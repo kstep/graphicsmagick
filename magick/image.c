@@ -2649,6 +2649,17 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds.x=0;
   if (bounds.y < 0)
     bounds.y=0;
+  /*
+    If we fail to find smaller bounds, then return original image
+    dimensions.
+  */
+  if ((bounds.width == 0) || (bounds.height == 0))
+    {
+      bounds.width=image->columns;
+      bounds.height=image->rows;
+      bounds.x=0;
+      bounds.y=0;
+    }
   return(bounds);
 }
 
