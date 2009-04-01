@@ -503,7 +503,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderTemporaryFileException(clone_info->filename);
     }
   FormatString(command,delegate_info->commands,antialias,
-    antialias,geometry,density,options,clone_info->filename,
+    antialias,density,options,clone_info->filename,
     postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(clone_info->verbose,command);

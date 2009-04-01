@@ -315,6 +315,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
+  FormatString(options+strlen(options)," -g%s",geometry);
   (void) strlcpy(filename,image_info->filename,MaxTextExtent);
   if (image_info->temporary)
     (void) LiberateTemporaryFile((char *) image_info->filename);
@@ -324,7 +325,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderTemporaryFileException(image_info->filename);
     }
   FormatString(command,delegate_info->commands,antialias,
-    antialias,geometry,density,options,image_info->filename,
+    antialias,density,options,image_info->filename,
     postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(image_info->verbose,command);

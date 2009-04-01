@@ -1,4 +1,4 @@
-.TH gm 1 "2008/12/12" "GraphicsMagick"
+.TH gm 1 "2009/03/05" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -332,11 +332,12 @@ raw images, specify a subimage with a geometry
 (e.g. -size 640x512 "image.rgb[320x256+50+50]").
 Surround the image name with quotation marks to prevent your shell
 from interpreting the square brackets.
-Single images are written with the filename you specify. However, multi-part
-images (e.g., a multi-page PostScript document with \fB+adjoin\fP
-specified) are written with the filename followed by a period (\fB.\fP)
-and the scene number. You can change this behavior by embedding a %d
-format specification in the file name. For example,
+Single images are written with the filename you specify. However,
+multi-part images (e.g., a multi-page PostScript document with
+\fB+adjoin\fP specified) are written with the filename followed by a
+period (\fB.\fP) and the scene number. You can change this behavior
+by embedding a %d format specification in the file name. For
+example,
 
     image%02d.miff
 

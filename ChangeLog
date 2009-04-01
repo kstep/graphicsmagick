@@ -1,3 +1,21 @@
+2009-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageBoundingBox): If we fail to find a
+	smaller bounding box, then the returned bounding box is the entire
+	image.
+
+	* VisualMagick/bin/delegates.mgk: Remove bounding box option (-g) from
+	Postscript delegate specifications.
+
+	* config/delegates.mgk.in: Remove bounding box option (-g) from
+	Postscript delegate specifications.
+
+	* coders/{ept.c, pdf.c, ps.c} : PDF bounding box is sometimes
+	incorrect or not globally applicable so don't specify bounding box
+	when reading PDF files.  Postscript files do need the bounding box
+	so make sure that it is still supplied.  Resolves SF tracker issue
+	2487651 "convert from pdf chops off rhs".
+
 2009-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: The module .la files need to be
