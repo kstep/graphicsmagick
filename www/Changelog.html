@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2009-03-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/bin/delegates.mgk: Remove bounding box option (-g) from
+        Postscript delegate specifications.
+
+  <LI> config/delegates.mgk.in: Remove bounding box option (-g) from
+        Postscript delegate specifications.
+
+  <LI> coders/{ept.c, pdf.c, ps.c} : PDF bounding box is sometimes
+        incorrect or not globally applicable so don't specify bounding box
+        when reading PDF files.  Postscript files do need the bounding box
+        so make sure that it is still supplied.  Resolves SF tracker issue
+        2487651 "convert from pdf chops off rhs".
+
+</UL>
+<p>
 2009-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

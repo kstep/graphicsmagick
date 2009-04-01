@@ -307,7 +307,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     command[MaxTextExtent],
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    options[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
   const DelegateInfo
@@ -491,23 +490,34 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Use Ghostscript to convert Postscript image.
   */
-  *options='\0';
-  if (image_info->subrange != 0)
-    FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
-      image_info->subimage+1,image_info->subimage+image_info->subrange);
-  if (image_info->authenticate != (char *) NULL)
-    FormatString(options+strlen(options)," -sPDFPassword=%.1024s",
-      image_info->authenticate);
-  (void) strlcpy(filename,image_info->filename,MaxTextExtent);
-  clone_info=CloneImageInfo(image_info);
-  if (!AcquireTemporaryFileName(clone_info->filename))
-    {
-      DestroyImageInfo(clone_info);
-      ThrowReaderTemporaryFileException(clone_info->filename);
-    }
-  FormatString(command,delegate_info->commands,antialias,
-    antialias,geometry,density,options,clone_info->filename,
-    postscript_filename);
+  {
+    char
+      options[MaxTextExtent];
+
+    options[0]='\0';
+    /*
+      Append subrange.
+    */
+    if (image_info->subrange != 0)
+      FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
+		   image_info->subimage+1,image_info->subimage+image_info->subrange);
+    /*
+      Append authentication string.
+    */
+    if (image_info->authenticate != (char *) NULL)
+      FormatString(options+strlen(options)," -sPDFPassword=%.1024s",
+		   image_info->authenticate);
+    (void) strlcpy(filename,image_info->filename,MaxTextExtent);
+    clone_info=CloneImageInfo(image_info);
+    if (!AcquireTemporaryFileName(clone_info->filename))
+      {
+	DestroyImageInfo(clone_info);
+	ThrowReaderTemporaryFileException(clone_info->filename);
+      }
+    FormatString(command,delegate_info->commands,antialias,
+		 antialias,density,options,clone_info->filename,
+		 postscript_filename);
+  }
   (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
                                 image->filename);
   status=InvokePostscriptDelegate(clone_info->verbose,command);
@@ -1187,9 +1197,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Image
                   *jpeg_image;
 
-                size_t
-                  length;
-
                 void
                   *blob;
 
@@ -1305,9 +1312,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 Image
                   *jpeg_image;
-
-                size_t
-                  length;
 
                 void
                   *blob;
@@ -1666,9 +1670,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     Image
                       *jpeg_image;
 
-                    size_t
-                      length;
-
                     void
                       *blob;
 
@@ -1766,9 +1767,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   {
                     Image
                       *jpeg_image;
-
-                    size_t
-                      length;
 
                     void
                       *blob;
