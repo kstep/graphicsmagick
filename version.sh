@@ -9,12 +9,12 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.1").
-PACKAGE_VERSION='1.1.14'
+PACKAGE_VERSION='1.1.15'
 
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2008-06-05"
+PACKAGE_RELEASE_DATE="2009-04-01"
 #PACKAGE_RELEASE_DATE="unreleased"
 
 #
@@ -63,14 +63,14 @@ CVS_BRANCH_TAG=GraphicsMagick-1_1
 # Magick library versioning
 #
 MAGICK_LIBRARY_CURRENT=1
-MAGICK_LIBRARY_REVISION=14
+MAGICK_LIBRARY_REVISION=15
 MAGICK_LIBRARY_AGE=0
 
 #
 # Magick++ library versioning
 #
 MAGICK_PLUS_PLUS_LIBRARY_CURRENT=1
-MAGICK_PLUS_PLUS_LIBRARY_REVISION=3
+MAGICK_PLUS_PLUS_LIBRARY_REVISION=4
 MAGICK_PLUS_PLUS_LIBRARY_AGE=0
 
 #

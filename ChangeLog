@@ -1,5 +1,7 @@
 2009-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh: GraphicsMagick 1.1.15 released.
+
 	* magick/image.c (GetImageBoundingBox): If we fail to find a
 	smaller bounding box, then the returned bounding box is the entire
 	image.

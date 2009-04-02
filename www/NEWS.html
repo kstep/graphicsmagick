@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.14 News</TITLE>
+<TITLE>GraphicsMagick 1.1.15 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,13 +17,54 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.14 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.15 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-This file was last updated on June 5, 2008.
+This file was last updated on April 1, 2009.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.15 (April 1, 2009)
 
+<p>
+  Bugs Fixed:
+
+<UL>
+  <LI> The MagickLibVersion define overflowed as of 1.1.10 since only
+      one digit was reserved for the minor version.  Fixed now.
+
+  <LI> MSL: Fix for handling of geometry x,y values in association with
+      gravity.
+
+  <LI> TIFF: Ping mode is now fast like it should have been.
+
+  <LI> Conjure subcommand was returning inverted status to the
+      environment.
+
+  <LI> Benchmark subcommand was leaking memory for each iteration.
+
+  <LI> Magick++ Image color quantization error measurement was
+      performing a wasteful operation.
+
+  <LI> GraphicsMagick.spec was not installing module .la files by default.
+
+  <LI> Bounding box query was failing rather than returning a bounding box
+      matching the entire image if there was no subimage to bound.
+
+  <LI> Memory leak/use fixes.
+
+</UL>
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Exclude all virtual delegates and coders for pseudo-formats when
+      deciding to use file extension as the format.
+
+  <LI> Fix assertion thrown for BMP and DIB files with negative image
+      height values.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.14 (released June 5, 2008)
 

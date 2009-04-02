@@ -1,5 +1,39 @@
-This file was last updated on June 5, 2008.
+This file was last updated on April 1, 2009.
 
+Significant changes associated with GraphicsMagick 1.1.15 (April 1, 2009)
+
+  Bugs Fixed:
+
+    o The MagickLibVersion define overflowed as of 1.1.10 since only
+      one digit was reserved for the minor version.  Fixed now.
+
+    o MSL: Fix for handling of geometry x,y values in association with
+      gravity.
+
+    o TIFF: Ping mode is now fast like it should have been.
+
+    o Conjure subcommand was returning inverted status to the
+      environment.
+
+    o Benchmark subcommand was leaking memory for each iteration.
+
+    o Magick++ Image color quantization error measurement was
+      performing a wasteful operation.
+
+    o GraphicsMagick.spec was not installing module .la files by default.
+
+    o Bounding box query was failing rather than returning a bounding box
+      matching the entire image if there was no subimage to bound.
+
+    o Memory leak/use fixes.
+
+  Security Fixes:
+
+    o Exclude all virtual delegates and coders for pseudo-formats when
+      deciding to use file extension as the format.
+
+    o Fix assertion thrown for BMP and DIB files with negative image
+      height values.
 
 Significant changes associated with GraphicsMagick 1.1.14 (released June 5, 2008)
 
