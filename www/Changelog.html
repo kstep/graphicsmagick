@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2009-04-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/bit_stream.c: Bitstream functions were often not inlining
+        and inline functions which don't inline are not much use.
+        Bitstream functions are now normal library functions.
+
+</UL>
+<p>
 2009-03-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

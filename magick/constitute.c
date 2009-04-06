@@ -2606,10 +2606,13 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
 %        exported (may be NULL)
 %
 */
-MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
-  const QuantumType quantum_type,const unsigned int quantum_size,
-  unsigned char *destination,const ExportPixelAreaOptions *options,
-  ExportPixelAreaInfo *export_info)
+MagickExport MagickPassFail
+ExportViewPixelArea(const ViewInfo *view,
+		    const QuantumType quantum_type,
+		    const unsigned int quantum_size,
+		    unsigned char *destination,
+		    const ExportPixelAreaOptions *options,
+		    ExportPixelAreaInfo *export_info)
 {
   const Image
     *image;
@@ -2698,7 +2701,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
       export_info->bytes_exported=0;
     }
 
-/*   printf("quantum_type=%d  quantum_size=%u  endian=%s\n",(int) quantum_type, quantum_size, EndianTypeToString(endian)); */
+  /*   printf("quantum_type=%d  quantum_size=%u  endian=%s\n",(int) quantum_type, quantum_size, EndianTypeToString(endian)); */
 
   double_scale=(double) (double_maxvalue-double_minvalue)/MaxRGB;
   if ((sample_type != FloatQuantumSampleType) && (sample_bits <= 32U))
@@ -2835,10 +2838,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   for (x = number_pixels; x != 0; --x)
                     {
-                      BitStreamMSBWrite(&stream,quantum_size,*indexes);
+                      MagickBitStreamMSBWrite(&stream,quantum_size,*indexes);
                       indexes++;
                     }
                   q=stream.bytes;
@@ -2907,16 +2910,16 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   for (x = number_pixels; x != 0; --x)
                     {
-                      BitStreamMSBWrite(&stream,quantum_size,*indexes);
+                      MagickBitStreamMSBWrite(&stream,quantum_size,*indexes);
                       unsigned_value=MaxRGB-GetOpacitySample(p);
                       if (QuantumDepth >  quantum_size)
                         unsigned_value /= unsigned_scale;
                       else if (QuantumDepth <  quantum_size)
                         unsigned_value *= unsigned_scale;
-                      BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                      MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                       indexes++;
                       p++;
                     }
@@ -3188,7 +3191,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
 
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if(QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
@@ -3200,7 +3203,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                             unsigned_value=PixelIntensityToQuantum(p);
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                           p++;
                         }
                     }
@@ -3216,7 +3219,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
                           unsigned_value /= unsigned_scale;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                           p++;
                         }
                     }
@@ -3232,7 +3235,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
                           unsigned_value *= unsigned_scale;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
                           p++;
                         }
                     }
@@ -3485,7 +3488,7 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
@@ -3497,8 +3500,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                             unsigned_value=PixelIntensityToQuantum(p);
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
-                          BitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
                           p++;
                         }
                     }
@@ -3514,9 +3517,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
                           unsigned_value /= unsigned_scale;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                           p++;
                         }
                     }
@@ -3532,9 +3535,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           if (grayscale_miniswhite)
                             unsigned_value=MaxRGB-unsigned_value;
                           unsigned_value *= unsigned_scale;
-                          BitStreamMSBWrite(&stream,quantum_size,unsigned_value);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,unsigned_value);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                           p++;
                         }
                     }
@@ -3647,14 +3650,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetRedSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetRedSample(p));
                           p++;
                         }
                     }
@@ -3663,8 +3666,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetRedSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetRedSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -3673,8 +3676,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetRedSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetRedSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -3783,14 +3786,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetGreenSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetGreenSample(p));
                           p++;
                         }
                     }
@@ -3799,8 +3802,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetGreenSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetGreenSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -3809,8 +3812,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetGreenSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetGreenSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -3919,14 +3922,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlueSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlueSample(p));
                           p++;
                         }
                     }
@@ -3935,8 +3938,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlueSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlueSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -3945,8 +3948,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlueSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlueSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -4053,14 +4056,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       BitStreamWriteHandle
                         stream;
                       
-                      BitStreamInitializeWrite(&stream,q);
+                      MagickBitStreamInitializeWrite(&stream,q);
                       if( QuantumDepth == sample_bits)
                         {
                           /* Unity scale */
                           for (x = number_pixels; x != 0; --x)
                             {
-                              BitStreamMSBWrite(&stream,quantum_size,
-                                                MaxRGB-*indexes);
+                              MagickBitStreamMSBWrite(&stream,quantum_size,
+						      MaxRGB-*indexes);
                               indexes++;
                             }
                         }
@@ -4069,8 +4072,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           /* Scale down */
                           for (x = number_pixels; x != 0; --x)
                             {
-                              BitStreamMSBWrite(&stream,quantum_size,
-                                                (MaxRGB-*indexes)/unsigned_scale);
+                              MagickBitStreamMSBWrite(&stream,quantum_size,
+						      (MaxRGB-*indexes)/unsigned_scale);
                               indexes++;
                             }
                         }
@@ -4079,8 +4082,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                           /* Scale up */
                           for (x = number_pixels; x != 0; --x)
                             {
-                              BitStreamMSBWrite(&stream,quantum_size,
-                                                (MaxRGB-*indexes)*unsigned_scale);
+                              MagickBitStreamMSBWrite(&stream,quantum_size,
+						      (MaxRGB-*indexes)*unsigned_scale);
                               indexes++;
                             }
                         }
@@ -4184,14 +4187,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            MaxRGB-GetOpacitySample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  MaxRGB-GetOpacitySample(p));
                           p++;
                         }
                     }
@@ -4200,8 +4203,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                           p++;
                         }
                     }
@@ -4210,8 +4213,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                           p++;
                         }
                     }
@@ -4316,14 +4319,14 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlackSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlackSample(p));
                           p++;
                         }
                     }
@@ -4332,8 +4335,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlackSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlackSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -4342,8 +4345,8 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            GetBlackSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  GetBlackSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -4457,15 +4460,15 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
                           p++;
                         }
                     }
@@ -4474,9 +4477,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -4485,9 +4488,9 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -4612,16 +4615,16 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if(QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,MaxRGB-GetOpacitySample(p));
                           p++;
                         }
                     }
@@ -4630,11 +4633,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))/unsigned_scale);
                           p++;
                         }
                     }
@@ -4643,11 +4646,11 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-GetOpacitySample(p))*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetRedSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetGreenSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlueSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-GetOpacitySample(p))*unsigned_scale);
                           p++;
                           
                         }
@@ -4777,16 +4780,16 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if(QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
                           p++;
                         }
                     }
@@ -4795,10 +4798,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
                           p++;
                         }
                     }
@@ -4807,10 +4810,10 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
                           p++;
                         }
                     }
@@ -4947,17 +4950,17 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                   BitStreamWriteHandle
                     stream;
                   
-                  BitStreamInitializeWrite(&stream,q);
+                  MagickBitStreamInitializeWrite(&stream,q);
                   if( QuantumDepth == sample_bits)
                     {
                       /* Unity scale */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
-                          BitStreamMSBWrite(&stream,quantum_size,MaxRGB-*indexes);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p));
+                          MagickBitStreamMSBWrite(&stream,quantum_size,MaxRGB-*indexes);
                           indexes++;
                           p++;
                         }
@@ -4967,12 +4970,12 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-*indexes)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)/unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-*indexes)/unsigned_scale);
                           indexes++;
                           p++;
                         }
@@ -4982,12 +4985,12 @@ MagickExport MagickPassFail ExportViewPixelArea(const ViewInfo *view,
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          BitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
-                          BitStreamMSBWrite(&stream,quantum_size,
-                                            (MaxRGB-*indexes)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetCyanSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetMagentaSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetYellowSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,GetBlackSample(p)*unsigned_scale);
+                          MagickBitStreamMSBWrite(&stream,quantum_size,
+						  (MaxRGB-*indexes)*unsigned_scale);
                           indexes++;
                           p++;
                         }
@@ -5235,10 +5238,13 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
 %               imported (may be NULL)
 %
 */
-MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
-  const QuantumType quantum_type,const unsigned int quantum_size,
-  const unsigned char *source,const ImportPixelAreaOptions *options,
-  ImportPixelAreaInfo *import_info)
+MagickExport MagickPassFail
+ImportViewPixelArea(ViewInfo *view,
+		    const QuantumType quantum_type,
+		    const unsigned int quantum_size,
+		    const unsigned char *source,
+		    const ImportPixelAreaOptions *options,
+		    ImportPixelAreaInfo *import_info)
 {
   Image
     *image;
@@ -5476,10 +5482,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   for (x = number_pixels; x != 0; --x)
                     {
-                      index=BitStreamMSBRead(&stream,quantum_size);
+                      index=MagickBitStreamMSBRead(&stream,quantum_size);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q++=image->colormap[index];
@@ -5565,15 +5571,15 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   for (x = number_pixels; x != 0; --x)
                     {
-                      index=BitStreamMSBRead(&stream,quantum_size);
+                      index=MagickBitStreamMSBRead(&stream,quantum_size);
                       VerifyColormapIndex(image,index);
                       *indexes++=index;
                       *q=image->colormap[index];
                       
-                      unsigned_value=BitStreamMSBRead(&stream,quantum_size);
+                      unsigned_value=MagickBitStreamMSBRead(&stream,quantum_size);
                       if (QuantumDepth >  sample_bits)
                         unsigned_value *= unsigned_scale;
                       else if (QuantumDepth <  sample_bits)
@@ -5734,10 +5740,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       BitStreamReadHandle
                         stream;
                       
-                      BitStreamInitializeRead(&stream,p);
+                      MagickBitStreamInitializeRead(&stream,p);
                       for (x = number_pixels; x != 0; --x)
                         {
-                          unsigned_value=BitStreamMSBRead(&stream,quantum_size);
+                          unsigned_value=MagickBitStreamMSBRead(&stream,quantum_size);
                           if (QuantumDepth >  sample_bits)
                             unsigned_value *= unsigned_scale;
                           else if (QuantumDepth <  sample_bits)
@@ -5859,10 +5865,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       if (unsigned_maxvalue > (image->colors-1))
                         indexes_scale=(unsigned_maxvalue/(image->colors-1));
                 
-                      BitStreamInitializeRead(&stream,p);
+                      MagickBitStreamInitializeRead(&stream,p);
                       for (x = number_pixels; x != 0; --x)
                         {
-                          index=BitStreamMSBRead(&stream,quantum_size);
+                          index=MagickBitStreamMSBRead(&stream,quantum_size);
                           index /= indexes_scale;
                           VerifyColormapIndex(image,index);
                           if (grayscale_miniswhite)
@@ -6056,10 +6062,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       BitStreamReadHandle
                         stream;
                       
-                      BitStreamInitializeRead(&stream,p);
+                      MagickBitStreamInitializeRead(&stream,p);
                       for (x = number_pixels; x != 0; --x)
                         {
-                          unsigned_value=BitStreamMSBRead(&stream,quantum_size);
+                          unsigned_value=MagickBitStreamMSBRead(&stream,quantum_size);
                           if (QuantumDepth >  sample_bits)
                             unsigned_value *= unsigned_scale;
                           else if (QuantumDepth <  sample_bits)
@@ -6068,7 +6074,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                             unsigned_value = MaxRGB-unsigned_value;
                           SetGraySample(q,unsigned_value);
 
-                          unsigned_value=BitStreamMSBRead(&stream,quantum_size);
+                          unsigned_value=MagickBitStreamMSBRead(&stream,quantum_size);
                           if (QuantumDepth >  sample_bits)
                             unsigned_value *= unsigned_scale;
                           else if (QuantumDepth <  sample_bits)
@@ -6153,10 +6159,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     BitStreamReadHandle
                       stream;
             
-                    BitStreamInitializeRead(&stream,p);
+                    MagickBitStreamInitializeRead(&stream,p);
                     for (x = number_pixels; x != 0; --x)
                       {
-                        index=BitStreamMSBRead(&stream,quantum_size);
+                        index=MagickBitStreamMSBRead(&stream,quantum_size);
                         index /= indexes_scale;
                         VerifyColormapIndex(image,index);
                         if (grayscale_miniswhite)
@@ -6164,7 +6170,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         *indexes++=index;
                         *q=image->colormap[index];
 
-                        unsigned_value=BitStreamMSBRead(&stream,quantum_size);
+                        unsigned_value=MagickBitStreamMSBRead(&stream,quantum_size);
                         if (QuantumDepth >  sample_bits)
                           unsigned_value *= unsigned_scale;
                         else if (QuantumDepth <  sample_bits)
@@ -6274,7 +6280,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       q++;
                     }
                   break;
-                    }
+		}
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
@@ -6303,13 +6309,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           q++;
                         }
                     }
@@ -6318,7 +6324,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           q++;
                         }
                     }
@@ -6409,7 +6415,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       q++;
                     }
                   break;
-                    }
+		}
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
@@ -6438,13 +6444,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           q++;
                         }
                     }
@@ -6453,7 +6459,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           q++;
                         }
                     }
@@ -6544,7 +6550,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       q++;
                     }
                   break;
-                    }
+		}
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
@@ -6573,13 +6579,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           q++;
                         }
                     }
@@ -6588,7 +6594,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           q++;
                         }
                     }
@@ -6702,13 +6708,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     BitStreamReadHandle
                       stream;
                 
-                    BitStreamInitializeRead(&stream,p);
+                    MagickBitStreamInitializeRead(&stream,p);
                     if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x != 0; --x)
                           {
-                            *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                            *indexes++=(IndexPacket) MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                           }
                       }
                     else
@@ -6716,7 +6722,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                         /* Scale down */
                         for (x = number_pixels; x != 0; --x)
                           {
-                            *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                            *indexes++=(IndexPacket) MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                           }
                       }
                   }
@@ -6822,13 +6828,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                 BitStreamReadHandle
                   stream;
 
-                BitStreamInitializeRead(&stream,p);
+                MagickBitStreamInitializeRead(&stream,p);
                 if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                        SetOpacitySample(q,MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                         q++;
                       }
                   }
@@ -6837,7 +6843,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                     /* Scale down */
                     for (x = number_pixels; x != 0; --x)
                       {
-                        SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                        SetOpacitySample(q,MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                         q++;
                       }
                   }
@@ -6925,7 +6931,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       q++;
                     }
                   break;
-                    }
+		}
               case 32:
                 {
                   for (x = number_pixels; x != 0; --x)
@@ -6954,13 +6960,13 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           q++;
                         }
                     }
@@ -6969,7 +6975,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           q++;
                         }
                     }
@@ -7110,15 +7116,15 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           SetOpacitySample(q,OpaqueOpacity);
                           q++;
                         }
@@ -7128,9 +7134,9 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           SetOpacitySample(q,OpaqueOpacity);
                           q++;
                         }
@@ -7307,16 +7313,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetOpacitySample(q,MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           q++;
                         }
                     }
@@ -7325,10 +7331,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetRedSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetGreenSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetBlueSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetOpacitySample(q,MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetRedSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetGreenSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlueSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetOpacitySample(q,MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           q++;
                         }
                     }
@@ -7516,16 +7522,16 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetCyanSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetMagentaSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetYellowSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
                           *indexes++=OpaqueOpacity;
                           q++;
                         }
@@ -7535,10 +7541,10 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetCyanSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetMagentaSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetYellowSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
                           *indexes++=OpaqueOpacity;
                           q++;
                         }
@@ -7738,17 +7744,17 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                   BitStreamReadHandle
                     stream;
                   
-                  BitStreamInitializeRead(&stream,p);
+                  MagickBitStreamInitializeRead(&stream,p);
                   if (QuantumDepth >=  sample_bits)
                     {
                       /* Scale up */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
-                          *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                          SetCyanSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetMagentaSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetYellowSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale);
+                          *indexes++=(IndexPacket) MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                           q++;
                         }
                     }
@@ -7757,11 +7763,11 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       /* Scale down */
                       for (x = number_pixels; x != 0; --x)
                         {
-                          SetCyanSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetMagentaSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetYellowSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          SetBlackSample(q,BitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
-                          *indexes++=(IndexPacket) MaxRGB-BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                          SetCyanSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetMagentaSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetYellowSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          SetBlackSample(q,MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale);
+                          *indexes++=(IndexPacket) MaxRGB-MagickBitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                           q++;
                         }
                     }
@@ -7956,7 +7962,7 @@ MagickExport MagickPassFail ImportViewPixelArea(ViewInfo *view,
                       ImportFloat32Quantum(endian,double_value,p);
                       break;
                     }
-                    case 64:
+		  case 64:
                     {
                       ImportFloat64Quantum(endian,double_value,p);
                       break;

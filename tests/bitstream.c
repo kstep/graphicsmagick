@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2005 GraphicsMagick Group
+  Copyright (C) 2003, 2005, 2009 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -85,10 +85,10 @@ int main ( int argc, char *argv[])
 
       for (rep=reps; rep > 0; rep--)
         {
-          BitStreamInitializeRead(&read_stream,bytes);
+          MagickBitStreamInitializeRead(&read_stream,bytes);
           for (x=reps; x > 0; x--)
             {
-              quantum=BitStreamMSBRead(&read_stream,bits);
+              quantum=MagickBitStreamMSBRead(&read_stream,bits);
               result += quantum;
             }
         }
@@ -125,10 +125,10 @@ int main ( int argc, char *argv[])
 
       for (rep=reps; rep > 0; rep--)
         {
-          BitStreamInitializeWrite(&write_stream,bytes);
+          MagickBitStreamInitializeWrite(&write_stream,bytes);
           for (x=reps; x > 0; x--)
             {
-              BitStreamMSBWrite(&write_stream,bits,x);
+              MagickBitStreamMSBWrite(&write_stream,bits,x);
               result += bytes[x];
             }
         }
@@ -177,13 +177,13 @@ int main ( int argc, char *argv[])
             }
           (void) memset(bytes,0xff,allocated_bytes);
           
-          BitStreamInitializeWrite(&write_stream,bytes);
-          BitStreamInitializeRead(&read_stream,bytes);
+          MagickBitStreamInitializeWrite(&write_stream,bytes);
+          MagickBitStreamInitializeRead(&read_stream,bytes);
           
           for (write_quantum=0; write_quantum < max_quantum; write_quantum++)
             {
-              BitStreamMSBWrite(&write_stream,bits,write_quantum);
-              read_quantum=BitStreamMSBRead(&read_stream,bits);
+              MagickBitStreamMSBWrite(&write_stream,bits,write_quantum);
+              read_quantum=MagickBitStreamMSBRead(&read_stream,bits);
               if (read_quantum != write_quantum)
                 {
                   (void) printf("mismatch: bits=%u write_quantum=%u read_quantum=%u\n",

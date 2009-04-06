@@ -16,8 +16,6 @@ For GM 1.4
 * Choose a better tile size for rotate by 0 and 270 degrees when the pixel
   cache is disk-based.  Also disable threading.
 
-* Fix failure to render entire page for some PDF files.
-
 * Add ClonePixelWand(), Compare, and Distortion functions to the Wand
   API.
 

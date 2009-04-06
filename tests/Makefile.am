@@ -16,7 +16,7 @@ TESTS_CHECK_PGRMS = \
         tests/rwfile
 
 tests_bitstream_SOURCES = tests/bitstream.c
-tests_bitstream_LDADD =
+tests_bitstream_LDADD = $(LIBMAGICK)
 tests_bitstream_CPPFLAGS = $(AM_CPPFLAGS)
 
 tests_constitute_SOURCES = tests/constitute.c

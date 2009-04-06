@@ -58,6 +58,7 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/attribute.c \
 	magick/attribute.h \
+	magick/bit_stream.c \
 	magick/bit_stream.h \
 	magick/blob.c \
 	magick/blob.h \

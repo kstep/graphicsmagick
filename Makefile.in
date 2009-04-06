@@ -1031,24 +1031,25 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(ltdl_shl_load_la_LDFLAGS) $(LDFLAGS) -o $@
 am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/alpha_composite.h magick/annotate.c magick/api.h \
-	magick/attribute.c magick/attribute.h magick/bit_stream.h \
-	magick/blob.c magick/blob.h magick/channel.c magick/channel.h \
-	magick/compare.c magick/compare.h magick/color.c \
-	magick/color.h magick/colorspace.c magick/colorspace.h \
-	magick/command.c magick/command.h magick/composite.c \
-	magick/composite.h magick/compress.c magick/compress.h \
-	magick/constitute.c magick/constitute.h magick/decorate.c \
-	magick/decorate.h magick/delegate.c magick/delegate.h \
-	magick/deprecate.c magick/deprecate.h magick/draw.c \
-	magick/draw.h magick/effect.c magick/effect.h magick/enhance.c \
-	magick/enhance.h magick/enum_strings.c magick/enum_strings.h \
-	magick/error.c magick/error.h magick/forward.h magick/fx.c \
-	magick/fx.h magick/gem.c magick/gem.h magick/image.c \
-	magick/image.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
-	magick/magic.h magick/magick.c magick/magick.h \
-	magick/magick_endian.c magick/magick_endian.h magick/map.c \
-	magick/map.h magick/memory.c magick/memory.h magick/module.c \
+	magick/attribute.c magick/attribute.h magick/bit_stream.c \
+	magick/bit_stream.h magick/blob.c magick/blob.h \
+	magick/channel.c magick/channel.h magick/compare.c \
+	magick/compare.h magick/color.c magick/color.h \
+	magick/colorspace.c magick/colorspace.h magick/command.c \
+	magick/command.h magick/composite.c magick/composite.h \
+	magick/compress.c magick/compress.h magick/constitute.c \
+	magick/constitute.h magick/decorate.c magick/decorate.h \
+	magick/delegate.c magick/delegate.h magick/deprecate.c \
+	magick/deprecate.h magick/draw.c magick/draw.h magick/effect.c \
+	magick/effect.h magick/enhance.c magick/enhance.h \
+	magick/enum_strings.c magick/enum_strings.h magick/error.c \
+	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
+	magick/gem.c magick/gem.h magick/image.c magick/image.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
+	magick/log.c magick/log.h magick/magic.c magick/magic.h \
+	magick/magick.c magick/magick.h magick/magick_endian.c \
+	magick/magick_endian.h magick/map.c magick/map.h \
+	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
@@ -1104,6 +1105,7 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-xwindow.lo
 am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
+	magick/magick_libGraphicsMagick_la-bit_stream.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
 	magick/magick_libGraphicsMagick_la-compare.lo \
@@ -1403,7 +1405,7 @@ Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_tests_bitstream_OBJECTS =  \
 	tests/tests_bitstream-bitstream.$(OBJEXT)
 tests_bitstream_OBJECTS = $(am_tests_bitstream_OBJECTS)
-tests_bitstream_DEPENDENCIES =
+tests_bitstream_DEPENDENCIES = $(LIBMAGICK)
 am_tests_constitute_OBJECTS =  \
 	tests/tests_constitute-constitute.$(OBJEXT)
 tests_constitute_OBJECTS = $(am_tests_constitute_OBJECTS)
@@ -2912,6 +2914,7 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/attribute.c \
 	magick/attribute.h \
+	magick/bit_stream.c \
 	magick/bit_stream.h \
 	magick/blob.c \
 	magick/blob.h \
@@ -3359,7 +3362,7 @@ TESTS_CHECK_PGRMS = \
         tests/rwfile
 
 tests_bitstream_SOURCES = tests/bitstream.c
-tests_bitstream_LDADD = 
+tests_bitstream_LDADD = $(LIBMAGICK)
 tests_bitstream_CPPFLAGS = $(AM_CPPFLAGS)
 tests_constitute_SOURCES = tests/constitute.c
 tests_constitute_CPPFLAGS = $(AM_CPPFLAGS)
@@ -5545,6 +5548,8 @@ magick/magick_libGraphicsMagick_la-annotate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-attribute.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-bit_stream.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-blob.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-channel.lo: magick/$(am__dirstamp) \
@@ -6597,6 +6602,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-annotate.lo
 	-rm -f magick/magick_libGraphicsMagick_la-attribute.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-attribute.lo
+	-rm -f magick/magick_libGraphicsMagick_la-bit_stream.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-bit_stream.lo
 	-rm -f magick/magick_libGraphicsMagick_la-blob.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-blob.lo
 	-rm -f magick/magick_libGraphicsMagick_la-channel.$(OBJEXT)
@@ -6989,6 +6996,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-attribute.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-bit_stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-blob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
@@ -7842,6 +7850,13 @@ magick/magick_libGraphicsMagick_la-attribute.lo: magick/attribute.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/attribute.c' object='magick/magick_libGraphicsMagick_la-attribute.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-attribute.lo `test -f 'magick/attribute.c' || echo '$(srcdir)/'`magick/attribute.c
+
+magick/magick_libGraphicsMagick_la-bit_stream.lo: magick/bit_stream.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-bit_stream.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-bit_stream.Tpo -c -o magick/magick_libGraphicsMagick_la-bit_stream.lo `test -f 'magick/bit_stream.c' || echo '$(srcdir)/'`magick/bit_stream.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-bit_stream.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-bit_stream.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/bit_stream.c' object='magick/magick_libGraphicsMagick_la-bit_stream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-bit_stream.lo `test -f 'magick/bit_stream.c' || echo '$(srcdir)/'`magick/bit_stream.c
 
 magick/magick_libGraphicsMagick_la-blob.lo: magick/blob.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-blob.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-blob.Tpo -c -o magick/magick_libGraphicsMagick_la-blob.lo `test -f 'magick/blob.c' || echo '$(srcdir)/'`magick/blob.c

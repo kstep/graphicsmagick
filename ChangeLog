@@ -1,3 +1,9 @@
+2009-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/bit_stream.c: Bitstream functions were often not inlining
+	and inline functions which don't inline are not much use.
+	Bitstream functions are now normal library functions.
+
 2009-03-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/delegates.mgk: Remove bounding box option (-g) from

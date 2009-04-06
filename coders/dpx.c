@@ -1531,9 +1531,9 @@ STATIC void ReadRowSamples(const unsigned char *scanline,
       read_func=ReadWordU32LE;
 
     read_state.words=scanline;
-    WordStreamInitializeRead(&read_stream,read_func, (void *) &read_state);
+    MagickWordStreamInitializeRead(&read_stream,read_func, (void *) &read_state);
       for (i=samples_per_row; i != 0; i--)
-        *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
+        *sp++=MagickWordStreamLSBRead(&read_stream,bits_per_sample);
   }
 }
 
@@ -2891,7 +2891,7 @@ STATIC void WriteRowSamples(const sample_t *samples,
     sample;
 
   sp=scanline;
-  BitStreamInitializeWrite(&bit_stream,scanline);
+  MagickBitStreamInitializeWrite(&bit_stream,scanline);
 
   if ((packing_method != PackingMethodPacked) &&
       ((bits_per_sample == 10) || (bits_per_sample == 12)))
@@ -3137,12 +3137,12 @@ STATIC void WriteRowSamples(const sample_t *samples,
         write_func=WriteWordU32LE;
 
       write_state.words=scanline;
-      WordStreamInitializeWrite(&write_stream,write_func, (void *) &write_state);
+      MagickWordStreamInitializeWrite(&write_stream,write_func, (void *) &write_state);
 
       for (i=samples_per_row; i != 0; i--)
-        WordStreamLSBWrite(&write_stream,bits_per_sample,*samples++);
+        MagickWordStreamLSBWrite(&write_stream,bits_per_sample,*samples++);
 
-      WordStreamLSBWriteFlush(&write_stream);
+      MagickWordStreamLSBWriteFlush(&write_stream);
   }
 }
 
