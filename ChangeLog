@@ -1,3 +1,8 @@
+2009-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c: Re-arrange ifdefs so that it is possible to
+	use pthreads under the WIN32 API.
+
 2009-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/bit_stream.c: Bitstream functions were often not inlining
