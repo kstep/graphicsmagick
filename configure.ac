@@ -1065,11 +1065,12 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll _exit ftime getexecname getc_unlocked getpagesize \
-  getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
-  _popen popen posix_fallocate pread pwrite putc_unlocked raise rand_r \
-  readlink realpath select seekdir sigemptyset sigaction strerror strlcat \
-  strlcpy strtoll sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
+AC_CHECK_FUNCS([atoll ctime_r _exit ftime getexecname getc_unlocked \
+  getpagesize getpid lltostr localtime_r madvise mkstemp _NSGetExecutablePath \
+  _pclose pclose poll _popen popen posix_fallocate pread pwrite putc_unlocked \
+  raise rand_r readdir_r readlink realpath select seekdir sigemptyset \
+  sigaction strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
+  tmpnam_r times telldir ulltostr vsprintf vsnprintf])
 
 ########
 #

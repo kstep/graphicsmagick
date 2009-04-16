@@ -1,5 +1,8 @@
 2009-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Add tests for some reentrant versions of functions
+	where we are still using the non-rentrant versions.
+
 	* magick/composite.c (CompositeImage): Fix problem with
 	compositing images where the change image overlaps off the left
 	side of the canvas.  Should fix SourceForge issue #2766200 "memory

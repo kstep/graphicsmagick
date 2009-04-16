@@ -78,6 +78,9 @@
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
 
+/* Define to 1 if you have the `ctime_r' function. */
+#undef HAVE_CTIME_R
+
 /* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
    you don't. */
 #undef HAVE_DECL_CYGWIN_CONV_PATH
@@ -171,6 +174,9 @@
 /* Define to 1 if you have the `lltostr' function. */
 #undef HAVE_LLTOSTR
 
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
+
 /* Define to 1 if the type `long double' works and has more range or precision
    than `double'. */
 #undef HAVE_LONG_DOUBLE
@@ -252,6 +258,9 @@
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
 
+/* Define to 1 if you have the `readdir_r' function. */
+#undef HAVE_READDIR_R
+
 /* Define to 1 if you have the `readlink' function. */
 #undef HAVE_READLINK
 
@@ -290,6 +299,9 @@
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
+
+/* Define to 1 if you have the `strerror_r' function. */
+#undef HAVE_STRERROR_R
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -361,6 +373,9 @@
 
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
+
+/* Define to 1 if you have the `tmpnam_r' function. */
+#undef HAVE_TMPNAM_R
 
 /* Define to 1 if you have the `ulltostr' function. */
 #undef HAVE_ULLTOSTR
