@@ -1,3 +1,10 @@
+2009-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImage): Fix problem with
+	compositing images where the change image overlaps off the left
+	side of the canvas.  Should fix SourceForge issue #2766200 "memory
+	allocation error when compositing small images".
+
 2009-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/semaphore.c: Re-arrange ifdefs so that it is possible to

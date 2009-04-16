@@ -3876,8 +3876,14 @@ SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->pixels == (PixelPacket *) NULL)
     {
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-			    "Failed to allocate %lu bytes for nexus staging!",
-			    (unsigned long) length);
+			    "Failed to allocate %lu bytes for nexus staging "
+			    "(number pixels=%" MAGICK_OFF_F "u, region width=%lu, "
+			    "region height=%lu, cache columns=%lu)!",
+			    (unsigned long) length,
+			    number_pixels,
+			    nexus_info->region.width,
+			    nexus_info->region.height,
+			    cache_info->columns);
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
 		     image->filename);
     }

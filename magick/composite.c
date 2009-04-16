@@ -397,7 +397,7 @@ XorCompositePixels(void *mutable_data,                /* User provided mutable d
   */
   for (i=0; i < npixels; i++)
     {
-      double gamma;
+      double gamma_adj;
       double source_alpha;
       double dest_alpha;
       double composite;
@@ -407,25 +407,25 @@ XorCompositePixels(void *mutable_data,                /* User provided mutable d
 
       source_alpha=(double) source.opacity/MaxRGBDouble;
       dest_alpha=(double) destination.opacity/MaxRGBDouble;
-          
-      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+      
+      gamma_adj=(1.0-source_alpha)+(1.0-dest_alpha)-
         2.0*(1.0-source_alpha)*(1.0-dest_alpha);
           
-      composite=MaxRGBDouble*(1.0-gamma);
+      composite=MaxRGBDouble*(1.0-gamma_adj);
       destination.opacity=RoundDoubleToQuantum(composite);
           
-      gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+      gamma_adj=1.0/(gamma_adj <= MagickEpsilon ? 1.0 : gamma_adj);
           
       composite=((1.0-source_alpha)*source.red*dest_alpha+
-                 (1.0-dest_alpha)*destination.red*source_alpha)*gamma;
+                 (1.0-dest_alpha)*destination.red*source_alpha)*gamma_adj;
       destination.red=RoundDoubleToQuantum(composite);
           
       composite=((1.0-source_alpha)*source.green*dest_alpha+
-                 (1.0-dest_alpha)*destination.green*source_alpha)*gamma;
+                 (1.0-dest_alpha)*destination.green*source_alpha)*gamma_adj;
       destination.green=RoundDoubleToQuantum(composite);
           
       composite=((1.0-source_alpha)*source.blue*dest_alpha+
-                 (1.0-dest_alpha)*destination.blue*source_alpha)*gamma;
+                 (1.0-dest_alpha)*destination.blue*source_alpha)*gamma_adj;
       destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
@@ -2195,7 +2195,9 @@ CompositeImage(Image *canvas_image,
       canvas_y=0;
 
 #if 0
-    printf("canvas=%lux%lu composite=%lux%lu offset=%ldx%ld | canvas=%ldx%ld composite=%ldx%ld size=%ldx%ld\n",
+    fprintf(stderr,
+	    "Parameters: canvas=%lux%lu | composite=%lux%lu | offset x=%ld y=%ld\n"
+	    "Overlap:    canvas x=%ld y=%ld | composite x=%ld y=%ld | size=%ldx%ld\n",
            canvas_image->columns,canvas_image->rows,
            change_image->columns,change_image->rows,
            x_offset,y_offset,
@@ -2215,10 +2217,10 @@ CompositeImage(Image *canvas_image,
         MagickBool
           clear_pixels = MagickFalse;
 
-        if ((canvas_x + change_image->columns) > canvas_image->columns)
-          columns -= ((canvas_x + change_image->columns) - canvas_image->columns);
-        if ((canvas_y + change_image->rows) > canvas_image->rows)
-          rows -= ((canvas_y + change_image->rows) - canvas_image->rows);
+	columns = Min(canvas_image->columns - canvas_x,
+		      change_image->columns - composite_x);
+	rows = Min(canvas_image->rows - canvas_y,
+		   change_image->rows - composite_y);
 
         call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
         if (call_back != (PixelIteratorDualModifyCallback) NULL)

@@ -22,6 +22,8 @@ For GM 1.4
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 
+ * Use localtime_r when available.
+
 For Future
 ==========
 
