@@ -247,11 +247,12 @@ of the library-based packages listed here.
 
   to read or write the MPEG image format.
 
-* GraphicsMagick requires the PNG library, version 1.0 or above, from
+* GraphicsMagick requires the LIBPNG library, version 1.0 or above, from
 
      http://www.libpng.org/pub/png/pngcode.html
 
-  to read the PNG image format.
+  to read or write the PNG, MNG, or JNG image formats.  LIBPNG depends
+  upon the ZLIB library (see below).
 
 * GraphicsMagick requires ra_ppm from Greg Ward's Radiance software
   available from
