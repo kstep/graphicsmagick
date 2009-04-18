@@ -1589,9 +1589,6 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   if (preserve_settings)
     {
-      const ImageAttribute
-        *attribute;
-
       if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  JPEG:preserve-settings flag is defined.");
