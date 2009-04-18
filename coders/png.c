@@ -1530,9 +1530,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   long
     y;
 
-  register unsigned char
-    *p;
-
   register IndexPacket
     *indexes;
 
@@ -2319,6 +2316,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                                image);
         for (y=0; y < (long) image->rows; y++)
           {
+            register unsigned char
+              *p;
+
             if (num_passes > 1)
               row_offset=ping_info->rowbytes*y;
             else
@@ -3574,9 +3574,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
     mng_background_color;
 #endif
 
-  register unsigned char
-    *p;
-
   register long
     i;
 
@@ -3727,6 +3724,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
       if (LocaleCompare(image_info->magick,"MNG") == 0)
         {
+          register unsigned char
+            *p;
+
           unsigned char
             *chunk;
 
@@ -4007,9 +4007,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             }
           if (!memcmp(type,mng_PLTE,4))
             {
-              register long
-                i;
-
               /*
                 Read global PLTE.
               */
@@ -4043,9 +4040,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             }
           if (!memcmp(type,mng_tRNS,4))
             {
-              register long
-                i;
-
               /* read global tRNS */
 
               if (length < 257)
@@ -4303,9 +4297,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             }
           if (!memcmp(type,mng_SAVE,4))
             {
-              register long
-                i;
-
               for (i=1; i < MNG_MAX_OBJECTS; i++)
                 if (mng_info->exists[i])
                   {
@@ -4322,9 +4313,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
           if (!memcmp(type,mng_DISC,4) || !memcmp(type,mng_SEEK,4))
             {
-              register long
-                i;
-
               /*
                 Read DISC or SEEK.
               */
@@ -4948,7 +4936,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                     y;
 
                   register long
-                    i,
                     x;
 
                   register PixelPacket
@@ -4961,7 +4948,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                     *prev;
 
                   size_t
-                    length;
+                    row_length;
 
                   png_uint_16
                     magn_methx,
@@ -5040,9 +5027,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                           large_image->rows);
                   m=mng_info->magn_mt;
                   yy=0;
-                  length=(size_t) (image->columns*sizeof(PixelPacket));
-                  next=MagickAllocateMemory(PixelPacket *,length);
-                  prev=MagickAllocateMemory(PixelPacket *,length);
+                  row_length=(size_t) (image->columns*sizeof(PixelPacket));
+                  next=MagickAllocateMemory(PixelPacket *,row_length);
+                  prev=MagickAllocateMemory(PixelPacket *,row_length);
                   if ((prev == (PixelPacket *) NULL) ||
                       (next == (PixelPacket *) NULL))
                     {
@@ -5052,7 +5039,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                            MemoryAllocationFailed,image)
                         }
                   n=GetImagePixels(image,0,0,image->columns,1);
-                  (void) memcpy(next,n,length);
+                  (void) memcpy(next,n,row_length);
                   for (y=0; y < (long) image->rows; y++)
                     {
                       if (y == 0)
@@ -5071,7 +5058,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                       if (y < (long) image->rows-1)
                         {
                           n=GetImagePixels(image,0,y+1,image->columns,1);
-                          (void) memcpy(next,n,length);
+                          (void) memcpy(next,n,row_length);
                         }
                       for (i=0; i < m; i++, yy++)
                         {
@@ -5154,7 +5141,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                   MagickFreeMemory(prev);
                   MagickFreeMemory(next);
 
-                  length=image->columns;
+                  row_length=image->columns;
 
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -5175,12 +5162,12 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                   for (y=0; y < (long) image->rows; y++)
                     {
                       q=GetImagePixels(image,0,y,image->columns,1);
-                      p=q+(image->columns-length);
+                      p=q+(image->columns-row_length);
                       n=p+1;
-                      for (x=(long) (image->columns-length);
+                      for (x=(long) (image->columns-row_length);
                            x < (long) image->columns; x++)
                         {
-                          if (x == (long) (image->columns-length))
+                          if (x == (long) (image->columns-row_length))
                             m=mng_info->magn_ml;
                           else if (magn_methx > 1 &&
                                    x == (long) image->columns-2)
@@ -6687,7 +6674,6 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
 
                   /* Check if grayscale is reducible */
                   int
-                    i,
                     depth_4_ok=True,
                     depth_2_ok=True,
                     depth_1_ok=True;
@@ -8176,16 +8162,15 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     chunk_length=0;
 #endif
 
-  unsigned char
-    chunk[800];
-
   unsigned int
     status;
 
   volatile unsigned int
-    scene,
     write_jng,
     write_mng;
+
+  volatile unsigned long
+    scene;
 
   unsigned long
     final_delay=0,
@@ -8257,9 +8242,6 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       /* Log some info about the input */
       Image
         *p;
-
-      long
-        scene;
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "  Checking input image(s)");
@@ -8375,6 +8357,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       }
   if (write_mng)
     {
+      unsigned char
+        chunk[800];
+
       unsigned int
         need_geom;
 
@@ -8819,6 +8804,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 #endif
   do
     {
+      unsigned char
+        chunk[800];
+
       if (mng_info->adjoin)
         {
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) ||  \
@@ -8914,9 +8902,6 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
           ((image->delay != mng_info->delay) ||
            (mng_info->framing_mode != mng_info->old_framing_mode)))
         {
-          unsigned char
-            chunk[16];
-
           if (image->delay == mng_info->delay)
             {
               /*
@@ -8988,6 +8973,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     } while (mng_info->adjoin);
   if (write_mng)
     {
+      unsigned char
+        chunk[16];
+
       while (image->previous != (Image *) NULL)
         image=image->previous;
       /*

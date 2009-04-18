@@ -1,3 +1,7 @@
+2008-04-09  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c: Fixed some warnings about "shadowed" variables.
+
 2009-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Add tests for some reentrant versions of functions
