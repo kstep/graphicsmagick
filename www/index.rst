@@ -25,11 +25,11 @@ GraphicsMagick Image Processing System
 
 .. _programming : programming.html
 
-========================  ===============================================
-Legacy Stable Branch:     1.1.15__ (Released April 1, 2009) download__
-Previous Stable Branch:   1.2.7__ (Released January 16, 2009) download__
-Current Stable Branch:    1.3.5__ (Released January 26, 2009) download__
-========================  ===============================================
+===========================  ===============================================
+Legacy (EOL) Stable Branch:  1.1.15__ (Released April 1, 2009) download__
+Previous Stable Branch:      1.2.7__ (Released January 16, 2009) download__
+Current Stable Branch:       1.3.5__ (Released January 26, 2009) download__
+===========================  ===============================================
 
 __ `GraphicsMagic-1.1`_
 __ `download GraphicsMagic-1.1`_
