@@ -49,6 +49,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _`benchmarks` : benchmarks.html
 .. _`SLOCCount` : http://www.dwheeler.com/sloccount/
 .. _`Flickr` : http://www.flickr.com/
+.. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 
 GraphicsMagick is the swiss army knife of image processing. Comprised of
 248K physical lines (according to `SLOCCount`_) of source code in the
@@ -93,7 +94,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is much smaller and tighter.
 
   * GM is used to process billions of files at the world's largest photo
-    sites (e.g. `Flickr`_).
+    sites (e.g. `Flickr`_, see `John Allspaw's presentation`_).
   
   * GM does not does not conflict with other installed software.
 
