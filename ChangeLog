@@ -1,3 +1,7 @@
+2009-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document the direction of rotation.
+
 2009-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (LogMagickEventList): Use MagickPackageName from
