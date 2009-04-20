@@ -6106,6 +6106,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     *png_pixels;
 
   unsigned int
+    image_colors,
+    image_depth,
+    image_matte,
     logging,
     matte,
     not_valid;
@@ -6137,21 +6140,25 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       return MagickFail;
     }
 
+  image_colors=image->colors;
+  image_depth=image->depth;
+  image_matte=image->matte;
+
   if (image->storage_class == PseudoClass &&
-      image->colors <= 256)
+      image_colors <= 256)
     {
       mng_info->IsPalette=MagickTrue;
-      image->depth=8;
+      image_depth=8;
     }
 
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
-    image->depth=8;
-  else if (image->depth < 8)
-    image->depth=8;
-  else if (image->depth > 8 && image->depth < 16)
-    image->depth=16;
-  else if (image->depth > 16)
-    image->depth=16;
+    image_depth=8;
+  else if (image_depth < 8)
+    image_depth=8;
+  else if (image_depth > 8 && image_depth < 16)
+    image_depth=16;
+  else if (image_depth > 16)
+    image_depth=16;
 
   /*
     Allocate the PNG structures
@@ -6219,13 +6226,13 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    height=%lu",ping_info->height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "    image->depth=%u",image->depth);
+                            "    image->depth=%u",image_depth);
     }
 
 
-  quantum_size=(image->depth > 8) ? 16:8;
+  quantum_size=(image_depth > 8) ? 16:8;
 
-  save_image_depth=image->depth;
+  save_image_depth=image_depth;
   ping_info->bit_depth=(png_byte) save_image_depth;
   if (logging)
     {
@@ -6278,17 +6285,17 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                               "    Setting up oFFs chunk");
     }
 #endif
-  if (image->matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
+  if (image_matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
     {
       png_color_16
         background;
 
-      if (image->depth < QuantumDepth)
+      if (image_depth < QuantumDepth)
         {
           int
             maxval;
 
-          maxval=(1 << image->depth)-1;
+          maxval=(1 << image_depth)-1;
           background.red=(png_uint_16)
             (maxval*image->background_color.red/MaxRGB);
           background.green=(png_uint_16)
@@ -6315,7 +6322,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   /*
     Select the color type.
   */
-  matte=image->matte;
+  matte=image_matte;
   if (mng_info->write_png8)
     {
       ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
@@ -6331,14 +6338,14 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           number_colors,
           save_number_colors;
 
-        number_colors=image->colors;
+        number_colors=image_colors;
         if (number_colors == 0 || number_colors > 256)
           {
             GetQuantizeInfo(&quantize_info);
             quantize_info.dither=image_info->dither;
             quantize_info.number_colors=256;
             (void) QuantizeImage(&quantize_info,image);
-            number_colors=image->colors;
+            number_colors=image_colors;
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "    Colors quantized to %ld",
@@ -6352,10 +6359,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
         ping_info->valid|=PNG_INFO_PLTE;
 #if defined(PNG_SORT_PALETTE)
-        save_number_colors=image->colors;
+        save_number_colors=image_colors;
         (void) CompressColormapTransFirst(image);
-        number_colors=image->colors;
-        image->colors=save_number_colors;
+        number_colors=image_colors;
+        image_colors=save_number_colors;
 #endif
         palette=MagickAllocateMemory(png_color *,
                                      number_colors*sizeof(png_color));
@@ -6438,19 +6445,19 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             break;
         ping_info->background.index=(png_uint_16) i;
       }
-      if (image->matte)
+      if (image_matte)
         {
           /* TO DO: reduce to binary transparency */
         }
     }
   else if (mng_info->write_png24)
     {
-      image->matte=False;
+      image_matte=False;
       ping_info->color_type=PNG_COLOR_TYPE_RGB;
     }
   else if (mng_info->write_png32)
     {
-      image->matte=True;
+      image_matte=True;
       ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
     }
   else
@@ -6478,7 +6485,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           else
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         }
-      else if (characteristics.palette && image->colors <= 256)
+      else if (characteristics.palette && image_colors <= 256)
         {
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->bit_depth=8;
@@ -6495,7 +6502,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         {
           if (characteristics.monochrome)
             {
-              if (!image->matte)
+              if (!image_matte)
                 ping_info->bit_depth=1;
             }
         }
@@ -6515,7 +6522,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "    image_info->type: %d",image_info->type);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "    image->depth: %u",image->depth);
+                                "    image->depth: %u",image_depth);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "    ping_info->bit_depth: %d",
                                 ping_info->bit_depth);
@@ -6532,7 +6539,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 No transparent pixels are present.  Change 4 or 6 to 0 or 2,
                 and do not set the PNG_INFO_tRNS flag in ping_info->valid.
               */
-              image->matte=False;
+              image_matte=False;
               ping_info->color_type&=0x03;
             }
           else
@@ -6629,7 +6636,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           if (ping_info->valid & PNG_INFO_tRNS)
             {
               ping_info->color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
-              if (image->depth == 8)
+              if (image_depth == 8)
                 {
                   ping_info->trans_values.red&=0xff;
                   ping_info->trans_values.green&=0xff;
@@ -6638,25 +6645,25 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 }
             }
         }
-      matte=image->matte;
+      matte=image_matte;
       if (ping_info->valid & PNG_INFO_tRNS)
-        image->matte=False;
+        image_matte=False;
       if ((mng_info->optimize || mng_info->IsPalette) &&
-          characteristics.grayscale && (!image->matte || image->depth >= 8))
+          characteristics.grayscale && (!image_matte || image_depth >= 8))
         {
-          if (image->matte)
+          if (image_matte)
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
           else
             {
               ping_info->color_type=PNG_COLOR_TYPE_GRAY;
-              if (save_image_depth == 16 && image->depth == 8)
+              if (save_image_depth == 16 && image_depth == 8)
                 ping_info->trans_values.gray*=0x0101;
             }
-          if (image->depth > QuantumDepth)
-            image->depth=QuantumDepth;
-          if (image->colors == 0 || image->colors-1 > MaxRGB)
-            image->colors=1 << image->depth;
-          if (image->depth > 8)
+          if (image_depth > QuantumDepth)
+            image_depth=QuantumDepth;
+          if (image_colors == 0 || image_colors-1 > MaxRGB)
+            image_colors=1 << image_depth;
+          if (image_depth > 8)
             ping_info->bit_depth=16;
           else
             {
@@ -6664,11 +6671,11 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                 {
                   ping_info->bit_depth=1;
                   while ((int) (1 << ping_info->bit_depth) <
-                                (long) image->colors)
+                                (long) image_colors)
                     ping_info->bit_depth <<= 1;
                 }
               else if (mng_info->optimize && ping_info->color_type ==
-                       PNG_COLOR_TYPE_GRAY && image->colors < 17 &&
+                       PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
                        mng_info->IsPalette)
                 {
 
@@ -6678,7 +6685,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                     depth_2_ok=True,
                     depth_1_ok=True;
 
-                  for (i=0; i < (long) image->colors; i++)
+                  for (i=0; i < (long) image_colors; i++)
                     {
                       unsigned char
                         intensity;
@@ -6687,9 +6694,11 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
 
                       if ((intensity & 0x0f) != ((intensity & 0xf0) >> 4))
                         depth_4_ok=depth_2_ok=depth_1_ok=False;
-                      else if ((intensity & 0x03) != ((intensity & 0x0c) >> 2))
+                      else if ((intensity & 0x03) !=
+                          ((intensity & 0x0c) >> 2))
                         depth_2_ok=depth_1_ok=False;
-                      else if ((intensity & 0x01) != ((intensity & 0x02) >> 1))
+                      else if ((intensity & 0x01) !=
+                          ((intensity & 0x02) >> 1))
                         depth_1_ok=False;
                     }
                   if (depth_1_ok)
@@ -6704,12 +6713,12 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       else
         if (mng_info->IsPalette)
           {
-            if (image->depth <= 8)
+            if (image_depth <= 8)
               {
                 unsigned long
                   number_colors;
 
-                number_colors=image->colors;
+                number_colors=image_colors;
                 if (matte)
                   ping_info->valid|=PNG_INFO_tRNS;
                 /*
@@ -6732,10 +6741,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
 
                     if (mng_info->optimize)
                       {
-                        save_number_colors=image->colors;
+                        save_number_colors=image_colors;
                         (void) CompressColormapTransFirst(image);
-                        number_colors=image->colors;
-                        image->colors=save_number_colors;
+                        number_colors=image_colors;
+                        image_colors=save_number_colors;
                       }
 #endif
                     palette=MagickAllocateArray(png_color *,
@@ -6864,9 +6873,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           }
         else
           {
-            if (image->depth < 8)
-              image->depth=8;
-            if ((save_image_depth == 16) && (image->depth == 8))
+            if (image_depth < 8)
+              image_depth=8;
+            if ((save_image_depth == 16) && (image_depth == 8))
               {
                 ping_info->trans_values.red*=0x0101;
                 ping_info->trans_values.green*=0x0101;
@@ -7143,7 +7152,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     Allocate memory.
   */
   rowbytes=image->columns;
-  if (image->depth <= 8)
+  if (image_depth <= 8)
     {
       if (mng_info->write_png24)
         rowbytes*=3;
@@ -7152,20 +7161,20 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       else if (!mng_info->write_png8 &&
                ((mng_info->optimize || mng_info->IsPalette) &&
                 IsGrayImage(image,&image->exception)))
-        rowbytes*=(image->matte ? 2 : 1);
+        rowbytes*=(image_matte ? 2 : 1);
       else
         {
           if (!mng_info->IsPalette)
-            rowbytes*=(image->matte ? 4 : 3);
+            rowbytes*=(image_matte ? 4 : 3);
         }
     }
   else
     {
       if ((mng_info->optimize || mng_info->IsPalette) &&
           IsGrayImage(image,&image->exception))
-        rowbytes*=(image->matte ? 4 : 2);
+        rowbytes*=(image_matte ? 4 : 2);
       else
-        rowbytes*=(image->matte ? 8 : 6);
+        rowbytes*=(image_matte ? 8 : 6);
     }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7180,9 +7189,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
        !mng_info->write_png32) && (mng_info->optimize ||
-                                   mng_info->IsPalette ||
-                                   image_info->type == BilevelType) &&
-      !image->matte && IsMonochromeImage(image,&image->exception))
+       mng_info->IsPalette ||
+       image_info->type == BilevelType) &&
+       !image_matte &&
+       IsMonochromeImage(image,&image->exception))
     for (pass=0; pass < num_passes; pass++)
       {
         /*
@@ -7221,7 +7231,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       {
         if ((!mng_info->write_png8 && !mng_info->write_png24 &&
              !mng_info->write_png32) &&
-            (!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
+            (!image_matte || (ping_info->bit_depth >= QuantumDepth)) &&
             (mng_info->optimize || mng_info->IsPalette) &&
             IsGrayImage(image,&image->exception))
           {
@@ -7242,7 +7252,8 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                     else
                       (void) ExportImagePixelArea(image,
                                                   (QuantumType) RedQuantum,
-                                                  quantum_size,png_pixels,0,0);
+                                                  quantum_size,
+                                                 png_pixels,0,0);
                   }
                 else /* PNG_COLOR_TYPE_GRAY_ALPHA */
                   {
@@ -7264,7 +7275,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         else
           for (pass=0; pass < num_passes; pass++)
             {
-              if ((image->depth > 8) ||
+              if ((image_depth > 8) ||
                   (mng_info->write_png24 ||
                    mng_info->write_png32 ||
                    (!mng_info->write_png8 && !mng_info->IsPalette)))
@@ -7300,7 +7311,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                                                     GrayAlphaQuantum,
                                                     quantum_size,
                                                     png_pixels,0,0);
-                      else if (image->matte)
+                      else if (image_matte)
                         (void) ExportImagePixelArea(image,(QuantumType)
                                                     RGBAQuantum,
                                                     quantum_size,
