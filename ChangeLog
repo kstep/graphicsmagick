@@ -1,3 +1,9 @@
+2009-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/display.imdoc: Fix documentation for crop and chop keyboard
+	accelerators.  Fixes SourceForge bug #2593388 "error in the
+	documentation/Keyboard accelarators".
+
 2009-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (GetImageBoundingBox): If we fail to find a

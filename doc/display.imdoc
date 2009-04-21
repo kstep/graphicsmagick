@@ -1319,7 +1319,7 @@ use <s>-colors</s>.</p>
 <p>
 To begin, press choose <s>Crop</s> of the <s>Transform</s> submenu from
 the <a href="#disp-comm">Command widget</a>. Alternatively,
-<a href="#disp-keyb">press</a> [ in the image window.</p>
+<a href="#disp-keyb">press</a> C in the image window.</p>
 
 <p>
 A small window appears showing the location of the cursor in the image
@@ -1358,7 +1358,7 @@ your cropping region. To exit without cropping the image, press Dismiss.</p>
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose <s>Chop</s> of the <s>Transform</s> sub-menu
 from the <a href="#disp-comm">Command widget</a>. Alternatively,
-<a href="#disp-keyb">press</a> ] in the Image window.</p>
+<a href="#disp-keyb">press</a> [ in the Image window.</p>
 
 <p>
 You are now in <s>Chop</s> mode. To exit immediately, press
