@@ -6360,7 +6360,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         ping_info->valid|=PNG_INFO_PLTE;
 #if defined(PNG_SORT_PALETTE)
         save_number_colors=image_colors;
-        (void) CompressColormapTransFirst(image);
+        if (CompressColormapTransFirst(image) == MagickFail)
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
         number_colors=image_colors;
         image_colors=save_number_colors;
 #endif
@@ -6742,7 +6744,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                     if (mng_info->optimize)
                       {
                         save_number_colors=image_colors;
-                        (void) CompressColormapTransFirst(image);
+                        if (CompressColormapTransFirst(image) == MagickFail)
+                          ThrowWriterException(ResourceLimitError,
+                                               MemoryAllocationFailed,
+                                               image);
                         number_colors=image_colors;
                         image_colors=save_number_colors;
                       }

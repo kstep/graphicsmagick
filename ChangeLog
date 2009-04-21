@@ -1,5 +1,9 @@
 2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
 
+        * coders/png.c: Check error return from CompressColormapTransFirst()
+
+2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
+
 	* coders/png.c: Refrain from modifying image struct
           members (matte, colors, depth) while writing a PNG.
 
