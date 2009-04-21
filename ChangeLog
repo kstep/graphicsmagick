@@ -1,5 +1,10 @@
 2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
 
+        * coders/png.c: Cosmetic-only, change "True" to "MagickTrue" or
+          "MagickPass" and "False" to "MagickFalse" or MagickFail".
+
+2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
+
         * coders/png.c: Check error return from CompressColormapTransFirst()
 
 2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
