@@ -7590,23 +7590,26 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 %  would be given the "png" file extension, this method also writes
 %  the following pseudo-formats which are subsets of PNG:
 %
-%
-%    o PNG8:  8-bit indexed.  If transparency is present, the tRNS chunk
+%    o PNG8:  An 8-bit indexed PNG datastream is written.
+%             If transparency is present, the tRNS chunk
 %             must only have values 0 and 255 (i.e., transparency is binary:
 %             fully opaque or fully transparent).  The pixels contain 8-bit
 %             indices even if they could be represented with 1, 2, or 4 bits.
-%             //////TODO: explain about grayscale handling./////
-%    o PNG24: 8-bit per sample RGB.  The tRNS chunk can be present to convey
-%             binary transparency.
-%    o PNG32: 8-bit per sample RGBA.  Partial transparency is permitted,
-%             i.e., the alpha sample for each pixel can have any value
-%             from 0 to 255. The alpha channel is present even if the
-%             image is fully opaque. 
+%             Note: grayscale images will be written as indexed PNG files
+%             even though the PNG grayscale type might be slightly more
+%             efficient.
+%    o PNG24: An 8-bit per sample RGB PNG datastream is written.  The tRNS
+%             chunk can be present to convey binary transparency by naming
+%             one of the colors as transparent.
+%    o PNG32: An 8-bit per sample RGBA PNG is written.  Partial
+%             transparency is permitted, i.e., the alpha sample for
+%             each pixel can have any value from 0 to 255. The alpha
+%             channel is present even if the image is fully opaque. 
 %
-%  If the image cannot be written in the requested PNG8, PNG24, format
-%  format without loss, a PNG file will not be written, and MagickFalse
+%  If the image cannot be written in the requested PNG8, PNG24, or PNG32
+%  format without loss, a PNG file will not be written, and MagickFail
 %  will be returned.  Since image encoders should not be responsible for
-%  the "heavy lifting", the user should make sure that ImageMagick has
+%  the "heavy lifting", the user should make sure that GraphicsMagick has
 %  already reduced the image depth and number of colors and limit
 %  transparency to binary transparency prior to attempting to write the
 %  image in a format that is subject to depth, color, or transparency
