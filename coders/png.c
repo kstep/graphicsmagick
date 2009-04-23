@@ -7558,6 +7558,67 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   /*  End write one PNG image */
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e P N G I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WritePNGImage() writes a Portable Network Graphics (PNG) or
+%  Multiple-image Network Graphics (MNG) image file.
+%
+%  MNG support written by Glenn Randers-Pehrson, glennrp@image...
+%
+%  The format of the WritePNGImage method is:
+%
+%      MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%  Returns MagickPass on success, MagickFail on failure.
+%
+%  While the datastream written is always in PNG format and normally
+%  would be given the "png" file extension, this method also writes
+%  the following pseudo-formats which are subsets of PNG:
+%
+%
+%    o PNG8:  8-bit indexed.  If transparency is present, the tRNS chunk
+%             must only have values 0 and 255 (i.e., transparency is binary:
+%             fully opaque or fully transparent).  The pixels contain 8-bit
+%             indices even if they could be represented with 1, 2, or 4 bits.
+%             //////TODO: explain about grayscale handling./////
+%    o PNG24: 8-bit per sample RGB.  The tRNS chunk can be present to convey
+%             binary transparency.
+%    o PNG32: 8-bit per sample RGBA.  Partial transparency is permitted,
+%             i.e., the alpha sample for each pixel can have any value
+%             from 0 to 255. The alpha channel is present even if the
+%             image is fully opaque. 
+%
+%  If the image cannot be written in the requested PNG8, PNG24, format
+%  format without loss, a PNG file will not be written, and MagickFalse
+%  will be returned.  Since image encoders should not be responsible for
+%  the "heavy lifting", the user should make sure that ImageMagick has
+%  already reduced the image depth and number of colors and limit
+%  transparency to binary transparency prior to attempting to write the
+%  image in a format that is subject to depth, color, or transparency
+%  limitations.
+%
+%  TODO: Enforce the previous paragraph.
+%
+%  TODO: Allow all other PNG subformats to be requested via new
+%        "-define png:bitdepth -define png_colortype" options.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
 static MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   MngInfo
@@ -8092,6 +8153,33 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
 }
 
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e J N G I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteJNGImage() writes a JPEG Network Graphics (JNG) image file.
+%
+%  JNG support written by Glenn Randers-Pehrson, glennrp@image...
+%
+%  The format of the WriteJNGImage method is:
+%
+%      MagickPassFail WriteJNGImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
 static MagickPassFail WriteJNGImage(const ImageInfo *image_info,Image *image)
 {
   MngInfo
