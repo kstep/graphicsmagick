@@ -1,3 +1,11 @@
+2009-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Add a test for the 'restrict' keyword so that
+	eventually we can use it.
+
+	* coders/jpeg.c (ReadJPEGImage): Tidy JPEG reader by moving JPEG
+	properties analysis code into subroutines.
+
 2009-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/display.imdoc: Fix documentation for crop and chop keyboard

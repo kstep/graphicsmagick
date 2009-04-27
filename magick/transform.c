@@ -1363,7 +1363,9 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       if ((geometry.width == 0) || (geometry.height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0) ||
           (flags & PercentValue))
-        crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
+	{
+	  crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
+	}
       else
         if ((transform_image->columns > geometry.width) ||
             (transform_image->rows > geometry.height))
@@ -1416,6 +1418,11 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
             crop_image=crop_image->previous;
           transform_image=crop_image;
         }
+      /*
+	FIXME: maybe image is a list and we should insert into it
+	rather than replacing it.  Note that this would then impact
+	the following resize code.
+      */
       *image=transform_image;
     }
   if (image_geometry == (const char *) NULL)

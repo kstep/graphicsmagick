@@ -842,6 +842,11 @@ AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/times.h sys/types.h)
 # define const to be empty.
 AC_C_CONST
 
+# If the C compiler supports the keyword restrict, do
+# nothing. Otherwise define restrict to __restrict__ or __restrict if
+# it accepts one of those, otherwise define restrict to be empty.
+AC_C_RESTRICT
+
 # If the C compiler supports the keyword inline, do nothing. Otherwise
 # define inline to __inline__ or __inline if it accepts one of those,
 # otherwise define inline to be empty.
