@@ -1,5 +1,12 @@
 2009-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImages): Deal slightly better with the
+	case when MogrifyImage() expands one image into several.  Still
+	don't know of a sane way to deal with -crop WIDTHxHEIGHT.
+
+	* magick/transform.c (TransformImage): Image which is updated may
+	be a list so account for that.
+
 	* configure.ac: Add a test for the 'restrict' keyword so that
 	eventually we can use it.
 

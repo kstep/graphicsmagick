@@ -8203,6 +8203,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("crop",option+1) == 0)
           {
+	    /*
+	      FIXME: This command can produce multiple images from one
+	      image, causing only the first to be fully processed.
+	    */
             TransformImage(image,argv[++i],(char *) NULL);
             continue;
           }
@@ -9021,12 +9025,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             else
               {
                 char
-                  *geometry;
+                  *geometry_str;
                 
-                geometry=GetPageGeometry(argv[++i]);
-                (void) GetGeometry(geometry,&(*image)->page.x,&(*image)->page.y,
+                geometry_str=GetPageGeometry(argv[++i]);
+                (void) GetGeometry(geometry_str,&(*image)->page.x,&(*image)->page.y,
                                    &(*image)->page.width,&(*image)->page.height);
-                MagickFreeMemory(geometry);
+                MagickFreeMemory(geometry_str);
               }
           }
         if (LocaleCompare("paint",option+1) == 0)
@@ -9961,7 +9965,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   int argc,char **argv,Image **images)
 {
-#define MogrifyImageText  "  Transform image...  "
+#define MogrifyImageText  "Transform image...  "
 
   char
     *option;
@@ -9970,9 +9974,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *image,
     *mogrify_images;
 
-/*   MonitorHandler */
-/*     handler; */
-
   register long
     i;
 
@@ -9980,7 +9981,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     status;
 
   unsigned long
-    number_images,
     scene;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -10008,28 +10008,30 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     }
   }
   /*
-    Apply options to individual each image in the list.
+    Apply options to each individual image in the list.
   */
   status=True;
   mogrify_images=NewImageList();
-  number_images=GetImageListLength(*images);
-  for (i=0; i < (long) number_images; i++)
-  {
-    image=RemoveFirstImageFromList(images);
-/*     handler=SetMonitorHandler((MonitorHandler) NULL); */
-    status&=MogrifyImage(image_info,argc,argv,&image);
-/*     (void) SetMonitorHandler(handler); */
-    if (scene)
-      image->scene+=i;
-    /*
-      Print one line description of image.
-    */
-    if (image_info->verbose)
-      (void) DescribeImage(image,stdout,False);
-    AppendImageToList(&mogrify_images,image);
-/*     if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception)) */
-/*       break; */
-  }
+  i=0;
+  while ((image=RemoveFirstImageFromList(images)) != (Image *) NULL)
+    {
+      status&=MogrifyImage(image_info,argc,argv,&image);
+      {
+	Image
+	  *p;
+
+	for (p=image; p != (Image *) NULL; p=p->next)
+	  {
+	    if (scene)
+	      p->scene += i;
+	    if (image_info->verbose)
+	      (void) DescribeImage(p,stdout,False);
+	    i++;
+	  }
+      }
+      AppendImageToList(&mogrify_images,image);
+    }
+
   /*
     Apply options to the entire image list.
   */
@@ -10181,14 +10183,14 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 
             int
               next,
-              status;
-
+              t_status;
+	    
             size_t
               length;
-
+	    
             TokenInfo
               token_info;
-
+	    
             length=strlen(argv[++i]);
             token=MagickAllocateMemory(char *,length+1);
             if (token == (char *) NULL)
@@ -10197,15 +10199,17 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
             /* FIXME: This code truncates the last character for an
                argument like "analyze" but works for "analyze=" */
             arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
-              (char *) "=",(char *) "\"",0,&breaker,&next,&quote);
-            if (status == 0)
+            t_status=Tokenizer(&token_info,0,token,length,arguments,
+			       (char *) "",(char *) "=",(char *) "\"",
+			       0,&breaker,&next,&quote);
+            if (t_status == 0)
               {
                 char
-                  *argv;
-
-                argv=&(arguments[next]);
-                (void) ExecuteModuleProcess(token,&mogrify_images,1,&argv);
+                  *t_argv;
+		
+                t_argv=&(arguments[next]);
+                (void) ExecuteModuleProcess(token,&mogrify_images,1,
+					    &t_argv);
               }
             MagickFreeMemory(token);
             continue;

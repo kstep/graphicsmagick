@@ -1332,17 +1332,18 @@ MagickExport Image *ShaveImage(const Image *image,
 %
 */
 MagickExport void TransformImage(Image **image,const char *crop_geometry,
-  const char *image_geometry)
+				 const char *image_geometry)
 {
   Image
+    *previous,
     *resize_image,
     *transform_image;
 
-  int
-    flags;
-
   RectangleInfo
     geometry;
+
+  int
+    flags;
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
@@ -1351,9 +1352,6 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
     {
       Image
         *crop_image;
-
-      RectangleInfo
-        geometry;
 
       /*
         Crop image to a user specified size.
@@ -1388,61 +1386,65 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
             height=geometry.height;
             next=(Image *) NULL;
             for (y=0; y < (long) transform_image->rows; y+=height)
-            {
-              for (x=0; x < (long) transform_image->columns; x+=width)
-              {
-                geometry.width=width;
-                geometry.height=height;
-                geometry.x=x;
-                geometry.y=y;
-                next=CropImage(transform_image,&geometry,&(*image)->exception);
-                if (next == (Image *) NULL)
-                  break;
-                if (crop_image == (Image *) NULL)
-                  crop_image=next;
-                else
-                  {
-                    next->previous=crop_image;
-                    crop_image->next=next;
-                    crop_image=crop_image->next;
-                  }
-              }
-              if (next == (Image *) NULL)
-                break;
-            }
+	      {
+		for (x=0; x < (long) transform_image->columns; x+=width)
+		  {
+		    geometry.width=width;
+		    geometry.height=height;
+		    geometry.x=x;
+		    geometry.y=y;
+		    next=CropImage(transform_image,&geometry,&(*image)->exception);
+		    if (next == (Image *) NULL)
+		      break;
+		    if (crop_image == (Image *) NULL)
+		      crop_image=next;
+		    else
+		      {
+			next->previous=crop_image;
+			crop_image->next=next;
+			crop_image=crop_image->next;
+		      }
+		  }
+		if (next == (Image *) NULL)
+		  break;
+	      }
           }
       if (crop_image != (Image *) NULL)
         {
+	  previous=transform_image->previous;
+	  crop_image->next=transform_image->next;
           DestroyImage(transform_image);
+	  transform_image=(Image *) NULL;
           while (crop_image->previous != (Image *) NULL)
             crop_image=crop_image->previous;
+	  crop_image->previous=previous;
           transform_image=crop_image;
         }
-      /*
-	FIXME: maybe image is a list and we should insert into it
-	rather than replacing it.  Note that this would then impact
-	the following resize code.
-      */
       *image=transform_image;
     }
   if (image_geometry == (const char *) NULL)
     return;
+
   /*
     Scale image to a user specified size.
   */
   SetGeometry(transform_image,&geometry);
   flags=GetMagickGeometry(image_geometry,&geometry.x,&geometry.y,
-    &geometry.width,&geometry.height);
+			  &geometry.width,&geometry.height);
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return;
+  
   /*
     Resize image.
   */
   resize_image=ZoomImage(transform_image,geometry.width,geometry.height,
-    &(*image)->exception);
+			 &(*image)->exception);
   if (resize_image == (Image *) NULL)
     return;
+
+  previous=transform_image->previous;
+  resize_image->next=transform_image->next;
   DestroyImage(transform_image);
   transform_image=resize_image;
   *image=transform_image;
