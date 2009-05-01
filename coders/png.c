@@ -1009,7 +1009,7 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 %    These are not valid PNG files and it is impossible to recover
 %    the orginal PNG from files that have been converted to Xcode-PNG,
 %    since irretrievable loss of color data has occurred due to the
-%    use of premultipled alpha.
+%    use of premultiplied alpha.
 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
