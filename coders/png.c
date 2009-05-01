@@ -1003,6 +1003,13 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 %    Upgrade to full MNG with Delta-PNG.
 %
 %    JNG tEXt/iTXt/zTXt
+%
+%    We will not attempt to read files containing the CgBI chunk.
+%    They are really Xcode files meant for display on the iPhone.
+%    These are not valid PNG files and it is impossible to recover
+%    the orginal PNG from files that have been converted to Xcode-PNG,
+%    since irretrievable loss of color data has occurred due to the
+%    use of premultipled alpha.
 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
