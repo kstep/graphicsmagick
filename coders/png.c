@@ -7533,7 +7533,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   s[0]=(char) ping_info->bit_depth;
   s[1]='\0';
 
-  (void) SetImageAttribute(image,"[png:bit_depth_written]",s);
+  (void) SetImageAttribute(image,"[png:bit-depth-written]",s);
 
   /*
     Free PNG resources.
@@ -7625,7 +7625,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 %  TODO: Enforce the previous paragraph.
 %
 %  TODO: Allow all other PNG subformats to be requested via new
-%        "-define png:bit_depth -define png:color_type" options.
+%        "-define png:bit-depth -define png:color-type" options.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
@@ -7800,7 +7800,7 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
                                     &image->exception);
 
           /* Retrieve sample depth used */
-          attribute=GetImageAttribute(jpeg_image,"[png:bit_depth_written]");
+          attribute=GetImageAttribute(jpeg_image,"[png:bit-depth-written]");
           if ((attribute != (const ImageAttribute *) NULL) &&
               (attribute->value != (char *) NULL))
             jng_alpha_sample_depth= (unsigned int) attribute->value[0];
