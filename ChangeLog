@@ -1,3 +1,7 @@
+2009-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lcms: Updated lcms to 1.18a.
+
 2009-05-01  Glenn Randers-Pehrson <glennrp@simple....>
 
         * coders/png.c (WriteOnePNGImage and WriteOneJNGImage):
