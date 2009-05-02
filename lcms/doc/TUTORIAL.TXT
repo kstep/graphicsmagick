@@ -8,7 +8,7 @@
 
                           by Marti Maria
 
-                            Ver 1.17
+                            Ver 1.18
 
         ---------------------------------------------------
 
@@ -75,7 +75,7 @@ Introduction:
                 http://www.color.org
 
 
-    **PLEASE NOTE THAN lcms IS NOT A ICC SUPPORTED LIBRARY**
+    **PLEASE NOTE THAN lcms IS NOT AN ICC SUPPORTED LIBRARY**
 
   
   I will assume the reader does have a working knowledge of the C
@@ -213,7 +213,7 @@ int main(void)
 
    This only will take a small fraction of memory. The BToA or AToB tables,
    which usually are big, are only loaded at transform-time, and on demand.
-   You can safely open a lot of profiles if you wish.
+   You can safely open a lot of profiles if you wish so.
 
    If cmsOpenProfileFromFile() fails, it raises an error signal that can
    or cannot be catched by the application depending of the state of the
@@ -234,7 +234,7 @@ int main(void)
 
    lcms can handle a lot of formats. In fact, it can handle:
 
-                - 8 and 16 bits per sample
+                - 8 and 16 bits per channel 
                 - up to 16 channels
                 - extra channels like alpha
                 - swapped-channels like BGR
@@ -426,7 +426,8 @@ int main(void)
   lcms tries to "smelt" input and output profiles in a single
   matrix-shaper or in a big 3D CLUT of 33 points. This will
   improve greatly the performance of the transform, but may
-  induce a small delay of 1-2 seconds on some 486-based machines.
+  induce a small delay of 1-2 seconds on some really old 
+  machines.
 
   If you are willing to transform just a palette or a few
   colors, you don't need this precalculations. Then, the flag
@@ -532,7 +533,7 @@ NOTES:
   Be also warned that some software does embed WRONG profiles,
   i.e., profiles marked as using different colorspace that
   one the profile really manages. lcms is NOT likely to understand
-  these profiles since they will be wrong at all.
+  these profiles since they are wrong after all.
 
 
 4. Device-link profiles
@@ -555,7 +556,7 @@ NOTES:
   profile parameter equal to NULL:
 
 
-        hDeviceLink = cmsOpenProfileFromFile("MYDEVLINK.ICM", "r");
+        hDeviceLink = cmsOpenProfileFromFile("MYDEVLINK.ICC", "r");
 
         hTransform  = cmsCreateTransform(hDeviceLink, TYPE_RGB_8,
                                          NULL, TYPE_BGR_8,

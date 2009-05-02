@@ -26,9 +26,14 @@ type
     ProgressBar1: TProgressBar;
     ComboBoxIntent: TComboBox;
     Label3: TLabel;
+    Button3: TButton;
+    Button4: TButton;
+    OpenDialog1: TOpenDialog;
 
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   private
     { Private declarations }
     function ComputeFlags: DWORD;
@@ -116,12 +121,8 @@ begin
      ComboBoxIntent.ItemIndex := INTENT_PERCEPTUAL;
 end;
 
-
-
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-
-
      if OpenPictureDialog1.Execute then begin
             Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
             Image1.Picture.Bitmap.PixelFormat := pf24bit;
@@ -143,7 +144,7 @@ begin
      if (n >= 0) then
         SelectedFile := List.Strings[n]
      else
-         SelectedFile := ''
+         SelectedFile := Combo.Text;
 end;
 
 
@@ -223,6 +224,18 @@ begin
           Image2.Repaint;
           ProgressBar1.Position := 0;
      end
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+ if OpenDialog1.Execute then
+  ComboBoxInput.Text:=OpenDialog1.FileName;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+ if OpenDialog1.Execute then
+  ComboBoxOutput.Text:=OpenDialog1.FileName;
 end;
 
 end.

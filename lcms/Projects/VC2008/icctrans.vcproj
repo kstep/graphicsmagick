@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
-	Name="lcmsdll"
-	ProjectGUID="{7F0F763A-BFD2-4AB1-B392-5F3DEAED6A0B}"
+	Version="9.00"
+	Name="icctrans"
+	ProjectGUID="{653AB287-0DF9-43C5-ADC8-42AD29A65E29}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -16,8 +17,8 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="."
-			IntermediateDirectory=".\DllDebug"
-			ConfigurationType="2"
+			IntermediateDirectory=".\IccTransDebug"
+			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -37,28 +38,22 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName="./lcmsdll.tlb"
+				TypeLibraryName="./icctrans.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;LCMSDLL_EXPORTS;LCMS_DLL;LCMS_DLL_BUILD"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				StructMemberAlignment="1"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\DllDebug/lcmsdll.pch"
-				AssemblerListingLocation=".\DllDebug/"
-				ObjectFile=".\DllDebug/"
-				ProgramDataBaseFileName=".\DllDebug/"
-				WarningLevel="4"
+				PrecompiledHeaderFile=".\IccTransDebug/icctrans.pch"
+				AssemblerListingLocation=".\IccTransDebug/"
+				ObjectFile=".\IccTransDebug/"
+				ProgramDataBaseFileName=".\IccTransDebug/"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -76,13 +71,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				OutputFile="..\..\bin\lcmsd.dll"
+				OutputFile="..\..\bin\icctrans.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile="..\..\src\lcms.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="./lcmsd.pdb"
-				ImportLibrary="..\..\lib\ms\lcmsdlld.lib"
+				ProgramDatabaseFile="./icctrans.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -103,17 +99,14 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
-			IntermediateDirectory=".\DllRelease"
-			ConfigurationType="2"
+			IntermediateDirectory=".\IccTransRelease"
+			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -133,37 +126,23 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName="./lcmsdll.tlb"
+				TypeLibraryName="./icctrans.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
 				InlineFunctionExpansion="1"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				EnableFiberSafeOptimizations="true"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="NDEBUG;LCMS_DLL,LCMS_DLL_BUILD;WIN32;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE"
 				StringPooling="true"
-				ExceptionHandling="0"
 				RuntimeLibrary="0"
-				StructMemberAlignment="1"
-				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=""
-				AssemblerListingLocation=".\DllRelease/"
-				ObjectFile="Release/"
-				ProgramDataBaseFileName="Release/"
-				WarningLevel="4"
+				PrecompiledHeaderFile=".\IccTransRelease/icctrans.pch"
+				AssemblerListingLocation=".\IccTransRelease/"
+				ObjectFile=".\IccTransRelease/"
+				ProgramDataBaseFileName=".\IccTransRelease/"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -180,13 +159,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				OutputFile="..\..\bin\lcms.dll"
+				OutputFile="..\..\bin\icctrans.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile="..\..\src\lcms.def"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				ImportLibrary="..\..\lib\ms\lcmsdll.lib"
+				ProgramDatabaseFile="./icctrans.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -207,9 +186,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -222,95 +198,15 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\..\src\cmscam02.c"
+				RelativePath="..\..\samples\icctrans.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cmscam97.c"
+				RelativePath="..\..\samples\vprf.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cmscgats.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmscnvrt.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmserr.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsgamma.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsgmt.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsintrp.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsio0.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsio1.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmslut.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsmatsh.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsmtrx.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsnamed.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmspack.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmspcs.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsps2.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmssamp.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsvirt.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmswtpnt.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\cmsxform.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\lcms.def"
-				>
-			</File>
-			<File
-				RelativePath=".\lcms.rc"
+				RelativePath="..\..\samples\xgetopt.c"
 				>
 			</File>
 		</Filter>
@@ -318,14 +214,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath="..\..\include\icc34.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\lcms.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

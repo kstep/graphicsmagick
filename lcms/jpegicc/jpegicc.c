@@ -2,7 +2,7 @@
 //  Little cms
 //  Copyright (C) 1998-2007 Marti Maria
 //
-// Permission is hereby granted, _cmsFree( of charge, to any person obtaining 
+// Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction, including without limitation 
 // the rights to use, copy, modify, merge, publish, distribute, sublicense, 
@@ -73,6 +73,8 @@ static int ProofingIntent          = INTENT_PERCEPTUAL;
 static int PrecalcMode             = 1;
 
 static int jpegQuality             = 75;
+
+static double ObserverAdaptationState = 0;
 
 static char *cInpProf  = NULL;
 static char *cOutProf  = NULL;
@@ -708,6 +710,10 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
        DWORD EmbedLen;
        LPBYTE EmbedBuffer;
 
+	   // Observer adaptation state (only meaningful on absolute colorimetric intent)
+
+       cmsSetAdaptationState(ObserverAdaptationState);
+
 
        if (BlackPointCompensation) {
 
@@ -862,6 +868,8 @@ void Help(int level)
 
      fprintf(stderr, "\n");
      fprintf(stderr, "%cq<0..100> - Output JPEG quality\n", SW);
+	 fprintf(stderr, "\n");
+	 fprintf(stderr, "%cd<0..1> - Observer adaptation state (abs.col. only)\n", SW);
 
      fprintf(stderr, "\n");
      fprintf(stderr, "%ch<0,1,2> - More help\n", SW);
@@ -905,7 +913,7 @@ void HandleSwitches(int argc, char *argv[])
 {
     int s;
     
-    while ((s=xgetopt(argc,argv,"bBnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:Q:q:M:m:L:l:eEs:S:F:f:")) != EOF) {
+	while ((s=xgetopt(argc,argv,"bBnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:Q:q:M:m:L:l:eEs:S:F:f:D:d:")) != EOF) {
         
         switch (s)
         {
@@ -1011,6 +1019,12 @@ void HandleSwitches(int argc, char *argv[])
         case 'S': SaveEmbedded = xoptarg;
             break;
             
+        case 'd':
+        case 'D': ObserverAdaptationState = atof(xoptarg);
+                 if (ObserverAdaptationState != 0 && 
+                     ObserverAdaptationState != 1.0)
+					 fprintf(stderr, "Warning: Adaptation states other that 0 or 1 are not yet implemented\n");
+                 break;
             
         default:
             

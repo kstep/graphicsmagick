@@ -1526,7 +1526,7 @@ int TestDeviceLinkGeneration()
     cmsCloseProfile(hDevLink);
     cmsCloseProfile(hsRGB);
     cmsDeleteTransform(hIdentity);
-	
+    
 
     hDevLink = cmsOpenProfileFromFile("devicelink.icm", "r");
     hXForm   = cmsCreateTransform(hDevLink, TYPE_RGBA_16, NULL, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0); 
@@ -1631,8 +1631,8 @@ void CompareWithICM_16bit(void)
     HPROFILE   hICMProfileFrom, hICMProfileTo;
     LOGCOLORSPACE LogColorSpace;
     COLOR In, Out;
-	COLOR *InBlk, *OutBlk, *InPtr;
-	size_t size;
+    COLOR *InBlk, *OutBlk, *InPtr;
+    size_t size;
     int r, g, b;
     PROFILE Profile;
     clock_t atime;
@@ -1665,18 +1665,18 @@ void CompareWithICM_16bit(void)
 
 
 
-	size = 256 * 256 * 256;
-	InBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
-	OutBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
+    size = 256 * 256 * 256;
+    InBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
+    OutBlk = _cmsMalloc((size_t) size * sizeof(COLOR));
 
-	if (InBlk == NULL || OutBlk == NULL) {
-		printf("Out of memory\n"); exit(2);
-	}
-			
+    if (InBlk == NULL || OutBlk == NULL) {
+        printf("Out of memory\n"); exit(2);
+    }
+            
     printf("Windows ICM is transforming full spectrum...");
 
-	InPtr = InBlk;
-	for (r=0; r < 255; r++)
+    InPtr = InBlk;
+    for (r=0; r < 255; r++)
         for (g=0; g < 255; g++)
             for (b=0; b < 255; b++) {
 
@@ -1684,8 +1684,8 @@ void CompareWithICM_16bit(void)
         InPtr->rgb.green = (g << 8) | g;
         InPtr->rgb.blue  = (b << 8) | b;
 
-		InPtr++;
-	}
+        InPtr++;
+    }
 
     atime = clock();
     
@@ -1721,8 +1721,8 @@ void CompareWithICM_16bit(void)
     cmsCloseProfile(hlcmsProfileIn);
     cmsCloseProfile(hlcmsProfileOut);
 
-	_cmsFree(InBlk);
-	_cmsFree(OutBlk);
+    _cmsFree(InBlk);
+    _cmsFree(OutBlk);
 }
 
 static
@@ -1840,19 +1840,19 @@ void SpeedTest(void)
     cmsHPROFILE hlcmsProfileIn, hlcmsProfileOut;
     cmsHTRANSFORM hlcmsxform;
     Scanline_rgb0 *In;
-	size_t Mb;
-   	
+    size_t Mb;
+    
     hlcmsProfileIn  = cmsOpenProfileFromFile("sRGB Color Space Profile.icm", "r");
     hlcmsProfileOut = cmsOpenProfileFromFile("sRGBSpac.icm", "r");
 
     hlcmsxform  = cmsCreateTransform(hlcmsProfileIn, TYPE_RGB_16, hlcmsProfileOut, TYPE_RGB_16, INTENT_PERCEPTUAL, cmsFLAGS_NOTCACHE);
 
-	Mb = 256*256*256*sizeof(Scanline_rgb0);
+    Mb = 256*256*256*sizeof(Scanline_rgb0);
 
-	In = (Scanline_rgb0*) _cmsMalloc(Mb);
+    In = (Scanline_rgb0*) _cmsMalloc(Mb);
 
-	j = 0;
-	for (r=0; r < 256; r++)
+    j = 0;
+    for (r=0; r < 256; r++)
         for (g=0; g < 256; g++)
             for (b=0; b < 256; b++) {
 
@@ -1860,8 +1860,8 @@ void SpeedTest(void)
         In[j].g = (WORD) ((g << 8) | g);
         In[j].b = (WORD) ((b << 8) | b);
 
-		j++;
-	}
+        j++;
+    }
 
 
     printf("lcms is transforming full spectrum...");
@@ -1872,8 +1872,8 @@ void SpeedTest(void)
 
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
-	_cmsFree(In);
-	
+    _cmsFree(In);
+    
     
     printf("done.\n[%d tics, %g sec, %g Mpixel/sec.]\n", (int) diff, seconds, Mb / (1024*1024*seconds*3*2) );
 
@@ -1895,7 +1895,7 @@ void SpeedTest2(void)
     cmsHPROFILE hlcmsProfileIn, hlcmsProfileOut;
     cmsHTRANSFORM hlcmsxform;
     Scanline_rgb8 *In;
-	size_t Mb;
+    size_t Mb;
    
    
     hlcmsProfileIn  = cmsOpenProfileFromFile("sRGB Color Space Profile.icm", "r");
@@ -1903,12 +1903,12 @@ void SpeedTest2(void)
 
     hlcmsxform  = cmsCreateTransform(hlcmsProfileIn, TYPE_RGB_8, hlcmsProfileOut, TYPE_RGB_8, INTENT_PERCEPTUAL, cmsFLAGS_NOTCACHE);
 
-	Mb = 256*256*256*sizeof(Scanline_rgb8);
+    Mb = 256*256*256*sizeof(Scanline_rgb8);
 
-	In = (Scanline_rgb8*) _cmsMalloc(Mb);
+    In = (Scanline_rgb8*) _cmsMalloc(Mb);
 
-	j = 0;
-	for (r=0; r < 256; r++)
+    j = 0;
+    for (r=0; r < 256; r++)
         for (g=0; g < 256; g++)
             for (b=0; b < 256; b++) {
 
@@ -1916,8 +1916,8 @@ void SpeedTest2(void)
         In[j].g = (BYTE) g;
         In[j].b = (BYTE) b;
 
-		j++;
-	}
+        j++;
+    }
 
 
     printf("lcms is transforming full spectrum...");
@@ -1928,8 +1928,8 @@ void SpeedTest2(void)
 
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
-	_cmsFree(In);
-	
+    _cmsFree(In);
+    
     
     printf("done.\n[%d tics, %g sec, %g Mpixels/sec.]\n", (int) diff, seconds, Mb / (1024*1024*seconds*3) );
 
@@ -2089,16 +2089,16 @@ int TestNamedColor(void)
 static
 int TestColorantTableTag()
 {
-	LPcmsNAMEDCOLORLIST	     nc2;
-	cmsHPROFILE hProfile = cmsOpenProfileFromFile("colTable.icc", "w");
+    LPcmsNAMEDCOLORLIST      nc2;
+    cmsHPROFILE hProfile = cmsOpenProfileFromFile("colTable.icc", "w");
 
-	nc2 = cmsAllocNamedColorList(3);
+    nc2 = cmsAllocNamedColorList(3);
 
-	strcpy(nc2 ->List[0].Name, "Red");
-	strcpy(nc2 ->List[1].Name, "Green");
-	strcpy(nc2 ->List[2].Name, "Blue");
+    strcpy(nc2 ->List[0].Name, "Red");
+    strcpy(nc2 ->List[1].Name, "Green");
+    strcpy(nc2 ->List[2].Name, "Blue");
 
-	
+    
     cmsSetDeviceClass(hProfile, icSigOutputClass);
     cmsSetPCS(hProfile, icSigLabData);
     cmsSetColorSpace(hProfile, icSigRgbData);
@@ -2109,16 +2109,16 @@ int TestColorantTableTag()
     cmsFreeNamedColorList(nc2);
 
 
-	hProfile = cmsOpenProfileFromFile("colTable.icc", "r");
+    hProfile = cmsOpenProfileFromFile("colTable.icc", "r");
 
-	nc2 = cmsReadColorantTable(hProfile, icSigColorantTableTag);
+    nc2 = cmsReadColorantTable(hProfile, icSigColorantTableTag);
 
-	cmsFreeNamedColorList(nc2);
-	cmsCloseProfile(hProfile);
+    cmsFreeNamedColorList(nc2);
+    cmsCloseProfile(hProfile);
 
-	unlink("colTable.icc");
+    unlink("colTable.icc");
 
-	return 1;
+    return 1;
 
 }
 
@@ -2169,9 +2169,9 @@ int TestIT8(void)
     cmsIT8Free(it8);
 
 
-	it8 = cmsIT8LoadFromFile("TEST.IT8");
-	cmsIT8SaveToFile(it8, "TEST.IT8");
-	cmsIT8Free(it8);
+    it8 = cmsIT8LoadFromFile("TEST.IT8");
+    cmsIT8SaveToFile(it8, "TEST.IT8");
+    cmsIT8Free(it8);
 
 
 
@@ -2184,9 +2184,9 @@ int TestIT8(void)
     }
 
 
-	cmsIT8SetPropertyDbl(it8, "DESCRIPTOR", 5678);
+    cmsIT8SetPropertyDbl(it8, "DESCRIPTOR", 5678);
 
-	if (cmsIT8GetPropertyDbl(it8, "DESCRIPTOR") != 5678) {
+    if (cmsIT8GetPropertyDbl(it8, "DESCRIPTOR") != 5678) {
     
         printf("fail!\n");
         return 0;
@@ -2213,64 +2213,64 @@ int TestIT8(void)
 static
 void GenerateCSA(const char* cInProf)
 {
-	cmsHPROFILE hProfile;
-	
-	
-	DWORD n;
-	char* Buffer;
+    cmsHPROFILE hProfile;
+    
+    
+    DWORD n;
+    char* Buffer;
 
 
-	if (cInProf == NULL) 
-		hProfile = cmsCreateLabProfile(NULL);
-	else 
-		hProfile = cmsOpenProfileFromFile(cInProf, "r");
+    if (cInProf == NULL) 
+        hProfile = cmsCreateLabProfile(NULL);
+    else 
+        hProfile = cmsOpenProfileFromFile(cInProf, "r");
 
-	n = cmsGetPostScriptCSA(hProfile, 0, NULL, 0);
-	if (n == 0) return;
+    n = cmsGetPostScriptCSA(hProfile, 0, NULL, 0);
+    if (n == 0) return;
 
-	Buffer = (char*) _cmsMalloc(n + 1);
-	cmsGetPostScriptCSA(hProfile, 0, Buffer, n);
-	Buffer[n] = 0;
-	
-	_cmsFree(Buffer);
-	cmsCloseProfile(hProfile);
+    Buffer = (char*) _cmsMalloc(n + 1);
+    cmsGetPostScriptCSA(hProfile, 0, Buffer, n);
+    Buffer[n] = 0;
+    
+    _cmsFree(Buffer);
+    cmsCloseProfile(hProfile);
 }
 
 
 static
 void GenerateCRD(const char* cOutProf)
 {
-	cmsHPROFILE hProfile;
-	DWORD n;
-	char* Buffer;
+    cmsHPROFILE hProfile;
+    DWORD n;
+    char* Buffer;
     DWORD dwFlags = 0;
     
 
-	if (cOutProf == NULL) 
-		hProfile = cmsCreateLabProfile(NULL);
-	else 
-		hProfile = cmsOpenProfileFromFile(cOutProf, "r");
+    if (cOutProf == NULL) 
+        hProfile = cmsCreateLabProfile(NULL);
+    else 
+        hProfile = cmsOpenProfileFromFile(cOutProf, "r");
 
-	n = cmsGetPostScriptCRDEx(hProfile, 0, dwFlags, NULL, 0);
-	if (n == 0) return;
+    n = cmsGetPostScriptCRDEx(hProfile, 0, dwFlags, NULL, 0);
+    if (n == 0) return;
 
-	Buffer = (char*) _cmsMalloc(n + 1);
+    Buffer = (char*) _cmsMalloc(n + 1);
     cmsGetPostScriptCRDEx(hProfile, 0, dwFlags, Buffer, n);
-	Buffer[n] = 0;
-	
-	_cmsFree(Buffer);
-	cmsCloseProfile(hProfile);
+    Buffer[n] = 0;
+    
+    _cmsFree(Buffer);
+    cmsCloseProfile(hProfile);
 }
 
 static 
 int TestPostScript()
 {
-	GenerateCSA("sRGB Color Space Profile.icm");
-	GenerateCRD("sRGB Color Space Profile.icm");
-	GenerateCSA(NULL);
-	GenerateCRD(NULL);
+    GenerateCSA("sRGB Color Space Profile.icm");
+    GenerateCRD("sRGB Color Space Profile.icm");
+    GenerateCSA(NULL);
+    GenerateCRD(NULL);
 
-	return 1;
+    return 1;
 }
 
 
@@ -2279,19 +2279,19 @@ void TestLabFloat()
 {
 #define TYPE_LabA_DBL   (COLORSPACE_SH(PT_Lab)|CHANNELS_SH(3)|BYTES_SH(0)|EXTRA_SH(1)|DOSWAP_SH(1))
 
-	struct {
-		   double L, a, b;
-		   double A;
-	} a;
-	cmsCIELab b;
-	cmsHPROFILE hLab  = cmsCreateLabProfile(NULL);
+    struct {
+           double L, a, b;
+           double A;
+    } a;
+    cmsCIELab b;
+    cmsHPROFILE hLab  = cmsCreateLabProfile(NULL);
     cmsHTRANSFORM xform = cmsCreateTransform(hLab, TYPE_LabA_DBL, hLab, TYPE_Lab_DBL, 0, 0);
 
-	a.L = 100; a.a = 0; a.b= 0;
-	cmsDoTransform(xform, &a, &b, 1);
+    a.L = 100; a.a = 0; a.b= 0;
+    cmsDoTransform(xform, &a, &b, 1);
 
-	cmsDeleteTransform(xform);
-	cmsCloseProfile(hLab);
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hLab);
 }
 
 
@@ -2300,18 +2300,18 @@ int main(int argc, char *argv[])
 {
        int lExhaustive = 0;   
 
-	   // #include "crtdbg.h"
-	   // _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
+       // #include "crtdbg.h"
+       // _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 
-	  	   
+           
          
        printf("little cms testbed. Ver %1.2f [build %s %s]\n\n", LCMS_VERSION / 100., __DATE__, __TIME__);
        
 #ifndef LCMS_DLL
 
-       if (!CheckEndianess()) return 1;	   
+       if (!CheckEndianess()) return 1;    
        if (!CheckSwab()) return 1;
-	   if (!CheckQuickFloor()) return 1;
+       if (!CheckQuickFloor()) return 1;
 
        TestFixedPoint();
      
@@ -2321,7 +2321,7 @@ int main(int argc, char *argv[])
        if (!TestLinearInterpolation(lExhaustive)) return 1;
        if (!TestReverseLinearInterpolation()) return 1;
 
-	   
+       
        
 
        if (!Test3D()) return 1;
@@ -2332,26 +2332,26 @@ int main(int argc, char *argv[])
 #endif
 
        if (!Test_sRGB()) return 1;
-	
+    
        if (!RealProfilesTest()) return 1;
-       if (!TestInducedError(TYPE_LABA_16)) return 1;	   
+       if (!TestInducedError(TYPE_LABA_16)) return 1;      
        if (!TestPreview()) return 1;
-       if (!TestMultiprofile()) return 1; 	   	 
+       if (!TestMultiprofile()) return 1;        
        if (!TestLinearizationDevicelink()) return 1;
-	  	 
-       if (!TestDeviceLinkGeneration()) return 1; 	  
-	   
+         
+       if (!TestDeviceLinkGeneration()) return 1;     
+       
 
        if (!TestLinearizationDevicelink2()) return 1;
-	  
+      
 
        if (!TestInkLimiting()) return 1;
        if (!TestSaveToMem()) return 1;
        if (!TestNamedColor()) return 1;  
        if (!TestIT8()) return 1;
-	   if (!TestPostScript()) return 1;
-	   if (!TestColorantTableTag()) return 1;
-	   
+       if (!TestPostScript()) return 1;
+       if (!TestColorantTableTag()) return 1;
+       
 #ifdef ICM_COMPARATIVE
 #ifndef NON_WINDOWS
        CompareWithICM_8bit();
@@ -2361,7 +2361,7 @@ int main(int argc, char *argv[])
 
 #ifdef CHECK_SPEED    
        SpeedTest();
-	   SpeedTest2();
+       SpeedTest2();
 #endif
 
        printf("\nSuccess.\n");

@@ -54,6 +54,8 @@ static LCMSBOOL BlackPointCompensation = FALSE;
 static LCMSBOOL PreserveBlack		   = FALSE;
 static LCMSBOOL lIsDeviceLink          = FALSE;
 static LCMSBOOL lTerse                 = FALSE;
+static LCMSBOOL lQuantize              = FALSE;
+static LCMSBOOL lUse255always          = FALSE;
 
 static char *cInProf   = NULL;
 static char *cOutProf  = NULL;
@@ -140,7 +142,9 @@ void Help(void)
      fprintf(stderr, "flags:\n\n");
      fprintf(stderr, "%cv - Verbose (Print PCS as well)\n", SW); 
 	 fprintf(stderr, "%cw - use 16 bits\n", SW);     
-     fprintf(stderr, "%cx - Hexadecimal\n\n", SW);
+     fprintf(stderr, "%c5 - don't use %% on inks (always 0..255, even on CMYK)\n", SW);     
+     fprintf(stderr, "%cx - Hexadecimal\n", SW);
+	 fprintf(stderr, "%cq - Quantize CGATS to 8 bits\n\n", SW);
 
      fprintf(stderr, "%ci<profile> - Input profile (defaults to sRGB)\n", SW);
      fprintf(stderr, "%co<profile> - Output profile (defaults to sRGB)\n", SW);   
@@ -180,10 +184,14 @@ void HandleSwitches(int argc, char *argv[])
 	int s;
 	
 	while ((s = xgetopt(argc,argv,
-        "%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:p:P:m:M:gGF:f:d:D:!:")) != EOF) {
+        "%C:c:VvQqWwxXhHbBnNI:i:O:o:T:t:L:l:p:P:m:M:gGF:f:d:D:!:5")) != EOF) {
 		
 		switch (s){
-			
+		
+        case '5': 
+            lUse255always = TRUE;
+            break;
+
         case '!': 
             IncludePart = xoptarg;
             break;
@@ -262,6 +270,10 @@ void HandleSwitches(int argc, char *argv[])
 			cProofing = xoptarg;
 			break;		
 								 			
+		case 'q':
+		case 'Q': 
+			lQuantize = TRUE;
+			break;
 		
 	    case 't':
 		case 'T':
@@ -502,6 +514,9 @@ void PrintRange(const char* C, double v, double Range)
     {       
 
         double out = (v * Range) / 65535.0;        
+		if (lQuantize) 
+			out = floor(out + 0.5);
+
         printf("%s%.2f ", Prefix, out);
     }
 }
@@ -510,18 +525,21 @@ void PrintRange(const char* C, double v, double Range)
 static
 void Print255(const char* C, double v)
 {
-       PrintRange(C, v, 255.0);
+    PrintRange(C, v, 255.0);
 }
 
 static
 void Print100(const char* C, double v)
 {
-       PrintRange(C, v, 100.0);
+    PrintRange(C, v, lUse255always ? 255.0 : 100.0);
 }
 
 static
 void PrintCooked(const char* C, double v)
 {
+	if (lQuantize) 
+			v = floor(v + 0.5);
+
     if (lTerse)
         printf("%.4f ", v);
     else
@@ -696,7 +714,7 @@ double GetAnswer(const char* Prompt, double Range)
 static
 WORD Get100(const char* AskFor)
 {
-    return (WORD) GetAnswer(AskFor, 100.0);
+    return (WORD) GetAnswer(AskFor, lUse255always ? 255.0 : 100.0);
 }
 
 
@@ -833,15 +851,25 @@ void TakeTextValues(WORD Encoded[])
         Encoded[4] = Get100("c"); Encoded[5] = Get100("m");                                       
         break;
 
-    case icSigHeptachromeData:
-    case icSigOctachromeData:    
     case icSig2colorData:
     case icSig3colorData:
     case icSig4colorData:
     case icSig5colorData:
     case icSig6colorData:
     case icSig7colorData:
-    case icSig8colorData: {
+    case icSig8colorData: 
+    case icSigMCH5Data:      
+    case icSigMCH7Data:  
+    case icSigMCH8Data:  
+    case icSigMCH9Data:
+    case icSigMCHAData:  
+    case icSigMCHBData:  
+    case icSigMCHCData:  
+    case icSigMCHDData:  
+    case icSigMCHEData:  
+    case icSigMCHFData:  
+				
+		{
         
 		int i;
 		
@@ -947,21 +975,31 @@ void TakeCGATSValues(int nPatch, WORD Encoded[])
                     break;
     
     case icSigCmykData:
-                    Encoded[0] = GetIT8Val("CMYK_C", 100.0);
-                    Encoded[1] = GetIT8Val("CMYK_M", 100.0);
-                    Encoded[2] = GetIT8Val("CMYK_Y", 100.0);
-                    Encoded[3] = GetIT8Val("CMYK_K", 100.0);
+                    Encoded[0] = GetIT8Val("CMYK_C", lUse255always ? 255.0 : 100.0);
+                    Encoded[1] = GetIT8Val("CMYK_M", lUse255always ? 255.0 : 100.0);
+                    Encoded[2] = GetIT8Val("CMYK_Y", lUse255always ? 255.0 : 100.0);
+                    Encoded[3] = GetIT8Val("CMYK_K", lUse255always ? 255.0 : 100.0);
                     break;
 
     case icSigCmyData:                        
-                    Encoded[0] = GetIT8Val("CMY_C", 100.0);
-                    Encoded[1] = GetIT8Val("CMY_M", 100.0);
-                    Encoded[2] = GetIT8Val("CMY_Y", 100.0);
+                    Encoded[0] = GetIT8Val("CMY_C", lUse255always ? 255.0 : 100.0);
+                    Encoded[1] = GetIT8Val("CMY_M", lUse255always ? 255.0 : 100.0);
+                    Encoded[2] = GetIT8Val("CMY_Y", lUse255always ? 255.0 : 100.0);
                     break;
     
-	default:
-		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(InputColorSpace));
+	default: {
 
+		int i;
+
+		for (i=0; i < _cmsChannelsOf(InputColorSpace); i++) { 
+
+			char Buffer[255];
+
+			sprintf(Buffer, "CHAN_%d", i);
+			Encoded[i] = GetIT8Val(Buffer, 255.0);
+		}
+
+			 }
 	}
 
 }
@@ -970,6 +1008,9 @@ void TakeCGATSValues(int nPatch, WORD Encoded[])
 static
 void SetCGATSfld(const char* Col, double Val)
 {
+
+	if (lQuantize) 
+		Val = floor(Val + 0.5);
 
 	if (!cmsIT8SetDataDbl(hIT8out, CGATSPatch, Col, Val)) {
 		FatalError("icctrans: couldn't set '%s' on output cgats '%s'", Col, CGATSoutFilename);
@@ -1014,21 +1055,30 @@ void PutCGATSValues(int nPatch, WORD Encoded[])
                     break;
     
     case icSigCmykData:
-				    SetCGATSfld("CMYK_C", 100.0 * Encoded[0] / 65535.0);
-					SetCGATSfld("CMYK_M", 100.0 * Encoded[1] / 65535.0);
-					SetCGATSfld("CMYK_Y", 100.0 * Encoded[2] / 65535.0);
-					SetCGATSfld("CMYK_K", 100.0 * Encoded[3] / 65535.0);
+				    SetCGATSfld("CMYK_C", (lUse255always ? 255.0 : 100.0) * Encoded[0] / 65535.0);
+					SetCGATSfld("CMYK_M", (lUse255always ? 255.0 : 100.0) * Encoded[1] / 65535.0);
+					SetCGATSfld("CMYK_Y", (lUse255always ? 255.0 : 100.0) * Encoded[2] / 65535.0);
+					SetCGATSfld("CMYK_K", (lUse255always ? 255.0 : 100.0) * Encoded[3] / 65535.0);
                     break;
 
     case icSigCmyData:
-					SetCGATSfld("CMY_C", 100.0 * Encoded[0] / 65535.0);
-					SetCGATSfld("CMY_M", 100.0 * Encoded[1] / 65535.0);
-					SetCGATSfld("CMY_Y", 100.0 * Encoded[2] / 65535.0);					
+					SetCGATSfld("CMY_C", (lUse255always ? 255.0 : 100.0) * Encoded[0] / 65535.0);
+					SetCGATSfld("CMY_M", (lUse255always ? 255.0 : 100.0) * Encoded[1] / 65535.0);
+					SetCGATSfld("CMY_Y", (lUse255always ? 255.0 : 100.0) * Encoded[2] / 65535.0);					
                     break;
     
-	default:
-		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(OutputColorSpace));
+	default: {
 
+		int i;
+
+		for (i=1; i <= _cmsChannelsOf(OutputColorSpace); i++) { 
+
+			char Buffer[255];
+
+			sprintf(Buffer, "CHAN_%d", i);
+			SetCGATSfld(Buffer, Encoded[i-1] / 257.0);
+		}
+	  }
 	}
 }
 
@@ -1119,9 +1169,20 @@ void SetOutputDataFormat()
 					cmsIT8SetDataFormat(hIT8out, 3, "CMY_Y");					
 					break;
     
-	default:
-		FatalError("icctrans: Unsupported %d channel profile for CGATS", _cmsChannelsOf(OutputColorSpace));
+	default: {
 
+		int i, n;
+		char Buffer[255];
+
+		n = _cmsChannelsOf(OutputColorSpace);
+		cmsIT8SetPropertyDbl(hIT8out, "NUMBER_OF_FIELDS", n+1);
+		cmsIT8SetDataFormat(hIT8out, 0, "SAMPLE_ID");
+
+		for (i=1; i <= n; i++) {
+			sprintf(Buffer, "CHAN_%d", i);
+			cmsIT8SetDataFormat(hIT8out, i, Buffer);
+		}
+		}
 	}
 }
 
@@ -1168,7 +1229,7 @@ int main(int argc, char *argv[])
 
     cmsSetErrorHandler(MyErrorHandler);
 
-    fprintf(stderr, "LittleCMS ColorSpace conversion calculator - v3.0\n\n");
+    fprintf(stderr, "LittleCMS ColorSpace conversion calculator - v3.3\n\n");
 
     if (argc == 1)  
               Help();              

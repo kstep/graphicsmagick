@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.17)
+AC_INIT(lcms,1.18)
 
 #
 # Libtool library revision control info
@@ -33,7 +33,7 @@ AC_INIT(lcms,1.17)
 #     then set age to 0.
 #
 LIBRARY_CURRENT=1
-LIBRARY_REVISION=16
+LIBRARY_REVISION=18
 LIBRARY_AGE=0
 
 
@@ -94,7 +94,7 @@ then
   if test -n "$PYTHON"
   then
 	LCMS_PYTHON_PREFIX=`$PYTHON -c "import sys; print sys.prefix"`
-	LCMS_PYEXECDIR=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib()"`
+	LCMS_PYEXECDIR=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(1)"`
     LCMS_PYINCLUDE=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`	
 	LCMS_PYLIB=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(0,1)"`
 	AC_CHECK_FILE([$LCMS_PYINCLUDE/Python.h],PYTHON_OK='yes',PYTHON_OK='no')
