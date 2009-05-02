@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="lcmsdll"
 	ProjectGUID="{7F0F763A-BFD2-4AB1-B392-5F3DEAED6A0B}"
 	>
@@ -146,13 +146,16 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="NDEBUG;LCMS_DLL,LCMS_DLL_BUILD;WIN32;_WINDOWS;_USRDLL"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
 				StructMemberAlignment="1"
+				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\DllRelease/"
@@ -181,7 +184,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile="..\..\src\lcms.def"
-				OptimizeReferences="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\lib\ms\lcmsdll.lib"
 			/>
 			<Tool
