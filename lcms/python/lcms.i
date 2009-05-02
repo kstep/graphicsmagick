@@ -552,7 +552,7 @@ class icTagSignature {
 
         PyObject* enumProperties() {
 
-            char** Props;
+            const char** Props;
             PyObject* TheList;
             PyObject* OneProp;
             int i, n;

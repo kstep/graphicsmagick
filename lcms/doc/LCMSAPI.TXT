@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.17
+                     little cms Engine 1.18
 
                          API Definition
 

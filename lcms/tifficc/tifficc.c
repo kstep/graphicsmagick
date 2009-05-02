@@ -61,6 +61,7 @@ static LCMSBOOL Width16                = FALSE;
 static LCMSBOOL GamutCheck             = FALSE;
 static LCMSBOOL lIsDeviceLink          = FALSE;
 static LCMSBOOL StoreAsAlpha           = FALSE;
+static LCMSBOOL Dither                 = FALSE;
 static int PreserveBlack		   = 0;
 static LCMSBOOL InputLabUsingICC	   = FALSE;
 
@@ -381,7 +382,7 @@ DWORD ComputeOutputFormatDescriptor(DWORD dwInput, int OutColorSpace, int bps)
         FatalError("Unsupported output color space");
     }
     
-    return (COLORSPACE_SH(OutColorSpace)|PLANAR_SH(IsPlanar)|CHANNELS_SH(Channels)|BYTES_SH(bps));
+    return (COLORSPACE_SH(OutColorSpace)|PLANAR_SH(IsPlanar)|CHANNELS_SH(Channels)|BYTES_SH(bps)|DITHER_SH(Dither));
 }
 
 
@@ -923,6 +924,15 @@ cmsHPROFILE GetTIFFProfile(TIFF* in)
 }
 
 
+static
+WORD SaturateWord(int a)
+{
+    if (a > 0xFFFF) return 0xFFFF;
+    if (a < 0) return 0;
+
+    return a;
+}
+
 // Formatter for 8bit Lab TIFF (photometric 8)
 
 static
@@ -938,18 +948,20 @@ unsigned char* UnrollTIFFLab8(register void* nfo, register WORD wIn[], register 
 }
 
 
+
 static
 unsigned char* PackTIFFLab8(register void* nfo, register WORD wOut[], register LPBYTE output)
 {
     _LPcmsTRANSFORM info = (_LPcmsTRANSFORM) nfo;
+    int a, b;
 
-		*output++ = (wOut[0] + 0x0080) >> 8;
+		*output++ = SaturateWord(wOut[0] + 0x0080) >> 8;
 
-		wOut[1] = (wOut[1] + 0x0080) >> 8;
-		wOut[2] = (wOut[2] + 0x0080) >> 8;
+		a = SaturateWord(wOut[1] + 0x0080) >> 8;
+		b = SaturateWord(wOut[2] + 0x0080) >> 8;
 
-		*output++ = (wOut[1] < 128) ? (wOut[1] + 128) : (wOut[1] - 128);
-		*output++ = (wOut[2] < 128) ? (wOut[2] + 128) : (wOut[2] - 128);
+		*output++ = (a < 128) ? (a + 128) : (a - 128);
+		*output++ = (b < 128) ? (b + 128) : (b - 128);
 
        return output;
 }
@@ -976,7 +988,6 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
            DoEmbedProfile(out, cOutProf);
 
 
-       
        if (BlackWhiteCompensation) 
             dwFlags |= cmsFLAGS_WHITEBLACKCOMPENSATION;           
        
@@ -1138,7 +1149,7 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
 static
 void Help(int level)
 {
-    fprintf(stderr, "little cms ICC profile applier for TIFF - v5.0\n\n");
+    fprintf(stderr, "little cms ICC profile applier for TIFF - v6.0\n\n");
     fflush(stderr);
     
      switch(level) {
@@ -1172,6 +1183,7 @@ void Help(int level)
      fprintf(stderr, "%cg - Marks out-of-gamut colors on softproof\n", SW);
      
      fprintf(stderr, "\n"); 
+	 fprintf(stderr, "%cq - Dither 8 bit images\n", SW);	 
      fprintf(stderr, "%cb - Black point compensation\n", SW);
 	 fprintf(stderr, "%cf<n> - Preserve black (CMYK only) 0=off, 1=black ink only, 2=full K plane\n", SW);
      fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
@@ -1226,7 +1238,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:D:d:f:F:")) != EOF) {
+       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:D:d:f:F:Qq")) != EOF) {
 
        switch (s)
        {
@@ -1271,9 +1283,13 @@ void HandleSwitches(int argc, char *argv[])
             GamutCheck = TRUE;
             break;
 
-       case 'v':
-       case 'V':
-            Verbose = TRUE;
+       
+		case 'H':
+        case 'h':  {
+
+            int a =  atoi(xoptarg);
+            Help(a); 
+            }
             break;
 
        case 'i':
@@ -1284,32 +1300,19 @@ void HandleSwitches(int argc, char *argv[])
             cInpProf = xoptarg;
             break;
 
-       case 'o':
-       case 'O':
-           if (lIsDeviceLink)
-                   FatalError("Device-link already specified"); 
-
-           cOutProf = xoptarg;
+	    case 'k':
+        case 'K':
+                InkLimit = atof(xoptarg);
+                if (InkLimit < 0.0 || InkLimit > 400.0)
+                        FatalError("Ink limit must be 0%%..400%%");
            break;
 
+     
        case 'l':
        case 'L': 
                 cInpProf = xoptarg;
                 lIsDeviceLink = TRUE;
                 break;
-
-       case 'p':
-       case 'P':
-           cProofing = xoptarg;
-           break;
-
-       case 't':
-       case 'T':
-            Intent = atoi(xoptarg);
-            if (Intent > 3) Intent = 3;
-            if (Intent < 0) Intent = 0;
-            break;
-
 
        case 'm':
        case 'M':
@@ -1323,32 +1326,47 @@ void HandleSwitches(int argc, char *argv[])
             IgnoreEmbedded = TRUE;
             break;
 
-       case 'W':
-       case 'w':
-            Width16 = TRUE;
+	   case 'o':
+       case 'O':
+           if (lIsDeviceLink)
+                   FatalError("Device-link already specified"); 
+
+           cOutProf = xoptarg;
             break;
 
+       case 'p':
+       case 'P':
+           cProofing = xoptarg;
+           break;
            
-        case 'k':
-        case 'K':
-                InkLimit = atof(xoptarg);
-                if (InkLimit < 0.0 || InkLimit > 400.0)
-                        FatalError("Ink limit must be 0%%..400%%");
+	   case 'q':
+	   case 'Q': 
+		   Dither= TRUE;
+		   break;
+
+       case 't':
+       case 'T':
+            Intent = atoi(xoptarg);
+            if (Intent > 3) Intent = 3;
+            if (Intent < 0) Intent = 0;
                 break;
                 
+
+        
 
         case 's':
         case 'S': SaveEmbedded = xoptarg;
                   break;
                   
-        case 'H':
-        case 'h':  {
-
-            int a =  atoi(xoptarg);
-            Help(a); 
-            }
+       case 'v':
+       case 'V':
+            Verbose = TRUE;
             break;
 
+       case 'W':
+       case 'w':
+            Width16 = TRUE;
+            break;
   default:
 
        FatalError("Unknown option - run without args to see valid ones");
@@ -1388,9 +1406,9 @@ int main(int argc, char* argv[])
 
         else
            fprintf(stdout, "%s(%s) -> %s(%s) [%s]", argv[xoptind],
-                                                (cInpProf == NULL ? "sRGB": cInpProf), 
+                                                (cInpProf == NULL ? "sRGB default": cInpProf), 
                                                 argv[xoptind+1],
-                                                (cOutProf == NULL ? "sRGB" : cOutProf), 
+                                                (cOutProf == NULL ? "sRGB default" : cOutProf), 
                                                 Intents[Intent]);
         fflush(stdout);
       }
