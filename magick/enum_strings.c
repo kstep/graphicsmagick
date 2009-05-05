@@ -551,6 +551,42 @@ MagickExport CompressionType StringToCompressionType(const char *option)
 }
 
 /*
+  ConfirmAccessMode
+*/
+MagickExport const char *ConfirmAccessModeToString(const ConfirmAccessMode access_mode)
+{
+  const char
+    *mode_string="Undefined";
+
+  switch(access_mode)
+    {
+    case UndefinedConfirmAccessMode:
+      mode_string="Undefined";
+      break;
+    case FileExecuteConfirmAccessMode:
+      mode_string="Execute";
+      break;
+    case FileReadConfirmAccessMode:
+      mode_string="Read";
+      break;
+    case FileWriteConfirmAccessMode:
+      mode_string="Write";
+      break;
+    case URLGetFTPConfirmAccessMode:
+      mode_string="FTP Get";
+      break;
+    case URLGetFileConfirmAccessMode:
+      mode_string="FILE Get";
+      break;
+    case URLGetHTTPConfirmAccessMode:
+      mode_string="HTTP Get";
+      break;
+    }
+
+  return mode_string;
+}
+
+/*
   EndianType
 */
 MagickExport const char *EndianTypeToString(const EndianType endian_type)

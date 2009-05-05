@@ -20,6 +20,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/color.html \
 	$(WWWAPIDIR)/compare.html \
 	$(WWWAPIDIR)/composite.html \
+	$(WWWAPIDIR)/confirm_access.html \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
@@ -62,6 +63,7 @@ WWWWAPI_FILES = \
 	www/api/color.html \
 	www/api/compare.html \
 	www/api/composite.html \
+	www/api/confirm_access.html \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \

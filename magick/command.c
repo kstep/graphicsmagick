@@ -41,6 +41,7 @@
 #include "magick/attribute.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/confirm_access.h"
 #include "magick/constitute.h"
 #include "magick/command.h"
 #include "magick/compare.h"
@@ -186,6 +187,46 @@ static const CommandInfo commands[] =
 #endif
     { 0, 0, 0, 0, 0}
   };
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o m m a n d A c c e s s M o n i t o r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CommandAccessMonitor displays the files and programs which are
+%  attempted to be accessed.
+%
+%  The format of the CommandAccessMonitor method is:
+%
+%      MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
+%                                      const char *path,
+%                                      ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o mode: The type of access to be performed.
+%
+%    o path: The local path or URL requested to be accessed.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
+				       const char *path,
+				       ExceptionInfo *exception)
+{
+  ARG_NOT_USED(exception);
+
+  (void) fprintf(stderr,"  %s %s\n",
+		 ConfirmAccessModeToString(mode),path);
+  return MagickPass;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -998,9 +1039,15 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -1950,9 +1997,15 @@ CompareImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         ThrowCompareException(OptionError,UnrecognizedOption,option)
@@ -2955,9 +3008,15 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -4545,9 +4604,15 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -6650,9 +6715,15 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
           if (LocaleCompare("monochrome",option+1) == 0)
@@ -7511,9 +7582,15 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         ThrowIdentifyException(OptionError,UnrecognizedOption,option)
@@ -11419,9 +11496,15 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -13026,9 +13109,15 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)
@@ -14075,9 +14164,15 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
         if (LocaleCompare("monitor",option+1) == 0)
           {
             if (*option == '+')
-              (void) SetMonitorHandler((MonitorHandler) NULL);
+	      {
+		(void) SetMonitorHandler((MonitorHandler) NULL);
+		(void) MagickSetConfirmAccessHandler((ConfirmAccessHandler) NULL);
+	      }
             else
-              (void) SetMonitorHandler(CommandProgressMonitor);
+	      {
+		(void) SetMonitorHandler(CommandProgressMonitor);
+		(void) MagickSetConfirmAccessHandler(CommandAccessMonitor);
+	      }
             break;
           }
         if (LocaleCompare("monochrome",option+1) == 0)

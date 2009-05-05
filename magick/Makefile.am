@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004, 2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -66,6 +66,8 @@ MAGICK_BASE_SRCS = \
 	magick/channel.h \
 	magick/compare.c \
 	magick/compare.h \
+	magick/confirm_access.c \
+	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -201,6 +203,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
+	magick/confirm_access.h \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \

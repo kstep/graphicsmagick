@@ -46,7 +46,7 @@
 #
 #
 
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004, 2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1034,7 +1034,8 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/attribute.c magick/attribute.h magick/bit_stream.c \
 	magick/bit_stream.h magick/blob.c magick/blob.h \
 	magick/channel.c magick/channel.h magick/compare.c \
-	magick/compare.h magick/color.c magick/color.h \
+	magick/compare.h magick/confirm_access.c \
+	magick/confirm_access.h magick/color.c magick/color.h \
 	magick/colorspace.c magick/colorspace.h magick/command.c \
 	magick/command.h magick/composite.c magick/composite.h \
 	magick/compress.c magick/compress.h magick/constitute.c \
@@ -1109,6 +1110,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
 	magick/magick_libGraphicsMagick_la-compare.lo \
+	magick/magick_libGraphicsMagick_la-confirm_access.lo \
 	magick/magick_libGraphicsMagick_la-color.lo \
 	magick/magick_libGraphicsMagick_la-colorspace.lo \
 	magick/magick_libGraphicsMagick_la-command.lo \
@@ -2922,6 +2924,8 @@ MAGICK_BASE_SRCS = \
 	magick/channel.h \
 	magick/compare.c \
 	magick/compare.h \
+	magick/confirm_access.c \
+	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -3052,6 +3056,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
+	magick/confirm_access.h \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \
@@ -4545,6 +4550,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/color.html \
 	$(WWWAPIDIR)/compare.html \
 	$(WWWAPIDIR)/composite.html \
+	$(WWWAPIDIR)/confirm_access.html \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
@@ -4587,6 +4593,7 @@ WWWWAPI_FILES = \
 	www/api/color.html \
 	www/api/compare.html \
 	www/api/composite.html \
+	www/api/confirm_access.html \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \
@@ -5556,6 +5563,8 @@ magick/magick_libGraphicsMagick_la-channel.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-compare.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-confirm_access.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colorspace.lo:  \
@@ -6620,6 +6629,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-composite.lo
 	-rm -f magick/magick_libGraphicsMagick_la-compress.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-compress.lo
+	-rm -f magick/magick_libGraphicsMagick_la-confirm_access.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-confirm_access.lo
 	-rm -f magick/magick_libGraphicsMagick_la-constitute.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-constitute.lo
 	-rm -f magick/magick_libGraphicsMagick_la-decorate.$(OBJEXT)
@@ -7005,6 +7016,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compare.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-composite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-compress.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-confirm_access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-constitute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-decorate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-delegate.Plo@am__quote@
@@ -7878,6 +7890,13 @@ magick/magick_libGraphicsMagick_la-compare.lo: magick/compare.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/compare.c' object='magick/magick_libGraphicsMagick_la-compare.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-compare.lo `test -f 'magick/compare.c' || echo '$(srcdir)/'`magick/compare.c
+
+magick/magick_libGraphicsMagick_la-confirm_access.lo: magick/confirm_access.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-confirm_access.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-confirm_access.Tpo -c -o magick/magick_libGraphicsMagick_la-confirm_access.lo `test -f 'magick/confirm_access.c' || echo '$(srcdir)/'`magick/confirm_access.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-confirm_access.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-confirm_access.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/confirm_access.c' object='magick/magick_libGraphicsMagick_la-confirm_access.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-confirm_access.lo `test -f 'magick/confirm_access.c' || echo '$(srcdir)/'`magick/confirm_access.c
 
 magick/magick_libGraphicsMagick_la-color.lo: magick/color.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-color.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Tpo -c -o magick/magick_libGraphicsMagick_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c

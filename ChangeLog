@@ -1,3 +1,15 @@
+2009-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/url.c (ReadURLImage): Added access confirmation checks
+	for URLs.
+
+	* magick/blob.c: Added access confirmation checks for files.
+
+	* magick/confirm_access.c (MagickConfirmAccess): Added an access
+	confirmation facility to allow the API user to monitor and/or
+	block access to files and URLs.  This allows the API user to
+	implement a security policy based on actual accesses.
+
 2009-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Updated libpng to 1.2.35.

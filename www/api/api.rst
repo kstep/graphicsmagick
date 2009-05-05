@@ -10,6 +10,7 @@ GraphicsMagick Core C API
 .. _Color : color.html
 .. _Compare : compare.html
 .. _Composite : composite.html
+.. _Confirm Access : confirm_access.html
 .. _Constitute : constitute.html
 .. _Decorate : decorate.html
 .. _Display : display.html
@@ -58,6 +59,7 @@ documentation, please reference the types_ documentation as required:
   * Color_: Methods to deal with image colors
   * Compare_: Compare images
   * Composite_: Composite images
+  * `Confirm Access`_ : Confirm access to files and URLs.
   * Constitute_: Read, write, import, and export images
   * Decorate_: Add fancy borders to images
   * Display_: Interactively display and edit an image
