@@ -40,6 +40,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/confirm_access.h"
 #include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -461,7 +462,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 
   size_t
     max_length,
-    remainder;
+    remaining;
 
   assert(blob != (const unsigned char *) NULL);
   assert(blob_length != 0);
@@ -479,8 +480,8 @@ MagickExport char *Base64Encode(const unsigned char *blob,
     encode[i++]=Base64[((*(p+1) & 0x0f) << 2)+(*(p+2) >> 6)];
     encode[i++]=Base64[*(p+2) & 0x3f];
   }
-  remainder=blob_length % 3;
-  if (remainder != 0)
+  remaining=blob_length % 3;
+  if (remaining != 0)
     {
       long
         j;
@@ -491,11 +492,11 @@ MagickExport char *Base64Encode(const unsigned char *blob,
       code[0]='\0';
       code[1]='\0';
       code[2]='\0';
-      for (j=0; j < (long) remainder; j++)
+      for (j=0; j < (long) remaining; j++)
         code[j]=(*p++);
       encode[i++]=Base64[code[0] >> 2];
       encode[i++]=Base64[((code[0] & 0x03) << 4)+(code[1] >> 4)];
-      if (remainder == 1)
+      if (remaining == 1)
         encode[i++]='=';
       else
         encode[i++]=Base64[((code[1] & 0x0f) << 2)+(code[2] >> 6)];
@@ -4724,6 +4725,29 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   const char
     *message_p = (const char *) NULL;
 
+  {
+    /*
+      Verify that we are allowed to run this program.
+    */
+    ExceptionInfo
+      exception_info;
+    
+    char
+      *end,
+      program[MaxTextExtent];
+    
+    GetExceptionInfo(&exception_info);
+    program[0]='\0';
+    GetToken(command,&end,program);
+    if (MagickConfirmAccess(FileExecuteConfirmAccessMode,program,&exception_info)
+	== MagickFail)
+      {
+	errno=EPERM;
+	DestroyExceptionInfo(&exception_info);
+	return -1;
+      }
+  }
+
   errno=0;
 #if defined(POSIX)
   status=system(command);
@@ -5408,14 +5432,14 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       {
         /* Page number */
         register const Image
-          *p;
+          *frame;
 
         unsigned long
           page;
 
-        p=image;
-        for (page=1; p->previous != (Image *) NULL; page++)
-          p=p->previous;
+        frame=image;
+        for (page=1; frame->previous != (Image *) NULL; page++)
+          frame=frame->previous;
         FormatString(buffer,"%lu",page);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;

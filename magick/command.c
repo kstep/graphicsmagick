@@ -261,8 +261,9 @@ static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
 %
 */
 static MagickBool CommandProgressMonitor(const char *task,
-  const magick_int64_t quantum,const magick_uint64_t span,
-  ExceptionInfo *ARGUNUSED(exception))
+					 const magick_int64_t quantum,
+					 const magick_uint64_t span,
+					 ExceptionInfo *ARGUNUSED(exception))
 {
   if ((span > 1) && (quantum >= 0) && ((magick_uint64_t) quantum < span))
     {
@@ -272,13 +273,15 @@ static MagickBool CommandProgressMonitor(const char *task,
       /* Skip over any preceding white space */
       for (p=task; (*p) && (isspace((int) *p)); p++);
       (void) fprintf(stderr,"  %3lu%% %s\r",
-                     (unsigned long) ((double) 100.0*quantum/(
+                     (unsigned long)
+		     ((double) 100.0*quantum/
+		      (
 #ifdef _MSC_VER
- #if _MSC_VER <= 1200		/*Older Visual studios does not implement UINT64 to double conversion*/
-		     (magick_int64_t)
- #endif
+# if _MSC_VER <= 1200 /*Older Visual Studio lacks UINT64 to double conversion*/
+		       (magick_int64_t)
+# endif
 #endif
-		     span-1)),
+		       span-1)),
                      p);
       if ((magick_uint64_t) quantum == (span-1))
         (void) fprintf(stderr,"\n");

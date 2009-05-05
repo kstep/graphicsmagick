@@ -1,5 +1,11 @@
 2009-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (SystemCommand): Added access confirmation
+	checks for external commands.
+
+	* magick/unix_port.c (MagickSpawnVP): Added access confirmation
+	checks for external commands.
+
 	* coders/url.c (ReadURLImage): Added access confirmation checks
 	for URLs.
 
