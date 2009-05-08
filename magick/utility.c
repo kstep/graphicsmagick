@@ -4730,20 +4730,20 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
       Verify that we are allowed to run this program.
     */
     ExceptionInfo
-      exception_info;
+      exception;
     
     char
       *end,
       program[MaxTextExtent];
     
-    GetExceptionInfo(&exception_info);
+    GetExceptionInfo(&exception);
     program[0]='\0';
     GetToken(command,&end,program);
-    if (MagickConfirmAccess(FileExecuteConfirmAccessMode,program,&exception_info)
+    if (MagickConfirmAccess(FileExecuteConfirmAccessMode,program,&exception)
 	== MagickFail)
       {
 	errno=EPERM;
-	DestroyExceptionInfo(&exception_info);
+	DestroyExceptionInfo(&exception);
 	return -1;
       }
   }

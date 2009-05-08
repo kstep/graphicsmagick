@@ -133,11 +133,11 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   image=(Image *) NULL;
 
-  if (LocaleCompare(image_info->magick,"ftp" == 0))
+  if (LocaleCompare(image_info->magick,"ftp") == 0)
     access_mode=URLGetFTPConfirmAccessMode;
-  else if (LocaleCompare(image_info->magick,"http" == 0))
+  else if (LocaleCompare(image_info->magick,"http") == 0)
     access_mode=URLGetHTTPConfirmAccessMode;
-  else if (LocaleCompare(image_info->magick,"file" == 0))
+  else if (LocaleCompare(image_info->magick,"file") == 0)
     access_mode=URLGetFileConfirmAccessMode;
 
   (void) strlcpy(filename,image_info->magick,MaxTextExtent);
