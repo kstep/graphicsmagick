@@ -1,7 +1,3 @@
-2009-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* ttf: Updated FreeType to 2.3.9.
-
 2009-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (SystemCommand): Added access confirmation
