@@ -5632,9 +5632,41 @@ then
       else
         CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
       fi
+      ;;
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
+fi
+
+# Reduce utility startup overhead by lazy-loading dependency libraries
+# if possible.
+#
+#   http://developers.sun.com/solaris/articles/reducing_app.html
+#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
+{ $as_echo "$as_me:$LINENO: checking for linker lazyload option" >&5
+$as_echo_n "checking for linker lazyload option... " >&6; }
+if test "${gm_cv_ld_lazyload+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+
+gm_cv_ld_lazyload='none'
+case "${host}" in
+  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
+    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
+       gm_cv_ld_lazyload='-Wl,-zlazyload'
+    fi
+    ;;
+esac
+
+fi
+{ $as_echo "$as_me:$LINENO: result: $gm_cv_ld_lazyload" >&5
+$as_echo "$gm_cv_ld_lazyload" >&6; }
+if test "${gm_cv_ld_lazyload}" != 'none' ; then
+  if test -n "${LDFLAGS}" ; then
+    LDFLAGS="${gm_cv_ld_lazyload}"
+  else
+    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
+  fi
 fi
 
 #
@@ -7089,13 +7121,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:7092: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:7124: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7095: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:7127: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:7098: output\"" >&5)
+  (eval echo "\"\$as_me:7130: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8286,7 +8318,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8289 "configure"' > conftest.$ac_ext
+  echo '#line 8321 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10202,11 +10234,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10205: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10237: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10209: \$? = $ac_status" >&5
+   echo "$as_me:10241: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10541,11 +10573,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10544: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10576: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10548: \$? = $ac_status" >&5
+   echo "$as_me:10580: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -10646,11 +10678,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10649: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10681: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10653: \$? = $ac_status" >&5
+   echo "$as_me:10685: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10701,11 +10733,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10704: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10736: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10708: \$? = $ac_status" >&5
+   echo "$as_me:10740: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13501,7 +13533,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13504 "configure"
+#line 13536 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13597,7 +13629,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13600 "configure"
+#line 13632 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16356,11 +16388,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16359: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16391: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16363: \$? = $ac_status" >&5
+   echo "$as_me:16395: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16455,11 +16487,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16458: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16490: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16462: \$? = $ac_status" >&5
+   echo "$as_me:16494: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16507,11 +16539,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16510: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16542: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16514: \$? = $ac_status" >&5
+   echo "$as_me:16546: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18407,7 +18439,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18410 "configure"
+#line 18442 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -29036,7 +29068,7 @@ MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 #
 { $as_echo "$as_me:$LINENO: checking for X11 configure files" >&5
 $as_echo_n "checking for X11 configure files... " >&6; }
-if test "${im_cv_x_configure+set}" = set; then
+if test "${gm_cv_x_configure+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   # Look for the header file in a standard set of common directories.
@@ -29047,6 +29079,7 @@ else
     /usr/X11R4/lib        \
     /usr/X11R5/lib        \
     /usr/X11R6/lib        \
+    /usr/X11R7/lib        \
     /usr/X386/lib         \
     /usr/XFree86/lib/X11  \
     /usr/athena/lib       \
@@ -29055,15 +29088,18 @@ else
     /usr/lib/X11R4        \
     /usr/lib/X11R5        \
     /usr/lib/X11R6        \
+    /usr/lib/X11R7        \
     /usr/local/X11/lib    \
     /usr/local/X11R4/lib  \
     /usr/local/X11R5/lib  \
     /usr/local/X11R6/lib  \
+    /usr/local/X11R7/lib  \
     /usr/local/lib        \
     /usr/local/lib/X11    \
     /usr/local/lib/X11R4  \
     /usr/local/lib/X11R5  \
     /usr/local/lib/X11R6  \
+    /usr/local/lib/X11R7  \
     /usr/local/x11r5/lib  \
     /usr/lpp/Xamples/lib  \
     /usr/openwin/lib      \
@@ -29074,19 +29110,19 @@ else
   do
     if test -f "$ac_dir/X11/rgb.txt"
     then
-        im_cv_x_configure="$ac_dir/X11/"
+        gm_cv_x_configure="$ac_dir/X11/"
 	break
     elif test -f "$ac_dir/rgb.txt"
     then
-        im_cv_x_configure="$ac_dir/"
+        gm_cv_x_configure="$ac_dir/"
         break
     fi
 
   done
 fi
-{ $as_echo "$as_me:$LINENO: result: $im_cv_x_configure" >&5
-$as_echo "$im_cv_x_configure" >&6; }
-X11ConfigurePath="$im_cv_x_configure"
+{ $as_echo "$as_me:$LINENO: result: $gm_cv_x_configure" >&5
+$as_echo "$gm_cv_x_configure" >&6; }
+X11ConfigurePath="$gm_cv_x_configure"
 case "${build_os}" in
   mingw* )
     X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`

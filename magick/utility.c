@@ -4731,11 +4731,11 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
     */
     ExceptionInfo
       exception;
-    
+
     char
       *end,
       program[MaxTextExtent];
-    
+
     GetExceptionInfo(&exception);
     program[0]='\0';
     GetToken(command,&end,program);

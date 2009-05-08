@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.10.2 subdir-objects dist-bzip2 dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 

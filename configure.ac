@@ -1,4 +1,4 @@
-# Copyright (C) 2003, 2007, 2008 GraphicsMagick Group
+# Copyright (C) 2003-2009 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.62)
+AC_PREREQ(2.63)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
@@ -264,9 +264,34 @@ then
       else
         CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
       fi
+      ;;
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
+fi
+
+# Reduce utility startup overhead by lazy-loading dependency libraries
+# if possible.
+#
+#   http://developers.sun.com/solaris/articles/reducing_app.html
+#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
+AC_CACHE_CHECK([for linker lazyload option],[gm_cv_ld_lazyload],
+[
+gm_cv_ld_lazyload='none'
+case "${host}" in
+  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
+    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
+       gm_cv_ld_lazyload='-Wl,-zlazyload'
+    fi
+    ;;
+esac
+])
+if test "${gm_cv_ld_lazyload}" != 'none' ; then
+  if test -n "${LDFLAGS}" ; then
+    LDFLAGS="${gm_cv_ld_lazyload}"
+  else
+    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
+  fi
 fi
 
 #
@@ -1202,7 +1227,7 @@ MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 #
 # Find the X11 RGB database
 #
-AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
+AC_CACHE_CHECK(for X11 configure files,gm_cv_x_configure,
 [# Look for the header file in a standard set of common directories.
 # Check X11 before X11Rn because it is often a symlink to the current release.
   for ac_dir in               \
@@ -1211,6 +1236,7 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
     /usr/X11R4/lib        \
     /usr/X11R5/lib        \
     /usr/X11R6/lib        \
+    /usr/X11R7/lib        \
     /usr/X386/lib         \
     /usr/XFree86/lib/X11  \
     /usr/athena/lib       \
@@ -1219,15 +1245,18 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
     /usr/lib/X11R4        \
     /usr/lib/X11R5        \
     /usr/lib/X11R6        \
+    /usr/lib/X11R7        \
     /usr/local/X11/lib    \
     /usr/local/X11R4/lib  \
     /usr/local/X11R5/lib  \
     /usr/local/X11R6/lib  \
+    /usr/local/X11R7/lib  \
     /usr/local/lib        \
     /usr/local/lib/X11    \
     /usr/local/lib/X11R4  \
     /usr/local/lib/X11R5  \
     /usr/local/lib/X11R6  \
+    /usr/local/lib/X11R7  \
     /usr/local/x11r5/lib  \
     /usr/lpp/Xamples/lib  \
     /usr/openwin/lib      \
@@ -1238,16 +1267,16 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
   do
     if test -f "$ac_dir/X11/rgb.txt"
     then
-        im_cv_x_configure="$ac_dir/X11/"
+        gm_cv_x_configure="$ac_dir/X11/"
 	break
     elif test -f "$ac_dir/rgb.txt"
     then 
-        im_cv_x_configure="$ac_dir/"
+        gm_cv_x_configure="$ac_dir/"
         break
     fi
 
   done])
-X11ConfigurePath="$im_cv_x_configure"
+X11ConfigurePath="$gm_cv_x_configure"
 case "${build_os}" in
   mingw* )
     X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
