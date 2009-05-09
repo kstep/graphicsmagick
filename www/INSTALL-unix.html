@@ -778,6 +778,14 @@ built under MinGW in order to be used. These libraries should be built
 and installed prior to configuring GraphicsMagick. While some delegate
 libraries are easy to configure and build under MinGW, others may be
 quite a challenge.</p>
+<p>Lucky for us, the most common delegate libraries are available
+pre-built, as part of the GnuWin32 project, from</p>
+<blockquote>
+<a class="reference" href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a></blockquote>
+<p>The relevant packages are bzip2, freetype, jbigkit, libintl, jpeg,
+libpng, libtiff, libwmf and zlib. However, note that for freetype
+to be detected by configure, you must move the <tt class="docutils literal"><span class="pre">freetype</span></tt> directory
+out of <tt class="docutils literal"><span class="pre">GnuWin32\include\freetype2</span></tt> and into <tt class="docutils literal"><span class="pre">GnuWin32\include</span></tt>.</p>
 <p>Since C++ exceptions do not currently work properly when thrown from a
 DLL, the Magick++ library is always built as a static library. Be sure
 to not specify --disable-static if you are building the Magick++
@@ -922,7 +930,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-26 21:42 UTC.
+Generated on: 2009-05-09 22:45 UTC.
 
 </div>
 </body>

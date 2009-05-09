@@ -640,6 +640,16 @@ and installed prior to configuring GraphicsMagick. While some delegate
 libraries are easy to configure and build under MinGW, others may be
 quite a challenge.
 
+Lucky for us, the most common delegate libraries are available
+pre-built, as part of the GnuWin32 project, from
+
+    http://gnuwin32.sourceforge.net/packages.html
+
+The relevant packages are bzip2, freetype, jbigkit, libintl, jpeg,
+libpng, libtiff, libwmf and zlib. However, note that for freetype
+to be detected by configure, you must move the ``freetype`` directory
+out of ``GnuWin32\include\freetype2`` and into ``GnuWin32\include``.
+
 Since C++ exceptions do not currently work properly when thrown from a
 DLL, the Magick++ library is always built as a static library. Be sure
 to not specify --disable-static if you are building the Magick++
