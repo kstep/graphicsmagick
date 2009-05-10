@@ -1,5 +1,8 @@
 2009-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* utilities/Makefile.am (MAGICKPROGRAMS): Add a 'compare'
+	ImageMagick compatibility link.
+
 	* INSTALL-unix.txt: Apply patch regarding GnuWin32 from John Wye,
 	SourceForge #2779009.
 

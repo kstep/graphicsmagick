@@ -4779,7 +4779,7 @@ UTILITIES_CLEANFILES = \
 
 
 # Install/Uninstall ImageMagick compatibility links
-@MAGICK_COMPAT_TRUE@MAGICKPROGRAMS = animate composite conjure convert display identify import mogrify montage
+@MAGICK_COMPAT_TRUE@MAGICKPROGRAMS = animate compare composite conjure convert display identify import mogrify montage
 @MAGICK_COMPAT_TRUE@UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
 @MAGICK_COMPAT_TRUE@UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick

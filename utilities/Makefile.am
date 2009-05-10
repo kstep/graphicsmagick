@@ -139,7 +139,7 @@ UTILITIES_CLEANFILES = \
 
 # Install/Uninstall ImageMagick compatibility links
 if MAGICK_COMPAT
-MAGICKPROGRAMS=animate composite conjure convert display identify import mogrify montage
+MAGICKPROGRAMS=animate compare composite conjure convert display identify import mogrify montage
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
