@@ -1,3 +1,17 @@
+2009-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pcl.c: Major improvements from John Sergeant.  These
+	include: 1) Fixed 2 bit output where Max=BLACK - this always
+	produced negative images even when -negate was passed as a
+	parameter. The code now uses a two element palette to handle this
+	situation.  2) Added support for 8 bit pseudoclass images.  3)
+	Changed the coder to allow adjoin, placing each sub-image on a new
+	page.  4) Added support for compression. Any compression other
+	than "None" will cause the coder to to try to calculate and pick
+	the best out of the PCL set of RLE, Tiff RLE or delta compression
+	on a per row basis, as well as handling repeated rows and zero
+	rows intelligently.
+
 2009-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/Makefile.am (MAGICKPROGRAMS): Add a 'compare'
