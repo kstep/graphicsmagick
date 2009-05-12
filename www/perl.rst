@@ -793,9 +793,11 @@ And here is a list of all the image attributes you can set:
    |compression     |{None, BZip, Fax, Group4, JPEG,     |type of image      |
    |                |LosslessJPEG, LZW, RLE, Zip}        |compression        |
    +----------------+------------------------------------+-------------------+
-   |                |{No, Configure, Annotate, Render,   |display copious    |
-   |debug           |Locale, Coder, X11, Cache, Blob,    |debugging          |
-   |                |All}                                |information        |
+   |                |{No, Configure, Annotate, Render,   |log copious        |
+   |debug           |Transform, Locale, Coder, X11,      |debugging          |
+   |                |Cache, Blob, Deprecate, User,       |information  for   |
+   |                |Resource, TemporaryFile,            |one or more event  |
+   |                |Exception,All}                      |types              |
    +----------------+------------------------------------+-------------------+
    |                |                                    |this many 1/100ths |
    |                |                                    |of a second\fP must|
