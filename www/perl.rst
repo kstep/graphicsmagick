@@ -800,7 +800,7 @@ And here is a list of all the image attributes you can set:
    |                |Exception,All}                      |types              |
    +----------------+------------------------------------+-------------------+
    |                |                                    |this many 1/100ths |
-   |                |                                    |of a second\fP must|
+   |                |                                    |of a second must   |
    |delay           |integer                             |expire before      |
    |                |                                    |displaying the next|
    |                |                                    |image in a sequence|
