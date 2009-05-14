@@ -1,4 +1,4 @@
-.TH gm 1 "2009/04/19" "GraphicsMagick"
+.TH gm 1 "2009/05/13" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3126,6 +3126,74 @@ thresholded. When \fBchanneltype\fP is "opacity" or "matte", only the
 opacity channel is thresholded. The other named channels only threshold
 the associated channel.
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+
+A user supplied color translation matrix (expressed as a text
+string) is used to translate/blend the image channels based on
+weightings in a supplied matrix which may be of order 3 (color
+channels only), 4 (color channels plus opacity), or 5 (color channels
+plus opacity and offset).  Values in the columns of the matrix (red,
+green, blue, opacity) are used as multipliers with the existing
+channel values and added together according to the rows of the matrix.
+Matrix values are floating point and may be negative.  The offset
+column (column 5) is purely additive and is scaled such that 0.0 to
+1.0 represents the maximum quantum range (but values are not limited
+to this range).
+
+An \fBidentity\fP matrix exists for each matrix order which
+results in no change to the image.  The translation matrix should be
+based on an alteration of the identity matrix.
+
+Identity matrix of order 3
+
+  1 0 0
+  0 1 0
+  0 0 1
+
+which may be formatted into a convenient matrix argument similar to
+(comma is treated as white space):
+
+  -recolor "1 0 0, 0 1 0, 0 0 1"
+
+Identity matrix of order 4
+
+  1 0 0 0
+  0 1 0 0
+  0 0 1 0
+  0 0 0 1
+
+Identity matrix of order 5.  The last row is optional.
+
+  1 0 0 0 0
+  0 1 0 0 0
+  0 0 1 0 0
+  0 0 0 1 0
+  0 0 0 0 1
+
+As an example, an image wrongly in BGR channel order may be converted
+to RGB using this matrix (green->red, red->green):
+
+  0 0 1
+  0 1 0
+  1 0 0
+
+and an RGB image using standard Rec.709 primaries may be converted
+to grayscale using this matrix of standard weighting factors:
+
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+
+and contrast may be reduced by scaling down by 80% and adding a 10%
+offset:
+
+  0.8 0.0 0.0 0.0 0.1
+  0.0 0.8 0.0 0.0 0.1
+  0.0 0.0 0.8 0.0 0.1
+  0.0 0.0 0.0 0.8 0.1
+  0.0 0.0 0.0 0.0 1.0
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -4541,6 +4609,9 @@ Options, above.
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG/TIFF compression level
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -5527,6 +5598,9 @@ Options, above.
 .TP
 .B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
 \fRrandom threshold the image
+.TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -6755,7 +6829,7 @@ use \fB-colors\fP.
 
 To begin, press choose \fBCrop\fP of the \fBTransform\fP submenu from
 the Command widget. Alternatively,
-press [ in the image window.
+press C in the image window.
 
 A small window appears showing the location of the cursor in the image
 window. You are now in crop mode. In crop mode, the Command widget has
@@ -6784,7 +6858,7 @@ your cropping region. To exit without cropping the image, press Dismiss.
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose \fBChop\fP of the \fBTransform\fP sub-menu
 from the Command widget. Alternatively,
-press ] in the Image window.
+press [ in the Image window.
 
 You are now in \fBChop\fP mode. To exit immediately, press
 \fBDismiss\fP.
@@ -8411,6 +8485,9 @@ Options, above.
 .TP
 .B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
 \fRrandom threshold the image
+.TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point

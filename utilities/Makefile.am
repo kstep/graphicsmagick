@@ -71,6 +71,7 @@ UTILITIES_TESTS = \
 	utilities/tests/quantize.sh \
 	utilities/tests/raise.sh \
 	utilities/tests/random-threshold.sh \
+	utilities/tests/recolor.sh \
 	utilities/tests/reducenoise.sh \
 	utilities/tests/resize.sh \
 	utilities/tests/roll.sh \

@@ -3886,6 +3886,89 @@ the associated channel.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a name="details-recolor"></a>-recolor <i>&lt;matrix&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a color translation matrix to image channels</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+A user supplied color translation matrix (expressed as a text
+string) is used to translate/blend the image channels based on
+weightings in a supplied matrix which may be of order 3 (color
+channels only), 4 (color channels plus opacity), or 5 (color channels
+plus opacity and offset).  Values in the columns of the matrix (red,
+green, blue, opacity) are used as multipliers with the existing
+channel values and added together according to the rows of the matrix.
+Matrix values are floating point and may be negative.  The offset
+column (column 5) is purely additive and is scaled such that 0.0 to
+1.0 represents the maximum quantum range (but values are not limited
+to this range).</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+An <strong>identity</strong> matrix exists for each matrix order which
+results in no change to the image.  The translation matrix should be
+based on an alteration of the identity matrix.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Identity matrix of order 3</font></td></tr></table>
+<pre>
+  1 0 0
+  0 1 0
+  0 0 1
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+which may be formatted into a convenient matrix argument similar to
+(comma is treated as white space):</font></td></tr></table>
+<pre>
+  -recolor "1 0 0, 0 1 0, 0 0 1"
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Identity matrix of order 4</font></td></tr></table>
+<pre>
+  1 0 0 0
+  0 1 0 0
+  0 0 1 0
+  0 0 0 1
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Identity matrix of order 5.  The last row is optional.</font></td></tr></table>
+<pre>
+  1 0 0 0 0
+  0 1 0 0 0
+  0 0 1 0 0
+  0 0 0 1 0
+  0 0 0 0 1
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+As an example, an image wrongly in BGR channel order may be converted
+to RGB using this matrix (green-&gt;red, red-&gt;green):</font></td></tr></table>
+<pre>
+  0 0 1
+  0 1 0
+  1 0 0
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+and an RGB image using standard Rec.709 primaries may be converted
+to grayscale using this matrix of standard weighting factors:</font></td></tr></table>
+<pre>
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+and contrast may be reduced by scaling down by 80% and adding a 10%
+offset:</font></td></tr></table>
+<pre>
+  0.8 0.0 0.0 0.0 0.1
+  0.0 0.8 0.0 0.0 0.1
+  0.0 0.0 0.8 0.0 0.1
+  0.0 0.0 0.0 0.8 0.1
+  0.0 0.0 0.0 0.0 1.0
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-red-primary"></a>-red-primary <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>red chromaticity primary point</td></tr></table>
@@ -6691,6 +6774,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details-recolor">-recolor</a> <i>&lt;matrix&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a color translation matrix to image channels</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-red-primary">-red-primary</a> <i>&lt;x&gt;,&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>red chromaticity primary point</td></tr></table>
@@ -8522,6 +8616,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-random-threshold">-random-threshold</a> <i>&lt;channeltype&gt; &lt;LOWxHIGH&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>random threshold the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details-recolor">-recolor</a> <i>&lt;matrix&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a color translation matrix to image channels</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11215,7 +11320,7 @@ color="#00B04F"><font size="+1">
 <p>
 To begin, press choose <strong>Crop</strong> of the <strong>Transform</strong> submenu from
 the <a href="#disp-comm">Command widget</a>. Alternatively,
-<a href="#disp-keyb">press</a> [ in the image window.
+<a href="#disp-keyb">press</a> C in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in crop mode. In crop mode, the Command widget has
@@ -11257,7 +11362,7 @@ color="#00B04F"><font size="+1">
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose <strong>Chop</strong> of the <strong>Transform</strong> sub-menu
 from the <a href="#disp-comm">Command widget</a>. Alternatively,
-<a href="#disp-keyb">press</a> ] in the Image window.
+<a href="#disp-keyb">press</a> [ in the Image window.
 <p>
 You are now in <strong>Chop</strong> mode. To exit immediately, press
 <strong>Dismiss</strong>.
@@ -14353,6 +14458,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-random-threshold">-random-threshold</a> <i>&lt;channeltype&gt; &lt;LOWxHIGH&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>random threshold the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details-recolor">-recolor</a> <i>&lt;matrix&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a color translation matrix to image channels</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

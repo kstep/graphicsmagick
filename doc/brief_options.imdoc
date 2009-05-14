@@ -521,6 +521,10 @@
 <lopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 <abs>random threshold the image</abs>
 </utils>
+<utils apps=composite,convert,mogrify>
+<lopt>-recolor <matrix></opt>
+<abs>apply a color translation matrix to image channels</abs>
+</utils>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-red-primary <x>,<y></opt>
 <abs>red chromaticity primary point</abs>

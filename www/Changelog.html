@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2009-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): Added a -recolor command option
+        to provide access to ColorMatrixImage().
+
+  <LI> magick/fx.c (ColorMatrixImage): New function to apply a color
+        matrix similar to Adobe Flash Flash.filters.colorMatrixFilter(),
+        and Windows GDI+ ColorMatrix class, (order up to 5x5) to the image
+        pixels.
+
+</UL>
+<p>
 2009-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

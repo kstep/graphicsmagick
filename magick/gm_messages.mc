@@ -1421,6 +1421,12 @@ kernel width must be an odd number
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorMatrixOrderOutOfRange
+Language        = English
+Matrix size is out of range
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorMissingAnImageFilename
 Language        = English
 Missing an image filename
@@ -1532,6 +1538,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorUnableToChopImage
 Language        = English
 unable to chop image
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorUnableToColorMatrixImage
+Language        = English
+Unable to color matrix image
 .
 
 MessageId       = +1

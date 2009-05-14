@@ -804,6 +804,9 @@
       <Message name="KernelWidthMustBeAnOddNumber">
         kernel width must be an odd number
       </Message>
+      <Message name="MatrixOrderOutOfRange">
+        Matrix size is out of range
+      </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>
@@ -860,6 +863,9 @@
       </Message>
       <Message name="UnableToChopImage">
         unable to chop image
+      </Message>
+      <Message name="UnableToColorMatrixImage">
+        Unable to color matrix image
       </Message>
       <Message name="UnableToConvolveImage">
         Unable to convolve image

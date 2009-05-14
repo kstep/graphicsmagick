@@ -3102,6 +3102,17 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
       case 'r':
       {
+        if (LocaleCompare("recolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,MissingArgument,
+                    option);
+              }
+            break;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -3455,6 +3466,7 @@ static void CompositeUsage(void)
       "-page geometry       size and location of an image canvas",
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
+      "-recolor matrix      apply a color translation matrix to image channels",
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
       "-resize geometry     resize the image",
@@ -4866,6 +4878,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("recolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -5469,8 +5491,9 @@ static void ConvertUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold channeltype LOWxHIGH",
       "                     random threshold the image",
-      "-region geometry     apply options to a portion of the image",
+      "-recolor matrix      apply a color translation matrix to image channels",
       "-red-primary point   chomaticity red primary point",
+      "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-resample geometry   resample to horizontal and vertical resolution",
       "-resize geometry     resize the image",
@@ -8251,6 +8274,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             /*
               Convolve image.
+	      FIXME: this parsing code is terrible.
             */
             p=argv[++i];
             for (x=0; *p != '\0'; x++)
@@ -8258,9 +8282,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               GetToken(p,&p,token);
               if (*token == ',')
                 GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
             }
             order=(unsigned int) sqrt(x+1);
-            kernel=MagickAllocateMemory(double *,order*order*sizeof(double));
+            kernel=MagickAllocateArray(double *,order*order,sizeof(double));
             if (kernel == (double *) NULL)
               MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
                 MagickMsg(ResourceLimitError,UnableToAllocateCoefficients));
@@ -8268,8 +8294,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             for (x=0; *p != '\0'; x++)
             {
               GetToken(p,&p,token);
-              if (*token == ',')
+	      if (token[0] == '\0')
+		break;
+              if (token[0] == ',')
                 GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
               kernel[x]=atof(token);
             }
             for ( ; x < (long) (order*order); x++)
@@ -9257,6 +9287,57 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) RandomChannelThresholdImage(*image,argv[i+1],argv[i+2],
                 &(*image)->exception);
             i+=2;
+            continue;
+          }
+        if (LocaleCompare("recolor",option+1) == 0)
+          {
+            char
+              *p,
+              token[MaxTextExtent];
+
+            double
+              *matrix;
+
+            register long
+              x;
+
+            unsigned int
+              order;
+
+            /*
+              Color matrix image.
+	      FIXME: this parsing code is terrible.
+            */
+            p=argv[++i];
+            for (x=0; *p != '\0'; x++)
+            {
+              GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
+              if (token[0] == ',')
+                GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
+            }
+            order=(unsigned int) sqrt(x+1);
+            matrix=MagickAllocateArray(double *,order*order,sizeof(double));
+            if (matrix == (double *) NULL)
+              MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
+                MagickMsg(ResourceLimitError,UnableToAllocateCoefficients));
+            p=argv[i];
+            for (x=0; *p != '\0'; x++)
+            {
+              GetToken(p,&p,token);
+              if (token[0] == ',')
+                GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
+	      matrix[x]=atof(token);
+            }
+            for ( ; x < (long) (order*order); x++)
+              matrix[x]=0.0;
+	    (void) ColorMatrixImage(*image,order,matrix);
+            MagickFreeMemory(matrix);
             continue;
           }
         if (LocaleCompare("red-primary",option+1) == 0)
@@ -11727,6 +11808,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
           break;
           }
+        if (LocaleCompare("recolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
             if (*option == '-')
@@ -12290,7 +12381,8 @@ static void MogrifyUsage(void)
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-random-threshold channeltype LOWxHIGH",
       "                     random threshold the image",
-      "-red-primary point  chomaticity red primary point",
+      "-recolor matrix      apply a color translation matrix to image channels",
+      "-red-primary point   chomaticity red primary point",
       "-region geometry     apply options to a portion of the image",
       "-resample geometry   resample to horizontal and vertical resolution",
       "-resize geometry     perferred size or location of the image",

@@ -1,3 +1,13 @@
+2009-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Added a -recolor command option
+	to provide access to ColorMatrixImage().
+
+	* magick/fx.c (ColorMatrixImage): New function to apply a color
+	matrix similar to Adobe Flash Flash.filters.colorMatrixFilter(),
+	and Windows GDI+ ColorMatrix class, (order up to 5x5) to the image
+	pixels.
+
 2009-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/perl.rst: Add missing PerlMagick debug event types.

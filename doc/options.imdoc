@@ -3937,6 +3937,97 @@ the associated channel.</pp>
 
 
 
+<!-- ------------ -recolor -------------------------------------- -->
+
+<utils apps=composite,convert,mogrify>
+<dopt>-recolor <matrix></opt>
+
+<abs>apply a color translation matrix to image channels</abs>
+
+<pp>
+A user supplied color translation matrix (expressed as a text
+string) is used to translate/blend the image channels based on
+weightings in a supplied matrix which may be of order 3 (color
+channels only), 4 (color channels plus opacity), or 5 (color channels
+plus opacity and offset).  Values in the columns of the matrix (red,
+green, blue, opacity) are used as multipliers with the existing
+channel values and added together according to the rows of the matrix.
+Matrix values are floating point and may be negative.  The offset
+column (column 5) is purely additive and is scaled such that 0.0 to
+1.0 represents the maximum quantum range (but values are not limited
+to this range).</pp>
+
+<pp>
+An <s>identity</s> matrix exists for each matrix order which
+results in no change to the image.  The translation matrix should be
+based on an alteration of the identity matrix.</pp>
+
+<pp>
+Identity matrix of order 3</pp>
+<pre>
+  1 0 0
+  0 1 0
+  0 0 1
+</pre>
+
+<pp>
+which may be formatted into a convenient matrix argument similar to
+(comma is treated as white space):</pp>
+<pre>
+  -recolor "1 0 0, 0 1 0, 0 0 1"
+</pre>
+
+<pp>
+Identity matrix of order 4</pp>
+<pre>
+  1 0 0 0
+  0 1 0 0
+  0 0 1 0
+  0 0 0 1
+</pre>
+
+<pp>
+Identity matrix of order 5.  The last row is optional.</pp>
+<pre>
+  1 0 0 0 0
+  0 1 0 0 0
+  0 0 1 0 0
+  0 0 0 1 0
+  0 0 0 0 1
+</pre>
+
+<pp>
+As an example, an image wrongly in BGR channel order may be converted
+to RGB using this matrix (green->red, red->green):</pp>
+<pre>
+  0 0 1
+  0 1 0
+  1 0 0
+</pre>
+
+<pp>
+and an RGB image using standard Rec.709 primaries may be converted
+to grayscale using this matrix of standard weighting factors:</pp>
+<pre>
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+</pre>
+
+<pp>
+and contrast may be reduced by scaling down by 80% and adding a 10%
+offset:</pp>
+<pre>
+  0.8 0.0 0.0 0.0 0.1
+  0.0 0.8 0.0 0.0 0.1
+  0.0 0.0 0.8 0.0 0.1
+  0.0 0.0 0.0 0.8 0.1
+  0.0 0.0 0.0 0.0 1.0
+</pre>
+
+</utils>
+
+
 
 <!-- ------------ -red-primary -------------------------------------- -->
 
