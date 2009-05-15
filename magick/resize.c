@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -928,16 +928,27 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
       pixel=zero;
       if ((destination->matte) || (destination->colorspace == CMYKColorspace))
         {
+	  double
+	    transparency_coeff,
+	    normalize;
+
+	  normalize=0.0;
           for (i=0; i < n; i++)
             {
               j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
                 (contribution[i].pixel-contribution[0].pixel);
               weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-              pixel.opacity+=weight*p[j].opacity;
+	      transparency_coeff = weight * (1 - ((double) p[j].opacity/TransparentOpacity));
+	      pixel.red+=transparency_coeff*p[j].red;
+	      pixel.green+=transparency_coeff*p[j].green;
+	      pixel.blue+=transparency_coeff*p[j].blue;
+	      pixel.opacity+=weight*p[j].opacity;
+	      normalize += transparency_coeff;
             }
+	  normalize = 1.0 / (AbsoluteValue(normalize) <= MagickEpsilon ? 1.0 : normalize);
+	  pixel.red *= normalize;
+	  pixel.green *= normalize;
+	  pixel.blue *= normalize;
           q[y].red=RoundSignedToQuantum(pixel.red);
           q[y].green=RoundSignedToQuantum(pixel.green);
           q[y].blue=RoundSignedToQuantum(pixel.blue);
@@ -1077,16 +1088,27 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
       pixel=zero;
       if ((source->matte) || (source->colorspace == CMYKColorspace))
         {
+	  double
+	    transparency_coeff,
+	    normalize;
+	  
+	  normalize=0.0;
           for (i=0; i < n; i++)
             {
               j=(long) ((contribution[i].pixel-contribution[0].pixel)*
                         source->columns+x);
               weight=contribution[i].weight;
-              pixel.red+=weight*p[j].red;
-              pixel.green+=weight*p[j].green;
-              pixel.blue+=weight*p[j].blue;
-              pixel.opacity+=weight*p[j].opacity;
+	      transparency_coeff = weight * (1 - ((double) p[j].opacity/TransparentOpacity));
+	      pixel.red+=transparency_coeff*p[j].red;
+	      pixel.green+=transparency_coeff*p[j].green;
+	      pixel.blue+=transparency_coeff*p[j].blue;
+	      pixel.opacity+=weight*p[j].opacity;
+	      normalize += transparency_coeff;
             }
+	  normalize = 1.0 / (AbsoluteValue(normalize) <= MagickEpsilon ? 1.0 : normalize);
+	  pixel.red *= normalize;
+	  pixel.green *= normalize;
+	  pixel.blue *= normalize;
           q[x].red=RoundSignedToQuantum(pixel.red);
           q[x].green=RoundSignedToQuantum(pixel.green);
           q[x].blue=RoundSignedToQuantum(pixel.blue);
