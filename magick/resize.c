@@ -916,13 +916,14 @@ HorizontalFilter(const Image *source,Image *destination,
               register long
                 i;
 
-              double
-                transparency_coeff, normalize;
-
               pixel=zero;
-              normalize=0;
               if ((destination->matte) || (destination->colorspace == CMYKColorspace))
                 {
+		  double
+		    transparency_coeff,
+		    normalize;
+
+		  normalize=0.0;
                   for (i=0; i < n; i++)
                     {
                       j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
@@ -935,10 +936,13 @@ HorizontalFilter(const Image *source,Image *destination,
                       pixel.opacity+=weight*p[j].opacity;
                       normalize += transparency_coeff;
                     }
-                  normalize = 1.0 / (fabs((double) normalize) <= MagickEpsilon ? 1.0 : normalize);
-                  q[y].red=RoundDoubleToQuantum(normalize*pixel.red);
-                  q[y].green=RoundDoubleToQuantum(normalize*pixel.green);
-                  q[y].blue=RoundDoubleToQuantum(normalize*pixel.blue);
+                  normalize = 1.0 / (AbsoluteValue(normalize) <= MagickEpsilon ? 1.0 : normalize);
+		  pixel.red *= normalize;
+		  pixel.green *= normalize;
+		  pixel.blue *= normalize;
+                  q[y].red=RoundDoubleToQuantum(pixel.red);
+                  q[y].green=RoundDoubleToQuantum(pixel.green);
+                  q[y].blue=RoundDoubleToQuantum(pixel.blue);
                   q[y].opacity=RoundDoubleToQuantum(pixel.opacity);
                 }
               else
@@ -1126,14 +1130,15 @@ VerticalFilter(const Image *source,Image *destination,
 
               register long
                 i;
-                
-              double
-                transparency_coeff, normalize;
 
               pixel=zero;
-              normalize=0;
               if ((source->matte) || (source->colorspace == CMYKColorspace))
                 {
+		  double
+		    transparency_coeff,
+		    normalize;
+
+		  normalize=0.0;
                   for (i=0; i < n; i++)
                     {
                       j=(long) ((contribution[i].pixel-contribution[0].pixel)*
@@ -1147,10 +1152,13 @@ VerticalFilter(const Image *source,Image *destination,
                       normalize += transparency_coeff;
                     }
 
-                  normalize = 1.0 / (fabs((double) normalize) <= MagickEpsilon ? 1.0 : normalize);
-                  q[x].red=RoundDoubleToQuantum(normalize*pixel.red);
-                  q[x].green=RoundDoubleToQuantum(normalize*pixel.green);
-                  q[x].blue=RoundDoubleToQuantum(normalize*pixel.blue);
+                  normalize = 1.0 / (AbsoluteValue(normalize) <= MagickEpsilon ? 1.0 : normalize);
+		  pixel.red *= normalize;
+		  pixel.green *= normalize;
+		  pixel.blue *= normalize;
+                  q[x].red=RoundDoubleToQuantum(pixel.red);
+                  q[x].green=RoundDoubleToQuantum(pixel.green);
+                  q[x].blue=RoundDoubleToQuantum(pixel.blue);
                   q[x].opacity=RoundDoubleToQuantum(pixel.opacity);
                 }
               else
