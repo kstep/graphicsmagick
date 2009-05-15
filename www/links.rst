@@ -17,6 +17,8 @@ GraphicsMagick Topics
 
 `Gentoo Sunrise <http://bugs.gentoo.org/show_bug.cgi?id=190372>`_ Bug Tracker Entry.
 
+`Red Hat Linux <https://bugzilla.redhat.com/buglist.cgi?quicksearch=GraphicsMagick`_ GraphicsMagick related bugs.
+
 `WikiPedia <http://en.wikipedia.org/wiki/GraphicsMagick>`_ GraphicsMagick Entry.
 
 `IceWalkers <http://www.icewalkers.com/Linux/Software/519400/GraphicsMagick.html>`_ GraphicsMagick Entry.

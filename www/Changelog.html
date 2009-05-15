@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2009-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (HorizontalFilter, VerticalFilter): When
+        resizing a non-opaque image, attenuate the influence of
+        surrounding colors based on their degree of transparency in order
+        to avoid "halos" around objects caused by colors which are
+        transparent and therefore not part of the visible image.  Patch
+        contributed by Pavel Merdin via SourceForge Tracker #2792322.
+
+</UL>
+<p>
 2009-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

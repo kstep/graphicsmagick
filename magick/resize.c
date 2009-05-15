@@ -916,7 +916,11 @@ HorizontalFilter(const Image *source,Image *destination,
               register long
                 i;
 
+              double
+                transparency_coeff, normalize;
+
               pixel=zero;
+              normalize=0;
               if ((destination->matte) || (destination->colorspace == CMYKColorspace))
                 {
                   for (i=0; i < n; i++)
@@ -924,14 +928,17 @@ HorizontalFilter(const Image *source,Image *destination,
                       j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
                         (contribution[i].pixel-contribution[0].pixel);
                       weight=contribution[i].weight;
-                      pixel.red+=weight*p[j].red;
-                      pixel.green+=weight*p[j].green;
-                      pixel.blue+=weight*p[j].blue;
+                      transparency_coeff = weight * (1 - ((double) p[j].opacity/TransparentOpacity));
+                      pixel.red+=transparency_coeff*p[j].red;
+                      pixel.green+=transparency_coeff*p[j].green;
+                      pixel.blue+=transparency_coeff*p[j].blue;
                       pixel.opacity+=weight*p[j].opacity;
+                      normalize += transparency_coeff;
                     }
-                  q[y].red=RoundDoubleToQuantum(pixel.red);
-                  q[y].green=RoundDoubleToQuantum(pixel.green);
-                  q[y].blue=RoundDoubleToQuantum(pixel.blue);
+                  normalize = 1.0 / (fabs((double) normalize) <= MagickEpsilon ? 1.0 : normalize);
+                  q[y].red=RoundDoubleToQuantum(normalize*pixel.red);
+                  q[y].green=RoundDoubleToQuantum(normalize*pixel.green);
+                  q[y].blue=RoundDoubleToQuantum(normalize*pixel.blue);
                   q[y].opacity=RoundDoubleToQuantum(pixel.opacity);
                 }
               else
@@ -1119,8 +1126,12 @@ VerticalFilter(const Image *source,Image *destination,
 
               register long
                 i;
+                
+              double
+                transparency_coeff, normalize;
 
               pixel=zero;
+              normalize=0;
               if ((source->matte) || (source->colorspace == CMYKColorspace))
                 {
                   for (i=0; i < n; i++)
@@ -1128,14 +1139,18 @@ VerticalFilter(const Image *source,Image *destination,
                       j=(long) ((contribution[i].pixel-contribution[0].pixel)*
                                 source->columns+x);
                       weight=contribution[i].weight;
-                      pixel.red+=weight*p[j].red;
-                      pixel.green+=weight*p[j].green;
-                      pixel.blue+=weight*p[j].blue;
+                      transparency_coeff = weight * (1 - ((double) p[j].opacity/TransparentOpacity));
+                      pixel.red+=transparency_coeff*p[j].red;
+                      pixel.green+=transparency_coeff*p[j].green;
+                      pixel.blue+=transparency_coeff*p[j].blue;
                       pixel.opacity+=weight*p[j].opacity;
+                      normalize += transparency_coeff;
                     }
-                  q[x].red=RoundDoubleToQuantum(pixel.red);
-                  q[x].green=RoundDoubleToQuantum(pixel.green);
-                  q[x].blue=RoundDoubleToQuantum(pixel.blue);
+
+                  normalize = 1.0 / (fabs((double) normalize) <= MagickEpsilon ? 1.0 : normalize);
+                  q[x].red=RoundDoubleToQuantum(normalize*pixel.red);
+                  q[x].green=RoundDoubleToQuantum(normalize*pixel.green);
+                  q[x].blue=RoundDoubleToQuantum(normalize*pixel.blue);
                   q[x].opacity=RoundDoubleToQuantum(pixel.opacity);
                 }
               else
