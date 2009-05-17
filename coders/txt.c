@@ -151,6 +151,9 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     (void) memset((void *)buffer,0,MaxTextExtent);
     (void) memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
 
+    if(!strncmp(buffer,"# ImageMagick pixel enumeration:",32))
+		return True;
+
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
@@ -292,6 +295,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  {             //go to the begin of number
 	    ch = ReadBlobByte(image);
 	    if(EOFBlob(image)) goto EndReading;
+		if(ch=='#') 
+		  {readln(image, (char *)&ch); continue;}
 	    if(ch==0 || ch>128 || (ch>='a' && ch<='z') || (ch>='A' && ch<='Z'))
 TXT_FAIL:			//not a text data
 		ThrowReaderException(CoderError,ImageTypeNotSupported,image);
@@ -364,6 +369,8 @@ EndReading:
 	 {		//move to the beginning of number
 	 if(EOFBlob(image)) goto FINISH;
 	 ch = ReadBlobByte(image);
+	 if(ch=='#') 
+		  {readln(image, (char *)&ch); continue;}
 	 }
 
     x=ReadInt(image,(char *)&ch);		// x
