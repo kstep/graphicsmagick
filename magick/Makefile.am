@@ -199,7 +199,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/color.h \
 	magick/colorspace.h \
 	magick/command.h \
-	magick/command.h \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
