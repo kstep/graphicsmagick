@@ -51,6 +51,49 @@
 static unsigned int
   WriteTXTImage(const ImageInfo *,Image *);
 
+
+/** Reads up to end of line. */
+static void readln(Image *image, char *pch)
+{
+char ch=0;
+  if(pch) ch=*pch;
+     else ch=' ';
+  while(ch!=10 && ch!=13 && !EOFBlob(image))
+  {
+    ch = ReadBlobByte(image);
+  }
+  if(pch) *pch=ch;
+}
+
+static long ReadInt(Image *image, char *pch)
+{
+char ch;
+long n;
+
+  n=0;
+  if(pch) ch=*pch;
+     else ch=' ';
+
+  while(isspace(ch)||ch==0)
+  {
+    ch = ReadBlobByte(image);
+    if(EOFBlob(image)) return(0);
+  }
+
+  while(isdigit(ch))
+  {
+	n=10*n+(ch-'0');
+	ch = ReadBlobByte(image);
+	if(EOFBlob(image)) return(n);
+  }
+
+ if(pch) *pch=ch;
+//  else ungetc(ch,F);
+
+return(n);
+}
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -227,22 +270,164 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+
+  p=ReadBlobString(image,text);
+  if (IsTXT((unsigned char *)p,strlen(p)))
+  {
+    unsigned x,y;
+	unsigned char ch;
+    long max,i;
+	unsigned char BImgBuff[3];
+	const PixelPacket *q;
+
+	(void) SeekBlob(image,0,SEEK_SET);    
+
+	x=0; y=0;
+    max=0;
+
+	ch=0;
+    while(!EOFBlob(image))	//auto detect sizes and num of planes
+    {
+      while(!(ch>='0' && ch<='9'))
+	  {             //go to the begin of number
+	    ch = ReadBlobByte(image);
+	    if(EOFBlob(image)) goto EndReading;
+	    if(ch==0 || ch>128 || (ch>='a' && ch<='z') || (ch>='A' && ch<='Z'))
+TXT_FAIL:			//not a text data
+		ThrowReaderException(CoderError,ImageTypeNotSupported,image);
+	  }
+					// x,y: (R,G,B)
+   i=ReadInt(image,(char *)&ch);		// x
+   if(i>x) x=i;
+
+   while(ch!=',')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+   ch=0;
+   i=ReadInt(image,(char *)&ch);		// y
+   if(i>y) y=i;
+
+   while(ch!=':')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+   while(ch!='(')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+   ch=0;
+   i = ReadInt(image,(char *)&ch);		// R
+   if(i>max) max=i;
+
+   while(ch!=',')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+   ch=0;
+   i = ReadInt(image,(char *)&ch);		//G
+   if(i>max) max=i;
+
+   while(ch!=',')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+   ch=0;
+   i = ReadInt(image,(char *)&ch);		//B
+   if(i>max) max=i;
+
+   while(ch!=')')
+     {ch = ReadBlobByte(image);
+      if(ch==10 || ch==13) goto TXT_FAIL;
+      if(EOFBlob(image)) break;}
+
+   readln(image, (char *)&ch);
+   }
+
+EndReading:
+//  i=1;
+//  if(max>=    2) i=2;
+//  if(max>=    4) i=4;
+//  if(max>=   16) i=8;
+//  if(max>=  256) i=16;
+  if(max>=65536) goto TXT_FAIL;		//!!! Cannot read 48 bits R(16)G(16)B(16)
+  
+  image->columns = x;
+  image->rows = y;    
+
+  (void) SeekBlob(image,0,SEEK_SET);
+
+  while(!EOFBlob(image)) 	//load picture data
+    {
+    x=0;
+    while(!(ch >= '0' && ch <= '9'))
+	 {		//move to the beginning of number
+	 if(EOFBlob(image)) goto FINISH;
+	 ch = ReadBlobByte(image);
+	 }
+
+    x=ReadInt(image,(char *)&ch);		// x
+
+    while(ch!=',')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+    ch=0;
+    y=ReadInt(image,(char *)&ch);		// y
+
+    while(ch!=':')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+    while(ch!='(')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+    ch=0;
+    BImgBuff[0] = ReadInt(image,(char *)&ch);	// R
+
+    while(ch!=',')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+    ch=0;
+    BImgBuff[1] = ReadInt(image,(char *)&ch);		//G    
+
+    while(ch!=',')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+    ch=0;
+    BImgBuff[2] = ReadInt(image,(char *)&ch);		//B    
+
+    while(ch!=')')
+      {ch = ReadBlobByte(image);
+       if(EOFBlob(image)) break;}
+
+//    Raster->SetValue2D(x,y,max);
+    q=SetImagePixels(image,x,y,1,1);
+    if (q == (PixelPacket *)NULL) break;	
+	(void)ImportImagePixelArea(image,RGBQuantum,8,BImgBuff,NULL,0);
+    if (!SyncImagePixels(image)) break;
+
+    readln(image,(char *)&ch);
+    }
+
+FINISH:
+	goto TXT_FINISH;    
+    }
+
   /*
     Set the page geometry.
   */
   dx_resolution=72.0;
   dy_resolution=72.0;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
-    {
-      char
+  {
+    char
         density[MaxTextExtent];
 
-      (void) strcpy(density,PSDensityGeometry);
+    (void) strcpy(density,PSDensityGeometry);
       count=GetMagickDimension(density,&image->x_resolution,
         &image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
-    }
+  }
   SetGeometry(image,&page);
   page.width=612;
   page.height=792;
@@ -284,13 +469,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
   (void) strlcpy(filename,image_info->filename,MaxTextExtent);
   if (draw_info->text != '\0')
-    *draw_info->text='\0';
-  p=ReadBlobString(image,text);
-
-  if (IsTXT((unsigned char *)p,strlen(p)))
-    {
-      ThrowReaderException(CoderError,ImageTypeNotSupported,image);
-    }
+    *draw_info->text='\0';  
 
   for (offset=2*page.y; p != (char *) NULL; )
   {
@@ -340,21 +519,23 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                 LoadImagesText,image->filename))
       break;
   }
+
   if (texture != (Image *) NULL)
-    {
-      MonitorHandler
+  {
+    MonitorHandler
         handler;
 
-      handler=SetMonitorHandler((MonitorHandler) NULL);
-      (void) TextureImage(image,texture);
-      (void) SetMonitorHandler(handler);
-    }
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    (void) TextureImage(image,texture);
+    (void) SetMonitorHandler(handler);
+  }
   (void) AnnotateImage(image,draw_info);
   if (texture != (Image *) NULL)
     DestroyImage(texture);
   DestroyDrawInfo(draw_info);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+TXT_FINISH:
   CloseBlob(image);
   return(image);
 }
