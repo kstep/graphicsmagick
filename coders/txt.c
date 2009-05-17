@@ -352,8 +352,8 @@ EndReading:
 //  if(max>=  256) i=16;
   if(max>=65536) goto TXT_FAIL;		//!!! Cannot read 48 bits R(16)G(16)B(16)
   
-  image->columns = x;
-  image->rows = y;    
+  image->columns = x+1;
+  image->rows = y+1;
 
   (void) SeekBlob(image,0,SEEK_SET);
 
