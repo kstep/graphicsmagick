@@ -20,6 +20,7 @@ GraphicsMagick Programming Interfaces
 .. _`C Core` : api/api.html
 .. _`C Wand` : wand/wand.html
 .. _C++ : Magick++/index.html
+.. _PHP : http://pecl.php.net/package/gmagick
 .. _Perl : perl.html
 .. _Ruby : http://rmagick.rubyforge.org/
 .. _Tcl/Tk : http://www.graphicsmagick.org/TclMagick/doc/
@@ -36,6 +37,7 @@ Language        Description
 `C Core`_       C language API for the lowest-level core programming interface.
 `C Wand`_       C language API for the mid-level Wand API programming interface.
 `C++`_          Magick++ provides an abstract object-oriented C++ interface.
+PHP_		Gmagick provides a small and fast extension for PHP.
 Perl_           PerlMagick provides an object-oriented Perl interface.
 Ruby_           RMagick provides a Ruby language extension  
 `Tcl/Tk`_       TclMagick provides a scripting environment based on Tcl or Tcl/Tk.

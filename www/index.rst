@@ -13,7 +13,7 @@ GraphicsMagick Image Processing System
 
    :keywords: GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick,
               Perl Magic, WebMagick, Web Magic, image processing,
-              software development, image, software, Magick++
+              software development, image, software, Magick++, Gmagick
 
 
 .. _GraphicsMagic-1.1 : http://www.graphicsmagick.org/1.1/
@@ -71,14 +71,14 @@ including Linux. It also runs under `Windows <INSTALL-windows.html>`_
 code still supports execution under Windows '98.
 
 GraphicsMagick supports huge images and has been tested with
-gigapixel-size images. GraphicsMagick can create new images on the fly,
-making it suitable for building dynamic Web applications. GraphicsMagick
-may be used to resize, rotate, sharpen, color reduce, or add special
-effects to an image and save the result in the same or differing image
-format. Image processing operations are available from the command line,
-as well as through C, C++, Perl, Tcl, Ruby, or Windows COM programming
-interfaces. With some modification, language extensions for ImageMagick
-may be used.
+gigapixel-size images. GraphicsMagick can create new images on the
+fly, making it suitable for building dynamic Web
+applications. GraphicsMagick may be used to resize, rotate, sharpen,
+color reduce, or add special effects to an image and save the result
+in the same or differing image format. Image processing operations are
+available from the command line, as well as through C, C++, Perl, PHP,
+Tcl, Ruby, or Windows COM programming interfaces. With some
+modification, language extensions for ImageMagick may be used.
 
 GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has been
 completely independent of the ImageMagick project since then. Since the
