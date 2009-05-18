@@ -1,3 +1,7 @@
+2009-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Support Linux style silent build rules.
+
 2009-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Updated to Automake 1.11.
