@@ -24,6 +24,8 @@ For GM 1.4
 
  * Use localtime_r when available.
 
+ * Add RW tests for TXT format.
+
 For Future
 ==========
 

@@ -74,6 +74,7 @@ MAGICK_CODER_SRCS = \
 	coders/hrz.c \
 	coders/html.c \
 	coders/icon.c \
+	coders/identity.c \
 	coders/label.c \
 	coders/locale.c \
 	coders/logo.c \
@@ -147,27 +148,91 @@ MAGICK_CODER_SRCS = \
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
-	coders/art.la coders/avi.la coders/avs.la coders/bmp.la \
-	coders/caption.la coders/cineon.la coders/cmyk.la coders/cut.la \
-	coders/dcm.la coders/dcraw.la coders/dib.la coders/dps.la \
-	coders/dpx.la coders/fax.la coders/fits.la coders/gif.la \
-	coders/gradient.la coders/gray.la coders/histogram.la coders/hrz.la \
-	coders/html.la coders/icon.la coders/label.la coders/locale.la \
-	coders/logo.la coders/map.la coders/mat.la coders/matte.la \
-	coders/meta.la coders/miff.la coders/mono.la coders/mpc.la \
-	coders/mpeg.la coders/mpr.la coders/msl.la coders/mtv.la \
-	coders/mvg.la coders/null.la coders/otb.la coders/palm.la \
-	coders/pcd.la coders/pcl.la coders/pcx.la coders/pdb.la \
-	coders/pdf.la coders/pict.la coders/pix.la coders/plasma.la \
-	coders/pnm.la coders/preview.la coders/ps.la coders/ps2.la \
-	coders/ps3.la coders/psd.la coders/pwp.la coders/rgb.la coders/rla.la \
-	coders/rle.la coders/sct.la coders/sfw.la coders/sgi.la \
-	coders/stegano.la coders/sun.la coders/svg.la coders/tga.la \
-	coders/tile.la coders/tim.la coders/topol.la coders/ttf.la \
-	coders/txt.la coders/uil.la coders/url.la coders/uyvy.la \
-	coders/vicar.la coders/vid.la coders/viff.la coders/wbmp.la \
-	coders/wmf.la coders/wpg.la coders/xbm.la coders/xc.la \
-	coders/xcf.la coders/xpm.la coders/yuv.la \
+	coders/art.la \
+	coders/avi.la \
+	coders/avs.la \
+	coders/bmp.la \
+	coders/caption.la \
+	coders/cineon.la \
+	coders/cmyk.la \
+	coders/cut.la \
+	coders/dcm.la \
+	coders/dcraw.la \
+	coders/dib.la \
+	coders/dps.la \
+	coders/dpx.la \
+	coders/fax.la \
+	coders/fits.la \
+	coders/gif.la \
+	coders/gradient.la \
+	coders/gray.la \
+	coders/histogram.la \
+	coders/hrz.la \
+	coders/html.la \
+	coders/icon.la \
+	coders/identity.la \
+	coders/label.la \
+	coders/locale.la \
+	coders/logo.la \
+	coders/map.la \
+	coders/mat.la \
+	coders/matte.la \
+	coders/meta.la \
+	coders/miff.la \
+	coders/mono.la \
+	coders/mpc.la \
+	coders/mpeg.la \
+	coders/mpr.la \
+	coders/msl.la \
+	coders/mtv.la \
+	coders/mvg.la \
+	coders/null.la \
+	coders/otb.la \
+	coders/palm.la \
+	coders/pcd.la \
+	coders/pcl.la \
+	coders/pcx.la \
+	coders/pdb.la \
+	coders/pdf.la \
+	coders/pict.la \
+	coders/pix.la \
+	coders/plasma.la \
+	coders/pnm.la \
+	coders/preview.la \
+	coders/ps.la \
+	coders/ps2.la \
+	coders/ps3.la \
+	coders/psd.la \
+	coders/pwp.la \
+	coders/rgb.la \
+	coders/rla.la \
+	coders/rle.la \
+	coders/sct.la \
+	coders/sfw.la \
+	coders/sgi.la \
+	coders/stegano.la \
+	coders/sun.la \
+	coders/svg.la \
+	coders/tga.la \
+	coders/tile.la \
+	coders/tim.la \
+	coders/topol.la \
+	coders/ttf.la \
+	coders/txt.la \
+	coders/uil.la \
+	coders/url.la \
+	coders/uyvy.la \
+	coders/vicar.la \
+	coders/vid.la \
+	coders/viff.la \
+	coders/wbmp.la \
+	coders/wmf.la \
+	coders/wpg.la \
+	coders/xbm.la \
+	coders/xc.la \
+	coders/xcf.la \
+	coders/xpm.la \
+	coders/yuv.la \
 	$(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) $(MAGICK_JBIG_MODULES) \
 	$(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) $(MAGICK_PNG_MODULES) \
 	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
@@ -330,6 +395,12 @@ coders_icon_la_SOURCES     = coders/icon.c
 coders_icon_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_icon_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_icon_la_LIBADD      = $(LIBMAGICK)
+
+# Identity coder module
+coders_identity_la_SOURCES  = coders/identity.c
+coders_identity_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_identity_la_LDFLAGS  = $(MODULECOMMONFLAGS)
+coders_identity_la_LIBADD   = $(LIBMAGICK)
 
 # JBIG coder module
 coders_jbig_la_SOURCES     = coders/jbig.c

@@ -447,6 +447,10 @@ following table lists these pseudo image formats:
    |              |      |                           |                                                             |
    |              |      |                           |   ``gm convert file.tiff histogram:file.miff``              |
    +--------------+------+---------------------------+-------------------------------------------------------------+
+   | IDENTITY     | R    | Hald CLUT identity image  | Generate a Hald CLUT identity image of a specified order.   |
+   |              |      |                           | The order is specified as an argument like "IDENTITY:8".    |
+   |              |      |                           | The default order is eight, producing a 512x512 image.      |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
    | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.              |
    |              |      |                           | "label:This is a label").                                   |
    +--------------+------+---------------------------+-------------------------------------------------------------+

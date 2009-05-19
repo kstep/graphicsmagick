@@ -162,6 +162,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterHRZImage();
   RegisterHTMLImage();
   RegisterICONImage();
+  RegisterIDENTITYImage();
 #if defined(HasJBIG)
   RegisterJBIGImage();
 #endif
@@ -308,6 +309,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterHRZImage();
   UnregisterHTMLImage();
   UnregisterICONImage();
+  UnregisterIDENTITYImage();
 #if defined(HasJBIG)
   UnregisterJBIGImage();
 #endif

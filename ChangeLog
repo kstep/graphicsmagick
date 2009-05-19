@@ -1,3 +1,8 @@
+2009-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/identity.c: New coder to return a Hald identity CLUT
+	image.
+
 2009-05-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Ability to read back Q32 txt files.
