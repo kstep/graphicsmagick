@@ -95,7 +95,7 @@ If you are not happy with configure's choice of compiler, compilation
 flags, or libraries, you can give 'configure' initial values for
 variables by specifying them on the configure command line, e.g.::
 
-    ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+    ./configure CC=c99 CFLAGS=-O2 LIBS=-lposix
 
 Options which should be common to packages installed under the same
 directory heirarchy may be supplied via a 'config.site' file located

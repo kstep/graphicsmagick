@@ -10,6 +10,9 @@
   <magic name="BMP" offset="0" target="CP" />
   <magic name="BMP" offset="0" target="IC" />
   <magic name="BMP" offset="0" target="PI" />
+  <magic name="CALS" offset="21" target="version: MIL-STD-1840" />
+  <magic name="CALS" offset="9" target="srcdocid:" />
+  <magic name="CALS" offset="8" target="rorient:" />
   <magic name="CGM" offset="0" target="BEGMF" />
   <magic name="CIN" offset="0" target="\200\052\137\327" />
   <magic name="DCM" offset="128" target="DICM" />

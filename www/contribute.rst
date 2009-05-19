@@ -78,9 +78,6 @@ the GraphicsMagick project:
   GraphicsMagick. This module could also export vector data in many
   formats using pstoedit's output drivers.
 
-* Create a coder to support the CALS
-  <http://www.fileformat.info/format/cals/> raster file format.
-
 * Work on adding EXIF profile writing support which works for JPEG and
   TIFF formats.
 

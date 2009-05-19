@@ -132,6 +132,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterAVIImage();
   RegisterAVSImage();
   RegisterBMPImage();
+  RegisterCALSImage();
   RegisterCAPTIONImage();
   RegisterCINEONImage();
 #if defined(HasWINGDI32)
@@ -279,6 +280,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterAVIImage();
   UnregisterAVSImage();
   UnregisterBMPImage();
+  UnregisterCALSImage();
   UnregisterCAPTIONImage();
   UnregisterCINEONImage();
 #if defined(HasWINGDI32)

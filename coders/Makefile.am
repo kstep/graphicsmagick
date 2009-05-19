@@ -56,6 +56,7 @@ MAGICK_CODER_SRCS = \
 	coders/avi.c \
 	coders/avs.c \
 	coders/bmp.c \
+	coders/cals.c \
 	coders/caption.c \
 	coders/cineon.c \
 	coders/cmyk.c \
@@ -152,6 +153,7 @@ coders_LTLIBRARIES = \
 	coders/avi.la \
 	coders/avs.la \
 	coders/bmp.la \
+	coders/cals.la \
 	coders/caption.la \
 	coders/cineon.la \
 	coders/cmyk.la \
@@ -263,6 +265,12 @@ coders_bmp_la_SOURCES      = coders/bmp.c
 coders_bmp_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_bmp_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_bmp_la_LIBADD       = $(LIBMAGICK)
+
+# CALS coder module
+coders_cals_la_SOURCES     = coders/cals.c
+coders_cals_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_cals_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_cals_la_LIBADD      = $(LIBMAGICK)
 
 # CAPTION coder module
 coders_caption_la_SOURCES  = coders/caption.c
