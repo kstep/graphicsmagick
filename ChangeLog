@@ -1,3 +1,10 @@
+2009-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/formats.rst: Add CALS to formats list.
+
+	* coders/cals.c (RegisterCALSImage): Consolidate duplicate text
+	strings.
+
 2009-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/cals.c: Add support for reading CALS type 1 format.

@@ -1,6 +1,6 @@
-======================
-GraphicsMagick Formats
-======================
+================================
+GraphicsMagick Supported Formats
+================================
 
 .. _animate : animate.html
 .. _composite : composite.html
@@ -14,41 +14,54 @@ GraphicsMagick Formats
 .. _montage : montage.html
 
 .. _AVI : http://www.jmcgowan.com/avi.html
+.. _BMP : http://www.fileformat.info/format/bmp/egff.htm
 .. _color : color.html
+.. _CALS : http://www.fileformat.info/format/cals/egff.htm
+.. _CGM : http://www.fileformat.info/format/cgm/egff.htm
 .. _DICOM : http://dicom.nema.org/
 .. _DICONDE : http://www.geinspectiontechnologies.com/en/products/software/diconde.html
 .. _DPX : motion-picture.html
 .. _FIG : foo.bar
 .. _FITS : http://www.cv.nrao.edu/fits/
 .. _Ghostscript : http://www.cs.wisc.edu/~ghost/
+.. _GIF : http://www.fileformat.info/format/gif/egff.htm
+.. _`Hald CLUT` : http://www.quelsolaar.com/technology/clut.html
+.. _JBIG : http://www.jpeg.org/
 .. _JNG : http://www.libmng.com/
 .. _JPEG : http://www.jpeg.org/
 .. _M2V : http://www.mpeg.org/
 .. _MIFF : miff.html
 .. _MNG : http://www.libmng.com/
 .. _MPEG : http://www.mpeg.org/
+.. _MTV : http://www.fileformat.info/format/mtv/egff.htm
 .. _MathWorks : http://www.mathworks.com/
+.. _PBM : http://www.fileformat.info/format/pbm/egff.htm
+.. _PCX : http://www.fileformat.info/format/pcx/egff.htm
 .. _PWP : http://www.photoworks.com/
-.. _Radiance : http://radsite.lbl.gov/radiance/HOME.html
 .. _README : README.html
+.. _Radiance : http://radsite.lbl.gov/radiance/HOME.html
 .. _SANE : http://www.mostang.com/sane/
 .. _SCT : http://oreilly.com/www/centers/gff/formats/scitex/
 .. _SFW : http://www.photoworks.com/
 .. _SMPTE : http://www.smpte.org/
 .. _SVG : http://www.w3.org/Graphics/SVG/
 .. _TIFF : http://www.remotesensing.org/libtiff/
+.. _VIFF: http://www.fileformat.info/format/viff/egff.htm
 .. _WBMP : http://www.openmobilealliance.org/Technical/wapindex.aspx
+.. _WMF : http://www.fileformat.info/format/wmf/egff.htm
+.. _WPG : http://www.fileformat.info/format/wpg/egff.htm
+.. _XBM : http://www.fileformat.info/format/xbm/egff.htm
+.. _XPM : http://www.fileformat.info/format/xpm/egff.htm
+.. _XWD : http://www.fileformat.info/format/xwd/egff.htm
 .. _freetype2 : http://www.freetype.org/
 .. _Gnuplot : http://gnuplot.sourceforge.net/
 .. _hp2xx : http://www.gnu.org/software/hp2xx/hp2xx.html
 .. _html2ps : http://user.it.uu.se/~jan/
 .. _jasper : http://www.ece.uvic.ca/~mdadams/jasper/
 .. _jbigkit : http://www.cl.cam.ac.uk/~mgk25/jbigkit/
-.. _JBIG : http://www.jpeg.org/
 .. _libxml2 : http://xmlsoft.org/
 .. _mpeg2vidcodec : foo.bar
 .. _ralcgm : http://www.agocg.ac.uk/train/cgm/ralcgm.htm
-
 
 GraphicsMagick uses an ASCII string known as "magick" (e.g. "GIF") to
 identify file formats, algorithms acting as formats, built-in images, and
@@ -75,9 +88,13 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | AVS          | RW   | AVS X image               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | BMP          | RW   | Microsoft Windows bitmap  |                                                  |
+   | BMP_         | RW   | Microsoft Windows bitmap  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | CGM          | R    | Computer Graphics         | Requires ralcgm_ to render CGM files.            |
+   | CALS_        | R    | Continuous Acquisition    | Specified in MIL-R-28002 and MIL-PRF-28002.      |
+   |              |      | and Life-cycle Support    | Standard blueprint archive format as used by the |
+   |              |      | Type 1 image              | US military to replace microfiche.               |
+   +--------------+------+---------------------------+--------------------------------------------------+
+   | CGM_         | R    | Computer Graphics         | Requires ralcgm_ to render CGM files.            |
    |              |      | Metafile                  |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | CMYK         | RW   | Raw cyan, magenta,        | Use -size, -depth, -endian, and -interlace to    |
@@ -157,7 +174,7 @@ image formats.
    |              |      |                           | 8-bit RGB PseudoColor with up to 256 palette     |
    |              |      |                           | entires. Specify the format "GIF87" to write the |
    |              |      | CompuServe Graphics       | older version 87a of the format.                 |
-   | GIF          | RW   | Interchange Format        |                                                  |
+   | GIF_         | RW   | Interchange Format        |                                                  |
    |              |      |                           | The PNG format provides a superior set of        |
    |              |      |                           | features to GIF. Consider using PNG format       |
    |              |      |                           | rather than GIF if clients are able to read PNG. |
@@ -242,7 +259,7 @@ image formats.
    | MSL          | RW   | Magick Scripting Language | MSL is the XML-based scripting language          |
    |              |      |                           | supported by the conjure utility.                |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | MTV          | RW   | MTV Raytracing image      |                                                  |
+   | MTV_         | RW   | MTV Raytracing image      |                                                  |
    |              |      | format                    |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | The native GraphicsMagick vector metafile        |
@@ -256,7 +273,7 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | PALM         | RW   | Palm pixmap               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PBM          | RW   | Portable bitmap format    |                                                  |
+   | PBM_         | RW   | Portable bitmap format    |                                                  |
    |              |      | (black and white)         |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | The maximum resolution written is 768x512 pixels |
@@ -267,7 +284,7 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | PCL          | W    | HP Page Control Language  | For output to HP laser printers.                 |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | PCX          | RW   | ZSoft IBM PC Paintbrush   |                                                  |
+   | PCX_         | RW   | ZSoft IBM PC Paintbrush   |                                                  |
    |              |      | file                      |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | PDB          | RW   | Palm Database ImageViewer |                                                  |
@@ -385,7 +402,7 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | VICAR        | RW   | VICAR rasterfile format   |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | VIFF         | RW   | Khoros Visualization      |                                                  |
+   | VIFF_        | RW   | Khoros Visualization      |                                                  |
    |              |      | Image File Format         |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | WBMP_        | RW   | Wireless bitmap           | Support for uncompressed monochrome only.        |
@@ -394,25 +411,25 @@ image formats.
    |              |      |                           | using the dimensions specified by the metafile   |
    |              |      |                           | header. Use the -density option to adjust the    |
    |              |      |                           | output resolution, and thereby adjust the ouput  |
-   | WMF          |      | Windows Metafile          | size. The default output resolution is 72DPI so  |
+   | WMF_         |      | Windows Metafile          | size. The default output resolution is 72DPI so  |
    |              |      |                           | "-density 144" results in an image twice as      |
    |              |      |                           | large as the default. Use -background color_ to  |
    |              |      |                           | specify the WMF background color (default white) |
    |              |      |                           | or -texture filename to specify a background     |
    |              |      |                           | texture image.                                   |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | WPG          | R    | Word Perfect Graphics     |                                                  |
+   | WPG_         | R    | Word Perfect Graphics     |                                                  |
    |              |      | File                      |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | XBM          | RW   | X Windows system bitmap,  | Used by the X Windows System to store monochrome |
+   | XBM_         | RW   | X Windows system bitmap,  | Used by the X Windows System to store monochrome |
    |              |      | black and white only      | icons.                                           |
    +--------------+------+---------------------------+--------------------------------------------------+
    | XCF          | R    | GIMP image                |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | XPM          | RW   | X Windows system pixmap   | Also known as "PM". Used by the X Windows System |
+   | XPM_         | RW   | X Windows system pixmap   | Also known as "PM". Used by the X Windows System |
    |              |      |                           | to store color icons.                            |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | XWD          | RW   | X Windows system window   | Used by the X Windows System to save/display     |
+   | XWD_         | RW   | X Windows system window   | Used by the X Windows System to save/display     |
    |              |      | dump                      | screen dumps.                                    |
    +--------------+------+---------------------------+--------------------------------------------------+
    | YUV          | RW   | CCIR 601 4:1:1            | Use -size command line option to specify width   |
@@ -447,8 +464,8 @@ following table lists these pseudo image formats:
    |              |      |                           |                                                             |
    |              |      |                           |   ``gm convert file.tiff histogram:file.miff``              |
    +--------------+------+---------------------------+-------------------------------------------------------------+
-   | IDENTITY     | R    | Hald CLUT identity image  | Generate a Hald CLUT identity image of a specified order.   |
-   |              |      |                           | The order is specified as an argument like "IDENTITY:8".    |
+   | IDENTITY     | R    | `Hald CLUT`_ identity     | Generate a Hald CLUT identity image of a specified order.   |
+   |              |      | image                     | The order is specified as an argument like "IDENTITY:8".    |
    |              |      |                           | The default order is eight, producing a 512x512 image.      |
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.              |
@@ -725,10 +742,10 @@ The TILE: virtual image type may also be used similar to::
    | VERTICALSAW          | 8x16 vertical saw-tooth pattern    | |verticalsaw|                          |
    +----------------------+------------------------------------+----------------------------------------+
 
-GraphicsMagick provides a number of format identifiers which are used to
-add, remove, and save embedded profiles for images which can support
-embedded profiles. Image types which may contain embedded profiles are
-TIFF_, JPEG_, and PDF.
+GraphicsMagick provides a number of format identifiers which are used
+to add, remove, and save embedded profiles for images which can
+support embedded profiles. Image types which may contain embedded
+profiles are TIFF_, JPEG_, PDF, and PNG.
 
 
 .. table:: Supported Embedded Profile Formats
@@ -757,27 +774,26 @@ TIFF_, JPEG_, and PDF.
 
 
 Support for some of the formats are delegated to libraries or external
-programs. The README describes where to find these distributions and any
-special configuration options required.
+programs. The README describes where to find these distributions and
+any special configuration options required.
 
-To get a complete listing of which image formats are supported on your
-system, type
+To get a complete listing of the image formats which are supported on
+your system, type
 
 ::
 
   gm convert -list format
 
 On some platforms, GraphicsMagick automatically processes these
-extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for
-block compression, and .pgp for PGP encryption. For example, a PNM image
-called image.pnm.gz is automatically uncompressed with the gzip program
-and the image is subsequently read.
+extensions: .gz for Zip compression, .Z for Unix compression, and .bz2
+for block compression. For example, a PNM image called image.pnm.gz is
+automatically uncompressed while the image is read.
 
 -----------------------------------------------------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2008
+Copyright |copy| GraphicsMagick Group 2002 - 2009
 
 
 

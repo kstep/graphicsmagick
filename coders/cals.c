@@ -333,14 +333,19 @@ ModuleExport void RegisterCALSImage(void)
   MagickInfo
     *entry;
 
+  const char
+    *description = "Continuous Acquisition and Life-cycle Support Type 1 image",
+    *module      = "CALS",
+    *note        = "Specified in MIL-R-28002 and MIL-PRF-28002";
+
   entry=SetMagickInfo("CAL");
   entry->decoder=(DecoderHandler) ReadCALSImage;
   entry->magick=(MagickHandler) IsCALS;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description="Continuous Acquisition and Life-cycle Support Type 1 image";
-  entry->note="Specified in MIL-R-28002 and MIL-PRF-28002";
-  entry->module="CALS";
+  entry->description=description;
+  entry->note=note;
+  entry->module=module;
   entry->stealth=MagickTrue;
   (void) RegisterMagickInfo(entry);
 
@@ -349,9 +354,9 @@ ModuleExport void RegisterCALSImage(void)
   entry->magick=(MagickHandler) IsCALS;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description="Continuous Acquisition and Life-cycle Support Type 1 image";
-  entry->note="Specified in MIL-R-28002 and MIL-PRF-28002";
-  entry->module="CALS";
+  entry->description=description;
+  entry->note=note;
+  entry->module=module;
   (void) RegisterMagickInfo(entry);
 }
 
