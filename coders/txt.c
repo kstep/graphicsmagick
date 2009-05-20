@@ -760,7 +760,16 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to TXT raster pixels.
     */
+     unsigned int
+       depth;
+
     (void) TransformColorspace(image,RGBColorspace);
+    if (image->depth <= 8)
+      depth=8;
+    else if (image->depth <= 16)
+      depth=16;
+    else
+      depth=32;
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -770,7 +779,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(buffer,"%ld,%ld: ",x,y);
         (void) WriteBlobString(image,buffer);
-        GetColorTuple(p,image->depth,image->matte,False,tuple);
+        GetColorTuple(p,depth,image->matte,False,tuple);
         (void) strcat(tuple," ");
         (void) WriteBlobString(image,tuple);
         (void) QueryColorname(image,p,SVGCompliance,tuple,&image->exception);
