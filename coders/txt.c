@@ -771,47 +771,48 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
-  {
-    /*
-      Convert MIFF to TXT raster pixels.
-    */
-	unsigned int
-  	        depth;
-  	 
-    (void) TransformColorspace(image,RGBColorspace);
-  	if (image->depth <= 8)
-  	  depth=8;
-  	else if (image->depth <= 16)
-  	  depth=16;
-  	else
-  	  depth=32;    
-    for (y=0; y < (long) image->rows; y++)
     {
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
-      {
-        FormatString(buffer,"%ld,%ld: ",x,y);
-        (void) WriteBlobString(image,buffer);
-        GetColorTuple(p,depth,image->matte,False,tuple);
-        (void) strcat(tuple," ");
-        (void) WriteBlobString(image,tuple);
-        (void) QueryColorname(image,p,SVGCompliance,tuple,&image->exception);
-        (void) WriteBlobString(image,tuple);
-        (void) WriteBlobString(image,"\n");
-        p++;
-      }
-    }
-    if (image->next == (Image *) NULL)
-      break;
-    image=SyncNextImageInList(image);
-    status=MagickMonitorFormatted(scene++,GetImageListLength(image),
-                                  &image->exception,SaveImagesText,
-                                  image->filename);
-    if (status == False)
-      break;
-  } while (image_info->adjoin);
+      /*
+	Convert MIFF to TXT raster pixels.
+      */
+      unsigned int
+	depth;
+  	 
+      (void) TransformColorspace(image,RGBColorspace);
+      if (image->depth <= 8)
+	depth=8;
+      else if (image->depth <= 16)
+	depth=16;
+      else
+	depth=32;    
+      for (y=0; y < (long) image->rows; y++)
+	{
+	  p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+	  if (p == (const PixelPacket *) NULL)
+	    break;
+	  for (x=0; x < (long) image->columns; x++)
+	    {
+	      FormatString(buffer,"%ld,%ld: ",x,y);
+	      (void) WriteBlobString(image,buffer);
+	      GetColorTuple(p,depth,image->matte,MagickFalse,tuple);
+	      (void) strcat(tuple," ");
+	      (void) WriteBlobString(image,tuple);
+	      /* (void) QueryColorname(image,p,SVGCompliance,tuple,&image->exception); */
+	      GetColorTuple(p,depth,image->matte,MagickTrue,tuple);
+	      (void) WriteBlobString(image,tuple);
+	      (void) WriteBlobString(image,"\n");
+	      p++;
+	    }
+	}
+      if (image->next == (Image *) NULL)
+	break;
+      image=SyncNextImageInList(image);
+      status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+				    &image->exception,SaveImagesText,
+				    image->filename);
+      if (status == False)
+	break;
+    } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
