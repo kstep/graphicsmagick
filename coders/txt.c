@@ -24,6 +24,8 @@
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                                 July 1992                                   %
+%                              Jaroslav Fojtik                                %
+%                                   2009                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -296,8 +298,21 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	x=0; y=0;
     max=0;
 
+	if(!strncmp(p,"# ImageMagick pixel enumeration:",32))
+	{
+	  if(sscanf(p+32,"%u,%u,%u",&x_min,&y_curr,&x_max)==3)
+	  {
+	    if(strstr(p+32,",rgb")!=NULL)
+		{
+	      x = x_min-1;
+		  y = y_curr-1;
+		  max = x_max;
+		}
+	  }
+	}
+
 	ch=0;
-    while(!EOFBlob(image))	//auto detect sizes and num of planes
+	if(x==0 && y==0) while(!EOFBlob(image))	//auto detect sizes and num of planes
     {
       while(!(ch>='0' && ch<='9'))
 	  {             //go to the begin of number
@@ -493,7 +508,7 @@ FINISH:
 	  }
 	}
 
-	MagickFreeMemory(BImgBuff); BImgBuff=NULL;
+	MagickFreeMemory(BImgBuff);
 	goto TXT_FINISH;    
   }
 
@@ -760,16 +775,16 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to TXT raster pixels.
     */
-     unsigned int
-       depth;
-
+	unsigned int
+  	        depth;
+  	 
     (void) TransformColorspace(image,RGBColorspace);
-    if (image->depth <= 8)
-      depth=8;
-    else if (image->depth <= 16)
-      depth=16;
-    else
-      depth=32;
+  	if (image->depth <= 8)
+  	  depth=8;
+  	else if (image->depth <= 16)
+  	  depth=16;
+  	else
+  	  depth=32;    
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
