@@ -47,6 +47,27 @@
 #include "magick/render.h"
 #include "magick/utility.h"
 
+
+typedef enum
+{
+	NO_TXT = 0,
+	IMAGEMAGICK_TXT = 1,
+	TXT_GM8B_HEX,
+	TXT_GM8B_PLAIN,
+	TXT_GM16B_HEX,
+	TXT_GM16B_PLAIN,
+	TXT_GM32B_HEX,
+	TXT_GM32B_PLAIN,
+	TXT_GM8B_HEX_Q,
+	TXT_GM8B_PLAIN_Q,
+	TXT_GM16B_HEX_Q,
+	TXT_GM16B_PLAIN_Q,
+	TXT_GM32B_HEX_Q,
+	TXT_GM32B_PLAIN_Q
+} TXT_TYPE;
+
+
+
 /*
   Forward declarations.
 */
@@ -161,42 +182,54 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
-      return(True);
+      return(TXT_GM8B_HEX);
+	if(count == 5)
+	  return(TXT_GM8B_PLAIN);
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
-      return(True);
+      return(TXT_GM16B_HEX);
+	if(count == 5)
+	  return(TXT_GM16B_PLAIN);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
-      return(True);
+      return(TXT_GM32B_HEX);
+	if(count == 5)
+	  return(TXT_GM32B_PLAIN);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%02X%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
-      return(True);
+	  return(TXT_GM8B_HEX_Q);
+	if(count == 6)
+	  return(TXT_GM8B_PLAIN_Q);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%04X%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
-      return(True);
+      return(TXT_GM16B_HEX_Q);
+	if(count == 6)
+	  return(TXT_GM16B_PLAIN_Q);            
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%08X%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
-      return(True);
+	  return(TXT_GM32B_HEX_Q);
+	if(count == 6)
+	  return(TXT_GM32B_PLAIN_Q);      
   }
   return(False);
 }
@@ -292,6 +325,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	magick_uint32_t *DImgBuff;
 	magick_uint32_t R,G,B;
 	const PixelPacket *q;
+	ImportPixelAreaOptions import_options;
 
 	(void) SeekBlob(image,0,SEEK_SET);    
 
@@ -389,6 +423,10 @@ EndReading:
   if(max>=  256) NumOfPlanes=16;
   if(max>=65536) NumOfPlanes=32;
 
+  image->depth = Min(QuantumDepth,NumOfPlanes);
+  ImportPixelAreaOptionsInit(&import_options);
+  import_options.endian = NativeEndian;
+
   BImgBuff = MagickAllocateMemory(unsigned char *,(size_t)(x+1)*(3*NumOfPlanes/8));
   WImgBuff = (magick_uint16_t *)BImgBuff;
   DImgBuff = (magick_uint32_t *)BImgBuff;  
@@ -453,7 +491,7 @@ EndReading:
 	  q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);
       if (q == (PixelPacket *)NULL) break;	
 	  (void)ImportImagePixelArea(image,RGBQuantum,NumOfPlanes,
-		  BImgBuff + 3*x_min*(NumOfPlanes/8),NULL,0);
+		  BImgBuff + 3*x_min*(NumOfPlanes/8),&import_options,0);
       if (!SyncImagePixels(image)) break;
 
 	  x_min = 1; x_max = 0;
@@ -498,7 +536,7 @@ FINISH:
       if (q != (PixelPacket *)NULL)
 	  {
 		(void)ImportImagePixelArea(image, RGBQuantum, NumOfPlanes,
-		           BImgBuff + 3*x_min*(NumOfPlanes/8), NULL, 0);	    	    
+		           BImgBuff + 3*x_min*(NumOfPlanes/8), &import_options, 0);	    	    
         if (!SyncImagePixels(image))
 		{
           if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),

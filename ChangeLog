@@ -1,3 +1,7 @@
+2009-05-21  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Fixed endian set to native endian.
+
 2009-05-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Faster read ImageMagick files.
