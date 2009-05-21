@@ -24,6 +24,25 @@
 2009-05-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> tests/Makefile.am (TESTS_TESTS): Add a set of TXT read/write
+        tests and enable the ones which are currently working.
+
+</UL>
+<p>
+2009-05-20  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/txt.c Faster read ImageMagick files.
+        Removed BImgBuff=NULL;
+
+</UL>
+<p>
+2009-05-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/txt.c (WriteTXTImage): Ensure that image depth is 8, 16,
+        or 32.
+
   <LI> www/formats.rst: Add CALS to formats list.
 
   <LI> coders/cals.c (RegisterCALSImage): Consolidate duplicate text

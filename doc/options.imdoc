@@ -3987,7 +3987,8 @@ Identity matrix of order 4</pp>
 </pre>
 
 <pp>
-Identity matrix of order 5.  The last row is optional.</pp>
+Identity matrix of order 5.  The last row is required to exist
+for the purpose of parsing, but is otherwise not used.</pp>
 <pre>
   1 0 0 0 0
   0 1 0 0 0
