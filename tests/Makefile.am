@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -362,13 +362,13 @@ TESTS_TESTS = \
 	tests/rwblob_PBM_gray.sh \
 	tests/rwblob_PBM_pallette.sh \
 	tests/rwblob_PBM_truecolor.sh \
-	tests/rwblob_PCD_bilevel.sh \
-	tests/rwblob_PCD_gray.sh \
-	tests/rwblob_PCD_pallette.sh \
 	tests/rwblob_PCDS_bilevel.sh \
 	tests/rwblob_PCDS_gray.sh \
 	tests/rwblob_PCDS_pallette.sh \
 	tests/rwblob_PCDS_truecolor.sh \
+	tests/rwblob_PCD_bilevel.sh \
+	tests/rwblob_PCD_gray.sh \
+	tests/rwblob_PCD_pallette.sh \
 	tests/rwblob_PCD_truecolor.sh \
 	tests/rwblob_PCX_bilevel.sh \
 	tests/rwblob_PCX_gray.sh \
@@ -424,6 +424,10 @@ TESTS_TESTS = \
 	tests/rwblob_TIFF_gray.sh \
 	tests/rwblob_TIFF_pallette.sh \
 	tests/rwblob_TIFF_truecolor.sh \
+	tests/rwblob_TXT_bilevel.sh \
+	tests/rwblob_TXT_gray.sh \
+	tests/rwblob_TXT_pallette.sh \
+	tests/rwblob_TXT_truecolor.sh \
 	tests/rwblob_UYVY_truecolor_70x46.sh \
 	tests/rwblob_VDA_bilevel.sh \
 	tests/rwblob_VDA_gray.sh \
@@ -461,383 +465,390 @@ TESTS_TESTS = \
 	tests/rwfile_AVS_bilevel.sh \
 	tests/rwfile_AVS_gray.sh \
 	tests/rwfile_AVS_pallette.sh \
+	tests/rwfile_AVS_truecolor.sh \
 	tests/rwfile_AVS_truecolor10.sh \
 	tests/rwfile_AVS_truecolor12.sh \
 	tests/rwfile_AVS_truecolor16.sh \
-	tests/rwfile_AVS_truecolor.sh \
 	tests/rwfile_BMP_bilevel.sh \
 	tests/rwfile_BMP_gray.sh \
 	tests/rwfile_BMP_pallette.sh \
+	tests/rwfile_BMP_truecolor.sh \
 	tests/rwfile_BMP_truecolor10.sh \
 	tests/rwfile_BMP_truecolor12.sh \
 	tests/rwfile_BMP_truecolor16.sh \
-	tests/rwfile_BMP_truecolor.sh \
 	tests/rwfile_CIN_bilevel.sh \
 	tests/rwfile_CIN_gray.sh \
 	tests/rwfile_CIN_pallette.sh \
+	tests/rwfile_CIN_truecolor.sh \
 	tests/rwfile_CIN_truecolor10.sh \
 	tests/rwfile_CIN_truecolor12.sh \
 	tests/rwfile_CIN_truecolor16.sh \
-	tests/rwfile_CIN_truecolor.sh \
 	tests/rwfile_CMYK_truecolor_70x46.sh \
 	tests/rwfile_DIB_bilevel.sh \
 	tests/rwfile_DIB_gray.sh \
 	tests/rwfile_DIB_pallette.sh \
+	tests/rwfile_DIB_truecolor.sh \
 	tests/rwfile_DIB_truecolor10.sh \
 	tests/rwfile_DIB_truecolor12.sh \
 	tests/rwfile_DIB_truecolor16.sh \
-	tests/rwfile_DIB_truecolor.sh \
 	tests/rwfile_DPX_bilevel.sh \
 	tests/rwfile_DPX_gray.sh \
 	tests/rwfile_DPX_pallette.sh \
+	tests/rwfile_DPX_truecolor.sh \
 	tests/rwfile_DPX_truecolor10.sh \
 	tests/rwfile_DPX_truecolor12.sh \
 	tests/rwfile_DPX_truecolor16.sh \
-	tests/rwfile_DPX_truecolor.sh \
 	tests/rwfile_EPDF_bilevel.sh \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \
+	tests/rwfile_EPDF_truecolor.sh \
 	tests/rwfile_EPDF_truecolor10.sh \
 	tests/rwfile_EPDF_truecolor12.sh \
 	tests/rwfile_EPDF_truecolor16.sh \
-	tests/rwfile_EPDF_truecolor.sh \
 	tests/rwfile_EPI_bilevel.sh \
 	tests/rwfile_EPI_gray.sh \
 	tests/rwfile_EPI_pallette.sh \
+	tests/rwfile_EPI_truecolor.sh \
 	tests/rwfile_EPI_truecolor10.sh \
 	tests/rwfile_EPI_truecolor12.sh \
 	tests/rwfile_EPI_truecolor16.sh \
-	tests/rwfile_EPI_truecolor.sh \
-	tests/rwfile_EPS_bilevel.sh \
 	tests/rwfile_EPSF_bilevel.sh \
 	tests/rwfile_EPSF_gray.sh \
 	tests/rwfile_EPSF_pallette.sh \
+	tests/rwfile_EPSF_truecolor.sh \
 	tests/rwfile_EPSF_truecolor10.sh \
 	tests/rwfile_EPSF_truecolor12.sh \
 	tests/rwfile_EPSF_truecolor16.sh \
-	tests/rwfile_EPSF_truecolor.sh \
-	tests/rwfile_EPS_gray.sh \
 	tests/rwfile_EPSI_bilevel.sh \
 	tests/rwfile_EPSI_gray.sh \
 	tests/rwfile_EPSI_pallette.sh \
+	tests/rwfile_EPSI_truecolor.sh \
 	tests/rwfile_EPSI_truecolor10.sh \
 	tests/rwfile_EPSI_truecolor12.sh \
 	tests/rwfile_EPSI_truecolor16.sh \
-	tests/rwfile_EPSI_truecolor.sh \
+	tests/rwfile_EPS_bilevel.sh \
+	tests/rwfile_EPS_gray.sh \
 	tests/rwfile_EPS_pallette.sh \
+	tests/rwfile_EPS_truecolor.sh \
 	tests/rwfile_EPS_truecolor10.sh \
 	tests/rwfile_EPS_truecolor12.sh \
 	tests/rwfile_EPS_truecolor16.sh \
-	tests/rwfile_EPS_truecolor.sh \
 	tests/rwfile_EPT_bilevel.sh \
 	tests/rwfile_EPT_gray.sh \
 	tests/rwfile_EPT_pallette.sh \
+	tests/rwfile_EPT_truecolor.sh \
 	tests/rwfile_EPT_truecolor10.sh \
 	tests/rwfile_EPT_truecolor12.sh \
 	tests/rwfile_EPT_truecolor16.sh \
-	tests/rwfile_EPT_truecolor.sh \
 	tests/rwfile_FAX_bilevel.sh \
 	tests/rwfile_FAX_gray.sh \
 	tests/rwfile_FAX_pallette.sh \
+	tests/rwfile_FAX_truecolor.sh \
 	tests/rwfile_FAX_truecolor10.sh \
 	tests/rwfile_FAX_truecolor12.sh \
 	tests/rwfile_FAX_truecolor16.sh \
-	tests/rwfile_FAX_truecolor.sh \
 	tests/rwfile_FITS_bilevel.sh \
 	tests/rwfile_FITS_gray.sh \
 	tests/rwfile_FITS_pallette.sh \
+	tests/rwfile_FITS_truecolor.sh \
 	tests/rwfile_FITS_truecolor10.sh \
 	tests/rwfile_FITS_truecolor12.sh \
 	tests/rwfile_FITS_truecolor16.sh \
-	tests/rwfile_FITS_truecolor.sh \
 	tests/rwfile_FPX_bilevel.sh \
 	tests/rwfile_FPX_gray.sh \
 	tests/rwfile_FPX_pallette.sh \
+	tests/rwfile_FPX_truecolor.sh \
 	tests/rwfile_FPX_truecolor10.sh \
 	tests/rwfile_FPX_truecolor12.sh \
 	tests/rwfile_FPX_truecolor16.sh \
-	tests/rwfile_FPX_truecolor.sh \
 	tests/rwfile_GIF_bilevel.sh \
 	tests/rwfile_GIF_gray.sh \
 	tests/rwfile_GIF_pallette.sh \
+	tests/rwfile_GIF_truecolor.sh \
 	tests/rwfile_GIF_truecolor10.sh \
 	tests/rwfile_GIF_truecolor12.sh \
 	tests/rwfile_GIF_truecolor16.sh \
-	tests/rwfile_GIF_truecolor.sh \
 	tests/rwfile_GRAY_bilevel.sh \
 	tests/rwfile_GRAY_gray.sh \
 	tests/rwfile_GRAY_pallette.sh \
+	tests/rwfile_GRAY_truecolor.sh \
 	tests/rwfile_GRAY_truecolor10.sh \
 	tests/rwfile_GRAY_truecolor12.sh \
 	tests/rwfile_GRAY_truecolor16.sh \
 	tests/rwfile_GRAY_truecolor_70x46.sh \
-	tests/rwfile_GRAY_truecolor.sh \
 	tests/rwfile_ICB_bilevel.sh \
 	tests/rwfile_ICB_gray.sh \
 	tests/rwfile_ICB_pallette.sh \
+	tests/rwfile_ICB_truecolor.sh \
 	tests/rwfile_ICB_truecolor10.sh \
 	tests/rwfile_ICB_truecolor12.sh \
 	tests/rwfile_ICB_truecolor16.sh \
-	tests/rwfile_ICB_truecolor.sh \
 	tests/rwfile_JBIG_bilevel.sh \
 	tests/rwfile_JBIG_gray.sh \
 	tests/rwfile_JBIG_pallette.sh \
+	tests/rwfile_JBIG_truecolor.sh \
 	tests/rwfile_JBIG_truecolor10.sh \
 	tests/rwfile_JBIG_truecolor12.sh \
 	tests/rwfile_JBIG_truecolor16.sh \
-	tests/rwfile_JBIG_truecolor.sh \
 	tests/rwfile_JP2_bilevel.sh \
 	tests/rwfile_JP2_gray.sh \
 	tests/rwfile_JP2_pallette.sh \
+	tests/rwfile_JP2_truecolor.sh \
 	tests/rwfile_JP2_truecolor10.sh \
 	tests/rwfile_JP2_truecolor12.sh \
 	tests/rwfile_JP2_truecolor16.sh \
-	tests/rwfile_JP2_truecolor.sh \
 	tests/rwfile_JPEG_bilevel.sh \
 	tests/rwfile_JPEG_gray.sh \
 	tests/rwfile_JPEG_pallette.sh \
+	tests/rwfile_JPEG_truecolor.sh \
 	tests/rwfile_JPEG_truecolor10.sh \
 	tests/rwfile_JPEG_truecolor12.sh \
 	tests/rwfile_JPEG_truecolor16.sh \
-	tests/rwfile_JPEG_truecolor.sh \
 	tests/rwfile_MAT_bilevel.sh \
 	tests/rwfile_MAT_gray.sh \
 	tests/rwfile_MAT_pallette.sh \
+	tests/rwfile_MAT_truecolor.sh \
 	tests/rwfile_MAT_truecolor10.sh \
 	tests/rwfile_MAT_truecolor12.sh \
 	tests/rwfile_MAT_truecolor16.sh \
-	tests/rwfile_MAT_truecolor.sh \
+	tests/rwfile_MIFF_bilevel.sh \
 	tests/rwfile_MIFF_bilevel_bzip.sh \
 	tests/rwfile_MIFF_bilevel_none.sh \
 	tests/rwfile_MIFF_bilevel_rle.sh \
-	tests/rwfile_MIFF_bilevel.sh \
 	tests/rwfile_MIFF_bilevel_zip.sh \
+	tests/rwfile_MIFF_gray.sh \
 	tests/rwfile_MIFF_gray_bzip.sh \
 	tests/rwfile_MIFF_gray_none.sh \
 	tests/rwfile_MIFF_gray_rle.sh \
-	tests/rwfile_MIFF_gray.sh \
 	tests/rwfile_MIFF_gray_zip.sh \
+	tests/rwfile_MIFF_pallette.sh \
 	tests/rwfile_MIFF_pallette_bzip.sh \
 	tests/rwfile_MIFF_pallette_none.sh \
 	tests/rwfile_MIFF_pallette_rle.sh \
-	tests/rwfile_MIFF_pallette.sh \
 	tests/rwfile_MIFF_pallette_zip.sh \
+	tests/rwfile_MIFF_truecolor.sh \
 	tests/rwfile_MIFF_truecolor10.sh \
 	tests/rwfile_MIFF_truecolor12.sh \
 	tests/rwfile_MIFF_truecolor16.sh \
 	tests/rwfile_MIFF_truecolor_bzip.sh \
 	tests/rwfile_MIFF_truecolor_none.sh \
 	tests/rwfile_MIFF_truecolor_rle.sh \
-	tests/rwfile_MIFF_truecolor.sh \
 	tests/rwfile_MIFF_truecolor_zip.sh \
 	tests/rwfile_MNG_bilevel.sh \
 	tests/rwfile_MNG_gray.sh \
 	tests/rwfile_MNG_pallette.sh \
+	tests/rwfile_MNG_truecolor.sh \
 	tests/rwfile_MNG_truecolor10.sh \
 	tests/rwfile_MNG_truecolor12.sh \
 	tests/rwfile_MNG_truecolor16.sh \
-	tests/rwfile_MNG_truecolor.sh \
 	tests/rwfile_MONO_truecolor_70x46.sh \
 	tests/rwfile_MTV_bilevel.sh \
 	tests/rwfile_MTV_gray.sh \
 	tests/rwfile_MTV_pallette.sh \
+	tests/rwfile_MTV_truecolor.sh \
 	tests/rwfile_MTV_truecolor10.sh \
 	tests/rwfile_MTV_truecolor12.sh \
 	tests/rwfile_MTV_truecolor16.sh \
-	tests/rwfile_MTV_truecolor.sh \
 	tests/rwfile_P7_bilevel.sh \
 	tests/rwfile_P7_gray.sh \
 	tests/rwfile_P7_pallette.sh \
+	tests/rwfile_P7_truecolor.sh \
 	tests/rwfile_P7_truecolor10.sh \
 	tests/rwfile_P7_truecolor12.sh \
 	tests/rwfile_P7_truecolor16.sh \
-	tests/rwfile_P7_truecolor.sh \
 	tests/rwfile_PAL_truecolor_70x46.sh \
 	tests/rwfile_PBM_bilevel.sh \
 	tests/rwfile_PBM_gray.sh \
 	tests/rwfile_PBM_pallette.sh \
+	tests/rwfile_PBM_truecolor.sh \
 	tests/rwfile_PBM_truecolor10.sh \
 	tests/rwfile_PBM_truecolor12.sh \
 	tests/rwfile_PBM_truecolor16.sh \
-	tests/rwfile_PBM_truecolor.sh \
-	tests/rwfile_PCD_bilevel.sh \
-	tests/rwfile_PCD_gray.sh \
-	tests/rwfile_PCD_pallette.sh \
 	tests/rwfile_PCDS_bilevel.sh \
 	tests/rwfile_PCDS_gray.sh \
 	tests/rwfile_PCDS_pallette.sh \
+	tests/rwfile_PCDS_truecolor.sh \
 	tests/rwfile_PCDS_truecolor10.sh \
 	tests/rwfile_PCDS_truecolor12.sh \
 	tests/rwfile_PCDS_truecolor16.sh \
-	tests/rwfile_PCDS_truecolor.sh \
+	tests/rwfile_PCD_bilevel.sh \
+	tests/rwfile_PCD_gray.sh \
+	tests/rwfile_PCD_pallette.sh \
+	tests/rwfile_PCD_truecolor.sh \
 	tests/rwfile_PCD_truecolor10.sh \
 	tests/rwfile_PCD_truecolor12.sh \
 	tests/rwfile_PCD_truecolor16.sh \
-	tests/rwfile_PCD_truecolor.sh \
 	tests/rwfile_PCX_bilevel.sh \
 	tests/rwfile_PCX_gray.sh \
 	tests/rwfile_PCX_pallette.sh \
+	tests/rwfile_PCX_truecolor.sh \
 	tests/rwfile_PCX_truecolor10.sh \
 	tests/rwfile_PCX_truecolor12.sh \
 	tests/rwfile_PCX_truecolor16.sh \
-	tests/rwfile_PCX_truecolor.sh \
 	tests/rwfile_PGM_bilevel.sh \
 	tests/rwfile_PGM_gray.sh \
 	tests/rwfile_PGM_pallette.sh \
+	tests/rwfile_PGM_truecolor.sh \
 	tests/rwfile_PGM_truecolor10.sh \
 	tests/rwfile_PGM_truecolor12.sh \
 	tests/rwfile_PGM_truecolor16.sh \
-	tests/rwfile_PGM_truecolor.sh \
 	tests/rwfile_PICON_bilevel.sh \
 	tests/rwfile_PICON_gray.sh \
 	tests/rwfile_PICON_pallette.sh \
+	tests/rwfile_PICON_truecolor.sh \
 	tests/rwfile_PICON_truecolor10.sh \
 	tests/rwfile_PICON_truecolor12.sh \
 	tests/rwfile_PICON_truecolor16.sh \
-	tests/rwfile_PICON_truecolor.sh \
 	tests/rwfile_PICT_bilevel.sh \
 	tests/rwfile_PICT_gray.sh \
 	tests/rwfile_PICT_pallette.sh \
+	tests/rwfile_PICT_truecolor.sh \
 	tests/rwfile_PICT_truecolor10.sh \
 	tests/rwfile_PICT_truecolor12.sh \
 	tests/rwfile_PICT_truecolor16.sh \
-	tests/rwfile_PICT_truecolor.sh \
 	tests/rwfile_PNG_bilevel.sh \
 	tests/rwfile_PNG_gray.sh \
 	tests/rwfile_PNG_pallette.sh \
+	tests/rwfile_PNG_truecolor.sh \
 	tests/rwfile_PNG_truecolor10.sh \
 	tests/rwfile_PNG_truecolor12.sh \
 	tests/rwfile_PNG_truecolor16.sh \
-	tests/rwfile_PNG_truecolor.sh \
 	tests/rwfile_PNM_bilevel.sh \
 	tests/rwfile_PNM_gray.sh \
 	tests/rwfile_PNM_pallette.sh \
+	tests/rwfile_PNM_truecolor.sh \
 	tests/rwfile_PNM_truecolor10.sh \
 	tests/rwfile_PNM_truecolor12.sh \
 	tests/rwfile_PNM_truecolor16.sh \
-	tests/rwfile_PNM_truecolor.sh \
 	tests/rwfile_PPM_bilevel.sh \
 	tests/rwfile_PPM_gray.sh \
 	tests/rwfile_PPM_pallette.sh \
+	tests/rwfile_PPM_truecolor.sh \
 	tests/rwfile_PPM_truecolor10.sh \
 	tests/rwfile_PPM_truecolor12.sh \
 	tests/rwfile_PPM_truecolor16.sh \
-	tests/rwfile_PPM_truecolor.sh \
-	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PSD_bilevel.sh \
 	tests/rwfile_PSD_gray.sh \
 	tests/rwfile_PSD_pallette.sh \
+	tests/rwfile_PSD_truecolor.sh \
 	tests/rwfile_PSD_truecolor10.sh \
 	tests/rwfile_PSD_truecolor12.sh \
 	tests/rwfile_PSD_truecolor16.sh \
-	tests/rwfile_PSD_truecolor.sh \
+	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \
+	tests/rwfile_PS_truecolor.sh \
 	tests/rwfile_PS_truecolor10.sh \
 	tests/rwfile_PS_truecolor12.sh \
 	tests/rwfile_PS_truecolor16.sh \
-	tests/rwfile_PS_truecolor.sh \
 	tests/rwfile_PTIF_bilevel.sh \
 	tests/rwfile_PTIF_gray.sh \
 	tests/rwfile_PTIF_pallette.sh \
+	tests/rwfile_PTIF_truecolor.sh \
 	tests/rwfile_PTIF_truecolor10.sh \
 	tests/rwfile_PTIF_truecolor12.sh \
 	tests/rwfile_PTIF_truecolor16.sh \
-	tests/rwfile_PTIF_truecolor.sh \
 	tests/rwfile_RAS_bilevel.sh \
 	tests/rwfile_RAS_gray.sh \
 	tests/rwfile_RAS_pallette.sh \
+	tests/rwfile_RAS_truecolor.sh \
 	tests/rwfile_RAS_truecolor10.sh \
 	tests/rwfile_RAS_truecolor12.sh \
 	tests/rwfile_RAS_truecolor16.sh \
-	tests/rwfile_RAS_truecolor.sh \
 	tests/rwfile_RGBA_truecolor_70x46.sh \
 	tests/rwfile_RGB_truecolor_70x46.sh \
 	tests/rwfile_SGI_bilevel.sh \
 	tests/rwfile_SGI_gray.sh \
 	tests/rwfile_SGI_pallette.sh \
+	tests/rwfile_SGI_truecolor.sh \
 	tests/rwfile_SGI_truecolor10.sh \
 	tests/rwfile_SGI_truecolor12.sh \
 	tests/rwfile_SGI_truecolor16.sh \
-	tests/rwfile_SGI_truecolor.sh \
 	tests/rwfile_SUN_bilevel.sh \
 	tests/rwfile_SUN_gray.sh \
 	tests/rwfile_SUN_pallette.sh \
+	tests/rwfile_SUN_truecolor.sh \
 	tests/rwfile_SUN_truecolor10.sh \
 	tests/rwfile_SUN_truecolor12.sh \
 	tests/rwfile_SUN_truecolor16.sh \
-	tests/rwfile_SUN_truecolor.sh \
 	tests/rwfile_TGA_bilevel.sh \
 	tests/rwfile_TGA_gray.sh \
 	tests/rwfile_TGA_pallette.sh \
+	tests/rwfile_TGA_truecolor.sh \
 	tests/rwfile_TGA_truecolor10.sh \
 	tests/rwfile_TGA_truecolor12.sh \
 	tests/rwfile_TGA_truecolor16.sh \
-	tests/rwfile_TGA_truecolor.sh \
 	tests/rwfile_TIFF_bilevel.sh \
 	tests/rwfile_TIFF_gray.sh \
 	tests/rwfile_TIFF_pallette.sh \
+	tests/rwfile_TIFF_truecolor.sh \
 	tests/rwfile_TIFF_truecolor10.sh \
 	tests/rwfile_TIFF_truecolor12.sh \
 	tests/rwfile_TIFF_truecolor16.sh \
-	tests/rwfile_TIFF_truecolor.sh \
+	tests/rwfile_TXT_bilevel.sh \
+	tests/rwfile_TXT_gray.sh \
+	tests/rwfile_TXT_pallette.sh \
+	tests/rwfile_TXT_truecolor.sh \
+	tests/rwfile_TXT_truecolor10.sh \
+	tests/rwfile_TXT_truecolor12.sh \
+	tests/rwfile_TXT_truecolor16.sh \
 	tests/rwfile_UYVY_truecolor_70x46.sh \
 	tests/rwfile_VDA_bilevel.sh \
 	tests/rwfile_VDA_gray.sh \
 	tests/rwfile_VDA_pallette.sh \
+	tests/rwfile_VDA_truecolor.sh \
 	tests/rwfile_VDA_truecolor10.sh \
 	tests/rwfile_VDA_truecolor12.sh \
 	tests/rwfile_VDA_truecolor16.sh \
-	tests/rwfile_VDA_truecolor.sh \
 	tests/rwfile_VICAR_bilevel.sh \
 	tests/rwfile_VICAR_gray.sh \
 	tests/rwfile_VICAR_pallette.sh \
+	tests/rwfile_VICAR_truecolor.sh \
 	tests/rwfile_VICAR_truecolor10.sh \
 	tests/rwfile_VICAR_truecolor12.sh \
 	tests/rwfile_VICAR_truecolor16.sh \
-	tests/rwfile_VICAR_truecolor.sh \
 	tests/rwfile_VIFF_bilevel.sh \
 	tests/rwfile_VIFF_gray.sh \
 	tests/rwfile_VIFF_pallette.sh \
+	tests/rwfile_VIFF_truecolor.sh \
 	tests/rwfile_VIFF_truecolor10.sh \
 	tests/rwfile_VIFF_truecolor12.sh \
 	tests/rwfile_VIFF_truecolor16.sh \
-	tests/rwfile_VIFF_truecolor.sh \
 	tests/rwfile_VST_bilevel.sh \
 	tests/rwfile_VST_gray.sh \
 	tests/rwfile_VST_pallette.sh \
+	tests/rwfile_VST_truecolor.sh \
 	tests/rwfile_VST_truecolor10.sh \
 	tests/rwfile_VST_truecolor12.sh \
 	tests/rwfile_VST_truecolor16.sh \
-	tests/rwfile_VST_truecolor.sh \
 	tests/rwfile_WBMP_bilevel.sh \
 	tests/rwfile_WBMP_gray.sh \
 	tests/rwfile_WBMP_pallette.sh \
+	tests/rwfile_WBMP_truecolor.sh \
 	tests/rwfile_WBMP_truecolor10.sh \
 	tests/rwfile_WBMP_truecolor12.sh \
 	tests/rwfile_WBMP_truecolor16.sh \
-	tests/rwfile_WBMP_truecolor.sh \
 	tests/rwfile_XBM_bilevel.sh \
 	tests/rwfile_XBM_gray.sh \
 	tests/rwfile_XBM_pallette.sh \
+	tests/rwfile_XBM_truecolor.sh \
 	tests/rwfile_XBM_truecolor10.sh \
 	tests/rwfile_XBM_truecolor12.sh \
 	tests/rwfile_XBM_truecolor16.sh \
-	tests/rwfile_XBM_truecolor.sh \
 	tests/rwfile_XPM_bilevel.sh \
 	tests/rwfile_XPM_gray.sh \
 	tests/rwfile_XPM_pallette.sh \
+	tests/rwfile_XPM_truecolor.sh \
 	tests/rwfile_XPM_truecolor10.sh \
 	tests/rwfile_XPM_truecolor12.sh \
 	tests/rwfile_XPM_truecolor16.sh \
-	tests/rwfile_XPM_truecolor.sh \
 	tests/rwfile_XWD_bilevel.sh \
 	tests/rwfile_XWD_gray.sh \
 	tests/rwfile_XWD_pallette.sh \
+	tests/rwfile_XWD_truecolor.sh \
 	tests/rwfile_XWD_truecolor10.sh \
 	tests/rwfile_XWD_truecolor12.sh \
 	tests/rwfile_XWD_truecolor16.sh \
-	tests/rwfile_XWD_truecolor.sh \
 	tests/rwfile_YUV_truecolor_70x46.sh
 
 TESTS_EXTRA_DIST = \
@@ -898,6 +909,7 @@ CHECK_BLOB_FORMATS = \
 	SUN \
 	TGA \
 	TIFF \
+	TXT \
 	VDA \
 	VICAR \
 	VIFF \
@@ -911,6 +923,7 @@ CHECK_BLOB_FORMATS = \
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
+	CIN \
 	DIB \
 	DPX \
 	EPDF \
@@ -950,6 +963,7 @@ CHECK_FILE_FORMATS = \
 	SGI \
 	SUN \
 	TGA \
+	TXT \
 	TIFF \
 	VDA \
 	VICAR \
@@ -1061,14 +1075,14 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo "#" >> "$${sh_file}" ; \
 	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
 	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1102,7 +1116,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1119,7 +1133,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
+	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1136,7 +1150,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
+	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done

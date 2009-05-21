@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile ${SRCDIR}/input_truecolor16.dpx PNM
+${RUNENV} ${MEMCHECK} ./rwfile -filespec 'out_truecolor16_%d' ${SRCDIR}/input_truecolor16.dpx PNM

@@ -1,3 +1,11 @@
+2009-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c: Allow the user to specify the basename for
+	temporary files.
+
+	* tests/Makefile.am: Add a set of TXT read/write tests.  Pass the
+	file name specification to use for the rwfile-based tests.
+
 2009-05-21  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Fixed endian set to native endian.

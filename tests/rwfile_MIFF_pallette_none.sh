@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile -compress none ${SRCDIR}/input_pallette.miff MIFF
+${RUNENV} ${MEMCHECK} ./rwfile  -filespec 'out_pallette_%d' -compress none ${SRCDIR}/input_pallette.miff MIFF

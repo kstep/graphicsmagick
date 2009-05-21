@@ -27,10 +27,11 @@ int main ( int argc, char **argv )
     *magick_info;
 
   char
-    filename[80],
+    filename[MaxTextExtent],
     format[MaxTextExtent],
     infile[MaxTextExtent],
-    size[MaxTextExtent];
+    size[MaxTextExtent],
+    filespec[MaxTextExtent];
 
   int
     arg = 1,
@@ -58,6 +59,7 @@ int main ( int argc, char **argv )
 
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
+  strcpy(filespec,"out_%d.%s");
 
   for (arg=1; arg < argc; arg++)
     {
@@ -113,6 +115,11 @@ int main ( int argc, char **argv )
                   goto program_exit;
                 }
             }
+	  else if (LocaleCompare("filespec",option+1) == 0)
+	    {
+	      (void) strcpy(filespec,argv[++arg]);
+	      (void) strcat(filespec,".%s");
+	    }
           else if (LocaleCompare("log",option+1) == 0)
             {
               (void) SetLogFormat(argv[++arg]);
@@ -150,7 +157,7 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
-      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -nocheck -size geometry -verbose] infile format\n", argv[0] );
+      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -filespec spec -log format -nocheck -size geometry -verbose] infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -202,7 +209,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
-  (void) sprintf( filename, "out_1.%s", format );
+  (void) sprintf( filename, filespec, 1, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
   (void) strncpy( original->filename, filename, MaxTextExtent-1 );
   original->delay = 10;
@@ -246,7 +253,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
-  (void) sprintf( filename, "out_2.%s", format );
+  (void) sprintf( filename, filespec, 2, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
   (void) strncpy( original->filename, filename, MaxTextExtent-1 );
   original->delay = 10;
