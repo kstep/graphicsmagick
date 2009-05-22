@@ -220,14 +220,12 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
 	  return(TXT_GM32B_HEX_Q);
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u)",
-                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
-                 &hex_blue);
-    if(count=6) return TXT_GM8B_PLAIN_Q;
+                 &column, &row, &red, &green, &blue, &opacity);
+    if(count==6) return TXT_GM8B_PLAIN_Q;
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u)",
-                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
-                 &hex_blue);
-    if(count=5) return TXT_GM8B_PLAIN;
+                 &column, &row, &red, &green, &blue);
+    if(count==5) return TXT_GM8B_PLAIN;
 
   }
   return(False);
@@ -442,7 +440,7 @@ EndReading:
   if(max>=65536) NumOfPlanes=32;
 
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Image detected [%u * % u]: %d", x, y, NumOfPlanes);
+          "Image detected [%u * %u]: %d", x, y, NumOfPlanes);
 
   image->depth = Min(QuantumDepth,NumOfPlanes);
   ImportPixelAreaOptionsInit(&import_options);
