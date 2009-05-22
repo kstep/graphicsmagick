@@ -88,7 +88,7 @@ char ch=0;
   if(pch) *pch=ch;
 }
 
-static long ReadInt(Image *image, char *pch)
+static long ReadInt(Image *image, int *pch)
 {
 char ch;
 long n;
@@ -183,8 +183,6 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(TXT_GM8B_HEX);
-	if(count == 5)
-	  return(TXT_GM8B_PLAIN);
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
@@ -192,8 +190,6 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(TXT_GM16B_HEX);
-	if(count == 5)
-	  return(TXT_GM16B_PLAIN);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
@@ -201,8 +197,6 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(TXT_GM32B_HEX);
-	if(count == 5)
-	  return(TXT_GM32B_PLAIN);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%02X%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
@@ -210,8 +204,6 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
 	  return(TXT_GM8B_HEX_Q);
-	if(count == 6)
-	  return(TXT_GM8B_PLAIN_Q);      
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%04X%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
@@ -219,8 +211,6 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
       return(TXT_GM16B_HEX_Q);
-	if(count == 6)
-	  return(TXT_GM16B_PLAIN_Q);            
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%08X%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
@@ -228,8 +218,17 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
 	  return(TXT_GM32B_HEX_Q);
-	if(count == 6)
-	  return(TXT_GM32B_PLAIN_Q);      
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u)",
+                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
+                 &hex_blue);
+    if(count=6) return TXT_GM8B_PLAIN_Q;
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u)",
+                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
+                 &hex_blue);
+    if(count=5) return TXT_GM8B_PLAIN;
+
   }
   return(False);
 }
@@ -312,41 +311,55 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 
-  p=ReadBlobString(image,text);
-  if (IsTXT((unsigned char *)p,strlen(p)))
+  p = ReadBlobString(image,text);
+  status = IsTXT((unsigned char *)p,strlen(p));
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+          "File type: %d", status);
+
+  if(status)
   {
     unsigned x,y;
-	unsigned x_min,x_max,y_curr;
-	int ch;
+    unsigned x_min,x_max,y_curr;
+    int ch;
     unsigned long max,i;
-	char NumOfPlanes;
-	unsigned char *BImgBuff;
-	magick_uint16_t *WImgBuff;
-	magick_uint32_t *DImgBuff;
-	magick_uint32_t R,G,B;
-	const PixelPacket *q;
-	ImportPixelAreaOptions import_options;
+    char NumOfPlanes;
+    unsigned char *BImgBuff;
+    magick_uint16_t *WImgBuff;
+    magick_uint32_t *DImgBuff;
+    magick_uint32_t R,G,B;
+    const PixelPacket *q;
+    ImportPixelAreaOptions import_options;
 
-	(void) SeekBlob(image,0,SEEK_SET);    
+    (void) SeekBlob(image,0,SEEK_SET);    
 
-	x=0; y=0;
+    x=0; y=0;
     max=0;
 
-	if(!strncmp(p,"# ImageMagick pixel enumeration:",32))
-	{
-	  if(sscanf(p+32,"%u,%u,%u",&x_min,&y_curr,&x_max)==3)
-	  {
-	    if(strstr(p+32,",rgb")!=NULL)
-		{
-	      x = x_min-1;
-		  y = y_curr-1;
-		  max = x_max;
-		}
-	  }
-	}
+    switch(status)
+    {
+      case TXT_GM8B_HEX:
+      case TXT_GM8B_HEX_Q:  max=255; break;
+      case TXT_GM16B_HEX:
+      case TXT_GM16B_HEX_Q: max=65535; break;	
+      case TXT_GM32B_HEX:	
+      case TXT_GM32B_HEX_Q: max=65536; break;
+    }
 
-	ch=0;
-	if(x==0 && y==0) while(!EOFBlob(image))	//auto detect sizes and num of planes
+    if(!strncmp(p,"# ImageMagick pixel enumeration:",32))
+    {
+      if(sscanf(p+32,"%u,%u,%u",&x_min,&y_curr,&x_max)==3)
+      {
+        if(strstr(p+32,",rgb")!=NULL)
+	{
+	  x = x_min-1;
+	  y = y_curr-1;
+	  max = x_max;
+	}
+      }
+    }
+
+    ch=0;
+    if(x==0 && y==0) while(!EOFBlob(image))	//auto detect sizes and num of planes
     {
       while(!(ch>='0' && ch<='9'))
 	  {             //go to the begin of number
@@ -355,33 +368,38 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		if(ch=='#') 
 		  {readln(image, (char *)&ch); continue;}
 	    if(ch==0 || ch>128 || (ch>='a' && ch<='z') || (ch>='A' && ch<='Z'))
+            {
 TXT_FAIL:			//not a text data
 		ThrowReaderException(CoderError,ImageTypeNotSupported,image);
+            }
 	  }
 					// x,y: (R,G,B)
-   i=ReadInt(image,(char *)&ch);		// x
+   i = ReadInt(image,&ch);		// x
    if(i>x) x=i;
 
    while(ch!=',')
    {  
-	  ch = ReadBlobByte(image);
-      if(ch==EOF) break;
-      if(ch==10 || ch==13) goto TXT_FAIL;
+     ch = ReadBlobByte(image);
+     if(ch==EOF) break;
+     if(ch==10 || ch==13) goto TXT_FAIL;
    }
    ch=0;
-   i=ReadInt(image,(char *)&ch);		// y
+   i=ReadInt(image,&ch);		// y
    if(i>y) y=i;
 
    while(ch!=':')
-     {ch = ReadBlobByte(image);
-      if(ch==10 || ch==13) goto TXT_FAIL;
+   {
+     ch = ReadBlobByte(image);
+     if(ch==10 || ch==13) goto TXT_FAIL;
 	  if(ch==EOF) break;}
-   while(ch!='(')
-     {ch = ReadBlobByte(image);
-      if(ch==10 || ch==13) goto TXT_FAIL;
-      if(ch==EOF) break;}
+     while(ch!='(')
+     {
+       ch = ReadBlobByte(image);
+       if(ch==10 || ch==13) goto TXT_FAIL;
+       if(ch==EOF) break;
+     }
    ch=0;
-   R = ReadInt(image,(char *)&ch);		// R
+   R = ReadInt(image,&ch);		// R
    if(R>max) max=R;
 
    while(ch!=',')
@@ -389,7 +407,7 @@ TXT_FAIL:			//not a text data
       if(ch==10 || ch==13) goto TXT_FAIL;
       if(ch==EOF) break;}
    ch=0;
-   G = ReadInt(image,(char *)&ch);		//G
+   G = ReadInt(image,&ch);		//G
    if(G>max) max=G;
 
    while(ch!=',')
@@ -399,7 +417,7 @@ TXT_FAIL:			//not a text data
      if(ch==EOF) break;
    }
    ch=0;
-   B = ReadInt(image,(char *)&ch);		//B
+   B = ReadInt(image,&ch);		//B
    if(B>max) max=B;
 
    while(ch!=')')
@@ -423,6 +441,9 @@ EndReading:
   if(max>=  256) NumOfPlanes=16;
   if(max>=65536) NumOfPlanes=32;
 
+  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Image detected [%u * % u]: %d", x, y, NumOfPlanes);
+
   image->depth = Min(QuantumDepth,NumOfPlanes);
   ImportPixelAreaOptionsInit(&import_options);
   import_options.endian = NativeEndian;
@@ -442,41 +463,47 @@ EndReading:
     {
     x=0;
     while(!(ch >= '0' && ch <= '9'))
-	 {		//move to the beginning of number
-	 if(EOFBlob(image)) goto FINISH;
-	 ch = ReadBlobByte(image);
-	 if(ch=='#') 
-		  {readln(image, (char *)&ch); continue;}
-	 }
+    {		//move to the beginning of number
+      if(EOFBlob(image)) goto FINISH;
+      ch = ReadBlobByte(image);
+      if(ch=='#') 
+      {readln(image, (char *)&ch); continue;}
+    }
     
-    x=ReadInt(image,(char *)&ch);		// x
+    x=ReadInt(image,&ch);		// x
 
     while(ch!=',')
-      {ch = ReadBlobByte(image);
-       if(EOFBlob(image)) break;}
+    {
+       ch = ReadBlobByte(image);       
+       if(EOFBlob(image)) break;
+    }
     ch=0;
-    y=ReadInt(image,(char *)&ch);		// y
+    y=ReadInt(image,&ch);		// y
 
     while(ch!=':')
-      {ch = ReadBlobByte(image);
-       if(EOFBlob(image)) break;}
+    {
+      ch = ReadBlobByte(image);
+      if(EOFBlob(image)) break;
+    }
     while(ch!='(')
-      {ch = ReadBlobByte(image);
-       if(EOFBlob(image)) break;}
+    {
+      ch = ReadBlobByte(image);
+      if(EOFBlob(image)) break;
+    }
     ch=0;
-	R = ReadInt(image,(char *)&ch);	   // R	
+	R = ReadInt(image,&ch);	   // R	
 
     while(ch!=',')
       {ch = ReadBlobByte(image);
        if(EOFBlob(image)) break;}
     ch=0;
-    G = ReadInt(image,(char *)&ch);		// G    	
+    G = ReadInt(image,&ch);		// G    	
 
     while(ch!=',')
       {ch = ReadBlobByte(image);
        if(EOFBlob(image)) break;}
     ch=0;
-	B = ReadInt(image,(char *)&ch);		// B    
+	B = ReadInt(image,&ch);		// B    
 
 	while(ch!=')')
     {
