@@ -40764,8 +40764,10 @@ ac_config_commands="$ac_config_commands GraphicsMagickWand-config.in"
 
 ac_config_commands="$ac_config_commands rungm.sh.in"
 
+ac_config_commands="$ac_config_commands PerlMagick/PerlMagickCheck.sh.in"
 
-ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
+
+ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -42024,12 +42026,14 @@ do
     "GraphicsMagick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick-config.in" ;;
     "GraphicsMagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagickWand-config.in" ;;
     "rungm.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS rungm.sh.in" ;;
+    "PerlMagick/PerlMagickCheck.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/PerlMagickCheck.sh.in" ;;
     "GraphicsMagick.spec") CONFIG_FILES="$CONFIG_FILES GraphicsMagick.spec" ;;
     "Magick++/bin/GraphicsMagick++-config") CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
     "Magick++/lib/GraphicsMagick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/GraphicsMagick++.pc" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "PerlMagick/Magick.pm") CONFIG_FILES="$CONFIG_FILES PerlMagick/Magick.pm" ;;
     "PerlMagick/Makefile.PL") CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
+    "PerlMagick/PerlMagickCheck.sh") CONFIG_FILES="$CONFIG_FILES PerlMagick/PerlMagickCheck.sh" ;;
     "config/delegates.mgk") CONFIG_FILES="$CONFIG_FILES config/delegates.mgk" ;;
     "config/type-ghostscript.mgk") CONFIG_FILES="$CONFIG_FILES config/type-ghostscript.mgk" ;;
     "config/type-solaris.mgk") CONFIG_FILES="$CONFIG_FILES config/type-solaris.mgk" ;;
@@ -43643,6 +43647,7 @@ _LT_EOF
     "GraphicsMagick-config.in":C) chmod +x magick/GraphicsMagick-config ;;
     "GraphicsMagickWand-config.in":C) chmod +x wand/GraphicsMagickWand-config ;;
     "rungm.sh.in":C) chmod +x rungm.sh ;;
+    "PerlMagick/PerlMagickCheck.sh.in":C) chmod +x PerlMagick/PerlMagickCheck.sh ;;
 
   esac
 done # for ac_tag

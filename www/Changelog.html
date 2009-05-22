@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2009-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am (AUTOMAKE_OPTIONS): Enable parallel-tests and
+        color-tests options.  Parallel test execution does not pass tests
+        yet.
+
+  <LI> PerlMagick/PerlMagickCheck.sh.in: Run PerlMagick tests via a
+        normal check script rather than a check hook.
+
+  <LI> coders/identity.c (ReadIdentityImage): Fix compilation with Sun
+        compiler.
+
+</UL>
+<p>
 2009-05-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

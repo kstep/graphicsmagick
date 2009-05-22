@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.11 subdir-objects dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -65,12 +65,16 @@ TESTS_ENVIRONMENT = \
 	SRCDIR=$(SRCDIR) \
 	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
 
+# Test extensions
+TEST_EXTENSIONS = .sh
+
 # Tests to run
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \
-	$(UTILITIES_TESTS)
+	$(UTILITIES_TESTS) \
+	$(PERLMAGICK_TESTS)
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
@@ -119,6 +123,9 @@ check_PROGRAMS = \
 	$(TESTS_CHECK_PGRMS) \
 	$(MAGICKPP_CHECK_PGRMS) \
 	$(WAND_CHECK_PGRMS)
+
+check_SCRIPTS = \
+	$(PERLMAGICK_CHECKSCRIPTS)
 
 AM_LDFLAGS =
 noinst_LTLIBRARIES =

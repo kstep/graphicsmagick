@@ -120,6 +120,66 @@ UTILITIES_TESTS = \
         utilities/tests/preview_threshold.sh \
         utilities/tests/preview_wave.sh
 
+utilities/tests/montage.log : \
+	utilities/tests/addnoise.log \
+	utilities/tests/affine.log \
+	utilities/tests/annotate.log \
+	utilities/tests/black-threshold.log \
+	utilities/tests/blur.log \
+	utilities/tests/border.log \
+	utilities/tests/channel.log \
+	utilities/tests/charcoal.log \
+	utilities/tests/composite.log \
+	utilities/tests/contrast.log \
+	utilities/tests/convolve.log \
+	utilities/tests/crop.log \
+	utilities/tests/despeckle.log \
+	utilities/tests/draw.log \
+	utilities/tests/edge.log \
+	utilities/tests/emboss.log \
+	utilities/tests/equalize.log \
+	utilities/tests/explode.log \
+	utilities/tests/flip.log \
+	utilities/tests/flop.log \
+	utilities/tests/frame.log \
+	utilities/tests/gamma.log \
+	utilities/tests/gaussianblur.log \
+	utilities/tests/gradient.log \
+	utilities/tests/grayscale.log \
+	utilities/tests/implode.log \
+	utilities/tests/level.log \
+	utilities/tests/medianfilter.log \
+	utilities/tests/modulate.log \
+	utilities/tests/monochrome.log \
+	utilities/tests/negate.log \
+	utilities/tests/normalize.log \
+	utilities/tests/oilpaint.log \
+	utilities/tests/ordered-dither2x2.log \
+	utilities/tests/ordered-dither3x3.log \
+	utilities/tests/ordered-dither4x4.log \
+	utilities/tests/plasma.log \
+	utilities/tests/quantize.log \
+	utilities/tests/raise.log \
+	utilities/tests/random-threshold.log \
+	utilities/tests/recolor.log \
+	utilities/tests/reducenoise.log \
+	utilities/tests/resize.log \
+	utilities/tests/roll.log \
+	utilities/tests/rotate.log \
+	utilities/tests/scale.log \
+	utilities/tests/segment.log \
+	utilities/tests/shade.log \
+	utilities/tests/sharpen.log \
+	utilities/tests/shave.log \
+	utilities/tests/shear.log \
+	utilities/tests/solarize.log \
+	utilities/tests/spread.log \
+	utilities/tests/swirl.log \
+	utilities/tests/threshold.log \
+	utilities/tests/unsharpmask.log \
+	utilities/tests/wave.log \
+	utilities/tests/white-threshold.log
+
 UTILITIES_MANS = \
 	utilities/gm.1 \
 	utilities/miff.4 \

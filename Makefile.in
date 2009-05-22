@@ -164,7 +164,7 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
-	$(UTILITIES_TESTS)
+	$(UTILITIES_TESTS) $(PERLMAGICK_TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) \
@@ -183,6 +183,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/Magick++/lib/GraphicsMagick++.pc.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
+	$(top_srcdir)/PerlMagick/PerlMagickCheck.sh.in \
 	$(top_srcdir)/config/delegates.mgk.in \
 	$(top_srcdir)/config/type-ghostscript.mgk.in \
 	$(top_srcdir)/config/type-solaris.mgk.in \
@@ -223,12 +224,13 @@ CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 CONFIG_CLEAN_FILES = GraphicsMagick.spec \
 	Magick++/bin/GraphicsMagick++-config \
 	Magick++/lib/GraphicsMagick++.pc PerlMagick/Magick.pm \
-	PerlMagick/Makefile.PL config/delegates.mgk \
-	config/type-ghostscript.mgk config/type-solaris.mgk \
-	config/type-windows.mgk config/type.mgk \
-	magick/GraphicsMagick-config magick/GraphicsMagick.pc \
-	magick/magick_types.h magick/version.h rungm.sh \
-	wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc
+	PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh \
+	config/delegates.mgk config/type-ghostscript.mgk \
+	config/type-solaris.mgk config/type-windows.mgk \
+	config/type.mgk magick/GraphicsMagick-config \
+	magick/GraphicsMagick.pc magick/magick_types.h \
+	magick/version.h rungm.sh wand/GraphicsMagickWand-config \
+	wand/GraphicsMagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -1744,10 +1746,69 @@ HEADERS = $(include_HEADERS) $(ltdlinclude_HEADERS) \
 	$(magickpptopinc_HEADERS) $(noinst_HEADERS) $(wandinc_HEADERS)
 ETAGS = etags
 CTAGS = ctags
+# If stdout is a non-dumb tty, use colors.  If test -t is not supported,
+# then this fails; a conservative approach.  Of course do not redirect
+# stdout here, just stderr.
 am__tty_colors = \
-red=; grn=; lgn=; blu=; std=
+red=; grn=; lgn=; blu=; std=; \
+test "X$(AM_COLOR_TESTS)" != Xno \
+&& test "X$$TERM" != Xdumb \
+&& { test "X$(AM_COLOR_TESTS)" = Xalways || test -t 1 2>/dev/null; } \
+&& { \
+  red='[0;31m'; \
+  grn='[0;32m'; \
+  lgn='[1;32m'; \
+  blu='[1;34m'; \
+  std='[m'; \
+}
+# Restructured Text title and section.
+am__rst_title = sed 's/.*/   &   /;h;s/./=/g;p;x;p;g;p;s/.*//'
+am__rst_section = sed 'p;s/./=/g;p;g'
+# Put stdin (possibly several lines separated by ".  ") in a box.
+am__text_box = $(AWK) '{				\
+  n = split($$0, lines, "\\.  "); max = 0;		\
+  for (i = 1; i <= n; ++i)				\
+    if (max < length(lines[i]))				\
+      max = length(lines[i]);				\
+  for (i = 0; i < max; ++i) line = line "=";		\
+  print line;						\
+  for (i = 1; i <= n; ++i) if (lines[i]) print lines[i];\
+  print line;						\
+}'
+# Solaris 10 'make', and several other traditional 'make' implementations,
+# pass "-e" to $(SHELL).  This contradicts POSIX.  Work around the problem
+# by disabling -e (using the XSI extension "set +e") if it's set.
+am__sh_e_setup = case $$- in *e*) set +e;; esac
+# To be inserted before the command running the test.  Creates the
+# directory for the log if needed.  Stores in $dir the directory
+# containing $f, in $tst the test, in $log the log, and passes
+# TESTS_ENVIRONMENT.  Save and restore TERM around use of
+# TESTS_ENVIRONMENT, in case that unsets it.
+am__check_pre = \
+$(am__sh_e_setup);					\
+$(am__vpath_adj_setup) $(am__vpath_adj)			\
+srcdir=$(srcdir); export srcdir;			\
+rm -f $@-t;						\
+trap 'st=$$?; rm -f '\''$(abs_builddir)/$@-t'\''; (exit $$st); exit $$st' \
+  1 2 13 15;						\
+am__odir=`echo "./$@" | sed 's|/[^/]*$$||'`;		\
+test "x$$am__odir" = x. || $(MKDIR_P) "$$am__odir" || exit $$?;	\
+if test -f "./$$f"; then dir=./;			\
+elif test -f "$$f"; then dir=;				\
+else dir="$(srcdir)/"; fi;				\
+tst=$$dir$$f; log='$@'; __SAVED_TERM=$$TERM;		\
+$(TESTS_ENVIRONMENT)
+RECHECK_LOGS = $(TEST_LOGS)
+AM_RECURSIVE_TARGETS = check check-html recheck recheck-html
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
+TEST_SUITE_LOG = test-suite.log
+TEST_SUITE_HTML = $(TEST_SUITE_LOG:.log=.html)
+am__test_logs1 = $(TESTS:=.log)
+am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
+TEST_LOGS = $(am__test_logs2:.sh.log=.log)
+SH_LOG_COMPILE = $(SH_LOG_COMPILER) $(AM_SH_LOG_FLAGS) $(SH_LOG_FLAGS)
+TEST_LOGS_TMP = $(TEST_LOGS:.log=.log-t)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -2085,7 +2146,7 @@ windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.11 subdir-objects dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-lzma foreign
 topincludedir = @includedir@/GraphicsMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
@@ -2131,6 +2192,9 @@ TESTS_ENVIRONMENT = \
 	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
 
 
+# Test extensions
+TEST_EXTENSIONS = .sh
+
 # Tests which are expected to fail
 XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS) \
@@ -2168,6 +2232,9 @@ EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	ltdl/COPYING.LIB ltdl/README ltdl/argz_.h ltdl/argz.c
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
+check_SCRIPTS = \
+	$(PERLMAGICK_CHECKSCRIPTS)
+
 AM_LDFLAGS = -no-undefined
 noinst_LTLIBRARIES = $(LT_DLLOADERS) $(am__append_3)
 EXTRA_LTLIBRARIES = ltdl/dlopen.la ltdl/dld_link.la ltdl/dyld.la \
@@ -4977,7 +5044,9 @@ UTILITIES_CLEANFILES = \
 @WITH_PERL_TRUE@PERLMAGICK_CLEAN_LOCAL_TARGETS = clean-perl
 @WITH_PERL_TRUE@PERLMAGICK_DISTCLEAN_LOCAL_TARGETS = clean-perl
 @WITH_PERL_TRUE@PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
-@WITH_PERL_TRUE@PERLMAGICK_CHECK_LOCAL_TARGETS = check-perl
+#PERLMAGICK_CHECK_LOCAL_TARGETS = check-perl
+@WITH_PERL_TRUE@PERLMAGICK_TESTS = PerlMagick/PerlMagickCheck.sh
+@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = perl-build
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
 
 # Pkgconfig directory
@@ -5045,7 +5114,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .o .obj
+.SUFFIXES: .c .cpp .html .lo .log .o .obj .sh .sh$(EXEEXT)
 am--refresh:
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/www/wand/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
@@ -5116,6 +5185,8 @@ Magick++/lib/GraphicsMagick++.pc: $(top_builddir)/config.status $(top_srcdir)/Ma
 PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/PerlMagickCheck.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/PerlMagickCheck.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/delegates.mgk: $(top_builddir)/config.status $(top_srcdir)/config/delegates.mgk.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10049,97 +10120,161 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
-check-TESTS: $(TESTS)
-	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
-	srcdir=$(srcdir); export srcdir; \
-	list=' $(TESTS) '; \
-	$(am__tty_colors); \
-	if test -n "$$list"; then \
-	  for tst in $$list; do \
-	    if test -f ./$$tst; then dir=./; \
-	    elif test -f $$tst; then dir=; \
-	    else dir="$(srcdir)/"; fi; \
-	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
-	      all=`expr $$all + 1`; \
-	      case " $(XFAIL_TESTS) " in \
-	      *[\ \	]$$tst[\ \	]*) \
-		xpass=`expr $$xpass + 1`; \
-		failed=`expr $$failed + 1`; \
-		col=$$red; res=XPASS; \
-	      ;; \
-	      *) \
-		col=$$grn; res=PASS; \
-	      ;; \
-	      esac; \
-	    elif test $$? -ne 77; then \
-	      all=`expr $$all + 1`; \
-	      case " $(XFAIL_TESTS) " in \
-	      *[\ \	]$$tst[\ \	]*) \
-		xfail=`expr $$xfail + 1`; \
-		col=$$lgn; res=XFAIL; \
-	      ;; \
-	      *) \
-		failed=`expr $$failed + 1`; \
-		col=$$red; res=FAIL; \
-	      ;; \
-	      esac; \
-	    else \
-	      skip=`expr $$skip + 1`; \
-	      col=$$blu; res=SKIP; \
-	    fi; \
-	    echo "$${col}$$res$${std}: $$tst"; \
-	  done; \
-	  if test "$$all" -eq 1; then \
-	    tests="test"; \
-	    All=""; \
-	  else \
-	    tests="tests"; \
-	    All="All "; \
-	  fi; \
-	  if test "$$failed" -eq 0; then \
-	    if test "$$xfail" -eq 0; then \
-	      banner="$$All$$all $$tests passed"; \
-	    else \
-	      if test "$$xfail" -eq 1; then failures=failure; else failures=failures; fi; \
-	      banner="$$All$$all $$tests behaved as expected ($$xfail expected $$failures)"; \
-	    fi; \
-	  else \
-	    if test "$$xpass" -eq 0; then \
-	      banner="$$failed of $$all $$tests failed"; \
-	    else \
-	      if test "$$xpass" -eq 1; then passes=pass; else passes=passes; fi; \
-	      banner="$$failed of $$all $$tests did not behave as expected ($$xpass unexpected $$passes)"; \
-	    fi; \
-	  fi; \
-	  dashes="$$banner"; \
-	  skipped=""; \
-	  if test "$$skip" -ne 0; then \
-	    if test "$$skip" -eq 1; then \
-	      skipped="($$skip test was not run)"; \
-	    else \
-	      skipped="($$skip tests were not run)"; \
-	    fi; \
-	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
-	      dashes="$$skipped"; \
-	  fi; \
-	  report=""; \
-	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
-	    report="Please report to $(PACKAGE_BUGREPORT)"; \
-	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
-	      dashes="$$report"; \
-	  fi; \
-	  dashes=`echo "$$dashes" | sed s/./=/g`; \
-	  if test "$$failed" -eq 0; then \
-	    echo "$$grn$$dashes"; \
-	  else \
-	    echo "$$red$$dashes"; \
-	  fi; \
-	  echo "$$banner"; \
-	  test -z "$$skipped" || echo "$$skipped"; \
-	  test -z "$$report" || echo "$$report"; \
-	  echo "$$dashes$$std"; \
-	  test "$$failed" -eq 0; \
-	else :; fi
+# To be appended to the command running the test.  Handle the stdout
+# and stderr redirection, and catch the exit status.
+am__check_post =					\
+>$@-t 2>&1;						\
+estatus=$$?;						\
+if test -n '$(DISABLE_HARD_ERRORS)'			\
+   && test $$estatus -eq 99; then			\
+  estatus=1;						\
+fi;							\
+TERM=$$__SAVED_TERM; export TERM;			\
+$(am__tty_colors);					\
+xfailed=PASS;						\
+case " $(XFAIL_TESTS) " in				\
+  *[\ \	]$$f[\ \	]* | *[\ \	]$$dir$$f[\ \	]*) \
+    xfailed=XFAIL;;					\
+esac;							\
+case $$estatus:$$xfailed in				\
+    0:XFAIL) col=$$red; res=XPASS;;			\
+    0:*)     col=$$grn; res=PASS ;;			\
+    77:*)    col=$$blu; res=SKIP ;;			\
+    99:*)    col=$$red; res=FAIL ;;			\
+    *:XFAIL) col=$$lgn; res=XFAIL;;			\
+    *:*)     col=$$red; res=FAIL ;;			\
+esac;							\
+echo "$${col}$$res$${std}: $$f";			\
+echo "$$res: $$f (exit: $$estatus)" |			\
+  $(am__rst_section) >$@;				\
+cat $@-t >>$@;						\
+rm -f $@-t
+
+$(TEST_SUITE_LOG): $(TEST_LOGS)
+	@$(am__sh_e_setup);						\
+	list='$(TEST_LOGS)';						\
+	results=`for f in $$list; do					\
+		   read line < $$f && echo "$$line" || echo FAIL;	\
+		 done`;							\
+	all=`echo "$$results" | sed '/^$$/d' | wc -l | sed -e 's/^[	 ]*//'`; \
+	fail=`echo "$$results" | grep -c '^FAIL'`;			\
+	pass=`echo "$$results" | grep -c '^PASS'`;			\
+	skip=`echo "$$results" | grep -c '^SKIP'`;			\
+	xfail=`echo "$$results" | grep -c '^XFAIL'`;			\
+	xpass=`echo "$$results" | grep -c '^XPASS'`;			\
+	failures=`expr $$fail + $$xpass`;				\
+	all=`expr $$all - $$skip`;					\
+	if test "$$all" -eq 1; then tests=test; All=;			\
+	else tests=tests; All="All "; fi;				\
+	case fail=$$fail:xpass=$$xpass:xfail=$$xfail in			\
+	  fail=0:xpass=0:xfail=0)					\
+	    msg="$$All$$all $$tests passed.  ";				\
+	    exit=true;;							\
+	  fail=0:xpass=0:xfail=*)					\
+	    msg="$$All$$all $$tests behaved as expected";		\
+	    if test "$$xfail" -eq 1; then xfailures=failure;		\
+	    else xfailures=failures; fi;				\
+	    msg="$$msg ($$xfail expected $$xfailures).  ";		\
+	    exit=true;;							\
+	  fail=*:xpass=0:xfail=*)					\
+	    msg="$$fail of $$all $$tests failed.  ";			\
+	    exit=false;;						\
+	  fail=*:xpass=*:xfail=*)					\
+	    msg="$$failures of $$all $$tests did not behave as expected"; \
+	    if test "$$xpass" -eq 1; then xpasses=pass;			\
+	    else xpasses=passes; fi;					\
+	    msg="$$msg ($$xpass unexpected $$xpasses).  ";		\
+	    exit=false;;						\
+	  *)								\
+	    echo >&2 "incorrect case"; exit 4;;				\
+	esac;								\
+	if test "$$skip" -ne 0; then					\
+	  if test "$$skip" -eq 1; then					\
+	    msg="$$msg($$skip test was not run).  ";			\
+	  else								\
+	    msg="$$msg($$skip tests were not run).  ";			\
+	  fi;								\
+	fi;								\
+	{								\
+	  echo "$(PACKAGE_STRING): $(subdir)/$(TEST_SUITE_LOG)" |	\
+	    $(am__rst_title);						\
+	  echo "$$msg";							\
+	  echo;								\
+	  echo ".. contents:: :depth: 2";				\
+	  echo;								\
+	  for f in $$list; do						\
+	    read line < $$f;						\
+	    case $$line in						\
+	      PASS:*|XFAIL:*);;						\
+	      *) echo; cat $$f;;					\
+	    esac;							\
+	  done;								\
+	} >$(TEST_SUITE_LOG).tmp;					\
+	mv $(TEST_SUITE_LOG).tmp $(TEST_SUITE_LOG);			\
+	if test "$$failures" -ne 0; then				\
+	  msg="$${msg}See $(subdir)/$(TEST_SUITE_LOG).  ";		\
+	  if test -n "$(PACKAGE_BUGREPORT)"; then			\
+	    msg="$${msg}Please report to $(PACKAGE_BUGREPORT).  ";	\
+	  fi;								\
+	fi;								\
+	test x"$$VERBOSE" = x || $$exit || cat $(TEST_SUITE_LOG);	\
+	$(am__tty_colors);						\
+	if $$exit; then							\
+	  echo $(ECHO_N) "$$grn$(ECHO_C)";				\
+	 else								\
+	  echo $(ECHO_N) "$$red$(ECHO_C)";				\
+	fi;								\
+	echo "$$msg" | $(am__text_box);					\
+	echo $(ECHO_N) "$$std$(ECHO_C)";				\
+	$$exit
+
+# Run all the tests.
+check-TESTS:
+	@list='$(RECHECK_LOGS)'; test -z "$$list" || rm -f $$list
+	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
+	@set_logs=; if test "X$(TEST_LOGS)" = X.log; then		\
+	  set_logs=TEST_LOGS=;						\
+	fi;								\
+	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) $$set_logs
+
+.log.html:
+	@list='$(RST2HTML) $$RST2HTML rst2html rst2html.py';		\
+	for r2h in $$list; do						\
+	  if ($$r2h --version) >/dev/null 2>&1; then			\
+	    R2H=$$r2h;							\
+	  fi;								\
+	done;								\
+	if test -z "$$R2H"; then					\
+	  echo >&2 "cannot find rst2html, cannot create $@";		\
+	  exit 2;							\
+	fi;								\
+	$$R2H $< >$@.tmp
+	@mv $@.tmp $@
+
+# Be sure to run check first, and then to convert the result.
+# Beware of concurrent executions.  Run "check" not "check-TESTS", as
+# check-SCRIPTS and other dependencies are rebuilt by the former only.
+# And expect check to fail.
+check-html:
+	@if $(MAKE) $(AM_MAKEFLAGS) check; then			\
+	  rv=0; else rv=$$?;					\
+	fi;							\
+	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_HTML) || exit 4;	\
+	exit $$rv
+recheck recheck-html:
+	@target=`echo $@ | sed 's,^re,,'`;				\
+	list='$(TEST_LOGS)';						\
+	list=`for f in $$list; do					\
+	        test -f $$f || continue;				\
+	        if read line < $$f; then				\
+	          case $$line in FAIL*|XPASS*) echo $$f;; esac;		\
+	        else echo $$f; fi;					\
+	      done | tr '\012\015' '  '`;				\
+	$(MAKE) $(AM_MAKEFLAGS) $$target AM_MAKEFLAGS='$(AM_MAKEFLAGS) TEST_LOGS="'"$$list"'"'
+.sh.log:
+	@p='$<'; $(am__check_pre) $(SH_LOG_COMPILE) "$$tst" $(am__check_post)
+@am__EXEEXT_TRUE@.sh$(EXEEXT).log:
+@am__EXEEXT_TRUE@	@p='$<'; $(am__check_pre) $(SH_LOG_COMPILE) "$$tst" $(am__check_post)
 
 distdir: $(DISTFILES)
 	@list='$(MANS)'; if test -n "$$list"; then \
@@ -10304,7 +10439,7 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) $(check_SCRIPTS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
@@ -10333,6 +10468,10 @@ install-strip:
 	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(TEST_LOGS)" || rm -f $(TEST_LOGS)
+	-test -z "$(TEST_LOGS_TMP)" || rm -f $(TEST_LOGS_TMP)
+	-test -z "$(TEST_SUITE_HTML)" || rm -f $(TEST_SUITE_HTML)
+	-test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 
 clean-generic:
 	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
@@ -10459,10 +10598,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
 
 uninstall-man: uninstall-man1 uninstall-man4 uninstall-man5
 
-.MAKE: all check check-am install install-am install-strip
+.MAKE: all check check-am check-html install install-am install-strip \
+	recheck recheck-html
 
 .PHONY: CTAGS GTAGS all all-am all-local am--refresh check check-TESTS \
-	check-am check-local clean clean-binPROGRAMS \
+	check-am check-html check-local clean clean-binPROGRAMS \
 	clean-checkPROGRAMS clean-codersLTLIBRARIES \
 	clean-filtersLTLIBRARIES clean-generic clean-libLTLIBRARIES \
 	clean-libtool clean-local clean-noinstLTLIBRARIES ctags dist \
@@ -10487,16 +10627,16 @@ uninstall-man: uninstall-man1 uninstall-man4 uninstall-man5
 	installdirs maintainer-clean maintainer-clean-generic \
 	maintainer-clean-local mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-binSCRIPTS uninstall-codersLTLIBRARIES \
-	uninstall-configlibDATA uninstall-configshareDATA \
-	uninstall-docDATA uninstall-filtersLTLIBRARIES \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-local uninstall-ltdlincludeHEADERS \
-	uninstall-magickincHEADERS uninstall-magickppincHEADERS \
-	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
-	uninstall-man4 uninstall-man5 uninstall-pkgconfigDATA \
-	uninstall-wandincHEADERS
+	recheck recheck-html tags uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
+	uninstall-configshareDATA uninstall-docDATA \
+	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-local \
+	uninstall-ltdlincludeHEADERS uninstall-magickincHEADERS \
+	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
+	uninstall-man uninstall-man1 uninstall-man4 uninstall-man5 \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 	$(LTDL_INSTALLHEADERS)
 
@@ -10730,6 +10870,66 @@ uninstall-data-html:
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@$(WWWWANDAPIDIR)/%.html : $(WWWWANDAPIDIR)/%.apirst
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO) --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-api.css \
 @HasRST2HTML_TRUE@@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
+
+utilities/tests/montage.log : \
+	utilities/tests/addnoise.log \
+	utilities/tests/affine.log \
+	utilities/tests/annotate.log \
+	utilities/tests/black-threshold.log \
+	utilities/tests/blur.log \
+	utilities/tests/border.log \
+	utilities/tests/channel.log \
+	utilities/tests/charcoal.log \
+	utilities/tests/composite.log \
+	utilities/tests/contrast.log \
+	utilities/tests/convolve.log \
+	utilities/tests/crop.log \
+	utilities/tests/despeckle.log \
+	utilities/tests/draw.log \
+	utilities/tests/edge.log \
+	utilities/tests/emboss.log \
+	utilities/tests/equalize.log \
+	utilities/tests/explode.log \
+	utilities/tests/flip.log \
+	utilities/tests/flop.log \
+	utilities/tests/frame.log \
+	utilities/tests/gamma.log \
+	utilities/tests/gaussianblur.log \
+	utilities/tests/gradient.log \
+	utilities/tests/grayscale.log \
+	utilities/tests/implode.log \
+	utilities/tests/level.log \
+	utilities/tests/medianfilter.log \
+	utilities/tests/modulate.log \
+	utilities/tests/monochrome.log \
+	utilities/tests/negate.log \
+	utilities/tests/normalize.log \
+	utilities/tests/oilpaint.log \
+	utilities/tests/ordered-dither2x2.log \
+	utilities/tests/ordered-dither3x3.log \
+	utilities/tests/ordered-dither4x4.log \
+	utilities/tests/plasma.log \
+	utilities/tests/quantize.log \
+	utilities/tests/raise.log \
+	utilities/tests/random-threshold.log \
+	utilities/tests/recolor.log \
+	utilities/tests/reducenoise.log \
+	utilities/tests/resize.log \
+	utilities/tests/roll.log \
+	utilities/tests/rotate.log \
+	utilities/tests/scale.log \
+	utilities/tests/segment.log \
+	utilities/tests/shade.log \
+	utilities/tests/sharpen.log \
+	utilities/tests/shave.log \
+	utilities/tests/shear.log \
+	utilities/tests/solarize.log \
+	utilities/tests/spread.log \
+	utilities/tests/swirl.log \
+	utilities/tests/threshold.log \
+	utilities/tests/unsharpmask.log \
+	utilities/tests/wave.log \
+	utilities/tests/white-threshold.log
 @MAGICK_COMPAT_TRUE@install-exec-local-utilities:
 @MAGICK_COMPAT_TRUE@	$(mkdir_p) $(DESTDIR)$(bindir)
 @MAGICK_COMPAT_TRUE@	cd $(DESTDIR)$(bindir) ; \
@@ -10774,8 +10974,12 @@ perl-sources:
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' )
+
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(LIBMAGICK) $(PERLMAKEMAKER)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS) && $(MAKE) Makefile ; $(MAKE) Makefile
+
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@$(PERLMAGICK)/$(PERLSTATICNAME): $(LIBMAGICK) $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( rm -f $(PERLMAGICK)/$(PERLSTATICNAME) ; cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) ; $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
@@ -10800,6 +11004,8 @@ perl-sources:
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 @WITH_PERL_TRUE@clean-perl:
 @WITH_PERL_TRUE@	(cd $(PERLMAGICK) && \

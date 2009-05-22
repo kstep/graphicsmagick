@@ -58,10 +58,10 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
     *image;
 
   unsigned long
-    cube_size,
-    order;
+    cube_size;
 
   long
+    order,
     y;
 
   unsigned long
@@ -81,7 +81,7 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   order=8;
   if (image_info->filename[0] != '\0')
-    order=(unsigned long) atol(image_info->filename);
+    order=atol(image_info->filename);
   if (order < 1)
     order=8;
   

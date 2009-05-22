@@ -31,7 +31,11 @@ PERLMAGICK_UNINSTALL_LOCAL_TARGETS = uninstall-exec-perl
 PERLMAGICK_CLEAN_LOCAL_TARGETS = clean-perl
 PERLMAGICK_DISTCLEAN_LOCAL_TARGETS = clean-perl
 PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
-PERLMAGICK_CHECK_LOCAL_TARGETS = check-perl
+#PERLMAGICK_CHECK_LOCAL_TARGETS = check-perl
+
+PERLMAGICK_TESTS = PerlMagick/PerlMagickCheck.sh
+
+PERLMAGICK_CHECKSCRIPTS = perl-build
 
 if WITH_PERL_DYNAMIC
 
@@ -51,6 +55,9 @@ uninstall-exec-perl: $(PERLMAKEFILE)
 check-perl: $(PERLMAKEFILE)
 	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
+perl-build: $(PERLMAKEFILE)
+	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' )
+
 else
 if WITH_PERL_STATIC
 
@@ -58,6 +65,7 @@ PERLSTATICNAME=PerlMagick
 
 $(PERLMAKEFILE): perl-sources $(LIBMAGICK) $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS) && $(MAKE) Makefile ; $(MAKE) Makefile
+
 $(PERLMAGICK)/$(PERLSTATICNAME): $(LIBMAGICK) $(PERLMAKEFILE)
 	( rm -f $(PERLMAGICK)/$(PERLSTATICNAME) ; cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) ; $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
@@ -82,6 +90,8 @@ uninstall-exec-perl:
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+
+perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC

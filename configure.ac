@@ -3017,6 +3017,7 @@ AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsM
 AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
 AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
 AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
+AC_CONFIG_COMMANDS([PerlMagick/PerlMagickCheck.sh.in],[chmod +x PerlMagick/PerlMagickCheck.sh])
 
 AC_OUTPUT( \
         GraphicsMagick.spec \
@@ -3025,6 +3026,7 @@ AC_OUTPUT( \
         Makefile \
         PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL \
+	PerlMagick/PerlMagickCheck.sh \
         config/delegates.mgk \
         config/type-ghostscript.mgk \
         config/type-solaris.mgk \
