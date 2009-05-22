@@ -1,4 +1,4 @@
-2009-05-21  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+2009-05-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Fixed char vs int parameter problem.
         Better detection of too dark 16bit or 32bit images.
