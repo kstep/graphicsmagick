@@ -78,7 +78,7 @@ static unsigned int
 /** Reads up to end of line. */
 static void readln(Image *image, int *pch)
 {
-char ch=0;
+int ch=0;
   if(pch) ch=*pch;
      else ch=' ';
   while(ch!=10 && ch!=13 && !EOFBlob(image))
@@ -90,7 +90,7 @@ char ch=0;
 
 static long ReadInt(Image *image, int *pch)
 {
-char ch;
+int ch;
 long n;
 
   n=0;
