@@ -76,7 +76,7 @@ static unsigned int
 
 
 /** Reads up to end of line. */
-static void readln(Image *image, char *pch)
+static void readln(Image *image, int *pch)
 {
 char ch=0;
   if(pch) ch=*pch;
@@ -366,7 +366,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    ch = ReadBlobByte(image);
 	    if(ch==EOF) goto EndReading;
 		if(ch=='#') 
-		  {readln(image, (char *)&ch); continue;}
+		  {readln(image,&ch); continue;}
 	    if(ch==0 || ch>128 || (ch>='a' && ch<='z') || (ch>='A' && ch<='Z'))
             {
 TXT_FAIL:			//not a text data
@@ -427,7 +427,7 @@ TXT_FAIL:			//not a text data
      if(ch==EOF) break;
    }
 
-   readln(image, (char *)&ch);
+   readln(image,&ch);
    }
 
 EndReading:
@@ -467,7 +467,7 @@ EndReading:
       if(EOFBlob(image)) goto FINISH;
       ch = ReadBlobByte(image);
       if(ch=='#') 
-      {readln(image, (char *)&ch); continue;}
+      {readln(image,&ch); continue;}
     }
     
     x=ReadInt(image,&ch);		// x
@@ -553,7 +553,7 @@ EndReading:
 	  }
 	}
 
-    readln(image,(char *)&ch);
+    readln(image,&ch);
     }
 
 FINISH:
