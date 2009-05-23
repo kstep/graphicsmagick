@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile  -filespec 'out_bilevel_%d' -compress bzip ${SRCDIR}/input_bilevel.miff MIFF
+${RUNENV} ${MEMCHECK} ./rwfile  -filespec 'out_bilevel_bzip_%d' -compress bzip ${SRCDIR}/input_bilevel.miff MIFF

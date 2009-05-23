@@ -10775,7 +10775,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
+	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
