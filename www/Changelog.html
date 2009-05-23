@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2009-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/tempfile.c (ComposeTemporaryFileName): Use simpler code
+        (suggested by Mark Mitchell) to compute the substitution index.
+        (AcquireTemporaryFileDescriptor): Try harder to generate a
+        successful temporary file and fall through to alternative
+        implementations if the first does not succeed.
+
+  <LI> magick/magick.c (InitializeMagick): Use MagickRandNewSeed() to
+        seed the default random number generator.
+
+  <LI> magick/utility.c (MagickRandNewSeed): Include PID in random
+        number seed generation.
+
+</UL>
+<p>
 2009-05-22  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
 
 <UL>

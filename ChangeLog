@@ -1,3 +1,17 @@
+2009-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (ComposeTemporaryFileName): Use simpler code
+	(suggested by Mark Mitchell) to compute the substitution index.
+	(AcquireTemporaryFileDescriptor): Try harder to generate a
+	successful temporary file and fall through to alternative
+	implementations if the first does not succeed.
+
+	* magick/magick.c (InitializeMagick): Use MagickRandNewSeed() to
+	seed the default random number generator.
+
+	* magick/utility.c (MagickRandNewSeed): Include PID in random
+	number seed generation.
+
 2009-05-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Fixed char vs int parameter problem.

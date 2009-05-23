@@ -3470,15 +3470,21 @@ MagickExport unsigned int MagickRandNewSeed(void)
   unsigned int
     seed;
 
+  /*
+    Initial seed is based on time of day.
+  */
   seed=time(0);
-#if defined(HAVE_RAND_R)
+  /*
+    Multiple processes may be started within the same second so hash
+    with process ID as well.
+  */
+  seed ^= (unsigned int) getpid();
   /*
     It is quite likely that multiple threads will invoke this function
     during the same second so we also tap into the default random
     number generator to help produce a more random seed.
   */
   seed ^= (unsigned int) rand();
-#endif
   return seed;
 }
 
