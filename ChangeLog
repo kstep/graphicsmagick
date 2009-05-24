@@ -1,3 +1,9 @@
+2009-05-24  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* /coders/txt.c Small optimization:
+        Before: 2000 iter 34.08s user 34.24s total 58.420 iter/s
+        After: 2000 iter 21.55s user 21.76s total 91.891 iter/s
+
 2009-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (XFAIL_TESTS): Handle the case where FreeType is not
