@@ -81,7 +81,7 @@ static void readln(Image *image, int *pch)
 int ch=0;
   if(pch) ch=*pch;
      else ch=' ';
-  while(ch!=10 && ch!=13 && !EOFBlob(image))
+  while(ch!=10 && ch!=13 && ch!=EOF)
   {
     ch = ReadBlobByte(image);
   }
@@ -100,14 +100,14 @@ long n;
   while(isspace(ch)||ch==0)
   {
     ch = ReadBlobByte(image);
-    if(EOFBlob(image)) return(0);
+    if(ch==EOF) return(0);
   }
 
   while(isdigit(ch))
   {
 	n=10*n+(ch-'0');
 	ch = ReadBlobByte(image);
-	if(EOFBlob(image)) return(n);
+	if(ch==EOF) return(n);
   }
 
  if(pch) *pch=ch;
@@ -473,7 +473,7 @@ EndReading:
     while(ch!=',')
     {
        ch = ReadBlobByte(image);       
-       if(EOFBlob(image)) break;
+       if(ch==EOF) break;
     }
     ch=0;
     y=ReadInt(image,&ch);		// y
@@ -481,39 +481,43 @@ EndReading:
     while(ch!=':')
     {
       ch = ReadBlobByte(image);
-      if(EOFBlob(image)) break;
+      if(ch==EOF) break;
     }
     while(ch!='(')
     {
       ch = ReadBlobByte(image);
-      if(EOFBlob(image)) break;
+      if(ch==EOF) break;
     }
     ch=0;
 	R = ReadInt(image,&ch);	   // R	
 
     while(ch!=',')
-      {ch = ReadBlobByte(image);
-       if(EOFBlob(image)) break;}
+    {
+      ch = ReadBlobByte(image);
+      if(ch==EOF) break;
+    }
     ch=0;
     G = ReadInt(image,&ch);		// G    	
 
     while(ch!=',')
-      {ch = ReadBlobByte(image);
-       if(EOFBlob(image)) break;}
-    ch=0;
-	B = ReadInt(image,&ch);		// B    
-
-	while(ch!=')')
     {
-	  ch = ReadBlobByte(image);
-      if(EOFBlob(image)) break;
-	}
+      ch = ReadBlobByte(image);
+      if(ch==EOF) break;
+    }
+    ch=0;
+    B = ReadInt(image,&ch);		// B    
+
+    while(ch!=')')
+    {
+      ch = ReadBlobByte(image);
+      if(ch==EOF) break;
+    }
 
 
 		//a new line has been detected
-	if(y!=y_curr)
-	{
-	  q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);
+    if(y!=y_curr)
+    {
+      q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);
       if (q == (PixelPacket *)NULL) break;	
 	  (void)ImportImagePixelArea(image,RGBQuantum,NumOfPlanes,
 		  BImgBuff + 3*x_min*(NumOfPlanes/8),&import_options,0);
