@@ -1,3 +1,10 @@
+2009-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (XFAIL_TESTS): Handle the case where FreeType is not
+	available by marking tests dependent on FreeType as XFAIL.
+	(TESTS): Reorder TESTS so that there will be no trailing spaces
+	since this confuses certain older versions of GNU make.
+
 2009-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/tempfile.c (ComposeTemporaryFileName): Use simpler code

@@ -61,6 +61,7 @@ RUNENV = $(SHELL) `pwd`/rungm.sh
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
+	MEMCHECK="$(MEMCHECK)" \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
 	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
@@ -73,12 +74,13 @@ TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \
-	$(UTILITIES_TESTS) \
-	$(PERLMAGICK_TESTS)
+	$(PERLMAGICK_TESTS) \
+	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS) \
+	$(MAGICKPP_XFAIL_TESTS) \
 	$(UTILITIES_XFAIL_TESTS)
 
 CHANGELOGS = \
@@ -205,8 +207,21 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+# drd: valgrind's newer thread error detector
+drd:
+	$(MAKE) MEMCHECK='valgrind --tool=drd --track-lockorders=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# helgrind: valgrind's older thread error detector
+helgrind:
+	$(MAKE) MEMCHECK='valgrind --tool=helgrind --track-lockorders=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# memcheck: valgrind's memory access checker
 memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# ptrcheck: valgrind's experimental pointer checking tool.
+ptrcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick

@@ -118,7 +118,7 @@
 # Makefile for building Wand API HTML files
 #
 
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -164,7 +164,9 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
-	$(UTILITIES_TESTS) $(PERLMAGICK_TESTS)
+	$(PERLMAGICK_TESTS) $(UTILITIES_TESTS)
+XFAIL_TESTS = $(TESTS_XFAIL_TESTS) $(am__EXEEXT_7) \
+	$(UTILITIES_XFAIL_TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) \
@@ -1802,6 +1804,8 @@ RECHECK_LOGS = $(TEST_LOGS)
 AM_RECURSIVE_TARGETS = check check-html recheck recheck-html
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_7 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TTF_XFAIL_TESTS_OPT)
 TEST_SUITE_LOG = test-suite.log
 TEST_SUITE_HTML = $(TEST_SUITE_LOG:.log=.html)
 am__test_logs1 = $(TESTS:=.log)
@@ -2187,6 +2191,7 @@ RUNENV = $(SHELL) `pwd`/rungm.sh
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
+	MEMCHECK="$(MEMCHECK)" \
         RUNENV="$(RUNENV)" \
 	SRCDIR=$(SRCDIR) \
 	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
@@ -2194,12 +2199,6 @@ TESTS_ENVIRONMENT = \
 
 # Test extensions
 TEST_EXTENSIONS = .sh
-
-# Tests which are expected to fail
-XFAIL_TESTS = \
-	$(TESTS_XFAIL_TESTS) \
-	$(UTILITIES_XFAIL_TESTS)
-
 CHANGELOGS = \
 	ChangeLog \
 	ChangeLog.2001 \
@@ -3396,6 +3395,15 @@ filters_analyze_la_LIBADD = $(LIBMAGICK)
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_XFAIL_TESTS = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_XFAIL_TESTS = $(MAGICKPP_TTF_XFAIL_TESTS_OPT)
+@HasTTF_FALSE@MAGICKPP_TTF_XFAIL_TESTS_OPT = \
+@HasTTF_FALSE@	Magick++/demo/button.sh \
+@HasTTF_FALSE@	Magick++/demo/demo.sh \
+@HasTTF_FALSE@	Magick++/demo/gravity.sh \
+@HasTTF_FALSE@	Magick++/demo/piddle.sh \
+@HasTTF_FALSE@	Magick++/demo/shapes.sh
+
 MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
@@ -4910,6 +4918,8 @@ utilities_gm_LDADD = $(LIBMAGICK)
 utilities_gm_LDFLAGS = $(LDFLAGS)
 utilities_gm_SOURCES = utilities/gm.c
 @HasTTF_FALSE@UTILITIES_TTF_XFAIL_TESTS = \
+@HasTTF_FALSE@	utilities/tests/annotate.sh \
+@HasTTF_FALSE@	utilities/tests/montage.sh \
 @HasTTF_FALSE@	utilities/tests/msl_composite.sh
 
 @HasXML_FALSE@UTILITIES_XML_XFAIL_TESTS = \
@@ -11053,8 +11063,21 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+# drd: valgrind's newer thread error detector
+drd:
+	$(MAKE) MEMCHECK='valgrind --tool=drd --track-lockorders=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# helgrind: valgrind's older thread error detector
+helgrind:
+	$(MAKE) MEMCHECK='valgrind --tool=helgrind --track-lockorders=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# memcheck: valgrind's memory access checker
 memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# ptrcheck: valgrind's experimental pointer checking tool.
+ptrcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

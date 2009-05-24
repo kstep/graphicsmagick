@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -17,6 +17,8 @@ utilities_gm_SOURCES	= utilities/gm.c
 
 if !HasTTF
 UTILITIES_TTF_XFAIL_TESTS = \
+	utilities/tests/annotate.sh \
+	utilities/tests/montage.sh \
 	utilities/tests/msl_composite.sh
 endif
 
