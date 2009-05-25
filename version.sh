@@ -11,6 +11,10 @@ PACKAGE_NAME='GraphicsMagick'
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.2").
 PACKAGE_VERSION='1.4'
+#
+# Package name plus version string.
+#
+PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 
 #
 # Formal Package release date

@@ -104,6 +104,9 @@
 /* define if the compiler supports default template parameters */
 #undef HAVE_DEFAULT_TEMPLATE_PARAMETERS
 
+/* Have a /dev/urandom device for producing random bytes */
+#undef HAVE_DEV_URANDOM
+
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H

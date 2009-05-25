@@ -141,6 +141,8 @@ MAGICK_BASE_SRCS = \
 	magick/quantize.h \
 	magick/registry.c \
 	magick/registry.h \
+	magick/random.c \
+	magick/random.h \
 	magick/render.c \
 	magick/render.h \
 	magick/resize.c \
@@ -230,6 +232,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/pixel_iterator.h \
 	magick/profile.h \
 	magick/quantize.h \
+	magick/random.h \
 	magick/registry.h \
 	magick/render.h \
 	magick/resize.h \

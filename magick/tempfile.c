@@ -12,6 +12,7 @@
 #include "magick/studio.h"
 #include "magick/error.h"
 #include "magick/log.h"
+#include "magick/random.h"
 #include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -133,7 +134,7 @@ static void ComposeTemporaryFileName(char *name)
   for (c=name; *c; c++)
     {
       if (*c == 'X')
-	*c=SafeChars[rand() % (sizeof(SafeChars)-1)];
+	*c=SafeChars[MagickRandomInteger() % (sizeof(SafeChars)-1)];
     }
 }
 

@@ -61,6 +61,7 @@
 #include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
+#include "magick/random.h"
 #include "magick/profile.h"
 #include "magick/semaphore.h"
 #include "magick/signature.h"
@@ -3996,12 +3997,12 @@ MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
 %
 */
 
-static inline Quantum PlasmaPixel(const double pixel,const double noise)
+static Quantum PlasmaPixel(const double pixel,const double noise)
 {
   double
     value;
 
-  value=pixel+noise*rand()/RAND_MAX-noise/2;
+  value=pixel+noise*MagickRandomReal()-noise/2;
   if (value <= 0.0)
     return(0);
   if (value >= MaxRGB)

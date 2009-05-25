@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2008 GraphicsMagick Group
+  Copyright (C) 2003-2009 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -11,6 +11,8 @@
 #ifndef _MAGICK_GEM_H
 #define _MAGICK_GEM_H
 
+#include "magick/random.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -21,7 +23,7 @@ extern "C" {
 extern MagickExport double
   ExpandAffine(const AffineMatrix *),
   GenerateDifferentialNoise(const Quantum pixel,const NoiseType noise_type,
-    unsigned int *seed);
+    MagickRandomKernel *kernel);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),

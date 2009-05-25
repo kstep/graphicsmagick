@@ -21,6 +21,35 @@
 </tr>
 </table>
 <p>
+2009-05-25  Ralf Wildenhues  &lt;Ralf.Wildenhues@gmx.de&gt;
+
+<UL>
+  <LI> version.sh: Define PACKAGE_STRING.
+
+</UL>
+<p>
+2009-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/tempfile.c (ComposeTemporaryFileName): Use new random
+        number generator.
+
+  <LI> magick/random.c: Implement a random number generation system
+        based on George Marsaglia's multiply-with-carry generator.
+        Somewhat slower than rand() but produces better random numbers
+        with a period &gt;2^60.  Suggested by Mark Mitchell.
+
+</UL>
+<p>
+2009-05-24  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> /coders/txt.c Small optimization:
+        Before: 2000 iter 34.08s user 34.24s total 58.420 iter/s
+        After: 2000 iter 21.55s user 21.76s total 91.891 iter/s
+
+</UL>
+<p>
 2009-05-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

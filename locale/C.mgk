@@ -1372,6 +1372,9 @@
         <Message name="UnableToAllocateQuantizeInfo">
           unable to allocate quantize info
         </Message>
+	<Message name="UnableToAllocateRandomKernel">
+          unable to allocate random kernel
+        </Message>
         <Message name="UnableToAllocateSemaphoreInfo">
           unable to allocate semaphore info
         </Message>

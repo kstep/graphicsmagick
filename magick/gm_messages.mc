@@ -2525,6 +2525,12 @@ unable to allocate quantize info
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToAllocateRandomKernel
+Language        = English
+unable to allocate random kernel
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateRegistryInfo
 Language        = English
 unable to allocate registry info

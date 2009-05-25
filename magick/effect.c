@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -49,6 +49,7 @@
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
+#include "magick/random.h"
 #include "magick/render.h"
 #include "magick/shear.h"
 #include "magick/utility.h"
@@ -2655,8 +2656,8 @@ RandomChannelThresholdImage(Image *image,const char *channel,
         register unsigned long
           x;
 
-        unsigned int
-          seed;
+	MagickRandomKernel
+	  *random_kernel;
 
         MagickBool
           thread_status;
@@ -2665,7 +2666,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
         if (thread_status == MagickFail)
           continue;
 
-        seed=MagickRandNewSeed();
+	random_kernel=AcquireMagickRandomKernel();
         q=GetImagePixelsEx(image,0,y,image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           thread_status=MagickFail;
@@ -2687,8 +2688,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                         else if (intensity > upper_threshold)
                           threshold=upper_threshold;
                         else
-                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)
-                                                             /(double) RAND_MAX));
+                          threshold=(Quantum) (MaxRGBDouble*MagickRandomRealInlined(random_kernel));
                         index=intensity <= threshold ? 0U : 1U;
                         *indexes++=index;
                         q->red=q->green=q->blue=image->colormap[index].red;
@@ -2746,8 +2746,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                           else if (q->opacity > upper_threshold)
                             threshold=upper_threshold;
                           else
-                            threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
-                                                               (double) RAND_MAX));
+                            threshold=(Quantum) (MaxRGBDouble*MagickRandomRealInlined(random_kernel));
                           q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
                           q++;
                         }
@@ -2792,8 +2791,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                         else if (q->red > upper_threshold)
                           threshold=upper_threshold;
                         else
-                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
-                                                             (double) RAND_MAX));
+                          threshold=(Quantum) (MaxRGBDouble*MagickRandomRealInlined(random_kernel));
                         q->red=(q->red <= threshold ? 0U : MaxRGB);
                         q++;
                       }
@@ -2838,8 +2836,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                         else if (q->green > upper_threshold)
                           threshold=upper_threshold;
                         else
-                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
-                                                             (double) RAND_MAX));
+                          threshold=(Quantum) (MaxRGBDouble*MagickRandomRealInlined(random_kernel));
                         q->green=(q->green <= threshold ? 0U : MaxRGB);
                         q++;
                       }
@@ -2884,8 +2881,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                         else if (q->blue > upper_threshold)
                           threshold=upper_threshold;
                         else
-                          threshold=(Quantum) (MaxRGBDouble*(MagickRandReentrant(&seed)/
-                                                             (double) RAND_MAX));
+                          threshold=(Quantum) (MaxRGBDouble*MagickRandomRealInlined(random_kernel));
                         q->blue=(q->blue <= threshold ? 0U : MaxRGB);
                         q++;
                       }
@@ -3553,11 +3549,13 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     Initialize random offsets cache
   */
   {
+    MagickRandomKernel
+      *random_kernel;
+
     unsigned int
-      seed,
       x;
 
-    seed=MagickRandNewSeed();
+    random_kernel=AcquireMagickRandomKernel();
     offsets=MagickAllocateMemory(int *,OFFSETS_ENTRIES*sizeof(int));
     if (offsets == (int *) NULL)
       {
@@ -3566,8 +3564,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       }
     for (x=0; x < OFFSETS_ENTRIES; x++)
       {
-        offsets[x]=((((2*(double) radius+1)*MagickRandReentrant(&seed))/
-                     RAND_MAX)-((int) radius));
+        offsets[x]=(((2*(double) radius+1)*MagickRandomRealInlined(random_kernel))
+		    -((int) radius));
       }
   }
 

@@ -1121,6 +1121,22 @@ AC_CHECK_DECLS([vsnprintf],[],[],[
 #include <stdio.h>
 #include <stdarg.h>])
 
+#######
+#
+# Check for /dev/urandom device
+#
+#######
+AC_CACHE_CHECK(for /dev/urandom,gm_cv_dev_urandom,
+[ gm_cv_dev_urandom=no
+  if test -c /dev/urandom
+  then
+    gm_cv_dev_urandom=yes
+  fi])
+  if test "${gm_cv_dev_urandom}" = yes
+  then
+     AC_DEFINE(HAVE_DEV_URANDOM,1,[Have a /dev/urandom device for producing random bytes])
+  fi
+
 ########
 #
 # Try to find a command which reports usable physical memory

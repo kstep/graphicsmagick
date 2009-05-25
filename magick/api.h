@@ -146,6 +146,7 @@ extern "C" {
 #include "magick/shear.h"
 #include "magick/transform.h"
 #include "magick/composite.h"
+#include "magick/random.h"
 #include "magick/registry.h"
 #include "magick/magick.h"
 #include "magick/magic.h"
