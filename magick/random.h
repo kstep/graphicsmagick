@@ -84,7 +84,7 @@ typedef struct _MagickRandomKernel
     Acquire the default random number kernel.  Memory is owned by
     library and should not be freed.
   */
-  extern MagickRandomKernel* AcquireMagickRandomKernel();
+  MagickExport MagickRandomKernel* AcquireMagickRandomKernel();
 
   /*
     Initialize the random number generator system.

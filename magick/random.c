@@ -39,7 +39,7 @@ static MagickTsdKey_t kernel_key = (MagickTsdKey_t) 0;
   Acquire the default random number kernel.  Memory is owned by
   library and should not be freed.
 */
-extern MagickRandomKernel* AcquireMagickRandomKernel()
+MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
 {
   MagickRandomKernel
     *kernel;
@@ -64,7 +64,7 @@ extern MagickRandomKernel* AcquireMagickRandomKernel()
 /*
   Initialize the random number generator system.
 */
-extern void InitializeMagickRandomGenerator()
+void InitializeMagickRandomGenerator()
 {
   AcquireSemaphoreInfo(&semaphore);
   if (kernel_key == (MagickTsdKey_t) 0)
@@ -75,7 +75,7 @@ extern void InitializeMagickRandomGenerator()
 /*
   Destroy the random number generator system.
 */
-extern void DestroyMagickRandomGenerator()
+void DestroyMagickRandomGenerator()
 {
   AcquireSemaphoreInfo(&semaphore);
   if (kernel_key != (MagickTsdKey_t) 0)
