@@ -27,6 +27,18 @@ typedef struct _MagickRandomKernel
 #define MAGICK_RANDOM_MAX 4294967295
 
   /*
+    Generate a random integer value (0 - MAGICK_RANDOM_MAX)
+  */
+  MagickExport magick_uint32_t MagickRandomInteger(void);
+
+  /*
+    Generate a random double value (0.0 - 1.0)
+  */
+  MagickExport double MagickRandomReal(void);
+
+#if defined(MAGICK_IMPLEMENTATION)
+
+  /*
     You may replace the following two constants MAGICK_RANDOM_ZC and
     MAGICK_RANDOM_WC by any pair of distinct constants from this list:
 
@@ -44,11 +56,6 @@ typedef struct _MagickRandomKernel
    */
 #define MAGICK_RANDOM_ZC 36969
 #define MAGICK_RANDOM_WC 18000
-
-  /*
-    Initialize the random kernel with suitable entropy
-  */
-  MagickExport void InitializeMagickRandomKernel(MagickRandomKernel *kernel);
 
   /*
     Generate a random integer value
@@ -69,16 +76,9 @@ typedef struct _MagickRandomKernel
   }
 
   /*
-    Generate a random integer value
+    Initialize the random kernel with suitable entropy
   */
-  MagickExport magick_uint32_t MagickRandomInteger(void);
-
-  /*
-    Generate a random double value
-  */
-  MagickExport double MagickRandomReal(void);
-
-#if defined(MAGICK_IMPLEMENTATION)
+  MagickExport void InitializeMagickRandomKernel(MagickRandomKernel *kernel);
 
   /*
     Acquire the default random number kernel.  Memory is owned by
