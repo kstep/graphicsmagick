@@ -45,11 +45,17 @@ WriteMakefile
    # Header search specfication and preprocessor flags
    'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
 
+   # C compiler
+   'CC'	        => '@CC@',
+
    # C pre-processor flags (e.g. -I & -D options)
    # 'CPPFLAGS'    => "$Config{'cppflags'} @CPPFLAGS@",
 
    # C compiler flags (e.g. -O -g)
    'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
+
+   # Linker
+   'LD'          => $Config{'ld'} == $Config{'cc'} ? '@CC@' : $Config{'ld'},
 
    # Linker flags for building an executable
    'LDFLAGS'    =>  "-L@MAGICKLIBDIR@ $Config{'ldflags'}",

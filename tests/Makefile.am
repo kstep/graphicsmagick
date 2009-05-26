@@ -1027,12 +1027,7 @@ CHECK_MIFF_FILE_COMPRESS = \
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	echo "#!/bin/sh" > "$${sh_file}" ; \
-	echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	echo "#" >> "$${sh_file}" ; \
-	echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	echo "" >> $${sh_file} ; \
+	echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" >> "$$sh_file" ; \
 	chmod +x "$$sh_file"
@@ -1042,12 +1037,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/constitute_$${storage_type}_$${map}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1059,12 +1049,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1076,12 +1061,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1093,12 +1073,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1110,12 +1085,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1127,12 +1097,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_MIFF_$${type}_$${compress}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
@@ -1144,12 +1109,7 @@ generate-tests-scripts:
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo "#" >> "$${sh_file}" ; \
-	    echo "# This program is covered by multiple licenses, which are described in" >> "$${sh_file}" ; \
-	    echo "# Copyright.txt. You should have received a copy of Copyright.txt with this" >> "$${sh_file}" ; \
-	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
-	    echo "" >> $${sh_file} ; \
+	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
 	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \

@@ -1,5 +1,14 @@
 2009-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/Makefile.PL.in: Increase the probability of
+	PerlMagick build success by using the user-specified C compiler as
+	the linker if the C compiler was already used as the linker.  This
+	helps if the C compiler used to build GraphicsMagick is a more
+	recent vintage than the one used to build Perl.
+
+	* PerlMagick/t/wmf/read.t: Test needs to be more lenient for
+	Linux.
+
 	* Makefile.am (TESTS_ENVIRONMENT): Pass a complete text
 	environment so that we don't need to execute rungm.sh in order to
 	run the test suite.

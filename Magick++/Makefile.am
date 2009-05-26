@@ -6,6 +6,15 @@
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
+if !HasTTF
+MAGICKPP_TTF_XFAIL_TESTS_OPT = \
+	Magick++/demo/button.sh \
+	Magick++/demo/demo.sh \
+	Magick++/demo/gravity.sh \
+	Magick++/demo/piddle.sh \
+	Magick++/demo/shapes.sh
+endif
+
 if WITH_MAGICK_PLUS_PLUS
 LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
 MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
@@ -26,15 +35,6 @@ MAGICKPP_TESTS =
 MAGICKPP_TOP_INCHEADERS =
 MAGICKPP_INCHEADERS =
 MAGICKPP_XFAIL_TESTS =
-endif
-
-if !HasTTF
-MAGICKPP_TTF_XFAIL_TESTS_OPT = \
-	Magick++/demo/button.sh \
-	Magick++/demo/demo.sh \
-	Magick++/demo/gravity.sh \
-	Magick++/demo/piddle.sh \
-	Magick++/demo/shapes.sh
 endif
 
 MAGICKPP_SCRIPTS_OPT = \
