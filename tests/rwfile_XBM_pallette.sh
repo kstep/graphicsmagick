@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile -filespec 'out_pallette_%d' ${SRCDIR}/input_pallette.miff XBM
+${MEMCHECK} ./rwfile -filespec 'out_pallette_%d' ${SRCDIR}/input_pallette.miff XBM

@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile -filespec 'out_bilevel_%d' ${SRCDIR}/input_bilevel.miff PSD
+${MEMCHECK} ./rwfile -filespec 'out_bilevel_%d' ${SRCDIR}/input_bilevel.miff PSD

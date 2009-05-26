@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./constitute -storagetype long ${SRCDIR}/input_truecolor.miff prgb
+${MEMCHECK} ./constitute -storagetype long ${SRCDIR}/input_truecolor.miff prgb

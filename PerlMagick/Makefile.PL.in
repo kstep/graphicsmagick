@@ -102,11 +102,11 @@ sub MY::makeaperl {
 #
 # Substitutions for "test" section.
 #
-sub MY::test {
-     package MY; # so that "SUPER" works right
-     my $inherited = shift->SUPER::test(@_);
-
+#sub MY::test {
+#     package MY; # so that "SUPER" works right
+#     my $inherited = shift->SUPER::test(@_);
+#
      # Run tests in our environment
-     $inherited =~ s:PERL_DL_NONLAZY=1:@SHELL@ ../rungm.sh PERL_DL_NONLAZY=1:g ;
-     $inherited;
- }
+#     $inherited =~ s:PERL_DL_NONLAZY=1:@SHELL@ ../rungm.sh PERL_DL_NONLAZY=1:g ;
+#     $inherited;
+# }

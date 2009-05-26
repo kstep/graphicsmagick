@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwblob ${SRCDIR}/input_pallette.miff MAT
+${MEMCHECK} ./rwblob ${SRCDIR}/input_pallette.miff MAT

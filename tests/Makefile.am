@@ -875,6 +875,7 @@ CHECK_DEEP_TYPES = truecolor10 truecolor12 truecolor16
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
+	CIN \
 	DIB \
 	DPX \
 	EPDF \
@@ -1033,7 +1034,7 @@ generate-tests-scripts:
 	echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	echo "" >> $${sh_file} ; \
 	echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	echo "\$${RUNENV} \$${MEMCHECK} ./drawtest drawtest_out.miff" >> "$$sh_file" ; \
+	echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" >> "$$sh_file" ; \
 	chmod +x "$$sh_file"
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
@@ -1048,7 +1049,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1065,7 +1066,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1082,7 +1083,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1099,7 +1100,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1116,7 +1117,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1133,7 +1134,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1150,7 +1151,7 @@ generate-tests-scripts:
 	    echo "# package; otherwise see http://www.graphicsmagick.org/www/Copyright.html." >> "$${sh_file}" ; \
 	    echo "" >> $${sh_file} ; \
 	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${RUNENV} \$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
+	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done

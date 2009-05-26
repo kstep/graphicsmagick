@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile -filespec 'out_truecolor_70x46_%d' -size 70x46 ${SRCDIR}/input_truecolor_70x46.miff UYVY
+${MEMCHECK} ./rwfile -filespec 'out_truecolor_70x46_%d' -size 70x46 ${SRCDIR}/input_truecolor_70x46.miff UYVY

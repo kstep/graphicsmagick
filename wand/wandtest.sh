@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/wand/common.sh
-${RUNENV} ${MEMCHECK} ./wandtest
+${MEMCHECK} ./wandtest

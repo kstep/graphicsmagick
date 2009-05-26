@@ -57,14 +57,18 @@ else
 SRCDIR="$(srcdir)/"
 endif
 
-RUNENV = $(SHELL) `pwd`/rungm.sh
-
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
+	GM="$(MEMCHECK) @abs_top_builddir@/utilities/gm" \
+	LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}" \
+	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
+	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
+	MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@' \
+	MAKE="$(MAKE)" \
+	MAKEFLAGS="$(MAKEFLAGS)" \
 	MEMCHECK="$(MEMCHECK)" \
-        RUNENV="$(RUNENV)" \
-	SRCDIR=$(SRCDIR) \
-	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
+	PATH="@abs_top_builddir@/utilities:${PATH}" \
+	SRCDIR=$(SRCDIR)
 
 # Test extensions
 TEST_EXTENSIONS = .sh

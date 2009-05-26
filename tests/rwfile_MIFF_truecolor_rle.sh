@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile  -filespec 'out_truecolor_rle_%d' -compress rle ${SRCDIR}/input_truecolor.miff MIFF
+${MEMCHECK} ./rwfile  -filespec 'out_truecolor_rle_%d' -compress rle ${SRCDIR}/input_truecolor.miff MIFF

@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile  -filespec 'out_gray_none_%d' -compress none ${SRCDIR}/input_gray.miff MIFF
+${MEMCHECK} ./rwfile  -filespec 'out_gray_none_%d' -compress none ${SRCDIR}/input_gray.miff MIFF
