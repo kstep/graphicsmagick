@@ -159,6 +159,7 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/ping.t
 t/png/input.mng
 t/png/input_16.png
 t/png/input_256.png

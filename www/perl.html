@@ -2828,7 +2828,7 @@ You can specify more than one filename but only one filehandle:
 </BLOCKQUOTE>
 <PRE STYLE="margin-left: 0.39in; margin-right: 0.39in">  ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
   ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;\*IMAGE);
-  ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);</PRE><BLOCKQUOTE>
+  ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;@blob);</PRE><BLOCKQUOTE>
 This is a more efficient and less memory intensive way to query if an
 image exists and what its characteristics are. 
 </BLOCKQUOTE>

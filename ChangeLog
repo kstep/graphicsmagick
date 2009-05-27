@@ -1,3 +1,11 @@
+2009-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Fix Ping of blob.
+
+	* PerlMagick/t/ping.t: Added tests for pinging files and blobs.
+
+	* www/perl.html: Ping blob syntax is like $image->Ping(blob=>@blob).
+
 2009-05-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* version.sh: Define PACKAGE_STRING.

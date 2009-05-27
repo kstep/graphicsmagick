@@ -6765,16 +6765,15 @@ Ping(ref,...)
     else
       for (n=0, i=0; i < ac; i++)
       {
-        list[n]=(char *) SvPV(ST(i+1),na);
-        if ((items >= 3) &&
-            strEQcase(package_info->image_info->filename,"blob"))
-          {
-            STRLEN
-              length;
+	STRLEN
+	  length;
 
-            i++;
-            package_info->image_info->blob=(void *) (SvPV(ST(i),length));
-            package_info->image_info->length=length;
+        list[n]=(char *) SvPV(ST(i+1),length);
+        if ((items >= 3) && strEQcase(list[n],"blob"))
+          {
+	    package_info->image_info->blob=(void *) (SvPV(ST(i+2),length));
+            package_info->image_info->length=(size_t) length;
+	    continue;
           }
         if ((items >= 3) && strEQcase(list[n],"filename"))
           continue;
