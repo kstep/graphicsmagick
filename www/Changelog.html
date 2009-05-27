@@ -24,6 +24,12 @@
 2009-05-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/Magick.xs: Fix Ping of blob.
+
+  <LI> PerlMagick/t/ping.t: Added tests for pinging files and blobs.
+
+  <LI> www/perl.rst: Ping blob syntax is like $image-&gt;Ping(blob=&gt;@blob).
+
   <LI> PerlMagick/Makefile.PL.in: Increase the probability of
         PerlMagick build success by using the user-specified C compiler as
         the linker if the C compiler was already used as the linker.  This

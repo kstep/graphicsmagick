@@ -7,8 +7,10 @@ Magick.xs
 Makefile.PL
 Makefile.PL.in
 Makefile.am
+Makefile.in
 Makefile.nt
 Makefile.old
+PerlMagickCheck.sh.in
 README.txt
 build_manifest.sh
 demo/Generic.ttf
@@ -172,6 +174,7 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/ping.t
 t/png/input.mng
 t/png/input_16.png
 t/png/input_256.png
