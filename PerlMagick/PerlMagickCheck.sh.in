@@ -5,6 +5,7 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
+echo '=== Environment ==='
 echo "LD_LIBRARY_PATH='${LD_LIBRARY_PATH}'"
 echo "MAGICK_CODER_MODULE_PATH='${MAGICK_CODER_MODULE_PATH}'"
 echo "MAGICK_CONFIGURE_PATH='${MAGICK_CONFIGURE_PATH}'"
@@ -15,6 +16,8 @@ echo "MEMCHECK='${MEMCHECK}'"
 echo "PATH='${PATH}'"
 echo "SRCDIR='${SRCDIR}'"
 echo "srcdir='${srcdir}'"
+echo '==================='
+echo ''
 
 set -x
 
@@ -28,10 +31,10 @@ if test -z "${MAKE}" ; then
   MAKE=make
 fi
 
-if test -x PerlMagick ; then
+if test -x PerlMagick -a -f Makefile.aperl ; then
   # Static build test incantation
   ${MAKE} -f Makefile.aperl CC='@CC@' test
-elif test -f Makefile ; then
+elif test -f Makefile -a -f Magick.o ; then
   # Shared build test incantation
   ${MAKE} CC='@CC@' test
 else

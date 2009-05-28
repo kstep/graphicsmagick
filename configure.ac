@@ -594,13 +594,13 @@ AC_ARG_WITH(magick-plus-plus,
 	      [with_magick_plus_plus=$withval],
 	      [with_magick_plus_plus='yes'])
 
-# Disable build/install of PerlMagick.
+# Enable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --without-perl          disable build/install of PerlMagick
+	      [  --with-perl             enable build/install of PerlMagick
        or
   --with-perl=PERL        use specified Perl binary to configure PerlMagick],
 	      [with_perl=$withval],
-	      [with_perl='yes'])
+	      [with_perl='no'])
 
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH(perl-options,

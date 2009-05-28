@@ -172,7 +172,7 @@ cat <<!!
      s/+!a!/<\/a>/
      s/!a href=/<a href=/
      s/ *!o!/<dd>!o!/
-     s/!o!/<img SRC=\"..\/images\/ball.png\" ALT=\"*\">/
+     s/!o!/<img SRC=\"images\/ball.png\" ALT=\"*\">/
      s/^ *$/<br>\&nbsp;<br>/
 
      s/<tab>/<tab> cellspacing=\"0\" cellpadding=\"2\">/

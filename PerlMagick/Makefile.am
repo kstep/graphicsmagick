@@ -25,9 +25,9 @@ PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
 PERLMAKEFILE=$(PERLMAGICK)/Makefile
 
 PERLMAGICK_ALL_LOCAL_TARGETS = all-perl
-PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS = install-exec-perl
+#PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS = install-exec-perl
 PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS = 
-PERLMAGICK_UNINSTALL_LOCAL_TARGETS = uninstall-exec-perl
+#PERLMAGICK_UNINSTALL_LOCAL_TARGETS = uninstall-exec-perl
 PERLMAGICK_CLEAN_LOCAL_TARGETS = clean-perl
 PERLMAGICK_DISTCLEAN_LOCAL_TARGETS = clean-perl
 PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
@@ -35,9 +35,11 @@ PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
 
 PERLMAGICK_TESTS = PerlMagick/PerlMagickCheck.sh
 
-PERLMAGICK_CHECKSCRIPTS = perl-build
+#PERLMAGICK_CHECKSCRIPTS = perl-build
 
 if WITH_PERL_DYNAMIC
+
+PERLMAGICK_CHECKSCRIPTS =
 
 $(PERLMAKEFILE): perl-sources $(LIBMAGICK) $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)
@@ -47,7 +49,7 @@ install-exec-perl: $(PERLMAKEFILE)
 	$(MAKE) CC='@CC@' install && \
 	$(MAKE) clean && rm -f  Makefile.old )
 
-all-perl:
+all-perl: perl-sources
 
 uninstall-exec-perl: $(PERLMAKEFILE)
 	echo "Uninstall not supported for PerlMagick"
@@ -62,6 +64,8 @@ else
 if WITH_PERL_STATIC
 
 PERLSTATICNAME=PerlMagick
+
+PERLMAGICK_CHECKSCRIPTS = perl-build
 
 $(PERLMAKEFILE): perl-sources $(LIBMAGICK) $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS) && $(MAKE) Makefile ; $(MAKE) Makefile

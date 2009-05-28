@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003-2009 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998,1999 E. I. du Pont de Nemours and Company
 #
@@ -12,7 +12,7 @@ Introduction
     PerlMagick, is an objected-oriented Perl interface to GraphicsMagick.
     Use the module to read, manipulate, or write an image or image
     sequence from within a Perl script. This makes it suitable for Web
-    CGI scripts. You must have GraphicsMagick 1.0.0 or above installed on
+    CGI scripts. You must have GraphicsMagick 1.2 or above installed on
     your system for this module to work properly.
 
     See
@@ -28,18 +28,21 @@ Introduction
 
 Installation 
 
-    PerlMagick is installed by default as part of GraphicsMagick.
-    GraphicsMagick does not provide a seperate distribution of
-    PerlMagick. These installation notes may be of use if you choose not
-    to use GraphicsMagick's configure to configure PerlMagick, or you
-    want to do something unusual.
+    PerlMagick is configured by default by GraphicsMagick in order to
+    create a starting Makefile.PL.  Additional edits to Makefile.PL
+    may be required.  GraphicsMagick does not provide a seperate
+    distribution of PerlMagick.  Please follow the applicable steps
+    described here in order to complete the installation of
+    PerlMagick.
 
     Get the GraphicsMagick distribution and type the following: 
 
-        gunzip -c GraphicsMagick-1.0.0.tar.gz | tar -xvf -
+        gunzip -c GraphicsMagick-1.2.tar.gz | tar -xvf -
         cd GraphicsMagick
         ./configure --enable-shared
         make
+        su root (if necessary)
+        make install
         cd PerlMagick
 
     If you used GraphicsMagick configure then Makefile.PL should already
@@ -59,6 +62,7 @@ Installation
         
         perl Makefile.PL
         make
+        su root (if necessary)
         make install
 
     To create and install a new 'perl' executable (replacing your
@@ -98,9 +102,12 @@ Testing PerlMagick
     
         make test
 
-    to verify that PERL can load the PerlMagick extension ok.  Chances are
-    some of the tests will fail if you do not have the proper delegates
-    installed for formats like JPEG, TIFF, etc.
+    to verify that PERL can load the PerlMagick extension ok.  Chances
+    are some of the tests will fail if you do not have the proper
+    delegates installed for formats like JPEG, TIFF, etc.  If 'make
+    test' fails in some gruesome way (e.g. many tests fail), then it
+    is advised not to install PerlMagick until the problem is
+    resolved.
 
     To see a number of PerlMagick demonstration scripts, type
     

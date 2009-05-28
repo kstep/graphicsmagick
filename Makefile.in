@@ -702,7 +702,8 @@ coders_pdb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 @WITH_MODULES_TRUE@am_coders_pdb_la_rpath = -rpath $(codersdir)
 coders_pdf_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_pdf_la_OBJECTS = coders/coders_pdf_la-pdf.lo
 coders_pdf_la_OBJECTS = $(am_coders_pdf_la_OBJECTS)
 coders_pdf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -767,7 +768,7 @@ coders_ps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 @WITH_MODULES_TRUE@am_coders_ps_la_rpath = -rpath $(codersdir)
 coders_ps2_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_ps2_la_OBJECTS = coders/coders_ps2_la-ps2.lo
 coders_ps2_la_OBJECTS = $(am_coders_ps2_la_OBJECTS)
 coders_ps2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -776,7 +777,7 @@ coders_ps2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 @WITH_MODULES_TRUE@am_coders_ps2_la_rpath = -rpath $(codersdir)
 coders_ps3_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_ps3_la_OBJECTS = coders/coders_ps3_la-ps3.lo
 coders_ps3_la_OBJECTS = $(am_coders_ps3_la_OBJECTS)
 coders_ps3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -870,6 +871,7 @@ coders_tga_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_tga_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_tga_la_rpath = -rpath $(codersdir)
 coders_tiff_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_tiff_la_OBJECTS = coders/coders_tiff_la-tiff.lo
 coders_tiff_la_OBJECTS = $(am_coders_tiff_la_OBJECTS)
@@ -2856,7 +2858,7 @@ coders_pdb_la_LIBADD = $(LIBMAGICK)
 coders_pdf_la_SOURCES = coders/pdf.c
 coders_pdf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
+coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
 
 # PICT coder module
 coders_pict_la_SOURCES = coders/pict.c
@@ -2904,13 +2906,13 @@ coders_ps_la_LIBADD = $(LIBMAGICK) $(LIB_GS) $(LIB_MATH)
 coders_ps2_la_SOURCES = coders/ps2.c
 coders_ps2_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps2_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_ps2_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
+coders_ps2_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PS3 coder module
 coders_ps3_la_SOURCES = coders/ps3.c
 coders_ps3_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_ps3_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_ps3_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
+coders_ps3_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PSD coder module
 coders_psd_la_SOURCES = coders/psd.c
@@ -2988,7 +2990,7 @@ coders_tga_la_LIBADD = $(LIBMAGICK)
 coders_tiff_la_SOURCES = coders/tiff.c
 coders_tiff_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_tiff_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_tiff_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB)
+coders_tiff_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # TILE coder module
 coders_tile_la_SOURCES = coders/tile.c
@@ -5059,15 +5061,18 @@ UTILITIES_CLEANFILES = \
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
 @WITH_PERL_TRUE@PERLMAGICK_ALL_LOCAL_TARGETS = all-perl
-@WITH_PERL_TRUE@PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS = install-exec-perl
+#PERLMAGICK_INSTALL_EXEC_LOCAL_TARGETS = install-exec-perl
 @WITH_PERL_TRUE@PERLMAGICK_INSTALL_DATA_LOCAL_TARGETS = 
-@WITH_PERL_TRUE@PERLMAGICK_UNINSTALL_LOCAL_TARGETS = uninstall-exec-perl
+#PERLMAGICK_UNINSTALL_LOCAL_TARGETS = uninstall-exec-perl
 @WITH_PERL_TRUE@PERLMAGICK_CLEAN_LOCAL_TARGETS = clean-perl
 @WITH_PERL_TRUE@PERLMAGICK_DISTCLEAN_LOCAL_TARGETS = clean-perl
 @WITH_PERL_TRUE@PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
 #PERLMAGICK_CHECK_LOCAL_TARGETS = check-perl
 @WITH_PERL_TRUE@PERLMAGICK_TESTS = PerlMagick/PerlMagickCheck.sh
-@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = perl-build
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = perl-build
+
+#PERLMAGICK_CHECKSCRIPTS = perl-build
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
 
 # Pkgconfig directory
@@ -10960,7 +10965,7 @@ perl-sources:
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' install && \
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@all-perl:
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@all-perl: perl-sources
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@uninstall-exec-perl: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	echo "Uninstall not supported for PerlMagick"

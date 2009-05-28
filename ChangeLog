@@ -1,3 +1,25 @@
+2009-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am (coders_tiff_la_LIBADD): Libtiff may now also
+	depend on libjbig and the math library.
+
+	* doc/gmdoc2html: Fix link to ball.png.  Problem was reported by
+	Wes Fox.
+
+	* VisualMagick/installer/inc/files-documentation.isx: Include Wand
+	API documentation.
+
+	* VisualMagick/installer/inc/icons-associate.isx: Fix Windows
+	Start menu link to web pages.
+
+	* configure.ac: --with-perl is changed to --without-perl since
+	building PerlMagick is no longer the default.  Building PerlMagick
+	automatically has caused too many problems.
+
+	* PerlMagick/Makefile.am: GraphicsMagick no longer automatically
+	installs PerlMagick.  Use the procedure described by
+	PerlMagick/README.txt to build and install PerlMagick.
+
 2009-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Debian stores Ghostscript fonts under

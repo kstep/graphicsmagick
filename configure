@@ -1923,7 +1923,7 @@ Optional Packages:
   --with-quantum-depth    number of bits in a pixel quantum (default 8)
   --with-frozenpaths      enable frozen delegate paths
   --without-magick-plus-plus disable build/install of Magick++
-  --without-perl          disable build/install of PerlMagick
+  --with-perl             enable build/install of PerlMagick
        or
   --with-perl=PERL        use specified Perl binary to configure PerlMagick
   --with-perl-options=OPTIONS  options to pass on command-line when
@@ -20041,13 +20041,13 @@ else
 fi
 
 
-# Disable build/install of PerlMagick.
+# Enable build/install of PerlMagick.
 
 # Check whether --with-perl was given.
 if test "${with_perl+set}" = set; then
   withval=$with_perl; with_perl=$withval
 else
-  with_perl='yes'
+  with_perl='no'
 fi
 
 

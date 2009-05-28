@@ -21,6 +21,31 @@
 </tr>
 </table>
 <p>
+2009-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/Makefile.am (coders_tiff_la_LIBADD): Libtiff may now also
+        depend on libjbig and the math library.
+
+  <LI> doc/gmdoc2html: Fix link to ball.png.  Problem was reported by
+        Wes Fox.
+
+  <LI> VisualMagick/installer/inc/files-documentation.isx: Include Wand
+        API documentation.
+
+  <LI> VisualMagick/installer/inc/icons-associate.isx: Fix Windows
+        Start menu link to web pages.
+
+  <LI> configure.ac: --with-perl is changed to --without-perl since
+        building PerlMagick is no longer the default.  Building PerlMagick
+        automatically has caused too many problems.
+
+  <LI> PerlMagick/Makefile.am: GraphicsMagick no longer automatically
+        installs PerlMagick.  Use the procedure described by
+        PerlMagick/README.txt to build and install PerlMagick.
+
+</UL>
+<p>
 2009-05-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
