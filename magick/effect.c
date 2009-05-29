@@ -2027,7 +2027,8 @@ static MedianPixelList *AllocateMedianList(const long width)
   MedianPixelList
     *skiplist;
 
-  skiplist=MagickAllocateMemory(MedianPixelList *,Max(sizeof(MedianPixelList),128));
+  skiplist=MagickAllocateMemory(MedianPixelList *,Max(sizeof(MedianPixelList),
+						      MAGICK_CACHE_LINE_SIZE));
   if (skiplist != (MedianPixelList *) NULL)
     {
       unsigned int

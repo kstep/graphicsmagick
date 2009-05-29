@@ -1,5 +1,8 @@
 2009-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Allow cache line size
+	to be set in one place in case we want to configure for it later.
+
 	* magick/effect.c (AllocateMedianList): Assure that allocated
 	stuctures do not occupy the same cache lines.
 

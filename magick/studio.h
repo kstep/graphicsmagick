@@ -16,6 +16,12 @@ extern "C" {
 #endif
 
 /*
+  Allow configuration of cache line size.  If smaller than actual
+  cache line size, then performance may suffer.
+*/
+#define MAGICK_CACHE_LINE_SIZE 128
+
+/*
   Note that the WIN32 and WIN64 definitions are provided by the build
   configuration rather than the compiler.  Definitions available from
   the Windows compiler are _WIN32 and _WIN64.

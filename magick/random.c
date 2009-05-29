@@ -51,7 +51,8 @@ MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
   if (kernel == (MagickRandomKernel *) NULL)
     {
       kernel=MagickAllocateMemory(MagickRandomKernel *,
-				  Max(sizeof(MagickRandomKernel),128));
+				  Max(sizeof(MagickRandomKernel),
+				      MAGICK_CACHE_LINE_SIZE));
       if (kernel == (MagickRandomKernel *) NULL)
 	MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
 			  UnableToAllocateRandomKernel);
