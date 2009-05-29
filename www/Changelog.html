@@ -24,6 +24,9 @@
 2009-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/effect.c (AllocateMedianList): Assure that allocated
+        stuctures do not occupy the same cache lines.
+
   <LI> magick/random.c (AcquireMagickRandomKernel): Assure that
         allocated random kernels do not occupy the same cache lines.
 
