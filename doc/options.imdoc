@@ -2007,7 +2007,8 @@ characters:</pp>
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   quantum depth
+     %q   image minimum bit depth
+     %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
@@ -2033,6 +2034,22 @@ titled <s>bird.miff</s> and whose width is 512 and height is 480.</pp>
 <pp>
 If the first character of <i>string</i> is <s>@</s>, the format
 is read from a file titled by the remaining characters in the string.</pp>
+
+<pp>
+The values of image type (<s>%p</s>) which may be returned include:</pp>
+
+<pre>
+     Bilevel
+     Grayscale
+     GrayscaleMatte
+     Palette
+     PaletteMatte
+     TrueColor
+     TrueColorMatte
+     ColorSeparation
+     ColorSeparationMatte
+     Optimize
+</pre>
 
 <pp>
 You can also use the following special formatting syntax to print Exif

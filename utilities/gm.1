@@ -1,4 +1,4 @@
-.TH gm 1 "2009/05/28" "GraphicsMagick"
+.TH gm 1 "2009/05/29" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1829,7 +1829,8 @@ characters:
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   quantum depth
+     %q   image minimum bit depth
+     %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
@@ -1849,6 +1850,19 @@ titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
 If the first character of \fIstring\fP is \fB@\fP, the format
 is read from a file titled by the remaining characters in the string.
+
+The values of image type (\fB%p\fP) which may be returned include:
+
+     Bilevel
+     Grayscale
+     GrayscaleMatte
+     Palette
+     PaletteMatte
+     TrueColor
+     TrueColorMatte
+     ColorSeparation
+     ColorSeparationMatte
+     Optimize
 
 You can also use the following special formatting syntax to print Exif
 information contained in the file:

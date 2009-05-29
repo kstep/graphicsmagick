@@ -2186,7 +2186,8 @@ characters:</font></td></tr></table>
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   quantum depth
+     %q   image minimum bit depth
+     %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
@@ -2208,6 +2209,20 @@ titled <strong>bird.miff</strong> and whose width is 512 and height is 480.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If the first character of <em>string</em> is <strong>@</strong>, the format
 is read from a file titled by the remaining characters in the string.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The values of image type (<strong>%p</strong>) which may be returned include:</font></td></tr></table>
+<pre>
+     Bilevel
+     Grayscale
+     GrayscaleMatte
+     Palette
+     PaletteMatte
+     TrueColor
+     TrueColorMatte
+     ColorSeparation
+     ColorSeparationMatte
+     Optimize
+</pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can also use the following special formatting syntax to print Exif
 information contained in the file:</font></td></tr></table>

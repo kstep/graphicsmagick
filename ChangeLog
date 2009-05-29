@@ -1,3 +1,8 @@
+2009-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document -format "%p".  Problem was reported
+	by Stijn Sanders.
+
 2009-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/Makefile.am (coders_tiff_la_LIBADD): Libtiff may now also
