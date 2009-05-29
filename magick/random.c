@@ -50,7 +50,7 @@ MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
   kernel=(MagickRandomKernel *) MagickTsdGetSpecific(kernel_key);
   if (kernel == (MagickRandomKernel *) NULL)
     {
-      kernel=MagickAllocateMemory(MagickRandomKernel *,sizeof(MagickRandomKernel));
+      kernel=MagickAllocateMemory(MagickRandomKernel *,Max(sizeof(MagickRandomKernel),128));
       if (kernel == (MagickRandomKernel *) NULL)
 	MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
 			  UnableToAllocateRandomKernel);

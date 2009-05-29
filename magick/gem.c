@@ -162,8 +162,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %    o noise_type:  The type of noise: Uniform, gaussian,
 %      multiplicative Gaussian, impulse, laplacian, or Poisson.
 %
-%    o kernel: Kernel for random number generator.  If 'kernel' is NULL,
-%      then the global kernel value is used.
+%    o kernel: Kernel for random number generator.
 %
 */
 #define NoiseEpsilon   1.0e-5
@@ -191,9 +190,6 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
 #if QuantumDepth > 8
   pixel /= MaxRGBDouble/255.0;
 #endif
-
-  if (kernel == (MagickRandomKernel *) NULL)
-    kernel = AcquireMagickRandomKernel();
 
   alpha=MagickRandomRealInlined(kernel);
   if (alpha == 0.0)
@@ -313,7 +309,8 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
   double
     value;
 
-  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type,0);
+  value=(double) pixel+GenerateDifferentialNoise(pixel,noise_type,
+						 AcquireMagickRandomKernel());
   return (RoundDoubleToQuantum(value));
 }
 

@@ -1,5 +1,11 @@
 2009-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/random.c (AcquireMagickRandomKernel): Assure that
+	allocated random kernels do not occupy the same cache lines.
+
+	* magick/gem.c (GenerateDifferentialNoise): User is required to
+	supply random kernel.
+
 	* doc/options.imdoc: Document -format "%p".  Problem was reported
 	by Stijn Sanders.
 
