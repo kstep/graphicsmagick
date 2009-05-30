@@ -99,6 +99,52 @@ TESTS_JP2_XFAIL_TESTS = \
 	tests/rwfile_JP2_truecolor16.sh
 endif
 
+if !HasPSDelegate
+TESTS_PS_XFAIL_TESTS = \
+	tests/rwfile_EPDF_bilevel.sh \
+	tests/rwfile_EPDF_gray.sh \
+	tests/rwfile_EPDF_pallette.sh \
+	tests/rwfile_EPDF_truecolor.sh \
+	tests/rwfile_EPDF_truecolor10.sh \
+	tests/rwfile_EPDF_truecolor12.sh \
+	tests/rwfile_EPDF_truecolor16.sh \
+	tests/rwfile_EPI_bilevel.sh \
+	tests/rwfile_EPI_gray.sh \
+	tests/rwfile_EPI_pallette.sh \
+	tests/rwfile_EPI_truecolor.sh \
+	tests/rwfile_EPI_truecolor10.sh \
+	tests/rwfile_EPI_truecolor12.sh \
+	tests/rwfile_EPI_truecolor16.sh \
+	tests/rwfile_EPSF_bilevel.sh \
+	tests/rwfile_EPSF_gray.sh \
+	tests/rwfile_EPSF_pallette.sh \
+	tests/rwfile_EPSF_truecolor.sh \
+	tests/rwfile_EPSF_truecolor10.sh \
+	tests/rwfile_EPSF_truecolor12.sh \
+	tests/rwfile_EPSF_truecolor16.sh \
+	tests/rwfile_EPSI_bilevel.sh \
+	tests/rwfile_EPSI_gray.sh \
+	tests/rwfile_EPSI_pallette.sh \
+	tests/rwfile_EPSI_truecolor.sh \
+	tests/rwfile_EPSI_truecolor10.sh \
+	tests/rwfile_EPSI_truecolor12.sh \
+	tests/rwfile_EPSI_truecolor16.sh \
+	tests/rwfile_EPS_bilevel.sh \
+	tests/rwfile_EPS_gray.sh \
+	tests/rwfile_EPS_pallette.sh \
+	tests/rwfile_EPS_truecolor.sh \
+	tests/rwfile_EPS_truecolor10.sh \
+	tests/rwfile_EPS_truecolor12.sh \
+	tests/rwfile_EPS_truecolor16.sh \
+	tests/rwfile_PS_bilevel.sh \
+	tests/rwfile_PS_gray.sh \
+	tests/rwfile_PS_pallette.sh \
+	tests/rwfile_PS_truecolor.sh \
+	tests/rwfile_PS_truecolor10.sh \
+	tests/rwfile_PS_truecolor12.sh \
+	tests/rwfile_PS_truecolor16.sh
+endif
+
 if !HasPNG
 TESTS_PNG_XFAIL_TESTS = \
 	tests/rwblob_MNG_bilevel.sh \
@@ -199,6 +245,7 @@ TESTS_XFAIL_TESTS = \
 	$(TESTS_JP2_XFAIL_TESTS) \
 	$(TESTS_JPEG_XFAIL_TESTS) \
 	$(TESTS_PNG_XFAIL_TESTS) \
+	$(TESTS_PS_XFAIL_TESTS) \
 	$(TESTS_TIFF_XFAIL_TESTS) \
 	$(TESTS_X11_XFAIL_TESTS)
 

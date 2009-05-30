@@ -49,8 +49,6 @@
 /*
   Define declarations.
 */
-#define MaxCacheViews  (Max(Max(cache_info->columns,cache_info->rows),256)+3)
-
 #if defined(POSIX) && defined(S_IRUSR)
 #  define S_MODE     (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
 #elif defined (MSWINDOWS)
@@ -2277,7 +2275,8 @@ AllocateCacheNexus()
   NexusInfo
     *nexus_info;
 
-  nexus_info=MagickAllocateMemory(NexusInfo *,sizeof(NexusInfo));
+  nexus_info=MagickAllocateMemory(NexusInfo *,Max(sizeof(NexusInfo),
+						  MAGICK_CACHE_LINE_SIZE));
   if (nexus_info != ((NexusInfo *) NULL))
     {
       (void) memset(nexus_info,0,sizeof(NexusInfo));

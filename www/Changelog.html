@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2009-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am (TESTS_XFAIL_TESTS): If Ghostscript is not
+        available then XFAIL the tests which depend on it.
+
+  <LI> magick/pixel_cache.c (GetCacheInfo): Assure that allocated
+        stuctures do not occupy the same cache lines.
+
+</UL>
+<p>
 2009-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

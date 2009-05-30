@@ -3693,6 +3693,50 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasJP2_FALSE@	tests/rwfile_JP2_truecolor12.sh \
 @HasJP2_FALSE@	tests/rwfile_JP2_truecolor16.sh
 
+@HasPSDelegate_FALSE@TESTS_PS_XFAIL_TESTS = \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPDF_truecolor16.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPI_truecolor16.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSF_truecolor16.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPSI_truecolor16.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_EPS_truecolor16.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_truecolor.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_truecolor10.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_truecolor12.sh \
+@HasPSDelegate_FALSE@	tests/rwfile_PS_truecolor16.sh
+
 @HasPNG_FALSE@TESTS_PNG_XFAIL_TESTS = \
 @HasPNG_FALSE@	tests/rwblob_MNG_bilevel.sh \
 @HasPNG_FALSE@	tests/rwblob_MNG_gray.sh \
@@ -3785,6 +3829,7 @@ TESTS_XFAIL_TESTS = \
 	$(TESTS_JP2_XFAIL_TESTS) \
 	$(TESTS_JPEG_XFAIL_TESTS) \
 	$(TESTS_PNG_XFAIL_TESTS) \
+	$(TESTS_PS_XFAIL_TESTS) \
 	$(TESTS_TIFF_XFAIL_TESTS) \
 	$(TESTS_X11_XFAIL_TESTS)
 

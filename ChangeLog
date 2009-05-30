@@ -1,3 +1,11 @@
+2009-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am (TESTS_XFAIL_TESTS): If Ghostscript is not
+	available then XFAIL the tests which depend on it.
+
+	* magick/pixel_cache.c (GetCacheInfo): Assure that allocated
+	stuctures do not occupy the same cache lines.
+
 2009-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Allow cache line size
