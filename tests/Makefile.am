@@ -101,6 +101,10 @@ endif
 
 if !HasPSDelegate
 TESTS_PS_XFAIL_TESTS = \
+	tests/rwblob_EPDF_bilevel.sh \
+	tests/rwblob_EPDF_gray.sh \
+	tests/rwblob_EPDF_pallette.sh \
+	tests/rwblob_EPDF_truecolor.sh \
 	tests/rwfile_EPDF_bilevel.sh \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \

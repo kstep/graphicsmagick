@@ -3694,6 +3694,10 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasJP2_FALSE@	tests/rwfile_JP2_truecolor16.sh
 
 @HasPSDelegate_FALSE@TESTS_PS_XFAIL_TESTS = \
+@HasPSDelegate_FALSE@	tests/rwblob_EPDF_bilevel.sh \
+@HasPSDelegate_FALSE@	tests/rwblob_EPDF_gray.sh \
+@HasPSDelegate_FALSE@	tests/rwblob_EPDF_pallette.sh \
+@HasPSDelegate_FALSE@	tests/rwblob_EPDF_truecolor.sh \
 @HasPSDelegate_FALSE@	tests/rwfile_EPDF_bilevel.sh \
 @HasPSDelegate_FALSE@	tests/rwfile_EPDF_gray.sh \
 @HasPSDelegate_FALSE@	tests/rwfile_EPDF_pallette.sh \
