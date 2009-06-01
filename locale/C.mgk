@@ -598,6 +598,9 @@
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
+      <Message name="ImageDifferenceExceedsLimit">
+        image difference exceeds limit (%s)
+      </Message>
       <Message name="ImageDoesNotContainResolution">
         image does not contain resolution
       </Message>

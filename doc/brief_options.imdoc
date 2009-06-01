@@ -393,6 +393,10 @@
 <lopt>-mattecolor <color></opt>
 <abs>specify the color to be used with the <s>-frame</s> option</abs>
 </utils>
+<utils apps=compare>
+<lopt>-maximum-error <limit></opt>
+<abs>specifies the maximum amount of total image error</abs>
+</utils>
 <utils apps=convert,mogrify>
 <opt>-median <radius></opt>
 <abs>apply a median filter to the image</abs>

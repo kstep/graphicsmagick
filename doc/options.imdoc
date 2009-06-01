@@ -2963,6 +2963,24 @@ option.</pp>
 
 
 
+<!-- ------------ -maximum-error ------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-maximum-error <limit></opt>
+
+<abs>specifies the maximum amount of total image error</abs>
+
+<pp>
+Specifies the maximum amount of total image error (based on comparison
+using a specified metric) before an error ("image difference exceeds
+limit") is reported.  The error is reported via a non-zero command
+execution return status.</pp>
+
+</utils>
+
+
+
+
 <!-- ------------ -median ------------------------------------------- -->
 
 <utils apps=convert,mogrify>

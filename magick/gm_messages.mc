@@ -1055,6 +1055,12 @@ image colorspace differs
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorImageDifferenceExceedsLimit
+Language        = English
+image difference exceeds limit (%s)
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorImageDoesNotContainResolution
 Language        = English
 image does not contain resolution

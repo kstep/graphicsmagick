@@ -1654,7 +1654,11 @@ CompareImageCommand(ImageInfo *image_info,
 
   char
     *filename,
+    message[MaxTextExtent],
     *option;
+
+  double
+    maximum_error;
 
   Image
     *compare_image,
@@ -1683,6 +1687,7 @@ CompareImageCommand(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
+  maximum_error=DBL_MAX;
 
   if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
       LocaleCompare("-?",argv[1]) == 0)))
@@ -1981,7 +1986,19 @@ CompareImageCommand(ImageInfo *image_info,
       case 'm':
       {
         if (LocaleCompare("matte",option+1) == 0)
-          break;
+	  break;
+	if (LocaleCompare("maximum-error",option+1) == 0)
+	  {
+	    if (*option == '-')
+              {
+		i++;
+		if (i == argc)
+		  ThrowCompareException(OptionError,MissingArgument,
+                                        option);
+		maximum_error=atof(argv[i]);
+	      }
+	    break;
+	  }
         if (LocaleCompare("metric",option+1) == 0)
           {
             if (*option == '-')
@@ -2127,6 +2144,13 @@ CompareImageCommand(ImageInfo *image_info,
         if (reference_image->matte)
           fprintf(stdout," Opacity: %#-6.2f\n",statistics.opacity);
         fprintf(stdout,"   Total: %#-6.2f\n",statistics.combined);
+
+	if (statistics.combined < maximum_error)
+	  {
+	    status &= MagickFail;
+	    FormatString(message,"%#.2f",statistics.combined);
+	    ThrowException(exception,ImageError,ImageDifferenceExceedsLimit,message);
+	  }
       }
     else
       {
@@ -2138,7 +2162,13 @@ CompareImageCommand(ImageInfo *image_info,
         if (reference_image->matte)
           fprintf(stdout," Opacity: %#-12.10f % 10.1f\n",statistics.opacity,statistics.opacity*MaxRGBDouble);
         fprintf(stdout,"   Total: %#-12.10f % 10.1f\n",statistics.combined,statistics.combined*MaxRGBDouble);
-        
+
+	if (statistics.combined > maximum_error)
+	  {
+	    status &= MagickFail;
+	    FormatString(message,"%#.10f",statistics.combined);
+	    ThrowException(exception,ImageError,ImageDifferenceExceedsLimit,message);
+	  }
       }
   }
 
@@ -2155,7 +2185,11 @@ CompareImageCommand(ImageInfo *image_info,
         {
           (void) strlcpy(difference_image->filename,difference_filename,
                          MaxTextExtent);
-          status&=WriteImage(image_info,difference_image);
+          if (WriteImage(image_info,difference_image) == MagickFail)
+	    {
+	      status &= MagickFail;
+	      CopyException(exception,&difference_image->exception);
+	    }
         }
     }
 
@@ -2213,6 +2247,7 @@ static void CompareUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
+      "-maximum-error       maximum total difference before returning error",
       "-matte               store matte channel if the image has one",
       "-metric              comparison metric (MAE, MSE, PAE, PSNR, RMSE)",
       "-monitor             show progress indication",

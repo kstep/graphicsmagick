@@ -1,3 +1,9 @@
+2009-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CompareImageCommand): Add a -maximum-error
+	option to 'compare' so that it can easily be used in boolean logic
+	when comparing images.
+
 2009-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am (TESTS_XFAIL_TESTS): If Ghostscript is not
