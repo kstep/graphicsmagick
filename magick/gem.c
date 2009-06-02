@@ -36,7 +36,6 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/pixel_cache.h"
 #include "magick/gem.h"
 #include "magick/utility.h"
 
@@ -749,89 +748,6 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
   (void) memset(affine,0,sizeof(AffineMatrix));
   affine->sx=1.0;
   affine->sy=1.0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n t e r p o l a t e C o l o r                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InterpolateColor applies bi-linear interpolation between a pixel and
-%  it's neighbors.
-%
-%  The format of the InterpolateColor method is:
-%
-%      PixelPacket InterpolateColor(const Image *image,const double x_offset,
-%        const double y_offset,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o x_offset,y_offset: A double representing the current (x,y) position of
-%      the pixel.
-%
-%
-*/
-MagickExport void
-InterpolateViewColor(const ViewInfo *view,
-                     PixelPacket *color,
-                     const double x_offset,
-                     const double y_offset,
-                     ExceptionInfo *exception)
-{
-  register const PixelPacket
-    *p;
-
-  p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
-  if (p == (const PixelPacket *) NULL)
-    {
-      (void) AcquireOneCacheViewPixel(view,color,(long) x_offset,
-                                      (long) y_offset,exception);
-    }
-  else
-    {
-      double
-        alpha,
-        beta,
-        one_minus_alpha,
-        one_minus_beta;
-
-      alpha=x_offset-floor(x_offset);
-      beta=y_offset-floor(y_offset);
-      one_minus_alpha=1.0-alpha;
-      one_minus_beta=1.0-beta;
-      color->red=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].red+alpha*p[1].red)+
-         beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
-      color->green=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].green+alpha*p[1].green)+
-         beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
-      color->blue=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].blue+alpha*p[1].blue)+
-         beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
-      color->opacity=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].opacity+alpha*p[1].opacity)+
-         beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
-    }
-}
-MagickExport PixelPacket InterpolateColor(const Image *image,
-  const double x_offset,const double y_offset,ExceptionInfo *exception)
-{
-  PixelPacket
-    color;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  InterpolateViewColor(AccessDefaultCacheView(image),&color,
-                       x_offset,y_offset,exception);
-  return color;
 }
 
 /*

@@ -1120,6 +1120,12 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
 
               point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
               point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
+	      /*
+		FIXME: It would be nice to support pixel interpolation
+		and different composition operators here.
+		Interpolation can be done by InterpolateColor() or
+		InterpolateViewColor().
+	      */
               (void) AcquireOnePixelByReference(composite,&pixel,(long) point.x,
                                                 (long) point.y,&image->exception);
               if (!composite->matte)

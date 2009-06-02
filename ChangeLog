@@ -1,3 +1,9 @@
+2009-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (InterpolateViewColor, InterpolateColor):
+	Moved from gem.c.  Gem functions should not be accessing the pixel
+	cache.
+
 2009-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (CompareImageCommand): Add a -maximum-error

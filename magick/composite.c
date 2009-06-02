@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2060,8 +2060,9 @@ CompositeImage(Image *canvas_image,
                 if (update_image->matte)
                   y_displace=(vertical_scale*(p->opacity-
                                               (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
-                *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
-                                    &canvas_image->exception);
+		InterpolateViewColor(AccessDefaultCacheView(canvas_image),r,
+				     x_offset+x+x_displace,y_offset+y+y_displace,
+				     &canvas_image->exception);
                 p++;
                 q++;
                 r++;
