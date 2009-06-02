@@ -1,3 +1,7 @@
+2009-06-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* /coders/txt.c Attempt to handle alpha channel.
+
 2009-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (InterpolateViewColor, InterpolateColor):

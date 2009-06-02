@@ -58,7 +58,7 @@ typedef enum
 	TXT_GM16B_PLAIN,
 	TXT_GM32B_HEX,
 	TXT_GM32B_PLAIN,
-	TXT_GM8B_HEX_Q,
+	TXT_GM8B_HEX_Q = 17,
 	TXT_GM8B_PLAIN_Q,
 	TXT_GM16B_HEX_Q,
 	TXT_GM16B_PLAIN_Q,
@@ -324,7 +324,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned char *BImgBuff;
     magick_uint16_t *WImgBuff;
     magick_uint32_t *DImgBuff;
-    magick_uint32_t R,G,B;
+    magick_uint32_t R,G,B,A;
     const PixelPacket *q;
     ImportPixelAreaOptions import_options;
 
@@ -401,16 +401,18 @@ TXT_FAIL:			//not a text data
    if(R>max) max=R;
 
    while(ch!=',')
-     {ch = ReadBlobByte(image);
-      if(ch==10 || ch==13) goto TXT_FAIL;
-      if(ch==EOF) break;}
+   { 
+     ch = ReadBlobByte(image);
+     if(ch==10 || ch==13) goto TXT_FAIL;
+     if(ch==EOF) break;
+   }
    ch=0;
    G = ReadInt(image,&ch);		//G
    if(G>max) max=G;
 
    while(ch!=',')
    {
-	 ch = ReadBlobByte(image);
+     ch = ReadBlobByte(image);
      if(ch==10 || ch==13) goto TXT_FAIL;
      if(ch==EOF) break;
    }
@@ -418,9 +420,22 @@ TXT_FAIL:			//not a text data
    B = ReadInt(image,&ch);		//B
    if(B>max) max=B;
 
+   if(status>16)
+   {
+     while(ch!=',')
+     {
+       ch = ReadBlobByte(image);
+       if(ch==10 || ch==13) goto TXT_FAIL;
+       if(ch==EOF) break;
+     }
+     ch=0;
+     A = ReadInt(image,&ch);		//A
+     if(A>max) max=A;
+   }
+
    while(ch!=')')
    {
-	 ch = ReadBlobByte(image);
+     ch = ReadBlobByte(image);
      if(ch==10 || ch==13) goto TXT_FAIL;
      if(ch==EOF) break;
    }
@@ -445,8 +460,9 @@ EndReading:
   image->depth = Min(QuantumDepth,NumOfPlanes);
   ImportPixelAreaOptionsInit(&import_options);
   import_options.endian = NativeEndian;
-
-  BImgBuff = MagickAllocateMemory(unsigned char *,(size_t)(x+1)*(3*NumOfPlanes/8));
+  
+  BImgBuff = MagickAllocateMemory(unsigned char *,
+     (size_t)(x+1) * ( ((status>16)?4:3) * NumOfPlanes/8));  
   WImgBuff = (magick_uint16_t *)BImgBuff;
   DImgBuff = (magick_uint32_t *)BImgBuff;  
   if(BImgBuff==NULL) 
@@ -468,15 +484,15 @@ EndReading:
       {readln(image,&ch); continue;}
     }
     
-    x=ReadInt(image,&ch);		// x
+    x = ReadInt(image,&ch);		// x
 
     while(ch!=',')
     {
        ch = ReadBlobByte(image);       
        if(ch==EOF) break;
     }
-    ch=0;
-    y=ReadInt(image,&ch);		// y
+    ch = 0;
+    y = ReadInt(image,&ch);		// y
 
     while(ch!=':')
     {
@@ -489,7 +505,7 @@ EndReading:
       if(ch==EOF) break;
     }
     ch=0;
-	R = ReadInt(image,&ch);	   // R	
+    R = ReadInt(image,&ch);		// R	
 
     while(ch!=',')
     {
@@ -505,7 +521,19 @@ EndReading:
       if(ch==EOF) break;
     }
     ch=0;
-    B = ReadInt(image,&ch);		// B    
+    B = ReadInt(image,&ch);		// B
+
+    if(status==TXT_GM8B_HEX_Q || status==TXT_GM16B_HEX_Q || status==TXT_GM32B_HEX_Q)
+    {
+      while(ch!=',')
+      {
+        ch = ReadBlobByte(image);       
+        if(ch==EOF) break;
+      }
+      ch=0;
+      A = ReadInt(image,&ch);		//A
+      if(A>max) max=A;
+    }
 
     while(ch!=')')
     {
@@ -519,7 +547,11 @@ EndReading:
     {
       q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);
       if (q == (PixelPacket *)NULL) break;	
-	  (void)ImportImagePixelArea(image,RGBQuantum,NumOfPlanes,
+      if(status>16)
+        (void)ImportImagePixelArea(image,RGBAQuantum,NumOfPlanes,
+		  BImgBuff + 4*x_min*(NumOfPlanes/8),&import_options,0);
+      else
+        (void)ImportImagePixelArea(image,RGBQuantum,NumOfPlanes,
 		  BImgBuff + 3*x_min*(NumOfPlanes/8),&import_options,0);
       if (!SyncImagePixels(image)) break;
 
@@ -527,56 +559,82 @@ EndReading:
 	  y_curr=y;
 	}
 
-	if(x<image->columns)
-	{
-      switch(NumOfPlanes)
+      if(x<image->columns)
+      {
+        if(status>16)
+        {
+          switch(NumOfPlanes)
 	  {
-	    case 8:   BImgBuff[0+3*x] = R;
-		          BImgBuff[1+3*x] = G;
-		 	      BImgBuff[2+3*x] = B;
-				  break;
-	    case 16:
-		          WImgBuff[0+3*x] = R;
-		          WImgBuff[1+3*x] = G;
-			      WImgBuff[2+3*x] = B;
-				  break;
-	    case 32:
-		          DImgBuff[0+3*x] = R;
-		          DImgBuff[1+3*x] = G;
-			      DImgBuff[2+3*x] = B;
-				  break;
+	    case 8: BImgBuff[0+4*x] = R;
+		    BImgBuff[1+4*x] = G;
+		    BImgBuff[2+4*x] = B;
+		    BImgBuff[3+4*x] = A;
+		    break;
+	    case 16:WImgBuff[0+4*x] = R;
+		    WImgBuff[1+4*x] = G;
+		    WImgBuff[2+4*x] = B;
+		    WImgBuff[3+4*x] = A;
+		    break;
+	    case 32:DImgBuff[0+4*x] = R;
+		    DImgBuff[1+4*x] = G;
+		    DImgBuff[2+4*x] = B;
+		    DImgBuff[3+4*x] = A;
+		    break;
 	  }    
-	  if(x_min>x_max) 
-	    x_max=x_min=x;
-	  else
+        }
+        else
+        {
+          switch(NumOfPlanes)
 	  {
-        if(x<x_min) x_min=x;
+	    case 8: BImgBuff[0+3*x] = R;
+		    BImgBuff[1+3*x] = G;
+		    BImgBuff[2+3*x] = B;
+		    break;
+	    case 16:WImgBuff[0+3*x] = R;
+		    WImgBuff[1+3*x] = G;
+		    WImgBuff[2+3*x] = B;
+		    break;
+	    case 32:DImgBuff[0+3*x] = R;
+		    DImgBuff[1+3*x] = G;
+		    DImgBuff[2+3*x] = B;
+		    break;
+	  }    
+        }
+	if(x_min>x_max) 
+	    x_max=x_min=x;
+	else
+	{
+          if(x<x_min) x_min=x;
 	    if(x>x_max) x_max=x;
-	  }
+	}
 	}
 
     readln(image,&ch);
     }
 
 FINISH:
-	if(x_min<=x_max)
-	{
-	  q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);	  
+    if(x_min<=x_max)
+    {
+      q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);	  
       if (q != (PixelPacket *)NULL)
-	  {
-		(void)ImportImagePixelArea(image, RGBQuantum, NumOfPlanes,
-		           BImgBuff + 3*x_min*(NumOfPlanes/8), &import_options, 0);	    	    
-        if (!SyncImagePixels(image))
-		{
+      {
+        if(status>16)        
+	  (void)ImportImagePixelArea(image, RGBAQuantum, NumOfPlanes,
+		           BImgBuff + 4*x_min*(NumOfPlanes/8), &import_options, 0);
+        else
+          (void)ImportImagePixelArea(image, RGBQuantum, NumOfPlanes,
+		           BImgBuff + 3*x_min*(NumOfPlanes/8), &import_options, 0);
+        if(!SyncImagePixels(image))
+	{
           if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
             "  TXT failed to sync image pixels for a row %u", y_curr);
-		}
-
-	  }
 	}
 
-	MagickFreeMemory(BImgBuff);
-	goto TXT_FINISH;    
+      }
+    }
+
+    MagickFreeMemory(BImgBuff);
+    goto TXT_FINISH;    
   }
 
   /*
