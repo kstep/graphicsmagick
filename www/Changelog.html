@@ -24,6 +24,10 @@
 2009-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/resource.c (ListMagickResourceInfo): If supporting
+        OpenMP, then include a "Threads" limit in the output of '-list
+        resource'.
+
   <LI> coders/pnm.c (ReadPNMImage): Fix multi-thread issue detected by
         valgrind's helgrind tool.  Diminish compilation warnings.
 
