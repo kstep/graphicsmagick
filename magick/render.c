@@ -1121,13 +1121,21 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
               point.x=x*inverse_affine.sx+y*inverse_affine.ry+inverse_affine.tx;
               point.y=x*inverse_affine.rx+y*inverse_affine.sy+inverse_affine.ty;
 	      /*
-		FIXME: It would be nice to support pixel interpolation
-		and different composition operators here.
-		Interpolation can be done by InterpolateColor() or
-		InterpolateViewColor().
+		FIXME: Point sampling is a rather crude implementation
+		for an affine transform.  We achieve more accurate
+		point sampling by using InterpolateViewColor() to
+		evalute a bi-linear interpolated point rather than
+		obtaining a pixel value from a close pixel.
 	      */
+#if 1
+	      InterpolateViewColor(AccessDefaultCacheView(composite),&pixel,
+				   point.x,
+				   point.y,
+				   &image->exception);
+#else
               (void) AcquireOnePixelByReference(composite,&pixel,(long) point.x,
                                                 (long) point.y,&image->exception);
+#endif
               if (!composite->matte)
                 pixel.opacity=OpaqueOpacity;
               AlphaCompositePixel(q,&pixel,pixel.opacity,q,q->opacity);

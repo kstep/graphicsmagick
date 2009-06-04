@@ -21,6 +21,41 @@
 </tr>
 </table>
 <p>
+2009-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pnm.c (ReadPNMImage): Fix multi-thread issue detected by
+        valgrind's helgrind tool.  Diminish compilation warnings.
+
+  <LI> coders/dpx.c (ReadDPXImage): Diminish compilation warnings.
+
+  <LI> magick/random.c (AcquireMagickRandomKernel): Fix potential
+        multi-thread issue detected by valgrind's helgrind tool.
+
+  <LI> magick/magick.c (InitializeMagick): Semaphore subsystem needs to be
+        initialized before anything which uses it.
+
+  <LI> magick/semaphore.c (InitializeSemaphore): Since we are using
+        PTHREAD_MUTEX_INITIALIZER to initialize primary POSIX mutex in the
+        semaphore subsystem, we should not explicitly initialize the
+        semaphore a second time.
+
+  <LI> magick/segment.c (Classify): Fix multi-thread issue detected by
+        valgrind's helgrind tool.
+
+  <LI> magick/render.c (DrawAffineImage): Use InterpolateViewColor() to
+        evalute a bi-linear interpolated point rather than obtaining a
+        pixel value from a close pixel.  This provides better results.
+
+</UL>
+<p>
+2009-06-02  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> /coders/txt.c Attempt to handle alpha channel.
+
+</UL>
+<p>
 2009-06-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

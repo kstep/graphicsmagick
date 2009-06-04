@@ -370,8 +370,13 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 MagickExport void InitializeSemaphore(void)
 {
 #if defined(USE_POSIX_THREADS)
-  (void) pthread_mutex_init(&semaphore_mutex,
-    (const pthread_mutexattr_t *) NULL);
+  /*
+    We use static pthread mutex initialization with
+    PTHREAD_MUTEX_INITIALIZER so explicit runtime initialization is
+    not required.
+  */
+/*   (void) pthread_mutex_init(&semaphore_mutex, */
+/*     (const pthread_mutexattr_t *) NULL); */
 #endif
 #if defined(USE_WIN32_THREADS)
 #if !defined(USE_SPINLOCKS)

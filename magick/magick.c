@@ -509,6 +509,8 @@ MagickExport MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  InitializeMagick() initializes the GraphicsMagick environment.
+%  InitializeMagick() MUST be invoked by the using program before making
+%  use of GraphicsMagick functions or else the library may be unstable.
 %
 %  The format of the InitializeMagick function is:
 %
@@ -863,15 +865,15 @@ MagickExport void InitializeMagick(const char *path)
   
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-  
+
+  /* Initialize semaphores */
+  InitializeSemaphore();
+
   /* Seed the random number generator */
   srand(MagickRandNewSeed());
 
   /* Initialize our random number generator */
   InitializeMagickRandomGenerator();
-  
-  /* Initialize semaphores */
-  InitializeSemaphore();
   
   /*
     Set logging flags using the value of MAGICK_DEBUG if it is set in

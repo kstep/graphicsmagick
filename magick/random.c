@@ -32,6 +32,7 @@
 #endif
 
 
+static MagickBool initialized = MagickFalse;
 static SemaphoreInfo *semaphore = (SemaphoreInfo *) 0;
 static MagickTsdKey_t kernel_key = (MagickTsdKey_t) 0;
 
@@ -44,7 +45,7 @@ MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
   MagickRandomKernel
     *kernel;
 
-  if (kernel_key == (MagickTsdKey_t) 0)
+  if (!initialized)
     InitializeMagickRandomGenerator();
 
   kernel=(MagickRandomKernel *) MagickTsdGetSpecific(kernel_key);
@@ -69,8 +70,11 @@ MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
 void InitializeMagickRandomGenerator()
 {
   AcquireSemaphoreInfo(&semaphore);
-  if (kernel_key == (MagickTsdKey_t) 0)
+  if (!initialized)
+    {
       MagickTsdKeyCreate(&kernel_key);
+      initialized=MagickTrue;
+    }
   LiberateSemaphoreInfo(&semaphore);
 }
 
@@ -80,9 +84,10 @@ void InitializeMagickRandomGenerator()
 void DestroyMagickRandomGenerator()
 {
   AcquireSemaphoreInfo(&semaphore);
-  if (kernel_key != (MagickTsdKey_t) 0)
+  if (initialized)
     MagickTsdKeyDelete(kernel_key);
   kernel_key=(MagickTsdKey_t) 0;
+  initialized=MagickFalse;
   LiberateSemaphoreInfo(&semaphore);
   DestroySemaphoreInfo(&semaphore);
 }

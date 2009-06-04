@@ -213,7 +213,9 @@ InitializeMagick( const char *path );
 </div>
 <div class="section">
 <h2><a id="id12" name="id12">Description</a></h2>
-<p>InitializeMagick() initializes the GraphicsMagick environment.</p>
+<p>InitializeMagick() initializes the GraphicsMagick environment.
+InitializeMagick() MUST be invoked by the using program before making
+use of GraphicsMagick functions or else the library may be unstable.</p>
 <p>The format of the InitializeMagick function is:</p>
 <pre class="literal-block">
 InitializeMagick( const char *path );
@@ -409,7 +411,7 @@ looking for.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-05-24 21:57 UTC.
+Generated on: 2009-06-04 15:27 UTC.
 
 </div>
 </body>

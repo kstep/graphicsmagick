@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -607,11 +607,15 @@ Classify(Image *image,short **extrema,
     {
       MagickBool
         thread_status;
-      
+
+      int
+	num_threads;
+
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
 
+      num_threads=omp_get_num_threads();
       q=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
       if (q == (PixelPacket *) NULL)
         thread_status=MagickFail;
@@ -648,7 +652,14 @@ Classify(Image *image,short **extrema,
                     q[x]=image->colormap[indexes[x]];
                     classified=MagickTrue;
 
-                    if ((count > 0) &&
+		    /*
+		      Re-sort array so that most frequent occurs first.
+
+		      Updating cluster_array causes a multithread race
+		      condition so this chunk is only enabled in the
+		      case of one thread.
+		    */
+                    if ((num_threads == 1) && (count > 0) &&
                         (cluster_array[count]->count > cluster_array[count-1]->count))
                       {
                         Cluster
@@ -1512,35 +1523,35 @@ ScaleSpace(const long *histogram,const double tau,double *scaled_histogram)
   double
     alpha,
     beta,
-    *gamma,
+    *gamma_l,
     sum;
 
   register long
     u,
     x;
 
-  gamma=MagickAllocateMemory(double *,256*sizeof(double));
-  if (gamma == (double *) NULL)
+  gamma_l=MagickAllocateMemory(double *,256*sizeof(double));
+  if (gamma_l == (double *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateGammaMap);
   alpha=1.0/(tau*sqrt(2.0*MagickPI));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= 255; x++)
-    gamma[x]=0.0;
+    gamma_l[x]=0.0;
   for (x=0; x <= 255; x++)
     {
-      gamma[x]=exp(beta*x*x);
-      if (gamma[x] < MagickEpsilon)
+      gamma_l[x]=exp(beta*x*x);
+      if (gamma_l[x] < MagickEpsilon)
         break;
     }
   for (x=0; x <= 255; x++)
     {
       sum=0.0;
       for (u=0; u <= 255; u++)
-        sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
+        sum+=(double) histogram[u]*gamma_l[AbsoluteValue(x-u)];
       scaled_histogram[x]=alpha*sum;
     }
-  MagickFreeMemory(gamma);
+  MagickFreeMemory(gamma_l);
 }
 
 /*
