@@ -2265,20 +2265,29 @@ Use the given radius and standard deviation (sigma).</pp>
 
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <!-- -geometry is also accepted, but not used, by identify -->
-<dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
+<dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}</opt>
 
 <abs>preferred size and location of the Image window.</abs>
-<pp>
-By default, the window size is the image
-size and the location is chosen by you when it is mapped.</pp>
 
 <pp>
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. <i>Append an exclamation point to the geometry
-to force the image size to exactly the size you specify</i>. For example,
-if you specify <tt>640x480!</tt> the image width is set to 640 pixels and
-height to 480.</pp>
+By default, the window size is the image size and the location is
+chosen by you when it is mapped.</pp>
+
+<pp>
+By default, the width and height are maximum values. That is, the
+image is expanded or contracted to fit the width and height value
+while maintaining the aspect ratio of the image.</pp>
+
+<pp>
+Append a ^ to the geometry so that the image is resized while
+maintaining the aspect ratio of the image, but the resulting width or
+height are treated as minimum values rather than maximum values.</pp>
+
+<pp>
+Append an exclamation point to the geometry to force the image size to
+exactly the size you specify. For example, if you specify
+<tt>640x480!</tt> the image width is set to 640 pixels and height to
+480.</pp>
 
 <pp>
 If only the width is specified, the width assumes the

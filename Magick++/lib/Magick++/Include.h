@@ -500,10 +500,12 @@ namespace Magick
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddDefinitions;
   using MagickLib::AddNoiseImage;
+  using MagickLib::AddNoiseImageChannel;
   using MagickLib::AffineMatrix;
   using MagickLib::AffineTransformImage;
   using MagickLib::AllocateImage;
   using MagickLib::AnnotateImage;
+  using MagickLib::AreaValue;
   using MagickLib::AspectValue;
   using MagickLib::Base64Decode;
   using MagickLib::Base64Encode;
@@ -512,6 +514,7 @@ namespace Magick
   using MagickLib::BlobToImage;
   using MagickLib::BlobWarning;
   using MagickLib::BlurImage;
+  using MagickLib::BlurImageChannel;
   using MagickLib::BorderImage;
   using MagickLib::CacheError;
   using MagickLib::CacheFatalError;
@@ -666,9 +669,10 @@ namespace Magick
   using MagickLib::GammaImage;
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
+  using MagickLib::GaussianBlurImageChannel;
   using MagickLib::GetBlobSize;
-  using MagickLib::GetCacheViewPixels;
   using MagickLib::GetCacheViewIndexes;
+  using MagickLib::GetCacheViewPixels;
   using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
@@ -726,6 +730,7 @@ namespace Magick
   using MagickLib::MatteFloodfillImage;
   using MagickLib::MedianFilterImage;
   using MagickLib::MinifyImage;
+  using MagickLib::MinimumValue;
   using MagickLib::MissingDelegateError;
   using MagickLib::MissingDelegateFatalError;
   using MagickLib::MissingDelegateWarning;
@@ -737,6 +742,7 @@ namespace Magick
   using MagickLib::MonitorFatalError;
   using MagickLib::MonitorWarning;
   using MagickLib::MontageInfo;
+  using MagickLib::MotionBlurImage;
   using MagickLib::NegateImage;
   using MagickLib::NoValue;
   using MagickLib::NoiseType;
@@ -762,6 +768,7 @@ namespace Magick
   using MagickLib::QueryColorDatabase;
   using MagickLib::RGBTransformImage;
   using MagickLib::RaiseImage;
+  using MagickLib::RandomChannelThresholdImage;
   using MagickLib::ReadImage;
   using MagickLib::RectangleInfo;
   using MagickLib::RectangleInfo;
@@ -799,6 +806,7 @@ namespace Magick
   using MagickLib::SetMagickResourceLimit;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
+  using MagickLib::SharpenImageChannel;
   using MagickLib::ShaveImage;
   using MagickLib::ShearImage;
   using MagickLib::SignatureImage;
@@ -828,6 +836,7 @@ namespace Magick
   using MagickLib::UndefinedRegistryType;
   using MagickLib::UnregisterMagickInfo;
   using MagickLib::UnsharpMaskImage;
+  using MagickLib::UnsharpMaskImageChannel;
   using MagickLib::ViewInfo;
   using MagickLib::WaveImage;
   using MagickLib::WidthValue;
@@ -840,14 +849,6 @@ namespace Magick
   using MagickLib::YNegative;
   using MagickLib::YValue;
   using MagickLib::ZoomImage;
-
-  using MagickLib::AddNoiseImageChannel;
-  using MagickLib::BlurImageChannel;
-  using MagickLib::GaussianBlurImageChannel;
-  using MagickLib::MotionBlurImage;
-  using MagickLib::RandomChannelThresholdImage;
-  using MagickLib::SharpenImageChannel;
-  using MagickLib::UnsharpMaskImageChannel;
 
 
 #endif // MAGICK_IMPLEMENTATION

@@ -1446,7 +1446,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
 %  height, x, and y values.  It also returns flags that indicates which
 %  of the four values (width, height, x, y) were located in the string, and
 %  whether the x and y values are negative.  In addition, there are flags to
-%  report any meta characters (%, !, <, and >).
+%  report any meta characters (%, !, <,  >, @, and ^).
 %
 %  The format of the GetGeometry method is:
 %
@@ -1541,6 +1541,11 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
           case '@':
             {
               flags|=AreaValue;
+              break;
+            }
+          case '^':
+            {
+              flags|=MinimumValue;
               break;
             }
           case '+':
@@ -1843,6 +1848,8 @@ GetMagickDimension(const char *str,double *width,double *height,
 %       are less than the geometry specification.
 %    >: Update the provided width and height parameters if its dimensions
 %       are greater than the geometry specification.
+%    ^: Width and height are increased as required to preserve aspect ratio
+%       while ensuring that width and height are no less than specified.
 %
 %  Any supplied offset parameters are used to adjust the image width,
 %  height, and x/y offset values as required to center the scaled image
@@ -1857,7 +1864,8 @@ GetMagickDimension(const char *str,double *width,double *height,
 %
 %    o flags:  Method GetMagickGeometry returns a bitmask that indicates
 %      which of the five values (PercentValue, AspectValue, LessValue,
-%      GreaterValue, AreaValue) were located in the geometry string.
+%      GreaterValue, AreaValue, MinimumValue) were located in the geometry
+%      string.
 %
 %    o image_geometry:  Specifies a character string representing the geometry
 %      specification.
@@ -1917,7 +1925,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (flags & AreaValue)
+  if (flags & AreaValue) /* @  */
     {
       double
         scale_factor,
@@ -1944,40 +1952,59 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (!(flags & AspectValue) &&
+  if (!(flags & AspectValue) && /* ! */
       ((*width != former_width) || (*height != former_height)))
     {
       double
         scale_factor;
 
       /*
-        Respect aspect ratio of the image.
+        Respect aspect ratio of the image but assure that it is no
+        larger than specified.
       */
       if ((former_width == 0) || (former_height == 0))
-        scale_factor=1.0;
+	{
+	  scale_factor=1.0;
+	}
       else
-        if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-          {
-            scale_factor=(double) *width/former_width;
-            if (scale_factor > ((double) *height/former_height))
-              scale_factor=(double) *height/former_height;
-          }
-        else
-          if ((flags & WidthValue) != 0)
-            scale_factor=(double) *width/former_width;
-          else
-            scale_factor=(double) *height/former_height;
+	{
+	  double
+	    scale_height=1.0,
+	    scale_width=1.0;
+
+	  if ((flags & HeightValue) != 0)
+	    scale_height=(double) *height/former_height;
+
+	  if ((flags & WidthValue) != 0)
+	    scale_width=(double) *width/former_width;
+	  else
+	    scale_width=scale_height;
+
+	  scale_factor=scale_width;
+	  if ((flags & MinimumValue) != 0)
+	    {
+	      /* Width and height are minimum values */
+	      if (scale_width < scale_height)
+		scale_factor=scale_height;
+	    }
+	  else
+	    {
+	      /* Width and height are maximum values */
+	      if (scale_width > scale_height)
+		scale_factor=scale_height;
+	    }
+	}
     *width=(unsigned long) floor(scale_factor*former_width+0.5);
     *height=(unsigned long) floor(scale_factor*former_height+0.5);
   }
-  if (flags & GreaterValue)
+  if (flags & GreaterValue) /* > */
     {
       if (former_width < *width)
         *width=former_width;
       if (former_height < *height)
         *height=former_height;
     }
-  if (flags & LessValue)
+  if (flags & LessValue) /* < */
     {
       if (former_width > *width)
         *width=former_width;
@@ -1985,63 +2012,6 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
         *height=former_height;
     }
 
-#if 0  
-    {
-      RectangleInfo
-        media_info;
-
-      long
-        delta;
-
-      media_info.width=(*width);
-      media_info.height=(*height);
-      media_info.x=(*x);
-      media_info.y=(*y);
-      (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
-                         &media_info.height);
-      if ((flags & XValue) == 0)
-        {
-          /*
-            Center image in the X direction.
-          */
-          delta=(long) (media_info.width-(*width));
-          if (delta >= 0)
-            *x=delta >> 1;
-        }
-      else
-        if ((flags & XNegative) != 0)
-          *x+=media_info.width-(*width);
-      if ((flags & YValue) == 0)
-        {
-          /*
-            Center image in the Y direction.
-          */
-          delta=(long) (media_info.height-(*height));
-          if (delta >= 0)
-            *y=delta >> 1;
-        }
-      else
-        if ((flags & YNegative) != 0)
-          *y+=media_info.height-(*height);
-      if (flags & GreaterValue)
-        {
-          if ((*width+((*x) << 1)) > media_info.width)
-            {
-              if ((long) *width > ((*x) << 1))
-                *width-=(*x) << 1;
-              if ((long) *height > ((*y) << 1))
-                *height-=(*y) << 1;
-            }
-          if ((*height+((*y) << 1)) > media_info.height)
-            {
-              if ((long) *width > ((*x) << 1))
-                *width-=(*x) << 1;
-              if ((long) *height > ((*y) << 1))
-                *height-=(*y) << 1;
-            }
-        }
-    }
-#endif
   return(flags);
 }
 
