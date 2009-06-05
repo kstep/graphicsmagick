@@ -3,7 +3,7 @@
 	* magick/utility.c (GetMagickGeometry): Support '^' modifier to
 	geometry specification which indicates that specified size is a
 	minimum bounding box rather than a maximum bounding box while
-	preserving the image aspect ration.
+	preserving the image aspect ratio.
 
 2009-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -36,7 +36,7 @@
 
 2009-06-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* /coders/txt.c Attempt to handle alpha channel.
+	* coders/txt.c Attempt to handle alpha channel.
 
 2009-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
