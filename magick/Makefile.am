@@ -101,6 +101,8 @@ MAGICK_BASE_SRCS = \
 	magick/fx.h \
 	magick/gem.c \
 	magick/gem.h \
+	magick/hclut.c \
+	magick/hclut.h \
 	magick/image.c \
 	magick/image.h \
 	magick/list.c \
@@ -216,6 +218,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
+	magick/hclut.h \
 	magick/image.h \
 	magick/list.h \
 	magick/log.h \

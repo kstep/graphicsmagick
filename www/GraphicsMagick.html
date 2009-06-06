@@ -2589,6 +2589,37 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    -hald-clut <i>&lt;clut&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a Hald CLUT to the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+A Hald CLUT ("Color Look-Up Table") is a special square color image
+which contains a look-up table for red, green, and blue.  The size of
+the Hald CLUT image is determined by its order.  The width (and
+height) of a Hald CLUT is the cube of the order.  For example, a Hald
+CLUT of order 8 is 512x512 pixels (262,144 colors) and of order 16 is
+4096x4096 (16,777,216 colors).  A special CLUT is the identity CLUT
+which which causes no change to the input image.  In order to use the
+Hald CLUT, one takes an identity CLUT and adjusts its colors in some
+way.  The modified CLUT can then be used to transform any number of
+images in an identical way.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+GraphicsMagick contains a built-in identity CLUT generator via the
+<strong>IDENTITY</strong> coder.  For example reading from the file name
+</strong>IDENTITY:8</strong> returns an identity CLUT of order 8.  Typical Hald
+CLUT identity images have an order of between 8 and 16.  The default
+order for the <strong>IDENTITY</strong> CLUT generator is 8.  Interpolation is
+used so it is not usually necessary for CLUT images to be very large.
+The PNG file format is ideal for storing Hald CLUT images because it
+compresses them very well.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     -help
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>

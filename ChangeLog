@@ -1,3 +1,14 @@
+2009-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/hclut.c (HaldClutImage): Add a Hald CLUT capability as
+	described at http://www.quelsolaar.com/technology/clut.html.  This
+	allows a color transformation to be easily created and replicated
+	on any number of images.  The algorithm is accessed by the
+	-hald-clut option of 'convert' and 'mogrify'.  The original
+	algorithm is by Eskil Steenberg and was adapted for GraphicsMagick
+	by Clément Follet with some support from Cédric Lejeune of
+	workflowers.net.
+
 2009-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetMagickGeometry): Support '^' modifier to

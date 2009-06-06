@@ -53,6 +53,7 @@
 #include "magick/enum_strings.h"
 #include "magick/fx.h"
 #include "magick/gem.h"
+#include "magick/hclut.h"
 #include "magick/log.h"
 #include "magick/magic.h"
 #include "magick/magick.h"
@@ -4331,6 +4332,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       }
       case 'h':
       {
+	if (LocaleCompare("hald-clut",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if (i == argc)
+		  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+	    break;
+          }
         if (LocaleCompare("help",option+1) == 0)
           {
             ConvertUsage();
@@ -5482,6 +5493,7 @@ static void ConvertUsage(void)
       "-geometry geometry   perferred size or location of the image",
       "-green-primary point chomaticity green primary point",
       "-gravity type        horizontal and vertical text placement",
+      "-hald-clut clut      apply a Hald CLUT to the image",
       "-help                print program options",
       "-implode amount      implode image pixels about the center",
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
@@ -8774,6 +8786,26 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         break;
       }
+      case 'h':
+      {
+	if (LocaleCompare("hald-clut",option+1) == 0)
+          {
+	    Image
+	      *clut_image;
+			  
+	    (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
+	    clut_image=ReadImage(clone_info,&(*image)->exception);
+	    if (clut_image == (Image *) NULL)
+	      continue;
+	    
+	    (void) HaldClutImage(*image,clut_image);
+
+	    (void) DestroyImage(clut_image);
+	    clut_image=(Image *) NULL;
+	    continue;
+          }
+	break;
+      }
       case 'i':
       {
         if (LocaleCompare("implode",option+1) == 0)
@@ -9284,6 +9316,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 }
               DeallocateImageProfileIterator(profile_iterator);
               DestroyImage(profile_image);
+	      profile_image=(Image *) NULL;
               clone_info->client_data=client_data;
             }
             continue;
@@ -9832,6 +9865,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->fill_pattern=
               CloneImage(fill_pattern,0,0,True,&(*image)->exception);
             DestroyImage(fill_pattern);
+	    fill_pattern=(Image *) NULL;
             continue;
           }
         if (LocaleCompare("transform",option+1) == 0)
@@ -11317,7 +11351,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       }
       case 'h':
       {
-        if (LocaleCompare("help",option+1) == 0)
+	if (LocaleCompare("hald-clut",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if (i == argc)
+		  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+	    break;
+          }
+	if (LocaleCompare("help",option+1) == 0)
           break;
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
@@ -12376,6 +12420,7 @@ static void MogrifyUsage(void)
       "-green-primary point chomaticity green primary point",
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
+      "-hald-clut clut      apply a Hald CLUT to the image",
       "-help                print program options",
       "-label name          assign a label to an image",
       "-lat geometry        local adaptive thresholding",

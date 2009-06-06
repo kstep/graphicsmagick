@@ -1379,6 +1379,12 @@ geometry does not contain image
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorHaldClutImageDimensionsInvalid
+Language        = English
+hald clut image dimensions are invalid
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorImagesAreNotTheSameSize
 Language        = English
 images are not the same size

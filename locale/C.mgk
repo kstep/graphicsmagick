@@ -783,6 +783,9 @@
       <Message name="GeometryDoesNotContainImage">
         geometry does not contain image
       </Message>
+      <Message name="HaldClutImageDimensionsInvalid">
+        hald clut image dimensions are invalid
+      </Message>
       <Message name="InputImagesAlreadySpecified">
         input images already specified
       </Message>

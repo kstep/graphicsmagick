@@ -29,7 +29,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadIdentityImage creates a Hald CLUT identity image.
+%  Method ReadIdentityImage creates a Hald CLUT identity image.  The argument
+%  to the IDENTITY filename (e.g. "identity:8") specifies the order of the
+%  identity image.  The minimum order which may be specified is 2.  Higher
+%  order LUTs contain more colors and are therefore more accurate, but consume
+%  more memory.  Typical Hald CLUT identity images have an order of between 8
+%  (512x512) and 16 (4096x4096).  The default order is 8.
 %
 %  The format of the ReadIdentityImage method is:
 %
@@ -82,7 +87,7 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
   order=8;
   if (image_info->filename[0] != '\0')
     order=atol(image_info->filename);
-  if (order < 1)
+  if (order < 2)
     order=8;
   
   image=AllocateImage(image_info);
