@@ -91,12 +91,7 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
 	
   const PixelPacket
     *clut = param->ppcl;
-	
-  ARG_NOT_USED(mutable_data);
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(indexes);
-  ARG_NOT_USED(exception);
-	
+
   unsigned int
     color,
     redaxis,
@@ -115,6 +110,11 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
     redval,
     greenval,
     blueval;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
 
   level *= level;
 	
