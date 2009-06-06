@@ -83,16 +83,14 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
 		    ExceptionInfo *exception)   /* Exception report */
 {
 
-  const HaldClutImageParameters_t
-    param = *(const HaldClutImageParameters_t *) immutable_data;
+  const HaldClutImageParameters_t *
+    param = (const HaldClutImageParameters_t *) immutable_data;
 	
   unsigned int
-    level = (unsigned int) param.level;
+    level = param->level;
 	
-  PixelPacket
-    *clut;
-
-  clut = (PixelPacket *) param.ppcl;
+  const PixelPacket
+    *clut = param->ppcl;
 	
   ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
@@ -105,8 +103,9 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
     greenaxis,
     blueaxis;
 
-  register
-    long i;
+  register long
+    i,
+    k;
 
   double
     tmp[9],
@@ -118,9 +117,6 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
     blueval;
 
   level *= level;
-	
-  register long
-    k;
 	
   for(k = 0; k < npixels ; k++)
     {
