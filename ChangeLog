@@ -1,3 +1,7 @@
+2009-06-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Handle alpha channel for ImageMagick's .txt
+
 2009-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/hclut.c (HaldClutImage): Add a Hald CLUT capability as

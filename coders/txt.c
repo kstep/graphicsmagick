@@ -58,7 +58,8 @@ typedef enum
 	TXT_GM16B_PLAIN,
 	TXT_GM32B_HEX,
 	TXT_GM32B_PLAIN,
-	TXT_GM8B_HEX_Q = 17,
+        IMAGEMAGICK_TXT_Q = 17,
+	TXT_GM8B_HEX_Q,
 	TXT_GM8B_PLAIN_Q,
 	TXT_GM16B_HEX_Q,
 	TXT_GM16B_PLAIN_Q,
@@ -175,7 +176,7 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     (void) memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
 
     if(!strncmp(buffer,"# ImageMagick pixel enumeration:",32))
-		return True;
+		return IMAGEMAGICK_TXT;
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
@@ -353,6 +354,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  y = y_curr-1;
 	  max = x_max;
 	}
+        if(strstr(p+32,",rgba")!=NULL)
+        {
+          status = IMAGEMAGICK_TXT_Q;
+        }
       }
     }
 
@@ -523,7 +528,7 @@ EndReading:
     ch=0;
     B = ReadInt(image,&ch);		// B
 
-    if(status==TXT_GM8B_HEX_Q || status==TXT_GM16B_HEX_Q || status==TXT_GM32B_HEX_Q)
+    if(status>16)
     {
       while(ch!=',')
       {
