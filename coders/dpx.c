@@ -3872,6 +3872,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Motion-picture film information header.
   */
+  (void) memset(&dpx_mp_info,0,sizeof(dpx_mp_info));
   AttributeToString(image_info,image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
   AttributeToString(image_info,image,"DPX:mp.film.type",dpx_mp_info.film_type);
   AttributeToString(image_info,image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
@@ -3888,6 +3889,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Television information header.
   */
+  (void) memset(&dpx_tv_info,0,sizeof(dpx_tv_info));
   AttributeBitsToU32(image_info,image,"DPX:tv.time.code",dpx_tv_info.time_code);
   AttributeBitsToU32(image_info,image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
   AttributeToU8(image_info,image,"DPX:tv.interlace",dpx_tv_info.interlace);
