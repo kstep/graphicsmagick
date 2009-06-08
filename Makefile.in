@@ -5023,6 +5023,7 @@ UTILITIES_TESTS = \
 	utilities/tests/gaussianblur.sh \
 	utilities/tests/gradient.sh \
 	utilities/tests/grayscale.sh \
+	utilities/tests/hald-clut.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
 	utilities/tests/medianfilter.sh \

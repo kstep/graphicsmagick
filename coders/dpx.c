@@ -4006,8 +4006,9 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   while (offset < dpx_image_info.element_info[0].data_offset)
     {
-      (void) WriteBlobByte(image,0U);
-      offset++;
+      if (WriteBlobByte(image,0U) != 1)
+	break;
+      offset += 1;
     }
   /*
     Allow user to over-ride pixel endianness.

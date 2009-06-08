@@ -1659,9 +1659,15 @@ DestroyCacheInfo(Cache cache_info)
       }
     }
   if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->file_semaphore);
+    {
+      DestroySemaphoreInfo(&cache_info->file_semaphore);
+      cache_info->file_semaphore=(SemaphoreInfo *) NULL;
+    }
   if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->reference_semaphore);
+    {
+      DestroySemaphoreInfo(&cache_info->reference_semaphore);
+      cache_info->reference_semaphore=(SemaphoreInfo *) NULL;
+    }
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
                         cache_info->filename);
   cache_info->signature=0;
