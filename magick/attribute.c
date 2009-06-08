@@ -1164,6 +1164,82 @@ static TagInfo
     {  0x0000, (char *) NULL}
   };
 
+
+static const char *
+EXIFTagDescription(int t)
+{
+  const char
+    *description;
+
+  register long
+    i;
+
+  description="unknown";
+  for (i=0; ; i++)
+    {
+      if (tag_table[i].tag == 0)
+	break;
+      if (tag_table[i].tag == t)
+	{
+	  description=tag_table[i].description;
+	  break;
+	}
+    }
+
+  return description;
+}
+
+static const char *
+EXIFFormatDescription(int f)
+{
+  const char
+    *description;
+
+  description="unknown";
+
+  switch (f)
+    {
+    case EXIF_FMT_BYTE:
+      description="BYTE";
+      break;
+    case EXIF_FMT_STRING:
+      description="STRING";
+      break;
+    case EXIF_FMT_USHORT:
+      description="USHORT";
+      break;
+    case EXIF_FMT_ULONG:
+      description="ULONG";
+      break;
+    case EXIF_FMT_URATIONAL:
+      description="URATIONAL";
+      break;
+    case EXIF_FMT_SBYTE:
+      description="SBYTE";
+      break;
+    case EXIF_FMT_UNDEFINED:
+      description="UNDEFINED";
+      break;
+    case EXIF_FMT_SSHORT:
+      description="SSHORT";
+      break;
+    case EXIF_FMT_SLONG:
+      description="SLONG";
+      break;
+    case EXIF_FMT_SRATIONAL:
+      description="SRATIONAL";
+      break;
+    case EXIF_FMT_SINGLE:
+      description="SINGLE";
+      break;
+    case EXIF_FMT_DOUBLE:
+      description="DOUBLE";
+      break;
+    }
+
+  return description;
+}
+
 static int
   format_bytes[] =
   {
@@ -1225,6 +1301,7 @@ static unsigned long Read32u(int morder, void *ilong)
   return(Read32s(morder,ilong) & 0xffffffffUL);
 }
 
+
 static int GenerateEXIFAttribute(Image *image,const char *specification)
 {
   char
@@ -1266,6 +1343,23 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   
   size_t
     profile_length;
+
+  MagickBool
+    debug=MagickFalse;
+
+  {
+    const char *
+      env_value;
+    
+    /*
+      Allow enabling debug of EXIF tags
+    */
+    if ((env_value=getenv("MAGICK_DEBUG_EXIF")))
+      {
+	if (LocaleCompare(env_value,"TRUE") == 0)
+	  debug=MagickTrue;
+      }
+  }
 
   /*
     Determine if there is any EXIF data available in the image.
@@ -1465,6 +1559,13 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
           char
             s[MaxTextExtent];
 
+	  if (debug)
+	    {
+	      fprintf(stderr,"EXIF: TagVal=%d  TagDescr=\"%s\" Format=%d  "
+		      "FormatDescr=\"%s\"  Components=%d\n",t,
+		      EXIFTagDescription(t),f, EXIFFormatDescription(f),c);
+	    }
+
           switch (f)
           {
             case EXIF_FMT_SBYTE:
@@ -1555,50 +1656,55 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
             case EXIF_FMT_UNDEFINED:
             case EXIF_FMT_STRING:
             {
-              value=MagickAllocateMemory(char *,n+1);
+	      unsigned int
+		a;
+
+	      size_t
+		allocation_size;
+
+	      MagickBool
+		binary=MagickFalse;
+
+	      allocation_size=n+1;
+	      for (a=0; a < n; a++)
+		if (!(isprint((int) pval[a])))
+		  allocation_size += 3;
+
+              value=MagickAllocateMemory(char *,allocation_size);
               if (value != (char *) NULL)
                 {
-                  unsigned int
-                    a;
-
+		  i=0;
                   for (a=0; a < n; a++)
                   {
-                    value[a]='.';
-                    if (isprint((int) pval[a]) || (pval[a] == '\0'))
-                      value[a]=pval[a];
+		    if ((isprint((int) pval[a])) ||
+			((pval[a] == '\0') && (a == (n-1) && (!binary))))
+		      {
+			value[i++]=pval[a];
+		      }
+		    else
+		      {
+			i += sprintf(&value[i],"\\%03o",(unsigned int) pval[a]);
+			binary |= MagickTrue;
+		      }
                   }
-                  value[a]='\0';
-                  break;
+                  value[i]='\0';
                 }
               break;
             }
           }
           if (value != (char *) NULL)
             {
-              int
-                i;
-
-              char
+              const char
                 *description;
 
               if (strlen(final) != 0)
                 (void) ConcatenateString(&final,EXIF_DELIMITER);
-              description=(char *) NULL;
+              description=(const char *) NULL;
               switch (all)
               {
                 case 1:
                 {
-                  description=(char *) "unknown";
-                  for (i=0; ; i++)
-                  {
-                    if (tag_table[i].tag == 0)
-                      break;
-                    if (tag_table[i].tag == t)
-                      {
-                        description=tag_table[i].description;
-                        break;
-                      }
-                  }
+		  description=EXIFTagDescription(t);
                   FormatString(s,"%.1024s=",description);
                   (void) ConcatenateString(&final,s);
                   break;
@@ -1616,10 +1722,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
         }
         if ((t == TAG_EXIF_OFFSET) || (t == TAG_INTEROP_OFFSET))
           {
-            size_t
-              offset;
-
-            offset=(size_t) Read32u(morder,pval);
+            offset=Read32u(morder,pval);
             if ((offset < length) && (level < (DE_STACK_SIZE-2)))
               {
                 /*
