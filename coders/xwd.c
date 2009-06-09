@@ -617,6 +617,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize XWD file header.
   */
+  (void) memset(&xwd_info,0,sizeof(xwd_info));
   xwd_info.header_size=(CARD32) (sz_XWDheader+strlen(image->filename)+1);
   xwd_info.file_version=(CARD32) XWD_FILE_VERSION;
   xwd_info.pixmap_format=(CARD32) ZPixmap;

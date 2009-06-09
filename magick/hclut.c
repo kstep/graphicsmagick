@@ -93,23 +93,26 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
     *clut = param->ppcl;
 
   unsigned int
-    color,
-    redaxis,
+    color;
+
+  unsigned int
+    blueaxis,
     greenaxis,
-    blueaxis;
+    redaxis;
 
   register long
     i,
     k;
 
+  long
+    clut_pixels;
+
   double
-    tmp[9],
+    sums[9],
     r,
     g,
     b,
-    redval,
-    greenval,
-    blueval;
+    value;
 
   ARG_NOT_USED(mutable_data);
   ARG_NOT_USED(image);
@@ -117,62 +120,84 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
   ARG_NOT_USED(exception);
 
   level *= level;
+  clut_pixels = (level*level*level);
 	
   for(k = 0; k < npixels ; k++)
     {
       /*
 	Calculate the position of each 3D axis pixel level.
       */
-      redaxis = (unsigned int)(((double)pixels[k].red/MaxRGBDouble) * (level-1));
-      greenaxis = (unsigned int)(((double)pixels[k].green/MaxRGBDouble) * (level-1));
-      blueaxis = (unsigned int)(((double)pixels[k].blue/MaxRGBDouble) * (level-1));
+      redaxis = (unsigned int) (((double) pixels[k].red/MaxRGBDouble) * (level-1));
+      if (redaxis > level - 2)
+	redaxis = level - 2;
+      greenaxis = (unsigned int) (((double) pixels[k].green/MaxRGBDouble) * (level-1));
+      if(greenaxis > level - 2)
+	greenaxis = level - 2;
+      blueaxis = (unsigned int) (((double) pixels[k].blue/MaxRGBDouble) * (level-1));
+      if(blueaxis > level - 2)
+	blueaxis = level - 2;
 
       /*
 	Convert between the value and the equivalent value position.
       */
-      r = ((double)pixels[k].red/MaxRGBDouble) * (level - 1) - redaxis;
-      g = ((double)pixels[k].green/MaxRGBDouble) * (level - 1) - greenaxis;
-      b = ((double)pixels[k].blue/MaxRGBDouble) * (level - 1) - blueaxis;
+      r = ((double) pixels[k].red/MaxRGBDouble) * (level - 1) - redaxis;
+      g = ((double) pixels[k].green/MaxRGBDouble) * (level - 1) - greenaxis;
+      b = ((double) pixels[k].blue/MaxRGBDouble) * (level - 1) - blueaxis;
 
       color = redaxis + greenaxis * level + blueaxis * level * level;
 
       i = color;
-      tmp[0] = ((double)clut[i].red/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].red/MaxRGBDouble) * r;
-      tmp[1] = ((double)clut[i].green/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].green/MaxRGBDouble) * r;
-      tmp[2] = ((double)clut[i].blue/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].blue/MaxRGBDouble) * r;
+      sums[0] = ((double) clut[i].red) * (1 - r);
+      sums[1] = ((double) clut[i].green) * (1 - r);
+      sums[2] = ((double) clut[i].blue) * (1 - r);
+      i++;
+      sums[0] += ((double) clut[i].red) * r;
+      sums[1] += ((double) clut[i].green) * r;
+      sums[2] += ((double) clut[i].blue) * r;
 
       i = (color + level);
-      tmp[3] = ((double)clut[i].red/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].red/MaxRGBDouble) * r;
-      tmp[4] = ((double)clut[i].green/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].green/MaxRGBDouble) * r;
-      tmp[5] = ((double)clut[i].blue/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].blue/MaxRGBDouble) * r;
+      sums[3] = ((double) clut[i].red) * (1 - r);
+      sums[4] = ((double) clut[i].green) * (1 - r);
+      sums[5] = ((double) clut[i].blue) * (1 - r);
+      i++;
+      sums[3] += ((double) clut[i].red) * r;
+      sums[4] += ((double) clut[i].green) * r;
+      sums[5] += ((double) clut[i].blue) * r;
 
-      tmp[6] = tmp[0] * (1 - g) + tmp[3] * g;
-      tmp[7] = tmp[1] * (1 - g) + tmp[4] * g;
-      tmp[8] = tmp[2] * (1 - g) + tmp[5] * g;
+      sums[6] = sums[0] * (1 - g) + sums[3] * g;
+      sums[7] = sums[1] * (1 - g) + sums[4] * g;
+      sums[8] = sums[2] * (1 - g) + sums[5] * g;
 
       i = (color + level * level);
-
-      tmp[0] = ((double)clut[i].red/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].red/MaxRGBDouble) * r;
-      tmp[1] = ((double)clut[i].green/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].green/MaxRGBDouble) * r;
-      tmp[2] = ((double)clut[i].blue/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].blue/MaxRGBDouble) * r;
+      sums[0] = ((double) clut[i].red) * (1 - r);
+      sums[1] = ((double) clut[i].green) * (1 - r);
+      sums[2] = ((double) clut[i].blue) * (1 - r);
+      i++;
+      sums[0] += ((double) clut[i].red) * r;
+      sums[1] += ((double) clut[i].green) * r;
+      sums[2] += ((double) clut[i].blue) * r;
 
       i = (color + level * level + level);
+      sums[3] = ((double) clut[i].red) * (1 - r);
+      sums[4] = ((double) clut[i].green) * (1 - r);
+      sums[5] = ((double) clut[i].blue) * (1 - r);
+      i++;
+      sums[3] += ((double) clut[i].red) * r;
+      sums[4] += ((double) clut[i].green) * r;
+      sums[5] += ((double) clut[i].blue) * r;
 
-      tmp[3] = ((double)clut[i].red/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].red/MaxRGBDouble) * r;
-      tmp[4] = ((double)clut[i].green/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].green/MaxRGBDouble) * r;
-      tmp[5] = ((double)clut[i].blue/MaxRGBDouble) * (1 - r) + ((double)clut[i+1].blue/MaxRGBDouble) * r;
+      sums[0] = sums[0] * (1 - g) + sums[3] * g;
+      sums[1] = sums[1] * (1 - g) + sums[4] * g;
+      sums[2] = sums[2] * (1 - g) + sums[5] * g;
 
-      tmp[0] = tmp[0] * (1 - g) + tmp[3] * g;
-      tmp[1] = tmp[1] * (1 - g) + tmp[4] * g;
-      tmp[2] = tmp[2] * (1 - g) + tmp[5] * g;
+      value=(sums[6] * (1 - b) + sums[0] * b);
+      pixels[k].red = RoundDoubleToQuantum(value);
 
-      redval=(tmp[6] * (1 - b) + tmp[0] * b)* MaxRGBDouble;
-      greenval=(tmp[7] * (1 - b) + tmp[1] * b)* MaxRGBDouble;
-      blueval=(tmp[8] * (1 - b) + tmp[2] * b)* MaxRGBDouble;
+      value=(sums[7] * (1 - b) + sums[1] * b);
+      pixels[k].green = RoundDoubleToQuantum(value);
 
-      pixels[k].red = RoundDoubleToQuantum(redval);
-      pixels[k].green = RoundDoubleToQuantum(greenval);
-      pixels[k].blue = RoundDoubleToQuantum(blueval);
+      value=(sums[8] * (1 - b) + sums[2] * b);
+      pixels[k].blue = RoundDoubleToQuantum(value);
     }
 	
   return MagickPass;
@@ -210,7 +235,7 @@ HaldClutImage(Image *image, const Image *clut)
     Calculate the level of the Hald CLUT
   */
   for(level = 1; level * level * level < clut->rows; level++);
-  if(level * level * level > clut->rows)
+  if((level * level * level > clut->rows) || (level < 2))
     {
       ThrowBinaryException(OptionError,HaldClutImageDimensionsInvalid,
 			   clut->filename);

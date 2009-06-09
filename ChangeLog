@@ -1,3 +1,11 @@
+2009-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/hclut.c (HaldClutImagePixels): Fix wrong accesses
+	detected by valgrind.  Also improve execution performance.
+
+	* coders/xwd.c (WriteXWDImage): Fixed valgrind memcheck complaint
+	about access to uninitialized data.
+
 2009-06-09  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c Handle alpha channel for ImageMagick's alternative .txt
