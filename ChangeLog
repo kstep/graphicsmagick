@@ -1,3 +1,7 @@
+2009-06-09  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Handle alpha channel for ImageMagick's alternative .txt
+
 2009-06-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Fixed valgrind memcheck complaint

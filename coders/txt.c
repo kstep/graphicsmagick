@@ -31,7 +31,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%
+% Patterns accepted:
+%     0,0: 129,129,129,255 
+%     0,0: 129,129,129
+%     0,0: (129,129,129) #818181
+%     0,0: (3411594072,2774050136,1883729991) #CB58CB58A558A55870477047
+%     0,0: (129,129,129,  0)  #81818100  rgba(129,129,129,0)
 */
 
 /*
@@ -54,6 +59,7 @@ typedef enum
 	IMAGEMAGICK_TXT = 1,
 	TXT_GM8B_HEX,
 	TXT_GM8B_PLAIN,
+        TXT_GM8B_PLAIN2,
 	TXT_GM16B_HEX,
 	TXT_GM16B_PLAIN,
 	TXT_GM32B_HEX,
@@ -61,6 +67,7 @@ typedef enum
         IMAGEMAGICK_TXT_Q = 17,
 	TXT_GM8B_HEX_Q,
 	TXT_GM8B_PLAIN_Q,
+        TXT_GM8B_PLAIN2_Q,
 	TXT_GM16B_HEX_Q,
 	TXT_GM16B_PLAIN_Q,
 	TXT_GM32B_HEX_Q,
@@ -149,8 +156,9 @@ return(n);
 */
 static unsigned int IsTXT(const unsigned char *magick,const size_t length)
 {
-  if (length < 22)
+  if (length < 20)
     return(False);
+
   {
     unsigned long
       column,
@@ -224,9 +232,17 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
                  &column, &row, &red, &green, &blue, &opacity);
     if(count==6) return TXT_GM8B_PLAIN_Q;
 
+    count=sscanf(buffer,"%lu,%lu: %u, %u, %u, %u",
+                 &column, &row, &red, &green, &blue, &opacity);
+    if(count==6) return TXT_GM8B_PLAIN2_Q;
+
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u)",
                  &column, &row, &red, &green, &blue);
     if(count==5) return TXT_GM8B_PLAIN;
+
+    count=sscanf(buffer,"%lu,%lu: %u, %u, %u",
+                 &column, &row, &red, &green, &blue);
+    if(count==5) return TXT_GM8B_PLAIN2;
 
   }
   return(False);
@@ -394,7 +410,9 @@ TXT_FAIL:			//not a text data
    {
      ch = ReadBlobByte(image);
      if(ch==10 || ch==13) goto TXT_FAIL;
-	  if(ch==EOF) break;}
+     if(ch==EOF) break;
+   }
+   if(status!=TXT_GM8B_PLAIN2_Q)
      while(ch!='(')
      {
        ch = ReadBlobByte(image);
@@ -438,12 +456,13 @@ TXT_FAIL:			//not a text data
      if(A>max) max=A;
    }
 
-   while(ch!=')')
-   {
-     ch = ReadBlobByte(image);
-     if(ch==10 || ch==13) goto TXT_FAIL;
-     if(ch==EOF) break;
-   }
+   if(status!=TXT_GM8B_PLAIN2_Q)
+     while(ch!=')')
+     {
+       ch = ReadBlobByte(image);
+       if(ch==10 || ch==13) goto TXT_FAIL;
+       if(ch==EOF) break;
+     }
 
    readln(image,&ch);
    }
