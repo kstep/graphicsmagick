@@ -671,6 +671,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
+      (void) memset(&color,0,sizeof(color));
       colors=MagickAllocateArray(XColor *,image->colors,sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
