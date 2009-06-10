@@ -2095,6 +2095,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
+static voidpf ZLIBAllocFunc(voidpf opaque, uInt items, uInt size)
+{
+  ARG_NOT_USED(opaque);
+  return MagickMallocCleared((size_t) items*size);
+}
+static void ZLIBFreeFunc(voidpf opaque, voidpf address)
+{
+  ARG_NOT_USED(opaque);
+  MagickFree(address);
+}
 static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   const unsigned long quality,unsigned char *pixels)
 {
@@ -2120,12 +2130,13 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   if (compressed_pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
+  (void) memset(&stream,0,sizeof(stream));
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
   stream.next_out=compressed_pixels;
   stream.avail_out=(unsigned int) compressed_packets;
-  stream.zalloc=(alloc_func) NULL;
-  stream.zfree=(free_func) NULL;
+  stream.zalloc=ZLIBAllocFunc;
+  stream.zfree=ZLIBFreeFunc;
   stream.opaque=(voidpf) NULL;
   status=deflateInit(&stream,(int) Min(quality/10,9));
   if (status == Z_OK)

@@ -294,6 +294,16 @@ unsigned char val = 0;
   *BuffL = val;
 }
 
+static voidpf ZLIBAllocFunc(voidpf opaque, uInt items, uInt size)
+{
+  ARG_NOT_USED(opaque);
+  return MagickMallocCleared((size_t) items*size);
+}
+static void ZLIBFreeFunc(voidpf opaque, voidpf address)
+{
+  ARG_NOT_USED(opaque);
+  MagickFree(address);
+}
 
 /** This procedure decompreses an image block for a new MATLAB format. */
 static Image *DecompressBlock(Image *orig, magick_off_t Size, ImageInfo *clone_info, ExceptionInfo *exception)
@@ -333,8 +343,8 @@ int status;
     return NULL;
   }
 
-  zip_info.zalloc = (alloc_func) NULL;
-  zip_info.zfree = (free_func) NULL;
+  zip_info.zalloc = ZLIBAllocFunc;
+  zip_info.zfree = ZLIBFreeFunc;
   zip_info.opaque = (voidpf) NULL;
   inflateInit(&zip_info);
   /* zip_info.next_out = 8*4; */

@@ -1,5 +1,12 @@
 2009-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/{mat.c, miff.c, pdf.c, ps3.c}: Have Zlib use our memory
+	allocators.
+
+	* magick/memory.c (MagickMallocCleared): New memory allocation
+	interface which is similar to MagickMalloc() except that returned
+	memory has been cleared first.
+
 	* magick/hclut.c (HaldClutImagePixels): Fix wrong accesses
 	detected by valgrind.  Also improve execution performance.
 

@@ -599,6 +599,30 @@ static unsigned int PushImageRLEPixels(Image *image,
   return(True);
 }
 
+#if 0
+static void *BZLIBAllocFunc(void *opaque, int items, int size)
+{
+  ARG_NOT_USED(opaque);
+  return MagickMallocCleared((size_t) items*size);
+}
+static void BZLIBFreeFunc(void *opaque, void *address)
+{
+  ARG_NOT_USED(opaque);
+  MagickFree(address);
+}
+#endif
+
+static voidpf ZLIBAllocFunc(voidpf opaque, uInt items, uInt size)
+{
+  ARG_NOT_USED(opaque);
+  return MagickMallocCleared((size_t) items*size);
+}
+static void ZLIBFreeFunc(voidpf opaque, voidpf address)
+{
+  ARG_NOT_USED(opaque);
+  MagickFree(address);
+}
+
 static Image *ReadMIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -1310,8 +1334,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               if (y == 0)
                 {
-                  zip_info.zalloc=(alloc_func) NULL;
-                  zip_info.zfree=(free_func) NULL;
+                  zip_info.zalloc=ZLIBAllocFunc;
+                  zip_info.zfree=ZLIBFreeFunc;
                   zip_info.opaque=(voidpf) NULL;
                   code=inflateInit(&zip_info);
                   status|=code >= 0;
@@ -2217,8 +2241,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (y == 0)
             {
-              zip_info.zalloc=(alloc_func) NULL;
-              zip_info.zfree=(free_func) NULL;
+              zip_info.zalloc=ZLIBAllocFunc;
+              zip_info.zfree=ZLIBFreeFunc;
               zip_info.opaque=(voidpf) NULL;
               code=deflateInit(&zip_info,(int) Min(image_info->quality/10,9));
               status|=code >= 0;

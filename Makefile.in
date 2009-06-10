@@ -11129,7 +11129,7 @@ helgrind:
 
 # memcheck: valgrind's memory access checker
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:
