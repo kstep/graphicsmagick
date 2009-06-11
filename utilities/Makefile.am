@@ -15,6 +15,11 @@ utilities_gm_LDADD	= $(LIBMAGICK)
 utilities_gm_LDFLAGS	= $(LDFLAGS)
 utilities_gm_SOURCES	= utilities/gm.c
 
+if !HasJPEG
+UTILITIES_JPEG_XFAIL_TESTS = \
+	utilities/tests/identify.sh
+endif
+
 if !HasTTF
 UTILITIES_TTF_XFAIL_TESTS = \
 	utilities/tests/annotate.sh \
@@ -28,6 +33,7 @@ UTILITIES_XML_XFAIL_TESTS = \
 endif
 
 UTILITIES_XFAIL_TESTS = \
+	$(UTILITIES_JPEG_XFAIL_TESTS) \
 	$(UTILITIES_TTF_XFAIL_TESTS) \
 	$(UTILITIES_XML_XFAIL_TESTS)
 
@@ -59,6 +65,7 @@ UTILITIES_TESTS = \
 	utilities/tests/gradient.sh \
 	utilities/tests/grayscale.sh \
 	utilities/tests/hald-clut.sh \
+	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
 	utilities/tests/medianfilter.sh \
@@ -191,7 +198,8 @@ UTILITIES_MANS = \
 UTILITIES_EXTRA_DIST = \
 	$(UTILITIES_MANS) \
 	$(UTILITIES_TESTS) \
-	utilities/tests/common.sh
+	utilities/tests/common.sh \
+	utilities/tests/sunrise.jpg
 
 UTILITIES_CLEANFILES = \
 	utilities/tests/*_out.miff \

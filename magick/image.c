@@ -2829,13 +2829,13 @@ static magick_uint8_t* AllocateDepthMap(void)
   magick_uint8_t 
     *map;
   
-  map = MagickAllocateArray(unsigned char *, MaxRGB, sizeof(magick_uint8_t));
+  map = MagickAllocateArray(unsigned char *, MaxMap+1, sizeof(magick_uint8_t));
   if (map != (unsigned char *) NULL)
     {
       unsigned int
         i;
       
-      for (i=0; i <= MaxRGB; i++)
+      for (i=0; i <= MaxMap; i++)
         map[i] = (magick_uint8_t) MinimumDepthForValue(i);
     }
   return map;
@@ -2980,6 +2980,8 @@ MagickExport unsigned long GetImageDepth(const Image *image,
                                   &depth,map,0,0,image->columns,
                                   image->rows,image,exception);
     }
+
+  MagickFreeMemory(map);
 
   return depth;
 }

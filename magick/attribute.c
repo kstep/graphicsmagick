@@ -1668,7 +1668,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
 	      allocation_size=n+1;
 	      for (a=0; a < n; a++)
 		if (!(isprint((int) pval[a])))
-		  allocation_size += 3;
+		  allocation_size += 4;
 
               value=MagickAllocateMemory(char *,allocation_size);
               if (value != (char *) NULL)

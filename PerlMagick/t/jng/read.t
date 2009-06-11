@@ -52,24 +52,24 @@ testReadCompare('input_gray_prog_jdaa.jng', '../reference/jng/read_gray_prog_jda
 # 7) Color with JDAA encoding
 # 
 ++$test;
-testReadCompare('input_idat.jng', '../reference/jng/read_idat.miff', q//, 0, 0);
+testReadCompare('input_idat.jng', '../reference/jng/read_idat.miff', q//, 0.009, 0.13);
 #
 # 8) Color with JDAA encoding
 # 
 ++$test;
-testReadCompare('input_jdaa.jng', '../reference/jng/read_jdaa.miff', q//, 0, 0);
+testReadCompare('input_jdaa.jng', '../reference/jng/read_jdaa.miff', q//, 0.009, 0.13);
 #
 # 9) Color progressive
 # 
 ++$test;
-testReadCompare('input_prog.jng', '../reference/jng/read_prog.miff', q//, 0, 0);#
+testReadCompare('input_prog.jng', '../reference/jng/read_prog.miff', q//, 0.009, 0.13);
 #
 # 10) Color progressive with IDAT encoding
 # 
 ++$test;
-testReadCompare('input_prog_idat.jng', '../reference/jng/read_prog_idat.miff', q//, 0, 0);
+testReadCompare('input_prog_idat.jng', '../reference/jng/read_prog_idat.miff', q//, 0.009, 0.13);
 #
 # 11) Color progressive with JDAA encoding
 # 
 ++$test;
-testReadCompare('input_prog_jdaa.jng', '../reference/jng/read_prog_jdaa.miff', q//, 0, 0);
+testReadCompare('input_prog_jdaa.jng', '../reference/jng/read_prog_jdaa.miff', q//, 0.009, 0.13);

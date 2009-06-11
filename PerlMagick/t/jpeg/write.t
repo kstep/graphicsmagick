@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003-2009 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 #
@@ -28,7 +28,7 @@ chdir 't/jpeg' || die 'Cd failed';
 print( "Non-interlaced JPEG ...\n" );
 testReadWriteCompare( 'input.jpg', 'output_tmp.jpg',
                       '../reference/jpeg/write_non_interlaced.miff',
-                      q//, q//, 6.4e-5, 0.008);
+                      q//, q//, 0.015, 0.16);
 
 #
 # 2) Test with plane-interlaced image
@@ -37,5 +37,5 @@ testReadWriteCompare( 'input.jpg', 'output_tmp.jpg',
 print( "Plane-interlaced JPEG ...\n" );
 testReadWriteCompare( 'input.jpg', 'output_plane_tmp.jpg',
                       '../reference/jpeg/write_plane_interlaced.miff',
-                      q//, q//, 6.4e-5, 0.008);
+                      q//, q//, 0.015, 0.16);
 

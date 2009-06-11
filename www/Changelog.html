@@ -21,6 +21,26 @@
 </tr>
 </table>
 <p>
+2009-06-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> utilities/tests/identify.sh: Added a test for 'identify
+        -verbose' on a well-populated JPEG file.
+
+  <LI> PerlMagick/t/{jpeg/write.t, jng/read.t, jng/write.t}: Relax
+        allowed error for JPEG-related tests.
+
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Attribute allocation
+        size was too small causing overrun of memory buffer.  Problem was
+        added on 2009-06-08.
+
+  <LI> magick/image.c (AllocateDepthMap): Allocation size was one
+        element too small.<BR>
+        (GetImageDepth): Forgot to free depth map.  Memory leak of 64K
+        bytes per iteration.
+
+</UL>
+<p>
 2009-06-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
