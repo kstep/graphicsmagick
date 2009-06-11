@@ -1,5 +1,8 @@
 2009-06-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/attribute.c (GenerateEXIFAttribute): Identify unknown
+	tags via their four-character hex value.
+
 	* magick/colorspace.c (CMYKToRGBTransform): Use symbolic notation
 	to access pixel quantum values.
 

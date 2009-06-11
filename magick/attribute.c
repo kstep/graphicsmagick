@@ -1164,29 +1164,35 @@ static TagInfo
     {  0x0000, (char *) NULL}
   };
 
+/*
+  Format a tag description.
+
+  An EXIF tag value to be translated, and a buffer of at least
+  MaxTextExtent length are passed as arguments.  For convenience, the
+  converted string is returned.
+*/
 
 static const char *
-EXIFTagDescription(int t)
+EXIFTagDescription(int t, char *tag_description)
 {
-  const char
-    *description;
-
-  register long
+  unsigned int
     i;
 
-  description="unknown";
+  tag_description[0]='\0';
   for (i=0; ; i++)
     {
       if (tag_table[i].tag == 0)
 	break;
       if (tag_table[i].tag == t)
 	{
-	  description=tag_table[i].description;
+	  (void) strlcpy(tag_description,tag_table[i].description,MaxTextExtent);
 	  break;
 	}
     }
+  if (tag_description[0] == '\0')
+    FormatString(tag_description,"0x%04X",t);
 
-  return description;
+  return tag_description;
 }
 
 static const char *
@@ -1305,9 +1311,10 @@ static unsigned long Read32u(int morder, void *ilong)
 static int GenerateEXIFAttribute(Image *image,const char *specification)
 {
   char
+    *final,
     *key,
-    *value,
-    *final;
+    tag_description[MaxTextExtent],
+    *value;
 
   int
     id,
@@ -1529,7 +1536,9 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
         c;
 
       char
-        *pde,
+        *pde;
+
+      unsigned char
         *pval;
 
       pde=(char *) (ifdp+2+(12*de));
@@ -1540,7 +1549,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
       c=(long) Read32u(morder,pde+4); /* get number of components */
       n=c*format_bytes[f];
       if (n <= 4)
-        pval=pde+8;
+        pval=(unsigned char *) pde+8;
       else
         {
           unsigned long
@@ -1552,7 +1561,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
           oval=Read32u(morder,pde+8);
           if ((oval+n) > length)
             continue;
-          pval=(char *)(tiffp+oval);
+          pval=(unsigned char *)(tiffp+oval);
         }
       if (all || (tag == t))
         {
@@ -1563,7 +1572,8 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
 	    {
 	      fprintf(stderr,"EXIF: TagVal=%d  TagDescr=\"%s\" Format=%d  "
 		      "FormatDescr=\"%s\"  Components=%d\n",t,
-		      EXIFTagDescription(t),f, EXIFFormatDescription(f),c);
+		      EXIFTagDescription(t,tag_description),f,
+		      EXIFFormatDescription(f),c);
 	    }
 
           switch (f)
@@ -1668,7 +1678,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
 	      allocation_size=n+1;
 	      for (a=0; a < n; a++)
 		if (!(isprint((int) pval[a])))
-		  allocation_size += 4;
+		  allocation_size += 3;
 
               value=MagickAllocateMemory(char *,allocation_size);
               if (value != (char *) NULL)
@@ -1676,6 +1686,8 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
 		  i=0;
                   for (a=0; a < n; a++)
                   {
+		    if ((f == EXIF_FMT_STRING) && (pval[a] == '\0'))
+		      break;
 		    if ((isprint((int) pval[a])) ||
 			((pval[a] == '\0') && (a == (n-1) && (!binary))))
 		      {
@@ -1704,7 +1716,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
               {
                 case 1:
                 {
-		  description=EXIFTagDescription(t);
+		  description=EXIFTagDescription(t,tag_description);
                   FormatString(s,"%.1024s=",description);
                   (void) ConcatenateString(&final,s);
                   break;
@@ -1745,6 +1757,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   } while (level > 0);
   if (strlen(final) == 0)
     (void) ConcatenateString(&final,"unknown");
+
   (void) SetImageAttribute(image,specification,(const char *) final);
   MagickFreeMemory(final);
   return(True);
