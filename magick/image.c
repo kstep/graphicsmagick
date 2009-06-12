@@ -2391,6 +2391,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
+  image->clip_mask=(Image *) NULL;
   MagickFreeMemory(image->montage);
   MagickFreeMemory(image->directory);
   MagickFreeMemory(image->colormap);

@@ -1,5 +1,8 @@
 2009-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImage): Fix leak of the entire mask
+	image supplied via -mask.
+
 	* utilities/tests/mask.sh: Add a test for applying a mask image
 	with -mask.
 

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004, 2007 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -8997,6 +8997,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             }
             (void) SetImageType(mask,TrueColorMatteType);
             (void) SetImageClipMask(*image,mask);
+	    /*
+	      SetImageClipMask clones the image.
+	     */
+	    DestroyImage(mask);
           }
         if (LocaleCompare("matte",option+1) == 0)
           {
