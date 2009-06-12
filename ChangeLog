@@ -1,3 +1,8 @@
+2009-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/tests/mask.sh: Add a test for applying a mask image
+	with -mask.
+
 2009-06-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (GenerateEXIFAttribute): Identify unknown

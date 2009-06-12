@@ -1,4 +1,4 @@
-.TH gm 1 "2009/06/06" "GraphicsMagick"
+.TH gm 1 "2009/06/12" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2400,9 +2400,10 @@ Colormaps.
 The image read from the file is used as a clipping mask.  It must have
 the same dimensions as the image being masked.
 
-If the mask image contains an opacity channel, the opacity of each pixel is
-used to define the mask.  Otherwise, the intensity (gray level) of each
-pixel is used.
+If the mask image contains an opacity channel, the opacity of each
+pixel is used to define the mask.  Otherwise, the intensity (gray
+level) of each pixel is used.  Unmasked (black) pixels are modified
+while masked pixels (not black) are protected from alteration.
 
 Use \fB+mask\fP to remove the clipping mask.
 

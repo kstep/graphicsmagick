@@ -68,6 +68,7 @@ UTILITIES_TESTS = \
 	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
+	utilities/tests/mask.sh \
 	utilities/tests/medianfilter.sh \
 	utilities/tests/modulate.sh \
 	utilities/tests/monochrome.sh \
@@ -158,6 +159,7 @@ utilities/tests/montage.log : \
 	utilities/tests/grayscale.log \
 	utilities/tests/implode.log \
 	utilities/tests/level.log \
+	utilities/tests/mask.log \
 	utilities/tests/medianfilter.log \
 	utilities/tests/modulate.log \
 	utilities/tests/monochrome.log \
