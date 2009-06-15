@@ -49,7 +49,7 @@
 #include "magick/magick_endian.h"
 #include "magick/tempfile.h"
 #if defined(HasZLIB)
- #include "zlib.h"
+#  include "zlib.h"
 #endif
 
 
@@ -294,6 +294,7 @@ unsigned char val = 0;
   *BuffL = val;
 }
 
+#if defined(HasZLIB)
 static voidpf ZLIBAllocFunc(voidpf opaque, uInt items, uInt size)
 {
   ARG_NOT_USED(opaque);
@@ -308,10 +309,8 @@ static void ZLIBFreeFunc(voidpf opaque, voidpf address)
 /** This procedure decompreses an image block for a new MATLAB format. */
 static Image *DecompressBlock(Image *orig, magick_off_t Size, ImageInfo *clone_info, ExceptionInfo *exception)
 {
-#if defined(HasZLIB)
-
 Image *image2;
-void *CacheBlock, *DecompressBlock;
+void *cache_block, *decompress_block;
 z_stream zip_info;
 FILE *mat_file;
 size_t magick_size;
@@ -325,20 +324,20 @@ int status;
     (void) unlink(clone_info->filename);
   }
 
-  CacheBlock = MagickAllocateMemory(unsigned char *,(size_t)((Size<16384)?Size:16384));
-  if(CacheBlock==NULL) return NULL;
-  DecompressBlock = MagickAllocateMemory(unsigned char *,(size_t)(4096));
-  if(DecompressBlock==NULL) 
+  cache_block = MagickAllocateMemory(unsigned char *,(size_t)((Size<16384)?Size:16384));
+  if(cache_block==NULL) return NULL;
+  decompress_block = MagickAllocateMemory(unsigned char *,(size_t)(4096));
+  if(decompress_block==NULL) 
   {
-    MagickFreeMemory(CacheBlock);    
+    MagickFreeMemory(cache_block);    
     return NULL;
   }
 
   mat_file = AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if(!mat_file)
   {
-    MagickFreeMemory(CacheBlock);
-    MagickFreeMemory(DecompressBlock);
+    MagickFreeMemory(cache_block);
+    MagickFreeMemory(decompress_block);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Gannot create file stream for PS image");
     return NULL;
   }
@@ -353,16 +352,16 @@ int status;
   zip_info.total_out = 0;
   while(Size>0 && !EOFBlob(orig))
   {    
-    magick_size = ReadBlob(orig, (Size<16384)?Size:16384, CacheBlock);
-    zip_info.next_in = CacheBlock;
+    magick_size = ReadBlob(orig, (Size<16384)?Size:16384, cache_block);
+    zip_info.next_in = cache_block;
     zip_info.avail_in = magick_size;    
 
     while(zip_info.avail_in>0)
     {
       zip_info.avail_out = 4096;    
-      zip_info.next_out = DecompressBlock;
+      zip_info.next_out = decompress_block;
       status = inflate(&zip_info,Z_NO_FLUSH);      
-      fwrite(DecompressBlock, 4096-zip_info.avail_out, 1, mat_file);
+      fwrite(decompress_block, 4096-zip_info.avail_out, 1, mat_file);
 
       if(status == Z_STREAM_END) goto DblBreak;
     }
@@ -372,8 +371,8 @@ int status;
 DblBreak:
  
   (void)fclose(mat_file);
-  MagickFreeMemory(CacheBlock);
-  MagickFreeMemory(DecompressBlock);
+  MagickFreeMemory(cache_block);
+  MagickFreeMemory(decompress_block);
 
   if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
   if( (image2 = AllocateImage(clone_info))==NULL ) goto EraseFile;  
@@ -390,10 +389,8 @@ UnlinkFile:
   }
 
   return image2;
-#else
-  return NULL;
-#endif
 }
+#endif /*  defined(HasZLIB) */
 
 
 

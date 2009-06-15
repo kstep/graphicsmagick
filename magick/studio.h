@@ -236,6 +236,16 @@ extern "C" {
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 #endif
 
+/*
+  Avoid shadowing system library globals and functions.
+*/
+#undef gamma
+#define gamma gamma_magick
+#undef swab
+#define swab swab_magick
+#undef y1
+#define y1 y1_magick
+
 #include "magick/magick_types.h"
 #include "magick/image.h"
 #include "magick/list.h"
@@ -247,7 +257,6 @@ extern "C" {
 #    include <sys/times.h>
 #  endif
 #endif
-
 
 #if defined(POSIX)
 # include "magick/unix_port.h"

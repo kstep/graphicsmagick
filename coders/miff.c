@@ -612,6 +612,7 @@ static void BZLIBFreeFunc(void *opaque, void *address)
 }
 #endif
 
+#if defined(HasZLIB)
 static voidpf ZLIBAllocFunc(voidpf opaque, uInt items, uInt size)
 {
   ARG_NOT_USED(opaque);
@@ -622,6 +623,7 @@ static void ZLIBFreeFunc(voidpf opaque, voidpf address)
   ARG_NOT_USED(opaque);
   MagickFree(address);
 }
+#endif /* defined(HasZLIB) */
 
 static Image *ReadMIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)

@@ -15,12 +15,13 @@ using namespace Magick;
 
 int main( int /*argc*/, char ** argv)
 {
-  // Initialize GraphicsMagick install location for Windows
+  // Initialize GraphicsMagick
   InitializeMagick(*argv);
       
   int failures=0;
-      
+
   cout << "Checking for working exceptions (may crash) ... ";
+  cout.flush();
 
   {      
     // Basic exception test
@@ -33,7 +34,7 @@ int main( int /*argc*/, char ** argv)
       {
         failures--;
       }
-      
+
     // Throw a Magick++ exception class.
     try
       {

@@ -126,7 +126,7 @@ indicate the width of the inner and outer shadows of the frame.</p>
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
 unsigned int RaiseImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#rectangleinfo">RectangleInfo</a> *raise_info,
-                         const int raise );
+                         const int raise_flag );
 </pre>
 </div>
 <div class="section">
@@ -138,14 +138,14 @@ edge of the effect.</p>
 <p>The format of the RaiseImage method is:</p>
 <pre class="literal-block">
 unsigned int RaiseImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#rectangleinfo">RectangleInfo</a> *raise_info,
-                         const int raise );
+                         const int raise_flag );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
 <dd>The image.</dd>
 <dt>raise_info:</dt>
 <dd>Define the width and height of the raise area.</dd>
-<dt>raise:</dt>
+<dt>raise_flag:</dt>
 <dd>A value other than zero creates a 3-D raise effect,
 otherwise it has a lowered effect.</dd>
 </dl>
@@ -154,7 +154,7 @@ otherwise it has a lowered effect.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-05-05 18:00 UTC.
+Generated on: 2009-06-15 19:15 UTC.
 
 </div>
 </body>

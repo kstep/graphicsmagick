@@ -1,3 +1,9 @@
+2009-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: User provided LDFLAGS was being overwritten under
+	Solaris.
+	* Many files: Additional reduction of shadowing warnings.
+
 2009-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Fix leak of the entire mask

@@ -397,7 +397,7 @@ XorCompositePixels(void *mutable_data,                /* User provided mutable d
   */
   for (i=0; i < npixels; i++)
     {
-      double gamma_adj;
+      double gamma;
       double source_alpha;
       double dest_alpha;
       double composite;
@@ -408,24 +408,24 @@ XorCompositePixels(void *mutable_data,                /* User provided mutable d
       source_alpha=(double) source.opacity/MaxRGBDouble;
       dest_alpha=(double) destination.opacity/MaxRGBDouble;
       
-      gamma_adj=(1.0-source_alpha)+(1.0-dest_alpha)-
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
         2.0*(1.0-source_alpha)*(1.0-dest_alpha);
           
-      composite=MaxRGBDouble*(1.0-gamma_adj);
+      composite=MaxRGBDouble*(1.0-gamma);
       destination.opacity=RoundDoubleToQuantum(composite);
           
-      gamma_adj=1.0/(gamma_adj <= MagickEpsilon ? 1.0 : gamma_adj);
+      gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
           
       composite=((1.0-source_alpha)*source.red*dest_alpha+
-                 (1.0-dest_alpha)*destination.red*source_alpha)*gamma_adj;
+                 (1.0-dest_alpha)*destination.red*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
           
       composite=((1.0-source_alpha)*source.green*dest_alpha+
-                 (1.0-dest_alpha)*destination.green*source_alpha)*gamma_adj;
+                 (1.0-dest_alpha)*destination.green*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
           
       composite=((1.0-source_alpha)*source.blue*dest_alpha+
-                 (1.0-dest_alpha)*destination.blue*source_alpha)*gamma_adj;
+                 (1.0-dest_alpha)*destination.blue*source_alpha)*gamma;
       destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);

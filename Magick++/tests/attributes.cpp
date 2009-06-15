@@ -663,7 +663,7 @@ int main( int /*argc*/, char ** argv)
 	  //image.directory();
           Magick::Image bad_image("foo");
 	}
-      catch ( Exception exception_)
+      catch ( Exception &exception_)
 	{
           cout << "Caught exception, good!:" << endl
                << "  \"" << exception_.what() << "\"" << endl;

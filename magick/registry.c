@@ -46,7 +46,7 @@ static SemaphoreInfo
   *registry_semaphore = (SemaphoreInfo *) NULL;
 
 static long
-  id = 0;
+  current_id = 0;
 
 static RegistryInfo
   *registry_list = (RegistryInfo *) NULL;
@@ -446,7 +446,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   registry_info->length=length;
   registry_info->signature=MagickSignature;
   AcquireSemaphoreInfo(&registry_semaphore);
-  registry_info->id=id++;
+  registry_info->id=current_id++;
   if (registry_list == (RegistryInfo *) NULL)
     registry_list=registry_info;
   else

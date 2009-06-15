@@ -6129,7 +6129,7 @@ WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
 %
 %      unsigned int MagickRaiseImage(MagickWand *wand,const unsigned long width,
 %        const unsigned long height,const long x,const long y,
-%        const unsigned int raise)
+%        const unsigned int raise_flag)
 %
 %  A description of each parameter follows:
 %
@@ -6137,13 +6137,13 @@ WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
 %
 %    o width,height,x,y:  Define the dimensions of the area to raise.
 %
-%    o raise: A value other than zero creates a 3-D raise effect,
+%    o raise_flag: A value other than zero creates a 3-D raise effect,
 %      otherwise it has a lowered effect.
 %
 */
 WandExport unsigned int MagickRaiseImage(MagickWand *wand,
   const unsigned long width,const unsigned long height,const long x,
-  const long y,const unsigned int raise)
+  const long y,const unsigned int raise_flag)
 {
   RectangleInfo
     raise_info;
@@ -6159,7 +6159,7 @@ WandExport unsigned int MagickRaiseImage(MagickWand *wand,
   raise_info.height=height;
   raise_info.x=x;
   raise_info.y=y;
-  status=RaiseImage(wand->image,&raise_info,raise);
+  status=RaiseImage(wand->image,&raise_info,raise_flag);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);

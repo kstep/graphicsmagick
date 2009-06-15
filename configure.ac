@@ -290,7 +290,7 @@ case "${host}" in
 esac
 ])
 if test "${gm_cv_ld_lazyload}" != 'none' ; then
-  if test -n "${LDFLAGS}" ; then
+  if test -z "${LDFLAGS}" ; then
     LDFLAGS="${gm_cv_ld_lazyload}"
   else
     LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"

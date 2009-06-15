@@ -1345,6 +1345,12 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   (void) XCloseDisplay(display);
   return(status);
 #else
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
+
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
     (char *) NULL);
   return(False);
@@ -7232,6 +7238,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   (void) XCloseDisplay(display);
   return(status);
 #else
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
+
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
     (char *) NULL);
   return(False);
@@ -14650,6 +14662,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   (void) XCloseDisplay(display);
   return(!status);
 #else
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
+
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
     (char *) NULL);
   return(False);

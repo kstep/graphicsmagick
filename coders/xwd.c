@@ -135,7 +135,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   IndexPacket
-    index;
+    index_val;
 
   int
     status;
@@ -375,12 +375,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
-              index=(unsigned short) ((pixel >> red_shift) & red_mask);
-              q->red=ScaleShortToQuantum(colors[index].red);
-              index=(unsigned short) ((pixel >> green_shift) & green_mask);
-              q->green=ScaleShortToQuantum(colors[index].green);
-              index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-              q->blue=ScaleShortToQuantum(colors[index].blue);
+              index_val=(unsigned short) ((pixel >> red_shift) & red_mask);
+              q->red=ScaleShortToQuantum(colors[index_val].red);
+              index_val=(unsigned short) ((pixel >> green_shift) & green_mask);
+              q->green=ScaleShortToQuantum(colors[index_val].green);
+              index_val=(unsigned short) ((pixel >> blue_shift) & blue_mask);
+              q->blue=ScaleShortToQuantum(colors[index_val].blue);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -438,10 +438,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
-            VerifyColormapIndex(image,index);
-            indexes[x]=index;
-            *q++=image->colormap[index];
+            index_val=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
+            VerifyColormapIndex(image,index_val);
+            indexes[x]=index_val;
+            *q++=image->colormap[index_val];
           }
           if (!SyncImagePixels(image))
             break;

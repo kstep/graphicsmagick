@@ -1523,35 +1523,35 @@ ScaleSpace(const long *histogram,const double tau,double *scaled_histogram)
   double
     alpha,
     beta,
-    *gamma_l,
+    *gamma,
     sum;
 
   register long
     u,
     x;
 
-  gamma_l=MagickAllocateMemory(double *,256*sizeof(double));
-  if (gamma_l == (double *) NULL)
+  gamma=MagickAllocateMemory(double *,256*sizeof(double));
+  if (gamma == (double *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateGammaMap);
   alpha=1.0/(tau*sqrt(2.0*MagickPI));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= 255; x++)
-    gamma_l[x]=0.0;
+    gamma[x]=0.0;
   for (x=0; x <= 255; x++)
     {
-      gamma_l[x]=exp(beta*x*x);
-      if (gamma_l[x] < MagickEpsilon)
+      gamma[x]=exp(beta*x*x);
+      if (gamma[x] < MagickEpsilon)
         break;
     }
   for (x=0; x <= 255; x++)
     {
       sum=0.0;
       for (u=0; u <= 255; u++)
-        sum+=(double) histogram[u]*gamma_l[AbsoluteValue(x-u)];
+        sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
       scaled_histogram[x]=alpha*sum;
     }
-  MagickFreeMemory(gamma_l);
+  MagickFreeMemory(gamma);
 }
 
 /*
