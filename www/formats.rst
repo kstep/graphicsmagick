@@ -46,6 +46,7 @@ GraphicsMagick Supported Formats
 .. _SMPTE : http://www.smpte.org/
 .. _SVG : http://www.w3.org/Graphics/SVG/
 .. _TIFF : http://www.remotesensing.org/libtiff/
+.. _TopoL : http://www.topol.cz/english/share/index.php3
 .. _VIFF: http://www.fileformat.info/format/viff/egff.htm
 .. _WBMP : http://www.openmobilealliance.org/Technical/wapindex.aspx
 .. _WMF : http://www.fileformat.info/format/wmf/egff.htm
@@ -345,6 +346,9 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | PWP_         | R    | Seattle File Works        |                                                  |
    |              |      | multi-image file          |                                                  |
+   +--------------+------+---------------------------+--------------------------------------------------+
+   | RAS          | R    | TopoL_ (GIS)              |                                                  |
+   |              |      |                           |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | RAD          | R    | Radiance_ image file      | Requires that ra_ppm from the Radiance_ software |
    |              |      |                           | package be installed.                            |
