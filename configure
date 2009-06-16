@@ -22230,9 +22230,8 @@ _ACEOF
 fi
 
 
-# If the C compiler supports a working long double type with more range
-# or precision than the double type, define HAVE_LONG_DOUBLE.
-
+# If C compiler supports a working long double type with more range
+# or precision than the double type then define HAVE_LONG_DOUBLE_WIDER.
 
   { $as_echo "$as_me:$LINENO: checking for long double with more range or precision than double" >&5
 $as_echo_n "checking for long double with more range or precision than double... " >&6; }
@@ -22310,15 +22309,6 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
   fi
-
-    ac_cv_c_long_double=$ac_cv_type_long_double_wider
-    if test $ac_cv_c_long_double = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_LONG_DOUBLE 1
-_ACEOF
-
-    fi
 
 
 # If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
@@ -40795,7 +40785,12 @@ MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 
 
+ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
+
+
 # Set configured scripts to executable.
+ac_config_commands="$ac_config_commands default"
+
 ac_config_commands="$ac_config_commands GraphicsMagick++-config.in"
 
 ac_config_commands="$ac_config_commands GraphicsMagick-config.in"
@@ -40806,8 +40801,6 @@ ac_config_commands="$ac_config_commands rungm.sh.in"
 
 ac_config_commands="$ac_config_commands PerlMagick/PerlMagickCheck.sh.in"
 
-
-ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -42069,11 +42062,6 @@ do
     "magick/magick_config_api.h") CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config_api.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
-    "GraphicsMagick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick++-config.in" ;;
-    "GraphicsMagick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick-config.in" ;;
-    "GraphicsMagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagickWand-config.in" ;;
-    "rungm.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS rungm.sh.in" ;;
-    "PerlMagick/PerlMagickCheck.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/PerlMagickCheck.sh.in" ;;
     "GraphicsMagick.spec") CONFIG_FILES="$CONFIG_FILES GraphicsMagick.spec" ;;
     "Magick++/bin/GraphicsMagick++-config") CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
     "Magick++/lib/GraphicsMagick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/GraphicsMagick++.pc" ;;
@@ -42093,6 +42081,12 @@ do
     "rungm.sh") CONFIG_FILES="$CONFIG_FILES rungm.sh" ;;
     "wand/GraphicsMagickWand-config") CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand-config" ;;
     "wand/GraphicsMagickWand.pc") CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand.pc" ;;
+    "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
+    "GraphicsMagick++-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick++-config.in" ;;
+    "GraphicsMagick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagick-config.in" ;;
+    "GraphicsMagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS GraphicsMagickWand-config.in" ;;
+    "rungm.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS rungm.sh.in" ;;
+    "PerlMagick/PerlMagickCheck.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS PerlMagick/PerlMagickCheck.sh.in" ;;
 
   *) { { $as_echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 $as_echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -43735,6 +43729,7 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:$LINENO: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
+
 
 rm -f magick-version
 

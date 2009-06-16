@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1201,6 +1201,32 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_destroy_decompress(&jpeg_info);
   MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
+
+  /*
+    Retrieve image orientation from EXIF (if present) and store in
+    image.
+
+    EXIF orienation enumerations match TIFF enumerations, which happen
+    to match the enumeration values used by GraphicsMagick.
+  */
+  if (status == MagickPass)
+    {
+      const ImageAttribute
+	*attribute;
+
+      attribute = GetImageAttribute(image,"EXIF:Orientation");
+      if ((attribute != (const ImageAttribute *) NULL) &&
+	  (attribute->value != (char *) NULL))
+	{
+	  int
+	    orientation;
+
+	  orientation=atoi(attribute->value);
+	  if ((orientation > UndefinedOrientation) &&
+	      (orientation <= LeftBottomOrientation))
+	    image->orientation=(OrientationType) orientation;
+	}
+    }
   if (image->logging) 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   GetImageException(image,exception);

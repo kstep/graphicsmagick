@@ -40,7 +40,7 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 . ${srcdir}/version.sh
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
 # Substitute Magick library versioning
 AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
@@ -576,7 +576,7 @@ case "${with_quantum_depth}" in
   8 ) ;;
   16 ) ;;
   32 ) ;;
-  * ) AC_ERROR("Pixel quantum depth must have value of 8, 16, or 32") ;;
+  * ) AC_MSG_ERROR("Pixel quantum depth must have value of 8, 16, or 32") ;;
 esac
 QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
@@ -899,9 +899,9 @@ AC_TYPE_SIZE_T
 # Define ssize_t to a suitable type, if standard headers do not define it.
 AC_TYPE_SSIZE_T
 
-# If the C compiler supports a working long double type with more range
-# or precision than the double type, define HAVE_LONG_DOUBLE.
-AC_C_LONG_DOUBLE
+# If C compiler supports a working long double type with more range
+# or precision than the double type then define HAVE_LONG_DOUBLE_WIDER.
+AC_TYPE_LONG_DOUBLE_WIDER
 
 # If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
 # C compiler predefines it.
@@ -3032,14 +3032,7 @@ AC_SUBST(MAGICK_API_PC_CPPFLAGS)
 AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
 
-# Set configured scripts to executable.
-AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
-AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
-AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
-AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
-AC_CONFIG_COMMANDS([PerlMagick/PerlMagickCheck.sh.in],[chmod +x PerlMagick/PerlMagickCheck.sh])
-
-AC_OUTPUT( \
+AC_CONFIG_FILES(\
         GraphicsMagick.spec \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/lib/GraphicsMagick++.pc \
@@ -3059,6 +3052,17 @@ AC_OUTPUT( \
         rungm.sh \
         wand/GraphicsMagickWand-config \
         wand/GraphicsMagickWand.pc )
+
+# Set configured scripts to executable.
+AC_CONFIG_COMMANDS([default],[],[])
+AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
+AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
+AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
+AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
+AC_CONFIG_COMMANDS([PerlMagick/PerlMagickCheck.sh.in],[chmod +x PerlMagick/PerlMagickCheck.sh])
+
+AC_OUTPUT
+
 rm -f magick-version
 
 echo ""

@@ -1,5 +1,10 @@
 2009-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Reduce usage of deprecated Autoconf macros.
+
+	* coders/jpeg.c (ReadJPEGImage): Set image orientation from EXIF
+	Orientation tag if it is present.
+
 	* www/formats.rst: Add TopoL format as per Jaroslav Fojtik.
 
 2009-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

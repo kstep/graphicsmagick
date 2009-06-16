@@ -182,10 +182,6 @@
 
 /* Define to 1 if the type `long double' works and has more range or precision
    than `double'. */
-#undef HAVE_LONG_DOUBLE
-
-/* Define to 1 if the type `long double' works and has more range or precision
-   than `double'. */
 #undef HAVE_LONG_DOUBLE_WIDER
 
 /* Define this if a modern libltdl is already installed */
