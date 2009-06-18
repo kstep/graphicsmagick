@@ -58,14 +58,14 @@
 <ul class="simple">
 <li><a class="reference" href="#how-does-graphicsmagick-differ-from-imagemagick" id="id1" name="id1">How does GraphicsMagick differ from ImageMagick?</a></li>
 <li><a class="reference" href="#how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick" id="id2" name="id2">How often does GraphicsMagick pick up new code from ImageMagick?</a></li>
-<li><a class="reference" href="#i-received-the-following-message-delegation-failed-what-does-it-mean" id="id3" name="id3">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></li>
-<li><a class="reference" href="#how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" id="id4" name="id4">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></li>
-<li><a class="reference" href="#how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" id="id5" name="id5">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></li>
-<li><a class="reference" href="#the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" id="id6" name="id6">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></li>
-<li><a class="reference" href="#how-do-i-animate-a-digital-yuv-image-sequence" id="id7" name="id7">How do I animate a digital YUV image sequence?</a></li>
-<li><a class="reference" href="#how-do-i-view-only-the-red-channel-of-an-rgb-image" id="id8" name="id8">How do I view only the red channel of an RGB image?</a></li>
+<li><a class="reference" href="#how-can-i-process-many-files-at-once" id="id3" name="id3">How can I process many files at once?</a></li>
+<li><a class="reference" href="#i-received-the-following-message-delegation-failed-what-does-it-mean" id="id4" name="id4">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></li>
+<li><a class="reference" href="#how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" id="id5" name="id5">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></li>
+<li><a class="reference" href="#how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" id="id6" name="id6">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></li>
+<li><a class="reference" href="#the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" id="id7" name="id7">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></li>
+<li><a class="reference" href="#how-do-i-animate-a-digital-yuv-image-sequence" id="id8" name="id8">How do I animate a digital YUV image sequence?</a></li>
 <li><a class="reference" href="#how-do-i-change-the-default-postscript-page-size" id="id9" name="id9">How do I change the default <em>PostScript</em> page size?</a></li>
-<li><a class="reference" href="#when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do" id="id10" name="id10">When I display or convert an image, I get Memory allocation error. What can I do?</a></li>
+<li><a class="reference" href="#i-get-a-memory-allocation-error-what-can-i-do" id="id10" name="id10">I get a memory allocation error. What can I do?</a></li>
 <li><a class="reference" href="#how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" id="id11" name="id11">How do I concatenate three images left-to-right with no borders, frames, or text?</a></li>
 <li><a class="reference" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" id="id12" name="id12">How do I create a GIF animation sequence to display within Netscape?</a></li>
 <li><a class="reference" href="#when-i-display-a-postscript-image-white-borders-are-trimmed" id="id13" name="id13">When I display a <em>PostScript</em> image, white borders are trimmed.</a></li>
@@ -145,7 +145,43 @@ developed entirely outside the ImageMagick source code to avoid any
 possibility of copyright taint.</p>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="i-received-the-following-message-delegation-failed-what-does-it-mean" name="i-received-the-following-message-delegation-failed-what-does-it-mean">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></h1>
+<h1><a class="toc-backref" href="#id3" id="how-can-i-process-many-files-at-once" name="how-can-i-process-many-files-at-once">How can I process many files at once?</a></h1>
+<p>Use 'gm mogrify'.  The 'mogrify' subcommand is designed to operate on
+any number of files in one command.  Normally 'mogrify' overwrites the
+input files but the <cite>-output-directory</cite> option (which must appear
+before any input file names!) allows sending the modified files to a
+different directory (which could be in a subdirectory).  For example:</p>
+<pre class="literal-block">
+gm mogrify -output-directory .thumbs -resize 320x200 *.jpg
+</pre>
+<p>If you encounter command line length limitations then you can have
+GraphicsMagick expand the file list by quoting the wildcard argument
+to prevent it from being expanded by your command shell:</p>
+<pre class="literal-block">
+gm mogrify -output-directory .thumbs -resize 320x200 &quot;*.jpg&quot;
+</pre>
+<p>and you can also retrieve a list of files to process from a text file
+(e.g. named 'files.txt') like:</p>
+<pre class="literal-block">
+gm mogrify -output-directory .thumbs -resize 320x200 &#64;files.txt
+</pre>
+<p>where files.txt has one line per file name.  If the input file paths
+contain relative sub-directory paths (e.g. &quot;foo/file1&quot;, &quot;bar/file2&quot;),
+you can instruct GraphicsMagick to create a similar subdirectory
+structure under the output directory by adding the
+<cite>-create-directories</cite> option:</p>
+<pre class="literal-block">
+gm mogrify -output-directory .thumbs -create-directories -resize 320x200 &#64;files.txt
+</pre>
+<p>Note that the algorithm used to generate output file names is quite
+simple.  If -output-directory is &quot;/foo&quot; and the file path is
+&quot;bar/none.jpg&quot; then the final path will be &quot;foo/bar/none.jpg&quot;.  Based
+on this it should be clear that when <cite>-output-directory</cite> is used, file
+paths should be relative paths rather than absolute paths or else the
+concatenation won't work.</p>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="i-received-the-following-message-delegation-failed-what-does-it-mean" name="i-received-the-following-message-delegation-failed-what-does-it-mean">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></h1>
 <p><em>GraphicsMagick</em> uses several freely available packages to perform the
 translation of certain image formats (<em>PostScript</em>, <em>MPEG</em>, etc.). Make
 sure these packages are available as described in the <a class="reference" href="README.html">README</a> file. Also
@@ -156,7 +192,7 @@ Ghostscript supports the <em>pnmraw</em> or <em>ppmraw</em> device (<tt class="d
 the document contains valid <em>PostScript</em> statements (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">image.ps</span></tt>).</p>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id4" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" name="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
+<h1><a class="toc-backref" href="#id5" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" name="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
 <p>Display your GIF image with <a class="reference" href="display.html">display</a>. Choose <em>Matte</em> from the <em>Image
 Edit</em> command menu and identify a pixel that has the <em>transparency</em>
 color. Press <em>Method</em> and select a matte edit method from a pop-up menu.
@@ -193,7 +229,7 @@ gm display -visual TrueColor image.gif
 </pre>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id5" id="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" name="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></h1>
+<h1><a class="toc-backref" href="#id6" id="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" name="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></h1>
 <p><a class="reference" href="animate.html">Animate</a> updates the image file name in the title bar of the image window
 as each image is displayed from the image sequence. To display just a
 single name that will not change, use <em>-title</em>:</p>
@@ -202,7 +238,7 @@ gm animate -title &quot;My Image Sequence&quot; images.
 </pre>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id6" id="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" name="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></h1>
+<h1><a class="toc-backref" href="#id7" id="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" name="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></h1>
 <p>Use the <em>-descend</em> option:</p>
 <pre class="literal-block">
 gm import -descend image.miff
@@ -221,18 +257,11 @@ be significantly slower than just grabbing the top-level window but
 ensures the correct image.</p>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id7" id="how-do-i-animate-a-digital-yuv-image-sequence" name="how-do-i-animate-a-digital-yuv-image-sequence">How do I animate a digital YUV image sequence?</a></h1>
+<h1><a class="toc-backref" href="#id8" id="how-do-i-animate-a-digital-yuv-image-sequence" name="how-do-i-animate-a-digital-yuv-image-sequence">How do I animate a digital YUV image sequence?</a></h1>
 <p>Suppose your sequence is 72 352x240 frames titled frame0.Y, frame0.U,
 frame0.V, frame1.Y, frame1.U, etc. Use this command:</p>
 <pre class="literal-block">
 gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
-</pre>
-</div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="how-do-i-view-only-the-red-channel-of-an-rgb-image" name="how-do-i-view-only-the-red-channel-of-an-rgb-image">How do I view only the red channel of an RGB image?</a></h1>
-<p>Use the <em>-gamma</em> option, for example,</p>
-<pre class="literal-block">
-gm display -gamma 1.0,0.0,0.0 image.miff
 </pre>
 </div>
 <div class="section">
@@ -242,7 +271,7 @@ another default, change the page geometries (PSPageGeometry) in
 <cite>magick/image.h</cite> and recompile.</p>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id10" id="when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do" name="when-i-display-or-convert-an-image-i-get-memory-allocation-error-what-can-i-do">When I display or convert an image, I get Memory allocation error. What can I do?</a></h1>
+<h1><a class="toc-backref" href="#id10" id="i-get-a-memory-allocation-error-what-can-i-do" name="i-get-a-memory-allocation-error-what-can-i-do">I get a memory allocation error. What can I do?</a></h1>
 <p>Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best
 advantage of the resources available by optimizing its use of <em>virtual</em>
@@ -720,7 +749,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-26 21:42 UTC.
+Generated on: 2009-06-18 00:43 UTC.
 
 </div>
 </body>

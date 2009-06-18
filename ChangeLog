@@ -1,3 +1,7 @@
+2009-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/FAQ.rst: Add a FAQ about how to process many files at once.
+
 2009-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Reduce usage of deprecated Autoconf macros.

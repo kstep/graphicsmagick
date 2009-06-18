@@ -14,7 +14,6 @@ GraphicsMagick FAQ
 .. _install: install.html
 .. _montage: montage.html
 .. _README: README.html
-.. _plagiarism: http://www.plagiarism.org/
 
 .. contents:: FAQ Contents
 
@@ -79,6 +78,44 @@ under GraphicsMagick's MIT X11 style license without additional
 encumberment.  In order for a work to be accepted, it must have been
 developed entirely outside the ImageMagick source code to avoid any
 possibility of copyright taint.
+
+How can I process many files at once?
+-------------------------------------
+
+Use 'gm mogrify'.  The 'mogrify' subcommand is designed to operate on
+any number of files in one command.  Normally 'mogrify' overwrites the
+input files but the `-output-directory` option (which must appear
+before any input file names!) allows sending the modified files to a
+different directory (which could be in a subdirectory).  For example::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 *.jpg
+
+If you encounter command line length limitations then you can have
+GraphicsMagick expand the file list by quoting the wildcard argument
+to prevent it from being expanded by your command shell::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 "*.jpg"
+
+and you can also retrieve a list of files to process from a text file
+(e.g. named 'files.txt') like::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 @files.txt
+
+where files.txt has one line per file name.  If the input file paths
+contain relative sub-directory paths (e.g. "foo/file1", "bar/file2"),
+you can instruct GraphicsMagick to create a similar subdirectory
+structure under the output directory by adding the
+`-create-directories` option::
+
+    gm mogrify -output-directory .thumbs -create-directories -resize 320x200 @files.txt
+
+Note that the algorithm used to generate output file names is quite
+simple.  If -output-directory is "/foo" and the file path is
+"bar/none.jpg" then the final path will be "foo/bar/none.jpg".  Based
+on this it should be clear that when `-output-directory` is used, file
+paths should be relative paths rather than absolute paths or else the
+concatenation won't work.
+
 
 I received the following message, "?????? delegation failed ...". What does it mean?
 ------------------------------------------------------------------------------------
@@ -168,13 +205,6 @@ frame0.V, frame1.Y, frame1.U, etc. Use this command::
 
     gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
 
-How do I view only the red channel of an RGB image?
----------------------------------------------------
-
-Use the *-gamma* option, for example, ::
-
-    gm display -gamma 1.0,0.0,0.0 image.miff
-
 How do I change the default *PostScript* page size?
 ---------------------------------------------------
 
@@ -182,8 +212,8 @@ The default dimensions of a *PostScript* page is 612x792. If you prefer
 another default, change the page geometries (PSPageGeometry) in
 `magick/image.h` and recompile.
 
-When I display or convert an image, I get Memory allocation error. What can I do?
----------------------------------------------------------------------------------
+I get a memory allocation error. What can I do?
+-----------------------------------------------
 
 Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best
