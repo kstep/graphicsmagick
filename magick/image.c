@@ -2057,12 +2057,15 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   {
     for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
       {
-        (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
-        if (strlen(attribute->key) > 1)
-          (void) fprintf(file,"%.1024s",attribute->key+1);
-
-        (void) fprintf(file,": ");
-        (void) fprintf(file,"%s\n",attribute->value);
+	if (LocaleNCompare("EXIF",attribute->key,4) != 0)
+	  {
+	    (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
+	    if (strlen(attribute->key) > 1)
+	      (void) fprintf(file,"%.1024s",attribute->key+1);
+	    
+	    (void) fprintf(file,": ");
+	    (void) fprintf(file,"%s\n",attribute->value);
+	  }
       }
   }
   if((profile=GetImageProfile(image,"ICM",&profile_length)) != 0)

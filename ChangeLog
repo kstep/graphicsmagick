@@ -1,3 +1,13 @@
+2009-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (RegisterJPEGImage): Fix typo which caused IJG
+	library version to be shown for "JPG" format but not for "JPEG".
+	Also use a more descriptive name for JPEG library.
+
+	* magick/image.c (DescribeImage): Filter out spurious EXIF
+	attributes which already exist because we previously accessed
+	them.  We do a full EXIF dump later.
+
 2009-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/FAQ.rst: Add a FAQ about how to process many files at once.

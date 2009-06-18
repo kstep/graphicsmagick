@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2009-06-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (RegisterJPEGImage): Fix typo which caused IJG
+        library version to be shown for "JPG" format but not for "JPEG".
+        Also use a more descriptive name for JPEG library.
+
+  <LI> magick/image.c (DescribeImage): Filter out spurious EXIF
+        attributes which already exist because we previously accessed
+        them.  We do a full EXIF dump later.
+
+</UL>
+<p>
 2009-06-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

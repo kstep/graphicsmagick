@@ -1259,6 +1259,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJPEGImage(void)
 {
+  static const char
+    *description="Joint Photographic Experts Group JFIF format";
+
   static char
     version[MaxTextExtent];
 
@@ -1266,8 +1269,8 @@ ModuleExport void RegisterJPEGImage(void)
     *entry;
 
   version[0]='\0';
-#if defined(JPEG_LIB_VERSION)
-  FormatString(version,"%d",JPEG_LIB_VERSION);
+#if defined(HasJPEG)
+  FormatString(version,"IJG JPEG %d",JPEG_LIB_VERSION);
 #endif
 
   entry=SetMagickInfo("JPEG");
@@ -1278,9 +1281,10 @@ ModuleExport void RegisterJPEGImage(void)
 #endif
   entry->magick=(MagickHandler) IsJPEG;
   entry->adjoin=False;
-  entry->description="Joint Photographic Experts Group JFIF format";
+  entry->description=description;
   if (version[0] != '\0')
-    entry->module="JPEG";
+    entry->version=version;
+  entry->module="JPEG";
   entry->coder_class=PrimaryCoderClass;
   (void) RegisterMagickInfo(entry);
 
@@ -1291,7 +1295,7 @@ ModuleExport void RegisterJPEGImage(void)
   entry->encoder=(EncoderHandler) WriteJPEGImage;
 #endif
   entry->adjoin=False;
-  entry->description="Joint Photographic Experts Group JFIF format";
+  entry->description=description;
   if (version[0] != '\0')
     entry->version=version;
   entry->module="JPEG";
