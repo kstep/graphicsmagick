@@ -2151,10 +2151,10 @@ CompareImageCommand(ImageInfo *image_info,
           fprintf(stdout," Opacity: %#-6.2f\n",statistics.opacity);
         fprintf(stdout,"   Total: %#-6.2f\n",statistics.combined);
 
-	if ((maximum_error >=0.0) && (statistics.combined < maximum_error))
+	if ((maximum_error >= 0.0) && (statistics.combined < maximum_error))
 	  {
 	    status &= MagickFail;
-	    FormatString(message,"%#.2f",statistics.combined);
+	    FormatString(message,"%g",statistics.combined);
 	    ThrowException(exception,ImageError,ImageDifferenceExceedsLimit,message);
 	  }
       }
@@ -2169,10 +2169,10 @@ CompareImageCommand(ImageInfo *image_info,
           fprintf(stdout," Opacity: %#-12.10f % 10.1f\n",statistics.opacity,statistics.opacity*MaxRGBDouble);
         fprintf(stdout,"   Total: %#-12.10f % 10.1f\n",statistics.combined,statistics.combined*MaxRGBDouble);
 
-	if ((maximum_error >=0.0) && (statistics.combined > maximum_error))
+	if ((maximum_error >= 0.0) && (statistics.combined > maximum_error))
 	  {
 	    status &= MagickFail;
-	    FormatString(message,"%#.10f",statistics.combined);
+	    FormatString(message,"%g > %g",statistics.combined, maximum_error);
 	    ThrowException(exception,ImageError,ImageDifferenceExceedsLimit,message);
 	  }
       }

@@ -1,3 +1,15 @@
+2009-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CompareImageCommand): Report full error rather
+	than rounded error in error reports since sometimes the value
+	reported was rounded down to zero.
+
+	* utilities/tests/hald-clut-transform.sh: New test to verify that
+	Hald CLUT interpolation is working perfectly.
+
+	* utilities/tests/hald-clut-identity.sh: Renamed from
+	hald-clut.sh.
+
 2009-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (RegisterJPEGImage): Fix typo which caused IJG

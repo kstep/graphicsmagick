@@ -64,7 +64,8 @@ UTILITIES_TESTS = \
 	utilities/tests/gaussianblur.sh \
 	utilities/tests/gradient.sh \
 	utilities/tests/grayscale.sh \
-	utilities/tests/hald-clut.sh \
+	utilities/tests/hald-clut-identity.sh \
+	utilities/tests/hald-clut-transform.sh \
 	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
