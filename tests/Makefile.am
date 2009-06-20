@@ -693,6 +693,13 @@ TESTS_TESTS = \
 	tests/rwfile_MNG_truecolor12.sh \
 	tests/rwfile_MNG_truecolor16.sh \
 	tests/rwfile_MONO_truecolor_70x46.sh \
+	tests/rwfile_MPR_bilevel.sh \
+	tests/rwfile_MPR_gray.sh \
+	tests/rwfile_MPR_pallette.sh \
+	tests/rwfile_MPR_truecolor.sh \
+	tests/rwfile_MPR_truecolor10.sh \
+	tests/rwfile_MPR_truecolor12.sh \
+	tests/rwfile_MPR_truecolor16.sh \
 	tests/rwfile_MTV_bilevel.sh \
 	tests/rwfile_MTV_gray.sh \
 	tests/rwfile_MTV_pallette.sh \
@@ -996,6 +1003,7 @@ CHECK_FILE_FORMATS = \
 	MAT \
 	MIFF \
 	MNG \
+	MPR \
 	MTV \
 	P7 \
 	PBM \

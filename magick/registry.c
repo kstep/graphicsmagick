@@ -165,7 +165,7 @@ MagickExport MagickPassFail DeleteMagickRegistry(const long id)
 %
 %
 */
-MagickExport void DestroyMagickRegistry(void)
+void DestroyMagickRegistry(void)
 {
   register RegistryInfo
     *p;
@@ -199,6 +199,7 @@ MagickExport void DestroyMagickRegistry(void)
     MagickFreeMemory(registry_info);
   }
   registry_list=(RegistryInfo *) NULL;
+  current_id = 0;
   LiberateSemaphoreInfo(&registry_semaphore);
   DestroySemaphoreInfo(&registry_semaphore);
 }
@@ -361,6 +362,34 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         description);
     }
   return(blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e M a g i c k R e g i s t r y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeMagickRegistry() ensures that the magick registry is ready for
+%  use.
+%
+%  The format of the InitializeMagickRegistry method is:
+%
+%       void InitializeMagickRegistry(void)
+%
+%
+*/
+void InitializeMagickRegistry(void)
+{
+  AcquireSemaphoreInfo(&registry_semaphore);
+  current_id = 0;
+  registry_list = (RegistryInfo *) NULL;
+  LiberateSemaphoreInfo(&registry_semaphore);
 }
 
 /*

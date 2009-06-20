@@ -43,8 +43,13 @@ extern MagickExport void
   *GetMagickRegistry(const long id,RegistryType *type,size_t *length,
      ExceptionInfo *exception);
 
+#if defined(MAGICK_IMPLEMENTATION)
+
 extern void
-  DestroyMagickRegistry(void);
+  DestroyMagickRegistry(void),
+  InitializeMagickRegistry(void);
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

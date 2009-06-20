@@ -874,7 +874,7 @@ MagickExport void InitializeMagick(const char *path)
 
   /* Initialize our random number generator */
   InitializeMagickRandomGenerator();
-  
+
   /*
     Set logging flags using the value of MAGICK_DEBUG if it is set in
     the environment.
@@ -913,6 +913,9 @@ MagickExport void InitializeMagick(const char *path)
      to the client is setup */
   InitializeMagickResources();
 
+  /* Initialize magick registry */
+  InitializeMagickRegistry();
+  
   /*
     Adjust minimum coder class if requested.
   */

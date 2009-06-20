@@ -24,9 +24,13 @@
 2009-06-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magick.c (InitializeMagick): Invoke InitializeMagickRegistry().
+
   <LI> magick/registry.c (RegistryInfo): There is no reason to expose
         the RegistryInfo structure in the public interface so it is moved
-        to registry.c.
+        to registry.c.<BR>
+        (InitializeMagickRegistry): Add a function for initializing the
+        magick registry.
 
 </UL>
 <p>

@@ -1,8 +1,12 @@
 2009-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.c (InitializeMagick): Invoke InitializeMagickRegistry().
+
 	* magick/registry.c (RegistryInfo): There is no reason to expose
 	the RegistryInfo structure in the public interface so it is moved
 	to registry.c.
+	(InitializeMagickRegistry): Add a function for initializing the
+	magick registry.
 
 2009-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
