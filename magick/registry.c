@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -38,6 +38,30 @@
 #include "magick/registry.h"
 #include "magick/semaphore.h"
 #include "magick/utility.h"
+/*
+  Typedef declarations.
+*/
+typedef struct _RegistryInfo
+{
+  long
+    id;
+
+  RegistryType
+    type;
+
+  void
+    *blob;
+
+  size_t
+    length;
+
+  unsigned long
+    signature;
+
+  struct _RegistryInfo
+    *previous,
+    *next;
+} RegistryInfo;
 
 /*
   Global declarations.
@@ -62,13 +86,13 @@ static RegistryInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteMagickRegistry() deletes an entry in the registry as defined by the id.
-%  It returns True if the entry is deleted otherwise False if no entry is found
-%  in the registry that matches the id.
+%  DeleteMagickRegistry() deletes an entry in the registry as defined by the
+%  id.  It returns MagickPass if the entry is deleted otherwise MagickFail if
+%  no entry is found in the registry that matches the id.
 %
 %  The format of the DeleteMagickRegistry method is:
 %
-%      unsigned int DeleteMagickRegistry(const long id)
+%      MagickPassFail DeleteMagickRegistry(const long id)
 %
 %  A description of each parameter follows:
 %
@@ -76,7 +100,7 @@ static RegistryInfo
 %
 %
 */
-MagickExport unsigned int DeleteMagickRegistry(const long id)
+MagickExport MagickPassFail DeleteMagickRegistry(const long id)
 {
   register RegistryInfo
     *p;
@@ -119,7 +143,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
     break;
   }
   LiberateSemaphoreInfo(&registry_semaphore);
-  return(p != (RegistryInfo *) NULL);
+  return ((p != (RegistryInfo *) NULL) ? MagickPass : MagickFail);
 }
 
 /*
@@ -234,7 +258,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   LiberateSemaphoreInfo(&registry_semaphore);
   if (image == (Image *) NULL)
     ThrowException(exception,RegistryError,UnableToLocateImage,name);
-  return(image);
+  return (image);
 }
 
 /*
@@ -459,5 +483,5 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       p->next=registry_info;
     }
   LiberateSemaphoreInfo(&registry_semaphore);
-  return(registry_info->id);
+  return (registry_info->id);
 }
