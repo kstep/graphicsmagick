@@ -1,3 +1,9 @@
+2009-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (ExpandFilenames): Input wildcard file
+	specifications with a subdirectory component such as
+	"subdir/*.dpx" were not working.
+
 2009-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (InitializeMagick): Invoke InitializeMagickRegistry().

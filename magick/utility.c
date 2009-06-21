@@ -965,19 +965,13 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     /* Get the list of matching file names. */
     filelist=ListFiles(*path=='\0' ? current_directory : path,
       filename,&number_files);
+
+    /* ListFiles() changes current directory without restoring. */
+    (void) chdir(current_directory);
+
     if (filelist == 0)
       continue;
 
-    /* 
-      Check that there's at least one real (non-directory), matching 
-      filename.
-
-      ListFiles returns all sub-directories plus files matching the filename
-      pattern. Check if it found only directories, continue if it did.
-    */
-    for (j=0; j < number_files; j++)
-      if (IsDirectory(filelist[j]) <= 0)
-        break;
     if (j == number_files)
       {
         /*
@@ -1053,10 +1047,6 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       }
     MagickFreeMemory(filelist);
   }
-  /*
-    ListFiles changes cd without restoring.
-  */
-  (void) chdir(current_directory);
   *argc=count;
   *argv=vector;
   return(MagickPass);
