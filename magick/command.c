@@ -10514,11 +10514,11 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 typedef struct _TransmogrifyOptions
 {
   ImageInfo *image_info;
-  char *input_filename;
+  const char *input_filename;
   int argc;
   char **argv;
-  char *output_format;
-  char *output_directory;
+  const char *output_format;
+  const char *output_directory;
   MagickBool create_directories;
   MagickBool global_colormap;
   MagickPassFail status;
@@ -10586,7 +10586,8 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
         Compute final output file name and format
       */
       (void) strlcpy(output_filename,"",MaxTextExtent);
-      if ((char *) NULL != options->output_directory)
+      if (((const char *) NULL != options->output_directory) &&
+	  (options->output_directory[0] != '\0'))
         {
           size_t
             output_directory_length;
@@ -10689,7 +10690,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   char
     *format = NULL,
     *option = NULL,
-    *output_directory;
+    output_directory[MaxTextExtent];
 
   double
     sans;
@@ -10729,7 +10730,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     Set defaults.
   */
   format=(char *) NULL;
-  output_directory=(char *) NULL;
+  output_directory[0]='\0';
   create_directories=MagickFalse;
   global_colormap=MagickFalse;
   status=True;
@@ -11803,14 +11804,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("output-directory",option+1) == 0)
           {
-            (void) CloneString(&output_directory,(char *) NULL);
+	    output_directory[0]='\0';
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
-                (void) CloneString(&output_directory,argv[i]);
+		(void) strlcpy(output_directory,argv[i],sizeof(output_directory));
               }
             break;
           }

@@ -882,7 +882,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     i,
     j;
 
-  unsigned int
+  MagickBool
     first;
 
   /*
@@ -910,7 +910,6 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     option=(*argv)[i];
     /* Never throw options away, so copy here, then perhaps modify later */
     vector[count++]=AcquireString(option);
-    first=True;
 
     /*
       Don't expand or process any VID: argument since the VID coder
@@ -966,6 +965,11 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     filelist=ListFiles(*path=='\0' ? current_directory : path,
       filename,&number_files);
 
+    if (filelist != (char **) NULL)
+      for (j=0; j < number_files; j++)
+	if (IsDirectory(filelist[j]) <= 0)
+	  break;
+
     /* ListFiles() changes current directory without restoring. */
     (void) chdir(current_directory);
 
@@ -994,6 +998,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     if (vector == (char **) NULL)
       return(MagickFail);
 
+    first=MagickTrue;
     for (j=0; j < number_files; j++)
       {
         char
@@ -1039,7 +1044,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
                 /* Deallocate original option assigned above */
                 --count;
                 MagickFreeMemory(vector[count]);
-                first=False;
+                first=MagickFalse;
               }
             vector[count++]=AcquireString(formatted_buffer);
           }

@@ -1,5 +1,8 @@
 2009-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImageCommand): Fix memory leak of
+	output_directory string buffer, if it was used.
+
 	* magick/utility.c (ExpandFilenames): Input wildcard file
 	specifications with a subdirectory component such as
 	"subdir/*.dpx" were not working.
