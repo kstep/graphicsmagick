@@ -1,3 +1,8 @@
+2009-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (ExpandFilenames): Expand @filename to a list
+	of arguments.
+
 2009-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): Fix memory leak of
