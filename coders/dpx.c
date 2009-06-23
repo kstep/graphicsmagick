@@ -4308,6 +4308,11 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   MagickFreeMemory(map_Y);
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
-  CloseBlob(image);  
+  CloseBlob(image);
+  if (chroma_image != (Image *) NULL)
+    {
+      DestroyImage(chroma_image);
+      chroma_image = (Image *) NULL;
+    }
   return(status);
 }
