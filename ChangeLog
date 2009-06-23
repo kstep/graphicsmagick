@@ -1,3 +1,16 @@
+2009-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (ExpandFilenames): Input wildcard file
+	specifications with a subdirectory component such as
+	"subdir/*.dpx" were not working.  Expand @filename to a list of
+	arguments.
+
+2009-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Debian stores Ghostscript fonts under
+	/usr/share/fonts/type1/gsfonts so check there for fonts.  Issue
+	reported by Ralf Wildenhues.
+
 2009-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Fix Ping of blob.

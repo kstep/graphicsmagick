@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2007 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -867,6 +867,9 @@ MagickExport void ExpandFilename(char *filename)
 */
 MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 {
+  const
+    size_t prealloc_entries = 1024;
+
   char
     current_directory[MaxTextExtent],
     *option,
@@ -880,7 +883,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
     i,
     j;
 
-  unsigned int
+  MagickBool
     first;
 
   /*
@@ -888,7 +891,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
   */
   assert(argc != (int *) NULL);
   assert(argv != (char ***) NULL);
-  vector=MagickAllocateMemory(char **,(*argc+MaxTextExtent)*sizeof(char *));
+  vector=MagickAllocateMemory(char **,(*argc+prealloc_entries)*sizeof(char *));
   if (vector == (char **) NULL)
     return(MagickFail);
   /*
@@ -897,164 +900,211 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
   (void) getcwd(current_directory,MaxTextExtent-1);
   count=0;
   for (i=0; i < *argc; i++)
-  {
-    char
-      **filelist,
-      filename[MaxTextExtent],
-      magick[MaxTextExtent],
-      path[MaxTextExtent],
-      subimage[MaxTextExtent];
+    {
+      char
+	**filelist,
+	filename[MaxTextExtent],
+	magick[MaxTextExtent],
+	path[MaxTextExtent],
+	subimage[MaxTextExtent];
 
-    option=(*argv)[i];
-    /* Never throw options away, so copy here, then perhaps modify later */
-    vector[count++]=AcquireString(option);
-    first=True;
+      option=(*argv)[i];
+      /* Never throw options away, so copy here, then perhaps modify later */
+      vector[count++]=AcquireString(option);
 
-    /*
-      Don't expand or process any VID: argument since the VID coder
-      does its own expansion
-    */
-    if (LocaleNCompare("VID:",option,4) == 0)
-      continue;
+      /*
+	Don't expand or process any VID: argument since the VID coder
+	does its own expansion
+      */
+      if (LocaleNCompare("VID:",option,4) == 0)
+	continue;
 
-    /*
-      Skip the argument to +profile and +define since it can be glob
-      specifications, and we don't want it interpreted as a file.
-      Also skip the argument to -convolve since it may be very large
-      and is not a filename.
-    */
-    if ((LocaleNCompare("+define",option,7) == 0) ||
-        (LocaleNCompare("+profile",option,8) == 0) ||
-        (LocaleNCompare("-convolve",option,9) == 0))
-      {
-        i++;
-        if (i == *argc)
+      /*
+	Don't attempt to expand the argument to these options.
+      */
+      if ((LocaleNCompare("+define",option,7) == 0) ||
+	  (LocaleNCompare("+profile",option,8) == 0) ||
+	  (LocaleNCompare("-comment",option,8) == 0) ||
+	  (LocaleNCompare("-convolve",option,9) == 0) ||
+	  (LocaleNCompare("-draw",option,5) == 0) ||
+	  (LocaleNCompare("-font",option,5) == 0) ||
+	  (LocaleNCompare("-format",option,7) == 0) ||
+	  (LocaleNCompare("-label",option,6) == 0))
+	{
+	  i++;
+	  if (i == *argc)
             continue;
-        option=(*argv)[i];
-        vector[count++]=AcquireString(option);
-        continue;
-      }
+	  option=(*argv)[i];
+	  vector[count++]=AcquireString(option);
+	  continue;
+	}
 
-    /* Pass quotes through to the command-line parser */
-    if ((*option == '"') || (*option == '\''))
-      continue;
+      /* Pass quotes through to the command-line parser */
+      if ((*option == '"') || (*option == '\''))
+	continue;
 
-    /* 
-      Fast cycle options that are not expandable filename patterns.
-      ListFiles only expands patterns in the filename.  We also check
-      if the full option resolves to a file since ListFiles() obtains
-      a list of all the files in the directory and is thus very slow
-      if there are thousands of files.
-    */
-    GetPathComponent(option,TailPath,filename);
-    if ((!IsGlob(filename)) || IsAccessibleNoLogging(option))
-      continue;
+      /*
+	Expand @filename to a list of arguments.
+      */
+      if (option[0] == '@')
+	{
+	  FILE
+	    *file;
 
-    /* Chop the option to get its other filename components. */
-    GetPathComponent(option,MagickPath,magick);
-    GetPathComponent(option,HeadPath,path);
-    GetPathComponent(option,SubImagePath,subimage);
+	  file=fopen(option+1,"r");
+	  if (file != (FILE *) NULL)
+	    {
 
-    /* GetPathComponent throws away the colon */
-    if (*magick != '\0')
-      (void) strlcat(magick,":",sizeof(magick));
-    ExpandFilename(path);
+	      first=MagickTrue;
+	      number_files=0;
+	      while (fgets(filename,sizeof(filename),file) != (char *) NULL)
+		{
+		  for (j=0; filename[j] != '\0'; j++)
+		    if (filename[j] == '\n')
+		      filename[j] = '\0';
+	      
+		  if (filename[0] != '\0')
+		    {
+		      if ((number_files % prealloc_entries) == 0)
+			{
+			  MagickReallocMemory(char **,vector,
+					      (*argc+count+prealloc_entries)*
+					      sizeof(char *));
+			  if (vector == (char **) NULL)
+			    {
+			      fclose(file);
+			      return(MagickFail);
+			    }
+			}
 
-    /* Get the list of matching file names. */
-    filelist=ListFiles(*path=='\0' ? current_directory : path,
-      filename,&number_files);
-    if (filelist == 0)
-      continue;
+		      if (first)
+			{
+			  /* Deallocate original option assigned above */
+			  --count;
+			  MagickFreeMemory(vector[count]);
+			  first=MagickFalse;
+			}
+		      number_files++;
+		      vector[count++]=AcquireString(filename);
+		    }
+		}
 
-    /* 
-      Check that there's at least one real (non-directory), matching 
-      filename.
+	      fclose(file);
+	    }
+	}
 
-      ListFiles returns all sub-directories plus files matching the filename
-      pattern. Check if it found only directories, continue if it did.
-    */
-    for (j=0; j < number_files; j++)
-      if (IsDirectory(filelist[j]) <= 0)
-        break;
-    if (j == number_files)
-      {
-        /*
-          Bourne/Bash shells passes through unchanged any glob patterns
-          not matching anything (abc* and there's no file starting with
-          abc). Do the same for behaviour consistent with that.
-        */
-        for (j=0; j < number_files; j++)
-          MagickFreeMemory(filelist[j]);
-        MagickFreeMemory(filelist);
-        continue;
-      }
+      /* 
+	 Fast cycle options that are not expandable filename patterns.
+	 ListFiles only expands patterns in the filename.  We also check
+	 if the full option resolves to a file since ListFiles() obtains
+	 a list of all the files in the directory and is thus very slow
+	 if there are thousands of files.
+      */
+      GetPathComponent(option,TailPath,filename);
+      if ((!IsGlob(filename)) || IsAccessibleNoLogging(option))
+	continue;
 
-    /*
-      There's at least one matching filename.
-      Transfer file list to argument vector.
-    */
-    MagickReallocMemory(char **,vector,
-                        (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
-    if (vector == (char **) NULL)
-      return(MagickFail);
+      /* Chop the option to get its other filename components. */
+      GetPathComponent(option,MagickPath,magick);
+      GetPathComponent(option,HeadPath,path);
+      GetPathComponent(option,SubImagePath,subimage);
 
-    for (j=0; j < number_files; j++)
-      {
-        char
-          filename_buffer[MaxTextExtent];
+      /* GetPathComponent throws away the colon */
+      if (*magick != '\0')
+	(void) strlcat(magick,":",sizeof(magick));
+      ExpandFilename(path);
 
-        *filename_buffer='\0';
-        if (strlcat(filename_buffer,path,sizeof(filename_buffer))
-            >= sizeof(filename_buffer))
-          MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                            filename_buffer);
-        if (*path != '\0')
-          {
-            if (strlcat(filename_buffer,DirectorySeparator,sizeof(filename_buffer))
-                >= sizeof(filename_buffer))
-              MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                                filename_buffer);
-          }
-        if (strlcat(filename_buffer,filelist[j],sizeof(filename_buffer))
-            >= sizeof(filename_buffer))
-          MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                            filename_buffer);
-        /* If it's a filename (not a directory) ... */
-        if (IsDirectory(filename_buffer) == 0) 
-          {
-            char
-              formatted_buffer[MaxTextExtent];
+      /* Get the list of matching file names. */
+      filelist=ListFiles(*path=='\0' ? current_directory : path,
+			 filename,&number_files);
 
-            *formatted_buffer='\0';
-            if (strlcat(formatted_buffer,magick,sizeof(filename_buffer))
-                >= sizeof(filename_buffer))
-              MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                                formatted_buffer);
-            if (strlcat(formatted_buffer,filename_buffer,sizeof(filename_buffer))
-                >= sizeof(filename_buffer))
-              MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                                formatted_buffer);
-            if (strlcat(formatted_buffer,subimage,sizeof(filename_buffer))
-                >= sizeof(filename_buffer))
-              MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
-                                formatted_buffer);
-            if (first)
-              {
-                /* Deallocate original option assigned above */
-                --count;
-                MagickFreeMemory(vector[count]);
-                first=False;
-              }
-            vector[count++]=AcquireString(formatted_buffer);
-          }
-        MagickFreeMemory(filelist[j]);
-      }
-    MagickFreeMemory(filelist);
-  }
-  /*
-    ListFiles changes cd without restoring.
-  */
-  (void) chdir(current_directory);
+      if (filelist != (char **) NULL)
+	for (j=0; j < number_files; j++)
+	  if (IsDirectory(filelist[j]) <= 0)
+	    break;
+
+      /* ListFiles() changes current directory without restoring. */
+      (void) chdir(current_directory);
+
+      if (filelist == 0)
+	continue;
+
+      if (j == number_files)
+	{
+	  /*
+	    Bourne/Bash shells passes through unchanged any glob patterns
+	    not matching anything (abc* and there's no file starting with
+	    abc). Do the same for behaviour consistent with that.
+	  */
+	  for (j=0; j < number_files; j++)
+	    MagickFreeMemory(filelist[j]);
+	  MagickFreeMemory(filelist);
+	  continue;
+	}
+
+      /*
+	There's at least one matching filename.
+	Transfer file list to argument vector.
+      */
+      MagickReallocMemory(char **,vector,
+			  (*argc+count+number_files+prealloc_entries)*sizeof(char *));
+      if (vector == (char **) NULL)
+	return(MagickFail);
+
+      first=MagickTrue;
+      for (j=0; j < number_files; j++)
+	{
+	  char
+	    filename_buffer[MaxTextExtent];
+
+	  *filename_buffer='\0';
+	  if (strlcat(filename_buffer,path,sizeof(filename_buffer))
+	      >= sizeof(filename_buffer))
+	    MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+			      filename_buffer);
+	  if (*path != '\0')
+	    {
+	      if (strlcat(filename_buffer,DirectorySeparator,sizeof(filename_buffer))
+		  >= sizeof(filename_buffer))
+		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+				  filename_buffer);
+	    }
+	  if (strlcat(filename_buffer,filelist[j],sizeof(filename_buffer))
+	      >= sizeof(filename_buffer))
+	    MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+			      filename_buffer);
+	  /* If it's a filename (not a directory) ... */
+	  if (IsDirectory(filename_buffer) == 0) 
+	    {
+	      char
+		formatted_buffer[MaxTextExtent];
+
+	      *formatted_buffer='\0';
+	      if (strlcat(formatted_buffer,magick,sizeof(filename_buffer))
+		  >= sizeof(filename_buffer))
+		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+				  formatted_buffer);
+	      if (strlcat(formatted_buffer,filename_buffer,sizeof(filename_buffer))
+		  >= sizeof(filename_buffer))
+		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+				  formatted_buffer);
+	      if (strlcat(formatted_buffer,subimage,sizeof(filename_buffer))
+		  >= sizeof(filename_buffer))
+		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
+				  formatted_buffer);
+	      if (first)
+		{
+		  /* Deallocate original option assigned above */
+		  --count;
+		  MagickFreeMemory(vector[count]);
+		  first=MagickFalse;
+		}
+	      vector[count++]=AcquireString(formatted_buffer);
+	    }
+	  MagickFreeMemory(filelist[j]);
+	}
+      MagickFreeMemory(filelist);
+    }
   *argc=count;
   *argv=vector;
   return(MagickPass);
