@@ -1,3 +1,12 @@
+2009-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Cache mogrify argument
+	images so that they are only loaded once when mogrify is used to
+	process multiple image files.
+
+	* coders/dpx.c (WriteDPXImage): Fix leak of chroma image when
+	subsampling to 4:2:2.
+
 2009-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (ExpandFilenames): Expand @filename to a list

@@ -139,6 +139,15 @@
 #include "magick/version.h"
 
 /*
+  While OpenMP has been observed to provide considerable speed-ups
+  when repetitively reading a few files (which become cached), it is
+  observed to slow the bulk processing of many files (showing high
+  lock occupancy) so it is always disabled for the moment.
+*/
+#undef DisableSlowOpenMP
+#define DisableSlowOpenMP 1
+
+/*
   Define STATIC to nothing so that normally static functions are
   externally visible in the symbol table (for profiling).
 */
@@ -4379,6 +4388,11 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   MagickFreeMemory(map_Y);
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
-  CloseBlob(image);  
+  CloseBlob(image);
+  if (chroma_image != (Image *) NULL)
+    {
+      DestroyImage(chroma_image);
+      chroma_image = (Image *) NULL;
+    }
   return(status);
 }

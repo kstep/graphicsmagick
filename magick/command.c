@@ -66,6 +66,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/profile.h"
 #include "magick/quantize.h"
+#include "magick/registry.h"
 #include "magick/render.h"
 #include "magick/resize.h"
 #include "magick/resource.h"
@@ -10683,6 +10684,62 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
   options->status=status;
   return (&options->status);
 }
+
+static MagickPassFail
+LoadAndCacheImageFile(char **filename,long *id,ExceptionInfo *exception)
+{
+  MagickPassFail
+    status;
+
+  status=MagickFail;
+  *id=-1;
+  if (LocaleNCompare(*filename,"MPRI:",5) != 0)
+    {
+      ImageInfo
+	*image_info;
+      
+      image_info=CloneImageInfo((const ImageInfo *) NULL);
+      if (image_info != (ImageInfo *) NULL)
+	{
+	  Image
+	    *clut_image;
+	  
+	  (void) strlcpy(image_info->filename,*filename,MaxTextExtent);
+	  clut_image=ReadImage(image_info,exception);
+	  if (clut_image != (Image *) NULL)
+	    {
+	      *id=SetMagickRegistry(ImageRegistryType,clut_image,sizeof(Image),exception);
+	      if (*id != -1)
+		{
+		  char
+		    mpri[MaxTextExtent];
+		  
+		  FormatString(mpri,"MPRI:%ld",*id);
+		  MagickFreeMemory(*filename);
+		  *filename=AcquireString(mpri);
+		  if (*filename != (char *) NULL)
+		    status=MagickPass;
+		}
+	      DestroyImage(clut_image);
+	    }
+	  DestroyImageInfo(image_info);
+	}
+    }
+  return status;
+}
+
+#define MaxStaticArrayEntries(a) (sizeof(a)/sizeof(*a))
+
+#define CacheArgumentImage(argp,cache,index,exception)	\
+  {									\
+    if (index < MaxStaticArrayEntries(cache))				\
+      {									\
+	if (LoadAndCacheImageFile(argp,&cache[index],exception)) \
+	  index++;							\
+      }									\
+}
+
+
 MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
@@ -10696,9 +10753,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     sans;
 
   long
+    image_cache[64],
     j,
     k,
     x;
+
+  size_t
+    image_cache_entries=0;    
 
   register long
     i;
@@ -11375,6 +11436,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 		i++;
 		if (i == argc)
 		  ThrowMogrifyException(OptionError,MissingArgument,option);
+
+		/*
+		  Cache argument image.
+		*/
+		CacheArgumentImage(&argv[i],image_cache,image_cache_entries,
+				   exception);
               }
 	    break;
           }
@@ -11621,6 +11688,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
+
+		/*
+		  Cache argument image.
+		*/
+		CacheArgumentImage(&argv[i],image_cache,image_cache_entries,
+				   exception);
               }
             break;
           }
@@ -11632,6 +11705,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
+
+		/*
+		  Cache argument image.
+		*/
+		CacheArgumentImage(&argv[i],image_cache,image_cache_entries,
+				   exception);
               }
             break;
           }
@@ -12189,6 +12268,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == argc)
               ThrowMogrifyException(OptionError,MissingArgument,option);
+
+	    /*
+	      Cache argument image.
+	    */
+	    CacheArgumentImage(&argv[i],image_cache,image_cache_entries,
+			       exception);
             break;
           }
         if (LocaleCompare("transform",option+1) == 0)
@@ -12356,6 +12441,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           (char *) NULL);
     }
  mogrify_cleanup_and_return:
+
+  /*
+    Release cached temporary files.
+  */
+  while (image_cache_entries > 0)
+    (void) DeleteMagickRegistry(image_cache[--image_cache_entries]);
   MagickFreeMemory(format);
   LiberateArgumentList(argc,argv);
   return(status);
