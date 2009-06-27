@@ -59,15 +59,15 @@ endif
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	GM="$(MEMCHECK) @abs_top_builddir@/utilities/gm" \
-	LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}" \
-	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
-	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
-	MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@' \
+	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
+	LD_LIBRARY_PATH="$(abs_top_builddir)/magick/.libs:${LD_LIBRARY_PATH}" \
+	MAGICK_CODER_MODULE_PATH='$(abs_top_builddir)/coders' \
+	MAGICK_CONFIGURE_PATH='$(abs_top_builddir)/config:$(abs_top_srcdir)/config' \
+	MAGICK_FILTER_MODULE_PATH='$(abs_top_builddir)/filters' \
 	MAKE="$(MAKE)" \
 	MAKEFLAGS="$(MAKEFLAGS)" \
 	MEMCHECK="$(MEMCHECK)" \
-	PATH="@abs_top_builddir@/utilities:${PATH}" \
+	PATH="$(abs_top_builddir)/utilities:${PATH}" \
 	SRCDIR=$(SRCDIR)
 
 # Test extensions

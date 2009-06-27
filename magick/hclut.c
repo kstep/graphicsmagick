@@ -254,8 +254,9 @@ HaldClutImage(Image *image, const Image *clut)
   FormatString(progress_message,
 	       "[%%s] Correcting the image with a clut of level %u ...",
 	       param.level);
-	
-  TransformColorspace(image,RGBColorspace);
+
+  if (!IsRGBCompatibleColorspace(image->colorspace))
+    TransformColorspace(image,RGBColorspace);
   if (image->storage_class == PseudoClass)
     {
       (void) HaldClutImagePixels(NULL,&param,image,image->colormap,
