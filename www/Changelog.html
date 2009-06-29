@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2009-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac, magick/blob.c: Add experimental Solaris direct I/O
+        support which is enabled by setting the environment variable
+        MAGICK_DIRECTIO to TRUE.  Direct I/O bypasses the filesystem
+        cache.  Only works for NFS and UFS, and not for ZFS.
+
+</UL>
+<p>
 2009-06-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

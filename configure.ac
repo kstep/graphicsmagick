@@ -1098,7 +1098,7 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r _exit ftime getexecname getc_unlocked \
+AC_CHECK_FUNCS([atoll ctime_r directio _exit ftime getexecname getc_unlocked \
   getpagesize getpid lltostr localtime_r madvise mkstemp _NSGetExecutablePath \
   _pclose pclose poll _popen popen posix_fallocate pread pwrite putc_unlocked \
   raise rand_r readdir_r readlink realpath select seekdir sigemptyset \
