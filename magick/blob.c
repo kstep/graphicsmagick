@@ -2557,31 +2557,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                                                     "  fsync() on close requested");
                           }
                       }
-#if defined(HAVE_DIRECTIO) && defined (DIRECTIO_ON)
-		    /*
-		      Enable direct I/O mode (possibly only available
-		      under Solaris).  Solaris 10 only supports direct
-		      I/O for NFS and UFS filesystem types.
-		    */
-		    if ((env = getenv("MAGICK_DIRECTIO")))
-                      {
-			if (LocaleCompare(env,"TRUE") == 0)
-                          {
-			    if (directio(fileno(image->blob->file),DIRECTIO_ON) != -1)
-			      {
-				if (image->logging)
-				  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-							"  directio enabled");
-			      }
-			    else
-			      {
-				if ((image->logging) && (errno == ENOTTY))
-				  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-							"  directio not supported by this file system");
-			      }
-			  }
-                      }
-#endif /* defined(HAVE_DIRECTIO) && defined (DIRECTIO_ON) */
                     image->blob->type=FileStream;
                     if (image->logging)
                       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
