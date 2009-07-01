@@ -1,3 +1,8 @@
+2009-07-01  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* www/formats.rst: ART module has writer for more than year.
+	So mark this here.
+
 2009-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/blob.c: Add experimental Solaris direct I/O

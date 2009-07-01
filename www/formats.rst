@@ -81,7 +81,7 @@ image formats.
    | Format       | Mode |        Description        |                      Notes                       |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | Format originally used on the Macintosh          |
-   | ART          | R    | PFS: 1st Publisher        | (MacPaint?) and later used for PFS: 1st          |
+   | ART          | RW   | PFS: 1st Publisher        | (MacPaint?) and later used for PFS: 1st          |
    |              |      |                           | Publisher clip art.                              |
    +--------------+------+---------------------------+--------------------------------------------------+
    | AVI_         | R    | Microsoft Audio/Visual    |                                                  |
