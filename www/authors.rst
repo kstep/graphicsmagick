@@ -58,6 +58,14 @@ Richard Nolde
 		Contributed code for converting between native floating
 		point types, and short (16/24) bit float types.
 
+Clément Follet
+		Contributed Hald CLUT and ASC-CDL implementations.
+
+John Sergeant
+		Re-wrote the HP PCL writer to work much better,
+		including support for compression.  Implemented
+		support for CALS type 1 format.  Re-wrote the DICOM
+		reader.
 
 Former GraphicsMagick Contributors
 ==================================

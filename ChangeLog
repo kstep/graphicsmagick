@@ -1,3 +1,8 @@
+2009-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c: Significant re-write of the DICOM reader.  Work
+	contributed by John Sergeant.
+
 2009-07-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (OpenBlob): Subsequent research shows that Direct
