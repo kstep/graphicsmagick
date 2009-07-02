@@ -1,5 +1,9 @@
 2009-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dcm.c: Eliminate compiler warnings.
+
+2009-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* coders/dcm.c: Significant re-write of the DICOM reader.  Work
 	contributed by John Sergeant.
 
