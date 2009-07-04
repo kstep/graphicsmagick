@@ -216,8 +216,7 @@ image formats.
    |              |      |                           | Coming from MathWorks_ for storing matrices.     |
    |              |      |                           | Currently supported types are 2D matrices: byte, |
    | MAT          | RW   | MATLAB image format       | word, double, complex and 3D matrices containing |
-   |              |      |                           | RGB [x*y*3] byte, word. Not supported are        |
-   |              |      |                           | compressed matrices from Matlab >7.1.            |
+   |              |      |                           | RGB [x*y*3] byte, word.                          |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      |                           | ImageMagick's lossless image format (with        |
    | MIFF_        | RW   | Magick image file format  | ASCII header) which ensures that no image        |
