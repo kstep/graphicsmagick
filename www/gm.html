@@ -520,6 +520,37 @@ option appears after all of the input images, all images are appended.</font></t
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a name="details"></a> <i>-asc-cdl &lt;spec&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply ASC CDL color transform</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Applies ("bakes in") the ASC-CDL which is a format for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers. The format defines the math for three
+functions: slope, offset and power. Each function uses a number for
+the red, green, and blue color channels for a total of nine numbers
+comprising a single color decision. A tenth number for chrominance
+(saturation) has been proposed but is not yet standardized.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The argument string is comma delimited and is in the following form
+(but without invervening spaces or line breaks)</font></td></tr></table>
+<pre>
+  redslope,redoffset,redpower:
+  greenslope,greenoffset,greenpower:
+  blueslope,blueoffset,bluepower:
+  saturation
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+with the unity (no change) specification being:
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-authenticate"></a>-authenticate <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>decrypt image with this password</td></tr></table>
@@ -7649,6 +7680,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details"></a> <i>-asc-cdl &lt;spec&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply ASC CDL color transform</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-authenticate">-authenticate</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>decrypt image with this password</td></tr></table>
@@ -13593,6 +13635,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-antialias">-antialias</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixel aliasing</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details"></a> <i>-asc-cdl &lt;spec&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply ASC CDL color transform</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

@@ -118,6 +118,7 @@ extern "C" {
 #include "magick/log.h"
 #include "magick/timer.h"
 #include "magick/image.h"
+#include "magick/cdl.h"
 #include "magick/channel.h"
 #include "magick/compare.h"
 #include "magick/confirm_access.h"

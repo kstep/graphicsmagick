@@ -118,6 +118,40 @@ option appears after all of the input images, all images are appended.</pp>
 
 
 
+<!-- ------------ -asc-cdl ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt> -asc-cdl <spec></opt>
+
+<abs>apply ASC CDL color transform</abs>
+
+<pp>
+Applies ("bakes in") the ASC-CDL which is a format for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers. The format defines the math for three
+functions: slope, offset and power. Each function uses a number for
+the red, green, and blue color channels for a total of nine numbers
+comprising a single color decision. A tenth number for chrominance
+(saturation) has been proposed but is not yet standardized.</pp>
+
+<pp>
+The argument string is comma delimited and is in the following form
+(but without invervening spaces or line breaks)</pp>
+
+<pre>
+  redslope,redoffset,redpower:
+  greenslope,greenoffset,greenpower:
+  blueslope,blueoffset,bluepower:
+  saturation
+</pre>
+
+<pp>
+with the unity (no change) specification being:
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"</pp>
+
+</utils>
+
+
 
 <!-- ------------ -authenticate ------------------------------------- -->
 

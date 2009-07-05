@@ -1,4 +1,4 @@
-.TH gm 1 "2009/06/12" "GraphicsMagick"
+.TH gm 1 "2009/07/05" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -406,6 +406,28 @@ Use \fB+append\fP to stack images left-to-right.  The set of images
 is terminated by the appearance of any option.
 If the \fB-append\fP
 option appears after all of the input images, all images are appended.
+.TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
+
+Applies ("bakes in") the ASC-CDL which is a format for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers. The format defines the math for three
+functions: slope, offset and power. Each function uses a number for
+the red, green, and blue color channels for a total of nine numbers
+comprising a single color decision. A tenth number for chrominance
+(saturation) has been proposed but is not yet standardized.
+
+The argument string is comma delimited and is in the following form
+(but without invervening spaces or line breaks)
+
+  redslope,redoffset,redpower:
+  greenslope,greenoffset,greenpower:
+  blueslope,blueoffset,bluepower:
+  saturation
+
+with the unity (no change) specification being:
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"
 .TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
@@ -5367,6 +5389,9 @@ Options, above.
 .B "-append"
 \fRappend a set of images
 .TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
+.TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
@@ -8283,6 +8308,9 @@ Options, above.
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
+.TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
 .TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password

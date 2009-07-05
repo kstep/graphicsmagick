@@ -47,7 +47,7 @@
 #
 #
 
-# Copyright (C) 2004, 2009 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -100,7 +100,7 @@
 # Makefile for building HTML files
 #
 
-# Copyright (C) 2008 GraphicsMagick Group
+# Copyright (C) 2008-2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1114,9 +1114,9 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/alpha_composite.h magick/annotate.c magick/api.h \
 	magick/attribute.c magick/attribute.h magick/bit_stream.c \
-	magick/bit_stream.h magick/blob.c magick/blob.h \
-	magick/channel.c magick/channel.h magick/compare.c \
-	magick/compare.h magick/confirm_access.c \
+	magick/bit_stream.h magick/blob.c magick/blob.h magick/cdl.c \
+	magick/cdl.h magick/channel.c magick/channel.h \
+	magick/compare.c magick/compare.h magick/confirm_access.c \
 	magick/confirm_access.h magick/color.c magick/color.h \
 	magick/colorspace.c magick/colorspace.h magick/command.c \
 	magick/command.h magick/composite.c magick/composite.h \
@@ -1191,6 +1191,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
 	magick/magick_libGraphicsMagick_la-bit_stream.lo \
 	magick/magick_libGraphicsMagick_la-blob.lo \
+	magick/magick_libGraphicsMagick_la-cdl.lo \
 	magick/magick_libGraphicsMagick_la-channel.lo \
 	magick/magick_libGraphicsMagick_la-compare.lo \
 	magick/magick_libGraphicsMagick_la-confirm_access.lo \
@@ -3167,6 +3168,8 @@ MAGICK_BASE_SRCS = \
 	magick/bit_stream.h \
 	magick/blob.c \
 	magick/blob.h \
+	magick/cdl.c \
+	magick/cdl.h \
 	magick/channel.c \
 	magick/channel.h \
 	magick/compare.c \
@@ -3299,6 +3302,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
 	magick/attribute.h \
 	magick/blob.h \
+	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
 	magick/colorspace.h \
@@ -4879,6 +4883,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/annotate.html \
 	$(WWWAPIDIR)/attribute.html \
 	$(WWWAPIDIR)/blob.html \
+	$(WWWAPIDIR)/cdl.html \
 	$(WWWAPIDIR)/channel.html \
 	$(WWWAPIDIR)/color.html \
 	$(WWWAPIDIR)/compare.html \
@@ -4893,6 +4898,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/enhance.html \
 	$(WWWAPIDIR)/error.html \
 	$(WWWAPIDIR)/fx.html \
+	$(WWWAPIDIR)/hclut.html \
 	$(WWWAPIDIR)/image.html \
 	$(WWWAPIDIR)/list.html \
 	$(WWWAPIDIR)/magick.html \
@@ -4922,6 +4928,7 @@ WWWWAPI_FILES = \
 	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
 	www/api/blob.html \
+	www/api/cdl.html \
 	www/api/channel.html \
 	www/api/color.html \
 	www/api/compare.html \
@@ -4936,6 +4943,7 @@ WWWWAPI_FILES = \
 	www/api/enhance.html \
 	www/api/error.html \
 	www/api/fx.html \
+	www/api/hclut.html \
 	www/api/image.html \
 	www/api/list.html \
 	www/api/magick.html \
@@ -5931,6 +5939,8 @@ magick/magick_libGraphicsMagick_la-attribute.lo:  \
 magick/magick_libGraphicsMagick_la-bit_stream.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-blob.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-cdl.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-channel.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
@@ -7036,6 +7046,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-bit_stream.lo
 	-rm -f magick/magick_libGraphicsMagick_la-blob.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-blob.lo
+	-rm -f magick/magick_libGraphicsMagick_la-cdl.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-cdl.lo
 	-rm -f magick/magick_libGraphicsMagick_la-channel.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-channel.lo
 	-rm -f magick/magick_libGraphicsMagick_la-color.$(OBJEXT)
@@ -7438,6 +7450,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-attribute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-bit_stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-blob.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colorspace.Plo@am__quote@
@@ -8436,6 +8449,14 @@ magick/magick_libGraphicsMagick_la-blob.lo: magick/blob.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/blob.c' object='magick/magick_libGraphicsMagick_la-blob.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-blob.lo `test -f 'magick/blob.c' || echo '$(srcdir)/'`magick/blob.c
+
+magick/magick_libGraphicsMagick_la-cdl.lo: magick/cdl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-cdl.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Tpo -c -o magick/magick_libGraphicsMagick_la-cdl.lo `test -f 'magick/cdl.c' || echo '$(srcdir)/'`magick/cdl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/cdl.c' object='magick/magick_libGraphicsMagick_la-cdl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-cdl.lo `test -f 'magick/cdl.c' || echo '$(srcdir)/'`magick/cdl.c
 
 magick/magick_libGraphicsMagick_la-channel.lo: magick/channel.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-channel.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-channel.Tpo -c -o magick/magick_libGraphicsMagick_la-channel.lo `test -f 'magick/channel.c' || echo '$(srcdir)/'`magick/channel.c

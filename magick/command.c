@@ -39,6 +39,7 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
+#include "magick/cdl.h"
 #include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/confirm_access.h"
@@ -3763,7 +3764,19 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("append",option+1) == 0)
-          break;
+	  {
+	    break;
+	  }
+	if (LocaleCompare("asc-cdl",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+		  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+	    break;
+          }
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             (void) CloneString(&image_info->authenticate,(char *) NULL);
@@ -5447,6 +5460,7 @@ static void ConvertUsage(void)
       "-affine matrix       affine transform matrix",
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
+      "-asc-cdl spec        apply ASC CDL transform",
       "-authenticate value  decrypt image with this password",
       "-average             average an image sequence",
       "-background color    background color",
@@ -8085,6 +8099,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->text_antialias=(*option == '-');
             break;
           }
+	if (LocaleCompare("asc-cdl",option+1) == 0)
+          {
+	    ++i;
+	    (void) CdlImage(*image,argv[i]);
+	    continue;
+	  }
         break;
       }
       case 'b':
@@ -10854,6 +10874,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->antialias=(*option == '-');
             break;
           }
+	if (LocaleCompare("asc-cdl",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+		  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+	    break;
+          }
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             (void) CloneString(&image_info->authenticate,(char *) NULL);
@@ -12478,6 +12508,7 @@ static void MogrifyUsage(void)
     {
       "-affine matrix       affine transform matrix",
       "-antialias           remove pixel-aliasing",
+      "-asc-cdl spec        apply ASC CDL transform",
       "-authenticate value  decrypt image with this password",
       "-background color    background color",
       "-black-threshold value",

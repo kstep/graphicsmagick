@@ -5,6 +5,7 @@ GraphicsMagick Core C API
 .. _Animate : animate.html
 .. _Annotate : annotate.html
 .. _Attribute : attribute.html
+.. _`ASC CDL` : cdl.html
 .. _Blob : blob.html
 .. _Channel : channel.html
 .. _Color : color.html
@@ -19,6 +20,7 @@ GraphicsMagick Core C API
 .. _Enhance : enhance.html
 .. _Error : error.html
 .. _FX : fx.html
+.. _`Hald CLUT` : hclut.html
 .. _Image : image.html
 .. _List : list.html
 .. _Magick : magick.html
@@ -54,6 +56,7 @@ documentation, please reference the types_ documentation as required:
   * Animate_: Interactively animate an image sequence
   * Annotate_: Annotate an image with text
   * Attribute_: Access key, value image attributes
+  * `ASC CDL`_ : Apply ASC CDL to image
   * Blob_: Read and write images to memory
   * Channel_: Import and export image channels as well as compute channel depth
   * Color_: Methods to deal with image colors
@@ -70,6 +73,7 @@ documentation, please reference the types_ documentation as required:
     and normalize
   * Error_: Error reporting methods
   * FX_: Special effects methods
+  * `Hald CLUT`_ : Apply Hald CLUT to image
   * Image_: Miscellaneous image methods
   * List_: Manage image lists
   * Magick_: Image format support interfaces

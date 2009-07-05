@@ -18,6 +18,10 @@
 <lopt>-append</opt>
 <abs>append a set of images</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt> -asc-cdl <spec></opt>
+<abs>apply ASC CDL color transform</abs>
+</utils>
 <utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <lopt>-authenticate <string></opt>
 <abs>decrypt image with this password</abs>
