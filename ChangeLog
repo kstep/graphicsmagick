@@ -1,3 +1,8 @@
+2009-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Incorporated updates from John
+	Sergeant to remove the font and thumbnail objects from PDF output.
+
 2009-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/cdl.c (CdlImage): New function to apply an ASC CDL

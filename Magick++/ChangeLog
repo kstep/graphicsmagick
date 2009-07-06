@@ -1,3 +1,8 @@
+2009-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (attribute): Invoke modifyImage() to assure
+	exclusive access to image when updating attributes.
+
 2009-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantumOperator): New variant of method which

@@ -2072,6 +2072,7 @@ unsigned int Magick::Image::animationIterations ( void ) const
 void Magick::Image::attribute ( const std::string name_,
                                 const std::string value_ )
 {
+  modifyImage();
   SetImageAttribute( image(), name_.c_str(), value_.c_str() );
 }
 std::string Magick::Image::attribute ( const std::string name_ )

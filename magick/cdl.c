@@ -46,6 +46,8 @@
 %
 %    "1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"
 %
+%  See http://en.wikipedia.org/wiki/ASC_CDL for more information.
+%
 %  The format of the CdlImage method is:
 %
 %      MagickPassFail CdlImage(Image *image,const char *cdl)
