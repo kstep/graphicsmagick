@@ -4056,12 +4056,12 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 	  max_value,
 	  reference_low,
 	  reference_high,
-	  scale_from_quantum;           /* multiplier to scale from Quantum */
+	  scale_from_maxmap;           /* multiplier to scale from MaxMap */
 
 	max_value = (double) MaxValueGivenBits(bits_per_sample);
 	reference_low = 0.0;
 	reference_high = max_value;
-	scale_from_quantum=max_value/MaxRGBDouble;
+	scale_from_maxmap=max_value/((double) MaxMap);
 
 	if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
 	    (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
@@ -4078,14 +4078,14 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
 	    for (i=0; i <= MaxMap ; i++)
 	      {
-		map_Y[i]=(i*ScaleY+reference_low)*scale_from_quantum+0.5;
-		map_CbCr[i]=(i*ScaleCbCr+reference_low)*scale_from_quantum+0.5;
+		map_Y[i]=(i*ScaleY+reference_low)*scale_from_maxmap+0.5;
+		map_CbCr[i]=(i*ScaleCbCr+reference_low)*scale_from_maxmap+0.5;
 	      }
 	  }
 	else
 	  {
 	    for (i=0; i <= MaxMap ; i++)
-	      map_Y[i]=i*scale_from_quantum+0.5;
+	      map_Y[i]=i*scale_from_maxmap+0.5;
 	  }
       }
 
