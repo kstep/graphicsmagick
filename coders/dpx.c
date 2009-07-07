@@ -1217,8 +1217,8 @@ DPXOrientationToOrientationType(const unsigned int orientation)
 /*
   Scale from a video level to a full-range level.
 */
-STATIC inline Quantum ScaleFromVideo(const unsigned int sample,
-                                     const unsigned int ref_low,
+STATIC inline Quantum ScaleFromVideo(const double sample,
+                                     const double ref_low,
                                      const double upscale)
 {
   double
@@ -2204,15 +2204,16 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       samples_per_pixel=DPXSamplesPerPixel(element_descriptor);
       if (samples_per_pixel != 0)
         {
-          unsigned int
-            max_value_given_bits = MaxValueGivenBits(bits_per_sample),
-            reference_low = 0,
-            reference_high = max_value_given_bits,
-            scale_to_short;             /* multiplier to scale to 16-bits */
+	  double
+            max_value,
+	    reference_low,
+	    reference_high,
+	    scale_to_quantum;           /* multiplier to scale to Quantum */
 
-          scale_to_short=1U;
-          if (bits_per_sample < 16U)
-            scale_to_short=(65535U / (65535U >> (16-bits_per_sample)));
+	  max_value = (double) MaxValueGivenBits(bits_per_sample);
+	  reference_low = 0.0;
+	  reference_high = max_value;
+	  scale_to_quantum=MaxRGBDouble/max_value;
 
           /*
             Is this a video type space?
@@ -2230,33 +2231,33 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 8 bit ==> Luma 16 to 235
                 10 bit ==> Luma 64 to 940
               */
-              reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
-              reference_high = (((double) max_value_given_bits+1) * (940.0/1024.0));
+              reference_low = ((max_value+1.0) * (64.0/1024.0));
+              reference_high = ((max_value+1.0) * (940.0/1024.0));
               
               if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_low_data_code))
                 reference_low=dpx_image_info.element_info[element].reference_low_data_code;
               if ((definition_value=AccessDefinition(image_info,"dpx","reference-low")))
-                reference_low=strtol(definition_value, (char **)NULL, 10);
+                reference_low=(double) strtol(definition_value, (char **)NULL, 10);
               
               if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_high_data_code))
                 reference_high=dpx_image_info.element_info[element].reference_high_data_code;
               if ((definition_value=AccessDefinition(image_info,"dpx","reference-high")))
-                reference_high=strtol(definition_value, (char **)NULL, 10);
+                reference_high=(double) strtol(definition_value, (char **)NULL, 10);
               
-              ScaleY = (((double) max_value_given_bits+1.0)/(reference_high-reference_low));
+              ScaleY = ((max_value+1.0)/(reference_high-reference_low));
               ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
-              reference_low=ScaleShortToQuantum(reference_low*scale_to_short);
+	      reference_low=reference_low*scale_to_quantum;
 
-              for(i=0; i <= max_value_given_bits; i++)
+              for(i=0; i <= (unsigned long) max_value; i++)
                 {
-                  map_Y[i] = ScaleFromVideo(ScaleShortToQuantum(i*scale_to_short),reference_low,ScaleY);
-                  map_CbCr[i] = ScaleFromVideo(ScaleShortToQuantum(i*scale_to_short),reference_low,ScaleCbCr);
+                  map_Y[i] = ScaleFromVideo(i*scale_to_quantum,reference_low,ScaleY);
+                  map_CbCr[i] = ScaleFromVideo(i*scale_to_quantum,reference_low,ScaleCbCr);
                 }
             }
           else
             {
-              for(i=0; i <= max_value_given_bits; i++)
-                map_Y[i]=ScaleShortToQuantum(i*scale_to_short);
+              for(i=0; i <= (unsigned long) max_value; i++)
+		map_Y[i]=scale_to_quantum*i+0.5;
             }
 
           /*
@@ -3257,12 +3258,6 @@ STATIC void WriteRowSamples(const sample_t *samples,
 }
 
 /*
-  Scale a value to video levels.
-*/
-#define ScaleToVideo(sample,ref_low,dnscale) \
-  ((unsigned int) (((double) sample*dnscale)+ref_low+0.5))
-
-/*
   Round an offset up to specified offset boundary.
 */
 #define RoundUpToBoundary(offset,boundary) \
@@ -3333,7 +3328,6 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     samples_per_component,
     samples_per_pixel,
     samples_per_row,
-    scale_from_short,
     status;
 
   MagickBool
@@ -4039,10 +4033,6 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       MagickBool
         swap_word_datums = MagickFalse;
 
-      unsigned int
-        max_value_given_bits = MaxValueGivenBits(bits_per_sample),
-        reference_low = 0,
-        reference_high = max_value_given_bits;
 
       if (BlobIsSeekable(image))
         {
@@ -4058,36 +4048,46 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
 
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
-      transfer_characteristic=(DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
+      transfer_characteristic=(DPXTransferCharacteristic)
+	dpx_image_info.element_info[element].transfer_characteristic;
 
-      scale_from_short=1U;
-      if (bits_per_sample < 16U)
-        scale_from_short=(65535U / (65535U >> (16-bits_per_sample)));
+      {
+	double
+	  max_value,
+	  reference_low,
+	  reference_high,
+	  scale_from_quantum;           /* multiplier to scale from Quantum */
 
-      if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
-          (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
-          (transfer_characteristic == TransferCharacteristicITU_R601_525L))
-        {
-          double
-            ScaleY = 0.0,
-            ScaleCbCr = 0.0;
+	max_value = (double) MaxValueGivenBits(bits_per_sample);
+	reference_low = 0.0;
+	reference_high = max_value;
+	scale_from_quantum=max_value/MaxRGBDouble;
 
-          reference_low = (((double) MaxRGB+1)*(64.0/1024.0));
-          reference_high = (((double) MaxRGB+1)*(940.0/1024.0));
-          ScaleY = ((double) reference_high-reference_low)/((double) MaxRGB+1);
-          ScaleCbCr = ScaleY*((960.0-64.0)/(940.0-64.0));
+	if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
+	    (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+	    (transfer_characteristic == TransferCharacteristicITU_R601_525L))
+	  {
+	    double
+	      ScaleY = 0.0,
+	      ScaleCbCr = 0.0;
 
-          for (i=0; i <= MaxMap ; i++)
-            {
-              map_Y[i]=ScaleQuantumToShort(ScaleToVideo(i,reference_low,ScaleY))/scale_from_short;
-              map_CbCr[i]=ScaleQuantumToShort(ScaleToVideo(i,reference_low,ScaleCbCr))/scale_from_short;
-            }
-        }
-      else
-        {
-          for (i=0; i <= MaxMap ; i++)
-            map_Y[i]=ScaleQuantumToShort(i)/scale_from_short;
-        }
+	    reference_low = ((MaxRGBDouble+1.0)*(64.0/1024.0));
+	    reference_high = ((MaxRGBDouble+1.0)*(940.0/1024.0));
+	    ScaleY = (reference_high-reference_low)/(MaxRGBDouble+1.0);
+	    ScaleCbCr = ScaleY*((960.0-64.0)/(940.0-64.0));
+
+	    for (i=0; i <= MaxMap ; i++)
+	      {
+		map_Y[i]=(i*ScaleY+reference_low)*scale_from_quantum+0.5;
+		map_CbCr[i]=(i*ScaleCbCr+reference_low)*scale_from_quantum+0.5;
+	      }
+	  }
+	else
+	  {
+	    for (i=0; i <= MaxMap ; i++)
+	      map_Y[i]=i*scale_from_quantum+0.5;
+	  }
+      }
 
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
@@ -4327,29 +4327,6 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             default:
               break;
             }
-
-#if 0
-          /*
-            Scale samples.
-          */
-          samples_itr=samples;
-          if (bits_per_sample == 1)
-            {
-              for (i=samples_per_row; i != 0; i--)
-                {
-                  *samples_itr=(*samples_itr > MaxRGB/2) ? 1 : 0;
-                  samples_itr++;
-                }
-            }
-          else
-            {
-              for (i=samples_per_row; i != 0; i--)
-                {
-                  *samples_itr=ScaleQuantumToShort(*samples_itr)/scale_from_short;
-                  samples_itr++;
-                }
-            }
-#endif
 
           /*
             FIXME: RLE samples.

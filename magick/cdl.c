@@ -85,11 +85,16 @@ CdlQuantum(const Quantum quantum, const double slope, const double offset,
 	   const double power, const double saturation)
 {
   double
-    result;
+    v,
+    t;
 
-  result=(pow(((double) quantum/MaxRGBDouble)*slope+offset,power)+saturation)
-    *MaxRGBDouble;
-  return RoundDoubleToQuantum(result);
+  t=(((double) quantum)/MaxRGBDouble)*slope+offset;
+  if (t < 0.0)
+    t = 0.0;
+  else if (t > 1.0)
+    t = 1.0;
+  v = (pow(t,power)+saturation)*MaxRGBDouble;
+  return RoundDoubleToQuantum(v);
 }
 
 static MagickPassFail

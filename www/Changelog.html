@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2009-07-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/cdl.c (CdlQuantum): Add range limiting of value before
+        applying power function.
+
+  <LI> coders/dpx.c (ReadDPXImage, WriteDPXImage): Using floating point
+        calculations when building sample value lookup tables in order to
+        decrease error.  In particular input values were being scaled too
+        low, resulting in improperly rounding down during processing of
+        the image.
+
+</UL>
+<p>
 2009-07-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
