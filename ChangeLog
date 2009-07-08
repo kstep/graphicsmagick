@@ -1,5 +1,8 @@
 2009-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (BenchmarkImageCommand): Send benchmark report
+	to stderr so that it does not interfer with pipes.
+
 	* magick/cdl.c (CdlQuantum): Add range limiting of value before
 	applying power function.
 

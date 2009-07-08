@@ -1595,8 +1595,12 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
       elapsed_time=GetElapsedTime(&timer);
       rate_total=(((double) iteration)/elapsed_time);
       rate_cpu=(((double) iteration)/user_time);
-      (void) printf("Results: %ld iter %.2fs user %.2fs total %.3f iter/s (%.3f iter/s cpu)\n",
-                    iteration,user_time,elapsed_time,rate_total,rate_cpu);
+      (void) fflush(stdout);
+      (void) fprintf(stderr,
+		     "Results: %ld iter %.2fs user %.2fs total %.3f iter/s "
+		     "(%.3f iter/s cpu)\n",
+		     iteration,user_time,elapsed_time,rate_total,rate_cpu);
+      (void) fflush(stderr);
     }
   }
 
