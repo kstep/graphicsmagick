@@ -2590,11 +2590,12 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
     status=ClassifyImageColors(cube_info,image,&image->exception);
     if (status == MagickFail)
       break;
-    (void) SetMonitorHandler(handler);
-    if (!MagickMonitorFormatted(i,number_images,&image->exception,
-                                ClassifyImageText,image->filename))
-      break;
     image=image->next;
+    (void) SetMonitorHandler(handler);
+    if ((image != (Image *) NULL) &&
+	(!MagickMonitorFormatted(i,number_images,&image->exception,
+				 ClassifyImageText,image->filename)))
+      break;
   }
   if (status != MagickFail)
     {
@@ -2613,8 +2614,9 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
           (void) TransformColorspace(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitorFormatted(i,number_images,&image->exception,
-                                    AssignImageText,image->filename))
+        if ((image != (Image *) NULL) &&
+	    (!MagickMonitorFormatted(i,number_images,&image->exception,
+				     AssignImageText,image->filename)))
           {
             status=MagickFail;
             break;
