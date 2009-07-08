@@ -1226,8 +1226,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *sample_info,
     sample_format,
     samples_per_pixel,
-    units,
-    value;
+    units;
 
   uint32
     height,
@@ -1334,7 +1333,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                 "Max sample value: %u",max_sample_value);
           if (sample_format == SAMPLEFORMAT_IEEEFP)
             {
-              
               double
                 value;
               
@@ -1560,9 +1558,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->units=PixelsPerInchResolution;
       if (units == RESUNIT_CENTIMETER)
         image->units=PixelsPerCentimeterResolution;
-      value=(unsigned short) image->scene;
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
-      image->scene=value;
+      {
+	uint16
+	  pagenumber;
+
+	pagenumber=(unsigned short) image->scene;
+	(void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&pagenumber,&pages);
+	image->scene=pagenumber;
+      }
 
       if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
         (void) SetImageAttribute(image,"artist",text);
@@ -3021,6 +3024,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     fill_order,
     photometric,
     planar_config,
+    predictor,
     sample_format,
     samples_per_pixel;
 
@@ -3150,6 +3154,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       ExportPixelAreaOptionsInit(&export_options);
       depth=image->depth;
       bits_per_sample=8;
+      predictor=0U;
       method=ScanLineMethod;
       if ((AccessDefinition(image_info,"tiff","tile")) ||
           (AccessDefinition(image_info,"tiff","tile-geometry")) ||
@@ -3508,9 +3513,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           const char *
             value;
 
-          const ImageAttribute
-            *attribute;
-
           if ((value=AccessDefinition(image_info,"tiff","alpha")))
             {
               if (LocaleCompare(value,"unspecified") == 0)
@@ -3719,7 +3721,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (((photometric == PHOTOMETRIC_RGB) ||
                  (photometric == PHOTOMETRIC_MINISBLACK)) &&
                 ((bits_per_sample == 8) || (bits_per_sample == 16)))
-              (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+	      predictor=PREDICTOR_HORIZONTAL;
             {
               /*
                 Zip quality has a useful range of 1-9.
@@ -3788,7 +3790,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (((photometric == PHOTOMETRIC_RGB) ||
                  (photometric == PHOTOMETRIC_MINISBLACK)) &&
                 ((bits_per_sample == 8) || (bits_per_sample == 16)))
-              (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+	      predictor=PREDICTOR_HORIZONTAL;
             break;
           }
         default:
@@ -3798,6 +3800,26 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
+	Allow the user to specify the predictor (at their own peril)
+      */
+      {
+	const char *
+            value;
+	
+	if ((value=AccessDefinition(image_info,"tiff","predictor")))
+	  predictor=(unsigned short) atoi(value);
+      }
+
+      if (predictor != 0)
+	{
+	  if (logging)
+	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				  "Requesting predictor %u",
+				  (unsigned int) predictor);
+	  (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
+	}
+
+      /*
         Allow the user to override rows-per-strip settings.
       */
       if ((method != TiledMethod) && (compress_tag != COMPRESSION_JPEG))
@@ -3805,8 +3827,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           const char *
             value;
 
-          value=AccessDefinition(image_info,"tiff","rows-per-strip");
-          if (value)
+          if ((value=AccessDefinition(image_info,"tiff","rows-per-strip")))
             {
               unsigned int
                 old_value;
@@ -3819,8 +3840,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 				      " per strip (was %u)",
                                       (unsigned int) rows_per_strip, old_value);
             }
-          value=AccessDefinition(image_info,"tiff","strip-per-page");
-          if (value)
+          if ((value=AccessDefinition(image_info,"tiff","strip-per-page")))
             {
               if (LocaleCompare("TRUE",value) == 0)
                 {
@@ -4116,10 +4136,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               max_sample,
               quantum_samples,
               sample;
-            
-            tsize_t
-              scanline_size;
-            
+
             QuantumType
               quantum_type;
             

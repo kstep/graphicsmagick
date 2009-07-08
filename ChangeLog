@@ -1,3 +1,9 @@
+2009-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add the ability for the user to
+	manually specify the predictor using syntax like '-define
+	tiff:predictor=2'.
+
 2009-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/quantize.c (QuantizeImages): Avoid crash when using
