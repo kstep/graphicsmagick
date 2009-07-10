@@ -3713,10 +3713,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
         case COMPRESSION_JPEG:
           {
-            /*
-              RowsPerStrip must be multiple of 8 for JPEG.
+	    /*
+              RowsPerStrip must be multiple of 16 for JPEG.
+	      
+	      RowsPerStrip is required to be a multiple of 8 times the
+	      largest vertical sampling factor.  If YCbCr subsampling
+	      is 2,2 then RowsPerStrip must be a multiple of 16.
             */
-            rows_per_strip=rows_per_strip+(8-(rows_per_strip % 8));
+	    rows_per_strip=(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16)*16;
             (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
             if (IsRGBColorspace(image->colorspace))
               (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);

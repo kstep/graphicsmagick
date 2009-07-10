@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2009-07-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): In some cases, RowsPerStrip
+        needs to be a multiple of 16 for JPEG in TIFF so ensure that
+        RowsPerStrip is a multiple of 16.
+
+</UL>
+<p>
 2009-06-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
