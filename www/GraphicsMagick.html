@@ -1518,8 +1518,9 @@ will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
 </dd>
 <dt>tiff:rows-per-strip=&lt;value&gt;</dt>
-<dd>Allows the user to specify the number of rows per TIFF strip. Ignored
-if using tiles or JPEG compression.
+<dd>Allows the user to specify the number of rows per TIFF strip.
+Rounded up to a multiple of 16 when using JPEG compression. Ignored when
+using tiles.
 </dd>
 <dt>tiff:strip-per-page=true</dt>
 <dd>Requests that the image is written in a single TIFF strip. This is

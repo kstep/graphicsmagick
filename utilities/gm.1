@@ -1,4 +1,4 @@
-.TH gm 1 "2009/07/05" "GraphicsMagick"
+.TH gm 1 "2009/07/10" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1319,8 +1319,9 @@ value stored in the image. This option should not normally be used.
 .in 20
  \fR
 .in 20
-Allows the user to specify the number of rows per TIFF strip. Ignored
-if using tiles or JPEG compression.
+Allows the user to specify the number of rows per TIFF strip.
+Rounded up to a multiple of 16 when using JPEG compression. Ignored when
+using tiles.
 
 .in 15
 .in 15
