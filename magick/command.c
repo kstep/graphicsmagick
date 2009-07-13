@@ -12858,6 +12858,16 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             image_info->adjoin=(*option == '-');
             break;
           }
+        if (LocaleCompare("affine",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             (void) CloneString(&image_info->authenticate,(char *) NULL);
@@ -12981,22 +12991,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("compress",option+1) == 0)
-          {
-            image_info->compression=NoCompression;
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  ThrowMontageException(OptionError,MissingArgument,option);
-                option=argv[i];
-                image_info->compression=StringToCompressionType(option);
-                if (image_info->compression == UndefinedCompression)
-                  ThrowMontageException(OptionError,UnrecognizedImageCompression,
-                    option);
-              }
-            break;
-          }
         if (LocaleCompare("compose",option+1) == 0)
           {
             CompositeOperator
@@ -13011,6 +13005,22 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 compose=StringToCompositeOperator(option);
                 if (compose == UndefinedCompositeOp)
                   ThrowMontageException(OptionError,UnrecognizedComposeOperator,
+                    option);
+              }
+            break;
+          }
+        if (LocaleCompare("compress",option+1) == 0)
+          {
+            image_info->compression=NoCompression;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,MissingArgument,option);
+                option=argv[i];
+                image_info->compression=StringToCompressionType(option);
+                if (image_info->compression == UndefinedCompression)
+                  ThrowMontageException(OptionError,UnrecognizedImageCompression,
                     option);
               }
             break;
@@ -13567,6 +13577,20 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("set",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                /* -set attribute value */
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,MissingArgument,option);
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("shadow",option+1) == 0)
           {
             montage_info->shadow=(*option == '-');
@@ -13837,8 +13861,12 @@ static void MontageUsage(void)
       "-adjoin              join images into a single multi-image file",
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
+      "-background color    background color",
       "-blue-primary point  chomaticity blue primary point",
       "-blur factor         apply a filter to blur the image",
+      "-bordercolor color   border color",
+      "-borderwidth geometry",
+      "                     border width",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",
@@ -13859,17 +13887,20 @@ static void MontageUsage(void)
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
+      "-font name           font to use when annotating with text",
+      "-format string       output formatted image characteristics",
       "-frame geometry      surround image with an ornamental border",
       "-gamma value         level of gamma correction",
       "-geometry geometry   preferred tile and border sizes",
       "-gravity direction   which direction to gravitate towards",
       "-green-primary point chomaticity green primary point",
-      "-interlace type      None, Line, Plane, or Partition",
       "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
       "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
+      "-mattecolor color    color to be used with the -frame option",
       "-mode type           Frame, Unframe, or Concatenate",
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
@@ -13885,10 +13916,13 @@ static void MontageUsage(void)
       "-scenes range        image scene range",
       "-set attribute value set image attribute",
       "-shadow              add a shadow beneath a tile to simulate depth",
+      "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
       "-stroke color        color to use when stroking a graphic primitive",
+      "-strokewidth value   stroke (line) width",
       "-texture filename    name of texture to tile onto the image background",
       "-tile geometry       number of tiles per row and column",
+      "-title string        thumbnail title",
       "-transform           affine transform image",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     color tree depth",

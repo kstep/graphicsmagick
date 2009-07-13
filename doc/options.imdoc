@@ -69,7 +69,7 @@ behavior.</pp>
 
 <!-- ------------ -affine ------------------------------------------- -->
 
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <dopt>-affine <matrix></opt>
 
 <abs>drawing transform matrix</abs>
@@ -4924,7 +4924,7 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</pp>
 
 <!-- ------------ -transform ---------------------------------------- -->
 
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <dopt>-transform</opt>
 
 <abs>transform the image</abs>

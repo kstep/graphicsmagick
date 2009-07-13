@@ -6,7 +6,7 @@
 <lopt>-adjoin</opt>
 <abs>join images into a single multi-image file</abs>
 </utils>
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <lopt>-affine <matrix></opt>
 <abs>drawing transform matrix</abs>
 </utils>
@@ -697,7 +697,7 @@
 <lopt>-title <string></opt>
 <abs>assign title to displayed image [<i>animate, display, montage</i>]</abs>
 </utils>
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <lopt>-transform</opt>
 <abs>transform the image</abs>
 </utils>
