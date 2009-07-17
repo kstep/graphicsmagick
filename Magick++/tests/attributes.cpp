@@ -848,11 +848,11 @@ int main( int /*argc*/, char ** argv)
     // interlaceType
     //
     // Test default
-    if ( image.interlaceType() != NoInterlace )
+    if ( image.interlaceType() != UndefinedInterlace )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", interlaceType default is not NoInterlace as expected" << endl;
+             << ", interlaceType default is not UndefinedInterlace as expected" << endl;
       }
 
     // Test set/get

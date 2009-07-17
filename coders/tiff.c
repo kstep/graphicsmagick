@@ -1370,6 +1370,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
       if (photometric == PHOTOMETRIC_SEPARATED)
         image->colorspace=CMYKColorspace;
+      if (planar_config == PLANARCONFIG_SEPARATE)
+	image->interlace=PlaneInterlace;
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
       x_resolution=image->x_resolution;
       y_resolution=image->y_resolution;
@@ -3664,9 +3666,35 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       planar_config=PLANARCONFIG_CONTIG;
       if (samples_per_pixel > 1)
-        if ((image_info->interlace == PlaneInterlace) ||
-            (image_info->interlace == PartitionInterlace))
-          planar_config=PLANARCONFIG_SEPARATE;
+	{
+	  switch (image->interlace)
+	    {
+	    case UndefinedInterlace:
+	      break;
+	    case NoInterlace:
+	    case LineInterlace:
+	    case PartitionInterlace:
+	      planar_config=PLANARCONFIG_CONTIG;
+	      break;
+	    case PlaneInterlace:
+	      planar_config=PLANARCONFIG_SEPARATE;
+	      break;
+	    }
+
+	  switch (image_info->interlace)
+	    {
+	    case UndefinedInterlace:
+	      break;
+	    case NoInterlace:
+	    case LineInterlace:
+	    case PartitionInterlace:
+	      planar_config=PLANARCONFIG_CONTIG;
+	      break;
+	    case PlaneInterlace:
+	      planar_config=PLANARCONFIG_SEPARATE;
+	      break;
+	    }
+	}
 
       /*
         Only set fill order if the setting is not the default.
@@ -3686,6 +3714,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLEFORMAT,sample_format);
       (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,planar_config);
+      if (logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "%s image planes",
+			      (planar_config == PLANARCONFIG_SEPARATE ?
+			       "Separate" : "Contiguous"));
       (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
 
       /*
@@ -4241,13 +4274,15 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       }
 
                     if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows))
-                        if ((status &= MagickMonitorFormatted(y,image->rows,
-                                                              &image->exception,
-                                                              SaveImageText,
-                                                              image->filename))
-                            == MagickFail)
-                          break;
+		      if (QuantumTick(y+sample*image->rows,image->rows*max_sample))
+			if (!MagickMonitorFormatted(y+sample*image->rows,
+						    image->rows*max_sample,&image->exception,
+						    SaveImageText,image->filename))
+			  {
+			    status=MagickFail;
+			    break;
+			  }
+
                   }
                 if (status == MagickFail)
                   break;
@@ -4379,49 +4414,50 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             stride=TIFFTileRowSize(tiff);
 
-            for (y=0; y < image->rows; y+=tile_rows)
-              {
-                for (x=0; x < image->columns; x+=tile_columns)
-                  {
-                    const PixelPacket
-                      *p;
-
-                    long
-                      tile_set_columns,
-                      tile_set_rows;
-
-                    /*
-                      Compute image region corresponding to tile.
-                    */
-                    if (x+tile_columns > image->columns)
-                      tile_set_columns=(tile_columns-(x+tile_columns-image->columns));
-                    else
-                      tile_set_columns=tile_columns;
-                    if (y+tile_rows > image->rows)
-                      tile_set_rows=(tile_rows-(y+tile_rows-image->rows));
-                    else
-                      tile_set_rows=tile_rows;
-                    /*
-                      Process each plane.
-                    */
-                    for (sample=0; sample < max_sample; sample++)
-                      {
-                        unsigned char
-                          *q;
-
-                        register long
-                          yy;
-
-                        /*
-                          Determine quantum parse method.
-                        */
-                        if (QuantumTransferMode(image,photometric,sample_format,
-                                                planar_config,sample,&quantum_type,
-                                                &quantum_samples) == MagickFail)
-                          {
-                            status=MagickFail;
-                            break;
-                          }
+	    /*
+	      Process each plane.
+	    */
+	    for (sample=0; sample < max_sample; sample++)
+	      {
+		/*
+		  Determine quantum parse method.
+		*/
+		if (QuantumTransferMode(image,photometric,sample_format,
+					planar_config,sample,&quantum_type,
+					&quantum_samples) == MagickFail)
+		  {
+		    status=MagickFail;
+		    break;
+		  }
+		for (y=0; y < image->rows; y+=tile_rows)
+		  {
+		    for (x=0; x < image->columns; x+=tile_columns)
+		      {
+			const PixelPacket
+			  *p;
+			
+			long
+			  tile_set_columns,
+			  tile_set_rows;
+			
+			unsigned char
+			  *q;
+			
+			register long
+			  yy;
+			
+			/*
+			  Compute image region corresponding to tile.
+			*/
+			if (x+tile_columns > image->columns)
+			  tile_set_columns=(tile_columns-(x+tile_columns-image->columns));
+			else
+			  tile_set_columns=tile_columns;
+			if (y+tile_rows > image->rows)
+			  tile_set_rows=(tile_rows-(y+tile_rows-image->rows));
+			else
+			  tile_set_rows=tile_rows;
+			
                         q=tile;
                         for (yy=y; yy < (long) y+tile_set_rows; yy++)
                           {
@@ -4474,33 +4510,25 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                           {
                             status=MagickFail;
                           }
-                      } /* for sample */
-                    if (status == MagickFail)
-                      break;
-                  } /* for x */
-
-
-                /*
-                  Progress indicator.
-                */
-                if (image->previous == (Image *) NULL)
-                  if (MagickMonitorFormatted(y,image->rows,&image->exception,
-                                             SaveImageText,image->filename)
-		      == MagickFail)
-                    status=MagickFail;
-                
-                if (status == MagickFail)
-                  break;
-              } /* for y */
-
-            /*
-              Ensure 100% progress indication when done.
-            */
-            if (image->previous == (Image *) NULL)
-              (void) MagickMonitorFormatted(image->rows-1,image->rows,
-                                            &image->exception,SaveImageText,
-                                            image->filename);
-
+			if (status == MagickFail)
+			  break;
+		      } /* for x */
+		    /*
+		      Progress indicator.
+		    */
+		    if (image->previous == (Image *) NULL)
+		      if (QuantumTick((y+sample*image->rows)/tile_rows,
+				      (image->rows*max_sample)/tile_rows))
+			if (!MagickMonitorFormatted((y+sample*image->rows)/tile_rows,
+						    (image->rows*max_sample)/tile_rows,
+						    &image->exception,
+						    SaveImageText,image->filename))
+			  status=MagickFail;
+		    
+		    if (status == MagickFail)
+		      break;
+		  } /* for y */
+	      } /* for sample */
             MagickFreeMemory(tile);
             break;
           }

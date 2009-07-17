@@ -7141,7 +7141,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                        bp.x,bp.y);
         }
     }
-  ping_info->interlace_type=image_info->interlace != NoInterlace;
+  ping_info->interlace_type=(image_info->interlace == LineInterlace);
 
   if (mng_info->write_mng)
     png_set_sig_bytes(ping,8);
@@ -7843,7 +7843,7 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
   chunk[12]=jng_color_type;
   chunk[13]=8;  /* sample depth */
   chunk[14]=8; /*jng_image_compression_method */
-  chunk[15]=image_info->interlace == NoInterlace ? 0 : 8;
+  chunk[15]=(image_info->interlace == LineInterlace) ? 8 : 0;
   chunk[16]=jng_alpha_sample_depth;
   chunk[17]=jng_alpha_compression_method;
   chunk[18]=0; /*jng_alpha_filter_method */

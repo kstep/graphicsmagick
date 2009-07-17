@@ -1987,17 +1987,9 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     }
   FormatSize(GetBlobSize(image),format);
   (void) fprintf(file,"  Filesize: %.1024s\n",format);
-  if (image->interlace == NoInterlace)
-    (void) fprintf(file,"  Interlace: None\n");
-  else
-    if (image->interlace == LineInterlace)
-      (void) fprintf(file,"  Interlace: Line\n");
-    else
-      if (image->interlace == PlaneInterlace)
-        (void) fprintf(file,"  Interlace: Plane\n");
-    else
-      if (image->interlace == PartitionInterlace)
-        (void) fprintf(file,"  Interlace: Partition\n");
+  fprintf(file,"  Interlace: %s\n",
+	  InterlaceTypeToString(image->interlace == UndefinedInterlace ?
+				NoInterlace : image->interlace));
   (void) fprintf(file,"  Orientation: %s\n", OrientationTypeToString(image->orientation));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     &image->exception);
@@ -3372,7 +3364,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) memset(image_info,0,sizeof(ImageInfo));
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
-  image_info->interlace=NoInterlace;
+  image_info->interlace=UndefinedInterlace;
   image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;

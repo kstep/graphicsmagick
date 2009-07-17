@@ -1939,7 +1939,7 @@ CompareImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -2984,7 +2984,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -4414,7 +4414,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -6700,7 +6700,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -8868,7 +8868,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             if (*option == '+')
               {
-                clone_info->interlace=NoInterlace;
+                clone_info->interlace=UndefinedInterlace;
                 continue;
               }
             option=argv[++i];
@@ -11497,7 +11497,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -13309,7 +13309,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;
@@ -14443,7 +14443,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("interlace",option+1) == 0)
           {
-            image_info->interlace=NoInterlace;
+            image_info->interlace=UndefinedInterlace;
             if (*option == '-')
               {
                 i++;

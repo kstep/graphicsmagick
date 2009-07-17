@@ -1000,7 +1000,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
 #ifdef D_LOSSLESS_SUPPORTED
   image->interlace=
-    jpeg_info.process == JPROC_PROGRESSIVE ? PlaneInterlace : NoInterlace;
+    jpeg_info.process == JPROC_PROGRESSIVE ? LineInterlace : NoInterlace;
   image->compression=jpeg_info.process == JPROC_LOSSLESS ?
     LosslessJPEGCompression : JPEGCompression;
   if (jpeg_info.data_precision > 8)
@@ -1008,19 +1008,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 		 "12-bit JPEG not supported. Reducing pixel data to 8 bits",
 		 (char *) NULL);
 #else
-  image->interlace=jpeg_info.progressive_mode ? PlaneInterlace : NoInterlace;
+  image->interlace=jpeg_info.progressive_mode ? LineInterlace : NoInterlace;
   image->compression=JPEGCompression;
 #endif
 #else
   image->compression=JPEGCompression;
-  image->interlace=PlaneInterlace;
+  image->interlace=LineInterlace;
 #endif
   (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   if (image->logging)
     {
-      if (image->interlace == PlaneInterlace)
+      if (image->interlace == LineInterlace)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			      "Interlace: progressive");
       else
@@ -1862,17 +1862,17 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
  }
 
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
-  if (image_info->interlace != NoInterlace)
-    jpeg_simple_progression(&jpeg_info);
-  if (image->logging)
-    {
-      if (image_info->interlace != NoInterlace)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Interlace: progressive");
-      else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Interlace: nonprogressive");
-    }
+ if (image_info->interlace == LineInterlace)
+   jpeg_simple_progression(&jpeg_info);
+ if (image->logging)
+   {
+     if (image_info->interlace == LineInterlace)
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			     "Interlace: progressive");
+     else
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			     "Interlace: nonprogressive");
+   }
 #else
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

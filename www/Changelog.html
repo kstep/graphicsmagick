@@ -24,11 +24,20 @@
 2009-07-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.c (GetImageInfo): Default interlace for ImageInfo
+        is now UndefinedInterlace so that it is possible to preserve the
+        original interlace setting for the image file.  Code depending on
+        the previous default setting of NoInterlace is adjusted to suit.
+        This is a potentially risky change given the brittle nature of
+        some of the legacy code.
+
   <LI> coders/tiff.c (ReadTIFFImage): Stripped reader needs to read
         planar TIFF plane-wise in order to work with libtiff's internal
         buffering.<BR>
         (ReadTIFFImage): Tiled reader needs to read planar TIFF plane-wise
         in order to work with libtiff's internal buffering.
+        (WriteTIFFImage): Tiled writer needs to output planar TIFF
+        plane-wise in order to work with libtiff's internal buffering.
 
 </UL>
 <p>

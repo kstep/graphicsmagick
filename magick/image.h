@@ -855,10 +855,11 @@ typedef struct _Image
     *next;              /* Pointer to next frame */
 
   /*
-    To be added here for the 1.4 release:
+    To be added here for a later release:
 
     subsampling
     video black/white setup levels (ReferenceBlack/ReferenceWhite)
+    sample format (integer/float)
    */
 
   /*

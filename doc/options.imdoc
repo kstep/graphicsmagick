@@ -2638,8 +2638,7 @@ is like plane except the different planes are saved to individual files
 
 <utils apps=composite,convert,display,import,mogrify,montage>
 <pp>
-Use <s>Line</s> or <s>Plane</s> to create an
-<s>interlaced PNG</s> or <s> GIF</s> or
+Use <s>Line</s> to create an <s>interlaced PNG</s> or <s> GIF</s> or
 <s>progressive JPEG</s> image.</pp>
 
 </utils>
