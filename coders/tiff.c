@@ -1775,17 +1775,20 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     == MagickPass)
                   max_sample=quantum_samples;
               }
-            for (y=0; y < image->rows; y++)
-              {
-                q=SetImagePixels(image,0,y,image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  {
-                    CopyException(exception,&image->exception);
-                    status=MagickFail;
-                    break;
-                  }
-                for (sample=0; sample < max_sample; sample++)
-                  {
+	    for (sample=0; sample < max_sample; sample++)
+	      {
+		for (y=0; y < image->rows; y++)
+		  {
+		    if (sample == 0)
+		      q=SetImagePixels(image,0,y,image->columns,1);
+		    else
+		      q=GetImagePixels(image,0,y,image->columns,1);
+		    if (q == (PixelPacket *) NULL)
+		      {
+			CopyException(exception,&image->exception);
+			status=MagickFail;
+			break;
+		      }
                     /*
                       Obtain a scanline
                     */
@@ -1826,28 +1829,27 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         status=MagickFail;
                         break;
                       }
-                  }
-                if (status == MagickFail)
-                  break;
-                /*
-                  Disassociate alpha from pixels if necessary.
-                */
-                if ((image->matte) && (alpha_type == AssociatedAlpha))
-                  DisassociateAlphaRegion(image);
-                /*
-                  Save our updates.
-                */
-                if (!SyncImagePixels(image))
-                  {
-                    CopyException(exception,&image->exception);
-                    status=MagickFail;
-                    break;
-                  }
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename))
-                      break;
+		    /*
+		      Disassociate alpha from pixels if necessary.
+		    */
+		    if ((image->matte) && (alpha_type == AssociatedAlpha) &&
+			(sample == (max_sample-1)))
+		      DisassociateAlphaRegion(image);
+		    /*
+		      Save our updates.
+		    */
+		    if (!SyncImagePixels(image))
+		      {
+			CopyException(exception,&image->exception);
+			status=MagickFail;
+			break;
+		      }
+		    if (image->previous == (Image *) NULL)
+		      if (QuantumTick(y+sample*image->rows,image->rows*max_sample))
+			if (!MagickMonitorFormatted(y+sample*image->rows,image->rows*max_sample,exception,
+						    LoadImageText,image->filename))
+			  break;
+		  }
               }
             MagickFreeMemory(scanline);
             break;

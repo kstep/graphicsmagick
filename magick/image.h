@@ -855,6 +855,13 @@ typedef struct _Image
     *next;              /* Pointer to next frame */
 
   /*
+    To be added here for the 1.4 release:
+
+    subsampling
+    video black/white setup levels (ReferenceBlack/ReferenceWhite)
+   */
+
+  /*
     Only private members appear past this point
   */
 
