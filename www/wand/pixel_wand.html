@@ -1,0 +1,1059 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<title>pixel_wand</title>
+<link rel="stylesheet" href="../docutils-api.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<span>
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Copyright.html">License</a></li>
+<li><a href="../mission.html">Mission</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Installation</a></li>
+<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="../formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="../process.html">Process</a></li>
+<li><a href="../contribute.html">Contribute</a></li>
+<li><a href="../CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
+<li><a href="../Changelog.html">ChangeLog</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../links.html">Links</a></li>
+</ul>
+</div>
+<div class="document" id="pixel-wand">
+<h1 class="title">pixel_wand</h1>
+<h2 class="subtitle" id="wand-pixel-access-interfaces">Wand pixel access interfaces</h2>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#destroypixelwand" id="id81" name="id81">DestroyPixelWand</a></li>
+<li><a class="reference" href="#newpixelwand" id="id82" name="id82">NewPixelWand</a></li>
+<li><a class="reference" href="#newpixelwands" id="id83" name="id83">NewPixelWands</a></li>
+<li><a class="reference" href="#pixelgetexception" id="id84" name="id84">PixelGetException</a></li>
+<li><a class="reference" href="#pixelgetblack" id="id85" name="id85">PixelGetBlack</a></li>
+<li><a class="reference" href="#pixelgetblackquantum" id="id86" name="id86">PixelGetBlackQuantum</a></li>
+<li><a class="reference" href="#pixelgetblue" id="id87" name="id87">PixelGetBlue</a></li>
+<li><a class="reference" href="#pixelgetbluequantum" id="id88" name="id88">PixelGetBlueQuantum</a></li>
+<li><a class="reference" href="#pixelgetcolorasstring" id="id89" name="id89">PixelGetColorAsString</a></li>
+<li><a class="reference" href="#pixelgetcolorcount" id="id90" name="id90">PixelGetColorCount</a></li>
+<li><a class="reference" href="#pixelgetcyan" id="id91" name="id91">PixelGetCyan</a></li>
+<li><a class="reference" href="#pixelgetcyanquantum" id="id92" name="id92">PixelGetCyanQuantum</a></li>
+<li><a class="reference" href="#pixelgetgreen" id="id93" name="id93">PixelGetGreen</a></li>
+<li><a class="reference" href="#pixelgetgreenquantum" id="id94" name="id94">PixelGetGreenQuantum</a></li>
+<li><a class="reference" href="#pixelgetmagenta" id="id95" name="id95">PixelGetMagenta</a></li>
+<li><a class="reference" href="#pixelgetmagentaquantum" id="id96" name="id96">PixelGetMagentaQuantum</a></li>
+<li><a class="reference" href="#pixelgetopacity" id="id97" name="id97">PixelGetOpacity</a></li>
+<li><a class="reference" href="#pixelgetopacityquantum" id="id98" name="id98">PixelGetOpacityQuantum</a></li>
+<li><a class="reference" href="#pixelgetred" id="id99" name="id99">PixelGetRed</a></li>
+<li><a class="reference" href="#pixelgetredquantum" id="id100" name="id100">PixelGetRedQuantum</a></li>
+<li><a class="reference" href="#pixelgetyellow" id="id101" name="id101">PixelGetYellow</a></li>
+<li><a class="reference" href="#pixelgetyellowquantum" id="id102" name="id102">PixelGetYellowQuantum</a></li>
+<li><a class="reference" href="#pixelsetblack" id="id103" name="id103">PixelSetBlack</a></li>
+<li><a class="reference" href="#pixelsetblackquantum" id="id104" name="id104">PixelSetBlackQuantum</a></li>
+<li><a class="reference" href="#pixelsetblue" id="id105" name="id105">PixelSetBlue</a></li>
+<li><a class="reference" href="#pixelsetbluequantum" id="id106" name="id106">PixelSetBlueQuantum</a></li>
+<li><a class="reference" href="#pixelsetcolor" id="id107" name="id107">PixelSetColor</a></li>
+<li><a class="reference" href="#pixelsetcolorcount" id="id108" name="id108">PixelSetColorCount</a></li>
+<li><a class="reference" href="#pixelsetcyan" id="id109" name="id109">PixelSetCyan</a></li>
+<li><a class="reference" href="#pixelsetcyanquantum" id="id110" name="id110">PixelSetCyanQuantum</a></li>
+<li><a class="reference" href="#pixelsetgreen" id="id111" name="id111">PixelSetGreen</a></li>
+<li><a class="reference" href="#pixelsetgreenquantum" id="id112" name="id112">PixelSetGreenQuantum</a></li>
+<li><a class="reference" href="#pixelsetmagenta" id="id113" name="id113">PixelSetMagenta</a></li>
+<li><a class="reference" href="#pixelsetmagentaquantum" id="id114" name="id114">PixelSetMagentaQuantum</a></li>
+<li><a class="reference" href="#pixelsetopacity" id="id115" name="id115">PixelSetOpacity</a></li>
+<li><a class="reference" href="#pixelsetopacityquantum" id="id116" name="id116">PixelSetOpacityQuantum</a></li>
+<li><a class="reference" href="#pixelsetquantumcolor" id="id117" name="id117">PixelSetQuantumColor</a></li>
+<li><a class="reference" href="#pixelsetred" id="id118" name="id118">PixelSetRed</a></li>
+<li><a class="reference" href="#pixelsetredquantum" id="id119" name="id119">PixelSetRedQuantum</a></li>
+<li><a class="reference" href="#pixelsetyellow" id="id120" name="id120">PixelSetYellow</a></li>
+<li><a class="reference" href="#pixelsetyellowquantum" id="id121" name="id121">PixelSetYellowQuantum</a></li>
+</ul>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id81" id="destroypixelwand" name="destroypixelwand">DestroyPixelWand</a></h1>
+<div class="section">
+<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int DestroyPixelWand( PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="description" name="description">Description</a></h2>
+<p>DestroyPixelWand() deallocates resources associated with a PixelWand.</p>
+<p>The format of the DestroyPixelWand method is:</p>
+<pre class="literal-block">
+unsigned int DestroyPixelWand( PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id82" id="newpixelwand" name="newpixelwand">NewPixelWand</a></h1>
+<div class="section">
+<h2><a id="id1" name="id1">Synopsis</a></h2>
+<pre class="literal-block">
+PixelWand NewPixelWand( void );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id2" name="id2">Description</a></h2>
+<p>NewPixelWand() returns a new pixel wand.</p>
+<p>The format of the NewPixelWand method is:</p>
+<pre class="literal-block">
+PixelWand NewPixelWand( void );
+</pre>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id83" id="newpixelwands" name="newpixelwands">NewPixelWands</a></h1>
+<div class="section">
+<h2><a id="id3" name="id3">Synopsis</a></h2>
+<pre class="literal-block">
+PixelWand NewPixelWands( const unsigned long number_wands );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id4" name="id4">Description</a></h2>
+<p>NewPixelWands() returns an array of pixel wands.</p>
+<p>The format of the NewPixelWand method is:</p>
+<pre class="literal-block">
+PixelWand NewPixelWands( const unsigned long number_wands );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>number_wands:</dt>
+<dd>The number of wands.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id84" id="pixelgetexception" name="pixelgetexception">PixelGetException</a></h1>
+<div class="section">
+<h2><a id="id5" name="id5">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelGetException( PixelWand *wand, char ** description );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id6" name="id6">Description</a></h2>
+<p>PixelGetException() returns the severity, reason, and description of any
+error that occurs when using the pixel wand methods.</p>
+<p>The format of the PixelGetException method is:</p>
+<pre class="literal-block">
+unsigned int PixelGetException( PixelWand *wand, char ** description );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>description:</dt>
+<dd>A description of the error.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id85" id="pixelgetblack" name="pixelgetblack">PixelGetBlack</a></h1>
+<div class="section">
+<h2><a id="id7" name="id7">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetBlack( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id8" name="id8">Description</a></h2>
+<p>PixelGetBlack() returns the normalized black color of the pixel wand.</p>
+<p>The format of the PixelGetBlack method is:</p>
+<pre class="literal-block">
+double PixelGetBlack( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id86" id="pixelgetblackquantum" name="pixelgetblackquantum">PixelGetBlackQuantum</a></h1>
+<div class="section">
+<h2><a id="id9" name="id9">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetBlackQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id10" name="id10">Description</a></h2>
+<p>PixelGetBlackQuantum() returns the black color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetBlackQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetBlackQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id87" id="pixelgetblue" name="pixelgetblue">PixelGetBlue</a></h1>
+<div class="section">
+<h2><a id="id11" name="id11">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetBlue( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id12" name="id12">Description</a></h2>
+<p>PixelGetBlue(const) returns the normalized blue color of the pixel wand.</p>
+<p>The format of the PixelGetBlue method is:</p>
+<pre class="literal-block">
+double PixelGetBlue( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id88" id="pixelgetbluequantum" name="pixelgetbluequantum">PixelGetBlueQuantum</a></h1>
+<div class="section">
+<h2><a id="id13" name="id13">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetBlueQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id14" name="id14">Description</a></h2>
+<p>PixelGetBlueQuantum(const ) returns the blue color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetBlueQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetBlueQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id89" id="pixelgetcolorasstring" name="pixelgetcolorasstring">PixelGetColorAsString</a></h1>
+<div class="section">
+<h2><a id="id15" name="id15">Synopsis</a></h2>
+<pre class="literal-block">
+char *PixelGetColorAsString( PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id16" name="id16">Description</a></h2>
+<p>PixelGetColorAsString() gets the color of the pixel wand.</p>
+<p>The format of the PixelGetColorAsString method is:</p>
+<pre class="literal-block">
+char *PixelGetColorAsString( PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id90" id="pixelgetcolorcount" name="pixelgetcolorcount">PixelGetColorCount</a></h1>
+<div class="section">
+<h2><a id="id17" name="id17">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned long PixelGetColorCount( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id18" name="id18">Description</a></h2>
+<p>PixelGetColorCount() returns the color count associated with this color.</p>
+<p>The format of the PixelGetColorCount method is:</p>
+<pre class="literal-block">
+unsigned long PixelGetColorCount( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id91" id="pixelgetcyan" name="pixelgetcyan">PixelGetCyan</a></h1>
+<div class="section">
+<h2><a id="id19" name="id19">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetCyan( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id20" name="id20">Description</a></h2>
+<p>PixelGetCyan() returns the normalized cyan color of the pixel wand.</p>
+<p>The format of the PixelGetCyan method is:</p>
+<pre class="literal-block">
+double PixelGetCyan( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id92" id="pixelgetcyanquantum" name="pixelgetcyanquantum">PixelGetCyanQuantum</a></h1>
+<div class="section">
+<h2><a id="id21" name="id21">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetCyanQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id22" name="id22">Description</a></h2>
+<p>PixelGetCyanQuantum() returns the cyan color of the pixel wand.  The color
+is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetCyanQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetCyanQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id93" id="pixelgetgreen" name="pixelgetgreen">PixelGetGreen</a></h1>
+<div class="section">
+<h2><a id="id23" name="id23">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetGreen( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id24" name="id24">Description</a></h2>
+<p>PixelGetGreen(const ) returns the normalized green color of the pixel wand.</p>
+<p>The format of the PixelGetGreen method is:</p>
+<pre class="literal-block">
+double PixelGetGreen( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id94" id="pixelgetgreenquantum" name="pixelgetgreenquantum">PixelGetGreenQuantum</a></h1>
+<div class="section">
+<h2><a id="id25" name="id25">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetGreenQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id26" name="id26">Description</a></h2>
+<p>PixelGetGreenQuantum(const ) returns the green color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetGreenQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetGreenQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id95" id="pixelgetmagenta" name="pixelgetmagenta">PixelGetMagenta</a></h1>
+<div class="section">
+<h2><a id="id27" name="id27">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetMagenta( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id28" name="id28">Description</a></h2>
+<p>PixelGetMagenta() returns the normalized magenta color of the pixel wand.</p>
+<p>The format of the PixelGetMagenta method is:</p>
+<pre class="literal-block">
+double PixelGetMagenta( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id96" id="pixelgetmagentaquantum" name="pixelgetmagentaquantum">PixelGetMagentaQuantum</a></h1>
+<div class="section">
+<h2><a id="id29" name="id29">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetMagentaQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id30" name="id30">Description</a></h2>
+<p>PixelGetMagentaQuantum() returns the magenta color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetMagentaQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetMagentaQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id97" id="pixelgetopacity" name="pixelgetopacity">PixelGetOpacity</a></h1>
+<div class="section">
+<h2><a id="id31" name="id31">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetOpacity( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id32" name="id32">Description</a></h2>
+<p>PixelGetOpacity(const ) returns the normalized opacity color of the pixel
+wand.</p>
+<p>The format of the PixelGetOpacity method is:</p>
+<pre class="literal-block">
+double PixelGetOpacity( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id98" id="pixelgetopacityquantum" name="pixelgetopacityquantum">PixelGetOpacityQuantum</a></h1>
+<div class="section">
+<h2><a id="id33" name="id33">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetOpacityQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id34" name="id34">Description</a></h2>
+<p>PixelGetOpacityQuantum(const ) returns the opacity color of the pixel wand.
+The color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetOpacityQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetOpacityQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id99" id="pixelgetred" name="pixelgetred">PixelGetRed</a></h1>
+<div class="section">
+<h2><a id="id35" name="id35">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetRed( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id36" name="id36">Description</a></h2>
+<p>PixelGetRed(const ) returns the normalized red color of the pixel wand.</p>
+<p>The format of the PixelGetRed method is:</p>
+<pre class="literal-block">
+double PixelGetRed( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id100" id="pixelgetredquantum" name="pixelgetredquantum">PixelGetRedQuantum</a></h1>
+<div class="section">
+<h2><a id="id37" name="id37">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetRedQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id38" name="id38">Description</a></h2>
+<p>PixelGetRedQuantum(const ) returns the red color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetRedQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetRedQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id101" id="pixelgetyellow" name="pixelgetyellow">PixelGetYellow</a></h1>
+<div class="section">
+<h2><a id="id39" name="id39">Synopsis</a></h2>
+<pre class="literal-block">
+double PixelGetYellow( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id40" name="id40">Description</a></h2>
+<p>PixelGetYellow() returns the normalized yellow color of the pixel wand.</p>
+<p>The format of the PixelGetYellow method is:</p>
+<pre class="literal-block">
+double PixelGetYellow( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id102" id="pixelgetyellowquantum" name="pixelgetyellowquantum">PixelGetYellowQuantum</a></h1>
+<div class="section">
+<h2><a id="id41" name="id41">Synopsis</a></h2>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetYellowQuantum( const PixelWand *wand );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id42" name="id42">Description</a></h2>
+<p>PixelGetYellowQuantum() returns the yellow color of the pixel wand.  The
+color is in the range of [0..MaxRGB]</p>
+<p>The format of the PixelGetYellowQuantum method is:</p>
+<pre class="literal-block">
+<a class="reference" href="../api/types.html#quantum">Quantum</a> PixelGetYellowQuantum( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id103" id="pixelsetblack" name="pixelsetblack">PixelSetBlack</a></h1>
+<div class="section">
+<h2><a id="id43" name="id43">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetBlack( PixelWand *wand, const double black );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id44" name="id44">Description</a></h2>
+<p>PixelSetBlack() sets the normalized black color of the pixel wand.</p>
+<p>The format of the PixelSetBlack method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetBlack( PixelWand *wand, const double black );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>black:</dt>
+<dd>The black color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id104" id="pixelsetblackquantum" name="pixelsetblackquantum">PixelSetBlackQuantum</a></h1>
+<div class="section">
+<h2><a id="id45" name="id45">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetBlackQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> black );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id46" name="id46">Description</a></h2>
+<p>PixelSetBlackQuantum() sets the black color of the pixel wand.  The color
+must be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetBlackQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetBlackQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> black );
+</pre>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>black:</dt>
+<dd>The black color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id105" id="pixelsetblue" name="pixelsetblue">PixelSetBlue</a></h1>
+<div class="section">
+<h2><a id="id47" name="id47">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetBlue( PixelWand *wand, const double blue );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id48" name="id48">Description</a></h2>
+<p>PixelSetBlue() sets the normalized blue color of the pixel wand.</p>
+<p>The format of the PixelSetBlue method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetBlue( PixelWand *wand, const double blue );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>blue:</dt>
+<dd>The blue color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id106" id="pixelsetbluequantum" name="pixelsetbluequantum">PixelSetBlueQuantum</a></h1>
+<div class="section">
+<h2><a id="id49" name="id49">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetBlueQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> blue );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id50" name="id50">Description</a></h2>
+<p>PixelSetBlueQuantum() sets the blue color of the pixel wand.  The color must
+be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetBlueQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetBlueQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> blue );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>blue:</dt>
+<dd>The blue color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id107" id="pixelsetcolor" name="pixelsetcolor">PixelSetColor</a></h1>
+<div class="section">
+<h2><a id="id51" name="id51">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetColor( PixelWand *wand, const char *color );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id52" name="id52">Description</a></h2>
+<p>PixelSetColor() sets the color of the pixel wand with a string (e.g.
+&quot;blue&quot;, &quot;#0000ff&quot;, &quot;rgb(0,0,255)&quot;, etc.).</p>
+<p>The format of the PixelSetColor method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetColor( PixelWand *wand, const char *color );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>color:</dt>
+<dd>The pixel wand color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id108" id="pixelsetcolorcount" name="pixelsetcolorcount">PixelSetColorCount</a></h1>
+<div class="section">
+<h2><a id="id53" name="id53">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetColorCount( PixelWand *wand, const unsigned long count );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id54" name="id54">Description</a></h2>
+<p>PixelSetColorCount() sets the color count of the pixel wand.</p>
+<p>The format of the PixelSetColorCount method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetColorCount( PixelWand *wand, const unsigned long count );
+</pre>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>count:</dt>
+<dd>The number of this particular color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id109" id="pixelsetcyan" name="pixelsetcyan">PixelSetCyan</a></h1>
+<div class="section">
+<h2><a id="id55" name="id55">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetCyan( PixelWand *wand, const double cyan );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id56" name="id56">Description</a></h2>
+<p>PixelSetCyan() sets the normalized cyan color of the pixel wand.</p>
+<p>The format of the PixelSetCyan method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetCyan( PixelWand *wand, const double cyan );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>cyan:</dt>
+<dd>The cyan color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id110" id="pixelsetcyanquantum" name="pixelsetcyanquantum">PixelSetCyanQuantum</a></h1>
+<div class="section">
+<h2><a id="id57" name="id57">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetCyanQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> cyan );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id58" name="id58">Description</a></h2>
+<p>PixelSetCyanQuantum() sets the cyan color of the pixel wand.  The color must
+be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetCyanQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetCyanQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> cyan );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>cyan:</dt>
+<dd>The cyan color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id111" id="pixelsetgreen" name="pixelsetgreen">PixelSetGreen</a></h1>
+<div class="section">
+<h2><a id="id59" name="id59">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetGreen( PixelWand *wand, const double green );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id60" name="id60">Description</a></h2>
+<p>PixelSetGreen() sets the normalized green color of the pixel wand.</p>
+<p>The format of the PixelSetGreen method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetGreen( PixelWand *wand, const double green );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>green:</dt>
+<dd>The green color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id112" id="pixelsetgreenquantum" name="pixelsetgreenquantum">PixelSetGreenQuantum</a></h1>
+<div class="section">
+<h2><a id="id61" name="id61">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetGreenQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> green );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id62" name="id62">Description</a></h2>
+<p>PixelSetGreenQuantum() sets the green color of the pixel wand.  The color must
+be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetGreenQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetGreenQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> green );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>green:</dt>
+<dd>The green color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id113" id="pixelsetmagenta" name="pixelsetmagenta">PixelSetMagenta</a></h1>
+<div class="section">
+<h2><a id="id63" name="id63">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetMagenta( PixelWand *wand, const double magenta );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id64" name="id64">Description</a></h2>
+<p>PixelSetMagenta() sets the normalized magenta color of the pixel wand.</p>
+<p>The format of the PixelSetMagenta method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetMagenta( PixelWand *wand, const double magenta );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>magenta:</dt>
+<dd>The magenta color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id114" id="pixelsetmagentaquantum" name="pixelsetmagentaquantum">PixelSetMagentaQuantum</a></h1>
+<div class="section">
+<h2><a id="id65" name="id65">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetMagentaQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> magenta );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id66" name="id66">Description</a></h2>
+<p>PixelSetMagentaQuantum() sets the magenta color of the pixel wand.  The
+color must be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetMagentaQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetMagentaQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> magenta );
+</pre>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>magenta:</dt>
+<dd>The green magenta.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id115" id="pixelsetopacity" name="pixelsetopacity">PixelSetOpacity</a></h1>
+<div class="section">
+<h2><a id="id67" name="id67">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetOpacity( PixelWand *wand, const double opacity );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id68" name="id68">Description</a></h2>
+<p>PixelSetOpacity() sets the normalized opacity color of the pixel wand.</p>
+<p>The format of the PixelSetOpacity method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetOpacity( PixelWand *wand, const double opacity );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>opacity:</dt>
+<dd>The opacity color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id116" id="pixelsetopacityquantum" name="pixelsetopacityquantum">PixelSetOpacityQuantum</a></h1>
+<div class="section">
+<h2><a id="id69" name="id69">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetOpacityQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> opacity );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id70" name="id70">Description</a></h2>
+<p>PixelSetOpacityQuantum() sets the opacity color of the pixel wand.  The
+color must be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetOpacityQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetOpacityQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> opacity );
+</pre>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>opacity:</dt>
+<dd>The opacity color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id117" id="pixelsetquantumcolor" name="pixelsetquantumcolor">PixelSetQuantumColor</a></h1>
+<div class="section">
+<h2><a id="id71" name="id71">Synopsis</a></h2>
+<pre class="literal-block">
+PixelSetQuantumColor( PixelWand *wand, <a class="reference" href="../api/types.html#pixelpacket">PixelPacket</a> *color );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id72" name="id72">Description</a></h2>
+<p>PixelSetQuantumColor() sets the color of the pixel wand.</p>
+<p>The format of the PixelSetQuantumColor method is:</p>
+<pre class="literal-block">
+PixelSetQuantumColor( PixelWand *wand, <a class="reference" href="../api/types.html#pixelpacket">PixelPacket</a> *color );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>color:</dt>
+<dd>Return the pixel wand color here.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id118" id="pixelsetred" name="pixelsetred">PixelSetRed</a></h1>
+<div class="section">
+<h2><a id="id73" name="id73">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetRed( PixelWand *wand, const double red );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id74" name="id74">Description</a></h2>
+<p>PixelSetRed() sets the normalized red color of the pixel wand.</p>
+<p>The format of the PixelSetRed method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetRed( PixelWand *wand, const double red );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>red:</dt>
+<dd>The red color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id119" id="pixelsetredquantum" name="pixelsetredquantum">PixelSetRedQuantum</a></h1>
+<div class="section">
+<h2><a id="id75" name="id75">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetRedQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> red );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id76" name="id76">Description</a></h2>
+<p>PixelSetRedQuantum() sets the red color of the pixel wand.  The color must
+be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetRedQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetRedQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> red );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>red:</dt>
+<dd>The red color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id120" id="pixelsetyellow" name="pixelsetyellow">PixelSetYellow</a></h1>
+<div class="section">
+<h2><a id="id77" name="id77">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetYellow( PixelWand *wand, const double yellow );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id78" name="id78">Description</a></h2>
+<p>PixelSetYellow() sets the normalized yellow color of the pixel wand.</p>
+<p>The format of the PixelSetYellow method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetYellow( PixelWand *wand, const double yellow );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>yellow:</dt>
+<dd>The yellow color.</dd>
+</dl>
+</div>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id121" id="pixelsetyellowquantum" name="pixelsetyellowquantum">PixelSetYellowQuantum</a></h1>
+<div class="section">
+<h2><a id="id79" name="id79">Synopsis</a></h2>
+<pre class="literal-block">
+unsigned int PixelSetYellowQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> yellow );
+</pre>
+</div>
+<div class="section">
+<h2><a id="id80" name="id80">Description</a></h2>
+<p>PixelSetYellowQuantum() sets the yellow color of the pixel wand.  The color
+must be in the range of [0..MaxRGB]</p>
+<p>The format of the PixelSetYellowQuantum method is:</p>
+<pre class="literal-block">
+unsigned int PixelSetYellowQuantum( PixelWand *wand, const <a class="reference" href="../api/types.html#quantum">Quantum</a> yellow );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand.</dd>
+<dt>yellow:</dt>
+<dd>The yellow color.</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2009-07-05 19:11 UTC.
+
+</div>
+</body>
+</html>
