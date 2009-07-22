@@ -1,3 +1,8 @@
+2009-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/benchmarks.rst: Update GraphicsMagick vs ImageMagick image
+	processing benchmark results.
+
 2009-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/OpenMP.rst: Update performance measurements for readily

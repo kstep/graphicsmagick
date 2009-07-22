@@ -16,6 +16,12 @@ extern "C" {
 #endif
 
 /*
+  This define is not used by GraphicsMagick and it causes some headers
+  from other installed packages (e.g. MinGW libpthread) to misbehave.
+*/
+#undef HAVE_CONFIG_H
+
+/*
   Allow configuration of cache line size.  If smaller than actual
   cache line size, then performance may suffer.
 */
