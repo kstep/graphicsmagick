@@ -85,7 +85,26 @@ void DestroyMagickRandomGenerator()
 {
   AcquireSemaphoreInfo(&semaphore);
   if (initialized)
-    MagickTsdKeyDelete(kernel_key);
+    {
+      MagickRandomKernel
+	*kernel;
+      
+      int
+	max_threads,
+	thread;
+      
+      max_threads=omp_get_max_threads();
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(static,1)
+#endif
+      for (thread=0; thread < max_threads; thread++)
+	{
+	  kernel=(MagickRandomKernel *) MagickTsdGetSpecific(kernel_key);
+	  MagickFreeMemory(kernel);
+	  (void) MagickTsdSetSpecific(kernel_key,kernel);
+	}
+      MagickTsdKeyDelete(kernel_key);
+    }
   kernel_key=(MagickTsdKey_t) 0;
   initialized=MagickFalse;
   LiberateSemaphoreInfo(&semaphore);

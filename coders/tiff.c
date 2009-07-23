@@ -2677,6 +2677,12 @@ ModuleExport void RegisterTIFFImage(void)
   MagickInfo
     *entry;
 
+  /*
+    Initialize thread specific data key.
+  */
+  if (tsd_key == (MagickTsdKey_t) NULL)
+    (void) MagickTsdKeyCreate(&tsd_key);
+
   version[0]='\0';
   {
     int
@@ -2758,11 +2764,7 @@ ModuleExport void RegisterTIFFImage(void)
   */
   ExtensionTagsInitialize();
 #endif /* defined(EXTEND_TIFF_TAGS) */
-  /*
-    Initialize thread specific data key.
-  */
-  if (tsd_key == (MagickTsdKey_t) NULL)
-    (void) MagickTsdKeyCreate(&tsd_key);
+
 
 #endif
 }
