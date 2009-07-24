@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003, 2008 GraphicsMagick Group
+; Copyright (C) 2003-2009 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -25,3 +25,4 @@ Source: "..\..\www\Magick++\*.png"; DestDir: "{app}\www\Magick++"; Flags: ignore
 Source: "..\..\www\Magick++\COPYING"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion; DestName: "COPYING.txt"
 Source: "..\..\www\Magick++\README.txt"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion
 Source: "..\..\www\api\*.html"; DestDir: "{app}\www\api"; Flags: ignoreversion
+Source: "..\..\www\wand\*.html"; DestDir: "{app}\www\wand"; Flags: ignoreversion
