@@ -78,6 +78,9 @@
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
 
+/* Define to 1 if you have the `ctime_r' function. */
+#undef HAVE_CTIME_R
+
 /* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
    you don't. */
 #undef HAVE_DECL_CYGWIN_CONV_PATH
@@ -100,6 +103,12 @@
 
 /* define if the compiler supports default template parameters */
 #undef HAVE_DEFAULT_TEMPLATE_PARAMETERS
+
+/* Have a /dev/urandom device for producing random bytes */
+#undef HAVE_DEV_URANDOM
+
+/* Define to 1 if you have the `directio' function. */
+#undef HAVE_DIRECTIO
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
@@ -131,6 +140,9 @@
 
 /* define if the compiler supports the explicit keyword */
 #undef HAVE_EXPLICIT
+
+/* Define to 1 if you have the `fcntl' function. */
+#undef HAVE_FCNTL
 
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
@@ -171,9 +183,8 @@
 /* Define to 1 if you have the `lltostr' function. */
 #undef HAVE_LLTOSTR
 
-/* Define to 1 if the type `long double' works and has more range or precision
-   than `double'. */
-#undef HAVE_LONG_DOUBLE
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
 
 /* Define to 1 if the type `long double' works and has more range or precision
    than `double'. */
@@ -225,8 +236,14 @@
 /* Define to 1 if you have the `popen' function. */
 #undef HAVE_POPEN
 
+/* Define to 1 if you have the `posix_fadvise' function. */
+#undef HAVE_POSIX_FADVISE
+
 /* Define to 1 if you have the `posix_fallocate' function. */
 #undef HAVE_POSIX_FALLOCATE
+
+/* Define to 1 if you have the `posix_madvise' function. */
+#undef HAVE_POSIX_MADVISE
 
 /* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
@@ -251,6 +268,9 @@
 
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
+
+/* Define to 1 if you have the `readdir_r' function. */
+#undef HAVE_READDIR_R
 
 /* Define to 1 if you have the `readlink' function. */
 #undef HAVE_READLINK
@@ -290,6 +310,9 @@
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
+
+/* Define to 1 if you have the `strerror_r' function. */
+#undef HAVE_STRERROR_R
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -361,6 +384,9 @@
 
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
+
+/* Define to 1 if you have the `tmpnam_r' function. */
+#undef HAVE_TMPNAM_R
 
 /* Define to 1 if you have the `ulltostr' function. */
 #undef HAVE_ULLTOSTR
@@ -651,6 +677,19 @@
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
+
+/* Define to the equivalent of the C99 'restrict' keyword, or to
+   nothing if this is not supported.  Do not define if restrict is
+   supported directly.  */
+#undef restrict
+/* Work around a bug in Sun C++: it does not support _Restrict, even
+   though the corresponding Sun C compiler does, which causes
+   "#define restrict _Restrict" in the previous line.  Perhaps some future
+   version of Sun C++ will work with _Restrict; if so, it'll probably
+   define __RESTRICT, just as Sun C does.  */
+#if defined __SUNPRO_CC && !defined __RESTRICT
+# define _Restrict
+#endif
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

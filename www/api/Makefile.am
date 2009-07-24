@@ -1,4 +1,4 @@
-# Copyright (C) 2008 GraphicsMagick Group
+# Copyright (C) 2008-2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -16,10 +16,12 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/annotate.html \
 	$(WWWAPIDIR)/attribute.html \
 	$(WWWAPIDIR)/blob.html \
+	$(WWWAPIDIR)/cdl.html \
 	$(WWWAPIDIR)/channel.html \
 	$(WWWAPIDIR)/color.html \
 	$(WWWAPIDIR)/compare.html \
 	$(WWWAPIDIR)/composite.html \
+	$(WWWAPIDIR)/confirm_access.html \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
@@ -29,6 +31,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/enhance.html \
 	$(WWWAPIDIR)/error.html \
 	$(WWWAPIDIR)/fx.html \
+	$(WWWAPIDIR)/hclut.html \
 	$(WWWAPIDIR)/image.html \
 	$(WWWAPIDIR)/list.html \
 	$(WWWAPIDIR)/magick.html \
@@ -58,10 +61,12 @@ WWWWAPI_FILES = \
 	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
 	www/api/blob.html \
+	www/api/cdl.html \
 	www/api/channel.html \
 	www/api/color.html \
 	www/api/compare.html \
 	www/api/composite.html \
+	www/api/confirm_access.html \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \
@@ -71,6 +76,7 @@ WWWWAPI_FILES = \
 	www/api/enhance.html \
 	www/api/error.html \
 	www/api/fx.html \
+	www/api/hclut.html \
 	www/api/image.html \
 	www/api/list.html \
 	www/api/magick.html \

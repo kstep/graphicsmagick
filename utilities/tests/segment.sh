@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -segment 0.5x0.25 -label Segment Segment_out.miff
+OUTFILE=TileSegment_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -segment 0.5x0.25 -label Segment ${OUTFILE}

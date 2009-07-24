@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace gray -label Grayscale Grayscale_out.miff
+OUTFILE=TileGrayscale_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace gray -label Grayscale ${OUTFILE}

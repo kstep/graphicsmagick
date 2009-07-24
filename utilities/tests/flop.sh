@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -flop -label Flop Flop_out.miff
+OUTFILE=TileFlop_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -flop -label Flop ${OUTFILE}

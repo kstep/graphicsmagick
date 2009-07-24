@@ -2,3 +2,55 @@
 Items large and small which remain to be worked on.
 See website for "wish list".
 --------------------------------------------------------------------
+
+For GM 1.4
+===========
+
+* Update Windows libtiff to 4.0
+
+* -random-threshold needs to have gamma 2.2 pre-applied to the pixels
+  for correct appearance.
+
+* Fix browser interoperability issues reported for PNG8.
+
+* Choose a better tile size for rotate by 0 and 270 degrees when the pixel
+  cache is disk-based.  Also disable threading.
+
+* Add ClonePixelWand(), Compare, and Distortion functions to the Wand
+  API.
+
+ * Verify that delegate-subsystem exceptions propogate properly from
+   BlobToImage().
+
+ * Use localtime_r when available.
+
+ * Add RW tests for TXT format.
+
+For Future
+==========
+
+* Fix Scitex RGB reader to handle files written by Photoshop.
+
+* Fix PerlMagick BLOB reading (disable header magic checking if
+  already specified).
+
+* Implement DrawableFillPattern and DrawableStrokePattern drawable
+  objects in order to allow setting the fill and stroke patterns.
+
+* Improve performance of Cineon coder.
+
+For later releases
+==================
+
+* Fix polyline renderering (improperly closes shape) when line is very thick.
+
+* Look into problem reported by Rick Mabry, "Shear produces artifacts
+  for a 0 y-shear (e.g. 60x0)."
+
+* It appears that SyncImagePixels() silently fails if the region
+  includes parts outside of the underlying image. The API supports
+  requesting areas outside of the image, but then the underlying image
+  is not updated. This was first noted with -lat when the image is
+  entirely disk-based.
+
+

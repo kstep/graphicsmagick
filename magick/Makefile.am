@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -37,22 +37,39 @@ magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 magick_libGraphicsMagick_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 
+if HasX11
+MAGICK_X11_BASE_SRCS = \
+	magick/animate.c \
+	magick/animate.h \
+	magick/display.c \
+	magick/display.h \
+	magick/PreRvIcccm.c \
+	magick/PreRvIcccm.h \
+	magick/widget.c \
+	magick/widget.h \
+	magick/xwindow.c \
+	magick/xwindow.h
+endif
+
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
-	magick/animate.c \
-	magick/animate.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
 	magick/attribute.h \
+	magick/bit_stream.c \
 	magick/bit_stream.h \
 	magick/blob.c \
 	magick/blob.h \
+	magick/cdl.c \
+	magick/cdl.h \
 	magick/channel.c \
 	magick/channel.h \
 	magick/compare.c \
 	magick/compare.h \
+	magick/confirm_access.c \
+	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
 	magick/colorspace.c \
@@ -71,8 +88,6 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
-	magick/display.c \
-	magick/display.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -88,6 +103,8 @@ MAGICK_BASE_SRCS = \
 	magick/fx.h \
 	magick/gem.c \
 	magick/gem.h \
+	magick/hclut.c \
+	magick/hclut.h \
 	magick/image.c \
 	magick/image.h \
 	magick/list.c \
@@ -122,14 +139,14 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
-	magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h \
 	magick/profile.c \
 	magick/profile.h \
 	magick/quantize.c \
 	magick/quantize.h \
 	magick/registry.c \
 	magick/registry.h \
+	magick/random.c \
+	magick/random.h \
 	magick/render.c \
 	magick/render.h \
 	magick/resize.c \
@@ -162,10 +179,7 @@ MAGICK_BASE_SRCS = \
 	magick/utility.h \
 	magick/version.c \
 	magick/version.h \
-	magick/widget.c \
-	magick/widget.h \
-	magick/xwindow.c \
-	magick/xwindow.h
+	$(MAGICK_X11_BASE_SRCS)
 
 if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = 	\
@@ -184,18 +198,18 @@ endif # if CYGWIN_BUILD
 endif # if WIN32_NATIVE_BUILD
 
 MAGICK_INCLUDE_HDRS = \
-	magick/PreRvIcccm.h \
 	magick/api.h \
 	magick/attribute.h \
 	magick/blob.h \
+	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
 	magick/colorspace.h \
 	magick/command.h \
-	magick/command.h \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
+	magick/confirm_access.h \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \
@@ -207,6 +221,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
+	magick/hclut.h \
 	magick/image.h \
 	magick/list.h \
 	magick/log.h \
@@ -223,6 +238,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/pixel_iterator.h \
 	magick/profile.h \
 	magick/quantize.h \
+	magick/random.h \
 	magick/registry.h \
 	magick/render.h \
 	magick/resize.h \
@@ -233,9 +249,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/timer.h \
 	magick/transform.h \
 	magick/utility.h \
-	magick/version.h \
-	magick/widget.h \
-	magick/xwindow.h
+	magick/version.h
 
 MAGICK_NOINST_HDRS = \
 	magick/alpha_composite.h \
@@ -251,8 +265,11 @@ MAGICK_NOINST_HDRS = \
 	magick/spinlock.h \
 	magick/static.h \
 	magick/studio.h \
+	magick/tempfile.h \
 	magick/unix_port.h \
-	magick/tempfile.h
+	magick/widget.h \
+	magick/xwindow.h
+
 
 MAGICK_EXTRA_DIST = \
 	magick/GraphicsMagick-config.in \

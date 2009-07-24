@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
-<title>GraphicsMagick Formats</title>
+<title>GraphicsMagick Supported Formats</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -48,8 +48,8 @@
 <li><a href="links.html">Links</a></li>
 </ul>
 </div>
-<div class="document" id="graphicsmagick-formats">
-<h1 class="title">GraphicsMagick Formats</h1>
+<div class="document" id="graphicsmagick-supported-formats">
+<h1 class="title">GraphicsMagick Supported Formats</h1>
 <p>GraphicsMagick uses an ASCII string known as &quot;magick&quot; (e.g. &quot;GIF&quot;) to
 identify file formats, algorithms acting as formats, built-in images, and
 embedded profile types. After a file has been read or &quot;pinged&quot;, the
@@ -73,7 +73,7 @@ image formats.</p>
 <td>Notes</td>
 </tr>
 <tr><td>ART</td>
-<td>R</td>
+<td>RW</td>
 <td>PFS: 1st Publisher</td>
 <td>Format originally used on the Macintosh
 (MacPaint?) and later used for PFS: 1st
@@ -90,12 +90,21 @@ Interleaved</td>
 <td>AVS X image</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>BMP</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/bmp/egff.htm">BMP</a></td>
 <td>RW</td>
 <td>Microsoft Windows bitmap</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>CGM</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/cals/egff.htm">CALS</a></td>
+<td>R</td>
+<td>Continuous Acquisition
+and Life-cycle Support
+Type 1 image</td>
+<td>Specified in MIL-R-28002 and MIL-PRF-28002.
+Standard blueprint archive format as used by the
+US military to replace microfiche.</td>
+</tr>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/cgm/egff.htm">CGM</a></td>
 <td>R</td>
 <td>Computer Graphics
 Metafile</td>
@@ -105,8 +114,9 @@ Metafile</td>
 <td>RW</td>
 <td>Raw cyan, magenta,
 yellow, and black samples</td>
-<td>Set -size and -depth to specify the image width,
-height, and depth.</td>
+<td>Use -size, -depth, -endian, and -interlace to
+specify the image width, height, depth, byte
+order, and interlace.</td>
 </tr>
 <tr><td>CUR</td>
 <td>R</td>
@@ -239,7 +249,7 @@ System</td>
 <td>FlashPix Format</td>
 <td>Requires FlashPix SDK.</td>
 </tr>
-<tr><td>GIF</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>
 <td>RW</td>
 <td>CompuServe Graphics
 Interchange Format</td>
@@ -259,8 +269,8 @@ rather than GIF if clients are able to read PNG.</p>
 <tr><td>GRAY</td>
 <td>RW</td>
 <td>Raw gray samples</td>
-<td>Use -size and -depth to specify the image width,
-height, and depth.</td>
+<td>Use -size, -depth, and -endian to specify the
+image width, height, depth, and byte order.</td>
 </tr>
 <tr><td>HPGL</td>
 <td>R</td>
@@ -325,8 +335,7 @@ installed.</td>
 <td>Coming from <a class="reference" href="http://www.mathworks.com/">MathWorks</a> for storing matrices.
 Currently supported types are 2D matrices: byte,
 word, double, complex and 3D matrices containing
-RGB [x*y*3] byte, word. Not supported are
-compressed matrices from Matlab &gt;7.1.</td>
+RGB [x*y*3] byte, word.</td>
 </tr>
 <tr><td><a class="reference" href="miff.html">MIFF</a></td>
 <td>RW</td>
@@ -392,7 +401,7 @@ memory) may be calculated by the equation
 <td>MSL is the XML-based scripting language
 supported by the conjure utility.</td>
 </tr>
-<tr><td>MTV</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/mtv/egff.htm">MTV</a></td>
 <td>RW</td>
 <td>MTV Raytracing image
 format</td>
@@ -421,7 +430,7 @@ thumbnail format</td>
 <td>Palm pixmap</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>PBM</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/pbm/egff.htm">PBM</a></td>
 <td>RW</td>
 <td>Portable bitmap format
 (black and white)</td>
@@ -444,7 +453,7 @@ since larger images require huffman compression
 <td>HP Page Control Language</td>
 <td>For output to HP laser printers.</td>
 </tr>
-<tr><td>PCX</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/pcx/egff.htm">PCX</a></td>
 <td>RW</td>
 <td>ZSoft IBM PC Paintbrush
 file</td>
@@ -560,6 +569,11 @@ specified when reading via the -size option.</td>
 multi-image file</td>
 <td>&nbsp;</td>
 </tr>
+<tr><td>RAS</td>
+<td>R</td>
+<td><a class="reference" href="http://www.topol.cz/english/share/index.php3">TopoL</a> (GIS)</td>
+<td>&nbsp;</td>
+</tr>
 <tr><td>RAD</td>
 <td>R</td>
 <td><a class="reference" href="http://radsite.lbl.gov/radiance/HOME.html">Radiance</a> image file</td>
@@ -570,15 +584,17 @@ package be installed.</td>
 <td>RW</td>
 <td>Raw red, green, and blue
 samples</td>
-<td>Use -size and -depth to specify the image width,
-height, and depth.</td>
+<td>Use -size, -depth, -endian, and -interlace to
+specify the image width, height, depth, byte
+order, and interlace.</td>
 </tr>
 <tr><td>RGBA</td>
 <td>RW</td>
-<td>Raw red, green, blue, and
-matte samples</td>
-<td>Use -size and -depth to specify the image width,
-height, and depth.</td>
+<td>Raw red, green, and blue
+and matte samples</td>
+<td>Use -size, -depth, -endian, and -interlace to
+specify the image width, height, depth, byte
+order, and interlace.</td>
 </tr>
 <tr><td>RLA</td>
 <td>R</td>
@@ -674,7 +690,7 @@ and height.</td>
 <td>VICAR rasterfile format</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>VIFF</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/viff/egff.htm">VIFF</a></td>
 <td>RW</td>
 <td>Khoros Visualization
 Image File Format</td>
@@ -685,7 +701,7 @@ Image File Format</td>
 <td>Wireless bitmap</td>
 <td>Support for uncompressed monochrome only.</td>
 </tr>
-<tr><td>WMF</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/wmf/egff.htm">WMF</a></td>
 <td>&nbsp;</td>
 <td>Windows Metafile</td>
 <td>Requires libwmf. By default, renders WMF files
@@ -699,13 +715,13 @@ specify the WMF background color (default white)
 or -texture filename to specify a background
 texture image.</td>
 </tr>
-<tr><td>WPG</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/wpg/egff.htm">WPG</a></td>
 <td>R</td>
 <td>Word Perfect Graphics
 File</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>XBM</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/xbm/egff.htm">XBM</a></td>
 <td>RW</td>
 <td>X Windows system bitmap,
 black and white only</td>
@@ -717,13 +733,13 @@ icons.</td>
 <td>GIMP image</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>XPM</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/xpm/egff.htm">XPM</a></td>
 <td>RW</td>
 <td>X Windows system pixmap</td>
 <td>Also known as &quot;PM&quot;. Used by the X Windows System
 to store color icons.</td>
 </tr>
-<tr><td>XWD</td>
+<tr><td><a class="reference" href="http://www.fileformat.info/format/xwd/egff.htm">XWD</a></td>
 <td>RW</td>
 <td>X Windows system window
 dump</td>
@@ -790,6 +806,14 @@ The output format is always ImageMagick <a class="reference" href="miff.html">MI
 <blockquote class="last">
 <tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.tiff</span> <span class="pre">histogram:file.miff</span></tt></blockquote>
 </td>
+</tr>
+<tr><td>IDENTITY</td>
+<td>R</td>
+<td><a class="reference" href="http://www.quelsolaar.com/technology/clut.html">Hald CLUT</a> identity
+image</td>
+<td>Generate a Hald CLUT identity image of a specified order.
+The order is specified as an argument like &quot;IDENTITY:8&quot;.
+The default order is eight, producing a 512x512 image.</td>
 </tr>
 <tr><td>LABEL</td>
 <td>R</td>
@@ -1182,10 +1206,10 @@ pattern</td>
 </tr>
 </tbody>
 </table>
-<p>GraphicsMagick provides a number of format identifiers which are used to
-add, remove, and save embedded profiles for images which can support
-embedded profiles. Image types which may contain embedded profiles are
-<a class="reference" href="http://www.remotesensing.org/libtiff/">TIFF</a>, <a class="reference" href="http://www.jpeg.org/">JPEG</a>, and PDF.</p>
+<p>GraphicsMagick provides a number of format identifiers which are used
+to add, remove, and save embedded profiles for images which can
+support embedded profiles. Image types which may contain embedded
+profiles are <a class="reference" href="http://www.remotesensing.org/libtiff/">TIFF</a>, <a class="reference" href="http://www.jpeg.org/">JPEG</a>, PDF, and PNG.</p>
 <table border="1" class="docutils">
 <caption>Supported Embedded Profile Formats</caption>
 <colgroup>
@@ -1243,24 +1267,23 @@ convert.</td>
 </tbody>
 </table>
 <p>Support for some of the formats are delegated to libraries or external
-programs. The README describes where to find these distributions and any
-special configuration options required.</p>
-<p>To get a complete listing of which image formats are supported on your
-system, type</p>
+programs. The README describes where to find these distributions and
+any special configuration options required.</p>
+<p>To get a complete listing of the image formats which are supported on
+your system, type</p>
 <pre class="literal-block">
 gm convert -list format
 </pre>
 <p>On some platforms, GraphicsMagick automatically processes these
-extensions: .gz for Zip compression, .Z for Unix compression, .bz2 for
-block compression, and .pgp for PGP encryption. For example, a PNM image
-called image.pnm.gz is automatically uncompressed with the gzip program
-and the image is subsequently read.</p>
+extensions: .gz for Zip compression, .Z for Unix compression, and .bz2
+for block compression. For example, a PNM image called image.pnm.gz is
+automatically uncompressed while the image is read.</p>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2008</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2009</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-20 00:48 UTC.
+Generated on: 2009-07-05 18:05 UTC.
 
 </div>
 </body>

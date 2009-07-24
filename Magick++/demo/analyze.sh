@@ -17,7 +17,7 @@ executable=`echo $0 | sed -e 's:.*/::g;s:test_::;s:\.sh::'`
 outfile="test_${executable}.out"
 
 rm -f $outfile
-${RUNENV} ${MEMCHECK} ./analyze "$SRCDIR/model.miff" 2>&1 > $outfile
+${MEMCHECK} ./analyze "$SRCDIR/model.miff" 2>&1 > $outfile
 status=$?
 if test $status -eq 1
 then

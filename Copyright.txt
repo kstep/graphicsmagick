@@ -14,14 +14,14 @@ GraphicsMagick Group.
   changes such as renaming a symbol has similar significance
   to changing one line of code.*]
 
-The licences which components of this software fall under are as follows.
+The licenses which components of this software fall under are as follows.
 
 1)
   In November 2002, the GraphicsMagick Group created GraphicsMagick from
   ImageMagick Studio's ImageMagick and applied this license:
 
-  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
-  to making software imaging solutions freely available.
+  Copyright (C) 2002 - 2009 GraphicsMagick Group, an organization
+  dedicated to making software imaging solutions freely available.
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files
@@ -48,8 +48,9 @@ The licences which components of this software fall under are as follows.
   authorization from the GraphicsMagick Group.
 
 2)
-  In August 1999, ImageMagick Studio assumed the responsibility for the
-  development of ImageMagick and applied a new license:
+  In October 1999, ImageMagick Studio assumed the responsibility for
+  the development of ImageMagick (forking from the distribution by
+  E. I. du Pont de Nemours and Company) and applied a new license:
 
   Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
   to making software imaging solutions freely available.
@@ -78,8 +79,9 @@ The licences which components of this software fall under are as follows.
   ImageMagick Studio.
 
 3)
-  From 1991 to August 1999, ImageMagick was developed and distributed by
-  E. I. du Pont de Nemours and Company:
+  From 1991 to October 1999 (through ImageMagick 4.2.9), ImageMagick
+  was developed and distributed by E. I. du Pont de Nemours and
+  Company:
 
   Copyright 1999 E. I. du Pont de Nemours and Company
 
@@ -255,6 +257,36 @@ The licences which components of this software fall under are as follows.
   with Magick++ or the use or other dealings in Magick++.
 
 10)
+  The GraphicsMagick HaldClutImagePixels() function in magick/hclut.c
+  is based on source code from the HaldCLUT package by Eskil Steenberg
+  (http://www.quelsolaar.com/technology/clut.html) which is
+  distributed under the following license:
+
+  Copyright (c) 2005 Eskil Steenberg.  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR \`\`AS IS\'\' AND ANY EXPRESS OR
+  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+11)
   GraphicsMagick makes use of third-party "delegate" libraries to
   support certain optional features. These libraries bear their own
   copyrights and licenses, which may be more or less restrictive than the
@@ -264,6 +296,6 @@ The licences which components of this software fall under are as follows.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 
 

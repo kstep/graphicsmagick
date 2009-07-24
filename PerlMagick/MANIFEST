@@ -7,8 +7,10 @@ Magick.xs
 Makefile.PL
 Makefile.PL.in
 Makefile.am
+Makefile.in
 Makefile.nt
 Makefile.old
+PerlMagickCheck.sh.in
 README.txt
 build_manifest.sh
 demo/Generic.ttf
@@ -65,6 +67,7 @@ t/input.dcx
 t/input.dib
 t/input.gif
 t/input.gif87
+t/input.hrz
 t/input.ico
 t/input.im1
 t/input.im24
@@ -127,6 +130,7 @@ t/input_gray_lsb_float.mat
 t/input_gray_msb_08bit.mat
 t/input_gray_msb_16bit.fits
 t/input_gray_msb_32bit.fits
+t/input_gray_msb_64bit.fits
 t/input_gray_msb_double.fits
 t/input_gray_msb_float.fits
 t/input_logical_lsb_08bit.mat
@@ -170,6 +174,7 @@ t/montage.t
 t/mpeg/input.m2v
 t/mpeg/input.mpg
 t/mpeg/read.t
+t/ping.t
 t/png/input.mng
 t/png/input_16.png
 t/png/input_256.png
@@ -316,10 +321,12 @@ t/reference/read/input_gray_lsb_float_mat.miff
 t/reference/read/input_gray_msb_08bit_mat.miff
 t/reference/read/input_gray_msb_16bit_fits.miff
 t/reference/read/input_gray_msb_32bit_fits.miff
+t/reference/read/input_gray_msb_64bit_fits.miff
 t/reference/read/input_gray_msb_double_fits.miff
 t/reference/read/input_gray_msb_float_fits.miff
 t/reference/read/input_gray_rla.miff
 t/reference/read/input_gray_rle.miff
+t/reference/read/input_hrz.miff
 t/reference/read/input_ico.miff
 t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff

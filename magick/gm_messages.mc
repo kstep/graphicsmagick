@@ -1055,6 +1055,12 @@ image colorspace differs
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorImageDifferenceExceedsLimit
+Language        = English
+image difference exceeds limit (%s)
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorImageDoesNotContainResolution
 Language        = English
 image does not contain resolution
@@ -1373,6 +1379,12 @@ geometry does not contain image
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorHaldClutImageDimensionsInvalid
+Language        = English
+hald clut image dimensions are invalid
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorImagesAreNotTheSameSize
 Language        = English
 images are not the same size
@@ -1418,6 +1430,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorKernelWidthMustBeAnOddNumber
 Language        = English
 kernel width must be an odd number
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorMatrixOrderOutOfRange
+Language        = English
+Matrix size is out of range
 .
 
 MessageId       = +1
@@ -1532,6 +1550,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorUnableToChopImage
 Language        = English
 unable to chop image
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorUnableToColorMatrixImage
+Language        = English
+Unable to color matrix image
 .
 
 MessageId       = +1
@@ -2510,6 +2534,12 @@ MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateQuantizeInfo
 Language        = English
 unable to allocate quantize info
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToAllocateRandomKernel
+Language        = English
+unable to allocate random kernel
 .
 
 MessageId       = +1

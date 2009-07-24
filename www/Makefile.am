@@ -32,9 +32,11 @@ uninstall-data-html:
 	done
 
 RST2HTML_TARGETS = \
+	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/api/api.html \
+	$(WWWDIR)/wand/wand.html \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
@@ -68,6 +70,7 @@ WWW_RST_FILES = \
 	www/CVS.rst \
 	www/FAQ.rst \
 	www/OpenMP.rst \
+	www/Magick++/Image.rst \
 	www/Magick++/index.rst \
 	www/Magick++/Documentation.rst \
 	www/api/api.rst \
@@ -104,6 +107,7 @@ WWW_HTML_FILES = \
 	www/ImageMagickObject.rst \
 	www/Magick++/Documentation.html \
 	www/Magick++/Documentation.rst \
+	www/Magick++/Image.html \
 	www/Magick++/index.html \
 	www/NEWS.html \
 	www/OpenMP.html \

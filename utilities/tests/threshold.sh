@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileThreshold_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -threshold "35%" \
-                   -label Threshold Threshold_out.miff
+                   -label Threshold ${OUTFILE}

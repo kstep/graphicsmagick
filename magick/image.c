@@ -61,6 +61,7 @@
 #include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
+#include "magick/random.h"
 #include "magick/profile.h"
 #include "magick/semaphore.h"
 #include "magick/signature.h"
@@ -866,7 +867,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_AverageImages)
 #endif
       {
         row_count++;
@@ -1401,7 +1402,7 @@ CycleColormapCallBack(void *mutable_data,         /* User provided mutable data 
 
 
   long
-    index;
+    colormap_index;
 
   register const PixelPacket
     *colormap = image->colormap;
@@ -1418,13 +1419,13 @@ CycleColormapCallBack(void *mutable_data,         /* User provided mutable data 
 
   for (i=0; i < npixels; i++)
     {
-      index=(long) ((indexes[i]+amount) % colors);
-      if (index < 0L)
-        index+=colors;
-      indexes[i]=(IndexPacket) index;
-      pixels[i].red=colormap[index].red;
-      pixels[i].green=colormap[index].green;
-      pixels[i].blue=colormap[index].blue;
+      colormap_index=(long) ((indexes[i]+amount) % colors);
+      if (colormap_index < 0L)
+        colormap_index+=colors;
+      indexes[i]=(IndexPacket) colormap_index;
+      pixels[i].red=colormap[colormap_index].red;
+      pixels[i].green=colormap[colormap_index].green;
+      pixels[i].blue=colormap[colormap_index].blue;
     }
 
   return MagickPass;
@@ -1986,17 +1987,9 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     }
   FormatSize(GetBlobSize(image),format);
   (void) fprintf(file,"  Filesize: %.1024s\n",format);
-  if (image->interlace == NoInterlace)
-    (void) fprintf(file,"  Interlace: None\n");
-  else
-    if (image->interlace == LineInterlace)
-      (void) fprintf(file,"  Interlace: Line\n");
-    else
-      if (image->interlace == PlaneInterlace)
-        (void) fprintf(file,"  Interlace: Plane\n");
-    else
-      if (image->interlace == PartitionInterlace)
-        (void) fprintf(file,"  Interlace: Partition\n");
+  fprintf(file,"  Interlace: %s\n",
+	  InterlaceTypeToString(image->interlace == UndefinedInterlace ?
+				NoInterlace : image->interlace));
   (void) fprintf(file,"  Orientation: %s\n", OrientationTypeToString(image->orientation));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     &image->exception);
@@ -2056,12 +2049,15 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   {
     for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
       {
-        (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
-        if (strlen(attribute->key) > 1)
-          (void) fprintf(file,"%.1024s",attribute->key+1);
-
-        (void) fprintf(file,": ");
-        (void) fprintf(file,"%s\n",attribute->value);
+	if (LocaleNCompare("EXIF",attribute->key,4) != 0)
+	  {
+	    (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
+	    if (strlen(attribute->key) > 1)
+	      (void) fprintf(file,"%.1024s",attribute->key+1);
+	    
+	    (void) fprintf(file,": ");
+	    (void) fprintf(file,"%s\n",attribute->value);
+	  }
       }
   }
   if((profile=GetImageProfile(image,"ICM",&profile_length)) != 0)
@@ -2390,6 +2386,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
+  image->clip_mask=(Image *) NULL;
   MagickFreeMemory(image->montage);
   MagickFreeMemory(image->directory);
   MagickFreeMemory(image->colormap);
@@ -2629,7 +2626,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         thread_status;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageBoundingBox)
 #endif
       {
         thread_status=status;
@@ -2680,7 +2677,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageBoundingBox)
 #endif
       {
         row_count++;
@@ -2711,6 +2708,18 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     bounds.x=0;
   if (bounds.y < 0)
     bounds.y=0;
+  /*
+    If we fail to find smaller bounds, then return original image
+    dimensions.
+  */
+  if ((bounds.width == 0) || (bounds.height == 0))
+    {
+      bounds.width=image->columns;
+      bounds.height=image->rows;
+      bounds.x=0;
+      bounds.y=0;
+    }
+
   return(bounds);
 }
 
@@ -2816,13 +2825,13 @@ static magick_uint8_t* AllocateDepthMap(void)
   magick_uint8_t 
     *map;
   
-  map = MagickAllocateArray(unsigned char *, MaxRGB, sizeof(magick_uint8_t));
+  map = MagickAllocateArray(unsigned char *, MaxMap+1, sizeof(magick_uint8_t));
   if (map != (unsigned char *) NULL)
     {
       unsigned int
         i;
       
-      for (i=0; i <= MaxRGB; i++)
+      for (i=0; i <= MaxMap; i++)
         map[i] = (magick_uint8_t) MinimumDepthForValue(i);
     }
   return map;
@@ -2856,7 +2865,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
   ARG_NOT_USED(exception);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageDepthCallBack)
 #endif
   {
     depth=*current_depth;
@@ -2910,7 +2919,7 @@ GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data
 #endif
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageDepthCallBack)
 #endif
   {
     if (depth > *current_depth)
@@ -2967,6 +2976,8 @@ MagickExport unsigned long GetImageDepth(const Image *image,
                                   &depth,map,0,0,image->columns,
                                   image->rows,image,exception);
     }
+
+  MagickFreeMemory(map);
 
   return depth;
 }
@@ -3353,7 +3364,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) memset(image_info,0,sizeof(ImageInfo));
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
-  image_info->interlace=NoInterlace;
+  image_info->interlace=UndefinedInterlace;
   image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;
@@ -3471,7 +3482,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsMean)
 #endif
   {
     statistics->red.mean += lstatistics.red.mean;
@@ -3531,7 +3542,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
 
   (void) memset(&lstatistics, 0, sizeof(ImageStatistics));
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsVariance)
 #endif
   {
     lstatistics.red.mean=statistics->red.mean;
@@ -3563,7 +3574,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GetImageStatisticsVariance)
 #endif
   {
     statistics->red.variance += lstatistics.red.variance;
@@ -3785,7 +3796,7 @@ MagickExport MagickPassFail GradientImage(Image *image,
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical
+#  pragma omp critical (GM_GradientImage)
 #endif
       {
         row_count++;
@@ -3984,12 +3995,12 @@ MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
 %
 */
 
-static inline Quantum PlasmaPixel(const double pixel,const double noise)
+static Quantum PlasmaPixel(const double pixel,const double noise)
 {
   double
     value;
 
-  value=pixel+noise*rand()/RAND_MAX-noise/2;
+  value=pixel+noise*MagickRandomReal()-noise/2;
   if (value <= 0.0)
     return(0);
   if (value >= MaxRGB)
@@ -5733,7 +5744,7 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
             thread_status=MagickFail;
         }
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical
+#  pragma omp critical (GM_TextureImage)
 #endif
       {
         row_count++;

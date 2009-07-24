@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileThresholdWhite_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -white-threshold "80%" \
-                   -label "White Threshold" ThresholdWhite_out.miff
+                   -label "White Threshold" ${OUTFILE}

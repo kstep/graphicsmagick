@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -median 3 -label MedianFilter Median_out.miff
+OUTFILE=TileMedian_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -median 3 -label MedianFilter ${OUTFILE}

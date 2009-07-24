@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.10.1 subdir-objects dist-bzip2 dist-lzma foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-lzma foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -57,24 +57,34 @@ else
 SRCDIR="$(srcdir)/"
 endif
 
-RUNENV = $(SHELL) `pwd`/rungm.sh
-
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-        RUNENV="$(RUNENV)" \
-	SRCDIR=$(SRCDIR) \
-	GM="$(RUNENV) $(MEMCHECK) `pwd`/utilities/gm"
+	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
+	LD_LIBRARY_PATH="$(abs_top_builddir)/magick/.libs:${LD_LIBRARY_PATH}" \
+	MAGICK_CODER_MODULE_PATH='$(abs_top_builddir)/coders' \
+	MAGICK_CONFIGURE_PATH='$(abs_top_builddir)/config:$(abs_top_srcdir)/config' \
+	MAGICK_FILTER_MODULE_PATH='$(abs_top_builddir)/filters' \
+	MAKE="$(MAKE)" \
+	MAKEFLAGS="$(MAKEFLAGS)" \
+	MEMCHECK="$(MEMCHECK)" \
+	PATH="$(abs_top_builddir)/utilities:${PATH}" \
+	SRCDIR=$(SRCDIR)
+
+# Test extensions
+TEST_EXTENSIONS = .sh
 
 # Tests to run
 TESTS = \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \
+	$(PERLMAGICK_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail
 XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS) \
+	$(MAGICKPP_XFAIL_TESTS) \
 	$(UTILITIES_XFAIL_TESTS)
 
 CHANGELOGS = \
@@ -110,7 +120,8 @@ EXTRA_DIST = \
 	$(UTILITIES_EXTRA_DIST) \
 	$(WAND_EXTRA_DIST) \
 	$(WWWW_EXTRA_DIST) \
-	$(WWWAPI_EXTRA_DIST)
+	$(WWWAPI_EXTRA_DIST) \
+	$(WWWWANDAPI_EXTRA_DIST)
 
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
 
@@ -118,6 +129,9 @@ check_PROGRAMS = \
 	$(TESTS_CHECK_PGRMS) \
 	$(MAGICKPP_CHECK_PGRMS) \
 	$(WAND_CHECK_PGRMS)
+
+check_SCRIPTS = \
+	$(PERLMAGICK_CHECKSCRIPTS)
 
 AM_LDFLAGS =
 noinst_LTLIBRARIES =
@@ -135,6 +149,7 @@ include tests/Makefile.am
 include wand/Makefile.am
 include www/Makefile.am
 include www/api/Makefile.am
+include www/wand/Makefile.am
 include utilities/Makefile.am
 include PerlMagick/Makefile.am
 
@@ -164,11 +179,12 @@ if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
 	magick-version \
 	$(WWW_MAINTAINER_TARGETS) \
-	$(WWWAPI_MAINTAINER_TARGETS)
+	$(WWWAPI_MAINTAINER_TARGETS) \
+	$(WWWWANDAPI_MAINTAINER_TARGETS)
 
 # Target to build just the web pages.
 .PHONY: www
-www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS)
+www : $(WWW_MAINTAINER_TARGETS) $(WWWAPI_MAINTAINER_TARGETS) $(WWWWANDAPI_MAINTAINER_TARGETS)
 
 endif
 
@@ -195,8 +211,21 @@ maintainer-clean-local: $(PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS)
 
 check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
+# drd: valgrind's newer thread error detector
+drd:
+	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# helgrind: valgrind's older thread error detector
+helgrind:
+	$(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# memcheck: valgrind's memory access checker
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+
+# ptrcheck: valgrind's experimental pointer checking tool.
+ptrcheck:
+	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick

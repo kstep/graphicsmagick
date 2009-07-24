@@ -11,7 +11,7 @@ GraphicsMagick Motion Picture Features
 .. _GraphicsMagick : index.html
 .. _SMPTE : http://www.smpte.org/
 .. _Everyone's Hero : http://www.everyonesherodvd.com/flash/ehero.html
-.. _Spirit 4K DataCine : http://www.grassvalley.com/products/film/spirit_4k/
+.. _Spirit 4K DataCine : http://www.dft-film.com/scanners/spirit_4k.php
 .. _Northlight Scanner : http://www.filmlight.ltd.uk/
 .. _Lasergraphics : http://www.lasergraphics.com/
 .. _Grass Valley Viper : http://www.grassvalley.com/products/cameras/viper/

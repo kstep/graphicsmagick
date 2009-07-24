@@ -19,7 +19,7 @@ filter=`echo $base_test | sed -e 's:.*_::'`
 outfile="test_${base_test}.out"
 
 rm -f $outfile
-${RUNENV} ${MEMCHECK} ./$executable -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff 2>&1 > $outfile
+${MEMCHECK} ./$executable -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff 2>&1 > $outfile
 status=$?
 if test $status -eq 1
 then

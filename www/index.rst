@@ -13,7 +13,7 @@ GraphicsMagick Image Processing System
 
    :keywords: GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick,
               Perl Magic, WebMagick, Web Magic, image processing,
-              software development, image, software, Magick++
+              software development, image, software, Magick++, Gmagick
 
 
 .. _GraphicsMagic-1.1 : http://www.graphicsmagick.org/1.1/
@@ -25,11 +25,11 @@ GraphicsMagick Image Processing System
 
 .. _programming : programming.html
 
-========================  ===============================================
-Legacy Stable Branch:     1.1.14__ (Released June 5, 2008) download__
-Previous Stable Branch:   1.2.7__ (Released January 16, 2009) download__
-Current Stable Branch:    1.3.5__ (Released January 26, 2009) download__
-========================  ===============================================
+===========================  ===============================================
+Legacy (EOL) Stable Branch:  1.1.15__ (Released April 1, 2009) download__
+Previous Stable Branch:      1.2.7__ (Released January 16, 2009) download__
+Current Stable Branch:       1.3.5__ (Released January 26, 2009) download__
+===========================  ===============================================
 
 __ `GraphicsMagic-1.1`_
 __ `download GraphicsMagic-1.1`_
@@ -48,13 +48,16 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _OpenMP : OpenMP.html
 .. _`benchmarks` : benchmarks.html
 .. _`SLOCCount` : http://www.dwheeler.com/sloccount/
+.. _`Flickr` : http://www.flickr.com/
+.. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 
-GraphicsMagick is the swiss army knife of image processing. Comprised of
-248K physical lines (according to `SLOCCount`_) of source code in the
-base package (or 891K including 3rd party libraries) it provides a robust
-and efficient collection of tools and libraries which support reading,
-writing, and manipulating an image in over 88 major formats including
-important formats like DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF.
+GraphicsMagick is the swiss army knife of image processing. Comprised
+of 259K physical lines (according to David A. Wheeler's `SLOCCount`_)
+of source code in the base package (or 900K including 3rd party
+libraries) it provides a robust and efficient collection of tools and
+libraries which support reading, writing, and manipulating an image in
+over 88 major formats including important formats like DPX, GIF, JPEG,
+JPEG-2000, PNG, PDF, PNM, and TIFF.
 
 Image processing is multi-threaded using OpenMP_ so that CPU-bound tasks
 scale linearly as processor cores are added. OpenMP_ support requires
@@ -69,14 +72,14 @@ including Linux. It also runs under `Windows <INSTALL-windows.html>`_
 code still supports execution under Windows '98.
 
 GraphicsMagick supports huge images and has been tested with
-gigapixel-size images. GraphicsMagick can create new images on the fly,
-making it suitable for building dynamic Web applications. GraphicsMagick
-may be used to resize, rotate, sharpen, color reduce, or add special
-effects to an image and save the result in the same or differing image
-format. Image processing operations are available from the command line,
-as well as through C, C++, Perl, Tcl, Ruby, or Windows COM programming
-interfaces. With some modification, language extensions for ImageMagick
-may be used.
+gigapixel-size images. GraphicsMagick can create new images on the
+fly, making it suitable for building dynamic Web
+applications. GraphicsMagick may be used to resize, rotate, sharpen,
+color reduce, or add special effects to an image and save the result
+in the same or differing image format. Image processing operations are
+available from the command line, as well as through C, C++, Perl, PHP,
+Tcl, Ruby, or Windows COM programming interfaces. With some
+modification, language extensions for ImageMagick may be used.
 
 GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has been
 completely independent of the ImageMagick project since then. Since the
@@ -92,7 +95,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is much smaller and tighter.
 
   * GM is used to process billions of files at the world's largest photo
-    sites.
+    sites (e.g. `Flickr`_, see `John Allspaw's presentation`_).
   
   * GM does not does not conflict with other installed software.
 

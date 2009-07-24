@@ -598,6 +598,9 @@
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
+      <Message name="ImageDifferenceExceedsLimit">
+        image difference exceeds limit (%s)
+      </Message>
       <Message name="ImageDoesNotContainResolution">
         image does not contain resolution
       </Message>
@@ -780,6 +783,9 @@
       <Message name="GeometryDoesNotContainImage">
         geometry does not contain image
       </Message>
+      <Message name="HaldClutImageDimensionsInvalid">
+        hald clut image dimensions are invalid
+      </Message>
       <Message name="InputImagesAlreadySpecified">
         input images already specified
       </Message>
@@ -803,6 +809,9 @@
       </Message>
       <Message name="KernelWidthMustBeAnOddNumber">
         kernel width must be an odd number
+      </Message>
+      <Message name="MatrixOrderOutOfRange">
+        Matrix size is out of range
       </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
@@ -860,6 +869,9 @@
       </Message>
       <Message name="UnableToChopImage">
         unable to chop image
+      </Message>
+      <Message name="UnableToColorMatrixImage">
+        Unable to color matrix image
       </Message>
       <Message name="UnableToConvolveImage">
         Unable to convolve image
@@ -1365,6 +1377,9 @@
         </Message>
         <Message name="UnableToAllocateQuantizeInfo">
           unable to allocate quantize info
+        </Message>
+	<Message name="UnableToAllocateRandomKernel">
+          unable to allocate random kernel
         </Message>
         <Message name="UnableToAllocateSemaphoreInfo">
           unable to allocate semaphore info

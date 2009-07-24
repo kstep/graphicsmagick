@@ -54,36 +54,33 @@
 <div class="contents topic">
 <p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference" href="#attachblob" id="id43" name="id43">AttachBlob</a></li>
-<li><a class="reference" href="#blobisseekable" id="id44" name="id44">BlobIsSeekable</a></li>
-<li><a class="reference" href="#blobreservesize" id="id45" name="id45">BlobReserveSize</a></li>
-<li><a class="reference" href="#blobtofile" id="id46" name="id46">BlobToFile</a></li>
-<li><a class="reference" href="#blobtoimage" id="id47" name="id47">BlobToImage</a></li>
-<li><a class="reference" href="#cloneblobinfo" id="id48" name="id48">CloneBlobInfo</a></li>
-<li><a class="reference" href="#destroyblob" id="id49" name="id49">DestroyBlob</a></li>
-<li><a class="reference" href="#destroyblobinfo" id="id50" name="id50">DestroyBlobInfo</a></li>
-<li><a class="reference" href="#detachblob" id="id51" name="id51">DetachBlob</a></li>
-<li><a class="reference" href="#filetoblob" id="id52" name="id52">FileToBlob</a></li>
-<li><a class="reference" href="#getblobfilehandle" id="id53" name="id53">GetBlobFileHandle</a></li>
-<li><a class="reference" href="#getblobinfo" id="id54" name="id54">GetBlobInfo</a></li>
-<li><a class="reference" href="#getblobstatus" id="id55" name="id55">GetBlobStatus</a></li>
-<li><a class="reference" href="#getblobstreamdata" id="id56" name="id56">GetBlobStreamData</a></li>
-<li><a class="reference" href="#getblobtemporary" id="id57" name="id57">GetBlobTemporary</a></li>
-<li><a class="reference" href="#getconfigureblob" id="id58" name="id58">GetConfigureBlob</a></li>
-<li><a class="reference" href="#imagetoblob" id="id59" name="id59">ImageToBlob</a></li>
-<li><a class="reference" href="#imagetofile" id="id60" name="id60">ImageToFile</a></li>
-<li><a class="reference" href="#pingblob" id="id61" name="id61">PingBlob</a></li>
-<li><a class="reference" href="#referenceblob" id="id62" name="id62">ReferenceBlob</a></li>
-<li><a class="reference" href="#setblobclosable" id="id63" name="id63">SetBlobClosable</a></li>
-<li><a class="reference" href="#setblobtemporary" id="id64" name="id64">SetBlobTemporary</a></li>
+<li><a class="reference" href="#attachblob" id="id37" name="id37">AttachBlob</a></li>
+<li><a class="reference" href="#blobisseekable" id="id38" name="id38">BlobIsSeekable</a></li>
+<li><a class="reference" href="#blobreservesize" id="id39" name="id39">BlobReserveSize</a></li>
+<li><a class="reference" href="#blobtofile" id="id40" name="id40">BlobToFile</a></li>
+<li><a class="reference" href="#blobtoimage" id="id41" name="id41">BlobToImage</a></li>
+<li><a class="reference" href="#cloneblobinfo" id="id42" name="id42">CloneBlobInfo</a></li>
+<li><a class="reference" href="#destroyblob" id="id43" name="id43">DestroyBlob</a></li>
+<li><a class="reference" href="#destroyblobinfo" id="id44" name="id44">DestroyBlobInfo</a></li>
+<li><a class="reference" href="#detachblob" id="id45" name="id45">DetachBlob</a></li>
+<li><a class="reference" href="#filetoblob" id="id46" name="id46">FileToBlob</a></li>
+<li><a class="reference" href="#getblobfilehandle" id="id47" name="id47">GetBlobFileHandle</a></li>
+<li><a class="reference" href="#getblobinfo" id="id48" name="id48">GetBlobInfo</a></li>
+<li><a class="reference" href="#getblobstatus" id="id49" name="id49">GetBlobStatus</a></li>
+<li><a class="reference" href="#getblobstreamdata" id="id50" name="id50">GetBlobStreamData</a></li>
+<li><a class="reference" href="#getblobtemporary" id="id51" name="id51">GetBlobTemporary</a></li>
+<li><a class="reference" href="#getconfigureblob" id="id52" name="id52">GetConfigureBlob</a></li>
+<li><a class="reference" href="#imagetoblob" id="id53" name="id53">ImageToBlob</a></li>
+<li><a class="reference" href="#imagetofile" id="id54" name="id54">ImageToFile</a></li>
+<li><a class="reference" href="#pingblob" id="id55" name="id55">PingBlob</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id43" id="attachblob" name="attachblob">AttachBlob</a></h1>
+<h1><a class="toc-backref" href="#id37" id="attachblob" name="attachblob">AttachBlob</a></h1>
 <div class="section">
 <h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
 <pre class="literal-block">
-void AttachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
+void AttachBlob( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
 </pre>
 </div>
 <div class="section">
@@ -91,7 +88,7 @@ void AttachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *b
 <p>AttachBlob() attaches a blob to the BlobInfo structure.</p>
 <p>The format of the AttachBlob method is:</p>
 <pre class="literal-block">
-void AttachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
+void AttachBlob( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -106,11 +103,11 @@ understood by GraphicsMagick.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id44" id="blobisseekable" name="blobisseekable">BlobIsSeekable</a></h1>
+<h1><a class="toc-backref" href="#id38" id="blobisseekable" name="blobisseekable">BlobIsSeekable</a></h1>
 <div class="section">
 <h2><a id="id1" name="id1">Synopsis</a></h2>
 <pre class="literal-block">
-MagickBool BlobIsSeekable( const <a class="reference" href="types.html#image">Image</a> *image );
+MagickBool BlobIsSeekable( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -119,7 +116,7 @@ MagickBool BlobIsSeekable( const <a class="reference" href="types.html#image">Im
 (SeekBlob() is functional).</p>
 <p>The format of the BlobIsSeekable method is:</p>
 <pre class="literal-block">
-MagickBool BlobIsSeekable( const <a class="reference" href="types.html#image">Image</a> *image );
+MagickBool BlobIsSeekable( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -129,11 +126,11 @@ MagickBool BlobIsSeekable( const <a class="reference" href="types.html#image">Im
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id45" id="blobreservesize" name="blobreservesize">BlobReserveSize</a></h1>
+<h1><a class="toc-backref" href="#id39" id="blobreservesize" name="blobreservesize">BlobReserveSize</a></h1>
 <div class="section">
 <h2><a id="id3" name="id3">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail BlobReserveSize( <a class="reference" href="types.html#image">Image</a> *image, magick_off_t size );
+MagickPassFail BlobReserveSize( <a class="reference" href="../api/types.html#image">Image</a> *image, magick_off_t size );
 </pre>
 </div>
 <div class="section">
@@ -146,7 +143,7 @@ performance is reduced by changing a write operation to a read, modify,
 write operation.</p>
 <p>The format of the BlobReserveSize method is:</p>
 <pre class="literal-block">
-MagickPassFail BlobReserveSize( <a class="reference" href="types.html#image">Image</a> *image, magick_off_t size );
+MagickPassFail BlobReserveSize( <a class="reference" href="../api/types.html#image">Image</a> *image, magick_off_t size );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -158,12 +155,12 @@ MagickPassFail BlobReserveSize( <a class="reference" href="types.html#image">Ima
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id46" id="blobtofile" name="blobtofile">BlobToFile</a></h1>
+<h1><a class="toc-backref" href="#id40" id="blobtofile" name="blobtofile">BlobToFile</a></h1>
 <div class="section">
 <h2><a id="id5" name="id5">Synopsis</a></h2>
 <pre class="literal-block">
 MagickPassFail BlobToFile( const char *filename, const void *blob, const size_t length,
-                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+                           <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -173,7 +170,7 @@ occurs otherwise MagickPass.</p>
 <p>The format of the BlobToFile method is:</p>
 <pre class="literal-block">
 MagickPassFail BlobToFile( const char *filename, const void *blob, const size_t length,
-                           <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+                           <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>status:</dt>
@@ -191,12 +188,12 @@ returns MagickFail if an error occurs.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id47" id="blobtoimage" name="blobtoimage">BlobToImage</a></h1>
+<h1><a class="toc-backref" href="#id41" id="blobtoimage" name="blobtoimage">BlobToImage</a></h1>
 <div class="section">
 <h2><a id="id7" name="id7">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#image">Image</a> *BlobToImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const void *blob,
-                    const size_t length, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference" href="../api/types.html#image">Image</a> *BlobToImage( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const void *blob,
+                    const size_t length, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -205,8 +202,8 @@ returns MagickFail if an error occurs.</dd>
 blob as an image.</p>
 <p>The format of the BlobToImage method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#image">Image</a> *BlobToImage( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const void *blob,
-                    const size_t length, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference" href="../api/types.html#image">Image</a> *BlobToImage( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const void *blob,
+                    const size_t length, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -222,11 +219,11 @@ understood by GraphicsMagick.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id48" id="cloneblobinfo" name="cloneblobinfo">CloneBlobInfo</a></h1>
+<h1><a class="toc-backref" href="#id42" id="cloneblobinfo" name="cloneblobinfo">CloneBlobInfo</a></h1>
 <div class="section">
 <h2><a id="id9" name="id9">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section">
@@ -235,7 +232,7 @@ understood by GraphicsMagick.</dd>
 blob info is NULL, a new one.</p>
 <p>The format of the CloneBlobInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -248,11 +245,11 @@ blob info, or if blob info is NULL a new one.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id49" id="destroyblob" name="destroyblob">DestroyBlob</a></h1>
+<h1><a class="toc-backref" href="#id43" id="destroyblob" name="destroyblob">DestroyBlob</a></h1>
 <div class="section">
 <h2><a id="id11" name="id11">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyBlob( <a class="reference" href="types.html#image">Image</a> *image );
+void DestroyBlob( <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -262,7 +259,7 @@ a reference counted object so the object is only destroyed once its
 reference count decreases to zero.</p>
 <p>The format of the DestroyBlob method is:</p>
 <pre class="literal-block">
-void DestroyBlob( <a class="reference" href="types.html#image">Image</a> *image );
+void DestroyBlob( <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -272,11 +269,11 @@ void DestroyBlob( <a class="reference" href="types.html#image">Image</a> *image 
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id50" id="destroyblobinfo" name="destroyblobinfo">DestroyBlobInfo</a></h1>
+<h1><a class="toc-backref" href="#id44" id="destroyblobinfo" name="destroyblobinfo">DestroyBlobInfo</a></h1>
 <div class="section">
 <h2><a id="id13" name="id13">Synopsis</a></h2>
 <pre class="literal-block">
-void DestroyBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob );
+void DestroyBlobInfo( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob );
 </pre>
 </div>
 <div class="section">
@@ -288,7 +285,7 @@ this function since it assures that the blob is closed prior to destruction.</p>
 <p>This function is no longer used within GraphicsMagick.</p>
 <p>The format of the DestroyBlobInfo method is:</p>
 <pre class="literal-block">
-void DestroyBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob );
+void DestroyBlobInfo( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -298,11 +295,11 @@ void DestroyBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id51" id="detachblob" name="detachblob">DetachBlob</a></h1>
+<h1><a class="toc-backref" href="#id45" id="detachblob" name="detachblob">DetachBlob</a></h1>
 <div class="section">
 <h2><a id="id15" name="id15">Synopsis</a></h2>
 <pre class="literal-block">
-void DetachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+void DetachBlob( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section">
@@ -310,7 +307,7 @@ void DetachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *b
 <p>DetachBlob() detaches a blob from the BlobInfo structure.</p>
 <p>The format of the DetachBlob method is:</p>
 <pre class="literal-block">
-void DetachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+void DetachBlob( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -320,11 +317,11 @@ void DetachBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *b
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id52" id="filetoblob" name="filetoblob">FileToBlob</a></h1>
+<h1><a class="toc-backref" href="#id46" id="filetoblob" name="filetoblob">FileToBlob</a></h1>
 <div class="section">
 <h2><a id="id17" name="id17">Synopsis</a></h2>
 <pre class="literal-block">
-void *FileToBlob( const char *filename, size_t *length, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *FileToBlob( const char *filename, size_t *length, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -333,7 +330,7 @@ void *FileToBlob( const char *filename, size_t *length, <a class="reference" hre
 file as a blob and its length.  If an error occurs, NULL is returned.</p>
 <p>The format of the FileToBlob method is:</p>
 <pre class="literal-block">
-void *FileToBlob( const char *filename, size_t *length, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *FileToBlob( const char *filename, size_t *length, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>blob:</dt>
@@ -350,11 +347,11 @@ blob.  On return, it reflects the actual length of the blob.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id53" id="getblobfilehandle" name="getblobfilehandle">GetBlobFileHandle</a></h1>
+<h1><a class="toc-backref" href="#id47" id="getblobfilehandle" name="getblobfilehandle">GetBlobFileHandle</a></h1>
 <div class="section">
 <h2><a id="id19" name="id19">Synopsis</a></h2>
 <pre class="literal-block">
-FILE *GetBlobFileHandle( const <a class="reference" href="types.html#image">Image</a> *image );
+FILE *GetBlobFileHandle( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -364,7 +361,7 @@ image blob.  If there is no associated file handle, then a null pointer
 is returned.</p>
 <p>The format of the GetBlobFileHandle method is:</p>
 <pre class="literal-block">
-FILE *GetBlobFileHandle( const <a class="reference" href="types.html#image">Image</a> *image );
+FILE *GetBlobFileHandle( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -374,11 +371,11 @@ FILE *GetBlobFileHandle( const <a class="reference" href="types.html#image">Imag
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id54" id="getblobinfo" name="getblobinfo">GetBlobInfo</a></h1>
+<h1><a class="toc-backref" href="#id48" id="getblobinfo" name="getblobinfo">GetBlobInfo</a></h1>
 <div class="section">
 <h2><a id="id21" name="id21">Synopsis</a></h2>
 <pre class="literal-block">
-void GetBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+void GetBlobInfo( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section">
@@ -386,7 +383,7 @@ void GetBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *
 <p>GetBlobInfo() initializes the BlobInfo structure.</p>
 <p>The format of the GetBlobInfo method is:</p>
 <pre class="literal-block">
-void GetBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
+void GetBlobInfo( <a class="reference" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -396,11 +393,11 @@ void GetBlobInfo( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id55" id="getblobstatus" name="getblobstatus">GetBlobStatus</a></h1>
+<h1><a class="toc-backref" href="#id49" id="getblobstatus" name="getblobstatus">GetBlobStatus</a></h1>
 <div class="section">
 <h2><a id="id23" name="id23">Synopsis</a></h2>
 <pre class="literal-block">
-int GetBlobStatus( const <a class="reference" href="types.html#image">Image</a> *image );
+int GetBlobStatus( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -408,7 +405,7 @@ int GetBlobStatus( const <a class="reference" href="types.html#image">Image</a> 
 <p>GetBlobStatus() returns the blob error status.</p>
 <p>The format of the GetBlobStatus method is:</p>
 <pre class="literal-block">
-int GetBlobStatus( const <a class="reference" href="types.html#image">Image</a> *image );
+int GetBlobStatus( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -418,11 +415,11 @@ int GetBlobStatus( const <a class="reference" href="types.html#image">Image</a> 
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id56" id="getblobstreamdata" name="getblobstreamdata">GetBlobStreamData</a></h1>
+<h1><a class="toc-backref" href="#id50" id="getblobstreamdata" name="getblobstreamdata">GetBlobStreamData</a></h1>
 <div class="section">
 <h2><a id="id25" name="id25">Synopsis</a></h2>
 <pre class="literal-block">
-unsigned char *GetBlobStreamData( const <a class="reference" href="types.html#image">Image</a> *image );
+unsigned char *GetBlobStreamData( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -432,7 +429,7 @@ available if the data is stored on the heap, or is memory mapped.
 Otherwise a NULL value is returned.</p>
 <p>The format of the GetBlobStreamData method is:</p>
 <pre class="literal-block">
-unsigned char *GetBlobStreamData( const <a class="reference" href="types.html#image">Image</a> *image );
+unsigned char *GetBlobStreamData( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -442,11 +439,11 @@ unsigned char *GetBlobStreamData( const <a class="reference" href="types.html#im
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id57" id="getblobtemporary" name="getblobtemporary">GetBlobTemporary</a></h1>
+<h1><a class="toc-backref" href="#id51" id="getblobtemporary" name="getblobtemporary">GetBlobTemporary</a></h1>
 <div class="section">
 <h2><a id="id27" name="id27">Synopsis</a></h2>
 <pre class="literal-block">
-MagickBool GetBlobTemporary( const <a class="reference" href="types.html#image">Image</a> *image );
+MagickBool GetBlobTemporary( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 </div>
 <div class="section">
@@ -456,7 +453,7 @@ is a temporary file and should be removed when the associated image is
 destroyed.</p>
 <p>The format of the GetBlobTemporary method is:</p>
 <pre class="literal-block">
-MagickBool GetBlobTemporary( const <a class="reference" href="types.html#image">Image</a> *image );
+MagickBool GetBlobTemporary( const <a class="reference" href="../api/types.html#image">Image</a> *image );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -466,11 +463,11 @@ MagickBool GetBlobTemporary( const <a class="reference" href="types.html#image">
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id58" id="getconfigureblob" name="getconfigureblob">GetConfigureBlob</a></h1>
+<h1><a class="toc-backref" href="#id52" id="getconfigureblob" name="getconfigureblob">GetConfigureBlob</a></h1>
 <div class="section">
 <h2><a id="id29" name="id29">Synopsis</a></h2>
 <pre class="literal-block">
-void *GetConfigureBlob( const char *filename, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *GetConfigureBlob( const char *filename, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -478,7 +475,7 @@ void *GetConfigureBlob( const char *filename, <a class="reference" href="types.h
 <p>GetConfigureBlob() returns the specified configure file as a blob.</p>
 <p>The format of the GetConfigureBlob method is:</p>
 <pre class="literal-block">
-void *GetConfigureBlob( const char *filename, <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *GetConfigureBlob( const char *filename, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -495,12 +492,12 @@ blob.  On return, it reflects the actual length of the blob.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id59" id="imagetoblob" name="imagetoblob">ImageToBlob</a></h1>
+<h1><a class="toc-backref" href="#id53" id="imagetoblob" name="imagetoblob">ImageToBlob</a></h1>
 <div class="section">
 <h2><a id="id31" name="id31">Synopsis</a></h2>
 <pre class="literal-block">
-void *ImageToBlob( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image, size_t *length,
-                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *ImageToBlob( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="../api/types.html#image">Image</a> *image, size_t *length,
+                   <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -510,8 +507,8 @@ image as a blob and its length.  The magick member of the Image structure
 determines the format of the returned blob(GIG, JPEG,  PNG, etc.)</p>
 <p>The format of the ImageToBlob method is:</p>
 <pre class="literal-block">
-void *ImageToBlob( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="types.html#image">Image</a> *image, size_t *length,
-                   <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+void *ImageToBlob( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference" href="../api/types.html#image">Image</a> *image, size_t *length,
+                   <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -527,12 +524,12 @@ blob.  On return, it reflects the actual length of the blob.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id60" id="imagetofile" name="imagetofile">ImageToFile</a></h1>
+<h1><a class="toc-backref" href="#id54" id="imagetofile" name="imagetofile">ImageToFile</a></h1>
 <div class="section">
 <h2><a id="id33" name="id33">Synopsis</a></h2>
 <pre class="literal-block">
-MagickPassFail ImageToFile( <a class="reference" href="types.html#image">Image</a> *image, const char *filename,
-                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ImageToFile( <a class="reference" href="../api/types.html#image">Image</a> *image, const char *filename,
+                            <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -544,8 +541,8 @@ Instead of streaming the data in, the data is streammed to a temporary
 file, and the coder accesses the temorary file directly.</p>
 <p>The format of the ImageToFile method is:</p>
 <pre class="literal-block">
-MagickPassFail ImageToFile( <a class="reference" href="types.html#image">Image</a> *image, const char *filename,
-                            <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ImageToFile( <a class="reference" href="../api/types.html#image">Image</a> *image, const char *filename,
+                            <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>status:</dt>
@@ -561,12 +558,12 @@ returns MagickFail if an error occurs.</dd>
 </div>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id61" id="pingblob" name="pingblob">PingBlob</a></h1>
+<h1><a class="toc-backref" href="#id55" id="pingblob" name="pingblob">PingBlob</a></h1>
 <div class="section">
 <h2><a id="id35" name="id35">Synopsis</a></h2>
 <pre class="literal-block">
-<a class="reference" href="types.html#image">Image</a> *PingBlob( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const void *blob, const size_t length,
-                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference" href="../api/types.html#image">Image</a> *PingBlob( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const void *blob, const size_t length,
+                 <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section">
@@ -577,8 +574,8 @@ BlobToImage().  On failure, a NULL image is returned and exception
 describes the reason for the failure.</p>
 <p>The format of the PingBlob method is:</p>
 <pre class="literal-block">
-<a class="reference" href="types.html#image">Image</a> *PingBlob( const <a class="reference" href="types.html#imageinfo">ImageInfo</a> *image_info, const void *blob, const size_t length,
-                 <a class="reference" href="types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference" href="../api/types.html#image">Image</a> *PingBlob( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const void *blob, const size_t length,
+                 <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -593,86 +590,10 @@ understood by GraphicsMagick.</dd>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id62" id="referenceblob" name="referenceblob">ReferenceBlob</a></h1>
-<div class="section">
-<h2><a id="id37" name="id37">Synopsis</a></h2>
-<pre class="literal-block">
-<a class="reference" href="types.html#blobInfo">BlobInfo</a> ReferenceBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
-</pre>
-</div>
-<div class="section">
-<h2><a id="id38" name="id38">Description</a></h2>
-<p>ReferenceBlob() increments the reference count associated with the pixel
-blob, returning a pointer to the blob.</p>
-<p>The format of the ReferenceBlob method is:</p>
-<pre class="literal-block">
-<a class="reference" href="types.html#blobInfo">BlobInfo</a> ReferenceBlob( <a class="reference" href="types.html#blobInfo">BlobInfo</a> *blob_info );
-</pre>
-<p>A description of each parameter follows:</p>
-<dl class="docutils">
-<dt>blob_info:</dt>
-<dd>The blob_info.</dd>
-</dl>
-</div>
-</div>
-<div class="section">
-<h1><a class="toc-backref" href="#id63" id="setblobclosable" name="setblobclosable">SetBlobClosable</a></h1>
-<div class="section">
-<h2><a id="id39" name="id39">Synopsis</a></h2>
-<pre class="literal-block">
-void SetBlobClosable( <a class="reference" href="types.html#image">Image</a> *image, MagickBool closeable );
-</pre>
-</div>
-<div class="section">
-<h2><a id="id40" name="id40">Description</a></h2>
-<p>SetBlobClosable() enables closing the blob if MagickTrue is passed, and
-exempts the blob from being closed if False is passed.  Blobs are closable
-by default (default MagickTrue).</p>
-<p>The format of the SetBlobClosable method is:</p>
-<pre class="literal-block">
-void SetBlobClosable( <a class="reference" href="types.html#image">Image</a> *image, MagickBool closeable );
-</pre>
-<p>A description of each parameter follows:</p>
-<dl class="docutils">
-<dt>image:</dt>
-<dd>Image to update</dd>
-<dt>closeable:</dt>
-<dd>Set to FALSE in order to disable closing the blob.</dd>
-</dl>
-</div>
-</div>
-<div class="section">
-<h1><a class="toc-backref" href="#id64" id="setblobtemporary" name="setblobtemporary">SetBlobTemporary</a></h1>
-<div class="section">
-<h2><a id="id41" name="id41">Synopsis</a></h2>
-<pre class="literal-block">
-void SetBlobTemporary( <a class="reference" href="types.html#image">Image</a> *image, MagickBool isTemporary );
-</pre>
-</div>
-<div class="section">
-<h2><a id="id42" name="id42">Description</a></h2>
-<p>SetBlobTemporary() sets a boolean flag (default False) to specify if
-the file associated with the blob is a temporary file and should be
-removed when the associated image is destroyed.</p>
-<p>The format of the SetBlobTemporary method is:</p>
-<pre class="literal-block">
-void SetBlobTemporary( <a class="reference" href="types.html#image">Image</a> *image, MagickBool isTemporary );
-</pre>
-<p>A description of each parameter follows:</p>
-<dl class="docutils">
-<dt>image:</dt>
-<dd>Image to update</dd>
-<dt>isTemporary:</dt>
-<dd>Set to True to indicate that the file associated with
-the blob is temporary.</dd>
-</dl>
-</div>
-</div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-01-13 20:59 UTC.
+Generated on: 2009-07-05 19:10 UTC.
 
 </div>
 </body>

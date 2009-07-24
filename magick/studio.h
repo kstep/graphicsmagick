@@ -16,6 +16,18 @@ extern "C" {
 #endif
 
 /*
+  This define is not used by GraphicsMagick and it causes some headers
+  from other installed packages (e.g. MinGW libpthread) to misbehave.
+*/
+#undef HAVE_CONFIG_H
+
+/*
+  Allow configuration of cache line size.  If smaller than actual
+  cache line size, then performance may suffer.
+*/
+#define MAGICK_CACHE_LINE_SIZE 128
+
+/*
   Note that the WIN32 and WIN64 definitions are provided by the build
   configuration rather than the compiler.  Definitions available from
   the Windows compiler are _WIN32 and _WIN64.
@@ -230,6 +242,16 @@ extern "C" {
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 #endif
 
+/*
+  Avoid shadowing system library globals and functions.
+*/
+#undef gamma
+#define gamma gamma_magick
+#undef swab
+#define swab swab_magick
+#undef y1
+#define y1 y1_magick
+
 #include "magick/magick_types.h"
 #include "magick/image.h"
 #include "magick/list.h"
@@ -241,7 +263,6 @@ extern "C" {
 #    include <sys/times.h>
 #  endif
 #endif
-
 
 #if defined(POSIX)
 # include "magick/unix_port.h"

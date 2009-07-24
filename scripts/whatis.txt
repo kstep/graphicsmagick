@@ -5,11 +5,13 @@ animate.c          Interactively animate an image sequence
 annotate.c         Annotate an image with text
 attribute.c        Access key,value image attributes
 blob.c             Read or write formatted images in memory (BLOBs)
+cdl.c		   Apply ASC CDL transform to image
 channel.c          Image channel functions
 color.c            Color related functions
 constitute.c       Read or write an image
 compare.c          Compare images
 composite.c        Merge image pixels using a specified algorithm
+confirm_access.c   Access confirmation functions
 decorate.c         Add decorative frames and borders
 deprecate.c        Methods which should no longer be used
 display.c          Interactively display and edit an image
@@ -19,6 +21,7 @@ effect.c           Image effects methods
 fx.c               Image special effects methods
 enhance.c          Methods to enhance or adjust an image
 error.c            Error reporting methods
+hclut.c		   Apply Hald CLUT to image
 image.c            Miscellaneous image methods
 list.c             Image list support
 magick.c           Image format support interfaces
@@ -38,4 +41,7 @@ shear.c            Rotate image, shear image, or apply a 2D affine transformatio
 signature.c        Add a digital signature to the image
 transform.c        Crop, flip, flop, roll, coalesce, etc.
 resize.c           Resize an image
-widget.c           X11 Widgets'
+widget.c           X11 Widgets
+drawing_wand.c	   Wand vector drawing interfaces
+magick_wand.c	   Wand image processing interfaces
+pixel_wand.c	   Wand pixel access interfaces

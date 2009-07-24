@@ -1,15 +1,17 @@
-====================
-GraphicsMagick C API
-====================
+=========================
+GraphicsMagick Core C API
+=========================
 
 .. _Animate : animate.html
 .. _Annotate : annotate.html
 .. _Attribute : attribute.html
+.. _`ASC CDL` : cdl.html
 .. _Blob : blob.html
 .. _Channel : channel.html
 .. _Color : color.html
 .. _Compare : compare.html
 .. _Composite : composite.html
+.. _Confirm Access : confirm_access.html
 .. _Constitute : constitute.html
 .. _Decorate : decorate.html
 .. _Display : display.html
@@ -18,6 +20,7 @@ GraphicsMagick C API
 .. _Enhance : enhance.html
 .. _Error : error.html
 .. _FX : fx.html
+.. _`Hald CLUT` : hclut.html
 .. _Image : image.html
 .. _List : list.html
 .. _Magick : magick.html
@@ -39,14 +42,13 @@ GraphicsMagick C API
 .. _Transform : transform.html
 .. _types: types.html
 
-GraphicsMagick has a number of functions that allow you to read, manipulate,
-write, or display an image. These functions are accessible through the various
-tools or the object-oriented Perl interface, PerlMagick. However, you can also
-access the functions directly from your program through the Magick Application
-Programmer Interface. To invoke the functions, write your program in your
-favorite language while making calls to the Magick image functions and link
-with libGraphicsMagick.a, libGraphicsMagick.so, or GraphicsMagick.dll depending
-on your system.
+The GraphicsMagick core C library constitutes the implementation of
+GraphicsMagick and provides the lowest-level C language programming
+interface for GraphicsMagick.  The core C API provides many functions
+to read, manipulate, write, or display an image.  To invoke the
+functions, write your program in C (or C++) language while making
+calls to the core library functions and link with libGraphicsMagick.a,
+libGraphicsMagick.so, or GraphicsMagick.dll depending on your system.
 
 The API is divided into a number of categories. While reading this
 documentation, please reference the types_ documentation as required:
@@ -54,11 +56,13 @@ documentation, please reference the types_ documentation as required:
   * Animate_: Interactively animate an image sequence
   * Annotate_: Annotate an image with text
   * Attribute_: Access key, value image attributes
+  * `ASC CDL`_ : Apply ASC CDL to image
   * Blob_: Read and write images to memory
   * Channel_: Import and export image channels as well as compute channel depth
   * Color_: Methods to deal with image colors
   * Compare_: Compare images
   * Composite_: Composite images
+  * `Confirm Access`_ : Confirm access to files and URLs.
   * Constitute_: Read, write, import, and export images
   * Decorate_: Add fancy borders to images
   * Display_: Interactively display and edit an image
@@ -69,6 +73,7 @@ documentation, please reference the types_ documentation as required:
     and normalize
   * Error_: Error reporting methods
   * FX_: Special effects methods
+  * `Hald CLUT`_ : Apply Hald CLUT to image
   * Image_: Miscellaneous image methods
   * List_: Manage image lists
   * Magick_: Image format support interfaces
@@ -207,5 +212,5 @@ your X server.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2008
+Copyright |copy| GraphicsMagick Group 2002 - 2009
 

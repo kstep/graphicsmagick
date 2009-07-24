@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileDraw_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill none -stroke gold \
-         -draw 'circle 60,90 60,120' -label Draw Draw_out.miff
+         -draw 'circle 60,90 60,120' -label Draw ${OUTFILE}

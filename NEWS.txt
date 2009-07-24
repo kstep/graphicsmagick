@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on January 26, 2009
+This file was last updated on July 20, 2009
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,39 +14,8 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.5 (January 26, 2009)
-=========================
-
-Security Fixes:
-
-  * BMP and DIB formats were throwing an assertion for negative height
-    values.  This caused the process to crash.
-
-Bug fixes:
-
-  * Don't install Magick++ headers if C++ is disabled.
-
-  * Linux RPM SPEC file needs to always install the loadable module
-    .la files or else the modules won't load.
-
-  * Windows runtime DLLs were for the wrong compiler version,
-    resulting in failure to execute if the correct runtime DLLs are
-    not available.
-
-New Features:
-
-  * None
-
-Feature improvements:
-
-  * FITS: Parsing is more robust.
-
-Performance Improvements:
-
-  * None
-
-1.3.4 (January 13, 2009)
-=========================
+1.4 (not yet released)
+======================
 
 Security Fixes:
 
@@ -57,6 +26,86 @@ Bug fixes:
   * Now runs under Windows Vista (as a 32-bit application).
 
   * Fix for colorspace transform math overflow in Q32 build.
+
+  * RPM build, Fixes to successfully build binary RPMs for Red Hat
+    Linux 4.
+
+  * MSL/conjure, Fix bug with attributes becoming appended to
+    themselves.  Fix memory leaks.
+
+  * 'identify' was throwing an assertion when used on colormapped
+    files (this bug was introduced by 1.3.2).
+
+  * With the -segment option, eliminate trashing the image colors when
+    used on huge images.
+
+  * 'identify -format "%c"' now reports the entire comment regardless
+    of size.
+
+  * Argument to -convolve is no longer arbitrarily truncated so huge
+    convolution kernels may now be specified from the command line.
+
+  * -roll was failing for colormapped images.
+
+  * Composition was failing when the change image overlaps off the
+    left side of the canvas.
+
+  * VID: Memory leak fix.
+
+  * PREVIEW: Solarize parameter was wrong.
+
+  * Delegates previously using 'spawn' needed an ampersand so that
+    starting the child process does not hang the GUI.
+
+  * BMP: Fix assertion thrown for BMP files with negative image height
+    values.
+
+  * EPT, PDF, PS: PDF bounding box is sometimes incorrect or not
+    globally applicable so don't specify bounding box when reading PDF
+    files.
+
+  * DIB: Fix assertion thrown for DIB files with negative image height
+    values.
+
+  * OpenMP: Fix (benign) multi-thread cross-contentions (detected by
+    valgrind's Helgrind).
+
+  * TIFF: Fix problem with reading one bit per sample RGB images.
+
+  * TIFF: Writer was using rows-per-strip of 8 when writing
+    JPEG-compressed TIFF.  This does not work for vertical
+    subsampling, and some TIFF readers insist on 16.  The
+    rows-per-strip is now required to be a multiple of 16.
+
+  * TIFF: In some cases, the TIFF reader and writer were accessing
+    planar TIFF in row-order rather than plane-order, which resulted
+    in sever buffering problems in libtiff, and failure when
+    compression was used.
+
+  * -write now works usefully as documented.
+
+  * Magick++: Don't install Magick++ headers if Magick++ is disabled.
+
+  * GraphicsMagick.spec: Install module .la files so that modules can
+    be loaded.
+
+  * Temporary file name generator was not random enough, resulting in
+    some file name collisions for GraphicsMagick processes started at
+    the same time.
+
+  * PerlMagick: Fixed Ping on a BLOB.
+
+  * GetImageDepth was leaking memory.
+
+  * Convert/mogrify -mask option was leaking memory.
+
+  * Mogrify -output-directory option was leaking memory.
+
+  * DPX: Fixed memory leak encountered when subsampling to 4:2:2.
+
+  * DPX: Values read received insuficient scaling, which round-tripped
+    correctly, but rounded-down excessively if any image processing
+    was applied.
 
 New Features:
 
@@ -71,104 +120,139 @@ New Features:
 
   * Added "Log", "Max", "Min", and "Pow" options to -operator.
 
+  * Added HRS reader for slow scan TV (contributed by Fojtik Jaroslav).
+
+  * Pthreads (POSIX threads) API may now be used under the WIN32 API.
+
+  * New access confirmation facility (MagickConfirmAccess) to allow
+    the API user to monitor and/or block access to files and URLs.
+    This allows the API user to implement a security policy based on
+    actual accesses.
+
+  * New color matrix function (ColorMatrixImage) to apply a color
+    matrix similar to Adobe Flash Flash.filters.colorMatrixFilter(),
+    and Windows GDI+ ColorMatrix class, (order up to 5x5) to the image
+    pixels.  This is accessible via the -recolor command option.
+
+  * Added an IDENTITY coder to return a Hald identity CLUT image of
+    specified order (e.g. "identity:8").
+
+  * Added a Hald CLUT capability as described at
+    http://www.quelsolaar.com/technology/clut.html.  This allows a
+    color transformation to be easily created and replicated on any
+    number of images.  The algorithm is accessed by the -hald-clut
+    option of 'convert' and 'mogrify'.  Original algorithm by Eskil
+    Steenberg and adapted for GraphicsMagick by Clément Follet, with
+    additional work by Bob Friesenhahn.
+
+  * Added support for the ASC CDL transform.  Available as -asc-cdl
+    via the 'convert' and 'mogrify' subcommands.  Original
+    implementation by Clément Follet but considerably re-worked by Bob
+    Friesenhahn.  Implementation passes the +/- 1 count accuracy
+    requirement required by the ASC CDL SOP tests.
+
+  * Added support for reading CALS Type 1 format (contributed by John
+    Sergeant).  CALS is a standard raster format used by the US
+    Department of Defense for storing blueprint images.
+
+  * Added a random number generation system based on George
+    Marsaglia's multiply-with-carry generator.  Somewhat slower than
+    rand() but produces better random numbers with a period >2^60.
+    This is a much better random number generator than the C library
+    rand() and the algorithm is integrated in a way which maximizes
+    multi-thread performance.
+
+  * The 'compare' command now supports a -maximum-error option to
+    specify the maximum image error so that it may be used to support
+    boolean logic in automated test scripts.
+
+  * For OpenMP-builds, the '-list resource' output now indicates the
+    number of threads which will be used.
+
 Feature improvements:
 
+  * Image resize now avoids adding "halos" around objects when
+    resizing an image which contains transparency (patch contributed by
+    Pavel Merdin).
+
   * Debug logging now properly prints 64-bit offset values.
+
+  * New --disable-openmp-slow configure option for disabling use of
+    OpenMP for algorithms which may run slower on systems with weak
+    memory/cache implementations.
+
+  * DICOM: The DICOM reader is completely re-written and is much more
+    functional now.  A few features (e.g. RLE compression) are still
+    missing.  This work is contributed by John Sergeant.
+
+  * EXIF: Unprintable characters in EXIF attribute strings are now
+    returned using three-digit octal notation.  Unknown tags are
+    identified via their four-character hex value.
+
+  * FITS: Parser is more robust (work by Fojtik Jaroslav).
+
+  * JPEG, Allow user to specify DCT encoding method via
+    jpeg:dct-method define.  Also allow control over whether huffman
+    encoding is used via jpeg:optimize-coding define.
+
+  * PCL: PCL writer is rewritten to fix many bugs, add support for
+    compression, add support for 8 bit PseudoClass images, and
+    dramatically improve usability (work contributed by John Sergeant).
+
+  * TIFF: Allow the user to force the returned image to be TrueColor
+    type for min-is-white and min-is-black TIFF files.
+
+  * TIFF: User can now specify the predictor using syntax like
+    '-define tiff:predictor=2'.
+
+  * TIFF: User can now specify the rows-per-strip value when using
+    JPEG compression.
+
+  * TXT: The TXT reader is now capable of reading image files written
+    by the TXT writer, as well continuing to render ASCII text into an
+    image (work contributed by Fojtik Jaroslav).
+
+  * +profile now supports an exclusion syntax.  For example ``+profile
+    '!icm,*'`` removes all of the profiles except for the ICM profile.
+    The new syntax also allows multiple profiles to be listed at once.
+
+  * Utilities @file.txt syntax for including a list of files to use as
+    an argument now really works as expected.  This may be used to
+    inject any other text into the command line as well.  As a result,
+    the 'mogrify' utility may be invoked on thousands of files at once
+    while obtaining the list of files to process from a text file.
+
+  * The 'mogrify' utility now caches argument images so that they are
+    loaded only once when mogrify is used to process multiple image
+    files.
 
 Performance Improvements:
 
   * Improve resource estimation for Microsoft Windows systems.
 
-1.3.3 (December 9, 2008)
-========================
+  * OpenMP (parallel processing) improvements for these functions:
 
-Security Fixes:
+    - Rotate by 90 and 270 degrees (-rotate)
 
-  * None.
+    - Segmentation (-segment)
 
-Bug fixes:
-
-  * 'identify' was throwing an assertion when used on colormapped
-    files (this bug was introduced by 1.3.2).
-
-  * With the -segment option, eliminate trashing the image colors when
-    used on huge images.
-
-  * 'identify -format "%c"' now reports the entire comment regardless
-    of size.
-
-  * Argument to -convolve is no longer arbitrarily truncated so huge
-    convolution kernels may now be specified from the command line.
-
-Performance Improvements:
-
-  * Image segmentation (-segment) is now accelerated using OpenMP and
-    uses several other tactics to improve execution performance.
+  * AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
+    process the opacity channel unless the image has one.
 
   * 'identify "*"' now successfully works in a 32-bit application when
     used in a directory containing a million files.
 
   * 'identify' now executes quickly when used on TIFF files.
 
-1.3.2 (November 29, 2008)
-=========================
+  * -median and -noise now see reliable linear speedup as threads are
+    added.
 
-Security Fixes:
+Behavior Changes:
 
-  * None.
+  * PerlMagick is configured but no longer built by default.
 
-Bug fixes:
-
-  * -roll was failing for colormapped images.
-
-  * VID: Memory leak fix.
-
-  * PREVIEW: Solarize parameter was wrong.
-
-  * Delegates previously using 'spawn' needed an ampersand so that
-    starting the child process does not hang the GUI.
-
-Feature improvements:
-
-  * +profile now supports an exclusion syntax.  For example ``+profile
-    '!icm,*'`` removes all of the profiles except for the ICM profile.
-    The new syntax also allows multiple profiles to be listed at once.
-
-Performance Improvements:
-
-  * AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
-    process the opacity channel unless the image has one.
-
-1.3.1 (November 17, 2008)
-=========================
-
-Security Fixes:
-
-  * None.
-
-Bug fixes:
-
-  * RPM build, Fixes to successfully build binary RPMs for Red Hat
-    Linux 4.
-
-  * MSL/conjure, Fix bug with attributes becoming appended to
-    themselves.  Fix memory leaks.
-
-Feature improvements:
-
-  * New --disable-openmp-slow configure option for disabling use of
-    OpenMP for algorithms which may run slower on operating systems
-    with crummy thread libraries.
-
-  * JPEG, Allow user to specify DCT encoding method via
-    jpeg:dct-method define.  Also allow control over whether huffman
-    encoding is used via jpeg:optimize-coding define.
-
-Performance Improvements:
-
-  * OpenMP (parallel processing) improvements for these functions:
-
-    - Rotate by 90 and 270 degrees (-rotate)
+  * Use '-interlace Line' to produce an interlaced GIF, PNG, or
+    progressive JPEG.
 
 1.3 (November 9, 2008)
 ======================

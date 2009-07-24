@@ -1,6 +1,593 @@
+2009-07-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/random.c (DestroyMagickRandomGenerator): Cleanup thread
+	specific random kernel data.
+
+	* magick/tsd.c (MagickTsdKeyCreate): Fix glitch when built without
+	any threads support.
+
+2009-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/benchmarks.rst: Update GraphicsMagick vs ImageMagick image
+	processing benchmark results.
+
+2009-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/OpenMP.rst: Update performance measurements for readily
+	available systems.
+
+	* NEWS.txt: Updated to reflect latest changes.
+
 2009-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Updated libpng to 1.2.38.
+
+2009-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageInfo): Default interlace for ImageInfo
+	is now UndefinedInterlace so that it is possible to preserve the
+	original interlace setting for the image file.  Code depending on
+	the previous default setting of NoInterlace is adjusted to suit.
+	This is a potentially risky change given the brittle nature of
+	some of the legacy code.
+
+	* coders/tiff.c (ReadTIFFImage): Stripped reader needs to read
+	planar TIFF plane-wise in order to work with libtiff's internal
+	buffering.
+	(ReadTIFFImage): Tiled reader needs to read planar TIFF plane-wise
+	in order to work with libtiff's internal buffering.
+	(WriteTIFFImage): Tiled writer needs to output planar TIFF
+	plane-wise in order to work with libtiff's internal buffering.
+
+2009-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MontageUsage): Reconcile montage help output
+	with actual montage options.
+
+2009-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Allow the user to be able to
+	specify rows_per_strip when using JPEG compression.  The
+	rows_per_strip value rounded up to the nearest multiple of 16.
+
+2009-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add the ability for the user to
+	manually specify the predictor using syntax like '-define
+	tiff:predictor=2'.
+
+2009-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/quantize.c (QuantizeImages): Avoid crash when using
+	-monitor +map on an image list.
+
+	* magick/command.c (BenchmarkImageCommand): Send benchmark report
+	to stderr so that it does not interfer with pipes.
+
+	* magick/cdl.c (CdlQuantum): Add range limiting of value before
+	applying power function.
+
+	* coders/dpx.c (ReadDPXImage, WriteDPXImage): Using floating point
+	calculations when building sample value lookup tables in order to
+	decrease error.  In particular input values were being scaled too
+	low, resulting in improperly rounding down during processing of
+	the image.
+
+2009-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Incorporated updates from John
+	Sergeant to remove the font and thumbnail objects from PDF output.
+
+2009-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cdl.c (CdlImage): New function to apply an ASC CDL
+	transform to the image.  Original implementation by Clément Follet
+	but considerably re-worked by Bob Friesenhahn.  Available as
+	-asc-cdl via the 'convert' and 'mogrify' subcommands.
+
+2009-07-04 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* www/formats.rst: MAT module can read compressed files.
+	Remove warning about unsupported compression.
+
+2009-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c: Eliminate compiler warnings.
+
+2009-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c: Significant re-write of the DICOM reader.  Work
+	contributed by John Sergeant.
+
+2009-07-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (OpenBlob): Subsequent research shows that Direct
+	I/O will not be useful to ordinary file I/O due to specific
+	requirements for buffer alignments and I/O sizes.  Support for
+	requesting it is removed.
+
+2009-07-01  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* www/formats.rst: ART module has writer for more than year.
+	So mark this here.
+
+2009-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac, magick/blob.c: Add experimental Solaris direct I/O
+	support which is enabled by setting the environment variable
+	MAGICK_DIRECTIO to TRUE.  Direct I/O bypasses the filesystem
+	cache.  Only works for NFS and UFS, and not for ZFS.
+
+2009-06-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* rungm.sh.in: Fix environment variable issues noticed while
+	running the test suite under MinGW.
+
+	* Makefile.am (TESTS_ENVIRONMENT): Fix environment variable issues
+	noticed while running the test suite under MinGW.
+
+	* magick/hclut.c (HaldClutImage): Don't convert Cineon Log to RGB.
+
+2009-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Cache mogrify argument
+	images so that they are only loaded once when mogrify is used to
+	process multiple image files.
+
+	* coders/dpx.c (WriteDPXImage): Fix leak of chroma image when
+	subsampling to 4:2:2.
+
+2009-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (ExpandFilenames): Expand @filename to a list
+	of arguments.
+
+2009-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Fix memory leak of
+	output_directory string buffer, if it was used.
+
+	* magick/utility.c (ExpandFilenames): Input wildcard file
+	specifications with a subdirectory component such as
+	"subdir/*.dpx" were not working.
+
+2009-06-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick): Invoke InitializeMagickRegistry().
+
+	* magick/registry.c (RegistryInfo): There is no reason to expose
+	the RegistryInfo structure in the public interface so it is moved
+	to registry.c.
+	(InitializeMagickRegistry): Add a function for initializing the
+	magick registry.
+
+2009-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CompareImageCommand): Report full error rather
+	than rounded error in error reports since sometimes the value
+	reported was rounded down to zero.
+
+	* utilities/tests/hald-clut-transform.sh: New test to verify that
+	Hald CLUT interpolation is working perfectly.
+
+	* utilities/tests/hald-clut-identity.sh: Renamed from
+	hald-clut.sh.
+
+2009-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (RegisterJPEGImage): Fix typo which caused IJG
+	library version to be shown for "JPG" format but not for "JPEG".
+	Also use a more descriptive name for JPEG library.
+
+	* magick/image.c (DescribeImage): Filter out spurious EXIF
+	attributes which already exist because we previously accessed
+	them.  We do a full EXIF dump later.
+
+2009-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/FAQ.rst: Add a FAQ about how to process many files at once.
+
+2009-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Reduce usage of deprecated Autoconf macros.
+
+	* coders/jpeg.c (ReadJPEGImage): Set image orientation from EXIF
+	Orientation tag if it is present.
+
+	* www/formats.rst: Add TopoL format as per Jaroslav Fojtik.
+
+2009-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: User provided LDFLAGS was being overwritten under
+	Solaris.
+	* Many files: Additional reduction of shadowing warnings.
+
+2009-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Fix leak of the entire mask
+	image supplied via -mask.
+
+	* utilities/tests/mask.sh: Add a test for applying a mask image
+	with -mask.
+
+2009-06-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (GenerateEXIFAttribute): Identify unknown
+	tags via their four-character hex value.
+
+	* magick/colorspace.c (CMYKToRGBTransform): Use symbolic notation
+	to access pixel quantum values.
+
+	* utilities/tests/identify.sh: Added a test for 'identify
+	-verbose' on a well-populated JPEG file.
+
+	* PerlMagick/t/{jpeg/write.t, jng/read.t, jng/write.t}: Relax
+	allowed error for JPEG-related tests.
+
+	* magick/attribute.c (GenerateEXIFAttribute): Attribute allocation
+	size was too small causing overrun of memory buffer.  Problem was
+	added on 2009-06-08.
+
+	* magick/image.c (AllocateDepthMap): Allocation size was one
+	element too small.
+	(GetImageDepth): Forgot to free depth map.  Memory leak of 64K
+	bytes per iteration.
+
+2009-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/{mat.c, miff.c, pdf.c, ps3.c}: Have Zlib use our memory
+	allocators.
+
+	* magick/memory.c (MagickMallocCleared): New memory allocation
+	interface which is similar to MagickMalloc() except that returned
+	memory has been cleared first.
+
+	* magick/hclut.c (HaldClutImagePixels): Fix wrong accesses
+	detected by valgrind.  Also improve execution performance.
+
+	* coders/xwd.c (WriteXWDImage): Fixed valgrind memcheck complaint
+	about access to uninitialized data.
+
+2009-06-09  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Handle alpha channel for ImageMagick's alternative .txt
+
+2009-06-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (WriteDPXImage): Fixed valgrind memcheck complaint
+	about access to uninitialized data.
+
+	* magick/attribute.c (GenerateEXIFAttribute): For EXIF STRING,
+	output unprintable characters using three-digit octal notation.
+
+	* coders/dpx.c (WriteDPXImage): Assure that offset count is
+	correct according to reported bytes written.
+
+	* utilities/tests/hald-clut.sh: Add a simple identity test for the
+	Hald CLUT support.
+
+2009-06-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Handle alpha channel for ImageMagick's .txt
+
+2009-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/hclut.c (HaldClutImage): Add a Hald CLUT capability as
+	described at http://www.quelsolaar.com/technology/clut.html.  This
+	allows a color transformation to be easily created and replicated
+	on any number of images.  The algorithm is accessed by the
+	-hald-clut option of 'convert' and 'mogrify'.  The original
+	algorithm is by Eskil Steenberg and was adapted for GraphicsMagick
+	by Clément Follet with some support from Cédric Lejeune of
+	workflowers.net.
+
+2009-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetMagickGeometry): Support '^' modifier to
+	geometry specification which indicates that specified size is a
+	minimum bounding box rather than a maximum bounding box while
+	preserving the image aspect ratio.
+
+2009-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (ListMagickResourceInfo): If supporting
+	OpenMP, then include a "Threads" limit in the output of '-list
+	resource'.
+
+	* coders/pnm.c (ReadPNMImage): Fix multi-thread issue detected by
+	valgrind's helgrind tool.  Diminish compilation warnings.
+
+	* coders/dpx.c (ReadDPXImage): Diminish compilation warnings.
+
+	* magick/random.c (AcquireMagickRandomKernel): Fix potential
+	multi-thread issue detected by valgrind's helgrind tool.
+
+	* magick/magick.c (InitializeMagick): Semaphore subsystem needs to be
+	initialized before anything which uses it.
+
+	* magick/semaphore.c (InitializeSemaphore): Since we are using
+	PTHREAD_MUTEX_INITIALIZER to initialize primary POSIX mutex in the
+	semaphore subsystem, we should not explicitly initialize the
+	semaphore a second time.
+
+	* magick/segment.c (Classify): Fix multi-thread issue detected by
+	valgrind's helgrind tool.
+
+	* magick/render.c (DrawAffineImage): Use InterpolateViewColor() to
+	evalute a bi-linear interpolated point rather than obtaining a
+	pixel value from a close pixel.  This provides better results.
+
+2009-06-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Attempt to handle alpha channel.
+
+2009-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (InterpolateViewColor, InterpolateColor):
+	Moved from gem.c.  Gem functions should not be accessing the pixel
+	cache.
+
+2009-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CompareImageCommand): Add a -maximum-error
+	option to 'compare' so that it can easily be used in boolean logic
+	when comparing images.
+
+2009-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am (TESTS_XFAIL_TESTS): If Ghostscript is not
+	available then XFAIL the tests which depend on it.
+
+	* magick/pixel_cache.c (GetCacheInfo): Assure that allocated
+	stuctures do not occupy the same cache lines.
+
+2009-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Allow cache line size
+	to be set in one place in case we want to configure for it later.
+
+	* magick/effect.c (AllocateMedianList): Assure that allocated
+	stuctures do not occupy the same cache lines.
+
+	* magick/random.c (AcquireMagickRandomKernel): Assure that
+	allocated random kernels do not occupy the same cache lines.
+
+	* magick/gem.c (GenerateDifferentialNoise): User is required to
+	supply random kernel.
+
+	* doc/options.imdoc: Document -format "%p".  Problem was reported
+	by Stijn Sanders.
+
+2009-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am (coders_tiff_la_LIBADD): Libtiff may now also
+	depend on libjbig and the math library.
+
+	* doc/gmdoc2html: Fix link to ball.png.  Problem was reported by
+	Wes Fox.
+
+	* VisualMagick/installer/inc/files-documentation.isx: Include Wand
+	API documentation.
+
+	* VisualMagick/installer/inc/icons-associate.isx: Fix Windows
+	Start menu link to web pages.
+
+	* configure.ac: --with-perl is changed to --without-perl since
+	building PerlMagick is no longer the default.  Building PerlMagick
+	automatically has caused too many problems.
+
+	* PerlMagick/Makefile.am: GraphicsMagick no longer automatically
+	installs PerlMagick.  Use the procedure described by
+	PerlMagick/README.txt to build and install PerlMagick.
+
+2009-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Debian stores Ghostscript fonts under
+	/usr/share/fonts/type1/gsfonts so check there for fonts.  Issue
+	reported by Ralf Wildenhues.
+
+2009-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Fix Ping of blob.
+
+	* PerlMagick/t/ping.t: Added tests for pinging files and blobs.
+
+	* www/perl.rst: Ping blob syntax is like $image->Ping(blob=>@blob).
+
+	* PerlMagick/Makefile.PL.in: Increase the probability of
+	PerlMagick build success by using the user-specified C compiler as
+	the linker if the C compiler was already used as the linker.  This
+	helps if the C compiler used to build GraphicsMagick is a more
+	recent vintage than the one used to build Perl.
+
+	* PerlMagick/t/wmf/read.t: Test needs to be more lenient for
+	Linux.
+
+	* Makefile.am (TESTS_ENVIRONMENT): Pass a complete text
+	environment so that we don't need to execute rungm.sh in order to
+	run the test suite.
+
+2009-05-25  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* version.sh: Define PACKAGE_STRING.
+
+2009-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (ComposeTemporaryFileName): Use new random
+	number generator.
+
+	* magick/random.c: Implement a random number generation system
+	based on George Marsaglia's multiply-with-carry generator.
+	Somewhat slower than rand() but produces better random numbers
+	with a period >2^60.  Suggested by Mark Mitchell.
+
+2009-05-24  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* /coders/txt.c Small optimization:
+        Before: 2000 iter 34.08s user 34.24s total 58.420 iter/s
+        After: 2000 iter 21.55s user 21.76s total 91.891 iter/s
+
+2009-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (XFAIL_TESTS): Handle the case where FreeType is not
+	available by marking tests dependent on FreeType as XFAIL.
+	(TESTS): Reorder TESTS so that there will be no trailing spaces
+	since this confuses certain older versions of GNU make.
+
+2009-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (ComposeTemporaryFileName): Use simpler code
+	(suggested by Mark Mitchell) to compute the substitution index.
+	(AcquireTemporaryFileDescriptor): Try harder to generate a
+	successful temporary file and fall through to alternative
+	implementations if the first does not succeed.
+
+	* magick/magick.c (InitializeMagick): Use MagickRandNewSeed() to
+	seed the default random number generator.
+
+	* magick/utility.c (MagickRandNewSeed): Include PID in random
+	number seed generation.
+
+2009-05-22  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Fixed char vs int parameter problem.
+        Better detection of too dark 16bit or 32bit images.
+
+2009-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Enable parallel-tests and
+	color-tests options.  Parallel test execution does not pass tests
+	yet.
+
+	* PerlMagick/PerlMagickCheck.sh.in: Run PerlMagick tests via a
+	normal check script rather than a check hook.
+
+	* coders/identity.c (ReadIdentityImage): Fix compilation with Sun
+	compiler.
+
+2009-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c: Allow the user to specify the basename for
+	temporary files.
+
+	* tests/Makefile.am: Add a set of TXT read/write tests.  Pass the
+	file name specification to use for the rwfile-based tests.
+
+2009-05-21  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Fixed endian set to native endian.
+
+2009-05-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Faster read ImageMagick files.
+	Removed BImgBuff=NULL;
+
+2009-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (WriteTXTImage): Ensure that image depth is 8, 16,
+	or 32.
+
+	* www/formats.rst: Add CALS to formats list.
+
+	* coders/cals.c (RegisterCALSImage): Consolidate duplicate text
+	strings.
+
+2009-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cals.c: Add support for reading CALS type 1 format.
+	Contributed by John Sergeant.
+
+	* coders/identity.c: New coder to return a Hald identity CLUT
+	image.
+
+2009-05-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c Ability to read back Q32 txt files.
+
+2009-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Support Linux style silent build rules.
+
+2009-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Updated to Automake 1.11.
+
+2009-05-17  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c First attempt to read back txt file.
+	It is amazingly ineffective, but it seems to work.
+
+2009-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (HorizontalFilter, VerticalFilter): When
+	resizing a non-opaque image, attenuate the influence of
+	surrounding colors based on their degree of transparency in order
+	to avoid "halos" around objects caused by colors which are
+	transparent and therefore not part of the visible image.  Patch
+	contributed by Pavel Merdin via SourceForge Tracker #2792322.
+	(VerticalFilter, VerticalFilter): Additional clean-up and
+	optimizations.
+
+2009-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Added a -recolor command option
+	to provide access to ColorMatrixImage().
+
+	* magick/fx.c (ColorMatrixImage): New function to apply a color
+	matrix similar to Adobe Flash Flash.filters.colorMatrixFilter(),
+	and Windows GDI+ ColorMatrix class, (order up to 5x5) to the image
+	pixels.
+
+2009-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/perl.rst: Add missing PerlMagick debug event types.
+
+	* coders/pcl.c: Major improvements from John Sergeant.  These
+	include: 1) Fixed 2 bit output where Max=BLACK - this always
+	produced negative images even when -negate was passed as a
+	parameter. The code now uses a two element palette to handle this
+	situation.  2) Added support for 8 bit pseudoclass images.  3)
+	Changed the coder to allow adjoin, placing each sub-image on a new
+	page.  4) Added support for compression. Any compression other
+	than "None" will cause the coder to to try to calculate and pick
+	the best out of the PCL set of RLE, Tiff RLE or delta compression
+	on a per row basis, as well as handling repeated rows and zero
+	rows intelligently.
+
+2009-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (MAGICKPROGRAMS): Add a 'compare'
+	ImageMagick compatibility link.
+
+	* INSTALL-unix.txt: Apply patch regarding GnuWin32 from John Wye,
+	SourceForge #2779009.
+
+2009-05-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Add the LDFLAGS option -Wl,-zlazyload when using
+	the Solaris linker.
+
+2009-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/url.c (ReadURLImage): Fix typos.
+
+2009-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (SystemCommand): Added access confirmation
+	checks for external commands.
+
+	* magick/unix_port.c (MagickSpawnVP): Added access confirmation
+	checks for external commands.
+
+	* coders/url.c (ReadURLImage): Added access confirmation checks
+	for URLs.
+
+	* magick/blob.c: Added access confirmation checks for files.
+
+	* magick/confirm_access.c (MagickConfirmAccess): Added an access
+	confirmation facility to allow the API user to monitor and/or
+	block access to files and URLs.  This allows the API user to
+	implement a security policy based on actual accesses.
 
 2009-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -8,11 +595,184 @@
 
 	* lcms: Updated lcms to 1.18a.
 
-2009-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2009-05-01  Glenn Randers-Pehrson <glennrp@simple....>
 
-	* version.sh: GraphicsMagick 1.3.5 released.
+        * coders/png.c (WriteOnePNGImage and WriteOneJNGImage):
+        Changed internal attribute png_bit_depth to png:bit-depth-written
+        to avoid confusion with planned new public png:bit-depth attribute.
 
-	* coders/fits.c: More robust fits parsing (by Fojtik Jaroslav).
+2009-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImages): Deal slightly better with the
+	case when MogrifyImage() expands one image into several.  Still
+	don't know of a sane way to deal with -crop WIDTHxHEIGHT.
+
+	* magick/transform.c (TransformImage): Image which is updated may
+	be a list so account for that.
+
+	* configure.ac: Add a test for the 'restrict' keyword so that
+	eventually we can use it.
+
+	* coders/jpeg.c (ReadJPEGImage): Tidy JPEG reader by moving JPEG
+	properties analysis code into subroutines.
+
+2009-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/display.imdoc: Fix documentation for crop and chop keyboard
+	accelerators.  Fixes SourceForge bug #2593388 "error in the
+	documentation/Keyboard accelarators".
+
+2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
+
+        * coders/png.c: Cosmetic-only, change "True" to "MagickTrue" or
+          "MagickPass" and "False" to "MagickFalse" or MagickFail".
+
+2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
+
+        * coders/png.c: Check error return from CompressColormapTransFirst()
+
+2009-04-20  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c: Refrain from modifying image struct
+          members (matte, colors, depth) while writing a PNG.
+
+2009-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document the direction of rotation.
+
+2009-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (LogMagickEventList): Use MagickPackageName from
+	version.h rather than hard-coding "GraphicsMagick".
+
+2009-04-18  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/jpeg.c: Fixed a warning about "shadowed" variables.
+
+2009-04-17  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c: Fixed some warnings about "shadowed" variables.
+
+2009-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Add tests for some reentrant versions of functions
+	where we are still using the non-rentrant versions.
+
+	* magick/composite.c (CompositeImage): Fix problem with
+	compositing images where the change image overlaps off the left
+	side of the canvas.  Should fix SourceForge issue #2766200 "memory
+	allocation error when compositing small images".
+
+2009-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c: Re-arrange ifdefs so that it is possible to
+	use pthreads under the WIN32 API.
+
+2009-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/bit_stream.c: Bitstream functions were often not inlining
+	and inline functions which don't inline are not much use.
+	Bitstream functions are now normal library functions.
+
+2009-03-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/bin/delegates.mgk: Remove bounding box option (-g) from
+	Postscript delegate specifications.
+
+	* config/delegates.mgk.in: Remove bounding box option (-g) from
+	Postscript delegate specifications.
+
+	* coders/{ept.c, pdf.c, ps.c} : PDF bounding box is sometimes
+	incorrect or not globally applicable so don't specify bounding box
+	when reading PDF files.  Postscript files do need the bounding box
+	so make sure that it is still supplied.  Resolves SF tracker issue
+	2487651 "convert from pdf chops off rhs".
+
+2009-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/Magick++/Image.rst: Translate Image.html to reStructuredText
+	format for easier maintenance.
+
+2009-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/rgb.c: Compute the quantum type rather than using a
+	recurring conditional statement.  It turns out that the -endian
+	option is working as it should.
+
+2009-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/{gray.c, rgb.c, cymk.c}: Work toward supporting the
+	-endian option.  Not working properly yet.
+
+	* magick/enum_strings.c (EndianTypeToString): New function.
+	(InterlaceTypeToString): New function.
+
+2009-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c: Stripped out unused code.
+
+	* www/wand: Added formatted Wand API documentation.
+
+	* scripts/format_c_api_doc.py: Now supports --include-rst option.
+
+2009-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageBoundingBox): If we fail to find a
+	smaller bounding box, then the returned bounding box is the entire
+	image.
+
+2009-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_config.h.in: Provide configuration
+	access to the DisableSlowOpenMP define.
+
+	* PerlMagick/t/read.t: Add a test for HRZ Slow scan TV.
+
+	* magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
+	clear monochrome and grayscale flags when pixels are accessed
+	read/write rather than at sync.
+
+	* coders/Makefile.am (MAGICK_CODER_SRCS): Add coders/hrz.c to
+	build.
+
+2009-01-27  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/hrz.c: New HRZ reader for slow scan TV.
+
+2009-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (ResizeImage): Make error handling more robust.
+
+	* magick/pixel_cache.c (SetNexus): Return a run-time error to
+	invoking code rather than exiting the program if the pixel staging
+	buffer fails to be allocated.
+
+2009-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Allow the user to force the
+	returned image to be TrueColor type for min-is-white and
+	min-is-black TIFF files.  Previous to this, bilevel TIFF files
+	were always returned as PseudoClass.
+
+2009-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c, coders/pnm.c: Fix several race conditions
+	reported by Julian Seward.
+	(OpenCache): Restore conservative pre-allocation of pixel indexes
+	since a glitch was encountered that needs to be resolved.
+
+	* magick/{channel.c,compare.c,constitute.c,decorate.c,effect.c,fx.c,
+	image.c,operator.c,pixel_iterator.c,render.c,resize.c,segment.c,
+	shear.c,transform.c}: Use explicit OpenMP critical sections to
+	avoid possible cross-contention.
+
+	* coders/{dpx.c, pnm.c} Use explicit OpenMP critical sections to
+	avoid possible cross-contention.
+
+2009-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (OpenCache): Remove conservative
+	pre-allocation of pixel indexes.
 
 2009-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -40,36 +800,88 @@
 
 	* GraphicsMagick.spec.in: --enable-lzw option is no longer used.
 
-2009-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2009-01-17  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* version.sh: GraphicsMagick 1.3.4 released.
+	* coders/fits.c: More robust fits parsing.
 
 2009-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS.txt: Updated news.
+
+2009-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/colorspace.c (XYZTransformPackets): Fix arithmetic
 	overflow problem noticed for Q32 build when using GCC on
 	big-endian systems.
+
+	* magick/constitute.c: Update Richard Nolde's float 16 and 24
+	functions.
+
+	* magick/command.c (VersionCommand): Print some build information
+	for MSVC builds.
+
+2009-01-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Ability to skip unsupported multidimensional object.
+
+2009-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (GetBlobSize): It seems that under Windows, the
+	zip stream is not usable as a file handle.  Switch back to using
+	stat instead, but use _stati64 if available.
+
+2009-01-04  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Fixed bug in scene count in extension block.
+	* coders/fits.c: Supported logging.
+
+2009-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* configure.ac: Produce sprintf scaling strings for
 	platform-specific types.
+
 	* magick/magick_types.h.in: Include sprintf scaling strings for
 	platform-specific types.
+
 	* magick/constitute.c (WriteImage): If output stream is not
 	seekable and coder needs to use seek, then divert output to
 	temporary file, and then send file to stream.
+
 	* magick/blob.c (GetBlobSize): Simplify implementation.
 	(OpenBlob): Don't attempt to test header magic on file we are
 	writing.  Silly benign bug in obtuse code.
+
 	* coders/tiff.c (ReadTIFFImage,WriteTIFFImage): Strip out use of
 	temporary file.  Use TIFFClientOpen() for writing.
-	* coders/fits.c: Merged in updates from CVS head. Ability to read
-	extension blocks. Fixed MaxTextExtent limitation of blocks.  Fixed
-	bug in scene count in extension block.  Supported logging.
+
+2008-12-28  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Ability to read extension blocks.
+	* coders/fits.c: Fixed MaxTextExtent limitation of blocks.
+
+2008-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/OpenMP.rst: Add results for Window Vista 64-bit / AMD Phenom
+	X4 9550.
+	* VisualMagick/installer/inc/body.isx: Revert yesterday's change
+	regarding the placement of config files.  Place the config files
+	in a 'config' subdirectory just as before.
+
+2008-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* VisualMagick/installer/inc/body.isx: They say that when in Rome
 	you should do as the Roman's do.  Based on this philosophy, all of
 	the coder and filter DLLs are now installed to the same directory
 	as the executables and DLLs which depend on them.  This eases
 	operation under Windows Vista.
-	* magick/blob.c: Support large file access under Windows.
+
+2008-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c: First pass at supporting large file access under
+	Windows.
+
+2008-12-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* magick/resource.c (InitializeMagickResources): Improve resource
 	estimation for Microsoft Windows systems with large memory.
 	* magick/segment.c: Added some code to dump histograms with
@@ -85,17 +897,9 @@
 
 2008-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/tiff.c (ReadTIFFImage, WriteTIFFImage) Support reading
-	and writing 64-bit integer TIFF.
-	* magick/constitute.c (ImportViewPixelArea): Add support for
-	importing 64-bit integer values.
-	(ImportViewPixelArea): Add support for exporting 64-bit integer
-	values.
 	* magick/operator.h (enum QuantumOperator): Added LogQuantumOp,
 	MaxQuantumOp, MinQuantumOp, and PowQuantumOp enumerations as well
 	as "Log", "Max", "Min", and "Pow" options to -operator.
-	* coders/fits.c: Incorporated Fojtik Jaroslav's updates to support
-	64-bit integer FITS.
 
 2008-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -104,15 +908,19 @@
 	at all.  Re-implement -write and eliminate +write from the
 	documentation since +write is not needed.
 
+2008-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage, WriteTIFFImage) Support reading
+	and writing 64-bit integer TIFF.
+	* magick/constitute.c (ImportViewPixelArea): Add support for
+	importing 64-bit integer values.
+	(ImportViewPixelArea): Add support for exporting 64-bit integer
+	values.
+
 2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Fix bug with reading one bit per
 	sample RGB images.
-
-2008-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* version.sh: GraphicsMagick 1.3.3 released.
-	* NEWS.txt: Updated news for release.
 
 2008-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -121,11 +929,25 @@
 	image files.  This bug was added in the 1.3.2 release.
 	* coders/tiff.c (ReadTIFFImage): Fix bug with 'ping' mode.
 
+2008-12-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Proper signed to unsigned conversion for 64 bit LSB images.
+
+2008-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/Makefile.am: When X11 is disabled, don't compile the
+	X11-specific source modules.  Don't ever install any X11-related
+	header files.
+
 2008-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/segment.c (SegmentImage): Use 'double' rather than 64-bit
 	integer to accumulate totalized values.  Make the cluster summary
 	report more concise.
+
+2008-12-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/fits.c: Fix for 64 bit images.
 
 2008-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -148,11 +970,6 @@
 	the convolution kernel used.
 	* magick/utility.c (TranslateTextEx): Support formatting huge
 	comment text.
-
-2008-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* version.sh: GraphicsMagick 1.3.2 released.
-	* NEWS.txt: Updated news for release.
 
 2008-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -188,6 +1005,8 @@
 	default, we need to add an ampersand to the end of the two entries
 	previously using 'spawn' so that the display program does not hang
 	when it invokes the external program.
+	* utilities/Makefile.am (UTILITIES_TESTS): Add preview-based
+	tests.
 	* coders/preview.c (WritePreviewImage): Solarize requires a
 	threshold argument.
 	* coders/vid.c (WriteVIDImage): Eliminate memory leak.
@@ -196,6 +1015,8 @@
 
 2008-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/omp_data_view.c (AccessThreadViewDataById): New function
+	to allow retrieving data via the index it was registered with.
 	* magick/enhance.c (BuildChannelHistograms): EnhanceImage() and
 	NormalizeImage() now share one common function for generating the
 	histogram.
@@ -208,10 +1029,6 @@
 	* www/authors.rst: List Mark Mitchell as an author.
 	* utilities/tests/msl_composite.sh: Fix 'rm -f' without a valid
 	argument which annoyed NetBSD.
-
-2008-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* version.sh: GraphicsMagick 1.3.1 released.
 	* coders/fits.c: Impose a limit on the length of the row PDU.
 	Make sure that GraphicsMagick version information does not
 	overflow the length allowed by a row PDU.
@@ -268,6 +1085,7 @@
 2008-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.3 released.
+	Next release on head will be 1.4.
 	* www/OpenMP.rst: Updated with latest measurement data.
 	* www/benchmarks.rst: Updated with latest benchmark data.
 	* coders/url.c (RegisterURLImage): Register HTTP and FTP URL

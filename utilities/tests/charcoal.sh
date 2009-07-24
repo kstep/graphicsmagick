@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -charcoal 0x1 -label Charcoal Charcoal_out.miff
+OUTFILE=TileCharcoal_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -charcoal 0x1 -label Charcoal ${OUTFILE}

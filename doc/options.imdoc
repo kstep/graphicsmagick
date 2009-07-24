@@ -69,7 +69,7 @@ behavior.</pp>
 
 <!-- ------------ -affine ------------------------------------------- -->
 
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <dopt>-affine <matrix></opt>
 
 <abs>drawing transform matrix</abs>
@@ -116,6 +116,40 @@ option appears after all of the input images, all images are appended.</pp>
 
 </utils>
 
+
+
+<!-- ------------ -asc-cdl ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt> -asc-cdl <spec></opt>
+
+<abs>apply ASC CDL color transform</abs>
+
+<pp>
+Applies ("bakes in") the ASC-CDL which is a format for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers. The format defines the math for three
+functions: slope, offset and power. Each function uses a number for
+the red, green, and blue color channels for a total of nine numbers
+comprising a single color decision. A tenth number for chrominance
+(saturation) has been proposed but is not yet standardized.</pp>
+
+<pp>
+The argument string is comma delimited and is in the following form
+(but without invervening spaces or line breaks)</pp>
+
+<pre>
+  redslope,redoffset,redpower:
+  greenslope,greenoffset,greenpower:
+  blueslope,blueoffset,bluepower:
+  saturation
+</pre>
+
+<pp>
+with the unity (no change) specification being:
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"</pp>
+
+</utils>
 
 
 
@@ -1182,8 +1216,9 @@ value stored in the image. This option should not normally be used.
 </dd>
 
 <dt>tiff:rows-per-strip=<value></dt>
-<dd>Allows the user to specify the number of rows per TIFF strip. Ignored
-if using tiles or JPEG compression.
+<dd>Allows the user to specify the number of rows per TIFF strip.
+Rounded up to a multiple of 16 when using JPEG compression. Ignored when
+using tiles.
 </dd>
 
 <dt>tiff:strip-per-page=true</dt>
@@ -1721,13 +1756,14 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i></pp>
 <utils apps=compare,composite,convert,display,import,mogrify,montage>
 <dopt>-endian <type></opt>
 
-<abs>specify endianness (MSB or LSB) of output image</abs>
+<abs>specify endianness (MSB, LSB, or Native) of image</abs>
 
 <pp>
-MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
-indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
-option currently only influences the output of the DPX and TIFF
-writers.</pp>
+<i>MSB</i> indicates big-endian (e.g. SPARC, Motorola 68K) while
+<i>LSB</i> indicates little-endian (e.g. Intel 'x86, VAX) byte
+ordering.  <i>Native</i> indicates to use the normal ordering for the
+current CPU.  This option currently only influences the CMYK, DPX,
+GRAY, RGB, and TIFF, formats.</pp>
 
 <pp>
 Use <s>+endian</s> to revert to unspecified endianness.</pp>
@@ -2006,7 +2042,8 @@ characters:</pp>
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   quantum depth
+     %q   image minimum bit depth
+     %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
@@ -2032,6 +2069,22 @@ titled <s>bird.miff</s> and whose width is 512 and height is 480.</pp>
 <pp>
 If the first character of <i>string</i> is <s>@</s>, the format
 is read from a file titled by the remaining characters in the string.</pp>
+
+<pp>
+The values of image type (<s>%p</s>) which may be returned include:</pp>
+
+<pre>
+     Bilevel
+     Grayscale
+     GrayscaleMatte
+     Palette
+     PaletteMatte
+     TrueColor
+     TrueColorMatte
+     ColorSeparation
+     ColorSeparationMatte
+     Optimize
+</pre>
 
 <pp>
 You can also use the following special formatting syntax to print Exif
@@ -2247,20 +2300,29 @@ Use the given radius and standard deviation (sigma).</pp>
 
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <!-- -geometry is also accepted, but not used, by identify -->
-<dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
+<dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}</opt>
 
 <abs>preferred size and location of the Image window.</abs>
-<pp>
-By default, the window size is the image
-size and the location is chosen by you when it is mapped.</pp>
 
 <pp>
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. <i>Append an exclamation point to the geometry
-to force the image size to exactly the size you specify</i>. For example,
-if you specify <tt>640x480!</tt> the image width is set to 640 pixels and
-height to 480.</pp>
+By default, the window size is the image size and the location is
+chosen by you when it is mapped.</pp>
+
+<pp>
+By default, the width and height are maximum values. That is, the
+image is expanded or contracted to fit the width and height value
+while maintaining the aspect ratio of the image.</pp>
+
+<pp>
+Append a ^ to the geometry so that the image is resized while
+maintaining the aspect ratio of the image, but the resulting width or
+height are treated as minimum values rather than maximum values.</pp>
+
+<pp>
+Append an exclamation point to the geometry to force the image size to
+exactly the size you specify. For example, if you specify
+<tt>640x480!</tt> the image width is set to 640 pixels and height to
+480.</pp>
 
 <pp>
 If only the width is specified, the width assumes the
@@ -2393,6 +2455,38 @@ for this purpose.</pp>
 
 </utils>
 
+
+
+<!-- ------------ -hald-clut --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-hald-clut <clut></opt>
+
+<abs>apply a Hald CLUT to the image</abs>
+
+<pp>
+A Hald CLUT ("Color Look-Up Table") is a special square color image
+which contains a look-up table for red, green, and blue.  The size of
+the Hald CLUT image is determined by its order.  The width (and
+height) of a Hald CLUT is the cube of the order.  For example, a Hald
+CLUT of order 8 is 512x512 pixels (262,144 colors) and of order 16 is
+4096x4096 (16,777,216 colors).  A special CLUT is the identity CLUT
+which which causes no change to the input image.  In order to use the
+Hald CLUT, one takes an identity CLUT and adjusts its colors in some
+way.  The modified CLUT can then be used to transform any number of
+images in an identical way.</pp>
+
+<pp>
+GraphicsMagick contains a built-in identity CLUT generator via the
+<s>IDENTITY</s> coder.  For example reading from the file name
+</s>IDENTITY:8</s> returns an identity CLUT of order 8.  Typical Hald
+CLUT identity images have an order of between 8 and 16.  The default
+order for the <s>IDENTITY</s> CLUT generator is 8.  Interpolation is
+used so it is not usually necessary for CLUT images to be very large.
+The PNG file format is ideal for storing Hald CLUT images because it
+compresses them very well.</pp>
+
+</utils>
 
 
 
@@ -2544,8 +2638,7 @@ is like plane except the different planes are saved to individual files
 
 <utils apps=composite,convert,display,import,mogrify,montage>
 <pp>
-Use <s>Line</s> or <s>Plane</s> to create an
-<s>interlaced PNG</s> or <s> GIF</s> or
+Use <s>Line</s> to create an <s>interlaced PNG</s> or <s> GIF</s> or
 <s>progressive JPEG</s> image.</pp>
 
 </utils>
@@ -2893,9 +2986,10 @@ The image read from the file is used as a clipping mask.  It must have
 the same dimensions as the image being masked.</pp>
 
 <pp>
-If the mask image contains an opacity channel, the opacity of each pixel is
-used to define the mask.  Otherwise, the intensity (gray level) of each
-pixel is used.</pp>
+If the mask image contains an opacity channel, the opacity of each
+pixel is used to define the mask.  Otherwise, the intensity (gray
+level) of each pixel is used.  Unmasked (black) pixels are modified
+while masked pixels (not black) are protected from alteration.</pp>
 
 <pp>
 Use <s>+mask</s> to remove the clipping mask.</pp>
@@ -2939,6 +3033,24 @@ matte channel in the output file.</pp>
 <pp>
 The color is specified using the format described under the <s>-fill</s>
 option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -maximum-error ------------------------------------- -->
+
+<utils apps=compare>
+<dopt>-maximum-error <limit></opt>
+
+<abs>specifies the maximum amount of total image error</abs>
+
+<pp>
+Specifies the maximum amount of total image error (based on comparison
+using a specified metric) before an error ("image difference exceeds
+limit") is reported.  The error is reported via a non-zero command
+execution return status.</pp>
 
 </utils>
 
@@ -3936,6 +4048,98 @@ the associated channel.</pp>
 
 
 
+<!-- ------------ -recolor -------------------------------------- -->
+
+<utils apps=composite,convert,mogrify>
+<dopt>-recolor <matrix></opt>
+
+<abs>apply a color translation matrix to image channels</abs>
+
+<pp>
+A user supplied color translation matrix (expressed as a text
+string) is used to translate/blend the image channels based on
+weightings in a supplied matrix which may be of order 3 (color
+channels only), 4 (color channels plus opacity), or 5 (color channels
+plus opacity and offset).  Values in the columns of the matrix (red,
+green, blue, opacity) are used as multipliers with the existing
+channel values and added together according to the rows of the matrix.
+Matrix values are floating point and may be negative.  The offset
+column (column 5) is purely additive and is scaled such that 0.0 to
+1.0 represents the maximum quantum range (but values are not limited
+to this range).</pp>
+
+<pp>
+An <s>identity</s> matrix exists for each matrix order which
+results in no change to the image.  The translation matrix should be
+based on an alteration of the identity matrix.</pp>
+
+<pp>
+Identity matrix of order 3</pp>
+<pre>
+  1 0 0
+  0 1 0
+  0 0 1
+</pre>
+
+<pp>
+which may be formatted into a convenient matrix argument similar to
+(comma is treated as white space):</pp>
+<pre>
+  -recolor "1 0 0, 0 1 0, 0 0 1"
+</pre>
+
+<pp>
+Identity matrix of order 4</pp>
+<pre>
+  1 0 0 0
+  0 1 0 0
+  0 0 1 0
+  0 0 0 1
+</pre>
+
+<pp>
+Identity matrix of order 5.  The last row is required to exist
+for the purpose of parsing, but is otherwise not used.</pp>
+<pre>
+  1 0 0 0 0
+  0 1 0 0 0
+  0 0 1 0 0
+  0 0 0 1 0
+  0 0 0 0 1
+</pre>
+
+<pp>
+As an example, an image wrongly in BGR channel order may be converted
+to RGB using this matrix (green->red, red->green):</pp>
+<pre>
+  0 0 1
+  0 1 0
+  1 0 0
+</pre>
+
+<pp>
+and an RGB image using standard Rec.709 primaries may be converted
+to grayscale using this matrix of standard weighting factors:</pp>
+<pre>
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+</pre>
+
+<pp>
+and contrast may be reduced by scaling down by 80% and adding a 10%
+offset:</pp>
+<pre>
+  0.8 0.0 0.0 0.0 0.1
+  0.0 0.8 0.0 0.0 0.1
+  0.0 0.0 0.8 0.0 0.1
+  0.0 0.0 0.0 0.8 0.1
+  0.0 0.0 0.0 0.0 1.0
+</pre>
+
+</utils>
+
+
 
 <!-- ------------ -red-primary -------------------------------------- -->
 
@@ -4108,22 +4312,26 @@ A negative <i>x</i> offset rolls the image left-to-right. A negative
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <dopt>-rotate <degrees>{<}{>}</opt>
 
-<abs>apply Paeth image rotation to the image</abs>
+<abs>rotate the image</abs>
 
 <pp>
-Use <tt>></tt> to rotate the image only if its width exceeds the height.
-<tt><</tt> rotates the image <i>only</i> if its width is less than the
-height. For example, if you specify <tt>-rotate "-90>"</tt> and the image
-size is 480x640, the image is not rotated.  However, if the
-image is 640x480, it is rotated by -90 degrees.  If you use <tt>></tt> or
-<tt><</tt>, enclose it in quotation marks to prevent it from being
-misinterpreted as a file redirection.</pp>
+Positive angles rotate the image in a clockwise direction while
+negative angles rotate counter-clockwise.</pp>
 
 <pp>
-Empty triangles left over from rotating the image are filled with the color
-defined as <s>background</s> (class <s>backgroundColor</s>).
-The color is specified using the format described under the <s>-fill</s>
-option.</pp>
+Use <tt>></tt> to rotate the image only if its width exceeds the
+height.  <tt><</tt> rotates the image <i>only</i> if its width is less
+than the height. For example, if you specify <tt>-rotate "-90>"</tt>
+and the image size is 480x640, the image is not rotated.  However, if
+the image is 640x480, it is rotated by -90 degrees.  If you use
+<tt>></tt> or <tt><</tt>, enclose it in quotation marks to prevent it
+from being misinterpreted as a file redirection.</pp>
+
+<pp>
+Empty triangles left over from rotating the image are filled with the
+color defined as <s>background</s> (class <s>backgroundColor</s>).
+The color is specified using the format described under the
+<s>-fill</s> option.</pp>
 
 </utils>
 
@@ -4715,7 +4923,7 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</pp>
 
 <!-- ------------ -transform ---------------------------------------- -->
 
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <dopt>-transform</opt>
 
 <abs>transform the image</abs>

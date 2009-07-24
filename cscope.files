@@ -1,7 +1,20 @@
+VisualMagick/SDL/Sdl/include/begin_code.h
+VisualMagick/configure/CStringEx.h
+VisualMagick/configure/WaitDlg.h
+VisualMagick/configure/configure.h
+VisualMagick/configure/configure_wizard.h
+VisualMagick/configure/finished_page.h
+VisualMagick/configure/resource.h
+VisualMagick/configure/stdafx.h
+VisualMagick/configure/system_page.h
+VisualMagick/configure/target_page.h
+VisualMagick/configure/welcome_page.h
+VisualMagick/iptcutils/iptcutil.c
 coders/art.c
 coders/avi.c
 coders/avs.c
 coders/bmp.c
+coders/cals.c
 coders/caption.c
 coders/cineon.c
 coders/clipboard.c
@@ -22,8 +35,10 @@ coders/gradient.c
 coders/gray.c
 coders/hdf.c
 coders/histogram.c
+coders/hrz.c
 coders/html.c
 coders/icon.c
+coders/identity.c
 coders/jbig.c
 coders/jp2.c
 coders/jpeg.c
@@ -129,6 +144,7 @@ contrib/win32/MFC/NtMagick/resource.h
 contrib/win32/cgi/cgimagick.c
 contrib/win32/isapi/isapimagick.c
 filters/analyze.c
+locale/locale_c.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
 magick/alpha_composite.h
@@ -138,6 +154,7 @@ magick/annotate.c
 magick/api.h
 magick/attribute.c
 magick/attribute.h
+magick/bit_stream.c
 magick/bit_stream.h
 magick/blob.c
 magick/blob.h
@@ -155,6 +172,8 @@ magick/composite.c
 magick/composite.h
 magick/compress.c
 magick/compress.h
+magick/confirm_access.c
+magick/confirm_access.h
 magick/constitute.c
 magick/constitute.h
 magick/decorate.c
@@ -222,6 +241,8 @@ magick/profile.c
 magick/profile.h
 magick/quantize.c
 magick/quantize.h
+magick/random.c
+magick/random.h
 magick/registry.c
 magick/registry.h
 magick/render.c

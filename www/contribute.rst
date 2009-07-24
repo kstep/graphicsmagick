@@ -55,10 +55,6 @@ the GraphicsMagick project:
   At the very least, registering a vote for the Gentoo bug may be helpful.
   See http://bugs.gentoo.org/show_bug.cgi?id=190372.
 
-* Help get GraphicsMagick 1.2.X added to the FreeBSD ports collection.
-  Currently GraphicsMagick is stuck at 1.1.X on FreeBSD since KDE and
-  other significant software depends on it.
-
 * Set up an FTP mirror site for GraphicsMagick.
 
 * Create a language interface using SWIG <http://www.swig.org/> to
@@ -76,18 +72,11 @@ the GraphicsMagick project:
 * Create an OpenEXR coder based on the OpenEXR
   <http://www.openexr.org/> library from Industrial Light & Magic.
 
-* Contribute fast and portable 16-bit (Half) and 24-bit floating point
-  translation code in (C language) so that GraphicsMagick can support
-  these small float samples in TIFF and OpenEXR.
-
 * Create a *pstoedit* module to import Postscript, EPS, and PDF
   files as vector data using pstoedit <http://www.pstoedit.net/> which
   already includes a high-quality driver to render Postscript vectors via
   GraphicsMagick. This module could also export vector data in many
   formats using pstoedit's output drivers.
-
-* Create a coder to support the CALS
-  <http://www.fileformat.info/format/cals/> raster file format.
 
 * Work on adding EXIF profile writing support which works for JPEG and
   TIFF formats.
@@ -104,13 +93,6 @@ the GraphicsMagick project:
 * Create a replacement (using a portable Widget set such as FLTK) for the
   IMDisplay Windows GUI program and possibly the X11 'display' program.
 
-* Write a shim-layer to allow The GIMP <http://www.gimp.org/> to be
-  executed as a loadable process module providing GraphicsMagick
-  users with access to GIMP features.
-
-* Port your existing GIMP module to GraphicsMagick as a loadable
-  process module.
-
 * Create an interface between GraphicsMagick and OpenOffice.org.
   <http://www.openoffice.org/> so that OpenOffice may load and save
   any format supported by GraphicsMagick. OpenOffice.org offers a
@@ -122,7 +104,7 @@ the GraphicsMagick project:
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

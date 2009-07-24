@@ -6,7 +6,7 @@
 <lopt>-adjoin</opt>
 <abs>join images into a single multi-image file</abs>
 </utils>
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <lopt>-affine <matrix></opt>
 <abs>drawing transform matrix</abs>
 </utils>
@@ -17,6 +17,10 @@
 <utils apps=convert>
 <lopt>-append</opt>
 <abs>append a set of images</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt> -asc-cdl <spec></opt>
+<abs>apply ASC CDL color transform</abs>
 </utils>
 <utils apps=animate,compare,composite,convert,display,identify,mogrify,montage>
 <lopt>-authenticate <string></opt>
@@ -202,7 +206,7 @@
 </utils>
 <utils apps=compare,composite,convert,display,import,mogrify,montage>
 <lopt>-endian <type></opt>
-<abs>specify endianness (MSB or LSB) of output image</abs>
+<abs>specify endianness (MSB, LSB, or Native) of image</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <opt>-enhance</opt>
@@ -273,7 +277,7 @@
 <abs>blur the image with a Gaussian operator</abs>
 </utils>
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
-<lopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
+<lopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}</opt>
 <abs>preferred size and location of the Image window.</abs>
 </utils>
 <utils apps=animate,display>
@@ -294,6 +298,10 @@
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-green-primary <x>,<y></opt>
 <abs>green chromaticity primary point</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-hald-clut <clut></opt>
+<abs>apply a Hald CLUT to the image</abs>
 </utils>
 <utils apps=animate,compare,composite,conjure,convert,display,identify,import,mogrify,montage>
 <opt>-help</opt>
@@ -392,6 +400,10 @@
 <utils apps=animate,convert,display,mogrify,montage>
 <lopt>-mattecolor <color></opt>
 <abs>specify the color to be used with the <s>-frame</s> option</abs>
+</utils>
+<utils apps=compare>
+<lopt>-maximum-error <limit></opt>
+<abs>specifies the maximum amount of total image error</abs>
 </utils>
 <utils apps=convert,mogrify>
 <opt>-median <radius></opt>
@@ -521,6 +533,10 @@
 <lopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 <abs>random threshold the image</abs>
 </utils>
+<utils apps=composite,convert,mogrify>
+<lopt>-recolor <matrix></opt>
+<abs>apply a color translation matrix to image channels</abs>
+</utils>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-red-primary <x>,<y></opt>
 <abs>red chromaticity primary point</abs>
@@ -559,7 +575,7 @@
 </utils>
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
 <lopt>-rotate <degrees>{<}{>}</opt>
-<abs>apply Paeth image rotation to the image</abs>
+<abs>rotate the image</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <lopt>-sample <geometry></opt>
@@ -681,7 +697,7 @@
 <lopt>-title <string></opt>
 <abs>assign title to displayed image [<i>animate, display, montage</i>]</abs>
 </utils>
-<utils apps=convert,mogrify>
+<utils apps=convert,mogrify,montage>
 <lopt>-transform</opt>
 <abs>transform the image</abs>
 </utils>

@@ -17,9 +17,9 @@ GraphicsMagick CVS
               simulation, image, software, AniMagick, Animagic,  Magick++
 
 
-.. _CVS program : http://www.cvshome.org/
+.. _CVS program : http://www.nongnu.org/cvs/
 .. _TortoiseCVS : http://www.tortoisecvs.org/
-.. _CVS Home Page : http://www.cvshome.org/
+.. _CVS Home Page : http://www.nongnu.org/cvs/
 .. _cvs.graphicsmagick.org : http://cvs.graphicsmagick.org/
 .. _CVSWeb: http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/
 
@@ -112,7 +112,7 @@ options used in the remaining instructions may be set as defaults (so they don't
 need to be repeated) by creating a .cvsrc file in your home directory with the
 following contents::
 
-  cvs -z3
+  cvs -z7
   update -P -d
   checkout -P
   diff -u
@@ -124,7 +124,7 @@ directory, issue the command::
 
 Or to save bandwidth get the compressed version, type::
 
-  cvs -z3 co -P GraphicsMagick
+  cvs -z7 co -P GraphicsMagick
 
 Note that adding ``-r GraphicsMagick-1_3`` requests the sources from the
 GraphicsMagick 1.3 release branch.
@@ -144,14 +144,14 @@ The available modules relating to GraphicsMagick are:
 To check out the GraphicsMagick source for Microsoft Windows, try this command
 line::
 
-  cvs -z3 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
+  cvs -z7 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 
-If you require a specific release of GraphicsMagick (e.g. 1.3.4), you may check
+If you require a specific release of GraphicsMagick (e.g. 1.3.3), you may check
 it out like::
 
- cvs -z3 co-r GraphicsMagick-1_3_4 -P GraphicsMagick
+ cvs -z7 co-r GraphicsMagick-1_3_3 -P GraphicsMagick
 
-where the ``GraphicsMagick-1_3_4`` is the release tag. You can use::
+where the ``GraphicsMagick-1_3_3`` is the release tag. You can use::
 
   cvs status -v README.txt
 
@@ -160,7 +160,7 @@ tags are available.
 
 You can use::
 
-  cvs -z3 update -r GraphicsMagick-1_3_4
+  cvs -z7 update -r GraphicsMagick-1_3_3
 
 from within an existing checked out directory to move it up (or down) to that
 branch or release tag.
@@ -171,14 +171,14 @@ cause an update if the tag is a branch tag, and is a newer version on the
 branch. To clear the sticky flags and update to the most current version on the
 trunk, use::
 
-  cvs -z3 update -A
+  cvs -z7 update -A
 
 Once a release has been tagged, checking out or updating using a release tag is
 the only reliable way to obtain release files from CVS since the default is to
 check out the most current sources on the requested branch, which may not be
 stable or released.
 
-Using compression levels over ``-z3`` may slow the CVS transfer since they require
+Using compression levels over ``-z7`` will slow the CVS transfer since they require
 the CVS server to work much harder, yet don't compress the data much more.
 
 CVS Software

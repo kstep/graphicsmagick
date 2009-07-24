@@ -6,6 +6,10 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
+# NOTE: set TEST_VERBOSE=1 in order to see verbose output from tests.
+#
+#   In order to run just one test verbosely do something like
+#     make TEST_VERBOSE=1 TEST_FILES=t/filter.t test
 
 use ExtUtils::MakeMaker;
 use Config;
@@ -13,7 +17,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib cgm hpgl jbig jng jp2 jpeg lcms mpeg png ps tiff ttf wmf x zlib/) {
+foreach $delegate (qw/ bzlib cgm hpgl jbig jng jp2 jpeg lcms mpeg png ps rad tiff ttf wmf x xfig zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }
@@ -33,31 +37,31 @@ WriteMakefile
    'AUTHOR'    => 'GraphicsMagick Group',
 
    # Module version
-   'VERSION'   => '1.2',
+   'VERSION'   => '1.4',
 
    # Preprocessor defines
-   'DEFINE'	=> '  -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
+   'DEFINE'	=> ' -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES=1  -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11 -I/usr/local/include/libxml2',
+   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/local/include/libxml2',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS'    => "$Config{'cppflags'} -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11 -I/usr/local/include/libxml2",
+   # 'CPPFLAGS'    => "$Config{'cppflags'} -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/local/include/libxml2",
 
    # C compiler flags (e.g. -O -g)
-   'CCFLAGS'     => "$Config{'ccflags'} -O2 -Wall -march=i686 -mcpu=pentium4 -pipe -Wall -D_THREAD_SAFE -pthread",
+   'CCFLAGS'     => "$Config{'ccflags'} -fopenmp -O2 -Wall -D_REENTRANT -pthreads",
 
    # Linker flags for building an executable
-   'LDFLAGS'    =>  "-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs $Config{'ldflags'}",
+   'LDFLAGS'    =>  "-L/home/fojtik/GraphicsMagick/magick/.libs $Config{'ldflags'}",
 
    # Linker flags for building a dynamically loadable module
-   'LDDLFLAGS'  => "-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs $Config{'lddlflags'}",
+   'LDDLFLAGS'  => "-L/home/fojtik/GraphicsMagick/magick/.libs $Config{'lddlflags'}",
 
    # Install PerlMagick binary into GraphicsMagick bin directory
    'INSTALLBIN'	=> '/usr/local/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs -lGraphicsMagick -L/usr/local/lib -R/usr/local/lib -R/usr/X11R6/lib -L/usr/X11R6/lib -L/usr/local/lib -L/usr/local/lib -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lwmflite -ldpstk -ldps -lXext -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lm -lc_r'],
+   'LIBS'	=> ['-L/home/fojtik/GraphicsMagick/magick/.libs -lGraphicsMagick -L/usr/local/lib -R/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/local/lib -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lwmflite -ldpstk -ldps -lXext -lSM -lICE -lX11 -lsocket -lnsl -lbz2 -lxml2 -lz -lm -lgomp -lpthread'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
@@ -66,7 +70,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as GraphicsMagick
-   'PERLMAINCC'	=> '/usr/local/bin/gcc-3.3.3',
+   'PERLMAINCC'	=> 'gcc-4.2.4',
 
    # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
@@ -91,7 +95,7 @@ sub MY::makeaperl {
      # tries to insert our library path first. Also, use the same compiler used
      # to build perlmain.c to link so that a C++ compiler may be used if
      # necessary.
-     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/home/bfriesen/src/graphics/GraphicsMagick-Web/magick/.libs: ;
+     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/home/fojtik/GraphicsMagick/magick/.libs: ;
      $inherited;
  }
 
@@ -103,6 +107,6 @@ sub MY::test {
      my $inherited = shift->SUPER::test(@_);
 
      # Run tests in our environment
-     $inherited =~ s:PERL_DL_NONLAZY=1:/bin/sh ../rungm.sh PERL_DL_NONLAZY=1:g ;
+     $inherited =~ s:PERL_DL_NONLAZY=1:/bin/bash ../rungm.sh PERL_DL_NONLAZY=1:g ;
      $inherited;
  }

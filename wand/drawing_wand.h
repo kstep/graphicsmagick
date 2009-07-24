@@ -232,7 +232,6 @@ extern "C" {
 #define NewDrawingWand MagickNewDrawingWand
 
 typedef struct _DrawingWand
-/*  *DrawContext, */
   DrawingWand;
 
 extern WandExport char

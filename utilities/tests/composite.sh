@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} composite ${COMPOSITE_FLAGS} ${SMILE_MIFF} -geometry +35+65 ${MODEL_MIFF} -label Composite Comp_out.miff
+OUTFILE=TileComposite_out.miff
+rm -f ${OUTFILE}
+${GM} composite ${COMPOSITE_FLAGS} ${SMILE_MIFF} -geometry +35+65 ${MODEL_MIFF} -label Composite ${OUTFILE}

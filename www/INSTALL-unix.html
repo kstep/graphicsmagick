@@ -87,7 +87,7 @@ The source code must be extracted prior to compilation as follows:</p>
 using '7za' from the P7ZIP package (<a class="reference" href="http://p7zip.sourceforge.net/">http://p7zip.sourceforge.net/</a>).
 Extract similar to:</p>
 <pre class="last literal-block">
-7za x GraphicsMagick-1.2.7z
+7za x GraphicsMagick-1.3.7z
 </pre>
 </dd>
 <dt>.tar.bz2</dt>
@@ -95,7 +95,7 @@ Extract similar to:</p>
 (<a class="reference" href="http://www.bzip.org/">http://www.bzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
-bzip2 -d GraphicsMagick-1.2.tar.bz | tar -xvf -
+bzip2 -d GraphicsMagick-1.3.tar.bz | tar -xvf -
 </pre>
 </dd>
 <dt>.tar.gz</dt>
@@ -103,7 +103,7 @@ bzip2 -d GraphicsMagick-1.2.tar.bz | tar -xvf -
 (<a class="reference" href="http://www.gzip.org/">http://www.gzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
-gzip -d GraphicsMagick-1.2.tar.gz | tar -xvf -
+gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
 </pre>
 </dd>
 <dt>.tar.lzma</dt>
@@ -111,31 +111,31 @@ gzip -d GraphicsMagick-1.2.tar.gz | tar -xvf -
 (<a class="reference" href="http://tukaani.org/lzma/">http://tukaani.org/lzma/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
-lzma -d GraphicsMagick-1.2.tar.lzma | tar -xvf -
+lzma -d GraphicsMagick-1.3.tar.lzma | tar -xvf -
 </pre>
 </dd>
 <dt>zip</dt>
 <dd><p class="first">PK-ZIP archive format. Requires that the unzip program from Info-Zip
 (<a class="reference" href="http://www.info-zip.org/UnZip.html">http://www.info-zip.org/UnZip.html</a>) be available. Extract similar to:</p>
 <pre class="last literal-block">
-unzip GraphicsMagick-1.2.zip
+unzip GraphicsMagick-1.3.zip
 </pre>
 </dd>
 </dl>
 <p>The GraphicsMagick source code is extracted into the subdirectory
-'GraphicsMagick-1.2'. After the source code extracted, change to the new
+'GraphicsMagick-1.3'. After the source code extracted, change to the new
 directory using the command:</p>
 <pre class="literal-block">
-cd GraphicsMagick-1.2
+cd GraphicsMagick-1.3
 </pre>
 </div>
 <div class="section">
 <h1><a class="toc-backref" href="#id3" id="build-configuration" name="build-configuration">Build Configuration</a></h1>
 <p>Use 'configure' to automatically configure, build, and install
 GraphicsMagick. The configure script may be executed from the
-GraphicsMagick source directory (e.g ./configure) or from a seperate
+GraphicsMagick source directory (e.g ./configure) or from a separate
 build directory by specifying the full path to configure (e.g.
-/src/GraphicsMagick-1.2/configure). The advantage of using a seperate
+/src/GraphicsMagick-1.3/configure). The advantage of using a separate
 build directory is that multiple GraphicsMagick builds may share the
 same GraphicsMagick source directory while allowing each build to use a
 unique set of options.</p>
@@ -157,7 +157,7 @@ in the system directories instead.</p>
 flags, or libraries, you can give 'configure' initial values for
 variables by specifying them on the configure command line, e.g.:</p>
 <pre class="literal-block">
-./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+./configure CC=c99 CFLAGS=-O2 LIBS=-lposix
 </pre>
 <p>Options which should be common to packages installed under the same
 directory heirarchy may be supplied via a 'config.site' file located
@@ -203,6 +203,11 @@ argument of the form '-Wl,-rpath,/somedir'.</dd>
 </dl>
 <p>Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
 path must specify an absolute path rather than a relative path.</p>
+<p>The build now supports a Linux-style &quot;silent&quot; build (default
+disabled).  To enable this, add the configure option
+--enable-silent-rules or invoke make like 'make V=0'.  If the build
+has been configured for silent mode and it is necessary to see a
+verbose build, then invoke make like 'make V=1'.</p>
 <p>Configure can usually find the X include and library files
 automatically, but if it doesn't, you can use the 'configure' options
 '--x-includes=DIR' and '--x-libraries=DIR' to specify their locations.</p>
@@ -302,8 +307,8 @@ follows (execute 'configure --help' to see all options).</p>
 </tr>
 <tr><td>&nbsp;</td><td>disable build/install of Magick++</td></tr>
 <tr><td class="option-group">
-<kbd><span class="option">--without-perl</span></kbd></td>
-<td>disable build/install of PerlMagick</td></tr>
+<kbd><span class="option">--with-perl</span></kbd></td>
+<td>enable build/install of PerlMagick</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--with-perl=<var>PERL</var></span></kbd></td>
 </tr>
@@ -669,17 +674,24 @@ recommended for FreeBSD 7.0 and Apple's OS-X Leopard and earlier due
 to weak thread support.  It should not be necessary for AIX, Linux,
 or Solaris.</td></tr>
 <tr><td class="option-group">
-<kbd><span class="option">--without-perl</span></kbd></td>
-<td>By default, PerlMagick is conveniently compiled and installed as part
-of GraphicsMagick's normal &quot;configure&quot;, &quot;make&quot;, &quot;make install&quot;
-process.. When --without-perl is specified, you must first install
-GraphicsMagick, change to the PerlMagick subdirectory, build, and
-finally install PerlMagick. Note, PerlMagick is configured even if
---without-perl is specified. If the argument
---with-perl=/path/to/perl is supplied, then /path/to/perl will be
-taken as the PERL interpreter to use. This is important in case the
-'perl' executable in your PATH is not PERL5, or is not the PERL you
-want to use.</td></tr>
+<kbd><span class="option">--with-perl</span></kbd></td>
+<td><p class="first">Use this option to include PerlMagick in the GraphicsMagick build
+and test suite. While PerlMagick is always configured by default
+(PerlMagick/Makefile.PL is generated by the configure script),
+PerlMagick is no longer installed by GraphicsMagick's ''make
+install''.  The procedure to configure, build, install, and check
+PerlMagick is described in PerlMagick/README.txt.  When using a
+shared library build of GraphicsMagick, it is necessary to formally
+install GraphicsMagick prior to building PerlMagick in order to
+achieve a working PerlMagick since otherwise the wrong
+GraphicsMagick libraries may be used.</p>
+<p class="last">If the argument ''--with-perl=/path/to/perl'' is supplied, then
+/path/to/perl will be taken as the PERL interpreter to use. This is
+important in case the 'perl' executable in your PATH is not PERL5,
+or is not the PERL you want to use.  Experience suggests that static
+PerlMagick builds may not be fully successful for Perl versions
+newer than 5.8.8.</p>
+</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--with-perl-options</span></kbd></td>
 </tr>
@@ -778,6 +790,14 @@ built under MinGW in order to be used. These libraries should be built
 and installed prior to configuring GraphicsMagick. While some delegate
 libraries are easy to configure and build under MinGW, others may be
 quite a challenge.</p>
+<p>Lucky for us, the most common delegate libraries are available
+pre-built, as part of the GnuWin32 project, from</p>
+<blockquote>
+<a class="reference" href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a></blockquote>
+<p>The relevant packages are bzip2, freetype, jbigkit, libintl, jpeg,
+libpng, libtiff, libwmf and zlib. However, note that for freetype
+to be detected by configure, you must move the <tt class="docutils literal"><span class="pre">freetype</span></tt> directory
+out of <tt class="docutils literal"><span class="pre">GnuWin32\include\freetype2</span></tt> and into <tt class="docutils literal"><span class="pre">GnuWin32\include</span></tt>.</p>
 <p>Since C++ exceptions do not currently work properly when thrown from a
 DLL, the Magick++ library is always built as a static library. Be sure
 to not specify --disable-static if you are building the Magick++
@@ -922,7 +942,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-14 19:05 UTC.
+Generated on: 2009-05-28 20:28 UTC.
 
 </div>
 </body>

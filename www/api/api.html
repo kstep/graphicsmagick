@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
-<title>GraphicsMagick C API</title>
+<title>GraphicsMagick Core C API</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -48,16 +48,15 @@
 <li><a href="../links.html">Links</a></li>
 </ul>
 </div>
-<div class="document" id="graphicsmagick-c-api">
-<h1 class="title">GraphicsMagick C API</h1>
-<p>GraphicsMagick has a number of functions that allow you to read, manipulate,
-write, or display an image. These functions are accessible through the various
-tools or the object-oriented Perl interface, PerlMagick. However, you can also
-access the functions directly from your program through the Magick Application
-Programmer Interface. To invoke the functions, write your program in your
-favorite language while making calls to the Magick image functions and link
-with libGraphicsMagick.a, libGraphicsMagick.so, or GraphicsMagick.dll depending
-on your system.</p>
+<div class="document" id="graphicsmagick-core-c-api">
+<h1 class="title">GraphicsMagick Core C API</h1>
+<p>The GraphicsMagick core C library constitutes the implementation of
+GraphicsMagick and provides the lowest-level C language programming
+interface for GraphicsMagick.  The core C API provides many functions
+to read, manipulate, write, or display an image.  To invoke the
+functions, write your program in C (or C++) language while making
+calls to the core library functions and link with libGraphicsMagick.a,
+libGraphicsMagick.so, or GraphicsMagick.dll depending on your system.</p>
 <p>The API is divided into a number of categories. While reading this
 documentation, please reference the <a class="reference" href="types.html">types</a> documentation as required:</p>
 <blockquote>
@@ -65,11 +64,13 @@ documentation, please reference the <a class="reference" href="types.html">types
 <li><a class="reference" href="animate.html">Animate</a>: Interactively animate an image sequence</li>
 <li><a class="reference" href="annotate.html">Annotate</a>: Annotate an image with text</li>
 <li><a class="reference" href="attribute.html">Attribute</a>: Access key, value image attributes</li>
+<li><a class="reference" href="cdl.html">ASC CDL</a> : Apply ASC CDL to image</li>
 <li><a class="reference" href="blob.html">Blob</a>: Read and write images to memory</li>
 <li><a class="reference" href="channel.html">Channel</a>: Import and export image channels as well as compute channel depth</li>
 <li><a class="reference" href="color.html">Color</a>: Methods to deal with image colors</li>
 <li><a class="reference" href="compare.html">Compare</a>: Compare images</li>
 <li><a class="reference" href="composite.html">Composite</a>: Composite images</li>
+<li><a class="reference" href="confirm_access.html">Confirm Access</a> : Confirm access to files and URLs.</li>
 <li><a class="reference" href="constitute.html">Constitute</a>: Read, write, import, and export images</li>
 <li><a class="reference" href="decorate.html">Decorate</a>: Add fancy borders to images</li>
 <li><a class="reference" href="display.html">Display</a>: Interactively display and edit an image</li>
@@ -80,6 +81,7 @@ gaussian blur ...</li>
 and normalize</li>
 <li><a class="reference" href="error.html">Error</a>: Error reporting methods</li>
 <li><a class="reference" href="fx.html">FX</a>: Special effects methods</li>
+<li><a class="reference" href="hclut.html">Hald CLUT</a> : Apply Hald CLUT to image</li>
 <li><a class="reference" href="image.html">Image</a>: Miscellaneous image methods</li>
 <li><a class="reference" href="list.html">List</a>: Manage image lists</li>
 <li><a class="reference" href="magick.html">Magick</a>: Image format support interfaces</li>
@@ -212,11 +214,11 @@ your program will compile and run.</p>
 <p>Another example is smile.c. Compile and execute it to display a smiley face on
 your X server.</p>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2008</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2009</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2009-07-05 19:10 UTC.
 
 </div>
 </body>

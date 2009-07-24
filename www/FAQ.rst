@@ -17,19 +17,23 @@ GraphicsMagick FAQ
 
 .. contents:: FAQ Contents
 
-1) How does GraphicsMagick differ from ImageMagick?
----------------------------------------------------
+How does GraphicsMagick differ from ImageMagick?
+------------------------------------------------
 
-*GraphicsMagick* is originally based on ImageMagick 5.5.2. Other than
-utilities being executed as sub-commands of the 'gm' command, the
-command-line syntax and programming APIs remain entirely upward
-compatible with ImageMagick 5.5.2. A better question might be "*How does
-ImageMagick differ from ImageMagick?*" since ImageMagick continues to
-alter and evolve its interfaces so they are no longer completely
-compatible with earlier versions. While GraphicsMagick also adds new
-features, it does so in a way which assures that existing features work
-as they did before. ImageMagick focuses on adding new functionality and
-features and has dramatically mutated several times since the fork.
+*GraphicsMagick* is originally based on (forked from) ImageMagick
+5.5.2 in November 2002, from the version distributed by ImageMagick
+Studio LLC, which is itself forked in August 1999 from ImageMagick
+developed by E. I. du Pont de Nemours and Company starting in
+1992. Other than utilities being executed as sub-commands of the 'gm'
+command, the command-line syntax and programming APIs remain entirely
+upward compatible with ImageMagick 5.5.2. A better question might be
+"*How does ImageMagick differ from ImageMagick?*" since ImageMagick
+continues to alter and evolve its interfaces so they are no longer
+completely compatible with earlier versions. While GraphicsMagick also
+adds new features, it does so in a way which assures that existing
+features work as they did before. ImageMagick focuses on adding new
+functionality and features and has dramatically mutated several times
+since the fork.
 
 GraphicsMagick maintains a stable release branch, maintains a detailed
 ChangeLog, and maintains a stable source repository with complete version
@@ -49,22 +53,72 @@ GraphicsMagick is usually faster than ImageMagick. The baseline execution
 overhead for simple commands is much lower, and GraphicsMagick is also
 more efficient at dealing with large images.
 
-2) How often does GraphicsMagick pick up new code from ImageMagick?
--------------------------------------------------------------------
+How often does GraphicsMagick pick up new code from ImageMagick?
+----------------------------------------------------------------
 
-GraphicsMagick never picks up new code from ImageMagick. Not long after
-the GraphicsMagick project was started in November 2002, ImageMagick
+GraphicsMagick never picks up new code from ImageMagick as distributed
+by ImageMagick Studio LLC. Not long after the GraphicsMagick project
+was started in November 2002, ImageMagick from ImageMagick Studio LLC
 abandoned the MIT X11 style license it had been using since 1992, and
 switched between several different licenses until it ended up with one
-based on the Apache license, which is intended to penalize projects which
-borrow some of its source code, or fork from it. Since that time,
-GraphicsMagick has not incorporated any ImageMagick source code. Authors
-of new features are encouraged to independently contribute their work to
-the GraphicsMagick project so that it can be released under
-GraphicsMagick's MIT X11 style license without additional encumberment.
+based on the Apache license, which is intended to penalize projects
+which borrow some of its source code, or fork from it. Since that
+time, GraphicsMagick has not incorporated any ImageMagick source code.
 
-3) I received the following message, "?????? delegation failed ...". What does it mean?
----------------------------------------------------------------------------------------
+On November 27, 2003 ImageMagick Studio LLC applied to register
+"ImageMagick" as its trademark, and it was awarded this registered
+trademark (serial number 78333969) on August 30, 2005.  Those who
+re-distribute modified versions of "ImageMagick" (e.g. patched or
+improved) under license as "ImageMagick" now face the risk of
+arbitrary trademark infringement claims by ImageMagick Studio LLC.
+
+Authors of new features are encouraged to independently contribute
+their work to the GraphicsMagick project so that it can be released
+under GraphicsMagick's MIT X11 style license without additional
+encumberment.  In order for a work to be accepted, it must have been
+developed entirely outside the ImageMagick source code to avoid any
+possibility of copyright taint.
+
+How can I process many files at once?
+-------------------------------------
+
+Use 'gm mogrify'.  The 'mogrify' subcommand is designed to operate on
+any number of files in one command.  Normally 'mogrify' overwrites the
+input files but the `-output-directory` option (which must appear
+before any input file names!) allows sending the modified files to a
+different directory (which could be in a subdirectory).  For example::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 *.jpg
+
+If you encounter command line length limitations then you can have
+GraphicsMagick expand the file list by quoting the wildcard argument
+to prevent it from being expanded by your command shell::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 "*.jpg"
+
+and you can also retrieve a list of files to process from a text file
+(e.g. named 'files.txt') like::
+
+    gm mogrify -output-directory .thumbs -resize 320x200 @files.txt
+
+where files.txt has one line per file name.  If the input file paths
+contain relative sub-directory paths (e.g. "foo/file1", "bar/file2"),
+you can instruct GraphicsMagick to create a similar subdirectory
+structure under the output directory by adding the
+`-create-directories` option::
+
+    gm mogrify -output-directory .thumbs -create-directories -resize 320x200 @files.txt
+
+Note that the algorithm used to generate output file names is quite
+simple.  If -output-directory is "/foo" and the file path is
+"bar/none.jpg" then the final path will be "foo/bar/none.jpg".  Based
+on this it should be clear that when `-output-directory` is used, file
+paths should be relative paths rather than absolute paths or else the
+concatenation won't work.
+
+
+I received the following message, "?????? delegation failed ...". What does it mean?
+------------------------------------------------------------------------------------
 
 *GraphicsMagick* uses several freely available packages to perform the
 translation of certain image formats (*PostScript*, *MPEG*, etc.). Make
@@ -75,8 +129,8 @@ sufficient space is available. Finally, for *PostScript*, verify that
 Ghostscript supports the *pnmraw* or *ppmraw* device (``gs -h``) and that
 the document contains valid *PostScript* statements (``gs image.ps``).
 
-4) How do I set the transparency index in a GIF image so it displays properly within Mozilla?
----------------------------------------------------------------------------------------------
+How do I set the transparency index in a GIF image so it displays properly within Mozilla?
+------------------------------------------------------------------------------------------
 
 Display your GIF image with display_. Choose *Matte* from the *Image
 Edit* command menu and identify a pixel that has the *transparency*
@@ -114,8 +168,8 @@ If you do not have the *xstdcmap(1)* program, try ::
 
     gm display -visual TrueColor image.gif
 
-5) How can I stop the filenames from changing in the title bar of the animate(1) image window?
-----------------------------------------------------------------------------------------------
+How can I stop the filenames from changing in the title bar of the animate(1) image window?
+-------------------------------------------------------------------------------------------
 
 Animate_ updates the image file name in the title bar of the image window
 as each image is displayed from the image sequence. To display just a
@@ -123,8 +177,8 @@ single name that will not change, use *-title*::
 
     gm animate -title "My Image Sequence" images.
 
-6) The image grabbed by import(1) does not look like the image on my X server. What's wrong?
---------------------------------------------------------------------------------------------
+The image grabbed by import(1) does not look like the image on my X server. What's wrong?
+-----------------------------------------------------------------------------------------
 
 Use the *-descend* option::
 
@@ -143,30 +197,23 @@ with the window you select and compositing it on a blank canvas. This can
 be significantly slower than just grabbing the top-level window but
 ensures the correct image.
 
-7) How do I animate a digital YUV image sequence?
--------------------------------------------------
+How do I animate a digital YUV image sequence?
+----------------------------------------------
 
 Suppose your sequence is 72 352x240 frames titled frame0.Y, frame0.U,
 frame0.V, frame1.Y, frame1.U, etc. Use this command::
 
     gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
 
-8) How do I view only the red channel of an RGB image?
-------------------------------------------------------
-
-Use the *-gamma* option, for example, ::
-
-    gm display -gamma 1.0,0.0,0.0 image.miff
-
-9) How do I change the default *PostScript* page size?
-------------------------------------------------------
+How do I change the default *PostScript* page size?
+---------------------------------------------------
 
 The default dimensions of a *PostScript* page is 612x792. If you prefer
 another default, change the page geometries (PSPageGeometry) in
 `magick/image.h` and recompile.
 
-10) When I display or convert an image, I get Memory allocation error. What can I do?
--------------------------------------------------------------------------------------
+I get a memory allocation error. What can I do?
+-----------------------------------------------
 
 Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best
@@ -245,8 +292,8 @@ operating system's ability to address memory, and your degree of
 patience. GraphicsMagick has been used to process RGB images 64K by 64K
 pixels in size!
 
-11) How do I concatenate three images left-to-right with no borders, frames, or text?
--------------------------------------------------------------------------------------
+How do I concatenate three images left-to-right with no borders, frames, or text?
+---------------------------------------------------------------------------------
 
 Assume your three images are called image1.ppm, image2.ppm, and
 image3.ppm. Type ::
@@ -267,8 +314,8 @@ example, ::
     gm composite -geometry +0+375 composite.miff image4.gif composite.miff
 
 
-12) How do I create a GIF animation sequence to display within Netscape?
-------------------------------------------------------------------------
+How do I create a GIF animation sequence to display within Netscape?
+--------------------------------------------------------------------
 
 Use convert_ with the *-delay* and *-page* options. The *-delay* option
 is used to specify the delay in *1/100ths of a second* between the
@@ -297,8 +344,8 @@ animation. If you want a single image produced for each frame, use
 
     gm convert +adjoin images.* frames%d.gif
 
-13) When I display a *PostScript* image, white borders are trimmed.
--------------------------------------------------------------------
+When I display a *PostScript* image, white borders are trimmed.
+---------------------------------------------------------------
 
 *GraphicsMagick* automatically trims any *PostScript* image as defined by
 the bounding box. To preempt this behavior, remove the bounding box
@@ -307,8 +354,8 @@ example, ::
 
     gm display -page letter image.ps
 
-14) What are visual image directories? How do I use them?
----------------------------------------------------------
+What are visual image directories? How do I use them?
+-----------------------------------------------------
 
 A visual image directory (VID) is an image that contains thumbnails of
 one or more images in a file directory. Rather than displaying each
@@ -347,8 +394,8 @@ frames of an image sequence::
 
     gm display vid:movie.mpg
 
-15) How can I include the window frame when importing a window?
----------------------------------------------------------------
+How can I include the window frame when importing a window?
+-----------------------------------------------------------
 
 I use the window ID reported by *xwininfo(1)* with import and it does not
 include the window manager frame as expected. How can I save the window
@@ -363,8 +410,8 @@ You can then use the returned window ID with import_::
 
     gm import -frame -window ID window.miff
 
-16) I displayed an image and it appears as one solid color. What did I do wrong?
---------------------------------------------------------------------------------
+I displayed an image and it appears as one solid color. What did I do wrong?
+----------------------------------------------------------------------------
 
 A blank image generally means that the image is either corrupt or it has
 a matte channel and the matte values are all zero. *GraphicsMagick*
@@ -373,8 +420,8 @@ this is the problem, try ::
 
     gm display +matte image.miff
 
-17) I received the following message, "???? library is not available...".
--------------------------------------------------------------------------
+I received the following message, "???? library is not available...".
+---------------------------------------------------------------------
 
 *GraphicsMagick* requires source libraries not included with the
 distribution to view or convert certain image formats such as JPEG or
@@ -382,8 +429,8 @@ TIFF. The above message means you did not compile the required library
 and link with the *GraphicsMagick* utilities. See README_ for the
 location of these libraries and compiling instructions.
 
-18) I want to inspect the values of the matte channel within my image.
-----------------------------------------------------------------------
+I want to inspect the values of the matte channel within my image.
+------------------------------------------------------------------
 
 View the matte image as a gray scale image. Suppose you have a TIFF image
 that has a matte channel and is 640 pixels in width and 480 in height.
@@ -392,8 +439,8 @@ Type::
     gm convert image.tiff image.matte
     gm display -size 640x480 gray:image.matte
 
-19) How can I add one of those cool bevels to my image that I see used on the Web?
-----------------------------------------------------------------------------------
+How can I add one of those cool bevels to my image that I see used on the Web?
+------------------------------------------------------------------------------
 
 There are four types of ornamental borders you can add to your image
 with GraphicsMagick. Each is listed below with the procedure to use
@@ -433,8 +480,8 @@ them with your image.
     gm convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
     gm convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif
 
-20) I try to launch display from my window manager and it fails. What's up?
----------------------------------------------------------------------------
+I try to launch display from my window manager and it fails. What's up?
+-----------------------------------------------------------------------
 
 Display_ determines if it is executing interactively and behaves
 differently depending on the result. To convince display <display.html>
@@ -446,8 +493,8 @@ window manager, use either of ::
 
 Note that this issue no longer exists as of GraphicsMagick 1.2.
 
-21)  How can I make Postscript text look good?
-----------------------------------------------
+How can I make Postscript text look good?
+-----------------------------------------
 
 Simple. Increase the dots-per-inch when converting and sub-sample::
 
@@ -468,8 +515,8 @@ but in the process anti-aliases (or smooths) the fonts and lines of the
 image so as to remove the jaggies you would otherwise get from a normal
 postscript to image conversion.
 
-22) How can I annotate an image with text that is 2 to 3 inches tall?
----------------------------------------------------------------------
+How can I annotate an image with text that is 2 to 3 inches tall?
+-----------------------------------------------------------------
 
 If you do not access to a particular named font that is large, try
 scalable fonts. First see if you have any scalable fonts. Type ::
@@ -490,8 +537,8 @@ increase your pointsize and/or density::
 
     gm convert -font Helvetica -pointsize 100 -density 300 ...
 
-23) How can I convert my GIF animation sequence to individual image files?
---------------------------------------------------------------------------
+How can I convert my GIF animation sequence to individual image files?
+----------------------------------------------------------------------
 
 Use the scene embedded file format with convert_::
 
@@ -500,8 +547,8 @@ Use the scene embedded file format with convert_::
 The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.
 
-24) How can I remove the background that prints around my image when I display it with Netscape?
-------------------------------------------------------------------------------------------------
+How can I remove the background that prints around my image when I display it with Netscape?
+--------------------------------------------------------------------------------------------
 
 Use the +page option of the convert_ command::
 
@@ -513,8 +560,8 @@ could have been introduced by GraphicsMagick. Either way, +page
 removes the unwanted page offset and Netscape should behave as
 expected.
 
-25) How do I create a GIF or PNG image with Web safe colors?
-------------------------------------------------------------
+How do I create a GIF or PNG image with Web safe colors?
+--------------------------------------------------------
 
 Web safe colors are not normally needed any more since almost all
 computers now have true color displays. However, this FAQ may still be
@@ -528,8 +575,8 @@ Netscape predefines 216 colors for colormapped displays. Use the above
 command to ensure only these predefined colors are used. Otherwise
 Netscape dithers your image with varying degrees of image fidelity.
 
-26) How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?
-----------------------------------------------------------------------
+How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?
+------------------------------------------------------------------
 
 The default PDF compression is *Zip*. You need Acrobat 3.0 and above
 to read Zip compressed PDF. Instead use no compression or LZW
@@ -537,8 +584,8 @@ compression when you create the PDF file::
 
     gm convert +compress images.tiff image.pdf
 
-27) How can I add a matte layer to my image?
---------------------------------------------
+How can I add a matte layer to my image?
+----------------------------------------
 
 One way is to use a bitmap as your transparency mask First, use the
 -matte option to add an all-opaque opacity channel, then use the
@@ -552,8 +599,8 @@ Note, GIF is limited to one transparent color. If your mask has
 variable opacity, use a format like MIFF, TIFF, or PNG as your output
 image format.
 
-28) How can I draw with text using 'convert' under Windows NT?
---------------------------------------------------------------
+How can I draw with text using 'convert' under Windows NT?
+----------------------------------------------------------
 
 The problem is that NT interprets the command line differently than
 Unix does, causing the documented command to fail. The following
@@ -568,15 +615,15 @@ on Ghostscript's 'gs' program to installed)::
     gm convert.exe -pointsize 18 -draw "text 0,0 "This is my text!"" \
       C:\blank.gif c:\text.gif
 
-29) Why are my JPEG files larger than expected?
------------------------------------------------
+Why are my JPEG files larger than expected?
+-------------------------------------------
 
 Your JPEG files may contain embedded "profiles" such as Exif or IPTC,
 or they may contain uncompressed thumbnails. You can use the `+profile
 "*"` commandline option or an equivalent API method to remove them.
 
-30) How do I extract a single image from a multi-image file?
-------------------------------------------------------------
+How do I extract a single image from a multi-image file?
+--------------------------------------------------------
 
 Use a square-bracket syntax to indicate which frame or frames you
 want. For example, ::
@@ -587,8 +634,8 @@ Will extract the first image (scene 0) from a GIF animation. Be sure
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.
 
-31) How can I extract and combine CMYK channels in a CMYK image?
-----------------------------------------------------------------
+How can I extract and combine CMYK channels in a CMYK image?
+------------------------------------------------------------
 
 GraphicsMagick 1.2.2 and later support combining multiple channels in of
 any image file format in order to create a CMYK image file.  For example,
@@ -615,8 +662,8 @@ There is also built-in support for a *Partition* interlace format which
 can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.
 
-32) How can I create a solid or patterned canvas image?
--------------------------------------------------------
+How can I create a solid or patterned canvas image?
+---------------------------------------------------
 
 Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
 formats. XC produces solid color images based on an color you specify
@@ -646,7 +693,7 @@ To create a patterned canvas image using a user-supplied image::
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2009 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 

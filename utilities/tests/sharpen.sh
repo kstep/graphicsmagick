@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -sharpen 0x1 -label Sharpen Sharpen_out.miff
+OUTFILE=TileSharpen_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -sharpen 0x1 -label Sharpen ${OUTFILE}

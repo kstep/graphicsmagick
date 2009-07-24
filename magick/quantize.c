@@ -196,7 +196,7 @@
 /*
   Typedef declarations.
 */
-#if QuantumDepth > 16 && defined(HAVE_LONG_DOUBLE)
+#if QuantumDepth > 16 && defined(HAVE_LONG_DOUBLE_WIDER)
   typedef long double ErrorSumType;
 #else
   typedef double ErrorSumType;
@@ -2592,8 +2592,9 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
       break;
     image=image->next;
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitorFormatted(i,number_images,&image->exception,
-                                ClassifyImageText,image->filename))
+    if ((image != (Image *) NULL) &&
+	(!MagickMonitorFormatted(i,number_images,&image->exception,
+				 ClassifyImageText,image->filename)))
       break;
   }
   if (status != MagickFail)
@@ -2613,8 +2614,9 @@ MagickExport MagickPassFail QuantizeImages(const QuantizeInfo *quantize_info,
           (void) TransformColorspace(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
-        if (!MagickMonitorFormatted(i,number_images,&image->exception,
-                                    AssignImageText,image->filename))
+        if ((image != (Image *) NULL) &&
+	    (!MagickMonitorFormatted(i,number_images,&image->exception,
+				     AssignImageText,image->filename)))
           {
             status=MagickFail;
             break;

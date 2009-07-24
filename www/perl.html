@@ -187,14 +187,14 @@ $ENV{PATH}='/bin:/usr/bin:/usr/local/bin';
 <pre class="literal-block">
 #!/usr/local/bin/perl
 use Graphics::Magick;
-my($image, $x);
+my($image, $status);
 $image = Graphics::Magick-&gt;new;
-$x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
-warn &quot;$x&quot; if &quot;$x&quot;;
-$x = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
-warn &quot;$x&quot; if &quot;$x&quot;;
-$x = $image-&gt;Write('x.gif');
-warn &quot;$x&quot; if &quot;$x&quot;;
+$status = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
+warn &quot;$status&quot; if &quot;$status&quot;;
+$status = $image-&gt;Crop(geometry=&gt;'100x100+100+100');
+warn &quot;$status&quot; if &quot;$status&quot;;
+$status = $image-&gt;Write('x.gif');
+warn &quot;$status&quot; if &quot;$status&quot;;
 </pre>
 <p>The script reads three images, crops them, and writes a single image as a
 GIF animation sequence. In many cases you may want to access individual
@@ -1073,16 +1073,20 @@ compression</td>
 </tr>
 <tr><td>debug</td>
 <td>{No, Configure, Annotate, Render,
-Locale, Coder, X11, Cache, Blob,
-All}</td>
-<td>display copious
+Transform, Locale, Coder, X11,
+Cache, Blob, Deprecate, User,
+Resource, TemporaryFile,
+Exception,All}</td>
+<td>log copious
 debugging
-information</td>
+information  for
+one or more event
+types</td>
 </tr>
 <tr><td>delay</td>
 <td>integer</td>
 <td>this many 1/100ths
-of a secondfP must
+of a second must
 expire before
 displaying the next
 image in a sequence</td>
@@ -1735,7 +1739,7 @@ specify more than one filename but only one filehandle:</p>
 <pre class="literal-block">
 ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
 ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;\*IMAGE);
-($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
+($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;&#64;blob);
 </pre>
 <p>This is a more efficient and less memory intensive way to query if an
 image exists and what its characteristics are.</p>
@@ -1808,27 +1812,27 @@ different methods:</p>
 <ul>
 <li><p class="first">Methods which return a number (e.g. Read(), Write()):</p>
 <pre class="literal-block">
-$x = $image-&gt;Read(...);
-warn &quot;$x&quot; if &quot;$x&quot;; # print the error message
-$x =~ /(\d+)/;
+$status = $image-&gt;Read(...);
+warn &quot;$status&quot; if &quot;$status&quot;; # print the error message
+$status =~ /(\d+)/;
 print $1; # print the error number
-print 0+$x; # print the number of images read
+print 0+$status; # print the number of images read
 </pre>
 </li>
 <li><p class="first">Methods which operate on an image (e.g. Resize(), Crop()):</p>
 <pre class="literal-block">
-$x = $image-&gt;Crop(...);
-warn &quot;$x&quot; if &quot;$x&quot;; # print the error message
-$x =~ /(\d+)/;
+$status = $image-&gt;Crop(...);
+warn &quot;$status&quot; if &quot;$status&quot;; # print the error message
+$status =~ /(\d+)/;
 print $1; # print the error number
 </pre>
 </li>
 <li><p class="first">Methods which return images (Average(), Montage(), Clone()) should be
 checked for errors this way:</p>
 <pre class="literal-block">
-$x = $image-&gt;Montage(...);
-warn &quot;$x&quot; if !ref($x); # print the error message
-$x =~ /(\d+)/;
+$status = $image-&gt;Montage(...);
+warn &quot;$status&quot; if !ref($status); # print the error message
+$status =~ /(\d+)/;
 print $1; # print the error number
 </pre>
 </li>
@@ -2017,17 +2021,17 @@ file</td>
 </table>
 <p>The following illustrates how you can use a numeric status code:</p>
 <pre class="literal-block">
-$x = $image-&gt;Read('rose.png');
-$x =~ /(\d+)/;
+$status = $image-&gt;Read('rose.png');
+$status =~ /(\d+)/;
 die &quot;unable to continue&quot; if ($1 == ResourceLimitError);
 </pre>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2008</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2009</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2008-11-09 20:27 UTC.
+Generated on: 2009-05-27 01:44 UTC.
 
 </div>
 </body>

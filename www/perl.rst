@@ -144,14 +144,14 @@ Here is an example script to get you started::
 
   #!/usr/local/bin/perl
   use Graphics::Magick;
-  my($image, $x);
+  my($image, $status);
   $image = Graphics::Magick->new;
-  $x = $image->Read('girl.png', 'logo.png', 'rose.png');
-  warn "$x" if "$x";
-  $x = $image->Crop(geometry=>'100x100+100+100');
-  warn "$x" if "$x";
-  $x = $image->Write('x.gif');
-  warn "$x" if "$x";
+  $status = $image->Read('girl.png', 'logo.png', 'rose.png');
+  warn "$status" if "$status";
+  $status = $image->Crop(geometry=>'100x100+100+100');
+  warn "$status" if "$status";
+  $status = $image->Write('x.gif');
+  warn "$status" if "$status";
 
 The script reads three images, crops them, and writes a single image as a
 GIF animation sequence. In many cases you may want to access individual
@@ -793,12 +793,14 @@ And here is a list of all the image attributes you can set:
    |compression     |{None, BZip, Fax, Group4, JPEG,     |type of image      |
    |                |LosslessJPEG, LZW, RLE, Zip}        |compression        |
    +----------------+------------------------------------+-------------------+
-   |                |{No, Configure, Annotate, Render,   |display copious    |
-   |debug           |Locale, Coder, X11, Cache, Blob,    |debugging          |
-   |                |All}                                |information        |
+   |                |{No, Configure, Annotate, Render,   |log copious        |
+   |debug           |Transform, Locale, Coder, X11,      |debugging          |
+   |                |Cache, Blob, Deprecate, User,       |information  for   |
+   |                |Resource, TemporaryFile,            |one or more event  |
+   |                |Exception,All}                      |types              |
    +----------------+------------------------------------+-------------------+
    |                |                                    |this many 1/100ths |
-   |                |                                    |of a second\fP must|
+   |                |                                    |of a second must   |
    |delay           |integer                             |expire before      |
    |                |                                    |displaying the next|
    |                |                                    |image in a sequence|
@@ -1253,7 +1255,7 @@ specify more than one filename but only one filehandle::
 
   ($width, $height, $size, $format) = $image->Ping('logo.png');
   ($width, $height, $size, $format) = $image->Ping(file=>\*IMAGE);
-  ($width, $height, $size, $format) = $image->Ping(blob=>$blob);
+  ($width, $height, $size, $format) = $image->Ping(blob=>@blob);
 
 This is a more efficient and less memory intensive way to query if an
 image exists and what its characteristics are.
@@ -1341,25 +1343,25 @@ different methods:
 
   + Methods which return a number (e.g. Read(), Write())::
 
-      $x = $image->Read(...);
-      warn "$x" if "$x"; # print the error message
-      $x =~ /(\d+)/;
+      $status = $image->Read(...);
+      warn "$status" if "$status"; # print the error message
+      $status =~ /(\d+)/;
       print $1; # print the error number
-      print 0+$x; # print the number of images read
+      print 0+$status; # print the number of images read
 
   + Methods which operate on an image (e.g. Resize(), Crop())::
 
-      $x = $image->Crop(...);
-      warn "$x" if "$x"; # print the error message
-      $x =~ /(\d+)/;
+      $status = $image->Crop(...);
+      warn "$status" if "$status"; # print the error message
+      $status =~ /(\d+)/;
       print $1; # print the error number
 
   + Methods which return images (Average(), Montage(), Clone()) should be
     checked for errors this way::
 
-      $x = $image->Montage(...);
-      warn "$x" if !ref($x); # print the error message
-      $x =~ /(\d+)/;
+      $status = $image->Montage(...);
+      warn "$status" if !ref($status); # print the error message
+      $status =~ /(\d+)/;
       print $1; # print the error number
 
 Here is an example error message::
@@ -1464,8 +1466,8 @@ Below is a list of error and warning codes:
 
 The following illustrates how you can use a numeric status code::
 
-  $x = $image->Read('rose.png');
-  $x =~ /(\d+)/;
+  $status = $image->Read('rose.png');
+  $status =~ /(\d+)/;
   die "unable to continue" if ($1 == ResourceLimitError);
 
 
@@ -1473,5 +1475,5 @@ The following illustrates how you can use a numeric status code::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2008
+Copyright |copy| GraphicsMagick Group 2002 - 2009
 

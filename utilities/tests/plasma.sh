@@ -11,4 +11,6 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${CONVERT_FLAGS} -size 130x194 plasma:fractal -label Plasma Plasma_out.miff
+OUTFILE=TilePlasma_out.miff
+rm -f ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} -size 130x194 plasma:fractal -label Plasma ${OUTFILE}

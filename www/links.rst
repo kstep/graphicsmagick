@@ -4,47 +4,52 @@ Related Links
 
 These links may be useful or interesting to **GraphicsMagick** users:
 
-ImageMagick/GraphicsMagick Topics
-=================================
+GraphicsMagick Topics
+=====================
 
-`ImageMagick Hacks <http://savage.net.au/ImageMagick.html>`_,
-a collection of tips and sample scripts for PerlMagick.
-
-`Graphics from the command line <http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428>`_,
-an excellent article about using command-line ImageMagick written by Michael Still.
-
-`WebMagick Image Navigator <http://webmagick.sourceforge.net/>`_,
-WebMagick creates photo albums for the Web.
-
-`PHP front-end to ImageMagick <http://www.evolt.org/article/PHP_frontend_to_ImageMagick/17/55650/>`_,
-an article about the PHP front-end to ImageMagick.
+`Free Software Foundation <http://directory.fsf.org/project/GraphicsMagick/>`_ GraphicsMagick Entry.
 
 `FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
+`FreshMeat <http://freshmeat.net/projects/graphicsmagick>`_ GraphicsMagick Entry.
 
-ImageMagick/GraphicsMagick Vulnerabilities
-=============================================
+`Gmane <http://dir.gmane.org/gmane.comp.video.graphicsmagick.announce>`_ GraphicsMagick Announce List.
+
+`Gentoo Sunrise <http://bugs.gentoo.org/show_bug.cgi?id=190372>`_ Bug Tracker Entry.
+
+`Red Hat Linux <http://bugzilla.redhat.com/buglist.cgi?quicksearch=GraphicsMagick>`_ GraphicsMagick related bugs.
+
+`WikiPedia <http://en.wikipedia.org/wiki/GraphicsMagick>`_ GraphicsMagick Entry.
+
+`IceWalkers <http://www.icewalkers.com/Linux/Software/519400/GraphicsMagick.html>`_ GraphicsMagick Entry.
+
+`Ohloh <http://www.ohloh.net/p/GraphicsMagick>`_ GraphicsMagick Entry.
+
+`SourceForge <http://sourceforge.net/projects/graphicsmagick/>`_ GraphicsMagick Entry.
+
+`GraphicsMagick on MinGW <http://ascendwiki.cheme.cmu.edu/Building_GraphicsMagick_on_MinGW>`_.
 
 
-Search the CVE site at MITRE for `GraphicsMagick`__  or `ImageMagick`__ vulnerabilities.
+GraphicsMagick Vulnerabilities
+==============================
+
+Search the CVE site at MITRE for `GraphicsMagick`__ vulnerabilities.
 
 .. _CVE_GraphicsMagick : http://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=GraphicsMagick
 
 __ CVE_GraphicsMagick_
 
-.. _CVE_ImageMagick : http://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=ImageMagick
-
-__ CVE_ImageMagick_
-
-Search Secunia for `GraphicsMagick`__ or `ImageMagick`__ vulnerabilities.
+Search Secunia for `GraphicsMagick`__ vulnerabilities.
 
 .. _Secunia_GraphicsMagick : http://secunia.com/search/?search=GraphicsMagick
 
 __ Secunia_GraphicsMagick_
 
-.. _Secunia_ImageMagick : http://secunia.com/search/?search=ImageMagick
+Seach SecurityFocus Bugtraq for `GraphicsMagick`__ vulnerabilities.
 
-__ Secunia_ImageMagick_
+__ Bugtraq_GraphicsMagick_
+
+.. _Bugtraq_GraphicsMagick : http://www.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
 
 Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=GraphicsMagick&amp;searchon=names&amp;suite=all&amp;section=main>`_.
 
@@ -142,8 +147,8 @@ library and sample tools for dealing with high dynamic-range (HDR) images.
 Motion Picture Links
 =========================
 
-`Digital Praxis <http://www.digitalpraxis.net/>`_,
-white papers regarding HD video cameras, log color spaces, and digital intermediate.
+`Light Illusion <http://www.lightillusion.com/home.htm>`_,
+white papers by Steve Shaw regarding HD video cameras, log color spaces, and digital intermediate.
 
 `Digital Intermediates <http://www.digitalintermediates.org/>`_,
 site by Jack James dedicated to the digital intermediate industry.
@@ -192,6 +197,10 @@ an open source ICC profiler with graphical user interface.
 `Gallery <http://gallery.menalto.com/>`_,
 a facinating web-based photo album organizer.  Works with GraphicsMagick!.
 
+`DJV Imaging <http://djv.sourceforge.net/>`_, professional movie
+playback and image processing software for the film and computer
+animation industries.
+
 Stock Photos
 =============
 
@@ -201,5 +210,5 @@ Stock Photos
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2008
+`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2009
 

@@ -272,7 +272,7 @@ WandExport unsigned int DestroyMagickWand(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k A d a p t i v e T h r e s o l d I m a g e                     %
+%   M a g i c k A d a p t i v e T h r e s h o l d I m a g e                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -283,10 +283,11 @@ WandExport unsigned int DestroyMagickWand(MagickWand *wand)
 %  allows for thresholding of an image whose global intensity histogram
 %  doesn't contain distinctive peaks.
 %
-%  The format of the AdaptiveThresholdImage method is:
+%  The format of the MagickAdaptiveThresholdImage method is:
 %
 %      unsigned int MagickAdaptiveThresholdImage(MagickWand *wand,
-%        const unsigned long width,const unsigned long height,const long offset)
+%                     const unsigned long width,const unsigned long height,
+%                     const long offset)
 %
 %  A description of each parameter follows:
 %
@@ -659,7 +660,7 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k B l a c k T h r e s o l d I m a g e                           %
+%   M a g i c k B l a c k T h r e s h o l d I m a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1006,7 +1007,7 @@ WandExport unsigned int MagickClipPathImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k C o e l e s c e I m a g e                                     %
+%   M a g i c k C o a l e s c e I m a g e s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1219,14 +1220,14 @@ WandExport unsigned int MagickCommentImage(MagickWand *wand,const char *comment)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k C o m p a r e I m a g e s                                     %
+%   M a g i c k C o m p a r e I m a g e C h a n n e l s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCompareImage() compares one or more image channels and returns the
-%  specified distortion metric.
+%  MagickCompareImageChannels() compares one or more image channels and
+%  returns the specified distortion metric.
 %
 %  The format of the MagickCompareImageChannels method is:
 %
@@ -1586,7 +1587,7 @@ WandExport unsigned int MagickCycleColormapImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k D e c o n s t r u c t I m a g e                               %
+%   M a g i c k D e c o n s t r u c t I m a g e s                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2619,7 +2620,7 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e B a c k g o u n d C o l o r                   %
+%   M a g i c k G e t I m a g e B a c k g r o u n d C o l o r                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3626,7 +3627,7 @@ WandExport unsigned long MagickGetImageIterations(MagickWand *wand)
 %
 %  The format of the MagickGetImageMatteColor method is:
 %
-%      unsigned int MagickGetImagematteColor(MagickWand *wand,
+%      unsigned int MagickGetImageMatteColor(MagickWand *wand,
 %        PixelWand *matte_color)
 %
 %  A description of each parameter follows:
@@ -3857,11 +3858,11 @@ WandExport RenderingIntent MagickGetImageRenderingIntent(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageXResolution() gets the image X & Y resolution.
+%   MagickGetImageResolution() gets the image X & Y resolution.
 %
-%  The format of the MagickGetImageXResolution method is:
+%  The format of the  MagickGetImageResolution method is:
 %
-%      unsigned int MagickGetImageXResolution(MagickWand *wand,double *x,
+%      unsigned int  MagickGetImageResolution(MagickWand *wand,double *x,
 %        double *y)
 %
 %  A description of each parameter follows:
@@ -4211,11 +4212,11 @@ WandExport unsigned long MagickGetNumberImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetName() returns the ImageMagick package name.
+%  MagickGetPackageName() returns the ImageMagick package name.
 %
-%  The format of the MagickGetName method is:
+%  The format of the MagickGetPackageName method is:
 %
-%      const char *MagickGetName(void)
+%      const char *MagickGetPackageName(void)
 %
 %
 */
@@ -4597,7 +4598,7 @@ WandExport unsigned int MagickLabelImage(MagickWand *wand,const char *label)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k L e v e I m a g e                                             %
+%   M a g i c k L e v e l I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4654,25 +4655,26 @@ WandExport unsigned int MagickLevelImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k L e v e I m a g e C h a n n e l                               %
+%   M a g i c k L e v e l I m a g e C h a n n e l                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickLevelImage() adjusts the levels of the specified channel of the
-%  reference image by scaling the colors falling between specified white and
-%  black points to the full available quantum range. The parameters provided
-%  represent the black, mid, and white points. The black point specifies the
-%  darkest color in the image. Colors darker than the black point are set to
-%  zero.  Mid point specifies a gamma correction to apply to the image.  White
-%  point specifies the lightest color in the image. Colors brighter than the
-%  white point are set to the maximum quantum value.
+%  MagickLevelImageChannel() adjusts the levels of the specified channel of
+%  the reference image by scaling the colors falling between specified white
+%  and black points to the full available quantum range. The parameters
+%  provided represent the black, mid, and white points. The black point
+%  specifies the darkest color in the image. Colors darker than the black
+%  point are set to zero.  Mid point specifies a gamma correction to apply
+%  to the image.  White point specifies the lightest color in the image.
+%  Colors brighter than the white point are set to the maximum quantum value.
 %
-%  The format of the MagickLevelImage method is:
+%  The format of the MagickLevelImageChannel method is:
 %
-%      unsigned int MagickLevelImage(MagickWand *wand,const ChannelType channel,
-%        const double black_point,const double gamma,const double white_point)
+%      unsigned int MagickLevelImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double black_point,
+%        const double gamma,const double white_point)
 %
 %  A description of each parameter follows:
 %
@@ -5298,7 +5300,7 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickNegateImage() negates the colors in the specified channel of the
+%  MagickNegateImageChannel() negates the colors in the specified channel of the
 %  reference image.  The Grayscale option means that only grayscale values
 %  within the image are negated.  Note that the Grayscale option has no
 %  effect for GraphicsMagick.
@@ -5306,9 +5308,9 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 %  You can also reduce the influence of a particular channel with a gamma
 %  value of 0.
 %
-%  The format of the MagickNegateImage method is:
+%  The format of the MagickNegateImageChannel method is:
 %
-%      unsigned int MagickNegateImage(MagickWand *wand,
+%      unsigned int MagickNegateImageChannel(MagickWand *wand,
 %        const ChannelType channel,const unsigned int gray)
 %
 %  A description of each parameter follows:
@@ -5574,7 +5576,7 @@ WandExport unsigned int MagickPingImage(MagickWand *wand,const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k P r e v i e w I m a g e                                       %
+%   M a g i c k P r e v i e w I m a g e s                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -6127,7 +6129,7 @@ WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
 %
 %      unsigned int MagickRaiseImage(MagickWand *wand,const unsigned long width,
 %        const unsigned long height,const long x,const long y,
-%        const unsigned int raise)
+%        const unsigned int raise_flag)
 %
 %  A description of each parameter follows:
 %
@@ -6135,13 +6137,13 @@ WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
 %
 %    o width,height,x,y:  Define the dimensions of the area to raise.
 %
-%    o raise: A value other than zero creates a 3-D raise effect,
+%    o raise_flag: A value other than zero creates a 3-D raise effect,
 %      otherwise it has a lowered effect.
 %
 */
 WandExport unsigned int MagickRaiseImage(MagickWand *wand,
   const unsigned long width,const unsigned long height,const long x,
-  const long y,const unsigned int raise)
+  const long y,const unsigned int raise_flag)
 {
   RectangleInfo
     raise_info;
@@ -6157,7 +6159,7 @@ WandExport unsigned int MagickRaiseImage(MagickWand *wand,
   raise_info.height=height;
   raise_info.x=x;
   raise_info.y=y;
-  status=RaiseImage(wand->image,&raise_info,raise);
+  status=RaiseImage(wand->image,&raise_info,raise_flag);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
@@ -7574,7 +7576,7 @@ WandExport unsigned int MagickSetImageIndex(MagickWand *wand,const long index)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I m a g e I n t e r l a c e S c h m e m e               %
+%   M a g i c k S e t I m a g e I n t e r l a c e S c h e m e                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8112,7 +8114,7 @@ WandExport unsigned int MagickSetImageVirtualPixelMethod(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S e t I n t e r l a c e S c h m e m e                         %
+%   M a g i c k S e t I n t e r l a c e S c h e m e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -8766,7 +8768,7 @@ WandExport unsigned int MagickSwirlImage(MagickWand *wand,const double degrees)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k T e x u r e I m a g e                                         %
+%   M a g i c k T e x t u r e I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9126,7 +9128,7 @@ WandExport unsigned int MagickTrimImage(MagickWand *wand,const double fuzz)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k S h a r p e n I m a g e                                       %
+%   M a g i c k U n s h a r p M a s k I m a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9228,7 +9230,7 @@ WandExport unsigned int MagickWaveImage(MagickWand *wand,const double amplitude,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k W h i t e T h r e s o l d I m a g e                           %
+%   M a g i c k W h i t e T h r e s h o l d I m a g e                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -9365,11 +9367,11 @@ WandExport unsigned char *MagickWriteImageBlob(MagickWand *wand,size_t *length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickWandToFile() writes an image to an open file descriptor.
+%  MagickWriteImageFile() writes an image to an open file descriptor.
 %
 %  The format of the MagickWandToFile method is:
 %
-%      unsigned int MagickWandToFile(MagickWand *wand,FILE *file)
+%      unsigned int MagickWriteImageFile(MagickWand *wand,FILE *file)
 %
 %  A description of each parameter follows:
 %

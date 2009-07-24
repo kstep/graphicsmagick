@@ -11,5 +11,7 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileThresholdBlack_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -black-threshold "20%" \
-                   -label "Black Threshold" ThresholdBlack_out.miff
+                   -label "Black Threshold" ${OUTFILE}

@@ -11,6 +11,8 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileShear_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -shear 45x45 \
-        -transparent black -label Shear Shear_out.miff
+        -transparent black -label Shear ${OUTFILE}
 

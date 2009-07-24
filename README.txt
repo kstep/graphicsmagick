@@ -117,16 +117,17 @@ of the library-based packages listed here.
 
     http://www.cybercom.net/~dcoffin/dcraw/
 
-  to read raw images from digital cameras.  Use similar to::
-
-    gm convert dcraw:infile outfile
+  to read raw images from digital cameras.  Dcraw is invoked
+  automatically when used to read files using a common RAW file format
+  extension.
 
 * GraphicsMagick requires 'fig2dev' provided in the transfig package
   from
 
     http://www.xfig.org/
 
-  to read the Fig image format.
+  to read the Fig image format. Ghostscript (see below) is also
+  required.
 
 * GraphicsMagick requires the FreeType software, version 2.0 or above,
   available as
@@ -178,7 +179,8 @@ of the library-based packages listed here.
      http://www.gnu.org/software/hp2xx/hp2xx.html
 
   to read the HP-GL image format. Note that HPGL is a plotter file
-  format. HP printers usually accept PCL format rather than HPGL format.
+  format. HP printers usually accept PCL format rather than HPGL
+  format.  Ghostscript (see above) is also required.
 
 * GraphicsMagick requires the LCMS library available from
 
@@ -190,13 +192,21 @@ of the library-based packages listed here.
 
      http://gnuplot.sourceforge.net/
 
-  to read GNUPLOT plot files (with extension gplt).
+  to read GNUPLOT plot files (with extension gplt).  Ghostscript (see
+  above) is also required.
+
+* GraphicsMagick requires Graphviz available from
+
+     http://www.graphviz.org/
+
+  to read Graphvis 'dot' digraph files (with extension dot).
+  Ghostscript (see above) is also required.
 
 * GraphicsMagick requires html2ps available from
 
      http://user.it.uu.se/~jan/html2ps.html
 
-  to rasterize HTML files.
+  to rasterize HTML files.  Ghostscript (see above) is also required.
 
 * GraphicsMagick requires the JBIG-Kit software available via
   HTTP from
@@ -237,11 +247,12 @@ of the library-based packages listed here.
 
   to read or write the MPEG image format.
 
-* GraphicsMagick requires the PNG library, version 1.0 or above, from
+* GraphicsMagick requires the LIBPNG library, version 1.0 or above, from
 
      http://www.libpng.org/pub/png/pngcode.html
 
-  to read the PNG image format.
+  to read or write the PNG, MNG, or JNG image formats.  LIBPNG depends
+  upon the ZLIB library (see below).
 
 * GraphicsMagick requires ra_ppm from Greg Ward's Radiance software
   available from

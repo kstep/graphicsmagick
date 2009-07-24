@@ -1,4 +1,4 @@
-# Copyright (C) 2003, 2007, 2008 GraphicsMagick Group
+# Copyright (C) 2003-2009 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.62)
+AC_PREREQ(2.63)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
@@ -40,7 +40,7 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 . ${srcdir}/version.sh
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
 # Substitute Magick library versioning
 AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
@@ -97,6 +97,9 @@ AM_SANITY_CHECK
 AC_CONFIG_HEADERS([magick/magick_config.h magick/magick_config_api.h])
 
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
+
+# Enable support for silent build rules
+AM_SILENT_RULES
 
 # Regenerate config.status if ChangeLog or version.sh is updated.
 AC_SUBST([CONFIG_STATUS_DEPENDENCIES],['$(top_srcdir)/ChangeLog $(top_srcdir)/version.sh'])
@@ -264,9 +267,34 @@ then
       else
         CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
       fi
+      ;;
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
+fi
+
+# Reduce utility startup overhead by lazy-loading dependency libraries
+# if possible.
+#
+#   http://developers.sun.com/solaris/articles/reducing_app.html
+#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
+AC_CACHE_CHECK([for linker lazyload option],[gm_cv_ld_lazyload],
+[
+gm_cv_ld_lazyload='none'
+case "${host}" in
+  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
+    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
+       gm_cv_ld_lazyload='-Wl,-zlazyload'
+    fi
+    ;;
+esac
+])
+if test "${gm_cv_ld_lazyload}" != 'none' ; then
+  if test -z "${LDFLAGS}" ; then
+    LDFLAGS="${gm_cv_ld_lazyload}"
+  else
+    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
+  fi
 fi
 
 #
@@ -548,7 +576,7 @@ case "${with_quantum_depth}" in
   8 ) ;;
   16 ) ;;
   32 ) ;;
-  * ) AC_ERROR("Pixel quantum depth must have value of 8, 16, or 32") ;;
+  * ) AC_MSG_ERROR("Pixel quantum depth must have value of 8, 16, or 32") ;;
 esac
 QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
@@ -566,13 +594,13 @@ AC_ARG_WITH(magick-plus-plus,
 	      [with_magick_plus_plus=$withval],
 	      [with_magick_plus_plus='yes'])
 
-# Disable build/install of PerlMagick.
+# Enable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --without-perl          disable build/install of PerlMagick
+	      [  --with-perl             enable build/install of PerlMagick
        or
   --with-perl=PERL        use specified Perl binary to configure PerlMagick],
 	      [with_perl=$withval],
-	      [with_perl='yes'])
+	      [with_perl='no'])
 
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH(perl-options,
@@ -842,6 +870,11 @@ AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/times.h sys/types.h)
 # define const to be empty.
 AC_C_CONST
 
+# If the C compiler supports the keyword restrict, do
+# nothing. Otherwise define restrict to __restrict__ or __restrict if
+# it accepts one of those, otherwise define restrict to be empty.
+AC_C_RESTRICT
+
 # If the C compiler supports the keyword inline, do nothing. Otherwise
 # define inline to __inline__ or __inline if it accepts one of those,
 # otherwise define inline to be empty.
@@ -866,9 +899,9 @@ AC_TYPE_SIZE_T
 # Define ssize_t to a suitable type, if standard headers do not define it.
 AC_TYPE_SSIZE_T
 
-# If the C compiler supports a working long double type with more range
-# or precision than the double type, define HAVE_LONG_DOUBLE.
-AC_C_LONG_DOUBLE
+# If C compiler supports a working long double type with more range
+# or precision than the double type then define HAVE_LONG_DOUBLE_WIDER.
+AC_TYPE_LONG_DOUBLE_WIDER
 
 # If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
 # C compiler predefines it.
@@ -1065,11 +1098,13 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll _exit ftime getexecname getc_unlocked getpagesize \
-  getpid lltostr madvise mkstemp _NSGetExecutablePath _pclose pclose poll \
-  _popen popen posix_fallocate pread pwrite putc_unlocked raise rand_r \
-  readlink realpath select seekdir sigemptyset sigaction strerror strlcat \
-  strlcpy strtoll sysconf tempnam times telldir ulltostr vsprintf vsnprintf])
+AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
+  getc_unlocked getpagesize getpid lltostr localtime_r madvise mkstemp \
+  _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
+  posix_fallocate posix_madvise pread pwrite putc_unlocked raise rand_r \
+  readdir_r readlink realpath select seekdir sigemptyset sigaction strerror \
+  strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r times telldir \
+  ulltostr vsprintf vsnprintf])
 
 ########
 #
@@ -1086,6 +1121,22 @@ AC_CHECK_DECLS([strlcpy],[],[],[
 AC_CHECK_DECLS([vsnprintf],[],[],[
 #include <stdio.h>
 #include <stdarg.h>])
+
+#######
+#
+# Check for /dev/urandom device
+#
+#######
+AC_CACHE_CHECK(for /dev/urandom,gm_cv_dev_urandom,
+[ gm_cv_dev_urandom=no
+  if test -c /dev/urandom
+  then
+    gm_cv_dev_urandom=yes
+  fi])
+  if test "${gm_cv_dev_urandom}" = yes
+  then
+     AC_DEFINE(HAVE_DEV_URANDOM,1,[Have a /dev/urandom device for producing random bytes])
+  fi
 
 ########
 #
@@ -1196,7 +1247,7 @@ MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 #
 # Find the X11 RGB database
 #
-AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
+AC_CACHE_CHECK(for X11 configure files,gm_cv_x_configure,
 [# Look for the header file in a standard set of common directories.
 # Check X11 before X11Rn because it is often a symlink to the current release.
   for ac_dir in               \
@@ -1205,6 +1256,7 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
     /usr/X11R4/lib        \
     /usr/X11R5/lib        \
     /usr/X11R6/lib        \
+    /usr/X11R7/lib        \
     /usr/X386/lib         \
     /usr/XFree86/lib/X11  \
     /usr/athena/lib       \
@@ -1213,15 +1265,18 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
     /usr/lib/X11R4        \
     /usr/lib/X11R5        \
     /usr/lib/X11R6        \
+    /usr/lib/X11R7        \
     /usr/local/X11/lib    \
     /usr/local/X11R4/lib  \
     /usr/local/X11R5/lib  \
     /usr/local/X11R6/lib  \
+    /usr/local/X11R7/lib  \
     /usr/local/lib        \
     /usr/local/lib/X11    \
     /usr/local/lib/X11R4  \
     /usr/local/lib/X11R5  \
     /usr/local/lib/X11R6  \
+    /usr/local/lib/X11R7  \
     /usr/local/x11r5/lib  \
     /usr/lpp/Xamples/lib  \
     /usr/openwin/lib      \
@@ -1232,16 +1287,16 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
   do
     if test -f "$ac_dir/X11/rgb.txt"
     then
-        im_cv_x_configure="$ac_dir/X11/"
+        gm_cv_x_configure="$ac_dir/X11/"
 	break
     elif test -f "$ac_dir/rgb.txt"
     then 
-        im_cv_x_configure="$ac_dir/"
+        gm_cv_x_configure="$ac_dir/"
         break
     fi
 
   done])
-X11ConfigurePath="$im_cv_x_configure"
+X11ConfigurePath="$gm_cv_x_configure"
 case "${build_os}" in
   mingw* )
     X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
@@ -2399,6 +2454,9 @@ have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != "$MPEGEncodeDelegateDef
 have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != "$RADDecodeDelegateDefault" ; then have_ra_ppm='yes' ; fi
 have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes' ; fi
 
+# Automake conditional to support test suite
+AM_CONDITIONAL(HasPSDelegate, test "$have_gs" = 'yes')
+
 # Test for optional rst2html.py utility and define automake conditional HasRST2HTML if found.
 AC_PATH_PROG(RST2HTML, rst2html.py, rst2html.py)
 have_rst2html='no' ; if test "$RST2HTML" != 'rst2html' ; then have_rst2html='yes' ; fi
@@ -2480,7 +2538,8 @@ else
     # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
     # Recent Cygwin puts Ghostscript fonts in /usr/share/ghostscript/fonts
     # Recent Gentoo Linux puts Ghostscript fonts in /usr/share/fonts/ghostscript
-    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/'
+    # Debian puts Ghostscript fonts in /usr/share/fonts/type1/gsfonts
+    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/' '/usr/share/fonts/type1/gsfonts/'
     do
       if test -f "${font_dir}a010013l.pfb"
       then
@@ -2974,19 +3033,14 @@ AC_SUBST(MAGICK_API_PC_CPPFLAGS)
 AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
 
-# Set configured scripts to executable.
-AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
-AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
-AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
-AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
-
-AC_OUTPUT( \
+AC_CONFIG_FILES(\
         GraphicsMagick.spec \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/lib/GraphicsMagick++.pc \
         Makefile \
         PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL \
+	PerlMagick/PerlMagickCheck.sh \
         config/delegates.mgk \
         config/type-ghostscript.mgk \
         config/type-solaris.mgk \
@@ -2999,6 +3053,17 @@ AC_OUTPUT( \
         rungm.sh \
         wand/GraphicsMagickWand-config \
         wand/GraphicsMagickWand.pc )
+
+# Set configured scripts to executable.
+AC_CONFIG_COMMANDS([default],[],[])
+AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
+AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
+AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
+AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
+AC_CONFIG_COMMANDS([PerlMagick/PerlMagickCheck.sh.in],[chmod +x PerlMagick/PerlMagickCheck.sh])
+
+AC_OUTPUT
+
 rm -f magick-version
 
 echo ""

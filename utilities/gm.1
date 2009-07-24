@@ -1,4 +1,4 @@
-.TH gm 1 "2009/03/05" "GraphicsMagick"
+.TH gm 1 "2009/07/17" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -406,6 +406,28 @@ Use \fB+append\fP to stack images left-to-right.  The set of images
 is terminated by the appearance of any option.
 If the \fB-append\fP
 option appears after all of the input images, all images are appended.
+.TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
+
+Applies ("bakes in") the ASC-CDL which is a format for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers. The format defines the math for three
+functions: slope, offset and power. Each function uses a number for
+the red, green, and blue color channels for a total of nine numbers
+comprising a single color decision. A tenth number for chrominance
+(saturation) has been proposed but is not yet standardized.
+
+The argument string is comma delimited and is in the following form
+(but without invervening spaces or line breaks)
+
+  redslope,redoffset,redpower:
+  greenslope,greenoffset,greenpower:
+  blueslope,blueoffset,bluepower:
+  saturation
+
+with the unity (no change) specification being:
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"
 .TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
@@ -1297,8 +1319,9 @@ value stored in the image. This option should not normally be used.
 .in 20
  \fR
 .in 20
-Allows the user to specify the number of rows per TIFF strip. Ignored
-if using tiles or JPEG compression.
+Allows the user to specify the number of rows per TIFF strip.
+Rounded up to a multiple of 16 when using JPEG compression. Ignored when
+using tiles.
 
 .in 15
 .in 15
@@ -1671,12 +1694,13 @@ Choose from \fIAdobeCustom, AdobeExpert, AdobeStandard, AppleRoman,
 BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.\fP
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 
-MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
-indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
-option currently only influences the output of the DPX and TIFF
-writers.
+\fIMSB\fP indicates big-endian (e.g. SPARC, Motorola 68K) while
+\fILSB\fP indicates little-endian (e.g. Intel 'x86, VAX) byte
+ordering.  \fINative\fP indicates to use the normal ordering for the
+current CPU.  This option currently only influences the CMYK, DPX,
+GRAY, RGB, and TIFF, formats.
 
 Use \fB+endian\fP to revert to unspecified endianness.
 .TP
@@ -1828,7 +1852,8 @@ characters:
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   quantum depth
+     %q   image minimum bit depth
+     %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
@@ -1848,6 +1873,19 @@ titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
 If the first character of \fIstring\fP is \fB@\fP, the format
 is read from a file titled by the remaining characters in the string.
+
+The values of image type (\fB%p\fP) which may be returned include:
+
+     Bilevel
+     Grayscale
+     GrayscaleMatte
+     Palette
+     PaletteMatte
+     TrueColor
+     TrueColorMatte
+     ColorSeparation
+     ColorSeparationMatte
+     Optimize
 
 You can also use the following special formatting syntax to print Exif
 information contained in the file:
@@ -1997,18 +2035,24 @@ but not set as an image attribute (e.g. PNG images).
 
 Use the given radius and standard deviation (sigma).
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
-By default, the window size is the image
-size and the location is chosen by you when it is mapped.
+By default, the window size is the image size and the location is
+chosen by you when it is mapped.
 
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. \fIAppend an exclamation point to the geometry
-to force the image size to exactly the size you specify\fP. For example,
-if you specify 640x480! the image width is set to 640 pixels and
-height to 480.
+By default, the width and height are maximum values. That is, the
+image is expanded or contracted to fit the width and height value
+while maintaining the aspect ratio of the image.
+
+Append a ^ to the geometry so that the image is resized while
+maintaining the aspect ratio of the image, but the resulting width or
+height are treated as minimum values rather than maximum values.
+
+Append an exclamation point to the geometry to force the image size to
+exactly the size you specify. For example, if you specify
+640x480! the image width is set to 640 pixels and height to
+480.
 
 If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
@@ -2098,6 +2142,29 @@ for this purpose.
 .B "-green-primary \fI<x>,<y>"\fP
 \fRgreen chromaticity primary point
 .TP
+.B "-hald-clut \fI<clut>"\fP
+\fRapply a Hald CLUT to the image
+
+A Hald CLUT ("Color Look-Up Table") is a special square color image
+which contains a look-up table for red, green, and blue.  The size of
+the Hald CLUT image is determined by its order.  The width (and
+height) of a Hald CLUT is the cube of the order.  For example, a Hald
+CLUT of order 8 is 512x512 pixels (262,144 colors) and of order 16 is
+4096x4096 (16,777,216 colors).  A special CLUT is the identity CLUT
+which which causes no change to the input image.  In order to use the
+Hald CLUT, one takes an identity CLUT and adjusts its colors in some
+way.  The modified CLUT can then be used to transform any number of
+images in an identical way.
+
+GraphicsMagick contains a built-in identity CLUT generator via the
+\fBIDENTITY\fP coder.  For example reading from the file name
+\fPIDENTITY:8\fP returns an identity CLUT of order 8.  Typical Hald
+CLUT identity images have an order of between 8 and 16.  The default
+order for the \fBIDENTITY\fP CLUT generator is 8.  Interpolation is
+used so it is not usually necessary for CLUT images to be very large.
+The PNG file format is ideal for storing Hald CLUT images because it
+compresses them very well.
+.TP
 .B "-help"
 \fRprint usage instructions
 .TP
@@ -2163,8 +2230,7 @@ and
 is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 
-Use \fBLine\fP or \fBPlane\fP to create an
-\fBinterlaced PNG\fP or \fB GIF\fP or
+Use \fBLine\fP to create an \fBinterlaced PNG\fP or \fB GIF\fP or
 \fBprogressive JPEG\fP image.
 .TP
 .B "-label \fI<name>"\fP
@@ -2356,9 +2422,10 @@ Colormaps.
 The image read from the file is used as a clipping mask.  It must have
 the same dimensions as the image being masked.
 
-If the mask image contains an opacity channel, the opacity of each pixel is
-used to define the mask.  Otherwise, the intensity (gray level) of each
-pixel is used.
+If the mask image contains an opacity channel, the opacity of each
+pixel is used to define the mask.  Otherwise, the intensity (gray
+level) of each pixel is used.  Unmasked (black) pixels are modified
+while masked pixels (not black) are protected from alteration.
 
 Use \fB+mask\fP to remove the clipping mask.
 
@@ -2378,6 +2445,14 @@ matte channel in the output file.
 
 The color is specified using the format described under the \fB-fill\fP
 option.
+.TP
+.B "-maximum-error \fI<limit>"\fP
+\fRspecifies the maximum amount of total image error
+
+Specifies the maximum amount of total image error (based on comparison
+using a specified metric) before an error ("image difference exceeds
+limit") is reported.  The error is reported via a non-zero command
+execution return status.
 .TP
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
@@ -3125,6 +3200,75 @@ thresholded. When \fBchanneltype\fP is "opacity" or "matte", only the
 opacity channel is thresholded. The other named channels only threshold
 the associated channel.
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+
+A user supplied color translation matrix (expressed as a text
+string) is used to translate/blend the image channels based on
+weightings in a supplied matrix which may be of order 3 (color
+channels only), 4 (color channels plus opacity), or 5 (color channels
+plus opacity and offset).  Values in the columns of the matrix (red,
+green, blue, opacity) are used as multipliers with the existing
+channel values and added together according to the rows of the matrix.
+Matrix values are floating point and may be negative.  The offset
+column (column 5) is purely additive and is scaled such that 0.0 to
+1.0 represents the maximum quantum range (but values are not limited
+to this range).
+
+An \fBidentity\fP matrix exists for each matrix order which
+results in no change to the image.  The translation matrix should be
+based on an alteration of the identity matrix.
+
+Identity matrix of order 3
+
+  1 0 0
+  0 1 0
+  0 0 1
+
+which may be formatted into a convenient matrix argument similar to
+(comma is treated as white space):
+
+  -recolor "1 0 0, 0 1 0, 0 0 1"
+
+Identity matrix of order 4
+
+  1 0 0 0
+  0 1 0 0
+  0 0 1 0
+  0 0 0 1
+
+Identity matrix of order 5.  The last row is required to exist
+for the purpose of parsing, but is otherwise not used.
+
+  1 0 0 0 0
+  0 1 0 0 0
+  0 0 1 0 0
+  0 0 0 1 0
+  0 0 0 0 1
+
+As an example, an image wrongly in BGR channel order may be converted
+to RGB using this matrix (green->red, red->green):
+
+  0 0 1
+  0 1 0
+  1 0 0
+
+and an RGB image using standard Rec.709 primaries may be converted
+to grayscale using this matrix of standard weighting factors:
+
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+  0.2126 0.7152 0.0722
+
+and contrast may be reduced by scaling down by 80% and adding a 10%
+offset:
+
+  0.8 0.0 0.0 0.0 0.1
+  0.0 0.8 0.0 0.0 0.1
+  0.0 0.0 0.8 0.0 0.1
+  0.0 0.0 0.0 0.8 0.1
+  0.0 0.0 0.0 0.0 1.0
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -3208,20 +3352,23 @@ A negative \fIx\fP offset rolls the image left-to-right. A negative
 \fIy\fP offset rolls the image top-to-bottom.
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 
-Use > to rotate the image only if its width exceeds the height.
-< rotates the image \fIonly\fP if its width is less than the
-height. For example, if you specify -rotate "-90>" and the image
-size is 480x640, the image is not rotated.  However, if the
-image is 640x480, it is rotated by -90 degrees.  If you use > or
-<, enclose it in quotation marks to prevent it from being
-misinterpreted as a file redirection.
+Positive angles rotate the image in a clockwise direction while
+negative angles rotate counter-clockwise.
 
-Empty triangles left over from rotating the image are filled with the color
-defined as \fBbackground\fP (class \fBbackgroundColor\fP).
-The color is specified using the format described under the \fB-fill\fP
-option.
+Use > to rotate the image only if its width exceeds the
+height.  < rotates the image \fIonly\fP if its width is less
+than the height. For example, if you specify -rotate "-90>"
+and the image size is 480x640, the image is not rotated.  However, if
+the image is 640x480, it is rotated by -90 degrees.  If you use
+> or <, enclose it in quotation marks to prevent it
+from being misinterpreted as a file redirection.
+
+Empty triangles left over from rotating the image are filled with the
+color defined as \fBbackground\fP (class \fBbackgroundColor\fP).
+The color is specified using the format described under the
+\fB-fill\fP option.
 .TP
 .B "-sample \fI<geometry>"\fP
 \fRscale image using pixel sampling
@@ -3927,7 +4074,7 @@ Options, above.
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-help"
@@ -3976,7 +4123,7 @@ Options, above.
 \fRperform a X11 remote operation
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRchroma subsampling factors
@@ -4328,7 +4475,7 @@ Options, above.
 \fRspecifies the X server to contact
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-file \fI<filename>"\fP
 \fRwrite annotated difference image to file
@@ -4353,6 +4500,9 @@ Options, above.
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one
+.TP
+.B "-maximum-error \fI<limit>"\fP
+\fRspecifies the maximum amount of total image error
 .TP
 .B "-monitor"
 \fRshow progress indication
@@ -4484,7 +4634,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-filter \fI<type>"\fP
 \fRuse this type of filter when resizing an image
@@ -4492,7 +4642,7 @@ Options, above.
 .B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -4537,6 +4687,9 @@ Options, above.
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG/TIFF compression level
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -4547,7 +4700,7 @@ Options, above.
 \fRresize an image
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRchroma subsampling factors
@@ -5236,6 +5389,9 @@ Options, above.
 .B "-append"
 \fRappend a set of images
 .TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
+.TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
@@ -5351,7 +5507,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -5389,7 +5545,7 @@ Options, above.
 .B "-Gaussian \fI<radius>{x<sigma>}"\fP
 \fRblur the image with a Gaussian operator
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -5397,6 +5553,9 @@ Options, above.
 .TP
 .B "-green-primary \fI<x>,<y>"\fP
 \fRgreen chromaticity primary point
+.TP
+.B "-hald-clut \fI<clut>"\fP
+\fRapply a Hald CLUT to the image
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -5524,6 +5683,9 @@ Options, above.
 .B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
 \fRrandom threshold the image
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -5543,7 +5705,7 @@ Options, above.
 \fRroll an image vertically or horizontally
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sample \fI<geometry>"\fP
 \fRscale image using pixel sampling
@@ -5853,7 +6015,7 @@ Options, above.
 \fRdetect edges within an image
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -5879,7 +6041,7 @@ Options, above.
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-help"
@@ -5952,7 +6114,7 @@ Options, above.
 \fRroll an image vertically or horizontally
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sample \fI<geometry>"\fP
 \fRscale image using pixel sampling
@@ -6751,7 +6913,7 @@ use \fB-colors\fP.
 
 To begin, press choose \fBCrop\fP of the \fBTransform\fP submenu from
 the Command widget. Alternatively,
-press [ in the image window.
+press C in the image window.
 
 A small window appears showing the location of the cursor in the image
 window. You are now in crop mode. In crop mode, the Command widget has
@@ -6780,7 +6942,7 @@ your cropping region. To exit without cropping the image, press Dismiss.
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose \fBChop\fP of the \fBTransform\fP sub-menu
 from the Command widget. Alternatively,
-press ] in the Image window.
+press [ in the Image window.
 
 You are now in \fBChop\fP mode. To exit immediately, press
 \fBDismiss\fP.
@@ -8011,12 +8173,12 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-frame"
 \fRinclude the X window frame in the imported image
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-help"
@@ -8062,7 +8224,7 @@ Options, above.
 \fRresize an image
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRchroma subsampling factors
@@ -8146,6 +8308,9 @@ Options, above.
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
+.TP
+.B " \fI-asc-cdl <spec>"\fP
+\fRapply ASC CDL color transform
 .TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
@@ -8247,7 +8412,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
@@ -8285,7 +8450,7 @@ Options, above.
 .B "-Gaussian \fI<radius>{x<sigma>}"\fP
 \fRblur the image with a Gaussian operator
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -8293,6 +8458,9 @@ Options, above.
 .TP
 .B "-green-primary \fI<x>,<y>"\fP
 \fRgreen chromaticity primary point
+.TP
+.B "-hald-clut \fI<clut>"\fP
+\fRapply a Hald CLUT to the image
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -8408,6 +8576,9 @@ Options, above.
 .B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
 \fRrandom threshold the image
 .TP
+.B "-recolor \fI<matrix>"\fP
+\fRapply a color translation matrix to image channels
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -8427,7 +8598,7 @@ Options, above.
 \fRroll an image vertically or horizontally
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sample \fI<geometry>"\fP
 \fRscale image using pixel sampling
@@ -8641,6 +8812,9 @@ Options, above.
 .B "-adjoin"
 \fRjoin images into a single multi-image file
 .TP
+.B "-affine \fI<matrix>"\fP
+\fRdrawing transform matrix
+.TP
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
@@ -8708,7 +8882,7 @@ Options, above.
 \fRspecify the text encoding
 .TP
 .B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB or LSB) of output image
+\fRspecify endianness (MSB, LSB, or Native) of image
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
@@ -8725,7 +8899,7 @@ Options, above.
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -8789,7 +8963,7 @@ Options, above.
 \fRresize an image
 .TP
 .B "-rotate \fI<degrees>{<}{>}"\fP
-\fRapply Paeth image rotation to the image
+\fRrotate the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRchroma subsampling factors
@@ -8820,6 +8994,9 @@ Options, above.
 .TP
 .B "-title \fI<string>"\fP
 \fRassign title to displayed image [\fIanimate, display, montage\fP]
+.TP
+.B "-transform"
+\fRtransform the image
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image

@@ -11,7 +11,9 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
+OUTFILE=TileAnnotate_out.miff
+rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill gold -pointsize 14 \
 	-font ${GENERIC_TTF} \
 	-draw 'gravity North text 0,20 "Magick"' \
-	-label Annotate Annotate_out.miff
+	-label Annotate ${OUTFILE}

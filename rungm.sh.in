@@ -1,5 +1,5 @@
 # !/bin/sh
-# Copyright (C) 2003, 2004 GraphicsMagick Group
+# Copyright (C) 2003-2009 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -15,10 +15,10 @@
 top_srcdir='@abs_top_srcdir@'
 top_builddir='@abs_top_builddir@'
 
-MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@'
-MAGICK_CONFIGURE_SRC_PATH='@MAGICK_CONFIGURE_SRC_PATH@'
-MAGICK_CONFIGURE_BUILD_PATH='@MAGICK_CONFIGURE_BUILD_PATH@'
-MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@'
+MAGICK_CODER_MODULE_PATH="${top_builddir}/coders"
+MAGICK_CONFIGURE_SRC_PATH="${top_srcdir}/config"
+MAGICK_CONFIGURE_BUILD_PATH="${top_builddir}/config"
+MAGICK_FILTER_MODULE_PATH="${top_builddir}/filters"
 DIRSEP='@DIRSEP@'
 
 PATH="${top_builddir}/utilities:${PATH}"

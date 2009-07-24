@@ -6,6 +6,7 @@
 Magick\.bs$
 Magick\.c$
 Magick\.o$
+Makefile.old$
 \.bak$
 \.cvsignore$
 \.old$

@@ -9,14 +9,14 @@
 PACKAGE_NAME='GraphicsMagick'
 #
 # Package base version.  This is is the numeric version suffix applied to
-# PACKAGE_NAME (e.g. "1.3.5").
-PACKAGE_VERSION='1.3.5'
+# PACKAGE_NAME (e.g. "1.3.6").
+PACKAGE_VERSION='1.3.6'
 
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2009-01-26"
-#PACKAGE_RELEASE_DATE="unreleased"
+#PACKAGE_RELEASE_DATE="2009-01-26"
+PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Date of last ChangeLog update
@@ -37,12 +37,22 @@ fi
 #
 # CVS branch that this release is on.
 #
-CVS_BRANCH_TAG=HEAD
+CVS_BRANCH_TAG=GraphicsMagick-1_3
 
 #
 # Libtool library revision control info
 # See the libtool documentation under the heading "Libtool's versioning
 # system" in order to understand the meaning of these fields
+#
+# current
+#      The most recent interface number that this library implements.
+# revision
+#      The implementation number of the current interface.
+# age
+#      The difference between the newest and oldest interfaces that
+#      this library implements. In other words, the library implements
+#      all the interface numbers in the range from number current -
+#      age to current.
 #
 # Here are a set of rules to help you update your library version
 # information:
@@ -63,20 +73,20 @@ CVS_BRANCH_TAG=HEAD
 #
 # Magick library versioning
 #
-MAGICK_LIBRARY_CURRENT=3
-MAGICK_LIBRARY_REVISION=5
-MAGICK_LIBRARY_AGE=0
+MAGICK_LIBRARY_CURRENT=4
+MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_AGE=1
 
 #
 # Magick++ library versioning
 #
-MAGICK_PLUS_PLUS_LIBRARY_CURRENT=3
-MAGICK_PLUS_PLUS_LIBRARY_REVISION=1
-MAGICK_PLUS_PLUS_LIBRARY_AGE=0
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT=4
+MAGICK_PLUS_PLUS_LIBRARY_REVISION=0
+MAGICK_PLUS_PLUS_LIBRARY_AGE=1
 
 #
 # Magick Wand library versioning
 #
 MAGICK_WAND_LIBRARY_CURRENT=2
-MAGICK_WAND_LIBRARY_REVISION=1
+MAGICK_WAND_LIBRARY_REVISION=2
 MAGICK_WAND_LIBRARY_AGE=0

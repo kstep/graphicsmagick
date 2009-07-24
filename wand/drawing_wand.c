@@ -156,111 +156,6 @@ struct _DrawingWand
   unsigned long
     signature;
 };
-
-/* Vector table for invoking subordinate renderers */
-struct _DrawVTable
-{
-  void (*DestroyDrawingWand) (DrawingWand *drawing_wand);
-  void (*DrawAnnotation)(DrawingWand *,const double,const double,
-    const unsigned char *);
-  void (*DrawArc)(DrawingWand *,const double,const double,const double,
-    const double,const double,const double);
-  void (*DrawBezier)(DrawingWand *,const unsigned long,const PointInfo *);
-  void (*DrawCircle)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawColor)(DrawingWand *,const double,const double,const PaintMethod);
-  void (*DrawComment)(DrawingWand *,const char *);
-  void (*DrawDestroyContext) (DrawContext context);
-  void (*DrawEllipse)(DrawingWand *,const double,const double,const double,
-    const double,const double,const double);
-  void (*DrawComposite)(DrawingWand *,const CompositeOperator,const double,
-    const double,const double,const double,const Image *);
-  void (*DrawLine)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawMatte)(DrawingWand *,const double,const double,const PaintMethod);
-  void (*DrawPathClose)(DrawingWand *);
-  void (*DrawPathCurveToAbsolute)(DrawingWand *,const double,const double,
-    const double,const double,const double,const double);
-  void (*DrawPathCurveToRelative)(DrawingWand *,const double,const double,
-    const double,const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierAbsolute)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierRelative)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToQuadraticBezierSmoothAbsolute)(DrawingWand *,
-    const double,const double);
-  void (*DrawPathCurveToQuadraticBezierSmoothRelative)(DrawingWand *,
-    const double,const double);
-  void (*DrawPathCurveToSmoothAbsolute)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathCurveToSmoothRelative)(DrawingWand *,const double,
-    const double,const double,const double);
-  void (*DrawPathEllipticArcAbsolute)(DrawingWand *,const double,const double,
-    const double,unsigned int,unsigned int,const double,const double);
-  void (*DrawPathEllipticArcRelative)(DrawingWand *,const double,const double,
-    const double,unsigned int,unsigned int,const double,const double);
-  void (*DrawPathFinish)(DrawingWand *);
-  void (*DrawPathLineToAbsolute)(DrawingWand *,const double,const double);
-  void (*DrawPathLineToRelative)(DrawingWand *,const double,const double);
-  void (*DrawPathLineToHorizontalAbsolute)(DrawingWand *,const double);
-  void (*DrawPathLineToHorizontalRelative)(DrawingWand *,const double);
-  void (*DrawPathLineToVerticalAbsolute)(DrawingWand *,const double);
-  void (*DrawPathLineToVerticalRelative)(DrawingWand *,const double);
-  void (*DrawPathMoveToAbsolute)(DrawingWand *,const double,const double);
-  void (*DrawPathMoveToRelative)(DrawingWand *,const double,const double);
-  void (*DrawPathStart)(DrawingWand *);
-  void (*DrawPoint)(DrawingWand *,const double,const double);
-  void (*DrawPolygon)(DrawingWand *,const unsigned long,const PointInfo *);
-  void (*DrawPolyline)(DrawingWand *,const unsigned long,const PointInfo *);
-  void (*DrawPopClipPath)(DrawingWand *);
-  void (*DrawPopDefs)(DrawingWand *);
-  void (*DrawPopGraphicContext)(DrawingWand *);
-  void (*DrawPopPattern)(DrawingWand *);
-  void (*DrawPushClipPath)(DrawingWand *,const char *);
-  void (*DrawPushDefs)(DrawingWand *);
-  void (*DrawPushGraphicContext)(DrawingWand *);
-  void (*DrawPushPattern)(DrawingWand *,const char *,const double,const double,
-    const double,const double);
-  void (*DrawRectangle)(DrawingWand *,const double,const double,const double,
-    const double);
-  void (*DrawRoundRectangle)(DrawingWand *,double,double,double,double,
-    double,double);
-  void (*DrawAffine)(DrawingWand *,const AffineMatrix *);
-  void (*DrawSetClipPath)(DrawingWand *,const char *);
-  void (*DrawSetClipRule)(DrawingWand *,const FillRule);
-  void (*DrawSetClipUnits)(DrawingWand *,const ClipPathUnits);
-  void (*DrawSetFillColor)(DrawingWand *,const PixelWand *);
-  void (*DrawSetFillOpacity)(DrawingWand *,const double);
-  void (*DrawSetFillRule)(DrawingWand *,const FillRule);
-  void (*DrawSetFillPatternURL)(DrawingWand *,const char *);
-  void (*DrawSetFont)(DrawingWand *,const char *);
-  void (*DrawSetFontFamily)(DrawingWand *,const char *);
-  void (*DrawSetFontSize)(DrawingWand *,const double);
-  void (*DrawSetFontStretch)(DrawingWand *,const StretchType);
-  void (*DrawSetFontStyle)(DrawingWand *,const StyleType);
-  void (*DrawSetFontWeight)(DrawingWand *,const unsigned long);
-  void (*DrawSetGravity)(DrawingWand *,const GravityType);
-  void (*DrawRotate)(DrawingWand *,const double);
-  void (*DrawScale)(DrawingWand *,const double,const double);
-  void (*DrawSkewX)(DrawingWand *,const double);
-  void (*DrawSkewY)(DrawingWand *,const double);
-  void (*DrawSetStrokeAntialias)(DrawingWand *,const unsigned int);
-  void (*DrawSetStrokeColor)(DrawingWand *,const PixelWand *);
-  void (*DrawSetStrokeDashArray)(DrawingWand *,const double *);
-  void (*DrawSetStrokeDashOffset)(DrawingWand *,const double);
-  void (*DrawSetStrokeLineCap)(DrawingWand *,const LineCap);
-  void (*DrawSetStrokeLineJoin)(DrawingWand *,const LineJoin);
-  void (*DrawSetStrokeMiterLimit)(DrawingWand *,const unsigned long);
-  void (*DrawSetStrokeOpacity)(DrawingWand *,const double);
-  void (*DrawSetStrokePatternURL)(DrawingWand *,const char *);
-  void (*DrawSetStrokeWidth)(DrawingWand *,const double);
-  void (*DrawSetTextAntialias)(DrawingWand *,const unsigned int);
-  void (*DrawSetTextDecoration)(DrawingWand *,const DecorationType);
-  void (*DrawSetTextUnderColor)(DrawingWand *,const PixelWand *);
-  void (*DrawTranslate)(DrawingWand *,const double,const double);
-  void (*DrawSetViewbox)(DrawingWand *,unsigned long,unsigned long,
-    unsigned long,unsigned long);
-};
 
 /*
   Forward declarations.
@@ -460,7 +355,7 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y D r a w W a n d                                             %
+%   D e s t r o y D r a w i n g W a n d                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -470,9 +365,9 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %  wand. Once the drawing wand has been freed, it should not be used
 %  any further unless it re-allocated.
 %
-%  The format of the DestroyDrawingWand method is:
+%  The format of the  DestroyDrawingWand method is:
 %
-%      void DestroyDrawingWand(DrawingWand *drawing_wand)
+%      void  DestroyDrawingWand(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
@@ -2443,15 +2338,15 @@ WandExport void DrawPathCurveToRelative(DrawingWand *drawing_wand,
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r A b s o l u t e  %
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
@@ -2504,15 +2399,15 @@ WandExport void DrawPathCurveToQuadraticBezierAbsolute(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                 %
+%                                                                                 %
+%                                                                                 %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e   %
+%                                                                                 %
+%                                                                                 %
+%                                                                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathCurveToQuadraticBezierRelative() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
@@ -2547,15 +2442,15 @@ WandExport void DrawPathCurveToQuadraticBezierRelative(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h A b s o l u t e   %
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
 %  Bezier curve (using absolute coordinates) from the current point to
@@ -2564,7 +2459,7 @@ WandExport void DrawPathCurveToQuadraticBezierRelative(
 %  point. (If there is no previous command or if the previous command was
 %  not a DrawPathCurveToQuadraticBezierAbsolute,
 %  DrawPathCurveToQuadraticBezierRelative,
-%  DrawPathCurveToQuadraticBezierSmoothAbsolut or
+%  DrawPathCurveToQuadraticBezierSmoothAbsolute or
 %  DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
 %  is coincident with the current point.). At the end of the command, the
 %  new current point becomes the final (x,y) coordinate pair used in the
@@ -2611,24 +2506,24 @@ WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h R e l a t i v e   %
+%                                                                                             %
+%                                                                                             %
+%                                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
+%  DrawPathCurveToQuadraticBezierSmoothRelative() draws a quadratic
 %  Bezier curve (using relative coordinates) from the current point to
 %  (x,y). The control point is assumed to be the reflection of the
 %  control point on the previous command relative to the current
 %  point. (If there is no previous command or if the previous command was
 %  not a DrawPathCurveToQuadraticBezierAbsolute,
 %  DrawPathCurveToQuadraticBezierRelative,
-%  DrawPathCurveToQuadraticBezierSmoothAbsolut or
+%  DrawPathCurveToQuadraticBezierSmoothAbsolute or
 %  DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point
 %  is coincident with the current point.). At the end of the command, the
 %  new current point becomes the final (x,y) coordinate pair used in the
@@ -3032,15 +2927,15 @@ WandExport void DrawPathLineToRelative(DrawingWand *drawing_wand,
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h L i n e T o H o r i z o n t a l A b s o l u t e           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%   D r a w P a t h L i n e T o H o r i z o n t a l A b s o l u t e              %
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathLineToHorizontalAbsolute() draws a horizontal line path from the
 %  current point to the target point using absolute coordinates.  The target
@@ -3085,15 +2980,15 @@ WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P a t h L i n e T o H o r i z o n t a l R e l a t i v e           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%   D r a w P a t h L i n e T o H o r i z o n t a l R e l a t i v e              %
+%                                                                                %
+%                                                                                %
+%                                                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathLineToHorizontalRelative() draws a horizontal line path from the
 %  current point to the target point using relative coordinates.  The target
@@ -3335,7 +3230,7 @@ WandExport void DrawPathStart(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P e e k G r a p h i c W a n d                                     %
+%   D r a w P e e k G r a p h i c C o n t e x t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3539,7 +3434,7 @@ WandExport void DrawPopDefs(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P o p G r a p h i c W a n d                                       %
+%   D r a w P o p G r a p h i c C o n t e x t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3715,7 +3610,7 @@ WandExport void DrawPushDefs(DrawingWand *drawing_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P u s h G r a p h i c W a n d                                     %
+%   D r a w P u s h G r a p h i c C o n t e x t                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -4420,12 +4315,12 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to
-%  stroke paths. The strokeDashArray represents an array of numbers that
+%  stroke paths. The stroke dash array represents an array of numbers that
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
 %  an even number of values. To remove an existing dash array, pass a zero
 %  number_elements argument and null dash_array.
-%  A typical strokeDashArray_ array might contain the members 5 3 2.
+%  A typical stroke dash array might contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %
@@ -5395,18 +5290,18 @@ WandExport void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N e w D r a w W a n d                                                     %
+%   N e w D r a w i n g W a n d                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NewDrawingWand() returns a draw wand required for all other methods in
+%  NewDrawingWand() returns a drawing wand required for all other methods in
 %  the API.
 %
 %  The format of the NewDrawingWand method is:
 %
-%      DrawingWand NewDrawingWand(void)
+%      DrawingWand *NewDrawingWand(void)
 %
 %
 */

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2009
 //
 // Implementation of Image
 //
@@ -1349,6 +1349,17 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
+  QuantumOperatorImage( image(), channel_, operator_, static_cast<double>(rvalue_),
+			&exceptionInfo);
+  throwException( exceptionInfo );
+}
+void Magick::Image::quantumOperator ( const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      double rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  modifyImage();
   QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
   throwException( exceptionInfo );
 }
@@ -1358,6 +1369,21 @@ void Magick::Image::quantumOperator ( const int x_,const int y_,
                                       const ChannelType channel_,
                                       const QuantumOperator operator_,
                                       const Quantum rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  modifyImage();
+  QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
+                              operator_, static_cast<double>(rvalue_),
+			      &exceptionInfo);
+  throwException( exceptionInfo );
+}
+void Magick::Image::quantumOperator ( const int x_,const int y_,
+                                      const unsigned int columns_,
+                                      const unsigned int rows_,
+                                      const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      const double rvalue_)
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -2046,6 +2072,7 @@ unsigned int Magick::Image::animationIterations ( void ) const
 void Magick::Image::attribute ( const std::string name_,
                                 const std::string value_ )
 {
+  modifyImage();
   SetImageAttribute( image(), name_.c_str(), value_.c_str() );
 }
 std::string Magick::Image::attribute ( const std::string name_ )

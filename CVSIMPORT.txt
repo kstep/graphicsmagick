@@ -29,7 +29,7 @@ jbig:
     INITIAL JBIGKIT_1_6
 
 lcms:
-
+  
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
     import -ko -m 'Import lcms 1.18a' delegates/lcms \
     LCMS_DIST LCMS_1_18
