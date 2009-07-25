@@ -33,9 +33,6 @@ Bug fixes:
   * MSL/conjure, Fix bug with attributes becoming appended to
     themselves.  Fix memory leaks.
 
-  * 'identify' was throwing an assertion when used on colormapped
-    files (this bug was introduced by 1.3.2).
-
   * With the -segment option, eliminate trashing the image colors when
     used on huge images.
 
