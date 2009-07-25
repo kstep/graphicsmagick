@@ -48,6 +48,16 @@ CVS_BRANCH_TAG=HEAD
 # See the libtool documentation under the heading "Libtool's versioning
 # system" in order to understand the meaning of these fields
 #
+# current
+#      The most recent interface number that this library implements.
+# revision
+#      The implementation number of the current interface.
+# age
+#      The difference between the newest and oldest interfaces that
+#      this library implements. In other words, the library implements
+#      all the interface numbers in the range from number current -
+#      age to current.
+#
 # Here are a set of rules to help you update your library version
 # information:
 #
@@ -69,18 +79,18 @@ CVS_BRANCH_TAG=HEAD
 #
 MAGICK_LIBRARY_CURRENT=4
 MAGICK_LIBRARY_REVISION=0
-MAGICK_LIBRARY_AGE=0
+MAGICK_LIBRARY_AGE=1
 
 #
 # Magick++ library versioning
 #
-MAGICK_PLUS_PLUS_LIBRARY_CURRENT=3
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT=4
 MAGICK_PLUS_PLUS_LIBRARY_REVISION=0
-MAGICK_PLUS_PLUS_LIBRARY_AGE=0
+MAGICK_PLUS_PLUS_LIBRARY_AGE=1
 
 #
 # Magick Wand library versioning
 #
 MAGICK_WAND_LIBRARY_CURRENT=2
-MAGICK_WAND_LIBRARY_REVISION=0
+MAGICK_WAND_LIBRARY_REVISION=2
 MAGICK_WAND_LIBRARY_AGE=0

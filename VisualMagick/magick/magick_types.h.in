@@ -27,7 +27,7 @@ extern "C" {
   magick_uint64_t --                          0 to 18,446,744,073,709,551,615
 */
 
-#if defined(WIN32) && !defined(__MINGW32__) || defined (_CH_)
+#if (defined(WIN32) || defined(WIN64)) && !defined(__MINGW32__) || defined (_CH_)
 
   /* The following typedefs are used for WIN32 */
   typedef signed char   magick_int8_t;
@@ -53,7 +53,13 @@ extern "C" {
 #  endif
 
   typedef magick_uint64_t magick_uintmax_t;
+
+#if defined(WIN32)
   typedef unsigned long magick_uintptr_t;
+#elif defined(WIN64)
+  /* WIN64 uses the LLP64 model */
+  typedef unsigned long long magick_uintptr_t;
+#endif
 
 #else
 
