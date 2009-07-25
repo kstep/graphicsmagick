@@ -2713,6 +2713,7 @@ inline int LocalFindReplace(string &s, const TCHAR* psz,
   return iReplaced;
 };
 
+
 BOOL CConfigureApp::InitInstance()
 {
   // Standard initialization
@@ -2905,6 +2906,32 @@ BOOL CConfigureApp::InitInstance()
       lib_shared_list.push_back("wsock32.lib");
       lib_shared_list.push_back("advapi32.lib");
       //lib_shared_list.push_back("scrnsave.lib");
+
+	  /* Nasty fix - MSVC cannot process correctly absolute paths - help it a little bit. */
+	  if(lib_loc.length()>=3)
+	  {
+		if(isalpha(lib_loc[0]) && lib_loc[1]==':' && lib_loc[2]=='\\')
+		{
+		  lib_shared_list.push_back("CORE_RL_zlib_.lib");
+		  lib_shared_list.push_back("CORE_RL_bzlib_.lib");
+		  lib_shared_list.push_back("CORE_RL_jpeg_.lib");
+		  lib_shared_list.push_back("CORE_RL_jp2_.lib");
+		  lib_shared_list.push_back("CORE_RL_png_.lib");
+		  lib_shared_list.push_back("CORE_RL_ttf_.lib");
+		  lib_shared_list.push_back("CORE_RL_jbig_.lib");
+		  lib_shared_list.push_back("CORE_RL_lcms_.lib");
+		  lib_shared_list.push_back("CORE_RL_tiff_.lib");
+		  lib_shared_list.push_back("CORE_RL_wand_.lib");
+		  lib_shared_list.push_back("CORE_RL_xlib_.lib");
+		  lib_shared_list.push_back("CORE_RL_filters_.lib");
+		  lib_shared_list.push_back("CORE_RL_coders_.lib");
+		  lib_shared_list.push_back("CORE_RL_libxml_.lib");
+		  lib_shared_list.push_back("CORE_RL_wmf_.lib");
+		  lib_shared_list.push_back("CORE_RL_magick_.lib");
+		}
+	  }
+	  /* End of fix. */
+
 
       ConfigureProject *dummy_project;
       if (visualStudio7)

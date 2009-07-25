@@ -1,3 +1,7 @@
+2009-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Released GraphicsMagick 1.3.6.
+
 2009-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/random.c (DestroyMagickRandomGenerator): Trick to free
@@ -779,6 +783,12 @@
 
 	* magick/pixel_cache.c (OpenCache): Remove conservative
 	pre-allocation of pixel indexes.
+
+2009-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+        * version.sh: GraphicsMagick 1.3.5 released.
+
+        * coders/fits.c: More robust fits parsing (by Fojtik Jaroslav).
 
 2009-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

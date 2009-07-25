@@ -52,21 +52,26 @@
 <h1 class="title">GraphicsMagick News</h1>
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on July 20, 2009</p>
+<p>This file was last updated on July 25, 2009</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic">
 <ul class="simple">
-<li><a class="reference" href="#not-yet-released" id="id1" name="id1">1.4 (not yet released)</a></li>
-<li><a class="reference" href="#november-9-2008" id="id2" name="id2">1.3 (November 9, 2008)</a></li>
-<li><a class="reference" href="#april-29-2008" id="id3" name="id3">1.2 (April 29, 2008)</a></li>
-<li><a class="reference" href="#released-april-4-2004" id="id4" name="id4">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference" href="#released-in-may-2003" id="id5" name="id5">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference" href="#july-25-2009" id="id1" name="id1">1.3.6 (July 25, 2009)</a></li>
+<li><a class="reference" href="#january-26-2009" id="id2" name="id2">1.3.5 (January 26, 2009)</a></li>
+<li><a class="reference" href="#january-13-2009" id="id3" name="id3">1.3.4 (January 13, 2009)</a></li>
+<li><a class="reference" href="#december-9-2008" id="id4" name="id4">1.3.3 (December 9, 2008)</a></li>
+<li><a class="reference" href="#november-29-2008" id="id5" name="id5">1.3.2 (November 29, 2008)</a></li>
+<li><a class="reference" href="#november-17-2008" id="id6" name="id6">1.3.1 (November 17, 2008)</a></li>
+<li><a class="reference" href="#november-9-2008" id="id7" name="id7">1.3 (November 9, 2008)</a></li>
+<li><a class="reference" href="#april-29-2008" id="id8" name="id8">1.2 (April 29, 2008)</a></li>
+<li><a class="reference" href="#released-april-4-2004" id="id9" name="id9">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference" href="#released-in-may-2003" id="id10" name="id10">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id1" id="not-yet-released" name="not-yet-released">1.4 (not yet released)</a></h1>
+<h1><a class="toc-backref" href="#id1" id="july-25-2009" name="july-25-2009">1.3.6 (July 25, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -76,34 +81,11 @@ ChangeLog file for full details.</p>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
-<li>Now runs under Windows Vista (as a 32-bit application).</li>
-<li>Fix for colorspace transform math overflow in Q32 build.</li>
-<li>RPM build, Fixes to successfully build binary RPMs for Red Hat
-Linux 4.</li>
-<li>MSL/conjure, Fix bug with attributes becoming appended to
-themselves.  Fix memory leaks.</li>
-<li>'identify' was throwing an assertion when used on colormapped
-files (this bug was introduced by 1.3.2).</li>
-<li>With the -segment option, eliminate trashing the image colors when
-used on huge images.</li>
-<li>'identify -format &quot;%c&quot;' now reports the entire comment regardless
-of size.</li>
-<li>Argument to -convolve is no longer arbitrarily truncated so huge
-convolution kernels may now be specified from the command line.</li>
-<li>-roll was failing for colormapped images.</li>
 <li>Composition was failing when the change image overlaps off the
 left side of the canvas.</li>
-<li>VID: Memory leak fix.</li>
-<li>PREVIEW: Solarize parameter was wrong.</li>
-<li>Delegates previously using 'spawn' needed an ampersand so that
-starting the child process does not hang the GUI.</li>
-<li>BMP: Fix assertion thrown for BMP files with negative image height
-values.</li>
 <li>EPT, PDF, PS: PDF bounding box is sometimes incorrect or not
 globally applicable so don't specify bounding box when reading PDF
 files.</li>
-<li>DIB: Fix assertion thrown for DIB files with negative image height
-values.</li>
 <li>OpenMP: Fix (benign) multi-thread cross-contentions (detected by
 valgrind's Helgrind).</li>
 <li>TIFF: Fix problem with reading one bit per sample RGB images.</li>
@@ -116,9 +98,6 @@ planar TIFF in row-order rather than plane-order, which resulted
 in sever buffering problems in libtiff, and failure when
 compression was used.</li>
 <li>-write now works usefully as documented.</li>
-<li>Magick++: Don't install Magick++ headers if Magick++ is disabled.</li>
-<li>GraphicsMagick.spec: Install module .la files so that modules can
-be loaded.</li>
 <li>Temporary file name generator was not random enough, resulting in
 some file name collisions for GraphicsMagick processes started at
 the same time.</li>
@@ -135,12 +114,6 @@ was applied.</li>
 <p>New Features:</p>
 <blockquote>
 <ul class="simple">
-<li>Windows build supports OpenMP and requires Windows 2000 or later
-(source code still supports Windows '98).</li>
-<li>Support large files under Windows.</li>
-<li>Support reading/writing 16 and 24 bit float TIFF files.</li>
-<li>Support reading/writing 64 bit integer TIFF files.</li>
-<li>Added &quot;Log&quot;, &quot;Max&quot;, &quot;Min&quot;, and &quot;Pow&quot; options to -operator.</li>
 <li>Added HRS reader for slow scan TV (contributed by Fojtik Jaroslav).</li>
 <li>Pthreads (POSIX threads) API may now be used under the WIN32 API.</li>
 <li>New access confirmation facility (MagickConfirmAccess) to allow
@@ -187,20 +160,12 @@ number of threads which will be used.</li>
 <li>Image resize now avoids adding &quot;halos&quot; around objects when
 resizing an image which contains transparency (patch contributed by
 Pavel Merdin).</li>
-<li>Debug logging now properly prints 64-bit offset values.</li>
-<li>New --disable-openmp-slow configure option for disabling use of
-OpenMP for algorithms which may run slower on systems with weak
-memory/cache implementations.</li>
 <li>DICOM: The DICOM reader is completely re-written and is much more
 functional now.  A few features (e.g. RLE compression) are still
 missing.  This work is contributed by John Sergeant.</li>
 <li>EXIF: Unprintable characters in EXIF attribute strings are now
 returned using three-digit octal notation.  Unknown tags are
 identified via their four-character hex value.</li>
-<li>FITS: Parser is more robust (work by Fojtik Jaroslav).</li>
-<li>JPEG, Allow user to specify DCT encoding method via
-jpeg:dct-method define.  Also allow control over whether huffman
-encoding is used via jpeg:optimize-coding define.</li>
 <li>PCL: PCL writer is rewritten to fix many bugs, add support for
 compression, add support for 8 bit PseudoClass images, and
 dramatically improve usability (work contributed by John Sergeant).</li>
@@ -213,9 +178,6 @@ JPEG compression.</li>
 <li>TXT: The TXT reader is now capable of reading image files written
 by the TXT writer, as well continuing to render ASCII text into an
 image (work contributed by Fojtik Jaroslav).</li>
-<li>+profile now supports an exclusion syntax.  For example <tt class="docutils literal"><span class="pre">+profile</span>
-<span class="pre">'!icm,*'</span></tt> removes all of the profiles except for the ICM profile.
-The new syntax also allows multiple profiles to be listed at once.</li>
 <li>Utilities &#64;file.txt syntax for including a list of files to use as
 an argument now really works as expected.  This may be used to
 inject any other text into the command line as well.  As a result,
@@ -229,17 +191,6 @@ files.</li>
 <p>Performance Improvements:</p>
 <blockquote>
 <ul class="simple">
-<li>Improve resource estimation for Microsoft Windows systems.</li>
-<li>OpenMP (parallel processing) improvements for these functions:<ul>
-<li>Rotate by 90 and 270 degrees (-rotate)</li>
-<li>Segmentation (-segment)</li>
-</ul>
-</li>
-<li>AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
-process the opacity channel unless the image has one.</li>
-<li>'identify &quot;*&quot;' now successfully works in a 32-bit application when
-used in a directory containing a million files.</li>
-<li>'identify' now executes quickly when used on TIFF files.</li>
 <li>-median and -noise now see reliable linear speedup as threads are
 added.</li>
 </ul>
@@ -254,7 +205,189 @@ progressive JPEG.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id2" id="november-9-2008" name="november-9-2008">1.3 (November 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id2" id="january-26-2009" name="january-26-2009">1.3.5 (January 26, 2009)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>BMP and DIB formats were throwing an assertion for negative height
+values.  This caused the process to crash.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Don't install Magick++ headers if C++ is disabled.</li>
+<li>Linux RPM SPEC file needs to always install the loadable module
+.la files or else the modules won't load.</li>
+<li>Windows runtime DLLs were for the wrong compiler version,
+resulting in failure to execute if the correct runtime DLLs are
+not available.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>None</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>FITS: Parsing is more robust.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>None</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="january-13-2009" name="january-13-2009">1.3.4 (January 13, 2009)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>None.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Now runs under Windows Vista (as a 32-bit application).</li>
+<li>Fix for colorspace transform math overflow in Q32 build.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>Windows build supports OpenMP and requires Windows 2000 or later
+(source code still supports Windows '98).</li>
+<li>Support large files under Windows.</li>
+<li>Support reading/writing 16 and 24 bit float TIFF files.</li>
+<li>Support reading/writing 64 bit integer TIFF files.</li>
+<li>Added &quot;Log&quot;, &quot;Max&quot;, &quot;Min&quot;, and &quot;Pow&quot; options to -operator.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Debug logging now properly prints 64-bit offset values.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Improve resource estimation for Microsoft Windows systems.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="december-9-2008" name="december-9-2008">1.3.3 (December 9, 2008)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>None.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>'identify' was throwing an assertion when used on colormapped
+files (this bug was introduced by 1.3.2).</li>
+<li>With the -segment option, eliminate trashing the image colors when
+used on huge images.</li>
+<li>'identify -format &quot;%c&quot;' now reports the entire comment regardless
+of size.</li>
+<li>Argument to -convolve is no longer arbitrarily truncated so huge
+convolution kernels may now be specified from the command line.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Image segmentation (-segment) is now accelerated using OpenMP and
+uses several other tactics to improve execution performance.</li>
+<li>'identify &quot;*&quot;' now successfully works in a 32-bit application when
+used in a directory containing a million files.</li>
+<li>'identify' now executes quickly when used on TIFF files.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id5" id="november-29-2008" name="november-29-2008">1.3.2 (November 29, 2008)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>None.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>-roll was failing for colormapped images.</li>
+<li>VID: Memory leak fix.</li>
+<li>PREVIEW: Solarize parameter was wrong.</li>
+<li>Delegates previously using 'spawn' needed an ampersand so that
+starting the child process does not hang the GUI.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>+profile now supports an exclusion syntax.  For example <tt class="docutils literal"><span class="pre">+profile</span>
+<span class="pre">'!icm,*'</span></tt> removes all of the profiles except for the ICM profile.
+The new syntax also allows multiple profiles to be listed at once.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>AdaptiveThreshold, Blur, Convolve, and MotionBlur no longer
+process the opacity channel unless the image has one.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id6" id="november-17-2008" name="november-17-2008">1.3.1 (November 17, 2008)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>None.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>RPM build, Fixes to successfully build binary RPMs for Red Hat
+Linux 4.</li>
+<li>MSL/conjure, Fix bug with attributes becoming appended to
+themselves.  Fix memory leaks.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>New --disable-openmp-slow configure option for disabling use of
+OpenMP for algorithms which may run slower on operating systems
+with crummy thread libraries.</li>
+<li>JPEG, Allow user to specify DCT encoding method via
+jpeg:dct-method define.  Also allow control over whether huffman
+encoding is used via jpeg:optimize-coding define.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>OpenMP (parallel processing) improvements for these functions:<ul>
+<li>Rotate by 90 and 270 degrees (-rotate)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="november-9-2008" name="november-9-2008">1.3 (November 9, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -462,7 +595,7 @@ dither any named channel.</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id3" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id8" id="april-29-2008" name="april-29-2008">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -718,7 +851,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section">
-<h1><a class="toc-backref" href="#id4" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id9" id="released-april-4-2004" name="released-april-4-2004">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -958,7 +1091,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section">
-<h1><a class="toc-backref" href="#id5" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id10" id="released-in-may-2003" name="released-in-may-2003">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1114,7 +1247,7 @@ package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-20 20:07 UTC.
+Generated on: 2009-07-25 16:50 UTC.
 
 </div>
 </body>
