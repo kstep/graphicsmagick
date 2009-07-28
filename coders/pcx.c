@@ -302,6 +302,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     image->columns=(pcx_info.right-pcx_info.left)+1;
     image->rows=(pcx_info.bottom-pcx_info.top)+1;
+    if ((image->columns == 0) || (image->rows == 0) ||
+        (pcx_info.bits_per_pixel == 0))
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->units=PixelsPerInchResolution;
     image->x_resolution=pcx_info.horizontal_resolution;
