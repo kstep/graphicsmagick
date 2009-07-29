@@ -34,6 +34,7 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/constitute.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
 #include "magick/error.h"
