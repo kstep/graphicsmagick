@@ -246,6 +246,15 @@ static void InsertRow(int depth, unsigned char *p, long y, Image * image, unsign
                      ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
       }
       break;
+
+    case 24:		/* Convert RGB scanline. */
+      q = SetImagePixels(image, Xoffset, y, columns, 1);
+      if (q == (PixelPacket *) NULL)
+	  break;	
+      (void)ImportImagePixelArea(image,RGBQuantum,8,p,NULL,0);
+      if(!SyncImagePixels(image)) break;
+      break;
+      
     }
 }
 
