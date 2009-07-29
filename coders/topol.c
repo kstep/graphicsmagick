@@ -427,6 +427,9 @@ TOPOL_KO:              ThrowReaderException(CorruptImageError,ImproperImageHeade
   image->columns = Header.Cols;
   image->rows = Header.Rows;
 
+  /* If ping is true, then only set image size and colors without reading any image data. */
+  if (image_info->ping) goto DONE_READING;
+
   /* ----- Handle the reindexing mez file ----- */
   for(i=0;i<255;i++)
     {
@@ -554,7 +557,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
     }
 
 
- NoPalette:
+NoPalette:
   if (palette == NULL && image->colors != 0)
     {
       if (!AllocateImageColormap(image, image->colors))
@@ -593,6 +596,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
           }
        InsertRow(depth, BImgBuff, i, image, MEZ, 0, image->columns);
      }
+     break;
   case 2:
     {
       magick_uint32_t *Offsets;
@@ -654,6 +658,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
 
 
   /* Finish: */
+DONE_READING:
   if (BImgBuff != NULL)
     MagickFreeMemory(BImgBuff);
   if (palette != NULL)
