@@ -410,8 +410,9 @@ TOPOL_KO:              ThrowReaderException(CorruptImageError,ImproperImageHeade
       break;
     case 5:
       image->colors = 0;
+      image->depth = 8;
       depth = 24;
-      break;			/* ????????? 24 bits */
+      break;
     case 6:
       image->colors = 0;
       depth = 16;
