@@ -857,6 +857,7 @@ typedef struct _Image
   /*
     To be added here for a later release:
 
+    quality?
     subsampling
     video black/white setup levels (ReferenceBlack/ReferenceWhite)
     sample format (integer/float)

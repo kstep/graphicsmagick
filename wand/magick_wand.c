@@ -52,7 +52,7 @@
 %  without fee, and encourage the use of this source code as a component for  %
 %  supporting image processing in commercial products.  If you use this       %
 %  source code in a product, acknowledgment is not required but would be      %
-%  appreciated.       
+%  appreciated.                                                               %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -6879,6 +6879,106 @@ WandExport unsigned int MagickSeparateImageChannel(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t C o m p r e s s i o n Q u a l i t y                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetCompressionQuality() sets the image quality factor, which
+%  determines compression options when saving the file.
+%
+%  For the JPEG and MPEG image formats, quality is 0 (lowest image
+%  quality and highest compression) to 100 (best quality but least
+%  effective compression).  The default quality is 75.  Use the
+%  -sampling-factor option to specify the factors for chroma
+%  downsampling.  To use the same quality value as that found by the
+%  JPEG decoder, use the -define jpeg:preserve-settings flag.
+% 
+%  For the MIFF image format, and the TIFF format while using ZIP
+%  compression, quality/10 is the zlib compres- sion level, which is 0
+%  (worst but fastest compression) to 9 (best but slowest). It has no
+%  effect on the image appearance, since the compression is always
+%  lossless.
+% 
+%  For the JPEG-2000 image format, quality is mapped using a non-linear
+%  equation to the compression ratio required by the Jasper library.
+%  This non-linear equation is intended to loosely approximate the
+%  quality provided by the JPEG v1 format.  The default quality value 75
+%  results in a request for 16:1 compression. The quality value 100
+%  results in a request for non-lossy compres- sion.
+% 
+%  For the MNG and PNG image formats, the quality value sets the zlib
+%  compression level (quality / 10) and filter-type (quality % 10).
+%  Compression levels range from 0 (fastest compression) to 100 (best
+%  but slowest).  For compression level 0, the Huffman-only strategy is
+%  used, which is fastest but not necessarily the worst compression.  If
+%  filter-type is 4 or less, the specified filter-type is used for all
+%  scanlines:
+% 
+%       0) none
+%       1) sub
+%       2) up
+%       3) average
+%       4) Paeth
+% 
+%  If filter-type is 5, adaptive filtering is used when quality is
+%  greater than 50 and the image does not have a color map, otherwise no
+%  filtering is used.
+% 
+%  If filter-type is 6, adaptive filtering with minimum-
+%  sum-of-absolute-values is used.
+% 
+%  Only if the output is MNG, if filter-type is 7, the LOCO color
+%  transformation and adaptive filtering with
+%  minimum-sum-of-absolute-values are used.
+% 
+%  The default is quality is 75, which means nearly the best compression
+%  with adaptive filtering.  The quality setting has no effect on the
+%  appearance of PNG and MNG images, since the compression is always
+%  lossless.
+% 
+%  For further information, see the PNG specification.
+% 
+%  When writing a JNG image with transparency, two quality values are
+%  required, one for the main image and one for the grayscale image that
+%  conveys the opacity channel.  These are written as a single integer
+%  equal to the main image quality plus 1000 times the opacity quality.
+%  For example, if you want to use quality 75 for the main image and
+%  quality 90 to compress the opacity data, use -quality 90075.
+% 
+%  For the PNM family of formats (PNM, PGM, and PPM) specify a quality
+%  factor of zero in order to obtain the ASCII variant of the
+%  format. Note that -compress none used to be used to trigger ASCII
+%  output but provided the opposite result of what was expected as
+%  compared with other formats.
+%
+%  The format of the MagickSetCompressionQuality method is:
+%
+%      unsigned int MagickSetCompressionQuality(MagickWand *wand,
+%        const unsigned long quality)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o delay: The image quality.
+%
+*/
+WandExport unsigned int MagickSetCompressionQuality(MagickWand *wand,
+  const unsigned long quality)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->quality=quality;
+  return(True);
 }
 
 /*
