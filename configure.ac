@@ -1818,6 +1818,7 @@ changequote(<<, >>)dnl
 <<
 #if JPEG_LIB_VERSION < 62
 #error IJG JPEG library must be version 6b or newer!
+Kaboom, Kaboom
 #endif
 return 0;
 >>,
