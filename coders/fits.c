@@ -63,8 +63,8 @@ static void FixSignedValues(unsigned char *data, int size, unsigned step, unsign
 {
   if(endian != MSBEndian)
   {
-    data += step - 1;  //LSB has most signifficant byte at the end
-  }		       //MSB has most signifficant byte first
+    data += step - 1;  /* LSB has most signifficant byte at the end */
+  }		       /* MSB has most signifficant byte first */
 
   while(size-->0)
   {
@@ -319,7 +319,9 @@ ReadExtension:
               ax_number = atoi(keyword+5);
             else ax_number=-2;			/*unsupported fits keyword*/
           }
-          if(ax_number>=-1) y = atoi(value);
+	  y=0;
+          if(ax_number>=-1)
+	    y = atoi(value);
           switch(ax_number)
           {
             case -1:fits_info.number_axes = y; break;
