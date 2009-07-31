@@ -55,7 +55,7 @@ typedef enum
   PCL_DeltaCompression,
   PCL_ZeroRowCompression,
   PCL_RepeatedRowCompression,
-  PCL_UndefinedCompression,
+  PCL_UndefinedCompression
 } PCL_CompressionType;
 
 /*
