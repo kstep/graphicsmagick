@@ -1383,6 +1383,8 @@ then
     AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
     # AIX xlc
     AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    # SGI IRIX 6.5 MIPSpro C/C++
+    AC_CHECK_LIB(mp,mp_destroy,LIB_OMP="-lmp",,)
   fi
   LIBS="$LIB_OMP $LIBS"
 fi
