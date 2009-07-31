@@ -625,7 +625,7 @@ NoPalette:
        ldblk = (long)((depth * Header.TileWidth + 7) / 8);
        BImgBuff = MagickAllocateMemory(unsigned char *,(size_t) ldblk);	/*Ldblk was set in the check phase */
 
-       //dlazdice.create(Header.TileWidth,Header.TileHeight,p.Planes);
+       /* dlazdice.create(Header.TileWidth,Header.TileHeight,p.Planes); */
        Offsets = MagickAllocateMemory(magick_uint32_t *,(size_t)TilesAcross*TilesDown*sizeof(magick_uint32_t));
        if(Offsets==NULL)
          ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);         
