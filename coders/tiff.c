@@ -72,6 +72,16 @@
   Set to 1 in order to log low-level BLOB I/O at "coder" level.
 */
 #define LOG_BLOB_IO 0
+
+#if !defined(PREDICTOR_NONE)
+#define     PREDICTOR_NONE              1
+#endif
+#if !defined(PREDICTOR_HORIZONTAL)
+#define     PREDICTOR_HORIZONTAL        2
+#endif
+#if !defined(PREDICTOR_FLOATINGPOINT)
+#define     PREDICTOR_FLOATINGPOINT     3
+#endif
 
 /*
   Global declarations.
