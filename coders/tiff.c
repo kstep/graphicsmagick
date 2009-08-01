@@ -82,6 +82,12 @@
 #if !defined(PREDICTOR_FLOATINGPOINT)
 #define     PREDICTOR_FLOATINGPOINT     3
 #endif
+#if !defined(SAMPLEFORMAT_COMPLEXINT)
+#define     SAMPLEFORMAT_COMPLEXINT     5
+#endif
+#if !defined(SAMPLEFORMAT_COMPLEXIEEEFP)
+#define     SAMPLEFORMAT_COMPLEXIEEEFP  6
+#endif
 
 /*
   Global declarations.
