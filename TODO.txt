@@ -3,8 +3,8 @@ Items large and small which remain to be worked on.
 See website for "wish list".
 --------------------------------------------------------------------
 
-For GM 1.4
-===========
+Short Term
+==========
 
 * Update Windows libtiff to 4.0
 
@@ -16,18 +16,16 @@ For GM 1.4
 * Choose a better tile size for rotate by 0 and 270 degrees when the pixel
   cache is disk-based.  Also disable threading.
 
-* Add ClonePixelWand(), Compare, and Distortion functions to the Wand
-  API.
+* Add ClonePixelWand(), CloneDrawingWand(), Compare, and Distortion
+  functions to the Wand API.
 
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 
  * Use localtime_r when available.
 
- * Add RW tests for TXT format.
-
-For Future
-==========
+Longer Term
+============
 
 * Fix Scitex RGB reader to handle files written by Photoshop.
 
@@ -39,8 +37,8 @@ For Future
 
 * Improve performance of Cineon coder.
 
-For later releases
-==================
+To Investigate
+==============
 
 * Fix polyline renderering (improperly closes shape) when line is very thick.
 

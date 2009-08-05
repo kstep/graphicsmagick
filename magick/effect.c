@@ -3624,7 +3624,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         else
           y_min=y-radius;
     
-        if ((y+radius) >= image->rows)
+        if (((unsigned long) y+radius) >= image->rows)
           y_max=image->rows-1;
         else
           y_max=y+radius;
