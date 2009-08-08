@@ -49,7 +49,7 @@ typedef struct
   char Name[20];
   magick_uint16_t Rows;
   magick_uint16_t Cols;
-  magick_uint16_t TypSou;	/* 0-binary, 1-8 bitu, 2-8 bits+PAL, 3-4 bits,
+  magick_uint16_t FileType;	/* 0-binary, 1-8 bitu, 2-8 bits+PAL, 3-4 bits,
 				   4-4 bits+PAL, 5-24 bits, 6-16 bits, 7-32
 				   bits */
   magick_uint32_t Zoom;
@@ -367,7 +367,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   (void) ReadBlob(image, 20, &Header.Name);
   Header.Rows = ReadBlobLSBShort(image);
   Header.Cols = ReadBlobLSBShort(image);
-  Header.TypSou = ReadBlobLSBShort(image);
+  Header.FileType = ReadBlobLSBShort(image);
   Header.Zoom = ReadBlobLSBLong(image);
   Header.Version = ReadBlobLSBShort(image);
   if (Header.Version >= 1)
@@ -402,7 +402,7 @@ TOPOL_KO:              ThrowReaderException(CorruptImageError,ImproperImageHeade
   if (Header.Version > 2)
     ThrowReaderException(CorruptImageError, InvalidFileFormatVersion, image); /* unknown version */
 
-  switch (Header.TypSou)
+  switch(Header.FileType)
     {
     case 0:
       image->colors = 2;
@@ -447,7 +447,7 @@ TOPOL_KO:              ThrowReaderException(CorruptImageError,ImproperImageHeade
       MEZ[i]=(unsigned char) i;
     }
     
-  if(Header.TypSou>=5) goto NoMEZ;    
+  if(Header.FileType>=5) goto NoMEZ;    
     
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoMEZ;
   
@@ -497,6 +497,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
     }
 
   /* ----- Do something with palette ----- */
+  if(Header.FileType==5) goto NoPalette;
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
  
   i=(long) strlen(clone_info->filename);
@@ -597,7 +598,7 @@ NoPalette:
      (void) SeekBlob(image, 512 /*sizeof(Header)*/, SEEK_SET);
      for (i = 0; i < (int) Header.Rows; i++)
      {
-       switch (Header.TypSou)
+       switch (Header.FileType)
           {
           case 6: ReadBlobWordLSB(image, ldblk, (magick_uint16_t *)BImgBuff);
                   break;
@@ -646,7 +647,7 @@ NoPalette:
 	   j = TilX * (ldblk+SkipBlk);
 	   for(i=0;i<Header.TileHeight;i++)
 	   {
-             switch (Header.TypSou)
+             switch (Header.FileType)
               {
               case 6: ReadBlobWordLSB(image, ldblk, (magick_uint16_t *) BImgBuff);
                       break;
