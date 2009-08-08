@@ -1,3 +1,6 @@
+2009-08-08 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+	* coders/topol.c: Pallette is ignored for subtype 5 (RGB).
+
 2009-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/{cineon.c, dpx.c, locale.c, svg.c}, magick/{attribute.c,
