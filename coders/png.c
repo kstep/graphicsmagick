@@ -78,6 +78,10 @@
 #include "zlib.h"
 
 #if PNG_LIBPNG_VER < 10400
+/*
+ * TO DO: rewrite using png_get_tRNS() instead of direct access to the
+ * ping and ping_info structs.
+ */
 #define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
 #define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
 #endif
