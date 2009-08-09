@@ -34,6 +34,7 @@
 */
 
 /* GraphicsMagick differences */
+
 #define LoadImageTag LoadImageText
 #define SaveImageTag SaveImageText
 #define LoadImagesTag LoadImagesText
@@ -76,6 +77,11 @@
 #include "png.h"
 #include "zlib.h"
 
+#if PNG_LIBPNG_VER < 10400
+#define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
+#define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#endif
+
 #if PNG_LIBPNG_VER > 95
 /*
   Optional declarations. Define or undefine them as you like.
@@ -1979,13 +1985,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Image has a transparent background.
       */
       transparent_color.red=
-        (Quantum)(ping_info->trans_values.red & bit_mask);
+        (Quantum)(ping_info->trans_color.red & bit_mask);
       transparent_color.green=
-        (Quantum) (ping_info->trans_values.green & bit_mask);
+        (Quantum) (ping_info->trans_color.green & bit_mask);
       transparent_color.blue=
-        (Quantum) (ping_info->trans_values.blue & bit_mask);
+        (Quantum) (ping_info->trans_color.blue & bit_mask);
       transparent_color.opacity=
-        (Quantum) (ping_info->trans_values.gray & bit_mask);
+        (Quantum) (ping_info->trans_color.gray & bit_mask);
       if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
         {
           transparent_color.red=transparent_color.opacity;
@@ -2520,7 +2526,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     index=indexes[x];
                     if (index < ping_info->num_trans)
                       q->opacity=
-                        ScaleCharToQuantum(255-ping_info->trans[index]);
+                        ScaleCharToQuantum(255-ping_info->trans_alpha[index]);
                     q++;
                   }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
@@ -6404,13 +6410,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         /*
           Identify which colormap entry is transparent.
         */
-        ping_info->trans=MagickAllocateMemory(unsigned char *,number_colors);
-        if (ping_info->trans == (unsigned char *) NULL)
+        ping_info->trans_alpha=MagickAllocateMemory(unsigned char *,
+           number_colors);
+        if (ping_info->trans_alpha == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                                image);
         assert(number_colors <= 256);
         for (i=0; i < (long) number_colors; i++)
-          ping_info->trans[i]=255;
+          ping_info->trans_alpha[i]=255;
         for (y=0; y < (long) image->rows; y++)
           {
             register const PixelPacket
@@ -6430,7 +6437,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
                     index=indexes[x];
                     assert((unsigned long) index < number_colors);
-                    ping_info->trans[index]=(png_byte) (255-
+                    ping_info->trans_alpha[index]=(png_byte) (255-
                                             ScaleQuantumToChar(p->opacity));
                   }
                 p++;
@@ -6438,14 +6445,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           }
         ping_info->num_trans=0;
         for (i=0; i < (long) number_colors; i++)
-          if (ping_info->trans[i] != 255)
+          if (ping_info->trans_alpha[i] != 255)
             ping_info->num_trans=(unsigned short) (i+1);
         if (ping_info->num_trans == 0)
           ping_info->valid&=(~PNG_INFO_tRNS);
         if (!(ping_info->valid & PNG_INFO_tRNS))
           ping_info->num_trans=0;
         if (ping_info->num_trans == 0)
-          MagickFreeMemory(ping_info->trans);
+          MagickFreeMemory(ping_info->trans_alpha);
         /*
           Identify which colormap entry is the background color.
         */
@@ -6588,14 +6595,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   (p->opacity != OpaqueOpacity))
                 {
                   ping_info->valid|=PNG_INFO_tRNS;
-                  ping_info->trans_values.red=ScaleQuantumToShort(p->red)&mask;
-                  ping_info->trans_values.green=ScaleQuantumToShort(p->green)
+                  ping_info->trans_color.red=ScaleQuantumToShort(p->red)&mask;
+                  ping_info->trans_color.green=ScaleQuantumToShort(p->green)
                                                 &mask;
-                  ping_info->trans_values.blue=ScaleQuantumToShort(p->blue)
+                  ping_info->trans_color.blue=ScaleQuantumToShort(p->blue)
                                                &mask;
-                  ping_info->trans_values.gray=
+                  ping_info->trans_color.gray=
                     (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
-                  ping_info->trans_values.index=(unsigned char)
+                  ping_info->trans_color.index=(unsigned char)
                     (ScaleQuantumToChar(MaxRGB-p->opacity));
                 }
             }
@@ -6616,7 +6623,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                     {
                       if (p->opacity != OpaqueOpacity)
                         {
-                          if (!RGBColorMatchExact(ping_info->trans_values,*p))
+                          if (!RGBColorMatchExact(ping_info->trans_color,*p))
                             {
                               break;  /* Can't use RGB + tRNS for multiple
                                          transparent colors.  */
@@ -6629,7 +6636,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         }
                       else
                         {
-                          if (RGBColorMatchExact(ping_info->trans_values,*p))
+                          if (RGBColorMatchExact(ping_info->trans_color,*p))
                             break; /* Can't use RGB + tRNS when another pixel
                                       having the same RGB samples is
                                       transparent. */
@@ -6647,10 +6654,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
               ping_info->color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
               if (image_depth == 8)
                 {
-                  ping_info->trans_values.red&=0xff;
-                  ping_info->trans_values.green&=0xff;
-                  ping_info->trans_values.blue&=0xff;
-                  ping_info->trans_values.gray&=0xff;
+                  ping_info->trans_color.red&=0xff;
+                  ping_info->trans_color.green&=0xff;
+                  ping_info->trans_color.blue&=0xff;
+                  ping_info->trans_color.gray&=0xff;
                 }
             }
         }
@@ -6666,7 +6673,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
             {
               ping_info->color_type=PNG_COLOR_TYPE_GRAY;
               if (save_image_depth == 16 && image_depth == 8)
-                ping_info->trans_values.gray*=0x0101;
+                ping_info->trans_color.gray*=0x0101;
             }
           if (image_depth > QuantumDepth)
             image_depth=QuantumDepth;
@@ -6789,14 +6796,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                 if (matte)
                   {
                     int
-                      trans[256];
+                      trans_alpha[256];
 
                     /*
                       Identify which colormap entry is transparent.
                     */
                     assert(number_colors <= 256);
                     for (i=0; i < (long) number_colors; i++)
-                      trans[i]=256;
+                      trans_alpha[i]=256;
                     for (y=0; y < (long) image->rows; y++)
                       {
                         register const PixelPacket
@@ -6816,9 +6823,9 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
                                 index=indexes[x];
                                 assert((unsigned long) index < number_colors);
-                                if (trans[index] != 256)
+                                if (trans_alpha[index] != 256)
                                   {
-                                    if (trans[index] != (png_byte) (255-
+                                    if (trans_alpha[index] != (png_byte) (255-
                                         ScaleQuantumToChar(p->opacity)))
                                       {
                                         ping_info->color_type=
@@ -6826,7 +6833,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                         break;
                                       }
                                   }
-                                trans[index]=(png_byte) (255-
+                                trans_alpha[index]=(png_byte) (255-
                                               ScaleQuantumToChar(p->opacity));
                               }
                             p++;
@@ -6851,9 +6858,9 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                       {
                         for (i=0; i < (long) number_colors; i++)
                           {
-                            if (trans[i] == 256)
-                              trans[i]=255;
-                            if (trans[i] != 255)
+                            if (trans_alpha[i] == 256)
+                              trans_alpha[i]=255;
+                            if (trans_alpha[i] != 255)
                               ping_info->num_trans=(unsigned short) (i+1);
                           }
                       }
@@ -6863,13 +6870,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                       ping_info->num_trans=0;
                     if (ping_info->num_trans != 0)
                       {
-                        ping_info->trans=MagickAllocateMemory(unsigned char *,
-                                                              number_colors);
-                        if (ping_info->trans == (unsigned char *) NULL)
+                        ping_info->trans_alpha=MagickAllocateMemory(
+                                              unsigned char *, number_colors);
+                        if (ping_info->trans_alpha == (unsigned char *) NULL)
                           ThrowWriterException(ResourceLimitError,
                                                MemoryAllocationFailed,image);
                         for (i=0; i < (long) number_colors; i++)
-                          ping_info->trans[i]=(png_byte) trans[i];
+                          ping_info->trans_alpha[i]=(png_byte) trans_alpha[i];
                       }
                   }
 
@@ -6889,10 +6896,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
               image_depth=8;
             if ((save_image_depth == 16) && (image_depth == 8))
               {
-                ping_info->trans_values.red*=0x0101;
-                ping_info->trans_values.green*=0x0101;
-                ping_info->trans_values.blue*=0x0101;
-                ping_info->trans_values.gray*=0x0101;
+                ping_info->trans_color.red*=0x0101;
+                ping_info->trans_color.green*=0x0101;
+                ping_info->trans_color.blue*=0x0101;
+                ping_info->trans_color.gray*=0x0101;
               }
           }
 
@@ -6920,8 +6927,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                   "  Setting up bKGD chunk");
           png_set_bKGD(ping,ping_info,&background);
 
-          ping_info->trans_values.gray=(png_uint_16)(maxval*
-                                        ping_info->trans_values.gray/
+          ping_info->trans_color.gray=(png_uint_16)(maxval*
+                                        ping_info->trans_color.gray/
                                         MaxRGB);
         }
     }
@@ -7547,7 +7554,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 #endif
   if (ping_info->valid & PNG_INFO_tRNS)
     {
-      MagickFreeMemory(ping_info->trans);
+      MagickFreeMemory(ping_info->trans_alpha);
       ping_info->valid&=(~PNG_INFO_tRNS);
     }
   png_destroy_write_struct(&ping,&ping_info);

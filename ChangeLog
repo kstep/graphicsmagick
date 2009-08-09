@@ -1,3 +1,8 @@
+2009-08-08  Glenn Randers-Pehrson <glennrp@simple....>
+	* coders/png.c: Made compatible with libpng-1.4.0beta74 and later
+        (won't work with libpng-1.4.0beta35 through beta73) due to change
+        in names of png_struct members "trans" and "trans_values"). 
+
 2009-08-08 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 	* coders/topol.c: Pallette is ignored for subtype 5 (RGB).
 
