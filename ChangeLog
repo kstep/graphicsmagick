@@ -1,4 +1,10 @@
+2009-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Don't override the photometric
+	for grayscale JPEG-compressed TIFF.
+
 2009-08-08  Glenn Randers-Pehrson <glennrp@simple....>
+
 	* coders/png.c: Made compatible with libpng-1.4.0beta74 and later
         (won't work with libpng-1.4.0beta35 through beta73) due to change
         in names of png_struct members "trans" and "trans_values"). 

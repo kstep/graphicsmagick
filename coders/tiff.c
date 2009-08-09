@@ -1056,6 +1056,7 @@ static MagickPassFail QuantumTransferMode(const Image *image,
           }
         }
     }
+  fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples);
   
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
@@ -1670,12 +1671,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         QuantumType
           quantum_type;
 
-        if (compress_tag == COMPRESSION_JPEG)
+        if ((samples_per_pixel > 1) && (compress_tag == COMPRESSION_JPEG) &&
+	    (photometric == PHOTOMETRIC_YCBCR))
           {
             /* Following hack avoids the error message "Application
                transferred too many scanlines. (JPEGLib)." caused by
                YCbCr subsampling, but it returns data in RGB rather
                than YCbCr. */
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Resetting photometric from %s to %s for JPEG RGB",
+                                    PhotometricTagToString(photometric),
+				    PhotometricTagToString(PHOTOMETRIC_RGB));
             (void) TIFFSetField( tiff, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB );
             photometric=PHOTOMETRIC_RGB;
           }
