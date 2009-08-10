@@ -1056,7 +1056,7 @@ static MagickPassFail QuantumTransferMode(const Image *image,
           }
         }
     }
-  fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples);
+  /* fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples); */
   
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
@@ -3330,12 +3330,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
-        Currently we only support JPEG compression with RGB.  FAX
-        compression types require PHOTOMETRIC_MINISWHITE.  CMYK takes
-        precedence over JPEG compression.
+        Currently we only support JPEG compression with MINISWHITE,
+        MINISBLACK, and RGB.  FAX compression types require
+        MINISWHITE.  CMYK takes precedence over JPEG compression.
       */
-      if ((photometric != PHOTOMETRIC_SEPARATED) &&
-          (compress_tag == COMPRESSION_JPEG))
+      if ((compress_tag == COMPRESSION_JPEG) &&
+	  (photometric == PHOTOMETRIC_PALETTE))
         {
           photometric=PHOTOMETRIC_RGB;
           if (logging)
@@ -3427,12 +3427,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
 
       /*
-        If the user has selected something other than RGB, then remove
-        JPEG compression.  Also remove fax compression if photometric
-        is not compatible.
+        If the user has selected something other than MINISWHITE,
+        MINISBLACK, or RGB, then remove JPEG compression.  Also remove
+        fax compression if photometric is not compatible.
       */
       if ((compress_tag == COMPRESSION_JPEG) &&
-          (photometric != PHOTOMETRIC_RGB))
+          ((photometric != PHOTOMETRIC_MINISWHITE) &&
+	   (photometric != PHOTOMETRIC_MINISBLACK) &&
+	   (photometric != PHOTOMETRIC_RGB)))
         {
           compress_tag=COMPRESSION_NONE;
           if (logging)

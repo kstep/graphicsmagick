@@ -1,3 +1,8 @@
+2009-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Support writing grayscale
+	JPEG-compressed TIFF.
+
 2009-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Don't override the photometric
