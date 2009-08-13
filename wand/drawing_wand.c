@@ -110,6 +110,9 @@ struct _DrawingWand
   Image
     *image;
 
+  MagickBool
+    own_image;          /* If true, then we own the image. */
+
   /* MVG output string and housekeeping */
   char
     *mvg;               /* MVG data */
@@ -132,7 +135,7 @@ struct _DrawingWand
     pattern_offset;
 
   /* Graphic drawing_wand */
-  unsigned int
+  int
     index;              /* array index */
 
   DrawInfo
@@ -173,8 +176,6 @@ __attribute__ ((format (printf, 2, 3)))
 ;
 static void
   MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color);
-
-static const char *dummy_image_filename = "[MagickDrawingWandDummyImage]";
 
 
 /* "Printf" for MVG commands */
@@ -281,8 +282,8 @@ static int MvgAutoWrapPrintf(DrawingWand *drawing_wand,const char *format,...)
   buffer[sizeof(buffer)-1]=0;
   if (formatted_length < 0)
     {
-    ThrowException(&drawing_wand->image->exception,DrawError,
-      UnableToPrint,format);
+      ThrowException(&drawing_wand->image->exception,DrawError,
+		     UnableToPrint,format);
     }
   else
     {
@@ -355,6 +356,129 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e D r a w i n g W a n d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneDrawingWand() returns a new drawing wand which is a full (deep) copy
+%  of an existing drawing wand.
+%
+%  The format of the  CloneDrawingWand method is:
+%
+%      DrawingWand *CloneDrawingWand(const DrawingWand *drawing_wand)
+%
+%  A description of each parameter follows:
+%
+%    o drawing_wand: The drawing wand to copy
+%
+*/
+WandExport DrawingWand *CloneDrawingWand(const DrawingWand *drawing_wand)
+{  
+  DrawingWand
+    *clone_wand;
+
+  ExceptionInfo
+    exeption_info;
+  
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  
+  clone_wand=MagickAllocateMemory(DrawingWand *,sizeof(*clone_wand));
+  if (clone_wand == (DrawingWand *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateDrawingWand);
+
+  GetExceptionInfo(&exeption_info);
+  (void) memcpy(clone_wand,drawing_wand,sizeof(*clone_wand));
+  clone_wand->image=(Image *) NULL;
+  clone_wand->mvg=(char *) NULL;
+  clone_wand->pattern_id=(char *) NULL;
+  clone_wand->graphic_context=(DrawInfo **) NULL;
+  
+  clone_wand->own_image=MagickTrue;
+  if (drawing_wand->image != (Image *) NULL)
+    {
+      clone_wand->image=CloneImage(drawing_wand->image,0,0,MagickTrue,
+				   &exeption_info);
+      if (clone_wand->image == (Image *) NULL)
+	goto clone_drawing_wand_fail;
+    }
+  
+  if (drawing_wand->mvg)
+    {
+      clone_wand->mvg=MagickAllocateMemory(char *,drawing_wand->mvg_alloc);
+      if (clone_wand->mvg == (char *) NULL)
+	{
+	  ThrowException3(&exeption_info,ResourceLimitError,
+			  MemoryAllocationFailed,UnableToCloneDrawingWand);
+	  goto clone_drawing_wand_fail;
+	}
+      (void) memcpy(clone_wand->mvg,drawing_wand->mvg,drawing_wand->mvg_length+1);
+    }
+
+  if (drawing_wand->pattern_id != (const char *) NULL)
+    clone_wand->pattern_id=AllocateString(drawing_wand->pattern_id);
+
+  if (drawing_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      clone_wand->graphic_context=MagickAllocateArray(DrawInfo **,
+						      drawing_wand->index+1,
+						      sizeof(DrawInfo *));
+      if (clone_wand->graphic_context == (DrawInfo **) NULL)
+	{
+	  ThrowException3(&exeption_info,ResourceLimitError,
+			  MemoryAllocationFailed,UnableToCloneDrawingWand);
+	  goto clone_drawing_wand_fail;
+	}
+      (void) memset(clone_wand->graphic_context,0,
+		    (drawing_wand->index+1)*sizeof(DrawInfo *));
+
+      for (clone_wand->index=0; clone_wand->index <= drawing_wand->index; clone_wand->index++)
+	{
+	  clone_wand->graphic_context[clone_wand->index]=
+	    CloneDrawInfo((ImageInfo*)NULL,drawing_wand->graphic_context[clone_wand->index]);
+	  if (clone_wand->graphic_context[clone_wand->index] == (DrawInfo*) NULL)
+	    {
+	      ThrowException3(&exeption_info,ResourceLimitError,
+			      MemoryAllocationFailed,UnableToCloneDrawingWand);
+	      goto clone_drawing_wand_fail;
+	    }
+	}
+      clone_wand->index=drawing_wand->index;
+    }
+
+  return(clone_wand);
+
+clone_drawing_wand_fail:
+
+  if (clone_wand->image != (Image *) NULL)
+    DestroyImage(clone_wand->image);
+  MagickFreeMemory(clone_wand->mvg);
+  MagickFreeMemory(clone_wand->pattern_id);
+  if (clone_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      for ( ; clone_wand->index >= 0; clone_wand->index--)
+	{
+	  if (clone_wand->graphic_context[clone_wand->index] != (DrawInfo*) NULL)
+	    DestroyDrawInfo(clone_wand->graphic_context[clone_wand->index]);
+	  clone_wand->graphic_context[clone_wand->index]=(DrawInfo*) NULL;
+	}
+      MagickFreeMemory(clone_wand->graphic_context);
+    }
+  (void) memset(clone_wand,0,sizeof(*clone_wand));
+  MagickFreeMemory(clone_wand);
+  /* No place to report exception, but it may be logged. */
+  DestroyExceptionInfo(&exeption_info);
+  return(clone_wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y D r a w i n g W a n d                                       %
 %                                                                             %
 %                                                                             %
@@ -371,43 +495,35 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
-%    o drawing_wand: The drawing wand. to destroy
+%    o drawing_wand: The drawing wand to destroy.
 %
 */
 WandExport void DestroyDrawingWand(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  drawing_wand->path_operation=PathDefaultOperation;
-  drawing_wand->path_mode=DefaultPathMode;
-  drawing_wand->indent_depth=0;
-  for ( ; drawing_wand->index > 0; drawing_wand->index--)
-  {
-    DestroyDrawInfo(CurrentContext);
-    CurrentContext=(DrawInfo*) NULL;
-  }
-  DestroyDrawInfo(CurrentContext);
-  CurrentContext=(DrawInfo*) NULL;
-  drawing_wand->graphic_context=(DrawInfo **)
-    RelinquishMagickMemory(drawing_wand->graphic_context);
-  if (drawing_wand->pattern_id != (char *) NULL)
-    drawing_wand->pattern_id=(char *)
-      RelinquishMagickMemory(drawing_wand->pattern_id);
-  drawing_wand->pattern_offset=0;
-  drawing_wand->pattern_bounds.x=0;
-  drawing_wand->pattern_bounds.y=0;
-  drawing_wand->pattern_bounds.width=0;
-  drawing_wand->pattern_bounds.height=0;
-  drawing_wand->mvg=(char *) RelinquishMagickMemory(drawing_wand->mvg);
-  drawing_wand->mvg_alloc=0;
-  drawing_wand->mvg_length=0;
-  /* A crummy way to determine if this image can be deleted. */
+
   if ((drawing_wand->image != (Image*) NULL) &&
-      strcmp(drawing_wand->image->filename,dummy_image_filename) == 0)
+      (drawing_wand->own_image == MagickTrue))
     DestroyImage(drawing_wand->image);
-  drawing_wand->image=(Image*) NULL;
-  drawing_wand->signature=0;
-  drawing_wand=(DrawingWand *) RelinquishMagickMemory(drawing_wand);
+
+  MagickFreeMemory(drawing_wand->mvg);
+
+  MagickFreeMemory(drawing_wand->pattern_id);
+
+  if (drawing_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      for ( ; drawing_wand->index >= 0; drawing_wand->index--)
+	{
+	  if (drawing_wand->graphic_context[drawing_wand->index] != (DrawInfo*) NULL)
+	    DestroyDrawInfo(drawing_wand->graphic_context[drawing_wand->index]);
+	  drawing_wand->graphic_context[drawing_wand->index]=(DrawInfo*) NULL;
+	}
+      MagickFreeMemory(drawing_wand->graphic_context);
+    }
+
+  (void) memset(drawing_wand,0,sizeof(*drawing_wand));
+  MagickFreeMemory(drawing_wand);
 }
 
 /*
@@ -518,6 +634,7 @@ WandExport void DrawAffine(DrawingWand *drawing_wand,
 */
 WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
 {
+#if 0
   DrawingWand
     *drawing_wand;
 
@@ -558,6 +675,24 @@ WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
   drawing_wand->path_mode=DefaultPathMode;
   drawing_wand->signature=MagickSignature;
   return(drawing_wand);
+#endif
+  
+  DrawingWand
+    *drawing_wand;
+
+  drawing_wand=NewDrawingWand();
+  if (draw_info != (const DrawInfo *) NULL)
+    {
+      DestroyDrawInfo(CurrentContext);
+      CurrentContext=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+    }
+  if (image != (Image *) NULL)
+    {
+      DestroyImage(drawing_wand->image);
+      drawing_wand->own_image=MagickFalse;
+    }
+  drawing_wand->image=image;
+  return drawing_wand;
 }
 
 /*
@@ -3769,14 +3904,17 @@ WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
 */
 WandExport unsigned int DrawRender(const DrawingWand *drawing_wand)
 {
+  MagickPassFail
+    status;
+
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   CurrentContext->primitive=drawing_wand->mvg;
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"MVG:\n'%s'\n",
     drawing_wand->mvg);
-  (void) DrawImage(drawing_wand->image, CurrentContext);
+  status=DrawImage(drawing_wand->image, CurrentContext);
   CurrentContext->primitive=(char *) NULL;
-  return(True);
+  return status;
 }
 
 /*
@@ -5307,11 +5445,45 @@ WandExport void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
 */
 WandExport DrawingWand *NewDrawingWand(void)
 {
-  Image
-    *image;
+  DrawingWand
+    *drawing_wand;
 
-  image=AllocateImage((const ImageInfo *) NULL);
-  /* A crummy way to determine that this image can be deleted. */
-  strlcpy(image->filename,dummy_image_filename,MaxTextExtent);
-  return(DrawAllocateWand((const DrawInfo *) NULL,image));
+  drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
+  if (drawing_wand == (DrawingWand *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateDrawingWand);
+  drawing_wand->image=AllocateImage((const ImageInfo *) NULL);
+  drawing_wand->own_image=MagickTrue;
+  drawing_wand->mvg=NULL;
+  drawing_wand->mvg_alloc=0;
+  drawing_wand->mvg_length=0;
+  drawing_wand->mvg_width=0;
+  drawing_wand->pattern_id=NULL;
+  drawing_wand->pattern_offset=0;
+  drawing_wand->pattern_bounds.x=0;
+  drawing_wand->pattern_bounds.y=0;
+  drawing_wand->pattern_bounds.width=0;
+  drawing_wand->pattern_bounds.height=0;
+  drawing_wand->index=0;
+  drawing_wand->graphic_context=(DrawInfo **)
+    AcquireMagickMemory(sizeof(DrawInfo *));
+  if (drawing_wand->graphic_context == (DrawInfo **) NULL)
+    {
+      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
+      return (DrawingWand *) NULL;
+    }
+  CurrentContext=CloneDrawInfo((ImageInfo*)NULL,(DrawInfo *) NULL);
+  if (CurrentContext == (DrawInfo*) NULL)
+    {
+      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
+      return (DrawingWand *) NULL;
+    }
+  drawing_wand->filter_off=False;
+  drawing_wand->indent_depth=0;
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
+  drawing_wand->signature=MagickSignature;
+  return(drawing_wand);
 }

@@ -1,3 +1,12 @@
+2009-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c (CloneDrawingWand): New function to
+	deep-copy a drawing wand.
+	(NewDrawingWand): Use a boolean flag to track if image is
+	allocated by the wand, or by the user.  Most of the previous
+	DrawAllocateWand() code is moved into NewDrawingWand() so that the
+	boolean flag is easy to manage.
+
 2009-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Support writing grayscale

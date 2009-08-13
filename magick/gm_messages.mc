@@ -2111,6 +2111,12 @@ unable to average image sequence
 .
 
 MessageId       = +1
+SymbolicName    = LimitErrorUnableToCloneDrawingWand
+Language        = English
+unable to clone drawing wand
+.
+
+MessageId       = +1
 SymbolicName    = LimitErrorUnableToCloneImage
 Language        = English
 unable to clone image

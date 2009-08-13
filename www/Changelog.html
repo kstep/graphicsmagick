@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2009-08-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/drawing_wand.c (CloneDrawingWand): New function to
+        deep-copy a drawing wand.<BR>
+        (NewDrawingWand): Use a boolean flag to track if image is
+        allocated by the wand, or by the user.  Most of the previous
+        DrawAllocateWand() code is moved into NewDrawingWand() so that the
+        boolean flag is easy to manage.
+
+</UL>
+<p>
 2009-08-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

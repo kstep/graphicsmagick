@@ -258,6 +258,7 @@ extern WandExport DrawInfo
   *DrawPeekGraphicContext(const DrawingWand *);
 
 extern WandExport DrawingWand
+  *CloneDrawingWand(const DrawingWand *drawing_wand),
   *DrawAllocateWand(const DrawInfo *,Image *),
   *NewDrawingWand(void);
 

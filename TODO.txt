@@ -16,8 +16,8 @@ Short Term
 * Choose a better tile size for rotate by 0 and 270 degrees when the pixel
   cache is disk-based.  Also disable threading.
 
-* Add ClonePixelWand(), CloneDrawingWand(), Compare, and Distortion
-  functions to the Wand API.
+* Add ClonePixelWand(), Compare, and Distortion functions to the Wand
+  API.
 
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
