@@ -4840,7 +4840,8 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
 
       while ((*p != '.') && (p > (image_info->filename+1)))
         p--;
-      if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
+      if ((LocaleCompare(p,".gz") == 0) ||
+	  (LocaleCompare(p,".Z") == 0) ||
           (LocaleCompare(p,".bz2") == 0))
         do
           {

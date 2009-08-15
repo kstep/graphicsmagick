@@ -532,6 +532,10 @@ MagickExport CompressionType StringToCompressionType(const char *option)
     compression_type=NoCompression;
   else if (LocaleCompare("BZip",option) == 0)
     compression_type=BZipCompression;
+  else if (LocaleCompare("BZip2",option) == 0)
+    compression_type=BZipCompression;
+  else if (LocaleCompare("BZ2",option) == 0)
+    compression_type=BZipCompression;
   else if (LocaleCompare("Fax",option) == 0)
     compression_type=FaxCompression;
   else if (LocaleCompare("Group4",option) == 0)
@@ -545,6 +549,8 @@ MagickExport CompressionType StringToCompressionType(const char *option)
   else if (LocaleCompare("RLE",option) == 0)
     compression_type=RLECompression;
   else if (LocaleCompare("Zip",option) == 0)
+    compression_type=ZipCompression;
+  else if (LocaleCompare("GZip",option) == 0)
     compression_type=ZipCompression;
 
   return compression_type;

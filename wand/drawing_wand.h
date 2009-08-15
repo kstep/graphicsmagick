@@ -10,6 +10,8 @@ extern "C" {
 
 #include "wand/pixel_wand.h"
 
+#undef CloneDrawingWand
+#define CloneDrawingWand MagickCloneDrawingWand
 #undef DestroyDrawingWand
 #define DestroyDrawingWand MagickDestroyDrawingWand
 #undef DrawAffine
@@ -22,6 +24,8 @@ extern "C" {
 #define DrawArc MagickDrawArc
 #undef DrawBezier
 #define DrawBezier MagickDrawBezier
+#undef DrawClearException
+#define DrawClearException MagickDrawClearException
 #undef DrawCircle
 #define DrawCircle MagickDrawCircle
 #undef DrawColor
@@ -38,6 +42,8 @@ extern "C" {
 #define DrawGetClipRule MagickDrawGetClipRule
 #undef DrawGetClipUnits
 #define DrawGetClipUnits MagickDrawGetClipUnits
+#undef DrawGetException
+#define DrawGetException MagickDrawGetException
 #undef DrawGetFillColor
 #define DrawGetFillColor MagickDrawGetFillColor
 #undef DrawGetFillOpacity
@@ -236,6 +242,7 @@ typedef struct _DrawingWand
 
 extern WandExport char
   *DrawGetClipPath(const DrawingWand *),
+  *DrawGetException(const DrawingWand *,ExceptionType *),
   *DrawGetFont(const DrawingWand *),
   *DrawGetFontFamily(const DrawingWand *),
   *DrawGetTextEncoding(const DrawingWand *);
@@ -259,7 +266,7 @@ extern WandExport DrawInfo
 
 extern WandExport DrawingWand
   *CloneDrawingWand(const DrawingWand *drawing_wand),
-  *DrawAllocateWand(const DrawInfo *,Image *),
+  *DrawAllocateWand(const DrawInfo *,Image *) __attribute__ ((deprecated)),
   *NewDrawingWand(void);
 
 extern WandExport FillRule
@@ -282,9 +289,10 @@ extern WandExport StyleType
   DrawGetFontStyle(const DrawingWand *);
 
 extern WandExport unsigned int
+  DrawClearException(DrawingWand *),
   DrawGetStrokeAntialias(const DrawingWand *),
   DrawGetTextAntialias(const DrawingWand *),
-  DrawRender(const DrawingWand *);
+  DrawRender(const DrawingWand *) __attribute__ ((deprecated));
 
 extern WandExport unsigned long
   DrawGetFontWeight(const DrawingWand *),

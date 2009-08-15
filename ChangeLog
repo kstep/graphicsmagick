@@ -1,3 +1,20 @@
+2009-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c (DrawClearException): New function to clear
+	drawing wand exception.
+	(DrawGetException): New function to retrieve information regarding
+	the last drawing wand exception (if any).
+	(DrawRender): DrawRender() is now deprecated since it requires an
+	Image pointer to be embedded in the drawing wand.  The image
+	passed is subsequently lost by CloneDrawingWand() since it must
+	clone the image using copy-on-write.  Subsequent use of
+	DrawRender() on a cloned wand scribbles on an image the user does
+	not have access to.  Use existing Wand function MagickDrawImage()
+	instead.
+	(DrawAllocateWand): DrawAllocateWand() is now deprecated since it
+	requires passing an Image pointer into the drawing wand.  Use
+	existing DrawingWand function NewDrawingWand() instead.
+
 2009-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/drawing_wand.c (CloneDrawingWand): New function to
