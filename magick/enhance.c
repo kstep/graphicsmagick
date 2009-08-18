@@ -43,7 +43,6 @@
 #include "magick/color.h"
 #include "magick/enhance.h"
 #include "magick/gem.h"
-#include "magick/omp_data_view.h"
 #include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"

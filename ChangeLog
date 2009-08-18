@@ -1,3 +1,9 @@
+2009-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawPolygonPrimitive): Drawing of points,
+	lines, and polygons is now accelerated using OpenMP with good
+	speed-up.
+
 2009-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/drawing_wand.c (DrawClearException): New function to clear
