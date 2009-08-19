@@ -1,3 +1,7 @@
+2009-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/meta.c (ReadMETAImage): Fix memory leak of profile blob.
+
 2009-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/tests/icc-transform.sh: Add a sanity-test for applying
