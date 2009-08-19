@@ -20,6 +20,11 @@ UTILITIES_JPEG_XFAIL_TESTS = \
 	utilities/tests/identify.sh
 endif
 
+if !HasLCMS
+UTILITIES_LCMS_XFAIL_TESTS = \
+	utilities/tests/icc-transform.sh
+endif
+
 if !HasTTF
 UTILITIES_TTF_XFAIL_TESTS = \
 	utilities/tests/annotate.sh \
@@ -34,6 +39,7 @@ endif
 
 UTILITIES_XFAIL_TESTS = \
 	$(UTILITIES_JPEG_XFAIL_TESTS) \
+	$(UTILITIES_LCMS_XFAIL_TESTS) \
 	$(UTILITIES_TTF_XFAIL_TESTS) \
 	$(UTILITIES_XML_XFAIL_TESTS)
 
@@ -66,6 +72,7 @@ UTILITIES_TESTS = \
 	utilities/tests/grayscale.sh \
 	utilities/tests/hald-clut-identity.sh \
 	utilities/tests/hald-clut-transform.sh \
+	utilities/tests/icc-transform.sh \
 	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
@@ -201,8 +208,10 @@ UTILITIES_MANS = \
 UTILITIES_EXTRA_DIST = \
 	$(UTILITIES_MANS) \
 	$(UTILITIES_TESTS) \
+	utilities/tests/BetaRGB.icc \
 	utilities/tests/common.sh \
-	utilities/tests/sunrise.jpg
+	utilities/tests/sunrise.jpg \
+	utilities/tests/sunrise.miff
 
 UTILITIES_CLEANFILES = \
 	utilities/tests/*_out.miff \

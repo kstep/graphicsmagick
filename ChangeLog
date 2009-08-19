@@ -1,3 +1,10 @@
+2009-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/tests/icc-transform.sh: Add a sanity-test for applying
+	ICC profiles.
+
+	* magick/profile.c (ProfileImage): Improve OpenMP performance.
+
 2009-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/render.c (DrawPolygonPrimitive): Drawing of points,
