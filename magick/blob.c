@@ -2522,13 +2522,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                       count;
 
                     size_t
-                      vbuf_size = 16384;
+                      vbuf_size;
 
-                    if ((env = getenv("MAGICK_IOBUF_SIZE")))
-                      {
-                        vbuf_size = (size_t) atol(env);
-                      }
-
+		    vbuf_size=MagickGetFileSystemBlockSize();
                     if (setvbuf(image->blob->file,NULL,_IOFBF,vbuf_size) != 0)
                       {
                         if (image->logging)

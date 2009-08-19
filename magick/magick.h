@@ -125,6 +125,23 @@ extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *magick_info),
   *SetMagickInfo(const char *name);
 
+#if defined(MAGICK_IMPLEMENTATION)
+
+  /*
+    Get blocksize to use when accessing the filesystem.
+  */
+  extern size_t
+  MagickGetFileSystemBlockSize(void);
+
+  /*
+    Set blocksize to use when accessing the filesystem.
+  */
+  extern void
+  MagickSetFileSystemBlockSize(const size_t block_size);
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

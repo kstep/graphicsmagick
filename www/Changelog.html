@@ -24,6 +24,15 @@
 2009-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magick.c (MagickGetFileSystemBlockSize): New private
+        function to allow getting desired filesystem block size.
+        (MagickSetFileSystemBlockSize): New private function to allow
+        setting desired filesystem block size.
+
+  <LI> magick/pixel_cache.c (WriteCacheIndexes, WriteCachePixels):
+        Temporarily disable pixel cache row coalescing when writing to
+        disk until we come up with a good way to optimize write sizes.
+
   <LI> coders/meta.c (ReadMETAImage): Fix memory leak of profile blob.
 
 </UL>

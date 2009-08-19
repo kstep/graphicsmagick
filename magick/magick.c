@@ -86,6 +86,33 @@ static CoderClass MinimumCoderClass = UnstableCoderClass;
 
 static void DestroyMagickInfo(MagickInfo** magick_info);
 static void DestroyMagickInfoList(void);
+
+/*
+  Block size to use when accessing filesystem.
+
+  Adjust via MAGICK_IOBUF_SIZE environment variable.
+*/
+
+static size_t filesystem_blocksize=16384;
+
+/*
+  Get blocksize to use when accessing the filesystem.
+*/
+size_t
+MagickGetFileSystemBlockSize(void)
+{
+  return filesystem_blocksize;
+}
+
+/*
+  Set blocksize to use when accessing the filesystem.
+*/
+void
+MagickSetFileSystemBlockSize(const size_t block_size)
+{
+  filesystem_blocksize=block_size;
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -881,6 +908,19 @@ MagickExport void InitializeMagick(const char *path)
   */
   if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
     (void) SetLogEventMask(p);
+
+  /*
+    Set the filesystem block size.
+  */
+  {
+    size_t
+      block_size=16384;
+    
+    if ((p=getenv("MAGICK_IOBUF_SIZE")) != (const char *) NULL)
+      block_size = (size_t) atol(p);
+    
+    MagickSetFileSystemBlockSize(block_size);
+  }
 
   /*
     Establish the path, filename, and display name of the client app

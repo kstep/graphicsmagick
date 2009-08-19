@@ -289,11 +289,22 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
 
   for (total_count=0; total_count < length; total_count+=count)
     {
+      char
+	*io_buff_address;
+
+      size_t
+	requested_io_size;
+
+      off_t
+	io_file_offset;
+
+      requested_io_size=length-total_count;
+      io_buff_address=(char *) buffer+total_count;
+      io_file_offset=offset+total_count;
 #if HAVE_PREAD
-      count=pread(file,(char *) buffer+total_count,length-total_count,
-                  offset+total_count);
+      count=pread(file,io_buff_address,requested_io_size,io_file_offset);
 #else
-      count=read(file,(char *) buffer+total_count,length-total_count);
+      count=read(file,io_buff_address,requested_io_size);
 #endif
       if (count <= 0)
         break;
@@ -325,11 +336,22 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
 #endif /* !HAVE_PWRITE */
   for (total_count=0; total_count < length; total_count+=count)
     {
+      char
+	*io_buff_address;
+
+      size_t
+	requested_io_size;
+
+      off_t
+	io_file_offset;
+
+      io_buff_address=(char *) buffer+total_count;
+      requested_io_size=length-total_count;
+      io_file_offset=offset+total_count;
 #if HAVE_PWRITE
-      count=pwrite(file,(char *) buffer+total_count,length-total_count,
-                   offset+total_count);
+      count=pwrite(file,io_buff_address,requested_io_size,io_file_offset);
 #else
-      count=write(file,(char *) buffer+total_count,length-total_count);
+      count=write(file,io_buff_address,requested_io_size);
 #endif
       if (count <= 0)
         break;
@@ -4016,7 +4038,7 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
                ExceptionInfo *exception)
 {
   MagickPassFail
-    status;
+    status=MagickPass;
 
   CacheInfo
     *cache_info;
@@ -4031,21 +4053,30 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
   if (cache_info == (CacheInfo *) NULL)
     {
       ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
-      return MagickFail;
+      status=MagickFail;
     }
-  if (IsNexusInCore(cache_info,nexus_info))
-    return(MagickPass);
-  if (image->clip_mask != (Image *) NULL)
-    if (!ClipCacheNexus(image,nexus_info))
-      return(MagickFail);
-  status=WriteCachePixels(cache_info,nexus_info);
-  if (cache_info->indexes_valid)
-    status&=WriteCacheIndexes(cache_info,nexus_info);
-  if (status == MagickFail)
+  else if (IsNexusInCore(cache_info,nexus_info))
     {
-      ThrowException(exception,CacheError,UnableToSyncCache,image->filename);
-      return MagickFail;
+      status=MagickPass;
     }
+  else
+    {
+      if (image->clip_mask != (Image *) NULL)
+	if (!ClipCacheNexus(image,nexus_info))
+	  status=MagickFail;
+
+      if (status != MagickFail)
+	if ((status=WriteCachePixels(cache_info,nexus_info)) == MagickFail)
+	  ThrowException(exception,CacheError,UnableToSyncCache,
+			 image->filename);
+
+      if (status != MagickFail)
+	if (cache_info->indexes_valid)
+	  if ((status=WriteCacheIndexes(cache_info,nexus_info)) == MagickFail)
+	    ThrowException(exception,CacheError,UnableToSyncCache,
+			   image->filename);
+    }
+
   return(status);
 }
 
@@ -4234,12 +4265,6 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
   length=nexus_info->region.width*sizeof(IndexPacket);
   rows=nexus_info->region.height;  
   number_pixels=(magick_uint64_t) length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (size_t) number_pixels))
-    {
-      length=number_pixels;
-      rows=1;
-    }
   y=0;
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
@@ -4248,9 +4273,18 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
         *cache_indexes;
 
       /*
+	Coalesce rows into larger write request if possible.
+      */
+      if ((cache_info->columns == nexus_info->region.width) &&
+	  (number_pixels == (size_t) number_pixels))
+	{
+	  length=number_pixels;
+	  rows=1;
+	}
+
+      /*
         Write indexes to memory.
       */
-
       cache_indexes=cache_info->indexes+offset;
       if (length < 257)
         {
@@ -4289,13 +4323,30 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
       }
     if (file != -1)
       {
+	magick_off_t
+	  row_offset;
+	
+	ssize_t
+	  bytes_written;
+
         number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
+	row_offset=cache_info->offset+number_pixels*sizeof(PixelPacket)+offset
+	  *sizeof(IndexPacket);
         for (y=0; y < (long) rows; y++)
           {
-            if ((FilePositionWrite(file,indexes,length,cache_info->offset+
-                                   number_pixels*sizeof(PixelPacket)+offset
-                                   *sizeof(IndexPacket))) < (long) length)
-              break;
+            if ((bytes_written=FilePositionWrite(file,indexes,length,row_offset))
+		< (long) length)
+	      {
+		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
+				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
+				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      y,
+				      row_offset,
+				      (long) bytes_written,
+				      (unsigned long) length,
+				      strerror(errno));
+		break;
+	      }
             indexes+=nexus_info->region.width;
             offset+=cache_info->columns;
           }
@@ -4378,18 +4429,22 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
   length=nexus_info->region.width*sizeof(PixelPacket);
   rows=nexus_info->region.height;  
   number_pixels=(magick_uint64_t) length*rows;
-  if ((cache_info->columns == nexus_info->region.width) &&
-      (number_pixels == (size_t) number_pixels))
-    {
-      length=number_pixels;
-      rows=1;
-    }
   y=0;
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
       register PixelPacket
         *cache_pixels;
+
+      /*
+	Coalesce rows into larger write request if possible.
+      */
+      if ((cache_info->columns == nexus_info->region.width) &&
+	  (number_pixels == (size_t) number_pixels))
+	{
+	  length=number_pixels;
+	  rows=1;
+	}
 
       /*
         Write pixels to memory.
@@ -4434,10 +4489,26 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
       {
         for (y=0; y < (long) rows; y++)
           {
-            if ((FilePositionWrite(file,pixels,length,
-                                   cache_info->offset+offset*
-                                   sizeof(PixelPacket))) < (long) length)
-              break;
+	    magick_off_t
+	      row_offset;
+
+	    ssize_t
+	      bytes_written;
+
+	    row_offset=cache_info->offset+offset*sizeof(PixelPacket);
+            if ((bytes_written=FilePositionWrite(file,pixels,length,row_offset))
+		< (ssize_t) length)
+	      {
+		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
+				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
+				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      y,
+				      row_offset,
+				      (long) bytes_written,
+				      (unsigned long) length,
+				      strerror(errno));
+		break;
+	      }
             pixels+=nexus_info->region.width;
             offset+=cache_info->columns;
           }
