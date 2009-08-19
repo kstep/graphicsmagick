@@ -946,6 +946,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       /*
 	Expand @filename to a list of arguments.
       */
+      j=0;
       if (option[0] == '@')
 	{
 	  FILE
