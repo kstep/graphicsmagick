@@ -24,6 +24,13 @@
 2009-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/command.c (TimeImageCommand): Add a simple 'time'
+        sub-command to time the execution of any other GraphicsMagick
+        sub-command.  Similar in concept to the 'benchmark' sub-command
+        but produces output similar to the 'time' command offered by the
+        zsh command shell.  Handy for when 'time' is not available, or
+        consistent output is desired.
+
   <LI> magick/magick.c (MagickGetFileSystemBlockSize): New private
         function to allow getting desired filesystem block size.
         (MagickSetFileSystemBlockSize): New private function to allow

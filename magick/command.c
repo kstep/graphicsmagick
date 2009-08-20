@@ -138,7 +138,8 @@ static void
 #endif /* HasX11 */
   LiberateArgumentList(const int argc,char **argv),
   MogrifyUsage(void),
-  MontageUsage(void);
+  MontageUsage(void),
+  TimeUsage(void);
 
 static unsigned int
   HelpCommand(ImageInfo *image_info,int argc,char **argv,
@@ -182,6 +183,8 @@ static const CommandInfo commands[] =
       MogrifyImageCommand, MogrifyUsage, 0 },
     { "montage", "create a composite image (in a grid) from separate images",
       MontageImageCommand, MontageUsage, 0 },
+    { "time", "time one of the other commands",
+      TimeImageCommand, TimeUsage, 1 },
     { "version", "obtain release version",
       VersionCommand, 0, 0 },
 #if defined(MSWINDOWS)
@@ -1437,7 +1440,7 @@ static void BenchmarkUsage(void)
 %
 %
 */
-static unsigned int BenchMarkSubCommand(const ImageInfo *image_info,
+static unsigned int ExecuteSubCommand(const ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
   unsigned int
@@ -1558,7 +1561,7 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
       {
         for (iteration=0; iteration < LONG_MAX; )
           {
-            status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
             iteration++;
             if (!status)
               break;
@@ -1573,7 +1576,7 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
         for (iteration=0; iteration < iterations; )
           {
             
-            status=BenchMarkSubCommand(image_info,argc,argv,metadata,exception);
+            status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
             iteration++;
             if (!status)
               break;
@@ -14933,6 +14936,164 @@ static void ImportUsage(void)
   (void) printf("standard input or output.\n");
 }
 #endif /* HasX11 */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T i m e U s a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TimeUsage() displays the program command syntax.
+%
+%  The format of the TimeUsage method is:
+%
+%      void TimeUsage()
+%
+%  A description of each parameter follows:
+%
+%
+*/
+static void TimeUsage(void)
+{
+  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  (void) printf("Usage: %.1024s command ... \n",GetClientName());
+  (void) printf("where 'command' is some other GraphicsMagick command\n");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  T i m e I m a g e C o m m a n d                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TimeImageCommand() executes a specified GraphicsMagick sub-command
+%  (e.g. 'convert') and prints out a summary of how long it took to the
+%  standard error output.  The format is similar to the output of the 'time'
+%  command in the zsh shell.
+%
+%  The format of the TimeImageCommand method is:
+%
+%      unsigned int TimeImageCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int
+TimeImageCommand(ImageInfo *image_info,
+		 int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+  double
+    elapsed_time,
+    resolution,
+    user_time;
+
+  TimerInfo
+    timer;
+
+  const char
+    *pad="    ";
+
+  char
+    client_name[MaxTextExtent];
+
+  int
+    formatted,
+    i,
+    screen_width;
+
+  unsigned int
+    status=True;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+                                  LocaleCompare("-?",argv[1]) == 0)))
+    {
+      TimeUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return MagickFail;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return MagickFail;
+    }
+
+  /*
+    Skip over our command name argv[0].
+  */
+  argc--;
+  argv++;
+  i=0;
+
+  if (argc < 1)
+    {
+      TimeUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return MagickFail;
+    }
+
+  (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
+  GetTimerInfo(&timer);
+  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+  (void) SetClientName(client_name);
+
+  resolution=GetTimerResolution();
+  user_time=GetUserTime(&timer);
+  elapsed_time=GetElapsedTime(&timer);
+  (void) fflush(stdout);
+
+  screen_width=0;
+  if (getenv("COLUMNS"))
+    screen_width=atoi(getenv("COLUMNS"))-1;
+  if (screen_width < 80)
+    screen_width=80;
+
+  formatted=0;
+  for (i=0; i < argc; i++)
+    {
+      if (i != 0)
+	formatted += fprintf(stderr," ");
+      formatted += fprintf(stderr,"%s",argv[i]);
+      if (formatted > (screen_width-55))
+	{
+	  if ((i+1) < argc)
+	    pad="... ";
+	  break;
+	}
+    }
+  (void) fprintf(stderr,
+		 "%s%.2fs user %.2fs system %.0f%% cpu %.3f total\n",
+		 pad,user_time,0.0,100.0*user_time/elapsed_time,elapsed_time);
+  (void) fflush(stderr);
+
+  return status;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
