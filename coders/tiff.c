@@ -1702,7 +1702,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             else if (TIFFIsTiled(tiff))
               method=TiledMethod;
-            else if ((TIFFStripSize(tiff)) < (1024*64))
+            else if ((TIFFStripSize(tiff)) <= (1024*64))
               method=StrippedMethod;
             if (photometric == PHOTOMETRIC_MINISWHITE)
               import_options.grayscale_miniswhite=MagickTrue;

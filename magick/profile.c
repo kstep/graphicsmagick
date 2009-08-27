@@ -471,6 +471,15 @@ ProfileImagePixels(void *mutable_data,         /* User provided mutable data */
 
   return MagickPass;
 }
+
+static void MagickFreeCMSTransform(void * cmsTransformVoid)
+{
+  cmsHTRANSFORM
+    cmsTransform=(cmsHTRANSFORM) cmsTransformVoid;
+
+  cmsDeleteTransform(cmsTransform);
+}
+
 #endif /* defined(HasLCMS) */
 
 #define ProfileImageText "[%s] Color Transform Pixels..."
@@ -827,7 +836,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
 	  /* build pre-computed transforms? */
 	  xform.flags=(transform_colormap ? cmsFLAGS_NOTPRECALC : 0);
 
-	  xform.transform=AllocateThreadViewDataSet(cmsDeleteTransform,
+	  xform.transform=AllocateThreadViewDataSet(MagickFreeCMSTransform,
 						    image,&image->exception);
 	  if (xform.transform == (ThreadViewDataSet *) NULL)
 	    status=MagickFail;
