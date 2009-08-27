@@ -43,7 +43,11 @@ extern int getopt(int, char**, char*);
 #define	CopyField3(tag, v1, v2, v3) \
     if (TIFFGetField(in, tag, &v1, &v2, &v3)) TIFFSetField(out, tag, v1, v2, v3)
 
-static	char fname[1024+1];
+#define PATH_LENGTH 8192
+
+static const char TIFF_SUFFIX[] = ".tif";
+
+static	char fname[PATH_LENGTH];
 
 static	int tiffcp(TIFF*, TIFF*);
 static	void newfilename(void);
@@ -60,16 +64,26 @@ main(int argc, char* argv[])
 		fprintf(stderr, "usage: tiffsplit input.tif [prefix]\n");
 		return (-3);
 	}
-	if (argc > 2)
-		strcpy(fname, argv[2]);
+	if (argc > 2) {
+		strncpy(fname, argv[2], sizeof(fname));
+		fname[sizeof(fname) - 1] = '\0';
+	}
 	in = TIFFOpen(argv[1], "r");
 	if (in != NULL) {
 		do {
-			char path[1024+1];
+			size_t path_len;
+			char *path;
+			
 			newfilename();
-			strcpy(path, fname);
-			strcat(path, ".tif");
+
+			path_len = strlen(fname) + sizeof(TIFF_SUFFIX);
+			path = (char *) _TIFFmalloc(path_len);
+			strncpy(path, fname, path_len);
+			path[path_len - 1] = '\0';
+			strncat(path, TIFF_SUFFIX, path_len - strlen(path) - 1);
 			out = TIFFOpen(path, TIFFIsBigEndian(in)?"wb":"wl");
+			_TIFFfree(path);
+
 			if (out == NULL)
 				return (-2);
 			if (!tiffcp(in, out))
@@ -183,7 +197,7 @@ tiffcp(TIFF* in, TIFF* out)
 	CopyField(TIFFTAG_YPOSITION, floatv);
 	CopyField(TIFFTAG_IMAGEDEPTH, longv);
 	CopyField(TIFFTAG_TILEDEPTH, longv);
-	CopyField(TIFFTAG_SAMPLEFORMAT, longv);
+	CopyField(TIFFTAG_SAMPLEFORMAT, shortv);
 	CopyField2(TIFFTAG_EXTRASAMPLES, shortv, shortav);
 	{ uint16 *red, *green, *blue;
 	  CopyField3(TIFFTAG_COLORMAP, red, green, blue);

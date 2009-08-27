@@ -53,8 +53,12 @@
 
 #include "tiffio.h"
 
+#ifndef HAVE_GETOPT
+extern int getopt(int, char**, char*);
+#endif
+
 #if defined(VMS)
-#define unlink delete
+# define unlink delete
 #endif
 
 #define	streq(a,b)	(strcmp(a,b) == 0)
@@ -357,6 +361,8 @@ processCompressOptions(char* opt)
 		if (cp)
 			defpredictor = atoi(cp+1);
 		defcompression = COMPRESSION_ADOBE_DEFLATE;
+	} else if (strneq(opt, "jbig", 4)) {
+		defcompression = COMPRESSION_JBIG;
 	} else
 		return (0);
 	return (1);
@@ -385,6 +391,7 @@ char* stuff[] = {
 " -c lzw[:opts]	compress output with Lempel-Ziv & Welch encoding",
 " -c zip[:opts]	compress output with deflate encoding",
 " -c jpeg[:opts]	compress output with JPEG encoding",
+" -c jbig	compress output with ISO JBIG encoding",
 " -c packbits	compress output with packbits encoding",
 " -c g3[:opts]	compress output with CCITT Group 3 encoding",
 " -c g4		compress output with CCITT Group 4 encoding",
@@ -640,7 +647,7 @@ tiffcp(TIFF* in, TIFF* out)
 				rowsperstrip =
 					TIFFDefaultStripSize(out, rowsperstrip);
 			}
-			if (rowsperstrip > length)
+			if (rowsperstrip > length && rowsperstrip != (uint32)-1)
 				rowsperstrip = length;
 		}
 		else if (rowsperstrip == (uint32) -1)
@@ -659,6 +666,12 @@ tiffcp(TIFF* in, TIFF* out)
 	case COMPRESSION_JPEG:
 		TIFFSetField(out, TIFFTAG_JPEGQUALITY, quality);
 		TIFFSetField(out, TIFFTAG_JPEGCOLORMODE, jpegcolormode);
+		break;
+	case COMPRESSION_JBIG:
+		CopyTag(TIFFTAG_FAXRECVPARAMS, 1, TIFF_LONG);
+		CopyTag(TIFFTAG_FAXRECVTIME, 1, TIFF_LONG);
+		CopyTag(TIFFTAG_FAXSUBADDRESS, 1, TIFF_ASCII);
+		CopyTag(TIFFTAG_FAXDCS, 1, TIFF_ASCII);
 		break;
 	case COMPRESSION_LZW:
 	case COMPRESSION_ADOBE_DEFLATE:
@@ -1328,7 +1341,7 @@ DECLAREwriteFunc(writeBufferToContigStrips)
 		tsize_t stripsize = TIFFVStripSize(out, nrows);
 		if (TIFFWriteEncodedStrip(out, strip++, buf, stripsize) < 0) {
 			TIFFError(TIFFFileName(out),
-				  "Error, can't write strip %lu", strip - 1);
+				  "Error, can't write strip %u", strip - 1);
 			return 0;
 		}
 		buf += stripsize;
@@ -1359,7 +1372,7 @@ DECLAREwriteFunc(writeBufferToSeparateStrips)
 			    nrows, imagewidth, 0, 0, spp, 1);
 			if (TIFFWriteEncodedStrip(out, strip++, obuf, stripsize) < 0) {
 				TIFFError(TIFFFileName(out),
-					  "Error, can't write strip %lu",
+					  "Error, can't write strip %u",
 					  strip - 1);
 				_TIFFfree(obuf);
 				return 0;
