@@ -60,6 +60,8 @@ extern "C" {
 /* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
 #define HAVE_TIFFSETWARNINGHANDLEREXT 1
 
+/* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
+#define HAVE_TIFFSWABARRAYOFTRIPLES 1
 
 // Define to support memory mapping files for improved performance
 #define HAVE_MMAP_FILEIO 1

@@ -1,5 +1,8 @@
 2009-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.h (HAVE_TIFFSWABARRAYOFTRIPLES): Need to define
+	this since libtiff includes this function now.
+
 	* VisualMagick/tiff/libtiff/tiffconf.h.in: Enable all the options
 	by default.
 
