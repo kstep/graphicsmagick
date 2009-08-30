@@ -1,5 +1,9 @@
 2009-08-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/render.c (DrawDashPolygon): Avoid access beyond end of
+	array.  Resolves SourceForge issue 2832125 "Crash on SVG
+	conversion".
+
 	* magick/magick.c (InitializeMagick): Improve the quality of the
 	seed passed to srand().
 
