@@ -795,7 +795,25 @@ MagickExport void InitializeMagick(const char *path)
   (void) setlocale(LC_NUMERIC,"C");
 
   /* Seed the random number generator */
-  srand(time(0));
+  {
+    unsigned int
+      seed;
+
+    /*
+      Initial seed is based on time of day.
+    */
+    seed=time(0);
+    /*
+      Multiple processes may be started within the same second so hash
+      with process ID as well.
+    */
+    seed ^= ((unsigned int) getpid() << 2);
+    /*
+      Hash with execution time as well.
+    */
+    seed ^= ((unsigned int) clock() << 3);
+    srand(seed);
+  }
 
   /* Initialize semaphores */
   InitializeSemaphore();

@@ -2458,7 +2458,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             break;
           indexes=GetIndexes(image);
 
-          q->opacity=OpaqueOpacity;
           if (storage_class == PseudoClass)
             {
               IndexPacket
@@ -2471,6 +2470,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     if (index < ping_info->num_trans)
                       q->opacity=
                         ScaleCharToQuantum(255-ping_info->trans[index]);
+		    else
+		      q->opacity=OpaqueOpacity;
                     q++;
                   }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
@@ -2482,6 +2483,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     q->blue=image->colormap[index].blue;
                     if (q->red == transparent_color.opacity)
                       q->opacity=TransparentOpacity;
+		    else
+		      q->opacity=OpaqueOpacity;
                     q++;
                   }
             }
@@ -2492,6 +2495,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     q->green == transparent_color.green &&
                     q->blue == transparent_color.blue)
                   q->opacity=TransparentOpacity;
+		else
+		  q->opacity=OpaqueOpacity;
                 q++;
               }
           if (!SyncImagePixels(image))
