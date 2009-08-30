@@ -236,7 +236,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
         x;
 
       for (x=0; draw_info->dash_pattern[x] != 0.0; x++);
-      clone_info->dash_pattern=MagickAllocateMemory(double *,(x+1)*sizeof(double));
+      clone_info->dash_pattern=
+	MagickAllocateArray(double *,(x+1),sizeof(double));
       if (clone_info->dash_pattern == (double *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
           UnableToAllocateDashPattern);
@@ -393,7 +394,8 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
   number_edges=16;
-  polygon_info->edges=MagickAllocateMemory(EdgeInfo *,number_edges*sizeof(EdgeInfo));
+  polygon_info->edges=
+    MagickAllocateArray(EdgeInfo *,number_edges,sizeof(EdgeInfo));
   if (polygon_info->edges == (EdgeInfo *) NULL)
     return((PolygonInfo *) NULL);
   direction=0;
@@ -440,7 +442,8 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         if (points == (PointInfo *) NULL)
           {
             number_points=16;
-            points=MagickAllocateMemory(PointInfo *,number_points*sizeof(PointInfo));
+            points=
+	      MagickAllocateArray(PointInfo *,number_points,sizeof(PointInfo));
             if (points == (PointInfo *) NULL)
               return((PolygonInfo *) NULL);
           }
@@ -485,7 +488,8 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         polygon_info->edges[edge].bounds.y1=points[0].y;
         polygon_info->edges[edge].bounds.y2=points[n-1].y;
         number_points=16;
-        points=MagickAllocateMemory(PointInfo *,number_points*sizeof(PointInfo));
+        points=
+	  MagickAllocateArray(PointInfo *,number_points,sizeof(PointInfo));
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
         n=1;
@@ -634,7 +638,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *ARGUNUSED(draw_info),
       break;
   }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
-  path_info=MagickAllocateMemory(PathInfo *,(2*i+3)*sizeof(PathInfo));
+  path_info=MagickAllocateArray(PathInfo *,(2*i+3),sizeof(PathInfo));
   if (path_info == (PathInfo *) NULL)
     return((PathInfo *) NULL);
   coordinates=0;
@@ -1417,7 +1421,8 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 
   int
     j,
-    n;
+    n,
+    number_vertices;
 
   PrimitiveInfo
     *dash_polygon;
@@ -1432,17 +1437,15 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   unsigned int
     status;
 
-  unsigned long
-    number_vertices;
-
   assert(draw_info != (const DrawInfo *) NULL);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin draw-dash");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   number_vertices=i;
-  dash_polygon=MagickAllocateMemory(PrimitiveInfo *,
-    (2*number_vertices+1)*sizeof(PrimitiveInfo));
+  dash_polygon=MagickAllocateArray(PrimitiveInfo *,
+				   (size_t) 2*number_vertices+1,
+				   sizeof(PrimitiveInfo));
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
   dash_polygon[0]=primitive_info[0];
@@ -1472,7 +1475,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     n++;
   }
   status=True;
-  for (i=1; i < (long) number_vertices; i++)
+  for (i=1; i < number_vertices; i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -1498,6 +1501,8 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
         }
       else
         {
+	  if (j+1 > number_vertices)
+	    break;
           dash_polygon[j]=primitive_info[i-1];
           dash_polygon[j].point.x=primitive_info[i-1].point.x+
             dx*total_length/maximum_length;
@@ -1667,8 +1672,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         UnableToDrawOnImage)
     }
   number_points=2047;
-  primitive_info=MagickAllocateMemory(PrimitiveInfo *,
-    number_points*sizeof(PrimitiveInfo));
+  primitive_info=
+    MagickAllocateArray(PrimitiveInfo *,number_points,sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       MagickFreeMemory(primitive);
@@ -2434,8 +2439,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   if (*token == ',')
                     GetToken(p,&p,token);
                 }
-                graphic_context[n]->dash_pattern=MagickAllocateMemory(double *,
-                  (2*x+1)*sizeof(double));
+                graphic_context[n]->dash_pattern=
+		  MagickAllocateArray(double *,(2*x+1),sizeof(double));
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException3(&image->exception,ResourceLimitError,
@@ -4431,8 +4436,8 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   }
   quantum=Min(quantum/number_coordinates,BezierQuantum);
   control_points=quantum*number_coordinates;
-  coefficients=MagickAllocateMemory(double *,number_coordinates*sizeof(double));
-  points=MagickAllocateMemory(PointInfo *,control_points*sizeof(PointInfo));
+  coefficients=MagickAllocateArray(double *,number_coordinates,sizeof(double));
+  points=MagickAllocateArray(PointInfo *,control_points,sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     MagickFatalError3(ResourceLimitError,MemoryAllocationFailed,
       UnableToDrawOnImage);
@@ -5115,10 +5120,11 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   */
   number_vertices=primitive_info->coordinates;
   max_strokes=2*number_vertices+6*BezierQuantum+360;
-  path_p=MagickAllocateMemory(PointInfo *,max_strokes*sizeof(PointInfo));
-  path_q=MagickAllocateMemory(PointInfo *,max_strokes*sizeof(PointInfo));
-  polygon_primitive=MagickAllocateMemory(PrimitiveInfo *,
-    (number_vertices+2)*sizeof(PrimitiveInfo));
+  path_p=MagickAllocateArray(PointInfo *,max_strokes,sizeof(PointInfo));
+  path_q=MagickAllocateArray(PointInfo *,max_strokes,sizeof(PointInfo));
+  polygon_primitive=
+    MagickAllocateArray(PrimitiveInfo *,(number_vertices+2),
+			sizeof(PrimitiveInfo));
   if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
       (polygon_primitive == (PrimitiveInfo *) NULL))
     return((PrimitiveInfo *) NULL);
@@ -5439,8 +5445,9 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   /*
     Trace stroked polygon.
   */
-  stroke_polygon=MagickAllocateMemory(PrimitiveInfo *,
-    (p+q+2*closed_path+2)*sizeof(PrimitiveInfo));
+  stroke_polygon=
+    MagickAllocateArray(PrimitiveInfo *,(p+q+2*closed_path+2),
+			sizeof(PrimitiveInfo));
   if (stroke_polygon != (PrimitiveInfo *) NULL)
     {
       for (i=0; i < (long) p; i++)

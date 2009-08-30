@@ -24,6 +24,10 @@
 2009-08-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/render.c (DrawDashPolygon): Avoid access beyond end of
+        array.  Resolves SourceForge issue 2832125 "Crash on SVG
+        conversion".
+
   <LI> coders/png.c (ReadOnePNGImage): Ensure that opacity channel is
         properly initialized.  Resolves SourceForge issue 2831240
         "Possible alpha channel issue with PNG w/palette and tRNS".
