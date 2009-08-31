@@ -1,5 +1,7 @@
 2009-08-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/wmf.c: Eliminate memory leaks.
+
 	* magick/render.c (DrawDashPolygon): Avoid access beyond end of
 	array.  Resolves SourceForge issue 2832125 "Crash on SVG
 	conversion".
