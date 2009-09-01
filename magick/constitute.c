@@ -1935,7 +1935,7 @@ MagickExport void DestroyConstitute(void)
 %    o exceptions: Any errors are reported here.
 %
 */
-#define ConstituteTextureImageText  "[%s] Generate image texture...  "
+#define ConstituteTextureImageText "[%s] Generate texture...  "
 MagickExport Image *ConstituteTextureImage(const unsigned long columns,
                                            const unsigned long rows,
                                            const Image *texture_image,

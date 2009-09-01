@@ -500,7 +500,8 @@ ReadExtension:
         break;
       if (QuantumTick(y,image->rows))
         if (!MagickMonitorFormatted(y,image->rows,exception,
-                                    LoadImageText,image->filename))
+                                    LoadImageText,image->filename,
+				    image->columns,image->rows))
           break;
     }
     MagickFreeMemory(fits_pixels);
@@ -765,7 +766,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       {
         status=MagickMonitorFormatted(image->rows-y-1,image->rows,
                                       &image->exception,SaveImageText,
-                                      image->filename);
+                                      image->filename,
+				      image->columns,image->rows);
         if (status == False)
           break;
       }

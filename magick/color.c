@@ -200,7 +200,7 @@ MagickConstrainColormapIndex(Image *image, unsigned int index)
 static CubeInfo *
 ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
 {
-#define ComputeImageColorsText  "[%s] Compute image colors..."
+#define ComputeImageColorsText  "[%s] Compute colors..."
 
   CubeInfo
     *cube_info;
@@ -1132,7 +1132,7 @@ HistogramToFile(const Image *image,CubeInfo *cube_info,
                 const NodeInfo *node_info,FILE *file,
                 ExceptionInfo *exception)
 {
-#define HistogramToFileImageText  "[%s] Compute image histogram..."
+#define HistogramToFileImageText "[%s] Compute histogram..."
 
   register unsigned int
     id;
@@ -1203,7 +1203,7 @@ HistogramToFile(const Image *image,CubeInfo *cube_info,
 %
 %
 */
-#define AnalyzeGrayImageText "[%s] Analyze image for gray..."
+#define AnalyzeGrayImageText "[%s] Analyze for gray..."
 MagickExport MagickBool IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1312,7 +1312,7 @@ MagickExport MagickBool IsGrayImage(const Image *image,
 %
 %
 */
-#define AnalyzeBilevelImageText "[%s] Analyze image for bilevel..."
+#define AnalyzeBilevelImageText "[%s] Analyze for bilevel..."
 MagickExport MagickBool IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1423,7 +1423,7 @@ MagickExport MagickBool IsMonochromeImage(const Image *image,
 %
 %
 */
-#define AnalyzeOpaqueImageText "[%s] Analyze image for opacity..."
+#define AnalyzeOpaqueImageText "[%s] Analyze for opacity..."
 MagickExport MagickBool IsOpaqueImage(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1510,7 +1510,7 @@ MagickExport MagickBool IsOpaqueImage(const Image *image,
 %
 %
 */
-#define AnalyzePaletteImageText "[%s] Analyze image for palette..."
+#define AnalyzePaletteImageText "[%s] Analyze for palette..."
 MagickExport MagickBool IsPaletteImage(const Image *image,
   ExceptionInfo *exception)
 {

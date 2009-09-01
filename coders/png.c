@@ -2309,7 +2309,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         if (image->previous == (Image *) NULL)
           if (!MagickMonitorFormatted(pass,num_passes,exception,
-                                      LoadImageTag,image->filename))
+                                      LoadImageTag,image->filename,
+				      image->columns,image->rows))
             break;
       }
   else /* image->storage_class != DirectClass */
@@ -2476,7 +2477,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         if (image->previous == (Image *) NULL)
           if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
-                                      image->filename))
+                                      image->filename,
+				      image->columns,image->rows))
             break;
         MagickFreeMemory(quantum_scanline);
       }
@@ -7249,7 +7251,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                           num_passes,
                                           &image->exception,
                                           SaveImageTag,
-                                          image->filename))
+                                          image->filename,
+					  image->columns,image->rows))
                 break;
 
           }
@@ -7296,7 +7299,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                               (magick_uint64_t) image->rows*
                                               num_passes,
                                               &image->exception,SaveImageTag,
-                                              image->filename))
+                                              image->filename,
+					      image->columns,image->rows))
                     break;
               }
           }
@@ -7359,7 +7363,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                                     image->rows*num_passes,
                                                     &image->exception,
                                                     SaveImageTag,
-                                                    image->filename))
+                                                    image->filename,
+						    image->columns,image->rows))
                           break;
                     }
                   if (logging)
@@ -7401,7 +7406,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                                     image->rows*num_passes,
                                                     &image->exception,
                                                     SaveImageTag,
-                                                    image->filename))
+                                                    image->filename,
+						    image->columns,image->rows))
                           break;
                     }
                 }

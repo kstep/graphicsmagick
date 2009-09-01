@@ -730,7 +730,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(offset,image->rows))
 	  if (!MagickMonitorFormatted(offset,image->rows,&image->exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    break;
       p=ReadBlobString(image,text);
       if ((offset < (long) image->rows) && (p != (char *) NULL))

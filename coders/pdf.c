@@ -1221,7 +1221,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                           status=MagickMonitorFormatted(y,image->rows,
                                                         &image->exception,
                                                         SaveImageText,
-                                                        image->filename);
+                                                        image->filename,
+							image->columns,image->rows);
                           if (status == False)
                             break;
                         }
@@ -1267,7 +1268,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                           status=MagickMonitorFormatted(y,image->rows,
                                                         &image->exception,
                                                         SaveImageText,
-                                                        image->filename);
+                                                        image->filename,
+							image->columns,image->rows);
                           if (status == False)
                             break;
                         }
@@ -1349,7 +1351,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                           status=MagickMonitorFormatted(y,image->rows,
                                                         &image->exception,
                                                         SaveImageText,
-                                                        image->filename);
+                                                        image->filename,
+							image->columns,image->rows);
                           if (status == False)
                             break;
                         }
@@ -1405,7 +1408,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                           status=MagickMonitorFormatted(y,image->rows,
                                                         &image->exception,
                                                         SaveImageText,
-                                                        image->filename);
+                                                        image->filename,
+							image->columns,image->rows);
                           if (status == False)
                             break;
                         }
@@ -1450,7 +1454,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                             status=MagickMonitorFormatted(y,image->rows,
                                                           &image->exception,
                                                           SaveImageText,
-                                                          image->filename);
+                                                          image->filename,
+							  image->columns,image->rows);
                             if (status == False)
                               break;
                           }
@@ -1493,7 +1498,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                             status=MagickMonitorFormatted(y,image->rows,
                                                           &image->exception,
                                                           SaveImageText,
-                                                          image->filename);
+                                                          image->filename,
+							  image->columns,image->rows);
                             if (status == False)
                               break;
                           }

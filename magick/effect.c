@@ -89,7 +89,7 @@
 %
 %
 */
-#define AdaptiveThresholdImageText  "[%s] Adaptive threshold image..."
+#define AdaptiveThresholdImageText "[%s] Adaptive threshold..."
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
                                            const unsigned long width,
                                            const unsigned long height,
@@ -413,8 +413,8 @@ MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresho
 %
 %
 */
-#define BlurImageColumnsText  "[%s] Blur image columns..."
-#define BlurImageRowsText  "[%s] Blur image rows...  "
+#define BlurImageColumnsText "[%s] Blur columns..."
+#define BlurImageRowsText "[%s] Blur rows...  "
 static void
 BlurScanline(const double *kernel,const unsigned long width,
              const PixelPacket *source,PixelPacket *destination,
@@ -905,7 +905,7 @@ ChannelThresholdPixels(void *mutable_data,         /* User provided mutable data
   return MagickPass;
 }
 
-#define ChannelThresholdImageText  "[%s] Channel threshold the image..."
+#define ChannelThresholdImageText "[%s] Channel threshold..."
 MagickExport MagickPassFail ChannelThresholdImage(Image *image,
   const char *threshold)
 {
@@ -1028,7 +1028,7 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 */
 MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 {
-#define DespeckleImageText  "[%s] Despeckle image..."
+#define DespeckleImageText "[%s] Despeckle..."
 
   Image
     *despeckle_image;
@@ -1507,7 +1507,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
       total_weight+=(weight);                                           \
     }                                                                   \
   r++;
-#define EnhanceImageText  "[%s] Enhance image...  "
+#define EnhanceImageText "[%s] Enhance...  "
 
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
@@ -2056,7 +2056,7 @@ static MedianPixelList *AllocateMedianList(const long width)
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
                                       ExceptionInfo *exception)
 {
-#define MedianFilterImageText  "[%s] Filter image with neighborhood ranking..."
+#define MedianFilterImageText "[%s] Filter with neighborhood ranking..."
 
   Image
     *median_image;
@@ -2288,7 +2288,7 @@ typedef struct _BlurOffsetInfo
     x,
     y;
 } BlurOffsetInfo;
-#define MotionBlurImageText  "[%s] Motion blur image..."
+#define MotionBlurImageText "[%s] Motion blur..."
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
                                     const double sigma,const double angle,
                                     ExceptionInfo *exception)
@@ -2498,7 +2498,7 @@ MagickExport MagickPassFail
 RandomChannelThresholdImage(Image *image,const char *channel,
                             const char *thresholds,ExceptionInfo *exception)
 {
-#define RandomChannelThresholdImageText  "[%s] Random-channel threshold image...  "
+#define RandomChannelThresholdImageText "[%s] Random-channel threshold...  "
 
   const double
     o2[4]={0.2,0.6,0.8,0.4};
@@ -3027,7 +3027,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
 MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
                                      ExceptionInfo *exception)
 {
-#define ReduceNoiseImageText  "[%s] Reduce the image noise...  "
+#define ReduceNoiseImageText "[%s] Reduce noise...  "
 
   Image
     *noise_image;
@@ -3206,7 +3206,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
                                double azimuth,double elevation,ExceptionInfo *exception)
 {
-#define ShadeImageText  "[%s] Shade image..."
+#define ShadeImageText "[%s] Shade..."
 
   Image
     *shade_image;
@@ -3523,7 +3523,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
 MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
                                 ExceptionInfo *exception)
 {
-#define SpreadImageText  "[%s] Spread image..."
+#define SpreadImageText "[%s] Spread..."
 #define OFFSETS_ENTRIES 5009U /* prime number is best */
 
   Image
@@ -3726,7 +3726,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 */
 MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
 {
-#define ThresholdImageText  "[%s] Threshold image..."
+#define ThresholdImageText "[%s] Threshold..."
 
   long
     y;
@@ -3955,7 +3955,7 @@ UnsharpMaskPixels(void *mutable_data,                /* User provided mutable da
   return MagickPass;
 }
 
-#define SharpenImageText  "[%s] Sharpen image..."
+#define SharpenImageText "[%s] Sharpen..."
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)

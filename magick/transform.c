@@ -78,7 +78,7 @@
 MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
                               ExceptionInfo *exception)
 {
-#define ChopImageText  "[%s] Chop image..."
+#define ChopImageText "[%s] Chop..."
 
   Image
     *chop_image;
@@ -547,8 +547,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       {
         row_count++;
         if (QuantumTick(row_count,crop_image->rows))
-          if (!MagickMonitorFormatted(row_count,crop_image->rows-1,exception,
-                                      "[%s] Crop %lux%lu+%ld+%ld image...",
+          if (!MagickMonitorFormatted(row_count,crop_image->rows,exception,
+                                      "[%s] Crop: %lux%lu+%ld+%ld...",
                                       crop_image->filename,
                                       crop_image->columns,crop_image->rows,
                                       page.x,page.y))
@@ -844,7 +844,7 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 {
-#define FlipImageText  "[%s] Flip image..."
+#define FlipImageText "[%s] Flip..."
 
   Image
     *flip_image;
@@ -963,7 +963,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 {
-#define FlopImageText  "[%s] Flop image..."
+#define FlopImageText "[%s] Flop..."
 
   Image
     *flop_image;
@@ -1091,7 +1091,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 {
-#define MosaicImageText  "[%s] Create image mosaic..."
+#define MosaicImageText "[%s] Create mosaic..."
 
   Image
     *mosaic_image;

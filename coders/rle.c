@@ -431,7 +431,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
       }
@@ -484,7 +485,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
             (void) SyncImage(image);
@@ -513,7 +515,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
                                               LoadImageText,
-                                              image->filename))
+                                              image->filename,
+					      image->columns,image->rows))
                     break;
             }
             MagickFreeMemory(image->colormap);

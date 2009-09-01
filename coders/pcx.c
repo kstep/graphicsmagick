@@ -587,7 +587,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
-                                      image->filename))
+                                      image->filename,
+				      image->columns,image->rows))
             break;
     }
     if (image->storage_class == PseudoClass)
@@ -1022,7 +1023,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             break;
           if (QuantumTick(y,image->rows))
             if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SaveImageText,image->filename))
+                                        SaveImageText,image->filename,
+					image->columns,image->rows))
               break;
         }
       }
@@ -1047,7 +1049,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                          SaveImageText,image->filename))
+                                          SaveImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
       else
@@ -1096,7 +1099,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                            SaveImageText,image->filename))
+                                            SaveImageText,image->filename,
+					    image->columns,image->rows))
                   break;
           }
         }

@@ -993,7 +993,7 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   return(inverse_affine);
 }
 
-#define AffineDrawImageText "[%s] Affine composite image..."
+#define AffineDrawImageText "[%s] Affine composite..."
 MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
                                             const AffineMatrix *affine)
 {
@@ -1577,7 +1577,7 @@ static inline unsigned int IsPoint(const char *point)
 
 MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
-#define RenderImageText  "[%s] Render image..."
+#define RenderImageText "[%s] Render..."
 
   AffineMatrix
     affine,

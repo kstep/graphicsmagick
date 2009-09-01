@@ -2343,7 +2343,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   row_count++;
                   if (QuantumTick(thread_row_count,image->rows))
                     if (!MagickMonitorFormatted(thread_row_count,image->rows,exception,
-                                                LoadImageText,image->filename))
+                                                LoadImageText,image->filename,
+						image->columns,image->rows))
                       thread_status=MagickFail;
                 }
                   
@@ -4339,7 +4340,8 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                          SaveImageText,image->filename))
+                                          SaveImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
     }

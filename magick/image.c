@@ -80,13 +80,9 @@ const char
   *DefaultTileLabel = "%f\n%wx%h\n%b",
   *ForegroundColor = "#000000000000",  /* black */
   *HighlightColor = "#f1f100001e1e", /* light red */
-  *LoadImageText = "[%s] Loading image...  ",
-  *LoadImagesText = "Loading images...  ",
   *MatteColor = "#bdbdbdbdbdbd",  /* gray */
   *PSDensityGeometry = "72.0x72.0",
-  *PSPageGeometry = "612x792>",
-  *SaveImageText = "[%s] Saving image...  ",
-  *SaveImagesText = "Saving images...  ";
+  *PSPageGeometry = "612x792>";
 
 const unsigned long
   DefaultCompressionQuality = 75;
@@ -583,7 +579,7 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
 MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   ExceptionInfo *exception)
 {
-#define AppendImageText  "[%s]Append image sequence..."
+#define AppendImageText "[%s] Append sequence..."
 
   Image
     *append_image;
@@ -968,7 +964,7 @@ MagickExport MagickPassFail ClipImage(Image *image)
   return(ClipPathImage(image,"#1",True));
 }
 
-#define ClipPathImageText  "[%s] Creating image clip mask..."
+#define ClipPathImageText "[%s] Creating clip mask..."
 static MagickPassFail
 ClipPathImageCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -1384,7 +1380,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-#define CycleColormapImageText "[%s] Cycle image colormap..."
+#define CycleColormapImageText "[%s] Cycle colormap..."
 static MagickPassFail
 CycleColormapCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -2578,7 +2574,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %
 */
-#define GetImageBoundingBoxText "[%s] Get image bounding box..."
+#define GetImageBoundingBoxText "[%s] Get bounding box..."
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
                                                ExceptionInfo *exception)
 {
@@ -2837,7 +2833,7 @@ static magick_uint8_t* AllocateDepthMap(void)
   return map;
 }
 #endif /* MaxMap == MaxRGB */
-#define GetImageDepthText "[%s] Get image depth..."
+#define GetImageDepthText "[%s] Get depth..."
 
 static MagickPassFail
 GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data */
@@ -3062,7 +3058,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 %    o exception: Any errors are reported here.
 %
 */
-#define AnalyzeImageText "[%s] Analyze image...  "
+#define AnalyzeImageText "[%s] Analyze...  "
 MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                                                     ImageCharacteristics *characteristics,
                                                     const MagickBool optimize,
@@ -3732,7 +3728,7 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
 %
 */
 
-#define GradientImageText "[%s] Gradient image..."
+#define GradientImageText "[%s] Gradient..."
 MagickExport MagickPassFail GradientImage(Image *image,
                                           const PixelPacket *start_color,
                                           const PixelPacket *stop_color)
@@ -4460,7 +4456,7 @@ ReplaceImageColormap(Image *image,
 %
 %
 */
-#define SetImageColorText "[%s] Set image color..."
+#define SetImageColorText "[%s] Set color..."
 static MagickPassFail
 SetImageColorCallBack(void *mutable_data,         /* User provided mutable data */
                       const void *immutable_data, /* User provided immutable data */
@@ -5091,7 +5087,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity_val)
         Attenuate existing opacity channel
       */
       (void) PixelIterateMonoModify(ModulateImageOpacityCallBack,NULL,
-                                    "[%s] Modulate image opacity...",
+                                    "[%s] Modulate opacity...",
                                     NULL,&opacity,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
@@ -5102,7 +5098,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity_val)
       */
       image->matte=True;
       (void) PixelIterateMonoModify(SetImageOpacityCallBack,NULL,
-                                    "[%s] Set image opacity...",
+                                    "[%s] Set opacity...",
                                     NULL,&opacity,0,0,image->columns,image->rows,
                                     image,&image->exception);
     }
@@ -5530,7 +5526,7 @@ MagickExport MagickPassFail SortColormapByIntensity(Image *image)
 %
 %
 */
-#define SyncImageText "[%s] Synchronizing DirectClass pixels..."
+#define SyncImageText "[%s] Synchronizing pixels..."
 static MagickPassFail
 SyncImageCallBack(void *mutable_data,         /* User provided mutable data */
                   const void *immutable_data, /* User provided immutable data */
@@ -5636,7 +5632,7 @@ MagickExport MagickPassFail SyncImage(Image *image)
 %
 */
 
-#define TextureImageText  "[%s] Apply image texture..."
+#define TextureImageText  "[%s] Apply texture..."
 MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
 {
   MagickPassFail

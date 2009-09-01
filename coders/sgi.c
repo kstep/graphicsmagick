@@ -674,7 +674,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
           }
@@ -702,7 +703,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,exception,
-                                            LoadImageText,image->filename))
+                                            LoadImageText,image->filename,
+					    image->columns,image->rows))
                   break;
           }
       }
@@ -738,7 +740,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
           }
@@ -761,7 +764,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,exception,
-                                            LoadImageText,image->filename))
+                                            LoadImageText,image->filename,
+					    image->columns,image->rows))
                   break;
           }
         (void) SyncImage(image);
@@ -1092,7 +1096,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                      SaveImageText,image->filename))
+                                      SaveImageText,image->filename,
+				      image->columns,image->rows))
             break;
     }
     if (image_info->compression == NoCompression)

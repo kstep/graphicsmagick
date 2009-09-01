@@ -207,7 +207,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(y,image->rows,exception,
-                                      LoadImageText,image->filename))
+                                      LoadImageText,image->filename,
+				      image->columns,image->rows))
             break;
     }
     image->is_grayscale=MagickTrue;
@@ -511,7 +512,8 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                      SaveImageText,image->filename))
+                                      SaveImageText,image->filename,
+				      image->columns,image->rows))
             break;
     }
     MagickFreeMemory(scanline);

@@ -227,10 +227,14 @@ static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
 				       const char *path,
 				       ExceptionInfo *exception)
 {
+  ARG_NOT_USED(mode);
+  ARG_NOT_USED(path);
   ARG_NOT_USED(exception);
 
+#if 0
   (void) fprintf(stderr,"  %s %s\n",
 		 ConfirmAccessModeToString(mode),path);
+#endif
   return MagickPass;
 }
 

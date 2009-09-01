@@ -3943,7 +3943,8 @@ static MagickPassFail DCM_ReadPaletteImage(Image *image,DicomStream *dcm,Excepti
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;
@@ -4044,7 +4045,8 @@ static MagickPassFail DCM_ReadGrayscaleImage(Image *image,DicomStream *dcm,Excep
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;
@@ -4089,7 +4091,8 @@ static MagickPassFail DCM_ReadPlanarRGBImage(Image *image,DicomStream *dcm,Excep
 	  if (image->previous == (Image *) NULL)
 	    if (QuantumTick(y,image->rows))
 	      if (!MagickMonitorFormatted(y,image->rows,exception,
-					  LoadImageText,image->filename))
+					  LoadImageText,image->filename,
+					  image->columns,image->rows))
 		return MagickFail;
 	}
     }
@@ -4165,7 +4168,8 @@ static MagickPassFail DCM_ReadRGBImage(Image *image,DicomStream *dcm,ExceptionIn
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;

@@ -511,13 +511,14 @@ extern MagickExport const char
   *DefaultTileLabel,
   *ForegroundColor,
   *HighlightColor,
-  *LoadImageText,
-  *LoadImagesText,
   *MatteColor,
   *PSDensityGeometry,
-  *PSPageGeometry,
-  *SaveImageText,
-  *SaveImagesText;
+  *PSPageGeometry;
+
+#define LoadImageText "[%s] Loading image: %lux%lu...  "
+#define SaveImageText "[%s] Saving image: %lux%lu...  "
+#define LoadImagesText "[%s] Loading images...  "
+#define SaveImagesText "[%s] Saving images...  "
 
 extern MagickExport const unsigned long
   DefaultCompressionQuality;

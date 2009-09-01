@@ -258,7 +258,7 @@ static int SceneCompare(const void *x,const void *y)
 MagickExport Image *MontageImages(const Image *images,
   const MontageInfo *montage_info,ExceptionInfo *exception)
 {
-#define MontageImageText  "[%s] Create visual image directory..."
+#define MontageImageText "[%s] Create visual image directory..."
 #define TileImageText  "[%s] Create image tiles..."
 
   char

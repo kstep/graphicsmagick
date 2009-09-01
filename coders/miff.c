@@ -1372,7 +1372,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
           break;
@@ -1424,7 +1425,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
           break;
@@ -1453,7 +1455,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
 
             }
@@ -1474,7 +1477,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
           break;
@@ -2371,7 +2375,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                      SaveImageText,image->filename))
+                                      SaveImageText,image->filename,
+				      image->columns,image->rows))
             break;
     }
     MagickFreeMemory(pixels);

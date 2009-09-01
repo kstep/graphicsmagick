@@ -1,3 +1,12 @@
+2009-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c (IntegralRotateImage): Rotate by zero degrees
+	does not need to do any work.
+
+	* coders/*.c, magick/*.c: Include image dimensions in progress
+	monitor output when loading or saving a file.  Eliminate redundant
+	text from progress messages.
+
 2009-08-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wmf.c: Eliminate memory leaks.

@@ -252,7 +252,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               status=MagickMonitorFormatted(image->rows-y-1,image->rows,
                                             exception,LoadImageText,
-                                            image->filename);
+                                            image->filename,
+					    image->columns,image->rows);
               if (status == False)
                 break;
             }
@@ -279,7 +280,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               status=MagickMonitorFormatted(image->rows-y-1,image->rows,
                                             exception,LoadImageText,
-                                            image->filename);
+                                            image->filename,
+					    image->columns,image->rows);
               if (status == False)
                 break;
             }
@@ -312,7 +314,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               status=MagickMonitorFormatted(image->rows-y-1,image->rows,
                                             exception,LoadImageText,
-                                            image->filename);
+                                            image->filename,
+					    image->columns,image->rows);
               if (status == False)
                 break;
             }
@@ -343,7 +346,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               status=MagickMonitorFormatted(image->rows-y-1,image->rows,
                                             exception,LoadImageText,
-                                            image->filename);
+                                            image->filename,
+					    image->columns,image->rows);
               if (status == False)
                 break;
             }

@@ -183,7 +183,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
-                                    image->filename))
+                                    image->filename,
+				    image->columns,image->rows))
           break;
     }
     if (image->storage_class == PseudoClass)

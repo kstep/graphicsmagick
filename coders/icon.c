@@ -287,7 +287,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -319,7 +320,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -345,7 +347,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -373,7 +376,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -403,7 +407,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -444,7 +449,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                      LoadImageText,image->filename))
+                                      LoadImageText,image->filename,
+				      image->columns,image->rows))
             break;
     }
     if (EOFBlob(image))

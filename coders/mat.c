@@ -1046,7 +1046,8 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,image->rows,pixels);
           if (QuantumTick(progress_quantum,progress_span))
             if (!MagickMonitorFormatted(progress_quantum,progress_span,&image->exception,
-                                        SaveImageText,image->filename))
+                                        SaveImageText,image->filename,
+					image->columns,image->rows))
               goto BreakAll;
 	}    
       } while(z-- >= 2);
