@@ -685,7 +685,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Entering BlobToImage");
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,OptionError,NullBlobArgument,
@@ -1223,7 +1223,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (MagickConfirmAccess(FileReadConfirmAccessMode,filename,exception)
       == MagickFail)
     return MagickFail;
@@ -1886,7 +1886,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   image->logging=IsEventLogging();
   if (image->logging)
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),"Entering ImageToBlob");
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);
   magick_info=GetMagickInfo(clone_info->magick,exception);
@@ -2766,7 +2766,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (((blob == (const void *) NULL)) || (length == 0))
     {
       ThrowException(exception,OptionError,NullBlobArgument,

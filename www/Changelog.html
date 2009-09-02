@@ -24,6 +24,12 @@
 2009-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (ReadImage): No longer clear the exception
+        at the start of ReadImage() and other similar functions.  If the
+        user of the function cares, she can clear the exception in
+        advance.  It is not right to overwrite exceptions which might not
+        have been reported/handled yet.
+
   <LI> magick/shear.c (IntegralRotateImage): Rotate by zero degrees
         does not need to do any work.
 

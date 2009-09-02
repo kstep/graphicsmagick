@@ -1502,7 +1502,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   assert(pixels != (void *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -8242,7 +8242,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
   image=ReadImage(clone_info,exception);
@@ -8351,7 +8351,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image_info->filename != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
@@ -8902,7 +8902,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   register const char
     *p;
 
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')

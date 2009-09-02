@@ -12,6 +12,7 @@ ORIGINAL_PROFILE=sunrise.icc
 IMAGE_OUTPUT=ICCTransform_out.miff
 
 rm -f ${ORIGINAL_PROFILE}
+rm -f ${IMAGE_OUTPUT}
 ${GM} convert ${SUNRISE_MIFF} ${ORIGINAL_PROFILE}
 ${GM} convert ${SUNRISE_MIFF} -profile ${BETARGB_PROFILE} -profile ${ORIGINAL_PROFILE} ${IMAGE_OUTPUT}
 ${GM} compare -maximum-error 0.004 -metric MAE ${SUNRISE_MIFF} ${IMAGE_OUTPUT}
