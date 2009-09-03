@@ -2499,6 +2499,56 @@ GetPixelCacheArea(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e I n C o r e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheInCore() tests to see the pixel cache is based on allocated
+%  memory and therefore supports efficient random access.
+%
+%  The format of the GetPixelCacheInCore() method is:
+%
+%      MagickBool GetPixelCacheInCore(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Specifies a pointer to an Image structure.
+%
+%
+*/
+extern MagickBool
+GetPixelCacheInCore(const Image *image)
+{
+
+  MagickBool
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  status = MagickFalse;
+  if (image->cache != (Cache) NULL)
+    {
+      CacheInfo
+	*cache_info;
+
+      cache_info=(CacheInfo *) image->cache;
+      assert(cache_info->signature == MagickSignature);
+
+      if (image->cache->type == MemoryCache)
+	status=MagickTrue;
+    }
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l C a c h e P r e s e n t                                   %
 %                                                                             %
 %                                                                             %

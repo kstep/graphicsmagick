@@ -281,6 +281,11 @@ static void CropToFitImage(Image **image,const double x_shear,
 %
 %
 */
+#if 1
+#if !defined(DisableSlowOpenMP)
+#  define IntegralRotateImageUseOpenMP
+#endif
+#endif
 static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                                   ExceptionInfo *exception)
 {
@@ -294,8 +299,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     page;
 
   long
-    tile_width_max=128,
-    tile_height_max=128;
+    tile_width_max,
+    tile_height_max;
 
   MagickPassFail
     status=MagickPass;
@@ -334,8 +339,15 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
     rotate_image=CloneImage(image,clone_columns,clone_rows,True,exception);
     if (rotate_image == (Image *) NULL)
       return((Image *) NULL);
+    if (rotations != 0)
+      if (ModifyCache(rotate_image,exception) != MagickPass)
+	{
+	  DestroyImage(rotate_image);
+	  return (Image *) NULL;
+	}
   }
 
+  tile_height_max=tile_width_max=2048/sizeof(PixelPacket); /* 2k x 2k = 4MB */
   if ((rotations == 1) || (rotations == 3))
     {
       /*
@@ -343,7 +355,10 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       */
       const char *
 	value;
-      
+
+      if (!GetPixelCacheInCore(image) || !GetPixelCacheInCore(rotate_image))
+	tile_height_max=tile_width_max=8192/sizeof(PixelPacket); /* 8k x 8k = 64MB */
+
       if ((value=getenv("MAGICK_ROTATE_TILE_GEOMETRY")))
 	{
 	  double
@@ -392,7 +407,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));        
         tile=0;
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp parallel for schedule(static,1) shared(status, tile)
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
@@ -518,7 +534,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                       }
                   }
 
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp critical (GM_IntegralRotateImage)
 #endif
                 {
@@ -550,7 +566,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           row_count=0;
 
         (void) strlcpy(message,"[%s] Rotate: 180 degrees...",sizeof(message));
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
         for (y=0; y < (long) image->rows; y++)
@@ -596,7 +612,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                 if (!SyncImagePixelsEx(rotate_image,exception))
                   thread_status=MagickFail;
               }
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp critical (GM_IntegralRotateImage)
 #endif
             {
@@ -633,7 +649,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));
         tile=0;
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp parallel for schedule(static,1) shared(status, tile)
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
@@ -759,7 +775,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                       }
                   }
 
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(IntegralRotateImageUseOpenMP)
 #  pragma omp critical (GM_IntegralRotateImage)
 #endif
                 {

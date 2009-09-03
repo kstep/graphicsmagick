@@ -13,9 +13,6 @@ Short Term
 
 * Fix browser interoperability issues reported for PNG8.
 
-* Choose a better tile size for rotate by 0 and 270 degrees when the pixel
-  cache is disk-based.  Also disable threading.
-
 * Add ClonePixelWand(), ColorMatrixImage(), Compare, and Distortion
   functions to the Wand API.
 
@@ -24,7 +21,9 @@ Short Term
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 
- * Use localtime_r when available.
+ * atof(), atoi(), ctime(), localtime(), qsort(), rand(), readdir(),
+   and strerror(), all have reentrant forms and are not thread safe
+   under FreeBSD.
 
 Longer Term
 ============
