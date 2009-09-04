@@ -1,3 +1,11 @@
+2009-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (cdl): New method to apply the ASC CDL.
+	(colorMatrix): New method to apply a color matrix to the image
+	channels.
+	(haldClut): New method to apply a color lookup table (Hald CLUT)
+	to the image.
+
 2009-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (attribute): Invoke modifyImage() to assure

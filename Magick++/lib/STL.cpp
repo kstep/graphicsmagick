@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2002
+// Copyright Bob Friesenhahn, 1999, 2002, 2009
 //
 // Implementation of STL classes and functions
 //
@@ -167,6 +167,33 @@ Magick::colorizeImage::colorizeImage( const unsigned int opacity_,
 void Magick::colorizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorize( _opacityRed, _opacityGreen, _opacityBlue, _penColor );
+}
+
+// Bake in the ASC-CDL, which is a convention for the for the exchange
+// of basic primary color grading information between for the exchange
+// of basic primary color grading information between equipment and
+// software from different manufacturers.  It is a useful transform
+// for other purposes as well.
+Magick::cdlImage::cdlImage( const std::string &cdl_ )
+  : _cdl ( cdl_ )
+{
+}
+void Magick::cdlImage::operator()( Image &image_ ) const
+{
+  image_.cdl( _cdl.c_str() );
+}
+
+// Apply a color matrix to the image channels.  The user supplied
+// matrix may be of order 1 to 5 (1x1 through 5x5).
+Magick::colorMatrixImage::colorMatrixImage( const unsigned int order_,
+					    const double *color_matrix_ )
+  : _order( order_ ),
+    _color_matrix( color_matrix_ )
+{
+}
+void Magick::colorMatrixImage::operator()( Image &image_ ) const
+{
+  image_.colorMatrix( _order, _color_matrix );
 }
 
 // Convert the image colorspace representation
@@ -516,6 +543,16 @@ Magick::implodeImage::implodeImage( const double factor_  )
 void Magick::implodeImage::operator()( Magick::Image &image_ ) const
 {
   image_.implode( _factor );
+}
+
+// Apply a color lookup table (Hald CLUT) to the image.
+Magick::haldClutImage::haldClutImage( const Image &haldClutImage_ )
+  : _haldClutImage ( haldClutImage_ )
+{
+}
+void Magick::haldClutImage::operator()( Image &image_ ) const
+{
+  image_.haldClut( _haldClutImage );
 }
 
 // Set image validity. Valid images become empty (inValid) if argument

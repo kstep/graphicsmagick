@@ -1,3 +1,8 @@
+2009-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++: New Image methods cdl(), colorMatrix(), and haldClut()
+	added.
+
 2009-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (IntegralRotateImage): Select tile sizes in a
