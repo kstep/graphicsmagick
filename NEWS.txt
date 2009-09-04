@@ -5,7 +5,10 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on January 16, 2009
+This file was last updated on September 4, 2009.
+
+This release is a bug-fix release made from a stable maintenance
+branch and does not contain current new features.
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,6 +17,72 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
+1.2.8 (September 4, 2009)
+=========================
+
+Security Fixes:
+
+  * BMP: Fix assertion thrown for BMP files with negative image height
+    values.  Resolves SF issue 2523536 "bug in bmp coder".
+
+  * DIB: Fix assertion thrown for DIB files with negative image height
+    values.
+
+  * PCX: Detect improper rows, columns, or depth.  Fixes CVE-2008-1097
+    "Memory corruption in ImageMagick's PCX coder".
+
+  * SVG/rendering: Avoid access beyond end of array.  Resolves
+    SourceForge issue 2832125 "Crash on SVG conversion".
+
+  * Random number generator initialization was insufficient, leading
+  * to predictable temporary file names.
+
+Bug fixes:
+
+  * DPX: Fix leak of chroma image when subsampling to 4:2:2.
+
+  * EPT, PDF, PS: PDF bounding box is sometimes incorrect or not
+    globally applicable so don't specify bounding box when reading PDF
+    files.  Postscript files do need the bounding box so make sure
+    that it is still supplied.  Resolves SF tracker issue 2487651
+    "convert from pdf chops off rhs".
+
+  * PNG: Ensure that opacity channel is properly initialized.
+    Resolves SourceForge issue 2831240 "Possible alpha channel issue
+    with PNG w/palette and tRNS".
+
+  * TIFF: In some cases, RowsPerStrip needs to be a multiple of 16 for
+    JPEG in TIFF so ensure that RowsPerStrip is a multiple of 16.
+
+  * WMF: Eliminate memory leaks.
+
+  * GetImageBoundingBox(): If we fail to find a smaller bounding box,
+    then the returned bounding box is the entire image.
+
+  * ReadMETAImage(): Fix memory leak of profile blob.
+
+  * Magick++: Don't install Magick++ headers if Magick++ is disabled.
+
+  * PerlMagick: Fix Ping of blob.
+
+  * Utilities all: Input wildcard file specifications with a
+    subdirectory component such as ``"subdir/*.dpx"`` were not
+    working.  Expand ``@filename`` to a list of arguments.
+
+  * RPM spec file: The module .la files need to be installed as part
+    of the base install or else the modules will fail to load.
+
+Feature improvements:
+
+  * -resize: When resizing a non-opaque image, attenuate the influence
+    of surrounding colors based on their degree of transparency in
+    order to avoid "halos" around objects caused by colors which are
+    transparent and therefore not part of the visible image.  Patch
+    contributed by Pavel Merdin via SourceForge Tracker #2792322.
+
+Performance improvments:
+
+  * None
 
 1.2.7 (January 16, 2009)
 =========================
