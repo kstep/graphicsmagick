@@ -21,6 +21,30 @@
 </tr>
 </table>
 <p>
+2009-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/delegate.c (InvokePostscriptDelegate): Added an
+        'exception' argument so that failure details can be returned.
+        Tried to reorganize the code so that it is more tolerant of errors
+        such as a dynamically-loadable DLL failing to load.  On POSIX
+        systems, Ghostscript was not being invoked as securely as
+        expected.
+
+  <LI> coders/Makefile.am Only build the DPS module if the Display
+        Postscript library is available.
+
+  <LI> coders/ept.c (ReadEPTImage): If we don't have the Display
+        Postscript library, then don't try to use it as a fallback.
+
+  <LI> coders/ps.c (ReadPSImage): If we don't have the Display
+        Postscript library, then don't try to use it as a fallback.
+
+  <LI> magick/blob.c (CloseBlob): If blob was never allocated, then
+        don't try to close it.
+
+</UL>
+<p>
 2009-09-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

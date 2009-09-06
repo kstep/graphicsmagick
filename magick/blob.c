@@ -844,18 +844,20 @@ MagickExport void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(image->blob != (BlobInfo *) NULL);
+
+  /*
+    If blob was not allocated, or blob type is UndefinedStream then it
+    doesn't need to be closed.
+  */
+  if ((image->blob == (BlobInfo *) NULL) ||
+      (image->blob->type == UndefinedStream))
+    return;
+
   if (image->logging)
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                           "Closing %sStream blob %p",
                           BlobStreamTypeToString(image->blob->type),
                           &image->blob);
-
-  /*
-    If blob type is UndefinedStream then it doesn't need to be closed.
-  */
-  if (image->blob->type == UndefinedStream)
-    return;
 
   status=0;
   switch (image->blob->type)

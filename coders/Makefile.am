@@ -11,6 +11,11 @@
 # Where coder modules get installed
 codersdir = $(MagickCoderModulesPath)
 
+if HasDPS
+MAGICK_DPS_MODULES = coders/dps.la
+MAGICK_DPS_SRCS = coders/dps.c
+endif
+
 if HasFPX
 MAGICK_FPX_MODULES = coders/fpx.la
 MAGICK_FPX_SRCS = coders/fpx.c
@@ -64,7 +69,6 @@ MAGICK_CODER_SRCS = \
 	coders/dcm.c \
 	coders/dcraw.c \
 	coders/dib.c \
-	coders/dps.c \
 	coders/dpx.c \
 	coders/fax.c \
 	coders/fits.c \
@@ -138,6 +142,7 @@ MAGICK_CODER_SRCS = \
 	coders/xcf.c \
 	coders/xpm.c \
 	coders/yuv.c \
+	$(MAGICK_DPS_SRCS) \
 	$(MAGICK_GDI32_SRCS) \
 	$(MAGICK_FPX_SRCS) \
 	$(MAGICK_JBIG_SRCS) \
@@ -161,7 +166,6 @@ coders_LTLIBRARIES = \
 	coders/dcm.la \
 	coders/dcraw.la \
 	coders/dib.la \
-	coders/dps.la \
 	coders/dpx.la \
 	coders/fax.la \
 	coders/fits.la \
@@ -235,9 +239,9 @@ coders_LTLIBRARIES = \
 	coders/xcf.la \
 	coders/xpm.la \
 	coders/yuv.la \
-	$(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) $(MAGICK_JBIG_MODULES) \
-	$(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) $(MAGICK_PNG_MODULES) \
-	$(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
+	$(MAGICK_DPS_MODULES) $(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) \
+	$(MAGICK_JBIG_MODULES) $(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) \
+	$(MAGICK_PNG_MODULES) $(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
 else
 coders_LTLIBRARIES =
 endif # WITH_MODULES

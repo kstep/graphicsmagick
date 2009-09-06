@@ -869,6 +869,18 @@ Delegate failed
 .
 
 MessageId       = +1
+SymbolicName    = DelegateErrorFailedToAllocateArgumentList
+Language        = English
+Failed to allocate argument list.
+.
+
+MessageId       = +1
+SymbolicName    = DelegateErrorFailedToAllocateGhostscriptInterpreter
+Language        = English
+Failed to allocate Ghostscript interpreter.
+.
+
+MessageId       = +1
 SymbolicName    = DelegateErrorFailedToComputeOutputSize
 Language        = English
 Failed to compute output size

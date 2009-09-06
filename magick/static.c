@@ -143,7 +143,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterDCMImage();
   RegisterDCRAWImage();
   RegisterDIBImage();
+#if defined(HasDPS)
   RegisterDPSImage();
+#endif
   RegisterDPXImage();
 #if defined(HasWINGDI32)
   RegisterEMFImage();
@@ -291,7 +293,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterDCMImage();
   UnregisterDCRAWImage();
   UnregisterDIBImage();
+#if defined(HasDPS)
   UnregisterDPSImage();
+#endif
   UnregisterDPXImage();
 #if defined(HasWINGDI32)
   UnregisterEMFImage();

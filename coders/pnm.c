@@ -560,7 +560,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ImportPixelAreaOptionsInit(&import_options);
             import_options.grayscale_miniswhite=MagickTrue;
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,1) shared(row_count,status)
+#  pragma omp parallel for schedule(static,1) shared(row_count,status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -655,7 +655,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,1) shared(is_monochrome,row_count,status)
+#  pragma omp parallel for schedule(static,1) shared(is_monochrome,row_count,status)
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -783,7 +783,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 #if 1
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,1) shared(is_grayscale,is_monochrome,row_count,status)
+#  pragma omp parallel for schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
 #endif
 #endif
             for (y=0; y < (long) image->rows; y++)

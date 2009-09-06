@@ -1140,7 +1140,9 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Method NTGhostscriptEXE obtains the path to the latest Ghostscript
-%   executable.  The method returns False if a value is not obtained.
+%   executable.  The method returns False if a full path value is not
+%   obtained.  When the full path value is not obtained, then the value
+%   "gswin32c.exe" is used.
 %
 %  The format of the NTGhostscriptEXE method is:
 %
@@ -1162,7 +1164,7 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
     buf[256],
     *p;
 
-  *path='\0';
+  (void) strlcpy(path,"gswin32c.exe",path_length);
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
@@ -1174,8 +1176,8 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
   if (p) {
     p++;
     *p = 0;
-    strncpy(p, "gswin32c.exe", sizeof(buf)-1-strlen(buf));
-    strncpy(path, buf, path_length-1);
+    strlcpy(p, path, sizeof(buf)-strlen(buf));
+    strlcpy(path, buf, path_length);
     return TRUE;
   }
 

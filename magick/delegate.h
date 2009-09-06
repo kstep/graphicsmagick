@@ -107,8 +107,9 @@ extern MagickExport const DelegateInfo
 extern MagickExport DelegateInfo
   *SetDelegateInfo(DelegateInfo *);
 
-extern MagickExport unsigned int
-  InvokePostscriptDelegate(const unsigned int verbose,const char *command),
+extern MagickExport MagickPassFail
+  InvokePostscriptDelegate(const unsigned int verbose,const char *command,
+			   ExceptionInfo *exception),
   InvokeDelegate(ImageInfo *image_info,Image *image,const char *decode,
                  const char *encode,ExceptionInfo *exception),
   ListDelegateInfo(FILE *file,ExceptionInfo *exception);

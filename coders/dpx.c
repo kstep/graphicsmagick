@@ -139,15 +139,6 @@
 #include "magick/version.h"
 
 /*
-  While OpenMP has been observed to provide considerable speed-ups
-  when repetitively reading a few files (which become cached), it is
-  observed to slow the bulk processing of many files (showing high
-  lock occupancy) so it is always disabled for the moment.
-*/
-#undef DisableSlowOpenMP
-#define DisableSlowOpenMP 1
-
-/*
   Define STATIC to nothing so that normally static functions are
   externally visible in the symbol table (for profiling).
 */
@@ -2289,7 +2280,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read element data.
           */
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,1)
+#  pragma omp parallel for schedule(static,1)
 #endif
           for (y=0; y < (long) image->rows; y++)
             {

@@ -520,35 +520,42 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
                                 image->filename);
-  status=InvokePostscriptDelegate(clone_info->verbose,command);
+  status=InvokePostscriptDelegate(clone_info->verbose,command,exception);
   (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
                                 image->filename);
-  if ((status) || (!IsAccessibleAndNotEmpty(clone_info->filename)))
-    {
-      DestroyImageInfo(clone_info);
-      (void) LiberateTemporaryFile(postscript_filename);
-      ThrowReaderException(DelegateError,PostscriptDelegateFailed,image)
-    }
   DestroyImage(image);
-  clone_info->blob=(void *) NULL;
-  clone_info->length=0;
-  clone_info->magick[0]='\0';
-  image=ReadImage(clone_info,exception);
+  image=(Image *) NULL;
+  if (IsAccessibleAndNotEmpty(clone_info->filename))
+    {
+      /*
+	Read Ghostscript output.
+      */
+      clone_info->blob=(void *) NULL;
+      clone_info->length=0;
+      clone_info->magick[0]='\0';
+      image=ReadImage(clone_info,exception);
+    }
   (void) LiberateTemporaryFile(postscript_filename);
-  (void) remove(clone_info->filename);
+  (void) LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
-    ThrowReaderException(DelegateError,DelegateFailed,image);
-  do
-  {
-    (void) strcpy(image->magick,"PDF");
-    (void) strlcpy(image->filename,filename,MaxTextExtent);
-    next_image=SyncNextImageInList(image);
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+    {
+      if (UndefinedException == exception->severity)
+	ThrowException(exception,DelegateError,PostscriptDelegateFailed,filename);
+    }
+  else
+    {
+      do
+	{
+	  (void) strcpy(image->magick,"PDF");
+	  (void) strlcpy(image->filename,filename,MaxTextExtent);
+	  next_image=SyncNextImageInList(image);
+	  if (next_image != (Image *) NULL)
+	    image=next_image;
+	} while (next_image != (Image *) NULL);
+      while (image->previous != (Image *) NULL)
+	image=image->previous;
+    }
   return(image);
 }
 
