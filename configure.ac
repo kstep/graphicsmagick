@@ -2692,6 +2692,7 @@ AM_CONDITIONAL(HAS_ZIP, test "x$ZIP" != "x" )
 GSColorDevice=ppmraw
 GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
+GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
@@ -2744,6 +2745,16 @@ then
   fi
   AC_MSG_RESULT($GSGrayDevice)
 
+  # GSPaletteDevice
+  AC_MSG_CHECKING([for gs pallet device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSPaletteDevice=pcx256
+  else
+    GSPaletteDevice=ppmraw
+  fi
+  AC_MSG_RESULT($GSPaletteDevice)
+
   # GSMonoDevice
   AC_MSG_CHECKING([for gs mono device])
   if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
@@ -2788,6 +2799,7 @@ fi
 
 AC_SUBST(GSMonoDevice)
 AC_SUBST(GSGrayDevice)
+AC_SUBST(GSPaletteDevice)
 AC_SUBST(GSColorDevice)
 AC_SUBST(GSColorAlphaDevice)
 AC_SUBST(GSPDFDevice)

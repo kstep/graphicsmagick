@@ -24,6 +24,18 @@
 2009-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/delegate.c (GetPostscriptDelegateInfo): Add a gs-palette
+        delegate entry in order to force Ghostscript to output a
+        colormapped image if '-type palette' is specified prior to the
+        input filename.  Ghostscript's dithering is much courser than
+        GraphicsMagick's -colors default (more similar to
+        -ordered-dither), but it is fast and produces smaller intermediate
+        files.
+
+  <LI> coders/ps.c (ReadPSImage): Eliminate use of NULL pointer when
+        progress monitor is enabled.  Was referring to image-&gt;filename
+        rather than image_info-&gt;filename as it should have.
+
   <LI> magick/delegate.c (InvokePostscriptDelegate): Added an
         'exception' argument so that failure details can be returned.
         Tried to reorganize the code so that it is more tolerant of errors
@@ -31,7 +43,7 @@
         systems, Ghostscript was not being invoked as securely as
         expected.
 
-  <LI> coders/Makefile.am Only build the DPS module if the Display
+  <LI> coders/Makefile.am: Only build the DPS module if the Display
         Postscript library is available.
 
   <LI> coders/ept.c (ReadEPTImage): If we don't have the Display

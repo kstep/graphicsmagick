@@ -1896,6 +1896,7 @@ GSGrayDevice = @GSGrayDevice@
 GSMonoDevice = @GSMonoDevice@
 GSPDFDevice = @GSPDFDevice@
 GSPSDevice = @GSPSDevice@
+GSPaletteDevice = @GSPaletteDevice@
 GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@

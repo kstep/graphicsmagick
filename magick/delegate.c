@@ -359,6 +359,10 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
     {
       (void) strlcpy(delegate,"gs-gray",sizeof(delegate));
     }
+  else if (PaletteType == image_info->type)
+    {
+      (void) strlcpy(delegate,"gs-palette",sizeof(delegate));
+    }
   else if ((GrayscaleMatteType == image_info->type) ||
            (PaletteMatteType == image_info->type) ||
            (TrueColorMatteType == image_info->type))

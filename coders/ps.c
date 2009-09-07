@@ -336,7 +336,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		 postscript_filename);
   }
   (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
-                                image->filename);
+                                image_info->filename);
   status=InvokePostscriptDelegate(image_info->verbose,command,exception);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
@@ -355,7 +355,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) LiberateTemporaryFile(postscript_filename);
   (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
-                                image->filename);
+                                image_info->filename);
   if (IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
