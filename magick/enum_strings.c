@@ -1317,6 +1317,8 @@ MagickExport ResourceType StringToResourceType(const char *option)
     resource_type=DiskResource;
   else if (LocaleCompare("File",option) == 0)
     resource_type=FileResource;
+  else if (LocaleCompare("Files",option) == 0)
+    resource_type=FileResource;
   else if (LocaleCompare("Map",option) == 0)
     resource_type=MapResource;
   else if (LocaleCompare("Memory",option) == 0)

@@ -91,7 +91,7 @@ static ResourceInfo
   {
     { "",       "",  0, ResourceInfinity, SummationLimit },
     { "disk",   "B", 0, ResourceInfinity, SummationLimit },
-    { "file",   "",  0, 256,              SummationLimit },
+    { "files",  "",  0, 256,              SummationLimit },
     { "map",    "B", 0, ResourceInfinity, SummationLimit },
     { "memory", "B", 0, ResourceInfinity, SummationLimit },
     { "pixels", "P", 0, ResourceInfinity, AbsoluteLimit  }
@@ -338,15 +338,8 @@ MagickExport void InitializeMagickResources(void)
   */
 #if defined(POSIX)
   {
-    long
-      files=-1;
-
     unsigned long
       total_memory=0;
-
-#  if defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
-    files=sysconf(_SC_OPEN_MAX);
-#  endif
 
 #  if  defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
     {
@@ -389,9 +382,6 @@ MagickExport void InitializeMagickResources(void)
         }
     }
 #  endif
-
-    if (files > 0)
-      max_files=files/2;
 
     if (total_memory > 0)
       {
@@ -525,6 +515,76 @@ MagickExport void InitializeMagickResources(void)
     if ((envp=getenv("MAGICK_LIMIT_PIXELS")))
       max_pixels=MagickSizeStrToInt64(envp,1024);
   }
+
+#if defined(POSIX)
+#  if defined(HAVE_GETRLIMIT) && defined(RLIMIT_NOFILE)
+    {
+      struct rlimit
+	rlimits;
+
+      rlim_t
+	margin,
+	target;
+
+      margin=128;
+      target=(rlim_t) max_files+margin;
+      if (getrlimit(RLIMIT_NOFILE, &rlimits) != -1)
+	{
+	  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+				"System file open limits are %lu soft,"
+				" %lu hard",
+				(unsigned long) rlimits.rlim_cur,
+				(unsigned long) rlimits.rlim_max);
+#    if defined(HAVE_SETRLIMIT)
+	  if (rlimits.rlim_max < target)
+	    rlimits.rlim_cur=rlimits.rlim_max;
+	  if (rlimits.rlim_cur < target)
+	    {
+	      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+				    "Increasing file open soft limit from %lu "
+				    "to %lu",
+				    (unsigned long) rlimits.rlim_cur,
+				    (unsigned long) target);
+	      rlimits.rlim_cur=target;
+	      (void) setrlimit(RLIMIT_NOFILE, &rlimits);
+	    }
+	  if (getrlimit(RLIMIT_NOFILE, &rlimits) != -1)
+	    {
+	      if (rlimits.rlim_cur < target)
+		{
+		  if (rlimits.rlim_cur > margin*2)
+		    max_files=rlimits.rlim_cur-margin;
+		  else
+		    max_files=rlimits.rlim_cur/2;
+		}
+	    }
+#    endif
+	}
+    }
+#  elif defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
+    {
+      long
+	margin,
+	open_max,
+	target;
+
+      margin=128;
+      target=max_files+margin;
+      open_max=sysconf(_SC_OPEN_MAX);
+      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+			    "System file open limit is %lu",
+			    (unsigned long) open_max);
+      if (open_max < target)
+	{
+	  if (open_max > margin*2)
+	    max_files=open_max-margin;
+	  else
+	    max_files=open_max/2;
+	}
+    }
+#  endif
+
+#endif
 
   if (max_disk >= 0)
     (void) SetMagickResourceLimit(DiskResource,max_disk);

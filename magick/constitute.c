@@ -9193,7 +9193,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
             break;
         }
       if (clone_info->verbose)
-        (void) DescribeImage(image,stdout,False);
+        (void) DescribeImage(image,stderr,False);
       DestroyImageInfo(clone_info);
       clone_info=0;
     }

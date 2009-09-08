@@ -231,6 +231,9 @@ extern "C" {
 #    define NAMLEN(dirent) strlen((dirent)->d_name)
 #  endif
 #  include <sys/wait.h>
+#  if defined(HAVE_SYS_RESOURCE_H)
+#    include <sys/resource.h>
+#  endif /* defined(HAVE_SYS_RESOURCE_H)  */
 #  include <pwd.h>
 #endif
 

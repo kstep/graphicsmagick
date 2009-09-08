@@ -562,7 +562,7 @@ ColorMatrixImage(Image *image,const unsigned int order,const double *color_matri
 %
 %
 */
-#define ConvolveImageText "[%s] Convolve..."
+#define ConvolveImageText "[%s] Convolve: order %u..."
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
@@ -759,7 +759,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
           if (QuantumTick(row_count,image->rows))
             if (!MagickMonitorFormatted(row_count,image->rows,exception,
                                         ConvolveImageText,
-                                        convolve_image->filename))
+                                        convolve_image->filename,
+					order))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)

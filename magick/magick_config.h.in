@@ -165,6 +165,9 @@
 /* Define to 1 if you have the `getpid' function. */
 #undef HAVE_GETPID
 
+/* Define to 1 if you have the `getrlimit' function. */
+#undef HAVE_GETRLIMIT
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -260,6 +263,9 @@
 /* Define to 1 if you have the `pwrite' function. */
 #undef HAVE_PWRITE
 
+/* Define to 1 if you have the `qsort_r' function. */
+#undef HAVE_QSORT_R
+
 /* Define to 1 if you have the `raise' function. */
 #undef HAVE_RAISE
 
@@ -283,6 +289,9 @@
 
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
+
+/* Define to 1 if you have the `setrlimit' function. */
+#undef HAVE_SETRLIMIT
 
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
@@ -342,6 +351,9 @@
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_NDIR_H
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#undef HAVE_SYS_RESOURCE_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H

@@ -413,8 +413,8 @@ MagickExport MagickPassFail BlackThresholdImage(Image *image,const char *thresho
 %
 %
 */
-#define BlurImageColumnsText "[%s] Blur columns..."
-#define BlurImageRowsText "[%s] Blur rows...  "
+#define BlurImageColumnsText "[%s] Blur columns: order %lu..."
+#define BlurImageRowsText "[%s] Blur rows: order %lu...  "
 static void
 BlurScanline(const double *kernel,const unsigned long width,
              const PixelPacket *source,PixelPacket *destination,
@@ -655,7 +655,8 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
                 }
               if (i != image->columns)
                 {
-                  (void) memcpy(&scanline[i],&q[i],(image->columns-i)*sizeof(PixelPacket));
+                  (void) memcpy(&scanline[i],&q[i],
+				(image->columns-i)*sizeof(PixelPacket));
                   BlurScanline(kernel,width,scanline,q,image->columns,matte);
                   if (!SyncImagePixelsEx(image,exception))
                     thread_status=MagickFail;
@@ -668,7 +669,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
             row_count++;
             if (QuantumTick(row_count,image->rows))
               if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                          format,image->filename))
+                                          format,image->filename,width))
                 thread_status=MagickFail;
           
             if (thread_status == MagickFail)
@@ -742,7 +743,8 @@ BlurImage(const Image *original_image,const double radius,
   blur_image->storage_class=DirectClass;
 
   if (status != MagickFail)
-    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageColumnsText,exception);
+    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageColumnsText,
+			       exception);
   
   if (status != MagickFail)
   {
@@ -761,7 +763,8 @@ BlurImage(const Image *original_image,const double radius,
   }
 
   if (status != MagickFail)
-    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageRowsText,exception);
+    status&=BlurImageScanlines(blur_image,kernel,width,BlurImageRowsText,
+			       exception);
 
   MagickFreeMemory(kernel);
   blur_image->is_grayscale=original_image->is_grayscale;
@@ -3947,15 +3950,22 @@ UnsharpMaskPixels(void *mutable_data,                /* User provided mutable da
   ARG_NOT_USED(exception);
   for (i=0; i < npixels; i++)
     {
-      update_pixels[i].red=UnsharpQuantum(source_pixels[i].red,update_pixels[i].red,options);
-      update_pixels[i].green=UnsharpQuantum(source_pixels[i].green,update_pixels[i].green,options);
-      update_pixels[i].blue=UnsharpQuantum(source_pixels[i].blue,update_pixels[i].blue,options);
-      update_pixels[i].opacity=UnsharpQuantum(source_pixels[i].opacity,update_pixels[i].opacity,options);
+      update_pixels[i].red=UnsharpQuantum(source_pixels[i].red,
+					  update_pixels[i].red,
+					  options);
+      update_pixels[i].green=UnsharpQuantum(source_pixels[i].green,
+					    update_pixels[i].green,
+					    options);
+      update_pixels[i].blue=UnsharpQuantum(source_pixels[i].blue,
+					   update_pixels[i].blue,
+					   options);
+      update_pixels[i].opacity=UnsharpQuantum(source_pixels[i].opacity,
+					      update_pixels[i].opacity,
+					      options);
     }
   return MagickPass;
 }
 
-#define SharpenImageText "[%s] Sharpen..."
 MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
@@ -3966,6 +3976,9 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   Image
     *sharp_image;
 
+  char
+    message[MaxTextExtent];
+
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -3974,9 +3987,12 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     return((Image *) NULL);
   options.amount=amount;
   options.threshold=(MaxRGBFloat*threshold)/2.0;
+  FormatString(message,"[%%s] Unsharp mask: amount %g, threshold %g...",
+	       amount,threshold);
   (void) PixelIterateDualModify(UnsharpMaskPixels,NULL,
-                                SharpenImageText,NULL,&options,
-                                image->columns,image->rows,image,0,0,sharp_image,
+                                message,NULL,&options,
+                                image->columns,image->rows,image,0,0,
+				sharp_image,
                                 0,0,exception);                                
   sharp_image->is_grayscale=image->is_grayscale;
   return(sharp_image);

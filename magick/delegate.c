@@ -817,11 +817,7 @@ InvokePostscriptDelegate(const unsigned int verbose,
 #endif
   if (gs_func != (GhostscriptVectors *) NULL)
     {
-      if (verbose)
-	{
-	  (void) fputs("[ghostscript library]",stdout);
-	  (void) fputs(strchr(command,' '),stdout);
-	}
+
       /*
 	Allocate an interpreter.
       */
@@ -842,6 +838,22 @@ InvokePostscriptDelegate(const unsigned int verbose,
 	  ThrowException(exception,DelegateError,FailedToAllocateArgumentList,
 			 command);
 	  return(MagickFail);
+	}
+
+      if (verbose)
+	{
+	  char
+	    buffer[MaxTextExtent];
+
+#if defined(MSWINDOWS)
+	  (void) NTGhostscriptDLL(buffer,sizeof(buffer));
+#else
+	  (void) strlcpy(buffer,"[ghostscript library]",sizeof(buffer));
+#endif
+	  (void) fputs(buffer,stderr);
+	  for (i=2 ; i < argc ; i++)
+	    (void) fprintf(stderr," \"%s\"",argv[i]);
+	  (void) fflush(stderr);
 	}
       status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
       if (status == 0)

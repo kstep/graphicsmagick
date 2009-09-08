@@ -80,7 +80,6 @@
 #if !defined(_O_TEMPORARY)
 # define _O_TEMPORARY 0
 #endif
-
 
 /*
   Declare pixel cache interfaces.
@@ -274,7 +273,8 @@ static MagickPassFail
 
 */
 static inline ssize_t
-FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
+FilePositionRead(int file, SemaphoreInfo *file_semaphore, void *buffer,
+		 size_t length,magick_off_t offset)
 {
   register ssize_t
     count=0;
@@ -282,10 +282,15 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
   register size_t
     total_count;
 
+  LockSemaphoreInfo(file_semaphore);
+
 #if !HAVE_PREAD
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return (ssize_t)-1;
-#endif
+    {
+      UnlockSemaphoreInfo(file_semaphore);
+      return (ssize_t)-1;
+    }
+#endif /* !HAVE_PREAD */
 
   for (total_count=0; total_count < length; total_count+=count)
     {
@@ -309,6 +314,9 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
       if (count <= 0)
         break;
     }
+
+  UnlockSemaphoreInfo(file_semaphore);
+
   if (count < 0)
     return (ssize_t)-1;
   return (ssize_t) total_count;
@@ -322,7 +330,8 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
 
 */
 static inline ssize_t
-FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset)
+FilePositionWrite(int file, SemaphoreInfo *file_semaphore,
+		  const void *buffer,size_t length,magick_off_t offset)
 {
   register ssize_t
     count=0;
@@ -330,9 +339,14 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
   register size_t
     total_count;
 
+  LockSemaphoreInfo(file_semaphore);
+
 #if !HAVE_PWRITE
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return (ssize_t)-1;
+    {
+      UnlockSemaphoreInfo(file_semaphore);
+      return (ssize_t)-1;
+    }
 #endif /* !HAVE_PWRITE */
   for (total_count=0; total_count < length; total_count+=count)
     {
@@ -356,6 +370,9 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
       if (count <= 0)
         break;
     }
+
+  UnlockSemaphoreInfo(file_semaphore);
+
   if (count < 0)
     return (ssize_t)-1;
   return (ssize_t) total_count;
@@ -3426,7 +3443,6 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
   /*
     Read indexes from disk.
   */
-  LockSemaphoreInfo(cache_info->file_semaphore);
   {
     file=(cache_info->file != -1 ? cache_info->file :
           open(cache_info->cache_filename,O_RDONLY | O_BINARY));
@@ -3435,7 +3451,8 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
         number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
         for (y=0; y < (long) rows; y++)
           {
-            if ((FilePositionRead(file,indexes,length,cache_info->offset+
+            if ((FilePositionRead(file,cache_info->file_semaphore,indexes,length,
+				  cache_info->offset+
                                   number_pixels*sizeof(PixelPacket)+offset*
                                   sizeof(IndexPacket))) <= 0)
               break;
@@ -3450,7 +3467,6 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
                                 nexus_info->region.x,nexus_info->region.y);
       }
   }
-  UnlockSemaphoreInfo(cache_info->file_semaphore);
   if (file == -1)
     return(MagickFail);
   return(y == (long) rows);
@@ -3569,7 +3585,6 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
   /*
     Read pixels from disk.
   */
-  LockSemaphoreInfo(cache_info->file_semaphore);
   {
     file=(cache_info->file != -1 ? cache_info->file :
           open(cache_info->cache_filename,O_RDONLY | O_BINARY));
@@ -3577,7 +3592,7 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
       {
         for (y=0; y < (long) rows; y++)
           {
-            if ((FilePositionRead(file,pixels,length,
+            if ((FilePositionRead(file,cache_info->file_semaphore,pixels,length,
                                   cache_info->offset+offset*
                                   sizeof(PixelPacket))) < (ssize_t) length)
               break;
@@ -3592,7 +3607,6 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
                                 nexus_info->region.x,nexus_info->region.y);
       }
   }
-  UnlockSemaphoreInfo(cache_info->file_semaphore);
   if (file == -1)
     return(MagickFail);
   return(y == (long) rows);
@@ -4362,10 +4376,9 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
   /*
     Write indexes to disk.
   */
-  LockSemaphoreInfo(cache_info->file_semaphore);
   {
     file=cache_info->file;
-    if (cache_info->file == -1)
+    if (file == -1)
       {
         file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
         if (file == -1)
@@ -4384,11 +4397,13 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
 	  *sizeof(IndexPacket);
         for (y=0; y < (long) rows; y++)
           {
-            if ((bytes_written=FilePositionWrite(file,indexes,length,row_offset))
+            if ((bytes_written=FilePositionWrite(file,cache_info->file_semaphore,
+						 indexes,length,row_offset))
 		< (long) length)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
-				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
+				      "Failed to write row %ld at file offset %"
+				      MAGICK_OFF_F
 				      "d.  Wrote %ld rather than %lu bytes (%s).",
 				      y,
 				      row_offset,
@@ -4408,7 +4423,6 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
                                 nexus_info->region.x,nexus_info->region.y);
       }
   }
-  UnlockSemaphoreInfo(cache_info->file_semaphore);
   if (file == -1)
     return MagickFail;
   return(y == (long) rows);
@@ -4526,10 +4540,9 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
   /*
     Write pixels to disk.
   */
-  LockSemaphoreInfo(cache_info->file_semaphore);
   {
     file=cache_info->file;
-    if (cache_info->file == -1)
+    if (file == -1)
       {
         file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
         if (file == -1)
@@ -4546,7 +4559,8 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
 	      bytes_written;
 
 	    row_offset=cache_info->offset+offset*sizeof(PixelPacket);
-            if ((bytes_written=FilePositionWrite(file,pixels,length,row_offset))
+            if ((bytes_written=FilePositionWrite(file,cache_info->file_semaphore,
+						 pixels,length,row_offset))
 		< (ssize_t) length)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -4570,7 +4584,6 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
                                 nexus_info->region.x,nexus_info->region.y);
       }
   }
-  UnlockSemaphoreInfo(cache_info->file_semaphore);
   if (file == -1)
     return(MagickFail);
   return(y == (long) rows);

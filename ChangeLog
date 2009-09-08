@@ -1,3 +1,19 @@
+2009-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Increase
+	operating system file handle limits if necessary.
+
+	* magick/pixel_cache.c: Pixel cache file locking is now done at
+	point of access.
+
+	* magick/nt_base.c (NTGhostscriptFind): New function to find
+	Ghostscript under Windows, replacing previous Ghostgum
+	implementation.
+
+	* Copyright.txt: License is now based on MIT license exactly,
+	without extra edits.  Ghostgum code has been eliminated so it is
+	no longer necessary to include its license.
+
 2009-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/delegate.c (GetPostscriptDelegateInfo): Add a gs-palette
