@@ -1,3 +1,15 @@
+2009-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (CacheInfo): Add read_only member to
+	indicate if cache is allowed to be modified.
+	(ModifyCache): Clone cache if origin cache is read only.
+	(PersistCache): Persistent caches which are attached are treated
+	as read-only.  This avoids crash with MPC images which are read
+	and subsequently modified.
+	Reverted pixel cache locking changes which were made yesterday
+	since I decided that they were too risky until file handle
+	management is addressed.
+
 2009-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources): Increase

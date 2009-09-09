@@ -62,7 +62,7 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsMPC returns True if the image format type, identified by the
+%  Method IsMPC returns MagickTrue if the image format type, identified by the
 %  magick string, is an Magick Persistent Cache image.
 %
 %  The format of the IsMPC method is:
@@ -71,7 +71,7 @@ static unsigned int
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsMPC returns True if the image format type is MPC.
+%    o status:  Method IsMPC returns MagickTrue if the image format type is MPC.
 %
 %    o magick: This string is generally the first few bytes of an image file
 %      or blob.
@@ -80,13 +80,13 @@ static unsigned int
 %
 %
 */
-static unsigned int IsMPC(const unsigned char *magick,const size_t length)
+static MagickBool IsMPC(const unsigned char *magick,const size_t length)
 {
   if (length < 14)
-    return(False);
+    return(MagickFalse);
   if (LocaleNCompare((char *) magick,"id=MagickCache",14) == 0)
-    return(True);
-  return(False);
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 /*
@@ -169,7 +169,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   (void) strlcpy(cache_filename,image->filename,MaxTextExtent);
   AppendImageFormat("cache",cache_filename);
@@ -772,8 +772,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Attach persistent pixel cache.
     */
-    status=PersistCache(image,cache_filename,True,&offset,exception);
-    if (status == False)
+    status=PersistCache(image,cache_filename,MagickTrue,&offset,exception);
+    if (status == MagickFail)
       ThrowReaderException(CacheError,UnableToPeristPixelCache,image);
     /*
       Proceed to next image.
@@ -797,7 +797,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
                                       exception,LoadImagesText,
                                       image->filename);
-        if (status == False)
+        if (status == MagickFail)
           break;
       }
   } while (c != EOF);
@@ -891,12 +891,12 @@ ModuleExport void UnregisterMPCImage(void)
 %
 %  The format of the WriteMPCImage method is:
 %
-%      unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
+%      MagickPassFail WriteMPCImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteMPCImage return True if the image is written.
-%      False is returned if there is a memory shortage or if the image file
+%    o status: Method WriteMPCImage return MagickPass if the image is written.
+%      MagickFail is returned if there is a memory shortage or if the image file
 %      fails to write.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
@@ -905,7 +905,7 @@ ModuleExport void UnregisterMPCImage(void)
 %
 %
 */
-static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteMPCImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],
@@ -946,7 +946,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) strlcpy(cache_filename,image->filename,MaxTextExtent);
   AppendImageFormat("cache",cache_filename);
@@ -1225,7 +1225,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         packet_size=image->depth > 8 ? 6 : 3;
         colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          return(False);
+          return(MagickFail);
         /*
           Write colormap to file.
         */
@@ -1256,8 +1256,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize persistent pixel cache.
     */
-    status=PersistCache(image,cache_filename,False,&offset,&image->exception);
-    if (status == False)
+    status=PersistCache(image,cache_filename,MagickFalse,&offset,&image->exception);
+    if (status == MagickFail)
       ThrowWriterException(CacheError,UnableToPeristPixelCache,image);
     if (image->next == (Image *) NULL)
       break;

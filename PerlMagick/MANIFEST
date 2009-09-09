@@ -365,6 +365,12 @@ t/reference/read/input_xbm.miff
 t/reference/read/input_xc_black.miff
 t/reference/read/input_xpm.miff
 t/reference/read/input_xwd.miff
+t/reference/read/topol_1.miff
+t/reference/read/topol_2.miff
+t/reference/read/topol_3.miff
+t/reference/read/topol_4.miff
+t/reference/read/topol_5.miff
+t/reference/read/topol_7.miff
 t/reference/ttf/annotate.miff
 t/reference/ttf/label.miff
 t/reference/ttf/read.miff
@@ -415,6 +421,7 @@ t/topol_4.pal
 t/topol_4.ras
 t/topol_5.ras
 t/topol_7.mez
+t/topol_7.ras
 t/ttf/input.ttf
 t/ttf/read.t
 t/wmf/clock.wmf
