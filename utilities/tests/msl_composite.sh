@@ -43,6 +43,7 @@ draw_text ()
     TEXT=$1
     TARGET=$2
 
+    DRAWCMDFILE=msl_composite_draw_out.txt
 #    TEMPFILE=draw_text_tmp.svg
 #    cat <<EOF >$TEMPFILE
 #<?xml version="1.0" encoding="utf-8" ?>
@@ -56,7 +57,9 @@ draw_text ()
 
 #    $CONVERT_CMD $TEMPFILE $TARGET || exit 1
 
-    $CONVERT_CMD -size 100x100 xc:white -draw "font-size 20 font '${GENERIC_TTF}' gravity center text 0,0 '$TEXT'" $TARGET
+    echo "font-size 20 font '${GENERIC_TTF}' gravity center text 0,0 '$TEXT'" > ${DRAWCMDFILE}
+    $CONVERT_CMD -size 100x100 xc:white -draw @${DRAWCMDFILE} $TARGET
+    rm -f ${DRAWCMDFILE}
 #    rm -f $TEMPFILE
 }
 

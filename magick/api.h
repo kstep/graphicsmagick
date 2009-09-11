@@ -89,7 +89,9 @@ extern "C" {
 #  define MagickGlobal
 #endif
 
-#define MaxTextExtent  2053
+#if !defined(MaxTextExtent)
+#  define MaxTextExtent  2053
+#endif
 #define MagickSignature  0xabacadabUL
 
 #define MagickPassFail unsigned int

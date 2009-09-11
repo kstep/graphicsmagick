@@ -152,7 +152,20 @@ extern "C" {
 #endif
 
 #define MagickSignature  0xabacadabUL
-#define MaxTextExtent  2053
+
+/*
+  This size is the default minimum string allocation size (heap or
+  stack) for a C string in GraphicsMagick.  The weird size is claimed
+  to be based on 2*FILENAME_MAX (not including terminating NULL) on
+  some antique system.  Linux has a FILENAME_MAX definition, but it is
+  4096 bytes.  Many OSs have path limits of 1024 bytes.
+
+  The FormatString() function assumes that the buffer it is writing to
+  has at least this many bytes remaining.
+*/
+#if !defined(MaxTextExtent)
+#  define MaxTextExtent  2053
+#endif
 
 #include <stdarg.h>
 #include <stdio.h>

@@ -1,5 +1,8 @@
 2009-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* utilities/tests/msl_composite.sh: Use a draw command file for
+	this test script too.
+
 	* utilities/tests/{black-threshold.sh,draw.sh,recolor.sh,
 	white-threshold.sh}: MSYS is sometimes wreaking havoc on arguments
 	with spaces in them so use work-arounds.

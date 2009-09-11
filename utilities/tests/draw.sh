@@ -10,7 +10,7 @@
 
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
-set -x
+
 OUTFILE=TileDraw_out.miff
 DRAWFILE=draw_circle_out.txt
 rm -f ${OUTFILE}

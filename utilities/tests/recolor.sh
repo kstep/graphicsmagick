@@ -10,7 +10,7 @@
 
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
-set -x
+
 OUTFILE=TileRecolor_out.miff
 MATRIXFILE=recolor_matrix_out.txt
 echo '0.9 0 0, 0 0.9 0, 0 0 1.2' > ${MATRIXFILE}
