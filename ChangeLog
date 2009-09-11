@@ -1,3 +1,9 @@
+2009-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/tests/{black-threshold.sh,draw.sh,recolor.sh,
+	white-threshold.sh}: MSYS is sometimes wreaking havoc on arguments
+	with spaces in them so use work-arounds.
+
 2009-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (NTGhostscriptFind): Improve logging messages
