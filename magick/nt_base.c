@@ -874,6 +874,9 @@ NTGhostscriptFind(const char **gs_productfamily,
   status=MagickFail;
   *gs_productfamily=NULL;
 
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+			"Searching for Ghostscript...");
+
   /* Minimum version of Ghostscript is 5.50 */
   *gs_major_version=5;
   *gs_minor_version=49;
@@ -887,6 +890,9 @@ NTGhostscriptFind(const char **gs_productfamily,
       char
 	key[MaxTextExtent];
 
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+			    "  Searching for %s...",
+			    products[product_index]);
       FormatString(key,"SOFTWARE\\%s",products[product_index]);
       hkeyroot = HKEY_LOCAL_MACHINE;
       if (RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey) == ERROR_SUCCESS)
@@ -897,6 +903,9 @@ NTGhostscriptFind(const char **gs_productfamily,
 	  int
 	    n;
 
+	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				"    RegOpenKeyExA() opened \"HKEY_LOCAL_MACHINE\\%s\"",
+				key);
 	  /* Now enumerate the keys */
 	  cbData = sizeof(key) / sizeof(char);
 	  n=0;
@@ -906,6 +915,8 @@ NTGhostscriptFind(const char **gs_productfamily,
 		major_version,
 		minor_version;
 
+	      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				    "      RegEnumKeyA enumerated \"%s\"",key);
 	      n++;
 	      major_version=0;
 	      minor_version=0;
@@ -913,7 +924,7 @@ NTGhostscriptFind(const char **gs_productfamily,
 		continue;
 
 	      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-				    "Found Ghostscript (%s) version %d.%02d",
+				    "      Found Ghostscript (%s) version %d.%02d",
 				    products[product_index],
 				    major_version,
 				    minor_version);
@@ -929,6 +940,12 @@ NTGhostscriptFind(const char **gs_productfamily,
 		}
 	    }
 	}
+      else
+	{
+	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				"    RegOpenKeyExA() failed to open \"HKEY_LOCAL_MACHINE\\%s\"",
+				key);
+	}
     }
   if (status != MagickFail)
     {
@@ -939,6 +956,8 @@ NTGhostscriptFind(const char **gs_productfamily,
     }
   else
     {
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+			    "Failed to find Ghostscript!");
       *gs_major_version=0;
       *gs_minor_version=0;
     }
@@ -1038,16 +1057,23 @@ NTGhostscriptGetString(const char *name, char *ptr, const size_t len)
 */
 MagickExport int NTGhostscriptDLL(char *path, int path_length)
 {
-  char
-    buf[256];
+  static char
+    cache[MaxTextExtent],
+    *result=NULL;
 
   path[0]='\0';
 
-  if (!NTGhostscriptGetString("GS_DLL", buf, sizeof(buf)))
-    return FALSE;
+  if (NULL == result)
+    if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
+      result=cache;
 
-  (void) strlcpy(path, buf, path_length);
-  return TRUE;
+  if (result)
+    {
+      (void) strlcpy(path, result, path_length);
+      return TRUE;
+    }
+
+  return FALSE;
 }
 
 /*
@@ -1092,8 +1118,8 @@ MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Method NTGhostscriptEXE obtains the path to the latest Ghostscript
-%   executable.  The method returns False if a full path value is not
-%   obtained.  When the full path value is not obtained, then the value
+%   executable.  The method returns TRUE if path is updated, otherwise
+%   FALSE.  When the full path value is not obtained, then the value
 %   "gswin32c.exe" is used.
 %
 %  The format of the NTGhostscriptEXE method is:
@@ -1116,33 +1142,30 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
   char
     *p;
 
-  int
-    status=FALSE;
-
-  if (NULL != result)
+  if (NULL == result)
     {
-      (void) strlcpy(path,result, path_length);
-      status=TRUE;
-    }
-  else
-    {
-      (void) strlcpy(path,"gswin32c.exe",path_length);
+      /* Ensure a suitable default. */
+      (void) strlcpy(cache,"gswin32c.exe",sizeof(cache));
 
-      if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
+      if (NTGhostscriptDLL(cache,sizeof(cache)))
 	{
 	  p = strrchr(cache, '\\');
 	  if (p) {
 	    p++;
 	    *p = 0;
-	    (void) strlcpy(p, path, sizeof(cache)-strlen(cache));
-	    (void) strlcpy(path, cache, path_length);
-	    result=cache;
-	    status=TRUE;
+ 	    (void) strlcat(cache,"gswin32c.exe",sizeof(cache));
 	  }
 	}
+      result=cache;
     }
 
-  return status;
+  if (result)
+    {
+      (void) strlcpy(path,result, path_length);
+      return TRUE;
+    }
+
+  return FALSE;
 }
 
 /*
