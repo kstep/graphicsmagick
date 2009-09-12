@@ -1,3 +1,6 @@
+2009-09-12 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+	* coders/topol.c: Pallette overflow fixed for subtype 3.
+
 2009-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* utilities/tests/msl_composite.sh: Use a draw command file for
