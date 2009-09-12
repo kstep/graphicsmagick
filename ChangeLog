@@ -1,3 +1,7 @@
+2009-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/read.t: Added tests for Topol format.
+
 2009-09-12 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 	* coders/topol.c: Pallette overflow fixed for subtype 3.
 
