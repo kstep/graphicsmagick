@@ -1,5 +1,9 @@
 2009-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/meta.c (GetIPTCStream): Updates from John.Sergeant to fix
+	issues with IPTC record 2 blocks and to deal better with IPTC
+	embedded in an 8BIM profile.
+
 	* PerlMagick/t/read.t: Added tests for Topol format.
 
 2009-09-12 Fojtik Jaroslav  <JaFojtik@seznam.cz>
