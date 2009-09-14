@@ -1,3 +1,9 @@
+2009-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/fx.c (ColorMatrixImage): Add opaque opacity channel if
+	image currently lacks an opacity channel but the matrix updates
+	the opacity channel.  Requested by Kerry Panchoo.
+
 2009-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c (GetIPTCStream): Updates from John.Sergeant to fix

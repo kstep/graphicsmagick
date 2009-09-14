@@ -465,8 +465,11 @@ ColorMatrixImage(Image *image,const unsigned int order,const double *color_matri
 	  }
       }
 
-    if (!image->matte)
-      options.matrix[3] = (double *) NULL;
+    /*
+      Add opacity channel if we will be updating opacity.
+    */
+    if ((!image->matte) && (options.matrix[3] != (double *) NULL))
+      SetImageOpacity(image,OpaqueOpacity);
   }
 
   if (LogMagickEvent(TransformEvent,GetMagickModule(),
