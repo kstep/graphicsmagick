@@ -526,6 +526,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
         i;
 
       (void) strlcpy(arg_string,name,sizeof(arg_string));
+      LocaleUpper(arg_string);
       for (i=0; arg_string[i] != '\0'; i++)
         if (arg_string[i] == ',')
           arg_string[i] = ' ';
@@ -1003,12 +1004,23 @@ MagickExport MagickPassFail
 SetImageProfile(Image *image,const char *name, const unsigned char *profile,
                 const size_t length)
 {
+  char
+    ucase_name[MaxTextExtent];
+
   unsigned int
     status = MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(name != NULL);
+
+  if (strlcpy(ucase_name,name,sizeof(ucase_name)) >= sizeof(ucase_name))
+    {
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Profile name too long! (%s)",name);
+      return MagickFail;
+    }
+  LocaleUpper(ucase_name);
 
   if ((profile == 0) && (image->profiles != 0))
     {

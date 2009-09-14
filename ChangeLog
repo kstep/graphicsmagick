@@ -1,5 +1,12 @@
 2009-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/profile.c (ProfileImage): GlobExpression is case
+	sensitive so assure that its glob strings are always upper-cased.
+	Without this fix, lower-cased arguments like "icm" would fail to
+	be removed.  This would not be much of a problem except that the
+	documentation claims that lower-case works.
+	(SetImageProfile): Assure that profile names are upper-cased.
+
 	* magick/fx.c (ColorMatrixImage): Add opaque opacity channel if
 	image currently lacks an opacity channel but the matrix updates
 	the opacity channel.  Requested by Kerry Panchoo.
