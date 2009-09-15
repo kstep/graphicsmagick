@@ -165,6 +165,8 @@ MAGICK_BASE_SRCS = \
 	magick/spinlock.h \
 	magick/static.c \
 	magick/static.h \
+	magick/statistics.c \
+	magick/statistics.h \
 	magick/studio.h \
 	magick/symbols.h \
 	magick/tempfile.c \
@@ -250,6 +252,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/resource.h \
 	magick/shear.h \
 	magick/signature.h \
+	magick/statistics.h \
 	magick/symbols.h \
 	magick/texture.h \
 	magick/timer.h \

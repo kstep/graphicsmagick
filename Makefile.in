@@ -1148,21 +1148,22 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/segment.c magick/semaphore.c magick/semaphore.h \
 	magick/shear.c magick/shear.h magick/signature.c \
 	magick/signature.h magick/spinlock.h magick/static.c \
-	magick/static.h magick/studio.h magick/symbols.h \
-	magick/tempfile.c magick/tempfile.h magick/texture.c \
-	magick/texture.h magick/timer.c magick/timer.h \
-	magick/transform.c magick/transform.h magick/tsd.c \
-	magick/tsd.h magick/type.c magick/unix_port.c magick/utility.c \
-	magick/utility.h magick/version.c magick/version.h \
-	magick/animate.c magick/animate.h magick/display.c \
-	magick/display.h magick/PreRvIcccm.c magick/PreRvIcccm.h \
-	magick/widget.c magick/widget.h magick/xwindow.c \
-	magick/xwindow.h magick/nt_feature.c magick/nt_feature.h \
-	magick/nt_base.c magick/nt_base.h coders/art.c coders/avi.c \
-	coders/avs.c coders/bmp.c coders/cals.c coders/caption.c \
-	coders/cineon.c coders/cmyk.c coders/cut.c coders/dcm.c \
-	coders/dcraw.c coders/dib.c coders/dpx.c coders/fax.c \
-	coders/fits.c coders/gif.c coders/gradient.c coders/gray.c \
+	magick/static.h magick/statistics.c magick/statistics.h \
+	magick/studio.h magick/symbols.h magick/tempfile.c \
+	magick/tempfile.h magick/texture.c magick/texture.h \
+	magick/timer.c magick/timer.h magick/transform.c \
+	magick/transform.h magick/tsd.c magick/tsd.h magick/type.c \
+	magick/unix_port.c magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/animate.c \
+	magick/animate.h magick/display.c magick/display.h \
+	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/widget.c \
+	magick/widget.h magick/xwindow.c magick/xwindow.h \
+	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
+	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
+	coders/bmp.c coders/cals.c coders/caption.c coders/cineon.c \
+	coders/cmyk.c coders/cut.c coders/dcm.c coders/dcraw.c \
+	coders/dib.c coders/dpx.c coders/fax.c coders/fits.c \
+	coders/gif.c coders/gradient.c coders/gray.c \
 	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
 	coders/identity.c coders/label.c coders/locale.c coders/logo.c \
 	coders/map.c coders/mat.c coders/matte.c coders/meta.c \
@@ -1244,6 +1245,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-shear.lo \
 	magick/magick_libGraphicsMagick_la-signature.lo \
 	magick/magick_libGraphicsMagick_la-static.lo \
+	magick/magick_libGraphicsMagick_la-statistics.lo \
 	magick/magick_libGraphicsMagick_la-tempfile.lo \
 	magick/magick_libGraphicsMagick_la-texture.lo \
 	magick/magick_libGraphicsMagick_la-timer.lo \
@@ -3280,6 +3282,8 @@ MAGICK_BASE_SRCS = \
 	magick/spinlock.h \
 	magick/static.c \
 	magick/static.h \
+	magick/statistics.c \
+	magick/statistics.h \
 	magick/studio.h \
 	magick/symbols.h \
 	magick/tempfile.c \
@@ -3360,6 +3364,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/resource.h \
 	magick/shear.h \
 	magick/signature.h \
+	magick/statistics.h \
 	magick/symbols.h \
 	magick/texture.h \
 	magick/timer.h \
@@ -4938,6 +4943,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/segment.html \
 	$(WWWAPIDIR)/shear.html \
 	$(WWWAPIDIR)/signature.html \
+	$(WWWAPIDIR)/statistics.html \
 	$(WWWAPIDIR)/texture.html \
 	$(WWWAPIDIR)/transform.html \
 	$(WWWAPIDIR)/types.html \
@@ -4984,6 +4990,7 @@ WWWWAPI_FILES = \
 	www/api/segment.html \
 	www/api/shear.html \
 	www/api/signature.html \
+	www/api/statistics.html \
 	www/api/texture.html \
 	www/api/transform.html \
 	www/api/types.html \
@@ -6071,6 +6078,8 @@ magick/magick_libGraphicsMagick_la-signature.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-static.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-statistics.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-tempfile.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-texture.lo: magick/$(am__dirstamp) \
@@ -7187,6 +7196,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-signature.lo
 	-rm -f magick/magick_libGraphicsMagick_la-static.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-static.lo
+	-rm -f magick/magick_libGraphicsMagick_la-statistics.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-statistics.lo
 	-rm -f magick/magick_libGraphicsMagick_la-tempfile.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-tempfile.lo
 	-rm -f magick/magick_libGraphicsMagick_la-texture.$(OBJEXT)
@@ -7541,6 +7552,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-shear.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-signature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-static.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-statistics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-tempfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-texture.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-timer.Plo@am__quote@
@@ -8896,6 +8908,14 @@ magick/magick_libGraphicsMagick_la-static.lo: magick/static.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/static.c' object='magick/magick_libGraphicsMagick_la-static.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-static.lo `test -f 'magick/static.c' || echo '$(srcdir)/'`magick/static.c
+
+magick/magick_libGraphicsMagick_la-statistics.lo: magick/statistics.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-statistics.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-statistics.Tpo -c -o magick/magick_libGraphicsMagick_la-statistics.lo `test -f 'magick/statistics.c' || echo '$(srcdir)/'`magick/statistics.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-statistics.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-statistics.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/statistics.c' object='magick/magick_libGraphicsMagick_la-statistics.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-statistics.lo `test -f 'magick/statistics.c' || echo '$(srcdir)/'`magick/statistics.c
 
 magick/magick_libGraphicsMagick_la-tempfile.lo: magick/tempfile.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-tempfile.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-tempfile.Tpo -c -o magick/magick_libGraphicsMagick_la-tempfile.lo `test -f 'magick/tempfile.c' || echo '$(srcdir)/'`magick/tempfile.c

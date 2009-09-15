@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2008 GraphicsMagick Group
+  Copyright (C) 2003 - 2009 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -671,28 +671,6 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _ImageChannelStatistics
- {
-   /* Minimum value observed */
-   double maximum;
-   /* Maximum value observed */
-   double minimum;
-   /* Average (mean) value observed */
-   double mean;
-   /* Standard deviation, sqrt(variance) */
-   double standard_deviation;
-   /* Variance */
-   double variance;
- } ImageChannelStatistics;
-
-typedef struct _ImageStatistics
- {
-   ImageChannelStatistics red;
-   ImageChannelStatistics green;
-   ImageChannelStatistics blue;
-   ImageChannelStatistics opacity;
- } ImageStatistics;
-
 typedef struct _ImageCharacteristics
 {
   MagickBool
@@ -1083,8 +1061,6 @@ extern MagickExport MagickPassFail
   DisplayImages(const ImageInfo *image_info,Image *image),
   GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
     const MagickBool optimize,ExceptionInfo *exception),
-  GetImageStatistics(const Image *image,ImageStatistics *statistics,
-    ExceptionInfo *exception),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,

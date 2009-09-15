@@ -149,6 +149,7 @@ extern "C" {
 #include "magick/effect.h"
 #include "magick/resize.h"
 #include "magick/shear.h"
+#include "magick/statistics.h"
 #include "magick/texture.h"
 #include "magick/transform.h"
 #include "magick/composite.h"

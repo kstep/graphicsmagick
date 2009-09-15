@@ -39,6 +39,7 @@ resource.c         Set resource consumption limits (e.g. memory)
 segment.c          Segment and image with thresholding using the fuzzy c-means method
 shear.c            Rotate image, shear image, or apply a 2D affine transformation
 signature.c        Add a digital signature to the image
+statistics.c	   Compute image statistics
 texture.c	   Image texture functions
 transform.c        Crop, flip, flop, roll, coalesce, etc.
 resize.c           Resize an image

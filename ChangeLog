@@ -1,5 +1,8 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/statistics.c (GetImageStatistics): Moved from image.c to
+	new statistics.c source file.
+
 	* magick/gradient.c (GradientImage): Moved from image.c to new
 	gradient.c source file.
 
