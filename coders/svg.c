@@ -59,6 +59,14 @@
 #  include <libxml/parserInternals.h>
 #  include <libxml/xmlerror.h>
 #endif
+
+/*
+  Disable SVG writer by default since it rarely works correctly.
+*/
+#if !defined(ENABLE_SVG_WRITER)
+#  define ENABLE_SVG_WRITER 0
+#endif /* if !defined(ENABLE_SVG_WRITER) */
+
 /*
   Avoid shadowing library globals and functions.
 */
@@ -159,8 +167,10 @@ typedef struct _SVGInfo
 /*
   Forward declarations.
 */
+#if ENABLE_SVG_WRITER
 static unsigned int
   WriteSVGImage(const ImageInfo *,Image *);
+#endif /* if ENABLE_SVG_WRITER */
 
 #if defined(HasXML)
 /*
@@ -2777,13 +2787,15 @@ ModuleExport void RegisterSVGImage(void)
   *version='\0';
 #if defined(LIBXML_DOTTED_VERSION)
   (void) strlcpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent);
-#endif
+#endif /* defined(LIBXML_DOTTED_VERSION) */
 
   entry=SetMagickInfo("SVG");
 #if defined(HasXML)
   entry->decoder=(DecoderHandler) ReadSVGImage;
-#endif
+#endif /* defined(HasXML) */
+#if ENABLE_SVG_WRITER
   entry->encoder=(EncoderHandler) WriteSVGImage;
+#endif /* if ENABLE_SVG_WRITER */
   entry->description="Scalable Vector Graphics";
   if (*version != '\0')
     entry->version=version;
@@ -2793,8 +2805,10 @@ ModuleExport void RegisterSVGImage(void)
   entry=SetMagickInfo("SVGZ");
 #if defined(HasXML)
   entry->decoder=(DecoderHandler) ReadSVGImage;
-#endif
+#endif /* defined(HasXML) */
+#if ENABLE_SVG_WRITER
   entry->encoder=(EncoderHandler) WriteSVGImage;
+#endif /* if ENABLE_SVG_WRITER */
   entry->description="Scalable Vector Graphics (ZIP compressed)";
   if (*version != '\0')
     entry->version=version;
@@ -2827,6 +2841,7 @@ ModuleExport void UnregisterSVGImage(void)
   (void) UnregisterMagickInfo("SVGZ");
 }
 
+#if ENABLE_SVG_WRITER
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4084,3 +4099,4 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   return(status);
 }
 #endif
+#endif /* if ENABLE_SVG_WRITER */

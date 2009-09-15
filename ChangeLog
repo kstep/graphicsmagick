@@ -1,3 +1,9 @@
+2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c (ENABLE_SVG_WRITER): Disable SVG writer by default
+	since it usually does not work correctly and is unlikely to work
+	correctly any time soon.
+
 2009-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/profile.c (ProfileImage): GlobExpression is case
