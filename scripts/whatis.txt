@@ -32,6 +32,7 @@ operator.c         Methods to apply mathematic or boolean operators to pixels.
 paint.c            Methods to fill image pixel regions
 pixel_cache.c      Image pixel cache (working pixels).
 pixel_iterator.c   Pixel iterator pattern support functions
+plasma.c	   Create a Plasma fractal image.
 profile.c          Manipulate embedded profiles
 quantize.c         Reduce the number of colors in an image
 registry.c         In-memory image registration interface

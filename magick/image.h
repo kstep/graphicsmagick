@@ -1061,7 +1061,6 @@ extern MagickExport MagickPassFail
   DisplayImages(const ImageInfo *image_info,Image *image),
   GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
     const MagickBool optimize,ExceptionInfo *exception),
-  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,
     const unsigned int colors),

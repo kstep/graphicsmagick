@@ -42,6 +42,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/paint.html \
 	$(WWWAPIDIR)/pixel_cache.html \
 	$(WWWAPIDIR)/pixel_iterator.html \
+	$(WWWAPIDIR)/plasma.html \
 	$(WWWAPIDIR)/profile.html \
 	$(WWWAPIDIR)/quantize.html \
 	$(WWWAPIDIR)/registry.html \
@@ -89,6 +90,7 @@ WWWWAPI_FILES = \
 	www/api/paint.html \
 	www/api/pixel_cache.html \
 	www/api/pixel_iterator.html \
+	www/api/plasma.html \
 	www/api/profile.html \
 	www/api/quantize.html \
 	www/api/registry.html \

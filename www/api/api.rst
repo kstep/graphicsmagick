@@ -31,6 +31,7 @@ GraphicsMagick Core C API
 .. _Paint : paint.html
 .. _Pixel Cache : pixel_cache.html
 .. _Pixel Iterator : pixel_iterator.html
+.. _Plasma : plasma.html
 .. _Profile : profile.html
 .. _Quantize : quantize.html
 .. _Registry : registry.html
@@ -86,6 +87,7 @@ documentation, please reference the types_ documentation as required:
   * Paint_: Fill pixel regions
   * `Pixel Cache`_: Low-level access to image pixels
   * `Pixel Iterator`_: Pixel iterator design pattern support functions
+  * Plasma_: Plasma fractal image generator
   * Profile_: Attached profile access
   * Quantize_: Reduce image colors or assign image colors from colormap
   * Registry_: Store and retrieve images in memory by ID

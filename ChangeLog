@@ -1,5 +1,8 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/plasma.c (PlasmaImage): Moved from image.c to new
+	plasma.c source file.
+
 	* magick/statistics.c (GetImageStatistics): Moved from image.c to
 	new statistics.c source file.
 
