@@ -129,6 +129,7 @@ extern "C" {
 #include "magick/render.h"
 #include "magick/draw.h"
 #include "magick/gem.h"
+#include "magick/gradient.h"
 #include "magick/hclut.h"
 #include "magick/quantize.h"
 #include "magick/compress.h"

@@ -1085,7 +1085,6 @@ extern MagickExport MagickPassFail
     const MagickBool optimize,ExceptionInfo *exception),
   GetImageStatistics(const Image *image,ImageStatistics *statistics,
     ExceptionInfo *exception),
-  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,

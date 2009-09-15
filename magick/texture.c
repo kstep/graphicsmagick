@@ -188,7 +188,7 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
 %
 %  The format of the TextureImage method is:
 %
-%      unsigned int TextureImage(Image *image,const Image *texture)
+%      MagickPassFail TextureImage(Image *image,const Image *texture)
 %
 %  A description of each parameter follows:
 %

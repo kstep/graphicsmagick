@@ -103,6 +103,8 @@ MAGICK_BASE_SRCS = \
 	magick/fx.h \
 	magick/gem.c \
 	magick/gem.h \
+	magick/gradient.c \
+	magick/gradient.h \
 	magick/hclut.c \
 	magick/hclut.h \
 	magick/image.c \
@@ -223,6 +225,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
+	magick/gradient.h \
 	magick/hclut.h \
 	magick/image.h \
 	magick/list.h \

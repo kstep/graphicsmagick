@@ -1128,12 +1128,13 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/effect.h magick/enhance.c magick/enhance.h \
 	magick/enum_strings.c magick/enum_strings.h magick/error.c \
 	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
-	magick/gem.c magick/gem.h magick/hclut.c magick/hclut.h \
-	magick/image.c magick/image.h magick/list.c magick/list.h \
-	magick/locale.c magick/locale_c.h magick/log.c magick/log.h \
-	magick/magic.c magick/magic.h magick/magick.c magick/magick.h \
-	magick/magick_endian.c magick/magick_endian.h magick/map.c \
-	magick/map.h magick/memory.c magick/memory.h magick/module.c \
+	magick/gem.c magick/gem.h magick/gradient.c magick/gradient.h \
+	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
+	magick/log.c magick/log.h magick/magic.c magick/magic.h \
+	magick/magick.c magick/magick.h magick/magick_endian.c \
+	magick/magick_endian.h magick/map.c magick/map.h \
+	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
@@ -1212,6 +1213,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-error.lo \
 	magick/magick_libGraphicsMagick_la-fx.lo \
 	magick/magick_libGraphicsMagick_la-gem.lo \
+	magick/magick_libGraphicsMagick_la-gradient.lo \
 	magick/magick_libGraphicsMagick_la-hclut.lo \
 	magick/magick_libGraphicsMagick_la-image.lo \
 	magick/magick_libGraphicsMagick_la-list.lo \
@@ -3216,6 +3218,8 @@ MAGICK_BASE_SRCS = \
 	magick/fx.h \
 	magick/gem.c \
 	magick/gem.h \
+	magick/gradient.c \
+	magick/gradient.h \
 	magick/hclut.c \
 	magick/hclut.h \
 	magick/image.c \
@@ -3331,6 +3335,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
+	magick/gradient.h \
 	magick/hclut.h \
 	magick/image.h \
 	magick/list.h \
@@ -6004,6 +6009,8 @@ magick/magick_libGraphicsMagick_la-fx.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-gem.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-gradient.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-hclut.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-image.lo: magick/$(am__dirstamp) \
@@ -7114,6 +7121,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-fx.lo
 	-rm -f magick/magick_libGraphicsMagick_la-gem.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-gem.lo
+	-rm -f magick/magick_libGraphicsMagick_la-gradient.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-gradient.lo
 	-rm -f magick/magick_libGraphicsMagick_la-hclut.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-hclut.lo
 	-rm -f magick/magick_libGraphicsMagick_la-image.$(OBJEXT)
@@ -7499,6 +7508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gem.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-hclut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-list.Plo@am__quote@
@@ -8638,6 +8648,14 @@ magick/magick_libGraphicsMagick_la-gem.lo: magick/gem.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/gem.c' object='magick/magick_libGraphicsMagick_la-gem.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-gem.lo `test -f 'magick/gem.c' || echo '$(srcdir)/'`magick/gem.c
+
+magick/magick_libGraphicsMagick_la-gradient.lo: magick/gradient.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-gradient.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Tpo -c -o magick/magick_libGraphicsMagick_la-gradient.lo `test -f 'magick/gradient.c' || echo '$(srcdir)/'`magick/gradient.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/gradient.c' object='magick/magick_libGraphicsMagick_la-gradient.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-gradient.lo `test -f 'magick/gradient.c' || echo '$(srcdir)/'`magick/gradient.c
 
 magick/magick_libGraphicsMagick_la-hclut.lo: magick/hclut.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-hclut.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-hclut.Tpo -c -o magick/magick_libGraphicsMagick_la-hclut.lo `test -f 'magick/hclut.c' || echo '$(srcdir)/'`magick/hclut.c

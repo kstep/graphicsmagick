@@ -1,5 +1,8 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/gradient.c (GradientImage): Moved from image.c to new
+	gradient.c source file.
+
 	* magick/texture.c (ConstituteTextureImage,TextureImage): Moved to
 	new texture.c source file.
 

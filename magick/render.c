@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -49,6 +49,7 @@
 #include "magick/enhance.h"
 #include "magick/enum_strings.h"
 #include "magick/gem.h"
+#include "magick/gradient.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/omp_data_view.h"
