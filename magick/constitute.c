@@ -49,6 +49,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/describe.h"
 #include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"

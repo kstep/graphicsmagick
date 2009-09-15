@@ -124,6 +124,7 @@ extern "C" {
 #include "magick/channel.h"
 #include "magick/compare.h"
 #include "magick/confirm_access.h"
+#include "magick/describe.h"
 #include "magick/list.h"
 #include "magick/paint.h"
 #include "magick/render.h"

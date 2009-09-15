@@ -14,6 +14,7 @@ composite.c        Merge image pixels using a specified algorithm
 confirm_access.c   Access confirmation functions
 decorate.c         Add decorative frames and borders
 deprecate.c        Methods which should no longer be used
+describe.c	   Methods to describe an image
 display.c          Interactively display and edit an image
 render.c           Low-level methods to draw on an image
 draw.c             User-friendly methods to draw on an image

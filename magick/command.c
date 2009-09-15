@@ -49,6 +49,7 @@
 #include "magick/composite.h"
 #include "magick/decorate.h"
 #include "magick/delegate.h"
+#include "magick/describe.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/enum_strings.h"

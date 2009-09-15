@@ -39,6 +39,7 @@
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
+#include "magick/describe.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/pixel_cache.h"

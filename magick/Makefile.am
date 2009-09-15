@@ -88,6 +88,8 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
+	magick/describe.c \
+	magick/describe.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -221,6 +223,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \
+	magick/describe.h \
 	magick/deprecate.h \
 	magick/draw.h \
 	magick/effect.h \

@@ -1124,11 +1124,12 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/compress.c magick/compress.h magick/constitute.c \
 	magick/constitute.h magick/decorate.c magick/decorate.h \
 	magick/delegate.c magick/delegate.h magick/deprecate.c \
-	magick/deprecate.h magick/draw.c magick/draw.h magick/effect.c \
-	magick/effect.h magick/enhance.c magick/enhance.h \
-	magick/enum_strings.c magick/enum_strings.h magick/error.c \
-	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
-	magick/gem.c magick/gem.h magick/gradient.c magick/gradient.h \
+	magick/deprecate.h magick/describe.c magick/describe.h \
+	magick/draw.c magick/draw.h magick/effect.c magick/effect.h \
+	magick/enhance.c magick/enhance.h magick/enum_strings.c \
+	magick/enum_strings.h magick/error.c magick/error.h \
+	magick/forward.h magick/fx.c magick/fx.h magick/gem.c \
+	magick/gem.h magick/gradient.c magick/gradient.h \
 	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
 	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
 	magick/log.c magick/log.h magick/magic.c magick/magic.h \
@@ -1208,6 +1209,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-decorate.lo \
 	magick/magick_libGraphicsMagick_la-delegate.lo \
 	magick/magick_libGraphicsMagick_la-deprecate.lo \
+	magick/magick_libGraphicsMagick_la-describe.lo \
 	magick/magick_libGraphicsMagick_la-draw.lo \
 	magick/magick_libGraphicsMagick_la-effect.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
@@ -3207,6 +3209,8 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
+	magick/describe.c \
+	magick/describe.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -3335,6 +3339,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \
+	magick/describe.h \
 	magick/deprecate.h \
 	magick/draw.h \
 	magick/effect.h \
@@ -4922,6 +4927,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
+	$(WWWAPIDIR)/describe.html \
 	$(WWWAPIDIR)/display.html \
 	$(WWWAPIDIR)/draw.html \
 	$(WWWAPIDIR)/effect.html \
@@ -4970,6 +4976,7 @@ WWWWAPI_FILES = \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \
+	www/api/describe.html \
 	www/api/display.html \
 	www/api/draw.html \
 	www/api/effect.html \
@@ -6008,6 +6015,8 @@ magick/magick_libGraphicsMagick_la-decorate.lo:  \
 magick/magick_libGraphicsMagick_la-delegate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-deprecate.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-describe.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-draw.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
@@ -7123,6 +7132,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-delegate.lo
 	-rm -f magick/magick_libGraphicsMagick_la-deprecate.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-deprecate.lo
+	-rm -f magick/magick_libGraphicsMagick_la-describe.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-describe.lo
 	-rm -f magick/magick_libGraphicsMagick_la-display.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-display.lo
 	-rm -f magick/magick_libGraphicsMagick_la-draw.$(OBJEXT)
@@ -7522,6 +7533,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-decorate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-delegate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-deprecate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-describe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-effect.Plo@am__quote@
@@ -8616,6 +8628,14 @@ magick/magick_libGraphicsMagick_la-deprecate.lo: magick/deprecate.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/deprecate.c' object='magick/magick_libGraphicsMagick_la-deprecate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-deprecate.lo `test -f 'magick/deprecate.c' || echo '$(srcdir)/'`magick/deprecate.c
+
+magick/magick_libGraphicsMagick_la-describe.lo: magick/describe.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-describe.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-describe.Tpo -c -o magick/magick_libGraphicsMagick_la-describe.lo `test -f 'magick/describe.c' || echo '$(srcdir)/'`magick/describe.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-describe.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-describe.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/describe.c' object='magick/magick_libGraphicsMagick_la-describe.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-describe.lo `test -f 'magick/describe.c' || echo '$(srcdir)/'`magick/describe.c
 
 magick/magick_libGraphicsMagick_la-draw.lo: magick/draw.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-draw.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-draw.Tpo -c -o magick/magick_libGraphicsMagick_la-draw.lo `test -f 'magick/draw.c' || echo '$(srcdir)/'`magick/draw.c

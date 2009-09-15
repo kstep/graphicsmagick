@@ -25,6 +25,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
+	$(WWWAPIDIR)/describe.html \
 	$(WWWAPIDIR)/display.html \
 	$(WWWAPIDIR)/draw.html \
 	$(WWWAPIDIR)/effect.html \
@@ -73,6 +74,7 @@ WWWWAPI_FILES = \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \
+	www/api/describe.html \
 	www/api/display.html \
 	www/api/draw.html \
 	www/api/effect.html \

@@ -1,5 +1,8 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/describe.c (DescribeImage): Moved from image.c to new
+	describe.c source file.
+
 	* magick/plasma.c (PlasmaImage): Moved from image.c to new
 	plasma.c source file.
 

@@ -14,6 +14,7 @@ GraphicsMagick Core C API
 .. _Confirm Access : confirm_access.html
 .. _Constitute : constitute.html
 .. _Decorate : decorate.html
+.. _Describe : describe.html
 .. _Display : display.html
 .. _Draw : draw.html
 .. _Effect : effect.html
@@ -68,6 +69,7 @@ documentation, please reference the types_ documentation as required:
   * `Confirm Access`_ : Confirm access to files and URLs.
   * Constitute_: Read, write, import, and export images
   * Decorate_: Add fancy borders to images
+  * Describe_: Describe an image
   * Display_: Interactively display and edit an image
   * Draw_: Convenient methods to draw vectors and text
   * Effect_:Threshold (various), blur, despeckle, edge, emboss, enhance,
