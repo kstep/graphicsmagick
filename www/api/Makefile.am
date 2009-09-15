@@ -51,6 +51,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/segment.html \
 	$(WWWAPIDIR)/shear.html \
 	$(WWWAPIDIR)/signature.html \
+	$(WWWAPIDIR)/texture.html \
 	$(WWWAPIDIR)/transform.html \
 	$(WWWAPIDIR)/types.html \
 	$(WWWAPIDIR)/widget.html
@@ -96,6 +97,7 @@ WWWWAPI_FILES = \
 	www/api/segment.html \
 	www/api/shear.html \
 	www/api/signature.html \
+	www/api/texture.html \
 	www/api/transform.html \
 	www/api/types.html \
 	www/api/widget.html

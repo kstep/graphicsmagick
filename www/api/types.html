@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Types</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
@@ -50,68 +50,69 @@
 </div>
 <div class="document" id="graphicsmagick-types">
 <h1 class="title">GraphicsMagick Types</h1>
-<div class="contents local topic">
+
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#affinematrix" id="id1" name="id1">AffineMatrix</a></li>
-<li><a class="reference" href="#blobinfo" id="id2" name="id2">BlobInfo</a></li>
-<li><a class="reference" href="#cache" id="id3" name="id3">Cache</a></li>
-<li><a class="reference" href="#channeltype" id="id4" name="id4">ChannelType</a></li>
-<li><a class="reference" href="#chromaticityinfo" id="id5" name="id5">ChromaticityInfo</a></li>
-<li><a class="reference" href="#classtype" id="id6" name="id6">ClassType</a></li>
-<li><a class="reference" href="#clippathunits" id="id7" name="id7">ClipPathUnits</a></li>
-<li><a class="reference" href="#colorpacket" id="id8" name="id8">ColorPacket</a></li>
-<li><a class="reference" href="#colorspacetype" id="id9" name="id9">ColorspaceType</a></li>
-<li><a class="reference" href="#compliancetype" id="id10" name="id10">ComplianceType</a></li>
-<li><a class="reference" href="#compositeoperator" id="id11" name="id11">CompositeOperator</a></li>
-<li><a class="reference" href="#compressiontype" id="id12" name="id12">CompressionType</a></li>
-<li><a class="reference" href="#decorationtype" id="id13" name="id13">DecorationType</a></li>
-<li><a class="reference" href="#drawcontext" id="id14" name="id14">DrawContext</a></li>
-<li><a class="reference" href="#drawinfo" id="id15" name="id15">DrawInfo</a></li>
-<li><a class="reference" href="#endiantype" id="id16" name="id16">EndianType</a></li>
-<li><a class="reference" href="#errorhandler" id="id17" name="id17">ErrorHandler</a></li>
-<li><a class="reference" href="#exceptioninfo" id="id18" name="id18">ExceptionInfo</a></li>
-<li><a class="reference" href="#exceptiontype" id="id19" name="id19">ExceptionType</a></li>
-<li><a class="reference" href="#fillrule" id="id20" name="id20">FillRule</a></li>
-<li><a class="reference" href="#filtertype" id="id21" name="id21">FilterType</a></li>
-<li><a class="reference" href="#frameinfo" id="id22" name="id22">FrameInfo</a></li>
-<li><a class="reference" href="#gravitytype" id="id23" name="id23">GravityType</a></li>
-<li><a class="reference" href="#image" id="id24" name="id24">Image</a></li>
-<li><a class="reference" href="#imageinfo" id="id25" name="id25">ImageInfo</a></li>
-<li><a class="reference" href="#imagetype" id="id26" name="id26">ImageType</a></li>
-<li><a class="reference" href="#indexpacket" id="id27" name="id27">IndexPacket</a></li>
-<li><a class="reference" href="#interlacetype" id="id28" name="id28">InterlaceType</a></li>
-<li><a class="reference" href="#layertype" id="id29" name="id29">LayerType</a></li>
-<li><a class="reference" href="#magickinfo" id="id30" name="id30">MagickInfo</a></li>
-<li><a class="reference" href="#monitorhandler" id="id31" name="id31">MonitorHandler</a></li>
-<li><a class="reference" href="#montageinfo" id="id32" name="id32">MontageInfo</a></li>
-<li><a class="reference" href="#noisetype" id="id33" name="id33">NoiseType</a></li>
-<li><a class="reference" href="#orientationtype" id="id34" name="id34">OrientationType</a></li>
-<li><a class="reference" href="#paintmethod" id="id35" name="id35">PaintMethod</a></li>
-<li><a class="reference" href="#pixelpacket" id="id36" name="id36">PixelPacket</a></li>
-<li><a class="reference" href="#pointinfo" id="id37" name="id37">PointInfo</a></li>
-<li><a class="reference" href="#profileinfo" id="id38" name="id38">ProfileInfo</a></li>
-<li><a class="reference" href="#quantizeinfo" id="id39" name="id39">QuantizeInfo</a></li>
-<li><a class="reference" href="#quantum" id="id40" name="id40">Quantum</a></li>
-<li><a class="reference" href="#quantumtype" id="id41" name="id41">QuantumType</a></li>
-<li><a class="reference" href="#rectangleinfo" id="id42" name="id42">RectangleInfo</a></li>
-<li><a class="reference" href="#registrytype" id="id43" name="id43">RegistryType</a></li>
-<li><a class="reference" href="#renderingintent" id="id44" name="id44">RenderingIntent</a></li>
-<li><a class="reference" href="#resolutiontype" id="id45" name="id45">ResolutionType</a></li>
-<li><a class="reference" href="#resourcetype" id="id46" name="id46">ResourceType</a></li>
-<li><a class="reference" href="#segmentinfo" id="id47" name="id47">SegmentInfo</a></li>
-<li><a class="reference" href="#signatureinfo" id="id48" name="id48">SignatureInfo</a></li>
-<li><a class="reference" href="#storagetype" id="id49" name="id49">StorageType</a></li>
-<li><a class="reference" href="#streamhandler" id="id50" name="id50">StreamHandler</a></li>
-<li><a class="reference" href="#stretchtype" id="id51" name="id51">StretchType</a></li>
-<li><a class="reference" href="#styletype" id="id52" name="id52">StyleType</a></li>
-<li><a class="reference" href="#typemetric" id="id53" name="id53">TypeMetric</a></li>
-<li><a class="reference" href="#viewinfo" id="id54" name="id54">ViewInfo</a></li>
-<li><a class="reference" href="#virtualpixelmethod" id="id55" name="id55">VirtualPixelMethod</a></li>
-<li><a class="reference" href="#magickxresourceinfo" id="id56" name="id56">MagickXResourceInfo</a></li>
+<li><a class="reference internal" href="#affinematrix" id="id1">AffineMatrix</a></li>
+<li><a class="reference internal" href="#blobinfo" id="id2">BlobInfo</a></li>
+<li><a class="reference internal" href="#cache" id="id3">Cache</a></li>
+<li><a class="reference internal" href="#channeltype" id="id4">ChannelType</a></li>
+<li><a class="reference internal" href="#chromaticityinfo" id="id5">ChromaticityInfo</a></li>
+<li><a class="reference internal" href="#classtype" id="id6">ClassType</a></li>
+<li><a class="reference internal" href="#clippathunits" id="id7">ClipPathUnits</a></li>
+<li><a class="reference internal" href="#colorpacket" id="id8">ColorPacket</a></li>
+<li><a class="reference internal" href="#colorspacetype" id="id9">ColorspaceType</a></li>
+<li><a class="reference internal" href="#compliancetype" id="id10">ComplianceType</a></li>
+<li><a class="reference internal" href="#compositeoperator" id="id11">CompositeOperator</a></li>
+<li><a class="reference internal" href="#compressiontype" id="id12">CompressionType</a></li>
+<li><a class="reference internal" href="#decorationtype" id="id13">DecorationType</a></li>
+<li><a class="reference internal" href="#drawcontext" id="id14">DrawContext</a></li>
+<li><a class="reference internal" href="#drawinfo" id="id15">DrawInfo</a></li>
+<li><a class="reference internal" href="#endiantype" id="id16">EndianType</a></li>
+<li><a class="reference internal" href="#errorhandler" id="id17">ErrorHandler</a></li>
+<li><a class="reference internal" href="#exceptioninfo" id="id18">ExceptionInfo</a></li>
+<li><a class="reference internal" href="#exceptiontype" id="id19">ExceptionType</a></li>
+<li><a class="reference internal" href="#fillrule" id="id20">FillRule</a></li>
+<li><a class="reference internal" href="#filtertype" id="id21">FilterType</a></li>
+<li><a class="reference internal" href="#frameinfo" id="id22">FrameInfo</a></li>
+<li><a class="reference internal" href="#gravitytype" id="id23">GravityType</a></li>
+<li><a class="reference internal" href="#image" id="id24">Image</a></li>
+<li><a class="reference internal" href="#imageinfo" id="id25">ImageInfo</a></li>
+<li><a class="reference internal" href="#imagetype" id="id26">ImageType</a></li>
+<li><a class="reference internal" href="#indexpacket" id="id27">IndexPacket</a></li>
+<li><a class="reference internal" href="#interlacetype" id="id28">InterlaceType</a></li>
+<li><a class="reference internal" href="#layertype" id="id29">LayerType</a></li>
+<li><a class="reference internal" href="#magickinfo" id="id30">MagickInfo</a></li>
+<li><a class="reference internal" href="#monitorhandler" id="id31">MonitorHandler</a></li>
+<li><a class="reference internal" href="#montageinfo" id="id32">MontageInfo</a></li>
+<li><a class="reference internal" href="#noisetype" id="id33">NoiseType</a></li>
+<li><a class="reference internal" href="#orientationtype" id="id34">OrientationType</a></li>
+<li><a class="reference internal" href="#paintmethod" id="id35">PaintMethod</a></li>
+<li><a class="reference internal" href="#pixelpacket" id="id36">PixelPacket</a></li>
+<li><a class="reference internal" href="#pointinfo" id="id37">PointInfo</a></li>
+<li><a class="reference internal" href="#profileinfo" id="id38">ProfileInfo</a></li>
+<li><a class="reference internal" href="#quantizeinfo" id="id39">QuantizeInfo</a></li>
+<li><a class="reference internal" href="#quantum" id="id40">Quantum</a></li>
+<li><a class="reference internal" href="#quantumtype" id="id41">QuantumType</a></li>
+<li><a class="reference internal" href="#rectangleinfo" id="id42">RectangleInfo</a></li>
+<li><a class="reference internal" href="#registrytype" id="id43">RegistryType</a></li>
+<li><a class="reference internal" href="#renderingintent" id="id44">RenderingIntent</a></li>
+<li><a class="reference internal" href="#resolutiontype" id="id45">ResolutionType</a></li>
+<li><a class="reference internal" href="#resourcetype" id="id46">ResourceType</a></li>
+<li><a class="reference internal" href="#segmentinfo" id="id47">SegmentInfo</a></li>
+<li><a class="reference internal" href="#signatureinfo" id="id48">SignatureInfo</a></li>
+<li><a class="reference internal" href="#storagetype" id="id49">StorageType</a></li>
+<li><a class="reference internal" href="#streamhandler" id="id50">StreamHandler</a></li>
+<li><a class="reference internal" href="#stretchtype" id="id51">StretchType</a></li>
+<li><a class="reference internal" href="#styletype" id="id52">StyleType</a></li>
+<li><a class="reference internal" href="#typemetric" id="id53">TypeMetric</a></li>
+<li><a class="reference internal" href="#viewinfo" id="id54">ViewInfo</a></li>
+<li><a class="reference internal" href="#virtualpixelmethod" id="id55">VirtualPixelMethod</a></li>
+<li><a class="reference internal" href="#magickxresourceinfo" id="id56">MagickXResourceInfo</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="affinematrix" name="affinematrix">AffineMatrix</a></h1>
+<div class="section" id="affinematrix">
+<h1><a class="toc-backref" href="#id1">AffineMatrix</a></h1>
 <p>AffineMatrix defines a 2D affine matrix transform.</p>
 <pre class="literal-block">
 typedef struct _AffineMatrix
@@ -126,20 +127,20 @@ typedef struct _AffineMatrix
 } AffineMatrix;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="blobinfo" name="blobinfo">BlobInfo</a></h1>
+<div class="section" id="blobinfo">
+<h1><a class="toc-backref" href="#id2">BlobInfo</a></h1>
 <p>BlobInfo is an opaque pointer reference to the internal structure of an
 I/O blob handle.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="cache" name="cache">Cache</a></h1>
+<div class="section" id="cache">
+<h1><a class="toc-backref" href="#id3">Cache</a></h1>
 <pre class="literal-block">
 typedef void
   *Cache;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="channeltype" name="channeltype">ChannelType</a></h1>
+<div class="section" id="channeltype">
+<h1><a class="toc-backref" href="#id4">ChannelType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -158,8 +159,8 @@ typedef enum
 } ChannelType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="chromaticityinfo" name="chromaticityinfo">ChromaticityInfo</a></h1>
+<div class="section" id="chromaticityinfo">
+<h1><a class="toc-backref" href="#id5">ChromaticityInfo</a></h1>
 <p>The ChromaticityInfo structure is used to represent chromaticity
 (colorspace primary coordinates in xy space) values for images in
 GraphicsMagick.</p>
@@ -196,8 +197,8 @@ table:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="classtype" name="classtype">ClassType</a></h1>
+<div class="section" id="classtype">
+<h1><a class="toc-backref" href="#id6">ClassType</a></h1>
 <p>ClassType enumeration specifies the image storage class.</p>
 <table border="1" class="docutils">
 <caption>ClassType</caption>
@@ -221,8 +222,8 @@ table:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="clippathunits" name="clippathunits">ClipPathUnits</a></h1>
+<div class="section" id="clippathunits">
+<h1><a class="toc-backref" href="#id7">ClipPathUnits</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -232,8 +233,8 @@ typedef enum
 } ClipPathUnits;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="colorpacket" name="colorpacket">ColorPacket</a></h1>
+<div class="section" id="colorpacket">
+<h1><a class="toc-backref" href="#id8">ColorPacket</a></h1>
 <pre class="literal-block">
 typedef struct _ColorPacket
 {
@@ -248,8 +249,8 @@ typedef struct _ColorPacket
 } ColorPacket;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="colorspacetype" name="colorspacetype">ColorspaceType</a></h1>
+<div class="section" id="colorspacetype">
+<h1><a class="toc-backref" href="#id9">ColorspaceType</a></h1>
 <p>The ColorspaceType enumeration is used to specify the colorspace that
 quantization (color reduction and mapping) is done under or to specify
 the colorspace when encoding an output image. Colorspaces are ways of
@@ -339,8 +340,8 @@ bitmap (PSD) files.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="compliancetype" name="compliancetype">ComplianceType</a></h1>
+<div class="section" id="compliancetype">
+<h1><a class="toc-backref" href="#id10">ComplianceType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -353,8 +354,8 @@ typedef enum
 } ComplianceType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="compositeoperator" name="compositeoperator">CompositeOperator</a></h1>
+<div class="section" id="compositeoperator">
+<h1><a class="toc-backref" href="#id11">CompositeOperator</a></h1>
 <p>CompositeOperator is used to select the image composition algorithm used
 to compose a composite image with an image. By default, each of the
 composite image pixels are replaced by the corresponding image tile
@@ -507,8 +508,8 @@ layer in composite image. The other layers are copied untouched.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="compressiontype" name="compressiontype">CompressionType</a></h1>
+<div class="section" id="compressiontype">
+<h1><a class="toc-backref" href="#id12">CompressionType</a></h1>
 <p>CompressionType is used to express the desired compression type when
 encoding an image. Be aware that most image types only support a sub-set
 of the available compression types. If the compression type specified is
@@ -558,8 +559,8 @@ Huffman coding)  as used by bzip2 utilities</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="decorationtype" name="decorationtype">DecorationType</a></h1>
+<div class="section" id="decorationtype">
+<h1><a class="toc-backref" href="#id13">DecorationType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -570,14 +571,14 @@ typedef enum
 } DecorationType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="drawcontext" name="drawcontext">DrawContext</a></h1>
+<div class="section" id="drawcontext">
+<h1><a class="toc-backref" href="#id14">DrawContext</a></h1>
 <pre class="literal-block">
 typedef struct _DrawContext *DrawContext;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="drawinfo" name="drawinfo">DrawInfo</a></h1>
+<div class="section" id="drawinfo">
+<h1><a class="toc-backref" href="#id15">DrawInfo</a></h1>
 <p>The DrawInfo structure is used to support annotating an image using
 drawing commands.</p>
 <table border="1" class="docutils">
@@ -879,8 +880,8 @@ subsequent drawing commands.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="endiantype" name="endiantype">EndianType</a></h1>
+<div class="section" id="endiantype">
+<h1><a class="toc-backref" href="#id16">EndianType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -891,15 +892,15 @@ typedef enum
 } EndianType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id17" id="errorhandler" name="errorhandler">ErrorHandler</a></h1>
+<div class="section" id="errorhandler">
+<h1><a class="toc-backref" href="#id17">ErrorHandler</a></h1>
 <pre class="literal-block">
 typedef void
   (*ErrorHandler)(const ExceptionType,const char *,const char *);
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id18" id="exceptioninfo" name="exceptioninfo">ExceptionInfo</a></h1>
+<div class="section" id="exceptioninfo">
+<h1><a class="toc-backref" href="#id18">ExceptionInfo</a></h1>
 <pre class="literal-block">
 typedef struct _ExceptionInfo
 {
@@ -915,8 +916,8 @@ typedef struct _ExceptionInfo
 } ExceptionInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id19" id="exceptiontype" name="exceptiontype">ExceptionType</a></h1>
+<div class="section" id="exceptiontype">
+<h1><a class="toc-backref" href="#id19">ExceptionType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -981,8 +982,8 @@ typedef enum
 } ExceptionType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id20" id="fillrule" name="fillrule">FillRule</a></h1>
+<div class="section" id="fillrule">
+<h1><a class="toc-backref" href="#id20">FillRule</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -992,8 +993,8 @@ typedef enum
 } FillRule;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id21" id="filtertype" name="filtertype">FilterType</a></h1>
+<div class="section" id="filtertype">
+<h1><a class="toc-backref" href="#id21">FilterType</a></h1>
 <p>FilterTypes is used to adjust the filter algorithm used when resizing
 images. Different filters experience varying degrees of success with
 various images and can take significantly different amounts of processing
@@ -1064,8 +1065,8 @@ sample images.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id22" id="frameinfo" name="frameinfo">FrameInfo</a></h1>
+<div class="section" id="frameinfo">
+<h1><a class="toc-backref" href="#id22">FrameInfo</a></h1>
 <pre class="literal-block">
 typedef struct _FrameInfo
 {
@@ -1081,8 +1082,8 @@ typedef struct _FrameInfo
 } FrameInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id23" id="gravitytype" name="gravitytype">GravityType</a></h1>
+<div class="section" id="gravitytype">
+<h1><a class="toc-backref" href="#id23">GravityType</a></h1>
 <p>GravityType specifies positioning of an object (e.g. text, image) within
 a bounding region (e.g. an image). Gravity provides a convenient way to
 locate objects irrespective of the size of the bounding region, in other
@@ -1131,8 +1132,8 @@ position an object. A common default for gravity is NorthWestGravity.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id24" id="image" name="image">Image</a></h1>
+<div class="section" id="image">
+<h1><a class="toc-backref" href="#id24">Image</a></h1>
 <p>The Image structure represents an GraphicsMagick image. It is initially
 allocated by AllocateImage() and deallocated by DestroyImage(). The
 functions ReadImage(), ReadImages(), BlobToImage() and CreateImage()
@@ -1515,8 +1516,8 @@ by GetNumberColors().</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id25" id="imageinfo" name="imageinfo">ImageInfo</a></h1>
+<div class="section" id="imageinfo">
+<h1><a class="toc-backref" href="#id25">ImageInfo</a></h1>
 <p>The ImageInfo structure is used to supply option information to the
 functions AllocateImage(), AnimateImages(), BlobToImage(),
 CloneAnnotateInfo(), DisplayImages(), GetAnnotateInfo(), ImageToBlob(),
@@ -1736,8 +1737,8 @@ JBIG, or JPEG.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id26" id="imagetype" name="imagetype">ImageType</a></h1>
+<div class="section" id="imagetype">
+<h1><a class="toc-backref" href="#id26">ImageType</a></h1>
 <p>ImageType indicates the type classification of the image.</p>
 <table border="1" class="docutils">
 <caption>ImageType</caption>
@@ -1776,16 +1777,16 @@ JBIG, or JPEG.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id27" id="indexpacket" name="indexpacket">IndexPacket</a></h1>
+<div class="section" id="indexpacket">
+<h1><a class="toc-backref" href="#id27">IndexPacket</a></h1>
 <p>IndexPacket is the type used for a colormap index. An array of type
 IndexPacket is used to represent an image in PseudoClass type. Currently
 supported IndexPacket underlying types are 'unsigned char' and 'unsigned
 short'. The type is selected at build time according to the QuantumDepth
 setting.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id28" id="interlacetype" name="interlacetype">InterlaceType</a></h1>
+<div class="section" id="interlacetype">
+<h1><a class="toc-backref" href="#id28">InterlaceType</a></h1>
 <p>InterlaceType specifies the ordering of the red, green, and blue pixel
 information in the image. Interlacing is usually used to make image
 information available to the user faster by taking advantage of the space
@@ -1823,8 +1824,8 @@ individual files (e.g. image.R, image.G, and image.B)</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id29" id="layertype" name="layertype">LayerType</a></h1>
+<div class="section" id="layertype">
+<h1><a class="toc-backref" href="#id29">LayerType</a></h1>
 <p>LayerType is used as an argument when doing color separations. Use
 LayerType when extracting a layer from an image. MatteLayer is useful for
 extracting the opacity values from an image.</p>
@@ -1856,8 +1857,8 @@ extracting the opacity values from an image.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id30" id="magickinfo" name="magickinfo">MagickInfo</a></h1>
+<div class="section" id="magickinfo">
+<h1><a class="toc-backref" href="#id30">MagickInfo</a></h1>
 <p>The MagickInfo structure is used by GraphicsMagick to register support
 for an image format. The MagickInfo structure is allocated with default
 parameters by calling SetMagickInfo(). Image formats are registered by
@@ -2029,8 +2030,8 @@ ImageInfo).</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id31" id="monitorhandler" name="monitorhandler">MonitorHandler</a></h1>
+<div class="section" id="monitorhandler">
+<h1><a class="toc-backref" href="#id31">MonitorHandler</a></h1>
 <p>MonitorHandler is the function type to be used for the progress monitor
 callback. Its definition is as follows:</p>
 <pre class="literal-block">
@@ -2085,8 +2086,8 @@ the user.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id32" id="montageinfo" name="montageinfo">MontageInfo</a></h1>
+<div class="section" id="montageinfo">
+<h1><a class="toc-backref" href="#id32">MontageInfo</a></h1>
 <pre class="literal-block">
 typedef struct _MontageInfo
 {
@@ -2125,8 +2126,8 @@ typedef struct _MontageInfo
 } MontageInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id33" id="noisetype" name="noisetype">NoiseType</a></h1>
+<div class="section" id="noisetype">
+<h1><a class="toc-backref" href="#id33">NoiseType</a></h1>
 <p>NoiseType is used as an argument to select the type of noise to be added
 to the image.</p>
 <table border="1" class="docutils">
@@ -2160,8 +2161,8 @@ to the image.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id34" id="orientationtype" name="orientationtype">OrientationType</a></h1>
+<div class="section" id="orientationtype">
+<h1><a class="toc-backref" href="#id34">OrientationType</a></h1>
 <p>OrientationType specifies the orientation of the image. Useful for when
 the image is produced via a different ordinate system, the camera was
 turned on its side, or the page was scanned sideways.</p>
@@ -2216,8 +2217,8 @@ turned on its side, or the page was scanned sideways.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id35" id="paintmethod" name="paintmethod">PaintMethod</a></h1>
+<div class="section" id="paintmethod">
+<h1><a class="toc-backref" href="#id35">PaintMethod</a></h1>
 <p>PaintMethod specifies how pixel colors are to be replaced in the image.
 It is used to select the pixel-filling algorithm employed.</p>
 <table border="1" class="docutils">
@@ -2250,8 +2251,8 @@ border color.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id36" id="pixelpacket" name="pixelpacket">PixelPacket</a></h1>
+<div class="section" id="pixelpacket">
+<h1><a class="toc-backref" href="#id36">PixelPacket</a></h1>
 <p>The PixelPacket structure is used to represent DirectClass color pixels
 in GraphicsMagick. If the image is indicated as a PseudoClass image, its
 DirectClass representation is only valid immediately after calling
@@ -2317,8 +2318,8 @@ RGBColorspace except for CMYKColorspace.</li>
 </ol>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id37" id="pointinfo" name="pointinfo">PointInfo</a></h1>
+<div class="section" id="pointinfo">
+<h1><a class="toc-backref" href="#id37">PointInfo</a></h1>
 <p>The PointInfo structure is used by the ChromaticityInfo structure to
 specify chromaticity point values. This defines the boundaries and gammut
 (range of included color) of the colorspace.</p>
@@ -2350,8 +2351,8 @@ specify chromaticity point values. This defines the boundaries and gammut
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id38" id="profileinfo" name="profileinfo">ProfileInfo</a></h1>
+<div class="section" id="profileinfo">
+<h1><a class="toc-backref" href="#id38">ProfileInfo</a></h1>
 <p>The ProfileInfo structure is used to represent ICC or IPCT profiles in
 GraphicsMagick (stored as an opaque BLOB).</p>
 <p>The members of the ProfileInfo structure are shown in the following table:</p>
@@ -2378,8 +2379,8 @@ GraphicsMagick (stored as an opaque BLOB).</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id39" id="quantizeinfo" name="quantizeinfo">QuantizeInfo</a></h1>
+<div class="section" id="quantizeinfo">
+<h1><a class="toc-backref" href="#id39">QuantizeInfo</a></h1>
 <p>The QuantizeInfo structure is used to support passing parameters to
 GraphicsMagick's color quantization (reduction) functions. Color
 quantization is the process of analyzing one or more images, and
@@ -2471,14 +2472,14 @@ determined through experimentation.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id40" id="quantum" name="quantum">Quantum</a></h1>
+<div class="section" id="quantum">
+<h1><a class="toc-backref" href="#id40">Quantum</a></h1>
 <p>Quantum is the base type ('unsigned char', 'unsigned short', 'unsigned
 int') used to store a pixel component (e.g. 'R' is one pixel component of
 an RGB pixel).</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id41" id="quantumtype" name="quantumtype">QuantumType</a></h1>
+<div class="section" id="quantumtype">
+<h1><a class="toc-backref" href="#id41">QuantumType</a></h1>
 <p>QuantumType is used to indicate the source or destination format of
 entire pixels, or components of pixels (&quot;Quantums&quot;) while they are being
 read, or written to, a pixel cache. The validity of these format
@@ -2576,8 +2577,8 @@ Image depth (eight or sixteen bits).</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id42" id="rectangleinfo" name="rectangleinfo">RectangleInfo</a></h1>
+<div class="section" id="rectangleinfo">
+<h1><a class="toc-backref" href="#id42">RectangleInfo</a></h1>
 <p>The RectangleInfo structure is used to represent positioning information
 in GraphicsMagick.</p>
 <p>The members of the RectangleInfo structure are shown in the following
@@ -2613,8 +2614,8 @@ table:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id43" id="registrytype" name="registrytype">RegistryType</a></h1>
+<div class="section" id="registrytype">
+<h1><a class="toc-backref" href="#id43">RegistryType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2624,8 +2625,8 @@ typedef enum
 } RegistryType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id44" id="renderingintent" name="renderingintent">RenderingIntent</a></h1>
+<div class="section" id="renderingintent">
+<h1><a class="toc-backref" href="#id44">RenderingIntent</a></h1>
 <p>Rendering intent is a concept defined by ICC Spec ICC.1:1998-09, &quot;File
 Format for Color Profiles&quot;. GraphicsMagick uses RenderingIntent in order
 to support ICC Color Profiles.</p>
@@ -2666,8 +2667,8 @@ but colorimetric accuracy might not be preserved.</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id45" id="resolutiontype" name="resolutiontype">ResolutionType</a></h1>
+<div class="section" id="resolutiontype">
+<h1><a class="toc-backref" href="#id45">ResolutionType</a></h1>
 <p>By default, GraphicsMagick defines resolutions in pixels per inch.
 ResolutionType provides a means to adjust this.</p>
 <table border="1" class="docutils">
@@ -2694,8 +2695,8 @@ centimeter (metric units).</td>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id46" id="resourcetype" name="resourcetype">ResourceType</a></h1>
+<div class="section" id="resourcetype">
+<h1><a class="toc-backref" href="#id46">ResourceType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2707,8 +2708,8 @@ typedef enum
 } ResourceType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id47" id="segmentinfo" name="segmentinfo">SegmentInfo</a></h1>
+<div class="section" id="segmentinfo">
+<h1><a class="toc-backref" href="#id47">SegmentInfo</a></h1>
 <pre class="literal-block">
 typedef struct _SegmentInfo
 {
@@ -2720,8 +2721,8 @@ typedef struct _SegmentInfo
 } SegmentInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id48" id="signatureinfo" name="signatureinfo">SignatureInfo</a></h1>
+<div class="section" id="signatureinfo">
+<h1><a class="toc-backref" href="#id48">SignatureInfo</a></h1>
 <pre class="literal-block">
 typedef struct _SignatureInfo
 {
@@ -2738,8 +2739,8 @@ typedef struct _SignatureInfo
 } SignatureInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id49" id="storagetype" name="storagetype">StorageType</a></h1>
+<div class="section" id="storagetype">
+<h1><a class="toc-backref" href="#id49">StorageType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2752,15 +2753,15 @@ typedef enum
 } StorageType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id50" id="streamhandler" name="streamhandler">StreamHandler</a></h1>
+<div class="section" id="streamhandler">
+<h1><a class="toc-backref" href="#id50">StreamHandler</a></h1>
 <pre class="literal-block">
 typedef unsigned int
   (*StreamHandler)(const Image *,const void *,const size_t);
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id51" id="stretchtype" name="stretchtype">StretchType</a></h1>
+<div class="section" id="stretchtype">
+<h1><a class="toc-backref" href="#id51">StretchType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2777,8 +2778,8 @@ typedef enum
 } StretchType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id52" id="styletype" name="styletype">StyleType</a></h1>
+<div class="section" id="styletype">
+<h1><a class="toc-backref" href="#id52">StyleType</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2789,8 +2790,8 @@ typedef enum
 } StyleType;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id53" id="typemetric" name="typemetric">TypeMetric</a></h1>
+<div class="section" id="typemetric">
+<h1><a class="toc-backref" href="#id53">TypeMetric</a></h1>
 <pre class="literal-block">
 typedef struct _TypeMetric
 {
@@ -2813,8 +2814,8 @@ typedef struct _TypeMetric
 } TypeMetric;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id54" id="viewinfo" name="viewinfo">ViewInfo</a></h1>
+<div class="section" id="viewinfo">
+<h1><a class="toc-backref" href="#id54">ViewInfo</a></h1>
 <p>ViewInfo represents a handle to a pixel view, which represents a uniquely
 selectable rectangular region of pixels. The only limit on the number of
 views is the amount of available memory. Each Image contains a collection
@@ -2824,8 +2825,8 @@ accessed without needing to explicitly allocate pixel views.</p>
 typedef void *ViewInfo;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id55" id="virtualpixelmethod" name="virtualpixelmethod">VirtualPixelMethod</a></h1>
+<div class="section" id="virtualpixelmethod">
+<h1><a class="toc-backref" href="#id55">VirtualPixelMethod</a></h1>
 <pre class="literal-block">
 typedef enum
 {
@@ -2837,8 +2838,8 @@ typedef enum
 } VirtualPixelMethod;
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id56" id="magickxresourceinfo" name="magickxresourceinfo">MagickXResourceInfo</a></h1>
+<div class="section" id="magickxresourceinfo">
+<h1><a class="toc-backref" href="#id56">MagickXResourceInfo</a></h1>
 <pre class="literal-block">
 typedef struct _XResourceInfo
 {
@@ -2943,7 +2944,7 @@ typedef struct _XResourceInfo
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-05 19:10 UTC.
+Generated on: 2009-09-15 21:10 UTC.
 
 </div>
 </body>

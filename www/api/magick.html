@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>magick</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
@@ -51,35 +51,36 @@
 <div class="document" id="magick">
 <h1 class="title">magick</h1>
 <h2 class="subtitle" id="image-format-support-interfaces">Image format support interfaces</h2>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#destroymagick" id="id27" name="id27">DestroyMagick</a></li>
-<li><a class="reference" href="#destroymagickinfo" id="id28" name="id28">DestroyMagickInfo</a></li>
-<li><a class="reference" href="#destroymagickinfolist" id="id29" name="id29">DestroyMagickInfoList</a></li>
-<li><a class="reference" href="#getimagemagick" id="id30" name="id30">GetImageMagick</a></li>
-<li><a class="reference" href="#getmagickinfo" id="id31" name="id31">GetMagickInfo</a></li>
-<li><a class="reference" href="#getmagickinfoarray" id="id32" name="id32">GetMagickInfoArray</a></li>
-<li><a class="reference" href="#initializemagick" id="id33" name="id33">InitializeMagick</a></li>
-<li><a class="reference" href="#ismagickconflict" id="id34" name="id34">IsMagickConflict</a></li>
-<li><a class="reference" href="#listmagickinfo" id="id35" name="id35">ListMagickInfo</a></li>
-<li><a class="reference" href="#listmodulemap" id="id36" name="id36">ListModuleMap</a></li>
-<li><a class="reference" href="#magicktomime" id="id37" name="id37">MagickToMime</a></li>
-<li><a class="reference" href="#registermagickinfo" id="id38" name="id38">RegisterMagickInfo</a></li>
-<li><a class="reference" href="#setmagickinfo" id="id39" name="id39">SetMagickInfo</a></li>
-<li><a class="reference" href="#unregistermagickinfo" id="id40" name="id40">UnregisterMagickInfo</a></li>
+<li><a class="reference internal" href="#destroymagick" id="id27">DestroyMagick</a></li>
+<li><a class="reference internal" href="#destroymagickinfo" id="id28">DestroyMagickInfo</a></li>
+<li><a class="reference internal" href="#destroymagickinfolist" id="id29">DestroyMagickInfoList</a></li>
+<li><a class="reference internal" href="#getimagemagick" id="id30">GetImageMagick</a></li>
+<li><a class="reference internal" href="#getmagickinfo" id="id31">GetMagickInfo</a></li>
+<li><a class="reference internal" href="#getmagickinfoarray" id="id32">GetMagickInfoArray</a></li>
+<li><a class="reference internal" href="#initializemagick" id="id33">InitializeMagick</a></li>
+<li><a class="reference internal" href="#ismagickconflict" id="id34">IsMagickConflict</a></li>
+<li><a class="reference internal" href="#listmagickinfo" id="id35">ListMagickInfo</a></li>
+<li><a class="reference internal" href="#listmodulemap" id="id36">ListModuleMap</a></li>
+<li><a class="reference internal" href="#magicktomime" id="id37">MagickToMime</a></li>
+<li><a class="reference internal" href="#registermagickinfo" id="id38">RegisterMagickInfo</a></li>
+<li><a class="reference internal" href="#setmagickinfo" id="id39">SetMagickInfo</a></li>
+<li><a class="reference internal" href="#unregistermagickinfo" id="id40">UnregisterMagickInfo</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id27" id="destroymagick" name="destroymagick">DestroyMagick</a></h1>
-<div class="section">
-<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<div class="section" id="destroymagick">
+<h1><a class="toc-backref" href="#id27">DestroyMagick</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 DestroyMagick( void );
 </pre>
 </div>
-<div class="section">
-<h2><a id="description" name="description">Description</a></h2>
+<div class="section" id="description">
+<h2>Description</h2>
 <p>DestroyMagick() destroys the GraphicsMagick environment.</p>
 <p>The format of the DestroyMagick function is:</p>
 <pre class="literal-block">
@@ -87,33 +88,33 @@ DestroyMagick( void );
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id28" id="destroymagickinfo" name="destroymagickinfo">DestroyMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id1" name="id1">Synopsis</a></h2>
+<div class="section" id="destroymagickinfo">
+<h1><a class="toc-backref" href="#id28">DestroyMagickInfo</a></h1>
+<div class="section" id="id1">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-void DestroyMagickInfo( <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> ** magick_info );
+void DestroyMagickInfo( <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> ** magick_info );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id2" name="id2">Description</a></h2>
+<div class="section" id="id2">
+<h2>Description</h2>
 <p>DestroyMagickInfo() destroys a MagickInfo structure.</p>
 <p>The format of the DestroyMagickInfoList method is:</p>
 <pre class="literal-block">
-void DestroyMagickInfo( <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> ** magick_info );
+void DestroyMagickInfo( <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> ** magick_info );
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id29" id="destroymagickinfolist" name="destroymagickinfolist">DestroyMagickInfoList</a></h1>
-<div class="section">
-<h2><a id="id3" name="id3">Synopsis</a></h2>
+<div class="section" id="destroymagickinfolist">
+<h1><a class="toc-backref" href="#id29">DestroyMagickInfoList</a></h1>
+<div class="section" id="id3">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 void DestroyMagickInfoList( void );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id4" name="id4">Description</a></h2>
+<div class="section" id="id4">
+<h2>Description</h2>
 <p>DestroyMagickInfo() deallocates memory associated with the MagickInfo list.</p>
 <p>The format of the DestroyMagickInfoList method is:</p>
 <pre class="literal-block">
@@ -121,16 +122,16 @@ void DestroyMagickInfoList( void );
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id30" id="getimagemagick" name="getimagemagick">GetImageMagick</a></h1>
-<div class="section">
-<h2><a id="id5" name="id5">Synopsis</a></h2>
+<div class="section" id="getimagemagick">
+<h1><a class="toc-backref" href="#id30">GetImageMagick</a></h1>
+<div class="section" id="id5">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 const char *GetImageMagick( const unsigned char *magick, const size_t length );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id6" name="id6">Description</a></h2>
+<div class="section" id="id6">
+<h2>Description</h2>
 <p>GetImageMagick() searches for an image format that matches the specified
 magick string.  If one is found the name is returned otherwise NULL.</p>
 <p>The format of the GetImageMagick method is:</p>
@@ -145,16 +146,16 @@ const char *GetImageMagick( const unsigned char *magick, const size_t length );
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id31" id="getmagickinfo" name="getmagickinfo">GetMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id7" name="id7">Synopsis</a></h2>
+<div class="section" id="getmagickinfo">
+<h1><a class="toc-backref" href="#id31">GetMagickInfo</a></h1>
+<div class="section" id="id7">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-const <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+const <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id8" name="id8">Description</a></h2>
+<div class="section" id="id8">
+<h2>Description</h2>
 <p>GetMagickInfo() returns a pointer MagickInfo structure that matches
 the specified name.  If name is NULL, the head of the image format list
 is returned. It is not safe to traverse the list by using the previous and
@@ -163,7 +164,7 @@ may be altered while the list is being traversed. If the list must be
 traversed, access it via the GetMagickInfoArray function instead.</p>
 <p>The format of the GetMagickInfo method is:</p>
 <pre class="literal-block">
-const <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+const <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -174,16 +175,16 @@ const <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *G
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id32" id="getmagickinfoarray" name="getmagickinfoarray">GetMagickInfoArray</a></h1>
-<div class="section">
-<h2><a id="id9" name="id9">Synopsis</a></h2>
+<div class="section" id="getmagickinfoarray">
+<h1><a class="toc-backref" href="#id32">GetMagickInfoArray</a></h1>
+<div class="section" id="id9">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id10" name="id10">Description</a></h2>
+<div class="section" id="id10">
+<h2>Description</h2>
 <p>GetMagickInfoArray() returns a sorted null-terminated array of MagickInfo
 pointers corresponding to the available format registrations. If necessarly
 all modules are loaded in order to return a complete list. This function
@@ -194,7 +195,7 @@ should be deallocated. Do not attempt to deallocate the MagickInfo
 structures based on pointers in the array!</p>
 <p>The format of the GetMagickList method is:</p>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> ** GetMagickInfoArray( <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -203,16 +204,16 @@ structures based on pointers in the array!</p>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id33" id="initializemagick" name="initializemagick">InitializeMagick</a></h1>
-<div class="section">
-<h2><a id="id11" name="id11">Synopsis</a></h2>
+<div class="section" id="initializemagick">
+<h1><a class="toc-backref" href="#id33">InitializeMagick</a></h1>
+<div class="section" id="id11">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 InitializeMagick( const char *path );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id12" name="id12">Description</a></h2>
+<div class="section" id="id12">
+<h2>Description</h2>
 <p>InitializeMagick() initializes the GraphicsMagick environment.
 InitializeMagick() MUST be invoked by the using program before making
 use of GraphicsMagick functions or else the library may be unstable.</p>
@@ -227,16 +228,16 @@ InitializeMagick( const char *path );
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id34" id="ismagickconflict" name="ismagickconflict">IsMagickConflict</a></h1>
-<div class="section">
-<h2><a id="id13" name="id13">Synopsis</a></h2>
+<div class="section" id="ismagickconflict">
+<h1><a class="toc-backref" href="#id34">IsMagickConflict</a></h1>
+<div class="section" id="id13">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 MagickBool IsMagickConflict( const char *magick );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id14" name="id14">Description</a></h2>
+<div class="section" id="id14">
+<h2>Description</h2>
 <p>Method IsMagickConflict returns true if the image format conflicts with
 a logical drive (.e.g. X:).</p>
 <p>The format of the IsMagickConflict method is:</p>
@@ -253,20 +254,20 @@ conflicts with a logical drive.</dd>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id35" id="listmagickinfo" name="listmagickinfo">ListMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id15" name="id15">Synopsis</a></h2>
+<div class="section" id="listmagickinfo">
+<h1><a class="toc-backref" href="#id35">ListMagickInfo</a></h1>
+<div class="section" id="id15">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ListMagickInfo( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id16" name="id16">Description</a></h2>
+<div class="section" id="id16">
+<h2>Description</h2>
 <p>ListMagickInfo() lists the image formats to a file.</p>
 <p>The format of the ListMagickInfo method is:</p>
 <pre class="literal-block">
-MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ListMagickInfo( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -277,21 +278,21 @@ MagickPassFail ListMagickInfo( FILE *file, <a class="reference" href="../api/typ
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id36" id="listmodulemap" name="listmodulemap">ListModuleMap</a></h1>
-<div class="section">
-<h2><a id="id17" name="id17">Synopsis</a></h2>
+<div class="section" id="listmodulemap">
+<h1><a class="toc-backref" href="#id36">ListModuleMap</a></h1>
+<div class="section" id="id17">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ListModuleMap( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id18" name="id18">Description</a></h2>
+<div class="section" id="id18">
+<h2>Description</h2>
 <p>Method ListModuleMap lists the module alias info to a file in the XML
 format used by modules.mgk. True is returned on success.</p>
 <p>The format of the ListModuleMap method is:</p>
 <pre class="literal-block">
-MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail ListModuleMap( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -302,16 +303,16 @@ MagickPassFail ListModuleMap( FILE *file, <a class="reference" href="../api/type
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id37" id="magicktomime" name="magicktomime">MagickToMime</a></h1>
-<div class="section">
-<h2><a id="id19" name="id19">Synopsis</a></h2>
+<div class="section" id="magicktomime">
+<h1><a class="toc-backref" href="#id37">MagickToMime</a></h1>
+<div class="section" id="id19">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 char *MagickToMime( const char *magick );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id20" name="id20">Description</a></h2>
+<div class="section" id="id20">
+<h2>Description</h2>
 <p>Method MagickToMime returns the officially registered (or de facto) MIME
 media-type corresponding to a magick string.  If there is no registered
 media-type, then the string &quot;image/x-magick&quot; (all lower case) is returned.
@@ -327,16 +328,16 @@ char *MagickToMime( const char *magick );
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id38" id="registermagickinfo" name="registermagickinfo">RegisterMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id21" name="id21">Synopsis</a></h2>
+<div class="section" id="registermagickinfo">
+<h1><a class="toc-backref" href="#id38">RegisterMagickInfo</a></h1>
+<div class="section" id="id21">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *magick_info );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *magick_info );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id22" name="id22">Description</a></h2>
+<div class="section" id="id22">
+<h2>Description</h2>
 <p>RegisterMagickInfo() adds attributes for a particular image format to the
 list of supported formats.  The attributes include the image format name,
 a method to read and/or write the format, whether the format supports the
@@ -344,7 +345,7 @@ saving of more than one frame to the same file or blob, whether the format
 supports native in-memory I/O, and a brief description of the format.</p>
 <p>The format of the RegisterMagickInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *magick_info );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *RegisterMagickInfo( <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *magick_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -353,21 +354,21 @@ supports native in-memory I/O, and a brief description of the format.</p>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id39" id="setmagickinfo" name="setmagickinfo">SetMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id23" name="id23">Synopsis</a></h2>
+<div class="section" id="setmagickinfo">
+<h1><a class="toc-backref" href="#id39">SetMagickInfo</a></h1>
+<div class="section" id="id23">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id24" name="id24">Description</a></h2>
+<div class="section" id="id24">
+<h2>Description</h2>
 <p>Method SetMagickInfo allocates a MagickInfo structure and initializes the
 members to default values.</p>
 <p>The format of the SetMagickInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
+<a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *SetMagickInfo( const char *name );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -380,16 +381,16 @@ with the MagickInfo structure.</dd>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id40" id="unregistermagickinfo" name="unregistermagickinfo">UnregisterMagickInfo</a></h1>
-<div class="section">
-<h2><a id="id25" name="id25">Synopsis</a></h2>
+<div class="section" id="unregistermagickinfo">
+<h1><a class="toc-backref" href="#id40">UnregisterMagickInfo</a></h1>
+<div class="section" id="id25">
+<h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int UnregisterMagickInfo( const char *name );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id26" name="id26">Description</a></h2>
+<div class="section" id="id26">
+<h2>Description</h2>
 <p>Method UnregisterMagickInfo removes a name from the magick info list.  It
 returns MagickFail if the name does not exist in the list otherwise
 MagickPass.</p>
@@ -411,7 +412,7 @@ looking for.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-08-19 21:03 UTC.
+Generated on: 2009-09-15 21:10 UTC.
 
 </div>
 </body>

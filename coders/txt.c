@@ -50,6 +50,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/render.h"
+#include "magick/texture.h"
 #include "magick/utility.h"
 
 typedef enum

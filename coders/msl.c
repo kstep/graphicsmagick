@@ -55,6 +55,7 @@
 #include "magick/render.h"
 #include "magick/resize.h"
 #include "magick/shear.h"
+#include "magick/texture.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #if defined(MSWINDOWS)

@@ -167,6 +167,8 @@ MAGICK_BASE_SRCS = \
 	magick/symbols.h \
 	magick/tempfile.c \
 	magick/tempfile.h \
+	magick/texture.c \
+	magick/texture.h \
 	magick/timer.c \
 	magick/timer.h \
 	magick/transform.c \
@@ -246,6 +248,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/shear.h \
 	magick/signature.h \
 	magick/symbols.h \
+	magick/texture.h \
 	magick/timer.h \
 	magick/transform.h \
 	magick/utility.h \

@@ -1096,8 +1096,7 @@ extern MagickExport MagickPassFail
   SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *);
+  SyncImage(Image *);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);

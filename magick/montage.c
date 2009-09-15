@@ -47,6 +47,7 @@
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
 #include "magick/resize.h"
+#include "magick/texture.h"
 #include "magick/utility.h"
 
 /*

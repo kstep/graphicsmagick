@@ -39,6 +39,7 @@ GraphicsMagick Core C API
 .. _Segment : segment.html
 .. _Shear : shear.html
 .. _Signature : signature.html
+.. _Texture : texture.html
 .. _Transform : transform.html
 .. _types: types.html
 
@@ -92,6 +93,7 @@ documentation, please reference the types_ documentation as required:
   * Segment_: Coalese similar image colors
   * Shear_: Rotate image, shear image, or apply a 2D affine transformation
   * Signature_: Compute an image signature (checksum)
+  * Texture_: Create a tiled texture image or tile an image with a texture.
   * Transform_: Chop, coalesce, deconstruct, flatten, flip, flop, mosiac, roll,
     or shave image
 

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>resource</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
@@ -51,31 +51,32 @@
 <div class="document" id="resource">
 <h1 class="title">resource</h1>
 <h2 class="subtitle" id="set-resource-consumption-limits-e-g-memory">Set resource consumption limits (e.g. memory)</h2>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#acquiremagickresource" id="id9" name="id9">AcquireMagickResource</a></li>
-<li><a class="reference" href="#getmagickresource" id="id10" name="id10">GetMagickResource</a></li>
-<li><a class="reference" href="#liberatemagickresource" id="id11" name="id11">LiberateMagickResource</a></li>
-<li><a class="reference" href="#listmagickresourceinfo" id="id12" name="id12">ListMagickResourceInfo</a></li>
-<li><a class="reference" href="#setmagickresourcelimit" id="id13" name="id13">SetMagickResourceLimit</a></li>
+<li><a class="reference internal" href="#acquiremagickresource" id="id9">AcquireMagickResource</a></li>
+<li><a class="reference internal" href="#getmagickresource" id="id10">GetMagickResource</a></li>
+<li><a class="reference internal" href="#liberatemagickresource" id="id11">LiberateMagickResource</a></li>
+<li><a class="reference internal" href="#listmagickresourceinfo" id="id12">ListMagickResourceInfo</a></li>
+<li><a class="reference internal" href="#setmagickresourcelimit" id="id13">SetMagickResourceLimit</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="acquiremagickresource" name="acquiremagickresource">AcquireMagickResource</a></h1>
-<div class="section">
-<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<div class="section" id="acquiremagickresource">
+<h1><a class="toc-backref" href="#id9">AcquireMagickResource</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-MagickPassFail AcquireMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
+MagickPassFail AcquireMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
 </pre>
 </div>
-<div class="section">
-<h2><a id="description" name="description">Description</a></h2>
+<div class="section" id="description">
+<h2>Description</h2>
 <p>AcquireMagickResource() acquires resources of the specified type.  True is
 returned if the specified resource is available otherwise False.</p>
 <p>The format of the AcquireMagickResource() method is:</p>
 <pre class="literal-block">
-MagickPassFail AcquireMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
+MagickPassFail AcquireMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
 </pre>
 <dl class="docutils">
 <dt>type:</dt>
@@ -85,21 +86,21 @@ MagickPassFail AcquireMagickResource( const <a class="reference" href="../api/ty
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="getmagickresource" name="getmagickresource">GetMagickResource</a></h1>
-<div class="section">
-<h2><a id="id1" name="id1">Synopsis</a></h2>
+<div class="section" id="getmagickresource">
+<h1><a class="toc-backref" href="#id10">GetMagickResource</a></h1>
+<div class="section" id="id1">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-magick_uint64_t GetMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type );
+magick_uint64_t GetMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id2" name="id2">Description</a></h2>
+<div class="section" id="id2">
+<h2>Description</h2>
 <p>GetMagickResource() returns the current consumption level for the
 specified resource type.</p>
 <p>The format of the GetMagickResource() method is:</p>
 <pre class="literal-block">
-magick_uint64_t GetMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type );
+magick_uint64_t GetMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -108,20 +109,20 @@ magick_uint64_t GetMagickResource( const <a class="reference" href="../api/types
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="liberatemagickresource" name="liberatemagickresource">LiberateMagickResource</a></h1>
-<div class="section">
-<h2><a id="id3" name="id3">Synopsis</a></h2>
+<div class="section" id="liberatemagickresource">
+<h1><a class="toc-backref" href="#id11">LiberateMagickResource</a></h1>
+<div class="section" id="id3">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-void LiberateMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
+void LiberateMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id4" name="id4">Description</a></h2>
+<div class="section" id="id4">
+<h2>Description</h2>
 <p>LiberateMagickResource() liberates resources of the specified type.</p>
 <p>The format of the LiberateMagickResource() method is:</p>
 <pre class="literal-block">
-void LiberateMagickResource( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
+void LiberateMagickResource( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const magick_int64_t size );
 </pre>
 <dl class="docutils">
 <dt>type:</dt>
@@ -131,20 +132,20 @@ void LiberateMagickResource( const <a class="reference" href="../api/types.html#
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="listmagickresourceinfo" name="listmagickresourceinfo">ListMagickResourceInfo</a></h1>
-<div class="section">
-<h2><a id="id5" name="id5">Synopsis</a></h2>
+<div class="section" id="listmagickresourceinfo">
+<h1><a class="toc-backref" href="#id12">ListMagickResourceInfo</a></h1>
+<div class="section" id="id5">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int ListMagickResourceInfo( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+unsigned int ListMagickResourceInfo( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id6" name="id6">Description</a></h2>
+<div class="section" id="id6">
+<h2>Description</h2>
 <p>Method ListMagickResourceInfo lists the resource info to a file.</p>
 <p>The format of the ListMagickResourceInfo method is:</p>
 <pre class="literal-block">
-unsigned int ListMagickResourceInfo( FILE *file, <a class="reference" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+unsigned int ListMagickResourceInfo( FILE *file, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <p>A description of each parameter follows.</p>
 <dl class="docutils">
@@ -155,16 +156,16 @@ unsigned int ListMagickResourceInfo( FILE *file, <a class="reference" href="../a
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="setmagickresourcelimit" name="setmagickresourcelimit">SetMagickResourceLimit</a></h1>
-<div class="section">
-<h2><a id="id7" name="id7">Synopsis</a></h2>
+<div class="section" id="setmagickresourcelimit">
+<h1><a class="toc-backref" href="#id13">SetMagickResourceLimit</a></h1>
+<div class="section" id="id7">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-void SetMagickResourceLimit( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long limit );
+void SetMagickResourceLimit( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long limit );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id8" name="id8">Description</a></h2>
+<div class="section" id="id8">
+<h2>Description</h2>
 <p>SetMagickResourceLimit() sets the limit for a particular resource.  The
 units for resource types are as follows:</p>
 <p>DiskResource    -- Gigabytes
@@ -174,7 +175,7 @@ MemoryResource  -- Megabytes
 PixelsResource  -- Megapixels</p>
 <p>The format of the SetMagickResourceLimit() method is:</p>
 <pre class="literal-block">
-void SetMagickResourceLimit( const <a class="reference" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long limit );
+void SetMagickResourceLimit( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long limit );
 </pre>
 <dl class="docutils">
 <dt>type:</dt>
@@ -187,7 +188,7 @@ void SetMagickResourceLimit( const <a class="reference" href="../api/types.html#
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-07 22:59 UTC.
+Generated on: 2009-09-15 21:10 UTC.
 
 </div>
 </body>
