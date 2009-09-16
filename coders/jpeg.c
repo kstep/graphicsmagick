@@ -322,7 +322,6 @@ AppendImageProfile(Image *image,
 		   const unsigned char *profile_chunk,
 		   const size_t chunk_length)
 {
-
   const unsigned char
     *existing_profile;
 
@@ -334,8 +333,12 @@ AppendImageProfile(Image *image,
 
   status=MagickFail;
   existing_length=0;
-  existing_profile=GetImageProfile(image,name,&existing_length);
-  if (existing_profile == (const unsigned char) NULL)
+  existing_profile=(const unsigned char *) NULL;
+  if (profile_chunk != (const unsigned char *) NULL)
+    existing_profile=GetImageProfile(image,name,&existing_length);
+
+  if ((profile_chunk == (const unsigned char *) NULL) ||
+      (existing_profile == (const unsigned char) NULL))
     {
       status=SetImageProfile(image,name,profile_chunk,chunk_length);
     }
