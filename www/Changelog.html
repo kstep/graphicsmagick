@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2009-09-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (ReadGenericProfile,ReadICCProfile,ReadIPTCProfile):
+        Profile chunks need to be concatenated.  Otherwise "chunked"
+        profiles become corrupted.
+
+</UL>
+<p>
 2009-09-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

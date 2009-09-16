@@ -313,6 +313,54 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   return(True);
 }
 
+/*
+  Append a profile chunk to a (possibly) existing profile.
+*/
+static MagickPassFail
+AppendImageProfile(Image *image,
+		   const char *name,
+		   const unsigned char *profile_chunk,
+		   const size_t chunk_length)
+{
+
+  const unsigned char
+    *existing_profile;
+
+  size_t
+    existing_length;
+
+  MagickPassFail
+    status;
+
+  status=MagickFail;
+  existing_length=0;
+  existing_profile=GetImageProfile(image,name,&existing_length);
+  if (existing_profile == (const unsigned char) NULL)
+    {
+      status=SetImageProfile(image,name,profile_chunk,chunk_length);
+    }
+  else
+    {
+      unsigned char
+	*profile;
+
+      size_t
+	profile_length;
+
+      profile_length=existing_length+chunk_length;
+      if ((profile_length < existing_length) || 
+	  ((profile=MagickAllocateMemory(unsigned char *,(size_t) profile_length)) ==
+	   (unsigned char *) NULL))
+	ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+			     (char *) NULL);
+      (void) memcpy(profile,existing_profile,existing_length);
+      (void) memcpy(profile+existing_length,profile_chunk,chunk_length);
+      status=SetImageProfile(image,name,profile,profile_length);
+    }
+
+  return status;
+}
+
 static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
 {
   ErrorManager
@@ -383,7 +431,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Store profile in Image.
   */
-  status=SetImageProfile(image,profile_name,profile,length);
+  status=AppendImageProfile(image,profile_name,profile,length);
   MagickFreeMemory(profile);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
@@ -449,13 +497,14 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ICC profile: %ld bytes",
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			"ICC profile chunk: %ld bytes",
     length);
 
   for (i=0 ; i < length; i++)
    profile[i]=GetCharacter(jpeg_info);
 
-  (void) SetImageProfile(image,"ICM",profile,length);
+  (void) AppendImageProfile(image,"ICM",profile,length);
 
   MagickFreeMemory(profile);
 
@@ -559,7 +608,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   for (i=0; i<length; i++)
     profile[i]=GetCharacter(jpeg_info);
 
-  (void) SetImageProfile(image,"IPTC",profile,length);
+  (void) AppendImageProfile(image,"IPTC",profile,length);
 
   MagickFreeMemory(profile);
   return(True);
