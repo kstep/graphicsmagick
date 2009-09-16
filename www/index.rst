@@ -27,7 +27,7 @@ GraphicsMagick Image Processing System
 
 ===========================  ===============================================
 Current Stable Branch:       1.3.6__ (Released July 25, 2009) download__
-Previous Stable Branch:      1.2.8__ (Released September 4, 2009) download__
+Previous Stable Branch:      1.2.9__ (Released September 16, 2009) download__
 Legacy (EOL) Stable Branch:  1.1.15__ (Released April 1, 2009) download__
 ===========================  ===============================================
 

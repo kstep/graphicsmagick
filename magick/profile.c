@@ -138,7 +138,6 @@ AppendImageProfile(Image *image,
 		   const unsigned char *profile_chunk,
 		   const size_t chunk_length)
 {
-
   const unsigned char
     *existing_profile;
 
