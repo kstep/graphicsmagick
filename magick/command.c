@@ -9338,7 +9338,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               profile_info.name="IPTC";
               profile_info.info=(unsigned char *) GetImageProfile(*image,profile_info.name,
                                                                   &profile_info.length);
-              clone_info->client_data=&profile_info;
+              clone_info->client_data=&profile_info; /* used to pass profile to meta.c */
 
               (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
               profile_image=ReadImage(clone_info,&(*image)->exception);

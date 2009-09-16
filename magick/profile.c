@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004, 2005 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -92,6 +92,93 @@ AllocateImageProfileIterator(const Image *image)
     return 0;
 
   return (ImageProfileIterator) MagickMapAllocateIterator(image->profiles);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     A p p e n d I m a g e P r o f i l e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AppendImageProfile adds a named profile to the image. If a profile with the
+%  same name already exists, then the new profile data is appended to the
+%  existing profile. If a null profile address is supplied, then an existing
+%  profile is removed. The profile is copied into the image. Note that this
+%  function does not execute CMS color profiles. Any existing CMS color
+%  profile is simply added/updated. Use the ProfileImage() function in order
+%  to execute a CMS color profile.
+%
+%  The format of the AppendImageProfile method is:
+%
+%      MaickPassFail AppendImageProfile(Image *image,const char *name,
+%                                       const unsigned char *profile_chunk,
+%                                       const size_t chunk_length)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o name: Profile name. Valid names are "8BIM", "ICM", "IPTC", XMP, or any
+%                          unique text string.
+%
+%    o profile_chunk: Address of profile chunk to add or append. Pass zero
+%               to remove an existing profile.
+%
+%    o length: The length of the profile chunk to add or append.
+%
+*/
+MagickExport MagickPassFail
+AppendImageProfile(Image *image,
+		   const char *name,
+		   const unsigned char *profile_chunk,
+		   const size_t chunk_length)
+{
+
+  const unsigned char
+    *existing_profile;
+
+  size_t
+    existing_length;
+
+  MagickPassFail
+    status;
+
+  status=MagickFail;
+  existing_length=0;
+  existing_profile=(const unsigned char *) NULL;
+  if (profile_chunk != (const unsigned char *) NULL)
+    existing_profile=GetImageProfile(image,name,&existing_length);
+
+  if ((profile_chunk == (const unsigned char *) NULL) ||
+      (existing_profile == (const unsigned char) NULL))
+    {
+      status=SetImageProfile(image,name,profile_chunk,chunk_length);
+    }
+  else
+    {
+      unsigned char
+	*profile;
+
+      size_t
+	profile_length;
+
+      profile_length=existing_length+chunk_length;
+      if ((profile_length < existing_length) || 
+	  ((profile=MagickAllocateMemory(unsigned char *,(size_t) profile_length)) ==
+	   (unsigned char *) NULL))
+	ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+			     (char *) NULL);
+      (void) memcpy(profile,existing_profile,existing_length);
+      (void) memcpy(profile+existing_length,profile_chunk,chunk_length);
+      status=SetImageProfile(image,name,profile,profile_length);
+    }
+
+  return status;
 }
 
 /*

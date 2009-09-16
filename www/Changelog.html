@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2009-09-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/profile.c (AppendImageProfile): New function to add or
+        append a profile.  If the profile already exists, then the data
+        provided is appended to it.
+
+  <LI> coders/jpeg.c (ReadGenericProfile,ReadICCProfile,ReadIPTCProfile):
+        Profile chunks need to be concatenated.  Otherwise "chunked"
+        profiles become corrupted.
+
+</UL>
+<p>
 2009-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

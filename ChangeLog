@@ -1,3 +1,13 @@
+2009-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c (AppendImageProfile): New function to add or
+	append a profile.  If the profile already exists, then the data
+	provided is appended to it.
+
+	* coders/jpeg.c (ReadGenericProfile,ReadICCProfile,ReadIPTCProfile):
+	Profile chunks need to be concatenated.  Otherwise "chunked"
+	profiles become corrupted.
+
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/average.c (AverageImages): Moved from image.c to new
