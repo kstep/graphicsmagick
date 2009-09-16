@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 4, 2009.
+This file was last updated on September 16, 2009.
 
 This release is a bug-fix release made from a stable maintenance
 branch and does not contain current new features.
@@ -16,6 +16,27 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.9 (September 16, 2009)
+==========================
+
+Security Fixes:
+
+  * None
+
+Bug fixes:
+
+  * Large embedded profiles (>32k, >64K, depending on writing
+    software) read from JPEG files were being corrupted.  This problem
+    originated in GraphicsMagick 1.2.
+
+Feature improvements:
+
+  * None
+
+Performance improvments:
+
+  * None
 
 1.2.8 (September 4, 2009)
 =========================

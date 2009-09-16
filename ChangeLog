@@ -1,5 +1,7 @@
 2009-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh: GraphicsMagick 1.2.9 released.
+
 	* coders/jpeg.c (ReadGenericProfile,ReadICCProfile,ReadIPTCProfile):
 	Profile chunks need to be concatenated.  Otherwise "chunked"
 	profiles become corrupted.
