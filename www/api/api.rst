@@ -9,6 +9,7 @@ GraphicsMagick Core C API
 .. _Blob : blob.html
 .. _Channel : channel.html
 .. _Color : color.html
+.. _Colormap : colormap.html
 .. _Compare : compare.html
 .. _Composite : composite.html
 .. _Confirm Access : confirm_access.html
@@ -64,6 +65,7 @@ documentation, please reference the types_ documentation as required:
   * Blob_: Read and write images to memory
   * Channel_: Import and export image channels as well as compute channel depth
   * Color_: Methods to deal with image colors
+  * Colormap_: Methods to deal with image colormaps
   * Compare_: Compare images
   * Composite_: Composite images
   * `Confirm Access`_ : Confirm access to files and URLs.

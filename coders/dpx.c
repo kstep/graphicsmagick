@@ -125,7 +125,6 @@
 #include "magick/blob.h"
 #include "magick/bit_stream.h"
 #include "magick/pixel_cache.h"
-#include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/enum_strings.h"
 #include "magick/magick_endian.h"

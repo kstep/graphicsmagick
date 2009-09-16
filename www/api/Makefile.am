@@ -19,6 +19,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/cdl.html \
 	$(WWWAPIDIR)/channel.html \
 	$(WWWAPIDIR)/color.html \
+	$(WWWAPIDIR)/colormap.html \
 	$(WWWAPIDIR)/compare.html \
 	$(WWWAPIDIR)/composite.html \
 	$(WWWAPIDIR)/confirm_access.html \
@@ -68,6 +69,7 @@ WWWWAPI_FILES = \
 	www/api/cdl.html \
 	www/api/channel.html \
 	www/api/color.html \
+	www/api/colormap.html \
 	www/api/compare.html \
 	www/api/composite.html \
 	www/api/confirm_access.html \

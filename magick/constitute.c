@@ -47,6 +47,7 @@
 #include "magick/bit_stream.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/describe.h"

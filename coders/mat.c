@@ -38,16 +38,17 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
+#include "magick/constitute.h"
 #include "magick/magick.h"
+#include "magick/magick_endian.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/shear.h"
+#include "magick/tempfile.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
-#include "magick/constitute.h"
-#include "magick/magick_endian.h"
-#include "magick/tempfile.h"
 #if defined(HasZLIB)
 #  include "zlib.h"
 #endif

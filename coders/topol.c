@@ -34,14 +34,13 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
-#include "magick/pixel_cache.h"
-#include "magick/color.h"
 #include "magick/error.h"
 #include "magick/list.h"
 #include "magick/magick.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
-#include "magick/blob.h"
 
 
 typedef struct

@@ -17,12 +17,6 @@ extern "C" {
 
 #if defined(MAGICK_IMPLEMENTATION)
 
-#define VerifyColormapIndex(image,index) \
-{ \
-  if (index >= image->colors) \
-    index=MagickConstrainColormapIndex(image,index); \
-}
-
 /*
   Macros for testing a pixel to see if it is grayscale, bilevel,
   black, or white

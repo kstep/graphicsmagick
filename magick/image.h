@@ -1052,23 +1052,18 @@ extern MagickExport MagickBool
 extern MagickExport MagickPassFail
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
-  AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ClipImage(Image *),
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
-  CycleColormapImage(Image *image,const int amount),
   DisplayImages(const ImageInfo *image_info,Image *image),
   GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
     const MagickBool optimize,ExceptionInfo *exception),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
-  ReplaceImageColormap(Image *image,const PixelPacket *colormap,
-    const unsigned int colors),
   SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
-  SortColormapByIntensity(Image *),
   SyncImage(Image *);
 
 extern MagickExport unsigned long

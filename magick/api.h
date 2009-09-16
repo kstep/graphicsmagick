@@ -140,6 +140,7 @@ extern "C" {
 #include "magick/signature.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/decorate.h"
 #include "magick/enhance.h"

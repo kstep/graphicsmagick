@@ -72,6 +72,8 @@ MAGICK_BASE_SRCS = \
 	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
+	magick/colormap.c \
+	magick/colormap.h \
 	magick/colorspace.c \
 	magick/colorspace.h \
 	magick/command.c \
@@ -214,6 +216,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/colormap.h \
 	magick/colorspace.h \
 	magick/command.h \
 	magick/compare.h \

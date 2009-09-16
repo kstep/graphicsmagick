@@ -173,6 +173,7 @@
 */
 #include "magick/studio.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/enhance.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"

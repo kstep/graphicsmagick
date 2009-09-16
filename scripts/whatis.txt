@@ -8,6 +8,7 @@ blob.c             Read or write formatted images in memory (BLOBs)
 cdl.c		   Apply ASC CDL transform to image
 channel.c          Image channel functions
 color.c            Color related functions
+colormap.c	   Colormap related functions
 constitute.c       Read or write an image
 compare.c          Compare images
 composite.c        Merge image pixels using a specified algorithm

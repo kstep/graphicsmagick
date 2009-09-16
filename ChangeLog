@@ -1,5 +1,14 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colormap.h (VerifyColormapIndex): Moved here from color.h
+
+	* magick/colormap.c (AllocateImageColormap): Moved from image.c to
+	new colormap.c source file.
+	(CycleColormapImage): Moved from image.c.
+	(ReplaceImageColormap): Moved from image.c.
+	(SortColormapByIntensity): Moved from image.c.
+	(MagickConstrainColormapIndex): Moved here from color.c.
+
 	* magick/describe.c (DescribeImage): Moved from image.c to new
 	describe.c source file.
 

@@ -38,6 +38,7 @@
 #include "magick/studio.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/enum_strings.h"
