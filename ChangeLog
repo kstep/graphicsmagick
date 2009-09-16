@@ -1,5 +1,8 @@
 2009-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/average.c (AverageImages): Moved from image.c to new
+	average.c file.
+
 	* magick/colormap.h (VerifyColormapIndex): Moved here from color.h
 
 	* magick/colormap.c (AllocateImageColormap): Moved from image.c to

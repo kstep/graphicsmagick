@@ -58,6 +58,8 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/attribute.c \
 	magick/attribute.h \
+	magick/average.c \
+	magick/average.h \
 	magick/bit_stream.c \
 	magick/bit_stream.h \
 	magick/blob.c \
@@ -212,6 +214,7 @@ endif # if WIN32_NATIVE_BUILD
 MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
 	magick/attribute.h \
+	magick/average.h \
 	magick/blob.h \
 	magick/cdl.h \
 	magick/channel.h \

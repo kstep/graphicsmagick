@@ -4,6 +4,7 @@
 animate.c          Interactively animate an image sequence
 annotate.c         Annotate an image with text
 attribute.c        Access key,value image attributes
+average.c	   Image averaging functions
 blob.c             Read or write formatted images in memory (BLOBs)
 cdl.c		   Apply ASC CDL transform to image
 channel.c          Image channel functions

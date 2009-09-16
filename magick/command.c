@@ -39,6 +39,7 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
+#include "magick/average.h"
 #include "magick/cdl.h"
 #include "magick/channel.h"
 #include "magick/color.h"

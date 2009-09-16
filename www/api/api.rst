@@ -5,6 +5,7 @@ GraphicsMagick Core C API
 .. _Animate : animate.html
 .. _Annotate : annotate.html
 .. _Attribute : attribute.html
+.. _Average : average.html
 .. _`ASC CDL` : cdl.html
 .. _Blob : blob.html
 .. _Channel : channel.html
@@ -61,6 +62,7 @@ documentation, please reference the types_ documentation as required:
   * Animate_: Interactively animate an image sequence
   * Annotate_: Annotate an image with text
   * Attribute_: Access key, value image attributes
+  * Average_: Average several images together
   * `ASC CDL`_ : Apply ASC CDL to image
   * Blob_: Read and write images to memory
   * Channel_: Import and export image channels as well as compute channel depth

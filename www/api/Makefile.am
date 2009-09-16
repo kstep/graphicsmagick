@@ -15,6 +15,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/animate.html \
 	$(WWWAPIDIR)/annotate.html \
 	$(WWWAPIDIR)/attribute.html \
+	$(WWWAPIDIR)/average.html \
 	$(WWWAPIDIR)/blob.html \
 	$(WWWAPIDIR)/cdl.html \
 	$(WWWAPIDIR)/channel.html \
@@ -65,6 +66,7 @@ WWWWAPI_FILES = \
 	www/api/annotate.html \
 	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
+	www/api/average.html \
 	www/api/blob.html \
 	www/api/cdl.html \
 	www/api/channel.html \

@@ -1020,7 +1020,6 @@ extern MagickExport ExceptionType
 extern MagickExport Image
   *AllocateImage(const ImageInfo *),
   *AppendImages(const Image *,const unsigned int,ExceptionInfo *),
-  *AverageImages(const Image *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
    const unsigned int,ExceptionInfo *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
