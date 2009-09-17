@@ -1,3 +1,10 @@
+2009-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/msl.c, doc/conjure.imdoc: Add support for a new 'profile'
+	command in MSL/conjure which applies, adds, or removes one or more
+	IPTC, ICC or generic profiles from a file.  Work contributed by
+	John Sergeant.
+
 2009-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (NTGhostscriptFind): Make sure we close the

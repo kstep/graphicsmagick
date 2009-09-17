@@ -7392,6 +7392,24 @@ use. Currently only <em>width</em> and <em>height</em> are supported.</dd>
 <dd>background, bordercolor, clip-mask, colorspace, density,
 magick, mattecolor, opacity.  Set an attribute recognized by
 PerlMagick's GetAttribute().</dd>
+<dt>&lt;profile&gt;</dt>
+    <dd>[profilename]</dd>
+<dd>
+Read one or more IPTC, ICC or generic profiles from file and assign to image
+</dd>
+<dd>
+<pre>
+    &lt;profile iptc="profile.iptc" generic="generic.dat" /&gt;
+</pre>
+</dd>
+<dd>
+To remove a specified profile use "!" as the filename eg
+</dd>
+<dd>
+<pre>
+    &lt;profile icm="!" iptc="profile.iptc" /&gt;
+</pre>
+</dd>
 <dt>&lt;border&gt;</dt>
     <dd>fill, geometry, height, width</dd>
 <dt>&lt;blur&gt;</dt>
@@ -7454,6 +7472,8 @@ PerlMagick's GetAttribute().</dd>
     <dd>radius</dd>
 <dt>&lt;print&gt;</dt>
     <dd>output</dd>
+<dt>&lt;profile&gt;</dt>
+    <dd>[profilename]</dd>
 <dt>&lt;read&gt;</dt>
 <dt>&lt;resize&gt;</dt>
     <dd>blur, filter, geometry, height, width</dd>
