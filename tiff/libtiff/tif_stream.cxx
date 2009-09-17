@@ -30,7 +30,9 @@
 #include "tiffiop.h"
 #include <iostream>
 
+#ifndef __VMS
 using namespace std;
+#endif
 
 class tiffis_data
 {
@@ -109,8 +111,12 @@ _tiffosSeekProc(thandle_t fd, toff_t off, int whence)
 	// ostrstream/ostringstream does. In that situation, add intermediate
 	// '\0' characters.
 	if( os->fail() ) {
+#ifdef __VMS
+		int		old_state;
+#else
 		ios::iostate	old_state;
-		toff_t		origin;
+#endif
+		toff_t		origin=0;
 
 		old_state = os->rdstate();
 		// reset the fail bit or else tellp() won't work below

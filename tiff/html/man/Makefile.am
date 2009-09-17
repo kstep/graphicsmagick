@@ -86,6 +86,7 @@ docfiles = \
 	tiff2rgba.1.html \
 	tiffcmp.1.html \
 	tiffcp.1.html \
+	tiffcrop.1.html \
 	tiffdither.1.html \
 	tiffdump.1.html \
 	tiffgt.1.html \
@@ -101,9 +102,9 @@ INDEXSTART = '<HTML><HEAD><TITLE>Libtiff HTML manpage index</TITLE></HEAD><BODY 
 INDEXEND = '</ul></BODY></HTML>'
 
 .PHONY: index
-index: $(docfiles)
+index:
 	${ECHO} ${INDEXSTART} > $(indexfile)
-	for i in $^; do							\
+	for i in $(docfiles); do					\
 		${ECHO} '<li><A HREF='$$i'>'$$i'</a>' >> $(indexfile);  \
 	done
 	${ECHO} ${INDEXEND} >> $(indexfile)
@@ -111,7 +112,7 @@ index: $(docfiles)
 manpages = $(docfiles:.html=)
 
 .PHONY: htmldoc
-htmldoc: index
+htmldoc:
 	for i in $(manpages); do					\
 		${GROFF} $(MANSRCDIR)/$$i > $(HTMLMANDIR)/$$i.html;	\
 	done

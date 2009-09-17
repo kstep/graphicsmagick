@@ -24,8 +24,8 @@ dnl OF THIS SOFTWARE.
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT([LibTIFF Software], 3.8.2, [tiff@lists.maptools.org], tiff)
+AC_PREREQ(2.64)
+AC_INIT([LibTIFF Software],[3.9.1],[tiff@lists.maptools.org],[tiff])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_LANG(C)
@@ -40,8 +40,8 @@ AM_MAINTAINER_MODE
 dnl Versioning.
 dnl Don't fill the ALPHA_VERSION field, if not applicable.
 LIBTIFF_MAJOR_VERSION=3
-LIBTIFF_MINOR_VERSION=8
-LIBTIFF_MICRO_VERSION=2
+LIBTIFF_MINOR_VERSION=9
+LIBTIFF_MICRO_VERSION=1
 LIBTIFF_ALPHA_VERSION=
 LIBTIFF_VERSION=$LIBTIFF_MAJOR_VERSION.$LIBTIFF_MINOR_VERSION.$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
 dnl This will be used with the 'make release' target
@@ -53,10 +53,10 @@ LIBTIFF_RELEASE_DATE=`date +"%Y%m%d"`
 # See http://bugzilla.remotesensing.org/show_bug.cgi?id=838 for details.
 case "$target_os" in
     openbsd* | mirbsd*)
-	LIBTIFF_VERSION_INFO=$LIBTIFF_MAJOR_VERSION$LIBTIFF_MINOR_VERSION:$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION:0
+	LIBTIFF_VERSION_INFO=$LIBTIFF_MAJOR_VERSION$LIBTIFF_MINOR_VERSION:$LIBTIFF_MICRO_VERSION:0
 	;;
     *)
-	LIBTIFF_VERSION_INFO=$LIBTIFF_MAJOR_VERSION:$LIBTIFF_MINOR_VERSION:$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
+	LIBTIFF_VERSION_INFO=$LIBTIFF_MAJOR_VERSION:$LIBTIFF_MINOR_VERSION:$LIBTIFF_MICRO_VERSION
 	;;
 esac
 
@@ -68,32 +68,49 @@ AC_SUBST(LIBTIFF_VERSION)
 AC_SUBST(LIBTIFF_VERSION_INFO)
 AC_SUBST(LIBTIFF_RELEASE_DATE)
 
+# Ensure that make can run correctly
+AM_SANITY_CHECK
+
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CC_STDC
+AC_PROG_CPP
+LT_PATH_LD
+
 AM_PROG_CC_C_O
+LT_PATH_LD
 
 dnl We want warnings. As many warnings as possible.
 VL_PROG_CC_WARNINGS()
-
 AC_PROG_INSTALL
+AC_PROG_MAKE_SET
 AC_PROG_LN_S
-AC_PROG_LIBTOOL
-AC_LIBTOOL_WIN32_DLL
+
+dnl Tests for Windows
+AC_EXEEXT
+AC_OBJEXT
+
+dnl initialize libtool
+LT_INIT([win32-dll])
+LT_LANG([C++])
+
+# Enable support for silent build rules
+AM_SILENT_RULES
 
 dnl Checks for libraries.
 AC_CHECK_LIB([c], [main])
 
-dnl We don't need to add math library at all targets
-case "$target_os" in
+dnl We don't need to add math library to all targets
+case "${host_os}" in
     cygwin* | mingw32* | beos* | darwin*)
         ;;
     *)
-	AC_CHECK_LIB(m,main,,,)
+	AC_CHECK_LIB(m,sin,,,)
         ;;
 esac
 
 dnl Checks for header files.
-AC_CHECK_HEADERS([assert.h fcntl.h limits.h malloc.h search.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([assert.h fcntl.h io.h limits.h malloc.h search.h sys/time.h unistd.h])
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -113,8 +130,55 @@ AC_CHECK_TYPES([int8, int16, int32],,,
 #endif
 ])
 
+# Obtain size of a 'signed long' and define as SIZEOF_SIGNED_LONG
+AC_CHECK_SIZEOF(signed long)
+
+# Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
+AC_CHECK_SIZEOF(unsigned long)
+
+# Obtain size of a 'long long' and define as SIZEOF_SIGNED_LONG_LONG.
+# If 'long long' is not supported then the value defined is zero.
+AC_CHECK_SIZEOF(signed long long)
+
+# Obtain size of a 'unsigned long long' and define as
+# SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
+# supported then the value defined is zero.
+AC_CHECK_SIZEOF(unsigned long long)
+
+AC_MSG_CHECKING(for signed 64-bit type)
+INT64_T='none'
+INT64_FORMAT='none'
+if test $ac_cv_sizeof_signed_long -eq 8
+then
+  INT64_T='signed long'
+  INT64_FORMAT='"%ld"'
+elif test $ac_cv_sizeof_signed_long_long -eq 8
+then
+  INT64_FORMAT='"%lld"'
+  INT64_T='signed long long'
+fi
+AC_MSG_RESULT($INT64_T)
+AC_DEFINE_UNQUOTED(TIFF_INT64_T,$INT64_T,[Signed 64-bit type])
+AC_DEFINE_UNQUOTED(TIFF_INT64_FORMAT,$INT64_FORMAT,[Signed 64-bit type formatter])
+
+AC_MSG_CHECKING(for unsigned 64-bit type)
+UINT64_T='none'
+UINT64_FORMAT='none'
+if test $ac_cv_sizeof_unsigned_long -eq 8
+then
+  UINT64_T='unsigned long'
+  UINT64_FORMAT='"%lu"'
+elif test $ac_cv_sizeof_unsigned_long_long -eq 8
+then
+  UINT64_T='unsigned long long'
+  UINT64_FORMAT='"%llu"'
+fi
+AC_MSG_RESULT($UINT64_T)
+AC_DEFINE_UNQUOTED(TIFF_UINT64_T,$UINT64_T,[Unsigned 64-bit type])
+AC_DEFINE_UNQUOTED(TIFF_UINT64_FORMAT,$UINT64_FORMAT,[Unsigned 64-bit type formatter])
+
 dnl Checks for library functions.
-AC_CHECK_FUNCS([floor isascii memmove memset mmap pow sqrt strchr strrchr strstr strtol])
+AC_CHECK_FUNCS([floor isascii memmove memset mmap pow setmode sqrt strchr strrchr strstr strtol])
 
 dnl Will use local replacements for unavailable functions
 AC_REPLACE_FUNCS(getopt)
@@ -389,15 +453,70 @@ dnl Check for Old JPEG.
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE(old-jpeg,
-	      AS_HELP_STRING([--enable-old-jpeg],
-			     [enable support for Old JPEG compresson (read contrib/ojpeg/README first! Compilation fails with unpatched IJG JPEG library)]),
-	      [HAVE_OJPEG=$enableval], [HAVE_OJPEG=no])
+	      AS_HELP_STRING([--disable-old-jpeg],
+			     [disable support for Old JPEG compresson (read-only, enabled by default)]),
+	      [HAVE_OJPEG=${enableval}], [HAVE_OJPEG=yes])
 
 if test "$HAVE_JPEG" = "yes" -a "$HAVE_OJPEG" = "yes" ; then
   AC_DEFINE(OJPEG_SUPPORT, 1,
-	    [Support Old JPEG compresson (read contrib/ojpeg/README first! Compilation fails with unpatched IJG JPEG library)])
+	    [Support Old JPEG compresson (read-only)])
 else
   HAVE_OJPEG=no
+fi
+
+dnl ---------------------------------------------------------------------------
+dnl Check for JBIG-KIT.
+dnl ---------------------------------------------------------------------------
+
+HAVE_JBIG=no
+
+AC_ARG_ENABLE(jbig,
+	      AS_HELP_STRING([--disable-jbig],
+			     [disable JBIG-KIT usage (required for ISO JBIG compression, enabled by default)]),,)
+AC_ARG_WITH(jbig-include-dir,
+	    AS_HELP_STRING([--with-jbig-include-dir=DIR],
+			   [location of JBIG-KIT headers]),,)
+AC_ARG_WITH(jbig-lib-dir,
+	    AS_HELP_STRING([--with-jbig-lib-dir=DIR],
+			   [location of JBIG-KIT library binary]),,)
+
+if test "x$enable_jbig" != "xno" ; then
+
+  if test "x$with_jbig_lib_dir" != "x" ; then
+    LDFLAGS="-L$with_jbig_lib_dir $LDFLAGS"
+  
+  fi
+  
+  AC_CHECK_LIB(jbig, jbg_dec_init, [jbig_lib=yes], [jbig_lib=no],)
+  if test "$jbig_lib" = "no" -a "x$with_jbig_lib_dir" != "x" ; then
+    AC_MSG_ERROR([JBIG-KIT library not found at $with_jbig_lib_dir])
+  fi
+    
+  if test "x$with_jbig_include_dir" != "x" ; then
+    CPPFLAGS="-I$with_jbig_include_dir $CPPFLAGS"
+  fi
+  AC_CHECK_HEADER(jbig.h, [jbig_h=yes], [jbig_h=no])
+  if test "$jbig_h" = "no" -a "x$with_jbig_include_dir" != "x" ; then
+    AC_MSG_ERROR([JBIG-KIT library headers not found at $with_jbig_include_dir])
+  fi
+
+  if test "$jbig_lib" = "yes" -a "$jbig_h" = "yes" ; then
+    HAVE_JBIG=yes
+  fi
+
+fi
+
+if test "$HAVE_JBIG" = "yes" ; then
+  AC_DEFINE(JBIG_SUPPORT,1,[Support ISO JBIG compression (requires JBIG-KIT library)])
+  LIBS="-ljbig $LIBS"
+
+  if test "$HAVE_RPATH" = "yes" -a "x$with_jbig_lib_dir" != "x" ; then
+    LIBDIR="-R $with_jbig_lib_dir $LIBDIR"
+  fi
+
+  # Older versions of jbigkit lack jbg_newlen
+  AC_CHECK_FUNCS([jbg_newlen])
+
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -435,6 +554,20 @@ if test "$no_x" != "yes" -a "$no_gl" != "yes" \
 fi
 
 AM_CONDITIONAL(HAVE_OPENGL, test "$HAVE_OPENGL" = "yes")
+
+dnl ---------------------------------------------------------------------------
+dnl Check for X Athena Widgets
+dnl ---------------------------------------------------------------------------
+
+dnl HAVE_XAW=no
+
+dnl ICE_FIND_ATHENA
+
+dnl if test "$no_xaw" != "yes" ; then
+dnl   HAVE_XAW=yes
+dnl fi
+
+dnl AM_CONDITIONAL(HAVE_XAW, test "$HAVE_XAW" = "yes")
 
 dnl ===========================================================================
 dnl ``Orthogonal Features''
@@ -508,6 +641,7 @@ AC_SUBST(LIBDIR)
 AC_CONFIG_HEADERS([libtiff/tif_config.h libtiff/tiffconf.h])
 
 AC_CONFIG_FILES([Makefile \
+		 build/Makefile \
 		 contrib/Makefile \
 		 contrib/acorn/Makefile \
 		 contrib/addtiffo/Makefile \
@@ -517,7 +651,6 @@ AC_CONFIG_FILES([Makefile \
 		 contrib/mac-cw/Makefile \
 		 contrib/mac-mpw/Makefile \
 		 contrib/mfs/Makefile \
-		 contrib/ojpeg/Makefile \
 		 contrib/pds/Makefile \
 		 contrib/ras/Makefile \
 		 contrib/stream/Makefile \
@@ -560,9 +693,11 @@ LOC_MSG([  ZLIB support:                       ${HAVE_ZLIB}])
 LOC_MSG([  Pixar log-format algorithm:         ${HAVE_PIXARLOG}])
 LOC_MSG([  JPEG support:                       ${HAVE_JPEG}])
 LOC_MSG([  Old JPEG support:                   ${HAVE_OJPEG}])
+LOC_MSG([  ISO JBIG support:                   ${HAVE_JBIG}])
 LOC_MSG()
 LOC_MSG([  C++ support:                        ${HAVE_CXX}])
 LOC_MSG()
+dnl LOC_MSG([  X Athena Widgets support:           ${HAVE_XAW}])
 LOC_MSG([  OpenGL support:                     ${HAVE_OPENGL}])
 LOC_MSG()
 
