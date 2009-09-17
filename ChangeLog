@@ -1,5 +1,8 @@
 2009-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.c (NTGhostscriptFind): Make sure we close the
+	registry key.  Log any Windows error messages.
+
 	* magick/profile.c (AppendImageProfile): New function to add or
 	append a profile.  If the profile already exists, then the data
 	provided is appended to it.

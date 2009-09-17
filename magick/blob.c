@@ -1802,8 +1802,12 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         }
 
       if (logging)
-        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-          "Tried: %.1024s [%.1024s]",test_path,strerror(errno));
+	{
+	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				"Tried: %.1024s [%.1024s]",test_path,
+				strerror(errno));
+	  errno=0;
+	}
     }
   MagickMapDeallocateIterator(path_map_iterator);
   MagickMapDeallocateMap(path_map);

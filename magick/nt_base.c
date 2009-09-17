@@ -58,6 +58,7 @@ static void
 static GhostscriptVectors
     gs_vectors;
 
+static MagickPassFail NTstrerror_r(LONG errnum, char *strerrbuf, size_t  buflen);
 
 /*
   External declarations.
@@ -887,15 +888,25 @@ NTGhostscriptFind(const char **gs_productfamily,
 	hkey,
 	hkeyroot;
 
+      LONG
+	winstatus;
+
       char
-	key[MaxTextExtent];
+	key[MaxTextExtent],
+	last_error_msg[MaxTextExtent];
 
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
 			    "  Searching for %s...",
 			    products[product_index]);
       FormatString(key,"SOFTWARE\\%s",products[product_index]);
       hkeyroot = HKEY_LOCAL_MACHINE;
-      if (RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey) == ERROR_SUCCESS)
+      /*
+	long WINAPI RegOpenKeyEx(const HKEY hKey, const LPCTSTR
+	lpSubKey, const DWORD ulOptions, const REGSAM samDesired,
+	PHKEY phkResult)
+      */
+      if ((winstatus=RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey))
+	  == ERROR_SUCCESS)
 	{
 	  DWORD
 	    cbData;
@@ -904,12 +915,23 @@ NTGhostscriptFind(const char **gs_productfamily,
 	    n;
 
 	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-				"    RegOpenKeyExA() opened \"HKEY_LOCAL_MACHINE\\%s\"",
+				"    RegOpenKeyExA() opened "
+				"\"HKEY_LOCAL_MACHINE\\%s\"",
 				key);
 	  /* Now enumerate the keys */
 	  cbData = sizeof(key) / sizeof(char);
 	  n=0;
-	  while (RegEnumKeyA(hkey, n, key, cbData) == ERROR_SUCCESS)
+	  /*
+	    LONG WINAPI RegEnumKeyEx(HKEY hKey, DWORD dwIndex, LPTSTR
+	    lpName, LPDWORD lpcName, LPDWORD lpReserved, LPTSTR
+	    lpClass, LPDWORD lpcClass, PFILETIME lpftLastWriteTime)
+
+	    Enumerates the subkeys of the specified open registry key. 
+
+	    RegEnumKeyA is is provided only for compatibility with
+	    16-bit versions of Windows.
+	  */
+	  while ((winstatus=RegEnumKeyA(hkey, n, key, cbData)) == ERROR_SUCCESS)
 	    {
 	      int
 		major_version,
@@ -939,12 +961,33 @@ NTGhostscriptFind(const char **gs_productfamily,
 		  status=MagickPass;
 		}
 	    }
+	  if (winstatus != ERROR_NO_MORE_ITEMS)
+	    {
+	      (void) NTstrerror_r(winstatus,last_error_msg,sizeof(last_error_msg));
+	      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				    "      RegEnumKeyA (%s)",
+				    last_error_msg);
+	    }
+	  /*
+	    LONG WINAPI RegCloseKey(HKEY hKey)
+	    
+	    Close the registry key.
+	  */
+	  winstatus=RegCloseKey(hkey);
 	}
       else
 	{
+	  /*
+	    If the function fails, the return value is a nonzero error
+	    code defined in Winerror.h. You can use the FormatMessage
+	    function with the FORMAT_MESSAGE_FROM_SYSTEM flag to get a
+	    generic description of the error.
+	   */
+	  (void) NTstrerror_r(winstatus,last_error_msg,sizeof(last_error_msg));
 	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-				"    RegOpenKeyExA() failed to open \"HKEY_LOCAL_MACHINE\\%s\"",
-				key);
+				"    RegOpenKeyExA() failed to open "
+				"\"HKEY_LOCAL_MACHINE\\%s\" (%s)",
+				key,last_error_msg);
 	}
     }
   if (status != MagickFail)
@@ -1566,6 +1609,67 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   UnlockResource(global); /* Obsolete 16 bit API with no replacement */
   FreeResource(global); /* Obsolete 16 bit API */
   return(blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   N T s t r e r r o r _ r                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTstrerror_r formats a returned Windows error code into a
+%   message string in a thread-safe manner.  MagickFail is returned if a
+%   message could not be found corresponding to the error code, otherwise
+%   MagickPass is returned.
+%
+%  The format of the NTstrerror_r method is:
+%
+%      MagickPassFail NTstrerror_r(LONG errnum, char *strerrbuf, size_t  buflen)
+%
+%  A description of each parameter follows:
+%
+%    o errnum: Windows error number
+%
+%    o strerrbuf: A buffer in which to write the message.
+%
+%    o buflen: The allocation length of the buffer.
+%
+*/
+static MagickPassFail
+NTstrerror_r(LONG errnum, char *strerrbuf, size_t  buflen)
+{
+  MagickPassFail
+    status;
+
+  LPVOID
+    buffer;
+
+  status=MagickFail;
+  if (buflen > 0)
+    strerrbuf[0]='\0';
+  if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		    FORMAT_MESSAGE_FROM_SYSTEM,NULL,errnum,
+		    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
+		    (LPTSTR) &buffer,0,NULL))
+    {
+      if (strlcpy(strerrbuf,buffer,buflen) < buflen)
+	{
+	  size_t
+	    index;
+
+	  for (index=0; strerrbuf[index] != 0; index++)
+	    if (strerrbuf[index] == '\015')
+	      strerrbuf[index]='\0';
+	  status=MagickPass;
+	}
+      LocalFree(buffer);
+    }
+  return status;
 }
 
 /*
