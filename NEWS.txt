@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on July 25, 2009
+This file was last updated on September 27, 2009
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,109 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.7 (September 17, 2009)
+==========================
+
+Security Fixes:
+
+  * PCX: Detect improper rows, columns, or depth.  Fixes CVE-2008-1097
+    "Memory corruption in ImageMagick's PCX coder".
+
+  * DrawDashPolygon: Avoid a crash which sometimes occured with tiny
+    polygons.
+
+Bug fixes:
+
+  * JPEG: Profile chunks need to be concatentated in order to build
+    the whole profile.  This was not working so embedded profiles
+    larger than 32K or maybe 64K were being corrupted.  This bug was
+    introduced in GraphicsMagick 1.2.
+
+  * Meta: Fix memory leaks.
+
+  * Meta: Work better with with IPTC record 2 blocks and deal better
+    with IPTC embedded in an 8BIM profile.  Fixes by John Sergeant.
+
+  * MPC: Fix crash when reading MPC and the input image is modified.
+
+  * PNG: Ensure that the opacity channel is properly initialized.
+
+  * -profile: Lowercase arguments were sometimes not working as
+    expected.
+
+  * Topol: Topol reader actually works now and is included in test
+    suite.
+
+  * TIFF: Read and write JPEG-compressed grayscale TIFF correctly.
+
+  * VisualMagick configure now works properly when output paths are
+    specified.
+
+  * WMF: Eliminate memory leaks.
+
+New Features:
+
+  * MagickWand: New method MagickSetCompressionQuality() to allow
+    setting the compression quality.
+
+  * MagickWand: New method CloneDrawingWand() to deep-copy a drawing
+    wand.
+
+  * MagickWand: New method DrawGetException() to retrieve information
+    regarding the last drawing wand exception (if any).
+
+  * MagickWand: New method DrawClearException() to clear a drawing wand
+    exception.
+
+  * Magick++: New Image method cdl() to apply the ASC CDL.
+
+  * Magick++: New Image method colorMatrix() to apply a color matrix
+    to the image channels.
+
+  * Magick++: New Image method haldClut)() to apply a color lookup
+    table (Hald CLUT) to the image.
+
+  * MSL/Conjure: Added a new 'profile' command which applies, adds, or
+    removes one or more IPTC, ICC or generic profiles from a file.
+    Work contributed by John Sergeant.
+
+  * Added a 'time' subcommand to provide Unix-style 'time' output when
+    a 'time' capability is missing, or the reporting format is
+    inconsistent.  For example 'gm time convert ...'.
+
+Feature improvements:
+
+  * ColorMatrixImage(): Add opaque opacity channel when needed.
+
+  * PDF & PS: Use '-type palette' prior to input file name to cause
+    Ghostscript to return a dithered colormapped image.
+
+  * PNG: Now compiles with libpng-1.4.0beta74 and later.
+
+  * TIFF: Libtiff in Windows build is upgraded to 3.9.1.  This allows
+    GraphicsMagick to read and write 16 and 24 bit float TIFF files.
+
+  * Windows code to find Ghostscript is rewritten from scratch.
+
+Performance Improvements:
+
+  * Drawing of points, lines, and polygons (and complex shapes based
+    on these) is now accelerated using OpenMP with excellent speed-up.
+
+  * ICC color transforms now see linear speedup from OpenMP.
+
+  * Rotate: For rotations of 90 or 270 degrees, tile sizes are
+    selected more appropriately.
+
+Behavior Changes:
+
+  * No longer clear the exception structure at the start of
+    ReadImage() and other similar functions since this sometimes masks
+    errors.  The API user is expected to make sure that the exception
+    structure is clean prior to invoking a function.
+
+  * SVG: Writer is now disabled since it usually does not work properly.
 
 1.3.6 (July 25, 2009)
 =====================

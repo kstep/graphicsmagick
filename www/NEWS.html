@@ -53,26 +53,117 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on July 25, 2009</p>
+<p>This file was last updated on September 27, 2009</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#july-25-2009" id="id1">1.3.6 (July 25, 2009)</a></li>
-<li><a class="reference internal" href="#january-26-2009" id="id2">1.3.5 (January 26, 2009)</a></li>
-<li><a class="reference internal" href="#january-13-2009" id="id3">1.3.4 (January 13, 2009)</a></li>
-<li><a class="reference internal" href="#december-9-2008" id="id4">1.3.3 (December 9, 2008)</a></li>
-<li><a class="reference internal" href="#november-29-2008" id="id5">1.3.2 (November 29, 2008)</a></li>
-<li><a class="reference internal" href="#november-17-2008" id="id6">1.3.1 (November 17, 2008)</a></li>
-<li><a class="reference internal" href="#november-9-2008" id="id7">1.3 (November 9, 2008)</a></li>
-<li><a class="reference internal" href="#april-29-2008" id="id8">1.2 (April 29, 2008)</a></li>
-<li><a class="reference internal" href="#released-april-4-2004" id="id9">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference internal" href="#released-in-may-2003" id="id10">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference internal" href="#september-17-2009" id="id1">1.3.7 (September 17, 2009)</a></li>
+<li><a class="reference internal" href="#july-25-2009" id="id2">1.3.6 (July 25, 2009)</a></li>
+<li><a class="reference internal" href="#january-26-2009" id="id3">1.3.5 (January 26, 2009)</a></li>
+<li><a class="reference internal" href="#january-13-2009" id="id4">1.3.4 (January 13, 2009)</a></li>
+<li><a class="reference internal" href="#december-9-2008" id="id5">1.3.3 (December 9, 2008)</a></li>
+<li><a class="reference internal" href="#november-29-2008" id="id6">1.3.2 (November 29, 2008)</a></li>
+<li><a class="reference internal" href="#november-17-2008" id="id7">1.3.1 (November 17, 2008)</a></li>
+<li><a class="reference internal" href="#november-9-2008" id="id8">1.3 (November 9, 2008)</a></li>
+<li><a class="reference internal" href="#april-29-2008" id="id9">1.2 (April 29, 2008)</a></li>
+<li><a class="reference internal" href="#released-april-4-2004" id="id10">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference internal" href="#released-in-may-2003" id="id11">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
+<div class="section" id="september-17-2009">
+<h1><a class="toc-backref" href="#id1">1.3.7 (September 17, 2009)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>PCX: Detect improper rows, columns, or depth.  Fixes CVE-2008-1097
+&quot;Memory corruption in ImageMagick's PCX coder&quot;.</li>
+<li>DrawDashPolygon: Avoid a crash which sometimes occured with tiny
+polygons.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>JPEG: Profile chunks need to be concatentated in order to build
+the whole profile.  This was not working so embedded profiles
+larger than 32K or maybe 64K were being corrupted.  This bug was
+introduced in GraphicsMagick 1.2.</li>
+<li>Meta: Fix memory leaks.</li>
+<li>Meta: Work better with with IPTC record 2 blocks and deal better
+with IPTC embedded in an 8BIM profile.  Fixes by John Sergeant.</li>
+<li>MPC: Fix crash when reading MPC and the input image is modified.</li>
+<li>PNG: Ensure that the opacity channel is properly initialized.</li>
+<li>-profile: Lowercase arguments were sometimes not working as
+expected.</li>
+<li>Topol: Topol reader actually works now and is included in test
+suite.</li>
+<li>TIFF: Read and write JPEG-compressed grayscale TIFF correctly.</li>
+<li>VisualMagick configure now works properly when output paths are
+specified.</li>
+<li>WMF: Eliminate memory leaks.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>MagickWand: New method MagickSetCompressionQuality() to allow
+setting the compression quality.</li>
+<li>MagickWand: New method CloneDrawingWand() to deep-copy a drawing
+wand.</li>
+<li>MagickWand: New method DrawGetException() to retrieve information
+regarding the last drawing wand exception (if any).</li>
+<li>MagickWand: New method DrawClearException() to clear a drawing wand
+exception.</li>
+<li>Magick++: New Image method cdl() to apply the ASC CDL.</li>
+<li>Magick++: New Image method colorMatrix() to apply a color matrix
+to the image channels.</li>
+<li>Magick++: New Image method haldClut)() to apply a color lookup
+table (Hald CLUT) to the image.</li>
+<li>MSL/Conjure: Added a new 'profile' command which applies, adds, or
+removes one or more IPTC, ICC or generic profiles from a file.
+Work contributed by John Sergeant.</li>
+<li>Added a 'time' subcommand to provide Unix-style 'time' output when
+a 'time' capability is missing, or the reporting format is
+inconsistent.  For example 'gm time convert ...'.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>ColorMatrixImage(): Add opaque opacity channel when needed.</li>
+<li>PDF &amp; PS: Use '-type palette' prior to input file name to cause
+Ghostscript to return a dithered colormapped image.</li>
+<li>PNG: Now compiles with libpng-1.4.0beta74 and later.</li>
+<li>TIFF: Libtiff in Windows build is upgraded to 3.9.1.  This allows
+GraphicsMagick to read and write 16 and 24 bit float TIFF files.</li>
+<li>Windows code to find Ghostscript is rewritten from scratch.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Drawing of points, lines, and polygons (and complex shapes based
+on these) is now accelerated using OpenMP with excellent speed-up.</li>
+<li>ICC color transforms now see linear speedup from OpenMP.</li>
+<li>Rotate: For rotations of 90 or 270 degrees, tile sizes are
+selected more appropriately.</li>
+</ul>
+</blockquote>
+<p>Behavior Changes:</p>
+<blockquote>
+<ul class="simple">
+<li>No longer clear the exception structure at the start of
+ReadImage() and other similar functions since this sometimes masks
+errors.  The API user is expected to make sure that the exception
+structure is clean prior to invoking a function.</li>
+<li>SVG: Writer is now disabled since it usually does not work properly.</li>
+</ul>
+</blockquote>
+</div>
 <div class="section" id="july-25-2009">
-<h1><a class="toc-backref" href="#id1">1.3.6 (July 25, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id2">1.3.6 (July 25, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -206,7 +297,7 @@ progressive JPEG.</li>
 </blockquote>
 </div>
 <div class="section" id="january-26-2009">
-<h1><a class="toc-backref" href="#id2">1.3.5 (January 26, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id3">1.3.5 (January 26, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -245,7 +336,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="january-13-2009">
-<h1><a class="toc-backref" href="#id3">1.3.4 (January 13, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id4">1.3.4 (January 13, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -284,7 +375,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="december-9-2008">
-<h1><a class="toc-backref" href="#id4">1.3.3 (December 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id5">1.3.3 (December 9, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -316,7 +407,7 @@ used in a directory containing a million files.</li>
 </blockquote>
 </div>
 <div class="section" id="november-29-2008">
-<h1><a class="toc-backref" href="#id5">1.3.2 (November 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id6">1.3.2 (November 29, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -350,7 +441,7 @@ process the opacity channel unless the image has one.</li>
 </blockquote>
 </div>
 <div class="section" id="november-17-2008">
-<h1><a class="toc-backref" href="#id6">1.3.1 (November 17, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id7">1.3.1 (November 17, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -388,7 +479,7 @@ encoding is used via jpeg:optimize-coding define.</li>
 </blockquote>
 </div>
 <div class="section" id="november-9-2008">
-<h1><a class="toc-backref" href="#id7">1.3 (November 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id8">1.3 (November 9, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -596,7 +687,7 @@ dither any named channel.</li>
 </blockquote>
 </div>
 <div class="section" id="april-29-2008">
-<h1><a class="toc-backref" href="#id8">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id9">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -852,7 +943,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section" id="released-april-4-2004">
-<h1><a class="toc-backref" href="#id9">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id10">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1092,7 +1183,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section" id="released-in-may-2003">
-<h1><a class="toc-backref" href="#id10">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id11">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1248,7 +1339,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:41 UTC.
+Generated on: 2009-09-17 21:32 UTC.
 
 </div>
 </body>
