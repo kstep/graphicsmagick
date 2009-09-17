@@ -42,11 +42,11 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
-#include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/profile.h"
 #include "magick/resource.h"
 #include "magick/utility.h"
@@ -385,7 +385,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Store profile in Image.
   */
-  status=SetImageProfile(image,profile_name,profile,length);
+  status=AppendImageProfile(image,profile_name,profile,length);
   MagickFreeMemory(profile);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
@@ -451,13 +451,14 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ICC profile: %ld bytes",
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			"ICC profile chunk: %ld bytes",
     length);
 
   for (i=0 ; i < length; i++)
    profile[i]=GetCharacter(jpeg_info);
 
-  (void) SetImageProfile(image,"ICM",profile,length);
+  (void) AppendImageProfile(image,"ICM",profile,length);
 
   MagickFreeMemory(profile);
 
@@ -562,7 +563,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   for (i=0; i<length; i++)
     profile[i]=GetCharacter(jpeg_info);
 
-  (void) SetImageProfile(image,"IPTC",profile,length);
+  (void) AppendImageProfile(image,"IPTC",profile,length);
 
   MagickFreeMemory(profile);
   return(True);
@@ -1187,7 +1188,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	}
       if (QuantumTick(y,image->rows))
 	if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
-				    image->filename))
+				    image->filename,
+				    image->columns,image->rows))
 	  {
 	    status=MagickFail;
 	    break;
@@ -2158,7 +2160,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                            SaveImageText,image->filename))
+                                            SaveImageText,image->filename,
+					    image->columns,image->rows))
                   break;
             }
         }
@@ -2185,7 +2188,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                              SaveImageText,image->filename))
+                                              SaveImageText,image->filename,
+					      image->columns,image->rows))
                     break;
               }
           }
@@ -2214,7 +2218,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                              SaveImageText,image->filename))
+                                              SaveImageText,image->filename,
+					      image->columns,image->rows))
                     break;
               }
           }
@@ -2250,7 +2255,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                          SaveImageText,image->filename))
+                                          SaveImageText,image->filename,
+					  image->columns,image->rows))
                 break;
           }
       }
@@ -2277,7 +2283,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                            SaveImageText,image->filename))
+                                            SaveImageText,image->filename,
+					    image->columns,image->rows))
                   break;
             }
         }
@@ -2306,7 +2313,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
               if (QuantumTick(y,image->rows))
                 if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                            SaveImageText,image->filename))
+                                            SaveImageText,image->filename,
+					    image->columns,image->rows))
                   break;
             }
         }

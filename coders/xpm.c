@@ -37,10 +37,11 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/quantize.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
@@ -766,7 +767,8 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,picon->rows))
       if (!MagickMonitorFormatted(y,picon->rows,&image->exception,
-                                  SaveImageText,image->filename))
+                                  SaveImageText,image->filename,
+				  image->columns,image->rows))
         break;
   }
   DestroyImage(picon);
@@ -990,7 +992,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
       if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                  SaveImageText,image->filename))
+                                  SaveImageText,image->filename,
+				  image->columns,image->rows))
         break;
   }
   (void) WriteBlobString(image,"};\n");

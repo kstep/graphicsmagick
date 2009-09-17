@@ -11,7 +11,7 @@
 # Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
 #
  
-AC_PREREQ(2.63)
+AC_PREREQ(2.64)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
@@ -858,7 +858,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers 
-AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/resource.h sys/times.h sys/types.h)
 
 ########
 #
@@ -1099,12 +1099,12 @@ AC_SUBST(UINTPTR_F)
 ########
 GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
-  getc_unlocked getpagesize getpid lltostr localtime_r madvise mkstemp \
-  _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
+  getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
+  mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise pread pwrite putc_unlocked raise rand_r \
-  readdir_r readlink realpath select seekdir sigemptyset sigaction strerror \
-  strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r times telldir \
-  ulltostr vsprintf vsnprintf])
+  readdir_r readlink realpath select seekdir setrlimit sigemptyset sigaction \
+  strerror strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r times \
+  telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #
@@ -1383,6 +1383,8 @@ then
     AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
     # AIX xlc
     AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    # SGI IRIX 6.5 MIPSpro C/C++
+    AC_CHECK_LIB(mp,mp_destroy,LIB_OMP="-lmp",,)
   fi
   LIBS="$LIB_OMP $LIBS"
 fi
@@ -1818,6 +1820,7 @@ changequote(<<, >>)dnl
 <<
 #if JPEG_LIB_VERSION < 62
 #error IJG JPEG library must be version 6b or newer!
+Kaboom, Kaboom
 #endif
 return 0;
 >>,
@@ -2689,6 +2692,7 @@ AM_CONDITIONAL(HAS_ZIP, test "x$ZIP" != "x" )
 GSColorDevice=ppmraw
 GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
+GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
@@ -2741,6 +2745,16 @@ then
   fi
   AC_MSG_RESULT($GSGrayDevice)
 
+  # GSPaletteDevice
+  AC_MSG_CHECKING([for gs pallet device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSPaletteDevice=pcx256
+  else
+    GSPaletteDevice=ppmraw
+  fi
+  AC_MSG_RESULT($GSPaletteDevice)
+
   # GSMonoDevice
   AC_MSG_CHECKING([for gs mono device])
   if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
@@ -2785,6 +2799,7 @@ fi
 
 AC_SUBST(GSMonoDevice)
 AC_SUBST(GSGrayDevice)
+AC_SUBST(GSPaletteDevice)
 AC_SUBST(GSColorDevice)
 AC_SUBST(GSColorAlphaDevice)
 AC_SUBST(GSPDFDevice)

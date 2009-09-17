@@ -41,7 +41,9 @@ extern MagickExport unsigned int
                       char **metadata,ExceptionInfo *exception),
   MogrifyImages(const ImageInfo *,int,char **,Image **),
   MontageImageCommand(ImageInfo *image_info,int argc,char **argv,
-                      char **metadata,ExceptionInfo *exception);
+                      char **metadata,ExceptionInfo *exception),
+  TimeImageCommand(ImageInfo *image_info,int argc,char **argv,
+		   char **metadata,ExceptionInfo *exception);
 
 extern MagickExport int
   GMCommand(int argc,char **argv);

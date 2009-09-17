@@ -540,7 +540,8 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 MagickExport MagickPassFail CloneString(char **destination,const char *source)
 {
   size_t
-    allocation_length;
+    allocation_length,
+    string_length;
 
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
@@ -548,13 +549,14 @@ MagickExport MagickPassFail CloneString(char **destination,const char *source)
       MagickFreeMemory(*destination);
       return(MagickPass);
     }
-  allocation_length=strlen(source)+1;
+  string_length=strlen(source);
+  allocation_length=string_length+1;
   MagickRoundUpStringLength(allocation_length);
   MagickReallocMemory(char *,*destination,allocation_length);
   if (*destination == (char *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateString);
-  (void) strcpy(*destination,source);
+  (void) memcpy(*destination,source,string_length+1);
   return(MagickPass);
 }
 
@@ -948,6 +950,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       /*
 	Expand @filename to a list of arguments.
       */
+      j=0;
       if (option[0] == '@')
 	{
 	  FILE

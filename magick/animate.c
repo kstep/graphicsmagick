@@ -194,7 +194,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
           continue;
         (void) SetMonitorHandler(handler);
         if (!MagickMonitorFormatted(i,number_files,&image->exception,
-                                    LoadImageText,image->filename))
+                                    LoadImagesText,image->filename))
           break;
       }
       DestroyExceptionInfo(&exception);

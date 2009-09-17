@@ -317,6 +317,13 @@ extern "C" {
   GetCacheInfo(Cache *cache);
 
   /*
+    GetPixelCacheInCore() tests to see the pixel cache is based on
+    allocated memory and therefore supports efficient random access.
+  */
+  extern MagickBool
+  GetPixelCacheInCore(const Image *image);
+
+  /*
     GetPixelCachePresent() tests to see the pixel cache is present
     and contains pixels.
   */

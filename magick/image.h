@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2008 GraphicsMagick Group
+  Copyright (C) 2003 - 2009 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -671,28 +671,6 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _ImageChannelStatistics
- {
-   /* Minimum value observed */
-   double maximum;
-   /* Maximum value observed */
-   double minimum;
-   /* Average (mean) value observed */
-   double mean;
-   /* Standard deviation, sqrt(variance) */
-   double standard_deviation;
-   /* Variance */
-   double variance;
- } ImageChannelStatistics;
-
-typedef struct _ImageStatistics
- {
-   ImageChannelStatistics red;
-   ImageChannelStatistics green;
-   ImageChannelStatistics blue;
-   ImageChannelStatistics opacity;
- } ImageStatistics;
-
 typedef struct _ImageCharacteristics
 {
   MagickBool
@@ -857,6 +835,7 @@ typedef struct _Image
   /*
     To be added here for a later release:
 
+    quality?
     subsampling
     video black/white setup levels (ReferenceBlack/ReferenceWhite)
     sample format (integer/float)
@@ -1041,7 +1020,6 @@ extern MagickExport ExceptionType
 extern MagickExport Image
   *AllocateImage(const ImageInfo *),
   *AppendImages(const Image *,const unsigned int,ExceptionInfo *),
-  *AverageImages(const Image *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
    const unsigned int,ExceptionInfo *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
@@ -1073,30 +1051,19 @@ extern MagickExport MagickBool
 extern MagickExport MagickPassFail
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
-  AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ClipImage(Image *),
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
-  CycleColormapImage(Image *image,const int amount),
-  DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
   GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
     const MagickBool optimize,ExceptionInfo *exception),
-  GetImageStatistics(const Image *image,ImageStatistics *statistics,
-    ExceptionInfo *exception),
-  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
-  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
-  ReplaceImageColormap(Image *image,const PixelPacket *colormap,
-    const unsigned int colors),
   SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
-  SortColormapByIntensity(Image *),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *);
+  SyncImage(Image *);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);

@@ -14,4 +14,4 @@ set -e # Exit on any error
 OUTFILE=TileThresholdWhite_out.miff
 rm -f ${OUTFILE}
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -white-threshold "80%" \
-                   -label "White Threshold" ${OUTFILE}
+                   -label 'White-Threshold' ${OUTFILE}

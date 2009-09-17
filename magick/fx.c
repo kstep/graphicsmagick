@@ -199,7 +199,7 @@ ColorizeImagePixelsCB(void *mutable_data,                /* User provided mutabl
 MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
-#define ColorizeImageText  "[%s] Colorize the image..."
+#define ColorizeImageText "[%s] Colorize..."
 
   ColorizeImagePixelsOptions
     options;
@@ -405,7 +405,7 @@ ColorMatrixImagePixels(void *mutable_data,         /* User provided mutable data
   return MagickPass;
 }
 
-#define ColorMatrixImageText  "[%s] Color matrix image..."
+#define ColorMatrixImageText "[%s] Color matrix..."
 MagickExport MagickPassFail
 ColorMatrixImage(Image *image,const unsigned int order,const double *color_matrix)
 {
@@ -465,8 +465,11 @@ ColorMatrixImage(Image *image,const unsigned int order,const double *color_matri
 	  }
       }
 
-    if (!image->matte)
-      options.matrix[3] = (double *) NULL;
+    /*
+      Add opacity channel if we will be updating opacity.
+    */
+    if ((!image->matte) && (options.matrix[3] != (double *) NULL))
+      SetImageOpacity(image,OpaqueOpacity);
   }
 
   if (LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -562,7 +565,7 @@ ColorMatrixImage(Image *image,const unsigned int order,const double *color_matri
 %
 %
 */
-#define ConvolveImageText  "[%s] Convolving image..."
+#define ConvolveImageText "[%s] Convolve: order %u..."
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
@@ -759,7 +762,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
           if (QuantumTick(row_count,image->rows))
             if (!MagickMonitorFormatted(row_count,image->rows,exception,
                                         ConvolveImageText,
-                                        convolve_image->filename))
+                                        convolve_image->filename,
+					order))
               thread_status=MagickFail;
           
           if (thread_status == MagickFail)
@@ -817,7 +821,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 MagickExport Image *ImplodeImage(const Image *image,const double amount,
                                  ExceptionInfo *exception)
 {
-#define ImplodeImageText  "[%s] Implode image..."
+#define ImplodeImageText "[%s] Implode..."
 
   double
     radius,
@@ -1032,7 +1036,7 @@ MorphImagePixelsCB(void *mutable_data,                /* User provided mutable d
 MagickExport Image *MorphImages(const Image *image,
   const unsigned long number_frames,ExceptionInfo *exception)
 {
-#define MorphImageText  "[%s] Morph image sequence..."
+#define MorphImageText "[%s] Morph sequence..."
 
   MorphImagePixelsOptions
     options;
@@ -1183,7 +1187,7 @@ MagickExport Image *MorphImages(const Image *image,
 MagickExport Image *OilPaintImage(const Image *image,const double radius,
                                   ExceptionInfo *exception)
 {
-#define OilPaintImageText  "[%s] OilPaint image..."
+#define OilPaintImageText "[%s] OilPaint..."
 
   Image
     *paint_image;
@@ -1389,7 +1393,7 @@ SolarizeImagePixelsCB(void *mutable_data,         /* User provided mutable data 
 }
 MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 {
-#define SolarizeImageText  "[%s] Solarize the image colors..."
+#define SolarizeImageText "[%s] Solarize..."
 
   unsigned int
     is_grayscale;
@@ -1469,7 +1473,7 @@ MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 #define GetBit(a,i) (((a) >> (i)) & 0x01)
 #define SetBit(a,i,set) \
   a=(Quantum) ((set) ? (a) | (1UL << (i)) : (a) & ~(1UL << (i)))
-#define SteganoImageText  "[%s] Stegano image..."
+#define SteganoImageText "[%s] Stegano..."
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
@@ -1605,7 +1609,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   ExceptionInfo *exception)
 {
-#define StereoImageText  "[%s] Stereo image..."
+#define StereoImageText "[%s] Stereo..."
 
   Image
     *stereo_image;
@@ -1702,7 +1706,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
 MagickExport Image *SwirlImage(const Image *image,double degrees,
                                ExceptionInfo *exception)
 {
-#define SwirlImageText  "[%s] Swirl image..."
+#define SwirlImageText "[%s] Swirl..."
 
   double
     radius,
@@ -1870,7 +1874,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 MagickExport Image *WaveImage(const Image *image,const double amplitude,
                               const double wave_length,ExceptionInfo *exception)
 {
-#define WaveImageText  "[%s] Wave image..."
+#define WaveImageText "[%s] Wave..."
 
   VirtualPixelMethod
     virtual_pixel_method;

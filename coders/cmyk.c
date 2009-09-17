@@ -221,7 +221,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -267,7 +268,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -310,7 +312,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               if (!MagickMonitorFormatted(i,span,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
           i++;
         }
@@ -340,7 +343,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               if (!MagickMonitorFormatted(i,span,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
           i++;
         }
@@ -370,7 +374,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               if (!MagickMonitorFormatted(i,span,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
           i++;
         }
@@ -400,7 +405,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               if (!MagickMonitorFormatted(i,span,&image->exception,
-                                          LoadImageText,image->filename))
+                                          LoadImageText,image->filename,
+					  image->columns,image->rows))
                 break;
           i++;
         }
@@ -437,7 +443,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(i,span))
                   if (!MagickMonitorFormatted(i,span,&image->exception,
-                                              LoadImageText,image->filename))
+                                              LoadImageText,image->filename,
+					      image->columns,image->rows))
                     break;
               i++;
             }
@@ -695,7 +702,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                          SaveImageText,image->filename))
+                                          SaveImageText,image->filename,
+					  image->columns,image->rows))
                 break;
         }
         break;
@@ -730,7 +738,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             }
           if (QuantumTick(y,image->rows))
             if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SaveImageText,image->filename))
+                                        SaveImageText,image->filename,
+					image->columns,image->rows))
               break;
         }
         break;
@@ -768,7 +777,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         if (!MagickMonitorFormatted(100,400,&image->exception,
-                                    SaveImageText,image->filename))
+                                    SaveImageText,image->filename,
+				    image->columns,image->rows))
           break;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -789,7 +799,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         if (!MagickMonitorFormatted(200,400,&image->exception,
-                                    SaveImageText,image->filename))
+                                    SaveImageText,image->filename,
+				    image->columns,image->rows))
           break;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -810,7 +821,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         if (!MagickMonitorFormatted(200,400,&image->exception,
-                                    SaveImageText,image->filename))
+                                    SaveImageText,image->filename,
+				    image->columns,image->rows))
           break;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -824,7 +836,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare(image_info->magick,"CMYKA") == 0)
           {
             if (!MagickMonitorFormatted(300,400,&image->exception,
-                                        SaveImageText,image->filename))
+                                        SaveImageText,image->filename,
+					image->columns,image->rows))
               break;
             if (image_info->interlace == PartitionInterlace)
               {
@@ -849,7 +862,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         if (image_info->interlace == PartitionInterlace)
           (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
         if (!MagickMonitorFormatted(400,400,&image->exception,
-                                    SaveImageText,image->filename))
+                                    SaveImageText,image->filename,
+				    image->columns,image->rows))
           break;
         break;
       }

@@ -72,8 +72,6 @@
 /*
   Define declarations.
 */
-#define DRAW_BINARY_IMPLEMENTATION 0
-
 #define CurrentContext  (drawing_wand->graphic_context[drawing_wand->index])
 #define WandColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
@@ -107,8 +105,14 @@ typedef enum
 struct _DrawingWand
 {
   /* Support structures */
+  ExceptionInfo
+    exception;
+
   Image
     *image;
+
+  MagickBool
+    own_image;          /* If true, then we own the image. */
 
   /* MVG output string and housekeeping */
   char
@@ -132,7 +136,7 @@ struct _DrawingWand
     pattern_offset;
 
   /* Graphic drawing_wand */
-  unsigned int
+  int
     index;              /* array index */
 
   DrawInfo
@@ -173,8 +177,6 @@ __attribute__ ((format (printf, 2, 3)))
 ;
 static void
   MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color);
-
-static const char *dummy_image_filename = "[MagickDrawingWandDummyImage]";
 
 
 /* "Printf" for MVG commands */
@@ -190,7 +192,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
       drawing_wand->mvg=(char *) AcquireMagickMemory(alloc_size);
       if ( drawing_wand->mvg == (char*) NULL )
         {
-          ThrowException3(&drawing_wand->image->exception,
+          ThrowException3(&drawing_wand->exception,
             ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
           return(-1);
         }
@@ -199,7 +201,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
       drawing_wand->mvg_length=0;
       if (drawing_wand->mvg == 0)
         {
-          ThrowException3(&drawing_wand->image->exception,
+          ThrowException3(&drawing_wand->exception,
             ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
           return(-1);
         }
@@ -212,7 +214,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
         ResizeMagickMemory(drawing_wand->mvg,realloc_size);
       if (drawing_wand->mvg == NULL)
         {
-          ThrowException3(&drawing_wand->image->exception,
+          ThrowException3(&drawing_wand->exception,
             ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
@@ -243,7 +245,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
     va_end(argp);
     if (formatted_length < 0)
       {
-        ThrowException(&drawing_wand->image->exception,DrawError,
+        ThrowException(&drawing_wand->exception,DrawError,
           UnableToPrint,format);
       }
     else
@@ -281,8 +283,8 @@ static int MvgAutoWrapPrintf(DrawingWand *drawing_wand,const char *format,...)
   buffer[sizeof(buffer)-1]=0;
   if (formatted_length < 0)
     {
-    ThrowException(&drawing_wand->image->exception,DrawError,
-      UnableToPrint,format);
+      ThrowException(&drawing_wand->exception,DrawError,
+		     UnableToPrint,format);
     }
   else
     {
@@ -297,15 +299,14 @@ static int MvgAutoWrapPrintf(DrawingWand *drawing_wand,const char *format,...)
 static void MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color)
 {
   if (color->red == 0U && color->green == 0U && color->blue == 0U &&
-     color->opacity == TransparentOpacity)
+      color->opacity == TransparentOpacity)
     (void) MvgPrintf(drawing_wand,"none");
   else
     {
       char
         tuple[MaxTextExtent];
 
-      GetColorTuple(color,drawing_wand->image->depth,drawing_wand->image->matte,
-        True,tuple);
+      GetColorTuple(color,QuantumDepth,MagickTrue,MagickTrue,tuple);
       (void) MvgPrintf(drawing_wand,"%.1024s",tuple);
     }
 }
@@ -355,6 +356,130 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e D r a w i n g W a n d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneDrawingWand() returns a new drawing wand which is a full (deep) copy
+%  of an existing drawing wand.
+%
+%  The format of the  CloneDrawingWand method is:
+%
+%      DrawingWand *CloneDrawingWand(const DrawingWand *drawing_wand)
+%
+%  A description of each parameter follows:
+%
+%    o drawing_wand: The drawing wand to copy
+%
+*/
+WandExport DrawingWand *CloneDrawingWand(const DrawingWand *drawing_wand)
+{  
+  DrawingWand
+    *clone_wand;
+
+  ExceptionInfo
+    exeption_info;
+  
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  
+  clone_wand=MagickAllocateMemory(DrawingWand *,sizeof(*clone_wand));
+  if (clone_wand == (DrawingWand *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateDrawingWand);
+
+  GetExceptionInfo(&exeption_info);
+  (void) memcpy(clone_wand,drawing_wand,sizeof(*clone_wand));
+  GetExceptionInfo(&clone_wand->exception);
+  clone_wand->image=(Image *) NULL;
+  clone_wand->mvg=(char *) NULL;
+  clone_wand->pattern_id=(char *) NULL;
+  clone_wand->graphic_context=(DrawInfo **) NULL;
+  
+  clone_wand->own_image=MagickTrue;
+  if (drawing_wand->image != (Image *) NULL)
+    {
+      clone_wand->image=CloneImage(drawing_wand->image,0,0,MagickTrue,
+				   &exeption_info);
+      if (clone_wand->image == (Image *) NULL)
+	goto clone_drawing_wand_fail;
+    }
+  
+  if (drawing_wand->mvg)
+    {
+      clone_wand->mvg=MagickAllocateMemory(char *,drawing_wand->mvg_alloc);
+      if (clone_wand->mvg == (char *) NULL)
+	{
+	  ThrowException3(&exeption_info,ResourceLimitError,
+			  MemoryAllocationFailed,UnableToCloneDrawingWand);
+	  goto clone_drawing_wand_fail;
+	}
+      (void) memcpy(clone_wand->mvg,drawing_wand->mvg,drawing_wand->mvg_length+1);
+    }
+
+  if (drawing_wand->pattern_id != (const char *) NULL)
+    clone_wand->pattern_id=AllocateString(drawing_wand->pattern_id);
+
+  if (drawing_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      clone_wand->graphic_context=MagickAllocateArray(DrawInfo **,
+						      drawing_wand->index+1,
+						      sizeof(DrawInfo *));
+      if (clone_wand->graphic_context == (DrawInfo **) NULL)
+	{
+	  ThrowException3(&exeption_info,ResourceLimitError,
+			  MemoryAllocationFailed,UnableToCloneDrawingWand);
+	  goto clone_drawing_wand_fail;
+	}
+      (void) memset(clone_wand->graphic_context,0,
+		    (drawing_wand->index+1)*sizeof(DrawInfo *));
+
+      for (clone_wand->index=0; clone_wand->index <= drawing_wand->index; clone_wand->index++)
+	{
+	  clone_wand->graphic_context[clone_wand->index]=
+	    CloneDrawInfo((ImageInfo*)NULL,drawing_wand->graphic_context[clone_wand->index]);
+	  if (clone_wand->graphic_context[clone_wand->index] == (DrawInfo*) NULL)
+	    {
+	      ThrowException3(&exeption_info,ResourceLimitError,
+			      MemoryAllocationFailed,UnableToCloneDrawingWand);
+	      goto clone_drawing_wand_fail;
+	    }
+	}
+      clone_wand->index=drawing_wand->index;
+    }
+
+  return(clone_wand);
+
+clone_drawing_wand_fail:
+
+  if (clone_wand->image != (Image *) NULL)
+    DestroyImage(clone_wand->image);
+  MagickFreeMemory(clone_wand->mvg);
+  MagickFreeMemory(clone_wand->pattern_id);
+  if (clone_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      for ( ; clone_wand->index >= 0; clone_wand->index--)
+	{
+	  if (clone_wand->graphic_context[clone_wand->index] != (DrawInfo*) NULL)
+	    DestroyDrawInfo(clone_wand->graphic_context[clone_wand->index]);
+	  clone_wand->graphic_context[clone_wand->index]=(DrawInfo*) NULL;
+	}
+      MagickFreeMemory(clone_wand->graphic_context);
+    }
+  (void) memset(clone_wand,0,sizeof(*clone_wand));
+  MagickFreeMemory(clone_wand);
+  /* No place to report exception, but it may be logged. */
+  DestroyExceptionInfo(&exeption_info);
+  return(clone_wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y D r a w i n g W a n d                                       %
 %                                                                             %
 %                                                                             %
@@ -371,43 +496,37 @@ static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
-%    o drawing_wand: The drawing wand. to destroy
+%    o drawing_wand: The drawing wand to destroy.
 %
 */
 WandExport void DestroyDrawingWand(DrawingWand *drawing_wand)
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  drawing_wand->path_operation=PathDefaultOperation;
-  drawing_wand->path_mode=DefaultPathMode;
-  drawing_wand->indent_depth=0;
-  for ( ; drawing_wand->index > 0; drawing_wand->index--)
-  {
-    DestroyDrawInfo(CurrentContext);
-    CurrentContext=(DrawInfo*) NULL;
-  }
-  DestroyDrawInfo(CurrentContext);
-  CurrentContext=(DrawInfo*) NULL;
-  drawing_wand->graphic_context=(DrawInfo **)
-    RelinquishMagickMemory(drawing_wand->graphic_context);
-  if (drawing_wand->pattern_id != (char *) NULL)
-    drawing_wand->pattern_id=(char *)
-      RelinquishMagickMemory(drawing_wand->pattern_id);
-  drawing_wand->pattern_offset=0;
-  drawing_wand->pattern_bounds.x=0;
-  drawing_wand->pattern_bounds.y=0;
-  drawing_wand->pattern_bounds.width=0;
-  drawing_wand->pattern_bounds.height=0;
-  drawing_wand->mvg=(char *) RelinquishMagickMemory(drawing_wand->mvg);
-  drawing_wand->mvg_alloc=0;
-  drawing_wand->mvg_length=0;
-  /* A crummy way to determine if this image can be deleted. */
+
+  DestroyExceptionInfo(&drawing_wand->exception);
+
   if ((drawing_wand->image != (Image*) NULL) &&
-      strcmp(drawing_wand->image->filename,dummy_image_filename) == 0)
+      (drawing_wand->own_image == MagickTrue))
     DestroyImage(drawing_wand->image);
-  drawing_wand->image=(Image*) NULL;
-  drawing_wand->signature=0;
-  drawing_wand=(DrawingWand *) RelinquishMagickMemory(drawing_wand);
+
+  MagickFreeMemory(drawing_wand->mvg);
+
+  MagickFreeMemory(drawing_wand->pattern_id);
+
+  if (drawing_wand->graphic_context != (DrawInfo **) NULL)
+    {
+      for ( ; drawing_wand->index >= 0; drawing_wand->index--)
+	{
+	  if (drawing_wand->graphic_context[drawing_wand->index] != (DrawInfo*) NULL)
+	    DestroyDrawInfo(drawing_wand->graphic_context[drawing_wand->index]);
+	  drawing_wand->graphic_context[drawing_wand->index]=(DrawInfo*) NULL;
+	}
+      MagickFreeMemory(drawing_wand->graphic_context);
+    }
+
+  (void) memset(drawing_wand,0,sizeof(*drawing_wand));
+  MagickFreeMemory(drawing_wand);
 }
 
 /*
@@ -521,43 +640,19 @@ WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
   DrawingWand
     *drawing_wand;
 
-  drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
-  if (drawing_wand == (DrawingWand *) NULL)
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateDrawingWand);
+  drawing_wand=NewDrawingWand();
+  if (draw_info != (const DrawInfo *) NULL)
+    {
+      DestroyDrawInfo(CurrentContext);
+      CurrentContext=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+    }
+  if (image != (Image *) NULL)
+    {
+      DestroyImage(drawing_wand->image);
+      drawing_wand->own_image=MagickFalse;
+    }
   drawing_wand->image=image;
-  drawing_wand->mvg=NULL;
-  drawing_wand->mvg_alloc=0;
-  drawing_wand->mvg_length=0;
-  drawing_wand->mvg_width=0;
-  drawing_wand->pattern_id=NULL;
-  drawing_wand->pattern_offset=0;
-  drawing_wand->pattern_bounds.x=0;
-  drawing_wand->pattern_bounds.y=0;
-  drawing_wand->pattern_bounds.width=0;
-  drawing_wand->pattern_bounds.height=0;
-  drawing_wand->index=0;
-  drawing_wand->graphic_context=(DrawInfo **)
-    AcquireMagickMemory(sizeof(DrawInfo *));
-  if (drawing_wand->graphic_context == (DrawInfo **) NULL)
-    {
-      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
-        MemoryAllocationFailed,UnableToDrawOnImage);
-      return (DrawingWand *) NULL;
-    }
-  CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
-  if (CurrentContext == (DrawInfo*) NULL)
-    {
-      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
-        MemoryAllocationFailed,UnableToDrawOnImage);
-      return (DrawingWand *) NULL;
-    }
-  drawing_wand->filter_off=False;
-  drawing_wand->indent_depth=0;
-  drawing_wand->path_operation=PathDefaultOperation;
-  drawing_wand->path_mode=DefaultPathMode;
-  drawing_wand->signature=MagickSignature;
-  return(drawing_wand);
+  return drawing_wand;
 }
 
 /*
@@ -686,6 +781,35 @@ WandExport void DrawCircle(DrawingWand *drawing_wand,const double ox,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w C l e a r E x c e p t i o n                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawClearException() clears any existing exception from the drawing wand.
+%
+%  The format of the DrawGetException method is:
+%
+%      MagickPassFail DrawClearException(DrawingWand *drawing_wand)
+%
+%  A description of each parameter follows:
+%
+%    o drawing_wand: The drawing wand.
+%
+*/
+WandExport MagickBool DrawClearException(DrawingWand *drawing_wand)
+{
+  DestroyExceptionInfo(&drawing_wand->exception);
+  GetExceptionInfo(&drawing_wand->exception);
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w G e t C l i p P a t h                                             %
 %                                                                             %
 %                                                                             %
@@ -750,12 +874,8 @@ WandExport void DrawSetClipPath(DrawingWand *drawing_wand,
     {
       (void) CloneString(&CurrentContext->clip_path,clip_path);
       if (CurrentContext->clip_path == (char*)NULL)
-        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+        ThrowException3(&drawing_wand->exception,ResourceLimitError,
           MemoryAllocationFailed,UnableToDrawOnImage);
-#if DRAW_BINARY_IMPLEMENTATION
-      (void) DrawClipPath(drawing_wand->image,CurrentContext,
-        CurrentContext->clip_path);
-#endif
       (void) MvgPrintf(drawing_wand,"clip-path url(#%s)\n",clip_path);
     }
 }
@@ -868,6 +988,63 @@ WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *drawing_wand)
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   return(CurrentContext->clip_units);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t E x c e p t i o n                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetException() obtains error information associated with the last
+%  exception (if any).  If an exception did occur, an allocated text string
+%  is returned which contains a detailed description of the exception.  This
+%  string must be deallocated by the user once it is no longer needed.
+%
+%  The format of the DrawGetException method is:
+%
+%      char *DrawGetException(const DrawingWand *drawing_wand,
+%                             ExceptionType *severity)
+%
+%  A description of each parameter follows:
+%
+%    o drawing_wand: The drawing wand.
+%
+%    o severity: Enumeration corresponding to last thrown exception.
+%
+*/
+WandExport char *DrawGetException(const DrawingWand *drawing_wand,
+				  ExceptionType *severity)
+{
+  char
+    buffer[MaxTextExtent],
+    *description;
+  
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  assert(drawing_wand->exception.signature == MagickSignature);
+
+  description=(char *) NULL;
+  buffer[0]='\0';
+  *severity=drawing_wand->exception.severity;
+  if (drawing_wand->exception.severity != UndefinedException)
+    {
+      if (drawing_wand->exception.description)
+	FormatString(buffer,"%.1024s (%.1024s)",
+		     drawing_wand->exception.reason,
+		     drawing_wand->exception.description);
+      else
+	FormatString(buffer,"%.1024s",
+		     drawing_wand->exception.reason);
+      CloneString(&description,buffer);
+    }
+
+  return(description);
 }
 
 /*
@@ -1200,12 +1377,12 @@ WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
   assert(drawing_wand->signature == MagickSignature);
   assert(fill_url != NULL);
   if (fill_url[0] != '#')
-    ThrowException(&drawing_wand->image->exception,DrawWarning,
+    ThrowException(&drawing_wand->exception,DrawWarning,
       NotARelativeURL,fill_url);
   (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",fill_url+1);
   if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowException(&drawing_wand->image->exception,DrawWarning,
+      ThrowException(&drawing_wand->exception,DrawWarning,
         URLNotFound,fill_url);
     }
   else
@@ -1215,9 +1392,6 @@ WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
 
       (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
         fill_url);
-#if DRAW_BINARY_IMPLEMENTATION
-      DrawPatternPath(drawing_wand->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
-#endif
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
       (void) MvgPrintf(drawing_wand,"fill %s\n",pattern_spec);
@@ -1443,7 +1617,7 @@ WandExport void DrawSetFont(DrawingWand *drawing_wand,const char *font_name)
     {
       (void) CloneString(&CurrentContext->font,font_name);
       if (CurrentContext->font == (char*)NULL)
-        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+        ThrowException3(&drawing_wand->exception,ResourceLimitError,
           MemoryAllocationFailed,UnableToDrawOnImage);
       (void) MvgPrintf(drawing_wand,"font '%s'\n",font_name);
     }
@@ -1515,7 +1689,7 @@ WandExport void DrawSetFontFamily(DrawingWand *drawing_wand,
     {
       (void) CloneString(&CurrentContext->family,font_family);
       if (CurrentContext->family == (char *) NULL)
-        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+        ThrowException3(&drawing_wand->exception,ResourceLimitError,
           MemoryAllocationFailed,UnableToDrawOnImage);
       (void) MvgPrintf(drawing_wand,"font-family '%s'\n",font_family);
     }
@@ -2023,16 +2197,16 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
   assert(width != 0);
   assert(height != 0);
   assert(*image->magick != '\0');
-  clone_image=CloneImage(image,0,0,True,&drawing_wand->image->exception);
+  clone_image=CloneImage(image,0,0,MagickTrue,&drawing_wand->exception);
   if (!clone_image)
     return;
   image_info=CloneImageInfo((ImageInfo*)NULL);
   if (!image_info)
-    ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+    ThrowException3(&drawing_wand->exception,ResourceLimitError,
       MemoryAllocationFailed,UnableToDrawOnImage);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   blob=(unsigned char*) ImageToBlob( image_info,clone_image,&blob_length,
-    &drawing_wand->image->exception);
+    &drawing_wand->exception);
   (void) SetMonitorHandler(handler);
   DestroyImageInfo(image_info);
   DestroyImageList(clone_image);
@@ -2047,7 +2221,7 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
 
       (void) FormatMagickString(buffer,MaxTextExtent,"%ld bytes",
         (4L*blob_length/3L+4L));
-      ThrowException(&drawing_wand->image->exception,ResourceLimitWarning,
+      ThrowException(&drawing_wand->exception,ResourceLimitWarning,
         MemoryAllocationFailed,buffer);
     }
   mode=CompositeOperatorToString(composite_operator);
@@ -3460,19 +3634,12 @@ WandExport void DrawPopGraphicContext(DrawingWand *drawing_wand)
   assert(drawing_wand->signature == MagickSignature);
   if (drawing_wand->index <= 0)
     {
-      ThrowException(&drawing_wand->image->exception,DrawError,
+      ThrowException(&drawing_wand->exception,DrawError,
         UnbalancedGraphicContextPushPop,NULL);
     }
   else
     {
       /* Destroy clip path if not same in preceding drawing_wand */
-#if DRAW_BINARY_IMPLEMENTATION
-      if (CurrentContext->clip_path != (char *) NULL)
-        if (LocaleCompare(CurrentContext->clip_path,
-            drawing_wand->graphic_context[drawing_wand->index-1]->clip_path) != 0)
-          (void) SetImageClipMask(drawing_wand->image,(Image *) NULL);
-#endif
-
       DestroyDrawInfo(CurrentContext);
       CurrentContext=(DrawInfo*)NULL;
       drawing_wand->index--;
@@ -3513,7 +3680,7 @@ WandExport void DrawPopPattern(DrawingWand *drawing_wand)
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   if (drawing_wand->pattern_id == NULL)
-    ThrowException(&drawing_wand->image->exception,DrawWarning,
+    ThrowException(&drawing_wand->exception,DrawWarning,
       NotCurrentlyPushingPatternDefinition,NULL);
   (void) FormatMagickString(key,MaxTextExtent,"[%.1024s]",
     drawing_wand->pattern_id);
@@ -3530,7 +3697,7 @@ WandExport void DrawPopPattern(DrawingWand *drawing_wand)
   drawing_wand->pattern_bounds.y=0;
   drawing_wand->pattern_bounds.width=0;
   drawing_wand->pattern_bounds.height=0;
-  drawing_wand->filter_off=False;
+  drawing_wand->filter_off=MagickFalse;
   if (drawing_wand->indent_depth > 0)
     drawing_wand->indent_depth--;
   (void) MvgPrintf(drawing_wand,"pop pattern\n");
@@ -3639,7 +3806,7 @@ WandExport void DrawPushGraphicContext(DrawingWand *drawing_wand)
   drawing_wand->graphic_context=(DrawInfo **) ResizeMagickMemory(
     drawing_wand->graphic_context,(drawing_wand->index+1)*sizeof(DrawInfo *));
   if (drawing_wand->graphic_context == (DrawInfo **) NULL)
-    ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+    ThrowException3(&drawing_wand->exception,ResourceLimitError,
       MemoryAllocationFailed,UnableToDrawOnImage);
   CurrentContext=CloneDrawInfo((ImageInfo *) NULL,
     drawing_wand->graphic_context[drawing_wand->index-1]);
@@ -3693,9 +3860,9 @@ WandExport void DrawPushPattern(DrawingWand *drawing_wand,
   assert(drawing_wand->signature == MagickSignature);
   assert(pattern_id != (const char *) NULL);
   if (drawing_wand->pattern_id != NULL)
-    ThrowException(&drawing_wand->image->exception,DrawError,
+    ThrowException(&drawing_wand->exception,DrawError,
       AlreadyPushingPatternDefinition,drawing_wand->pattern_id);
-  drawing_wand->filter_off=True;
+  drawing_wand->filter_off=MagickTrue;
   (void) MvgPrintf(drawing_wand,"push pattern %s %.4g,%.4g %.4g,%.4g\n",pattern_id,
     x,y,width,height);
   drawing_wand->indent_depth++;
@@ -3769,14 +3936,17 @@ WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
 */
 WandExport unsigned int DrawRender(const DrawingWand *drawing_wand)
 {
+  MagickPassFail
+    status;
+
   assert(drawing_wand != (const DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   CurrentContext->primitive=drawing_wand->mvg;
   (void) LogMagickEvent(DrawEvent,GetMagickModule(),"MVG:\n'%s'\n",
     drawing_wand->mvg);
-  (void) DrawImage(drawing_wand->image, CurrentContext);
+  status=DrawImage(drawing_wand->image, CurrentContext);
   CurrentContext->primitive=(char *) NULL;
-  return(True);
+  return status;
 }
 
 /*
@@ -4143,12 +4313,12 @@ WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
   assert(drawing_wand->signature == MagickSignature);
   assert(stroke_url != NULL);
   if (stroke_url[0] != '#')
-    ThrowException(&drawing_wand->image->exception,DrawWarning,
+    ThrowException(&drawing_wand->exception,DrawWarning,
       NotARelativeURL,stroke_url);
   (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",stroke_url+1);
   if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowException(&drawing_wand->image->exception,DrawWarning,
+      ThrowException(&drawing_wand->exception,DrawWarning,
         URLNotFound,stroke_url);
     }
   else
@@ -4158,9 +4328,6 @@ WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
 
       (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
         stroke_url);
-#if DRAW_BINARY_IMPLEMENTATION
-      DrawPatternPath(drawing_wand->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
-#endif
       if (CurrentContext->stroke.opacity != TransparentOpacity)
         CurrentContext->stroke.opacity=CurrentContext->opacity;
       (void) MvgPrintf(drawing_wand,"stroke %s\n",pattern_spec);
@@ -4347,7 +4514,7 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
 
   unsigned int
     i,
-    updated=False,
+    updated=MagickFalse,
     n_new=number_elements,
     n_old=0;
 
@@ -4359,11 +4526,11 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
       n_old++;
   if ((n_old == 0) && (n_new == 0))
     {
-      updated=False;
+      updated=MagickFalse;
     }
   else if ( n_old != n_new )
     {
-      updated=True;
+      updated=MagickTrue;
     }
   else if ((CurrentContext->dash_pattern != (double *) NULL) &&
            (dash_array != (double *) NULL))
@@ -4375,7 +4542,7 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
       {
         if (AbsoluteValue(*p - *q) > MagickEpsilon)
           {
-            updated=True;
+            updated=MagickTrue;
             break;
           }
         p++;
@@ -4393,7 +4560,7 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
             AcquireMagickMemory((n_new+1)*sizeof(double));
           if (!CurrentContext->dash_pattern)
             {
-              ThrowException3(&drawing_wand->image->exception,
+              ThrowException3(&drawing_wand->exception,
                 ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
             }
           else
@@ -5307,11 +5474,46 @@ WandExport void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
 */
 WandExport DrawingWand *NewDrawingWand(void)
 {
-  Image
-    *image;
+  DrawingWand
+    *drawing_wand;
 
-  image=AllocateImage((const ImageInfo *) NULL);
-  /* A crummy way to determine that this image can be deleted. */
-  strlcpy(image->filename,dummy_image_filename,MaxTextExtent);
-  return(DrawAllocateWand((const DrawInfo *) NULL,image));
+  drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
+  if (drawing_wand == (DrawingWand *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateDrawingWand);
+  GetExceptionInfo(&drawing_wand->exception);
+  drawing_wand->image=AllocateImage((const ImageInfo *) NULL);
+  drawing_wand->own_image=MagickTrue;
+  drawing_wand->mvg=NULL;
+  drawing_wand->mvg_alloc=0;
+  drawing_wand->mvg_length=0;
+  drawing_wand->mvg_width=0;
+  drawing_wand->pattern_id=NULL;
+  drawing_wand->pattern_offset=0;
+  drawing_wand->pattern_bounds.x=0;
+  drawing_wand->pattern_bounds.y=0;
+  drawing_wand->pattern_bounds.width=0;
+  drawing_wand->pattern_bounds.height=0;
+  drawing_wand->index=0;
+  drawing_wand->graphic_context=(DrawInfo **)
+    AcquireMagickMemory(sizeof(DrawInfo *));
+  if (drawing_wand->graphic_context == (DrawInfo **) NULL)
+    {
+      ThrowException3(&drawing_wand->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
+      return (DrawingWand *) NULL;
+    }
+  CurrentContext=CloneDrawInfo((ImageInfo*)NULL,(DrawInfo *) NULL);
+  if (CurrentContext == (DrawInfo*) NULL)
+    {
+      ThrowException3(&drawing_wand->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
+      return (DrawingWand *) NULL;
+    }
+  drawing_wand->filter_off=MagickFalse;
+  drawing_wand->indent_depth=0;
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
+  drawing_wand->signature=MagickSignature;
+  return(drawing_wand);
 }

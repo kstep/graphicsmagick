@@ -482,6 +482,12 @@
       <Message name="FailedToRenderFile">
         Failed to render file
       </Message>
+      <Message name="FailedToAllocateArgumentList">
+        Failed to allocate argument list.
+      </Message>
+      <Message name="FailedToAllocateGhostscriptInterpreter">
+        Failed to allocate Ghostscript interpreter.
+      </Message>
       <Message name="FailedToScanFile">
         Failed to scan file
       </Message>
@@ -1165,6 +1171,9 @@
         </Message>
         <Message name="UnableToAverageImageSequence">
           unable to average image sequence
+        </Message>
+        <Message name="UnableToCloneDrawingWand">
+          unable to clone drawing wand
         </Message>
         <Message name="UnableToCloneImage">
           unable to clone image

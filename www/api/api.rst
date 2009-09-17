@@ -5,15 +5,18 @@ GraphicsMagick Core C API
 .. _Animate : animate.html
 .. _Annotate : annotate.html
 .. _Attribute : attribute.html
+.. _Average : average.html
 .. _`ASC CDL` : cdl.html
 .. _Blob : blob.html
 .. _Channel : channel.html
 .. _Color : color.html
+.. _Colormap : colormap.html
 .. _Compare : compare.html
 .. _Composite : composite.html
 .. _Confirm Access : confirm_access.html
 .. _Constitute : constitute.html
 .. _Decorate : decorate.html
+.. _Describe : describe.html
 .. _Display : display.html
 .. _Draw : draw.html
 .. _Effect : effect.html
@@ -31,6 +34,7 @@ GraphicsMagick Core C API
 .. _Paint : paint.html
 .. _Pixel Cache : pixel_cache.html
 .. _Pixel Iterator : pixel_iterator.html
+.. _Plasma : plasma.html
 .. _Profile : profile.html
 .. _Quantize : quantize.html
 .. _Registry : registry.html
@@ -39,6 +43,8 @@ GraphicsMagick Core C API
 .. _Segment : segment.html
 .. _Shear : shear.html
 .. _Signature : signature.html
+.. _Statistics : statistics.html
+.. _Texture : texture.html
 .. _Transform : transform.html
 .. _types: types.html
 
@@ -56,15 +62,18 @@ documentation, please reference the types_ documentation as required:
   * Animate_: Interactively animate an image sequence
   * Annotate_: Annotate an image with text
   * Attribute_: Access key, value image attributes
+  * Average_: Average several images together
   * `ASC CDL`_ : Apply ASC CDL to image
   * Blob_: Read and write images to memory
   * Channel_: Import and export image channels as well as compute channel depth
   * Color_: Methods to deal with image colors
+  * Colormap_: Methods to deal with image colormaps
   * Compare_: Compare images
   * Composite_: Composite images
   * `Confirm Access`_ : Confirm access to files and URLs.
   * Constitute_: Read, write, import, and export images
   * Decorate_: Add fancy borders to images
+  * Describe_: Describe an image
   * Display_: Interactively display and edit an image
   * Draw_: Convenient methods to draw vectors and text
   * Effect_:Threshold (various), blur, despeckle, edge, emboss, enhance,
@@ -84,6 +93,7 @@ documentation, please reference the types_ documentation as required:
   * Paint_: Fill pixel regions
   * `Pixel Cache`_: Low-level access to image pixels
   * `Pixel Iterator`_: Pixel iterator design pattern support functions
+  * Plasma_: Plasma fractal image generator
   * Profile_: Attached profile access
   * Quantize_: Reduce image colors or assign image colors from colormap
   * Registry_: Store and retrieve images in memory by ID
@@ -92,6 +102,8 @@ documentation, please reference the types_ documentation as required:
   * Segment_: Coalese similar image colors
   * Shear_: Rotate image, shear image, or apply a 2D affine transformation
   * Signature_: Compute an image signature (checksum)
+  * Statistics_: Compute image statistics
+  * Texture_: Create a tiled texture image or tile an image with a texture.
   * Transform_: Chop, coalesce, deconstruct, flatten, flip, flop, mosiac, roll,
     or shave image
 

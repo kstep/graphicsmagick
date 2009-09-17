@@ -11430,7 +11430,7 @@ static Image *MagickXVisualDirectoryImage(Display *display,
       }
     (void) SetMonitorHandler(handler);
     if (!MagickMonitorFormatted(i,number_files,&image->exception,
-                                LoadImageText,image->filename))
+                                LoadImagesText,image->filename))
       break;
   }
   DestroyImageInfo(clone_info);

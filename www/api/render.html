@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>render</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
@@ -51,33 +51,34 @@
 <div class="document" id="render">
 <h1 class="title">render</h1>
 <h2 class="subtitle" id="low-level-methods-to-draw-on-an-image">Low-level methods to draw on an image</h2>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#clonedrawinfo" id="id11" name="id11">CloneDrawInfo</a></li>
-<li><a class="reference" href="#destroydrawinfo" id="id12" name="id12">DestroyDrawInfo</a></li>
-<li><a class="reference" href="#drawaffineimage" id="id13" name="id13">DrawAffineImage</a></li>
-<li><a class="reference" href="#drawclippath" id="id14" name="id14">DrawClipPath</a></li>
-<li><a class="reference" href="#drawimage" id="id15" name="id15">DrawImage</a></li>
-<li><a class="reference" href="#drawpatternpath" id="id16" name="id16">DrawPatternPath</a></li>
+<li><a class="reference internal" href="#clonedrawinfo" id="id11">CloneDrawInfo</a></li>
+<li><a class="reference internal" href="#destroydrawinfo" id="id12">DestroyDrawInfo</a></li>
+<li><a class="reference internal" href="#drawaffineimage" id="id13">DrawAffineImage</a></li>
+<li><a class="reference internal" href="#drawclippath" id="id14">DrawClipPath</a></li>
+<li><a class="reference internal" href="#drawimage" id="id15">DrawImage</a></li>
+<li><a class="reference internal" href="#drawpatternpath" id="id16">DrawPatternPath</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="clonedrawinfo" name="clonedrawinfo">CloneDrawInfo</a></h1>
-<div class="section">
-<h2><a id="synopsis" name="synopsis">Synopsis</a></h2>
+<div class="section" id="clonedrawinfo">
+<h1><a class="toc-backref" href="#id11">CloneDrawInfo</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *CloneDrawInfo( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+<a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *CloneDrawInfo( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 </div>
-<div class="section">
-<h2><a id="description" name="description">Description</a></h2>
+<div class="section" id="description">
+<h2>Description</h2>
 <p>CloneDrawInfo() makes a copy of the given draw info structure.  If NULL
 is specified, a new image info structure is created initialized to
 default values.</p>
 <p>The format of the CloneDrawInfo method is:</p>
 <pre class="literal-block">
-<a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *CloneDrawInfo( const <a class="reference" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+<a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *CloneDrawInfo( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
@@ -87,21 +88,21 @@ default values.</p>
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="destroydrawinfo" name="destroydrawinfo">DestroyDrawInfo</a></h1>
-<div class="section">
-<h2><a id="id1" name="id1">Synopsis</a></h2>
+<div class="section" id="destroydrawinfo">
+<h1><a class="toc-backref" href="#id12">DestroyDrawInfo</a></h1>
+<div class="section" id="id1">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-void DestroyDrawInfo( <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+void DestroyDrawInfo( <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id2" name="id2">Description</a></h2>
+<div class="section" id="id2">
+<h2>Description</h2>
 <p>DestroyDrawInfo() deallocates memory associated with an DrawInfo
 structure.</p>
 <p>The format of the DestroyDrawInfo method is:</p>
 <pre class="literal-block">
-void DestroyDrawInfo( <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+void DestroyDrawInfo( <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -110,23 +111,23 @@ void DestroyDrawInfo( <a class="reference" href="../api/types.html#drawinfo">Dra
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="drawaffineimage" name="drawaffineimage">DrawAffineImage</a></h1>
-<div class="section">
-<h2><a id="id3" name="id3">Synopsis</a></h2>
+<div class="section" id="drawaffineimage">
+<h1><a class="toc-backref" href="#id13">DrawAffineImage</a></h1>
+<div class="section" id="id3">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawAffineImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#image">Image</a> *composite,
-                              const <a class="reference" href="../api/types.html#affinematrix">AffineMatrix</a> *affine );
+unsigned int DrawAffineImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#image">Image</a> *composite,
+                              const <a class="reference external" href="../api/types.html#affinematrix">AffineMatrix</a> *affine );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id4" name="id4">Description</a></h2>
+<div class="section" id="id4">
+<h2>Description</h2>
 <p>DrawAffineImage() composites the source over the destination image as
 dictated by the affine transform.</p>
 <p>The format of the DrawAffineImage method is:</p>
 <pre class="literal-block">
-unsigned int DrawAffineImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#image">Image</a> *composite,
-                              const <a class="reference" href="../api/types.html#affinematrix">AffineMatrix</a> *affine );
+unsigned int DrawAffineImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#image">Image</a> *composite,
+                              const <a class="reference external" href="../api/types.html#affinematrix">AffineMatrix</a> *affine );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -138,21 +139,21 @@ unsigned int DrawAffineImage( <a class="reference" href="../api/types.html#image
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="drawclippath" name="drawclippath">DrawClipPath</a></h1>
-<div class="section">
-<h2><a id="id5" name="id5">Synopsis</a></h2>
+<div class="section" id="drawclippath">
+<h1><a class="toc-backref" href="#id14">DrawClipPath</a></h1>
+<div class="section" id="id5">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawClipPath( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+unsigned int DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
                            const char *name );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id6" name="id6">Description</a></h2>
+<div class="section" id="id6">
+<h2>Description</h2>
 <p>DrawClipPath() draws the clip path on the image mask.</p>
 <p>The format of the DrawClipPath method is:</p>
 <pre class="literal-block">
-unsigned int DrawClipPath( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+unsigned int DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
                            const char *name );
 </pre>
 <dl class="docutils">
@@ -165,16 +166,16 @@ unsigned int DrawClipPath( <a class="reference" href="../api/types.html#image">I
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="drawimage" name="drawimage">DrawImage</a></h1>
-<div class="section">
-<h2><a id="id7" name="id7">Synopsis</a></h2>
+<div class="section" id="drawimage">
+<h1><a class="toc-backref" href="#id15">DrawImage</a></h1>
+<div class="section" id="id7">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+unsigned int DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id8" name="id8">Description</a></h2>
+<div class="section" id="id8">
+<h2>Description</h2>
 <p>Use DrawImage() to draw a graphic primitive on your image.  The primitive
 may be represented as a string or filename.  Precede the filename with an
 &quot;at&quot; sign (&#64;) and the contents of the file are drawn on the image.  You
@@ -185,7 +186,7 @@ using the Draw* methods defined by magick/draw.h since they are better
 documented and less error prone.</p>
 <p>The format of the DrawImage method is:</p>
 <pre class="literal-block">
-unsigned int DrawImage( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+unsigned int DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -196,22 +197,22 @@ unsigned int DrawImage( <a class="reference" href="../api/types.html#image">Imag
 </dl>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="drawpatternpath" name="drawpatternpath">DrawPatternPath</a></h1>
-<div class="section">
-<h2><a id="id9" name="id9">Synopsis</a></h2>
+<div class="section" id="drawpatternpath">
+<h1><a class="toc-backref" href="#id16">DrawPatternPath</a></h1>
+<div class="section" id="id9">
+<h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawPatternPath( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                              const char *name, <a class="reference" href="../api/types.html#image">Image</a> ** pattern );
+unsigned int DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                              const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
 </pre>
 </div>
-<div class="section">
-<h2><a id="id10" name="id10">Description</a></h2>
+<div class="section" id="id10">
+<h2>Description</h2>
 <p>DrawPatternPath() draws a pattern.</p>
 <p>The format of the DrawPatternPath method is:</p>
 <pre class="literal-block">
-unsigned int DrawPatternPath( <a class="reference" href="../api/types.html#image">Image</a> *image, const <a class="reference" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                              const char *name, <a class="reference" href="../api/types.html#image">Image</a> ** pattern );
+unsigned int DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                              const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -228,7 +229,7 @@ unsigned int DrawPatternPath( <a class="reference" href="../api/types.html#image
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-05 19:10 UTC.
+Generated on: 2009-09-17 19:45 UTC.
 
 </div>
 </body>

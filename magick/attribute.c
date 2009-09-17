@@ -375,6 +375,7 @@ static char *TracePSClippingPath(unsigned char *blob,size_t length,
   unsigned int
     in_subpath;
 
+  first[0].x=first[0].y=first[1].x=first[1].y=0;
   path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
@@ -595,6 +596,7 @@ static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
   unsigned int
     in_subpath;
 
+  first[0].x=first[0].y=first[1].x=first[1].y=0;
   path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);

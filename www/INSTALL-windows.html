@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Windows Installation</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,39 +50,40 @@
 </div>
 <div class="document" id="graphicsmagick-windows-installation">
 <h1 class="title">GraphicsMagick Windows Installation</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<div class="contents local topic">
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#installing-using-installer-package" id="id1" name="id1">Installing Using Installer Package</a><ul>
-<li><a class="reference" href="#prerequisites" id="id2" name="id2">Prerequisites</a></li>
-<li><a class="reference" href="#retrieve-install-package" id="id3" name="id3">Retrieve Install Package</a></li>
-<li><a class="reference" href="#start-installation-wizard" id="id4" name="id4">Start Installation Wizard</a></li>
-<li><a class="reference" href="#read-installation-information" id="id5" name="id5">Read Installation Information</a></li>
-<li><a class="reference" href="#select-destination-directory" id="id6" name="id6">Select Destination Directory</a></li>
-<li><a class="reference" href="#select-start-menu-folder" id="id7" name="id7">Select Start Menu Folder</a></li>
-<li><a class="reference" href="#select-additional-tasks" id="id8" name="id8">Select Additional Tasks</a></li>
-<li><a class="reference" href="#ready-to-install" id="id9" name="id9">Ready to Install</a></li>
-<li><a class="reference" href="#installation-progress" id="id10" name="id10">Installation Progress</a></li>
-<li><a class="reference" href="#final-information" id="id11" name="id11">Final Information</a></li>
-<li><a class="reference" href="#finishing-up" id="id12" name="id12">Finishing Up</a></li>
-<li><a class="reference" href="#testing-the-installation" id="id13" name="id13">Testing The Installation</a></li>
-<li><a class="reference" href="#uninstall" id="id14" name="id14">Uninstall</a></li>
-<li><a class="reference" href="#use-from-another-package-or-program" id="id15" name="id15">Use From Another Package or Program</a></li>
+<li><a class="reference internal" href="#installing-using-installer-package" id="id1">Installing Using Installer Package</a><ul>
+<li><a class="reference internal" href="#prerequisites" id="id2">Prerequisites</a></li>
+<li><a class="reference internal" href="#retrieve-install-package" id="id3">Retrieve Install Package</a></li>
+<li><a class="reference internal" href="#start-installation-wizard" id="id4">Start Installation Wizard</a></li>
+<li><a class="reference internal" href="#read-installation-information" id="id5">Read Installation Information</a></li>
+<li><a class="reference internal" href="#select-destination-directory" id="id6">Select Destination Directory</a></li>
+<li><a class="reference internal" href="#select-start-menu-folder" id="id7">Select Start Menu Folder</a></li>
+<li><a class="reference internal" href="#select-additional-tasks" id="id8">Select Additional Tasks</a></li>
+<li><a class="reference internal" href="#ready-to-install" id="id9">Ready to Install</a></li>
+<li><a class="reference internal" href="#installation-progress" id="id10">Installation Progress</a></li>
+<li><a class="reference internal" href="#final-information" id="id11">Final Information</a></li>
+<li><a class="reference internal" href="#finishing-up" id="id12">Finishing Up</a></li>
+<li><a class="reference internal" href="#testing-the-installation" id="id13">Testing The Installation</a></li>
+<li><a class="reference internal" href="#uninstall" id="id14">Uninstall</a></li>
+<li><a class="reference internal" href="#use-from-another-package-or-program" id="id15">Use From Another Package or Program</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#installing-from-source-code" id="id16" name="id16">Installing From Source Code</a><ul>
-<li><a class="reference" href="#applicability" id="id17" name="id17">Applicability</a></li>
-<li><a class="reference" href="#important-notes" id="id18" name="id18">Important Notes</a></li>
-<li><a class="reference" href="#windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation" id="id19" name="id19">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></li>
-<li><a class="reference" href="#environment-variables" id="id20" name="id20">Environment Variables</a></li>
-<li><a class="reference" href="#windows-distribution-build-procedure" id="id21" name="id21">Windows Distribution Build Procedure</a></li>
+<li><a class="reference internal" href="#installing-from-source-code" id="id16">Installing From Source Code</a><ul>
+<li><a class="reference internal" href="#applicability" id="id17">Applicability</a></li>
+<li><a class="reference internal" href="#important-notes" id="id18">Important Notes</a></li>
+<li><a class="reference internal" href="#windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation" id="id19">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></li>
+<li><a class="reference internal" href="#environment-variables" id="id20">Environment Variables</a></li>
+<li><a class="reference internal" href="#windows-distribution-build-procedure" id="id21">Windows Distribution Build Procedure</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="installing-using-installer-package" name="installing-using-installer-package">Installing Using Installer Package</a></h1>
+<div class="section" id="installing-using-installer-package">
+<h1><a class="toc-backref" href="#id1">Installing Using Installer Package</a></h1>
 <blockquote>
 This section provides information specific to GraphicsMagick installed
 via a &quot;setup.exe&quot; style installation wizard under Microsoft Windows. It
@@ -90,8 +91,8 @@ applies only to the pre-built &quot;binaries&quot; package, and not to versions
 compiled from source code. If you would like to install GraphicsMagick
 from source code, then please refer to the Installing From Source Code
 section.</blockquote>
-<div class="section">
-<h2><a class="toc-backref" href="#id2" id="prerequisites" name="prerequisites">Prerequisites</a></h2>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id2">Prerequisites</a></h2>
 <blockquote>
 <p>While multiple versions of GraphicsMagick may be installed at one time,
 if your intention is to replace a prior installation of GraphicsMagick
@@ -99,7 +100,7 @@ with a newer version, then it may be wise to uninstall the existing
 GraphicsMagick (see uninstall procedure) prior to installing the newer
 version.</p>
 <p>While it is not a requirement, it is strongly recommended that the
-<a class="reference" href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> package (GraphicsMagick
+<a class="reference external" href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a> package (GraphicsMagick
 is tested with version 8.62) be installed. GraphicsMagick uses
 Ghostscript to render Postscript and PDF files, as well as formats
 where a translator to Postscript is available. GraphicsMagick will also
@@ -109,15 +110,15 @@ fonts are not available as TrueType fonts.</p>
 <p>The installation package includes the GraphicsMagick Perl extension (
 PerlMagick &lt;perl.html&gt;) as an installation option. If you would like to
 use this extension, then you must install
-<a class="reference" href="http://www.activestate.com/store/activeperl/download/">ActiveState ActivePerl</a>
+<a class="reference external" href="http://www.activestate.com/store/activeperl/download/">ActiveState ActivePerl</a>
 prior to commencing with installation of GraphicsMagick.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id3" id="retrieve-install-package" name="retrieve-install-package">Retrieve Install Package</a></h2>
+<div class="section" id="retrieve-install-package">
+<h2><a class="toc-backref" href="#id3">Retrieve Install Package</a></h2>
 <blockquote>
 <p>Retrieve the GraphicsMagick Windows binary install package from a one
-of the ftp sites listed at the <a class="reference" href="download.html">GraphicsMagick Download Sites</a> page. The available install packages are as follows</p>
+of the ftp sites listed at the <a class="reference external" href="download.html">GraphicsMagick Download Sites</a> page. The available install packages are as follows</p>
 <p>Windows Dynamic-Multithread (DLL-based) install package with utilities,
 PerlMagick, ImageMagickObject COM object, and web pages:</p>
 <blockquote>
@@ -136,22 +137,22 @@ profiles, or deal with images that have limited contrast, then the Q16
 version is recommended.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id4" id="start-installation-wizard" name="start-installation-wizard">Start Installation Wizard</a></h2>
+<div class="section" id="start-installation-wizard">
+<h2><a class="toc-backref" href="#id4">Start Installation Wizard</a></h2>
 <blockquote>
 Execute the downloaded file from your browser or by double-clicking on
 the filename from within Windows Explorer. The GraphicsMagick Setup
 Wizard will appear. Click on &quot;<em>Next&gt;</em>&quot; to continue.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="read-installation-information" name="read-installation-information">Read Installation Information</a></h2>
+<div class="section" id="read-installation-information">
+<h2><a class="toc-backref" href="#id5">Read Installation Information</a></h2>
 <blockquote>
 An informational screen is presented which provides a summary of things
 you should know before you proceed. Please take care to read this
 information. Once you have finished, Click on &quot;<em>Next&gt;</em>&quot; to continue.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="select-destination-directory" name="select-destination-directory">Select Destination Directory</a></h2>
+<div class="section" id="select-destination-directory">
+<h2><a class="toc-backref" href="#id6">Select Destination Directory</a></h2>
 <blockquote>
 Specify what drive and directory to install GraphicsMagick into.
 Approximately 15MB of free disk space is required to install all of
@@ -162,15 +163,15 @@ installation directory is similar to <tt class="docutils literal"><span class="p
 <span class="pre">Files\GraphicsMagick-1.3-Q8</span></tt>. Once you have entered the desired
 installation directory, then select &quot;<em>Next&gt;</em>&quot; to continue.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="select-start-menu-folder" name="select-start-menu-folder">Select Start Menu Folder</a></h2>
+<div class="section" id="select-start-menu-folder">
+<h2><a class="toc-backref" href="#id7">Select Start Menu Folder</a></h2>
 <blockquote>
 Select the folder where you would like the program's shortcuts to
 appear. The default should normally be satisfactory. Click on &quot;<em>Next&gt;</em>&quot;
 to continue.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="select-additional-tasks" name="select-additional-tasks">Select Additional Tasks</a></h2>
+<div class="section" id="select-additional-tasks">
+<h2><a class="toc-backref" href="#id8">Select Additional Tasks</a></h2>
 <blockquote>
 <p>A screen is displayed which presents most (or all) of the following
 options:</p>
@@ -196,13 +197,13 @@ than that. Windows XP seems to handle the file associations pretty
 well, allowing you to choose from a list of programs, but older systems
 like Windows NT 4.0 and Windows '98 only support a single association
 per format, which can be quite annoying. Associations for
-GraphicsMagick's native formats (such as <a class="reference" href="miff.html">MIFF</a>) will
+GraphicsMagick's native formats (such as <a class="reference external" href="miff.html">MIFF</a>) will
 always be made.</p>
 <p>Once you have made your selections, click on &quot;<em>Next&gt;</em>&quot; to continue.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="ready-to-install" name="ready-to-install">Ready to Install</a></h2>
+<div class="section" id="ready-to-install">
+<h2><a class="toc-backref" href="#id9">Ready to Install</a></h2>
 <blockquote>
 A screen is displayed which displays the selected options. If you are
 not satisfied with a selected option, then click on &quot;<em>&lt;Back</em>&quot; to go back
@@ -210,14 +211,14 @@ to a previous screen so that the option may be adjusted. If you are
 satisfied with the options and are ready to install, then select
 &quot;<em>Install</em>&quot;. To abort the installation entirely, select &quot;<em>Cancel</em>&quot;.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id10" id="installation-progress" name="installation-progress">Installation Progress</a></h2>
+<div class="section" id="installation-progress">
+<h2><a class="toc-backref" href="#id10">Installation Progress</a></h2>
 <blockquote>
 While the install program is performing the installation, it will
 display what it is doing in an installation progress window.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id11" id="final-information" name="final-information">Final Information</a></h2>
+<div class="section" id="final-information">
+<h2><a class="toc-backref" href="#id11">Final Information</a></h2>
 <blockquote>
 A summary of post-install steps is provided. These steps include some
 commands you can execute to make sure that GraphicsMagick is working,
@@ -225,8 +226,8 @@ as well as some notes about what has been installed on your system, and
 where to find additional information. Once you have read this
 information, click on &quot;<em>Next&gt;</em>&quot; to continue.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id12" id="finishing-up" name="finishing-up">Finishing Up</a></h2>
+<div class="section" id="finishing-up">
+<h2><a class="toc-backref" href="#id12">Finishing Up</a></h2>
 <blockquote>
 <p>By default &quot;<em>View GraphicsMagick.html</em>&quot; is check-marked. This causes the
 GraphicsMagick web pages to be displayed in your web browser when
@@ -240,8 +241,8 @@ autoexec.bat is updated correctly. We have received some reports that
 the path in autoexec.bat is not always updated correctly.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id13" id="testing-the-installation" name="testing-the-installation">Testing The Installation</a></h2>
+<div class="section" id="testing-the-installation">
+<h2><a class="toc-backref" href="#id13">Testing The Installation</a></h2>
 <blockquote>
 <p>Select &quot;<em>Command Prompt</em>&quot; from the Windows Start menu. Within the window
 type</p>
@@ -254,8 +255,8 @@ gmdisplay logo.miff
 <p>and the GraphicsMagick logo should be displayed in a window.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id14" id="uninstall" name="uninstall">Uninstall</a></h2>
+<div class="section" id="uninstall">
+<h2><a class="toc-backref" href="#id14">Uninstall</a></h2>
 <blockquote>
 <p>The GraphicsMagick package incorporates its own uninstall
 functionality. Always remove an installed GraphicsMagick via its
@@ -271,14 +272,14 @@ the GraphicsMagick package from the list, and click on &quot;<em>Change/Remove</
 to uninstall it.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id15" id="use-from-another-package-or-program" name="use-from-another-package-or-program">Use From Another Package or Program</a></h2>
+<div class="section" id="use-from-another-package-or-program">
+<h2><a class="toc-backref" href="#id15">Use From Another Package or Program</a></h2>
 <blockquote>
 <p>The GraphicsMagick gm utility may be executed as a sub-process by other
 programs. If gm utility is not in the systems executable search path
 (it should be since the GraphicsMagick install extends the path), then
 the utility should be executed via the complete path to the executable.</p>
-<p>The <a class="reference" href="ImageMagickObject.html">ImageMagickObject</a> COM object may be
+<p>The <a class="reference external" href="ImageMagickObject.html">ImageMagickObject</a> COM object may be
 used to execute the gm sub-functions (e.g. &quot;convert&quot;) without spawning
 a new process or causing Windows to pop up a window. The COM object
 supports multi-threaded concurrent use.</p>
@@ -335,26 +336,26 @@ installed</td>
 </blockquote>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="installing-from-source-code" name="installing-from-source-code">Installing From Source Code</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id17" id="applicability" name="applicability">Applicability</a></h2>
+<div class="section" id="installing-from-source-code">
+<h1><a class="toc-backref" href="#id16">Installing From Source Code</a></h1>
+<div class="section" id="applicability">
+<h2><a class="toc-backref" href="#id17">Applicability</a></h2>
 <blockquote>
 This section provides instructions for building GraphicsMagick
 Microsoft Windows using the Visual C++ (Visual Studio, etc.) IDE. For
 building using the free Cygwin or MinGW compilers, follow the
 instructions in INSTALL-unix.txt.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id18" id="important-notes" name="important-notes">Important Notes</a></h2>
+<div class="section" id="important-notes">
+<h2><a class="toc-backref" href="#id18">Important Notes</a></h2>
 <blockquote>
 On some platforms Visual C++ may fail with an internal compiler error.
 If this happens to you, then make sure that your compiler is updated
 with the latest fixes from the Microsoft web site and the problem
 should go away.</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id19" id="windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation" name="windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></h2>
+<div class="section" id="windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation">
+<h2><a class="toc-backref" href="#id19">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></h2>
 <blockquote>
 <p>The Visual C++ distribution targeted at Windows XP, Win2K, or Windows
 98 does not provide any stock workspace (DSW) or project files (DSP)
@@ -543,8 +544,8 @@ were the exe program is run from in order to find all of the files as
 well as the DLL's it needs.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id20" id="environment-variables" name="environment-variables">Environment Variables</a></h2>
+<div class="section" id="environment-variables">
+<h2><a class="toc-backref" href="#id20">Environment Variables</a></h2>
 <blockquote>
 <p>You can use the &quot;System&quot; control panel to allow you to add and delete
 what is in any of the environment variables. You can even have user
@@ -602,8 +603,8 @@ the GraphicsMagick documentation.</p>
 <p>The Win2K executables will work under Windows '98 and later.</p>
 </blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id21" id="windows-distribution-build-procedure" name="windows-distribution-build-procedure">Windows Distribution Build Procedure</a></h2>
+<div class="section" id="windows-distribution-build-procedure">
+<h2><a class="toc-backref" href="#id21">Windows Distribution Build Procedure</a></h2>
 <blockquote>
 <p>The following are the instructions for how to build a Q:8 DLL-based
 distribution installer package using Visual C++ 7.0:</p>
@@ -613,9 +614,9 @@ distribution installer package using Visual C++ 7.0:</p>
 <blockquote>
 <ol class="loweralpha simple">
 <li>Download and install Inno Setup 5
-&lt;&quot;<a class="reference" href="http://www.jrsoftware.org/isinfo.php">http://www.jrsoftware.org/isinfo.php</a>&quot;&gt;.</li>
+&lt;&quot;<a class="reference external" href="http://www.jrsoftware.org/isinfo.php">http://www.jrsoftware.org/isinfo.php</a>&quot;&gt;.</li>
 <li>Download and install ActiveState ActivePerl
-&lt;&quot;<a class="reference" href="http://www.activestate.com/store/activeperl/download/">http://www.activestate.com/store/activeperl/download/</a>&quot;&gt;.</li>
+&lt;&quot;<a class="reference external" href="http://www.activestate.com/store/activeperl/download/">http://www.activestate.com/store/activeperl/download/</a>&quot;&gt;.</li>
 </ol>
 </blockquote>
 <ol class="arabic simple" start="2">
@@ -699,13 +700,13 @@ that can be used to do this manually after you open up a command prompt.</p>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:41 UTC.
 
 </div>
 </body>

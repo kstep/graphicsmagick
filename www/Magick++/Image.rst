@@ -535,6 +535,19 @@ specified by the borderColor attribute::
     void            border ( const Geometry &geometry_
                              = borderGeometryDefault )
 
+cdl
++++
+
+Bake in the ASC-CDL, which is a convention for the for the exchange of
+basic primary color grading information between for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers.  It is a useful transform for other
+purposes as well:
+
+    void            cdl ( const std::string &cdl_ )
+
+See `CdlImage <../api/cdl.html#cdlimage>`_ for more details on the ASC-CDL.
+
 channel
 +++++++
 
@@ -588,6 +601,17 @@ Colorize image with pen `color`_, using specified percent opacity::
 
     void            colorize ( const unsigned int opacity_,
 			       const Color &penColor_ )
+
+colorMatrix
++++++++++++
+
+Apply a color matrix to the image channels.  The user supplied matrix
+may be of order 1 to 5 (1x1 through 5x5)::
+
+    void            colorMatrix (const unsigned int order_,
+				 const double *color_matrix_)
+
+See `ColorMatrixImage <../api/fx.html#colormatriximage>`_ for more details.
 
 comment
 +++++++
@@ -866,6 +890,15 @@ implode
 Implode image (special effect)::
 
     void            implode ( const double factor_ )
+
+haldClut
+++++++++
+
+Apply a color lookup table (Hald CLUT) to the image::
+
+    void            haldClut ( const Image &clutImage_ )
+
+See `HaldClutImage <../api/hclut.html#haldclutimage>`_ for more details.
 
 label
 +++++

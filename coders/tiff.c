@@ -42,12 +42,12 @@
 #include "magick/attribute.h"
 #include "magick/bit_stream.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
-#include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/resize.h"
@@ -72,6 +72,22 @@
   Set to 1 in order to log low-level BLOB I/O at "coder" level.
 */
 #define LOG_BLOB_IO 0
+
+#if !defined(PREDICTOR_NONE)
+#define     PREDICTOR_NONE              1
+#endif
+#if !defined(PREDICTOR_HORIZONTAL)
+#define     PREDICTOR_HORIZONTAL        2
+#endif
+#if !defined(PREDICTOR_FLOATINGPOINT)
+#define     PREDICTOR_FLOATINGPOINT     3
+#endif
+#if !defined(SAMPLEFORMAT_COMPLEXINT)
+#define     SAMPLEFORMAT_COMPLEXINT     5
+#endif
+#if !defined(SAMPLEFORMAT_COMPLEXIEEEFP)
+#define     SAMPLEFORMAT_COMPLEXIEEEFP  6
+#endif
 
 /*
   Global declarations.
@@ -1040,6 +1056,7 @@ static MagickPassFail QuantumTransferMode(const Image *image,
           }
         }
     }
+  /* fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples); */
   
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
@@ -1654,12 +1671,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         QuantumType
           quantum_type;
 
-        if (compress_tag == COMPRESSION_JPEG)
+        if ((samples_per_pixel > 1) && (compress_tag == COMPRESSION_JPEG) &&
+	    (photometric == PHOTOMETRIC_YCBCR))
           {
             /* Following hack avoids the error message "Application
                transferred too many scanlines. (JPEGLib)." caused by
                YCbCr subsampling, but it returns data in RGB rather
                than YCbCr. */
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Resetting photometric from %s to %s for JPEG RGB",
+                                    PhotometricTagToString(photometric),
+				    PhotometricTagToString(PHOTOMETRIC_RGB));
             (void) TIFFSetField( tiff, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB );
             photometric=PHOTOMETRIC_RGB;
           }
@@ -1679,7 +1702,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             else if (TIFFIsTiled(tiff))
               method=TiledMethod;
-            else if ((TIFFStripSize(tiff)) < (1024*64))
+            else if ((TIFFStripSize(tiff)) <= (1024*64))
               method=StrippedMethod;
             if (photometric == PHOTOMETRIC_MINISWHITE)
               import_options.grayscale_miniswhite=MagickTrue;
@@ -1850,7 +1873,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 		      if (QuantumTick(y+sample*image->rows,image->rows*max_sample))
 			if (!MagickMonitorFormatted(y+sample*image->rows,
 						    image->rows*max_sample,exception,
-						    LoadImageText,image->filename))
+						    LoadImageText,image->filename,
+						    image->columns,image->rows))
 			  break;
 		  }
               }
@@ -2020,7 +2044,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y+image->rows*sample,image->rows*max_sample))
                         if (!MagickMonitorFormatted(y+image->rows*sample,image->rows*max_sample,exception,
-                                                    LoadImageText,image->filename))
+                                                    LoadImageText,image->filename,
+						    image->columns,image->rows))
                           {
                             status=MagickFail;
                             break;
@@ -2239,7 +2264,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         if (!MagickMonitorFormatted((y+sample*image->rows)/tile_rows,
 						    (image->rows*max_sample)/tile_rows,
 						    exception,
-                                                    LoadImageText,image->filename))
+                                                    LoadImageText,image->filename,
+						    image->columns,image->rows))
                           {
                             status=MagickFail;
                             break;
@@ -2334,7 +2360,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename))
+                                                LoadImageText,image->filename,
+						image->columns,image->rows))
                       {
                         status=MagickFail;
                         break;
@@ -2489,7 +2516,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename))
+                                                LoadImageText,image->filename,
+						image->columns,image->rows))
                       {
                         status=MagickFail;
                         break;
@@ -2581,7 +2609,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename))
+                                                LoadImageText,image->filename,
+						image->columns,image->rows))
                       {
                         status=MagickFail;
                         break;
@@ -2626,7 +2655,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               image=SyncNextImageInList(image);
               status=MagickMonitorFormatted(image->scene-1,image->scene,
                                             &image->exception,
-                                            LoadImageText,image->filename);
+                                            LoadImageText,image->filename,
+					    image->columns,image->rows);
             }
         }
       
@@ -3307,12 +3337,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
-        Currently we only support JPEG compression with RGB.  FAX
-        compression types require PHOTOMETRIC_MINISWHITE.  CMYK takes
-        precedence over JPEG compression.
+        Currently we only support JPEG compression with MINISWHITE,
+        MINISBLACK, and RGB.  FAX compression types require
+        MINISWHITE.  CMYK takes precedence over JPEG compression.
       */
-      if ((photometric != PHOTOMETRIC_SEPARATED) &&
-          (compress_tag == COMPRESSION_JPEG))
+      if ((compress_tag == COMPRESSION_JPEG) &&
+	  (photometric == PHOTOMETRIC_PALETTE))
         {
           photometric=PHOTOMETRIC_RGB;
           if (logging)
@@ -3404,12 +3434,14 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
 
       /*
-        If the user has selected something other than RGB, then remove
-        JPEG compression.  Also remove fax compression if photometric
-        is not compatible.
+        If the user has selected something other than MINISWHITE,
+        MINISBLACK, or RGB, then remove JPEG compression.  Also remove
+        fax compression if photometric is not compatible.
       */
       if ((compress_tag == COMPRESSION_JPEG) &&
-          (photometric != PHOTOMETRIC_RGB))
+          ((photometric != PHOTOMETRIC_MINISWHITE) &&
+	   (photometric != PHOTOMETRIC_MINISBLACK) &&
+	   (photometric != PHOTOMETRIC_RGB)))
         {
           compress_tag=COMPRESSION_NONE;
           if (logging)
@@ -4279,7 +4311,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		      if (QuantumTick(y+sample*image->rows,image->rows*max_sample))
 			if (!MagickMonitorFormatted(y+sample*image->rows,
 						    image->rows*max_sample,&image->exception,
-						    SaveImageText,image->filename))
+						    SaveImageText,image->filename,
+						    image->columns,image->rows))
 			  {
 			    status=MagickFail;
 			    break;
@@ -4524,7 +4557,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 			if (!MagickMonitorFormatted((y+sample*image->rows)/tile_rows,
 						    (image->rows*max_sample)/tile_rows,
 						    &image->exception,
-						    SaveImageText,image->filename))
+						    SaveImageText,image->filename,
+						    image->columns,image->rows))
 			  status=MagickFail;
 		    
 		    if (status == MagickFail)

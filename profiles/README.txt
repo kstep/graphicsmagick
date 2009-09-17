@@ -12,6 +12,10 @@ BetaRGB.icc
   (x,y)=(0.346, 0.359)
   Hue=319.82, Chroma=0.00
 
+BRG.icc
+
+  Sanity test profile which swaps blue and green channels.
+
 CMY.icm
   CMY to Lab colorspace conversion profile 
   WhitePoint : D50

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick 1.3.6 vs ImageMagick 6.5.4 Benchmark Report</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,39 +50,40 @@
 </div>
 <div class="document" id="graphicsmagick-1-3-6-vs-imagemagick-6-5-4-benchmark-report">
 <h1 class="title">GraphicsMagick 1.3.6 vs ImageMagick 6.5.4 Benchmark Report</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<div class="contents local topic">
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#introduction" id="id1" name="id1">Introduction</a></li>
-<li><a class="reference" href="#executive-summary" id="id2" name="id2">Executive Summary</a></li>
-<li><a class="reference" href="#strategy" id="id3" name="id3">Strategy</a></li>
-<li><a class="reference" href="#the-benchmark" id="id4" name="id4">The Benchmark</a></li>
-<li><a class="reference" href="#test-results" id="id5" name="id5">Test Results</a><ul>
-<li><a class="reference" href="#amd-opteron-solaris-10" id="id6" name="id6">AMD Opteron/Solaris 10</a></li>
-<li><a class="reference" href="#sun-sparc-solaris-10" id="id7" name="id7">Sun SPARC/Solaris 10</a></li>
-<li><a class="reference" href="#apple-powerpc-g5-os-x-tiger" id="id8" name="id8">Apple PowerPC G5/OS-X Tiger</a></li>
-<li><a class="reference" href="#intel-xeon-freebsd-7-0" id="id9" name="id9">Intel Xeon / FreeBSD 7.0</a></li>
-<li><a class="reference" href="#windows-xp-mingw-intel-core-2-quad" id="id10" name="id10">Windows XP / MinGW / Intel Core 2 Quad</a></li>
-<li><a class="reference" href="#intel-pentium-iv-cygwin" id="id11" name="id11">Intel Pentium IV / Cygwin</a></li>
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
+<li><a class="reference internal" href="#executive-summary" id="id2">Executive Summary</a></li>
+<li><a class="reference internal" href="#strategy" id="id3">Strategy</a></li>
+<li><a class="reference internal" href="#the-benchmark" id="id4">The Benchmark</a></li>
+<li><a class="reference internal" href="#test-results" id="id5">Test Results</a><ul>
+<li><a class="reference internal" href="#amd-opteron-solaris-10" id="id6">AMD Opteron/Solaris 10</a></li>
+<li><a class="reference internal" href="#sun-sparc-solaris-10" id="id7">Sun SPARC/Solaris 10</a></li>
+<li><a class="reference internal" href="#apple-powerpc-g5-os-x-tiger" id="id8">Apple PowerPC G5/OS-X Tiger</a></li>
+<li><a class="reference internal" href="#intel-xeon-freebsd-7-0" id="id9">Intel Xeon / FreeBSD 7.0</a></li>
+<li><a class="reference internal" href="#windows-xp-mingw-intel-core-2-quad" id="id10">Windows XP / MinGW / Intel Core 2 Quad</a></li>
+<li><a class="reference internal" href="#intel-pentium-iv-cygwin" id="id11">Intel Pentium IV / Cygwin</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="introduction" name="introduction">Introduction</a></h1>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id1">Introduction</a></h1>
 <p>GraphicsMagick 1.3.6 has been benchmarked against the most recent
 ImageMagick release available at time of release. ImageMagick has
 recently been significantly updated to use OpenMP as has
 GraphicsMagick 1.3.6. Several disparate types of systems were used in
 our testing. We are pleased to see that ImageMagick's performance has
 improved significantly on the benchmark that we posted earlier (see
-<a class="reference" href="benchmarks-1.2.html">GraphicsMagick 1.2 Benchmarks</a>). It seems that access to the useful
+<a class="reference external" href="benchmarks-1.2.html">GraphicsMagick 1.2 Benchmarks</a>). It seems that access to the useful
 benchmark and GraphicsMagick source code has been quite helpful to
 ImageMagick in order to resolve many of the performance issues.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="executive-summary" name="executive-summary">Executive Summary</a></h1>
+<div class="section" id="executive-summary">
+<h1><a class="toc-backref" href="#id2">Executive Summary</a></h1>
 <p>GraphicsMagick is typically 1.5 to 5X faster at executing image
 processing operations from the command line than ImageMagick 6.5.4 is.
 Some ImageMagick algorithms run as much as 97X slower. ImageMagick
@@ -101,8 +102,8 @@ resulting in slow code. If time and money are important to you, then
 you should use GraphicsMagick rather than ImageMagick. If time and
 money are not important to you, then you should use ImageMagick.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="strategy" name="strategy">Strategy</a></h1>
+<div class="section" id="strategy">
+<h1><a class="toc-backref" href="#id3">Strategy</a></h1>
 <p>For this benchmark cycle, we used a completely different benchmark
 approach. Instead of testing single-shot performance with large
 uncompressed files, we focused on the ability to process many medium
@@ -131,8 +132,8 @@ GraphicsMagick 1.3.6 unreleased Q16 http://www.GraphicsMagick.org/
 ImageMagick 6.5.4-3 2009-07-19 Q16 OpenMP http://www.imagemagick.org
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="the-benchmark" name="the-benchmark">The Benchmark</a></h1>
+<div class="section" id="the-benchmark">
+<h1><a class="toc-backref" href="#id4">The Benchmark</a></h1>
 <p>The benchmark is quite simple. It reads a list of commands to execute
 from a file named &quot;commands.txt&quot; and times how long it takes to
 execute each command 20 times using GraphicsMagick and ImageMagick.</p>
@@ -194,8 +195,8 @@ do
 done
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="test-results" name="test-results">Test Results</a></h1>
+<div class="section" id="test-results">
+<h1><a class="toc-backref" href="#id5">Test Results</a></h1>
 <p>The test results are expressed as the image processing operation
 performed, the amount of wall-clock time it took for GraphicsMagick to
 execute it twenty times, the amount of wall-clock time it took for
@@ -204,8 +205,8 @@ divided by the GraphicsMagick time. In order to understand the &quot;IM/GM
 ratio&quot; column, a value of 0.50 indicates that GM is half as fast as
 IM, a value of 1.00 indicates that GM and IM are the same speed, and a
 value of 4.00 indicates that GM is four times as fast as IM.</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="amd-opteron-solaris-10" name="amd-opteron-solaris-10">AMD Opteron/Solaris 10</a></h2>
+<div class="section" id="amd-opteron-solaris-10">
+<h2><a class="toc-backref" href="#id6">AMD Opteron/Solaris 10</a></h2>
 <p>This system is a modern AMD Opteron system with two dual-core 3.0GHz
 CPUs and running Solaris 10 U5. The compiler used identifies itself as
 &quot;gcc (GCC) 4.3.3&quot;.</p>
@@ -642,8 +643,8 @@ CPUs and running Solaris 10 U5. The compiler used identifies itself as
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="sun-sparc-solaris-10" name="sun-sparc-solaris-10">Sun SPARC/Solaris 10</a></h2>
+<div class="section" id="sun-sparc-solaris-10">
+<h2><a class="toc-backref" href="#id7">Sun SPARC/Solaris 10</a></h2>
 <p>This system is a 2004 vintage Sun SPARC workstation with two 1.2GHz
 CPUs and running Solaris 10 U5. The compiler used identifies itself as
 &quot;gcc (GCC) 4.2.4&quot;.</p>
@@ -1080,8 +1081,8 @@ CPUs and running Solaris 10 U5. The compiler used identifies itself as
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="apple-powerpc-g5-os-x-tiger" name="apple-powerpc-g5-os-x-tiger">Apple PowerPC G5/OS-X Tiger</a></h2>
+<div class="section" id="apple-powerpc-g5-os-x-tiger">
+<h2><a class="toc-backref" href="#id8">Apple PowerPC G5/OS-X Tiger</a></h2>
 <p>This system is an Apple G5 system with two 2.5GHz CPUs and running the
 Leopard release of OS-X. The compiler used identifies itself as
 &quot;gcc-4.4.0 (GCC) 4.4.0&quot;.</p>
@@ -1518,8 +1519,8 @@ Leopard release of OS-X. The compiler used identifies itself as
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="intel-xeon-freebsd-7-0" name="intel-xeon-freebsd-7-0">Intel Xeon / FreeBSD 7.0</a></h2>
+<div class="section" id="intel-xeon-freebsd-7-0">
+<h2><a class="toc-backref" href="#id9">Intel Xeon / FreeBSD 7.0</a></h2>
 <p>This system is a 2003 vintage Intel Xeon system with two 2.4GHz CPUs
 and running FreeBSD 7.2. The compiler used identifies itself as &quot;gcc
 (GCC) 4.2.1 20070719 [FreeBSD]&quot;.</p>
@@ -1956,10 +1957,10 @@ and running FreeBSD 7.2. The compiler used identifies itself as &quot;gcc
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id10" id="windows-xp-mingw-intel-core-2-quad" name="windows-xp-mingw-intel-core-2-quad">Windows XP / MinGW / Intel Core 2 Quad</a></h2>
+<div class="section" id="windows-xp-mingw-intel-core-2-quad">
+<h2><a class="toc-backref" href="#id10">Windows XP / MinGW / Intel Core 2 Quad</a></h2>
 <p>TDM's GCC/mingw32 build 1.902.0 was downloaded from
-<a class="reference" href="http://www.tdragon.net/recentgcc/">http://www.tdragon.net/recentgcc/</a> and installed on the same Windows XP
+<a class="reference external" href="http://www.tdragon.net/recentgcc/">http://www.tdragon.net/recentgcc/</a> and installed on the same Windows XP
 system with the 2.83 GHz Core 2 Quad Processor (Q9550) as described
 above.  This processor is a multi-chip module (MCM) based on two Core
 2 CPUs bonded to a L3 cache in the same chip package.  This build
@@ -2397,8 +2398,8 @@ supports OpenMP:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id11" id="intel-pentium-iv-cygwin" name="intel-pentium-iv-cygwin">Intel Pentium IV / Cygwin</a></h2>
+<div class="section" id="intel-pentium-iv-cygwin">
+<h2><a class="toc-backref" href="#id11">Intel Pentium IV / Cygwin</a></h2>
 <p>This system is a 2000 vintage 2.0GHz Pentium IV system with Windows XP
 SP3 and latest Cygwin.  This system has only one CPU core and the
 compiler (gcc version 3.4.4 (cygming special, gdc 0.12, using dmd
@@ -2844,13 +2845,13 @@ entry).  GraphicsMagick is faster for all algorithms:</p>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:42 UTC.
 
 </div>
 </body>

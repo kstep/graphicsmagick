@@ -39,7 +39,6 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/pixel_cache.h"
-#include "magick/color.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
@@ -55,7 +54,7 @@ typedef enum
   PCL_DeltaCompression,
   PCL_ZeroRowCompression,
   PCL_RepeatedRowCompression,
-  PCL_UndefinedCompression,
+  PCL_UndefinedCompression
 } PCL_CompressionType;
 
 /*
@@ -1153,7 +1152,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                          SaveImageText,image->filename))
+                                          SaveImageText,image->filename,
+					  image->columns,image->rows))
 		break;
         }   
 

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>OpenMP in GraphicsMagick</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,28 +50,29 @@
 </div>
 <div class="document" id="openmp-in-graphicsmagick">
 <h1 class="title">OpenMP in GraphicsMagick</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<div class="contents local topic">
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#overview" id="id1" name="id1">Overview</a></li>
-<li><a class="reference" href="#results" id="id2" name="id2">Results</a><ul>
-<li><a class="reference" href="#sun-solaris-amd-opteron" id="id3" name="id3">Sun Solaris / AMD Opteron</a></li>
-<li><a class="reference" href="#sun-solaris-ultrasparc-iii" id="id4" name="id4">Sun Solaris / UltraSPARC III</a></li>
-<li><a class="reference" href="#ibm-aix-ibm-power5" id="id5" name="id5">IBM AIX / IBM Power5+</a></li>
-<li><a class="reference" href="#linux-intel-xeon" id="id6" name="id6">Linux / Intel Xeon</a></li>
-<li><a class="reference" href="#apple-os-x-ibm-g5" id="id7" name="id7">Apple OS-X/IBM G5</a></li>
-<li><a class="reference" href="#freebsd-intel-xeon" id="id8" name="id8">FreeBSD / Intel Xeon</a></li>
-<li><a class="reference" href="#windows-xp-msvc-intel-core-2-quad" id="id9" name="id9">Windows XP / MSVC / Intel Core 2 Quad</a></li>
-<li><a class="reference" href="#windows-xp-mingw-intel-core-2-quad" id="id10" name="id10">Windows XP / MinGW / Intel Core 2 Quad</a></li>
-<li><a class="reference" href="#windows-vista-64-bit-phenom-x4-9550" id="id11" name="id11">Windows Vista 64-bit / Phenom X4 9550</a></li>
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#results" id="id2">Results</a><ul>
+<li><a class="reference internal" href="#sun-solaris-amd-opteron" id="id3">Sun Solaris / AMD Opteron</a></li>
+<li><a class="reference internal" href="#sun-solaris-ultrasparc-iii" id="id4">Sun Solaris / UltraSPARC III</a></li>
+<li><a class="reference internal" href="#ibm-aix-ibm-power5" id="id5">IBM AIX / IBM Power5+</a></li>
+<li><a class="reference internal" href="#linux-intel-xeon" id="id6">Linux / Intel Xeon</a></li>
+<li><a class="reference internal" href="#apple-os-x-ibm-g5" id="id7">Apple OS-X/IBM G5</a></li>
+<li><a class="reference internal" href="#freebsd-intel-xeon" id="id8">FreeBSD / Intel Xeon</a></li>
+<li><a class="reference internal" href="#windows-xp-msvc-intel-core-2-quad" id="id9">Windows XP / MSVC / Intel Core 2 Quad</a></li>
+<li><a class="reference internal" href="#windows-xp-mingw-intel-core-2-quad" id="id10">Windows XP / MinGW / Intel Core 2 Quad</a></li>
+<li><a class="reference internal" href="#windows-vista-64-bit-phenom-x4-9550" id="id11">Windows Vista 64-bit / Phenom X4 9550</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="overview" name="overview">Overview</a></h1>
-<p>GraphicsMagick has been transformed to use <a class="reference" href="http://openmp.org/">OpenMP</a> for the 1.3 release. OpenMP is a portable
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id1">Overview</a></h1>
+<p>GraphicsMagick has been transformed to use <a class="reference external" href="http://openmp.org/">OpenMP</a> for the 1.3 release. OpenMP is a portable
 framework for accelerating CPU-bound and memory-bound operations using
 multiple threads. OpenMP originates in the super-computing world and
 has been available in one form or another since the late '90s.</p>
@@ -149,8 +150,8 @@ available to the application. Typically this is set to the number of
 processor cores on the system but may be set lower to limit resource
 consumption or (in some cases) to improve execution efficiency.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="results" name="results">Results</a></h1>
+<div class="section" id="results">
+<h1><a class="toc-backref" href="#id2">Results</a></h1>
 <p>A simple scheme was developed in order to evaluate the performance
 boost with varying numbers of threads.  GraphicsMagick's built-in
 benchmark facility is used.  The selected algorithm is executed
@@ -165,8 +166,8 @@ substantial if image generation is slow.</p>
 <p>The first test executed is <cite>-noop</cite> since it does no work other than
 to generate the input image.  This represents how fast it is possible
 to go based on how fast the input image may be generated.</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id3" id="sun-solaris-amd-opteron" name="sun-solaris-amd-opteron">Sun Solaris / AMD Opteron</a></h2>
+<div class="section" id="sun-solaris-amd-opteron">
+<h2><a class="toc-backref" href="#id3">Sun Solaris / AMD Opteron</a></h2>
 <!-- Last update: Mon Jul 20 16:39:33 CDT 2009 -->
 <p>The following table shows the performance boost in GraphicsMagick
 1.4 as threads are added on a four-core AMD Opteron 3.0GHz system
@@ -948,8 +949,8 @@ running Sun Solaris 10:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id4" id="sun-solaris-ultrasparc-iii" name="sun-solaris-ultrasparc-iii">Sun Solaris / UltraSPARC III</a></h2>
+<div class="section" id="sun-solaris-ultrasparc-iii">
+<h2><a class="toc-backref" href="#id4">Sun Solaris / UltraSPARC III</a></h2>
 <!-- Last update: Mon Jul 20 16:41:33 CDT 2009 -->
 <p>The following table shows the performance boost as threads are added
 on 2 CPU Sun SPARC 1.2GHz workstation running Sun Solaris 10.  This
@@ -1539,8 +1540,8 @@ system obtains quite substantial benefit for most key algorithms:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="ibm-aix-ibm-power5" name="ibm-aix-ibm-power5">IBM AIX / IBM Power5+</a></h2>
+<div class="section" id="ibm-aix-ibm-power5">
+<h2><a class="toc-backref" href="#id5">IBM AIX / IBM Power5+</a></h2>
 <!-- Last update: Mon Jul 20 19:15:49 CDT 2009 -->
 <p>The following table shows the boost on a four core IBM P5+ server
 system (IBM System p5 505 Express with (2) 2.1Ghz CPUs) running AIX:</p>
@@ -2297,8 +2298,8 @@ system (IBM System p5 505 Express with (2) 2.1Ghz CPUs) running AIX:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="linux-intel-xeon" name="linux-intel-xeon">Linux / Intel Xeon</a></h2>
+<div class="section" id="linux-intel-xeon">
+<h2><a class="toc-backref" href="#id6">Linux / Intel Xeon</a></h2>
 <p>These tests were run on an eight core Intel Xeon (L5335) system
 running at 2.00GHz.  This system is built using two CPUs, each of
 which are multi-chip modules (MCM) containing a pair of dual-core
@@ -3386,8 +3387,8 @@ modules.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="apple-os-x-ibm-g5" name="apple-os-x-ibm-g5">Apple OS-X/IBM G5</a></h2>
+<div class="section" id="apple-os-x-ibm-g5">
+<h2><a class="toc-backref" href="#id7">Apple OS-X/IBM G5</a></h2>
 <!-- Last update: Mon Jul 20 16:46:35 CDT 2009 -->
 <p>The following table shows the boost on a two core Apple PowerPC G5
 system (2.5GHz) running OS-X Leopard:</p>
@@ -3976,8 +3977,8 @@ system (2.5GHz) running OS-X Leopard:</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="freebsd-intel-xeon" name="freebsd-intel-xeon">FreeBSD / Intel Xeon</a></h2>
+<div class="section" id="freebsd-intel-xeon">
+<h2><a class="toc-backref" href="#id8">FreeBSD / Intel Xeon</a></h2>
 <!-- Last update: Mon Jul 20 16:43:39 CDT 2009 -->
 <p>The following shows the performance boost on a 2003 vintage 2-CPU
 hyperthreaded Intel Xeon system running at 2.4GHz.  The operating
@@ -4768,8 +4769,8 @@ hyperthreading since otherwise the maximum performance gain would be
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="windows-xp-msvc-intel-core-2-quad" name="windows-xp-msvc-intel-core-2-quad">Windows XP / MSVC / Intel Core 2 Quad</a></h2>
+<div class="section" id="windows-xp-msvc-intel-core-2-quad">
+<h2><a class="toc-backref" href="#id9">Windows XP / MSVC / Intel Core 2 Quad</a></h2>
 <!-- Last update: Mon Jul 20 19:15:49 CDT 2009 -->
 <p>This system is Windows XP Professional (SP3) using the Visual Studio
 2008 compiler and a Q8 build.  The system CPU is a 2.83 GHz Core 2
@@ -5554,11 +5555,11 @@ package.</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id10" id="windows-xp-mingw-intel-core-2-quad" name="windows-xp-mingw-intel-core-2-quad">Windows XP / MinGW / Intel Core 2 Quad</a></h2>
+<div class="section" id="windows-xp-mingw-intel-core-2-quad">
+<h2><a class="toc-backref" href="#id10">Windows XP / MinGW / Intel Core 2 Quad</a></h2>
 <!-- Last update: Mon Jul 20 16:32:57 CDT 2009 -->
 <p>TDM's GCC/mingw32 build 1.902.0 was downloaded from
-<a class="reference" href="http://www.tdragon.net/recentgcc/">http://www.tdragon.net/recentgcc/</a> and installed on the same Windows XP
+<a class="reference external" href="http://www.tdragon.net/recentgcc/">http://www.tdragon.net/recentgcc/</a> and installed on the same Windows XP
 system with the 2.83 GHz Core 2 Quad Processor (Q9550) as described
 above.  This processor is a multi-chip module (MCM) based on two Core
 2 CPUs bonded to a L3 cache in the same chip package.</p>
@@ -6340,8 +6341,8 @@ above.  This processor is a multi-chip module (MCM) based on two Core
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id11" id="windows-vista-64-bit-phenom-x4-9550" name="windows-vista-64-bit-phenom-x4-9550">Windows Vista 64-bit / Phenom X4 9550</a></h2>
+<div class="section" id="windows-vista-64-bit-phenom-x4-9550">
+<h2><a class="toc-backref" href="#id11">Windows Vista 64-bit / Phenom X4 9550</a></h2>
 <p>The following shows the performance of 32-bit GraphicsMagick running
 on a Window Vista 64-bit system with the AMD Phenom X4 9550 (2200 MHz)
 quad-core CPU chip.  For reasons which are not clear, the performance
@@ -7436,13 +7437,13 @@ are nullified with many threads.</p>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:42 UTC.
 
 </div>
 </body>

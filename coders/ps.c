@@ -157,9 +157,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image,
     *next_image;
 
-  ImageInfo
-    *clone_info;
-
   int
     c,
     status;
@@ -307,6 +304,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   filesize=GetBlobSize(image);
   DestroyImage(image);
+  image=(Image *) NULL;
   /*
     Use Ghostscript to convert Postscript image.
   */
@@ -338,12 +336,12 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		 postscript_filename);
   }
   (void) MagickMonitorFormatted(0,8,&image->exception,RenderPostscriptText,
-                                image->filename);
-  status=InvokePostscriptDelegate(image_info->verbose,command);
+                                image_info->filename);
+  status=InvokePostscriptDelegate(image_info->verbose,command,exception);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
-        Append a showpage operator if needed.
+        Ghostscript requires a showpage operator.
       */
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
@@ -353,42 +351,55 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       (void) fputs("showpage\n",file);
       (void) fclose(file);
-      status=InvokePostscriptDelegate(image_info->verbose,command);
+      status=InvokePostscriptDelegate(image_info->verbose,command,exception);
     }
   (void) LiberateTemporaryFile(postscript_filename);
   (void) MagickMonitorFormatted(7,8,&image->exception,RenderPostscriptText,
-                                image->filename);
-  if (!IsAccessibleAndNotEmpty(image_info->filename))
+                                image_info->filename);
+  if (IsAccessibleAndNotEmpty(image_info->filename))
+    {
+      /*
+	Read Ghostscript output.
+      */
+      ImageInfo
+	*clone_info;
+
+      clone_info=CloneImageInfo(image_info);
+      clone_info->blob=(void *) NULL;
+      clone_info->length=0;
+      clone_info->magick[0]='\0';
+      image=ReadImage(clone_info,exception);
+      DestroyImageInfo(clone_info);
+    }
+  (void) LiberateTemporaryFile((char *) image_info->filename);
+#if defined(HasDPS)
+  if (image == (Image *) NULL)
     {
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      (void) LiberateTemporaryFile((char *) image_info->filename);
       (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
       image=ReadImage(image_info,exception);
-      if (image != (Image *) NULL)
-        return(image);
-      ThrowReaderException(DelegateError,PostscriptDelegateFailed,image)
     }
-  clone_info=CloneImageInfo(image_info);
-  clone_info->blob=(void *) NULL;
-  clone_info->length=0;
-  clone_info->magick[0]='\0';
-  image=ReadImage(clone_info,exception);
-  DestroyImageInfo(clone_info);
-  (void) LiberateTemporaryFile((char *) image_info->filename);
+#endif /* defined(HasDPS) */
   if (image == (Image *) NULL)
-    ThrowReaderException(DelegateError,PostscriptDelegateFailed,image);
-  do
-  {
-    (void) strcpy(image->magick,"PS");
-    (void) strlcpy(image->filename,filename,MaxTextExtent);
-    next_image=SyncNextImageInList(image);
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+    {
+      if (UndefinedException == exception->severity)
+	ThrowException(exception,DelegateError,PostscriptDelegateFailed,filename);
+    }
+  else
+    {
+      do
+	{
+	  (void) strcpy(image->magick,"PS");
+	  (void) strlcpy(image->filename,filename,MaxTextExtent);
+	  next_image=SyncNextImageInList(image);
+	  if (next_image != (Image *) NULL)
+	    image=next_image;
+	} while (next_image != (Image *) NULL);
+      while (image->previous != (Image *) NULL)
+	image=image->previous;
+    }
   return(image);
 }
 
@@ -1242,7 +1253,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                              SaveImageText,image->filename))
+                                              SaveImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             } 
             if (bp != buffer)
@@ -1311,7 +1323,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                              SaveImageText,image->filename))
+                                              SaveImageText,image->filename,
+					      image->columns,image->rows))
                     break;
             }
             if (bp != buffer)
@@ -1377,7 +1390,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                                SaveImageText,image->filename))
+                                                SaveImageText,image->filename,
+						image->columns,image->rows))
                       break;
               }
               if (bp != buffer)
@@ -1423,7 +1437,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                                SaveImageText,image->filename))
+                                                SaveImageText,image->filename,
+						image->columns,image->rows))
                       break;
               }
               if (bp != buffer)
@@ -1508,7 +1523,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                                SaveImageText,image->filename))
+                                                SaveImageText,image->filename,
+						image->columns,image->rows))
                       break;
               }
               if (bp != buffer)
@@ -1549,7 +1565,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     if (!MagickMonitorFormatted(y,image->rows,&image->exception,
-                                                SaveImageText,image->filename))
+                                                SaveImageText,image->filename,
+						image->columns,image->rows))
                       break;
               }
               if (bp != buffer)

@@ -58,6 +58,8 @@ MAGICK_BASE_SRCS = \
 	magick/api.h \
 	magick/attribute.c \
 	magick/attribute.h \
+	magick/average.c \
+	magick/average.h \
 	magick/bit_stream.c \
 	magick/bit_stream.h \
 	magick/blob.c \
@@ -72,6 +74,8 @@ MAGICK_BASE_SRCS = \
 	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
+	magick/colormap.c \
+	magick/colormap.h \
 	magick/colorspace.c \
 	magick/colorspace.h \
 	magick/command.c \
@@ -88,6 +92,8 @@ MAGICK_BASE_SRCS = \
 	magick/delegate.h \
 	magick/deprecate.c \
 	magick/deprecate.h \
+	magick/describe.c \
+	magick/describe.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/effect.c \
@@ -103,6 +109,8 @@ MAGICK_BASE_SRCS = \
 	magick/fx.h \
 	magick/gem.c \
 	magick/gem.h \
+	magick/gradient.c \
+	magick/gradient.h \
 	magick/hclut.c \
 	magick/hclut.h \
 	magick/image.c \
@@ -139,6 +147,8 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
+	magick/plasma.c \
+	magick/plasma.h \
 	magick/profile.c \
 	magick/profile.h \
 	magick/quantize.c \
@@ -163,10 +173,14 @@ MAGICK_BASE_SRCS = \
 	magick/spinlock.h \
 	magick/static.c \
 	magick/static.h \
+	magick/statistics.c \
+	magick/statistics.h \
 	magick/studio.h \
 	magick/symbols.h \
 	magick/tempfile.c \
 	magick/tempfile.h \
+	magick/texture.c \
+	magick/texture.h \
 	magick/timer.c \
 	magick/timer.h \
 	magick/transform.c \
@@ -200,10 +214,12 @@ endif # if WIN32_NATIVE_BUILD
 MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
 	magick/attribute.h \
+	magick/average.h \
 	magick/blob.h \
 	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/colormap.h \
 	magick/colorspace.h \
 	magick/command.h \
 	magick/compare.h \
@@ -213,6 +229,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/constitute.h \
 	magick/decorate.h \
 	magick/delegate.h \
+	magick/describe.h \
 	magick/deprecate.h \
 	magick/draw.h \
 	magick/effect.h \
@@ -221,6 +238,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
+	magick/gradient.h \
 	magick/hclut.h \
 	magick/image.h \
 	magick/list.h \
@@ -236,6 +254,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/paint.h \
 	magick/pixel_cache.h \
 	magick/pixel_iterator.h \
+	magick/plasma.h \
 	magick/profile.h \
 	magick/quantize.h \
 	magick/random.h \
@@ -245,7 +264,9 @@ MAGICK_INCLUDE_HDRS = \
 	magick/resource.h \
 	magick/shear.h \
 	magick/signature.h \
+	magick/statistics.h \
 	magick/symbols.h \
+	magick/texture.h \
 	magick/timer.h \
 	magick/transform.h \
 	magick/utility.h \

@@ -99,6 +99,11 @@ TESTS_JP2_XFAIL_TESTS = \
 	tests/rwfile_JP2_truecolor16.sh
 endif
 
+if !WIN32_NATIVE_BUILD
+# For a native WWIN32 build, we assume that the Ghostcript library is
+# dynamically loaded.  We don't have a good way to know if the
+# Ghostscript library is available so we will assume that Postscript
+# is supported, and allow obvious test errors to occur if it is not.
 if !HasPSDelegate
 TESTS_PS_XFAIL_TESTS = \
 	tests/rwblob_EPDF_bilevel.sh \
@@ -147,6 +152,7 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwfile_PS_truecolor10.sh \
 	tests/rwfile_PS_truecolor12.sh \
 	tests/rwfile_PS_truecolor16.sh
+endif
 endif
 
 if !HasPNG

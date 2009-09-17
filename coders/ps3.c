@@ -472,7 +472,8 @@ static unsigned int SerializePseudoClassImage(const ImageInfo *image_info,
       if (QuantumTick(y,image->rows))
         {
           status=MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SaveImageText,image->filename);
+                                        SaveImageText,image->filename,
+					image->columns,image->rows);
           if (status == False)
             break;
         }
@@ -564,7 +565,8 @@ static unsigned int SerializeMultiChannelImage(const ImageInfo *image_info,
       if (QuantumTick(y,image->rows))
         {
           status=MagickMonitorFormatted(y,image->rows,&image->exception,
-                                        SaveImageText,image->filename);
+                                        SaveImageText,image->filename,
+					image->columns,image->rows);
           if (status == False)
             break;
         }
@@ -680,7 +682,8 @@ static unsigned int SerializeSingleChannelImage(const ImageInfo *image_info,
         {
           status=MagickMonitorFormatted(y,image->rows,
                                         &image->exception,SaveImageText,
-                                        image->filename);
+                                        image->filename,
+					image->columns,image->rows);
           if (status == False)
             break;
         }

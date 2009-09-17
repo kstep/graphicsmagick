@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>Magick::Image Class</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
@@ -50,22 +50,23 @@
 </div>
 <div class="document" id="magick-image-class">
 <h1 class="title">Magick::Image Class</h1>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#introduction" id="id9" name="id9">Introduction</a></li>
-<li><a class="reference" href="#blobs" id="id10" name="id10">BLOBs</a></li>
-<li><a class="reference" href="#construct-an-image" id="id11" name="id11">Construct An Image</a></li>
-<li><a class="reference" href="#read-or-write-an-image" id="id12" name="id12">Read Or Write An Image</a></li>
-<li><a class="reference" href="#manipulate-an-image" id="id13" name="id13">Manipulate An Image</a></li>
-<li><a class="reference" href="#set-get-image-attributes" id="id14" name="id14">Set/Get Image Attributes</a></li>
-<li><a class="reference" href="#low-level-image-pixel-access" id="id15" name="id15">Low-Level Image Pixel Access</a></li>
+<li><a class="reference internal" href="#introduction" id="id9">Introduction</a></li>
+<li><a class="reference internal" href="#blobs" id="id10">BLOBs</a></li>
+<li><a class="reference internal" href="#construct-an-image" id="id11">Construct An Image</a></li>
+<li><a class="reference internal" href="#read-or-write-an-image" id="id12">Read Or Write An Image</a></li>
+<li><a class="reference internal" href="#manipulate-an-image" id="id13">Manipulate An Image</a></li>
+<li><a class="reference internal" href="#set-get-image-attributes" id="id14">Set/Get Image Attributes</a></li>
+<li><a class="reference internal" href="#low-level-image-pixel-access" id="id15">Low-Level Image Pixel Access</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="introduction" name="introduction">Introduction</a></h1>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id9">Introduction</a></h1>
 <p>Image is the primary object in Magick++ and represents a single image
-frame (see <a class="reference" href="ImageDesign.html">image design</a>). The <a class="reference" href="STL.html">STL</a> interface must be used to
+frame (see <a class="reference external" href="ImageDesign.html">image design</a>). The <a class="reference external" href="STL.html">STL</a> interface must be used to
 operate on image sequences or images (e.g. of format GIF, TIFF, MIFF,
 Postscript, &amp; MNG) which are comprized of multiple image
 frames. Individual frames of a multi-frame image may be requested by
@@ -73,7 +74,7 @@ adding array-style notation to the end of the file name
 (e.g. &quot;animation.gif[3]&quot; retrieves the fourth frame of a GIF
 animation.  Various image manipulation operations may be applied to
 the image. Attributes may be set on the image to influence the
-operation of the manipulation operations. The <a class="reference" href="Pixels.html">Pixels</a> class provides
+operation of the manipulation operations. The <a class="reference external" href="Pixels.html">Pixels</a> class provides
 low-level access to image pixels. As a convenience, including
 &lt;Magick++.h&gt; is sufficient in order to use the complete Magick++
 API. The Magick++ API is enclosed within the Magick namespace so you
@@ -187,19 +188,19 @@ image.type( GrayscaleType );
 </pre>
 <p>prior to writing the image.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="blobs" name="blobs">BLOBs</a></h1>
+<div class="section" id="blobs">
+<h1><a class="toc-backref" href="#id10">BLOBs</a></h1>
 <p>While encoded images (e.g. JPEG) are most often written-to and
 read-from a disk file, encoded images may also reside in
 memory. Encoded images in memory are known as BLOBs (Binary Large
-OBjects) and may be represented using the <a class="reference" href="Blob.html">Blob</a> class. The encoded
+OBjects) and may be represented using the <a class="reference external" href="Blob.html">Blob</a> class. The encoded
 image may be initially placed in memory by reading it directly from a
 file, reading the image from a database, memory-mapped from a disk
 file, or could be written to memory by Magick++. Once the encoded
-image has been placed within a <a class="reference" href="Blob.html">Blob</a>, it may be read into a Magick++
+image has been placed within a <a class="reference external" href="Blob.html">Blob</a>, it may be read into a Magick++
 Image via a constructor or read() . Likewise, a Magick++ image may be
-written to a <a class="reference" href="Blob.html">Blob</a> via write().</p>
-<p>An example of using Image to write to a <a class="reference" href="Blob.html">Blob</a> follows:</p>
+written to a <a class="reference external" href="Blob.html">Blob</a> via write().</p>
+<p>An example of using Image to write to a <a class="reference external" href="Blob.html">Blob</a> follows:</p>
 <pre class="literal-block">
 #include &lt;Magick++.h&gt;
 using namespace std;
@@ -219,7 +220,7 @@ int main(int argc,char **argv)
     return 0;
 }
 </pre>
-<p>likewise, to read an image from a <a class="reference" href="Blob.html">Blob</a>, you could use one of the
+<p>likewise, to read an image from a <a class="reference external" href="Blob.html">Blob</a>, you could use one of the
 following examples:</p>
 <p>[ Entry condition for the following examples is that data is pointer
 to encoded image data and length represents the size of the data ]</p>
@@ -243,40 +244,40 @@ image.magick( &quot;RGBA&quot; );
 image.read( blob);
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="construct-an-image" name="construct-an-image">Construct An Image</a></h1>
+<div class="section" id="construct-an-image">
+<h1><a class="toc-backref" href="#id11">Construct An Image</a></h1>
 <p>An Image may be constructed in a number of ways. It may be constructed
 from a file, a URL, or an encoded image (e.g. JPEG) contained in an
-in-memory <a class="reference" href="Blob.html">Blob</a> . The following Image constructors and assignment
+in-memory <a class="reference external" href="Blob.html">Blob</a> . The following Image constructors and assignment
 operators are available:</p>
 <p>Construct from image file or image specification:</p>
 <pre class="literal-block">
 Image( const std::string &amp;imageSpec_ )
 </pre>
-<p>Construct a blank image canvas of specified size and <a class="reference" href="Color.html">color</a>:</p>
+<p>Construct a blank image canvas of specified size and <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 Image( const Geometry &amp;size_, const Color &amp;color_ )
 </pre>
-<p>Construct Image from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Construct Image from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 Image ( const Blob &amp;blob_ )
 </pre>
-<p>Construct Image of specified size from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Construct Image of specified size from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 Image ( const Blob &amp;blob_, const Geometry &amp;size_ )
 </pre>
-<p>Construct Image of specified size and depth from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Construct Image of specified size and depth from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 Image ( const Blob &amp;blob_, const Geometry &amp;size,
         const unsigned int depth )
 </pre>
-<p>Construct Image of specified size, depth, and format from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Construct Image of specified size, depth, and format from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 Image ( const Blob &amp;blob_, const Geometry &amp;size,
         const unsigned int depth_,
         const std::string &amp;magick_ )
 </pre>
-<p>Construct Image of specified size, and format from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Construct Image of specified size, and format from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 Image ( const Blob &amp;blob_, const Geometry &amp;size,
         const std::string &amp;magick_ )
@@ -303,18 +304,18 @@ Image ( const Image &amp; image_ )
 Image&amp; operator= ( const Image &amp;image_ )
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="read-or-write-an-image" name="read-or-write-an-image">Read Or Write An Image</a></h1>
-<div class="contents local topic">
+<div class="section" id="read-or-write-an-image">
+<h1><a class="toc-backref" href="#id12">Read Or Write An Image</a></h1>
+<div class="contents local topic" id="id1">
 <ul class="simple">
-<li><a class="reference" href="#ping" id="id16" name="id16">ping</a></li>
-<li><a class="reference" href="#read" id="id17" name="id17">read</a></li>
-<li><a class="reference" href="#write" id="id18" name="id18">write</a></li>
+<li><a class="reference internal" href="#ping" id="id16">ping</a></li>
+<li><a class="reference internal" href="#read" id="id17">read</a></li>
+<li><a class="reference internal" href="#write" id="id18">write</a></li>
 </ul>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id16" id="ping" name="ping">ping</a></h2>
-<p>Ping is similar to <a class="reference" href="#read">read</a> except only enough of the image is read to
+<div class="section" id="ping">
+<h2><a class="toc-backref" href="#id16">ping</a></h2>
+<p>Ping is similar to <a class="reference internal" href="#read">read</a> except only enough of the image is read to
 determine the image columns, rows, and filesize.  Access the
 columns(), rows(), and fileSize() attributes after invoking ping.  The
 image pixels are not valid after calling ping:</p>
@@ -329,9 +330,9 @@ ping.  The image pixels are not valid after calling ping:</p>
 void            ping ( const Blob &amp;blob_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id17" id="read" name="read">read</a></h2>
-<p>Read single image frame into current object.  Use <a class="reference" href="#ping">ping</a> instead if you
+<div class="section" id="read">
+<h2><a class="toc-backref" href="#id17">read</a></h2>
+<p>Read single image frame into current object.  Use <a class="reference internal" href="#ping">ping</a> instead if you
 want to obtain the basic attributes of the image without reading the
 whole file/blob:</p>
 <pre class="literal-block">
@@ -342,24 +343,24 @@ void            read ( const std::string &amp;imageSpec_ )
 void            read ( const Geometry &amp;size_,
                        const std::string &amp;imageSpec_ )
 </pre>
-<p>Read single image frame from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Read single image frame from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 void            read ( const Blob        &amp;blob_ )
 </pre>
-<p>Read single image frame of specified size from in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+<p>Read single image frame of specified size from in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 void            read ( const Blob        &amp;blob_,
                        const Geometry    &amp;size_ )
 </pre>
 <p>Read single image frame of specified size and depth from in-memory
-<a class="reference" href="Blob.html">Blob</a>:</p>
+<a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 void            read ( const Blob         &amp;blob_,
                        const Geometry     &amp;size_,
                        const unsigned int depth_ )
 </pre>
 <p>Read single image frame of specified size, depth, and format from
-in-memory <a class="reference" href="Blob.html">Blob</a>:</p>
+in-memory <a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 void            read ( const Blob         &amp;blob_,
                        const Geometry     &amp;size_,
@@ -367,7 +368,7 @@ void            read ( const Blob         &amp;blob_,
                        const std::string  &amp;magick_ )
 </pre>
 <p>Read single image frame of specified size, and format from in-memory
-<a class="reference" href="Blob.html">Blob</a>:</p>
+<a class="reference external" href="Blob.html">Blob</a>:</p>
 <pre class="literal-block">
 void            read ( const Blob         &amp;blob_,
                        const Geometry     &amp;size_,
@@ -384,13 +385,13 @@ void            read ( const unsigned int width_,
                        const void        *pixels_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id18" id="write" name="write">write</a></h2>
+<div class="section" id="write">
+<h2><a class="toc-backref" href="#id18">write</a></h2>
 <p>Write single image frame to a file:</p>
 <pre class="literal-block">
 void            write ( const std::string &amp;imageSpec_ )
 </pre>
-<p>Write single image frame to in-memory <a class="reference" href="Blob.html">Blob</a>, with optional format and
+<p>Write single image frame to in-memory <a class="reference external" href="Blob.html">Blob</a>, with optional format and
 adjoin parameters:</p>
 <pre class="literal-block">
 void            write ( Blob *blob_ )
@@ -416,11 +417,11 @@ void            write ( const int x_,
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="manipulate-an-image" name="manipulate-an-image">Manipulate An Image</a></h1>
+<div class="section" id="manipulate-an-image">
+<h1><a class="toc-backref" href="#id13">Manipulate An Image</a></h1>
 <p>Image supports access to all the single-image (versus image-list)
 manipulation operations provided by the GraphicsMagick library. If you
-must process a multi-image file (such as an animation), the <a class="reference" href="STL.html">STL</a>
+must process a multi-image file (such as an animation), the <a class="reference external" href="STL.html">STL</a>
 interface , which provides a multi-image abstraction on top of Image,
 must be used.</p>
 <p>Image manipulation methods are very easy to use.  For example:</p>
@@ -432,100 +433,103 @@ image.write(&quot;myImage.tiff&quot;);
 </pre>
 <p>adds gaussian noise to the image file &quot;myImage.tiff&quot;.</p>
 <p>The following image manipulation methods are available:</p>
-<div class="contents local topic">
+<div class="contents local topic" id="id2">
 <ul class="simple">
-<li><a class="reference" href="#adaptivethreshold" id="id19" name="id19">adaptiveThreshold</a></li>
-<li><a class="reference" href="#addnoise" id="id20" name="id20">addNoise</a></li>
-<li><a class="reference" href="#addnoisechannel" id="id21" name="id21">addNoiseChannel</a></li>
-<li><a class="reference" href="#affinetransform" id="id22" name="id22">affineTransform</a></li>
-<li><a class="reference" href="#annotate" id="id23" name="id23">annotate</a></li>
-<li><a class="reference" href="#blur" id="id24" name="id24">blur</a></li>
-<li><a class="reference" href="#blurchannel" id="id25" name="id25">blurChannel</a></li>
-<li><a class="reference" href="#border" id="id26" name="id26">border</a></li>
-<li><a class="reference" href="#channel" id="id27" name="id27">channel</a></li>
-<li><a class="reference" href="#channeldepth" id="id28" name="id28">channelDepth</a></li>
-<li><a class="reference" href="#charcoal" id="id29" name="id29">charcoal</a></li>
-<li><a class="reference" href="#chop" id="id30" name="id30">chop</a></li>
-<li><a class="reference" href="#colorize" id="id31" name="id31">colorize</a></li>
-<li><a class="reference" href="#comment" id="id32" name="id32">comment</a></li>
-<li><a class="reference" href="#compare" id="id33" name="id33">compare</a></li>
-<li><a class="reference" href="#composite" id="id34" name="id34">composite</a></li>
-<li><a class="reference" href="#contrast" id="id35" name="id35">contrast</a></li>
-<li><a class="reference" href="#convolve" id="id36" name="id36">convolve</a></li>
-<li><a class="reference" href="#crop" id="id37" name="id37">crop</a></li>
-<li><a class="reference" href="#cyclecolormap" id="id38" name="id38">cycleColormap</a></li>
-<li><a class="reference" href="#despeckle" id="id39" name="id39">despeckle</a></li>
-<li><a class="reference" href="#display" id="id40" name="id40">display</a></li>
-<li><a class="reference" href="#draw" id="id41" name="id41">draw</a></li>
-<li><a class="reference" href="#edge" id="id42" name="id42">edge</a></li>
-<li><a class="reference" href="#emboss" id="id43" name="id43">emboss</a></li>
-<li><a class="reference" href="#enhance" id="id44" name="id44">enhance</a></li>
-<li><a class="reference" href="#equalize" id="id45" name="id45">equalize</a></li>
-<li><a class="reference" href="#erase" id="id46" name="id46">erase</a></li>
-<li><a class="reference" href="#flip" id="id47" name="id47">flip</a></li>
-<li><a class="reference" href="#floodfillcolor" id="id48" name="id48">floodFillColor</a></li>
-<li><a class="reference" href="#floodfillopacity" id="id49" name="id49">floodFillOpacity</a></li>
-<li><a class="reference" href="#floodfilltexture" id="id50" name="id50">floodFillTexture</a></li>
-<li><a class="reference" href="#flop" id="id51" name="id51">flop</a></li>
-<li><a class="reference" href="#frame" id="id52" name="id52">frame</a></li>
-<li><a class="reference" href="#gamma" id="id53" name="id53">gamma</a></li>
-<li><a class="reference" href="#gaussianblur" id="id54" name="id54">gaussianBlur</a></li>
-<li><a class="reference" href="#gaussianblurchannel" id="id55" name="id55">gaussianBlurChannel</a></li>
-<li><a class="reference" href="#implode" id="id56" name="id56">implode</a></li>
-<li><a class="reference" href="#label" id="id57" name="id57">label</a></li>
-<li><a class="reference" href="#level" id="id58" name="id58">level</a></li>
-<li><a class="reference" href="#levelchannel" id="id59" name="id59">levelChannel</a></li>
-<li><a class="reference" href="#magnify" id="id60" name="id60">magnify</a></li>
-<li><a class="reference" href="#map" id="id61" name="id61">map</a></li>
-<li><a class="reference" href="#mattefloodfill" id="id62" name="id62">matteFloodfill</a></li>
-<li><a class="reference" href="#medianfilter" id="id63" name="id63">medianFilter</a></li>
-<li><a class="reference" href="#minify" id="id64" name="id64">minify</a></li>
-<li><a class="reference" href="#modifyimage" id="id65" name="id65">modifyImage</a></li>
-<li><a class="reference" href="#modulate" id="id66" name="id66">modulate</a></li>
-<li><a class="reference" href="#motionblur" id="id67" name="id67">motionBlur</a></li>
-<li><a class="reference" href="#negate" id="id68" name="id68">negate</a></li>
-<li><a class="reference" href="#normalize" id="id69" name="id69">normalize</a></li>
-<li><a class="reference" href="#oilpaint" id="id70" name="id70">oilPaint</a></li>
-<li><a class="reference" href="#opacity" id="id71" name="id71">opacity</a></li>
-<li><a class="reference" href="#opaque" id="id72" name="id72">opaque</a></li>
-<li><a class="reference" href="#quantize" id="id73" name="id73">quantize</a></li>
-<li><a class="reference" href="#quantumoperator" id="id74" name="id74">quantumOperator</a></li>
-<li><a class="reference" href="#process" id="id75" name="id75">process</a></li>
-<li><a class="reference" href="#raise" id="id76" name="id76">raise</a></li>
-<li><a class="reference" href="#randomthreshold" id="id77" name="id77">randomThreshold</a></li>
-<li><a class="reference" href="#randomthresholdchannel" id="id78" name="id78">randomThresholdChannel</a></li>
-<li><a class="reference" href="#reducenoise" id="id79" name="id79">reduceNoise</a></li>
-<li><a class="reference" href="#roll" id="id80" name="id80">roll</a></li>
-<li><a class="reference" href="#rotate" id="id81" name="id81">rotate</a></li>
-<li><a class="reference" href="#sample" id="id82" name="id82">sample</a></li>
-<li><a class="reference" href="#scale" id="id83" name="id83">scale</a></li>
-<li><a class="reference" href="#segment" id="id84" name="id84">segment</a></li>
-<li><a class="reference" href="#shade" id="id85" name="id85">shade</a></li>
-<li><a class="reference" href="#sharpen" id="id86" name="id86">sharpen</a></li>
-<li><a class="reference" href="#sharpenchannel" id="id87" name="id87">sharpenChannel</a></li>
-<li><a class="reference" href="#shave" id="id88" name="id88">shave</a></li>
-<li><a class="reference" href="#shear" id="id89" name="id89">shear</a></li>
-<li><a class="reference" href="#solarize" id="id90" name="id90">solarize</a></li>
-<li><a class="reference" href="#spread" id="id91" name="id91">spread</a></li>
-<li><a class="reference" href="#stegano" id="id92" name="id92">stegano</a></li>
-<li><a class="reference" href="#stereo" id="id93" name="id93">stereo</a></li>
-<li><a class="reference" href="#swirl" id="id94" name="id94">swirl</a></li>
-<li><a class="reference" href="#texture" id="id95" name="id95">texture</a></li>
-<li><a class="reference" href="#threshold" id="id96" name="id96">threshold</a></li>
-<li><a class="reference" href="#transform" id="id97" name="id97">transform</a></li>
-<li><a class="reference" href="#transparent" id="id98" name="id98">transparent</a></li>
-<li><a class="reference" href="#trim" id="id99" name="id99">trim</a></li>
-<li><a class="reference" href="#type" id="id100" name="id100">type</a></li>
-<li><a class="reference" href="#unsharpmask" id="id101" name="id101">unsharpmask</a></li>
-<li><a class="reference" href="#unsharpmaskchannel" id="id102" name="id102">unsharpmaskChannel</a></li>
-<li><a class="reference" href="#wave" id="id103" name="id103">wave</a></li>
-<li><a class="reference" href="#zoom" id="id104" name="id104">zoom</a></li>
+<li><a class="reference internal" href="#adaptivethreshold" id="id19">adaptiveThreshold</a></li>
+<li><a class="reference internal" href="#addnoise" id="id20">addNoise</a></li>
+<li><a class="reference internal" href="#addnoisechannel" id="id21">addNoiseChannel</a></li>
+<li><a class="reference internal" href="#affinetransform" id="id22">affineTransform</a></li>
+<li><a class="reference internal" href="#annotate" id="id23">annotate</a></li>
+<li><a class="reference internal" href="#blur" id="id24">blur</a></li>
+<li><a class="reference internal" href="#blurchannel" id="id25">blurChannel</a></li>
+<li><a class="reference internal" href="#border" id="id26">border</a></li>
+<li><a class="reference internal" href="#cdl" id="id27">cdl</a></li>
+<li><a class="reference internal" href="#channel" id="id28">channel</a></li>
+<li><a class="reference internal" href="#channeldepth" id="id29">channelDepth</a></li>
+<li><a class="reference internal" href="#charcoal" id="id30">charcoal</a></li>
+<li><a class="reference internal" href="#chop" id="id31">chop</a></li>
+<li><a class="reference internal" href="#colorize" id="id32">colorize</a></li>
+<li><a class="reference internal" href="#colormatrix" id="id33">colorMatrix</a></li>
+<li><a class="reference internal" href="#comment" id="id34">comment</a></li>
+<li><a class="reference internal" href="#compare" id="id35">compare</a></li>
+<li><a class="reference internal" href="#composite" id="id36">composite</a></li>
+<li><a class="reference internal" href="#contrast" id="id37">contrast</a></li>
+<li><a class="reference internal" href="#convolve" id="id38">convolve</a></li>
+<li><a class="reference internal" href="#crop" id="id39">crop</a></li>
+<li><a class="reference internal" href="#cyclecolormap" id="id40">cycleColormap</a></li>
+<li><a class="reference internal" href="#despeckle" id="id41">despeckle</a></li>
+<li><a class="reference internal" href="#display" id="id42">display</a></li>
+<li><a class="reference internal" href="#draw" id="id43">draw</a></li>
+<li><a class="reference internal" href="#edge" id="id44">edge</a></li>
+<li><a class="reference internal" href="#emboss" id="id45">emboss</a></li>
+<li><a class="reference internal" href="#enhance" id="id46">enhance</a></li>
+<li><a class="reference internal" href="#equalize" id="id47">equalize</a></li>
+<li><a class="reference internal" href="#erase" id="id48">erase</a></li>
+<li><a class="reference internal" href="#flip" id="id49">flip</a></li>
+<li><a class="reference internal" href="#floodfillcolor" id="id50">floodFillColor</a></li>
+<li><a class="reference internal" href="#floodfillopacity" id="id51">floodFillOpacity</a></li>
+<li><a class="reference internal" href="#floodfilltexture" id="id52">floodFillTexture</a></li>
+<li><a class="reference internal" href="#flop" id="id53">flop</a></li>
+<li><a class="reference internal" href="#frame" id="id54">frame</a></li>
+<li><a class="reference internal" href="#gamma" id="id55">gamma</a></li>
+<li><a class="reference internal" href="#gaussianblur" id="id56">gaussianBlur</a></li>
+<li><a class="reference internal" href="#gaussianblurchannel" id="id57">gaussianBlurChannel</a></li>
+<li><a class="reference internal" href="#implode" id="id58">implode</a></li>
+<li><a class="reference internal" href="#haldclut" id="id59">haldClut</a></li>
+<li><a class="reference internal" href="#label" id="id60">label</a></li>
+<li><a class="reference internal" href="#level" id="id61">level</a></li>
+<li><a class="reference internal" href="#levelchannel" id="id62">levelChannel</a></li>
+<li><a class="reference internal" href="#magnify" id="id63">magnify</a></li>
+<li><a class="reference internal" href="#map" id="id64">map</a></li>
+<li><a class="reference internal" href="#mattefloodfill" id="id65">matteFloodfill</a></li>
+<li><a class="reference internal" href="#medianfilter" id="id66">medianFilter</a></li>
+<li><a class="reference internal" href="#minify" id="id67">minify</a></li>
+<li><a class="reference internal" href="#modifyimage" id="id68">modifyImage</a></li>
+<li><a class="reference internal" href="#modulate" id="id69">modulate</a></li>
+<li><a class="reference internal" href="#motionblur" id="id70">motionBlur</a></li>
+<li><a class="reference internal" href="#negate" id="id71">negate</a></li>
+<li><a class="reference internal" href="#normalize" id="id72">normalize</a></li>
+<li><a class="reference internal" href="#oilpaint" id="id73">oilPaint</a></li>
+<li><a class="reference internal" href="#opacity" id="id74">opacity</a></li>
+<li><a class="reference internal" href="#opaque" id="id75">opaque</a></li>
+<li><a class="reference internal" href="#quantize" id="id76">quantize</a></li>
+<li><a class="reference internal" href="#quantumoperator" id="id77">quantumOperator</a></li>
+<li><a class="reference internal" href="#process" id="id78">process</a></li>
+<li><a class="reference internal" href="#raise" id="id79">raise</a></li>
+<li><a class="reference internal" href="#randomthreshold" id="id80">randomThreshold</a></li>
+<li><a class="reference internal" href="#randomthresholdchannel" id="id81">randomThresholdChannel</a></li>
+<li><a class="reference internal" href="#reducenoise" id="id82">reduceNoise</a></li>
+<li><a class="reference internal" href="#roll" id="id83">roll</a></li>
+<li><a class="reference internal" href="#rotate" id="id84">rotate</a></li>
+<li><a class="reference internal" href="#sample" id="id85">sample</a></li>
+<li><a class="reference internal" href="#scale" id="id86">scale</a></li>
+<li><a class="reference internal" href="#segment" id="id87">segment</a></li>
+<li><a class="reference internal" href="#shade" id="id88">shade</a></li>
+<li><a class="reference internal" href="#sharpen" id="id89">sharpen</a></li>
+<li><a class="reference internal" href="#sharpenchannel" id="id90">sharpenChannel</a></li>
+<li><a class="reference internal" href="#shave" id="id91">shave</a></li>
+<li><a class="reference internal" href="#shear" id="id92">shear</a></li>
+<li><a class="reference internal" href="#solarize" id="id93">solarize</a></li>
+<li><a class="reference internal" href="#spread" id="id94">spread</a></li>
+<li><a class="reference internal" href="#stegano" id="id95">stegano</a></li>
+<li><a class="reference internal" href="#stereo" id="id96">stereo</a></li>
+<li><a class="reference internal" href="#swirl" id="id97">swirl</a></li>
+<li><a class="reference internal" href="#texture" id="id98">texture</a></li>
+<li><a class="reference internal" href="#threshold" id="id99">threshold</a></li>
+<li><a class="reference internal" href="#transform" id="id100">transform</a></li>
+<li><a class="reference internal" href="#transparent" id="id101">transparent</a></li>
+<li><a class="reference internal" href="#trim" id="id102">trim</a></li>
+<li><a class="reference internal" href="#type" id="id103">type</a></li>
+<li><a class="reference internal" href="#unsharpmask" id="id104">unsharpmask</a></li>
+<li><a class="reference internal" href="#unsharpmaskchannel" id="id105">unsharpmaskChannel</a></li>
+<li><a class="reference internal" href="#wave" id="id106">wave</a></li>
+<li><a class="reference internal" href="#zoom" id="id107">zoom</a></li>
 </ul>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id19" id="adaptivethreshold" name="adaptivethreshold">adaptiveThreshold</a></h2>
+<div class="section" id="adaptivethreshold">
+<h2><a class="toc-backref" href="#id19">adaptiveThreshold</a></h2>
 <p>Apply adaptive thresholding to the image (see
-<a class="reference" href="http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm">http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm</a>). Adaptive thresholding is
+<a class="reference external" href="http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm">http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm</a>). Adaptive thresholding is
 useful if the ideal threshold level is not known in advance, or if the
 illumination gradient is not constant across the image. Adaptive
 thresholding works by evaulating the mean (average) of a pixel region
@@ -539,15 +543,15 @@ void            adaptiveThreshold ( const unsigned int width,
                                     const unsigned offset = 0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id20" id="addnoise" name="addnoise">addNoise</a></h2>
+<div class="section" id="addnoise">
+<h2><a class="toc-backref" href="#id20">addNoise</a></h2>
 <p>Add noise to image with the specified noise type:</p>
 <pre class="literal-block">
 void            addNoise ( const NoiseType noiseType_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id21" id="addnoisechannel" name="addnoisechannel">addNoiseChannel</a></h2>
+<div class="section" id="addnoisechannel">
+<h2><a class="toc-backref" href="#id21">addNoiseChannel</a></h2>
 <p>Add noise to an image channel with the specified noise type. The
 <cite>channel</cite> parameter specifies the channel to add noise to.  The
 <cite>noiseType</cite> parameter specifies the type of noise:</p>
@@ -556,15 +560,15 @@ void            addNoiseChannel ( const ChannelType channel_,
                                   const NoiseType noiseType_)
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id22" id="affinetransform" name="affinetransform">affineTransform</a></h2>
+<div class="section" id="affinetransform">
+<h2><a class="toc-backref" href="#id22">affineTransform</a></h2>
 <p>Transform image by specified affine (or free transform) matrix:</p>
 <pre class="literal-block">
 void            affineTransform ( const DrawableAffine &amp;affine )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id23" id="annotate" name="annotate">annotate</a></h2>
+<div class="section" id="annotate">
+<h2><a class="toc-backref" href="#id23">annotate</a></h2>
 <p>Annotate image (draw text on image)</p>
 <p>Gravity effects text placement in bounding area according to these
 rules:</p>
@@ -614,8 +618,8 @@ void            annotate ( const std::string &amp;text_,
                            const GravityType gravity_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id24" id="blur" name="blur">blur</a></h2>
+<div class="section" id="blur">
+<h2><a class="toc-backref" href="#id24">blur</a></h2>
 <p>Blur an image with the specified blur factor.</p>
 <p>The <cite>radius</cite> parameter specifies the radius of the Gaussian, in
 pixels, not counting the center pixel.  The <cite>sigma</cite> parameter
@@ -625,8 +629,8 @@ void            blur ( const double radius_ = 0.0,
                        const double sigma_ = 1.0  )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id25" id="blurchannel" name="blurchannel">blurChannel</a></h2>
+<div class="section" id="blurchannel">
+<h2><a class="toc-backref" href="#id25">blurChannel</a></h2>
 <p>Blur an image channel with the specified blur factor.</p>
 <p>The <cite>channel</cite> parameter specifies the channel to modify. The <cite>radius</cite>
 parameter specifies the radius of the Gaussian, in pixels, not
@@ -638,17 +642,28 @@ void            blurChannel ( const ChannelType channel_,
                               const double sigma_ = 1.0  )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id26" id="border" name="border">border</a></h2>
-<p>Border image (add border to image).  The <a class="reference" href="Color.html">color</a> of the border is
+<div class="section" id="border">
+<h2><a class="toc-backref" href="#id26">border</a></h2>
+<p>Border image (add border to image).  The <a class="reference external" href="Color.html">color</a> of the border is
 specified by the borderColor attribute:</p>
 <pre class="literal-block">
 void            border ( const Geometry &amp;geometry_
                          = borderGeometryDefault )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id27" id="channel" name="channel">channel</a></h2>
+<div class="section" id="cdl">
+<h2><a class="toc-backref" href="#id27">cdl</a></h2>
+<p>Bake in the ASC-CDL, which is a convention for the for the exchange of
+basic primary color grading information between for the exchange of
+basic primary color grading information between equipment and software
+from different manufacturers.  It is a useful transform for other
+purposes as well:</p>
+<blockquote>
+void            cdl ( const std::string &amp;cdl_ )</blockquote>
+<p>See <a class="reference external" href="../api/cdl.html#cdlimage">CdlImage</a> for more details on the ASC-CDL.</p>
+</div>
+<div class="section" id="channel">
+<h2><a class="toc-backref" href="#id28">channel</a></h2>
 <p>Extract channel from image. Use this option to extract a particular
 channel from the image.  MatteChannel for example, is useful for
 extracting the opacity values from an image:</p>
@@ -656,8 +671,8 @@ extracting the opacity values from an image:</p>
 void            channel ( const ChannelType channel_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id28" id="channeldepth" name="channeldepth">channelDepth</a></h2>
+<div class="section" id="channeldepth">
+<h2><a class="toc-backref" href="#id29">channelDepth</a></h2>
 <p>Set or obtain modulus channel depth:</p>
 <pre class="literal-block">
 void            channelDepth ( const ChannelType channel_,
@@ -666,8 +681,8 @@ void            channelDepth ( const ChannelType channel_,
 unsigned int    channelDepth ( const ChannelType channel_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id29" id="charcoal" name="charcoal">charcoal</a></h2>
+<div class="section" id="charcoal">
+<h2><a class="toc-backref" href="#id30">charcoal</a></h2>
 <p>Charcoal effect image (looks like charcoal sketch).</p>
 <p>The <cite>radius</cite> parameter specifies the radius of the Gaussian, in
 pixels, not counting the center pixel.  The <cite>sigma</cite> parameter
@@ -677,16 +692,16 @@ void            charcoal ( const double radius_ = 0.0,
                            const double sigma_ = 1.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id30" id="chop" name="chop">chop</a></h2>
+<div class="section" id="chop">
+<h2><a class="toc-backref" href="#id31">chop</a></h2>
 <p>Chop image (remove vertical or horizontal subregion of image):</p>
 <pre class="literal-block">
 void            chop ( const Geometry &amp;geometry_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id31" id="colorize" name="colorize">colorize</a></h2>
-<p>Colorize image with pen <a class="reference" href="Color.html">color</a>, using specified percent opacity for
+<div class="section" id="colorize">
+<h2><a class="toc-backref" href="#id32">colorize</a></h2>
+<p>Colorize image with pen <a class="reference external" href="Color.html">color</a>, using specified percent opacity for
 red, green, and blue quantums:</p>
 <pre class="literal-block">
 void            colorize ( const unsigned int opacityRed_,
@@ -694,25 +709,35 @@ void            colorize ( const unsigned int opacityRed_,
                            const unsigned int opacityBlue_,
                            const Color &amp;penColor_ )
 </pre>
-<p>Colorize image with pen <a class="reference" href="Color.html">color</a>, using specified percent opacity:</p>
+<p>Colorize image with pen <a class="reference external" href="Color.html">color</a>, using specified percent opacity:</p>
 <pre class="literal-block">
 void            colorize ( const unsigned int opacity_,
                            const Color &amp;penColor_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id32" id="comment" name="comment">comment</a></h2>
+<div class="section" id="colormatrix">
+<h2><a class="toc-backref" href="#id33">colorMatrix</a></h2>
+<p>Apply a color matrix to the image channels.  The user supplied matrix
+may be of order 1 to 5 (1x1 through 5x5):</p>
+<pre class="literal-block">
+void            colorMatrix (const unsigned int order_,
+                             const double *color_matrix_)
+</pre>
+<p>See <a class="reference external" href="../api/fx.html#colormatriximage">ColorMatrixImage</a> for more details.</p>
+</div>
+<div class="section" id="comment">
+<h2><a class="toc-backref" href="#id34">comment</a></h2>
 <p>Comment image (add comment string to image). By default, each image is
 commented with its file name. Use this method to assign a specific
 comment to the image.  Optionally you can include the image filename,
-type, width, height, or other image attributes by embedding <a class="reference" href="FormatCharacters.html">special
+type, width, height, or other image attributes by embedding <a class="reference external" href="FormatCharacters.html">special
 format characters</a>:</p>
 <pre class="literal-block">
 void            comment ( const std::string &amp;comment_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id33" id="compare" name="compare">compare</a></h2>
+<div class="section" id="compare">
+<h2><a class="toc-backref" href="#id35">compare</a></h2>
 <p>Compare current image with another image.  Sets meanErrorPerPixel,
 normalizedMaxError, and normalizedMeanError in the current
 image. False is returned if the images are identical. An ErrorOption
@@ -722,8 +747,8 @@ or matte differ from the current image:</p>
 bool            compare ( const Image &amp;reference_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id34" id="composite" name="composite">composite</a></h2>
+<div class="section" id="composite">
+<h2><a class="toc-backref" href="#id36">composite</a></h2>
 <p>Compose an image onto another at specified x and y offset and using a
 specified algorithm:</p>
 <pre class="literal-block">
@@ -744,15 +769,15 @@ void            composite ( const Image &amp;compositeImage_,
                             = InCompositeOp )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id35" id="contrast" name="contrast">contrast</a></h2>
+<div class="section" id="contrast">
+<h2><a class="toc-backref" href="#id37">contrast</a></h2>
 <p>Contrast image (enhance intensity differences in image):</p>
 <pre class="literal-block">
 void            contrast ( const unsigned int sharpen_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id36" id="convolve" name="convolve">convolve</a></h2>
+<div class="section" id="convolve">
+<h2><a class="toc-backref" href="#id38">convolve</a></h2>
 <p>Convolve image.  Applies a user-specified convolution to the image.
 The <cite>order</cite> parameter represents the number of columns and rows in the
 filter kernel while <cite>kernel</cite> is a two-dimensional array of doubles
@@ -762,29 +787,29 @@ void            convolve ( const unsigned int order_,
                            const double *kernel_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id37" id="crop" name="crop">crop</a></h2>
+<div class="section" id="crop">
+<h2><a class="toc-backref" href="#id39">crop</a></h2>
 <p>Crop image (return subregion of original image):</p>
 <pre class="literal-block">
 void            crop ( const Geometry &amp;geometry_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id38" id="cyclecolormap" name="cyclecolormap">cycleColormap</a></h2>
+<div class="section" id="cyclecolormap">
+<h2><a class="toc-backref" href="#id40">cycleColormap</a></h2>
 <p>Cycle (rotate) image colormap:</p>
 <pre class="literal-block">
 void            cycleColormap ( const int amount_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id39" id="despeckle" name="despeckle">despeckle</a></h2>
+<div class="section" id="despeckle">
+<h2><a class="toc-backref" href="#id41">despeckle</a></h2>
 <p>Despeckle image (reduce speckle noise):</p>
 <pre class="literal-block">
 void            despeckle ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id40" id="display" name="display">display</a></h2>
+<div class="section" id="display">
+<h2><a class="toc-backref" href="#id42">display</a></h2>
 <p>Display image on screen. Caution: if an image format is is not
 compatible with the display visual (e.g. JPEG on a colormapped
 display) then the original image will be altered. Use a copy of the
@@ -792,22 +817,22 @@ original if this is a problem:</p>
 <blockquote>
 void            display ( void )</blockquote>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id41" id="draw" name="draw">draw</a></h2>
-<p>Draw shape or text on image using a single <a class="reference" href="Drawable.html">drawable</a> object:</p>
+<div class="section" id="draw">
+<h2><a class="toc-backref" href="#id43">draw</a></h2>
+<p>Draw shape or text on image using a single <a class="reference external" href="Drawable.html">drawable</a> object:</p>
 <pre class="literal-block">
 void            draw ( const Drawable &amp;drawable_ );
 </pre>
-<p>Draw shapes or text on image using a set of <a class="reference" href="Drawable.html">Drawable</a> objects
-contained in an <a class="reference" href="STL.html">STL</a> list. Use of this method improves drawing
+<p>Draw shapes or text on image using a set of <a class="reference external" href="Drawable.html">Drawable</a> objects
+contained in an <a class="reference external" href="STL.html">STL</a> list. Use of this method improves drawing
 performance and allows batching draw objects together in a list for
 repeated use:</p>
 <pre class="literal-block">
 void            draw ( const std::list&lt;Magick::Drawable&gt; &amp;drawable_ );
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id42" id="edge" name="edge">edge</a></h2>
+<div class="section" id="edge">
+<h2><a class="toc-backref" href="#id44">edge</a></h2>
 <p>Edge image (hilight edges in image).  The radius is the radius of the
 pixel neighborhood.. Specify a radius of zero for automatic radius
 selection:</p>
@@ -815,8 +840,8 @@ selection:</p>
 void            edge ( const double radius_ = 0.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id43" id="emboss" name="emboss">emboss</a></h2>
+<div class="section" id="emboss">
+<h2><a class="toc-backref" href="#id45">emboss</a></h2>
 <p>Emboss image (hilight edges with 3D effect).  The <cite>radius</cite> parameter
 specifies the radius of the Gaussian, in pixels, not counting the
 center pixel.  The <cite>sigma</cite> parameter specifies the standard deviation
@@ -826,39 +851,39 @@ void            emboss ( const double radius_ = 0.0,
                          const double sigma_ = 1.0)
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id44" id="enhance" name="enhance">enhance</a></h2>
+<div class="section" id="enhance">
+<h2><a class="toc-backref" href="#id46">enhance</a></h2>
 <p>Enhance image (minimize noise):</p>
 <pre class="literal-block">
 void            enhance ( void );
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id45" id="equalize" name="equalize">equalize</a></h2>
+<div class="section" id="equalize">
+<h2><a class="toc-backref" href="#id47">equalize</a></h2>
 <p>Equalize image (histogram equalization):</p>
 <pre class="literal-block">
 void            equalize ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id46" id="erase" name="erase">erase</a></h2>
+<div class="section" id="erase">
+<h2><a class="toc-backref" href="#id48">erase</a></h2>
 <p>Set all image pixels to the current background color:</p>
 <pre class="literal-block">
 void            erase ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id47" id="flip" name="flip">flip</a></h2>
+<div class="section" id="flip">
+<h2><a class="toc-backref" href="#id49">flip</a></h2>
 <p>Flip image (reflect each scanline in the vertical direction):</p>
 <pre class="literal-block">
 void            flip ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id48" id="floodfillcolor" name="floodfillcolor">floodFillColor</a></h2>
-<p>Flood-fill <a class="reference" href="Color.html">color</a> across pixels that match the <a class="reference" href="Color.html">color</a> of the target
+<div class="section" id="floodfillcolor">
+<h2><a class="toc-backref" href="#id50">floodFillColor</a></h2>
+<p>Flood-fill <a class="reference external" href="Color.html">color</a> across pixels that match the <a class="reference external" href="Color.html">color</a> of the target
 pixel and are neighbors of the target pixel.  Uses current fuzz
-setting when determining <a class="reference" href="Color.html">color</a> match:</p>
+setting when determining <a class="reference external" href="Color.html">color</a> match:</p>
 <pre class="literal-block">
 void            floodFillColor( const unsigned int x_,
                                 const unsigned int y_,
@@ -867,9 +892,9 @@ void            floodFillColor( const unsigned int x_,
 void            floodFillColor( const Geometry &amp;point_,
                                 const Color &amp;fillColor_ )
 </pre>
-<p>Flood-fill <a class="reference" href="Color.html">color</a> across pixels starting at target-pixel and stopping
-at pixels matching specified border <a class="reference" href="Color.html">color</a>.  Uses current fuzz setting
-when determining <a class="reference" href="Color.html">color</a> match:</p>
+<p>Flood-fill <a class="reference external" href="Color.html">color</a> across pixels starting at target-pixel and stopping
+at pixels matching specified border <a class="reference external" href="Color.html">color</a>.  Uses current fuzz setting
+when determining <a class="reference external" href="Color.html">color</a> match:</p>
 <pre class="literal-block">
 void            floodFillColor( const unsigned int x_,
                                 const unsigned int y_,
@@ -881,9 +906,9 @@ void            floodFillColor( const Geometry &amp;point_,
                                 const Color &amp;borderColor_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id49" id="floodfillopacity" name="floodfillopacity">floodFillOpacity</a></h2>
-<p>Flood-fill pixels matching <a class="reference" href="Color.html">color</a> (within fuzz factor) of target
+<div class="section" id="floodfillopacity">
+<h2><a class="toc-backref" href="#id51">floodFillOpacity</a></h2>
+<p>Flood-fill pixels matching <a class="reference external" href="Color.html">color</a> (within fuzz factor) of target
 pixel(x,y) with replacement opacity value using method:</p>
 <pre class="literal-block">
 void            floodFillOpacity ( const unsigned int x_,
@@ -892,11 +917,11 @@ void            floodFillOpacity ( const unsigned int x_,
                                    const PaintMethod method_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id50" id="floodfilltexture" name="floodfilltexture">floodFillTexture</a></h2>
-<p>Flood-fill texture across pixels that match the <a class="reference" href="Color.html">color</a> of the
+<div class="section" id="floodfilltexture">
+<h2><a class="toc-backref" href="#id52">floodFillTexture</a></h2>
+<p>Flood-fill texture across pixels that match the <a class="reference external" href="Color.html">color</a> of the
 target pixel and are neighbors of the target pixel.
-Uses current fuzz setting when determining <a class="reference" href="Color.html">color</a> match:</p>
+Uses current fuzz setting when determining <a class="reference external" href="Color.html">color</a> match:</p>
 <pre class="literal-block">
 void            floodFillTexture( const unsigned int x_,
                                   const unsigned int y_,
@@ -906,8 +931,8 @@ void            floodFillTexture( const Geometry &amp;point_,
                                   const Image &amp;texture_ )
 </pre>
 <p>Flood-fill texture across pixels starting at target-pixel and
-stopping at pixels matching specified border <a class="reference" href="Color.html">color</a>.
-Uses current fuzz setting when determining <a class="reference" href="Color.html">color</a> match:</p>
+stopping at pixels matching specified border <a class="reference external" href="Color.html">color</a>.
+Uses current fuzz setting when determining <a class="reference external" href="Color.html">color</a> match:</p>
 <pre class="literal-block">
 void            floodFillTexture( const unsigned int x_,
                                   const unsigned int y_,
@@ -919,15 +944,15 @@ void            floodFillTexture( const Geometry &amp;point_,
                                   const Color &amp;borderColor_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id51" id="flop" name="flop">flop</a></h2>
+<div class="section" id="flop">
+<h2><a class="toc-backref" href="#id53">flop</a></h2>
 <p>Flop image (reflect each scanline in the horizontal direction):</p>
 <pre class="literal-block">
 void            flop ( void );
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id52" id="frame" name="frame">frame</a></h2>
+<div class="section" id="frame">
+<h2><a class="toc-backref" href="#id54">frame</a></h2>
 <p>Draw a decorative frame around the image:</p>
 <pre class="literal-block">
 void            frame ( const Geometry &amp;geometry_ = frameGeometryDefault )
@@ -938,8 +963,8 @@ void            frame ( const unsigned int width_,
                         const int outerBevel_ = 6 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id53" id="gamma" name="gamma">gamma</a></h2>
+<div class="section" id="gamma">
+<h2><a class="toc-backref" href="#id55">gamma</a></h2>
 <p>Gamma correct the image or individual image channels:</p>
 <pre class="literal-block">
 void            gamma ( const double gamma_ )
@@ -949,8 +974,8 @@ void            gamma ( const double gammaRed_,
                         const double gammaBlue_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id54" id="gaussianblur" name="gaussianblur">gaussianBlur</a></h2>
+<div class="section" id="gaussianblur">
+<h2><a class="toc-backref" href="#id56">gaussianBlur</a></h2>
 <p>Gaussian blur image.  The number of neighbor pixels to be included in
 the convolution mask is specified by <cite>width</cite>. The standard deviation
 of the gaussian bell curve is specified by <cite>sigma</cite>:</p>
@@ -958,8 +983,8 @@ of the gaussian bell curve is specified by <cite>sigma</cite>:</p>
 void            gaussianBlur ( const double width_, const double sigma_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id55" id="gaussianblurchannel" name="gaussianblurchannel">gaussianBlurChannel</a></h2>
+<div class="section" id="gaussianblurchannel">
+<h2><a class="toc-backref" href="#id57">gaussianBlurChannel</a></h2>
 <p>Gaussian blur image channel.  The number of neighbor pixels to be
 included in the convolution mask is specified by <cite>width</cite>. The
 standard deviation of the gaussian bell curve is specified by
@@ -970,18 +995,26 @@ void            gaussianBlurChannel ( const ChannelType channel_,
                                       const double sigma_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id56" id="implode" name="implode">implode</a></h2>
+<div class="section" id="implode">
+<h2><a class="toc-backref" href="#id58">implode</a></h2>
 <p>Implode image (special effect):</p>
 <pre class="literal-block">
 void            implode ( const double factor_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id57" id="label" name="label">label</a></h2>
+<div class="section" id="haldclut">
+<h2><a class="toc-backref" href="#id59">haldClut</a></h2>
+<p>Apply a color lookup table (Hald CLUT) to the image:</p>
+<pre class="literal-block">
+void            haldClut ( const Image &amp;clutImage_ )
+</pre>
+<p>See <a class="reference external" href="../api/hclut.html#haldclutimage">HaldClutImage</a> for more details.</p>
+</div>
+<div class="section" id="label">
+<h2><a class="toc-backref" href="#id60">label</a></h2>
 <p>Assign a label to an image. Use this option to assign a specific label
 to the image. Optionally you can include the image filename, type,
-width, height, or scene number in the label by embedding <a class="reference" href="FormatCharacters.html">special
+width, height, or scene number in the label by embedding <a class="reference external" href="FormatCharacters.html">special
 format characters</a>. If the first character of string is &#64;, the image
 label is read from a file titled by the remaining characters in the
 string. When converting to Postscript, use this option to specify a
@@ -990,8 +1023,8 @@ header string to print above the image:</p>
 void            label ( const std::string &amp;label_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id58" id="level" name="level">level</a></h2>
+<div class="section" id="level">
+<h2><a class="toc-backref" href="#id61">level</a></h2>
 <p>Level image to increase image contrast, and/or adjust image
 gamma. Adjust the levels of the image by scaling the colors falling
 between specified white and black points to the full available quantum
@@ -1009,8 +1042,8 @@ void            level ( const double black_point,
                         const double mid_point=1.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id59" id="levelchannel" name="levelchannel">levelChannel</a></h2>
+<div class="section" id="levelchannel">
+<h2><a class="toc-backref" href="#id62">levelChannel</a></h2>
 <p>Level image channel to increase image contrast, and/or adjust image
 gamma. Adjust the levels of the image channel by scaling the colors
 falling between specified white and black points to the full available
@@ -1029,15 +1062,15 @@ void            levelChannel ( const ChannelType channel,
                                const double mid_point=1.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id60" id="magnify" name="magnify">magnify</a></h2>
+<div class="section" id="magnify">
+<h2><a class="toc-backref" href="#id63">magnify</a></h2>
 <p>Magnify image by integral size (double the dimensions):</p>
 <pre class="literal-block">
 void            magnify ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id61" id="map" name="map">map</a></h2>
+<div class="section" id="map">
+<h2><a class="toc-backref" href="#id64">map</a></h2>
 <p>Remap image colors with closest color from a reference image. Set
 <cite>dither</cite> to true in to apply Floyd/Steinberg error diffusion to the
 image. By default, color reduction chooses an optimal set of colors
@@ -1048,8 +1081,8 @@ void            map ( const Image &amp;mapImage_ ,
                       const bool dither_ = false )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id62" id="mattefloodfill" name="mattefloodfill">matteFloodfill</a></h2>
+<div class="section" id="mattefloodfill">
+<h2><a class="toc-backref" href="#id65">matteFloodfill</a></h2>
 <p>Floodfill designated area with a replacement opacity value:</p>
 <pre class="literal-block">
 void            matteFloodfill ( const Color &amp;target_ ,
@@ -1058,23 +1091,23 @@ void            matteFloodfill ( const Color &amp;target_ ,
                                  const PaintMethod method_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id63" id="medianfilter" name="medianfilter">medianFilter</a></h2>
+<div class="section" id="medianfilter">
+<h2><a class="toc-backref" href="#id66">medianFilter</a></h2>
 <p>Filter image by replacing each pixel component with the median color
 in a circular neighborhood:</p>
 <pre class="literal-block">
 void            medianFilter ( const double radius_ = 0.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id64" id="minify" name="minify">minify</a></h2>
+<div class="section" id="minify">
+<h2><a class="toc-backref" href="#id67">minify</a></h2>
 <p>Reduce image by integral (half) size:</p>
 <pre class="literal-block">
 void            minify ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id65" id="modifyimage" name="modifyimage">modifyImage</a></h2>
+<div class="section" id="modifyimage">
+<h2><a class="toc-backref" href="#id68">modifyImage</a></h2>
 <p>Prepare to update image (copy if reference &gt; 1). Normally Magick++'s
 implicit reference counting takes care of all instance management.  In
 the rare case that the automatic instance management does not work,
@@ -1086,8 +1119,8 @@ multiple references:</p>
 void            modifyImage ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id66" id="modulate" name="modulate">modulate</a></h2>
+<div class="section" id="modulate">
+<h2><a class="toc-backref" href="#id69">modulate</a></h2>
 <p>Modulate percent hue, saturation, and brightness of an image.
 Modulation of saturation and brightness is as a ratio of the current
 value (1.0 for no change). Modulation of hue is an absolute rotation
@@ -1099,8 +1132,8 @@ void            modulate ( const double brightness_,
                            const double hue_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id67" id="motionblur" name="motionblur">motionBlur</a></h2>
+<div class="section" id="motionblur">
+<h2><a class="toc-backref" href="#id70">motionBlur</a></h2>
 <p>Motion blur image with specified blur factor. The <cite>radius</cite> parameter
 specifies the radius of the Gaussian, in pixels, not counting the
 center pixel.  The <cite>sigma</cite> parameter specifies the standard
@@ -1113,31 +1146,31 @@ void            motionBlur ( const double radius_,
                              const double angle_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id68" id="negate" name="negate">negate</a></h2>
+<div class="section" id="negate">
+<h2><a class="toc-backref" href="#id71">negate</a></h2>
 <p>Negate colors in image.  Set <cite>grayscale</cite> to only negate grayscale
 values in image:</p>
 <pre class="literal-block">
 void            negate ( const bool grayscale_ = false )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id69" id="normalize" name="normalize">normalize</a></h2>
+<div class="section" id="normalize">
+<h2><a class="toc-backref" href="#id72">normalize</a></h2>
 <p>Normalize image (increase contrast by normalizing the pixel values to
 span the full range of color values):</p>
 <pre class="literal-block">
 void            normalize ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id70" id="oilpaint" name="oilpaint">oilPaint</a></h2>
+<div class="section" id="oilpaint">
+<h2><a class="toc-backref" href="#id73">oilPaint</a></h2>
 <p>Oilpaint image (image looks like an oil painting):</p>
 <pre class="literal-block">
 void            oilPaint ( const double radius_ = 3.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id71" id="opacity" name="opacity">opacity</a></h2>
+<div class="section" id="opacity">
+<h2><a class="toc-backref" href="#id74">opacity</a></h2>
 <p>Set or attenuate the opacity channel in the image. If the image pixels
 are opaque then they are set to the specified opacity value, otherwise
 they are blended with the supplied opacity value.  The value of
@@ -1148,24 +1181,24 @@ completely opaque or completely transparent, respectively:</p>
 void            opacity ( const unsigned int opacity_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id72" id="opaque" name="opaque">opaque</a></h2>
-<p>Change <a class="reference" href="Color.html">color</a> of specified opaque pixel to specified pen <a class="reference" href="Color.html">color</a>:</p>
+<div class="section" id="opaque">
+<h2><a class="toc-backref" href="#id75">opaque</a></h2>
+<p>Change <a class="reference external" href="Color.html">color</a> of specified opaque pixel to specified pen <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 void            opaque ( const Color &amp;opaqueColor_,
                          const Color &amp;penColor_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id73" id="quantize" name="quantize">quantize</a></h2>
+<div class="section" id="quantize">
+<h2><a class="toc-backref" href="#id76">quantize</a></h2>
 <p>Quantize image (reduce number of colors). Set <cite>measureError</cite> to true
 in order to calculate error attributes:</p>
 <pre class="literal-block">
 void            quantize ( const bool measureError_ = false )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id74" id="quantumoperator" name="quantumoperator">quantumOperator</a></h2>
+<div class="section" id="quantumoperator">
+<h2><a class="toc-backref" href="#id77">quantumOperator</a></h2>
 <p>Apply an arithmetic or bitwise operator to the image pixel quantums:</p>
 <pre class="literal-block">
 void            quantumOperator ( const ChannelType channel_,
@@ -1180,8 +1213,8 @@ void            quantumOperator ( const int x_,const int y_,
                                   const double rvalue_)
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id75" id="process" name="process">process</a></h2>
+<div class="section" id="process">
+<h2><a class="toc-backref" href="#id78">process</a></h2>
 <p>Execute a named process module using an argc/argv syntax similar to
 that accepted by a C 'main' routine. An exception is thrown if the
 requested process module doesn't exist, fails to load, or fails during
@@ -1192,8 +1225,8 @@ void            process ( std::string name_,
                           char **argv_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id76" id="raise" name="raise">raise</a></h2>
+<div class="section" id="raise">
+<h2><a class="toc-backref" href="#id79">raise</a></h2>
 <p>Raise image (lighten or darken the edges of an image to give a 3-D
 raised or lowered effect):</p>
 <pre class="literal-block">
@@ -1201,8 +1234,8 @@ void            raise ( const Geometry &amp;geometry_ = &quot;6x6+0+0&quot;,
                         const bool raisedFlag_ = false )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id77" id="randomthreshold" name="randomthreshold">randomThreshold</a></h2>
+<div class="section" id="randomthreshold">
+<h2><a class="toc-backref" href="#id80">randomThreshold</a></h2>
 <p>Random threshold image.</p>
 <p>Changes the value of individual pixels based on the intensity
 of each pixel compared to a random threshold.  The result is a
@@ -1216,8 +1249,8 @@ a very fast alternative to 'quantize' based dithering:</p>
 void            randomThreshold( const Geometry &amp;thresholds_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id78" id="randomthresholdchannel" name="randomthresholdchannel">randomThresholdChannel</a></h2>
+<div class="section" id="randomthresholdchannel">
+<h2><a class="toc-backref" href="#id81">randomThresholdChannel</a></h2>
 <p>Random threshold image channel.</p>
 <p>Changes the value of individual pixels based on the intensity of each
 pixel compared to a random threshold.  The result is a low-contrast,
@@ -1232,8 +1265,8 @@ void            randomThresholdChannel( const Geometry &amp;thresholds_,
                                         const ChannelType channel_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id79" id="reducenoise" name="reducenoise">reduceNoise</a></h2>
+<div class="section" id="reducenoise">
+<h2><a class="toc-backref" href="#id82">reduceNoise</a></h2>
 <p>Reduce noise in image using a noise peak elimination filter:</p>
 <pre class="literal-block">
 void            reduceNoise ( void )
@@ -1241,8 +1274,8 @@ void            reduceNoise ( void )
 void            reduceNoise ( const double order_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id80" id="roll" name="roll">roll</a></h2>
+<div class="section" id="roll">
+<h2><a class="toc-backref" href="#id83">roll</a></h2>
 <p>Roll image (rolls image vertically and horizontally) by specified
 number of columnms and rows):</p>
 <pre class="literal-block">
@@ -1252,30 +1285,30 @@ void            roll ( const unsigned int columns_,
                        const unsigned int rows_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id81" id="rotate" name="rotate">rotate</a></h2>
+<div class="section" id="rotate">
+<h2><a class="toc-backref" href="#id84">rotate</a></h2>
 <p>Rotate image counter-clockwise by specified number of degrees:</p>
 <pre class="literal-block">
 void            rotate ( const double degrees_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id82" id="sample" name="sample">sample</a></h2>
+<div class="section" id="sample">
+<h2><a class="toc-backref" href="#id85">sample</a></h2>
 <p>Resize image by using pixel sampling algorithm:</p>
 <pre class="literal-block">
 void            sample ( const Geometry &amp;geometry_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id83" id="scale" name="scale">scale</a></h2>
+<div class="section" id="scale">
+<h2><a class="toc-backref" href="#id86">scale</a></h2>
 <p>Resize image by using simple ratio algorithm which provides good
 quality:</p>
 <pre class="literal-block">
 void            scale ( const Geometry &amp;geometry_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id84" id="segment" name="segment">segment</a></h2>
+<div class="section" id="segment">
+<h2><a class="toc-backref" href="#id87">segment</a></h2>
 <p>Segment (coalesce similar image components) by analyzing the
 histograms of the color components and identifying units that are
 homogeneous with the fuzzy c-means technique.  A histogram is built
@@ -1295,8 +1328,8 @@ void            segment ( const double clusterThreshold_ = 1.0,
                           const double smoothingThreshold_ = 1.5 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id85" id="shade" name="shade">shade</a></h2>
+<div class="section" id="shade">
+<h2><a class="toc-backref" href="#id88">shade</a></h2>
 <p>Shade image using distant light source. Specify <cite>azimuth</cite> and
 <cite>elevation</cite> as the position of the light source. By default, the
 shading results as a grayscale image.. Set <cite>colorShading</cite> to true to
@@ -1307,8 +1340,8 @@ void            shade ( const double azimuth_ = 30,
                         const bool   colorShading_ = false )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id86" id="sharpen" name="sharpen">sharpen</a></h2>
+<div class="section" id="sharpen">
+<h2><a class="toc-backref" href="#id89">sharpen</a></h2>
 <p>Sharpen pixels in image.  The <cite>radius</cite> parameter specifies the radius
 of the Gaussian, in pixels, not counting the center pixel.  The
 <cite>sigma</cite> parameter specifies the standard deviation of the Laplacian,
@@ -1318,8 +1351,8 @@ void            sharpen ( const double radius_ = 0.0,
                           const double sigma_ = 1.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id87" id="sharpenchannel" name="sharpenchannel">sharpenChannel</a></h2>
+<div class="section" id="sharpenchannel">
+<h2><a class="toc-backref" href="#id90">sharpenChannel</a></h2>
 <p>Sharpen pixels in image channel.  The <cite>radius</cite> parameter specifies the
 radius of the Gaussian, in pixels, not counting the center pixel.  The
 <cite>sigma</cite> parameter specifies the standard deviation of the Laplacian,
@@ -1330,15 +1363,15 @@ void            sharpenChannel ( const ChannelType channel_,
                                  const double sigma_ = 1.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id88" id="shave" name="shave">shave</a></h2>
+<div class="section" id="shave">
+<h2><a class="toc-backref" href="#id91">shave</a></h2>
 <p>Shave pixels from image edges:</p>
 <pre class="literal-block">
 void            shave ( const Geometry &amp;geometry_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id89" id="shear" name="shear">shear</a></h2>
+<div class="section" id="shear">
+<h2><a class="toc-backref" href="#id92">shear</a></h2>
 <p>Shear image (create parallelogram by sliding image by X or Y
 axis). Shearing slides one edge of an image along the X or Y axis,
 creating a parallelogram.  An X direction shear slides an edge along
@@ -1347,58 +1380,58 @@ The amount of the shear is controlled by a shear angle.  For X
 direction shears, x degrees is measured relative to the Y axis, and
 similarly, for Y direction shears y degrees is measured relative to
 the X axis. Empty triangles left over from shearing the image are
-filled with the <a class="reference" href="Color.html">color</a> defined as borderColor:</p>
+filled with the <a class="reference external" href="Color.html">color</a> defined as borderColor:</p>
 <pre class="literal-block">
 void            shear ( const double xShearAngle_,
                         const double yShearAngle_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id90" id="solarize" name="solarize">solarize</a></h2>
+<div class="section" id="solarize">
+<h2><a class="toc-backref" href="#id93">solarize</a></h2>
 <p>Solarize image (similar to effect seen when exposing a photographic
 film to light during the development process):</p>
 <pre class="literal-block">
 void            solarize ( const double factor_ = 50.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id91" id="spread" name="spread">spread</a></h2>
+<div class="section" id="spread">
+<h2><a class="toc-backref" href="#id94">spread</a></h2>
 <p>Spread pixels randomly within image by specified ammount:</p>
 <pre class="literal-block">
 void            spread ( const unsigned int amount_ = 3 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id92" id="stegano" name="stegano">stegano</a></h2>
+<div class="section" id="stegano">
+<h2><a class="toc-backref" href="#id95">stegano</a></h2>
 <p>Add a digital watermark to the image (based on second image):</p>
 <pre class="literal-block">
 void            stegano ( const Image &amp;watermark_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id93" id="stereo" name="stereo">stereo</a></h2>
+<div class="section" id="stereo">
+<h2><a class="toc-backref" href="#id96">stereo</a></h2>
 <p>Create an image which appears in stereo when viewed with red-blue
 glasses (Red image on left, blue on right):</p>
 <pre class="literal-block">
 void            stereo ( const Image &amp;rightImage_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id94" id="swirl" name="swirl">swirl</a></h2>
+<div class="section" id="swirl">
+<h2><a class="toc-backref" href="#id97">swirl</a></h2>
 <p>Swirl image (image pixels are rotated by degrees):</p>
 <pre class="literal-block">
 void            swirl ( const double degrees_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id95" id="texture" name="texture">texture</a></h2>
-<p>Channel a texture on pixels matching image background <a class="reference" href="Color.html">color</a>:</p>
+<div class="section" id="texture">
+<h2><a class="toc-backref" href="#id98">texture</a></h2>
+<p>Channel a texture on pixels matching image background <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 void            texture ( const Image &amp;texture_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id96" id="threshold" name="threshold">threshold</a></h2>
+<div class="section" id="threshold">
+<h2><a class="toc-backref" href="#id99">threshold</a></h2>
 <p>Threshold image channels (below threshold becomes black, above
 threshold becomes white).  The range of the threshold parameter is 0
 to MaxRGB:</p>
@@ -1406,8 +1439,8 @@ to MaxRGB:</p>
 void            threshold ( const double threshold_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id97" id="transform" name="transform">transform</a></h2>
+<div class="section" id="transform">
+<h2><a class="toc-backref" href="#id100">transform</a></h2>
 <p>Transform image based on image and crop geometries. Crop geometry is
 optional:</p>
 <pre class="literal-block">
@@ -1417,23 +1450,23 @@ void            transform ( const Geometry &amp;imageGeometry_,
                             const Geometry &amp;cropGeometry_  )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id98" id="transparent" name="transparent">transparent</a></h2>
-<p>Add matte channel to image, setting pixels matching <a class="reference" href="Color.html">color</a> to
+<div class="section" id="transparent">
+<h2><a class="toc-backref" href="#id101">transparent</a></h2>
+<p>Add matte channel to image, setting pixels matching <a class="reference external" href="Color.html">color</a> to
 transparent:</p>
 <pre class="literal-block">
 void            transparent ( const Color &amp;color_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id99" id="trim" name="trim">trim</a></h2>
-<p>Trim edges that are the background <a class="reference" href="Color.html">color</a> from the image:</p>
+<div class="section" id="trim">
+<h2><a class="toc-backref" href="#id102">trim</a></h2>
+<p>Trim edges that are the background <a class="reference external" href="Color.html">color</a> from the image:</p>
 <pre class="literal-block">
 void            trim ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id100" id="type" name="type">type</a></h2>
+<div class="section" id="type">
+<h2><a class="toc-backref" href="#id103">type</a></h2>
 <p>Convert the image representation to the specified type or retrieve the
 current image type.  If the image is reduced to an inferior type, then
 image information may be lost (e.g. color changed to grayscale).</p>
@@ -1468,8 +1501,8 @@ void            type ( const ImageType type_ )
 ImageType       type ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id101" id="unsharpmask" name="unsharpmask">unsharpmask</a></h2>
+<div class="section" id="unsharpmask">
+<h2><a class="toc-backref" href="#id104">unsharpmask</a></h2>
 <p>Replace image with a sharpened version of the original image using the
 unsharp mask algorithm.</p>
 <blockquote>
@@ -1493,8 +1526,8 @@ void            unsharpmask ( const double radius_,
                               const double threshold_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id102" id="unsharpmaskchannel" name="unsharpmaskchannel">unsharpmaskChannel</a></h2>
+<div class="section" id="unsharpmaskchannel">
+<h2><a class="toc-backref" href="#id105">unsharpmaskChannel</a></h2>
 <p>Replace image channel with a sharpened version of the original image
 using the unsharp mask algorithm.</p>
 <blockquote>
@@ -1521,24 +1554,24 @@ void            unsharpmaskChannel ( const ChannelType channel_,
                                      const double threshold_ );
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id103" id="wave" name="wave">wave</a></h2>
+<div class="section" id="wave">
+<h2><a class="toc-backref" href="#id106">wave</a></h2>
 <p>Map image pixels to a sine wave:</p>
 <pre class="literal-block">
 void            wave ( const double amplitude_ = 25.0,
                        const double wavelength_ = 150.0 )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id104" id="zoom" name="zoom">zoom</a></h2>
+<div class="section" id="zoom">
+<h2><a class="toc-backref" href="#id107">zoom</a></h2>
 <p>Zoom (resize) image to specified size:</p>
 <pre class="literal-block">
 void            zoom ( const Geometry &amp;geometry_ )
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="set-get-image-attributes" name="set-get-image-attributes">Set/Get Image Attributes</a></h1>
+<div class="section" id="set-get-image-attributes">
+<h1><a class="toc-backref" href="#id14">Set/Get Image Attributes</a></h1>
 <p>Image attributes are set and obtained via methods in Image. Except for
 methods which accept pointer arguments (e.g. chromaBluePrimary) all
 methods return attributes by value.</p>
@@ -1555,116 +1588,116 @@ image.density(Geometry(150,150));   // could also use image.density(&quot;150x15
 image.write(filename)
 </pre>
 <p>The following image attribute methods are available:</p>
-<div class="contents local topic">
+<div class="contents local topic" id="id3">
 <ul class="simple">
-<li><a class="reference" href="#adjoin" id="id105" name="id105">adjoin</a></li>
-<li><a class="reference" href="#antialias" id="id106" name="id106">antiAlias</a></li>
-<li><a class="reference" href="#animationdelay" id="id107" name="id107">animationDelay</a></li>
-<li><a class="reference" href="#animationiterations" id="id108" name="id108">animationIterations</a></li>
-<li><a class="reference" href="#attribute" id="id109" name="id109">attribute</a></li>
-<li><a class="reference" href="#backgroundcolor" id="id110" name="id110">backgroundColor</a></li>
-<li><a class="reference" href="#backgroundtexture" id="id111" name="id111">backgroundTexture</a></li>
-<li><a class="reference" href="#basecolumns" id="id112" name="id112">baseColumns</a></li>
-<li><a class="reference" href="#basefilename" id="id113" name="id113">baseFilename</a></li>
-<li><a class="reference" href="#baserows" id="id114" name="id114">baseRows</a></li>
-<li><a class="reference" href="#bordercolor" id="id115" name="id115">borderColor</a></li>
-<li><a class="reference" href="#boundingbox" id="id116" name="id116">boundingBox</a></li>
-<li><a class="reference" href="#boxcolor" id="id117" name="id117">boxColor</a></li>
-<li><a class="reference" href="#cachethreshold" id="id118" name="id118">cacheThreshold</a></li>
-<li><a class="reference" href="#chromablueprimary" id="id119" name="id119">chromaBluePrimary</a></li>
-<li><a class="reference" href="#chromagreenprimary" id="id120" name="id120">chromaGreenPrimary</a></li>
-<li><a class="reference" href="#chromaredprimary" id="id121" name="id121">chromaRedPrimary</a></li>
-<li><a class="reference" href="#chromawhitepoint" id="id122" name="id122">chromaWhitePoint</a></li>
-<li><a class="reference" href="#classtype" id="id123" name="id123">classType</a></li>
-<li><a class="reference" href="#clipmask" id="id124" name="id124">clipMask</a></li>
-<li><a class="reference" href="#colorfuzz" id="id125" name="id125">colorFuzz</a></li>
-<li><a class="reference" href="#colormap" id="id126" name="id126">colorMap</a></li>
-<li><a class="reference" href="#colormapsize" id="id127" name="id127">colorMapSize</a></li>
-<li><a class="reference" href="#colorspace" id="id128" name="id128">colorSpace</a></li>
-<li><a class="reference" href="#columns" id="id129" name="id129">columns</a></li>
-<li><a class="reference" href="#id4" id="id130" name="id130">comment</a></li>
-<li><a class="reference" href="#compose" id="id131" name="id131">compose</a></li>
-<li><a class="reference" href="#compresstype" id="id132" name="id132">compressType</a></li>
-<li><a class="reference" href="#debug" id="id133" name="id133">debug</a></li>
-<li><a class="reference" href="#definevalue" id="id134" name="id134">defineValue</a></li>
-<li><a class="reference" href="#defineset" id="id135" name="id135">defineSet</a></li>
-<li><a class="reference" href="#density" id="id136" name="id136">density</a></li>
-<li><a class="reference" href="#depth" id="id137" name="id137">depth</a></li>
-<li><a class="reference" href="#directory" id="id138" name="id138">directory</a></li>
-<li><a class="reference" href="#endian" id="id139" name="id139">endian</a></li>
-<li><a class="reference" href="#filename" id="id140" name="id140">fileName</a></li>
-<li><a class="reference" href="#filesize" id="id141" name="id141">fileSize</a></li>
-<li><a class="reference" href="#fillcolor" id="id142" name="id142">fillColor</a></li>
-<li><a class="reference" href="#fillpattern" id="id143" name="id143">fillPattern</a></li>
-<li><a class="reference" href="#fillrule" id="id144" name="id144">fillRule</a></li>
-<li><a class="reference" href="#filtertype" id="id145" name="id145">filterType</a></li>
-<li><a class="reference" href="#font" id="id146" name="id146">font</a></li>
-<li><a class="reference" href="#fontpointsize" id="id147" name="id147">fontPointsize</a></li>
-<li><a class="reference" href="#fonttypemetrics" id="id148" name="id148">fontTypeMetrics</a></li>
-<li><a class="reference" href="#format" id="id149" name="id149">format</a></li>
-<li><a class="reference" href="#id5" id="id150" name="id150">gamma</a></li>
-<li><a class="reference" href="#id6" id="id151" name="id151">geometry</a></li>
-<li><a class="reference" href="#gifdisposemethod" id="id152" name="id152">gifDisposeMethod</a></li>
-<li><a class="reference" href="#icccolorprofile" id="id153" name="id153">iccColorProfile</a></li>
-<li><a class="reference" href="#interlacetype" id="id154" name="id154">interlaceType</a></li>
-<li><a class="reference" href="#iptcprofile" id="id155" name="id155">iptcProfile</a></li>
-<li><a class="reference" href="#isvalid" id="id156" name="id156">isValid</a></li>
-<li><a class="reference" href="#id7" id="id157" name="id157">label</a></li>
-<li><a class="reference" href="#linewidth" id="id158" name="id158">lineWidth</a></li>
-<li><a class="reference" href="#magick" id="id159" name="id159">magick</a></li>
-<li><a class="reference" href="#matte" id="id160" name="id160">matte</a></li>
-<li><a class="reference" href="#mattecolor" id="id161" name="id161">matteColor</a></li>
-<li><a class="reference" href="#meanerrorperpixel" id="id162" name="id162">meanErrorPerPixel</a></li>
-<li><a class="reference" href="#modulusdepth" id="id163" name="id163">modulusDepth</a></li>
-<li><a class="reference" href="#monochrome" id="id164" name="id164">monochrome</a></li>
-<li><a class="reference" href="#montagegeometry" id="id165" name="id165">montageGeometry</a></li>
-<li><a class="reference" href="#normalizedmaxerror" id="id166" name="id166">normalizedMaxError</a></li>
-<li><a class="reference" href="#normalizedmeanerror" id="id167" name="id167">normalizedMeanError</a></li>
-<li><a class="reference" href="#orientation" id="id168" name="id168">orientation</a></li>
-<li><a class="reference" href="#page" id="id169" name="id169">page</a></li>
-<li><a class="reference" href="#pixelcolor" id="id170" name="id170">pixelColor</a></li>
-<li><a class="reference" href="#profile" id="id171" name="id171">profile</a></li>
-<li><a class="reference" href="#quality" id="id172" name="id172">quality</a></li>
-<li><a class="reference" href="#quantizecolors" id="id173" name="id173">quantizeColors</a></li>
-<li><a class="reference" href="#quantizecolorspace" id="id174" name="id174">quantizeColorSpace</a></li>
-<li><a class="reference" href="#quantizedither" id="id175" name="id175">quantizeDither</a></li>
-<li><a class="reference" href="#quantizetreedepth" id="id176" name="id176">quantizeTreeDepth</a></li>
-<li><a class="reference" href="#renderingintent" id="id177" name="id177">renderingIntent</a></li>
-<li><a class="reference" href="#resolutionunits" id="id178" name="id178">resolutionUnits</a></li>
-<li><a class="reference" href="#rows" id="id179" name="id179">rows</a></li>
-<li><a class="reference" href="#scene" id="id180" name="id180">scene</a></li>
-<li><a class="reference" href="#signature" id="id181" name="id181">signature</a></li>
-<li><a class="reference" href="#size" id="id182" name="id182">size</a></li>
-<li><a class="reference" href="#statistics" id="id183" name="id183">statistics</a></li>
-<li><a class="reference" href="#strokeantialias" id="id184" name="id184">strokeAntiAlias</a></li>
-<li><a class="reference" href="#strokecolor" id="id185" name="id185">strokeColor</a></li>
-<li><a class="reference" href="#strokedasharray" id="id186" name="id186">strokeDashArray</a></li>
-<li><a class="reference" href="#strokedashoffset" id="id187" name="id187">strokeDashOffset</a></li>
-<li><a class="reference" href="#strokelinecap" id="id188" name="id188">strokeLineCap</a></li>
-<li><a class="reference" href="#strokelinejoin" id="id189" name="id189">strokeLineJoin</a></li>
-<li><a class="reference" href="#strokemiterlimit" id="id190" name="id190">strokeMiterLimit</a></li>
-<li><a class="reference" href="#strokepattern" id="id191" name="id191">strokePattern</a></li>
-<li><a class="reference" href="#strokewidth" id="id192" name="id192">strokeWidth</a></li>
-<li><a class="reference" href="#subimage" id="id193" name="id193">subImage</a></li>
-<li><a class="reference" href="#subrange" id="id194" name="id194">subRange</a></li>
-<li><a class="reference" href="#textencoding" id="id195" name="id195">textEncoding</a></li>
-<li><a class="reference" href="#tilename" id="id196" name="id196">tileName</a></li>
-<li><a class="reference" href="#totalcolors" id="id197" name="id197">totalColors</a></li>
-<li><a class="reference" href="#transformorigin" id="id198" name="id198">transformOrigin</a></li>
-<li><a class="reference" href="#transformrotation" id="id199" name="id199">transformRotation</a></li>
-<li><a class="reference" href="#transformreset" id="id200" name="id200">transformReset</a></li>
-<li><a class="reference" href="#transformscale" id="id201" name="id201">transformScale</a></li>
-<li><a class="reference" href="#transformskewx" id="id202" name="id202">transformSkewX</a></li>
-<li><a class="reference" href="#transformskewy" id="id203" name="id203">transformSkewY</a></li>
-<li><a class="reference" href="#verbose" id="id204" name="id204">verbose</a></li>
-<li><a class="reference" href="#view" id="id205" name="id205">view</a></li>
-<li><a class="reference" href="#x11display" id="id206" name="id206">x11Display</a></li>
-<li><a class="reference" href="#xresolution" id="id207" name="id207">xResolution</a></li>
-<li><a class="reference" href="#yresolution" id="id208" name="id208">yResolution</a></li>
+<li><a class="reference internal" href="#adjoin" id="id108">adjoin</a></li>
+<li><a class="reference internal" href="#antialias" id="id109">antiAlias</a></li>
+<li><a class="reference internal" href="#animationdelay" id="id110">animationDelay</a></li>
+<li><a class="reference internal" href="#animationiterations" id="id111">animationIterations</a></li>
+<li><a class="reference internal" href="#attribute" id="id112">attribute</a></li>
+<li><a class="reference internal" href="#backgroundcolor" id="id113">backgroundColor</a></li>
+<li><a class="reference internal" href="#backgroundtexture" id="id114">backgroundTexture</a></li>
+<li><a class="reference internal" href="#basecolumns" id="id115">baseColumns</a></li>
+<li><a class="reference internal" href="#basefilename" id="id116">baseFilename</a></li>
+<li><a class="reference internal" href="#baserows" id="id117">baseRows</a></li>
+<li><a class="reference internal" href="#bordercolor" id="id118">borderColor</a></li>
+<li><a class="reference internal" href="#boundingbox" id="id119">boundingBox</a></li>
+<li><a class="reference internal" href="#boxcolor" id="id120">boxColor</a></li>
+<li><a class="reference internal" href="#cachethreshold" id="id121">cacheThreshold</a></li>
+<li><a class="reference internal" href="#chromablueprimary" id="id122">chromaBluePrimary</a></li>
+<li><a class="reference internal" href="#chromagreenprimary" id="id123">chromaGreenPrimary</a></li>
+<li><a class="reference internal" href="#chromaredprimary" id="id124">chromaRedPrimary</a></li>
+<li><a class="reference internal" href="#chromawhitepoint" id="id125">chromaWhitePoint</a></li>
+<li><a class="reference internal" href="#classtype" id="id126">classType</a></li>
+<li><a class="reference internal" href="#clipmask" id="id127">clipMask</a></li>
+<li><a class="reference internal" href="#colorfuzz" id="id128">colorFuzz</a></li>
+<li><a class="reference internal" href="#colormap" id="id129">colorMap</a></li>
+<li><a class="reference internal" href="#colormapsize" id="id130">colorMapSize</a></li>
+<li><a class="reference internal" href="#colorspace" id="id131">colorSpace</a></li>
+<li><a class="reference internal" href="#columns" id="id132">columns</a></li>
+<li><a class="reference internal" href="#id4" id="id133">comment</a></li>
+<li><a class="reference internal" href="#compose" id="id134">compose</a></li>
+<li><a class="reference internal" href="#compresstype" id="id135">compressType</a></li>
+<li><a class="reference internal" href="#debug" id="id136">debug</a></li>
+<li><a class="reference internal" href="#definevalue" id="id137">defineValue</a></li>
+<li><a class="reference internal" href="#defineset" id="id138">defineSet</a></li>
+<li><a class="reference internal" href="#density" id="id139">density</a></li>
+<li><a class="reference internal" href="#depth" id="id140">depth</a></li>
+<li><a class="reference internal" href="#directory" id="id141">directory</a></li>
+<li><a class="reference internal" href="#endian" id="id142">endian</a></li>
+<li><a class="reference internal" href="#filename" id="id143">fileName</a></li>
+<li><a class="reference internal" href="#filesize" id="id144">fileSize</a></li>
+<li><a class="reference internal" href="#fillcolor" id="id145">fillColor</a></li>
+<li><a class="reference internal" href="#fillpattern" id="id146">fillPattern</a></li>
+<li><a class="reference internal" href="#fillrule" id="id147">fillRule</a></li>
+<li><a class="reference internal" href="#filtertype" id="id148">filterType</a></li>
+<li><a class="reference internal" href="#font" id="id149">font</a></li>
+<li><a class="reference internal" href="#fontpointsize" id="id150">fontPointsize</a></li>
+<li><a class="reference internal" href="#fonttypemetrics" id="id151">fontTypeMetrics</a></li>
+<li><a class="reference internal" href="#format" id="id152">format</a></li>
+<li><a class="reference internal" href="#id5" id="id153">gamma</a></li>
+<li><a class="reference internal" href="#id6" id="id154">geometry</a></li>
+<li><a class="reference internal" href="#gifdisposemethod" id="id155">gifDisposeMethod</a></li>
+<li><a class="reference internal" href="#icccolorprofile" id="id156">iccColorProfile</a></li>
+<li><a class="reference internal" href="#interlacetype" id="id157">interlaceType</a></li>
+<li><a class="reference internal" href="#iptcprofile" id="id158">iptcProfile</a></li>
+<li><a class="reference internal" href="#isvalid" id="id159">isValid</a></li>
+<li><a class="reference internal" href="#id7" id="id160">label</a></li>
+<li><a class="reference internal" href="#linewidth" id="id161">lineWidth</a></li>
+<li><a class="reference internal" href="#magick" id="id162">magick</a></li>
+<li><a class="reference internal" href="#matte" id="id163">matte</a></li>
+<li><a class="reference internal" href="#mattecolor" id="id164">matteColor</a></li>
+<li><a class="reference internal" href="#meanerrorperpixel" id="id165">meanErrorPerPixel</a></li>
+<li><a class="reference internal" href="#modulusdepth" id="id166">modulusDepth</a></li>
+<li><a class="reference internal" href="#monochrome" id="id167">monochrome</a></li>
+<li><a class="reference internal" href="#montagegeometry" id="id168">montageGeometry</a></li>
+<li><a class="reference internal" href="#normalizedmaxerror" id="id169">normalizedMaxError</a></li>
+<li><a class="reference internal" href="#normalizedmeanerror" id="id170">normalizedMeanError</a></li>
+<li><a class="reference internal" href="#orientation" id="id171">orientation</a></li>
+<li><a class="reference internal" href="#page" id="id172">page</a></li>
+<li><a class="reference internal" href="#pixelcolor" id="id173">pixelColor</a></li>
+<li><a class="reference internal" href="#profile" id="id174">profile</a></li>
+<li><a class="reference internal" href="#quality" id="id175">quality</a></li>
+<li><a class="reference internal" href="#quantizecolors" id="id176">quantizeColors</a></li>
+<li><a class="reference internal" href="#quantizecolorspace" id="id177">quantizeColorSpace</a></li>
+<li><a class="reference internal" href="#quantizedither" id="id178">quantizeDither</a></li>
+<li><a class="reference internal" href="#quantizetreedepth" id="id179">quantizeTreeDepth</a></li>
+<li><a class="reference internal" href="#renderingintent" id="id180">renderingIntent</a></li>
+<li><a class="reference internal" href="#resolutionunits" id="id181">resolutionUnits</a></li>
+<li><a class="reference internal" href="#rows" id="id182">rows</a></li>
+<li><a class="reference internal" href="#scene" id="id183">scene</a></li>
+<li><a class="reference internal" href="#signature" id="id184">signature</a></li>
+<li><a class="reference internal" href="#size" id="id185">size</a></li>
+<li><a class="reference internal" href="#statistics" id="id186">statistics</a></li>
+<li><a class="reference internal" href="#strokeantialias" id="id187">strokeAntiAlias</a></li>
+<li><a class="reference internal" href="#strokecolor" id="id188">strokeColor</a></li>
+<li><a class="reference internal" href="#strokedasharray" id="id189">strokeDashArray</a></li>
+<li><a class="reference internal" href="#strokedashoffset" id="id190">strokeDashOffset</a></li>
+<li><a class="reference internal" href="#strokelinecap" id="id191">strokeLineCap</a></li>
+<li><a class="reference internal" href="#strokelinejoin" id="id192">strokeLineJoin</a></li>
+<li><a class="reference internal" href="#strokemiterlimit" id="id193">strokeMiterLimit</a></li>
+<li><a class="reference internal" href="#strokepattern" id="id194">strokePattern</a></li>
+<li><a class="reference internal" href="#strokewidth" id="id195">strokeWidth</a></li>
+<li><a class="reference internal" href="#subimage" id="id196">subImage</a></li>
+<li><a class="reference internal" href="#subrange" id="id197">subRange</a></li>
+<li><a class="reference internal" href="#textencoding" id="id198">textEncoding</a></li>
+<li><a class="reference internal" href="#tilename" id="id199">tileName</a></li>
+<li><a class="reference internal" href="#totalcolors" id="id200">totalColors</a></li>
+<li><a class="reference internal" href="#transformorigin" id="id201">transformOrigin</a></li>
+<li><a class="reference internal" href="#transformrotation" id="id202">transformRotation</a></li>
+<li><a class="reference internal" href="#transformreset" id="id203">transformReset</a></li>
+<li><a class="reference internal" href="#transformscale" id="id204">transformScale</a></li>
+<li><a class="reference internal" href="#transformskewx" id="id205">transformSkewX</a></li>
+<li><a class="reference internal" href="#transformskewy" id="id206">transformSkewY</a></li>
+<li><a class="reference internal" href="#verbose" id="id207">verbose</a></li>
+<li><a class="reference internal" href="#view" id="id208">view</a></li>
+<li><a class="reference internal" href="#x11display" id="id209">x11Display</a></li>
+<li><a class="reference internal" href="#xresolution" id="id210">xResolution</a></li>
+<li><a class="reference internal" href="#yresolution" id="id211">yResolution</a></li>
 </ul>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id105" id="adjoin" name="adjoin">adjoin</a></h2>
+<div class="section" id="adjoin">
+<h2><a class="toc-backref" href="#id108">adjoin</a></h2>
 <p>Join images into a single multi-image file:</p>
 <pre class="literal-block">
 void            adjoin ( const bool flag_ )
@@ -1672,8 +1705,8 @@ void            adjoin ( const bool flag_ )
 bool            adjoin ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id106" id="antialias" name="antialias">antiAlias</a></h2>
+<div class="section" id="antialias">
+<h2><a class="toc-backref" href="#id109">antiAlias</a></h2>
 <p>Control antialiasing of rendered Postscript and Postscript or TrueType
 fonts. Enabled by default:</p>
 <pre class="literal-block">
@@ -1682,8 +1715,8 @@ void            antiAlias( const bool flag_ )
 bool            antiAlias( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id107" id="animationdelay" name="animationdelay">animationDelay</a></h2>
+<div class="section" id="animationdelay">
+<h2><a class="toc-backref" href="#id110">animationDelay</a></h2>
 <p>Time in 1/100ths of a second (0 to 65535) which must expire before
 displaying the next image in an animated sequence. This option is
 useful for regulating the animation of a sequence of GIF images within
@@ -1694,8 +1727,8 @@ void            animationDelay ( const unsigned int delay_ )
 unsigned int    animationDelay ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id108" id="animationiterations" name="animationiterations">animationIterations</a></h2>
+<div class="section" id="animationiterations">
+<h2><a class="toc-backref" href="#id111">animationIterations</a></h2>
 <p>Number of iterations to loop an animation (e.g. Netscape loop
 extension) for:</p>
 <pre class="literal-block">
@@ -1704,8 +1737,8 @@ void            animationIterations ( const unsigned int iterations_ )
 unsigned int    animationIterations ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id109" id="attribute" name="attribute">attribute</a></h2>
+<div class="section" id="attribute">
+<h2><a class="toc-backref" href="#id112">attribute</a></h2>
 <p>Access an arbitrary named image attribute. Any number of named
 attributes may be attached to the image. For example, the image
 comment is a named image attribute with the name &quot;comment&quot;. EXIF tags
@@ -1718,17 +1751,17 @@ void            attribute ( const std::string name_,
 std::string     attribute ( const std::string name_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id110" id="backgroundcolor" name="backgroundcolor">backgroundColor</a></h2>
-<p>Image background <a class="reference" href="Color.html">color</a>:</p>
+<div class="section" id="backgroundcolor">
+<h2><a class="toc-backref" href="#id113">backgroundColor</a></h2>
+<p>Image background <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 void            backgroundColor ( const Color &amp;color_ )
 
 Color           backgroundColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id111" id="backgroundtexture" name="backgroundtexture">backgroundTexture</a></h2>
+<div class="section" id="backgroundtexture">
+<h2><a class="toc-backref" href="#id114">backgroundTexture</a></h2>
 <p>Image file name to use as the background texture. Does not modify
 image pixels:</p>
 <pre class="literal-block">
@@ -1737,38 +1770,38 @@ void            backgroundTexture (const std::string &amp;backgroundTexture_ )
 std::string     backgroundTexture ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id112" id="basecolumns" name="basecolumns">baseColumns</a></h2>
+<div class="section" id="basecolumns">
+<h2><a class="toc-backref" href="#id115">baseColumns</a></h2>
 <p>Base image width (before transformations):</p>
 <pre class="literal-block">
 unsigned int    baseColumns ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id113" id="basefilename" name="basefilename">baseFilename</a></h2>
+<div class="section" id="basefilename">
+<h2><a class="toc-backref" href="#id116">baseFilename</a></h2>
 <p>Base image filename (before transformations):</p>
 <pre class="literal-block">
 std::string     baseFilename ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id114" id="baserows" name="baserows">baseRows</a></h2>
+<div class="section" id="baserows">
+<h2><a class="toc-backref" href="#id117">baseRows</a></h2>
 <p>Base image height (before transformations):</p>
 <pre class="literal-block">
 unsigned int    baseRows ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id115" id="bordercolor" name="bordercolor">borderColor</a></h2>
-<p>Image border <a class="reference" href="Color.html">color</a>:</p>
+<div class="section" id="bordercolor">
+<h2><a class="toc-backref" href="#id118">borderColor</a></h2>
+<p>Image border <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 void            borderColor ( const Color &amp;color_ )
 
 Color           borderColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id116" id="boundingbox" name="boundingbox">boundingBox</a></h2>
+<div class="section" id="boundingbox">
+<h2><a class="toc-backref" href="#id119">boundingBox</a></h2>
 <p>Return smallest bounding box enclosing non-border pixels. The
 current fuzz value is used when discriminating between pixels.
 This is the crop bounding box used by <tt class="docutils literal"><span class="pre">crop(Geometry(0,0))</span></tt>:</p>
@@ -1776,17 +1809,17 @@ This is the crop bounding box used by <tt class="docutils literal"><span class="
 Geometry        boundingBox ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id117" id="boxcolor" name="boxcolor">boxColor</a></h2>
-<p>Base <a class="reference" href="Color.html">color</a> that annotation text is rendered on (default none):</p>
+<div class="section" id="boxcolor">
+<h2><a class="toc-backref" href="#id120">boxColor</a></h2>
+<p>Base <a class="reference external" href="Color.html">color</a> that annotation text is rendered on (default none):</p>
 <pre class="literal-block">
 void            boxColor ( const Color &amp;boxColor_ )
 
 Color           boxColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id118" id="cachethreshold" name="cachethreshold">cacheThreshold</a></h2>
+<div class="section" id="cachethreshold">
+<h2><a class="toc-backref" href="#id121">cacheThreshold</a></h2>
 <p>Pixel cache threshold in megabytes.  Once this memory threshold is
 exceeded, all subsequent pixels cache operations are to/from disk.
 This setting is shared by all Image objects:</p>
@@ -1794,8 +1827,8 @@ This setting is shared by all Image objects:</p>
 static void     cacheThreshold ( const unsigned int threshold_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id119" id="chromablueprimary" name="chromablueprimary">chromaBluePrimary</a></h2>
+<div class="section" id="chromablueprimary">
+<h2><a class="toc-backref" href="#id122">chromaBluePrimary</a></h2>
 <p>Chromaticity blue primary point (e.g. x=0.15, y=0.06):</p>
 <pre class="literal-block">
 void            chromaBluePrimary ( const double x_, const double y_ )
@@ -1803,8 +1836,8 @@ void            chromaBluePrimary ( const double x_, const double y_ )
 void            chromaBluePrimary ( double *x_, double *y_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id120" id="chromagreenprimary" name="chromagreenprimary">chromaGreenPrimary</a></h2>
+<div class="section" id="chromagreenprimary">
+<h2><a class="toc-backref" href="#id123">chromaGreenPrimary</a></h2>
 <p>Chromaticity green primary point (e.g. x=0.3, y=0.6):</p>
 <pre class="literal-block">
 void            chromaGreenPrimary ( const double x_, const double y_ )
@@ -1812,8 +1845,8 @@ void            chromaGreenPrimary ( const double x_, const double y_ )
 void            chromaGreenPrimary ( double *x_, double *y_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id121" id="chromaredprimary" name="chromaredprimary">chromaRedPrimary</a></h2>
+<div class="section" id="chromaredprimary">
+<h2><a class="toc-backref" href="#id124">chromaRedPrimary</a></h2>
 <p>Chromaticity red primary point (e.g. x=0.64, y=0.33):</p>
 <pre class="literal-block">
 void            chromaRedPrimary ( const double x_, const double y_ )
@@ -1821,16 +1854,16 @@ void            chromaRedPrimary ( const double x_, const double y_ )
 void            chromaRedPrimary ( double *x_, double *y_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id122" id="chromawhitepoint" name="chromawhitepoint">chromaWhitePoint</a></h2>
+<div class="section" id="chromawhitepoint">
+<h2><a class="toc-backref" href="#id125">chromaWhitePoint</a></h2>
 <p>Chromaticity white point (e.g. x=0.3127, y=0.329):</p>
 <pre class="literal-block">
 void            chromaWhitePoint ( const double x_, const double y_ )
 void            chromaWhitePoint ( double *x_, double *y_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id123" id="classtype" name="classtype">classType</a></h2>
+<div class="section" id="classtype">
+<h2><a class="toc-backref" href="#id126">classType</a></h2>
 <p>Image class (DirectClass or PseudoClass).  NOTE: setting a DirectClass
 image to PseudoClass will result in the loss of color information if
 the number of colors in the image is greater than the maximum palette
@@ -1842,8 +1875,8 @@ void            classType ( const ClassType class_ )
 ClassType       classType ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id124" id="clipmask" name="clipmask">clipMask</a></h2>
+<div class="section" id="clipmask">
+<h2><a class="toc-backref" href="#id127">clipMask</a></h2>
 <p>Associate a clip mask image with the current image. The clip mask
 image must have the same dimensions as the current image or an
 exception is thrown. Clipping occurs wherever pixels are transparent
@@ -1855,8 +1888,8 @@ void            clipMask ( const Image &amp; clipMask_ )
 Image           clipMask ( void  ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id125" id="colorfuzz" name="colorfuzz">colorFuzz</a></h2>
+<div class="section" id="colorfuzz">
+<h2><a class="toc-backref" href="#id128">colorFuzz</a></h2>
 <p>Colors within this distance are considered equal. A number of
 algorithms search for a target color. By default the color must be
 exact. Use this option to match colors that are close to the target
@@ -1867,9 +1900,9 @@ void            colorFuzz ( const double fuzz_ )
 double          colorFuzz ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id126" id="colormap" name="colormap">colorMap</a></h2>
-<p><a class="reference" href="Color.html">Color</a> at colormap position <cite>index</cite>:</p>
+<div class="section" id="colormap">
+<h2><a class="toc-backref" href="#id129">colorMap</a></h2>
+<p><a class="reference external" href="Color.html">Color</a> at colormap position <cite>index</cite>:</p>
 <pre class="literal-block">
 void            colorMap ( const unsigned int index_,
                            const Color &amp;color_ )
@@ -1877,8 +1910,8 @@ void            colorMap ( const unsigned int index_,
 Color           colorMap ( const unsigned int index_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id127" id="colormapsize" name="colormapsize">colorMapSize</a></h2>
+<div class="section" id="colormapsize">
+<h2><a class="toc-backref" href="#id130">colorMapSize</a></h2>
 <p>Number of entries in the colormap. Setting the colormap size may
 extend or truncate the colormap. The maximum number of supported
 entries is specified by the MaxColormapSize constant, and is dependent
@@ -1892,8 +1925,8 @@ void            colorMapSize ( const unsigned int entries_ )
 unsigned int    colorMapSize ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id128" id="colorspace" name="colorspace">colorSpace</a></h2>
+<div class="section" id="colorspace">
+<h2><a class="toc-backref" href="#id131">colorSpace</a></h2>
 <p>The colorspace (e.g. CMYK) used to represent the image pixel colors:</p>
 <pre class="literal-block">
 void            colorSpace( const ColorspaceType colorSpace_ )
@@ -1901,22 +1934,22 @@ void            colorSpace( const ColorspaceType colorSpace_ )
 ColorspaceType  colorSpace ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id129" id="columns" name="columns">columns</a></h2>
+<div class="section" id="columns">
+<h2><a class="toc-backref" href="#id132">columns</a></h2>
 <p>Image width:</p>
 <pre class="literal-block">
 unsigned int    columns ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id130" id="id4" name="id4">comment</a></h2>
+<div class="section" id="id4">
+<h2><a class="toc-backref" href="#id133">comment</a></h2>
 <p>Image comment:</p>
 <pre class="literal-block">
 std::string     comment ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id131" id="compose" name="compose">compose</a></h2>
+<div class="section" id="compose">
+<h2><a class="toc-backref" href="#id134">compose</a></h2>
 <p>Composition operator to be used when composition is implicitly
 used (such as for image flattening):</p>
 <pre class="literal-block">
@@ -1925,8 +1958,8 @@ void            compose (const CompositeOperator compose_)
 CompositeOperator compose ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id132" id="compresstype" name="compresstype">compressType</a></h2>
+<div class="section" id="compresstype">
+<h2><a class="toc-backref" href="#id135">compressType</a></h2>
 <p>Image compresion type. The default is the compression type of the
 input image file:</p>
 <pre class="literal-block">
@@ -1935,8 +1968,8 @@ void            compressType ( const CompressionType compressType_ )
 CompressionType compressType ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id133" id="debug" name="debug">debug</a></h2>
+<div class="section" id="debug">
+<h2><a class="toc-backref" href="#id136">debug</a></h2>
 <p>Enable printing of debug messages from GraphicsMagick as it executes:</p>
 <pre class="literal-block">
 void            debug ( const bool flag_ )
@@ -1944,8 +1977,8 @@ void            debug ( const bool flag_ )
 bool            debug ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id134" id="definevalue" name="definevalue">defineValue</a></h2>
+<div class="section" id="definevalue">
+<h2><a class="toc-backref" href="#id137">defineValue</a></h2>
 <p>Set or obtain a definition string to applied when encoding or decoding
 the specified format. The meanings of the definitions are format
 specific. The format is designated by the <cite>magick</cite> argument, the
@@ -1961,8 +1994,8 @@ std::string     defineValue ( const std::string &amp;magick_,
                               const std::string &amp;key_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id135" id="defineset" name="defineset">defineSet</a></h2>
+<div class="section" id="defineset">
+<h2><a class="toc-backref" href="#id138">defineSet</a></h2>
 <p>Set or obtain a definition flag to applied when encoding or decoding
 the specified format. Similar to the defineValue() method except that
 passing the <cite>flag</cite> value 'true' creates a value-less define with that
@@ -1978,8 +2011,8 @@ bool            defineSet ( const std::string &amp;magick_,
                             const std::string &amp;key_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id136" id="density" name="density">density</a></h2>
+<div class="section" id="density">
+<h2><a class="toc-backref" href="#id139">density</a></h2>
 <p>Vertical and horizontal resolution in pixels of the image. This option
 specifies an image density when decoding a Postscript or Portable
 Document page. Often used with <cite>psPageSize</cite>:</p>
@@ -1989,8 +2022,8 @@ void            density ( const Geometry &amp;geomery_ )
 Geometry        density ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id137" id="depth" name="depth">depth</a></h2>
+<div class="section" id="depth">
+<h2><a class="toc-backref" href="#id140">depth</a></h2>
 <p>Image depth (bits allocated to red/green/blue components). Used to
 specify the bit depth when reading or writing raw images or when the
 output format supports multiple depths. Defaults to the quantum depth
@@ -2001,15 +2034,15 @@ void            depth ( const unsigned int depth_ )
 unsigned int    depth ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id138" id="directory" name="directory">directory</a></h2>
+<div class="section" id="directory">
+<h2><a class="toc-backref" href="#id141">directory</a></h2>
 <p>Tile names from within an image montage:</p>
 <pre class="literal-block">
 std::string     directory ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id139" id="endian" name="endian">endian</a></h2>
+<div class="section" id="endian">
+<h2><a class="toc-backref" href="#id142">endian</a></h2>
 <p>Endianness (<cite>LSBEndian</cite> like Intel, <cite>MSBEndian</cite> like SPARC, or
 <cite>NativeEndian</cite> for what this computer uses) for image formats which
 support endian-specific options:</p>
@@ -2019,8 +2052,8 @@ void            endian ( const EndianType endian_ )
 EndianType      endian ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id140" id="filename" name="filename">fileName</a></h2>
+<div class="section" id="filename">
+<h2><a class="toc-backref" href="#id143">fileName</a></h2>
 <p>Image file name:</p>
 <pre class="literal-block">
 void            fileName ( const std::string &amp;fileName_ )
@@ -2028,24 +2061,24 @@ void            fileName ( const std::string &amp;fileName_ )
 std::string     fileName ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id141" id="filesize" name="filesize">fileSize</a></h2>
+<div class="section" id="filesize">
+<h2><a class="toc-backref" href="#id144">fileSize</a></h2>
 <p>Number of bytes of the image on disk:</p>
 <pre class="literal-block">
 off_t          fileSize ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id142" id="fillcolor" name="fillcolor">fillColor</a></h2>
-<p><a class="reference" href="Color.html">Color</a> to use when filling drawn objects:</p>
+<div class="section" id="fillcolor">
+<h2><a class="toc-backref" href="#id145">fillColor</a></h2>
+<p><a class="reference external" href="Color.html">Color</a> to use when filling drawn objects:</p>
 <pre class="literal-block">
 void            fillColor ( const Color &amp;fillColor_ )
 
 Color           fillColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id143" id="fillpattern" name="fillpattern">fillPattern</a></h2>
+<div class="section" id="fillpattern">
+<h2><a class="toc-backref" href="#id146">fillPattern</a></h2>
 <p>Pattern to use while filling drawn objects:</p>
 <pre class="literal-block">
 void            fillPattern ( const Image &amp;fillPattern_ )
@@ -2053,8 +2086,8 @@ void            fillPattern ( const Image &amp;fillPattern_ )
 Image           fillPattern ( void  ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id144" id="fillrule" name="fillrule">fillRule</a></h2>
+<div class="section" id="fillrule">
+<h2><a class="toc-backref" href="#id147">fillRule</a></h2>
 <p>Rule to use when filling drawn objects:</p>
 <pre class="literal-block">
 void            fillRule ( const FillRule &amp;fillRule_ )
@@ -2062,8 +2095,8 @@ void            fillRule ( const FillRule &amp;fillRule_ )
 FillRule        fillRule ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id145" id="filtertype" name="filtertype">filterType</a></h2>
+<div class="section" id="filtertype">
+<h2><a class="toc-backref" href="#id148">filterType</a></h2>
 <p>Filter to use when resizing image. The reduction filter employed has a
 sigificant effect on the time required to resize an image and the
 resulting quality. The default filter is Lanczos which has been shown
@@ -2074,8 +2107,8 @@ void            filterType ( const FilterTypes filterType_ )
 FilterTypes     filterType ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id146" id="font" name="font">font</a></h2>
+<div class="section" id="font">
+<h2><a class="toc-backref" href="#id149">font</a></h2>
 <p>Text rendering font. If the font is a fully qualified X server font
 name, the font is obtained from an X server. To use a TrueType font,
 precede the TrueType filename with an &#64;. Otherwise, specify a
@@ -2086,8 +2119,8 @@ void            font ( const std::string &amp;font_ )
 std::string     font ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id147" id="fontpointsize" name="fontpointsize">fontPointsize</a></h2>
+<div class="section" id="fontpointsize">
+<h2><a class="toc-backref" href="#id150">fontPointsize</a></h2>
 <p>Text rendering font point size:</p>
 <pre class="literal-block">
 void            fontPointsize ( const double pointSize_ )
@@ -2095,9 +2128,9 @@ void            fontPointsize ( const double pointSize_ )
 double          fontPointsize ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id148" id="fonttypemetrics" name="fonttypemetrics">fontTypeMetrics</a></h2>
-<p>Obtain font metrics (see <a class="reference" href="TypeMetric.html">TypeMetric</a>) for text string given current
+<div class="section" id="fonttypemetrics">
+<h2><a class="toc-backref" href="#id151">fontTypeMetrics</a></h2>
+<p>Obtain font metrics (see <a class="reference external" href="TypeMetric.html">TypeMetric</a>) for text string given current
 font, pointsize, and density settings.  This information is necessary
 in order to do fancy layout of text:</p>
 <pre class="literal-block">
@@ -2105,15 +2138,15 @@ void            fontTypeMetrics( const std::string &amp;text_,
                                  TypeMetric *metrics )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id149" id="format" name="format">format</a></h2>
+<div class="section" id="format">
+<h2><a class="toc-backref" href="#id152">format</a></h2>
 <p>Long image format description:</p>
 <pre class="literal-block">
 std::string     format ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id150" id="id5" name="id5">gamma</a></h2>
+<div class="section" id="id5">
+<h2><a class="toc-backref" href="#id153">gamma</a></h2>
 <p>Gamma level of the image.  Gamma is a pow() function which converts
 between the linear light representation and the representation for the
 computer display.  Most computer images are gamma corrected to 2.2
@@ -2123,15 +2156,15 @@ computer or video display:</p>
 double          gamma ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id151" id="id6" name="id6">geometry</a></h2>
+<div class="section" id="id6">
+<h2><a class="toc-backref" href="#id154">geometry</a></h2>
 <p>Preferred size of the image when encoding:</p>
 <pre class="literal-block">
 Geometry        geometry ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id152" id="gifdisposemethod" name="gifdisposemethod">gifDisposeMethod</a></h2>
+<div class="section" id="gifdisposemethod">
+<h2><a class="toc-backref" href="#id155">gifDisposeMethod</a></h2>
 <p>GIF disposal method. This option (specific to the GIF file format) is
 used to control how successive frames are rendered (how the preceding
 frame is disposed of) when creating a GIF animation:</p>
@@ -2141,9 +2174,9 @@ void            gifDisposeMethod ( const unsigned int disposeMethod_ )
 unsigned int    gifDisposeMethod ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id153" id="icccolorprofile" name="icccolorprofile">iccColorProfile</a></h2>
-<p>ICC color profile. Supplied via a <a class="reference" href="Blob.html">Blob</a> since Magick++/ and
+<div class="section" id="icccolorprofile">
+<h2><a class="toc-backref" href="#id156">iccColorProfile</a></h2>
+<p>ICC color profile. Supplied via a <a class="reference external" href="Blob.html">Blob</a> since Magick++/ and
 GraphicsMagick do not currently support formating this data structure
 directly.  Specifications are available from the International Color
 Consortium for the format of ICC color profiles:</p>
@@ -2153,8 +2186,8 @@ void            iccColorProfile( const Blob &amp;colorProfile_ )
 Blob            iccColorProfile( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id154" id="interlacetype" name="interlacetype">interlaceType</a></h2>
+<div class="section" id="interlacetype">
+<h2><a class="toc-backref" href="#id157">interlaceType</a></h2>
 <p>The type of interlacing scheme (default <cite>NoInterlace</cite> ). This option
 is used to specify the type of interlacing scheme for raw image
 formats such as RGB or YUV. <cite>NoInterlace</cite> means do not interlace,
@@ -2170,9 +2203,9 @@ void            interlaceType ( const InterlaceType interlace_ )
 InterlaceType   interlaceType ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id155" id="iptcprofile" name="iptcprofile">iptcProfile</a></h2>
-<p>IPTC profile. Supplied via a <a class="reference" href="Blob.html">Blob</a> since Magick++ and GraphicsMagick do
+<div class="section" id="iptcprofile">
+<h2><a class="toc-backref" href="#id158">iptcProfile</a></h2>
+<p>IPTC profile. Supplied via a <a class="reference external" href="Blob.html">Blob</a> since Magick++ and GraphicsMagick do
 not currently support formating this data structure
 directly. Specifications are available from the International Press
 Telecommunications Council for IPTC profiles:</p>
@@ -2182,8 +2215,8 @@ void            iptcProfile( const Blob&amp; iptcProfile_ )
 Blob            iptcProfile( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id156" id="isvalid" name="isvalid">isValid</a></h2>
+<div class="section" id="isvalid">
+<h2><a class="toc-backref" href="#id159">isValid</a></h2>
 <p>Does object contain valid image? Set to <cite>false</cite> in order to invalidate
 the image. Images constructed via the default constructor are invalid
 images and isValid() will return false:</p>
@@ -2193,15 +2226,15 @@ void            isValid ( const bool isValid_ )
 bool            isValid ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id157" id="id7" name="id7">label</a></h2>
+<div class="section" id="id7">
+<h2><a class="toc-backref" href="#id160">label</a></h2>
 <p>Image label:</p>
 <pre class="literal-block">
 std::string     label ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id158" id="linewidth" name="linewidth">lineWidth</a></h2>
+<div class="section" id="linewidth">
+<h2><a class="toc-backref" href="#id161">lineWidth</a></h2>
 <p>Stroke width for drawing vector objects (default one)
 This method is now deprecated. Please use strokeWidth instead:</p>
 <pre class="literal-block">
@@ -2210,8 +2243,8 @@ void            lineWidth ( const double lineWidth_ )
 double          lineWidth ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id159" id="magick" name="magick">magick</a></h2>
+<div class="section" id="magick">
+<h2><a class="toc-backref" href="#id162">magick</a></h2>
 <p>File type magick identifier (.e.g &quot;GIF&quot;):</p>
 <pre class="literal-block">
 void            magick ( const std::string &amp;magick_ )
@@ -2219,8 +2252,8 @@ void            magick ( const std::string &amp;magick_ )
 std::string     magick ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id160" id="matte" name="matte">matte</a></h2>
+<div class="section" id="matte">
+<h2><a class="toc-backref" href="#id163">matte</a></h2>
 <p>Image supports transparency (matte channel):</p>
 <pre class="literal-block">
 void            matte ( const bool matteFlag_ )
@@ -2228,17 +2261,17 @@ void            matte ( const bool matteFlag_ )
 bool            matte ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id161" id="mattecolor" name="mattecolor">matteColor</a></h2>
-<p>Image matte (frame) <a class="reference" href="Color.html">color</a>:</p>
+<div class="section" id="mattecolor">
+<h2><a class="toc-backref" href="#id164">matteColor</a></h2>
+<p>Image matte (frame) <a class="reference external" href="Color.html">color</a>:</p>
 <pre class="literal-block">
 void            matteColor ( const Color &amp;matteColor_ )
 
 Color           matteColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id162" id="meanerrorperpixel" name="meanerrorperpixel">meanErrorPerPixel</a></h2>
+<div class="section" id="meanerrorperpixel">
+<h2><a class="toc-backref" href="#id165">meanErrorPerPixel</a></h2>
 <p>The mean error per pixel computed when an image is color reduced. This
 parameter is only valid if verbose is set to true and the image has
 just been quantized:</p>
@@ -2246,8 +2279,8 @@ just been quantized:</p>
 double          meanErrorPerPixel ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id163" id="modulusdepth" name="modulusdepth">modulusDepth</a></h2>
+<div class="section" id="modulusdepth">
+<h2><a class="toc-backref" href="#id166">modulusDepth</a></h2>
 <p>Image modulus depth (minimum number of bits required to support
 red/green/blue components without loss of accuracy). The pixel modulus
 depth may be decreased by supplying a value which is less than the
@@ -2260,8 +2293,8 @@ void            modulusDepth ( const unsigned int modulusDepth_ )
 unsigned int    modulusDepth ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id164" id="monochrome" name="monochrome">monochrome</a></h2>
+<div class="section" id="monochrome">
+<h2><a class="toc-backref" href="#id167">monochrome</a></h2>
 <p>Transform image to black and white while color reducing (quantizing):</p>
 <pre class="literal-block">
 void            monochrome ( const bool monochromeFlag_ )
@@ -2269,16 +2302,16 @@ void            monochrome ( const bool monochromeFlag_ )
 bool            monochrome ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id165" id="montagegeometry" name="montagegeometry">montageGeometry</a></h2>
+<div class="section" id="montagegeometry">
+<h2><a class="toc-backref" href="#id168">montageGeometry</a></h2>
 <p>Tile size and offset within an image montage. Only valid for montage
 images:</p>
 <pre class="literal-block">
 Geometry        montageGeometry ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id166" id="normalizedmaxerror" name="normalizedmaxerror">normalizedMaxError</a></h2>
+<div class="section" id="normalizedmaxerror">
+<h2><a class="toc-backref" href="#id169">normalizedMaxError</a></h2>
 <p>The normalized max error per pixel computed when an image is color
 reduced. This parameter is only valid if verbose is set to true and
 the image has just been quantized:</p>
@@ -2286,8 +2319,8 @@ the image has just been quantized:</p>
 double          normalizedMaxError ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id167" id="normalizedmeanerror" name="normalizedmeanerror">normalizedMeanError</a></h2>
+<div class="section" id="normalizedmeanerror">
+<h2><a class="toc-backref" href="#id170">normalizedMeanError</a></h2>
 <p>The normalized mean error per pixel computed when an image is color
 reduced. This parameter is only valid if verbose is set to true and
 the image has just been quantized:</p>
@@ -2295,8 +2328,8 @@ the image has just been quantized:</p>
 double          normalizedMeanError ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id168" id="orientation" name="orientation">orientation</a></h2>
+<div class="section" id="orientation">
+<h2><a class="toc-backref" href="#id171">orientation</a></h2>
 <p>Image orientation.  Supported by some file formats such as DPX and
 TIFF. Useful for turning the right way up:</p>
 <pre class="literal-block">
@@ -2305,8 +2338,8 @@ void            orientation ( const OrientationType orientation_ )
 OrientationType orientation ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id169" id="page" name="page">page</a></h2>
+<div class="section" id="page">
+<h2><a class="toc-backref" href="#id172">page</a></h2>
 <p>Preferred size and location of an image canvas.</p>
 <p>Use this option to specify the dimensions and position of the
 Postscript page in dots per inch or a TEXT page in pixels. This option
@@ -2319,9 +2352,9 @@ void            page ( const Geometry &amp;pageSize_ )
 Geometry        page ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id170" id="pixelcolor" name="pixelcolor">pixelColor</a></h2>
-<p>Get/set pixel <a class="reference" href="Color.html">color</a> at location x &amp; y:</p>
+<div class="section" id="pixelcolor">
+<h2><a class="toc-backref" href="#id173">pixelColor</a></h2>
+<p>Get/set pixel <a class="reference external" href="Color.html">color</a> at location x &amp; y:</p>
 <pre class="literal-block">
 void            pixelColor ( const unsigned int x_,
                              const unsigned int y_,
@@ -2331,10 +2364,10 @@ Color           pixelColor ( const unsigned int x_,
                              const unsigned int y_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id171" id="profile" name="profile">profile</a></h2>
+<div class="section" id="profile">
+<h2><a class="toc-backref" href="#id174">profile</a></h2>
 <p>Add or remove a named profile to/from the image. Remove the
-profile by passing an empty <a class="reference" href="Blob.html">Blob</a> (e.g. Blob()). Valid names are
+profile by passing an empty <a class="reference external" href="Blob.html">Blob</a> (e.g. Blob()). Valid names are
 &quot;*&quot;, &quot;8BIM&quot;, &quot;ICM&quot;, &quot;IPTC&quot;, or a user/format-defined profile name:</p>
 <pre class="literal-block">
 void            profile( const std::string name_,
@@ -2347,8 +2380,8 @@ or an existing user/format-defined profile name:</p>
 Blob            profile( const std::string name_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id172" id="quality" name="quality">quality</a></h2>
+<div class="section" id="quality">
+<h2><a class="toc-backref" href="#id175">quality</a></h2>
 <p>JPEG/MIFF/PNG compression level (default 75):</p>
 <pre class="literal-block">
 void            quality ( const unsigned int quality_ )
@@ -2356,8 +2389,8 @@ void            quality ( const unsigned int quality_ )
 unsigned int    quality ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id173" id="quantizecolors" name="quantizecolors">quantizeColors</a></h2>
+<div class="section" id="quantizecolors">
+<h2><a class="toc-backref" href="#id176">quantizeColors</a></h2>
 <p>Maximum number of colors to quantize to:</p>
 <pre class="literal-block">
 void            quantizeColors ( const unsigned int colors_ )
@@ -2365,8 +2398,8 @@ void            quantizeColors ( const unsigned int colors_ )
 unsigned int    quantizeColors ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id174" id="quantizecolorspace" name="quantizecolorspace">quantizeColorSpace</a></h2>
+<div class="section" id="quantizecolorspace">
+<h2><a class="toc-backref" href="#id177">quantizeColorSpace</a></h2>
 <p>Colorspace to quantize in (default RGB). Empirical evidence suggests
 that distances in color spaces such as YUV or YIQ correspond to
 perceptual color differences more closely than do distances in RGB
@@ -2378,8 +2411,8 @@ void            quantizeColorSpace ( const ColorspaceType colorSpace_ )
 ColorspaceType  quantizeColorSpace ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id175" id="quantizedither" name="quantizedither">quantizeDither</a></h2>
+<div class="section" id="quantizedither">
+<h2><a class="toc-backref" href="#id178">quantizeDither</a></h2>
 <p>Apply Floyd/Steinberg error diffusion to the image. The basic strategy
 of dithering is to trade intensity resolution for spatial resolution
 by averaging the intensities of several neighboring pixels. Images
@@ -2392,8 +2425,8 @@ void            quantizeDither ( const bool ditherFlag_ )
 bool            quantizeDither ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id176" id="quantizetreedepth" name="quantizetreedepth">quantizeTreeDepth</a></h2>
+<div class="section" id="quantizetreedepth">
+<h2><a class="toc-backref" href="#id179">quantizeTreeDepth</a></h2>
 <p>Depth of the quantization color classification tree. Values of 0 or 1
 allow selection of the optimal tree depth for the color reduction
 algorithm. Values between 2 and 8 may be used to manually adjust the
@@ -2404,8 +2437,8 @@ void            quantizeTreeDepth ( const unsigned int treeDepth_ )
 unsigned int    quantizeTreeDepth ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id177" id="renderingintent" name="renderingintent">renderingIntent</a></h2>
+<div class="section" id="renderingintent">
+<h2><a class="toc-backref" href="#id180">renderingIntent</a></h2>
 <p>The type of rendering intent (used when applying an ICC color
 profile):</p>
 <pre class="literal-block">
@@ -2414,8 +2447,8 @@ void            renderingIntent ( const RenderingIntent renderingIntent_ )
 RenderingIntent renderingIntent ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id178" id="resolutionunits" name="resolutionunits">resolutionUnits</a></h2>
+<div class="section" id="resolutionunits">
+<h2><a class="toc-backref" href="#id181">resolutionUnits</a></h2>
 <p>Units of image resolution:</p>
 <pre class="literal-block">
 void            resolutionUnits ( const ResolutionType resolutionUnits_ )
@@ -2423,15 +2456,15 @@ void            resolutionUnits ( const ResolutionType resolutionUnits_ )
 ResolutionType  resolutionUnits ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id179" id="rows" name="rows">rows</a></h2>
+<div class="section" id="rows">
+<h2><a class="toc-backref" href="#id182">rows</a></h2>
 <p>The number of pixel rows in the image:</p>
 <pre class="literal-block">
 unsigned int    rows ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id180" id="scene" name="scene">scene</a></h2>
+<div class="section" id="scene">
+<h2><a class="toc-backref" href="#id183">scene</a></h2>
 <p>Image scene number:</p>
 <pre class="literal-block">
 void            scene ( const unsigned int scene_ )
@@ -2439,16 +2472,16 @@ void            scene ( const unsigned int scene_ )
 unsigned int    scene ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id181" id="signature" name="signature">signature</a></h2>
+<div class="section" id="signature">
+<h2><a class="toc-backref" href="#id184">signature</a></h2>
 <p>Image textual signature.  Set <cite>force</cite> to true in order to re-calculate
 the signature regardless of whether the image data has been modified:</p>
 <pre class="literal-block">
 std::string     signature ( const bool force_ = false ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id182" id="size" name="size">size</a></h2>
+<div class="section" id="size">
+<h2><a class="toc-backref" href="#id185">size</a></h2>
 <p>Width and height of a raw image (an image which does not support width
 and height information).  Size may also be used to affect the image
 size read from a multi-resolution format (e.g. Photo CD, JBIG, or
@@ -2459,8 +2492,8 @@ void            size ( const Geometry &amp;geometry_ )
 Geometry        size ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id183" id="statistics" name="statistics">statistics</a></h2>
+<div class="section" id="statistics">
+<h2><a class="toc-backref" href="#id186">statistics</a></h2>
 <p>Obtain image statistics. Statistics are normalized to the range
 of 0.0 to 1.0 and are output to the specified ImageStatistics
 structure:</p>
@@ -2468,8 +2501,8 @@ structure:</p>
 void            statistics ( ImageStatistics *statistics ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id184" id="strokeantialias" name="strokeantialias">strokeAntiAlias</a></h2>
+<div class="section" id="strokeantialias">
+<h2><a class="toc-backref" href="#id187">strokeAntiAlias</a></h2>
 <p>Enable/disable stroke anti-aliasing:</p>
 <pre class="literal-block">
 void            strokeAntiAlias( const bool flag_ )
@@ -2477,17 +2510,17 @@ void            strokeAntiAlias( const bool flag_ )
 bool            strokeAntiAlias( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id185" id="strokecolor" name="strokecolor">strokeColor</a></h2>
-<p><a class="reference" href="Color.html">Color</a> to use when drawing object outlines:</p>
+<div class="section" id="strokecolor">
+<h2><a class="toc-backref" href="#id188">strokeColor</a></h2>
+<p><a class="reference external" href="Color.html">Color</a> to use when drawing object outlines:</p>
 <pre class="literal-block">
 void            strokeColor ( const Color &amp;strokeColor_ )
 
 Color           strokeColor ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id186" id="strokedasharray" name="strokedasharray">strokeDashArray</a></h2>
+<div class="section" id="strokedasharray">
+<h2><a class="toc-backref" href="#id189">strokeDashArray</a></h2>
 <p>Specify the pattern of dashes and gaps used to stroke paths. The
 strokeDashArray represents a zero-terminated array of numbers that
 specify the lengths of alternating dashes and gaps in pixels. If an
@@ -2501,8 +2534,8 @@ void            strokeDashArray ( const double* strokeDashArray_ )
 const double*   strokeDashArray ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id187" id="strokedashoffset" name="strokedashoffset">strokeDashOffset</a></h2>
+<div class="section" id="strokedashoffset">
+<h2><a class="toc-backref" href="#id190">strokeDashOffset</a></h2>
 <p>While drawing using a dash pattern, specify distance into the
 dash pattern to start the dash (default 0):</p>
 <pre class="literal-block">
@@ -2511,8 +2544,8 @@ void            strokeDashOffset ( const double strokeDashOffset_ )
 double          strokeDashOffset ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id188" id="strokelinecap" name="strokelinecap">strokeLineCap</a></h2>
+<div class="section" id="strokelinecap">
+<h2><a class="toc-backref" href="#id191">strokeLineCap</a></h2>
 <p>Specify the shape to be used at the end of open subpaths when
 they are stroked. Values of LineCap are UndefinedCap, ButtCap,
 RoundCap, and SquareCap:</p>
@@ -2522,8 +2555,8 @@ void            strokeLineCap ( const LineCap lineCap_ )
 LineCap         strokeLineCap ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id189" id="strokelinejoin" name="strokelinejoin">strokeLineJoin</a></h2>
+<div class="section" id="strokelinejoin">
+<h2><a class="toc-backref" href="#id192">strokeLineJoin</a></h2>
 <p>Specify the shape to be used at the corners of paths (or other
 vector shapes) when they are stroked. Values of LineJoin are
 UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin:</p>
@@ -2533,8 +2566,8 @@ void            strokeLineJoin ( const LineJoin lineJoin_ )
 LineJoin        strokeLineJoin ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id190" id="strokemiterlimit" name="strokemiterlimit">strokeMiterLimit</a></h2>
+<div class="section" id="strokemiterlimit">
+<h2><a class="toc-backref" href="#id193">strokeMiterLimit</a></h2>
 <p>Specify miter limit. When two line segments meet at a sharp
 angle and miter joins have been specified for 'lineJoin', it is
 possible for the miter to extend far beyond the thickness of
@@ -2547,8 +2580,8 @@ void            strokeMiterLimit ( const unsigned int miterLimit_ )
 unsigned int    strokeMiterLimit ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id191" id="strokepattern" name="strokepattern">strokePattern</a></h2>
+<div class="section" id="strokepattern">
+<h2><a class="toc-backref" href="#id194">strokePattern</a></h2>
 <p>Pattern image to use while stroking object outlines:</p>
 <pre class="literal-block">
 void            strokePattern ( const Image &amp;strokePattern_ )
@@ -2556,8 +2589,8 @@ void            strokePattern ( const Image &amp;strokePattern_ )
 Image           strokePattern ( void  ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id192" id="strokewidth" name="strokewidth">strokeWidth</a></h2>
+<div class="section" id="strokewidth">
+<h2><a class="toc-backref" href="#id195">strokeWidth</a></h2>
 <p>Stroke width for drawing vector objects (default one):</p>
 <pre class="literal-block">
 void            strokeWidth ( const double strokeWidth_ )
@@ -2565,8 +2598,8 @@ void            strokeWidth ( const double strokeWidth_ )
 double          strokeWidth ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id193" id="subimage" name="subimage">subImage</a></h2>
+<div class="section" id="subimage">
+<h2><a class="toc-backref" href="#id196">subImage</a></h2>
 <p>Subimage of an image sequence:</p>
 <pre class="literal-block">
 void            subImage ( const unsigned int subImage_ )
@@ -2574,8 +2607,8 @@ void            subImage ( const unsigned int subImage_ )
 unsigned int    subImage ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id194" id="subrange" name="subrange">subRange</a></h2>
+<div class="section" id="subrange">
+<h2><a class="toc-backref" href="#id197">subRange</a></h2>
 <p>Number of images relative to the base image:</p>
 <pre class="literal-block">
 void            subRange ( const unsigned int subRange_ )
@@ -2583,8 +2616,8 @@ void            subRange ( const unsigned int subRange_ )
 unsigned int    subRange ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id195" id="textencoding" name="textencoding">textEncoding</a></h2>
+<div class="section" id="textencoding">
+<h2><a class="toc-backref" href="#id198">textEncoding</a></h2>
 <p>Annotation text encoding (e.g. &quot;UTF-16&quot;):</p>
 <pre class="literal-block">
 void            textEncoding ( const std::string &amp;encoding_ )
@@ -2592,8 +2625,8 @@ void            textEncoding ( const std::string &amp;encoding_ )
 std::string     textEncoding ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id196" id="tilename" name="tilename">tileName</a></h2>
+<div class="section" id="tilename">
+<h2><a class="toc-backref" href="#id199">tileName</a></h2>
 <p>Tile name:</p>
 <pre class="literal-block">
 void            tileName ( const std::string &amp;tileName_ )
@@ -2601,57 +2634,57 @@ void            tileName ( const std::string &amp;tileName_ )
 std::string     tileName ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id197" id="totalcolors" name="totalcolors">totalColors</a></h2>
+<div class="section" id="totalcolors">
+<h2><a class="toc-backref" href="#id200">totalColors</a></h2>
 <p>Number of colors in the image:</p>
 <pre class="literal-block">
 unsigned long   totalColors ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id198" id="transformorigin" name="transformorigin">transformOrigin</a></h2>
+<div class="section" id="transformorigin">
+<h2><a class="toc-backref" href="#id201">transformOrigin</a></h2>
 <p>Origin of coordinate system to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformOrigin ( const double x_,const  double y_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id199" id="transformrotation" name="transformrotation">transformRotation</a></h2>
+<div class="section" id="transformrotation">
+<h2><a class="toc-backref" href="#id202">transformRotation</a></h2>
 <p>Rotation to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformRotation ( const double angle_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id200" id="transformreset" name="transformreset">transformReset</a></h2>
+<div class="section" id="transformreset">
+<h2><a class="toc-backref" href="#id203">transformReset</a></h2>
 <p>Reset transformation parameters to default:</p>
 <pre class="literal-block">
 void            transformReset ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id201" id="transformscale" name="transformscale">transformScale</a></h2>
+<div class="section" id="transformscale">
+<h2><a class="toc-backref" href="#id204">transformScale</a></h2>
 <p>Scale to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformScale ( const double sx_, const double sy_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id202" id="transformskewx" name="transformskewx">transformSkewX</a></h2>
+<div class="section" id="transformskewx">
+<h2><a class="toc-backref" href="#id205">transformSkewX</a></h2>
 <p>Skew to use in X axis when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformSkewX ( const double skewx_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id203" id="transformskewy" name="transformskewy">transformSkewY</a></h2>
+<div class="section" id="transformskewy">
+<h2><a class="toc-backref" href="#id206">transformSkewY</a></h2>
 <p>Skew to use in Y axis when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformSkewY ( const double skewy_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id204" id="verbose" name="verbose">verbose</a></h2>
+<div class="section" id="verbose">
+<h2><a class="toc-backref" href="#id207">verbose</a></h2>
 <p>Print detailed information about the image:</p>
 <pre class="literal-block">
 void            verbose ( const bool verboseFlag_ )
@@ -2659,8 +2692,8 @@ void            verbose ( const bool verboseFlag_ )
 bool            verbose ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id205" id="view" name="view">view</a></h2>
+<div class="section" id="view">
+<h2><a class="toc-backref" href="#id208">view</a></h2>
 <p>FlashPix viewing parameters:</p>
 <pre class="literal-block">
 void            view ( const std::string &amp;view_ )
@@ -2668,8 +2701,8 @@ void            view ( const std::string &amp;view_ )
 std::string     view ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id206" id="x11display" name="x11display">x11Display</a></h2>
+<div class="section" id="x11display">
+<h2><a class="toc-backref" href="#id209">x11Display</a></h2>
 <p>X11 display to display to, obtain fonts from, or to capture
 image from:</p>
 <pre class="literal-block">
@@ -2678,33 +2711,33 @@ void            x11Display ( const std::string &amp;display_ )
 std::string     x11Display ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id207" id="xresolution" name="xresolution">xResolution</a></h2>
+<div class="section" id="xresolution">
+<h2><a class="toc-backref" href="#id210">xResolution</a></h2>
 <p>x resolution of the image:</p>
 <pre class="literal-block">
 double          xResolution ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id208" id="yresolution" name="yresolution">yResolution</a></h2>
+<div class="section" id="yresolution">
+<h2><a class="toc-backref" href="#id211">yResolution</a></h2>
 <p>y resolution of the image:</p>
 <pre class="literal-block">
 double          yResolution ( void ) const
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="low-level-image-pixel-access" name="low-level-image-pixel-access">Low-Level Image Pixel Access</a></h1>
-<p>Image pixels (of type <a class="reference" href="PixelPacket.html">PixelPacket</a> ) may be accessed directly via
+<div class="section" id="low-level-image-pixel-access">
+<h1><a class="toc-backref" href="#id15">Low-Level Image Pixel Access</a></h1>
+<p>Image pixels (of type <a class="reference external" href="PixelPacket.html">PixelPacket</a> ) may be accessed directly via
 the Image Pixel Cache .  The image pixel cache is a rectangular window
 into the actual image pixels (which may be in memory, memory-mapped
 from a disk file, or entirely on disk). Two interfaces exist to access
 the Image Pixel Cache. The interface described here (part of the Image
-class) supports only one view at a time. See the <a class="reference" href="Pixels.html">Pixels</a> class for a
+class) supports only one view at a time. See the <a class="reference external" href="Pixels.html">Pixels</a> class for a
 more abstract interface which supports simultaneous pixel views (up to
 the number of rows). As an analogy, the interface described here
-relates to the <a class="reference" href="Pixels.html">Pixels</a> class as stdio's gets() relates to
-fgets(). The <a class="reference" href="Pixels.html">Pixels</a> class provides the more general form of the
+relates to the <a class="reference external" href="Pixels.html">Pixels</a> class as stdio's gets() relates to
+fgets(). The <a class="reference external" href="Pixels.html">Pixels</a> class provides the more general form of the
 interface.</p>
 <p>Obtain existing image pixels via getPixels(). Create a new pixel
 region using setPixels().</p>
@@ -2754,20 +2787,20 @@ image.syncPixels();
 image.write(&quot;horse.png&quot;);
 </pre>
 <p>The image cache supports the following methods:</p>
-<div class="contents local topic">
+<div class="contents local topic" id="id8">
 <ul class="simple">
-<li><a class="reference" href="#getconstpixels" id="id209" name="id209">getConstPixels</a></li>
-<li><a class="reference" href="#getindexes" id="id210" name="id210">getIndexes</a></li>
-<li><a class="reference" href="#getconstindexes" id="id211" name="id211">getConstIndexes</a></li>
-<li><a class="reference" href="#getpixels" id="id212" name="id212">getPixels</a></li>
-<li><a class="reference" href="#setpixels" id="id213" name="id213">setPixels</a></li>
-<li><a class="reference" href="#syncpixels" id="id214" name="id214">syncPixels</a></li>
-<li><a class="reference" href="#readpixels" id="id215" name="id215">readPixels</a></li>
-<li><a class="reference" href="#writepixels" id="id216" name="id216">writePixels</a></li>
+<li><a class="reference internal" href="#getconstpixels" id="id212">getConstPixels</a></li>
+<li><a class="reference internal" href="#getindexes" id="id213">getIndexes</a></li>
+<li><a class="reference internal" href="#getconstindexes" id="id214">getConstIndexes</a></li>
+<li><a class="reference internal" href="#getpixels" id="id215">getPixels</a></li>
+<li><a class="reference internal" href="#setpixels" id="id216">setPixels</a></li>
+<li><a class="reference internal" href="#syncpixels" id="id217">syncPixels</a></li>
+<li><a class="reference internal" href="#readpixels" id="id218">readPixels</a></li>
+<li><a class="reference internal" href="#writepixels" id="id219">writePixels</a></li>
 </ul>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id209" id="getconstpixels" name="getconstpixels">getConstPixels</a></h2>
+<div class="section" id="getconstpixels">
+<h2><a class="toc-backref" href="#id212">getConstPixels</a></h2>
 <p>Transfers read-only pixels from the image to the pixel cache as
 defined by the specified region:</p>
 <pre class="literal-block">
@@ -2776,22 +2809,22 @@ const PixelPacket* getConstPixels ( const int x_, const int y_,
                                     const unsigned int rows_ ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id210" id="getindexes" name="getindexes">getIndexes</a></h2>
+<div class="section" id="getindexes">
+<h2><a class="toc-backref" href="#id213">getIndexes</a></h2>
 <p>Obtain mutable image pixel indexes (valid for PseudoClass images):</p>
 <pre class="literal-block">
 IndexPacket* getIndexes ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id211" id="getconstindexes" name="getconstindexes">getConstIndexes</a></h2>
+<div class="section" id="getconstindexes">
+<h2><a class="toc-backref" href="#id214">getConstIndexes</a></h2>
 <p>Obtain immutable image pixel indexes (valid for PseudoClass images):</p>
 <pre class="literal-block">
 const IndexPacket* getConstIndexes ( void ) const
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id212" id="getpixels" name="getpixels">getPixels</a></h2>
+<div class="section" id="getpixels">
+<h2><a class="toc-backref" href="#id215">getPixels</a></h2>
 <p>Transfers pixels from the image to the pixel cache as defined by the
 specified region. Modified pixels may be subsequently transferred back
 to the image via syncPixels.  This method is valid for DirectClass
@@ -2802,8 +2835,8 @@ PixelPacket* getPixels ( const int x_, const int y_,
                          const unsigned int rows_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id213" id="setpixels" name="setpixels">setPixels</a></h2>
+<div class="section" id="setpixels">
+<h2><a class="toc-backref" href="#id216">setPixels</a></h2>
 <p>Allocates a pixel cache region to store image pixels as defined by the
 region rectangle.  This area is subsequently transferred from the
 pixel cache to the image via syncPixels:</p>
@@ -2813,15 +2846,15 @@ PixelPacket* setPixels ( const int x_, const int y_,
                          const unsigned int rows_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id214" id="syncpixels" name="syncpixels">syncPixels</a></h2>
+<div class="section" id="syncpixels">
+<h2><a class="toc-backref" href="#id217">syncPixels</a></h2>
 <p>Transfers the image cache pixels to the image:</p>
 <pre class="literal-block">
 void syncPixels ( void )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id215" id="readpixels" name="readpixels">readPixels</a></h2>
+<div class="section" id="readpixels">
+<h2><a class="toc-backref" href="#id218">readPixels</a></h2>
 <p>Transfers one or more pixel components from a buffer or file into the
 image pixel cache of an image.  Used to support image decoders:</p>
 <pre class="literal-block">
@@ -2829,21 +2862,21 @@ void readPixels ( const QuantumType quantum_,
                   const unsigned char *source_ )
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id216" id="writepixels" name="writepixels">writePixels</a></h2>
+<div class="section" id="writepixels">
+<h2><a class="toc-backref" href="#id219">writePixels</a></h2>
 <p>Transfers one or more pixel components from the image pixel cache to a
 buffer or file.  Used to support image encoders:</p>
 <pre class="literal-block">
 void writePixels ( const QuantumType quantum_,
                    unsigned char *destination_ )
 </pre>
-<p>Copyright © <a class="reference" href="mailto:bfriesen&#64;simple.dallas.tx.us">Bob Friesenhahn</a> 1999 - 2009</p>
+<p>Copyright © <a class="reference external" href="mailto:bfriesen&#64;simple.dallas.tx.us">Bob Friesenhahn</a> 1999 - 2009</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-29 20:23 UTC.
+Generated on: 2009-09-17 19:41 UTC.
 
 </div>
 </body>

@@ -869,6 +869,18 @@ Delegate failed
 .
 
 MessageId       = +1
+SymbolicName    = DelegateErrorFailedToAllocateArgumentList
+Language        = English
+Failed to allocate argument list.
+.
+
+MessageId       = +1
+SymbolicName    = DelegateErrorFailedToAllocateGhostscriptInterpreter
+Language        = English
+Failed to allocate Ghostscript interpreter.
+.
+
+MessageId       = +1
 SymbolicName    = DelegateErrorFailedToComputeOutputSize
 Language        = English
 Failed to compute output size
@@ -2108,6 +2120,12 @@ MessageId       = +1
 SymbolicName    = LimitErrorUnableToAverageImageSequence
 Language        = English
 unable to average image sequence
+.
+
+MessageId       = +1
+SymbolicName    = LimitErrorUnableToCloneDrawingWand
+Language        = English
+unable to clone drawing wand
 .
 
 MessageId       = +1

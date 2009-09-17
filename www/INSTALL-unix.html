@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>UNIX/Cygwin/MinGW Compilation</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,41 +50,42 @@
 </div>
 <div class="document" id="unix-cygwin-mingw-compilation">
 <h1 class="title">UNIX/Cygwin/MinGW Compilation</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<div class="contents local topic">
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#platforms-note" id="id1" name="id1">Platforms Note</a></li>
-<li><a class="reference" href="#archive-formats" id="id2" name="id2">Archive Formats</a></li>
-<li><a class="reference" href="#build-configuration" id="id3" name="id3">Build Configuration</a><ul>
-<li><a class="reference" href="#optional-features" id="id4" name="id4">Optional Features</a></li>
-<li><a class="reference" href="#optional-packages-options" id="id5" name="id5">Optional Packages/Options</a></li>
+<li><a class="reference internal" href="#platforms-note" id="id1">Platforms Note</a></li>
+<li><a class="reference internal" href="#archive-formats" id="id2">Archive Formats</a></li>
+<li><a class="reference internal" href="#build-configuration" id="id3">Build Configuration</a><ul>
+<li><a class="reference internal" href="#optional-features" id="id4">Optional Features</a></li>
+<li><a class="reference internal" href="#optional-packages-options" id="id5">Optional Packages/Options</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#building-under-cygwin" id="id6" name="id6">Building under Cygwin</a></li>
-<li><a class="reference" href="#building-under-mingw-msys" id="id7" name="id7">Building under MinGW &amp; MSYS</a></li>
-<li><a class="reference" href="#dealing-with-configuration-failures" id="id8" name="id8">Dealing with configuration failures</a></li>
-<li><a class="reference" href="#makefile-build-targets" id="id9" name="id9">Makefile Build Targets</a></li>
-<li><a class="reference" href="#build-install" id="id10" name="id10">Build &amp; Install</a></li>
-<li><a class="reference" href="#verifying-the-build" id="id11" name="id11">Verifying The Build</a></li>
+<li><a class="reference internal" href="#building-under-cygwin" id="id6">Building under Cygwin</a></li>
+<li><a class="reference internal" href="#building-under-mingw-msys" id="id7">Building under MinGW &amp; MSYS</a></li>
+<li><a class="reference internal" href="#dealing-with-configuration-failures" id="id8">Dealing with configuration failures</a></li>
+<li><a class="reference internal" href="#makefile-build-targets" id="id9">Makefile Build Targets</a></li>
+<li><a class="reference internal" href="#build-install" id="id10">Build &amp; Install</a></li>
+<li><a class="reference internal" href="#verifying-the-build" id="id11">Verifying The Build</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="platforms-note" name="platforms-note">Platforms Note</a></h1>
+<div class="section" id="platforms-note">
+<h1><a class="toc-backref" href="#id1">Platforms Note</a></h1>
 <p>Platform specific notes regarding specific operating systems may be found
-in the <a class="reference" href="PLATFORMS.html">PLATFORMS.txt</a> file. The intructions in the
+in the <a class="reference external" href="PLATFORMS.html">PLATFORMS.txt</a> file. The intructions in the
 platforms document provide generic instructions which work in most common
 cases. Additional notes regarding Cygwin &amp; MinGW are provided later in
 this file.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="archive-formats" name="archive-formats">Archive Formats</a></h1>
+<div class="section" id="archive-formats">
+<h1><a class="toc-backref" href="#id2">Archive Formats</a></h1>
 <p>GraphicsMagick is distributed in a number of different archive formats.
 The source code must be extracted prior to compilation as follows:</p>
 <dl class="docutils">
 <dt>7z</dt>
 <dd><p class="first">7-Zip archive format. The Z-Zip format may be extracted under Unix
-using '7za' from the P7ZIP package (<a class="reference" href="http://p7zip.sourceforge.net/">http://p7zip.sourceforge.net/</a>).
+using '7za' from the P7ZIP package (<a class="reference external" href="http://p7zip.sourceforge.net/">http://p7zip.sourceforge.net/</a>).
 Extract similar to:</p>
 <pre class="last literal-block">
 7za x GraphicsMagick-1.3.7z
@@ -92,7 +93,7 @@ Extract similar to:</p>
 </dd>
 <dt>.tar.bz2</dt>
 <dd><p class="first">BZip2 compressed tar archive format. Requires that both the bzip2
-(<a class="reference" href="http://www.bzip.org/">http://www.bzip.org/</a>) and tar programs to be available. Extract
+(<a class="reference external" href="http://www.bzip.org/">http://www.bzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
 bzip2 -d GraphicsMagick-1.3.tar.bz | tar -xvf -
@@ -100,7 +101,7 @@ bzip2 -d GraphicsMagick-1.3.tar.bz | tar -xvf -
 </dd>
 <dt>.tar.gz</dt>
 <dd><p class="first">Gzip compressed tar archive format. Requires that both the gzip
-(<a class="reference" href="http://www.gzip.org/">http://www.gzip.org/</a>) and tar programs to be available. Extract
+(<a class="reference external" href="http://www.gzip.org/">http://www.gzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
 gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
@@ -108,7 +109,7 @@ gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
 </dd>
 <dt>.tar.lzma</dt>
 <dd><p class="first">LZMA compressed tar archive format. Requires that LZMA utils
-(<a class="reference" href="http://tukaani.org/lzma/">http://tukaani.org/lzma/</a>) and tar programs to be available. Extract
+(<a class="reference external" href="http://tukaani.org/lzma/">http://tukaani.org/lzma/</a>) and tar programs to be available. Extract
 similar to:</p>
 <pre class="last literal-block">
 lzma -d GraphicsMagick-1.3.tar.lzma | tar -xvf -
@@ -116,7 +117,7 @@ lzma -d GraphicsMagick-1.3.tar.lzma | tar -xvf -
 </dd>
 <dt>zip</dt>
 <dd><p class="first">PK-ZIP archive format. Requires that the unzip program from Info-Zip
-(<a class="reference" href="http://www.info-zip.org/UnZip.html">http://www.info-zip.org/UnZip.html</a>) be available. Extract similar to:</p>
+(<a class="reference external" href="http://www.info-zip.org/UnZip.html">http://www.info-zip.org/UnZip.html</a>) be available. Extract similar to:</p>
 <pre class="last literal-block">
 unzip GraphicsMagick-1.3.zip
 </pre>
@@ -129,8 +130,8 @@ directory using the command:</p>
 cd GraphicsMagick-1.3
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="build-configuration" name="build-configuration">Build Configuration</a></h1>
+<div class="section" id="build-configuration">
+<h1><a class="toc-backref" href="#id3">Build Configuration</a></h1>
 <p>Use 'configure' to automatically configure, build, and install
 GraphicsMagick. The configure script may be executed from the
 GraphicsMagick source directory (e.g ./configure) or from a separate
@@ -216,8 +217,8 @@ options.  When disabling an option --disable-something is equivalent to
 specifying --enable-something=no and --without-something is equivalent
 to --with-something=no.  The configure options are as
 follows (execute 'configure --help' to see all options).</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id4" id="optional-features" name="optional-features">Optional Features</a></h2>
+<div class="section" id="optional-features">
+<h2><a class="toc-backref" href="#id4">Optional Features</a></h2>
 <table class="docutils option-list" frame="void" rules="none">
 <col class="option" />
 <col class="description" />
@@ -262,8 +263,8 @@ follows (execute 'configure --help' to see all options).</p>
 </tbody>
 </table>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="optional-packages-options" name="optional-packages-options">Optional Packages/Options</a></h2>
+<div class="section" id="optional-packages-options">
+<h2><a class="toc-backref" href="#id5">Optional Packages/Options</a></h2>
 <table class="docutils option-list" frame="void" rules="none">
 <col class="option" />
 <col class="description" />
@@ -646,7 +647,7 @@ library.</td></tr>
 <kbd><span class="option">--disable-openmp</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td><p class="first">By default, GraphicsMagick is compiled with support for OpenMP
-(<a class="reference" href="http://www.openmp.org/">http://www.openmp.org/</a>) if the compilation environment supports it.
+(<a class="reference external" href="http://www.openmp.org/">http://www.openmp.org/</a>) if the compilation environment supports it.
 OpenMP automatically parallizes loops across concurrent threads
 based on instructions in pragmas. OpenMP is relatively new to GCC
 and was introduced in GCC 4.2. OpenMP is a standard and was
@@ -735,15 +736,15 @@ not necessary when GraphicsMagick is running under MS-Windows.</td></tr>
 </table>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="building-under-cygwin" name="building-under-cygwin">Building under Cygwin</a></h1>
+<div class="section" id="building-under-cygwin">
+<h1><a class="toc-backref" href="#id6">Building under Cygwin</a></h1>
 <p>GraphicsMagick may be built under the Windows '95-XP Cygwin
 Unix-emulation environment available for free from</p>
 <blockquote>
-<a class="reference" href="http://www.cygwin.com/">http://www.cygwin.com/</a></blockquote>
+<a class="reference external" href="http://www.cygwin.com/">http://www.cygwin.com/</a></blockquote>
 <p>X11R6 for Cygwin is available from</p>
 <blockquote>
-<a class="reference" href="http://xfree86.cygwin.com/">http://xfree86.cygwin.com/</a></blockquote>
+<a class="reference external" href="http://xfree86.cygwin.com/">http://xfree86.cygwin.com/</a></blockquote>
 <p>It is strongly recommended that the X11R6 package be installed since
 this enables GraphicsMagick's X11 support (animate, display, and
 import sub-commands will work) and it includes the Freetype v2 DLL
@@ -759,12 +760,12 @@ Magick++ library is always built as a static library. Be sure to not
 specify --disable-static if you are building the Magick++ library since
 that would surely lead to problems.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="building-under-mingw-msys" name="building-under-mingw-msys">Building under MinGW &amp; MSYS</a></h1>
+<div class="section" id="building-under-mingw-msys">
+<h1><a class="toc-backref" href="#id7">Building under MinGW &amp; MSYS</a></h1>
 <p>GraphicsMagick may be built using the free MinGW (&quot;Minimalistic GNU for
 Windows&quot;) package, available from</p>
 <blockquote>
-<a class="reference" href="http://www.mingw.org/">http://www.mingw.org/</a></blockquote>
+<a class="reference external" href="http://www.mingw.org/">http://www.mingw.org/</a></blockquote>
 <p>which consists of a GNU-based (GCC) compilation toolset plus headers
 and libraries required to build programs which are entirely based on
 standard Microsoft Windows DLLs so that they may be used for
@@ -793,7 +794,7 @@ quite a challenge.</p>
 <p>Lucky for us, the most common delegate libraries are available
 pre-built, as part of the GnuWin32 project, from</p>
 <blockquote>
-<a class="reference" href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a></blockquote>
+<a class="reference external" href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a></blockquote>
 <p>The relevant packages are bzip2, freetype, jbigkit, libintl, jpeg,
 libpng, libtiff, libwmf and zlib. However, note that for freetype
 to be detected by configure, you must move the <tt class="docutils literal"><span class="pre">freetype</span></tt> directory
@@ -813,8 +814,8 @@ installation layout (e.g. <tt class="docutils literal"><span class="pre">C:\Grap
 which may be embedded in libraries and configuration files are
 transformed into Windows paths so they don't depend on MSYS.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="dealing-with-configuration-failures" name="dealing-with-configuration-failures">Dealing with configuration failures</a></h1>
+<div class="section" id="dealing-with-configuration-failures">
+<h1><a class="toc-backref" href="#id8">Dealing with configuration failures</a></h1>
 <p>While configure is designed to ease installation of GraphicsMagick, it
 often discovers problems that would otherwise be encountered later
 when compiling GraphicsMagick. The configure script tests for headers
@@ -841,7 +842,7 @@ option).</li>
 <p>If all reasonable corrective actions have been tried and the problem
 appears to be due to a flaw in the configure script, please send a
 bug report to the configure script maintainer (currently
-<a class="reference" href="mailto:bfriesen&#64;graphicsmagick.org">bfriesen&#64;graphicsmagick.org</a>). All bug reports should contain the
+<a class="reference external" href="mailto:bfriesen&#64;graphicsmagick.org">bfriesen&#64;graphicsmagick.org</a>). All bug reports should contain the
 operating system type (as reported by 'uname -a') and the
 compiler/compiler-version. A copy of the configure script output
 and/or the config.log file may be valuable in order to find the
@@ -849,8 +850,8 @@ problem. If you send a config.log, please also send a script of the
 configure output and a description of what you expected to see (and
 why) so the failure you are observing can be identified and resolved.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="makefile-build-targets" name="makefile-build-targets">Makefile Build Targets</a></h1>
+<div class="section" id="makefile-build-targets">
+<h1><a class="toc-backref" href="#id9">Makefile Build Targets</a></h1>
 <p>Once GraphicsMagick is configured, these standard build targets are
 available from the generated Makefiles:</p>
 <blockquote>
@@ -876,8 +877,8 @@ an 'uninstall' target.</dd>
 </dl>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="build-install" name="build-install">Build &amp; Install</a></h1>
+<div class="section" id="build-install">
+<h1><a class="toc-backref" href="#id10">Build &amp; Install</a></h1>
 <p>Now that GraphicsMagick is configured, type</p>
 <pre class="literal-block">
 make
@@ -888,8 +889,8 @@ make install
 </pre>
 <p>to install it.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="verifying-the-build" name="verifying-the-build">Verifying The Build</a></h1>
+<div class="section" id="verifying-the-build">
+<h1><a class="toc-backref" href="#id11">Verifying The Build</a></h1>
 <p>To confirm your installation of the GraphicsMagick distribution was
 successful, ensure that the installation directory is in your executable
 search path and type</p>
@@ -937,12 +938,12 @@ the current release of all dependent libraries.</p>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:41 UTC.
 
 </div>
 </body>

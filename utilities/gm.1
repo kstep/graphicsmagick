@@ -1,4 +1,4 @@
-.TH gm 1 "2009/07/17" "GraphicsMagick"
+.TH gm 1 "2009/09/17" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -4986,6 +4986,35 @@ magick, mattecolor, opacity.  Set an attribute recognized by
 PerlMagick's GetAttribute().
 .in 15
 .in 15
+.B "<profile>"
+.in 20
+ \fR
+.in 20
+    [profilename]
+.in 15
+.in 20
+
+Read one or more IPTC, ICC or generic profiles from file and assign to image
+
+.in 15
+.in 20
+
+
+    <profile iptc="profile.iptc" generic="generic.dat" />
+
+.in 15
+.in 20
+
+To remove a specified profile use "!" as the filename eg
+
+.in 15
+.in 20
+
+
+    <profile icm="!" iptc="profile.iptc" />
+
+.in 15
+.in 15
 .B "<border>"
 .in 20
  \fR
@@ -5154,6 +5183,13 @@ PerlMagick's GetAttribute().
  \fR
 .in 20
     output
+.in 15
+.in 15
+.B "<profile>"
+.in 20
+ \fR
+.in 20
+    [profilename]
 .in 15
 .in 15
 .B "<read>"

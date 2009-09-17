@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>ImageMagickObject</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,8 +50,9 @@
 </div>
 <div class="document" id="imagemagickobject">
 <h1 class="title">ImageMagickObject</h1>
-<div class="section">
-<h1><a id="overview" name="overview">Overview</a></h1>
+
+<div class="section" id="overview">
+<h1>Overview</h1>
 <p>The <em>ImageMagickObject</em> is a COM+ compatible component that may be
 invoked from any language capable of using COM objects. The intended use
 is for Windows Scripting Host VBS scripts and Visual Basic, but it can
@@ -60,7 +61,7 @@ also be used from C++, ASP, and other languages like Delphi, Perl and PHP.</p>
 same as with PerlMagick interface provided with ImageMagick. PerlMagick
 is a low level API based system that defines a whole new way of scripting
 IM operations. The IM COM+ component simply provides access to the
-<a class="reference" href="convert.html">convert</a>, composite, <a class="reference" href="mogrify.html">mogrify</a>, <a class="reference" href="identify.html">identify</a>, and <a class="reference" href="montage.html">montage</a> tools,
+<a class="reference external" href="convert.html">convert</a>, composite, <a class="reference external" href="mogrify.html">mogrify</a>, <a class="reference external" href="identify.html">identify</a>, and <a class="reference external" href="montage.html">montage</a> tools,
 efficiently executing them as part of your process, rather than as
 external programs. The way you use it is exactly the same. You pass it a
 list of strings including filenames and various options and it does the
@@ -71,7 +72,7 @@ pass in and retrieve images in memory in the form of standard smart
 arrays (byte arrays). Samples are provided, to show both the simple and
 more elaborate forms of access.</p>
 <p><em>GraphicsMagick</em> provides a statically-built ImageMagick object as part of
-its &quot;utils&quot; <a class="reference" href="INSTALL-windows.html">Windows installation package</a>. When this package is
+its &quot;utils&quot; <a class="reference external" href="INSTALL-windows.html">Windows installation package</a>. When this package is
 installed, <em>ImageMagickObject</em> and its sample programs are installed to</p>
 <pre class="literal-block">
 c:\Program Files\GraphicsMagick-1.3-Q16\ImageMagickObject
@@ -84,7 +85,7 @@ install time.</p>
 cscript SimpleTest.vbs
 </pre>
 <p>Since the <em>GraphicsMagick</em> utility command line parsers are incorporated
-within <em>ImageMagickObject</em>, please refer to the command line <a class="reference" href="utilities.html">utility
+within <em>ImageMagickObject</em>, please refer to the command line <a class="reference external" href="utilities.html">utility
 documentation</a> to learn how to use it. The sample VBS scripts show how
 the object should be called and used and have lots of comments.</p>
 <p>For C++ programmers - have a look at the MagickCMD.cpp command line
@@ -93,8 +94,8 @@ complex because the object requires a variable size list of BSTR's to
 emulate the command line argc, argv style calling conventions of the COM
 component which is more complex in C++ then in VBS or VB.</p>
 </div>
-<div class="section">
-<h1><a id="other-goodies" name="other-goodies">Other goodies...</a></h1>
+<div class="section" id="other-goodies">
+<h1>Other goodies...</h1>
 <p>MagickCMD is a C++ sample, but it can also server as a replacement for
 all the other command line utilities in most applications. Instead of
 using &quot;<tt class="docutils literal"><span class="pre">convert</span> <span class="pre">xxxx</span> <span class="pre">yyyy</span></tt>&quot; you can use &quot;<tt class="docutils literal"><span class="pre">MagickCMD</span> <span class="pre">convert</span> <span class="pre">xxxx</span>
@@ -102,8 +103,8 @@ using &quot;<tt class="docutils literal"><span class="pre">convert</span> <span 
 small tight combination replaces the entire usual binary distribution in
 just a few megabytes.</p>
 </div>
-<div class="section">
-<h1><a id="building-imagemagickobject-from-source" name="building-imagemagickobject-from-source">Building ImageMagickObject From Source</a></h1>
+<div class="section" id="building-imagemagickobject-from-source">
+<h1>Building ImageMagickObject From Source</h1>
 <p>The source code for <em>ImageMagickObject</em> is available from <em>GraphicsMagick</em>
 CVS, or as part of the <em>GraphicsMagick</em> Windows source package. Once the
 source code has been retrieved and extracted, the source for
@@ -143,7 +144,7 @@ working.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:42 UTC.
 
 </div>
 </body>

@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..70\n"; }
+BEGIN { $| = 1; $test=1; print "1..76\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -234,6 +234,30 @@ testReadCompare('input.im8', 'reference/read/input_im8.miff', q//, 0, 0);
 print("SUN TrueColor Rasterfile ...\n");
 ++$test;
 testReadCompare('sun:input.im24', 'reference/read/input_im24.miff', q//, 0, 0);
+
+print("Topol Type 1 ...\n");
+++$test;
+testReadCompare('topol:topol_1.ras', 'reference/read/topol_1.miff', q//, 0, 0);
+
+print("Topol Type 2 ...\n");
+++$test;
+testReadCompare('topol:topol_2.ras', 'reference/read/topol_2.miff', q//, 0, 0);
+
+print("Topol Type 3 ...\n");
+++$test;
+testReadCompare('topol:topol_3.ras', 'reference/read/topol_3.miff', q//, 0, 0);
+
+print("Topol Type 4 ...\n");
+++$test;
+testReadCompare('topol:topol_4.ras', 'reference/read/topol_4.miff', q//, 0, 0);
+
+print("Topol Type 5 ...\n");
+++$test;
+testReadCompare('topol:topol_5.ras', 'reference/read/topol_5.miff', q//, 0, 0);
+
+print("Topol Type 7 ...\n");
+++$test;
+testReadCompare('topol:topol_7.ras', 'reference/read/topol_7.miff', q//, 0, 0);
 
 print("Truevision Targa image file ...\n");
 ++$test;

@@ -685,7 +685,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Entering BlobToImage");
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,OptionError,NullBlobArgument,
@@ -844,18 +844,20 @@ MagickExport void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(image->blob != (BlobInfo *) NULL);
+
+  /*
+    If blob was not allocated, or blob type is UndefinedStream then it
+    doesn't need to be closed.
+  */
+  if ((image->blob == (BlobInfo *) NULL) ||
+      (image->blob->type == UndefinedStream))
+    return;
+
   if (image->logging)
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                           "Closing %sStream blob %p",
                           BlobStreamTypeToString(image->blob->type),
                           &image->blob);
-
-  /*
-    If blob type is UndefinedStream then it doesn't need to be closed.
-  */
-  if (image->blob->type == UndefinedStream)
-    return;
 
   status=0;
   switch (image->blob->type)
@@ -1223,7 +1225,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (MagickConfirmAccess(FileReadConfirmAccessMode,filename,exception)
       == MagickFail)
     return MagickFail;
@@ -1800,8 +1802,12 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         }
 
       if (logging)
-        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-          "Tried: %.1024s [%.1024s]",test_path,strerror(errno));
+	{
+	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+				"Tried: %.1024s [%.1024s]",test_path,
+				strerror(errno));
+	  errno=0;
+	}
     }
   MagickMapDeallocateIterator(path_map_iterator);
   MagickMapDeallocateMap(path_map);
@@ -1886,7 +1892,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   image->logging=IsEventLogging();
   if (image->logging)
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),"Entering ImageToBlob");
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);
   magick_info=GetMagickInfo(clone_info->magick,exception);
@@ -2522,13 +2528,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                       count;
 
                     size_t
-                      vbuf_size = 16384;
+                      vbuf_size;
 
-                    if ((env = getenv("MAGICK_IOBUF_SIZE")))
-                      {
-                        vbuf_size = (size_t) atol(env);
-                      }
-
+		    vbuf_size=MagickGetFileSystemBlockSize();
                     if (setvbuf(image->blob->file,NULL,_IOFBF,vbuf_size) != 0)
                       {
                         if (image->logging)
@@ -2770,7 +2772,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (((blob == (const void *) NULL)) || (length == 0))
     {
       ThrowException(exception,OptionError,NullBlobArgument,

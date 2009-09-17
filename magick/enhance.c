@@ -43,7 +43,6 @@
 #include "magick/color.h"
 #include "magick/enhance.h"
 #include "magick/gem.h"
-#include "magick/omp_data_view.h"
 #include "magick/pixel_iterator.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
@@ -114,7 +113,7 @@ BuildChannelHistograms(const Image *image, ExceptionInfo *exception)
     iterator_options.max_threads=1;
     status=PixelIterateMonoRead(BuildChannelHistogramsCB,
                                 &iterator_options,
-                                "[%s] Building image histogram...",
+                                "[%s] Building histogram...",
                                 histogram,NULL,
                                 0,0,image->columns,image->rows,
                                 image,exception);
@@ -199,8 +198,8 @@ ContrastImagePixels(void *mutable_data,         /* User provided mutable data */
 
   return MagickPass;
 }
-#define DullContrastImageText  "[%s] Dulling image contrast..."
-#define SharpenContrastImageText  "[%s] Sharpening image contrast..."
+#define DullContrastImageText "[%s] Dulling contrast..."
+#define SharpenContrastImageText "[%s] Sharpening contrast..."
 MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpen)
 {
   double
@@ -317,7 +316,7 @@ ApplyLevels(void *mutable_data,          /* User provided mutable data */
   return MagickPass;
 }
 
-#define EqualizeImageText  "Equalizing image...  "
+#define EqualizeImageText "Equalize...  "
 MagickExport MagickPassFail EqualizeImage(Image *image)
 {
   DoublePixelPacket
@@ -583,7 +582,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
 %
 %
 */
-#define LevelImageText  "Leveling the image...  "
+#define LevelImageText "Level...  "
 MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 {
   double
@@ -796,7 +795,7 @@ MagickExport MagickPassFail LevelImageChannel(Image *image,
     {
       status=PixelIterateMonoModify(ApplyLevels,
                                     NULL,
-                                    "[%s] Leveling image...",
+                                    "[%s] Leveling channels...",
                                     NULL,&levels,
                                     0,0,image->columns,image->rows,
                                     image,
@@ -927,7 +926,7 @@ MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
   param.percent_saturation=AbsoluteValue(param.percent_saturation);
   param.percent_hue=AbsoluteValue(param.percent_hue);
 
-  FormatString(progress_message,"[%%s] Modulate %g/%g/%g image...",
+  FormatString(progress_message,"[%%s] Modulate %g/%g/%g...",
                param.percent_brightness,param.percent_saturation,
                param.percent_hue);
   TransformColorspace(image,RGBColorspace);
@@ -1026,7 +1025,7 @@ NegateImagePixels(void *mutable_data,         /* User provided mutable data */
   return MagickPass;
 }
 
-#define NegateImageText  "[%s] Negating the image colors..."
+#define NegateImageText "[%s] Negate..."
 MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscale)
 {
   unsigned int

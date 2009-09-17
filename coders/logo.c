@@ -41,8 +41,8 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/color.h"
 #include "magick/magick.h"
+#include "magick/texture.h"
 #include "magick/utility.h"
 
 

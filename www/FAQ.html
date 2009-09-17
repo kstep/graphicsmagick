@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick FAQ</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,48 +50,49 @@
 </div>
 <div class="document" id="graphicsmagick-faq">
 <h1 class="title">GraphicsMagick FAQ</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <!-- URL links -->
-<div class="contents topic">
-<p class="topic-title first"><a id="faq-contents" name="faq-contents">FAQ Contents</a></p>
+<div class="contents topic" id="faq-contents">
+<p class="topic-title first">FAQ Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#how-does-graphicsmagick-differ-from-imagemagick" id="id1" name="id1">How does GraphicsMagick differ from ImageMagick?</a></li>
-<li><a class="reference" href="#how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick" id="id2" name="id2">How often does GraphicsMagick pick up new code from ImageMagick?</a></li>
-<li><a class="reference" href="#how-can-i-process-many-files-at-once" id="id3" name="id3">How can I process many files at once?</a></li>
-<li><a class="reference" href="#i-received-the-following-message-delegation-failed-what-does-it-mean" id="id4" name="id4">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></li>
-<li><a class="reference" href="#how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" id="id5" name="id5">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></li>
-<li><a class="reference" href="#how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" id="id6" name="id6">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></li>
-<li><a class="reference" href="#the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" id="id7" name="id7">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></li>
-<li><a class="reference" href="#how-do-i-animate-a-digital-yuv-image-sequence" id="id8" name="id8">How do I animate a digital YUV image sequence?</a></li>
-<li><a class="reference" href="#how-do-i-change-the-default-postscript-page-size" id="id9" name="id9">How do I change the default <em>PostScript</em> page size?</a></li>
-<li><a class="reference" href="#i-get-a-memory-allocation-error-what-can-i-do" id="id10" name="id10">I get a memory allocation error. What can I do?</a></li>
-<li><a class="reference" href="#how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" id="id11" name="id11">How do I concatenate three images left-to-right with no borders, frames, or text?</a></li>
-<li><a class="reference" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" id="id12" name="id12">How do I create a GIF animation sequence to display within Netscape?</a></li>
-<li><a class="reference" href="#when-i-display-a-postscript-image-white-borders-are-trimmed" id="id13" name="id13">When I display a <em>PostScript</em> image, white borders are trimmed.</a></li>
-<li><a class="reference" href="#what-are-visual-image-directories-how-do-i-use-them" id="id14" name="id14">What are visual image directories? How do I use them?</a></li>
-<li><a class="reference" href="#how-can-i-include-the-window-frame-when-importing-a-window" id="id15" name="id15">How can I include the window frame when importing a window?</a></li>
-<li><a class="reference" href="#i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong" id="id16" name="id16">I displayed an image and it appears as one solid color. What did I do wrong?</a></li>
-<li><a class="reference" href="#i-received-the-following-message-library-is-not-available" id="id17" name="id17">I received the following message, &quot;???? library is not available...&quot;.</a></li>
-<li><a class="reference" href="#i-want-to-inspect-the-values-of-the-matte-channel-within-my-image" id="id18" name="id18">I want to inspect the values of the matte channel within my image.</a></li>
-<li><a class="reference" href="#how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web" id="id19" name="id19">How can I add one of those cool bevels to my image that I see used on the Web?</a></li>
-<li><a class="reference" href="#i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up" id="id20" name="id20">I try to launch display from my window manager and it fails. What's up?</a></li>
-<li><a class="reference" href="#how-can-i-make-postscript-text-look-good" id="id21" name="id21">How can I make Postscript text look good?</a></li>
-<li><a class="reference" href="#how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" id="id22" name="id22">How can I annotate an image with text that is 2 to 3 inches tall?</a></li>
-<li><a class="reference" href="#how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" id="id23" name="id23">How can I convert my GIF animation sequence to individual image files?</a></li>
-<li><a class="reference" href="#how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" id="id24" name="id24">How can I remove the background that prints around my image when I display it with Netscape?</a></li>
-<li><a class="reference" href="#how-do-i-create-a-gif-or-png-image-with-web-safe-colors" id="id25" name="id25">How do I create a GIF or PNG image with Web safe colors?</a></li>
-<li><a class="reference" href="#how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" id="id26" name="id26">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></li>
-<li><a class="reference" href="#how-can-i-add-a-matte-layer-to-my-image" id="id27" name="id27">How can I add a matte layer to my image?</a></li>
-<li><a class="reference" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id28" name="id28">How can I draw with text using 'convert' under Windows NT?</a></li>
-<li><a class="reference" href="#why-are-my-jpeg-files-larger-than-expected" id="id29" name="id29">Why are my JPEG files larger than expected?</a></li>
-<li><a class="reference" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id30" name="id30">How do I extract a single image from a multi-image file?</a></li>
-<li><a class="reference" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id31" name="id31">How can I extract and combine CMYK channels in a CMYK image?</a></li>
-<li><a class="reference" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id32" name="id32">How can I create a solid or patterned canvas image?</a></li>
+<li><a class="reference internal" href="#how-does-graphicsmagick-differ-from-imagemagick" id="id1">How does GraphicsMagick differ from ImageMagick?</a></li>
+<li><a class="reference internal" href="#how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick" id="id2">How often does GraphicsMagick pick up new code from ImageMagick?</a></li>
+<li><a class="reference internal" href="#how-can-i-process-many-files-at-once" id="id3">How can I process many files at once?</a></li>
+<li><a class="reference internal" href="#i-received-the-following-message-delegation-failed-what-does-it-mean" id="id4">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></li>
+<li><a class="reference internal" href="#how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" id="id5">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></li>
+<li><a class="reference internal" href="#how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" id="id6">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></li>
+<li><a class="reference internal" href="#the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" id="id7">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></li>
+<li><a class="reference internal" href="#how-do-i-animate-a-digital-yuv-image-sequence" id="id8">How do I animate a digital YUV image sequence?</a></li>
+<li><a class="reference internal" href="#how-do-i-change-the-default-postscript-page-size" id="id9">How do I change the default <em>PostScript</em> page size?</a></li>
+<li><a class="reference internal" href="#i-get-a-memory-allocation-error-what-can-i-do" id="id10">I get a memory allocation error. What can I do?</a></li>
+<li><a class="reference internal" href="#how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" id="id11">How do I concatenate three images left-to-right with no borders, frames, or text?</a></li>
+<li><a class="reference internal" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" id="id12">How do I create a GIF animation sequence to display within Netscape?</a></li>
+<li><a class="reference internal" href="#when-i-display-a-postscript-image-white-borders-are-trimmed" id="id13">When I display a <em>PostScript</em> image, white borders are trimmed.</a></li>
+<li><a class="reference internal" href="#what-are-visual-image-directories-how-do-i-use-them" id="id14">What are visual image directories? How do I use them?</a></li>
+<li><a class="reference internal" href="#how-can-i-include-the-window-frame-when-importing-a-window" id="id15">How can I include the window frame when importing a window?</a></li>
+<li><a class="reference internal" href="#i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong" id="id16">I displayed an image and it appears as one solid color. What did I do wrong?</a></li>
+<li><a class="reference internal" href="#i-received-the-following-message-library-is-not-available" id="id17">I received the following message, &quot;???? library is not available...&quot;.</a></li>
+<li><a class="reference internal" href="#i-want-to-inspect-the-values-of-the-matte-channel-within-my-image" id="id18">I want to inspect the values of the matte channel within my image.</a></li>
+<li><a class="reference internal" href="#how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web" id="id19">How can I add one of those cool bevels to my image that I see used on the Web?</a></li>
+<li><a class="reference internal" href="#i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up" id="id20">I try to launch display from my window manager and it fails. What's up?</a></li>
+<li><a class="reference internal" href="#how-can-i-make-postscript-text-look-good" id="id21">How can I make Postscript text look good?</a></li>
+<li><a class="reference internal" href="#how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" id="id22">How can I annotate an image with text that is 2 to 3 inches tall?</a></li>
+<li><a class="reference internal" href="#how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" id="id23">How can I convert my GIF animation sequence to individual image files?</a></li>
+<li><a class="reference internal" href="#how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" id="id24">How can I remove the background that prints around my image when I display it with Netscape?</a></li>
+<li><a class="reference internal" href="#how-do-i-create-a-gif-or-png-image-with-web-safe-colors" id="id25">How do I create a GIF or PNG image with Web safe colors?</a></li>
+<li><a class="reference internal" href="#how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" id="id26">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></li>
+<li><a class="reference internal" href="#how-can-i-add-a-matte-layer-to-my-image" id="id27">How can I add a matte layer to my image?</a></li>
+<li><a class="reference internal" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id28">How can I draw with text using 'convert' under Windows NT?</a></li>
+<li><a class="reference internal" href="#why-are-my-jpeg-files-larger-than-expected" id="id29">Why are my JPEG files larger than expected?</a></li>
+<li><a class="reference internal" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id30">How do I extract a single image from a multi-image file?</a></li>
+<li><a class="reference internal" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id31">How can I extract and combine CMYK channels in a CMYK image?</a></li>
+<li><a class="reference internal" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id32">How can I create a solid or patterned canvas image?</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="how-does-graphicsmagick-differ-from-imagemagick" name="how-does-graphicsmagick-differ-from-imagemagick">How does GraphicsMagick differ from ImageMagick?</a></h1>
+<div class="section" id="how-does-graphicsmagick-differ-from-imagemagick">
+<h1><a class="toc-backref" href="#id1">How does GraphicsMagick differ from ImageMagick?</a></h1>
 <p><em>GraphicsMagick</em> is originally based on (forked from) ImageMagick
 5.5.2 in November 2002, from the version distributed by ImageMagick
 Studio LLC, which is itself forked in August 1999 from ImageMagick
@@ -121,8 +122,8 @@ operating system, a fully-featured install of GraphicsMagick depends on
 overhead for simple commands is much lower, and GraphicsMagick is also
 more efficient at dealing with large images.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick" name="how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick">How often does GraphicsMagick pick up new code from ImageMagick?</a></h1>
+<div class="section" id="how-often-does-graphicsmagick-pick-up-new-code-from-imagemagick">
+<h1><a class="toc-backref" href="#id2">How often does GraphicsMagick pick up new code from ImageMagick?</a></h1>
 <p>GraphicsMagick never picks up new code from ImageMagick as distributed
 by ImageMagick Studio LLC. Not long after the GraphicsMagick project
 was started in November 2002, ImageMagick from ImageMagick Studio LLC
@@ -144,8 +145,8 @@ encumberment.  In order for a work to be accepted, it must have been
 developed entirely outside the ImageMagick source code to avoid any
 possibility of copyright taint.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="how-can-i-process-many-files-at-once" name="how-can-i-process-many-files-at-once">How can I process many files at once?</a></h1>
+<div class="section" id="how-can-i-process-many-files-at-once">
+<h1><a class="toc-backref" href="#id3">How can I process many files at once?</a></h1>
 <p>Use 'gm mogrify'.  The 'mogrify' subcommand is designed to operate on
 any number of files in one command.  Normally 'mogrify' overwrites the
 input files but the <cite>-output-directory</cite> option (which must appear
@@ -180,20 +181,20 @@ on this it should be clear that when <cite>-output-directory</cite> is used, fil
 paths should be relative paths rather than absolute paths or else the
 concatenation won't work.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="i-received-the-following-message-delegation-failed-what-does-it-mean" name="i-received-the-following-message-delegation-failed-what-does-it-mean">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></h1>
+<div class="section" id="i-received-the-following-message-delegation-failed-what-does-it-mean">
+<h1><a class="toc-backref" href="#id4">I received the following message, &quot;?????? delegation failed ...&quot;. What does it mean?</a></h1>
 <p><em>GraphicsMagick</em> uses several freely available packages to perform the
 translation of certain image formats (<em>PostScript</em>, <em>MPEG</em>, etc.). Make
-sure these packages are available as described in the <a class="reference" href="README.html">README</a> file. Also
+sure these packages are available as described in the <a class="reference external" href="README.html">README</a> file. Also
 verify that you have plenty of temporary disk space. If not, set the
 MAGICK_TMPDIR (or TMPDIR) environment variable to an area where
 sufficient space is available. Finally, for <em>PostScript</em>, verify that
 Ghostscript supports the <em>pnmraw</em> or <em>ppmraw</em> device (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">-h</span></tt>) and that
 the document contains valid <em>PostScript</em> statements (<tt class="docutils literal"><span class="pre">gs</span> <span class="pre">image.ps</span></tt>).</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla" name="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
-<p>Display your GIF image with <a class="reference" href="display.html">display</a>. Choose <em>Matte</em> from the <em>Image
+<div class="section" id="how-do-i-set-the-transparency-index-in-a-gif-image-so-it-displays-properly-within-mozilla">
+<h1><a class="toc-backref" href="#id5">How do I set the transparency index in a GIF image so it displays properly within Mozilla?</a></h1>
+<p>Display your GIF image with <a class="reference external" href="display.html">display</a>. Choose <em>Matte</em> from the <em>Image
 Edit</em> command menu and identify a pixel that has the <em>transparency</em>
 color. Press <em>Method</em> and select a matte edit method from a pop-up menu.
 Choose from these methods:</p>
@@ -228,17 +229,17 @@ gm display -map list image.gif
 gm display -visual TrueColor image.gif
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window" name="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></h1>
-<p><a class="reference" href="animate.html">Animate</a> updates the image file name in the title bar of the image window
+<div class="section" id="how-can-i-stop-the-filenames-from-changing-in-the-title-bar-of-the-animate-1-image-window">
+<h1><a class="toc-backref" href="#id6">How can I stop the filenames from changing in the title bar of the animate(1) image window?</a></h1>
+<p><a class="reference external" href="animate.html">Animate</a> updates the image file name in the title bar of the image window
 as each image is displayed from the image sequence. To display just a
 single name that will not change, use <em>-title</em>:</p>
 <pre class="literal-block">
 gm animate -title &quot;My Image Sequence&quot; images.
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong" name="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></h1>
+<div class="section" id="the-image-grabbed-by-import-1-does-not-look-like-the-image-on-my-x-server-what-s-wrong">
+<h1><a class="toc-backref" href="#id7">The image grabbed by import(1) does not look like the image on my X server. What's wrong?</a></h1>
 <p>Use the <em>-descend</em> option:</p>
 <pre class="literal-block">
 gm import -descend image.miff
@@ -247,31 +248,31 @@ gm import -descend image.miff
 <pre class="literal-block">
 gm import.descend: True
 </pre>
-<p>By default, <a class="reference" href="import.html">import</a> quickly grabs the image from the X server. However,
+<p>By default, <a class="reference external" href="import.html">import</a> quickly grabs the image from the X server. However,
 it may not always have the correct colors in some areas. This can happen
 when a subwindow has a different colormap than its parent. With
-<em>-descend</em>, <a class="reference" href="import.html">import</a> descends the window hierarchy. Descending involves
+<em>-descend</em>, <a class="reference external" href="import.html">import</a> descends the window hierarchy. Descending involves
 grabbing the image and colormap of each window or subwindow associated
 with the window you select and compositing it on a blank canvas. This can
 be significantly slower than just grabbing the top-level window but
 ensures the correct image.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="how-do-i-animate-a-digital-yuv-image-sequence" name="how-do-i-animate-a-digital-yuv-image-sequence">How do I animate a digital YUV image sequence?</a></h1>
+<div class="section" id="how-do-i-animate-a-digital-yuv-image-sequence">
+<h1><a class="toc-backref" href="#id8">How do I animate a digital YUV image sequence?</a></h1>
 <p>Suppose your sequence is 72 352x240 frames titled frame0.Y, frame0.U,
 frame0.V, frame1.Y, frame1.U, etc. Use this command:</p>
 <pre class="literal-block">
 gm animate -geometry 352x240 -scene 0-71 yuv3:frame%d
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="how-do-i-change-the-default-postscript-page-size" name="how-do-i-change-the-default-postscript-page-size">How do I change the default <em>PostScript</em> page size?</a></h1>
+<div class="section" id="how-do-i-change-the-default-postscript-page-size">
+<h1><a class="toc-backref" href="#id9">How do I change the default <em>PostScript</em> page size?</a></h1>
 <p>The default dimensions of a <em>PostScript</em> page is 612x792. If you prefer
 another default, change the page geometries (PSPageGeometry) in
 <cite>magick/image.h</cite> and recompile.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="i-get-a-memory-allocation-error-what-can-i-do" name="i-get-a-memory-allocation-error-what-can-i-do">I get a memory allocation error. What can I do?</a></h1>
+<div class="section" id="i-get-a-memory-allocation-error-what-can-i-do">
+<h1><a class="toc-backref" href="#id10">I get a memory allocation error. What can I do?</a></h1>
 <p>Memory allocation is a complex topic in GraphicsMagick and image
 processing requires a lot of memory. GraphicsMagick tries to take best
 advantage of the resources available by optimizing its use of <em>virtual</em>
@@ -342,7 +343,7 @@ image storage formats (<em>Monochrome</em>, <em>PseudoColor</em>, or <em>TrueCol
 many different types of X visuals (<em>StaticGray, StaticColor, PseudoColor,
 GrayScale, DirectColor,</em> or <em>TrueColor</em>). To support all these
 combinations of image storage formats and X visuals, extra memory is
-required. Additionally, <a class="reference" href="animate.html">animate</a> and <a class="reference" href="montage.html">montage</a> store an entire image
+required. Additionally, <a class="reference external" href="animate.html">animate</a> and <a class="reference external" href="montage.html">montage</a> store an entire image
 sequence in memory.</p>
 <p>It is recommended that systems used to run <em>GraphicsMagick</em> have at least
 96MB of RAM and 140MB free in their paging area. Systems used to process
@@ -359,8 +360,8 @@ operating system's ability to address memory, and your degree of
 patience. GraphicsMagick has been used to process RGB images 64K by 64K
 pixels in size!</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" name="how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text">How do I concatenate three images left-to-right with no borders, frames, or text?</a></h1>
+<div class="section" id="how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text">
+<h1><a class="toc-backref" href="#id11">How do I concatenate three images left-to-right with no borders, frames, or text?</a></h1>
 <p>Assume your three images are called image1.ppm, image2.ppm, and
 image3.ppm. Type</p>
 <pre class="literal-block">
@@ -368,7 +369,7 @@ gm montage -mode concatenate -tile 3x1 image1.ppm image2.ppm \
   image3.ppm concatenated.miff
 </pre>
 <p>To concatenate the images top-to-bottom, use -tile 1x3.</p>
-<p>For more control over the placement of an image, use <a class="reference" href="composite.html">composite</a>. First
+<p>For more control over the placement of an image, use <a class="reference external" href="composite.html">composite</a>. First
 create a matte image and position your images onto the matte. For
 example,</p>
 <pre class="literal-block">
@@ -379,9 +380,9 @@ gm composite -geometry +0+300 composite.miff image3.gif composite.miff
 gm composite -geometry +0+375 composite.miff image4.gif composite.miff
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" name="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape">How do I create a GIF animation sequence to display within Netscape?</a></h1>
-<p>Use <a class="reference" href="convert.html">convert</a> with the <em>-delay</em> and <em>-page</em> options. The <em>-delay</em> option
+<div class="section" id="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape">
+<h1><a class="toc-backref" href="#id12">How do I create a GIF animation sequence to display within Netscape?</a></h1>
+<p>Use <a class="reference external" href="convert.html">convert</a> with the <em>-delay</em> and <em>-page</em> options. The <em>-delay</em> option
 is used to specify the delay in <em>1/100ths of a second</em> between the
 display of each frame of the animation. For example,</p>
 <pre class="literal-block">
@@ -409,8 +410,8 @@ animation. If you want a single image produced for each frame, use
 gm convert +adjoin images.* frames%d.gif
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="when-i-display-a-postscript-image-white-borders-are-trimmed" name="when-i-display-a-postscript-image-white-borders-are-trimmed">When I display a <em>PostScript</em> image, white borders are trimmed.</a></h1>
+<div class="section" id="when-i-display-a-postscript-image-white-borders-are-trimmed">
+<h1><a class="toc-backref" href="#id13">When I display a <em>PostScript</em> image, white borders are trimmed.</a></h1>
 <p><em>GraphicsMagick</em> automatically trims any <em>PostScript</em> image as defined by
 the bounding box. To preempt this behavior, remove the bounding box
 statement from the <em>Postscript</em> or explicitly set the page size. For
@@ -419,8 +420,8 @@ example,</p>
 gm display -page letter image.ps
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="what-are-visual-image-directories-how-do-i-use-them" name="what-are-visual-image-directories-how-do-i-use-them">What are visual image directories? How do I use them?</a></h1>
+<div class="section" id="what-are-visual-image-directories-how-do-i-use-them">
+<h1><a class="toc-backref" href="#id14">What are visual image directories? How do I use them?</a></h1>
 <p>A visual image directory (VID) is an image that contains thumbnails of
 one or more images in a file directory. Rather than displaying each
 individual image at its full resolution, you can browse the visual image
@@ -430,9 +431,9 @@ either of these commands:</p>
 gm montage *.jpg directory.vid
 gm convert 'vid:*.jpg' directory.vid
 </pre>
-<p>Of course you can substitute any filenames you desire. <a class="reference" href="montage.html">Montage</a> has many
+<p>Of course you can substitute any filenames you desire. <a class="reference external" href="montage.html">Montage</a> has many
 relevant command line options. You can exercise more control over the
-appearance of the VID than with <a class="reference" href="convert.html">convert</a>.</p>
+appearance of the VID than with <a class="reference external" href="convert.html">convert</a>.</p>
 <p>Next display the directory:</p>
 <pre class="literal-block">
 gm display directory.vid
@@ -446,8 +447,8 @@ gm display 'vid:*.jpg'
 <p>You can also select <em>Visual Image...</em> from the <em>File</em> menu of the command
 widget.</p>
 <p><em>Note, that creating a VID is time consuming</em>. Creating them on-the-fly
-within <a class="reference" href="display.html">display</a> may be less convenient than using <a class="reference" href="montage.html">montage</a> or <a class="reference" href="convert.html">convert</a> .
-Also, if you create them with <a class="reference" href="montage.html">montage</a>. or <a class="reference" href="convert.html">convert</a>, you can reuse them
+within <a class="reference external" href="display.html">display</a> may be less convenient than using <a class="reference external" href="montage.html">montage</a> or <a class="reference external" href="convert.html">convert</a> .
+Also, if you create them with <a class="reference external" href="montage.html">montage</a>. or <a class="reference external" href="convert.html">convert</a>, you can reuse them
 as often as necessary.</p>
 <p>Note that a visual image directory is useful for looking at individual
 frames of an image sequence:</p>
@@ -455,8 +456,8 @@ frames of an image sequence:</p>
 gm display vid:movie.mpg
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="how-can-i-include-the-window-frame-when-importing-a-window" name="how-can-i-include-the-window-frame-when-importing-a-window">How can I include the window frame when importing a window?</a></h1>
+<div class="section" id="how-can-i-include-the-window-frame-when-importing-a-window">
+<h1><a class="toc-backref" href="#id15">How can I include the window frame when importing a window?</a></h1>
 <p>I use the window ID reported by <em>xwininfo(1)</em> with import and it does not
 include the window manager frame as expected. How can I save the window
 with its frame?</p>
@@ -465,13 +466,13 @@ the <em>-frame</em> option to get the reparented window ID:</p>
 <pre class="literal-block">
 xwininfo -frame
 </pre>
-<p>You can then use the returned window ID with <a class="reference" href="import.html">import</a>:</p>
+<p>You can then use the returned window ID with <a class="reference external" href="import.html">import</a>:</p>
 <pre class="literal-block">
 gm import -frame -window ID window.miff
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong" name="i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong">I displayed an image and it appears as one solid color. What did I do wrong?</a></h1>
+<div class="section" id="i-displayed-an-image-and-it-appears-as-one-solid-color-what-did-i-do-wrong">
+<h1><a class="toc-backref" href="#id16">I displayed an image and it appears as one solid color. What did I do wrong?</a></h1>
 <p>A blank image generally means that the image is either corrupt or it has
 a matte channel and the matte values are all zero. <em>GraphicsMagick</em>
 treats a matte value of zero as completely transparent. To determine if
@@ -480,16 +481,16 @@ this is the problem, try</p>
 gm display +matte image.miff
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id17" id="i-received-the-following-message-library-is-not-available" name="i-received-the-following-message-library-is-not-available">I received the following message, &quot;???? library is not available...&quot;.</a></h1>
+<div class="section" id="i-received-the-following-message-library-is-not-available">
+<h1><a class="toc-backref" href="#id17">I received the following message, &quot;???? library is not available...&quot;.</a></h1>
 <p><em>GraphicsMagick</em> requires source libraries not included with the
 distribution to view or convert certain image formats such as JPEG or
 TIFF. The above message means you did not compile the required library
-and link with the <em>GraphicsMagick</em> utilities. See <a class="reference" href="README.html">README</a> for the
+and link with the <em>GraphicsMagick</em> utilities. See <a class="reference external" href="README.html">README</a> for the
 location of these libraries and compiling instructions.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id18" id="i-want-to-inspect-the-values-of-the-matte-channel-within-my-image" name="i-want-to-inspect-the-values-of-the-matte-channel-within-my-image">I want to inspect the values of the matte channel within my image.</a></h1>
+<div class="section" id="i-want-to-inspect-the-values-of-the-matte-channel-within-my-image">
+<h1><a class="toc-backref" href="#id18">I want to inspect the values of the matte channel within my image.</a></h1>
 <p>View the matte image as a gray scale image. Suppose you have a TIFF image
 that has a matte channel and is 640 pixels in width and 480 in height.
 Type:</p>
@@ -498,8 +499,8 @@ gm convert image.tiff image.matte
 gm display -size 640x480 gray:image.matte
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id19" id="how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web" name="how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web">How can I add one of those cool bevels to my image that I see used on the Web?</a></h1>
+<div class="section" id="how-can-i-add-one-of-those-cool-bevels-to-my-image-that-i-see-used-on-the-web">
+<h1><a class="toc-backref" href="#id19">How can I add one of those cool bevels to my image that I see used on the Web?</a></h1>
 <p>There are four types of ornamental borders you can add to your image
 with GraphicsMagick. Each is listed below with the procedure to use
 them with your image.</p>
@@ -540,9 +541,9 @@ gm convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif
 </li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id20" id="i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up" name="i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up">I try to launch display from my window manager and it fails. What's up?</a></h1>
-<p><a class="reference" href="display.html">Display</a> determines if it is executing interactively and behaves
+<div class="section" id="i-try-to-launch-display-from-my-window-manager-and-it-fails-what-s-up">
+<h1><a class="toc-backref" href="#id20">I try to launch display from my window manager and it fails. What's up?</a></h1>
+<p><a class="reference external" href="display.html">Display</a> determines if it is executing interactively and behaves
 differently depending on the result. To convince display &lt;display.html&gt;
 you are running in an interactive environment when launching from a
 window manager, use either of</p>
@@ -552,8 +553,8 @@ display &lt; /dev/console
 </pre>
 <p>Note that this issue no longer exists as of GraphicsMagick 1.2.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id21" id="how-can-i-make-postscript-text-look-good" name="how-can-i-make-postscript-text-look-good">How can I make Postscript text look good?</a></h1>
+<div class="section" id="how-can-i-make-postscript-text-look-good">
+<h1><a class="toc-backref" href="#id21">How can I make Postscript text look good?</a></h1>
 <p>Simple. Increase the dots-per-inch when converting and sub-sample:</p>
 <pre class="literal-block">
 gm convert -density 288 -geometry 25% image.ps image.gif
@@ -571,14 +572,14 @@ but in the process anti-aliases (or smooths) the fonts and lines of the
 image so as to remove the jaggies you would otherwise get from a normal
 postscript to image conversion.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id22" id="how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" name="how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall">How can I annotate an image with text that is 2 to 3 inches tall?</a></h1>
+<div class="section" id="how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall">
+<h1><a class="toc-backref" href="#id22">How can I annotate an image with text that is 2 to 3 inches tall?</a></h1>
 <p>If you do not access to a particular named font that is large, try
 scalable fonts. First see if you have any scalable fonts. Type</p>
 <pre class="literal-block">
 xlsfonts -fn '*-0-0-0-0-*'
 </pre>
-<p>Or if you are using <a class="reference" href="display.html">display</a>, use the font pattern above within the Font
+<p>Or if you are using <a class="reference external" href="display.html">display</a>, use the font pattern above within the Font
 Browser (see Image Edit-&gt;Annotate). Next substitute the appropriate
 resolution. Keep in mind that a scalable font must be fully qualified to
 work. That is, all 14 fields must be specified. Here is one example where
@@ -593,18 +594,18 @@ increase your pointsize and/or density:</p>
 gm convert -font Helvetica -pointsize 100 -density 300 ...
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id23" id="how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" name="how-can-i-convert-my-gif-animation-sequence-to-individual-image-files">How can I convert my GIF animation sequence to individual image files?</a></h1>
-<p>Use the scene embedded file format with <a class="reference" href="convert.html">convert</a>:</p>
+<div class="section" id="how-can-i-convert-my-gif-animation-sequence-to-individual-image-files">
+<h1><a class="toc-backref" href="#id23">How can I convert my GIF animation sequence to individual image files?</a></h1>
+<p>Use the scene embedded file format with <a class="reference external" href="convert.html">convert</a>:</p>
 <pre class="literal-block">
 gm convert animation.gif frame%02d.gif
 </pre>
 <p>The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id24" id="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" name="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape">How can I remove the background that prints around my image when I display it with Netscape?</a></h1>
-<p>Use the +page option of the <a class="reference" href="convert.html">convert</a> command:</p>
+<div class="section" id="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape">
+<h1><a class="toc-backref" href="#id24">How can I remove the background that prints around my image when I display it with Netscape?</a></h1>
+<p>Use the +page option of the <a class="reference external" href="convert.html">convert</a> command:</p>
 <pre class="literal-block">
 gm convert +page alpha.gif beta.gif
 </pre>
@@ -614,12 +615,12 @@ could have been introduced by GraphicsMagick. Either way, +page
 removes the unwanted page offset and Netscape should behave as
 expected.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id25" id="how-do-i-create-a-gif-or-png-image-with-web-safe-colors" name="how-do-i-create-a-gif-or-png-image-with-web-safe-colors">How do I create a GIF or PNG image with Web safe colors?</a></h1>
+<div class="section" id="how-do-i-create-a-gif-or-png-image-with-web-safe-colors">
+<h1><a class="toc-backref" href="#id25">How do I create a GIF or PNG image with Web safe colors?</a></h1>
 <p>Web safe colors are not normally needed any more since almost all
 computers now have true color displays. However, this FAQ may still be
 useful.</p>
-<p>Use the -map option of the <a class="reference" href="convert.html">convert</a> command:</p>
+<p>Use the -map option of the <a class="reference external" href="convert.html">convert</a> command:</p>
 <pre class="literal-block">
 gm convert -map netscape: alpha.gif beta.gif
 </pre>
@@ -627,8 +628,8 @@ gm convert -map netscape: alpha.gif beta.gif
 command to ensure only these predefined colors are used. Otherwise
 Netscape dithers your image with varying degrees of image fidelity.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id26" id="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" name="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></h1>
+<div class="section" id="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format">
+<h1><a class="toc-backref" href="#id26">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></h1>
 <p>The default PDF compression is <em>Zip</em>. You need Acrobat 3.0 and above
 to read Zip compressed PDF. Instead use no compression or LZW
 compression when you create the PDF file:</p>
@@ -636,8 +637,8 @@ compression when you create the PDF file:</p>
 gm convert +compress images.tiff image.pdf
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id27" id="how-can-i-add-a-matte-layer-to-my-image" name="how-can-i-add-a-matte-layer-to-my-image">How can I add a matte layer to my image?</a></h1>
+<div class="section" id="how-can-i-add-a-matte-layer-to-my-image">
+<h1><a class="toc-backref" href="#id27">How can I add a matte layer to my image?</a></h1>
 <p>One way is to use a bitmap as your transparency mask First, use the
 -matte option to add an all-opaque opacity channel, then use the
 composite utility to copy the graylevel samples from the mask file
@@ -650,8 +651,8 @@ gm composite -compose CopyOpacity mask.xbm temp.miff transparent.gif
 variable opacity, use a format like MIFF, TIFF, or PNG as your output
 image format.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id28" id="how-can-i-draw-with-text-using-convert-under-windows-nt" name="how-can-i-draw-with-text-using-convert-under-windows-nt">How can I draw with text using 'convert' under Windows NT?</a></h1>
+<div class="section" id="how-can-i-draw-with-text-using-convert-under-windows-nt">
+<h1><a class="toc-backref" href="#id28">How can I draw with text using 'convert' under Windows NT?</a></h1>
 <p>The problem is that NT interprets the command line differently than
 Unix does, causing the documented command to fail. The following
 command has been reported to work correctly (all on one line):</p>
@@ -666,14 +667,14 @@ gm convert.exe -pointsize 18 -draw &quot;text 0,0 &quot;This is my text!&quot;&q
   C:\blank.gif c:\text.gif
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id29" id="why-are-my-jpeg-files-larger-than-expected" name="why-are-my-jpeg-files-larger-than-expected">Why are my JPEG files larger than expected?</a></h1>
+<div class="section" id="why-are-my-jpeg-files-larger-than-expected">
+<h1><a class="toc-backref" href="#id29">Why are my JPEG files larger than expected?</a></h1>
 <p>Your JPEG files may contain embedded &quot;profiles&quot; such as Exif or IPTC,
 or they may contain uncompressed thumbnails. You can use the <cite>+profile
 &quot;*&quot;</cite> commandline option or an equivalent API method to remove them.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id30" id="how-do-i-extract-a-single-image-from-a-multi-image-file" name="how-do-i-extract-a-single-image-from-a-multi-image-file">How do I extract a single image from a multi-image file?</a></h1>
+<div class="section" id="how-do-i-extract-a-single-image-from-a-multi-image-file">
+<h1><a class="toc-backref" href="#id30">How do I extract a single image from a multi-image file?</a></h1>
 <p>Use a square-bracket syntax to indicate which frame or frames you
 want. For example,</p>
 <pre class="literal-block">
@@ -683,8 +684,8 @@ gm convert &quot;Image.gif[0]&quot; first.gif
 to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id31" id="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" name="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image">How can I extract and combine CMYK channels in a CMYK image?</a></h1>
+<div class="section" id="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image">
+<h1><a class="toc-backref" href="#id31">How can I extract and combine CMYK channels in a CMYK image?</a></h1>
 <p>GraphicsMagick 1.2.2 and later support combining multiple channels in of
 any image file format in order to create a CMYK image file.  For example,
 starting with a CMYK JPEG file, we can create a set of separate files
@@ -709,8 +710,8 @@ original image file.</p>
 can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id32" id="how-can-i-create-a-solid-or-patterned-canvas-image" name="how-can-i-create-a-solid-or-patterned-canvas-image">How can I create a solid or patterned canvas image?</a></h1>
+<div class="section" id="how-can-i-create-a-solid-or-patterned-canvas-image">
+<h1><a class="toc-backref" href="#id32">How can I create a solid or patterned canvas image?</a></h1>
 <p>Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
 formats. XC produces solid color images based on an color you specify
 while TILE produces a tiled image based on an an image you specify. Both
@@ -744,12 +745,12 @@ gm convert -size 640x480 tile:myimage.tiff canvas.tiff
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-07-24 19:48 UTC.
+Generated on: 2009-09-17 19:41 UTC.
 
 </div>
 </body>

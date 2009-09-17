@@ -38,13 +38,13 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
-#include "magick/pixel_cache.h"
-#include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/enhance.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
@@ -3943,7 +3943,8 @@ static MagickPassFail DCM_ReadPaletteImage(Image *image,DicomStream *dcm,Excepti
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;
@@ -4044,7 +4045,8 @@ static MagickPassFail DCM_ReadGrayscaleImage(Image *image,DicomStream *dcm,Excep
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;
@@ -4089,7 +4091,8 @@ static MagickPassFail DCM_ReadPlanarRGBImage(Image *image,DicomStream *dcm,Excep
 	  if (image->previous == (Image *) NULL)
 	    if (QuantumTick(y,image->rows))
 	      if (!MagickMonitorFormatted(y,image->rows,exception,
-					  LoadImageText,image->filename))
+					  LoadImageText,image->filename,
+					  image->columns,image->rows))
 		return MagickFail;
 	}
     }
@@ -4165,7 +4168,8 @@ static MagickPassFail DCM_ReadRGBImage(Image *image,DicomStream *dcm,ExceptionIn
       if (image->previous == (Image *) NULL)
 	if (QuantumTick(y,image->rows))
 	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename))
+				      LoadImageText,image->filename,
+				      image->columns,image->rows))
 	    return MagickFail;
     }
   return MagickPass;

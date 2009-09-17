@@ -12,5 +12,8 @@ set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
 OUTFILE=TileRecolor_out.miff
+MATRIXFILE=recolor_matrix_out.txt
+echo '0.9 0 0, 0 0.9 0, 0 0 1.2' > ${MATRIXFILE}
 rm -f ${OUTFILE}
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -recolor '0.9 0 0, 0 0.9 0, 0 0 1.2' -label Recolor ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -recolor @${MATRIXFILE} -label Recolor ${OUTFILE}
+rm -f ${MATRIXFILE}

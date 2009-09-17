@@ -245,7 +245,7 @@ DumpHistogramArray(FILE *stream,const unsigned int entries,
 %
 %
 */
-#define SegmentImageText  "[%s] Segmenting image..."
+#define SegmentImageText "[%s] Segment..."
 
 typedef struct _Cluster
 {

@@ -15,16 +15,19 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/animate.html \
 	$(WWWAPIDIR)/annotate.html \
 	$(WWWAPIDIR)/attribute.html \
+	$(WWWAPIDIR)/average.html \
 	$(WWWAPIDIR)/blob.html \
 	$(WWWAPIDIR)/cdl.html \
 	$(WWWAPIDIR)/channel.html \
 	$(WWWAPIDIR)/color.html \
+	$(WWWAPIDIR)/colormap.html \
 	$(WWWAPIDIR)/compare.html \
 	$(WWWAPIDIR)/composite.html \
 	$(WWWAPIDIR)/confirm_access.html \
 	$(WWWAPIDIR)/constitute.html \
 	$(WWWAPIDIR)/decorate.html \
 	$(WWWAPIDIR)/deprecate.html \
+	$(WWWAPIDIR)/describe.html \
 	$(WWWAPIDIR)/display.html \
 	$(WWWAPIDIR)/draw.html \
 	$(WWWAPIDIR)/effect.html \
@@ -42,6 +45,7 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/paint.html \
 	$(WWWAPIDIR)/pixel_cache.html \
 	$(WWWAPIDIR)/pixel_iterator.html \
+	$(WWWAPIDIR)/plasma.html \
 	$(WWWAPIDIR)/profile.html \
 	$(WWWAPIDIR)/quantize.html \
 	$(WWWAPIDIR)/registry.html \
@@ -51,6 +55,8 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/segment.html \
 	$(WWWAPIDIR)/shear.html \
 	$(WWWAPIDIR)/signature.html \
+	$(WWWAPIDIR)/statistics.html \
+	$(WWWAPIDIR)/texture.html \
 	$(WWWAPIDIR)/transform.html \
 	$(WWWAPIDIR)/types.html \
 	$(WWWAPIDIR)/widget.html
@@ -60,16 +66,19 @@ WWWWAPI_FILES = \
 	www/api/annotate.html \
 	www/api/api_hyperlinks.rst \
 	www/api/attribute.html \
+	www/api/average.html \
 	www/api/blob.html \
 	www/api/cdl.html \
 	www/api/channel.html \
 	www/api/color.html \
+	www/api/colormap.html \
 	www/api/compare.html \
 	www/api/composite.html \
 	www/api/confirm_access.html \
 	www/api/constitute.html \
 	www/api/decorate.html \
 	www/api/deprecate.html \
+	www/api/describe.html \
 	www/api/display.html \
 	www/api/draw.html \
 	www/api/effect.html \
@@ -87,6 +96,7 @@ WWWWAPI_FILES = \
 	www/api/paint.html \
 	www/api/pixel_cache.html \
 	www/api/pixel_iterator.html \
+	www/api/plasma.html \
 	www/api/profile.html \
 	www/api/quantize.html \
 	www/api/registry.html \
@@ -96,6 +106,8 @@ WWWWAPI_FILES = \
 	www/api/segment.html \
 	www/api/shear.html \
 	www/api/signature.html \
+	www/api/statistics.html \
+	www/api/texture.html \
 	www/api/transform.html \
 	www/api/types.html \
 	www/api/widget.html

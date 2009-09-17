@@ -376,7 +376,7 @@ static void ScribbleImage (Image *image)
     DrawPopGraphicContext(draw_wand);
   }
   DrawPopGraphicContext(draw_wand);
-  DrawRender(draw_wand);
+  DrawRender(draw_wand); /* FIXME: Use Wand MagickDrawImage() instead. */
   DestroyPixelWand(color);
   DestroyDrawingWand(draw_wand);
 }

@@ -47,8 +47,10 @@
 #include "magick/bit_stream.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/describe.h"
 #include "magick/enum_strings.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -1502,7 +1504,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   assert(pixels != (void *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -1903,158 +1905,6 @@ MagickExport void DestroyConstitute(void)
   /* The final call actually releases the associated mutex used to prevent
      multiple threads from accessing the data */
   DestroySemaphoreInfo(&constitute_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%     C o n s t i t u t e T e x t u r e I m a g e                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ConstituteTextureImage() returns a new image canvas based on repeatedly
-%  tiling the texture image across and down the new image canvas.  The
-%  returned image properties are similar to the texture image properties.
-%
-%  The format of the TextureImage method is:
-%
-%      Image *ConstituteTextureImage(unsigned long columns,unsigned long rows,
-%                              const Image *texture, ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o columns: The number of columns in the new image.
-%
-%    o rows: The number of rows in the new image.
-%
-%    o texture: The texture image to layer on the background.
-%
-%    o exceptions: Any errors are reported here.
-%
-*/
-#define ConstituteTextureImageText  "[%s] Generate image texture...  "
-MagickExport Image *ConstituteTextureImage(const unsigned long columns,
-                                           const unsigned long rows,
-                                           const Image *texture_image,
-                                           ExceptionInfo *exception)
-{
-  Image
-    *canvas_image;
-
-  long
-    y;
-
-  unsigned long
-    row_count=0;
-
-  MagickPassFail
-    status=MagickPass;
-
-  assert(texture_image != (Image *) NULL);
-  assert(texture_image->signature == MagickSignature);
-
-  canvas_image=CloneImage(texture_image,columns,rows,MagickTrue,exception);
-  if (canvas_image == (Image *) NULL)
-    return canvas_image;
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
-#endif
-  for (y=0; y < (long) canvas_image->rows; y++)
-    {
-      const PixelPacket
-        *texture_pixels;
-
-      PixelPacket
-        *canvas_pixels;
-
-      unsigned long
-        x;
-
-      MagickBool
-        thread_status;
-
-      thread_status=status;
-      if (thread_status == MagickFail)
-        continue;
-
-      texture_pixels=AcquireImagePixels(texture_image,0,
-                                        y % texture_image->rows,
-                                        texture_image->columns,1,
-                                        exception);
-      canvas_pixels=SetImagePixelsEx(canvas_image,0,y,canvas_image->columns,
-                                     1,exception);
-
-      if ((texture_pixels == (const PixelPacket *) NULL) ||
-          (canvas_pixels == (PixelPacket *) NULL))
-        thread_status=MagickFail;
-
-      if (thread_status != MagickFail)
-        {
-          const IndexPacket
-            *texture_indexes=(const IndexPacket *) NULL;
-          
-          IndexPacket
-            *canvas_indexes=(IndexPacket *) NULL;;
-
-          if (texture_image->storage_class == PseudoClass)
-            texture_indexes=AccessImmutableIndexes(texture_image);
-          if (canvas_image->storage_class == PseudoClass)
-            canvas_indexes=AccessMutableIndexes(canvas_image);
-
-          for (x=0; x < canvas_image->columns; x+=texture_image->columns)
-            {
-              unsigned long
-                texture_width;
-
-              texture_width=texture_image->columns;
-              if ((x+texture_width) > canvas_image->columns)
-                texture_width=canvas_image->columns-x;
-
-              if ((texture_indexes != (const IndexPacket *) NULL) &&
-                  (canvas_indexes != (const IndexPacket *) NULL))
-                {
-                  (void) memcpy(canvas_indexes,texture_indexes,texture_width*sizeof(IndexPacket));
-                  canvas_indexes += texture_width;
-                }
-              (void) memcpy(canvas_pixels,texture_pixels,texture_width*sizeof(PixelPacket));
-              canvas_pixels += texture_width;
-            }
-
-          if (!SyncImagePixelsEx(canvas_image,exception))
-            thread_status=MagickFail;
-        }
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp critical (GM_ConstituteTextureImage)
-#endif
-      {
-        row_count++;
-        if (QuantumTick(row_count,canvas_image->rows))
-          if (!MagickMonitorFormatted(row_count,canvas_image->rows,exception,
-                                      ConstituteTextureImageText,
-                                      texture_image->filename))
-            thread_status=MagickFail;
-
-        if (thread_status == MagickFail)
-          status=MagickFail;
-      }
-    }
-
-  if (status == MagickFail)
-    {
-      DestroyImage(canvas_image);
-      canvas_image=(Image *) NULL;
-    }
-
-  if (canvas_image != (Image *) NULL)
-    {
-      canvas_image->is_monochrome=texture_image->is_monochrome;
-      canvas_image->is_grayscale=texture_image->is_grayscale;
-    }
-
-  return canvas_image;
 }
 
 /*
@@ -8242,7 +8092,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
   image=ReadImage(clone_info,exception);
@@ -8351,7 +8201,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image_info->filename != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
@@ -8902,7 +8752,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   register const char
     *p;
 
-  SetExceptionInfo(exception,UndefinedException);
+  /* SetExceptionInfo(exception,UndefinedException); */
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
@@ -9193,7 +9043,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
             break;
         }
       if (clone_info->verbose)
-        (void) DescribeImage(image,stdout,False);
+        (void) DescribeImage(image,stderr,False);
       DestroyImageInfo(clone_info);
       clone_info=0;
     }
