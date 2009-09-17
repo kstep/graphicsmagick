@@ -82,6 +82,9 @@
   <!-- Read grayscale Postscript, EPS, and PDF  -->
   <delegate decode="gs-gray" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=pgmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
+<!-- Read palette Postscript, EPS, and PDF  -->
+  <delegate decode="gs-palette" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=pcx256 -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
+
   <!-- Read color Postscript, EPS, and PDF  -->
   <delegate decode="gs-color" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=ppmraw -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
 
