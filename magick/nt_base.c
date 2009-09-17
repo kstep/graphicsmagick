@@ -891,6 +891,9 @@ NTGhostscriptFind(const char **gs_productfamily,
       LONG
 	winstatus;
 
+      REGSAM
+	open_key_mode;
+
       char
 	key[MaxTextExtent],
 	last_error_msg[MaxTextExtent];
@@ -905,7 +908,14 @@ NTGhostscriptFind(const char **gs_productfamily,
 	lpSubKey, const DWORD ulOptions, const REGSAM samDesired,
 	PHKEY phkResult)
       */
-      if ((winstatus=RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey))
+      open_key_mode=KEY_READ;
+#if defined(KEY_WOW64_32KEY)
+      // Access a 32-bit key from either a 32-bit or 64-bit
+      // application.  This flag is not supported on Windows 2000.
+      // Presumably Ghostscript is registered in the 32-bit registry.
+      open_key_mode |= KEY_WOW64_32KEY;
+#endif // defined(KEY_WOW64_32KEY)
+      if ((winstatus=RegOpenKeyExA(hkeyroot, key, 0, open_key_mode, &hkey))
 	  == ERROR_SUCCESS)
 	{
 	  DWORD
