@@ -2906,31 +2906,7 @@ BOOL CConfigureApp::InitInstance()
       lib_shared_list.push_back("wsock32.lib");
       lib_shared_list.push_back("advapi32.lib");
       //lib_shared_list.push_back("scrnsave.lib");
-
-	  /* Nasty fix - MSVC cannot process correctly absolute paths - help it a little bit. */
-	  if(lib_loc.length()>=3)
-	  {
-		if(isalpha(lib_loc[0]) && lib_loc[1]==':' && lib_loc[2]=='\\')
-		{
-		  lib_shared_list.push_back("CORE_RL_zlib_.lib");
-		  lib_shared_list.push_back("CORE_RL_bzlib_.lib");
-		  lib_shared_list.push_back("CORE_RL_jpeg_.lib");
-		  lib_shared_list.push_back("CORE_RL_jp2_.lib");
-		  lib_shared_list.push_back("CORE_RL_png_.lib");
-		  lib_shared_list.push_back("CORE_RL_ttf_.lib");
-		  lib_shared_list.push_back("CORE_RL_jbig_.lib");
-		  lib_shared_list.push_back("CORE_RL_lcms_.lib");
-		  lib_shared_list.push_back("CORE_RL_tiff_.lib");
-		  lib_shared_list.push_back("CORE_RL_wand_.lib");
-		  lib_shared_list.push_back("CORE_RL_xlib_.lib");
-		  lib_shared_list.push_back("CORE_RL_filters_.lib");
-		  lib_shared_list.push_back("CORE_RL_coders_.lib");
-		  lib_shared_list.push_back("CORE_RL_libxml_.lib");
-		  lib_shared_list.push_back("CORE_RL_wmf_.lib");
-		  lib_shared_list.push_back("CORE_RL_magick_.lib");
-		}
-	  }
-	  /* End of fix. */
+	  
 
 
       ConfigureProject *dummy_project;
@@ -3122,6 +3098,7 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
                            dll?get_full_path(root + "\\",bin_path).c_str():get_full_path(root + "\\",lib_path).c_str(),
                            runtime, project_type, dll?DLLPROJECT:LIBPROJECT, 0);
 
+
   if (dll && isCOMproject)
     {
       string trigger, target;
@@ -3168,7 +3145,7 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
                            bNeedsRelo,lib_shared_list,lib_debug_list,
                            get_full_path(root + "\\",lib_path).c_str(),
                            dll?get_full_path(root + "\\",bin_path).c_str():get_full_path(root + "\\",lib_path).c_str(),
-                           runtime, project_type, dll?DLLPROJECT:LIBPROJECT, 1);
+                           runtime, project_type, dll?DLLPROJECT:LIBPROJECT, 1);  
 
   if (dll && isCOMproject)
     {
@@ -3331,11 +3308,42 @@ ConfigureProject *CConfigureApp::write_project_exe(
   project->write_res_compiler_tool(root,extra_path,
                                    runtime, project_type, EXEPROJECT, 0);
 
+   /* Nasty fix - MSVC cannot process correctly absolute paths - help it a little bit. */
+   int LibCount = lib_shared_list.size();
+   if(lib_loc.length()>=3)
+   {
+	 if(isalpha(lib_loc[0]) && lib_loc[1]==':' && lib_loc[2]=='\\')
+	 {
+	   lib_shared_list.push_back("CORE_RL_zlib_.lib");
+	   lib_shared_list.push_back("CORE_RL_bzlib_.lib");
+	   lib_shared_list.push_back("CORE_RL_jpeg_.lib");
+       lib_shared_list.push_back("CORE_RL_jp2_.lib");
+	   lib_shared_list.push_back("CORE_RL_png_.lib");
+	   lib_shared_list.push_back("CORE_RL_ttf_.lib");
+	   lib_shared_list.push_back("CORE_RL_jbig_.lib");
+	   lib_shared_list.push_back("CORE_RL_lcms_.lib");
+	   lib_shared_list.push_back("CORE_RL_tiff_.lib");
+	   lib_shared_list.push_back("CORE_RL_wand_.lib");
+	   lib_shared_list.push_back("CORE_RL_xlib_.lib");
+	   lib_shared_list.push_back("CORE_RL_filters_.lib");
+	   lib_shared_list.push_back("CORE_RL_coders_.lib");
+	   lib_shared_list.push_back("CORE_RL_libxml_.lib");
+	   lib_shared_list.push_back("CORE_RL_wmf_.lib");
+	   lib_shared_list.push_back("CORE_RL_magick_.lib");
+	 }
+   }
+   /* End of fix. */ 
+
   project->write_link_tool(root,extra_path,module_definition_file,outname,bNeedsMagickpp,
                            false,lib_shared_list,lib_release_list,
                            get_full_path(root + "\\",lib_path).c_str(),
                            get_full_path(root + "\\",bin_path).c_str(),
                            runtime, project_type, EXEPROJECT, 0);
+
+    /* Remove newly added libraries. */
+  while(LibCount < lib_shared_list.size())
+    lib_shared_list.pop_back();
+  /* ...... */
 
   project->write_configuration(libname.c_str(), "Win32 Debug", 1);
 
@@ -3364,11 +3372,41 @@ ConfigureProject *CConfigureApp::write_project_exe(
   project->write_res_compiler_tool(root,extra_path,
                                    runtime, project_type, EXEPROJECT, 1);
 
+  /* Nasty fix - MSVC cannot process correctly absolute paths - help it a little bit. */   
+   if(lib_loc.length()>=3)
+   {
+	 if(isalpha(lib_loc[0]) && lib_loc[1]==':' && lib_loc[2]=='\\')
+	 {
+	   lib_shared_list.push_back("CORE_DB_zlib_.lib");
+	   lib_shared_list.push_back("CORE_DB_bzlib_.lib");
+	   lib_shared_list.push_back("CORE_DB_jpeg_.lib");
+       lib_shared_list.push_back("CORE_DB_jp2_.lib");
+	   lib_shared_list.push_back("CORE_DB_png_.lib");
+	   lib_shared_list.push_back("CORE_DB_ttf_.lib");
+	   lib_shared_list.push_back("CORE_DB_jbig_.lib");
+	   lib_shared_list.push_back("CORE_DB_lcms_.lib");
+	   lib_shared_list.push_back("CORE_DB_tiff_.lib");
+	   lib_shared_list.push_back("CORE_DB_wand_.lib");
+	   lib_shared_list.push_back("CORE_DB_xlib_.lib");
+	   lib_shared_list.push_back("CORE_DB_filters_.lib");
+	   lib_shared_list.push_back("CORE_DB_coders_.lib");
+	   lib_shared_list.push_back("CORE_DB_libxml_.lib");
+	   lib_shared_list.push_back("CORE_DB_wmf_.lib");
+	   lib_shared_list.push_back("CORE_DB_magick_.lib");
+	 }
+   }
+  /* End of fix. */ 
+
   project->write_link_tool(root,extra_path,module_definition_file,outname,bNeedsMagickpp,
                            false,lib_shared_list,lib_debug_list,
                            get_full_path(root + "\\",lib_path).c_str(),
                            get_full_path(root + "\\",bin_path).c_str(),
                            runtime, project_type, EXEPROJECT, 1);
+
+  /* Remove newly added libraries. */
+  while(LibCount < lib_shared_list.size())
+    lib_shared_list.pop_back();
+  /* ...... */
 
   project->write_configuration(libname.c_str(), "", 2);
 
