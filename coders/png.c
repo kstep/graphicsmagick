@@ -2171,8 +2171,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else
               row_offset=0;
             png_read_row(ping,png_pixels+row_offset,NULL);
-            /* FIXME: Use SetImagePixels? */
-            if (!GetImagePixels(image,0,y,image->columns,1))
+	    if (!SetImagePixels(image,0,y,image->columns,1))  /* Was GetImagePixels() */
               break;
 #if (QuantumDepth == 8)
             if (depth == 16)

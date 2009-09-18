@@ -1,3 +1,11 @@
+2009-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cals.c (WriteCALSImage): Initial CALS Type 1 writer
+	implementation.  Contributed by John Sergeant.
+
+	* coders/png.c (ReadOnePNGImage): Fresh pixels should be set using
+	SetImagePixels().
+
 2009-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/msl.c, doc/conjure.imdoc: Add support for a new 'profile'
