@@ -73,7 +73,7 @@ New Features:
   * Magick++: New Image method colorMatrix() to apply a color matrix
     to the image channels.
 
-  * Magick++: New Image method haldClut)() to apply a color lookup
+  * Magick++: New Image method haldClut() to apply a color lookup
     table (Hald CLUT) to the image.
 
   * MSL/Conjure: Added a new 'profile' command which applies, adds, or
