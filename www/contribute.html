@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>Contributing to GraphicsMagick</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,6 +50,7 @@
 </div>
 <div class="document" id="contributing-to-graphicsmagick">
 <h1 class="title">Contributing to GraphicsMagick</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <p>The future and success of GraphicsMagick depends on your contributions.
@@ -78,10 +79,10 @@ increased significantly if you have a proven track-record of success on
 other open source projects, are a recognized expert in the field, or have
 already demonstrated your capabilities and commitment by contributing to
 the project in other ways. Please contact Bob Friesenhahn
-&lt;<a class="reference" href="mailto:bfriesen&#64;simple.dallas.tx.us">bfriesen&#64;simple.dallas.tx.us</a>&gt; in order to be considered for group
+&lt;<a class="reference external" href="mailto:bfriesen&#64;simple.dallas.tx.us">bfriesen&#64;simple.dallas.tx.us</a>&gt; in order to be considered for group
 membership.</p>
-<div class="section">
-<h1><a id="areas-to-contribute" name="areas-to-contribute">Areas To Contribute</a></h1>
+<div class="section" id="areas-to-contribute">
+<h1>Areas To Contribute</h1>
 <p>The following are areas where significant contributions may be made to
 the GraphicsMagick project:</p>
 <ul class="simple">
@@ -90,37 +91,37 @@ the GraphicsMagick project:</p>
 that it is added back to Portage. This is not difficult since the
 ebuild has been actively maintained via the Gentoo bug tracking system.
 At the very least, registering a vote for the Gentoo bug may be helpful.
-See <a class="reference" href="http://bugs.gentoo.org/show_bug.cgi?id=190372">http://bugs.gentoo.org/show_bug.cgi?id=190372</a>.</li>
+See <a class="reference external" href="http://bugs.gentoo.org/show_bug.cgi?id=190372">http://bugs.gentoo.org/show_bug.cgi?id=190372</a>.</li>
 <li>Set up an FTP mirror site for GraphicsMagick.</li>
-<li>Create a language interface using SWIG &lt;<a class="reference" href="http://www.swig.org/">http://www.swig.org/</a>&gt; to
+<li>Create a language interface using SWIG &lt;<a class="reference external" href="http://www.swig.org/">http://www.swig.org/</a>&gt; to
 support scripting in Perl, Python, TCL/TK, Guile, MzScheme, Ruby,
 Java, PHP, and CHICKEN, based on a common implementation.</li>
 <li>Create a new utility command parser based on a separate LALR or
 XML-based syntax definition, and using an approach suitable to
 replace the existing error-prone command parsers in magick/command.c</li>
 <li>Create a vector encoder for EPS, Postscript, PDF, SVG
-&lt;<a class="reference" href="http://www.w3.org/Graphics/SVG/">http://www.w3.org/Graphics/SVG/</a>&gt;, Macromedia Flash
-(SWF), WebCGM &lt;<a class="reference" href="http://www.w3.org/Graphics/WebCGM/">http://www.w3.org/Graphics/WebCGM/</a>&gt;, or WMF.</li>
+&lt;<a class="reference external" href="http://www.w3.org/Graphics/SVG/">http://www.w3.org/Graphics/SVG/</a>&gt;, Macromedia Flash
+(SWF), WebCGM &lt;<a class="reference external" href="http://www.w3.org/Graphics/WebCGM/">http://www.w3.org/Graphics/WebCGM/</a>&gt;, or WMF.</li>
 <li>Create an OpenEXR coder based on the OpenEXR
-&lt;<a class="reference" href="http://www.openexr.org/">http://www.openexr.org/</a>&gt; library from Industrial Light &amp; Magic.</li>
+&lt;<a class="reference external" href="http://www.openexr.org/">http://www.openexr.org/</a>&gt; library from Industrial Light &amp; Magic.</li>
 <li>Create a <em>pstoedit</em> module to import Postscript, EPS, and PDF
-files as vector data using pstoedit &lt;<a class="reference" href="http://www.pstoedit.net/">http://www.pstoedit.net/</a>&gt; which
+files as vector data using pstoedit &lt;<a class="reference external" href="http://www.pstoedit.net/">http://www.pstoedit.net/</a>&gt; which
 already includes a high-quality driver to render Postscript vectors via
 GraphicsMagick. This module could also export vector data in many
 formats using pstoedit's output drivers.</li>
 <li>Work on adding EXIF profile writing support which works for JPEG and
 TIFF formats.</li>
 <li>Add integrated Adobe XMP
-&lt;<a class="reference" href="http://www.adobe.com/products/xmp/main.html">http://www.adobe.com/products/xmp/main.html</a>&gt; profile support for
+&lt;<a class="reference external" href="http://www.adobe.com/products/xmp/main.html">http://www.adobe.com/products/xmp/main.html</a>&gt; profile support for
 TIFF, JPEG, PNG, PDF, EPS, and Postscript.</li>
 <li>Port Erik Reinhard's super-cool Parameter Estimation For
 Photographic Tone Reproduction
-&lt;<a class="reference" href="http://www.cs.ucf.edu/~reinhard/Reinhard02/">http://www.cs.ucf.edu/~reinhard/Reinhard02/</a>&gt; algorithm to
+&lt;<a class="reference external" href="http://www.cs.ucf.edu/~reinhard/Reinhard02/">http://www.cs.ucf.edu/~reinhard/Reinhard02/</a>&gt; algorithm to
 GraphicsMagick.</li>
 <li>Create a replacement (using a portable Widget set such as FLTK) for the
 IMDisplay Windows GUI program and possibly the X11 'display' program.</li>
 <li>Create an interface between GraphicsMagick and OpenOffice.org.
-&lt;<a class="reference" href="http://www.openoffice.org/">http://www.openoffice.org/</a>&gt; so that OpenOffice may load and save
+&lt;<a class="reference external" href="http://www.openoffice.org/">http://www.openoffice.org/</a>&gt; so that OpenOffice may load and save
 any format supported by GraphicsMagick. OpenOffice.org offers a
 separate SDK so there may be a number of other opportunities to
 explore.</li>
@@ -133,12 +134,12 @@ delegate under Windows.</li>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-05-19 23:04 UTC.
+Generated on: 2009-09-17 21:45 UTC.
 
 </div>
 </body>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>Magick++ API for GraphicsMagick</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
@@ -50,13 +50,14 @@
 </div>
 <div class="document" id="magick-api-for-graphicsmagick">
 <h1 class="title">Magick++ API for GraphicsMagick</h1>
-<div class="section">
-<h1><a id="introduction" name="introduction">Introduction</a></h1>
-<p><em>Magick++</em> is the object-oriented C++ API to the <a class="reference" href="../index.html">GraphicsMagick</a>
+
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p><em>Magick++</em> is the object-oriented C++ API to the <a class="reference external" href="../index.html">GraphicsMagick</a>
 image-processing library, the most comprehensive open-source image
-processing package available. Read the latest <a class="reference" href="NEWS.html">NEWS</a> and <a class="reference" href="ChangeLog.html">ChangeLog</a> for
+processing package available. Read the latest <a class="reference external" href="NEWS.html">NEWS</a> and <a class="reference external" href="ChangeLog.html">ChangeLog</a> for
 <em>Magick++</em>.</p>
-<p><em>Magick++</em> supports an object model which is inspired by <a class="reference" href="../perl.html">PerlMagick</a>.
+<p><em>Magick++</em> supports an object model which is inspired by <a class="reference external" href="../perl.html">PerlMagick</a>.
 Images support implicit reference counting so that copy constructors and
 assignment incur almost no cost. The cost of actually copying an image
 (if necessary) is done just before modification and this copy is managed
@@ -64,31 +65,31 @@ automatically by <em>Magick++</em>. De-referenced copies are automatically
 deleted. The image objects support value (rather than pointer) semantics
 so it is trivial to support multiple generations of an image in memory at
 one time.</p>
-<p><em>Magick++</em> provides integrated support for the <a class="reference" href="http://www.sgi.com/tech/stl/">Standard Template
-Library</a> (<a class="reference" href="http://www.sgi.com/tech/stl/">STL</a>) so that the powerful containers available (e.g. <a class="reference" href="http://www.sgi.com/tech/stl/Deque.html">deque</a>,
-<a class="reference" href="http://www.sgi.com/tech/stl/Vector.html">vector</a>, <a class="reference" href="http://www.sgi.com/tech/stl/List.html">list</a>, and <a class="reference" href="http://www.sgi.com/tech/stl/Map.html">map</a>) can be used to write programs similar to those
-possible with PERL &amp; <a class="reference" href="../perl.html">PerlMagick</a>. STL-compatible template versions of
+<p><em>Magick++</em> provides integrated support for the <a class="reference external" href="http://www.sgi.com/tech/stl/">Standard Template
+Library</a> (<a class="reference external" href="http://www.sgi.com/tech/stl/">STL</a>) so that the powerful containers available (e.g. <a class="reference external" href="http://www.sgi.com/tech/stl/Deque.html">deque</a>,
+<a class="reference external" href="http://www.sgi.com/tech/stl/Vector.html">vector</a>, <a class="reference external" href="http://www.sgi.com/tech/stl/List.html">list</a>, and <a class="reference external" href="http://www.sgi.com/tech/stl/Map.html">map</a>) can be used to write programs similar to those
+possible with PERL &amp; <a class="reference external" href="../perl.html">PerlMagick</a>. STL-compatible template versions of
 GraphicsMagick's list-style operations are provided so that operations
 may be performed on multiple images stored in STL containers.</p>
 </div>
-<div class="section">
-<h1><a id="id1" name="id1">Documentation</a></h1>
-<p>Detailed <a class="reference" href="Documentation.html">documentation</a> are provided for all <em>Magick++</em> classes, class
+<div class="section" id="id1">
+<h1>Documentation</h1>
+<p>Detailed <a class="reference external" href="Documentation.html">documentation</a> are provided for all <em>Magick++</em> classes, class
 methods, and template functions which comprise the API.</p>
 </div>
-<div class="section">
-<h1><a id="obtaining-magick" name="obtaining-magick">Obtaining Magick++</a></h1>
-<p><em>Magick++</em> is included as part of <a class="reference" href="../index.html">GraphicsMagick</a> source releases and may
-be retrieved via <a class="reference" href="../download.html">ftp</a> or <a class="reference" href="../CVS.html">CVS</a>.</p>
+<div class="section" id="obtaining-magick">
+<h1>Obtaining Magick++</h1>
+<p><em>Magick++</em> is included as part of <a class="reference external" href="../index.html">GraphicsMagick</a> source releases and may
+be retrieved via <a class="reference external" href="../download.html">ftp</a> or <a class="reference external" href="../CVS.html">CVS</a>.</p>
 </div>
-<div class="section">
-<h1><a id="installation" name="installation">Installation</a></h1>
-<p>Installation is very easy since <em>Magick++</em> is part of <a class="reference" href="../index.html">GraphicsMagick</a> and
-is built by default. Once <a class="reference" href="../index.html">GraphicsMagick</a> is built, then <em>Magick++</em> is
+<div class="section" id="installation">
+<h1>Installation</h1>
+<p>Installation is very easy since <em>Magick++</em> is part of <a class="reference external" href="../index.html">GraphicsMagick</a> and
+is built by default. Once <a class="reference external" href="../index.html">GraphicsMagick</a> is built, then <em>Magick++</em> is
 available for use.</p>
 </div>
-<div class="section">
-<h1><a id="usage" name="usage">Usage</a></h1>
+<div class="section" id="usage">
+<h1>Usage</h1>
 <p>A helper script named <em>GraphicsMagick++-config</em> is installed in the same
 directory as the GraphicsMagick <em>gm</em> program under Unix which assists
 with recalling compilation options required to compile and link programs
@@ -118,16 +119,16 @@ GraphicsMagick DLL/library and configuration files, InitializeMagick()
 initializes all of the semaphores necessary for a multi-threaded program
 to be thread safe.</p>
 </div>
-<div class="section">
-<h1><a id="reporting-bugs" name="reporting-bugs">Reporting Bugs</a></h1>
-<p>Please report any bugs via the <a class="reference" href="http://sourceforge.net/projects/graphicsmagick/">GraphicsMagick Bug Tracker</a>. Questions
-regarding usage should be directed to <a class="reference" href="mailto:bfriesen&#64;simple.dallas.tx.us">Bob Friesenhahn</a>.</p>
+<div class="section" id="reporting-bugs">
+<h1>Reporting Bugs</h1>
+<p>Please report any bugs via the <a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/">GraphicsMagick Bug Tracker</a>. Questions
+regarding usage should be directed to <a class="reference external" href="mailto:bfriesen&#64;simple.dallas.tx.us">Bob Friesenhahn</a>.</p>
 <p>Copyright © Bob Friesenhahn 1999 - 2008</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-26 21:42 UTC.
+Generated on: 2009-09-17 21:45 UTC.
 
 </div>
 </body>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>Platform Notes</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,29 +50,30 @@
 </div>
 <div class="document" id="platform-notes">
 <h1 class="title">Platform Notes</h1>
+
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<div class="contents local topic">
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#overview" id="id1" name="id1">Overview</a></li>
-<li><a class="reference" href="#apple-os-x-intel" id="id2" name="id2">Apple OS X (Intel)</a></li>
-<li><a class="reference" href="#cygwin" id="id3" name="id3">Cygwin</a></li>
-<li><a class="reference" href="#sgi-irix" id="id4" name="id4">SGI Irix</a></li>
-<li><a class="reference" href="#linux-6-1" id="id5" name="id5">Linux 6.1</a></li>
-<li><a class="reference" href="#freebsd-3-x-and-4-x" id="id6" name="id6">FreeBSD 3.X and 4.X</a></li>
-<li><a class="reference" href="#digital-unix-and-osf-1" id="id7" name="id7">Digital Unix and OSF/1</a></li>
-<li><a class="reference" href="#solaris-2-x" id="id8" name="id8">Solaris 2.X</a></li>
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#apple-os-x-intel" id="id2">Apple OS X (Intel)</a></li>
+<li><a class="reference internal" href="#cygwin" id="id3">Cygwin</a></li>
+<li><a class="reference internal" href="#sgi-irix" id="id4">SGI Irix</a></li>
+<li><a class="reference internal" href="#linux-6-1" id="id5">Linux 6.1</a></li>
+<li><a class="reference internal" href="#freebsd-3-x-and-4-x" id="id6">FreeBSD 3.X and 4.X</a></li>
+<li><a class="reference internal" href="#digital-unix-and-osf-1" id="id7">Digital Unix and OSF/1</a></li>
+<li><a class="reference internal" href="#solaris-2-x" id="id8">Solaris 2.X</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="overview" name="overview">Overview</a></h1>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id1">Overview</a></h1>
 <p>This file provides platform specific portability notes which don't
 belong in README.txt. Usually GraphicsMagick compiles fine according to the
 procedures described in README.txt, but sometimes a platform related
 oddity causes a failure.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="apple-os-x-intel" name="apple-os-x-intel">Apple OS X (Intel)</a></h1>
+<div class="section" id="apple-os-x-intel">
+<h1><a class="toc-backref" href="#id2">Apple OS X (Intel)</a></h1>
 <blockquote>
 <p>A GraphicsMagick user submitted these steps for how to get
 GraphicsMagick up and going on an Intel Mac:</p>
@@ -123,8 +124,8 @@ sudo make install</blockquote>
 gm display</blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="cygwin" name="cygwin">Cygwin</a></h1>
+<div class="section" id="cygwin">
+<h1><a class="toc-backref" href="#id3">Cygwin</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -145,8 +146,8 @@ equivalent DLL.  Using a shared build gets PerlMagick over the hurdle.</p>
 </blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="sgi-irix" name="sgi-irix">SGI Irix</a></h1>
+<div class="section" id="sgi-irix">
+<h1><a class="toc-backref" href="#id4">SGI Irix</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -167,8 +168,8 @@ Compiling C++ code fails with the error:
 </blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="linux-6-1" name="linux-6-1">Linux 6.1</a></h1>
+<div class="section" id="linux-6-1">
+<h1><a class="toc-backref" href="#id5">Linux 6.1</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -194,8 +195,8 @@ Use 'LDFLAGS=-Wl,-rpath,/somedir' instead to pass the options through
 to the linker.</blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="freebsd-3-x-and-4-x" name="freebsd-3-x-and-4-x">FreeBSD 3.X and 4.X</a></h1>
+<div class="section" id="freebsd-3-x-and-4-x">
+<h1><a class="toc-backref" href="#id6">FreeBSD 3.X and 4.X</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -216,8 +217,8 @@ execute</p>
 </blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="digital-unix-and-osf-1" name="digital-unix-and-osf-1">Digital Unix and OSF/1</a></h1>
+<div class="section" id="digital-unix-and-osf-1">
+<h1><a class="toc-backref" href="#id7">Digital Unix and OSF/1</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -232,8 +233,8 @@ Ensure that the JPEG library you installed is used. Be sure to
 install the JPEG library as a shared library.</blockquote>
 </blockquote>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="solaris-2-x" name="solaris-2-x">Solaris 2.X</a></h1>
+<div class="section" id="solaris-2-x">
+<h1><a class="toc-backref" href="#id8">Solaris 2.X</a></h1>
 <blockquote>
 <p>Problem</p>
 <blockquote>
@@ -332,12 +333,12 @@ installed.</blockquote>
 </div>
 <p>This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
+package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/www/Copyright.html">http://www.graphicsmagick.org/www/Copyright.html</a>.</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-26 21:43 UTC.
+Generated on: 2009-09-17 21:45 UTC.
 
 </div>
 </body>

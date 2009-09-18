@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Perl API -- PerlMagick</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -50,29 +50,30 @@
 </div>
 <div class="document" id="graphicsmagick-perl-api-perlmagick">
 <h1 class="title">GraphicsMagick Perl API -- PerlMagick</h1>
-<div class="contents local topic">
+
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference" href="#introduction" id="id1" name="id1">Introduction</a></li>
-<li><a class="reference" href="#installation" id="id2" name="id2">Installation</a><ul>
-<li><a class="reference" href="#unix" id="id3" name="id3">UNIX</a></li>
-<li><a class="reference" href="#windows-xp-windows-2000" id="id4" name="id4">Windows XP / Windows 2000</a></li>
-<li><a class="reference" href="#running-the-regression-tests" id="id5" name="id5">Running the Regression Tests</a></li>
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
+<li><a class="reference internal" href="#installation" id="id2">Installation</a><ul>
+<li><a class="reference internal" href="#unix" id="id3">UNIX</a></li>
+<li><a class="reference internal" href="#windows-xp-windows-2000" id="id4">Windows XP / Windows 2000</a></li>
+<li><a class="reference internal" href="#running-the-regression-tests" id="id5">Running the Regression Tests</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#overview" id="id6" name="id6">Overview</a></li>
-<li><a class="reference" href="#example-script" id="id7" name="id7">Example Script</a></li>
-<li><a class="reference" href="#read-or-write-an-image" id="id8" name="id8">Read or Write an Image</a></li>
-<li><a class="reference" href="#manipulate-an-image" id="id9" name="id9">Manipulate an Image</a></li>
-<li><a class="reference" href="#set-an-image-attribute" id="id10" name="id10">Set an Image Attribute</a></li>
-<li><a class="reference" href="#get-an-image-attribute" id="id11" name="id11">Get an Image Attribute</a></li>
-<li><a class="reference" href="#create-an-image-montage" id="id12" name="id12">Create an Image Montage</a></li>
-<li><a class="reference" href="#working-with-blobs" id="id13" name="id13">Working with Blobs</a></li>
-<li><a class="reference" href="#miscellaneous-methods" id="id14" name="id14">Miscellaneous Methods</a></li>
-<li><a class="reference" href="#handling-errors" id="id15" name="id15">Handling Errors</a></li>
+<li><a class="reference internal" href="#overview" id="id6">Overview</a></li>
+<li><a class="reference internal" href="#example-script" id="id7">Example Script</a></li>
+<li><a class="reference internal" href="#read-or-write-an-image" id="id8">Read or Write an Image</a></li>
+<li><a class="reference internal" href="#manipulate-an-image" id="id9">Manipulate an Image</a></li>
+<li><a class="reference internal" href="#set-an-image-attribute" id="id10">Set an Image Attribute</a></li>
+<li><a class="reference internal" href="#get-an-image-attribute" id="id11">Get an Image Attribute</a></li>
+<li><a class="reference internal" href="#create-an-image-montage" id="id12">Create an Image Montage</a></li>
+<li><a class="reference internal" href="#working-with-blobs" id="id13">Working with Blobs</a></li>
+<li><a class="reference internal" href="#miscellaneous-methods" id="id14">Miscellaneous Methods</a></li>
+<li><a class="reference internal" href="#handling-errors" id="id15">Handling Errors</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="introduction" name="introduction">Introduction</a></h1>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id1">Introduction</a></h1>
 <p>PerlMagick is an objected-oriented Perl interface to GraphicsMagick. Use
 the module to read, manipulate, or write an image or image sequence from
 within a Perl script. This makes it very suitable for Web CGI scripts.
@@ -82,18 +83,18 @@ There are a number of useful scripts available to show you the value of
 PerlMagick. The PerlMagick demo directory provides a number of sample
 demos.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="installation" name="installation">Installation</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id3" id="unix" name="unix">UNIX</a></h2>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id2">Installation</a></h1>
+<div class="section" id="unix">
+<h2><a class="toc-backref" href="#id3">UNIX</a></h2>
 <p>PerlMagick is installed by default by installing GraphicsMagick.
 Installing PerlMagick as a subordinate package of GraphicsMagick is the
 best way to avoid problems.</p>
 <p>For Unix, you typically need to be root to install the software. There
 are ways around this. Consult the Perl manual pages for more information.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id4" id="windows-xp-windows-2000" name="windows-xp-windows-2000">Windows XP / Windows 2000</a></h2>
+<div class="section" id="windows-xp-windows-2000">
+<h2><a class="toc-backref" href="#id4">Windows XP / Windows 2000</a></h2>
 <p>Please note that a nice GUI installer is available for GraphicsMagick.
 PerlMagick is included in this installer. If you are using the installer,
 then there is no need to compile PerlMagick.</p>
@@ -111,8 +112,8 @@ nmake install
 <p>See the PerlMagick Windows HowTo page for further installation
 instructions.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="running-the-regression-tests" name="running-the-regression-tests">Running the Regression Tests</a></h2>
+<div class="section" id="running-the-regression-tests">
+<h2><a class="toc-backref" href="#id5">Running the Regression Tests</a></h2>
 <p>To verify a correct installation, type:</p>
 <pre class="literal-block">
 make test
@@ -127,8 +128,8 @@ make
 scripts.</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="overview" name="overview">Overview</a></h1>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id6">Overview</a></h1>
 <p>Any script that wants to use PerlMagick methods must first define the
 methods within its namespace and instantiate an image object. Do this
 with</p>
@@ -181,8 +182,8 @@ variable to work properly. For example,</p>
 $ENV{PATH}='/bin:/usr/bin:/usr/local/bin';
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="example-script" name="example-script">Example Script</a></h1>
+<div class="section" id="example-script">
+<h1><a class="toc-backref" href="#id7">Example Script</a></h1>
 <p>Here is an example script to get you started:</p>
 <pre class="literal-block">
 #!/usr/local/bin/perl
@@ -244,8 +245,8 @@ push(&#64;$q, &#64;$p); # push the images from object p onto object q
 $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]); # 3x3 Gaussian kernel
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="read-or-write-an-image" name="read-or-write-an-image">Read or Write an Image</a></h1>
+<div class="section" id="read-or-write-an-image">
+<h1><a class="toc-backref" href="#id8">Read or Write an Image</a></h1>
 <p>Use the methods listed below to either read, write, or display an image
 or image sequence.</p>
 <table border="1" class="docutils">
@@ -337,8 +338,8 @@ image%03d.miff
 <p>You can optionally add Image to any method name. For example, ReadImage()
 is an alias for method Read().</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="manipulate-an-image" name="manipulate-an-image">Manipulate an Image</a></h1>
+<div class="section" id="manipulate-an-image">
+<h1><a class="toc-backref" href="#id9">Manipulate an Image</a></h1>
 <p>Once you create an image with, for example, method ReadImage() you may want
 to operate on it. Below is a list of all the image manipulations methods
 available to you with PerlMagick. There are examples of select PerlMagick
@@ -991,8 +992,8 @@ is an alias for method Trim().</p>
 <p>Most of the attributes listed above have an analog in convert. See the
 documentation for a more detailed description of these attributes.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="set-an-image-attribute" name="set-an-image-attribute">Set an Image Attribute</a></h1>
+<div class="section" id="set-an-image-attribute">
+<h1><a class="toc-backref" href="#id10">Set an Image Attribute</a></h1>
 <p>Use method Set() to set an image attribute. For example,</p>
 <pre class="literal-block">
 $image-&gt;Set(dither=&gt;'True');
@@ -1361,8 +1362,8 @@ parameters (e.g. geometry=&gt;'106x80' is equivalent to width=&gt;106, height=&g
 <p>Most of the attributes listed above have an analog in gm convert. See the
 gm documentation for a more detailed description of these attributes.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="get-an-image-attribute" name="get-an-image-attribute">Get an Image Attribute</a></h1>
+<div class="section" id="get-an-image-attribute">
+<h1><a class="toc-backref" href="#id11">Get an Image Attribute</a></h1>
 <p>Use method Get() to get an image attribute. For example,</p>
 <pre class="literal-block">
 ($a, $b, $c) = $image-&gt;Get('colorspace', 'magick', 'adjoin');
@@ -1494,8 +1495,8 @@ False}</td>
 <p>Most of the attributes listed above have an analog in convert. See the
 documentation for a more detailed description of these attributes.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="create-an-image-montage" name="create-an-image-montage">Create an Image Montage</a></h1>
+<div class="section" id="create-an-image-montage">
+<h1><a class="toc-backref" href="#id12">Create an Image Montage</a></h1>
 <p>Use method Montage() to create a composite image by combining several
 separate images. The images are tiled on the composite image with the
 name of the image optionally appearing just below the individual tile.
@@ -1631,8 +1632,8 @@ parameters (e.g. geometry=&gt;'106x80' is equivalent to width=&gt;106, height=&g
 <p>Most of the attributes listed above have an analog in montage. See the
 documentation for a more detailed description of these attributes.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="working-with-blobs" name="working-with-blobs">Working with Blobs</a></h1>
+<div class="section" id="working-with-blobs">
+<h1><a class="toc-backref" href="#id13">Working with Blobs</a></h1>
 <p>A blob contains data that directly represent a particular image format in
 memory instead of on disk. PerlMagick supports blobs in any of these
 image formats and provides methods to convert a blob to or from a
@@ -1689,8 +1690,8 @@ $image=Graphics::Magick-&gt;new(magick=&gt;'jpg');
 $image-&gt;BlobToImage(&#64;blob);
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="miscellaneous-methods" name="miscellaneous-methods">Miscellaneous Methods</a></h1>
+<div class="section" id="miscellaneous-methods">
+<h1><a class="toc-backref" href="#id14">Miscellaneous Methods</a></h1>
 <p>The Append() method append a set of images. For example,</p>
 <pre class="literal-block">
 $p = $image-&gt;Append(stack=&gt;{true,false});
@@ -1799,8 +1800,8 @@ $p = $image-&gt;Transform(crop=&gt;'100x100');
 <p>You can optionally add Image to any method name above. For example,
 PingImage() is an alias for method Ping().</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="handling-errors" name="handling-errors">Handling Errors</a></h1>
+<div class="section" id="handling-errors">
+<h1><a class="toc-backref" href="#id15">Handling Errors</a></h1>
 <p>All PerlMagick methods return an undefined string context upon success. If
 any problems occur, the error is returned as a string with an embedded
 numeric status code. A status code less than 400 is a warning. This means
@@ -2031,7 +2032,7 @@ die &quot;unable to continue&quot; if ($1 == ResourceLimitError);
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-05-27 01:44 UTC.
+Generated on: 2009-09-17 21:45 UTC.
 
 </div>
 </body>

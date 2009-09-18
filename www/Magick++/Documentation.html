@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
 <title>Magick++ API Documentation</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
@@ -50,6 +50,7 @@
 </div>
 <div class="document" id="magick-api-documentation">
 <h1 class="title">Magick++ API Documentation</h1>
+
 <p><em>Magick++</em> provides a simple C++ API to the GraphicsMagick image
 processing library which supports reading and writing a huge number of
 image formats as well as supporting a broad spectrum of traditional image
@@ -65,18 +66,18 @@ GraphicsMagick C library are imported under the MagickLib namespace to
 avoid possible conflicts and GraphicsMagick macros are only included
 within the <em>Magick++</em> implementation so they won't impact the user's
 application.</p>
-<p>The core class in <em>Magick++</em> is the <a class="reference" href="Image.html">Image</a> class. The <a class="reference" href="Image.html">Image</a> class
+<p>The core class in <em>Magick++</em> is the <a class="reference external" href="Image.html">Image</a> class. The <a class="reference external" href="Image.html">Image</a> class
 provides methods to manipulate a single image frame (e.g. a JPEG image).
-Standard Template Library (<a class="reference" href="STL.html">STL</a>) compatible algorithms and function
+Standard Template Library (<a class="reference external" href="STL.html">STL</a>) compatible algorithms and function
 objects are provided in order to manipulate multiple image frames or to
 read and write file formats which support multiple image frames (e.g. GIF
 animations, MPEG animations, and Postscript files).</p>
-<p>The <a class="reference" href="Image.html">Image</a> class supports reference-counted memory management which
+<p>The <a class="reference external" href="Image.html">Image</a> class supports reference-counted memory management which
 supports the semantics of an intrinsic variable type (e.g. 'int') with an
 extremely efficient operator = and copy constructor (only a pointer is
 assigned) while ensuring that the image data is replicated as required so
 that it the image may be modified without impacting earlier generations.
-Since the <a class="reference" href="Image.html">Image</a> class manages heap memory internally, images are best
+Since the <a class="reference external" href="Image.html">Image</a> class manages heap memory internally, images are best
 allocated via C++ automatic (stack-based) memory allocation. This support
 allows most programs using <em>Magick++</em> to be written without using any
 pointers, simplifying the implementation and avoiding the risks of using
@@ -84,23 +85,23 @@ pointers. When a program uses automatic memory allocation to allocate
 <em>Magick++</em> images, that aspect of the program becomes naturally
 exception-safe and thread-safe.</p>
 <p>The image class uses a number of supportive classes in order to specify
-arguments. Colors are specified via the <a class="reference" href="Color.html">Color</a> class. Colors specified
-in X11-style string form are implicitly converted to the <a class="reference" href="Color.html">Color</a> class.
+arguments. Colors are specified via the <a class="reference external" href="Color.html">Color</a> class. Colors specified
+in X11-style string form are implicitly converted to the <a class="reference external" href="Color.html">Color</a> class.
 Geometry arguments (those specifying width, height, and/or x and y
-offset) are specified via the <a class="reference" href="Geometry.html">Geometry</a> class. Similar to the <a class="reference" href="Color.html">Color</a>
+offset) are specified via the <a class="reference external" href="Geometry.html">Geometry</a> class. Similar to the <a class="reference external" href="Color.html">Color</a>
 class, geometries specified as an X11-style string are implicitly
-converted to the <a class="reference" href="Geometry.html">Geometry</a> class. Two dimensional drawable objects are
-specified via the <a class="reference" href="Drawable.html">Drawable</a> class. Drawable objects may be provided as
+converted to the <a class="reference external" href="Geometry.html">Geometry</a> class. Two dimensional drawable objects are
+specified via the <a class="reference external" href="Drawable.html">Drawable</a> class. Drawable objects may be provided as
 a single object or as a list of objects to be rendered using the current
-image options. <a class="reference" href="Montage.html">Montage</a> options (a montage is a rendered grid of
-thumbnails in one image) are specified via the <a class="reference" href="Montage.html">Montage</a> class.</p>
-<p>Errors are reported using C++ exceptions derived from the <a class="reference" href="Exception.html">Exception</a>
+image options. <a class="reference external" href="Montage.html">Montage</a> options (a montage is a rendered grid of
+thumbnails in one image) are specified via the <a class="reference external" href="Montage.html">Montage</a> class.</p>
+<p>Errors are reported using C++ exceptions derived from the <a class="reference external" href="Exception.html">Exception</a>
 class, which is itself derived from the standard C++ exception class.
 Exceptions are reported synchronous with the operation and are caught by
 the first matching try block as the stack is unraveled. This allows a
 clean coding style in which multiple related <em>Magick++</em> commands may be
 executed with errors handled as a unit rather than line-by-line. Since
-the <a class="reference" href="Image.html">Image</a> object provides reference-counted memory management,
+the <a class="reference external" href="Image.html">Image</a> object provides reference-counted memory management,
 unreferenced images on the stack are automatically cleaned up, avoiding
 the potential for memory leaks.</p>
 <p>For ease of access, the documentation for the available user-level
@@ -112,41 +113,41 @@ classes is available via the following table:</p>
 <col width="82%" />
 </colgroup>
 <tbody valign="top">
-<tr><td><a class="reference" href="Blob.html">Blob</a></td>
+<tr><td><a class="reference external" href="Blob.html">Blob</a></td>
 <td>Binary Large OBject container.</td>
 </tr>
-<tr><td><a class="reference" href="CoderInfo.html">CoderInfo</a></td>
+<tr><td><a class="reference external" href="CoderInfo.html">CoderInfo</a></td>
 <td>Report information about supported image formats (use with
-<a class="reference" href="STL.html#coderInfoList">coderInfoList</a>())</td>
+<a class="reference external" href="STL.html#coderInfoList">coderInfoList</a>())</td>
 </tr>
-<tr><td><a class="reference" href="Color.html">Color</a></td>
+<tr><td><a class="reference external" href="Color.html">Color</a></td>
 <td>Color specification.</td>
 </tr>
-<tr><td><a class="reference" href="Drawable.html">Drawable</a></td>
+<tr><td><a class="reference external" href="Drawable.html">Drawable</a></td>
 <td>Drawable shape (for input to 'draw').</td>
 </tr>
-<tr><td><a class="reference" href="Exception.html">Exception</a></td>
+<tr><td><a class="reference external" href="Exception.html">Exception</a></td>
 <td>C++ exception objects.</td>
 </tr>
-<tr><td><a class="reference" href="Geometry.html">Geometry</a></td>
+<tr><td><a class="reference external" href="Geometry.html">Geometry</a></td>
 <td>Geometry specification.</td>
 </tr>
-<tr><td><a class="reference" href="Image.html">Image</a></td>
+<tr><td><a class="reference external" href="Image.html">Image</a></td>
 <td>Image frame.  This is the primary object in <em>Magick++</em>.</td>
 </tr>
-<tr><td><a class="reference" href="Montage.html">Montage</a></td>
+<tr><td><a class="reference external" href="Montage.html">Montage</a></td>
 <td>Montage options for montageImages().</td>
 </tr>
-<tr><td><a class="reference" href="Pixels.html">Pixels</a></td>
+<tr><td><a class="reference external" href="Pixels.html">Pixels</a></td>
 <td>Low-level access to image pixels.</td>
 </tr>
-<tr><td><a class="reference" href="STL.html">STL</a></td>
+<tr><td><a class="reference external" href="STL.html">STL</a></td>
 <td>STL algorithms and function objects for operating on
 containers of image frames.</td>
 </tr>
-<tr><td><a class="reference" href="TypeMetric.html">TypeMetric</a></td>
+<tr><td><a class="reference external" href="TypeMetric.html">TypeMetric</a></td>
 <td>Container for font type metrics (use with
-<a class="reference" href="Image.html#fontTypeMetrics">Image::fontTypeMetrics</a>).</td>
+<a class="reference external" href="Image.html#fontTypeMetrics">Image::fontTypeMetrics</a>).</td>
 </tr>
 </tbody>
 </table>
@@ -154,7 +155,7 @@ containers of image frames.</td>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-03-26 21:42 UTC.
+Generated on: 2009-09-17 21:45 UTC.
 
 </div>
 </body>
