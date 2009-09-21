@@ -746,8 +746,8 @@ Operation                                      GM real    IM real    IM/GM ratio
 -white-threshold 80%                             0:01.235   0:05.625    4.55
 ============================================== ========== ========== ===========
 
-Windows XP / MinGW / Intel Core 2 Quad
---------------------------------------
+Windows XP / Cygwin / Intel Core 2 Quad
+---------------------------------------
 
 Cygwin was installed on the same Windows XP system with the 2.83 GHz
 Core 2 Quad Processor (Q9550) as described above.  The compiler
