@@ -65,6 +65,9 @@ Installation
         su root (if necessary)
         make install
 
+    [ Note that the following procedure for building a static
+      PerlMagick seems to work only for perl 5.8.8 and earlier ]
+
     To create and install a new 'perl' executable (replacing your
     existing PERL interpreter!) with PerlMagick statically linked
     (but other libraries linked statically or dynamically according
