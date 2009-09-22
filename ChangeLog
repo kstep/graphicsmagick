@@ -1,3 +1,17 @@
+2009-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/configure/configure.cpp (process_library): CALS
+	module is dependent on TIFF library.
+
+	* coders/cals.c (WriteCALSImage): Allow CALS writing at any time,
+	but only enable CALS reader if libtiff is present at build time.
+
+	* coders/{cals.c,pdf.c,ps2.c,ps3.c} (Huffman2DEncodeImage): Force
+	TIFF image type to bilevel type.
+
+	* config/modules.mgk, VisualMagick/bin/modules.mkg: CAL-->CALS
+	rather than CALS-->CAL.
+
 2009-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/benchmarks.rst: Updated GraphicsMagick vs ImageMagick

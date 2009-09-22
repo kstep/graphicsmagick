@@ -147,6 +147,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  clone_info->type=BilevelType;
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);

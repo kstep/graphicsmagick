@@ -155,6 +155,7 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
 
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  clone_info->type=BilevelType;
   (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
                         &image->exception);
 

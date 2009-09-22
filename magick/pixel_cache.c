@@ -89,6 +89,37 @@
 extern "C" {
 #endif
 
+  typedef magick_off_t pixel_off_t;
+
+  /*
+    Read only access to a linear pixel region.
+  */
+  MagickExport const PixelPacket
+  *AcquireImagePixelsDirect(const Image *image,
+			    const pixel_off_t offset,
+			    const unsigned long length,
+			    ExceptionInfo *exception);
+
+  /*
+    Read/write access to a linear pixel region (existing data read and
+    updated).
+  */
+  extern MagickExport PixelPacket
+  *GetImagePixelsDirect(Image *image,
+			const pixel_off_t offset,
+			const unsigned long length,
+			ExceptionInfo *exception);
+
+  /*
+    Write access to a linear pixel region (existing data ignored).
+  */
+  extern MagickExport PixelPacket
+  *SetImagePixelsDirect(Image *image,
+			const pixel_off_t offset,
+			const unsigned long length,
+			ExceptionInfo *exception);
+
+
 /*
   Enum declaractions.
 */

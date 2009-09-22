@@ -1032,6 +1032,10 @@ void CConfigureApp::process_library( const char *root,
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      if (name.compare("cals") == 0)
+        {
+          workspace->write_project_dependency(project,"CORE_tiff");
+        }
       if (name.compare("hdf") == 0)
         {
           workspace->write_project_dependency(project,"CORE_zlib");
@@ -1059,6 +1063,7 @@ void CConfigureApp::process_library( const char *root,
         {
           workspace->write_project_dependency(project,"CORE_jpeg");
           workspace->write_project_dependency(project,"CORE_zlib");
+	  workspace->write_project_dependency(project,"CORE_jbig");
         }
       if (name.compare("wand") == 0)
         {

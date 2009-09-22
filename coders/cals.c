@@ -44,10 +44,10 @@
 #include "magick/utility.h"
 
 #if defined(HasTIFF)
-#if defined(HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
+#  if defined(HAVE_TIFFCONF_H)
+#    include "tiffconf.h"
+#  endif /* defined(HAVE_TIFFCONF_H) */
+#  include "tiffio.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -134,6 +134,7 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
 
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  clone_info->type=BilevelType;
   (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
                         &image->exception);
 
@@ -196,15 +197,7 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
   (void) LiberateTemporaryFile(filename);
   return(True);
 }
-#else
-static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename);
-}
-#endif
+#endif /* if defined(HasTIFF) */
 
 
 /* 
@@ -467,8 +460,17 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   image=ReadImage(clone_info,exception);
   (void) LiberateTemporaryFile(filename);
   DestroyImageInfo(clone_info);
+  if (image != (Image *) NULL)
+    {
+      (void) strlcpy(image->filename,image_info->filename,
+		     sizeof(image->filename));
+      (void) strlcpy(image->magick_filename,image_info->filename,
+		     sizeof(image->magick_filename));
+      (void) strlcpy(image->magick,"CALS",sizeof(image->magick));
+    }
   return(image);
 }
+#if defined(HasTIFF)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -638,6 +640,7 @@ static unsigned int WriteCALSImage(const ImageInfo *image_info,Image *image)
   CloseBlob(image);
   return(True);
 }
+#endif /* if defined(HasTIFF) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -674,7 +677,9 @@ ModuleExport void RegisterCALSImage(void)
 
   entry=SetMagickInfo("CAL");
   entry->decoder=(DecoderHandler) ReadCALSImage;
+#if defined(HasTIFF)
   entry->encoder=(EncoderHandler) WriteCALSImage;
+#endif /* if defined(HasTIFF) */
   entry->magick=(MagickHandler) IsCALS;
   entry->adjoin=False;
   entry->seekable_stream=True;
@@ -686,7 +691,9 @@ ModuleExport void RegisterCALSImage(void)
 
   entry=SetMagickInfo("CALS");
   entry->decoder=(DecoderHandler) ReadCALSImage;
+#if defined(HasTIFF)
   entry->encoder=(EncoderHandler) WriteCALSImage;
+#endif /* if defined(HasTIFF) */
   entry->magick=(MagickHandler) IsCALS;
   entry->adjoin=False;
   entry->seekable_stream=True;
