@@ -1,5 +1,8 @@
 2009-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/cals.c: CALS module was not being built under Windows
+	with MSVC.  Now it is.
+
 	* VisualMagick/configure/configure.cpp (process_library): CALS
 	module is dependent on TIFF library.
 

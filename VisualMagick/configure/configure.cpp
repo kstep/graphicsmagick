@@ -1061,9 +1061,9 @@ void CConfigureApp::process_library( const char *root,
         }
       if (name.compare("tiff") == 0)
         {
+	  workspace->write_project_dependency(project,"CORE_jbig");
           workspace->write_project_dependency(project,"CORE_jpeg");
           workspace->write_project_dependency(project,"CORE_zlib");
-	  workspace->write_project_dependency(project,"CORE_jbig");
         }
       if (name.compare("wand") == 0)
         {
@@ -1493,6 +1493,7 @@ void CConfigureApp::process_3rd_party_library( const char *root,
 #endif
                 if (name.compare("tiff") == 0)
                   {
+		    workspace->write_project_dependency(project,"CORE_jbig");
                     workspace->write_project_dependency(project,"CORE_jpeg");
                     workspace->write_project_dependency(project,"CORE_zlib");
                   }
