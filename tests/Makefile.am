@@ -183,6 +183,10 @@ endif
 
 if !HasTIFF
 TESTS_TIFF_XFAIL_TESTS = \
+	tests/rwblob_CALS_bilevel.sh \
+	tests/rwblob_CALS_gray.sh \
+	tests/rwblob_CALS_pallette.sh \
+	tests/rwblob_CALS_truecolor.sh \
 	tests/rwblob_EPT_bilevel.sh \
 	tests/rwblob_EPT_gray.sh \
 	tests/rwblob_EPT_pallette.sh \
@@ -191,6 +195,13 @@ TESTS_TIFF_XFAIL_TESTS = \
 	tests/rwblob_TIFF_gray.sh \
 	tests/rwblob_TIFF_pallette.sh \
 	tests/rwblob_TIFF_truecolor.sh \
+	tests/rwfile_CALS_bilevel.sh \
+	tests/rwfile_CALS_gray.sh \
+	tests/rwfile_CALS_pallette.sh \
+	tests/rwfile_CALS_truecolor.sh \
+	tests/rwfile_CALS_truecolor10.sh \
+	tests/rwfile_CALS_truecolor12.sh \
+	tests/rwfile_CALS_truecolor16.sh \
 	tests/rwfile_EPT_bilevel.sh \
 	tests/rwfile_EPT_gray.sh \
 	tests/rwfile_EPT_pallette.sh \
@@ -257,76 +268,79 @@ TESTS_XFAIL_TESTS = \
 	$(TESTS_PNG_XFAIL_TESTS) \
 	$(TESTS_PS_XFAIL_TESTS) \
 	$(TESTS_TIFF_XFAIL_TESTS) \
-	$(TESTS_X11_XFAIL_TESTS)
+	$(TESTS_X11_XFAIL_TESTS) \
+	tests/rwblob_CALS_bilevel.sh \
+	tests/rwblob_CALS_gray.sh \
+	tests/rwblob_CALS_pallette.sh \
+	tests/rwblob_CALS_truecolor.sh
 
 TESTS_TESTS = \
+	tests/constitute_char_bgr.sh \
 	tests/constitute_char_bgro.sh \
 	tests/constitute_char_bgrp.sh \
-	tests/constitute_char_bgr.sh \
-	tests/constitute_char_cmyk.sh \
 	tests/constitute_char_cmy.sh \
+	tests/constitute_char_cmyk.sh \
 	tests/constitute_char_i.sh \
 	tests/constitute_char_prgb.sh \
+	tests/constitute_char_rgb.sh \
 	tests/constitute_char_rgba.sh \
 	tests/constitute_char_rgbo.sh \
-	tests/constitute_char_rgb.sh \
 	tests/constitute_char_rgbt.sh \
+	tests/constitute_double_bgr.sh \
 	tests/constitute_double_bgro.sh \
 	tests/constitute_double_bgrp.sh \
-	tests/constitute_double_bgr.sh \
-	tests/constitute_double_cmyk.sh \
 	tests/constitute_double_cmy.sh \
+	tests/constitute_double_cmyk.sh \
 	tests/constitute_double_i.sh \
 	tests/constitute_double_prgb.sh \
+	tests/constitute_double_rgb.sh \
 	tests/constitute_double_rgba.sh \
 	tests/constitute_double_rgbo.sh \
-	tests/constitute_double_rgb.sh \
 	tests/constitute_double_rgbt.sh \
+	tests/constitute_float_bgr.sh \
 	tests/constitute_float_bgro.sh \
 	tests/constitute_float_bgrp.sh \
-	tests/constitute_float_bgr.sh \
-	tests/constitute_float_cmyk.sh \
 	tests/constitute_float_cmy.sh \
+	tests/constitute_float_cmyk.sh \
 	tests/constitute_float_i.sh \
 	tests/constitute_float_prgb.sh \
+	tests/constitute_float_rgb.sh \
 	tests/constitute_float_rgba.sh \
 	tests/constitute_float_rgbo.sh \
-	tests/constitute_float_rgb.sh \
 	tests/constitute_float_rgbt.sh \
+	tests/constitute_integer_bgr.sh \
 	tests/constitute_integer_bgro.sh \
 	tests/constitute_integer_bgrp.sh \
-	tests/constitute_integer_bgr.sh \
-	tests/constitute_integer_cmyk.sh \
 	tests/constitute_integer_cmy.sh \
+	tests/constitute_integer_cmyk.sh \
 	tests/constitute_integer_i.sh \
 	tests/constitute_integer_prgb.sh \
+	tests/constitute_integer_rgb.sh \
 	tests/constitute_integer_rgba.sh \
 	tests/constitute_integer_rgbo.sh \
-	tests/constitute_integer_rgb.sh \
 	tests/constitute_integer_rgbt.sh \
+	tests/constitute_long_bgr.sh \
 	tests/constitute_long_bgro.sh \
 	tests/constitute_long_bgrp.sh \
-	tests/constitute_long_bgr.sh \
-	tests/constitute_long_cmyk.sh \
 	tests/constitute_long_cmy.sh \
+	tests/constitute_long_cmyk.sh \
 	tests/constitute_long_i.sh \
 	tests/constitute_long_prgb.sh \
+	tests/constitute_long_rgb.sh \
 	tests/constitute_long_rgba.sh \
 	tests/constitute_long_rgbo.sh \
-	tests/constitute_long_rgb.sh \
 	tests/constitute_long_rgbt.sh \
+	tests/constitute_short_bgr.sh \
 	tests/constitute_short_bgro.sh \
 	tests/constitute_short_bgrp.sh \
-	tests/constitute_short_bgr.sh \
-	tests/constitute_short_cmyk.sh \
 	tests/constitute_short_cmy.sh \
+	tests/constitute_short_cmyk.sh \
 	tests/constitute_short_i.sh \
 	tests/constitute_short_prgb.sh \
+	tests/constitute_short_rgb.sh \
 	tests/constitute_short_rgba.sh \
 	tests/constitute_short_rgbo.sh \
-	tests/constitute_short_rgb.sh \
 	tests/constitute_short_rgbt.sh \
-	tests/drawtest.sh \
 	tests/rwblob_AVS_bilevel.sh \
 	tests/rwblob_AVS_gray.sh \
 	tests/rwblob_AVS_pallette.sh \
@@ -335,6 +349,10 @@ TESTS_TESTS = \
 	tests/rwblob_BMP_gray.sh \
 	tests/rwblob_BMP_pallette.sh \
 	tests/rwblob_BMP_truecolor.sh \
+	tests/rwblob_CALS_bilevel.sh \
+	tests/rwblob_CALS_gray.sh \
+	tests/rwblob_CALS_pallette.sh \
+	tests/rwblob_CALS_truecolor.sh \
 	tests/rwblob_CIN_bilevel.sh \
 	tests/rwblob_CIN_gray.sh \
 	tests/rwblob_CIN_pallette.sh \
@@ -447,10 +465,6 @@ TESTS_TESTS = \
 	tests/rwblob_PNG_gray.sh \
 	tests/rwblob_PNG_pallette.sh \
 	tests/rwblob_PNG_truecolor.sh \
-	tests/rwblob_PNM_bilevel.sh \
-	tests/rwblob_PNM_gray.sh \
-	tests/rwblob_PNM_pallette.sh \
-	tests/rwblob_PNM_truecolor.sh \
 	tests/rwblob_PPM_bilevel.sh \
 	tests/rwblob_PPM_gray.sh \
 	tests/rwblob_PPM_pallette.sh \
@@ -523,16 +537,14 @@ TESTS_TESTS = \
 	tests/rwfile_AVS_gray.sh \
 	tests/rwfile_AVS_pallette.sh \
 	tests/rwfile_AVS_truecolor.sh \
-	tests/rwfile_AVS_truecolor10.sh \
-	tests/rwfile_AVS_truecolor12.sh \
-	tests/rwfile_AVS_truecolor16.sh \
 	tests/rwfile_BMP_bilevel.sh \
 	tests/rwfile_BMP_gray.sh \
 	tests/rwfile_BMP_pallette.sh \
 	tests/rwfile_BMP_truecolor.sh \
-	tests/rwfile_BMP_truecolor10.sh \
-	tests/rwfile_BMP_truecolor12.sh \
-	tests/rwfile_BMP_truecolor16.sh \
+	tests/rwfile_CALS_bilevel.sh \
+	tests/rwfile_CALS_gray.sh \
+	tests/rwfile_CALS_pallette.sh \
+	tests/rwfile_CALS_truecolor.sh \
 	tests/rwfile_CIN_bilevel.sh \
 	tests/rwfile_CIN_gray.sh \
 	tests/rwfile_CIN_pallette.sh \
@@ -545,9 +557,6 @@ TESTS_TESTS = \
 	tests/rwfile_DIB_gray.sh \
 	tests/rwfile_DIB_pallette.sh \
 	tests/rwfile_DIB_truecolor.sh \
-	tests/rwfile_DIB_truecolor10.sh \
-	tests/rwfile_DIB_truecolor12.sh \
-	tests/rwfile_DIB_truecolor16.sh \
 	tests/rwfile_DPX_bilevel.sh \
 	tests/rwfile_DPX_gray.sh \
 	tests/rwfile_DPX_pallette.sh \
@@ -559,51 +568,30 @@ TESTS_TESTS = \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \
 	tests/rwfile_EPDF_truecolor.sh \
-	tests/rwfile_EPDF_truecolor10.sh \
-	tests/rwfile_EPDF_truecolor12.sh \
-	tests/rwfile_EPDF_truecolor16.sh \
 	tests/rwfile_EPI_bilevel.sh \
 	tests/rwfile_EPI_gray.sh \
 	tests/rwfile_EPI_pallette.sh \
 	tests/rwfile_EPI_truecolor.sh \
-	tests/rwfile_EPI_truecolor10.sh \
-	tests/rwfile_EPI_truecolor12.sh \
-	tests/rwfile_EPI_truecolor16.sh \
 	tests/rwfile_EPSF_bilevel.sh \
 	tests/rwfile_EPSF_gray.sh \
 	tests/rwfile_EPSF_pallette.sh \
 	tests/rwfile_EPSF_truecolor.sh \
-	tests/rwfile_EPSF_truecolor10.sh \
-	tests/rwfile_EPSF_truecolor12.sh \
-	tests/rwfile_EPSF_truecolor16.sh \
 	tests/rwfile_EPSI_bilevel.sh \
 	tests/rwfile_EPSI_gray.sh \
 	tests/rwfile_EPSI_pallette.sh \
 	tests/rwfile_EPSI_truecolor.sh \
-	tests/rwfile_EPSI_truecolor10.sh \
-	tests/rwfile_EPSI_truecolor12.sh \
-	tests/rwfile_EPSI_truecolor16.sh \
 	tests/rwfile_EPS_bilevel.sh \
 	tests/rwfile_EPS_gray.sh \
 	tests/rwfile_EPS_pallette.sh \
 	tests/rwfile_EPS_truecolor.sh \
-	tests/rwfile_EPS_truecolor10.sh \
-	tests/rwfile_EPS_truecolor12.sh \
-	tests/rwfile_EPS_truecolor16.sh \
 	tests/rwfile_EPT_bilevel.sh \
 	tests/rwfile_EPT_gray.sh \
 	tests/rwfile_EPT_pallette.sh \
 	tests/rwfile_EPT_truecolor.sh \
-	tests/rwfile_EPT_truecolor10.sh \
-	tests/rwfile_EPT_truecolor12.sh \
-	tests/rwfile_EPT_truecolor16.sh \
 	tests/rwfile_FAX_bilevel.sh \
 	tests/rwfile_FAX_gray.sh \
 	tests/rwfile_FAX_pallette.sh \
 	tests/rwfile_FAX_truecolor.sh \
-	tests/rwfile_FAX_truecolor10.sh \
-	tests/rwfile_FAX_truecolor12.sh \
-	tests/rwfile_FAX_truecolor16.sh \
 	tests/rwfile_FITS_bilevel.sh \
 	tests/rwfile_FITS_gray.sh \
 	tests/rwfile_FITS_pallette.sh \
@@ -615,38 +603,23 @@ TESTS_TESTS = \
 	tests/rwfile_FPX_gray.sh \
 	tests/rwfile_FPX_pallette.sh \
 	tests/rwfile_FPX_truecolor.sh \
-	tests/rwfile_FPX_truecolor10.sh \
-	tests/rwfile_FPX_truecolor12.sh \
-	tests/rwfile_FPX_truecolor16.sh \
 	tests/rwfile_GIF_bilevel.sh \
 	tests/rwfile_GIF_gray.sh \
 	tests/rwfile_GIF_pallette.sh \
 	tests/rwfile_GIF_truecolor.sh \
-	tests/rwfile_GIF_truecolor10.sh \
-	tests/rwfile_GIF_truecolor12.sh \
-	tests/rwfile_GIF_truecolor16.sh \
 	tests/rwfile_GRAY_bilevel.sh \
 	tests/rwfile_GRAY_gray.sh \
 	tests/rwfile_GRAY_pallette.sh \
 	tests/rwfile_GRAY_truecolor.sh \
-	tests/rwfile_GRAY_truecolor10.sh \
-	tests/rwfile_GRAY_truecolor12.sh \
-	tests/rwfile_GRAY_truecolor16.sh \
 	tests/rwfile_GRAY_truecolor_70x46.sh \
 	tests/rwfile_ICB_bilevel.sh \
 	tests/rwfile_ICB_gray.sh \
 	tests/rwfile_ICB_pallette.sh \
 	tests/rwfile_ICB_truecolor.sh \
-	tests/rwfile_ICB_truecolor10.sh \
-	tests/rwfile_ICB_truecolor12.sh \
-	tests/rwfile_ICB_truecolor16.sh \
 	tests/rwfile_JBIG_bilevel.sh \
 	tests/rwfile_JBIG_gray.sh \
 	tests/rwfile_JBIG_pallette.sh \
 	tests/rwfile_JBIG_truecolor.sh \
-	tests/rwfile_JBIG_truecolor10.sh \
-	tests/rwfile_JBIG_truecolor12.sh \
-	tests/rwfile_JBIG_truecolor16.sh \
 	tests/rwfile_JP2_bilevel.sh \
 	tests/rwfile_JP2_gray.sh \
 	tests/rwfile_JP2_pallette.sh \
@@ -658,9 +631,6 @@ TESTS_TESTS = \
 	tests/rwfile_JPEG_gray.sh \
 	tests/rwfile_JPEG_pallette.sh \
 	tests/rwfile_JPEG_truecolor.sh \
-	tests/rwfile_JPEG_truecolor10.sh \
-	tests/rwfile_JPEG_truecolor12.sh \
-	tests/rwfile_JPEG_truecolor16.sh \
 	tests/rwfile_MAT_bilevel.sh \
 	tests/rwfile_MAT_gray.sh \
 	tests/rwfile_MAT_pallette.sh \
@@ -703,73 +673,43 @@ TESTS_TESTS = \
 	tests/rwfile_MPR_gray.sh \
 	tests/rwfile_MPR_pallette.sh \
 	tests/rwfile_MPR_truecolor.sh \
-	tests/rwfile_MPR_truecolor10.sh \
-	tests/rwfile_MPR_truecolor12.sh \
-	tests/rwfile_MPR_truecolor16.sh \
 	tests/rwfile_MTV_bilevel.sh \
 	tests/rwfile_MTV_gray.sh \
 	tests/rwfile_MTV_pallette.sh \
 	tests/rwfile_MTV_truecolor.sh \
-	tests/rwfile_MTV_truecolor10.sh \
-	tests/rwfile_MTV_truecolor12.sh \
-	tests/rwfile_MTV_truecolor16.sh \
 	tests/rwfile_P7_bilevel.sh \
 	tests/rwfile_P7_gray.sh \
 	tests/rwfile_P7_pallette.sh \
 	tests/rwfile_P7_truecolor.sh \
-	tests/rwfile_P7_truecolor10.sh \
-	tests/rwfile_P7_truecolor12.sh \
-	tests/rwfile_P7_truecolor16.sh \
 	tests/rwfile_PAL_truecolor_70x46.sh \
 	tests/rwfile_PBM_bilevel.sh \
 	tests/rwfile_PBM_gray.sh \
 	tests/rwfile_PBM_pallette.sh \
 	tests/rwfile_PBM_truecolor.sh \
-	tests/rwfile_PBM_truecolor10.sh \
-	tests/rwfile_PBM_truecolor12.sh \
-	tests/rwfile_PBM_truecolor16.sh \
 	tests/rwfile_PCDS_bilevel.sh \
 	tests/rwfile_PCDS_gray.sh \
 	tests/rwfile_PCDS_pallette.sh \
 	tests/rwfile_PCDS_truecolor.sh \
-	tests/rwfile_PCDS_truecolor10.sh \
-	tests/rwfile_PCDS_truecolor12.sh \
-	tests/rwfile_PCDS_truecolor16.sh \
 	tests/rwfile_PCD_bilevel.sh \
 	tests/rwfile_PCD_gray.sh \
 	tests/rwfile_PCD_pallette.sh \
 	tests/rwfile_PCD_truecolor.sh \
-	tests/rwfile_PCD_truecolor10.sh \
-	tests/rwfile_PCD_truecolor12.sh \
-	tests/rwfile_PCD_truecolor16.sh \
 	tests/rwfile_PCX_bilevel.sh \
 	tests/rwfile_PCX_gray.sh \
 	tests/rwfile_PCX_pallette.sh \
 	tests/rwfile_PCX_truecolor.sh \
-	tests/rwfile_PCX_truecolor10.sh \
-	tests/rwfile_PCX_truecolor12.sh \
-	tests/rwfile_PCX_truecolor16.sh \
 	tests/rwfile_PGM_bilevel.sh \
 	tests/rwfile_PGM_gray.sh \
 	tests/rwfile_PGM_pallette.sh \
 	tests/rwfile_PGM_truecolor.sh \
-	tests/rwfile_PGM_truecolor10.sh \
-	tests/rwfile_PGM_truecolor12.sh \
-	tests/rwfile_PGM_truecolor16.sh \
 	tests/rwfile_PICON_bilevel.sh \
 	tests/rwfile_PICON_gray.sh \
 	tests/rwfile_PICON_pallette.sh \
 	tests/rwfile_PICON_truecolor.sh \
-	tests/rwfile_PICON_truecolor10.sh \
-	tests/rwfile_PICON_truecolor12.sh \
-	tests/rwfile_PICON_truecolor16.sh \
 	tests/rwfile_PICT_bilevel.sh \
 	tests/rwfile_PICT_gray.sh \
 	tests/rwfile_PICT_pallette.sh \
 	tests/rwfile_PICT_truecolor.sh \
-	tests/rwfile_PICT_truecolor10.sh \
-	tests/rwfile_PICT_truecolor12.sh \
-	tests/rwfile_PICT_truecolor16.sh \
 	tests/rwfile_PNG_bilevel.sh \
 	tests/rwfile_PNG_gray.sh \
 	tests/rwfile_PNG_pallette.sh \
@@ -781,9 +721,6 @@ TESTS_TESTS = \
 	tests/rwfile_PNM_gray.sh \
 	tests/rwfile_PNM_pallette.sh \
 	tests/rwfile_PNM_truecolor.sh \
-	tests/rwfile_PNM_truecolor10.sh \
-	tests/rwfile_PNM_truecolor12.sh \
-	tests/rwfile_PNM_truecolor16.sh \
 	tests/rwfile_PPM_bilevel.sh \
 	tests/rwfile_PPM_gray.sh \
 	tests/rwfile_PPM_pallette.sh \
@@ -795,16 +732,10 @@ TESTS_TESTS = \
 	tests/rwfile_PSD_gray.sh \
 	tests/rwfile_PSD_pallette.sh \
 	tests/rwfile_PSD_truecolor.sh \
-	tests/rwfile_PSD_truecolor10.sh \
-	tests/rwfile_PSD_truecolor12.sh \
-	tests/rwfile_PSD_truecolor16.sh \
 	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \
 	tests/rwfile_PS_truecolor.sh \
-	tests/rwfile_PS_truecolor10.sh \
-	tests/rwfile_PS_truecolor12.sh \
-	tests/rwfile_PS_truecolor16.sh \
 	tests/rwfile_PTIF_bilevel.sh \
 	tests/rwfile_PTIF_gray.sh \
 	tests/rwfile_PTIF_pallette.sh \
@@ -816,9 +747,6 @@ TESTS_TESTS = \
 	tests/rwfile_RAS_gray.sh \
 	tests/rwfile_RAS_pallette.sh \
 	tests/rwfile_RAS_truecolor.sh \
-	tests/rwfile_RAS_truecolor10.sh \
-	tests/rwfile_RAS_truecolor12.sh \
-	tests/rwfile_RAS_truecolor16.sh \
 	tests/rwfile_RGBA_truecolor_70x46.sh \
 	tests/rwfile_RGB_truecolor_70x46.sh \
 	tests/rwfile_SGI_bilevel.sh \
@@ -832,9 +760,6 @@ TESTS_TESTS = \
 	tests/rwfile_SUN_gray.sh \
 	tests/rwfile_SUN_pallette.sh \
 	tests/rwfile_SUN_truecolor.sh \
-	tests/rwfile_SUN_truecolor10.sh \
-	tests/rwfile_SUN_truecolor12.sh \
-	tests/rwfile_SUN_truecolor16.sh \
 	tests/rwfile_TGA_bilevel.sh \
 	tests/rwfile_TGA_gray.sh \
 	tests/rwfile_TGA_pallette.sh \
@@ -861,58 +786,34 @@ TESTS_TESTS = \
 	tests/rwfile_VDA_gray.sh \
 	tests/rwfile_VDA_pallette.sh \
 	tests/rwfile_VDA_truecolor.sh \
-	tests/rwfile_VDA_truecolor10.sh \
-	tests/rwfile_VDA_truecolor12.sh \
-	tests/rwfile_VDA_truecolor16.sh \
 	tests/rwfile_VICAR_bilevel.sh \
 	tests/rwfile_VICAR_gray.sh \
 	tests/rwfile_VICAR_pallette.sh \
 	tests/rwfile_VICAR_truecolor.sh \
-	tests/rwfile_VICAR_truecolor10.sh \
-	tests/rwfile_VICAR_truecolor12.sh \
-	tests/rwfile_VICAR_truecolor16.sh \
 	tests/rwfile_VIFF_bilevel.sh \
 	tests/rwfile_VIFF_gray.sh \
 	tests/rwfile_VIFF_pallette.sh \
 	tests/rwfile_VIFF_truecolor.sh \
-	tests/rwfile_VIFF_truecolor10.sh \
-	tests/rwfile_VIFF_truecolor12.sh \
-	tests/rwfile_VIFF_truecolor16.sh \
 	tests/rwfile_VST_bilevel.sh \
 	tests/rwfile_VST_gray.sh \
 	tests/rwfile_VST_pallette.sh \
 	tests/rwfile_VST_truecolor.sh \
-	tests/rwfile_VST_truecolor10.sh \
-	tests/rwfile_VST_truecolor12.sh \
-	tests/rwfile_VST_truecolor16.sh \
 	tests/rwfile_WBMP_bilevel.sh \
 	tests/rwfile_WBMP_gray.sh \
 	tests/rwfile_WBMP_pallette.sh \
 	tests/rwfile_WBMP_truecolor.sh \
-	tests/rwfile_WBMP_truecolor10.sh \
-	tests/rwfile_WBMP_truecolor12.sh \
-	tests/rwfile_WBMP_truecolor16.sh \
 	tests/rwfile_XBM_bilevel.sh \
 	tests/rwfile_XBM_gray.sh \
 	tests/rwfile_XBM_pallette.sh \
 	tests/rwfile_XBM_truecolor.sh \
-	tests/rwfile_XBM_truecolor10.sh \
-	tests/rwfile_XBM_truecolor12.sh \
-	tests/rwfile_XBM_truecolor16.sh \
 	tests/rwfile_XPM_bilevel.sh \
 	tests/rwfile_XPM_gray.sh \
 	tests/rwfile_XPM_pallette.sh \
 	tests/rwfile_XPM_truecolor.sh \
-	tests/rwfile_XPM_truecolor10.sh \
-	tests/rwfile_XPM_truecolor12.sh \
-	tests/rwfile_XPM_truecolor16.sh \
 	tests/rwfile_XWD_bilevel.sh \
 	tests/rwfile_XWD_gray.sh \
 	tests/rwfile_XWD_pallette.sh \
 	tests/rwfile_XWD_truecolor.sh \
-	tests/rwfile_XWD_truecolor10.sh \
-	tests/rwfile_XWD_truecolor12.sh \
-	tests/rwfile_XWD_truecolor16.sh \
 	tests/rwfile_YUV_truecolor_70x46.sh
 
 TESTS_EXTRA_DIST = \
@@ -939,6 +840,7 @@ CHECK_DEEP_TYPES = truecolor10 truecolor12 truecolor16
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
+	CALS \
 	CIN \
 	DIB \
 	DPX \
@@ -966,7 +868,6 @@ CHECK_BLOB_FORMATS = \
 	PICON \
 	PICT \
 	PNG \
-	PNM \
 	PPM \
 	PSD \
 	RAS \
@@ -988,6 +889,7 @@ CHECK_BLOB_FORMATS = \
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
+	CALS \
 	CIN \
 	DIB \
 	DPX \
@@ -1062,6 +964,23 @@ CHECK_SIZED_FILE_FORMATS = \
 	UYVY \
 	YUV
 
+# File formats which support more than 8 bits per sample
+CHECK_DEEP_FILE_FORMATS = \
+	CIN \
+	DPX \
+	FITS \
+	JP2 \
+	MAT \
+	MIFF \
+	MNG \
+	PNG \
+	PPM \
+	PTIF \
+	SGI \
+	TIFF \
+	TGA \
+	TXT
+
 CHECK_CONSTITUTE_MAPS = \
 	bgr \
 	bgro \
@@ -1091,20 +1010,24 @@ CHECK_MIFF_FILE_COMPRESS = \
 
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
-	echo "#!/bin/sh" > "$${sh_file}" ; \
-	echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" >> "$$sh_file" ; \
+	( \
+	  echo "#!/bin/sh" ; \
+	  echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	  echo ". \$${srcdir}/tests/common.shi" ; \
+	  echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" ; \
+	) > "$${sh_file}" ; \
 	chmod +x "$$sh_file"
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/constitute_$${storage_type}_$${map}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1113,10 +1036,12 @@ generate-tests-scripts:
 	  for type in $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1125,10 +1050,12 @@ generate-tests-scripts:
 	  for type in  $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1137,10 +1064,12 @@ generate-tests-scripts:
 	  for type in truecolor_70x46 ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1149,10 +1078,12 @@ generate-tests-scripts:
 	  for type in truecolor_70x46 ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -1161,22 +1092,26 @@ generate-tests-scripts:
 	  for type in $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_MIFF_$${type}_$${compress}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" ; \
+	    )  > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
-	for format in $(CHECK_FILE_FORMATS) ; \
+	for format in $(CHECK_DEEP_FILE_FORMATS) ; \
 	do \
 	  for type in  $(CHECK_DEEP_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
+	    (  \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" ; \
+	    ) > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done

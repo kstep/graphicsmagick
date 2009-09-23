@@ -24,6 +24,9 @@
 2009-09-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> tests/Makefile.am: Add CALS tests.  Skip testing deep images for
+        most formats which don't support deep images.
+
   <LI> coders/cals.c: CALS module was not being built under Windows
         with MSVC.  Now it is.
 
