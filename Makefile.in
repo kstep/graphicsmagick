@@ -3900,11 +3900,7 @@ TESTS_XFAIL_TESTS = \
 	$(TESTS_PNG_XFAIL_TESTS) \
 	$(TESTS_PS_XFAIL_TESTS) \
 	$(TESTS_TIFF_XFAIL_TESTS) \
-	$(TESTS_X11_XFAIL_TESTS) \
-	tests/rwblob_CALS_bilevel.sh \
-	tests/rwblob_CALS_gray.sh \
-	tests/rwblob_CALS_pallette.sh \
-	tests/rwblob_CALS_truecolor.sh
+	$(TESTS_X11_XFAIL_TESTS)
 
 TESTS_TESTS = \
 	tests/constitute_char_bgr.sh \

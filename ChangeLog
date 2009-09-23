@@ -1,3 +1,11 @@
+2009-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cals.c (Huffman2DEncodeImage): Fix test failures when
+	doing I/O to an in-memory blob.
+
+	* coders/pcl.c (WritePCLImage): Use a different control code to
+	(hopefully) eject the page.  Patch submitted by John Sergeant.
+
 2009-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am: Add CALS tests.  Skip testing deep images for
