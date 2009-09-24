@@ -29,6 +29,7 @@
   <module magick="G3" name="FAX" />
   <module magick="GIF87" name="GIF" />
   <module magick="GRANITE" name="LOGO" />
+  <module magick="GROUP4RAW" name="TIFF" />
   <module magick="H" name="LOGO" />
   <module magick="H5" name="HDF" />
   <module magick="HTM" name="HTML" />

@@ -1,5 +1,7 @@
 2009-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (WriteGROUP4RAWImage): Added a GROUP4RAW encoder.
+
 	* coders/cals.c (Huffman2DEncodeImage): Fix test failures when
 	doing I/O to an in-memory blob.
 

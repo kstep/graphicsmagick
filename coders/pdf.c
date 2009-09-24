@@ -158,6 +158,8 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
   clone_info->type=BilevelType;
   (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
                         &image->exception);
+  (void) AddDefinitions(clone_info,"tiff:fill-order=msb2lsb",
+                        &image->exception);
 
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);

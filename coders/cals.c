@@ -142,7 +142,10 @@ static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);
   if (status == MagickFalse)
-    return(MagickFalse);
+    {
+      (void) LiberateTemporaryFile(filename);
+      return(MagickFalse);
+    }
 
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
@@ -477,7 +480,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e C A L S I m a g e                                                 %
+%   W r i t e C A L S I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

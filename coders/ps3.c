@@ -176,6 +176,8 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
   clone_info->type=BilevelType;
+  (void) AddDefinitions(clone_info,"tiff:fill-order=msb2lsb",
+                        &image->exception);
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);

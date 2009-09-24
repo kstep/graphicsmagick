@@ -36,45 +36,45 @@ digraph "pixel-cache" {
                 GetImagePixelsEx GetIndexes GetOnePixel GetPixels SetImagePixels \
                 SetImagePixelsEx SyncImagePixels SyncImagePixelsEx };
 
-  AccessCacheViewPixels [color="green"];
-  AccessMutableIndexes [color="green"];
-  AccessMutablePixels [color="green"];
-  AcquireCacheViewPixels [color="green"];
-  AcquireImagePixels [color="green"];
-  AccessImmutableIndexes  [color="green"];
-  AcquireOneCacheViewPixel [color="green"];
-  AcquireOnePixel [color="green"];
-  AcquireOnePixelByReference [color="green"];
-  CloseCacheView [color="green"];
-/*   DestroyCacheInfo [color="green"]; */
-/*   DestroyImagePixels [color="green"]; */
-/*   GetCacheInfo [color="green"]; */
-  GetCacheViewPixels [color="green"];
-  GetCacheViewIndexes [color="green"];
-  GetImagePixels [color="green"];
-  GetImagePixelsEx [color="green"];
-  GetIndexes [color="green"];
-  GetOnePixel [color="green"];
-  /* GetPixelCacheArea [color="green"]; */
-  /* GetPixelCachePresent [color="green"]; */
-  GetPixels [color="green"];
-  OpenCacheView [color="green"];
-  /* PersistCache [color="green"]; */
-/*   ReferenceCache [color="green"]; */
-  SetCacheViewPixels [color="green"];
-  SetImagePixels [color="green"];
-  SetImagePixelsEx [color="green"];
-  SyncCacheViewPixels [color="green"];
-  SyncImagePixels [color="green"];
-  SyncImagePixelsEx [color="green"];
+  AccessCacheViewPixels [color="chartreuse"];
+  AccessMutableIndexes [color="chartreuse"];
+  AccessMutablePixels [color="chartreuse"];
+  AcquireCacheViewPixels [color="chartreuse"];
+  AcquireImagePixels [color="chartreuse"];
+  AccessImmutableIndexes  [color="chartreuse"];
+  AcquireOneCacheViewPixel [color="chartreuse"];
+  AcquireOnePixel [color="chartreuse"];
+  AcquireOnePixelByReference [color="chartreuse"];
+  CloseCacheView [color="chartreuse"];
+/*   DestroyCacheInfo [color="chartreuse"]; */
+/*   DestroyImagePixels [color="chartreuse"]; */
+/*   GetCacheInfo [color="chartreuse"]; */
+  GetCacheViewPixels [color="chartreuse"];
+  GetCacheViewIndexes [color="chartreuse"];
+  GetImagePixels [color="chartreuse"];
+  GetImagePixelsEx [color="chartreuse"];
+  GetIndexes [color="chartreuse"];
+  GetOnePixel [color="chartreuse"];
+  /* GetPixelCacheArea [color="chartreuse"]; */
+  /* GetPixelCachePresent [color="chartreuse"]; */
+  GetPixels [color="chartreuse"];
+  OpenCacheView [color="chartreuse"];
+  /* PersistCache [color="chartreuse"]; */
+/*   ReferenceCache [color="chartreuse"]; */
+  SetCacheViewPixels [color="chartreuse"];
+  SetImagePixels [color="chartreuse"];
+  SetImagePixelsEx [color="chartreuse"];
+  SyncCacheViewPixels [color="chartreuse"];
+  SyncImagePixels [color="chartreuse"];
+  SyncImagePixelsEx [color="chartreuse"];
 
-/*   DestroyCacheInfo [color="tomato"]; */
-  DestroyCacheNexus [color="tomato"];
-/*   DestroyPixelStream [color="tomato"]; */
-  AllocateCacheNexus [color="tomato"];
-  ModifyCache [color="tomato"];
-  /* PersistCache [color="tomato"]; */
-/*   ReferenceCache [color="tomato"]; */
+/*   DestroyCacheInfo [color="salmon"]; */
+  DestroyCacheNexus [color="salmon"];
+/*   DestroyPixelStream [color="salmon"]; */
+  AllocateCacheNexus [color="salmon"];
+  ModifyCache [color="salmon"];
+  /* PersistCache [color="salmon"]; */
+/*   ReferenceCache [color="salmon"]; */
 
   AccessCacheViewPixels -> GetNexusPixels;
   AcquireCacheNexus -> AcquireCacheNexus;
