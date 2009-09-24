@@ -1583,7 +1583,6 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
     p+=4;
     blob_remaining-=4;
     if (tag_length > blob_remaining) break;
-
     /* Check whether we have the IPTC tag data */
     if (marker == IPTC_ID)
       {
@@ -1591,7 +1590,10 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
         *offset=(unsigned long)(p-blob);
         return blob_remaining;
       }
-      
+
+    /* Allow for padding of data to even size */
+    if (tag_length & 1) tag_length++;
+
     /* Skip unwanted data */
     p+=tag_length;
     blob_remaining-=tag_length;
