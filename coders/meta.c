@@ -1588,7 +1588,7 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
       {
         /* All looks good so return IPTC block "as is" */
         *offset=(unsigned long)(p-blob);
-        return blob_remaining;
+        return tag_length;
       }
 
     /* Allow for padding of data to even size */
