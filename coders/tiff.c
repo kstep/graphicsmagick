@@ -726,29 +726,30 @@ TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 #if !defined(WORDS_BIGENDIAN)
 static void
 SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
-                                const tsize_t size)
+		    const tsize_t size)
 {
   if (bits_per_sample == 64U)
     {
       TIFFSwabArrayOfDouble((double*) data,
-                            (size+sizeof(double)-1)/sizeof(double));
+			    NumberOfObjectsInArray(size,sizeof(double)));
     }
   else if (bits_per_sample == 32U)
     {
       TIFFSwabArrayOfLong((uint32*) data,
-                          (size+sizeof(uint32)-1)/sizeof(uint32));
+			  NumberOfObjectsInArray(size,sizeof(uint32)));
     }
 #if defined(HAVE_TIFFSWABARRAYOFTRIPLES)
   /* New libtiff function to swap 24 bit values.  Grumble ... */
   else if (bits_per_sample == 24U)
     {
-      TIFFSwabArrayOfTriples(data,(size+3-1)/3);
+      TIFFSwabArrayOfTriples(data,
+			     NumberOfObjectsInArray(size,3));
     }
 #endif
   else if (bits_per_sample == 16U)
     {
       TIFFSwabArrayOfShort((uint16*) data,
-                           (size+sizeof(uint16)-1)/sizeof(uint16));
+			   NumberOfObjectsInArray(size,sizeof(uint16)));
     }
 }
 #endif
@@ -759,29 +760,30 @@ SwabDataToBigEndian(const uint16 bits_per_sample, tdata_t data,
 #if !defined(WORDS_BIGENDIAN)
 static void
 SwabDataToNativeEndian(const uint16 bits_per_sample, tdata_t data,
-                                   const tsize_t size)
+		       const tsize_t size)
 {
   if (bits_per_sample == 64)
     {
       TIFFSwabArrayOfDouble((double*) data,
-                            (size+sizeof(double)-1)/sizeof(double));
+			    NumberOfObjectsInArray(size,sizeof(double)));
     }
   else if (bits_per_sample == 32)
     {
       TIFFSwabArrayOfLong((uint32*) data,
-                          (size+sizeof(uint32)-1)/sizeof(uint32));
+			  NumberOfObjectsInArray(size,sizeof(uint32)));
     }
 #if defined(HAVE_TIFFSWABARRAYOFTRIPLES)
   /* New libtiff function to swap 24 bit values.  Grumble ... */
   else if (bits_per_sample == 24U)
     {
-      TIFFSwabArrayOfTriples(data,(size+3-1)/3);
+      TIFFSwabArrayOfTriples(data,
+			     NumberOfObjectsInArray(size,3));
     }
 #endif
   else if (bits_per_sample == 16)
     {
       TIFFSwabArrayOfShort((uint16*) data,
-                           (size+sizeof(uint16)-1)/sizeof(uint16));
+			   NumberOfObjectsInArray(size,sizeof(uint16)));
     }
 }
 #endif

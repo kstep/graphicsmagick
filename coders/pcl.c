@@ -926,7 +926,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Start raster image
       */
-      (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
+      if  (AccessDefinition(image_info,"pcl","fit_to_page") != NULL)
+        (void) WriteBlobString(image,"\033*r3A");  /* start raster graphics with scaling */
+      else
+        (void) WriteBlobString(image,"\033*r1A");  /* start raster graphics */
       (void) WriteBlobString(image,"\033*b0Y");  /* set y offset */
 
       /*

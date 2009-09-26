@@ -406,10 +406,13 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
+#define NumberOfObjectsInArray(octets,size) ((octets+size-1)/size)
 #define QuantumTick(i,span) \
   ((((i) % ((Max(101,span)-1)/100)) == 0) || \
     ((magick_int64_t) (i) == ((magick_int64_t) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
+#define RoundUpToAlignment(offset,alignment)				\
+  (((offset)+((alignment)-1)) & ~((alignment)-1))
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))

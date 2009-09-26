@@ -1,3 +1,11 @@
+2009-09-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/unix_port.c (MagickGetMMUPageSize): Cache returned page
+	size to eliminated repeated system calls.
+
+	* magick/operator.c (QuantumOperatorRegionImage): Fix missing
+	percent in progress monitor message.
+
 2009-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c (GetIPTCStream): Should return IPTC block length
