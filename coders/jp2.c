@@ -353,12 +353,15 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
     {
     case JAS_CLRSPC_FAM_RGB:
       {
-        if (((components[0]=jas_image_getcmptbytype(jp2_image,
-                                                    JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0) ||
-            ((components[1]=jas_image_getcmptbytype(jp2_image,
-                                                    JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0) ||
-            ((components[2]=jas_image_getcmptbytype(jp2_image,
-                                                    JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0))
+        if (((components[0]=
+	      jas_image_getcmptbytype(jp2_image,
+				      JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0) ||
+            ((components[1]=
+	      jas_image_getcmptbytype(jp2_image,
+				      JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0) ||
+            ((components[2]=
+	      jas_image_getcmptbytype(jp2_image,
+				      JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0))
           {
             (void) jas_stream_close(jp2_stream);
             jas_image_destroy(jp2_image);
@@ -383,8 +386,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
       }
     case JAS_CLRSPC_FAM_GRAY:
       {
-        if ((components[0]=jas_image_getcmptbytype(jp2_image,
-                                                   JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0)
+        if ((components[0]=
+	     jas_image_getcmptbytype(jp2_image,
+				     JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0)
           {
             (void) jas_stream_close(jp2_stream);
             jas_image_destroy(jp2_image);
@@ -765,12 +769,12 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %  The format of the WriteJP2Image method is:
 %
-%      unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
+%      MagickPassFail WriteJP2Image(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteJP2Image return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
+%    o status: Method WriteJP2Image return MagickTrue if the image is written.
+%      MagickFalse is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
@@ -779,7 +783,8 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %
 */
-static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
+static MagickPassFail
+WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
     magick[MaxTextExtent],
@@ -799,7 +804,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     *jp2_image;
 
   jas_matrix_t
-    *pixels[4];
+    *jp2_pixels;
 
   jas_stream_t
     *jp2_stream;
@@ -808,15 +813,18 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     *p;
 
   register int
-    i,
     x;
 
   unsigned int
     rate_specified=False,
     status;
 
-  unsigned int
+  int
+    component,
     number_components;
+
+  unsigned short
+    *lut;
 
   ImageCharacteristics
     characteristics;
@@ -863,7 +871,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,UnableToCreateImage,image);
 
-  for (i=0; i < (long) number_components; i++)
+  for (component=0; component < number_components; component++)
   {
     (void) memset((void *)&component_info,0,sizeof(jas_image_cmptparm_t));
     component_info.tlx=0; /* top left x ordinate */
@@ -872,13 +880,37 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info.vstep=1; /* vertical pixels per step */
     component_info.width=(unsigned int) image->columns;
     component_info.height=(unsigned int) image->rows;
-    component_info.prec=(unsigned int) image->depth <= 8 ? 8 : 16; /* bits in range */
+    component_info.prec=(unsigned int) Min(2,Min(image->depth,16)); /* bits in range */
     component_info.sgnd = false;  /* range is signed value? */
 
-    if (jas_image_addcmpt(jp2_image, i,&component_info)) {
+    if (jas_image_addcmpt(jp2_image, component,&component_info)) {
       jas_image_destroy(jp2_image);
       ThrowWriterException(DelegateError,UnableToCreateImageComponent,image);
     }
+  }
+
+  /*
+    Allocate and compute LUT.
+  */
+  {
+    unsigned long
+      i,
+      max_value;
+
+    double
+      scale_to_component;
+
+    lut=MagickAllocateArray(unsigned short *,MaxMap+1,sizeof(*lut));
+    if (lut == (unsigned short *) NULL)
+      {
+	jas_image_destroy(jp2_image);
+	ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      }
+
+    max_value=MaxValueGivenBits(component_info.prec);
+    scale_to_component=max_value/MaxRGBDouble;
+    for(i=0; i <= MaxMap; i++)
+	lut[i]=scale_to_component*i+0.5;
   }
 
   if (number_components == 1)
@@ -928,59 +960,48 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   /*
     Convert to JPEG 2000 pixels.
   */
-  for (i=0; i < (long) number_components; i++)
-  {
-    pixels[i]=jas_matrix_create(1,(unsigned int) image->columns);
-    if (pixels[i] == (jas_matrix_t *) NULL)
-      {
-        for (x=0; x < i; x++)
-          jas_matrix_destroy(pixels[x]);
-        jas_image_destroy(jp2_image);
-        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
-      }
-  }
+  jp2_pixels=jas_matrix_create(1,(unsigned int) image->columns);
+  if (jp2_pixels == (jas_matrix_t *) NULL)
+    {
+      MagickFreeMemory(lut);
+      jas_image_destroy(jp2_image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    if (image->depth <= 8)
-      for (x=0; x < (long) image->columns; x++)
+    if (number_components == 1)
       {
-        if (number_components == 1)
-          jas_matrix_setv(pixels[0],x,
-            ScaleQuantumToChar(PixelIntensityToQuantum(p)));
-        else
-          {
-            jas_matrix_setv(pixels[0],x,ScaleQuantumToChar(p->red));
-            jas_matrix_setv(pixels[1],x,ScaleQuantumToChar(p->green));
-            jas_matrix_setv(pixels[2],x,ScaleQuantumToChar(p->blue));
-            if (number_components > 3)
-              jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(MaxRGB-p->opacity));
-          }
-        p++;
+	for (x=0; x < (long) image->columns; x++)
+	  jas_matrix_setv(jp2_pixels,x,lut[ScaleQuantumToMap(PixelIntensityToQuantum(&p[x]))]);
+	(void) jas_image_writecmpt(jp2_image,0,0,(unsigned int) y,
+				   (unsigned int) image->columns,1,jp2_pixels);
       }
     else
-      for (x=0; x < (long) image->columns; x++)
-        {
-          if (number_components == 1)
-            jas_matrix_setv(pixels[0],x,
-              ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-          else
-            {
-              jas_matrix_setv(pixels[0],x,ScaleQuantumToShort(p->red));
-              jas_matrix_setv(pixels[1],x,ScaleQuantumToShort(p->green));
-              jas_matrix_setv(pixels[2],x,ScaleQuantumToShort(p->blue));
-              if (number_components > 3)
-                jas_matrix_setv(pixels[3],x,
-                  ScaleQuantumToShort(MaxRGB-p->opacity));
-            }
-          p++;
-        }
-    for (i=0; i < (long) number_components; i++)
       {
-        (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
-          (unsigned int) image->columns,1,pixels[i]);
+	for (x=0; x < (long) image->columns; x++)
+	  jas_matrix_setv(jp2_pixels,x,lut[ScaleQuantumToMap(p[x].red)]);
+	(void) jas_image_writecmpt(jp2_image,0,0,(unsigned int) y,
+				   (unsigned int) image->columns,1,jp2_pixels);
+
+	for (x=0; x < (long) image->columns; x++)
+	  jas_matrix_setv(jp2_pixels,x,lut[ScaleQuantumToMap(p[x].green)]);
+	(void) jas_image_writecmpt(jp2_image,1,0,(unsigned int) y,
+				   (unsigned int) image->columns,1,jp2_pixels);
+
+	for (x=0; x < (long) image->columns; x++)
+	  jas_matrix_setv(jp2_pixels,x,lut[ScaleQuantumToMap(p[x].blue)]);
+	(void) jas_image_writecmpt(jp2_image,2,0,(unsigned int) y,
+				   (unsigned int) image->columns,1,jp2_pixels);
+
+	if (number_components > 3)
+	  for (x=0; x < (long) image->columns; x++)
+	    jas_matrix_setv(jp2_pixels,x,lut[ScaleQuantumToMap(MaxRGB-p[x].opacity)]);
+	(void) jas_image_writecmpt(jp2_image,3,0,(unsigned int) y,
+				   (unsigned int) image->columns,1,jp2_pixels);
       }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
@@ -1070,7 +1091,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
           header_size+=(number_components-1)*142; /* Additional components */
           /* FIXME: Need to account for any ICC profiles here */
           
-          current_size=(double)image->rows*image->columns*(image->depth/8)*
+          current_size=(double)((image->rows*image->columns*image->depth)/8)*
             number_components;
           target_size=(current_size*rate)+header_size;
           rate=target_size/current_size;
@@ -1078,7 +1099,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
       FormatString(option_keyval,"%s=%g ","rate",rate);
       ConcatenateString(&options,option_keyval);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
+        "Compression rate: %g (%3.2f:1)",rate,1.0/rate);
     }
   if (options)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1088,8 +1109,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   (void) jas_stream_close(jp2_stream);
   MagickFreeMemory(options);
-  for (i=0; i < (long) number_components; i++)
-    jas_matrix_destroy(pixels[i]);
+  MagickFreeMemory(lut);
+  jas_matrix_destroy(jp2_pixels);
   jas_image_destroy(jp2_image);
   if (status)
     ThrowWriterException(DelegateError,UnableToEncodeImageFile,image);
