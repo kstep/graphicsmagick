@@ -880,7 +880,7 @@ WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info.vstep=1; /* vertical pixels per step */
     component_info.width=(unsigned int) image->columns;
     component_info.height=(unsigned int) image->rows;
-    component_info.prec=(unsigned int) Min(2,Min(image->depth,16)); /* bits in range */
+    component_info.prec=(unsigned int) Max(2,Min(image->depth,16)); /* bits in range */
     component_info.sgnd = false;  /* range is signed value? */
 
     if (jas_image_addcmpt(jp2_image, component,&component_info)) {
