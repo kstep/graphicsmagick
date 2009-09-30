@@ -951,25 +951,25 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 	      CCITTParam[4];
 
 	    ExceptionInfo
-	      exception_info;
+	      exception;
 
 	    /*
 	      Try compressing page to Group4 to see if it is
 	      supported, otherwise we will fall back to Group3.
 	    */
 	    (void) strlcpy(CCITTParam,"0",sizeof(CCITTParam));
-	    GetExceptionInfo(&exception_info);
+	    GetExceptionInfo(&exception);
 	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 				  "Executing ImageToHuffman2DBlob for CCITT Fax4 ...");
 	    fax_blob=ImageToHuffman2DBlob(image,image_info,&fax_blob_length,
-					  &exception_info);
+					  &exception);
 	    if (fax_blob != (char *) NULL)
 	      {
 		(void) strlcpy(CCITTParam,"-1",sizeof(CCITTParam));
 		(void) LogMagickEvent(CoderEvent,GetMagickModule(),
 				      "ImageToHuffman2DBlob reports success!");
 	      }
-	    DestroyExceptionInfo(&exception_info);
+	    DestroyExceptionInfo(&exception);
             (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
             (void) WriteBlobString(image,buffer);
             (void) strcpy(buffer,"/Interpolate false\n");
