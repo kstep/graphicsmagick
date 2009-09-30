@@ -274,7 +274,7 @@ coders_bmp_la_LIBADD       = $(LIBMAGICK)
 coders_cals_la_SOURCES     = coders/cals.c
 coders_cals_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_cals_la_LIBADD      = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
+coders_cals_la_LIBADD      = $(LIBMAGICK)
 
 # CAPTION coder module
 coders_caption_la_SOURCES  = coders/caption.c
@@ -568,7 +568,7 @@ coders_pdb_la_LIBADD       = $(LIBMAGICK)
 coders_pdf_la_SOURCES      = coders/pdf.c
 coders_pdf_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD       = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
+coders_pdf_la_LIBADD       = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_GS)
 
 # PICT coder module
 coders_pict_la_SOURCES     = coders/pict.c

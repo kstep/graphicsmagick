@@ -51,11 +51,6 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #include "magick/version.h"
-#if defined(HasTIFF)
-#define CCITTParam  "-1"
-#else
-#define CCITTParam  "0"
-#endif
 
 /*
   Forward declarations.
@@ -64,171 +59,6 @@ static unsigned int
   WritePDFImage(const ImageInfo *,Image *),
   ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);
 
-#if defined(HasTIFF)
-#if defined(HAVE_TIFFCONF_H)
-#include "tiffconf.h"
-#endif
-#include "tiffio.h"
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H u f f m a n 2 D E n c o d e I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Huffman2DEncodeImage compresses an image via two-dimensional
-%  Huffman-coding.
-%
-%  The format of the Huffman2DEncodeImage method is:
-%
-%      MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
-%        Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method Huffman2DEncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
-%
-%    o image_info: The image info..
-%
-%    o image: The image.
-%
-*/
-static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image)
-{
-  char
-    filename[MaxTextExtent];
-
-  Image
-    *huffman_image;
-
-  ImageInfo
-    *clone_info;
-
-  long
-    count;
-
-  register long
-    i;
-
-  TIFF
-    *tiff;
-
-  uint16
-    fillorder;
-
-  unsigned char
-    *buffer;
-
-  unsigned int
-    status;
-
-  uint32
-    *byte_count;
-
-  unsigned long
-    strip_size;
-
-  /*
-    Write image as CCITTFax4 TIFF image to a temporary file.
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if(!AcquireTemporaryFileName(filename))
-    ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
-      filename);
-
-  huffman_image=CloneImage(image,0,0,True,&image->exception);
-  if (huffman_image == (Image *) NULL)
-    return(False);
-
-  (void) SetImageType(huffman_image,BilevelType);
-  FormatString(huffman_image->filename,"tiff:%s",filename);
-
-  clone_info=CloneImageInfo(image_info);
-  clone_info->compression=Group4Compression;
-  clone_info->type=BilevelType;
-  (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
-                        &image->exception);
-  (void) AddDefinitions(clone_info,"tiff:fill-order=msb2lsb",
-                        &image->exception);
-
-  status=WriteImage(clone_info,huffman_image);
-  DestroyImageInfo(clone_info);
-  DestroyImage(huffman_image);
-  if (status == MagickFalse)
-    return(MagickFalse);
-
-  tiff=TIFFOpen(filename,"rb");
-  if (tiff == (TIFF *) NULL)
-    {
-      (void) LiberateTemporaryFile(filename);
-      ThrowBinaryException(FileOpenError,UnableToOpenFile,
-        image_info->filename)
-    }
-
-  /*
-    Allocate raw strip buffer.
-  */
-  byte_count=0;
-  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
-  strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  /* strip_size=TIFFStripSize(tiff); */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Allocating %lu bytes of memory for TIFF strip",
-                        (unsigned long) strip_size);
-  buffer=MagickAllocateMemory(unsigned char *,strip_size);
-  if (buffer == (unsigned char *) NULL)
-    {
-      TIFFClose(tiff);
-      (void) LiberateTemporaryFile(filename);
-      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-        (char *) NULL)
-    }
-
-  /*
-    Compress runlength encoded to 2D Huffman pixels.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Output 2D Huffman pixels.");
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
-  {
-    count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,count);
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Writing %lu strip bytes to blob ...",
-                          (unsigned long) count);
-    (void) WriteBlob(image,count,buffer);
-  }
-
-  MagickFreeMemory(buffer);
-  TIFFClose(tiff);
-  (void) LiberateTemporaryFile(filename);
-  return(True);
-}
-#else
-static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -706,6 +536,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
+    *fax_blob=(char *) NULL,
     **labels,
     page_geometry[MaxTextExtent];
 
@@ -748,6 +579,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x;
 
   size_t
+    fax_blob_length,
     length;
 
   struct tm
@@ -759,7 +591,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned long
@@ -1115,6 +947,29 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           }
         case FaxCompression:
           {
+	    char
+	      CCITTParam[4];
+
+	    ExceptionInfo
+	      exception_info;
+
+	    /*
+	      Try compressing page to Group4 to see if it is
+	      supported, otherwise we will fall back to Group3.
+	    */
+	    (void) strlcpy(CCITTParam,"0",sizeof(CCITTParam));
+	    GetExceptionInfo(&exception_info);
+	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				  "Executing ImageToHuffman2DBlob for CCITT Fax4 ...");
+	    fax_blob=ImageToHuffman2DBlob(image,image_info,&fax_blob_length,
+					  &exception_info);
+	    if (fax_blob != (char *) NULL)
+	      {
+		(void) strlcpy(CCITTParam,"-1",sizeof(CCITTParam));
+		(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				      "ImageToHuffman2DBlob reports success!");
+	      }
+	    DestroyExceptionInfo(&exception_info);
             (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
             (void) WriteBlobString(image,buffer);
             (void) strcpy(buffer,"/Interpolate false\n");
@@ -1157,7 +1012,15 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             {
             case FaxCompression:
               {
-                if (LocaleCompare(CCITTParam,"0") == 0)
+		/*
+		  Try Group4 first and use Group3 as a fallback.
+		*/
+		if (fax_blob != (char *) NULL)
+		  {
+		    (void) WriteBlob(image,fax_blob_length,fax_blob);
+		    MagickFreeMemory(fax_blob);
+		  }
+                else
                   {
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                           "Executing HuffmanEncodeImage for CCITT Fax3 ...");
@@ -1165,37 +1028,21 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                             "HuffmanEncodeImage reports failure!");
                   }
-                else
-                  {
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                          "Executing Huffman2DEncodeImage for CCITT Fax4 ...");
-                    if (!Huffman2DEncodeImage(image_info,image) )
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                            "Huffman2DEncodeImage reports failure!");
-                  }
                 break;
               }
             case JPEGCompression:
               {
-                Image
-                  *jpeg_image;
-
-                void
-                  *blob;
+                char
+                  *jpeg_blob;
 
                 /*
                   Write image in JPEG format.
                 */
-                jpeg_image=CloneImage(image,0,0,True,&image->exception);
-                if (jpeg_image == (Image *) NULL)
+		jpeg_blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
+                if (jpeg_blob == (char *) NULL)
                   ThrowWriterException2(CoderError,image->exception.reason,image);
-                (void) strcpy(jpeg_image->magick,"JPEG");
-                blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
-                if (blob == (void *) NULL)
-                  ThrowWriterException2(CoderError,image->exception.reason,image);
-                (void) WriteBlob(image,length,blob);
-                DestroyImage(jpeg_image);
-                MagickFreeMemory(blob);
+                (void) WriteBlob(image,length,jpeg_blob);
+                MagickFreeMemory(jpeg_blob);
                 break;
               }
             case RLECompression:
@@ -1295,25 +1142,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             {
             case JPEGCompression:
               {
-                Image
-                  *jpeg_image;
-
-                void
-                  *blob;
+                char
+                  *jpeg_blob;
 
                 /*
                   Write image in JPEG format.
                 */
-                jpeg_image=CloneImage(image,0,0,True,&image->exception);
-                if (jpeg_image == (Image *) NULL)
+		jpeg_blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
+                if (jpeg_blob == (char *) NULL)
                   ThrowWriterException2(CoderError,image->exception.reason,image);
-                (void) strcpy(jpeg_image->magick,"JPEG");
-                blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
-                if (blob == (void *) NULL)
-                  ThrowWriterException2(CoderError,image->exception.reason,image);
-                (void) WriteBlob(image,length,blob);
-                DestroyImage(jpeg_image);
-                MagickFreeMemory(blob);
+                (void) WriteBlob(image,length,jpeg_blob);
+                MagickFreeMemory(jpeg_blob);
                 break;
               }
             case RLECompression:
@@ -1651,6 +1490,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%EOF\n");
   MagickFreeMemory(xref);
   CloseBlob(image);
+  MagickFreeMemory(fax_blob);
   return(True);
 }
 

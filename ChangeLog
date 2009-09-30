@@ -1,3 +1,15 @@
+2009-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Use ImageToHuffman2DBlob() and
+	ImageToJPEGBlob().
+
+	* coders/cals.c (WriteCALSImage): Use ImageToHuffman2DBlob().
+
+	* magick/compress.c (ImageToHuffman2DBlob): New private
+	convenience function to produce a CCIT Group4 blob.
+	(ImageToJPEGBlob): New private convenience function to produce a
+	JPEG blob.
+
 2009-09-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (ReadJP2Image): Fix scaling problem noticed when

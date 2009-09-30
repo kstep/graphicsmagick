@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2009-09-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pdf.c (WritePDFImage): Use ImageToHuffman2DBlob() and
+        ImageToJPEGBlob().
+
+  <LI> coders/cals.c (WriteCALSImage): Use ImageToHuffman2DBlob().
+
+  <LI> magick/compress.c (ImageToHuffman2DBlob): New private
+        convenience function to produce a CCIT Group4 blob.
+        (ImageToJPEGBlob): New private convenience function to produce a
+        JPEG blob.
+
+</UL>
+<p>
 2009-09-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

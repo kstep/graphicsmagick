@@ -317,10 +317,7 @@ coders_bmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_bmp_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_bmp_la_rpath = -rpath $(codersdir)
-am__DEPENDENCIES_1 =
-coders_cals_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+coders_cals_la_DEPENDENCIES = $(LIBMAGICK)
 am_coders_cals_la_OBJECTS = coders/coders_cals_la-cals.lo
 coders_cals_la_OBJECTS = $(am_coders_cals_la_OBJECTS)
 coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -344,6 +341,7 @@ coders_cineon_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_cineon_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_cineon_la_rpath = -rpath $(codersdir)
+am__DEPENDENCIES_1 =
 coders_clipboard_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
 am_coders_clipboard_la_OBJECTS =  \
 	coders/coders_clipboard_la-clipboard.lo
@@ -704,8 +702,6 @@ coders_pdb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_pdb_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pdb_la_rpath = -rpath $(codersdir)
 coders_pdf_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_pdf_la_OBJECTS = coders/coders_pdf_la-pdf.lo
 coders_pdf_la_OBJECTS = $(am_coders_pdf_la_OBJECTS)
@@ -2586,7 +2582,7 @@ coders_bmp_la_LIBADD = $(LIBMAGICK)
 coders_cals_la_SOURCES = coders/cals.c
 coders_cals_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_cals_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
+coders_cals_la_LIBADD = $(LIBMAGICK)
 
 # CAPTION coder module
 coders_caption_la_SOURCES = coders/caption.c
@@ -2880,7 +2876,7 @@ coders_pdb_la_LIBADD = $(LIBMAGICK)
 coders_pdf_la_SOURCES = coders/pdf.c
 coders_pdf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
+coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_GS)
 
 # PICT coder module
 coders_pict_la_SOURCES = coders/pict.c

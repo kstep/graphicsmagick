@@ -23,8 +23,6 @@
 %                               John Sergeant                                 %
 %                                  May 2009                                   %
 %                                                                             %
-%         NB Huffman2DEncodeImage 'borrowed' wholesale from pdf.c             %
-%                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -37,172 +35,12 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
+#include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
-
-#if defined(HasTIFF)
-#  if defined(HAVE_TIFFCONF_H)
-#    include "tiffconf.h"
-#  endif /* defined(HAVE_TIFFCONF_H) */
-#  include "tiffio.h"
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   H u f f m a n 2 D E n c o d e I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Huffman2DEncodeImage compresses an image via two-dimensional
-%  Huffman-coding.
-%
-%  The format of the Huffman2DEncodeImage method is:
-%
-%      MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
-%        Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method Huffman2DEncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
-%
-%    o image_info: The image info..
-%
-%    o image: The image.
-%
-*/
-static MagickPassFail Huffman2DEncodeImage(const ImageInfo *image_info,
-  Image *image)
-{
-  char
-    filename[MaxTextExtent];
-
-  Image
-    *huffman_image;
-
-  ImageInfo
-    *clone_info;
-
-  long
-    count;
-
-  register long
-    i;
-
-  TIFF
-    *tiff;
-
-  uint16
-    fillorder;
-
-  unsigned char
-    *buffer;
-
-  unsigned int
-    status;
-
-  uint32
-    *byte_count;
-
-  unsigned long
-    strip_size;
-
-  /*
-    Write image as CCITTFax4 TIFF image to a temporary file.
-  */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if(!AcquireTemporaryFileName(filename))
-    ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
-      filename);
-
-  huffman_image=CloneImage(image,0,0,True,&image->exception);
-  if (huffman_image == (Image *) NULL)
-    return(False);
-
-  (void) SetImageType(huffman_image,BilevelType);
-  FormatString(huffman_image->filename,"tiff:%s",filename);
-
-  clone_info=CloneImageInfo((ImageInfo *) NULL);
-  clone_info->compression=Group4Compression;
-  clone_info->type=BilevelType;
-  (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
-                        &image->exception);
-
-  status=WriteImage(clone_info,huffman_image);
-  DestroyImageInfo(clone_info);
-  DestroyImage(huffman_image);
-  if (status == MagickFalse)
-    {
-      (void) LiberateTemporaryFile(filename);
-      return(MagickFalse);
-    }
-
-  tiff=TIFFOpen(filename,"rb");
-  if (tiff == (TIFF *) NULL)
-    {
-      (void) LiberateTemporaryFile(filename);
-      ThrowBinaryException(FileOpenError,UnableToOpenFile,
-        image_info->filename)
-    }
-
-  /*
-    Allocate raw strip buffer.
-  */
-  byte_count=0;
-  (void) TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
-  strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  /* strip_size=TIFFStripSize(tiff); */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Allocating %lu bytes of memory for TIFF strip",
-                        (unsigned long) strip_size);
-  buffer=MagickAllocateMemory(unsigned char *,strip_size);
-  if (buffer == (unsigned char *) NULL)
-    {
-      TIFFClose(tiff);
-      (void) LiberateTemporaryFile(filename);
-      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-        (char *) NULL)
-    }
-
-  /*
-    Compress runlength encoded to 2D Huffman pixels.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Output 2D Huffman pixels.");
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
-  {
-    count=TIFFReadRawStrip(tiff,(uint32) i,buffer,(long) byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(buffer,count);
-
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Writing %lu strip bytes to blob ...",
-                          (unsigned long) count);
-    (void) WriteBlob(image,count,buffer);
-  }
-
-  MagickFreeMemory(buffer);
-  TIFFClose(tiff);
-  (void) LiberateTemporaryFile(filename);
-  return(True);
-}
-#endif /* if defined(HasTIFF) */
-
-
 /* 
    Write an unsigned long to file with Intel/LSB ordering
 */
@@ -225,7 +63,7 @@ static void CALS_WriteIntelULong(FILE *file,unsigned long ul)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsCALS returns True if the image format type, identified by the
+%  Method IsCALS returns MagickTrue if the image format type, identified by the
 %  magick string, is CAL.
 %
 %  The format of the IsCALS method is:
@@ -234,7 +72,7 @@ static void CALS_WriteIntelULong(FILE *file,unsigned long ul)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsCALS returns True if the image format type is CAL.
+%    o status:  Method IsCALS returns MagickTrue if the image format type is CAL.
 %
 %    o magick: This string is generally the first few bytes of an image file
 %      or blob.
@@ -243,17 +81,17 @@ static void CALS_WriteIntelULong(FILE *file,unsigned long ul)
 %
 %
 */
-static unsigned int IsCALS(const unsigned char *magick,const size_t length)
+static MagickBool IsCALS(const unsigned char *magick,const size_t length)
 {
   if (length < 132)
-    return(False);
+    return(MagickFalse);
   if (LocaleNCompare((char *) (magick),"version: MIL-STD-1840",21) == 0)
-    return(True);
+    return(MagickTrue);
   if (LocaleNCompare((char *) (magick),"srcdocid:",9) == 0)
-    return(True);
+    return(MagickTrue);
   if (LocaleNCompare((char *) (magick),"rorient:",8) == 0)
-    return(True);
-  return(False);
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 /*
@@ -332,7 +170,7 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 
   /*
@@ -473,7 +311,6 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
     }
   return(image);
 }
-#if defined(HasTIFF)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -494,8 +331,8 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteCALSImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
+%    o status: Method WriteCALSImage return MagickTrue if the image is written.
+%      MagickFail is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
@@ -533,7 +370,7 @@ static void WriteCALSRecord(Image *image,const char *data)
     }
 }
 
-static unsigned int WriteCALSImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteCALSImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent];
@@ -550,6 +387,9 @@ static unsigned int WriteCALSImage(const ImageInfo *image_info,Image *image)
   int
     orx,
     ory;
+
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Validate input image
@@ -628,22 +468,38 @@ static unsigned int WriteCALSImage(const ImageInfo *image_info,Image *image)
   */
   memset(buffer,' ',128);
   for (i = 0; i < 5; i++)
-    WriteBlob(image,128,buffer);
+    if (WriteBlob(image,128,buffer) != 128)
+      status=MagickFail;
 
   /*
-    Encode data to Group 4 - routine 'borrowed' from pdf.c
+    Encode data to Group 4
   */
-  if (!Huffman2DEncodeImage(image_info,image) )
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Huffman2DEncodeImage reports failure!");
+  if (MagickFail != status)
+  {
+    char
+      *blob;
+
+    size_t
+      blob_length;
+
+    blob=ImageToHuffman2DBlob(image,image_info,&blob_length,&image->exception);
+    if (blob == (char *) NULL)
+      status=MagickFail;
+
+    if (MagickFail != status)
+      {
+	if (WriteBlob(image,blob_length,blob) != blob_length)
+	  status=MagickFail;
+      }
+    MagickFreeMemory(blob);
+  }
 
   /*
     Close output file and return image
   */
   CloseBlob(image);
-  return(True);
+  return status;
 }
-#endif /* if defined(HasTIFF) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -680,12 +536,10 @@ ModuleExport void RegisterCALSImage(void)
 
   entry=SetMagickInfo("CAL");
   entry->decoder=(DecoderHandler) ReadCALSImage;
-#if defined(HasTIFF)
   entry->encoder=(EncoderHandler) WriteCALSImage;
-#endif /* if defined(HasTIFF) */
   entry->magick=(MagickHandler) IsCALS;
-  entry->adjoin=False;
-  entry->seekable_stream=True;
+  entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=description;
   entry->note=note;
   entry->module=module;
@@ -694,12 +548,10 @@ ModuleExport void RegisterCALSImage(void)
 
   entry=SetMagickInfo("CALS");
   entry->decoder=(DecoderHandler) ReadCALSImage;
-#if defined(HasTIFF)
   entry->encoder=(EncoderHandler) WriteCALSImage;
-#endif /* if defined(HasTIFF) */
   entry->magick=(MagickHandler) IsCALS;
-  entry->adjoin=False;
-  entry->seekable_stream=True;
+  entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
   entry->description=description;
   entry->note=note;
   entry->module=module;

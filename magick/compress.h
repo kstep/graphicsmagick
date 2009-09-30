@@ -48,7 +48,7 @@ extern MagickExport unsigned int
 /*
   Compress methods.
 */
-extern MagickExport unsigned int
+extern MagickExport MagickPassFail
   HuffmanDecodeImage(Image *image),
   HuffmanEncodeImage(const ImageInfo *image_info,Image *image),
   HuffmanEncode2Image(const ImageInfo *image_info,Image *image,WriteByteHook write_byte,void *info),
@@ -56,6 +56,12 @@ extern MagickExport unsigned int
   LZWEncode2Image(Image *image,const size_t length,magick_uint8_t *pixels,WriteByteHook write_byte,void *info),
   PackbitsEncodeImage(Image *image,const size_t length,magick_uint8_t *pixels),
   PackbitsEncode2Image(Image *image,const size_t length,magick_uint8_t *pixels,WriteByteHook write_byte,void *info);
+
+extern MagickExport char
+  *ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
+     size_t *length,ExceptionInfo *exception),
+  *ImageToJPEGBlob(const Image *image,const ImageInfo *image_info,
+     size_t *length,ExceptionInfo *exception);
 
 extern MagickExport void
   Ascii85Encode(Image *image,const magick_uint8_t code),
