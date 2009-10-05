@@ -1,26 +1,41 @@
 <?xml version="1.0"?>
+<!-- Copyright (C) 2002-2009 GraphicsMagick Group.
+Additional copyrights and licenses apply to this software.
+See http://www.GraphicsMagick.org/www/Copyright.html for details. -->
+<!-- Magick Module Alias Map (modules.mgk) -->
 <modulemap>
+  <module magick="3FR" name="DCRAW" />
   <module magick="8BIM" name="META" />
   <module magick="8BIMTEXT" name="META" />
   <module magick="8BIMWTEXT" name="META" />
-  <module magick="AFM" name="TTF" />
   <module magick="APP1" name="META" />
   <module magick="APP1JPEG" name="META" />
+  <module magick="ARW" name="DCRAW" />
   <module magick="B" name="GRAY" />
   <module magick="BIE" name="JBIG" />
+  <module magick="BIGTIFF" name="TIFF" />
+  <module magick="BMP2" name="BMP" />
+  <module magick="BMP3" name="BMP" />
   <module magick="C" name="GRAY" />
   <module magick="CAL" name="CALS" />
   <module magick="CIN" name="CINEON" />
+  <module magick="CMYKA" name="CMYK" />
+  <module magick="CR2" name="DCRAW" />
+  <module magick="CRW" name="DCRAW" />
   <module magick="CUR" name="ICON" />
+  <module magick="DCR" name="DCRAW" />
   <module magick="DCX" name="PCX" />
-  <module magick="EMF" name="EMF" />
+  <module magick="DNG" name="DCRAW" />
   <module magick="EPDF" name="PDF" />
   <module magick="EPI" name="PS" />
   <module magick="EPS" name="PS" />
-  <module magick="EPSF" name="PS" />
-  <module magick="EPSI" name="PS" />
   <module magick="EPS2" name="PS2" />
   <module magick="EPS3" name="PS3" />
+  <module magick="EPSF" name="PS" />
+  <module magick="EPSI" name="PS" />
+  <module magick="EPT2" name="EPT" />
+  <module magick="EPT3" name="EPT" />
+  <module magick="ERF" name="DCRAW" />
   <module magick="EXIF" name="META" />
   <module magick="FILE" name="URL" />
   <module magick="FRACTAL" name="PLASMA" />
@@ -31,7 +46,6 @@
   <module magick="GRANITE" name="LOGO" />
   <module magick="GROUP4RAW" name="TIFF" />
   <module magick="H" name="LOGO" />
-  <module magick="H5" name="HDF" />
   <module magick="HTM" name="HTML" />
   <module magick="HTTP" name="URL" />
   <module magick="ICB" name="TGA" />
@@ -39,55 +53,59 @@
   <module magick="ICM" name="META" />
   <module magick="ICO" name="ICON" />
   <module magick="IMAGE" name="LOGO" />
-  <module magick="IMPLICIT" name="MIFF" />
   <module magick="IPTC" name="META" />
   <module magick="IPTCTEXT" name="META" />
   <module magick="IPTCWTEXT" name="META" />
   <module magick="JBG" name="JBIG" />
   <module magick="JNG" name="PNG" />
-  <module magick="JPC" name="JP2" />
   <module magick="JPG" name="JPEG" />
   <module magick="K" name="GRAY" />
+  <module magick="K25" name="DCRAW" />
+  <module magick="KDC" name="DCRAW" />
+  <module magick="LOCALEC" name="LOCALE" />
+  <module magick="LOCALEH" name="LOCALE" />
+  <module magick="LOCALEMC" name="LOCALE" />
   <module magick="M" name="GRAY" />
   <module magick="M2V" name="MPEG" />
   <module magick="MNG" name="PNG" />
   <module magick="MPG" name="MPEG" />
-  <module magick="MPRI" name="MPR" />
+  <module magick="MRW" name="DCRAW" />
+  <module magick="NEF" name="DCRAW" />
   <module magick="NETSCAPE" name="LOGO" />
   <module magick="O" name="GRAY" />
+  <module magick="ORF" name="DCRAW" />
   <module magick="P7" name="PNM" />
   <module magick="PAL" name="UYVY" />
   <module magick="PATTERN" name="LOGO" />
   <module magick="PBM" name="PNM" />
   <module magick="PCDS" name="PCD" />
   <module magick="PCT" name="PICT" />
+  <module magick="PEF" name="DCRAW" />
   <module magick="PFA" name="TTF" />
   <module magick="PFB" name="TTF" />
-  <module magick="PFM" name="TTF" />
   <module magick="PGM" name="PNM" />
-  <module magick="PGX" name="JP2" />
   <module magick="PICON" name="XPM" />
   <module magick="PM" name="XPM" />
-  <module magick="PNG8" name="PNG" />
   <module magick="PNG24" name="PNG" />
   <module magick="PNG32" name="PNG" />
+  <module magick="PNG8" name="PNG" />
   <module magick="PPM" name="PNM" />
-  <module magick="PSD" name="PSD" />
   <module magick="PTIF" name="TIFF" />
   <module magick="R" name="GRAY" />
+  <module magick="RAF" name="DCRAW" />
   <module magick="RAS" name="SUN" />
   <module magick="RGBA" name="RGB" />
   <module magick="ROSE" name="LOGO" />
   <module magick="SHTML" name="HTML" />
+  <module magick="SR2" name="DCRAW" />
+  <module magick="SRF" name="DCRAW" />
   <module magick="SVGZ" name="SVG" />
   <module magick="TEXT" name="TXT" />
   <module magick="TIF" name="TIFF" />
   <module magick="VDA" name="TGA" />
   <module magick="VST" name="TGA" />
-  <module magick="WMFWIN32" name="EMF" />
+  <module magick="X3F" name="DCRAW" />
   <module magick="XMP" name="META" />
-  <module magick="XTRNARRAY" name="XTRN" />
-  <module magick="XTRNBSTR" name="XTRN" />
   <module magick="XV" name="VIFF" />
   <module magick="Y" name="GRAY" />
 </modulemap>

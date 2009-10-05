@@ -288,7 +288,6 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 }
 #endif
 
-#if defined(HasJPEG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -317,51 +316,36 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 %    o image: The image.
 %
 */
-static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
+static MagickPassFail JPEGEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
-  Image
-    *jpeg_image;
-
-  size_t
-    i,
-    length;
-
-  register const unsigned char
-    *p;
-
-  void
+  unsigned char
     *blob;
 
-  /*
-    Write image as JPEG image to an in-memory BLOB
-  */
-  jpeg_image=CloneImage(image,0,0,True,&image->exception);
-  if (jpeg_image == (Image *) NULL)
-    ThrowWriterException2(CoderError,image->exception.reason,image);
-  (void) strcpy(jpeg_image->magick,"JPEG");
-  blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
-  if (blob == (void *) NULL)
-    ThrowWriterException2(CoderError,image->exception.reason,image);
+  size_t
+    length;
 
-  Ascii85Initialize(image);
-  for (p=(const unsigned char*) blob,i=0; i < length; i++)
-    Ascii85Encode(image,(unsigned long) p[i]);
-  Ascii85Flush(image);
-  DestroyImage(jpeg_image);
-  MagickFreeMemory(blob);
-  return(True);
+  MagickPassFail
+    status=MagickFail;
+  
+  blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
+  if (blob != (unsigned char *) NULL)
+    {
+      register const unsigned char
+	*p;
+
+      register size_t
+	i;
+
+        Ascii85Initialize(image);
+      for (p=(const unsigned char*) blob,i=0; i < length; i++)
+	Ascii85Encode(image,(unsigned long) p[i]);
+      Ascii85Flush(image);
+      MagickFreeMemory(blob);
+      status=MagickPass;
+    }
+  return status;
 }
-#else
-static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
-  Image *image)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename)
-  return(False);
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1661,15 +1645,15 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       /* Image data. Always ASCII85 encoded. */
       if (compression == JPEGCompression)
         {
-            status=JPEGEncodeImage(image_info,image);
+	  status=JPEGEncodeImage(image_info,image);
         }
       else
         if (compression == FaxCompression)
           {
-              if (LocaleCompare(CCITTParam,"0") == 0)
-                status=HuffmanEncodeImage(image_info,image);
-              else
-                status=Huffman2DEncodeImage(image_info,image);
+	    if (LocaleCompare(CCITTParam,"0") == 0)
+	      status=HuffmanEncodeImage(image_info,image);
+	    else
+	      status=Huffman2DEncodeImage(image_info,image);
           }
         else
           {

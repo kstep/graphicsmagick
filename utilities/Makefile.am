@@ -37,9 +37,15 @@ UTILITIES_XML_XFAIL_TESTS = \
 	utilities/tests/msl_composite.sh
 endif
 
+if !WITH_MODULES
+UTILITIES_MODULES_XFAIL_TESTS = \
+	utilities/tests/list-module.sh
+endif
+
 UTILITIES_XFAIL_TESTS = \
 	$(UTILITIES_JPEG_XFAIL_TESTS) \
 	$(UTILITIES_LCMS_XFAIL_TESTS) \
+	$(UTILITIES_MODULES_XFAIL_TESTS) \
 	$(UTILITIES_TTF_XFAIL_TESTS) \
 	$(UTILITIES_XML_XFAIL_TESTS)
 
@@ -72,10 +78,31 @@ UTILITIES_TESTS = \
 	utilities/tests/grayscale.sh \
 	utilities/tests/hald-clut-identity.sh \
 	utilities/tests/hald-clut-transform.sh \
+	utilities/tests/help-animate.sh \
+	utilities/tests/help-benchmark.sh \
+	utilities/tests/help-compare.sh \
+	utilities/tests/help-composite.sh \
+	utilities/tests/help-conjure.sh \
+	utilities/tests/help-convert.sh \
+	utilities/tests/help-identify.sh \
+	utilities/tests/help-import.sh \
+	utilities/tests/help-mogrify.sh \
+	utilities/tests/help-montage.sh \
+	utilities/tests/help-time.sh \
+	utilities/tests/help-version.sh \
+	utilities/tests/help.sh \
 	utilities/tests/icc-transform.sh \
 	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
+	utilities/tests/list-color.sh \
+	utilities/tests/list-delegate.sh \
+	utilities/tests/list-format.sh \
+	utilities/tests/list-magic.sh \
+	utilities/tests/list-module.sh \
+	utilities/tests/list-modulemap.sh \
+	utilities/tests/list-resource.sh \
+	utilities/tests/list-type.sh \
 	utilities/tests/mask.sh \
 	utilities/tests/medianfilter.sh \
 	utilities/tests/modulate.sh \
@@ -137,7 +164,8 @@ UTILITIES_TESTS = \
         utilities/tests/preview_spread.sh \
         utilities/tests/preview_swirl.sh \
         utilities/tests/preview_threshold.sh \
-        utilities/tests/preview_wave.sh
+        utilities/tests/preview_wave.sh \
+	utilities/tests/version.sh
 
 utilities/tests/montage.log : \
 	utilities/tests/addnoise.log \

@@ -2927,23 +2927,16 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
   TIFF
     *tiff;
 
-  uint32
-    *byte_count;
-
-  unsigned long
+  toff_t
+    *byte_counts,
+    count,
     strip_size;
-
-  uint16
-    fillorder;
 
   unsigned char
     *strip;
 
-  register long
-    i;
-
-  long
-    count;
+ unsigned int
+   i;
 
   MagickPassFail
     status;
@@ -2965,7 +2958,8 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
 
   (void) SetImageType(huffman_image,BilevelType);
   FormatString(huffman_image->filename,"tiff:%s",temporary_filename);
-  clone_info=CloneImageInfo((ImageInfo *) NULL);
+  clone_info=CloneImageInfo((const ImageInfo *) NULL);
+/*   clone_info->blob=0; */
   clone_info->compression=Group4Compression;
   clone_info->type=BilevelType;
   (void) AddDefinitions(clone_info,"tiff:strip-per-page=TRUE",
@@ -2997,23 +2991,20 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate raw strip buffer.
   */
-  byte_count=0;
-  if (TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count) != 1)
+  if (TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_counts) != 1)
     {
       TIFFClose(tiff);
       (void) LiberateTemporaryFile(temporary_filename);
       return MagickFail;
     }
-
-  strip_size=byte_count[0];
-  for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  /* strip_size=TIFFStripSize(tiff); */
+  strip_size=byte_counts[0];
+  for (i=1; i < TIFFNumberOfStrips(tiff); i++)
+    if (byte_counts[i] > strip_size)
+      strip_size=byte_counts[i];
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Allocating %lu bytes of memory for TIFF strip",
                         (unsigned long) strip_size);
-  strip=MagickAllocateMemory(unsigned char *,strip_size);
+  strip=MagickAllocateMemory(unsigned char *,(size_t) strip_size);
   if (strip == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
@@ -3021,7 +3012,9 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
 			   image);
     }
-
+  /*
+    Open blob for output
+  */
   if ((status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception))
       == MagickFail)
     {
@@ -3035,18 +3028,14 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
     Compress runlength encoded to 2D Huffman pixels.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Output 2D Huffman pixels.");
-  (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
-  for (i=0; i < (long) TIFFNumberOfStrips(tiff); i++)
+			"Output 2D Huffman pixels.");
+  for (i=0; i < TIFFNumberOfStrips(tiff); i++)
   {
-    count=TIFFReadRawStrip(tiff,(uint32) i,strip,(long) byte_count[i]);
-    if (fillorder == FILLORDER_LSB2MSB)
-      TIFFReverseBits(strip,count);
-
+    count=TIFFReadRawStrip(tiff,(uint32) i,strip,strip_size);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Writing %lu strip bytes to blob ...",
-                          (unsigned long) count);
-    if (WriteBlob(image,count,strip) != (size_t) count)
+			  "Writing strip %u (%lu bytes) to blob ...",
+			  i,(unsigned long) count);
+    if ((toff_t) WriteBlob(image,count,strip) != count)
       status=MagickFail;
   }
 

@@ -536,9 +536,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
-    *fax_blob=(char *) NULL,
     **labels,
     page_geometry[MaxTextExtent];
+
+  unsigned char
+    *fax_blob=(unsigned char *) NULL;
 
   CompressionType
     compression;
@@ -963,7 +965,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 				  "Executing ImageToHuffman2DBlob for CCITT Fax4 ...");
 	    fax_blob=ImageToHuffman2DBlob(image,image_info,&fax_blob_length,
 					  &exception);
-	    if (fax_blob != (char *) NULL)
+	    if (fax_blob != (unsigned char *) NULL)
 	      {
 		(void) strlcpy(CCITTParam,"-1",sizeof(CCITTParam));
 		(void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1015,7 +1017,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 		/*
 		  Try Group4 first and use Group3 as a fallback.
 		*/
-		if (fax_blob != (char *) NULL)
+		if (fax_blob != (unsigned char *) NULL)
 		  {
 		    (void) WriteBlob(image,fax_blob_length,fax_blob);
 		    MagickFreeMemory(fax_blob);
@@ -1032,14 +1034,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
             case JPEGCompression:
               {
-                char
+                unsigned char
                   *jpeg_blob;
 
                 /*
                   Write image in JPEG format.
                 */
 		jpeg_blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
-                if (jpeg_blob == (char *) NULL)
+                if (jpeg_blob == (unsigned char *) NULL)
                   ThrowWriterException2(CoderError,image->exception.reason,image);
                 (void) WriteBlob(image,length,jpeg_blob);
                 MagickFreeMemory(jpeg_blob);
@@ -1142,14 +1144,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             {
             case JPEGCompression:
               {
-                char
+                unsigned char
                   *jpeg_blob;
 
                 /*
                   Write image in JPEG format.
                 */
 		jpeg_blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
-                if (jpeg_blob == (char *) NULL)
+                if (jpeg_blob == (unsigned char *) NULL)
                   ThrowWriterException2(CoderError,image->exception.reason,image);
                 (void) WriteBlob(image,length,jpeg_blob);
                 MagickFreeMemory(jpeg_blob);

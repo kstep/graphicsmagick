@@ -37,6 +37,7 @@
 #include "magick/blob.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/tempfile.h"
@@ -228,6 +229,9 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   if ((!width) || (!height) || (rtype != 1))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			"Dimensions %lux%lu",width,height);
+
   /* Create TIFF wrapper to handle file data using TIFF library */
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
@@ -258,9 +262,9 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   CALS_WriteIntelULong(file,orient);
   /* 1 sample per pixel */
   fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  /* Rows per strip (same as width) */
+  /* Rows per strip (same as height) */
   fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,width);
+  CALS_WriteIntelULong(file,height);
   /* Strip byte count */
   fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
   byte_count_pos = ftell(file)-4;
@@ -476,14 +480,14 @@ static MagickPassFail WriteCALSImage(const ImageInfo *image_info,Image *image)
   */
   if (MagickFail != status)
   {
-    char
+    unsigned char
       *blob;
 
     size_t
       blob_length;
 
     blob=ImageToHuffman2DBlob(image,image_info,&blob_length,&image->exception);
-    if (blob == (char *) NULL)
+    if (blob == (unsigned char *) NULL)
       status=MagickFail;
 
     if (MagickFail != status)

@@ -1,3 +1,39 @@
+2009-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* config/modules.mgk: DCRAW module entries were missing.
+
+	* coders/tiff.c (WriteGROUP4RAWImage): Was not working properly on
+	big-endian CPUs with libtiff 1.4.
+
+	* coders/ps2.c (WritePS2Image): Use ImageToJPEGBlob().
+
+	* coders/ps3.c (WritePS3Image): Use ImageToJPEGBlob().
+
+	* coders/pdf.c (WritePDFImage): Decouple from libtiff.  Use ImageToJPEGBlob().
+
+	* coders/dcraw.c (RegisterDCRAWImage): Needed to register module
+	name.
+
+	* coders/cals.c (ReadCALSImage): Fix bug in CALS reader which
+	caused reading images taller than the image width to fail with an
+	error.
+
+	* magick/utility.c (AcquireString): Minor optimizations.
+	(AllocateString): Minor optimizations.
+	(CloneString): Minor optimizations.
+	(LocaleCompare): Minor optimizations.
+	(SubstituteString): Re-implemented in a more compact way which
+	might avoid some reallocations.
+
+	* magick/magick.c (ListModuleMap): Don't crash if 'module' was not
+	set.
+
+	* magick/delegate.c (ListDelegateInfo): Fix insignificant memory
+	leak.
+
+	* magick/compress.c (ImageToJPEGBlob): Preserve JPEG settings if
+	feasable.
+
 2009-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (WritePDFImage): Use ImageToHuffman2DBlob() and

@@ -15,7 +15,6 @@ GraphicsMagick Motion Picture Features
 .. _Northlight Scanner : http://www.filmlight.ltd.uk/
 .. _Lasergraphics : http://www.lasergraphics.com/
 .. _Grass Valley Viper : http://www.grassvalley.com/products/cameras/viper/
-.. _DALSA Origin : http://www.dalsa.com/dc/4K_products/origin_main.asp
 .. _typical pixel resolutions : http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/
 .. _Digital Intermediates : http://www.digitalintermediates.org/
 .. _Library Of Congress : http://www.digitalpreservation.gov/
@@ -55,15 +54,15 @@ industry. It was used to perform 16-bit TIFF to DPX conversion for
 be `Christopher Reeve`_'s most memorable work, the film's images turned
 out great, and the kids are sure to enjoy the film.
 
-The modern motion picture industry usually shoots on film and then uses a
-machine known as a *datacine* (e.g. `Spirit 4K DataCine`_ or Cintel DSX)
-or a *scanner* (e.g. `Northlight Scanner`_ or `Lasergraphics`_ Director) to
-convert each film image into an individual image file. An alternative to
-this is to use a high definition CCD camera such as the `Grass Valley
-Viper`_ or the `DALSA Origin`_ to capture images to uncompressed files
-directly. A rather inferior approach is to use a video high definition
-compressed format like HDCAM and convert each frame to a file for
-processing.
+The modern motion picture industry usually shoots on film and then
+uses a machine known as a *datacine* (e.g. `Spirit 4K DataCine`_ or
+Cintel DSX) or a *scanner* (e.g. `Northlight Scanner`_ or
+`Lasergraphics`_ Director) to convert each film image into an
+individual image file. An alternative to this is to use a high
+definition CCD camera such as the `Grass Valley Viper`_ or the
+Panavision Genesis to capture images to uncompressed files directly. A
+rather inferior approach is to use a video high definition compressed
+format like HDCAM and convert each frame to a file for processing.
 
 Images scanned from film are usually in either a log colorspace similar
 to Cineon Log (10 bits per sample is most common), or in a linear format

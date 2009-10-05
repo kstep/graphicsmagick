@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -895,12 +895,14 @@ MagickExport MagickPassFail HuffmanEncodeImage(const ImageInfo *image_info,
 %  Huffman-coding (CCITT Group4 FAX) and returns the compressed data in a
 %  heap allocated buffer.  NULL is returned if there is an error.
 %
+%  Data is output with one strip per page with MSB2LSB fill order.
+%
 %  The format of the ImageToHuffman2DBlob method is:
 %
-%      char *ImageToHuffman2DBlob(const Image *image,
-%                                 const ImageInfo *image_info,
-%                                 size_t *blob_length,
-%                                 ExceptionInfo *exception);
+%      unsigned char *ImageToHuffman2DBlob(const Image *image,
+%                                          const ImageInfo *image_info,
+%                                          size_t *blob_length,
+%                                          ExceptionInfo *exception);
 %
 %  A description of each parameter follows:
 %
@@ -913,12 +915,12 @@ MagickExport MagickPassFail HuffmanEncodeImage(const ImageInfo *image_info,
 %    o exception: Any exception is reported here.
 %
 */
-MagickExport char *
+MagickExport unsigned char *
 ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
 		     size_t *blob_length,ExceptionInfo *exception)
 {
-  char
-    *blob = NULL;
+  unsigned char
+    *blob = (unsigned char *) NULL;
 
   ImageInfo
     *huffman_info;
@@ -936,7 +938,7 @@ ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
 	{
 	  (void) strlcpy(huffman_image->magick,"GROUP4RAW",sizeof(huffman_image->magick));
 	  (void) strlcpy(huffman_image->filename,"",sizeof(huffman_image->filename));
-	  blob =(char *) ImageToBlob(huffman_info, huffman_image, blob_length, exception);
+	  blob=ImageToBlob(huffman_info, huffman_image, blob_length, exception);
 	  DestroyImage(huffman_image);
 	}
       DestroyImageInfo(huffman_info);
@@ -961,10 +963,10 @@ ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
 %
 %  The format of the ImageToJPEGBlob method is:
 %
-%      char *ImageToJPEGBlob(const Image *image,
-%                            const ImageInfo *image_info,
-%                            size_t *blob_length,
-%                            ExceptionInfo *exception);
+%      unsigned char *ImageToJPEGBlob(const Image *image,
+%                                     const ImageInfo *image_info,
+%                                     size_t *blob_length,
+%                                     ExceptionInfo *exception);
 %
 %  A description of each parameter follows:
 %
@@ -977,11 +979,11 @@ ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
 %    o exception: Any exception is reported here.
 %
 */
-MagickExport char *
+MagickExport unsigned char *
 ImageToJPEGBlob(const Image *image,const ImageInfo *image_info,
 		size_t *blob_length,ExceptionInfo *exception)
 {
-  char
+  unsigned char
     *blob = NULL;
 
   ImageInfo
@@ -994,12 +996,21 @@ ImageToJPEGBlob(const Image *image,const ImageInfo *image_info,
       Image
 	*jpeg_image;
 
+      /*
+	Try to preserve any existing JPEG options but if the user
+	applies any override, then existing JPEG options are ignored.
+      */
+      if ((JPEGCompression == image->compression) &&
+	  (DefaultCompressionQuality == image_info->quality) &&
+	  ((char *) NULL == jpeg_info->sampling_factor))
+	(void) AddDefinitions(jpeg_info,"jpeg:preserve-settings=TRUE",
+			      exception);
       jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
       if (jpeg_image != (Image *) NULL)
 	{
 	  (void) strlcpy(jpeg_image->magick,"JPEG",sizeof(jpeg_image->magick));
 	  (void) strlcpy(jpeg_image->filename,"",sizeof(jpeg_image->filename));
-	  blob =(char *) ImageToBlob(jpeg_info, jpeg_image, blob_length, exception);
+	  blob =(unsigned char *) ImageToBlob(jpeg_info, jpeg_image, blob_length, exception);
 	  DestroyImage(jpeg_image);
 	}
       DestroyImageInfo(jpeg_info);

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1019,6 +1019,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     }
     for (i=0; commands[i] != (char *) NULL; i++)
       MagickFreeMemory(commands[i]);
+    MagickFreeMemory(commands);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&delegate_semaphore);

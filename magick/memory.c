@@ -222,7 +222,8 @@ MagickExport void * MagickMallocCleared(const size_t size)
 %
 %  The format of the MagickCloneMemory method is:
 %
-%      void *MagickCloneMemory(void *destination,const void *source,const size_t size)
+%      void *MagickCloneMemory(void *destination,const void *source,
+%                              const size_t size)
 %
 %  A description of each parameter follows:
 %

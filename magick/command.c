@@ -552,12 +552,12 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
     if (LocaleCompare("help",option+1) == 0)
       {
         AnimateUsage();
-        return False;
+        return MagickPass;
       }
     if (LocaleCompare("version",option+1) == 0)
       {
         (void) VersionCommand(image_info,argc,argv,metadata,exception);
-        return False;
+        return MagickPass;
       }
   }
 
@@ -1500,13 +1500,17 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
                                   LocaleCompare("-?",argv[1]) == 0)))
     {
       BenchmarkUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return MagickFail;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return MagickFail;
+      return MagickPass;
     }
 
   /*
@@ -1715,13 +1719,17 @@ CompareImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       CompareUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickPass;
     }
 
   status=ExpandFilenames(&argc,&argv);
@@ -1910,7 +1918,8 @@ CompareImageCommand(ImageInfo *image_info,
         if (LocaleCompare("help",option+1) == 0)
           {
             CompareUsage();
-            ThrowCompareException(OptionError,UsageError,NULL);
+	    break;
+            /* ThrowCompareException(OptionError,UsageError,NULL); */
           }
         if ((LocaleCompare("highlight-color",option+1) == 0) ||
             (LocaleCompare("hilight-color",option+1) == 0))
@@ -2526,19 +2535,23 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  status=True;
+  status=MagickPass;
 
   if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
       LocaleCompare("-?",argv[1]) == 0)))
     {
       CompositeUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickPass;
     }
 
   status=ExpandFilenames(&argc,&argv);
@@ -2986,7 +2999,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("help",option+1) == 0)
           {
             CompositeUsage();
-            ThrowCompositeException(OptionError,UsageError,NULL);
+	    break;
+            /* ThrowCompositeException(OptionError,UsageError,NULL); */
           }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
       }
@@ -3685,13 +3699,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       ConvertUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return MagickFail;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return MagickFail;
+      return MagickPass;
     }
 
   status=ExpandFilenames(&argc,&argv);
@@ -4379,7 +4397,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("help",option+1) == 0)
           {
             ConvertUsage();
-            ThrowConvertException(OptionError,UsageError,NULL);
+	    break;
+            /* ThrowConvertException(OptionError,UsageError,NULL); */
           }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
       }
@@ -4606,7 +4625,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                     ThrowConvertException(OptionError,UnrecognizedListType,
                       option)
                 }
-                return(True);
+		status=MagickPass;
+		goto convert_cleanup_and_return;
               }
             break;
           }
@@ -5396,7 +5416,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       case '?':
         {
           ConvertUsage();
-          ThrowConvertException(OptionError,UsageError,NULL);
+	  break;
+          /* ThrowConvertException(OptionError,UsageError,NULL); */
         }
       default:
         {
@@ -5708,13 +5729,17 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       ConjureUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return MagickFail;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return MagickFail;
+      return MagickPass;
     }
 
   /*
@@ -6003,13 +6028,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           (LocaleCompare("-?",argv[1]) == 0))
         {
           DisplayUsage();
-          ThrowException(exception,OptionError,UsageError,NULL);
-          return False;
+          return MagickPass;
         }
       else if (LocaleCompare("-version",argv[1]) == 0)
         {
           (void) VersionCommand(image_info,argc,argv,metadata,exception);
-          return False;
+          return MagickPass;
         }
     }
 
@@ -6680,7 +6704,10 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
-          DisplayUsage();
+	  {
+	    DisplayUsage();
+	    break;
+	  }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
         break;
       }
@@ -7374,7 +7401,7 @@ static unsigned int HelpCommand(ImageInfo *ARGUNUSED(image_info),
   
   GMUsage();
 
-  return True;
+  return MagickPass;
 }
 
 /*
@@ -7462,13 +7489,17 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       IdentifyUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickPass;
     }
 
   /*
@@ -10812,13 +10843,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       MogrifyUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickPass;
     }
 
   /*
@@ -11691,7 +11726,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                     ThrowMogrifyException(OptionError,UnrecognizedListType,
                       option)
                 }
-                return(True);
+                status=MagickPass;
+		goto mogrify_cleanup_and_return;
               }
             break;
           }
@@ -12771,6 +12807,21 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
     status;
 
   /*
+    Validate command line.
+  */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      MontageUsage();
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
+    }
+
+  /*
     Set defaults.
   */
   format=(char *) NULL;
@@ -12787,16 +12838,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       (char *) NULL);
-
-  /*
-    Validate command line.
-  */
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      MontageUsage();
-      ThrowMontageException(OptionError,UsageError,NULL);
-    }
 
   (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
   (void) SetImageInfo(image_info,True,exception);
@@ -14083,12 +14124,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
         LocaleCompare("?", option+1) == 0)
       {
         ImportUsage();
-        return False;
+        return MagickPass;
       }
     if (LocaleCompare("version",option+1) == 0)
       {
         (void) VersionCommand(image_info,argc,argv,metadata,exception);
-        return False;
+        return MagickPass;
       }
   }
 
@@ -15042,13 +15083,17 @@ TimeImageCommand(ImageInfo *image_info,
                                   LocaleCompare("-?",argv[1]) == 0)))
     {
       TimeUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return MagickFail;
+      if (argc < 2)
+	{
+	  ThrowException(exception,OptionError,UsageError,NULL);
+	  return MagickFail;
+	}
+      return MagickPass;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return MagickFail;
+      return MagickPass;
     }
 
   /*

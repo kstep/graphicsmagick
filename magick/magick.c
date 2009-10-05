@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1159,7 +1159,9 @@ MagickExport MagickPassFail ListModuleMap(FILE *file,ExceptionInfo *exception)
 /*              (void) fprintf(file, "\n"); */
 /*            (void) fprintf(file, "  <!-- %s -->\n",magick_array[i]->description); */
            (void) fprintf(file, "  <module magick=\"%s\" name=\"%s\" />\n",
-                          magick_array[i]->name, magick_array[i]->module);
+                          magick_array[i]->name,
+			  (magick_array[i]->module == NULL ? "(null)" :
+			   magick_array[i]->module));
          }
      }
    (void) fprintf(file, "</modulemap>\n");

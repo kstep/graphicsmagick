@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2009 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -57,7 +57,7 @@ extern MagickExport MagickPassFail
   PackbitsEncodeImage(Image *image,const size_t length,magick_uint8_t *pixels),
   PackbitsEncode2Image(Image *image,const size_t length,magick_uint8_t *pixels,WriteByteHook write_byte,void *info);
 
-extern MagickExport char
+extern MagickExport unsigned char
   *ImageToHuffman2DBlob(const Image *image,const ImageInfo *image_info,
      size_t *length,ExceptionInfo *exception),
   *ImageToJPEGBlob(const Image *image,const ImageInfo *image_info,
