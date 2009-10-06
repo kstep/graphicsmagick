@@ -4983,6 +4983,10 @@ utilities_gm_SOURCES = utilities/gm.c
 @HasXML_FALSE@UTILITIES_XML_XFAIL_TESTS = \
 @HasXML_FALSE@	utilities/tests/msl_composite.sh
 
+@HasX11_FALSE@UTILITIES_X11_XFAIL_TESTS = \
+@HasX11_FALSE@	utilities/tests/help-animate.sh \
+@HasX11_FALSE@	utilities/tests/help-import.sh
+
 @WITH_MODULES_FALSE@UTILITIES_MODULES_XFAIL_TESTS = \
 @WITH_MODULES_FALSE@	utilities/tests/list-module.sh
 

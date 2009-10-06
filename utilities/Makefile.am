@@ -37,6 +37,12 @@ UTILITIES_XML_XFAIL_TESTS = \
 	utilities/tests/msl_composite.sh
 endif
 
+if !HasX11
+UTILITIES_X11_XFAIL_TESTS = \
+	utilities/tests/help-animate.sh \
+	utilities/tests/help-import.sh
+endif
+
 if !WITH_MODULES
 UTILITIES_MODULES_XFAIL_TESTS = \
 	utilities/tests/list-module.sh
