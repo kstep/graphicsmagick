@@ -4642,6 +4642,7 @@ MagickExport void Strip(char *message)
 MagickExport MagickBool
 SubstituteString(char **buffer,const char *search,const char *replace)
 {
+#if 0
   register char
     *p=*buffer;
 
@@ -4687,6 +4688,99 @@ SubstituteString(char **buffer,const char *search,const char *replace)
 	}
     }
   return replaced;
+#else
+  char
+    *destination,
+    *result;
+
+  const char
+    *match,
+    *source;
+
+  size_t
+    allocated_length,
+    copy_length,
+    replace_length,
+    result_length,
+    search_length;
+
+  assert(buffer != (char**) NULL);
+  assert(*buffer != (char *) NULL);
+  assert(search != (const char*) NULL);
+  assert(replace != (const char*) NULL);
+  source=(*buffer);
+  match=strstr(source,search);
+  if (match == (char *) NULL)
+    return(False);
+  allocated_length=strlen(source)+MaxTextExtent;
+  result=MagickAllocateMemory(char *,allocated_length);
+  if (result == (char *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateString);
+  *result='\0';
+  result_length=0;
+  destination=result;
+  replace_length=strlen(replace);
+  search_length=strlen(search);
+  while (match != (char*) NULL)
+  {
+    /*
+      Copy portion before match.
+    */
+    copy_length=match-source;
+    if (copy_length != 0)
+      {
+        result_length+=copy_length;
+        if (result_length >= allocated_length)
+          {
+            allocated_length+=copy_length+MaxTextExtent;
+            MagickReallocMemory(char *,result,allocated_length);
+            if (result == (char *) NULL)
+              MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+              UnableToAllocateString);
+          }
+        (void) strlcpy(destination,source,copy_length+1);
+        destination+=copy_length;
+      }
+      /*
+        Copy replacement.
+      */
+      result_length+=replace_length;
+      if (result_length >= allocated_length)
+        {
+          allocated_length+=replace_length+MaxTextExtent;
+          MagickReallocMemory(char *,result,allocated_length);
+          if (result == (char *) NULL)
+            MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+              UnableToAllocateString);
+        }
+      (void) strcat(destination,replace);
+      destination+=replace_length;
+      /*
+        Find next match.
+      */
+      source=match;
+      source+=search_length;
+      match=strstr(source,search);
+    }
+  /*
+    Copy remaining string.
+  */
+  copy_length=strlen(source);
+  result_length+=copy_length;
+  if (result_length >= allocated_length)
+    {
+      allocated_length+=copy_length+MaxTextExtent;
+      MagickReallocMemory(char *,result,allocated_length);
+      if (result == (char *) NULL)
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+          UnableToAllocateString);
+    }
+  (void) strcat(destination,source);
+  MagickFreeMemory(*buffer);
+  *buffer=result;
+  return True;
+#endif
 }
 
 /*
