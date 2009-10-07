@@ -542,9 +542,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *fax_blob=(unsigned char *) NULL;
 
-  CompressionType
-    compression;
-
   const ImageAttribute
     *attribute;
 
@@ -618,64 +615,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  /*
-    Default to ZIP compression if it is available.
-  */
-#if defined(HasZLIB)
-  compression=ZipCompression;
-#else
-  compression=NoCompression;
-#endif
-
-  /*
-    FIXME: Should we pay attention to Image compression (which usually
-    depends on the input file format) at all?  Let's comment it out
-    and see if anyone complains.
-  */
-#if 0
-  if ((image->compression != UndefinedCompression) &&
-      (image->compression != NoCompression))
-    compression=image->compression;
-#endif
-
-  /*
-    ImageInfo compression always prevails if it is set.
-  */
-  if (image_info->compression != UndefinedCompression)
-    compression=image_info->compression;
-
-  switch (compression)
-    {
-#if !defined(HasJPEG)
-    case JPEGCompression:
-      {
-        /*
-          If JPEG compression is not supported, then use RLE compression
-          and report a warning to user.
-        */
-        compression=RLECompression;
-        ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
-        break;
-      }
-#endif
-#if !defined(HasZLIB)
-    case ZipCompression:
-      {
-        /*
-          If ZIP compression is not supported, then use RLE compression
-          and report a warning to user.
-        */
-        compression=RLECompression;
-        ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
-        break;
-      }
-#endif
-    default:
-      break;
-    }
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "%s compression.",
-                        CompressionTypeToString(compression));
 
   /*
     Allocate X ref memory.
@@ -763,14 +702,75 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   do
     {
       ImageCharacteristics
-        characteristics;
+	characteristics;
+
+      CompressionType
+	compression;
 
       /*
-        Analyze image to be written.
+	Analyze image properties.
       */
       (void) GetImageCharacteristics(image,&characteristics,
-                                     (OptimizeType == image_info->type),
-                                     &image->exception);
+				     (OptimizeType == image_info->type),
+				     &image->exception);
+
+      compression=image->compression;
+      if (image_info->compression != UndefinedCompression)
+	{
+	  /*
+	    ImageInfo compression always prevails if it is set.
+	  */
+	  compression=image_info->compression;
+	}
+      else
+	{
+	  /*
+	    Default to Zip compression unless the image was JPEG
+	    compressed and is not monochrome.
+	  */
+	  if ((JPEGCompression != compression) || (characteristics.monochrome))
+	    {
+#if defined(HasZLIB)
+	      compression=ZipCompression;
+#else
+	      compression=NoCompression;
+#endif
+	    }
+	}
+      
+      switch (compression)
+	{
+#if !defined(HasJPEG)
+	case JPEGCompression:
+	  {
+	    /*
+	      If JPEG compression is not supported, then use RLE compression
+	      and report a warning to user.
+	    */
+	    compression=RLECompression;
+	    ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
+	    break;
+	  }
+#endif
+#if !defined(HasZLIB)
+	case ZipCompression:
+	  {
+	    /*
+	      If ZIP compression is not supported, then use RLE compression
+	      and report a warning to user.
+	    */
+	    compression=RLECompression;
+	    ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
+	    break;
+	  }
+#endif
+	default:
+	  break;
+	}
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "%s compression.",
+			    CompressionTypeToString(compression));
+
       /*
         Scale image to size of Portable Document page.
       */
@@ -1010,6 +1010,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           ((image_info->type != TrueColorType) &&
            characteristics.grayscale))
         {
+	  /*
+	    Write grayscale output.
+	  */
           switch (compression)
             {
             case FaxCompression:

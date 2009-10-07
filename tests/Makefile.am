@@ -694,6 +694,34 @@ TESTS_TESTS = \
 	tests/rwfile_PCX_gray.sh \
 	tests/rwfile_PCX_pallette.sh \
 	tests/rwfile_PCX_truecolor.sh \
+	tests/rwfile_PDF_bilevel.sh \
+	tests/rwfile_PDF_bilevel_fax.sh \
+	tests/rwfile_PDF_bilevel_jpeg.sh \
+	tests/rwfile_PDF_bilevel_lzw.sh \
+	tests/rwfile_PDF_bilevel_none.sh \
+	tests/rwfile_PDF_bilevel_rle.sh \
+	tests/rwfile_PDF_bilevel_zip.sh \
+	tests/rwfile_PDF_gray.sh \
+	tests/rwfile_PDF_gray_fax.sh \
+	tests/rwfile_PDF_gray_jpeg.sh \
+	tests/rwfile_PDF_gray_lzw.sh \
+	tests/rwfile_PDF_gray_none.sh \
+	tests/rwfile_PDF_gray_rle.sh \
+	tests/rwfile_PDF_gray_zip.sh \
+	tests/rwfile_PDF_pallette.sh \
+	tests/rwfile_PDF_pallette_fax.sh \
+	tests/rwfile_PDF_pallette_jpeg.sh \
+	tests/rwfile_PDF_pallette_lzw.sh \
+	tests/rwfile_PDF_pallette_none.sh \
+	tests/rwfile_PDF_pallette_rle.sh \
+	tests/rwfile_PDF_pallette_zip.sh \
+	tests/rwfile_PDF_truecolor.sh \
+	tests/rwfile_PDF_truecolor_fax.sh \
+	tests/rwfile_PDF_truecolor_jpeg.sh \
+	tests/rwfile_PDF_truecolor_lzw.sh \
+	tests/rwfile_PDF_truecolor_none.sh \
+	tests/rwfile_PDF_truecolor_rle.sh \
+	tests/rwfile_PDF_truecolor_zip.sh \
 	tests/rwfile_PGM_bilevel.sh \
 	tests/rwfile_PGM_gray.sh \
 	tests/rwfile_PGM_pallette.sh \
@@ -914,6 +942,7 @@ CHECK_FILE_FORMATS = \
 	PCD \
 	PCDS \
 	PCX \
+	PDF \
 	PGM \
 	PICON \
 	PICT \
@@ -1004,6 +1033,14 @@ CHECK_MIFF_FILE_COMPRESS = \
 	zip \
 	rle
 
+CHECK_PDF_FILE_COMPRESS = \
+	none \
+	fax \
+	jpeg \
+	lzw \
+	rle \
+	zip
+
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	( \
@@ -1093,6 +1130,20 @@ generate-tests-scripts:
 	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" ; \
+	    )  > "$${sh_file}" ; \
+            chmod +x "$$sh_file" ; \
+	  done ; \
+	done
+	for compress in $(CHECK_PDF_FILE_COMPRESS) ; \
+	do \
+	  for type in $(CHECK_TYPES) ; \
+	  do \
+	    sh_file="$(srcdir)/tests/rwfile_PDF_$${type}_$${compress}.sh" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff PDF" ; \
 	    )  > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
