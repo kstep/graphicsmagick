@@ -726,14 +726,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 	{
 	  /*
 	    Default to Zip compression unless the image was JPEG
-	    compressed and is not monochrome.
+	    compressed and is not now monochrome or colormapped.
 	  */
-	  if ((JPEGCompression != compression) || (characteristics.monochrome))
+	  if ((JPEGCompression != compression) ||
+	      (characteristics.monochrome) ||
+	      (characteristics.palette))
 	    {
 #if defined(HasZLIB)
 	      compression=ZipCompression;
 #else
-	      compression=NoCompression;
+	      compression=LZWCompression;
 #endif
 	    }
 	}
