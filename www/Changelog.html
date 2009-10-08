@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2009-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dcm.c (ReadDCMImage): Handle (UN)known type VRs correctly
+        and interpret the transfer syntax correctly.  Added define
+        "dcm:avoid-scaling" to request that the coder should not scale
+        image samples unless necessary (i.e. when bits used &gt; quantum
+        depth or maximum colormap depth, depending on image type).  Work
+        is contributed by John Sergeant.
+
+</UL>
+<p>
 2009-10-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

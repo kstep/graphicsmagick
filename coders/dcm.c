@@ -50,7 +50,6 @@
 
 /*
 #define USE_GRAYMAP
-#define RLE_SUPPORTED
 #define GRAYSCALE_USES_PALETTE
 */
 
@@ -59,7 +58,7 @@
 #define IGNORE_WINDOW_FOR_UNSPECIFIED_SCALE_TYPE
 
 /*
-  Function types for reading MSB/LSB shorts/longs 
+  Function types for reading MSB/LSB shorts/longs
 */
 typedef magick_uint16_t (DicomReadShortFunc)(Image *);
 typedef magick_uint32_t (DicomReadLongFunc)(Image *);
@@ -150,10 +149,32 @@ typedef struct _DicomStream
 
   Dicom_RT
     rescale_type;
-	
+
   Dicom_RS
     rescaling;
-	
+
+  /*
+    Array to store offset table for fragments within image
+  */
+  magick_uint32_t
+    offset_ct;
+  magick_uint32_t *
+    offset_arr;
+
+  /*
+    Variables used to handle fragments and RLE compression
+  */
+  magick_uint32_t
+    frag_bytes;
+
+  magick_uint32_t
+    rle_seg_ct,
+    rle_seg_offsets[15];
+
+  int
+    rle_rep_ct,
+    rle_rep_char;
+
   /*
     Max and minimum sample values within image used for post rescale mapping
   */
@@ -192,10 +213,10 @@ typedef struct _DicomStream
   */
   DicomReadShortFunc *
     funcReadShort;
-  
+
   DicomReadLongFunc *
     funcReadLong;
-	
+
   int
     explicit_file;
 
@@ -247,11 +268,11 @@ typedef struct _DicomInfo
   unsigned short
     group,
     element;
-	
+
   char
     *vr,
     *description;
-	
+
   DicomElemParseFunc
     *pfunc;
 } DicomInfo;
@@ -2855,7 +2876,11 @@ static MagickPassFail DCM_InitDCM(DicomStream *dcm,int verbose)
   dcm->rescale_map=NULL;
   dcm->rescale_type=DCM_RT_HOUNSFIELD;
   dcm->rescaling=DCM_RS_NONE;
-#if defined(USE_GRAYMAP)  
+  dcm->offset_ct=0;
+  dcm->offset_arr=NULL;
+  dcm->frag_bytes=0;
+  dcm->rle_rep_ct=0;
+#if defined(USE_GRAYMAP)
   dcm->graymap=(unsigned short *) NULL;
 #endif
   dcm->funcReadShort=ReadBlobLSBShort;
@@ -2882,40 +2907,35 @@ static MagickPassFail funcDCM_TransferSyntax(Image *image,DicomStream *dcm,Excep
   if (strncmp(p,"1.2.840.10008.1.2",17) == 0)
     {
       if (*(p+17) == 0)
-	{
-	  dcm->transfer_syntax = DCM_TS_IMPL_LITTLE;
-	  return MagickPass;
-	}
+        {
+          dcm->transfer_syntax = DCM_TS_IMPL_LITTLE;
+          return MagickPass;
+        }
       type=0;
       subtype=0;
       sscanf(p+17,".%d.%d",&type,&subtype);
       switch (type)
-	{
-	case 1:
-	  dcm->transfer_syntax = DCM_TS_EXPL_LITTLE;
-	  break;
-	case 2:
-	  dcm->transfer_syntax = DCM_TS_EXPL_BIG;
-	  dcm->msb_state=DCM_MSB_BIG_PENDING;
-	  break;
-	case 4:
-	  if ((type >= 80) && (type <= 81))
-	    dcm->transfer_syntax = DCM_TS_JPEG_LS;
-	  else
-	    if ((type >= 90) && (type <= 93))
-	      dcm->transfer_syntax = DCM_TS_JPEG_2000;
-	    else
-	      dcm->transfer_syntax = DCM_TS_JPEG;	    
-	  break;
-	case 5:
-#if defined(RLE_SUPPORTED)
-	  dcm->transfer_syntax = DCM_TS_RLE;
-	  break;
-#else
-          ThrowException(exception,CoderError,RLECompressionNotSupported,image->filename);
-          return MagickFail;
-#endif
-	}
+        {
+        case 1:
+          dcm->transfer_syntax = DCM_TS_EXPL_LITTLE;
+          break;
+        case 2:
+          dcm->transfer_syntax = DCM_TS_EXPL_BIG;
+          dcm->msb_state=DCM_MSB_BIG_PENDING;
+          break;
+        case 4:
+          if ((subtype >= 80) && (subtype <= 81))
+            dcm->transfer_syntax = DCM_TS_JPEG_LS;
+          else
+          if ((subtype >= 90) && (subtype <= 93))
+            dcm->transfer_syntax = DCM_TS_JPEG_2000;
+          else
+            dcm->transfer_syntax = DCM_TS_JPEG;
+          break;
+        case 5:
+          dcm->transfer_syntax = DCM_TS_RLE;
+          break;
+        }
     }
   return MagickPass;
 }
@@ -2999,7 +3019,7 @@ static MagickPassFail funcDCM_PhotometricInterpretation(Image *image,DicomStream
   for (i=0; i < (long) Min(dcm->length, MaxTextExtent-1); i++)
     photometric[i]=dcm->data[i];
   photometric[i]='\0';
-	  
+
   if (strncmp(photometric,"MONOCHROME1",11) == 0)
     dcm->phot_interp = DCM_PI_MONOCHROME1;
   else
@@ -3007,12 +3027,12 @@ static MagickPassFail funcDCM_PhotometricInterpretation(Image *image,DicomStream
       dcm->phot_interp = DCM_PI_MONOCHROME2;
     else
       if (strncmp(photometric,"PALETTE COLOR",13) == 0)
-	dcm->phot_interp = DCM_PI_PALETTE_COLOR;
+        dcm->phot_interp = DCM_PI_PALETTE_COLOR;
       else
-	if (strncmp(photometric,"RGB",3) == 0)
-	  dcm->phot_interp = DCM_PI_RGB;
-	else
-	  dcm->phot_interp = DCM_PI_OTHER;
+        if (strncmp(photometric,"RGB",3) == 0)
+          dcm->phot_interp = DCM_PI_RGB;
+        else
+          dcm->phot_interp = DCM_PI_OTHER;
   return MagickPass;
 }
 
@@ -3212,7 +3232,7 @@ static MagickPassFail funcDCM_LUT(Image *image,DicomStream *dcm,ExceptionInfo *e
   */
   unsigned long
     colors;
-	
+
   register unsigned long
     i;
 
@@ -3236,12 +3256,12 @@ static MagickPassFail funcDCM_LUT(Image *image,DicomStream *dcm,ExceptionInfo *e
 #endif
   return MagickPass;
 }
-	
+
 static MagickPassFail funcDCM_Palette(Image *image,DicomStream *dcm,ExceptionInfo *exception)
 {
   register long
     i;
-	
+
   unsigned char
     *p;
 
@@ -3255,19 +3275,19 @@ static MagickPassFail funcDCM_Palette(Image *image,DicomStream *dcm,ExceptionInf
   if (image->colormap == (PixelPacket *) NULL)
     {
       /*
-	Allocate color map first time in
+        Allocate color map first time in
       */
       if (!AllocateImageColormap(image,dcm->length))
-	{
+        {
           ThrowException(exception,ResourceLimitError,UnableToCreateColormap,image->filename);
-	  return MagickFail;
-	}
+          return MagickFail;
+        }
     }
 
   /*
     Check that palette size matches previous one(s)
   */
-  if (dcm->length != image->colors)	  
+  if (dcm->length != image->colors)
     {
       ThrowException(exception,ResourceLimitError,UnableToCreateColormap,image->filename);
       return MagickFail;
@@ -3277,18 +3297,70 @@ static MagickPassFail funcDCM_Palette(Image *image,DicomStream *dcm,ExceptionInf
   for (i=0; i < (long) image->colors; i++)
     {
       if (dcm->msb_state == DCM_MSB_BIG)
-	index=(*p << 8) | *(p+1);
+        index=(*p << 8) | *(p+1);
       else
-	index=*p | (*(p+1) << 8);
+        index=*p | (*(p+1) << 8);
       if (dcm->element == 0x1201)
-	image->colormap[i].red=ScaleShortToQuantum(index);
+        image->colormap[i].red=ScaleShortToQuantum(index);
       else if (dcm->element == 0x1202)
-	image->colormap[i].green=ScaleShortToQuantum(index);
+        image->colormap[i].green=ScaleShortToQuantum(index);
       else
-	image->colormap[i].blue=ScaleShortToQuantum(index);
+        image->colormap[i].blue=ScaleShortToQuantum(index);
       p+=2;
     }
   return MagickPass;
+}
+
+static magick_uint8_t DCM_RLE_ReadByte(Image *image, DicomStream *dcm)
+{
+  if (dcm->rle_rep_ct == 0)
+    {
+      int
+        rep_ct,
+        rep_char;
+
+      /* We need to read the next command pair */     
+      if (dcm->frag_bytes <= 2)
+        dcm->frag_bytes = 0;
+      else
+        dcm->frag_bytes -= 2;
+
+      rep_ct=ReadBlobByte(image);
+      rep_char=ReadBlobByte(image);
+      if (rep_ct == 128)
+        {
+          /* Illegal value */
+          return 0;
+        }
+      else
+      if (rep_ct < 128)
+        {
+          /* (rep_ct+1) literal bytes */
+          dcm->rle_rep_ct=rep_ct;
+          dcm->rle_rep_char=-1;
+          return (magick_uint8_t)rep_char;
+        }
+      else
+        {
+          /* (257-rep_ct) repeated bytes */
+          dcm->rle_rep_ct=256-rep_ct;
+          dcm->rle_rep_char=rep_char;
+          return (magick_uint8_t)rep_char;
+        }
+    }
+
+  dcm->rle_rep_ct--;
+  if (dcm->rle_rep_char >= 0)
+    return dcm->rle_rep_char;
+
+  if (dcm->frag_bytes > 0)
+    dcm->frag_bytes--;
+  return ReadBlobByte(image);
+}
+
+static magick_uint16_t DCM_RLE_ReadShort(Image *image, DicomStream *dcm)
+{
+  return (DCM_RLE_ReadByte(image,dcm) << 4) | DCM_RLE_ReadByte(image,dcm);
 }
 
 static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionInfo *exception)
@@ -3314,7 +3386,7 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
       dcm->funcReadShort=ReadBlobMSBShort;
       dcm->funcReadLong=ReadBlobMSBLong;
       dcm->msb_state=DCM_MSB_BIG;
-    }	  
+    }
   dcm->element=dcm->funcReadShort(image);
   dcm->data=(unsigned char *) NULL;
   dcm->quantum=0;
@@ -3331,7 +3403,7 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
         (dcm->element == dicom_info[i].element))
       break;
   dcm->index=i;
-	
+
   /*
     Check for "explicitness", but meta-file headers always explicit.
   */
@@ -3342,27 +3414,27 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
     }
   explicit_vr[2]='\0';
   (void) strlcpy(implicit_vr,dicom_info[dcm->index].vr,MaxTextExtent);
-  
+
 #if defined(NEW_IMPLICIT_LOGIC)
   use_explicit=False;
   if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
     {
       /* Explicit VR looks to be valid */
       if (strcmp(explicit_vr,implicit_vr) == 0)
-	{
-	  /* Explicit VR matches implicit VR so assume that it is explicit */
-	  use_explicit=True;
-	}
+        {
+          /* Explicit VR matches implicit VR so assume that it is explicit */
+          use_explicit=True;
+        }
       else if ((dcm->group & 1) || strcmp(implicit_vr,"xs") == 0)
-	{
-	  /*
-	    We *must* use explicit type under two conditions
-	    1) group is odd and therefore private
-	    2) element vr is set as "xs" ie is not of a fixed type
-	  */
-	  use_explicit=True;
-	  strcpy(implicit_vr,explicit_vr);
-	}
+        {
+          /*
+            We *must* use explicit type under two conditions
+            1) group is odd and therefore private
+            2) element vr is set as "xs" ie is not of a fixed type
+          */
+          use_explicit=True;
+          strcpy(implicit_vr,explicit_vr);
+        }
     }
   if ((!use_explicit) || (strcmp(implicit_vr,"!!") == 0))
     {
@@ -3378,14 +3450,15 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
           (strcmp(explicit_vr,"OW") == 0) ||
           (strcmp(explicit_vr,"OF") == 0) ||
           (strcmp(explicit_vr,"SQ") == 0) ||
-	  (strcmp(explicit_vr,"UT") == 0))
+          (strcmp(explicit_vr,"UN") == 0) ||
+          (strcmp(explicit_vr,"UT") == 0))
         {
           (void) dcm->funcReadShort(image);
           if (EOFBlob(image))
-	    {
+            {
               ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
               return MagickFail;
-	    }  
+            }
           dcm->quantum=4;
         }
     }
@@ -3411,16 +3484,16 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
           (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
         {
           (void) dcm->funcReadShort(image)
-	    if (EOFBlob(image))
-	      {
-		ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
-		return MagickFail;
-	      }  
+            if (EOFBlob(image))
+              {
+                ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
+                return MagickFail;
+              }
           dcm->quantum=4;
         }
     }
 #endif
-	
+
   dcm->datum=0;
   if (dcm->quantum == 4)
     {
@@ -3429,16 +3502,16 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
         {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
     }
   else if (dcm->quantum == 2)
     {
       dcm->datum=(long) dcm->funcReadShort(image);
       if (EOFBlob(image))
-	{
+        {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
     }
   dcm->quantum=0;
   dcm->length=1;
@@ -3446,22 +3519,20 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
     {
       if ((strcmp(implicit_vr,"SS") == 0) ||
           (strcmp(implicit_vr,"US") == 0) ||
-	  (strcmp(implicit_vr,"OW") == 0))
+          (strcmp(implicit_vr,"OW") == 0))
         dcm->quantum=2;
+      else if ((strcmp(implicit_vr,"UL") == 0) ||
+              (strcmp(implicit_vr,"SL") == 0) ||
+              (strcmp(implicit_vr,"FL") == 0) ||
+              (strcmp(implicit_vr,"OF") == 0))
+        dcm->quantum=4;
+      else  if (strcmp(implicit_vr,"FD") == 0)
+        dcm->quantum=8;
       else
-	if ((strcmp(implicit_vr,"UL") == 0) ||
-	    (strcmp(implicit_vr,"SL") == 0) ||
-	    (strcmp(implicit_vr,"FL") == 0) ||
-	    (strcmp(implicit_vr,"OF") == 0))
-	  dcm->quantum=4;
-	else
-	  if (strcmp(implicit_vr,"FD") == 0)
-	    dcm->quantum=8;
-	  else
-	    dcm->quantum=1;
+        dcm->quantum=1;
 
       if (dcm->datum != -1)
-	{
+        {
           dcm->length=(size_t) dcm->datum/dcm->quantum;
         }
       else
@@ -3479,12 +3550,12 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
   if (dcm->verbose)
     {
       if (!use_explicit)
-	explicit_vr[0]='\0';
+        explicit_vr[0]='\0';
       (void) fprintf(stdout,"0x%04lX %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
-		     image->offset,(unsigned long) dcm->length,implicit_vr,explicit_vr,
-		     dcm->group,dcm->element);
+                     image->offset,(unsigned long) dcm->length,implicit_vr,explicit_vr,
+                     dcm->group,dcm->element);
       if (dicom_info[dcm->index].description != (char *) NULL)
-	(void) fprintf(stdout," %.1024s",dicom_info[dcm->index].description);
+        (void) fprintf(stdout," %.1024s",dicom_info[dcm->index].description);
       (void) fprintf(stdout,": ");
     }
   if ((dcm->group == 0x7FE0) && (dcm->element == 0x0010))
@@ -3499,28 +3570,28 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
   if ((dcm->length == 1) && (dcm->quantum == 1))
     {
       if ((dcm->datum=ReadBlobByte(image)) == EOF)
-	{
+        {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
     }
   else if ((dcm->length == 1) && (dcm->quantum == 2))
     {
       dcm->datum=dcm->funcReadShort(image);
       if (EOFBlob(image))
-	{
+        {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
     }
   else if ((dcm->length == 1) && (dcm->quantum == 4))
     {
       dcm->datum=(long) dcm->funcReadLong(image);
       if (EOFBlob(image))
-	{
+        {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
     }
   else if ((dcm->quantum != 0) && (dcm->length != 0))
     {
@@ -3528,29 +3599,29 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
         size;
 
       if (dcm->length > ((~0UL)/dcm->quantum))
-	{
+        {
           ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
           return MagickFail;
-	}
+        }
       dcm->data=MagickAllocateArray(unsigned char *,(dcm->length+1),dcm->quantum);
       if (dcm->data == (unsigned char *) NULL)
-	{
+        {
           ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
           return MagickFail;
-	}	
+        }
       size=dcm->quantum*dcm->length;
       if (ReadBlob(image,size,(char *) dcm->data) != size)
-	{
+        {
           ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
           return MagickFail;
-	}
+        }
       dcm->data[size]=0;
     }
 
   if (dcm->verbose)
     {
       /*
-	Display data
+        Display data
       */
       if (dcm->data == (unsigned char *) NULL)
         {
@@ -3565,7 +3636,7 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
             {
               long
                 j,
-		bin_datum;
+                bin_datum;
 
               bin_datum=0;
               for (j=(long) dcm->length-1; j >= 0; j--)
@@ -3573,14 +3644,14 @@ static MagickPassFail DCM_ReadElement(Image *image, DicomStream *dcm,ExceptionIn
               (void) fprintf(stdout,"%lu\n",bin_datum);
             }
           else
-	    {
+            {
               for (i=0; i < (long) dcm->length; i++)
                 if (isprint(dcm->data[i]))
                   (void) fprintf(stdout,"%c",dcm->data[i]);
                 else
                   (void) fprintf(stdout,"%c",'.');
               (void) fprintf(stdout,"\n");
-	    }
+            }
         }
     }
   return MagickPass;
@@ -3603,8 +3674,8 @@ static MagickPassFail DCM_SetupColormap(Image *image,DicomStream *dcm,ExceptionI
       if (image->colormap == (PixelPacket *) NULL)
         {
           ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
-	  return MagickFail;
-	}
+          return MagickFail;
+        }
       (void) memcpy(image->colormap,image->previous->colormap,length);
     }
   else
@@ -3613,10 +3684,10 @@ static MagickPassFail DCM_SetupColormap(Image *image,DicomStream *dcm,ExceptionI
         Create new colormap
       */
       if (AllocateImageColormap(image,dcm->max_value_out+1) == MagickFail)
-	{
+        {
           ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
-	  return MagickFail;
-	}
+          return MagickFail;
+        }
     }
   return MagickPass;
 }
@@ -3641,34 +3712,34 @@ static MagickPassFail DCM_SetupRescaleMap(Image *image,DicomStream *dcm,Exceptio
 
   if (dcm->rescaling == DCM_RS_NONE)
     return MagickPass;
-	
+
   if (dcm->rescale_map == (Quantum *) NULL)
     {
       dcm->rescale_map=MagickAllocateArray(Quantum *,dcm->max_value_in+1,sizeof(Quantum));
       if (dcm->rescale_map == NULL)
-	{
+        {
           ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
-	  return MagickFail;
-	}
+          return MagickFail;
+        }
     }
 
   if (dcm->window_width == 0)
     { /* zero window width */
       if (dcm->upper_lim > dcm->lower_lim)
-	{
-	  /* Use known range within image */
+        {
+          /* Use known range within image */
           win_width=(dcm->upper_lim-dcm->lower_lim+1)*dcm->rescale_slope;
           win_center=((dcm->upper_lim+dcm->lower_lim)/2)*dcm->rescale_slope+dcm->rescale_intercept;
-	}
+        }
       else
-	{
-	  /* Use full sample range and hope for the best */
+        {
+          /* Use full sample range and hope for the best */
           win_width=(dcm->max_value_in+1)*dcm->rescale_slope;
-	  if (dcm->pixel_representation == 1)
-	    win_center=dcm->rescale_intercept;
-	  else
-	    win_center=win_width/2 + dcm->rescale_intercept;
-	}
+          if (dcm->pixel_representation == 1)
+            win_center=dcm->rescale_intercept;
+          else
+            win_center=win_width/2 + dcm->rescale_intercept;
+        }
     }
   else
     {
@@ -3680,15 +3751,15 @@ static MagickPassFail DCM_SetupRescaleMap(Image *image,DicomStream *dcm,Exceptio
   for (i=0; i < (dcm->max_value_in+1); i++)
     {
       if ((dcm->pixel_representation == 1) && (i >= (1U << (dcm->significant_bits-1))))
-	Xr = -((dcm->max_value_in+1-i) * dcm->rescale_slope) + dcm->rescale_intercept;
+        Xr = -((dcm->max_value_in+1-i) * dcm->rescale_slope) + dcm->rescale_intercept;
       else
-	Xr = (i * dcm->rescale_slope) + dcm->rescale_intercept;
+        Xr = (i * dcm->rescale_slope) + dcm->rescale_intercept;
       if (Xr <= Xw_min)
-	dcm->rescale_map[i]=0;
+        dcm->rescale_map[i]=0;
       else if (Xr >= Xw_max)
-	dcm->rescale_map[i]=dcm->max_value_out;
+        dcm->rescale_map[i]=dcm->max_value_out;
       else
-	dcm->rescale_map[i]=(Quantum)(((Xr-Xw_min)/(win_width-1))*dcm->max_value_out+0.5);
+        dcm->rescale_map[i]=(Quantum)(((Xr-Xw_min)/(win_width-1))*dcm->max_value_out+0.5);
     }  
   if (dcm->phot_interp == DCM_PI_MONOCHROME1)
     for (i=0; i < (dcm->max_value_in+1); i++)
@@ -3696,60 +3767,66 @@ static MagickPassFail DCM_SetupRescaleMap(Image *image,DicomStream *dcm,Exceptio
   return MagickPass;
 }
 
-void DCM_SetRescaling(DicomStream *dcm)
+void DCM_SetRescaling(DicomStream *dcm,int avoid_scaling)
 {
+  /*
+    If avoid_scaling is True then scaling will only be applied where necessary ie
+    input bit depth exceeds quantum size.
+
+    ### TODO : Should this throw an error rather than setting DCM_RS_PRE?
+  */
   dcm->rescaling=DCM_RS_NONE;
   dcm->max_value_out=dcm->max_value_in;
-  
+
   if (dcm->phot_interp == DCM_PI_PALETTE_COLOR)
     {
       if (dcm->max_value_in >= MaxColormapSize)
-	{
-	  dcm->max_value_out=MaxColormapSize-1;
-	  dcm->rescaling=DCM_RS_PRE;
-	}
+        {
+          dcm->max_value_out=MaxColormapSize-1;
+          dcm->rescaling=DCM_RS_PRE;
+        }
       return;
     }
-	
+
   if ((dcm->phot_interp == DCM_PI_MONOCHROME1) ||
       (dcm->phot_interp == DCM_PI_MONOCHROME2))
     {
       if ((dcm->transfer_syntax == DCM_TS_JPEG) ||
-	  (dcm->transfer_syntax == DCM_TS_JPEG_LS) ||
-	  (dcm->transfer_syntax == DCM_TS_JPEG_2000))
+          (dcm->transfer_syntax == DCM_TS_JPEG_LS) ||
+          (dcm->transfer_syntax == DCM_TS_JPEG_2000))
         {
-	  /* Encapsulated grayscale images are always post rescaled */
-          dcm->rescaling=DCM_RS_POST;
+          /* Encapsulated non-native grayscale images are post rescaled by default */
+          if (!avoid_scaling)
+            dcm->rescaling=DCM_RS_POST;
         }
-      else		
 #if defined(GRAYSCALE_USES_PALETTE)
-	if (dcm->max_value_in >= MaxColormapSize)
-	  {
-	    dcm->max_value_out=MaxColormapSize-1;
-	    dcm->rescaling=DCM_RS_PRE;
-	  }
-#else
-      if (dcm->max_value_in > MaxRGB)
-	{
-	  dcm->max_value_out=MaxRGB;
+      else if (dcm->max_value_in >= MaxColormapSize)
+        {
+          dcm->max_value_out=MaxColormapSize-1;
           dcm->rescaling=DCM_RS_PRE;
-	}
+        }
+#else
+      else if (dcm->max_value_in > MaxRGB)
+        {
+          dcm->max_value_out=MaxRGB;
+          dcm->rescaling=DCM_RS_PRE;
+        }
 #endif
-      else
-	{
+      else if (!avoid_scaling)
+        {
 #if !defined(GRAYSCALE_USES_PALETTE)
-	  dcm->max_value_out=MaxRGB;
+          dcm->max_value_out=MaxRGB;
 #endif
           dcm->rescaling=DCM_RS_POST;
         }
       return;
     }
 
-  if (dcm->max_value_in != MaxRGB)
-    {
-      dcm->max_value_out=MaxRGB;
-      dcm->rescaling=DCM_RS_PRE;
-    }
+  if (avoid_scaling || (dcm->max_value_in == MaxRGB))
+    return;
+
+  dcm->max_value_out=MaxRGB;
+  dcm->rescaling=DCM_RS_PRE;
 }
 
 static MagickPassFail DCM_PostRescaleImage(Image *image,DicomStream *dcm,unsigned long ScanLimits,ExceptionInfo *exception)
@@ -3764,62 +3841,62 @@ static MagickPassFail DCM_PostRescaleImage(Image *image,DicomStream *dcm,unsigne
   if (ScanLimits)
     {
       /*
-	Causes rescan for upper/lower limits - used for encapsulated images
+        Causes rescan for upper/lower limits - used for encapsulated images
       */
       unsigned int
-	l;
+        l;
 
       for (y=0; y < image->rows; y++)
-	{
-	  q=GetImagePixels(image,0,y,image->columns,1);
-	  if (q == (PixelPacket *) NULL)
-	    return MagickFail;
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            return MagickFail;
 
-	  if (image->storage_class == PseudoClass)
-	    {
-	      register IndexPacket
-		*indexes;
-	
-	      indexes=AccessMutableIndexes(image);
-	      for (x=0; x < image->columns; x++)
-		{
-		  l=indexes[x];
-		  if (dcm->pixel_representation == 1)
-		    if (l > ((dcm->max_value_in >> 1)))
-		      l = dcm->max_value_in-l+1;
-		  if (l < (unsigned int) dcm->lower_lim)
-		    dcm->lower_lim = l;
-		  if (l > (unsigned int) dcm->upper_lim)
-		    dcm->upper_lim = l;
-		}
-	    }		
-	  else
-	    {
-	      for (x=0; x < image->columns; x++)
-	        {
-		  l=q->green;
-		  if (dcm->pixel_representation == 1)
-		    if (l > (dcm->max_value_in >> 1))
-		      l = dcm->max_value_in-l+1;
-		  if (l < (unsigned int) dcm->lower_lim)
-		    dcm->lower_lim = l;
-		  if (l > (unsigned int) dcm->upper_lim)
-		    dcm->upper_lim = l;
-		  q++;
-		}
-	    }
-	}
-	  
+          if (image->storage_class == PseudoClass)
+            {
+              register IndexPacket
+                *indexes;
+
+              indexes=AccessMutableIndexes(image);
+              for (x=0; x < image->columns; x++)
+                {
+                  l=indexes[x];
+                  if (dcm->pixel_representation == 1)
+                    if (l > ((dcm->max_value_in >> 1)))
+                      l = dcm->max_value_in-l+1;
+                  if (l < (unsigned int) dcm->lower_lim)
+                    dcm->lower_lim = l;
+                  if (l > (unsigned int) dcm->upper_lim)
+                    dcm->upper_lim = l;
+                }
+            }
+          else
+            {
+              for (x=0; x < image->columns; x++)
+                {
+                  l=q->green;
+                  if (dcm->pixel_representation == 1)
+                    if (l > (dcm->max_value_in >> 1))
+                      l = dcm->max_value_in-l+1;
+                  if (l < (unsigned int) dcm->lower_lim)
+                    dcm->lower_lim = l;
+                  if (l > (unsigned int) dcm->upper_lim)
+                    dcm->upper_lim = l;
+                  q++;
+                }
+            }
+        }
+
       if (image->storage_class == PseudoClass)
-	{
-	  /* Handle compressed range by reallocating palette */
-	  if (!AllocateImageColormap(image,dcm->upper_lim+1))
-	    {
+        {
+          /* Handle compressed range by reallocating palette */
+          if (!AllocateImageColormap(image,dcm->upper_lim+1))
+            {
               ThrowException(exception,ResourceLimitError,UnableToCreateColormap,image->filename);
-	      return MagickFail;
-	    }
-	  return MagickPass;
-	}
+              return MagickFail;
+            }
+          return MagickPass;
+        }
     }
 
   DCM_SetupRescaleMap(image,dcm,exception);
@@ -3827,35 +3904,35 @@ static MagickPassFail DCM_PostRescaleImage(Image *image,DicomStream *dcm,unsigne
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-	return MagickFail;
+        return MagickFail;
 
       if (image->storage_class == PseudoClass)
-	{
-	  register IndexPacket
-	    *indexes;
-	
-	  indexes=AccessMutableIndexes(image);		
-	  for (x=0; x < image->columns; x++)
-	    indexes[x]=dcm->rescale_map[indexes[x]];
-	}		
+        {
+          register IndexPacket
+            *indexes;
+
+          indexes=AccessMutableIndexes(image);
+          for (x=0; x < image->columns; x++)
+            indexes[x]=dcm->rescale_map[indexes[x]];
+        }
       else
-	{
-	  for (x=0; x < image->columns; x++)
-	    {
-	      q->red=dcm->rescale_map[q->red];
-	      q->green=dcm->rescale_map[q->green];
-	      q->blue=dcm->rescale_map[q->blue];
-	      q++;
-	    }
-	}
+        {
+          for (x=0; x < image->columns; x++)
+            {
+              q->red=dcm->rescale_map[q->red];
+              q->green=dcm->rescale_map[q->green];
+              q->blue=dcm->rescale_map[q->blue];
+              q++;
+            }
+        }
       if (!SyncImagePixels(image))
-	return MagickFail;
+        return MagickFail;
       /*
-	if (image->previous == (Image *) NULL)
-	if (QuantumTick(y,image->rows))
+        if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
         if (!MagickMonitorFormatted(y,image->rows,exception,
-	LoadImageText,image->filename))
-	return MagickFail;
+        LoadImageText,image->filename))
+        return MagickFail;
       */
     }
   return MagickPass;
@@ -3882,70 +3959,85 @@ static MagickPassFail DCM_ReadPaletteImage(Image *image,DicomStream *dcm,Excepti
     byte;
 
   byte=0;
-  
+
   for (y=0; y < (long) image->rows; y++)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-	return MagickFail;
+        return MagickFail;
       indexes=AccessMutableIndexes(image);
       for (x=0; x < (long) image->columns; x++)
-	{
-	  if (dcm->bytes_per_pixel == 1)
-	    index=ReadBlobByte(image);
-	  else
-	    if (dcm->bits_allocated != 12)
-	      {
-		index=dcm->funcReadShort(image);
-	      }
-	    else
-	      {
-		if (x & 0x01)
-		  {
-		    /* ### TO DO - Check whether logic needs altering if msb_state != DCM_MSB_LITTLE */
-		    index=(ReadBlobByte(image) << 4) | byte;
-		  }
-		else
-		  {
-		    index=dcm->funcReadShort(image);
-		    byte=index >> 12;
-		    index&=0xfff;
-		  }
-	      }
-	  index&=dcm->max_value_in;
-	  if (dcm->rescaling == DCM_RS_PRE)
-	    {
-	      /*
-		### TO DO - must read as Direct Class so look up
-		red/green/blue values in palette table, processed via
-		rescale_map
-	      */
-	    }
-	  else
-	    {
+        {
+          if (dcm->bytes_per_pixel == 1)
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                index=DCM_RLE_ReadByte(image,dcm);
+              else
+                index=ReadBlobByte(image);
+            }
+          else
+          if (dcm->bits_allocated != 12)
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                index=DCM_RLE_ReadShort(image,dcm);
+              else
+                index=dcm->funcReadShort(image);
+            }
+          else
+            {
+              if (x & 0x01)
+                {
+                  /* ### TODO - Check whether logic needs altering if msb_state != DCM_MSB_LITTLE */
+                  if (dcm->transfer_syntax == DCM_TS_RLE)
+                    index=DCM_RLE_ReadByte(image,dcm);
+                  else
+                    index=ReadBlobByte(image);
+                  index=(index << 4) | byte;
+                }
+              else
+                {
+                  if (dcm->transfer_syntax == DCM_TS_RLE)
+                    index=DCM_RLE_ReadByte(image,dcm);
+                  else
+                    index=dcm->funcReadShort(image);
+                  byte=index >> 12;
+                  index&=0xfff;
+                }
+            }
+          index&=dcm->max_value_in;
+          if (dcm->rescaling == DCM_RS_PRE)
+            {
+              /*
+                ### TODO - must read as Direct Class so look up
+                red/green/blue values in palette table, processed via
+                rescale_map
+              */
+            }
+          else
+            {
 #if defined(USE_GRAYMAP)
-	      if (dcm->graymap != (unsigned short *) NULL)
-		index=dcm->graymap[index];
+              if (dcm->graymap != (unsigned short *) NULL)
+                index=dcm->graymap[index];
 #endif
-	      index=(IndexPacket) (index);
-	      VerifyColormapIndex(image,index);
-	      indexes[x]=index;
-	    }
-		
-	  if (EOFBlob(image))
-	    {
-	      ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
-	      return MagickFail;
-	    }
-	}
+              index=(IndexPacket) (index);
+              VerifyColormapIndex(image,index);
+              indexes[x]=index;
+            }
+
+          if (EOFBlob(image))
+            {
+              ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
+              return MagickFail;
+            }
+        }
       if (!SyncImagePixels(image))
-	return MagickFail;
+        return MagickFail;
       if (image->previous == (Image *) NULL)
-	if (QuantumTick(y,image->rows))
-	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename,
-				      image->columns,image->rows))
-	    return MagickFail;
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitorFormatted(y,image->rows,exception,
+                                      LoadImageText,image->filename,
+                                      image->columns,image->rows))
+            return MagickFail;
     }
   return MagickPass;
 }
@@ -3965,7 +4057,7 @@ static MagickPassFail DCM_ReadGrayscaleImage(Image *image,DicomStream *dcm,Excep
   register IndexPacket
     *indexes;
 #endif
-	
+
   unsigned short
     index;
 
@@ -3979,75 +4071,90 @@ static MagickPassFail DCM_ReadGrayscaleImage(Image *image,DicomStream *dcm,Excep
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-	return MagickFail;
+        return MagickFail;
 #if defined(GRAYSCALE_USES_PALETTE)
       indexes=AccessMutableIndexes(image);
 #endif
       for (x=0; x < (long) image->columns; x++)
-	{
-	  if (dcm->bytes_per_pixel == 1)
-	    index=ReadBlobByte(image);
-	  else
-	    if (dcm->bits_allocated != 12)
-	      {
-		index=dcm->funcReadShort(image);
-	      }
-	    else
-	      {
-		if (x & 0x01)
-		  {
-		    /* ### TO DO - Check whether logic needs altering if msb_state != DCM_MSB_LITTLE */
-		    index=(ReadBlobByte(image) << 4) | byte;
-		  }
-		else
-		  {
-		    index=dcm->funcReadShort(image);
-		    byte=index >> 12;
-		    index&=0xfff;
-		  }
-	      }
-	  index&=dcm->max_value_in;
-	  if (dcm->rescaling == DCM_RS_POST)
-	    {
-	      unsigned int
-		l;
-			
-	      l = index;
-	      if (dcm->pixel_representation == 1)
-		if (l > (dcm->max_value_in >> 1))
-		  l = dcm->max_value_in-l+1;
-	      if ((int) l < dcm->lower_lim)
-		dcm->lower_lim = l;
-	      if ((int) l > dcm->upper_lim)
-		dcm->upper_lim = l;
-	    }
+        {
+          if (dcm->bytes_per_pixel == 1)
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                index=DCM_RLE_ReadByte(image,dcm);
+              else
+                index=ReadBlobByte(image);
+            }
+          else
+          if (dcm->bits_allocated != 12)
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                index=DCM_RLE_ReadShort(image,dcm);
+              else
+                index=dcm->funcReadShort(image);
+            }
+          else
+            {
+              if (x & 0x01)
+                {
+                  /* ### TODO - Check whether logic needs altering if msb_state != DCM_MSB_LITTLE */
+                  if (dcm->transfer_syntax == DCM_TS_RLE)
+                    index=DCM_RLE_ReadByte(image,dcm);
+                  else
+                    index=ReadBlobByte(image);
+                  index=(index << 4) | byte;
+                }
+              else
+                {
+                  if (dcm->transfer_syntax == DCM_TS_RLE)
+                    index=DCM_RLE_ReadShort(image,dcm);
+                  else
+                    index=dcm->funcReadShort(image);
+                  byte=index >> 12;
+                  index&=0xfff;
+                }
+            }
+          index&=dcm->max_value_in;
+          if (dcm->rescaling == DCM_RS_POST)
+            {
+              unsigned int
+                l;
+
+              l = index;
+              if (dcm->pixel_representation == 1)
+                if (l > (dcm->max_value_in >> 1))
+                  l = dcm->max_value_in-l+1;
+              if ((int) l < dcm->lower_lim)
+                dcm->lower_lim = l;
+              if ((int) l > dcm->upper_lim)
+                dcm->upper_lim = l;
+            }
 #if defined(GRAYSCALE_USES_PALETTE)
-	  if (dcm->rescaling == DCM_RS_PRE)
-	    indexes[x]=dcm->rescale_map[index];
-	  else
-	    indexes[x]=index;
+          if (dcm->rescaling == DCM_RS_PRE)
+            indexes[x]=dcm->rescale_map[index];
+          else
+            indexes[x]=index;
 #else
-	  if (dcm->rescaling == DCM_RS_PRE)
-	    index=dcm->rescale_map[index];
-	  q->red=index;
-	  q->green=index;
-	  q->blue=index;
-	  q++;
+          if (dcm->rescaling == DCM_RS_PRE)
+            index=dcm->rescale_map[index];
+          q->red=index;
+          q->green=index;
+          q->blue=index;
+          q++;
 #endif
-	  if (EOFBlob(image))
-	    {
-	      ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
-	      return MagickFail;
-	    }
-	}
+          if (EOFBlob(image))
+            {
+              ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
+              return MagickFail;
+            }
+        }
       if (!SyncImagePixels(image))
-	return MagickFail;
+        return MagickFail;
       if (image->previous == (Image *) NULL)
-	if (QuantumTick(y,image->rows))
-	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename,
-				      image->columns,image->rows))
-	    return MagickFail;
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitorFormatted(y,image->rows,exception,
+                                      LoadImageText,image->filename,
+                                      image->columns,image->rows))
+            return MagickFail;
     }
   return MagickPass;
 }
@@ -4065,36 +4172,56 @@ static MagickPassFail DCM_ReadPlanarRGBImage(Image *image,DicomStream *dcm,Excep
   for (plane=0; plane < dcm->samples_per_pixel; plane++)
     {
       for (y=0; y < image->rows; y++)
-	{
-	  q=GetImagePixels(image,0,y,image->columns,1);
-	  if (q == (PixelPacket *) NULL)
-	    return MagickFail;
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            return MagickFail;
 
-	  for (x=0; x < image->columns; x++)
-	    {
-	      switch ((int) plane)
-		{
-		case 0: q->red=ScaleCharToQuantum(ReadBlobByte(image)); break;
-		case 1: q->green=ScaleCharToQuantum(ReadBlobByte(image)); break;
-		case 2: q->blue=ScaleCharToQuantum(ReadBlobByte(image)); break;
-		case 3: q->opacity=(Quantum)(MaxRGB-ScaleCharToQuantum(ReadBlobByte(image))); break;
-		}
-	      if (EOFBlob(image))
-		{
-		  ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
-		  return MagickFail;
-		}
-	      q++;
-	    }
-	  if (!SyncImagePixels(image))
-	    return MagickFail;
-	  if (image->previous == (Image *) NULL)
-	    if (QuantumTick(y,image->rows))
-	      if (!MagickMonitorFormatted(y,image->rows,exception,
-					  LoadImageText,image->filename,
-					  image->columns,image->rows))
-		return MagickFail;
-	}
+          for (x=0; x < image->columns; x++)
+            {
+              switch ((int) plane)
+                {
+                  case 0:
+                    if (dcm->transfer_syntax == DCM_TS_RLE)
+                      q->red=ScaleCharToQuantum(DCM_RLE_ReadByte(image,dcm));
+                    else
+                      q->red=ScaleCharToQuantum(ReadBlobByte(image));
+                    break;
+                  case 1:
+                    if (dcm->transfer_syntax == DCM_TS_RLE)
+                      q->green=ScaleCharToQuantum(DCM_RLE_ReadByte(image,dcm));
+                    else
+                      q->green=ScaleCharToQuantum(ReadBlobByte(image));
+                    break;
+                  case 2:
+                    if (dcm->transfer_syntax == DCM_TS_RLE)
+                      q->blue=ScaleCharToQuantum(DCM_RLE_ReadByte(image,dcm));
+                    else
+                      q->blue=ScaleCharToQuantum(ReadBlobByte(image));
+                    break;
+                  case 3:
+                    if (dcm->transfer_syntax == DCM_TS_RLE)
+                      q->opacity=ScaleCharToQuantum((Quantum)(MaxRGB-ScaleCharToQuantum(DCM_RLE_ReadByte(image,dcm))));
+                    else
+                      q->opacity=ScaleCharToQuantum((Quantum)(MaxRGB-ScaleCharToQuantum(ReadBlobByte(image))));
+                    break;
+                }
+              if (EOFBlob(image))
+                {
+                  ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
+                  return MagickFail;
+                }
+              q++;
+            }
+          if (!SyncImagePixels(image))
+            return MagickFail;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitorFormatted(y,image->rows,exception,
+                                          LoadImageText,image->filename,
+                                          image->columns,image->rows))
+                return MagickFail;
+        }
     }
   return MagickPass;
 }
@@ -4116,66 +4243,133 @@ static MagickPassFail DCM_ReadRGBImage(Image *image,DicomStream *dcm,ExceptionIn
 
   unsigned char
     byte;
-	
+
   red=0;
   green=0;
   blue=0;
   i=0;
   byte=0;
-  
+
   for (y=0; y < image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-	return MagickFail;
+        return MagickFail;
 
       for (x=0; x < image->columns; x++)
-	{
-	  if (dcm->bytes_per_pixel == 1)
-	    {
-	      red=ReadBlobByte(image);
-	      green=ReadBlobByte(image);
-	      blue=ReadBlobByte(image);
-	    }
-	  else
-	    {
-	      red=dcm->funcReadShort(image);
-	      green=dcm->funcReadShort(image);
-	      blue=dcm->funcReadShort(image);
-	    }
-	  red&=dcm->max_value_in;
-	  green&=dcm->max_value_in;
-	  blue&=dcm->max_value_in;
-	  if (dcm->rescaling == DCM_RS_PRE)
-	    {
-	      red=dcm->rescale_map[red];
-	      green=dcm->rescale_map[green];
-	      blue=dcm->rescale_map[blue];
-	    }
-		
-	  q->red=(Quantum) red;
-	  q->green=(Quantum) green;
-	  q->blue=(Quantum) blue;
-	  q++;
-	  if (EOFBlob(image))
-	    {
-	      ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
-	      return MagickFail;
-	    }
-	}  
+        {
+          if (dcm->bytes_per_pixel == 1)
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                {
+                  red=DCM_RLE_ReadByte(image,dcm);
+                  green=DCM_RLE_ReadByte(image,dcm);
+                  blue=DCM_RLE_ReadByte(image,dcm);
+
+                }
+              else
+                {
+                  red=ReadBlobByte(image);
+                  green=ReadBlobByte(image);
+                  blue=ReadBlobByte(image);
+                }
+            }
+          else
+            {
+              if (dcm->transfer_syntax == DCM_TS_RLE)
+                {
+                  red=DCM_RLE_ReadShort(image,dcm);
+                  green=DCM_RLE_ReadShort(image,dcm);
+                  blue=DCM_RLE_ReadShort(image,dcm);
+                }
+              else
+                {
+                  red=dcm->funcReadShort(image);
+                  green=dcm->funcReadShort(image);
+                  blue=dcm->funcReadShort(image);
+                }
+            }
+          red&=dcm->max_value_in;
+          green&=dcm->max_value_in;
+          blue&=dcm->max_value_in;
+          if (dcm->rescaling == DCM_RS_PRE)
+            {
+              red=dcm->rescale_map[red];
+              green=dcm->rescale_map[green];
+              blue=dcm->rescale_map[blue];
+            }
+
+          q->red=(Quantum) red;
+          q->green=(Quantum) green;
+          q->blue=(Quantum) blue;
+          q++;
+          if (EOFBlob(image))
+            {
+              ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
+              return MagickFail;
+            }
+        }
       if (!SyncImagePixels(image))
-	return MagickFail;
+        return MagickFail;
       if (image->previous == (Image *) NULL)
-	if (QuantumTick(y,image->rows))
-	  if (!MagickMonitorFormatted(y,image->rows,exception,
-				      LoadImageText,image->filename,
-				      image->columns,image->rows))
-	    return MagickFail;
+        if (QuantumTick(y,image->rows))
+          if (!MagickMonitorFormatted(y,image->rows,exception,
+                                      LoadImageText,image->filename,
+                                      image->columns,image->rows))
+            return MagickFail;
     }
   return MagickPass;
 }
 
-static MagickPassFail DCM_ReadEncapImages(Image **image,const ImageInfo *image_info,DicomStream *dcm,ExceptionInfo *exception)
+static MagickPassFail DCM_ReadOffsetTable(Image *image,DicomStream *dcm,ExceptionInfo *exception)
+{
+  magick_uint32_t
+    base_offset,
+    tag,
+    length,
+    i;
+
+  tag=(dcm->funcReadShort(image) << 16) | dcm->funcReadShort(image);
+  length=dcm->funcReadLong(image);
+  if (tag != 0xFFFEE000)
+    return MagickFail;
+
+  dcm->offset_ct=length >> 2;
+  if (dcm->offset_ct == 0)
+    return MagickPass;
+
+  if (dcm->offset_ct != dcm->number_scenes)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
+
+  dcm->offset_arr=MagickAllocateArray(magick_uint32_t *,dcm->offset_ct,sizeof(magick_uint32_t));  
+  if (dcm->offset_arr == (magick_uint32_t) NULL)
+    {
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
+      return MagickFail;
+    }
+
+  for (i=0; i < dcm->offset_ct; i++)
+  {
+    dcm->offset_arr[i]=dcm->funcReadLong(image);
+    if (EOFBlob(image))
+      return MagickFail;
+  }
+  base_offset=(magick_uint32_t)TellBlob(image);
+  for (i=0; i < dcm->offset_ct; i++)
+    dcm->offset_arr[i]+=base_offset;
+
+  /*
+     Seek first fragment of first frame if necessary (although it shouldn't be...)
+  */
+  if (TellBlob(image) != dcm->offset_arr[0])
+    SeekBlob(image,dcm->offset_arr[0],SEEK_SET);
+  return MagickPass;
+}
+
+static MagickPassFail DCM_ReadNonNativeImages(Image **image,const ImageInfo *image_info,DicomStream *dcm,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -4189,11 +4383,11 @@ static MagickPassFail DCM_ReadEncapImages(Image **image,const ImageInfo *image_i
   Image
     *image_list,
     *next_image;
-	
+
   ImageInfo
     *clone_info;
 
-  unsigned long
+  magick_uint32_t
     scene,
     tag,
     status,
@@ -4201,125 +4395,138 @@ static MagickPassFail DCM_ReadEncapImages(Image **image,const ImageInfo *image_i
     i;
 
   image_list=(Image *)NULL;
-	
+
   /*
-    Read/discard offset table
+    Read offset table
   */
-  tag=(dcm->funcReadShort(*image) << 16) | dcm->funcReadShort(*image);
-  length=dcm->funcReadLong(*image);
-  if (tag != 0xFFFEE000)
+  if (DCM_ReadOffsetTable(*image,dcm,exception) == MagickFail)
     return MagickFail;
-  for (i=(length >> 2); i > 0; i--)
-    dcm->funcReadLong(*image);
-  if (EOFBlob(*image))
-    return MagickFail;
-	
+
   status=MagickPass;
   for (scene=0; scene < dcm->number_scenes; scene++)
-    { 
+    {
       /*
-	Use temporary file to hold extracted data stream
+        Use temporary file to hold extracted data stream
       */
       file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
       if (file == (FILE *) NULL)
-	{
-	  ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,filename);
-	  return MagickFail;
-	}
+        {
+          ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,filename);
+          return MagickFail;
+        }
 
-      status=MagickPass;	
+      status=MagickPass;
       do
-	{
-	  /*
-	    Read fragment tag
-	  */
-	  tag=(dcm->funcReadShort(*image) << 16) | dcm->funcReadShort(*image);
-	  length=dcm->funcReadLong(*image);
-	  if (EOFBlob(*image))
-	    {
-	      status=MagickFail;
-	      break;
-	    }
-	  
-	  if (tag == 0xFFFEE0DD)
-	    {
-	      /* Sequence delimiter tag */
-	      break;
-	    }
-	  else
-	    if (tag != 0xFFFEE000)
-	      {
-		status=MagickFail;
-		break;
-	      }
+        {
+          /*
+            Read fragment tag
+          */
+          tag=(dcm->funcReadShort(*image) << 16) | dcm->funcReadShort(*image);
+          length=dcm->funcReadLong(*image);
+          if (EOFBlob(*image))
+            {
+              status=MagickFail;
+              break;
+            }
 
-	  /*
-	    Copy this fragment to the temporary file
-	  */
-	  while (length > 0)
-	    {
-	      c=ReadBlobByte(*image);
-	      if (c == EOF)
-		{
-		  status=MagickFail;
-		  break;
-		}
-	      (void) fputc(c,file);
-	      length--;
-	    }
-	} while ((status==MagickPass) && (dcm->number_scenes < 2));
+          if (tag == 0xFFFEE0DD)
+            {
+              /* Sequence delimiter tag */
+              break;
+            }
+          else
+            if (tag != 0xFFFEE000)
+              {
+                status=MagickFail;
+                break;
+              }
+
+          /*
+            Copy this fragment to the temporary file
+          */
+          while (length > 0)
+            {
+              c=ReadBlobByte(*image);
+              if (c == EOF)
+                {
+                  status=MagickFail;
+                  break;
+                }
+              (void) fputc(c,file);
+              length--;
+            }
+
+          if (dcm->offset_ct == 0)
+            {
+              /*
+                Assume one fragment per frame so break loop unless we are in the last frame
+              */
+              if (scene < dcm->number_scenes-1)
+                break;
+            }
+          else
+            {
+              /* Lookk for end of multi-fragment frames by checking for against offset table */
+              length=TellBlob(*image);
+              for (i=0; i <= dcm->offset_ct; i++)
+                if (length == dcm->offset_arr[i])
+                  {
+                    break;
+                  }
+            }
+        } while (status == MagickPass);
 
       (void) fclose(file);
       if (status == MagickPass)
-	{
-	  clone_info=CloneImageInfo(image_info);
-	  clone_info->blob=(void *) NULL;
-	  clone_info->length=0;
-	  if (dcm->transfer_syntax == DCM_TS_JPEG_2000)
-	    FormatString(clone_info->filename,"jp2:%.1024s",filename);
-	  else
-	    FormatString(clone_info->filename,"jpeg:%.1024s",filename);
-	  next_image=ReadImage(clone_info,exception);
-	  DestroyImageInfo(clone_info);
-	  if (next_image == (Image*)NULL)
-	    {
-	      status=MagickFail;
-	    }
-	  else
-	    if (dcm->rescaling == DCM_RS_POST)
-	      {
-		/*
-		  ### TO DO: ???
-		  We cannot guarantee integrity of input data since libjpeg may already have
-		  downsampled 12- or 16-bit jpegs. Best guess at the moment is to recalculate
-		  scaling using the image depth.
-		*/
-		/* Allow for libjpeg having changed depth of image */
-		dcm->significant_bits=next_image->depth;
-		dcm->bytes_per_pixel=1;
-		if (dcm->significant_bits > 8)
-		  dcm->bytes_per_pixel=2;
-		dcm->max_value_in=(1 << dcm->significant_bits)-1;
-		dcm->max_value_out=dcm->max_value_in;
-		status=DCM_PostRescaleImage(next_image,dcm,True,exception);
-	      }	
-	  if (status == MagickPass)
-	    {
-	      strcpy(next_image->filename,(*image)->filename);
-	      next_image->scene=scene;
-	      if (image_list == (Image*)NULL)
-		image_list=next_image;
-	      else
-		AppendImageToList(&image_list,next_image);
-	    }			
-	}
-      (void) LiberateTemporaryFile(filename); 
+        {
+          clone_info=CloneImageInfo(image_info);
+          clone_info->blob=(void *) NULL;
+          clone_info->length=0;
+          if (dcm->transfer_syntax == DCM_TS_JPEG_2000)
+            FormatString(clone_info->filename,"jp2:%.1024s",filename);
+          else
+            FormatString(clone_info->filename,"jpeg:%.1024s",filename);
+          next_image=ReadImage(clone_info,exception);
+          DestroyImageInfo(clone_info);
+          if (next_image == (Image*)NULL)
+            {
+              status=MagickFail;
+            }
+          else
+            if (dcm->rescaling == DCM_RS_POST)
+              {
+                /*
+                  ### TODO: ???
+                  We cannot guarantee integrity of input data since libjpeg may already have
+                  downsampled 12- or 16-bit jpegs. Best guess at the moment is to recalculate
+                  scaling using the image depth (unless avoid-scaling is in force)
+                */
+                /* Allow for libjpeg having changed depth of image */
+                dcm->significant_bits=next_image->depth;
+                dcm->bytes_per_pixel=1;
+                if (dcm->significant_bits > 8)
+                  dcm->bytes_per_pixel=2;
+                dcm->max_value_in=(1 << dcm->significant_bits)-1;
+                dcm->max_value_out=dcm->max_value_in;
+                status=DCM_PostRescaleImage(next_image,dcm,True,exception);
+              }
+          if (status == MagickPass)
+            {
+              strcpy(next_image->filename,(*image)->filename);
+              next_image->scene=scene;
+              if (image_list == (Image*)NULL)
+                image_list=next_image;
+              else
+                AppendImageToList(&image_list,next_image);
+            }
+        }
+      (void) LiberateTemporaryFile(filename);
     }
   DestroyImage(*image);
   *image=image_list;
   return status;
 }
-	
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4367,7 +4574,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     status;
-	
+
   DicomStream
     dcm;
 
@@ -4382,7 +4589,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
-	
+
   /*
     Read DCM preamble
   */
@@ -4395,24 +4602,24 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           "magick: \"%.4s\"",magick);
   if (LocaleNCompare((char *) magick,"DICM",4) != 0)
     (void) SeekBlob(image,0L,SEEK_SET);
-	
+
   /*
     Loop to read DCM image header one element at a time
   */
-  (void) DCM_InitDCM(&dcm,image_info->verbose); 
+  (void) DCM_InitDCM(&dcm,image_info->verbose);
   status=DCM_ReadElement(image,&dcm,exception);
   while ((status == MagickPass) && ((dcm.group != 0x7FE0) || (dcm.element != 0x0010)))
     {
       DicomElemParseFunc
-	*pfunc;
-	  
+        *pfunc;
+
       pfunc=dicom_info[dcm.index].pfunc;
       if (pfunc != (DicomElemParseFunc *)NULL)
-	status=pfunc(image,&dcm,exception);
+        status=pfunc(image,&dcm,exception);
       MagickFreeMemory(dcm.data);
       dcm.data = NULL;
       if (status == MagickPass)
-	status=DCM_ReadElement(image,&dcm,exception);
+        status=DCM_ReadElement(image,&dcm,exception);
     }
 #if defined(IGNORE_WINDOW_FOR_UNSPECIFIED_SCALE_TYPE)
   if (dcm.rescale_type == DCM_RT_UNSPECIFIED)
@@ -4422,7 +4629,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dcm.rescale_intercept=0;
     }
 #endif
-  DCM_SetRescaling(&dcm);
+  DCM_SetRescaling(&dcm,(AccessDefinition(image_info,"dcm","avoid-scaling") != NULL));
   /*
     Now process the image data
   */
@@ -4431,27 +4638,82 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     if ((dcm.columns == 0) || (dcm.rows == 0))
       {
-	ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
-	status=MagickFail;
+        ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+        status=MagickFail;
       }
-    else if ((dcm.transfer_syntax == DCM_TS_JPEG) ||
-	     (dcm.transfer_syntax == DCM_TS_JPEG_LS) ||
-	     (dcm.transfer_syntax == DCM_TS_JPEG_2000))
+    else if ((dcm.transfer_syntax != DCM_TS_IMPL_LITTLE) &&
+             (dcm.transfer_syntax != DCM_TS_EXPL_LITTLE) &&
+             (dcm.transfer_syntax != DCM_TS_EXPL_BIG) &&
+             (dcm.transfer_syntax != DCM_TS_RLE))
       {
-	status=DCM_ReadEncapImages(&image,image_info,&dcm,exception);
-	dcm.number_scenes=0;
+        status=DCM_ReadNonNativeImages(&image,image_info,&dcm,exception);
+        dcm.number_scenes=0;
       }
     else if (dcm.rescaling != DCM_RS_POST)
       {
-	status=DCM_SetupRescaleMap(image,&dcm,exception);
+        status=DCM_SetupRescaleMap(image,&dcm,exception);
       }
+
+  if (dcm.transfer_syntax == DCM_TS_RLE)
+    status=DCM_ReadOffsetTable(image,&dcm,exception);
 
   /* Loop to process all scenes in image */
   if (status == MagickFail) dcm.number_scenes = 0;
   for (scene=0; scene < (long) dcm.number_scenes; scene++)
     {
+      if (dcm.transfer_syntax == DCM_TS_RLE)
+        {
+          magick_uint32_t
+            tag,
+            length;
+
+          /*
+            Discard any remaining bytes from last fragment
+          */
+          if (dcm.frag_bytes)
+            SeekBlob(image,dcm.frag_bytes,SEEK_CUR);
+
+          /*
+           Read fragment tag
+          */
+          tag=(dcm.funcReadShort(image) << 16) | dcm.funcReadShort(image);
+          length=dcm.funcReadLong(image);
+          if ((tag != 0xFFFEE000) || (length <= 64) || EOFBlob(image))
+            {
+              status=MagickFail;
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+              break;
+            }
+
+          /*
+            Set up decompression state
+          */
+          dcm.frag_bytes=length;
+          dcm.rle_rep_ct=0;
+
+          /*
+            Read RLE segment table
+          */
+          dcm.rle_seg_ct=dcm.funcReadLong(image);
+          for (length=0; length < 15; length++)
+            dcm.rle_seg_offsets[length]=dcm.funcReadLong(image);
+          dcm.frag_bytes-=64;
+          if (EOFBlob(image))
+            {
+              status=MagickFail;
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+              break;
+            }
+          if (dcm.rle_seg_ct > 1)
+            {
+              fprintf(stdout,"Multiple RLE segments in frame are not supported\n");
+              status=MagickFail;
+              break;
+            }
+        }
+
       /*
-	Initialize image structure.
+        Initialize image structure.
       */
       image->columns=dcm.columns;
       image->rows=dcm.rows;
@@ -4459,81 +4721,82 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(GRAYSCALE_USES_PALETTE)
       if ((image->colormap == (PixelPacket *) NULL) && (dcm.samples_per_pixel == 1))
 #else
-	if ((image->colormap == (PixelPacket *) NULL) && (dcm.phot_interp == DCM_PI_PALETTE_COLOR))
+        if ((image->colormap == (PixelPacket *) NULL) && (dcm.phot_interp == DCM_PI_PALETTE_COLOR))
 #endif
-	  {
-	    status=DCM_SetupColormap(image,&dcm,exception);
-	    if (status == MagickFail)
-	      break;
-	  }
-
+          {
+            status=DCM_SetupColormap(image,&dcm,exception);
+            if (status == MagickFail)
+              break;
+          }
       if (image_info->ping)
-	break;
+        break;
 
       /*
-	Process image according to type
+        Process image according to type
       */
       if (dcm.samples_per_pixel == 1)
-	{
-	  if (dcm.phot_interp == DCM_PI_PALETTE_COLOR)
-	    status=DCM_ReadPaletteImage(image,&dcm,exception);
-	  else
-	    status=DCM_ReadGrayscaleImage(image,&dcm,exception);
-	}
+        {
+          if (dcm.phot_interp == DCM_PI_PALETTE_COLOR)
+            status=DCM_ReadPaletteImage(image,&dcm,exception);
+          else
+            status=DCM_ReadGrayscaleImage(image,&dcm,exception);
+        }
       else
-	{
-	  if (image->interlace == PlaneInterlace)
-	    status=DCM_ReadPlanarRGBImage(image,&dcm,exception);
-	  else
-	    status=DCM_ReadRGBImage(image,&dcm,exception);
-	}
+        {
+          if (image->interlace == PlaneInterlace)
+            status=DCM_ReadPlanarRGBImage(image,&dcm,exception);
+          else
+            status=DCM_ReadRGBImage(image,&dcm,exception);
+        }
       if (status != MagickPass)
-	break;
+        break;
 
       if ((dcm.rescaling == DCM_RS_PRE) &&
-	  ((dcm.phot_interp == DCM_PI_MONOCHROME1) ||
-	   (dcm.phot_interp == DCM_PI_MONOCHROME2)))
-	{
-	  NormalizeImage(image);
-	}
+          ((dcm.phot_interp == DCM_PI_MONOCHROME1) ||
+           (dcm.phot_interp == DCM_PI_MONOCHROME2)))
+        {
+          NormalizeImage(image);
+        }
       else
-	if (dcm.rescaling == DCM_RS_POST)
-	  {
-	    status = DCM_PostRescaleImage(image,&dcm,False,exception);
-	    if (status != MagickPass)
-	      break;
-	  }
+        if (dcm.rescaling == DCM_RS_POST)
+          {
+            status = DCM_PostRescaleImage(image,&dcm,False,exception);
+            if (status != MagickPass)
+              break;
+          }
 
       /*
-	Proceed to next image.
+        Proceed to next image.
       */
       if (image_info->subrange != 0)
-	if (image->scene >= (image_info->subimage+image_info->subrange-1))
-	  break;
+        if (image->scene >= (image_info->subimage+image_info->subrange-1))
+          break;
       if (scene < (long) (dcm.number_scenes-1))
-	{
-	  /*
-	    Allocate next image structure.
-	  */
-	  AllocateNextImage(image_info,image);
-	  if (image->next == (Image *) NULL)
-	    {
-	      status=MagickFail;
-	      break;
-	    }
-	  image=SyncNextImageInList(image);
-	  status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
-					exception,LoadImagesText,
-					image->filename);
-	  if (status == MagickFail)
-	    break;
-	}
+        {
+          /*
+            Allocate next image structure.
+          */
+          AllocateNextImage(image_info,image);
+          if (image->next == (Image *) NULL)
+            {
+              status=MagickFail;
+              break;
+            }
+          image=SyncNextImageInList(image);
+          status=MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                        exception,LoadImagesText,
+                                        image->filename);
+          if (status == MagickFail)
+            break;
+        }
     }
-	
+
   /*
     Free allocated resources
   */
 
+  if (dcm.offset_arr != NULL)
+    MagickFreeMemory(dcm.offset_arr);    
   if (dcm.data != NULL)
     MagickFreeMemory(dcm.data);
 #if defined(USE_GRAYMAP)
@@ -4619,24 +4882,23 @@ ModuleExport void UnregisterDCMImage(void)
   (void) UnregisterMagickInfo("DCM");
 }
 /*
-   ### TO DO :
+   ### TODO :
    #1 Fixes on palette support:
-		- Handle palette images where # of entries > MaxColormapSize - create image
-		  as Direct class, store the original palette (scaled to MaxRGB) and then map
-		  input values via modified palette to output RGB values.
+                - Handle palette images where # of entries > MaxColormapSize - create image
+                  as Direct class, store the original palette (scaled to MaxRGB) and then map
+                  input values via modified palette to output RGB values.
         - Honour palette/LUT descriptors (ie values <= min value map to first
-		  entry, value = (min_value + 1) maps to second entry, and so on, whilst
-		  values >= (min value + palette/LUT size) map to last entry.
+                  entry, value = (min_value + 1) maps to second entry, and so on, whilst
+                  values >= (min value + palette/LUT size) map to last entry.
    #2 Use ImportImagePixelArea?
-   #3 Add RLE support
-   #4 Handling of encapsulated JPEGs which downsample to 8 bit via
+   #3 Handling of encapsulated JPEGs which downsample to 8 bit via
       libjpeg. These lose accuracy before we can rescale to handle the
-	  issues of PR=1 + window center/width + rescale slope/intercept on
-	  MONOCHROME1 or 2. Worst case : CT-MONO2-16-chest. Currently images
-	  are post-rescaled based on sample range. For PseudoClass grayscales
-	  this is done by colormap manipulation only.
-   #5 JPEG/JPEG-LS/JPEG 2000: Check that multi frame handling in DCM_ReadEncapImages
+          issues of PR=1 + window center/width + rescale slope/intercept on
+          MONOCHROME1 or 2. Worst case : CT-MONO2-16-chest. Currently images
+          are post-rescaled based on sample range. For PseudoClass grayscales
+          this is done by colormap manipulation only.
+   #4 JPEG/JPEG-LS/JPEG 2000: Check that multi frame handling in DCM_ReadEncapImages
       is ok
-   #6 Support LUTs?
-   #7 Pixel Padding value/range - make transparent or allow use to specify a color?
+   #5 Support LUTs?
+   #6 Pixel Padding value/range - make transparent or allow use to specify a color?
 */
