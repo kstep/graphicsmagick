@@ -1,3 +1,13 @@
+2009-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXMakeImage): Fix for CVE-2009-1882
+	"Integer overflow in the XMakeImage function".  The problem is
+	that the shared memory segment allocated may be smaller than the
+	image size requires due to integer overflow.  On some systems it
+	may be possible to crash GraphicsMagick (while displaying an image
+	file) but not likely to overwrite the heap since shared memory
+	segments are outside of the heap allocation.
+
 2009-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2.9 released.

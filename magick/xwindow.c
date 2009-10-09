@@ -5508,6 +5508,9 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
       XShmSegmentInfo
         *segment_info;
 
+      size_t
+	shm_extent;
+
       segment_info=(XShmSegmentInfo *) window->segment_info;
       segment_info[1].shmid=(-1);
       segment_info[1].shmaddr=NULL;
@@ -5515,9 +5518,13 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
         &segment_info[1],width,height);
       window->shared_memory&=(ximage != (XImage *) NULL);
 
+      shm_extent=(size_t)(ximage->bytes_per_line*ximage->height);
+      window->shared_memory&=(((size_t) ximage->height != 0) &&
+			      ((shm_extent/((size_t) ximage->height)) ==
+			       (size_t) ximage->bytes_per_line));
+
       if (window->shared_memory)
-        segment_info[1].shmid=shmget(IPC_PRIVATE,(size_t)
-          (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
+        segment_info[1].shmid=shmget(IPC_PRIVATE,shm_extent,IPC_CREAT | 0777);
       window->shared_memory&=(segment_info[1].shmid >= 0);
 
       if (window->shared_memory)
