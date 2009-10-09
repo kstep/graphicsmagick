@@ -5350,8 +5350,8 @@ MagickExport Cursor MagickXMakeCursor(Display *display,Window window,
 %  The format of the MagickXMakeImage method is:
 %
 %      unsigned int MagickXMakeImage(Display *display,
-%        const MagickXResourceInfo *resource_info,MagickXWindowInfo *window,Image *image,
-%        unsigned int width,unsigned int height)
+%        const MagickXResourceInfo *resource_info,MagickXWindowInfo *window,
+%        Image *image,unsigned int width,unsigned int height)
 %
 %  A description of each parameter follows:
 %
@@ -5376,9 +5376,12 @@ MagickExport Cursor MagickXMakeCursor(Display *display,Window window,
 %
 %
 */
-MagickExport unsigned int MagickXMakeImage(Display *display,
-  const MagickXResourceInfo *resource_info,MagickXWindowInfo *window,Image *image,
-  unsigned int width,unsigned int height)
+MagickExport unsigned int
+MagickXMakeImage(Display *display,
+		 const MagickXResourceInfo *resource_info,
+		 MagickXWindowInfo *window,
+		 Image *image,
+		 unsigned int width,unsigned int height)
 {
   int
     depth,
@@ -5496,7 +5499,9 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
           }
 #endif
       width=(unsigned int) window->image->columns;
+      assert(width == window->image->columns);
       height=(unsigned int) window->image->rows;
+      assert(height == window->image->rows);
     }
   /*
     Create X image.
@@ -5504,27 +5509,32 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
   ximage=(XImage *) NULL;
   format=(depth == 1) ? XYBitmap : ZPixmap;
 #if defined(HasSharedMemory)
-  window->shared_memory&=XShmQueryExtension(display);
+  window->shared_memory &= XShmQueryExtension(display);
   if (window->shared_memory)
     {
       XShmSegmentInfo
         *segment_info;
 
+      size_t
+	shm_extent;
+
       segment_info=(XShmSegmentInfo *) window->segment_info;
       segment_info[1].shmid=(-1);
       segment_info[1].shmaddr=NULL;
       ximage=XShmCreateImage(display,window->visual,depth,format,(char *) NULL,
-        &segment_info[1],width,height);
-      window->shared_memory&=(ximage != (XImage *) NULL);
+			     &segment_info[1],width,height);
+      window->shared_memory &= (ximage != (XImage *) NULL);
+
+      shm_extent=MagickArraySize(ximage->height,ximage->bytes_per_line);
+      window->shared_memory &= (shm_extent != 0);
 
       if (window->shared_memory)
-        segment_info[1].shmid=shmget(IPC_PRIVATE,(size_t)
-          (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
-      window->shared_memory&=(segment_info[1].shmid >= 0);
+        segment_info[1].shmid=shmget(IPC_PRIVATE,shm_extent,IPC_CREAT | 0777);
+      window->shared_memory &= (segment_info[1].shmid >= 0);
 
       if (window->shared_memory)
         segment_info[1].shmaddr=(char *) MagickShmAt(segment_info[1].shmid,0,0);
-      window->shared_memory&=(segment_info[1].shmaddr != NULL);
+      window->shared_memory &= (segment_info[1].shmaddr != NULL);
 
       if (!window->shared_memory)
         {

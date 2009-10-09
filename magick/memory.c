@@ -90,6 +90,43 @@ MagickExport void MagickAllocFunctions(MagickFreeFunc free_func,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k A r r a y Si z e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickArraySize() returnes the size of an array given two size_t arguments.
+%  Zero is returned if the computed result overflows the size_t type.
+%
+%  The format of the MagickArraySize method is:
+%
+%      size_t MagickArraySize(const size_t count, const size_t size);
+%
+%  A description of each parameter follows:
+%
+%    o count: The number of elements in the array.
+%
+%    o size: The size of one array element.
+%
+*/
+MagickExport size_t MagickArraySize(const size_t count, const size_t size)
+{
+  size_t
+    allocation_size;
+
+  allocation_size = size * count;
+  if ((count != 0) && (size != allocation_size/count))
+    allocation_size = 0;
+
+  return allocation_size;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k M a l l o c                                                   %
 %                                                                             %
 %                                                                             %
@@ -155,9 +192,8 @@ MagickExport void *MagickMallocArray(const size_t count,const size_t size)
     *allocation;
 
   allocation = (void *) NULL;
-  allocation_size = size * count;
-  if ((count != 0) && (size != allocation_size/count))
-    allocation_size = 0;
+  allocation_size=MagickArraySize(count,size);
+
   if (allocation_size)
     allocation = (MallocFunc)(allocation_size);
   return allocation;

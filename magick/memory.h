@@ -22,13 +22,18 @@ extern MagickExport void
    MagickAllocFunctions(MagickFreeFunc free_func,MagickMallocFunc malloc_func,
                         MagickReallocFunc realloc_func),
   *MagickMalloc(const size_t size),
-  *MagickMallocArray(const size_t count,const size_t size),
   *MagickMallocCleared(const size_t size),
   *MagickCloneMemory(void *destination,const void *source,const size_t size),
   *MagickRealloc(void *memory,const size_t size),
    MagickFree(void *memory);
 
 #if defined(MAGICK_IMPLEMENTATION)
+
+extern MagickExport void
+  *MagickMallocArray(const size_t count,const size_t size);
+
+extern MagickExport size_t
+  MagickArraySize(const size_t count,const size_t size);
 
 /*
   Allocate memory
