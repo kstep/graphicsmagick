@@ -10425,16 +10425,19 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       {
         if (LocaleCompare("flatten",option+1) == 0)
           {
-            Image
-              *flatten_image;
+	    if (mogrify_images->next != (Image *) NULL)
+	      {
+		Image
+		  *flatten_image;
 
-            flatten_image=FlattenImages(mogrify_images,
-              &mogrify_images->exception);
-            if (flatten_image != (Image *) NULL)
-              {
-                DestroyImageList(mogrify_images);
-                mogrify_images=flatten_image;
-              }
+		flatten_image=FlattenImages(mogrify_images,
+					    &mogrify_images->exception);
+		if (flatten_image != (Image *) NULL)
+		  {
+		    DestroyImageList(mogrify_images);
+		    mogrify_images=flatten_image;
+		  }
+	      }
             break;
           }
         break;

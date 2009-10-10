@@ -798,21 +798,22 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (image->next == (Image *) NULL)
-    ThrowImageException3(ImageError,ImageSequenceIsRequired,
-      UnableToFlattenImage);
+
   /*
-    Clone first image in sequence.
+    Clone first image in sequence to serve as canvas image
   */
   flatten_image=CloneImage(image,0,0,True,exception);
-  if (flatten_image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Flatten image.
-  */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
-    (void) CompositeImage(flatten_image,next->compose,next,next->page.x,
-      next->page.y);
+
+  if ((flatten_image != (Image *) NULL) &&
+      (image->next != (Image *) NULL))
+    {
+      /*
+	Flatten remaining images onto canvas
+      */
+      for (next=image->next; next != (Image *) NULL; next=next->next)
+	(void) CompositeImage(flatten_image,next->compose,next,next->page.x,
+			      next->page.y);
+    }
   return(flatten_image);
 }
 

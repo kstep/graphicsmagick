@@ -1,5 +1,12 @@
 2009-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImages): If there is only one image in
+	the list, then -flatten does nothing at all.
+
+	* magick/transform.c (FlattenImages): If the user provides only
+	one image then return a clone of that image rather than reporting
+	an error.
+
 	* magick/texture.c (TextureImage): If an under-texture is applied,
 	then remove the matte channel.
 
