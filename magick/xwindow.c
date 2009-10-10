@@ -43,10 +43,12 @@
 #include "magick/describe.h"
 #include "magick/log.h"
 #include "magick/magick.h"
+#include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/resize.h"
 #include "magick/shear.h"
 #include "magick/tempfile.h"
+#include "magick/texture.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -2937,7 +2939,7 @@ MagickExport void MagickXGetImportInfo(MagickXImportInfo *ximage_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k X G e t P i x e l I n f o                                     %
+%   M a g i c k X G e t P i x e l P a c k e t                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5376,6 +5378,43 @@ MagickExport Cursor MagickXMakeCursor(Display *display,Window window,
 %
 %
 */
+static const char *
+MagickXImageFormatToString(int xformat)
+{
+  static const char
+    *formats[] = 
+    {
+      "XYBitmap",
+      "XYPixmap",
+      "ZPixmap"
+    };
+  
+  const char
+    *format = "Unknown";
+
+  if ((size_t) xformat < sizeof(formats)/sizeof(formats[0]))
+    format=formats[xformat];
+
+  return format;
+}
+static const char *
+MagickXByteOrderToString(int xbyte_order)
+{
+  static const char
+    *byte_orders[] =
+    {
+      "LSBFirst",
+      "MSBFirst"
+    };
+  
+  const char
+    *byte_order = "Unknown";
+
+  if ((size_t) xbyte_order < sizeof(byte_orders)/sizeof(byte_orders[0]))
+    byte_order=byte_orders[xbyte_order];
+
+  return byte_order;
+}
 MagickExport unsigned int
 MagickXMakeImage(Display *display,
 		 const MagickXResourceInfo *resource_info,
@@ -5413,6 +5452,10 @@ MagickXMakeImage(Display *display,
   window->destroy=False;
   if (window->image != (Image *) NULL)
     {
+      MonitorHandler
+	handler=(MonitorHandler) NULL;
+
+      handler=SetMonitorHandler((MonitorHandler) NULL);
       if (window->crop_geometry)
         {
           Image
@@ -5462,46 +5505,49 @@ MagickXMakeImage(Display *display,
               window->destroy=MagickTrue;
             }
         }
-#if 0
-      if ((window->immutable == MagickFalse) &&
-          (window->image->matte != MagickFalse) &&
-          (window->pixel_info->colors == 0))
+      if ((window->image->matte != MagickFalse) &&
+	  (window->pixel_info->colors == 0)
+	  /* && (window->immutable == MagickFalse) */)
         {
           Image
             *texture;
 
           /*
-            Tile background with texture.
+            Tile background with texture according to opacity
           */
-          strlcpy(resource_info->image_info->filename,"image:checkerboard",MaxTextExtent);
+          strlcpy(resource_info->image_info->filename,"image:checkerboard",
+		  sizeof(resource_info->image_info->filename));
           texture=ReadImage(resource_info->image_info,&window->image->exception);
           if (texture != (Image *) NULL)
             {
               Image
                 *textured_image;
 
-              textured_image=CloneImage(window->image,window->image->columns,
-                window->image->rows,MagickTrue,&window->image->exception);
+              textured_image=CloneImage(window->image,0,0,MagickTrue,
+					&window->image->exception);
               if (textured_image != (Image *) NULL)
                 {
-/*                   strlcpy(window->image->filename,"textured_image.miff", MaxTextExtent); */
-/*                   WriteImage(resource_info->image_info,window->image); */
-                  TextureImage(textured_image,texture);
-                  textured_image->matte=MagickFalse;
-                  if (window->image != image)
-                    DestroyImage(window->image);
-                  window->image=textured_image;
-                  window->destroy=MagickTrue;
+                  if (TextureImage(textured_image,texture) != MagickFail)
+		    {
+		      if (window->image != image)
+			DestroyImage(window->image);
+		      window->image=textured_image;
+		      window->destroy=MagickTrue;
+		    }
+		  else
+		    {
+		      DestroyImage(textured_image);
+		    }
                 }
               DestroyImage(texture);
               texture=(Image *) NULL;
             }
           }
-#endif
       width=(unsigned int) window->image->columns;
       assert(width == window->image->columns);
       height=(unsigned int) window->image->rows;
       assert(height == window->image->rows);
+      (void) SetMonitorHandler(handler);
     }
   /*
     Create X image.
@@ -5617,12 +5663,12 @@ MagickXMakeImage(Display *display,
   if (IsEventLogging())
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),"XImage:");
-      (void) LogMagickEvent(X11Event,GetMagickModule(),"  width, height: %dx%d",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  width x height: %dx%d",
         ximage->width,ximage->height);
-      (void) LogMagickEvent(X11Event,GetMagickModule(),"  format: %d",
-        ximage->format);
-      (void) LogMagickEvent(X11Event,GetMagickModule(),"  byte order: %d",
-        ximage->byte_order);
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  format: %s",
+			    MagickXImageFormatToString(ximage->format));
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  byte order: %s",
+			    MagickXByteOrderToString(ximage->byte_order));
       (void) LogMagickEvent(X11Event,GetMagickModule(),
         "  bitmap unit, bit order, pad: %d %d %d",ximage->bitmap_unit,
         ximage->bitmap_bit_order,ximage->bitmap_pad);
@@ -5639,11 +5685,13 @@ MagickXMakeImage(Display *display,
   if (!window->shared_memory)
     {
       if (ximage->format == XYBitmap)
-        ximage->data=MagickAllocateArray(char *,
-          ximage->height*ximage->depth,ximage->bytes_per_line);
+        ximage->data=
+	  MagickAllocateArray(char *,
+			      MagickArraySize(ximage->height,ximage->bytes_per_line),
+			      ximage->depth);
       else
-        ximage->data=MagickAllocateArray(char *,
-          ximage->height,ximage->bytes_per_line);
+        ximage->data=
+	  MagickAllocateArray(char *,ximage->height,ximage->bytes_per_line);
     }
   if (ximage->data == (char *) NULL)
     {
@@ -5719,8 +5767,9 @@ MagickXMakeImage(Display *display,
             /*
               Allocate matte image pixel data.
             */
-            length=matte_image->bytes_per_line*
-              matte_image->height*matte_image->depth;
+            length=MagickArraySize(MagickArraySize(matte_image->bytes_per_line,
+						   matte_image->height),
+				   matte_image->depth);
             matte_image->data=MagickAllocateMemory(char *,length);
             if (matte_image->data == (char *) NULL)
               {
@@ -7381,9 +7430,9 @@ MagickExport void MagickXMakeMagnifyImage(Display *display,MagickXWindows *windo
 %
 %  The format of the MagickXMakePixmap method is:
 %
-%      void MagickXMakeStandardColormap(Display *display,XVisualInfo *visual_info,
-%        MagickXResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
-%        MagickXPixelInfo *pixel)
+%      unsigned int MagickXMakePixmap(Display *display,
+%                                     const MagickXResourceInfo *resource_info,
+%                                     MagickXWindowInfo *window)
 %
 %  A description of each parameter follows:
 %

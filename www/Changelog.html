@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2009-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/texture.c (TextureImage): If an under-texture is applied,
+        then remove the matte channel.
+
+  <LI> magick/xwindow.c (MagickXMakeImage): Apply a checkerboard
+        pattern when displaying non-opaque TrueColor images.  Fix a second
+        integer overflow issue related to CVE-2009-1882.
+
+</UL>
+<p>
+2009-10-10  Toby Thain  &lt;qu1j0t3@users.sourceforge.net&gt;
+
+<UL>
+  <LI> coders/psd.c: Fix for 2783535 reported by Daniel Kirsch. PSD
+        parser was confused by 0x0 pixel layers, resulting in image data
+        corruption of all following layers.
+
+</UL>
+<p>
 2009-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

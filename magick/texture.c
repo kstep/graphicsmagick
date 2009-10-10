@@ -183,8 +183,8 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
 %
 %  TextureImage() repeatedly tiles the texture image across and down the image
 %  canvas. If the image canvas includes a matte channel, then the tile is
-%  alpha-composited "under" the image. MagickFail is returned if an error is
-%  encountered.
+%  alpha-composited "under" the image and the matte channel is removed.
+%  MagickFail is returned if an error is encountered.
 %
 %  The format of the TextureImage method is:
 %
@@ -326,5 +326,9 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
     image->is_grayscale=(is_grayscale && texture->is_grayscale);
   else
     image->is_grayscale=texture->is_grayscale;
+  if (image->matte)
+    image->matte=MagickFalse;
+  else
+    image->matte=texture->matte;
   return (status);
 }
