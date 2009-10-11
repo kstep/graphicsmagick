@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -808,7 +808,7 @@ static char **MagickFontToList(char *font)
   for (p=font; *p != '\0'; p++)
     if ((*p == ':') || (*p == ';') || (*p == ','))
       fonts++;
-  fontlist=MagickAllocateMemory(char **,(fonts+1)*sizeof(char *));
+  fontlist=MagickAllocateArray(char **,(fonts+1),sizeof(char *));
   if (fontlist == (char **) NULL)
     {
       MagickError3(ResourceLimitError,MemoryAllocationFailed,
@@ -1103,7 +1103,7 @@ MagickExport void MagickXBestPixel(Display *display,const Colormap colormap,
       /*
         Read X server colormap.
       */
-      colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,number_colors,sizeof(XColor));
       if (colors == (XColor *) NULL)
         {
           MagickError3(ResourceLimitError,MemoryAllocationFailed,
@@ -2133,10 +2133,10 @@ static void MagickXDitherImage(Image *image,XImage *ximage)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      red_map[i][j]=MagickAllocateMemory(unsigned char *,256*sizeof(unsigned char));
-      green_map[i][j]=MagickAllocateMemory(unsigned char *,
-        256*sizeof(unsigned char));
-      blue_map[i][j]=MagickAllocateMemory(unsigned char *,256*sizeof(unsigned char));
+      red_map[i][j]=MagickAllocateArray(unsigned char *,256,sizeof(unsigned char));
+      green_map[i][j]=MagickAllocateArray(unsigned char *,
+					  256,sizeof(unsigned char));
+      blue_map[i][j]=MagickAllocateArray(unsigned char *,256,sizeof(unsigned char));
       if ((red_map[i][j] == (unsigned char *) NULL) ||
           (green_map[i][j] == (unsigned char *) NULL) ||
           (blue_map[i][j] == (unsigned char *) NULL))
@@ -3022,7 +3022,7 @@ MagickExport void MagickXGetPixelPacket(Display *display,
   if (pixel->pixels != (unsigned long *) NULL)
     MagickFreeMemory(pixel->pixels);
   pixel->pixels=
-    MagickAllocateMemory(unsigned long *,packets*sizeof(unsigned long));
+    MagickAllocateArray(unsigned long *,packets,sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       MagickMsg(XServerFatalError,UnableToGetPixelInfo));
@@ -4073,8 +4073,8 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
       */
       max_windows+=1024;
       if (window_info == (WindowInfo *) NULL)
-        window_info=MagickAllocateMemory(WindowInfo *,
-          max_windows*sizeof(WindowInfo));
+        window_info=MagickAllocateArray(WindowInfo *,
+					max_windows,sizeof(WindowInfo));
       else
         MagickReallocMemory(WindowInfo *,window_info,max_windows*sizeof(WindowInfo));
     }
@@ -4227,7 +4227,7 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
                 /*
                   Get the window colormap.
                 */
-                colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
+                colors=MagickAllocateArray(XColor *,number_colors,sizeof(XColor));
                 if (colors == (XColor *) NULL)
                   {
                     XDestroyImage(ximage);
@@ -4577,7 +4577,7 @@ MagickExport void MagickXGetWindowInfo(Display *display,XVisualInfo *visual_info
           *segment_info;
 
         if (window->segment_info == (void *) NULL)
-          window->segment_info=MagickAllocateMemory(void *,2*sizeof(XShmSegmentInfo));
+          window->segment_info=MagickAllocateArray(void *,2,sizeof(XShmSegmentInfo));
         segment_info=(XShmSegmentInfo *) window->segment_info;
         segment_info[0].shmid=(-1);
         segment_info[0].shmaddr=NULL;
@@ -7734,8 +7734,8 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
         Define Standard Colormap for StaticGray or StaticColor visual.
       */
       number_colors=image->colors;
-      colors=MagickAllocateMemory(XColor *,
-        visual_info->colormap_size*sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,
+				 visual_info->colormap_size,sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError3(ResourceLimitError,MemoryAllocationFailed,
           UnableToCreateColormap);
@@ -7774,8 +7774,8 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
         Define Standard Colormap for GrayScale or PseudoColor visual.
       */
       number_colors=image->colors;
-      colors=MagickAllocateMemory(XColor *,
-        visual_info->colormap_size*sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,
+				 visual_info->colormap_size,sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
           UnableToCreateColormap);
@@ -7820,8 +7820,8 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
           /*
             Define Standard colormap for shared GrayScale or PseudoColor visual.
           */
-          diversity=MagickAllocateMemory(DiversityPacket *,
-            image->colors*sizeof(DiversityPacket));
+          diversity=MagickAllocateArray(DiversityPacket *,
+					image->colors,sizeof(DiversityPacket));
           if (diversity == (DiversityPacket *) NULL)
             MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
               UnableToCreateColormap);
@@ -7882,8 +7882,9 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
           /*
             Read X server colormap.
           */
-          server_colors=MagickAllocateMemory(XColor *,
-            visual_info->colormap_size*sizeof(XColor));
+          server_colors=MagickAllocateArray(XColor *,
+					    visual_info->colormap_size,
+					    sizeof(XColor));
           if (server_colors == (XColor *) NULL)
             MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
               UnableToCreateColormap);
@@ -8023,7 +8024,7 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
       /*
         Allocate color array.
       */
-      colors=MagickAllocateMemory(XColor *,number_colors*sizeof(XColor));
+      colors=MagickAllocateArray(XColor *,number_colors,sizeof(XColor));
       if (colors == (XColor *) NULL)
         MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
           UnableToCreateColormap);

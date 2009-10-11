@@ -1,5 +1,7 @@
 2009-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c: Check for overflow on all array allocations.
+
 	* magick/command.c (MogrifyImages): If there is only one image in
 	the list, then -flatten does nothing at all.
 
