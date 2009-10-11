@@ -1,3 +1,8 @@
+2009-10-11  Toby Thain  <qu1j0t3@users.sourceforge.net>
+
+	* coders/psd.c: Further fix for 2783535 reported by Daniel Kirsch.
+	Omit 0x0 layers from the image list, or they break compositing.
+
 2009-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c: Check for overflow on all array allocations.

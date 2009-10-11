@@ -1271,19 +1271,23 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (number_layers > 0)
         {
           Image* returnImage = image;
+          LayerInfo *prevLayer = NULL;
 
           if (logging)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "  putting layers into image list");
             }
+          // omit any 0x0 sized layers from the list, as they break compositing
           for (i=0; i < number_layers; i++)
+            if(layer_info[i].page.height > 0 && layer_info[i].page.width > 0)
             {
-              if (i > 0)
-                layer_info[i].image->previous=layer_info[i-1].image;
-              if (i < (number_layers-1))
-                layer_info[i].image->next=layer_info[i+1].image;
-              layer_info[i].image->page=layer_info[i].page;
+              if (prevLayer){
+                layer_info[i].image->previous = prevLayer->image;
+                prevLayer->image->next = layer_info[i].image;
+              }
+              layer_info[i].image->page = layer_info[i].page;
+              prevLayer = &layer_info[i];
             }
 #ifdef use_image
           image->next=layer_info[0].image;
