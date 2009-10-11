@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2009-10-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/describe.c (DescribeImage): Include composition operator
+        in verbose output.  Also use CompressionTypeToString() to convert
+        a compression enum to a string.
+
+</UL>
+<p>
+2009-10-11  Toby Thain  &lt;qu1j0t3@users.sourceforge.net&gt;
+
+<UL>
+  <LI> coders/psd.c: Further fix for 2783535 reported by Daniel Kirsch.
+        Omit 0x0 layers from the image list, or they break compositing.
+
+</UL>
+<p>
 2009-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

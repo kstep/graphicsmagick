@@ -571,6 +571,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
+  (void) fprintf(file,"  Compose: %s\n",
+		 CompositeOperatorToString(image->compose));
   (void) fprintf(file,"  Dispose: ");
   switch (image->dispose)
   {
@@ -594,20 +596,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   else
     if (image->scene != 0)
       (void) fprintf(file,"  Scene: %lu\n",image->scene);
-  (void) fprintf(file,"  Compression: ");
-  switch (image->compression)
-  {
-    case NoCompression: (void) fprintf(file,"None\n"); break;
-    case BZipCompression: (void) fprintf(file,"BZip\n"); break;
-    case FaxCompression: (void) fprintf(file,"Fax\n"); break;
-    case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
-    case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
-    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n"); break;
-    case LZWCompression: (void) fprintf(file,"LZW\n"); break;
-    case RLECompression: (void) fprintf(file,"Runlength Encoded\n"); break;
-    case ZipCompression: (void) fprintf(file,"Zip\n"); break;
-    default: (void) fprintf(file,"\n");  break;
-  }
+  (void) fprintf(file,"  Compression: %s\n",
+		 CompressionTypeToString(image->compression));
   /*
     Display formatted image attributes. This must happen before we access
     any pseudo attributes like EXIF since doing so causes real attributes
