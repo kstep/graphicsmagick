@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2009-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/xwindow.c (MagickXMakeImage): If image is TrueColor and
+        has an opacity channel, then render it on top of a grid image.
+
+  <LI> magick/image.c (TextureImage): Remove matte channel if texture
+        is rendered under image.
+
+</UL>
+<p>
 2009-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

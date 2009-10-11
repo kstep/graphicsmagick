@@ -1,3 +1,11 @@
+2009-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXMakeImage): If image is TrueColor and
+	has an opacity channel, then render it on top of a grid image.
+
+	* magick/image.c (TextureImage): Remove matte channel if texture
+	is rendered under image.
+
 2009-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXMakeImage): Fix for CVE-2009-1882
