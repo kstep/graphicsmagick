@@ -43,6 +43,7 @@
 #include "magick/cdl.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/confirm_access.h"
 #include "magick/constitute.h"

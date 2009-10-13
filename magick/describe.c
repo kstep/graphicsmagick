@@ -19,6 +19,7 @@
 #include "magick/blob.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/constitute.h"
 #include "magick/enum_strings.h"
 #include "magick/magick.h"

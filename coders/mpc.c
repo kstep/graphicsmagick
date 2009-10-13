@@ -39,6 +39,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"

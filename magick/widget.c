@@ -38,6 +38,7 @@
 */
 #include "magick/studio.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
 #include "magick/xwindow.h"

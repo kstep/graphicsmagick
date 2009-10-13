@@ -187,16 +187,6 @@ typedef enum
 
 typedef enum
 {
-  UndefinedCompliance = 0x0000,
-  NoCompliance = 0x0000,
-  SVGCompliance = 0x0001,
-  X11Compliance = 0x0002,
-  XPMCompliance = 0x0004,
-  AllCompliance = 0xffff
-} ComplianceType;
-
-typedef enum
-{
   UndefinedCompositeOp = 0,
   OverCompositeOp,
   InCompositeOp,
@@ -534,29 +524,6 @@ typedef struct _PixelPacket
     opacity;
 #endif
 } PixelPacket;
-
-typedef struct _ColorInfo
-{
-  char
-    *path,
-    *name;
-
-  ComplianceType
-    compliance;
-
-  PixelPacket
-    color;
-
-  unsigned int
-    stealth;
-
-  unsigned long
-    signature;
-
-  struct _ColorInfo
-    *previous,
-    *next;
-} ColorInfo;
 
 typedef struct _DoublePixelPacket
 {

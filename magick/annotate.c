@@ -41,6 +41,7 @@
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
 #include "magick/gem.h"

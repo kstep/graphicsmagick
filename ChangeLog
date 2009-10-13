@@ -1,5 +1,8 @@
 2009-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/color_lookup.c: New source file to contain color lookup
+	functions.  Moved associated functions from color.c to this file.
+
 	* magick/ImageMagick.rc: Remove inclusion of magic.mgk.
 
 	* magick/utility.c (MagickRoundUpStringLength): Use a bit less

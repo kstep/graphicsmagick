@@ -41,7 +41,7 @@
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
-#include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"

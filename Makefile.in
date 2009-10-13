@@ -1118,23 +1118,24 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/channel.c magick/channel.h magick/compare.c \
 	magick/compare.h magick/confirm_access.c \
 	magick/confirm_access.h magick/color.c magick/color.h \
-	magick/colormap.c magick/colormap.h magick/colorspace.c \
-	magick/colorspace.h magick/command.c magick/command.h \
-	magick/composite.c magick/composite.h magick/compress.c \
-	magick/compress.h magick/constitute.c magick/constitute.h \
-	magick/decorate.c magick/decorate.h magick/delegate.c \
-	magick/delegate.h magick/deprecate.c magick/deprecate.h \
-	magick/describe.c magick/describe.h magick/draw.c \
-	magick/draw.h magick/effect.c magick/effect.h magick/enhance.c \
-	magick/enhance.h magick/enum_strings.c magick/enum_strings.h \
-	magick/error.c magick/error.h magick/forward.h magick/fx.c \
-	magick/fx.h magick/gem.c magick/gem.h magick/gradient.c \
-	magick/gradient.h magick/hclut.c magick/hclut.h magick/image.c \
-	magick/image.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
-	magick/magic.h magick/magick.c magick/magick.h \
-	magick/magick_endian.c magick/magick_endian.h magick/map.c \
-	magick/map.h magick/memory.c magick/memory.h magick/module.c \
+	magick/color_lookup.c magick/color_lookup.h magick/colormap.c \
+	magick/colormap.h magick/colorspace.c magick/colorspace.h \
+	magick/command.c magick/command.h magick/composite.c \
+	magick/composite.h magick/compress.c magick/compress.h \
+	magick/constitute.c magick/constitute.h magick/decorate.c \
+	magick/decorate.h magick/delegate.c magick/delegate.h \
+	magick/deprecate.c magick/deprecate.h magick/describe.c \
+	magick/describe.h magick/draw.c magick/draw.h magick/effect.c \
+	magick/effect.h magick/enhance.c magick/enhance.h \
+	magick/enum_strings.c magick/enum_strings.h magick/error.c \
+	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
+	magick/gem.c magick/gem.h magick/gradient.c magick/gradient.h \
+	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
+	magick/log.c magick/log.h magick/magic.c magick/magic.h \
+	magick/magick.c magick/magick.h magick/magick_endian.c \
+	magick/magick_endian.h magick/map.c magick/map.h \
+	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
@@ -1201,6 +1202,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-compare.lo \
 	magick/magick_libGraphicsMagick_la-confirm_access.lo \
 	magick/magick_libGraphicsMagick_la-color.lo \
+	magick/magick_libGraphicsMagick_la-color_lookup.lo \
 	magick/magick_libGraphicsMagick_la-colormap.lo \
 	magick/magick_libGraphicsMagick_la-colorspace.lo \
 	magick/magick_libGraphicsMagick_la-command.lo \
@@ -3194,6 +3196,8 @@ MAGICK_BASE_SRCS = \
 	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
+	magick/color_lookup.c \
+	magick/color_lookup.h \
 	magick/colormap.c \
 	magick/colormap.h \
 	magick/colorspace.c \
@@ -3334,6 +3338,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/color_lookup.h \
 	magick/colormap.h \
 	magick/colorspace.h \
 	magick/command.h \
@@ -5995,6 +6000,8 @@ magick/magick_libGraphicsMagick_la-confirm_access.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-color_lookup.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colormap.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colorspace.lo:  \
@@ -7111,6 +7118,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-channel.lo
 	-rm -f magick/magick_libGraphicsMagick_la-color.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-color.lo
+	-rm -f magick/magick_libGraphicsMagick_la-color_lookup.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-color_lookup.lo
 	-rm -f magick/magick_libGraphicsMagick_la-colormap.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-colormap.lo
 	-rm -f magick/magick_libGraphicsMagick_la-colorspace.$(OBJEXT)
@@ -7525,6 +7534,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colormap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colorspace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-command.Plo@am__quote@
@@ -8575,6 +8585,14 @@ magick/magick_libGraphicsMagick_la-color.lo: magick/color.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/color.c' object='magick/magick_libGraphicsMagick_la-color.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c
+
+magick/magick_libGraphicsMagick_la-color_lookup.lo: magick/color_lookup.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-color_lookup.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Tpo -c -o magick/magick_libGraphicsMagick_la-color_lookup.lo `test -f 'magick/color_lookup.c' || echo '$(srcdir)/'`magick/color_lookup.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/color_lookup.c' object='magick/magick_libGraphicsMagick_la-color_lookup.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-color_lookup.lo `test -f 'magick/color_lookup.c' || echo '$(srcdir)/'`magick/color_lookup.c
 
 magick/magick_libGraphicsMagick_la-colormap.lo: magick/colormap.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-colormap.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-colormap.Tpo -c -o magick/magick_libGraphicsMagick_la-colormap.lo `test -f 'magick/colormap.c' || echo '$(srcdir)/'`magick/colormap.c

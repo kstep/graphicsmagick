@@ -122,6 +122,7 @@ extern "C" {
 #include "magick/cdl.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/command.h"
 #include "magick/compare.h"

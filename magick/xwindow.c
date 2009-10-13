@@ -37,6 +37,7 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
