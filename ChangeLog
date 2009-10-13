@@ -1,5 +1,7 @@
 2009-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/ImageMagick.rc: Remove inclusion of magic.mgk.
+
 	* magick/utility.c (MagickRoundUpStringLength): Use a bit less
 	memory.
 
