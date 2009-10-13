@@ -832,7 +832,7 @@ MagickExport char **GetColorList(const char *pattern,
     if (p->stealth)
       continue;
     if (GlobExpression(p->name,pattern))
-      colorlist[i++]=AllocateString(p->name);
+      colorlist[i++]=AcquireString(p->name);
   }
   LiberateSemaphoreInfo(&color_semaphore);
 
@@ -2006,8 +2006,8 @@ static unsigned int ReadColorConfigureFile(const char *basename,
   else
     xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(ColorMap);
-  token=AllocateString(xml);
+    xml=AcquireString(ColorMap);
+  token=AcquireString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*

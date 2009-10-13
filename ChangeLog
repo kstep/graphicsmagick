@@ -1,3 +1,14 @@
+2009-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (MagickRoundUpStringLength): Use a bit less
+	memory.
+
+	* magick/color.c: Use most efficient string allocation function.
+
+	* config/Makefile.am: Eliminate use of magic.mgk.
+
+	* magick/magic.c: Store file header magic data in a static struct.
+
 2009-10-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/describe.c (DescribeImage): Include composition operator

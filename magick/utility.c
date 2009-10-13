@@ -68,7 +68,7 @@
   size_t \
     _rounded; \
  \
-  for (_rounded=1024U; _rounded < (Max(size,MaxTextExtent)); _rounded *= 2); \
+  for (_rounded=256U; _rounded < (Max(size,256)); _rounded *= 2); \
   size=_rounded; \
 }
 

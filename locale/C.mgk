@@ -308,6 +308,9 @@
       <Message name="UnableToAccessModuleFile">
         Unable to access module file
       </Message>
+      <Message name="StringTokenLengthExceeded">
+        String token maximum length exceeded
+      </Message>
     </Error>
     <FatalError>
       <Message name="Default">

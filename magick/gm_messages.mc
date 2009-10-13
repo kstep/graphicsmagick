@@ -545,6 +545,12 @@ Registry key lookup failed. Package is not properly installed on this machine.
 .
 
 MessageId       = +1
+SymbolicName    = ConfigureErrorStringTokenLengthExceeded
+Language        = English
+String token maximum length exceeded
+.
+
+MessageId       = +1
 SymbolicName    = ConfigureErrorUnableToAccessConfigureFile
 Language        = English
 Unable to access configuration file

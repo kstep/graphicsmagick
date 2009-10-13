@@ -2273,8 +2273,7 @@ configsharedir = $(MagickShareConfigPath)
 configshare_DATA = \
 	config/colors.mgk \
 	config/log.mgk \
-	config/modules.mgk \
-	config/magic.mgk
+	config/modules.mgk
 
 
 # Where architecture-dependent configuration files get installed
@@ -2291,7 +2290,6 @@ CONFIG_EXTRA_DIST = \
         config/colors.mgk \
 	config/delegates.mgk.in \
         config/log.mgk \
-	config/magic.mgk \
 	config/modules.mgk \
 	config/type-ghostscript.mgk.in \
 	config/type-solaris.mgk.in \

@@ -318,7 +318,10 @@ MagickExport void *MagickRealloc(void *memory,const size_t size)
   void
     *new_memory = (void *) NULL;
 
-  new_memory = (ReallocFunc)(memory,size);
+  if ((void *) NULL == memory)
+    new_memory = (MallocFunc)(size);
+  else
+    new_memory = (ReallocFunc)(memory,size);
   if ((new_memory == 0) && (memory != 0) && (size != 0))
     (FreeFunc)(memory);
 
