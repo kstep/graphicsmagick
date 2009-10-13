@@ -11,7 +11,7 @@
 ; Configuration files
 Source: "..\..\config\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\..\config\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
-Source: "..\..\config\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+;; Source: "..\..\config\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\delegates.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\type-ghostscript.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\type.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
