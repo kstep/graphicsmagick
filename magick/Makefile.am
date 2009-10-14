@@ -54,6 +54,8 @@ endif
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
+	magick/analyze.c \
+	magick/analyze.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
@@ -215,6 +217,7 @@ endif # if WIN32_NATIVE_BUILD
 
 MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
+	magick/analyze.h \
 	magick/attribute.h \
 	magick/average.h \
 	magick/blob.h \

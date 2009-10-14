@@ -55,16 +55,13 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#getcolorhistogram" id="id11">GetColorHistogram</a></li>
-<li><a class="reference internal" href="#getnumbercolors" id="id12">GetNumberColors</a></li>
-<li><a class="reference internal" href="#isgrayimage" id="id13">IsGrayImage</a></li>
-<li><a class="reference internal" href="#ismonochromeimage" id="id14">IsMonochromeImage</a></li>
-<li><a class="reference internal" href="#isopaqueimage" id="id15">IsOpaqueImage</a></li>
-<li><a class="reference internal" href="#ispaletteimage" id="id16">IsPaletteImage</a></li>
+<li><a class="reference internal" href="#getcolorhistogram" id="id5">GetColorHistogram</a></li>
+<li><a class="reference internal" href="#getnumbercolors" id="id6">GetNumberColors</a></li>
+<li><a class="reference internal" href="#ispaletteimage" id="id7">IsPaletteImage</a></li>
 </ul>
 </div>
 <div class="section" id="getcolorhistogram">
-<h1><a class="toc-backref" href="#id11">GetColorHistogram</a></h1>
+<h1><a class="toc-backref" href="#id5">GetColorHistogram</a></h1>
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -96,7 +93,7 @@ unique colors.</dd>
 </div>
 </div>
 <div class="section" id="getnumbercolors">
-<h1><a class="toc-backref" href="#id12">GetNumberColors</a></h1>
+<h1><a class="toc-backref" href="#id6">GetNumberColors</a></h1>
 <div class="section" id="id1">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -122,96 +119,15 @@ unsigned long GetNumberColors( const <a class="reference external" href="../api/
 </dl>
 </div>
 </div>
-<div class="section" id="isgrayimage">
-<h1><a class="toc-backref" href="#id13">IsGrayImage</a></h1>
-<div class="section" id="id3">
-<h2>Synopsis</h2>
-<pre class="literal-block">
-unsigned int IsGrayImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-</div>
-<div class="section" id="id4">
-<h2>Description</h2>
-<p>IsGrayImage() returns True if all the pixels in the image have the same
-red, green, and blue intensities.</p>
-<p>The format of the IsGrayImage method is:</p>
-<pre class="literal-block">
-unsigned int IsGrayImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-<p>A description of each parameter follows:</p>
-<dl class="docutils">
-<dt>status:</dt>
-<dd>Method IsGrayImage returns True if the image is grayscale
-otherwise False is returned.</dd>
-<dt>image:</dt>
-<dd>The image.</dd>
-<dt>exception:</dt>
-<dd>Return any errors or warnings in this structure.</dd>
-</dl>
-</div>
-</div>
-<div class="section" id="ismonochromeimage">
-<h1><a class="toc-backref" href="#id14">IsMonochromeImage</a></h1>
-<div class="section" id="id5">
-<h2>Synopsis</h2>
-<pre class="literal-block">
-unsigned int IsMonochromeImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-</div>
-<div class="section" id="id6">
-<h2>Description</h2>
-<p>IsMonochromeImage() returns True if all the pixels in the image have
-the same red, green, and blue intensities and the intensity is either
-0 or MaxRGB.</p>
-<p>The format of the IsMonochromeImage method is:</p>
-<pre class="literal-block">
-unsigned int IsMonochromeImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-<dl class="docutils">
-<dt>image:</dt>
-<dd>The image.</dd>
-<dt>exception:</dt>
-<dd>Return any errors or warnings in this structure.</dd>
-</dl>
-</div>
-</div>
-<div class="section" id="isopaqueimage">
-<h1><a class="toc-backref" href="#id15">IsOpaqueImage</a></h1>
-<div class="section" id="id7">
-<h2>Synopsis</h2>
-<pre class="literal-block">
-unsigned int IsOpaqueImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-</div>
-<div class="section" id="id8">
-<h2>Description</h2>
-<p>IsOpaqueImage() returns True if none of the pixels in the image have an
-opacity value other than opaque (0).</p>
-<p>The format of the IsOpaqueImage method is:</p>
-<pre class="literal-block">
-unsigned int IsOpaqueImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-<p>A description of each parameter follows:</p>
-<dl class="docutils">
-<dt>status:</dt>
-<dd>Method IsOpaqueImage returns False if the image has one or more
-pixels that are transparent otherwise True is returned.</dd>
-<dt>image:</dt>
-<dd>The image.</dd>
-<dt>exception:</dt>
-<dd>Return any errors or warnings in this structure.</dd>
-</dl>
-</div>
-</div>
 <div class="section" id="ispaletteimage">
-<h1><a class="toc-backref" href="#id16">IsPaletteImage</a></h1>
-<div class="section" id="id9">
+<h1><a class="toc-backref" href="#id7">IsPaletteImage</a></h1>
+<div class="section" id="id3">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickBool IsPaletteImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id10">
+<div class="section" id="id4">
 <h2>Description</h2>
 <p>Method IsPaletteImage returns True if the image is PseudoClass and has 256
 unique colors or less.</p>
@@ -234,7 +150,7 @@ PseudoClass or has 256 color or less.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-10-13 23:07 UTC.
+Generated on: 2009-10-14 00:45 UTC.
 
 </div>
 </body>

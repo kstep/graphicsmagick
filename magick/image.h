@@ -638,16 +638,6 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _ImageCharacteristics
-{
-  MagickBool
-    cmyk,               /* CMYK(A) image */
-    grayscale,          /* Grayscale image */
-    monochrome,         /* Black/white image */
-    opaque,             /* Opaque image */
-    palette;            /* Colormapped image */
-} ImageCharacteristics;
-
 typedef struct _Image
 {
   ClassType
@@ -995,9 +985,6 @@ extern MagickExport Image
 extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *);
 
-extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *);
-
 extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
      const char *key);
@@ -1005,9 +992,6 @@ extern MagickExport const char
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
   RectangleInfo *);
-
-extern MagickExport RectangleInfo
-  GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 /* Functions which return unsigned int as a True/False boolean value */
 extern MagickExport MagickBool
@@ -1022,8 +1006,6 @@ extern MagickExport MagickPassFail
   ClipImage(Image *),
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   DisplayImages(const ImageInfo *image_info,Image *image),
-  GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
-    const MagickBool optimize,ExceptionInfo *exception),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
@@ -1031,9 +1013,6 @@ extern MagickExport MagickPassFail
   SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
   SyncImage(Image *);
-
-extern MagickExport unsigned long
-  GetImageDepth(const Image *,ExceptionInfo *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

@@ -36,6 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/analyze.h"
 #include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/colormap.h"

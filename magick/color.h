@@ -31,18 +31,15 @@ extern MagickExport HistogramColorPacket
   *GetColorHistogram(const Image *image,unsigned long *colors,
      ExceptionInfo *exception);
 
-extern MagickExport unsigned int
-  IsGrayImage(const Image *image,ExceptionInfo *exception),
-  IsMonochromeImage(const Image *image,ExceptionInfo *exception),
-  IsOpaqueImage(const Image *image,ExceptionInfo *exception),
-  IsPaletteImage(const Image *image,ExceptionInfo *exception);
-
 extern MagickExport unsigned long
   GetNumberColors(const Image *image,FILE *file,ExceptionInfo *exception);
 
 extern MagickExport void
   GetColorTuple(const PixelPacket *color,const unsigned int depth,
     const unsigned int matte,const unsigned int hex,char *tuple);
+
+extern MagickExport MagickBool
+  IsPaletteImage(const Image *image,ExceptionInfo *exception);
 
 #if defined(MAGICK_IMPLEMENTATION)
 

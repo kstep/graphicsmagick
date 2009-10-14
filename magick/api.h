@@ -116,6 +116,7 @@ extern "C" {
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 
 #include "magick/magick_types.h"
+#include "magick/analyze.h"
 #include "magick/attribute.h"
 #include "magick/average.h"
 #include "magick/blob.h"
