@@ -1,3 +1,8 @@
+2009-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: --enable-libtool-verbose configure option is no
+	longer needed now that we have silent build capability.
+
 2009-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (GenerateEXIFAttribute): Add support for
