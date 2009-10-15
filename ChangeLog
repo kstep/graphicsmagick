@@ -1,3 +1,13 @@
+2009-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (GenerateEXIFAttribute): Add support for
+	retrieving GPS EXIF attributes.  Based on work contributed by
+	Jukka Manner.
+
+	* Magick++/lib/STL.cpp, Magick++/lib/Magick++/STL.h (shadeImage):
+	ShadeImage was the result of a botched cut-and-paste.  Corrected
+	now.  Thanks to Jukka Manner for making me aware of this.
+
 2009-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/analyze.c: New source file to contain image analysis
