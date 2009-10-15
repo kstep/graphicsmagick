@@ -488,16 +488,6 @@ else
   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-installed "
 fi
 
-dnl # Enable verbose output from libtool (enable libtool's default)
-dnl AC_ARG_ENABLE(libtool-verbose,
-dnl 	      [  --enable-libtool-verbose enable verbose libtool output (default disabled)],
-dnl 	      [with_libtool_verbose=$enableval],
-dnl 	      [with_libtool_verbose='no'])
-dnl if test "$with_libtool_verbose" = 'no'
-dnl then
-dnl   LIBTOOL="$LIBTOOL --silent"
-dnl fi
-
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
