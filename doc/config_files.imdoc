@@ -59,16 +59,6 @@
   </magicklog>
 </pre>
 
-<opt>magic.mgk</opt>
-<abs>file header magic test configuration file</abs>
-
-<pre>
-  <?xml version="1.0"?>
-  <magicmap>
-    <magic name="AVI" offset="0" target="RIFF" />
-  </magicmap>
-</pre>
-
 <opt>modules.mgk</opt>
 <abs>loadable modules configuration file</abs>
 

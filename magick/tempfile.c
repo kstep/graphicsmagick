@@ -460,6 +460,33 @@ MagickExport void DestroyTemporaryFiles(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n i t i a l i z e T e m p o r a r y F i l e s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeTemporaryFiles initializes the temporary file facility
+%
+%  The format of the InitializeTemporaryFiles method is:
+%
+%      MagickPassFail InitializeTemporaryFiles(void)
+%
+%
+*/
+MagickPassFail
+InitializeTemporaryFiles(void)
+{
+  AcquireSemaphoreInfo(&templist_semaphore);
+  LiberateSemaphoreInfo(&templist_semaphore);
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   L i b e r a t e T e m p o r a r y F i l e                                 %
 %                                                                             %
 %                                                                             %

@@ -87,6 +87,8 @@ static CoderClass MinimumCoderClass = UnstableCoderClass;
 static void DestroyMagickInfo(MagickInfo** magick_info);
 static void DestroyMagickInfoList(void);
 
+static MagickPassFail InitializeMagickInfoList(void);
+
 /*
   Block size to use when accessing filesystem.
 
@@ -896,6 +898,9 @@ MagickExport void InitializeMagick(const char *path)
   /* Initialize semaphores */
   InitializeSemaphore();
 
+  /* Initialize logging */
+  InitializeLogInfo();
+
   /* Seed the random number generator */
   srand(MagickRandNewSeed());
 
@@ -934,29 +939,6 @@ MagickExport void InitializeMagick(const char *path)
     DefineClientName(path);
 
   /*
-    Set logging flags using the value of MAGICK_DEBUG if it is set in
-    the environment.
-  */
-  if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
-    (void) SetLogEventMask(p);
-
-  /*
-    Establish signal handlers for common signals
-  */
-  InitializeMagickSignalHandlers();
-
-  /*
-    Compute memory allocation and memory map resource limits based
-    on available memory
-  */
-  /* NOTE: This call does logging, so you can not make it before the path
-     to the client is setup */
-  InitializeMagickResources();
-
-  /* Initialize magick registry */
-  InitializeMagickRegistry();
-  
-  /*
     Adjust minimum coder class if requested.
   */
   if ((p=getenv("MAGICK_CODER_STABILITY")) != (const char *) NULL)
@@ -969,17 +951,51 @@ MagickExport void InitializeMagick(const char *path)
         MinimumCoderClass=PrimaryCoderClass;
     }
 
-  /*
-    Initialize module loader
-  */
+  InitializeMagickSignalHandlers(); /* Signal handlers */
+  InitializeTemporaryFiles();       /* Temporary files */
+  InitializeMagickResources();      /* Resources */
+  InitializeMagickRegistry();       /* Image/blob registry */
+  InitializeConstitute();           /* Constitute semaphore */
 #if defined(SupportMagickModules)
-  InitializeMagickModules();
+  InitializeMagickModules();        /* Module loader */
 #endif /* defined(SupportMagickModules) */
+  InitializeMagickInfoList();       /* Coder registrations + modules */
+  InitializeMagicInfo();            /* File format detection */
+  InitializeTypeInfo();             /* Font information */
+  InitializeDelegateInfo();         /* External delegate information */
+  InitializeColorInfo();            /* Color database */
 
   /* Let's log the three important setting as we exit this routine */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Path: \"%s\" Name: \"%s\" Filename: \"%s\"",
       GetClientPath(),GetClientName(),GetClientFilename());
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e M a g i c k I n f o L i s t                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeMagickInfoList initializes the magick info facility
+%
+%  The format of the InitializeMagickInfoList method is:
+%
+%      MagickPassFail InitializeMagickInfoList(void)
+%
+%
+*/
+MagickPassFail
+InitializeMagickInfoList(void)
+{
+  AcquireSemaphoreInfo(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
+  return MagickPass;
 }
 
 /*

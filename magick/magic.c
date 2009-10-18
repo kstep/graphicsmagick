@@ -40,7 +40,6 @@
 /*
   Define declarations.
 */
-#define MAGIC(name,offset,magic) {name,(unsigned char *)magic,sizeof(magic)-1,offset}
 
 /*
   Static declarations.
@@ -57,8 +56,9 @@ static const struct
     length,
     offset;
 }
-Magic[] =
+StaticMagic[] =
 {
+#define MAGIC(name,offset,magic) {name,(unsigned char *)magic,sizeof(magic)-1,offset}
   MAGIC("AVI", 0, "RIFF"),
   MAGIC("8BIMWTEXT", 0, "8\000B\000I\000M\000#"),
   MAGIC("8BIMTEXT", 0, "8BIM#"),
@@ -180,7 +180,8 @@ Magic[] =
 %
 %
 */
-MagickExport void DestroyMagicInfo(void)
+MagickExport void
+DestroyMagicInfo(void)
 {
 }
 
@@ -245,15 +246,15 @@ GetMagickFileFormat(const unsigned char *header, const size_t header_length,
       /*
 	Search for requested magic.
       */
-      for (i=0; i < sizeof(Magic)/sizeof(Magic[0]); i++)
+      for (i=0; i < sizeof(StaticMagic)/sizeof(StaticMagic[0]); i++)
 	{
-	  if (Magic[i].offset+Magic[i].length <= header_length)
+	  if (StaticMagic[i].offset+StaticMagic[i].length <= header_length)
 	    {
-	      if ((header[Magic[i].offset] == Magic[i].magic[0]) &&
-		  (memcmp(header+Magic[i].offset,Magic[i].magic,
-			  Magic[i].length) == 0))
+	      if ((header[StaticMagic[i].offset] == StaticMagic[i].magic[0]) &&
+		  (memcmp(header+StaticMagic[i].offset,StaticMagic[i].magic,
+			  StaticMagic[i].length) == 0))
 		{
-		  if (strlcpy(format,Magic[i].name,format_length) < format_length)
+		  if (strlcpy(format,StaticMagic[i].name,format_length) < format_length)
 		    status=MagickPass;
 		  break;
 		}
@@ -283,10 +284,9 @@ GetMagickFileFormat(const unsigned char *header, const size_t header_length,
 %
 %
 */
-MagickExport MagickPassFail InitializeMagicInfo(ExceptionInfo *exception)
+MagickExport MagickPassFail
+InitializeMagicInfo(void)
 {
-  ARG_NOT_USED(exception);
-
   return MagickPass;
 }
 
@@ -315,7 +315,8 @@ MagickExport MagickPassFail InitializeMagicInfo(ExceptionInfo *exception)
 %
 %
 */
-MagickExport MagickPassFail ListMagicInfo(FILE *file,ExceptionInfo *exception)
+MagickExport MagickPassFail
+ListMagicInfo(FILE *file,ExceptionInfo *exception)
 {
   register unsigned int
     i,
@@ -329,19 +330,19 @@ MagickExport MagickPassFail ListMagicInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"Name      Offset Target\n");
   (void) fprintf(file,"-------------------------------------------------"
 		 "------------------------------\n");
-  for (i=0; i < sizeof(Magic)/sizeof(Magic[0]); i++)
+  for (i=0; i < sizeof(StaticMagic)/sizeof(StaticMagic[0]); i++)
     {
       register const unsigned char
 	*c;
 
-      (void) fprintf(file,"%.1024s",Magic[i].name);
-      for (j= (unsigned int) strlen(Magic[i].name); j <= 9; j++)
+      (void) fprintf(file,"%.1024s",StaticMagic[i].name);
+      for (j= (unsigned int) strlen(StaticMagic[i].name); j <= 9; j++)
 	(void) fprintf(file," ");
-      (void) fprintf(file,"%6d ",Magic[i].offset);
+      (void) fprintf(file,"%6d ",StaticMagic[i].offset);
 
       (void) fprintf(file,"\"");
-      c=Magic[i].magic;
-      for (j=0; j < Magic[i].length; j++)
+      c=StaticMagic[i].magic;
+      for (j=0; j < StaticMagic[i].length; j++)
 	{
 /* 	    else if ('\b' == c[j]) */
 /* 	      (void) fprintf(file,"\\b"); */

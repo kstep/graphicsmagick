@@ -293,6 +293,33 @@ MagickExport void DestroyLogInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n i t i a l i z e L o g I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeLogInfo initializes the constitute facility
+%
+%  The format of the InitializeLogInfo method is:
+%
+%      MagickPassFail InitializeLogInfo(void)
+%
+%
+*/
+MagickPassFail
+InitializeLogInfo(void)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  LiberateSemaphoreInfo(&log_semaphore);
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  I s E v e n t L o g g i n g                                                %
 %                                                                             %
 %                                                                             %

@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2009-10-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> config/colors.mgk: Colors.mkg is now empty since it is used to
+        modify or extend the built-in color lookup table.
+
+  <LI> magick/{constitute.c,delegate.c,log.c,magic.c,magick.c,tempfile.c}:
+        Explicitly initialize semaphores via InitializeMagick().
+
+  <LI> magick/type.h: New header file to contain types and function
+        prototypes for functions in type.c.
+
+  <LI> magick/color_lookup.c (ReadColorConfigureFile): Store RGB color
+        table in a static struct.  Entries in the colors.mgk file are now
+        used to modify statically-defined entries, or add new definitions
+        to the color table.
+
+</UL>
+<p>
 2009-10-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

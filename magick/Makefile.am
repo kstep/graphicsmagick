@@ -192,6 +192,7 @@ MAGICK_BASE_SRCS = \
 	magick/tsd.c \
 	magick/tsd.h \
 	magick/type.c \
+	magick/type.h \
 	magick/unix_port.c \
 	magick/utility.c \
 	magick/utility.h \
@@ -275,6 +276,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/texture.h \
 	magick/timer.h \
 	magick/transform.h \
+	magick/type.h \
 	magick/utility.h \
 	magick/version.h
 

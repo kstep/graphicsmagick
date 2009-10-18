@@ -377,6 +377,33 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n i t i a l i z e D e l e g a t e I n f o                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeDelegateInfo initializes the delegate facility
+%
+%  The format of the InitializeDelegateInfo method is:
+%
+%      MagickPassFail InitializeDelegateInfo(void)
+%
+%
+*/
+MagickPassFail
+InitializeDelegateInfo(void)
+{
+  AcquireSemaphoreInfo(&delegate_semaphore);
+  LiberateSemaphoreInfo(&delegate_semaphore);
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I n v o k e D e l e g a t e                                               %
 %                                                                             %
 %                                                                             %

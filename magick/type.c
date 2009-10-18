@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -43,6 +43,7 @@
 #include "magick/log.h"
 #include "magick/render.h"
 #include "magick/semaphore.h"
+#include "magick/type.h"
 #include "magick/utility.h"
 
 /*
@@ -474,6 +475,33 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
   }
   *number_types=i;
   return(typelist);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e T y p e I n f o                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeTypeInfo initializes the type facility
+%
+%  The format of the InitializeTypeInfo method is:
+%
+%      MagickPassFail InitializeTypeInfo(void)
+%
+%
+*/
+MagickPassFail
+InitializeTypeInfo(void)
+{
+  AcquireSemaphoreInfo(&type_semaphore);
+  LiberateSemaphoreInfo(&type_semaphore);
+  return MagickPass;
 }
 
 /*

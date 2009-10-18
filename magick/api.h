@@ -170,6 +170,7 @@ extern "C" {
 #include "magick/texture.h"
 #include "magick/timer.h"
 #include "magick/transform.h"
+#include "magick/type.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -177,4 +178,4 @@ extern "C" {
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
-#endif /* !defined(_MAGICK_API_H) */
+#endif /* _MAGICK_API_H */

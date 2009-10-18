@@ -1,3 +1,19 @@
+2009-10-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* config/colors.mgk: Colors.mkg is now empty since it is used to
+	modify or extend the built-in color lookup table.
+
+	* magick/{constitute.c,delegate.c,log.c,magic.c,magick.c,tempfile.c}:
+	Explicitly initialize semaphores via InitializeMagick().
+
+	* magick/type.h: New header file to contain types and function
+	prototypes for functions in type.c.
+
+	* magick/color_lookup.c (ReadColorConfigureFile): Store RGB color
+	table in a static struct.  Entries in the colors.mgk file are now
+	used to modify statically-defined entries, or add new definitions
+	to the color table.
+
 2009-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: --enable-libtool-verbose configure option is no

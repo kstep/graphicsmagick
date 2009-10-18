@@ -76,6 +76,9 @@ extern MagickExport void
 extern MagickExport unsigned int
   ListColorInfo(FILE *file,ExceptionInfo *exception);
 
+extern MagickPassFail
+  InitializeColorInfo(void);
+
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -8057,6 +8057,33 @@ MagickFindRawImageMinMax(Image *image, EndianType endian,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n i t i a l i z e C o n s t i t u t e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeConstitute initializes the constitute facility
+%
+%  The format of the InitializeConstitute method is:
+%
+%      MagickPassFail InitializeConstitute(void)
+%
+%
+*/
+MagickPassFail
+InitializeConstitute(void)
+{
+  AcquireSemaphoreInfo(&constitute_semaphore);
+  LiberateSemaphoreInfo(&constitute_semaphore);
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i n g I m a g e                                                         %
 %                                                                             %
 %                                                                             %
