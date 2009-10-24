@@ -48,6 +48,16 @@ extern MagickExport unsigned int
 extern MagickExport int
   GMCommand(int argc,char **argv);
 
+#if defined(MAGICK_IMPLEMENTATION)
+
+extern void
+  MagickDestroyCommandInfo(void);
+
+extern MagickPassFail
+  MagickInitializeCommandInfo(void);
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

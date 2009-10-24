@@ -181,14 +181,14 @@ static SemaphoreInfo
   Forward declarations.
 */
 static MagickPassFail
-  ReadLogConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadLogConfigureFile(const char *,const unsigned int,ExceptionInfo *);
 
 /*
   Allocate LogInfo structure populated with default values
 */
 static void AllocateLogInfo( void )
 {
-  AcquireSemaphoreInfo(&log_semaphore);
+  LockSemaphoreInfo(log_semaphore);
   if (log_info == (LogInfo *) NULL)
     {
       log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
@@ -212,7 +212,7 @@ static void AllocateLogInfo( void )
 #endif
       GetTimerInfo(&log_info->timer);
     }
-  LiberateSemaphoreInfo(&log_semaphore);
+  UnlockSemaphoreInfo(log_semaphore);
 }
 /*
   Parse an event specification string and return the equivalent bits.
@@ -268,7 +268,6 @@ static LogEventType ParseEvents(const char *event_string)
 */
 MagickExport void DestroyLogInfo(void)
 {
-  AcquireSemaphoreInfo(&log_semaphore);
   if (log_info != (LogInfo *) NULL)
     {
       if (log_info->file != (FILE *) NULL)
@@ -284,7 +283,6 @@ MagickExport void DestroyLogInfo(void)
     }
   log_info=(LogInfo *) NULL;
   log_configured=False;
-  LiberateSemaphoreInfo(&log_semaphore);
   DestroySemaphoreInfo(&log_semaphore);
 }
 
@@ -310,8 +308,8 @@ MagickExport void DestroyLogInfo(void)
 MagickPassFail
 InitializeLogInfo(void)
 {
-  AcquireSemaphoreInfo(&log_semaphore);
-  LiberateSemaphoreInfo(&log_semaphore);
+  assert(log_semaphore == (SemaphoreInfo *) NULL);
+  log_semaphore=AllocateSemaphoreInfo();
   return MagickPass;
 }
 
@@ -456,7 +454,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
      reason */
   GetPathComponent(module,TailPath,srcname);
 
-  AcquireSemaphoreInfo(&log_semaphore);
+  LockSemaphoreInfo(log_semaphore);
   switch (((unsigned int) type) % 100)
   {
     case UndefinedException: domain=(char *) "Undefined"; break;
@@ -548,7 +546,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
-              LiberateSemaphoreInfo(&log_semaphore);
+              UnlockSemaphoreInfo(log_semaphore);
               return(False);
             }
           (void) fprintf(log_info->file,"<?xml version=\"1.0\"?>\n");
@@ -575,7 +573,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");
       (void) fflush(log_info->file);
-      LiberateSemaphoreInfo(&log_semaphore);
+      UnlockSemaphoreInfo(log_semaphore);
       return(True);
     }
   if (((unsigned int) log_info->output_type) & TXTFileOutput)
@@ -600,7 +598,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
-              LiberateSemaphoreInfo(&log_semaphore);
+              UnlockSemaphoreInfo(log_semaphore);
               return(False);
             }
           log_info->generation++;
@@ -612,7 +610,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
             timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
               user_time, (long) getpid(), srcname, function, line, domain, severity, event);
       (void) fflush(log_info->file);
-      LiberateSemaphoreInfo(&log_semaphore);
+      UnlockSemaphoreInfo(log_semaphore);
       return(True);
     }
 #if defined(MSWINDOWS)
@@ -760,7 +758,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
       (void) fprintf(file,"\n");
       (void) fflush(file);
     }
-  LiberateSemaphoreInfo(&log_semaphore);
+  UnlockSemaphoreInfo(log_semaphore);
   return(True);
 }
 MagickExport unsigned int LogMagickEvent(const ExceptionType type,
@@ -796,7 +794,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 %  The format of the ReadLogConfigureFile method is:
 %
 %      unsigned int ReadLogConfigureFile(const char *basename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%        const unsigned int depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -812,7 +810,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 %
 */
 static MagickPassFail ReadLogConfigureFile(const char *basename,
-  const unsigned long depth,ExceptionInfo *exception)
+  const unsigned int depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1034,7 +1032,7 @@ MagickExport unsigned long SetLogEventMask(const char *events)
   if (log_info == (LogInfo *) NULL)
     AllocateLogInfo();
 
-  AcquireSemaphoreInfo(&log_semaphore);
+  LockSemaphoreInfo(log_semaphore);
 
   if (events != NULL)
     {
@@ -1047,11 +1045,11 @@ MagickExport unsigned long SetLogEventMask(const char *events)
       ExceptionInfo
         exception;
 
-      LiberateSemaphoreInfo(&log_semaphore);
+      UnlockSemaphoreInfo(log_semaphore);
       GetExceptionInfo(&exception);
       (void) ReadLogConfigureFile(MagickLogFilename,0,&exception);
       DestroyExceptionInfo(&exception);
-      AcquireSemaphoreInfo(&log_semaphore);
+      LockSemaphoreInfo(log_semaphore);
     }
 
   /*
@@ -1061,7 +1059,7 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events=event_flags;
 
   event_flags=log_info->events;
-  LiberateSemaphoreInfo(&log_semaphore);
+  UnlockSemaphoreInfo(log_semaphore);
 
   return (event_flags);
 }
@@ -1095,7 +1093,7 @@ MagickExport void SetLogFormat(const char *format)
   if (log_info == (LogInfo *) NULL)
     AllocateLogInfo();
 
-  AcquireSemaphoreInfo(&log_semaphore);
+  LockSemaphoreInfo(log_semaphore);
 
   if (log_configured == False)
     {
@@ -1108,5 +1106,5 @@ MagickExport void SetLogFormat(const char *format)
     }
 
   (void) CloneString(&log_info->format,format);
-  LiberateSemaphoreInfo(&log_semaphore);
+  UnlockSemaphoreInfo(log_semaphore);
 }

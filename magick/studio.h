@@ -445,6 +445,10 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MAP_FAILED      ((void *) -1)
 #endif
 
+#if !defined(PATH_MAX)
+#  define PATH_MAX 4096
+#endif
+
 #if defined(HasLTDL) || ( defined(MSWINDOWS) && defined(_DLL) )
 #  define SupportMagickModules
 #endif

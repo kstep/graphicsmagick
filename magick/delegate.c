@@ -112,7 +112,6 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
     delegate_info=p;
@@ -128,7 +127,6 @@ MagickExport void DestroyDelegateInfo(void)
     MagickFreeMemory(delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
-  LiberateSemaphoreInfo(&delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 
@@ -256,17 +254,17 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 
   if (delegate_list == (DelegateInfo *) NULL)
     {
-      AcquireSemaphoreInfo(&delegate_semaphore);
+      LockSemaphoreInfo(delegate_semaphore);
       if (delegate_list == (DelegateInfo *) NULL)
         (void) ReadConfigureFile(DelegateFilename,0,exception);
-      LiberateSemaphoreInfo(&delegate_semaphore);
+      UnlockSemaphoreInfo(delegate_semaphore);
     }
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return((const DelegateInfo *) delegate_list);
   /*
     Search for requested delegate.
   */
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->mode > 0)
@@ -306,7 +304,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
         delegate_list->previous=p;
         delegate_list=p;
       }
-  LiberateSemaphoreInfo(&delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return((const DelegateInfo *) p);
 }
 
@@ -394,8 +392,8 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
 MagickPassFail
 InitializeDelegateInfo(void)
 {
-  AcquireSemaphoreInfo(&delegate_semaphore);
-  LiberateSemaphoreInfo(&delegate_semaphore);
+  assert(delegate_semaphore == (SemaphoreInfo *) NULL);
+  delegate_semaphore=AllocateSemaphoreInfo();
   return MagickPass;
 }
 
@@ -981,7 +979,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) GetDelegateInfo("*","*",exception);
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if ((p->previous == (DelegateInfo *) NULL) ||
@@ -1049,7 +1047,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     MagickFreeMemory(commands);
   }
   (void) fflush(file);
-  LiberateSemaphoreInfo(&delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return(True);
 }
 

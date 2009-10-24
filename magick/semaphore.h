@@ -25,11 +25,21 @@ extern MagickExport unsigned int
   UnlockSemaphoreInfo(SemaphoreInfo *);
 
 extern MagickExport void
-  AcquireSemaphoreInfo(SemaphoreInfo **),
+  DestroySemaphoreInfo(SemaphoreInfo **);
+
+/*
+  These are deprecated.
+*/
+extern MagickExport void
+  AcquireSemaphoreInfo(SemaphoreInfo **) __attribute__ ((deprecated)),
+  LiberateSemaphoreInfo(SemaphoreInfo **) __attribute__ ((deprecated));
+
+/*
+  These should not be MagickExport.
+*/
+extern MagickExport void
   DestroySemaphore(void),
-  DestroySemaphoreInfo(SemaphoreInfo **),
-  InitializeSemaphore(void),
-  LiberateSemaphoreInfo(SemaphoreInfo **);
+  InitializeSemaphore(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

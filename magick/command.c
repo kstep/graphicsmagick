@@ -77,6 +77,7 @@
 #include "magick/resize.h"
 #include "magick/resource.h"
 #include "magick/shear.h"
+#include "magick/semaphore.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -198,6 +199,9 @@ static const CommandInfo commands[] =
 #endif
     { 0, 0, 0, 0, 0}
   };
+
+static SemaphoreInfo
+  *command_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1479,9 +1483,16 @@ static unsigned int ExecuteSubCommand(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   return status;
 }
-MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+MagickExport unsigned int
+BenchmarkImageCommand(ImageInfo *image_info,
+		      int argc,char **argv,
+		      char **metadata,ExceptionInfo *exception)
 {
+#if defined(HAVE_OPENMP)
+  MagickBool
+    concurrent;
+#endif /* HAVE_OPENMP */
+
   double
     duration;
 
@@ -1521,32 +1532,41 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
   argc--;
   argv++;
   i=0;
+#if defined(HAVE_OPENMP)
+  concurrent=MagickFalse;
+#endif /* HAVE_OPENMP */
   duration=-1.0;
   iterations=1L;
-  if (argc)
+
+#if defined(HAVE_OPENMP)
+  if ((argc) && (LocaleCompare("-concurrent",argv[0]) == 0))
     {
-      if (LocaleCompare("-duration",argv[0]) == 0)
-        {
-          argc--;
-          argv++;
-          if (argc)
-            {
-              duration=atof(*argv);
-              argc--;
-              argv++;
-            }
-        }
-      else if (LocaleCompare("-iterations",argv[0]) == 0)
-        {
-          argc--;
-          argv++;
-          if (argc)
-            {
-              iterations=atol(argv[0]);
-              argc--;
-              argv++;
-            }
-        }
+      argc--;
+      argv++;
+      concurrent=MagickTrue;
+    }
+#endif /* HAVE_OPENMP */
+  if ((argc) && (LocaleCompare("-duration",argv[0]) == 0))
+    {
+      argc--;
+      argv++;
+      if (argc)
+	{
+	  duration=atof(*argv);
+	  argc--;
+	  argv++;
+	}
+    }
+  if ((argc) && (LocaleCompare("-iterations",argv[0]) == 0))
+    {
+      argc--;
+      argv++;
+      if (argc)
+	{
+	  iterations=atol(argv[0]);
+	  argc--;
+	  argv++;
+	}
     }
 
   if ((argc < 1) ||
@@ -1570,31 +1590,97 @@ MagickExport unsigned int BenchmarkImageCommand(ImageInfo *image_info,
     (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
     GetTimerInfo(&timer);
     
-    if (duration > 0)
+#if defined(HAVE_OPENMP)
+    if (concurrent)
       {
-        for (iteration=0; iteration < LONG_MAX; )
-          {
-            status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-            iteration++;
-            if (!status)
-              break;
-            if (GetElapsedTime(&timer) > duration)
-              break;
-            (void) ContinueTimer(&timer);
-            (void) SetClientName(client_name);
-          }
+	MagickBool
+	  quit;
+
+	long
+	  count;
+
+	count=0;
+	quit=MagickFalse;
+	omp_set_nested(MagickTrue);
+	if (duration > 0)
+	  {
+	    count=0;
+# pragma omp parallel for shared(count, status, quit)
+	    for (iteration=0; iteration < 1000000; iteration++)
+	      {
+		MagickPassFail
+		  thread_status;
+
+		if (quit)
+		  continue;
+
+		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		{
+		  count++;
+		  if (!thread_status)
+		    {
+		      status=thread_status;
+		      quit=MagickTrue;
+		    }
+		  if (GetElapsedTime(&timer) > duration)
+		    quit=MagickTrue;
+		  else
+		    (void) ContinueTimer(&timer);
+		}
+	      }
+	  }
+	else if (iterations > 0)
+	  {
+#  pragma omp parallel for shared(count, status, quit)
+	    for (iteration=0; iteration < iterations; iteration++)
+	      {
+		MagickPassFail
+		  thread_status;
+
+		if (quit)
+		  continue;
+
+		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		{
+		  count++;
+		  if (!thread_status)
+		    {
+		      status=thread_status;
+		      quit=MagickTrue;
+		    }
+		}
+	      }
+	  }
+	iteration=count;
       }
-    else if (iterations > 0)
+    else
+#endif /* HAVE_OPENMP */
       {
-        for (iteration=0; iteration < iterations; )
-          {
-            
-            status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-            iteration++;
-            if (!status)
-              break;
-            (void) SetClientName(client_name);
-          }
+	if (duration > 0)
+	  {
+	    for (iteration=0; iteration < (LONG_MAX-1); )
+	      {
+		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		iteration++;
+		if (!status)
+		  break;
+		if (GetElapsedTime(&timer) > duration)
+		  break;
+		(void) ContinueTimer(&timer);
+	      }
+	  }
+	else if (iterations > 0)
+	  {
+	    for (iteration=0; iteration < iterations; )
+	      {
+		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		iteration++;
+		if (!status)
+		  break;
+	      }
+	  }
       }
     {
       double
@@ -7975,27 +8061,90 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
       if (LocaleCompare(commands[i].command,option) == 0)
         {
           char
-            client_name[MaxTextExtent],
             command_name[MaxTextExtent];
 
+	  const char
+	    *pos;
+
           /*
-            Append subcommand name to existing client name if existing
-            client name is not identical to subcommand name.
+            Append subcommand name to existing client name if end of
+            existing client name is not identical to subcommand name.
           */
+	  LockSemaphoreInfo(command_semaphore);
           GetPathComponent(GetClientName(),BasePath,command_name);
-          if (LocaleCompare(commands[i].command,command_name) != 0)
+	  pos=strrchr(command_name,' ');
+          if ((pos == (const char *) NULL) ||
+	      (LocaleCompare(commands[i].command,pos+1) != 0))
             {
+	      char
+		client_name[MaxTextExtent];
+		
               FormatString(client_name,"%.1024s %s",GetClientName(),
                            commands[i].command);
               
               (void) SetClientName(client_name);
             }
+	  UnlockSemaphoreInfo(command_semaphore);
+
           return(commands[i].command_vector)(image_info,argc,argv,
             commands[i].pass_metadata ? metadata : (char **) NULL,exception);
         }
     }
   ThrowException(exception,OptionError,UnrecognizedCommand,option);
   return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k D e s t r o y C o m m a n d I n f o                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickDestroyCommandInfo deallocates memory associated with the
+%  command parser.
+%
+%  The format of the MagickDestroyCommandInfo method is:
+%
+%      void MagickDestroyCommandInfo(void)
+%
+%
+*/
+void MagickDestroyCommandInfo(void)
+{
+  DestroySemaphoreInfo(&command_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k I n i t i a l i z e C o m m a n d I n f o                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickInitializeCommandInfo initializes the command parsing
+%  facility.
+%
+%  The format of the MagickInitializeCommandInfo method is:
+%
+%      MagickPassFail MagickInitializeCommandInfo(void)
+%
+%
+*/
+MagickPassFail
+MagickInitializeCommandInfo(void)
+{
+  assert(command_semaphore == (SemaphoreInfo *) NULL);
+  command_semaphore=AllocateSemaphoreInfo();
+  return MagickPass;
 }
 
 /*

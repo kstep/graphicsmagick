@@ -355,7 +355,7 @@
 </utils>
 <utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-limit <type> <value></opt>
-<abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
+<abs>Disk, File, Map, Memory, Pixels, or Threads resource limit</abs>
 </utils>
 <utils apps=mogrify>
 <opt>-linewidth</opt>

@@ -636,7 +636,7 @@ static ColorInfo
   Forward declarations.
 */
 static unsigned int
-  ReadColorConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadColorConfigureFile(const char *,const unsigned int,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -683,7 +683,6 @@ DestroyColorInfo(void)
   register ColorInfo
     *p;
 
-  AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; )
   {
     color_info=p;
@@ -691,7 +690,6 @@ DestroyColorInfo(void)
     DestroyColorInfoEntry(color_info);
   }
   color_list=(ColorInfo *) NULL;
-  LiberateSemaphoreInfo(&color_semaphore);
   DestroySemaphoreInfo(&color_semaphore);
 }
 
@@ -739,10 +737,10 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
   register ColorInfo
     *p;
 
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   if (color_list == (ColorInfo *) NULL)
     (void) ReadColorConfigureFile(ColorFilename,0,exception);
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return((const ColorInfo *) color_list);
   /*
@@ -756,7 +754,7 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
     (void) strcpy(q,q+1);
     q--;
   }
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
     if (LocaleCompare(colorname,p->name) == 0)
       break;
@@ -792,7 +790,7 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
         color_list->previous=p;
         color_list=p;
       }
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   return((const ColorInfo *) p);
 }
 
@@ -862,7 +860,7 @@ GetColorInfoArray(ExceptionInfo *exception)
   if ((!color_list) || (exception->severity > UndefinedException))
     return 0;
 
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
 
   list=color_list;
 
@@ -890,7 +888,7 @@ GetColorInfoArray(ExceptionInfo *exception)
   for (p=list; p != 0; p=p->next)
     array[i++]=p;
 
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
 
   /*
     Sort array entries
@@ -956,11 +954,11 @@ GetColorList(const char *pattern,unsigned long *number_colors)
   /*
     Determine color list size
   */
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     i++;
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
 
   /*
     Allocate color list.
@@ -972,7 +970,7 @@ GetColorList(const char *pattern,unsigned long *number_colors)
   /*
     Add colors matching glob specification to list
   */
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
@@ -981,7 +979,7 @@ GetColorList(const char *pattern,unsigned long *number_colors)
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AcquireString(p->name);
   }
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
 
   *number_colors=i;
   return(colorlist);
@@ -1026,7 +1024,7 @@ ListColorInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) GetColorInfo("*",exception);
-  AcquireSemaphoreInfo(&color_semaphore);
+  LockSemaphoreInfo(color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
     if ((p->previous == (ColorInfo *) NULL) ||
@@ -1068,7 +1066,7 @@ ListColorInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
-  LiberateSemaphoreInfo(&color_semaphore);
+  UnlockSemaphoreInfo(color_semaphore);
   return(True);
 }
 
@@ -1094,8 +1092,8 @@ ListColorInfo(FILE *file,ExceptionInfo *exception)
 MagickPassFail
 InitializeColorInfo(void)
 {
-  AcquireSemaphoreInfo(&color_semaphore);
-  LiberateSemaphoreInfo(&color_semaphore);
+  assert(color_semaphore == (SemaphoreInfo *) NULL);
+  color_semaphore=AllocateSemaphoreInfo();
   return MagickPass;
 }
 
@@ -1371,7 +1369,7 @@ QueryColorname(const Image *image,const PixelPacket *color,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C o l o rC o n f i g u r e F i l e                                %
++   R e a d C o l o r C o n f i g u r e F i l e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1382,8 +1380,8 @@ QueryColorname(const Image *image,const PixelPacket *color,
 %
 %  The format of the ReadColorConfigureFile method is:
 %
-%      unsigned int ReadColorConfigureFile(const char *basename,
-%        const unsigned long depth,ExceptionInfo *exception)
+%      MagickPassFail ReadColorConfigureFile(const char *basename,
+%        const unsigned int depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1400,7 +1398,7 @@ QueryColorname(const Image *image,const PixelPacket *color,
 */
 static MagickPassFail
 ReadColorConfigureFile(const char *basename,
-		       const unsigned long depth,
+		       const unsigned int depth,
 		       ExceptionInfo *exception)
 {
   size_t
@@ -1452,11 +1450,22 @@ ReadColorConfigureFile(const char *basename,
   /*
     Read the color configure file (if any).
   */
-  (void) strcpy(path,basename);
+  (void) strlcpy(path,basename,sizeof(path));
   if (depth == 0)
-    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+    {
+      ExceptionInfo
+	exception_local;
+
+      GetExceptionInfo(&exception_local);
+      xml=(char *) GetConfigureBlob(basename,path,&length,&exception_local);
+      if (exception_local.severity != ConfigureError)
+	CopyException(exception,&exception_local);
+      DestroyExceptionInfo(&exception_local);
+    }
   else
-    xml=(char *) FileToBlob(basename,&length,exception);
+    {
+      xml=(char *) FileToBlob(basename,&length,exception);
+    }
   if (xml != (char *) NULL)
     {
       char
@@ -1465,10 +1474,10 @@ ReadColorConfigureFile(const char *basename,
 	*token;
 
       MagickBool
-	in_color;
+	in_entry;
 
       token=AcquireString(xml);
-      in_color=MagickFalse;
+      in_entry=MagickFalse;
       for (q=xml; *q != '\0'; )
 	{
 	  /*
@@ -1477,7 +1486,7 @@ ReadColorConfigureFile(const char *basename,
 	  GetToken(q,&q,token);
 	  if (*token == '\0')
 	    break;
-	  (void) strlcpy(keyword,token,MaxTextExtent);
+	  (void) strlcpy(keyword,token,sizeof(keyword));
 	  if (LocaleNCompare(keyword,"<!--",4) == 0)
 	    {
 	      /*
@@ -1502,7 +1511,8 @@ ReadColorConfigureFile(const char *basename,
 		  if (LocaleCompare(keyword,"file") == 0)
 		    {
 		      if (depth > 200)
-			ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
+			ThrowException(exception,ConfigureError,
+				       IncludeElementNestedTooDeeply,path);
 		      else
 			{
 			  char
@@ -1510,8 +1520,8 @@ ReadColorConfigureFile(const char *basename,
 
 			  GetPathComponent(path,HeadPath,filename);
 			  if (*filename != '\0')
-			    (void) strlcat(filename,DirectorySeparator,MaxTextExtent);
-			  (void) strlcat(filename,token,MaxTextExtent);
+			    (void) strlcat(filename,DirectorySeparator,sizeof(filename));
+			  (void) strlcat(filename,token,sizeof(filename));
 			  (void) ReadColorConfigureFile(filename,depth+1,exception);
 			}
 		      if (color_list != (ColorInfo *) NULL)
@@ -1529,7 +1539,7 @@ ReadColorConfigureFile(const char *basename,
 	      /*
 		Allocate memory for the color list.
 	      */
-	      in_color=MagickTrue;
+	      in_entry=MagickTrue;
 	      color_info=MagickAllocateMemory(ColorInfo *,sizeof(ColorInfo));
 	      if (color_info == (ColorInfo *) NULL)
 		MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -1552,7 +1562,7 @@ ReadColorConfigureFile(const char *basename,
 	      /*
 		Closing a color specification.
 	      */
-	      if (in_color)
+	      if (in_entry)
 		{
 		  /*
 		    Remove any existing entry with same name (last one wins).
@@ -1573,7 +1583,7 @@ ReadColorConfigureFile(const char *basename,
 			  }
 		      }
 		  }
-		  in_color=MagickFalse;
+		  in_entry=MagickFalse;
 		}
 	    }
 	  if (color_list == (ColorInfo *) NULL)
@@ -1666,9 +1676,7 @@ ReadColorConfigureFile(const char *basename,
 		break;
 	      }
 	    default:
-	      {
-		break;
-	      }
+	      break;
 	    }
 	}
       MagickFreeMemory(token);

@@ -1674,7 +1674,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
 
   if (display == (Display *) NULL)
     {
-      char
+      const char
         *client_name;
 
       /*
@@ -1688,7 +1688,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
         Get user defaults from X resource database.
       */
       (void) XSetErrorHandler(MagickXError);
-      client_name=SetClientName((char *) NULL);
+      client_name=GetClientName();
       resource_database=MagickXGetResourceDatabase(display,client_name);
       MagickXGetResourceInfo(resource_database,client_name,&resource_info);
       resource_info.close_server=False;

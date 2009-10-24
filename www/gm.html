@@ -524,13 +524,14 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply ASC CDL color transform</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Applies ("bakes in") the ASC-CDL which is a format for the exchange of
-basic primary color grading information between equipment and software
-from different manufacturers. The format defines the math for three
-functions: slope, offset and power. Each function uses a number for
-the red, green, and blue color channels for a total of nine numbers
-comprising a single color decision. A tenth number for chrominance
-(saturation) has been proposed but is not yet standardized.</font></td></tr></table>
+Applies ("bakes in") the ASC CDL, which is a format for the exchange
+of basic primary color grading information between equipment and
+software from different manufacturers. The format defines the math for
+three functions: slope, offset and power. Each function uses a number
+for the red, green, and blue color channels for a total of nine
+numbers comprising a single color decision. The tenth number
+(optional) is for chromiance (saturation) as specified by ASC CDL
+1.2.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The argument string is comma delimited and is in the following form
 (but without invervening spaces or line breaks)</font></td></tr></table>
@@ -542,7 +543,7 @@ The argument string is comma delimited and is in the following form
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 with the unity (no change) specification being:
-"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"</font></td></tr></table>
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:1.0"</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2834,15 +2835,17 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, resource limits are estimated based on the available
 resources of the system. The resource limits are <strong>Disk</strong>, maximum
 total disk space consumed; <strong>File</strong>, maximum number of file
-descriptors allowed to be open at once; <strong>Map</strong>, maximum total number
-of file bytes which may be memory mapped; <strong>Memory</strong>, maximum total
-number of bytes of heap memory used for image storage; and <strong>Pixels</strong>,
-maximum absolute image size (per image).</font></td></tr></table>
+descriptors allowed to be open at once; <strong>Map</strong>, maximum total
+number of file bytes which may be memory mapped; <strong>Memory</strong>,
+maximum total number of bytes of heap memory used for image storage;
+<strong>Pixels</strong>, maximum absolute image size (per image); and
+<strong>Threads</strong>, the maximum number of worker threads to use per OpenMP
+thread team.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 These resource limits are used to decide if (for a given image) the
 decoded image ("pixel cache") should be stored in heap memory (RAM), in a
@@ -2864,9 +2867,10 @@ megabytes and 64 megabytes respectively.</font></td></tr></table>
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
 <strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MAP</strong>,
-<strong>MAGICK_LIMIT_MEMORY</strong>, and <strong>MAGICK_LIMIT_PIXELS</strong> may be used to
-set the limits for disk space, open files, memory mapped size, heap
-memory, and per-image pixels respectively.</font></td></tr></table>
+<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>, and
+<strong>OMP_NUM_THREADS</strong> may be used to set the limits for disk space,
+open files, memory mapped size, heap memory, per-image pixels, and
+threads respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the option <tt>-list resource</tt> list the current limits.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -5591,7 +5595,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6286,7 +6290,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6789,7 +6793,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8395,7 +8399,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9858,7 +9862,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -12907,7 +12911,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -13314,7 +13318,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14292,7 +14296,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -15647,7 +15651,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

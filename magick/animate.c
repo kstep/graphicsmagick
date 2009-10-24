@@ -915,8 +915,12 @@ MagickExport void MagickXAnimateBackgroundImage(Display *display,
 %
 %
 */
-MagickExport Image *MagickXAnimateImages(Display *display,
-  MagickXResourceInfo *resource_info,char **argv,const int argc,Image *images)
+MagickExport Image *
+MagickXAnimateImages(Display *display,
+		     MagickXResourceInfo *resource_info,
+		     char *argv[],
+		     const int argc,
+		     Image *images)
 {
 #define MagickMenus  4
 #define MaxWindows  8

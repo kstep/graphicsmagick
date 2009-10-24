@@ -11786,8 +11786,9 @@ MagickExport unsigned int MagickXDisplayBackgroundImage(Display *display,
     } \
 }
 
-MagickExport Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
-  char **argv,int argc,Image **image,unsigned long *state)
+MagickExport Image *
+MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
+		    char *argv[],int argc,Image **image,unsigned long *state)
 {
 
   static const char

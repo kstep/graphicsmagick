@@ -435,13 +435,7 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   if (view_set == (ThreadViewSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
-  /*
-    omp_get_max_threads() returns the # threads which will be used in team by default.
-    omp_get_num_threads() returns the # of threads in current team (1 in main thread).
-  */
-  view_set->nviews=omp_get_max_threads();
-  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
-  
+  view_set->nviews=(unsigned int) GetMagickResourceLimit(ThreadsResource);
   view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
     {
@@ -1722,16 +1716,8 @@ DestroyCacheInfo(Cache cache_info)
         break;
       }
     }
-  if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
-    {
-      DestroySemaphoreInfo(&cache_info->file_semaphore);
-      cache_info->file_semaphore=(SemaphoreInfo *) NULL;
-    }
-  if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
-    {
-      DestroySemaphoreInfo(&cache_info->reference_semaphore);
-      cache_info->reference_semaphore=(SemaphoreInfo *) NULL;
-    }
+  DestroySemaphoreInfo(&cache_info->file_semaphore);
+  DestroySemaphoreInfo(&cache_info->reference_semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy cache %.1024s",
                         cache_info->filename);
   cache_info->signature=0;

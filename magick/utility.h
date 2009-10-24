@@ -77,7 +77,6 @@ extern MagickExport char
   *EscapeString(const char *,const char),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
-  *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *),
@@ -85,9 +84,10 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetClientFilename(void),
-  *SetClientFilename(const char *),
   *GetClientName(void),
   *GetClientPath(void),
+  *SetClientFilename(const char *),
+  *SetClientName(const char *),
   *SetClientPath(const char *);
 
 extern MagickExport double

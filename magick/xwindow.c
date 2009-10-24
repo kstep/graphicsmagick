@@ -3416,8 +3416,9 @@ MagickExport XrmDatabase MagickXGetResourceDatabase(Display *display,
 %
 %
 */
-MagickExport void MagickXGetResourceInfo(XrmDatabase database,char *client_name,
-  MagickXResourceInfo *resource_info)
+MagickExport void
+MagickXGetResourceInfo(XrmDatabase database,const char *client_name,
+		       MagickXResourceInfo *resource_info)
 {
   char
     *resource_value;
@@ -9136,9 +9137,11 @@ MagickExport MagickXWindows *MagickXSetWindows(MagickXWindows *windows_info)
 MagickExport void MagickXUserPreferences(MagickXResourceInfo *resource_info)
 {
 #if defined(PreferencesDefaults)
+  const char
+    *client_name;
+
   char
     cache[MaxTextExtent],
-    *client_name,
     filename[MaxTextExtent],
     specifier[MaxTextExtent];
 
@@ -9152,7 +9155,7 @@ MagickExport void MagickXUserPreferences(MagickXResourceInfo *resource_info)
     Save user preferences to the client configuration file.
   */
   assert(resource_info != (MagickXResourceInfo *) NULL);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   preferences_database=XrmGetStringDatabase("");
   FormatString(specifier,"%.1024s.backdrop",client_name);
   value=MagickBoolToString(resource_info->backdrop);

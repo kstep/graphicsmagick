@@ -1328,6 +1328,8 @@ MagickExport ResourceType StringToResourceType(const char *option)
     resource_type=MemoryResource;
   else if (LocaleCompare("Pixels",option) == 0)
     resource_type=PixelsResource;
+  else if (LocaleCompare("Threads",option) == 0)
+    resource_type=ThreadsResource;
   return resource_type;
 }
 

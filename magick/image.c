@@ -438,7 +438,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
-  char
+  const char
     *client_name;
 
   Display
@@ -458,12 +458,13 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     return(False);
   (void) XSetErrorHandler(MagickXError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=MagickXGetResourceDatabase(display,client_name);
   MagickXGetResourceInfo(resource_database,client_name,&resource);
   resource.image_info=CloneImageInfo(image_info);
   resource.immutable=True;
-  (void) MagickXAnimateImages(display,&resource,&client_name,1,image);
+  (void) MagickXAnimateImages(display,&resource,(char **) &client_name,
+			      1,image);
   (void) XCloseDisplay(display);
   DestroyImageInfo(resource.image_info);
   return(image->exception.severity == UndefinedException);
@@ -1106,11 +1107,11 @@ MagickExport void DestroyImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   destroy=False;
-  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   image->reference_count--;
   if (image->reference_count == 0)
     destroy=True;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   if (!destroy)
     return;
   /*
@@ -1147,8 +1148,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   MagickFreeMemory(image->ascii85);
   DestroyBlob(image);
-  if (image->semaphore)
-    DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   MagickFreeMemory(image);
 }
 
@@ -1230,7 +1230,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   Image *image)
 {
-  char
+  const char
     *client_name;
 
   Display
@@ -1256,7 +1256,7 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     return(MagickFail);
   (void) XSetErrorHandler(MagickXError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=MagickXGetResourceDatabase(display,client_name);
   MagickXGetResourceInfo(resource_database,client_name,&resource_info);
   if (image_info->page != (char *) NULL)
@@ -1265,7 +1265,8 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   for (next=image; next; next=next->next)
   {
     state=DefaultState;
-    (void) MagickXDisplayImage(display,&resource_info,&client_name,1,&next,&state);
+    (void) MagickXDisplayImage(display,&resource_info,(char **) &client_name,
+			       1,&next,&state);
     if (state & ExitState)
       break;
   }
@@ -1685,16 +1686,16 @@ MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
   assert(*image != (Image *) NULL);
   assert((*image)->signature == MagickSignature);
   clone=False;
-  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   if ((*image)->reference_count > 1)
     clone=True;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   if (!clone)
     return;
   clone_image=CloneImage(*image,0,0,True,exception);
-  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   (*image)->reference_count--;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   *image=clone_image;
 }
 
@@ -1726,9 +1727,9 @@ MagickExport Image *ReferenceImage(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   image->reference_count++;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   return(image);
 }
 

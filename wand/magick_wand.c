@@ -9576,9 +9576,11 @@ static unsigned long GetMagickWandId(void)
   static unsigned long
     id = 0;
 
-  AcquireSemaphoreInfo(&wand_semaphore);
+  if (wand_semaphore == (SemaphoreInfo *) NULL)
+    wand_semaphore=AllocateSemaphoreInfo();
+  LockSemaphoreInfo(wand_semaphore);
   id++;
-  LiberateSemaphoreInfo(&wand_semaphore);
+  UnlockSemaphoreInfo(wand_semaphore);
   return(id);
 }
 

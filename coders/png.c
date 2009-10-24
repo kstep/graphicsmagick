@@ -1584,7 +1584,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.opacity=0;
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  AcquireSemaphoreInfo(&png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
 #if (PNG_LIBPNG_VER < 10007)
@@ -1629,7 +1629,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (png_pixels != (unsigned char *) NULL)
         MagickFreeMemory(png_pixels);
@@ -2122,7 +2122,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (image != (Image *) NULL)
         image->columns=0;
@@ -2496,7 +2496,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2698,7 +2698,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   MagickFreeMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LiberateSemaphoreInfo(&png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging)
@@ -6210,7 +6210,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   png_pixels=(unsigned char *) NULL;
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  AcquireSemaphoreInfo(&png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
   if (setjmp(ping->jmpbuf))
@@ -6225,7 +6225,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       png_destroy_write_struct(&ping,&ping_info);
       MagickFreeMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFail);
     }
@@ -7578,7 +7578,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   MagickFreeMemory(png_pixels);
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LiberateSemaphoreInfo(&png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging)

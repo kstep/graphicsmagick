@@ -1,3 +1,40 @@
+2009-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c: Added support for a "Threads" limit, which
+	specifies how many threads may be used.  Note that if
+	omp_set_nested(true) is used, GCC's GOMP seems to replicate this
+	number of threads for each level of threading rather than sharing
+	the specified number of threads across all teams.  For example,
+	specifying four threads leads to sixteen active threads with
+	omp_set_nested(true) and nested threading.  This GOMP behavior
+	does not seem to cause any harm.
+	(GetMagickResourceLimit): New accessor function to retrieve the
+	maximum limit for a resource.
+
+	* magick/module.c (ReadModuleConfigureFile): Default set of module
+	aliases is now statically initialized.  The modules.mgk file is
+	now optional and can be used to support adding more modules, or
+	diverting existing format support to a user-provided module.
+
+	* magick/magick.c (DestroyMagick): Document that this function
+	should be invoked from the program's primary thread after any
+	threads using GraphicsMagick have terminated.
+	(GetMagickInfo): Was thread safe for access but not properly
+	thread safe during initialization.  Is now fully thread safe.
+	(InitializeMagick): Fully initialize everything needed to
+	read/write files.  Document that this function MUST be invoked
+	from the program's primary thread prior to using any other
+	GraphicsMagick functions.
+
+	* magick/color_lookup.c (ReadColorConfigureFile): The colors.mgk
+	is now optional so don't throw an exception if it is not found.
+
+	* magick/semaphore.c (AcquireSemaphoreInfo): Deprecated this
+	internal function.  Use AllocateSemaphoreInfo() and
+	LockSemaphoreInfo() instead.
+	(LiberateSemaphoreInfo): Deprecated this internal function.  Use
+	UnlockSemaphoreInfo() instead.
+
 2009-10-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* config/colors.mgk: Colors.mkg is now empty since it is used to

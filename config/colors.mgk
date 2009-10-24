@@ -2,7 +2,8 @@
 <!--
 Color definition file.  Definitions in this file extend or replace the
 compiled in color definitions.  Use 'gm convert -list color' to list
-the currently available colors.
+the currently available colors.  This file is optional and the
+software will still function if it is removed.
 
 For example:
 

@@ -69,13 +69,14 @@ MagickExport MagickRandomKernel* AcquireMagickRandomKernel()
 */
 void InitializeMagickRandomGenerator()
 {
-  AcquireSemaphoreInfo(&semaphore);
+  assert(semaphore == (SemaphoreInfo *) NULL);
+  semaphore=AllocateSemaphoreInfo();
+
   if (!initialized)
     {
       MagickTsdKeyCreate(&kernel_key);
       initialized=MagickTrue;
     }
-  LiberateSemaphoreInfo(&semaphore);
 }
 
 /*
@@ -83,7 +84,6 @@ void InitializeMagickRandomGenerator()
 */
 void DestroyMagickRandomGenerator()
 {
-  AcquireSemaphoreInfo(&semaphore);
   if (initialized)
     {
       MagickRandomKernel
@@ -97,7 +97,6 @@ void DestroyMagickRandomGenerator()
     }
   kernel_key=(MagickTsdKey_t) 0;
   initialized=MagickFalse;
-  LiberateSemaphoreInfo(&semaphore);
   DestroySemaphoreInfo(&semaphore);
 }
 

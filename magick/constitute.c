@@ -1897,14 +1897,6 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 */
 MagickExport void DestroyConstitute(void)
 {
-#if defined(JUST_FOR_DOCUMENTATION)
-  /* The first two calls should bracket any code that deals with the data
-     structurees being released */
-  AcquireSemaphoreInfo(&constitute_semaphore);
-  LiberateSemaphoreInfo(&constitute_semaphore);
-#endif
-  /* The final call actually releases the associated mutex used to prevent
-     multiple threads from accessing the data */
   DestroySemaphoreInfo(&constitute_semaphore);
 }
 
@@ -8074,8 +8066,8 @@ MagickFindRawImageMinMax(Image *image, EndianType endian,
 MagickPassFail
 InitializeConstitute(void)
 {
-  AcquireSemaphoreInfo(&constitute_semaphore);
-  LiberateSemaphoreInfo(&constitute_semaphore);
+  assert(constitute_semaphore == (SemaphoreInfo *) NULL);
+  constitute_semaphore=AllocateSemaphoreInfo();
   return MagickPass;
 }
 
@@ -8349,13 +8341,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (magick_info->decoder != NULL))
     {
       if (!magick_info->thread_support)
-        AcquireSemaphoreInfo(&constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8445,13 +8437,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         Invoke decoder for format
       */
       if (!magick_info->thread_support)
-        AcquireSemaphoreInfo(&constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8917,7 +8909,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 	}
 
       if (!magick_info->thread_support)
-        AcquireSemaphoreInfo(&constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			    "Invoking \"%.1024s\" encoder (%.1024s): "
 			    "monochrome=%s grayscale=%s class=%s colorspace=%s",
@@ -8931,7 +8923,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			    "Returned from \"%.1024s\" encoder",magick_info->name);
       if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
 
       if (tempfile[0] != '\0')
 	{
@@ -8983,10 +8975,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 			       image->filename)
 	    }
       if (!magick_info->thread_support)
-        AcquireSemaphoreInfo(&constitute_semaphore);
+        LockSemaphoreInfo(constitute_semaphore);
       status=(magick_info->encoder)(clone_info,image);
       if (!magick_info->thread_support)
-        LiberateSemaphoreInfo(&constitute_semaphore);
+        UnlockSemaphoreInfo(constitute_semaphore);
     }
   (void) strlcpy(image->magick,clone_info->magick,MaxTextExtent);
   DestroyImageInfo(clone_info);
