@@ -1,3 +1,18 @@
+2009-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Fix lockup due to hanging in loop
+	while parsing malformed sub-image specification (SourceForge issue
+	2886560).
+
+	* coders/jpeg.c (ReadJPEGImage): Fix image scaling when used with
+	IJG JPEG library version 7.
+
+2009-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/STL.cpp, Magick++/lib/Magick++/STL.h (shadeImage):
+	ShadeImage was the result of a botched cut-and-paste.  Corrected
+	now.  Thanks to Jukka Manner for making me aware of this.
+
 2009-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXMakeImage): If image is TrueColor and

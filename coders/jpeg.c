@@ -788,21 +788,35 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       /*
         Let the JPEG library subsample for us.
       */
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Requested Geometry: %lux%lu",
+			      image->columns,image->rows);
       jpeg_calc_output_dimensions(&jpeg_info);
       image->magick_columns=jpeg_info.output_width;
       image->magick_rows=jpeg_info.output_height;
       scale_factor=(double) jpeg_info.output_width/image->columns;
       if (scale_factor > ((double) jpeg_info.output_height/image->rows))
         scale_factor=(double) jpeg_info.output_height/image->rows;
-      jpeg_info.scale_denom=(unsigned int) scale_factor;
+      jpeg_info.scale_denom *= (unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Scale_factor: %ld",
-        (long) scale_factor);
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Scale_factor: %ld (scale_num=%d, "
+			      "scale_denom=%d)",
+			      (long) scale_factor,
+			      jpeg_info.scale_num,jpeg_info.scale_denom);
     }
-  if (image_info->subrange != 0)
+  else if (image_info->subrange != 0)
     {
-      jpeg_info.scale_denom=(int) image_info->subrange;
+      jpeg_info.scale_denom *= (int) image_info->subrange;
       jpeg_calc_output_dimensions(&jpeg_info);
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Requested Scaling Denominator: %d "
+			      "(scale_num=%d, scale_denom=%d)",
+			      (int) image_info->subrange,
+			      jpeg_info.scale_num,jpeg_info.scale_denom);
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
 #ifdef D_LOSSLESS_SUPPORTED

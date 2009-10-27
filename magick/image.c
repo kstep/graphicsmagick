@@ -4924,8 +4924,8 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       if ((q > image_info->filename) && (*q == '[') && IsFrame(q+1))
         {
           unsigned long
-            first,
-            last;
+            first=0,
+            last=0;
 
           (void) CloneString(&image_info->tile,q+1);
           /* Copy image range spec. to tile spec. w/o brackets */
@@ -4938,14 +4938,30 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           /* Parse the image range spec. now placed in tile */
           for (q=image_info->tile; *q != '\0'; )
           {
+	    char
+	      *digits;
+
+	    unsigned long
+	      value;
+
             while (isspace((int)(unsigned char) *q) || (*q == ','))
               q++;
-            first=strtol(q,&q,10);
+	    digits=q;
+            value=strtol(digits,&q,10);
+	    if (digits <= q)
+	      break;
+	    first=value;
             last=first;
             while (isspace((int)(unsigned char) *q))
               q++;
             if (*q == '-')
-              last=strtol(q+1,&q,10);
+	      {
+		digits=q+1;
+		value=strtol(digits,&q,10);
+		if (digits <= q)
+		  break;
+		last=value;
+	      }
             if (first > last)
               Swap(first,last);
             if (first < image_info->subimage)

@@ -1,3 +1,9 @@
+2009-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/STL.cpp, lib/Magick++/STL.h (shadeImage): ShadeImage was the
+	result of a botched cut-and-paste.  Corrected now.  Thanks to
+	Jukka Manner for making me aware of this.
+
 2008-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantumOperator): Add missing modifyImage().
