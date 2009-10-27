@@ -813,6 +813,9 @@
       <Message name="ImageWidthsOrHeightsDiffer">
         image widths or heights differ
       </Message>
+      <Message name="InvalidSubimageSpecification">
+        Invalid subimage specification
+      </Message>
       <Message name="KernelRadiusIsTooSmall">
         kernel radius is too small
       </Message>

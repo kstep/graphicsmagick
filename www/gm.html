@@ -825,6 +825,13 @@ width=15><b><font face="Helvetica, Arial"
 Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
 a colorization value list delimited with slashes (e.g. 0/0/50).</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-colorize</strong> option may be used in conjunction with <strong>-modulate</strong>
+to produce a nice sepia toned image like:</font></td></tr></table>
+<pre>
+  gm convert input.ppm -modulate 115,0,100 \
+     -colorize 7,21,50 output.ppm.
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1389,14 +1396,23 @@ compression. If defined, this value overrides the -quality
 setting. The default quality setting of 75 results in a rate value of
 0.06641.
 </dd>
+<dt>jpeg:block-smoothing={true|false}</dt>
+<dd>Enables or disables block smoothing when reading a JPEG file
+(default enabled).
+&lt;/dd/
 <dt>jpeg:dct-method=&lt;value&gt;</dt>
-<dd>Selects the IJG JPEG library DCT encoding implementation to use. The
-encoding implementations vary in speed and encoding error. The available
-choices for <strong>value</strong> are <strong>islow</strong>, <strong>ifast</strong>, <strong>float</strong>,
-<strong>default</strong> and <strong>fastest</strong>. Note that <strong>fastest</strong> might not
-necessarily be fastest on your CPU, depending on the choices made when
-the JPEG library was built and how your CPU behaves.
+<dd>Selects the IJG JPEG library DCT implementation to use. The
+encoding implementations vary in speed and encoding error. The
+available choices for <strong>value</strong> are <strong>islow</strong>, <strong>ifast</strong>,
+<strong>float</strong>, <strong>default</strong> and <strong>fastest</strong>. Note that
+<strong>fastest</strong> might not necessarily be fastest on your CPU, depending
+on the choices made when the JPEG library was built and how your CPU
+behaves.
 </dd>
+<dt>jpeg:fancy-upsampling={true|false}</dt>
+<dd>Enables or disables fancy upsampling when reading a JPEG file
+(default enabled).
+&lt;/dd/
 <dt>jpeg:optimize-coding={true|false}</dt>
 <dd>
 Selects if huffman encoding should be used. Huffman encoding is enabled

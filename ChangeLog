@@ -1,3 +1,18 @@
+2009-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Added jpeg:block-smoothing and
+	jpeg:fancy-upsampling defines to control these JPEG library
+	options.
+
+	* magick/image.c (SetImageInfo): Fix lockup due to hanging in loop
+	while parsing malformed sub-image specification (SourceForge issue
+	2886560).  Also fixes the ability to pass the image size via the
+	filename specification like "myfile.jpg[640x480]" rather than
+	needing to use -size.
+
+	* coders/jpeg.c (ReadJPEGImage): Fix image scaling when used with
+	IJG JPEG library version 7.
+
 2009-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c: Added support for a "Threads" limit, which

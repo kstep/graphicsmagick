@@ -973,31 +973,57 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
             image->units=PixelsPerCentimeterResolution;
         }
     }
+  /*
+    If the desired image size is pre-set (e.g. by using -size), then
+    let the JPEG library subsample for us.
+  */
   number_pixels=image->columns*image->rows;
   if (number_pixels != 0)
     {
       double
         scale_factor;
 
-      /*
-        Let the JPEG library subsample for us.
-      */
+
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Requested Geometry: %lux%lu",
+			      image->columns,image->rows);
       jpeg_calc_output_dimensions(&jpeg_info);
       image->magick_columns=jpeg_info.output_width;
       image->magick_rows=jpeg_info.output_height;
       scale_factor=(double) jpeg_info.output_width/image->columns;
       if (scale_factor > ((double) jpeg_info.output_height/image->rows))
         scale_factor=(double) jpeg_info.output_height/image->rows;
-      jpeg_info.scale_denom=(unsigned int) scale_factor;
+      jpeg_info.scale_denom *=(unsigned int) scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
       if (image->logging)
 	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			      "Scale_factor: %ld",(long) scale_factor);
+			      "Scale_factor: %ld (scale_num=%d, "
+			      "scale_denom=%d)",
+			      (long) scale_factor,
+			      jpeg_info.scale_num,jpeg_info.scale_denom);
     }
-  if (image_info->subrange != 0)
+  /*
+    The subrange parameter is set by the filename array syntax similar
+    to the way an image is requested from a list (e.g. myfile.jpg[2]).
+    Argument values other than zero are used to scale the image down
+    by that factor.  IJG JPEG 62 (6b) supports values of 1,2,4, or 8
+    while IJG JPEG 70 supports all values in the range 1-16.  This
+    feature is useful in case you want to view all of the images with
+    a consistent ratio.  Unfortunately, it uses the same syntax as
+    list member access.
+  */
+  else if (image_info->subrange != 0)
     {
-      jpeg_info.scale_denom=(int) image_info->subrange;
+      jpeg_info.scale_denom *=(int) image_info->subrange;
       jpeg_calc_output_dimensions(&jpeg_info);
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Requested Scaling Denominator: %d "
+			      "(scale_num=%d, scale_denom=%d)",
+			      (int) image_info->subrange,
+			      jpeg_info.scale_num,jpeg_info.scale_denom);
+
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
 #ifdef D_LOSSLESS_SUPPORTED
@@ -1017,6 +1043,49 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->compression=JPEGCompression;
   image->interlace=LineInterlace;
 #endif
+  {
+    const char
+      *value;
+
+    /*
+      Allow the user to enable/disable block smoothing.
+    */
+    if ((value=AccessDefinition(image_info,"jpeg","block-smoothing")))
+      {
+	if (LocaleCompare(value,"FALSE") == 0)
+          jpeg_info.do_block_smoothing=False;
+        else
+          jpeg_info.do_block_smoothing=True;
+      }
+
+    /*
+      Allow the user to select the DCT decoding algorithm.
+    */
+    if ((value=AccessDefinition(image_info,"jpeg","dct-method")))
+      {
+        if (LocaleCompare(value,"ISLOW") == 0)
+          jpeg_info.dct_method=JDCT_ISLOW;
+        else if (LocaleCompare(value,"IFAST") == 0)
+          jpeg_info.dct_method=JDCT_IFAST;
+        else if (LocaleCompare(value,"FLOAT") == 0)
+          jpeg_info.dct_method=JDCT_FLOAT;
+        else if (LocaleCompare(value,"DEFAULT") == 0)
+          jpeg_info.dct_method=JDCT_DEFAULT;
+        else if (LocaleCompare(value,"FASTEST") == 0)
+          jpeg_info.dct_method=JDCT_FASTEST;
+      }
+
+    /*
+      Allow the user to enable/disable fancy upsampling.
+    */
+    if ((value=AccessDefinition(image_info,"jpeg","fancy-upsampling")))
+      {
+	if (LocaleCompare(value,"FALSE") == 0)
+          jpeg_info.do_fancy_upsampling=False;
+        else
+          jpeg_info.do_fancy_upsampling=True;
+      }
+  }
   (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
@@ -1035,6 +1104,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
 			    (int) jpeg_info.output_width,
 			    (int) jpeg_info.output_height);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"DCT Method: %d",
+			    jpeg_info.dct_method);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Fancy Upsampling: %s",
+			    (jpeg_info.do_fancy_upsampling ? "true" : "false"));
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Block Smoothing: %s",
+			    (jpeg_info.do_block_smoothing ? "true" : "false"));
     }
 
   {
@@ -1744,8 +1819,6 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
     }
 
-
-
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorMatteType) &&
       (image_info->type != ColorSeparationType) &&
@@ -1814,9 +1887,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
       *value;
 
     /*
-      Allow the user to select the DCD encoding algorithm.
+      Allow the user to select the DCT encoding algorithm.
     */
-    /* jpeg_info.dct_method=JDCT_DEFAULT; */
     if ((value=AccessDefinition(image_info,"jpeg","dct-method")))
       {
         if (LocaleCompare(value,"ISLOW") == 0)

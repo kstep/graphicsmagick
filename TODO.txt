@@ -16,8 +16,6 @@ Short Term
 * Add ClonePixelWand(), ColorMatrixImage(), Compare, and Distortion
   functions to the Wand API.
 
-* Add ColorMatrixImage() to the Magick++ API.
-
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 

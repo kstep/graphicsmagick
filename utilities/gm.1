@@ -1,4 +1,4 @@
-.TH gm 1 "2009/10/24" "GraphicsMagick"
+.TH gm 1 "2009/10/26" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -573,6 +573,12 @@ option appears after all of the input images, all images are coalesced.
 Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
 a colorization value list delimited with slashes (e.g. 0/0/50).
+
+The \fB-colorize\fP option may be used in conjunction with \fB-modulate\fP
+to produce a nice sepia toned image like:
+
+  gm convert input.ppm -modulate 115,0,100 \\
+     -colorize 7,21,50 output.ppm.
 .TP
 .B "-colormap \fI<type>"\fP
 \fRdefine the colormap type
@@ -1169,18 +1175,35 @@ setting. The default quality setting of 75 results in a rate value of
 
 .in 15
 .in 15
+.B "jpeg:block-smoothing={true|false}"
+.in 20
+ \fR
+.in 20
+Enables or disables block smoothing when reading a JPEG file
+(default enabled).
+</dd/
+.in 15
 .B "jpeg:dct-method=<value>"
 .in 20
  \fR
 .in 20
-Selects the IJG JPEG library DCT encoding implementation to use. The
-encoding implementations vary in speed and encoding error. The available
-choices for \fBvalue\fP are \fBislow\fP, \fBifast\fP, \fBfloat\fP,
-\fBdefault\fP and \fBfastest\fP. Note that \fBfastest\fP might not
-necessarily be fastest on your CPU, depending on the choices made when
-the JPEG library was built and how your CPU behaves.
+Selects the IJG JPEG library DCT implementation to use. The
+encoding implementations vary in speed and encoding error. The
+available choices for \fBvalue\fP are \fBislow\fP, \fBifast\fP,
+\fBfloat\fP, \fBdefault\fP and \fBfastest\fP. Note that
+\fBfastest\fP might not necessarily be fastest on your CPU, depending
+on the choices made when the JPEG library was built and how your CPU
+behaves.
 
 .in 15
+.in 15
+.B "jpeg:fancy-upsampling={true|false}"
+.in 20
+ \fR
+.in 20
+Enables or disables fancy upsampling when reading a JPEG file
+(default enabled).
+</dd/
 .in 15
 .B "jpeg:optimize-coding={true|false}"
 .in 20

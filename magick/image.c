@@ -2055,7 +2055,8 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %
 */
 
-static inline unsigned int IsFrame(const char *point)
+static inline unsigned int
+IsFrame(const char *point)
 {
   char
     *p;
@@ -2064,8 +2065,140 @@ static inline unsigned int IsFrame(const char *point)
   return(p != point);
 }
 
-MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
-  const MagickBool rectify,ExceptionInfo *exception)
+static MagickPassFail
+ParseSubImageSpecification(char *filename,
+			   char **tile_ptr,
+			   unsigned long *subimage_ptr,
+			   unsigned long *subrange_ptr,
+			   ExceptionInfo *exception)
+{
+  char
+    *spec_start,
+    *spec_end;
+
+  size_t
+    filename_length;
+
+  MagickPassFail
+    status=MagickPass;
+
+  assert(filename != (const char *) NULL);
+  assert(tile_ptr != (char **) NULL);
+  assert(subimage_ptr != (unsigned long *) NULL);
+  assert(subrange_ptr != (unsigned long *) NULL);
+  assert(exception != (ExceptionInfo*) NULL);
+
+  MagickFreeMemory(*tile_ptr);
+  filename_length=strlen(filename);
+  if ((filename_length > 2) &&
+      (filename_length < MaxTextExtent) &&
+      (filename[filename_length-1] == ']') &&
+      ((spec_start=strrchr(filename,'[')) != (const char *) NULL))
+    {
+      const char
+	*digits;
+
+      char
+	spec[MaxTextExtent],
+	*q;
+
+      unsigned long
+	subimage=0,
+	subrange=0;
+
+      unsigned long
+	first,
+	last;
+
+      long
+	value;
+
+      spec_end=&filename[filename_length-1];
+      spec_start++;
+      (void) strlcpy(spec,spec_start,sizeof(spec));
+      spec[spec_end-spec_start]='\0';
+
+      /*
+	Example of supported formats (as per documentation):
+
+	4
+	2,7,4
+	4-7
+	320x256+50+50
+      */
+
+      digits=spec;
+      q=0;
+      value=strtol(digits,&q,10);
+      if (q <= digits) /* Parse error */
+	goto invalid_subimage_specification;
+
+      subimage=value;
+      subrange=subimage;
+
+      for (q=spec; *q != '\0'; )
+	{
+	  while (isspace((int)(unsigned char) *q) || (*q == ','))
+	    q++;
+	  digits=q;
+	  value=strtol(digits,&q,10);
+	  if (q <= digits) /* Parse error */
+	    break;
+	  first=value;
+	  last=first;
+	  while (isspace((int)(unsigned char) *q))
+	    q++;
+	  if (*q == '-')
+	    {
+	      digits=q+1;
+	      value=strtol(digits,&q,10);
+	      if (q <= digits) /* Parse error */
+		break;
+	      last=value;
+	    }
+	  else if (*q != ',')
+	    {
+	      break; /* Parse error */
+	    }
+	  if (first > last)
+	    Swap(first,last);
+	  if (first < subimage)
+	    subimage=first;
+	  if (last > subrange)
+	    subrange=last;
+	}
+      if (*q == '\0')
+	{
+	  *subimage_ptr=subimage;
+	  *subrange_ptr=subrange;
+	  status=MagickPass;
+	}
+      else if (IsGeometry(spec))
+	{
+	  status=MagickPass;
+	  (void) CloneString(tile_ptr,spec);
+	}
+      else
+	{
+	invalid_subimage_specification:
+	  ThrowException(exception,OptionError,
+			 InvalidSubimageSpecification,spec);
+	  status=MagickFail;
+	}
+      if (status == MagickPass)
+	{
+	  /* (void) CloneString(tile_ptr,spec); */
+	  /* Truncate filename */
+	  *(spec_start-1)='\0';
+	}
+    }
+
+  return status;
+}
+
+MagickExport MagickPassFail
+SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
+	     ExceptionInfo *exception)
 {
   static const char
     *virtual_delegates[] =
@@ -2107,7 +2240,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   unsigned char
     magick[2*MaxTextExtent];
 
-  unsigned int
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -2122,46 +2255,11 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
       */
-      for (q=p; (q > image_info->filename) && (*q != '['); q--)
-        ;
-
-      if ((q > image_info->filename) && (*q == '[') && IsFrame(q+1))
-        {
-          unsigned long
-            first,
-            last;
-
-          (void) CloneString(&image_info->tile,q+1);
-          /* Copy image range spec. to tile spec. w/o brackets */
-          image_info->tile[p-q-1]='\0';
-          /* Cut image range spec. from filename */
-          *q='\0';
-          image_info->subimage=atol(image_info->tile);
-          image_info->subrange=image_info->subimage;
-
-          /* Parse the image range spec. now placed in tile */
-          for (q=image_info->tile; *q != '\0'; )
-          {
-            while (isspace((int)(unsigned char) *q) || (*q == ','))
-              q++;
-            first=strtol(q,&q,10);
-            last=first;
-            while (isspace((int)(unsigned char) *q))
-              q++;
-            if (*q == '-')
-              last=strtol(q+1,&q,10);
-            if (first > last)
-              Swap(first,last);
-            if (first < image_info->subimage)
-              image_info->subimage=first;
-            if (last > image_info->subrange)
-              image_info->subrange=last;
-          }
-          image_info->subrange-=image_info->subimage-1;
-        }
-
-      /* Restore p to end of modified filename */
-      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+      (void) ParseSubImageSpecification(image_info->filename,
+					&image_info->tile,
+					&image_info->subimage,
+					&image_info->subrange,
+					exception);
     }
 
   /*

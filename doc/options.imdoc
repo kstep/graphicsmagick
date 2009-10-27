@@ -471,6 +471,15 @@ Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
 a colorization value list delimited with slashes (e.g. 0/0/50).</pp>
 
+<pp>
+The <s>-colorize</s> option may be used in conjunction with <s>-modulate</s>
+to produce a nice sepia toned image like:</pp>
+
+<pre>
+  gm convert input.ppm -modulate 115,0,100 \
+     -colorize 7,21,50 output.ppm.
+</pre>
+
 </utils>
 
 
@@ -1113,14 +1122,28 @@ setting. The default quality setting of 75 results in a rate value of
 0.06641.
 </dd>
 
+<dt>jpeg:block-smoothing={true|false}</dt>
+
+<dd>Enables or disables block smoothing when reading a JPEG file
+(default enabled).
+</dd/
+
 <dt>jpeg:dct-method=<value></dt>
-<dd>Selects the IJG JPEG library DCT encoding implementation to use. The
-encoding implementations vary in speed and encoding error. The available
-choices for <s>value</s> are <s>islow</s>, <s>ifast</s>, <s>float</s>,
-<s>default</s> and <s>fastest</s>. Note that <s>fastest</s> might not
-necessarily be fastest on your CPU, depending on the choices made when
-the JPEG library was built and how your CPU behaves.
+
+<dd>Selects the IJG JPEG library DCT implementation to use. The
+encoding implementations vary in speed and encoding error. The
+available choices for <s>value</s> are <s>islow</s>, <s>ifast</s>,
+<s>float</s>, <s>default</s> and <s>fastest</s>. Note that
+<s>fastest</s> might not necessarily be fastest on your CPU, depending
+on the choices made when the JPEG library was built and how your CPU
+behaves.
 </dd>
+
+<dt>jpeg:fancy-upsampling={true|false}</dt>
+
+<dd>Enables or disables fancy upsampling when reading a JPEG file
+(default enabled).
+</dd/
 
 <dt>jpeg:optimize-coding={true|false}</dt>
 <dd>

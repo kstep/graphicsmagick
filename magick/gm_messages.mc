@@ -1439,6 +1439,12 @@ input images already specified
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorInvalidSubimageSpecification
+Language        = English
+Invalid subimage specification
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorKernelRadiusIsTooSmall
 Language        = English
 kernel radius is too small
