@@ -1,5 +1,10 @@
 2009-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImageCommand): Convolve does not accept
+	an argument which looks like a geometry.  Resolves SourceForge
+	issue #2890923 "Different handling of -convolve between convert
+	and mogrify".
+
 	* coders/tiff.c (ReadTIFFImage): Improved/added more coder logging
 	statements.
 
