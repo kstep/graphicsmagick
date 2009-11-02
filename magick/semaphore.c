@@ -446,10 +446,6 @@ MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %
 */
-static void mylittlefunc()
-{
-  printf("Bad semaphore!\n");
-};
 MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   MagickPassFail

@@ -170,6 +170,16 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
+  /*
+    We must unset the grayscale and monochrome flags by default since
+    the MPC format does not necessarily update the pixel cache while
+    it is read.
+  */
+  image->is_grayscale=MagickFalse;
+  image->is_monochrome=MagickFalse;
+  /*
+    Open blob
+  */
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
@@ -417,8 +427,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"grayscale") == 0)
                   {
-                    image->is_grayscale=(LocaleCompare(values,"True") == 0) ||
-                      (LocaleCompare(values,"true") == 0);
+		    if (LocaleCompare(values,"True") == 0)
+		      image->is_grayscale=MagickTrue;
                     break;
                   }
                 if (LocaleCompare(keyword,"green-primary") == 0)
@@ -476,8 +486,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"monochrome") == 0)
                   {
-                    image->is_monochrome=(LocaleCompare(values,"True") == 0) ||
-                      (LocaleCompare(values,"true") == 0);
+		    if (LocaleCompare(values,"True") == 0)
+		      image->is_monochrome=MagickTrue;
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)

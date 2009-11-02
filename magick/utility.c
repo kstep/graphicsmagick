@@ -4171,7 +4171,7 @@ MagickExport const char *GetClientName(void)
 MagickExport const char *SetClientName(const char *name)
 {
   static char
-    client_name[MaxTextExtent] = "";
+    client_name[MaxTextExtent] = "Magick";
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {

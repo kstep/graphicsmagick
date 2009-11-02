@@ -584,7 +584,7 @@ extern MagickExport void
   MagickXQueryPosition(Display *,const Window,int *,int *),
   MagickXRefreshWindow(Display *,const MagickXWindowInfo *,const XEvent *),
   MagickXRetainWindowColors(Display *,const Window),
-  MagickXSignalHandler(int),
+  MagickXSignalHandler(int) __attribute__ ((noreturn)),
   MagickXSetCursorState(Display *,MagickXWindows *,const unsigned int),
   MagickXUserPreferences(MagickXResourceInfo *),
   MagickXWarning(const ExceptionType,const char *,const char *);

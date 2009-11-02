@@ -636,40 +636,62 @@ TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 static tsize_t
 TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 {
+  tsize_t
+    result;
+
+  result=(tsize_t) ReadBlob((Image *) image,(size_t) size,data);
+
 #if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "TIFF read blob: data=0x%p size=%ld", data, size);
+                          "TIFF read blob: data=0x%p size=%ld, returns %"
+			  MAGICK_OFF_F "d",
+			  data, (long) size, (magick_off_t) result);
 #endif /* LOG_BLOB_IO */
-  return((tsize_t) ReadBlob((Image *) image,(size_t) size,data));
+
+  return result;
 }
 
 /* Seek to BLOB offset */
 static toff_t
 TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
+  toff_t
+    result;
+
+  result=SeekBlob((Image *) image,offset,whence);
 #if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "TIFF seek blob: offset=%" MAGICK_OFF_F "u whence=%d (%s)",
-                          (magick_off_t) offset, whence,
+                          "TIFF seek blob: offset=%" MAGICK_OFF_F
+			  "u whence=%d (%s), returns %" MAGICK_OFF_F "d",
+                          (magick_off_t) offset,
+			  whence,
                           (whence == SEEK_SET ? "SET" :
                            (whence == SEEK_CUR ? "CUR" :
-                            (whence == SEEK_END ? "END" : "unknown"))));
+                            (whence == SEEK_END ? "END" : "unknown"))),
+			  (magick_off_t) result);
 #endif  /* LOG_BLOB_IO */
-  return((toff_t) SeekBlob((Image *) image,offset,whence));
+  return result;
 }
 
 /* Obtain BLOB size */
 static toff_t
 TIFFGetBlobSize(thandle_t image)
 {
+  toff_t
+    result;
+
+  result=(toff_t) GetBlobSize((Image *) image);
+
 #if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "TIFF get blob size");
+			  "TIFF get blob size returns %" MAGICK_OFF_F "d",
+			  (magick_off_t) result);
 #endif /* LOG_BLOB_IO */
-  return((toff_t) GetBlobSize((Image *) image));
+
+  return result;
 }
 
 /* Unmap BLOB memory */
@@ -712,13 +734,21 @@ TIFFWarnings(const char *module,const char *format,va_list warning)
 static tsize_t
 TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
+  tsize_t
+    result;
+
+  result=(tsize_t) WriteBlob((Image *) image,(size_t) size,data);
+
 #if LOG_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "TIFF write blob: data=%p size=%" MAGICK_OFF_F "u",
-			  data, (magick_off_t) size);
+			  "TIFF write blob: data=%p size=%" MAGICK_OFF_F
+			  "u, returns %" MAGICK_OFF_F "d",
+			  data, (magick_off_t) size,
+			  (magick_off_t) result);
 #endif  /* LOG_BLOB_IO */
-  return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
+
+  return result;
 }
 
 /*
@@ -4785,7 +4815,11 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (image_info->verbose > 1)
         TIFFPrintDirectory(tiff,stdout,MagickFalse);
       if(!TIFFWriteDirectory(tiff))
-        status=MagickFail;
+	{
+	  status=MagickFail;
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				"TIFFWriteDirectory returns failed status!");
+	}
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
@@ -4805,7 +4839,10 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Handle write failure.
       */
-      (void) unlink(filename);
+			    
+      if (unlink(filename) != -1)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Removed broken output file \"%s\"",filename);
       return (MagickFail);
     }
 

@@ -1,3 +1,16 @@
+2009-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Improved/added more coder logging
+	statements.
+
+	* magick/xwindow.c: Reflowed some code and comments.
+
+	* magick/utility.c (SetClientName): Default client name does need
+	to be "Magick", so original value is restored.
+
+	* coders/mpc.c (ReadMPCImage): is_monochrome and is_grayscale
+	flags were not managed properly for the MPC coder.
+
 2009-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (ReadJPEGImage): Added jpeg:block-smoothing and

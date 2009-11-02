@@ -95,6 +95,9 @@ static void DestroyMagickInfoList(void);
 
 static MagickPassFail InitializeMagickInfoList(void);
 
+static RETSIGTYPE MagickPanicSignalHandler(int signo)  __attribute__ ((noreturn));
+static RETSIGTYPE MagickSignalHandler(int signo) __attribute__ ((noreturn));
+
 /*
   Block size to use when accessing filesystem.
 
@@ -672,6 +675,7 @@ MagickIgnoreSignalHandler(int signo)
   While support for signal is definitely broken under Windows, the good
   news is that it seems to be unlikely to generate a signal we care about.
 */
+
 static RETSIGTYPE
 MagickPanicSignalHandler(int signo)
 {
@@ -698,6 +702,7 @@ MagickPanicSignalHandler(int signo)
 
   SignalHandlerExit(signo);
 }
+
 static RETSIGTYPE
 MagickSignalHandler(int signo)
 {
