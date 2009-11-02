@@ -10783,7 +10783,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
            if (*option == '-')
              {
                i++;
-               if ((i == (argc-1)) || !IsGeometry(argv[i]))
+               if (i == (argc-1))
                  ThrowMogrifyException(OptionError,MissingArgument,
                    option);
              }
