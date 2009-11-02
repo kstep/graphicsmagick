@@ -95,8 +95,8 @@ static void DestroyMagickInfoList(void);
 
 static MagickPassFail InitializeMagickInfoList(void);
 
-static RETSIGTYPE MagickPanicSignalHandler(int signo)  __attribute__ ((noreturn));
-static RETSIGTYPE MagickSignalHandler(int signo) __attribute__ ((noreturn));
+static RETSIGTYPE MagickPanicSignalHandler(int signo);
+static RETSIGTYPE MagickSignalHandler(int signo);
 
 /*
   Block size to use when accessing filesystem.
