@@ -95,9 +95,6 @@ static void DestroyMagickInfoList(void);
 
 static MagickPassFail InitializeMagickInfoList(void);
 
-static RETSIGTYPE MagickPanicSignalHandler(int signo);
-static RETSIGTYPE MagickSignalHandler(int signo);
-
 /*
   Block size to use when accessing filesystem.
 
@@ -589,6 +586,9 @@ typedef RETSIGTYPE Sigfunc(int);
 #if !defined(SIG_DFL)
 # define SIG_DFL (Sigfunc *)0
 #endif
+
+static RETSIGTYPE MagickPanicSignalHandler(int signo) __attribute__ ((noreturn));
+static RETSIGTYPE MagickSignalHandler(int signo) __attribute__ ((noreturn));
 
 /*
   Signal function which prevents interrupted system calls from
