@@ -825,6 +825,9 @@
       <Message name="MatrixOrderOutOfRange">
         Matrix size is out of range
       </Message>
+      <Message name="MatrixIsNotSquare">
+        Matrix is not square (%s elements)
+      </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>

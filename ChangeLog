@@ -4,6 +4,9 @@
 	an argument which looks like a geometry.  Resolves SourceForge
 	issue #2890923 "Different handling of -convolve between convert
 	and mogrify".
+	(MogrifyImage): Validate that user-provided matrix is square when
+	parsing -convolve and -recolor commands in order to avoid a core
+	dump.
 
 	* coders/tiff.c (ReadTIFFImage): Improved/added more coder logging
 	statements.

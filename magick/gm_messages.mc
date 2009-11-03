@@ -1457,6 +1457,12 @@ kernel width must be an odd number
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorMatrixIsNotSquare
+Language        = English
+Matrix is not square (%s elements)
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorMatrixOrderOutOfRange
 Language        = English
 Matrix size is out of range

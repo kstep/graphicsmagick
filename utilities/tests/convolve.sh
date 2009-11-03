@@ -13,4 +13,7 @@ set -e # Exit on any error
 
 OUTFILE=TileConvolve_out.miff
 rm -f ${OUTFILE}
+# 1,1,1,
+# 1,4,1,
+# 1,1,1
 ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -convolve 1,1,1,1,4,1,1,1,1 -label Convolve ${OUTFILE}

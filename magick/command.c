@@ -8545,22 +8545,33 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               x;
 
             unsigned int
+	      elements,
               order;
 
             /*
               Convolve image.
-	      FIXME: this parsing code is terrible.
             */
             p=argv[++i];
-            for (x=0; *p != '\0'; x++)
+            for (elements=0; *p != '\0'; elements++)
             {
               GetToken(p,&p,token);
+	      if (token[0] == '\0')
+		break;
               if (*token == ',')
                 GetToken(p,&p,token);
 	      if (token[0] == '\0')
 		break;
             }
-            order=(unsigned int) sqrt(x+1);
+            order=(unsigned int) sqrt(elements);
+	    if ((0 == elements) || (order*order != elements))
+	      {
+		char
+		  message[MaxTextExtent];
+
+		FormatString(message,"%u",elements);
+		ThrowException(&(*image)->exception,OptionError,MatrixIsNotSquare,message);
+		continue;
+	      }
             kernel=MagickAllocateArray(double *,order*order,sizeof(double));
             if (kernel == (double *) NULL)
               MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -9602,14 +9613,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               x;
 
             unsigned int
+	      elements,
               order;
 
             /*
               Color matrix image.
-	      FIXME: this parsing code is terrible.
             */
             p=argv[++i];
-            for (x=0; *p != '\0'; x++)
+            for (elements=0; *p != '\0'; elements++)
             {
               GetToken(p,&p,token);
 	      if (token[0] == '\0')
@@ -9619,7 +9630,16 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 	      if (token[0] == '\0')
 		break;
             }
-            order=(unsigned int) sqrt(x+1);
+            order=(unsigned int) sqrt(elements);
+	    if ((0 == elements) || (order*order != elements))
+	      {
+		char
+		  message[MaxTextExtent];
+
+		FormatString(message,"%u",elements);
+		ThrowException(&(*image)->exception,OptionError,MatrixIsNotSquare,message);
+		continue;
+	      }
             matrix=MagickAllocateArray(double *,order*order,sizeof(double));
             if (matrix == (double *) NULL)
               MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
