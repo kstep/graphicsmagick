@@ -1,3 +1,8 @@
+2009-11-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document difference between -recolor and
+	Adobe Flash color matrix.
+
 2009-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): Convolve does not accept

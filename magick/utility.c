@@ -916,7 +916,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
   /*
     Expand any wildcard filenames.
   */
-  (void) getcwd(current_directory,MaxTextExtent-1);
+  current_directory[0]='\0';
   count=0;
   for (i=0; i < *argc; i++)
     {
@@ -1033,6 +1033,9 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       if (*magick != '\0')
 	(void) strlcat(magick,":",sizeof(magick));
       ExpandFilename(path);
+
+      if ('\0' == current_directory[0])
+	(void) getcwd(current_directory,MaxTextExtent-1);
 
       /* Get the list of matching file names. */
       filelist=ListFiles(*path=='\0' ? current_directory : path,
@@ -2230,6 +2233,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %
 %  Method GetPathComponent returns the parent directory name, filename,
 %  basename, or extension of a file path.
+%
 %
 %  The format of the GetPathComponent function is:
 %

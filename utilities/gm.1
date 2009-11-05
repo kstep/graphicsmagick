@@ -1,4 +1,4 @@
-.TH gm 1 "2009/10/26" "GraphicsMagick"
+.TH gm 1 "2009/11/05" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3230,17 +3230,20 @@ the associated channel.
 .B "-recolor \fI<matrix>"\fP
 \fRapply a color translation matrix to image channels
 
-A user supplied color translation matrix (expressed as a text
-string) is used to translate/blend the image channels based on
-weightings in a supplied matrix which may be of order 3 (color
-channels only), 4 (color channels plus opacity), or 5 (color channels
-plus opacity and offset).  Values in the columns of the matrix (red,
-green, blue, opacity) are used as multipliers with the existing
-channel values and added together according to the rows of the matrix.
-Matrix values are floating point and may be negative.  The offset
-column (column 5) is purely additive and is scaled such that 0.0 to
-1.0 represents the maximum quantum range (but values are not limited
-to this range).
+A user supplied color translation matrix (expressed as a text string)
+is used to translate/blend the image channels based on weightings in a
+supplied matrix which may be of order 3 (color channels only), 4
+(color channels plus opacity), or 5 (color channels plus opacity and
+offset).  Values in the columns of the matrix (red, green, blue,
+opacity) are used as multipliers with the existing channel values and
+added together according to the rows of the matrix.  Matrix values are
+floating point and may be negative.  The offset column (column 5) is
+purely additive and is scaled such that 0.0 to 1.0 represents the
+maximum quantum range (but values are not limited to this range). The
+math for the color translation matrix is similar to that used by Adobe
+Flash except that the offset is scaled to 1.0 (divide Flash offset by
+255 for use with GraphicsMagick) so that the results are independent
+of quantum depth.
 
 An \fBidentity\fP matrix exists for each matrix order which
 results in no change to the image.  The translation matrix should be
