@@ -1,4 +1,8 @@
-2009-08-08  Glenn Randers-Pehrson <glennrp@simple....>
+2009-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tiff: Updated to libtiff 3.9.2.
+
+2009-11-08  Glenn Randers-Pehrson <glennrp@simple....>
 
 	* coders/png.c: Suppress new pedantic warnings from libpng
 	version 1.2.41 and 1.4.0 and later.
