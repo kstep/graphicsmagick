@@ -1,3 +1,8 @@
+2009-11-08  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c: Also suppress new pedantic warnings from most
+	older libpng-1.4.0 betas.
+
 2009-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Only invoke ProfileImage() if
