@@ -78,10 +78,10 @@
 #if defined(HasPNG)
 
 /* Suppress libpng pedantic warnings */
-#define PNG_DEPRECATED  /* use of this function is deprecated */
-#define PNG_USE_RESULT  /* the result of this function must be checked */
-#define PNG_NORETURN    /* this function does not return */
-#define PNG_ALLOCATED   /* the result of the function is new memory */
+#define PNG_DEPRECATED  /* Use of this function is deprecated */
+#define PNG_USE_RESULT  /* The result of this function must be checked */
+#define PNG_NORETURN    /* This function does not return */
+/* #define PNG_ALLOCATED */ /* The result of the function is new memory */
 #define PNG_DEPSTRUCT   /* access to this struct member is deprecated */
 
 #include "png.h"
@@ -99,7 +99,7 @@
    /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
     * Just don't use libpng-1.4.0beta32-34 or beta67-73
     */
-#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
+#  ifndef  PNG_ER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
 #    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
 #  endif
 #  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
@@ -1610,6 +1610,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
+#endif
+
+#if (PNG_LIBPNG_VER >= 10400)
+#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
+  if (image_info->verbose)
+    {
+      printf("Your PNG library (libpng-%s) is an old beta version.\n",
+           PNG_LIBPNG_VER_STRING);
+      printf("Please update it.\n");
+    }
+#  endif
 #endif
 
   image=mng_info->image;
