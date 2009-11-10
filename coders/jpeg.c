@@ -869,6 +869,33 @@ FormatJPEGSamplingFactors(const struct jpeg_decompress_struct *jpeg_info,
     }
 }
 
+static MagickBool
+IsITUFax(const Image* image)
+{
+  size_t
+    profile_length;
+  
+  const unsigned char
+    *profile;
+  
+  MagickBool
+    status;
+  
+  status=MagickFalse;
+  if ((profile=GetImageProfile(image,"APP1",&profile_length)) &&
+      (profile_length >= 5))
+    {
+      if (profile[0] == 0x47 &&
+	  profile[1] == 0x33 &&
+	  profile[2] == 0x46 &&
+	  profile[3] == 0x41 &&
+	  profile[4] == 0x58)
+      status=MagickTrue;
+    }
+
+    return status;
+}
+
 static Image *ReadJPEGImage(const ImageInfo *image_info,
 			    ExceptionInfo *exception)
 {
@@ -956,8 +983,21 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,JPEG_APP0+i,ReadGenericProfile);
   i=jpeg_read_header(&jpeg_info,True);
-  if (jpeg_info.out_color_space == JCS_CMYK)
-    image->colorspace=CMYKColorspace;
+  if (IsITUFax(image))
+    {
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Image colorspace set to LAB");
+      image->colorspace=LABColorspace;
+      jpeg_info.out_color_space = JCS_YCbCr;
+    }
+  else if (jpeg_info.out_color_space == JCS_CMYK)
+    {
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Image colorspace set to CMYK");
+      image->colorspace=CMYKColorspace;
+    }
   if (jpeg_info.saw_JFIF_marker)
     {
       if ((jpeg_info.X_density != 1U) && (jpeg_info.Y_density != 1U))
@@ -1129,7 +1169,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     (void) SetImageAttribute(image,"JPEG-Colorspace-Name",attribute);
     if (image->logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			    "Colorspace: %s", attribute);
+			    "Colorspace: %s (%d)", attribute,
+			    jpeg_info.out_color_space);
 
     FormatJPEGSamplingFactors(&jpeg_info,attribute);
     (void) SetImageAttribute(image,"JPEG-Sampling-factors",attribute);

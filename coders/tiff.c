@@ -1432,7 +1432,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ImportPixelAreaOptionsInit(&import_options);
       if (photometric == PHOTOMETRIC_CIELAB)
         {
-#if 0
+#if 1
           image->colorspace=LABColorspace;
 #else
           TIFFClose(tiff);

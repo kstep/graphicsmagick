@@ -1,3 +1,16 @@
+2009-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Only invoke ProfileImage() if
+	an ICC CMS transform is to be performed.  Otherwise invoke
+	SetImageProfile() to add the new profile.
+
+	* magick/profile.c (ProfileImage): Improve logging messages.
+
+	* coders/tiff.c (ReadTIFFImage): Allow CIELAB TIFF to be read.
+
+	* coders/jpeg.c (ReadJPEGImage): Detect and apply colorspaces
+	appropriately for ITU FAX JPEG.
+
 2009-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tiff: Updated to libtiff 3.9.2.

@@ -9529,8 +9529,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   clone_info->client_data=(void *) &(*image)->iptc_profile;
               */
               profile_info.name="IPTC";
-              profile_info.info=(unsigned char *) GetImageProfile(*image,profile_info.name,
-                                                                  &profile_info.length);
+              profile_info.info=
+		(unsigned char *) GetImageProfile(*image,profile_info.name,
+						  &profile_info.length);
               clone_info->client_data=&profile_info; /* used to pass profile to meta.c */
 
               (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
@@ -9549,14 +9550,31 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               while(NextImageProfile(profile_iterator,&profile_name,&profile_data,
                                      &profile_length) != MagickFail)
                 {
-                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                        "Adding %s profile to image",profile_name);
-                  if ((LocaleCompare(profile_name,"ICC") == 0) ||
-                      (LocaleCompare(profile_name,"ICM") == 0))
-                    (void) ProfileImage(*image,profile_name,(unsigned char *) profile_data,
-                                        profile_length,True);
+		  size_t
+		    existing_length;
+
+                  if (((LocaleCompare(profile_name,"ICC") == 0) ||
+		       (LocaleCompare(profile_name,"ICM") == 0)) &&
+		      (GetImageProfile(*image,"ICM",&existing_length)))
+		    {
+		      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+					    "Transform using %s profile \"%s\","
+					    " %lu bytes",
+					    profile_name,clone_info->filename,
+					    (unsigned long) profile_length);
+		      (void) ProfileImage(*image,profile_name,
+					  (unsigned char *) profile_data,
+					  profile_length,True);
+		    }
                   else
-                    (void) SetImageProfile(*image,profile_name,profile_data,profile_length);
+		    {
+		      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+					    "Adding %s profile \"%s\","
+					    " %lu bytes",
+					    profile_name,clone_info->filename,
+					    (unsigned long) profile_length);
+		      (void) SetImageProfile(*image,profile_name,profile_data,profile_length);
+		    }
                 }
               DeallocateImageProfileIterator(profile_iterator);
               DestroyImage(profile_image);

@@ -21,6 +21,22 @@
 </tr>
 </table>
 <p>
+2009-11-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): Only invoke ProfileImage() if
+        an ICC CMS transform is to be performed.  Otherwise invoke
+        SetImageProfile() to add the new profile.
+
+  <LI> magick/profile.c (ProfileImage): Improve logging messages.
+
+  <LI> coders/tiff.c (ReadTIFFImage): Allow CIELAB TIFF to be read.
+
+  <LI> coders/jpeg.c (ReadJPEGImage): Detect and apply colorspaces
+        appropriately for ITU FAX JPEG.
+
+</UL>
+<p>
 2009-11-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

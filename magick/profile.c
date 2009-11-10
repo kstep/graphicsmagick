@@ -567,6 +567,42 @@ static void MagickFreeCMSTransform(void * cmsTransformVoid)
   cmsDeleteTransform(cmsTransform);
 }
 
+static const char *
+PixelTypeToString(int pixel_type)
+{
+const char *
+  result="";
+
+  switch (pixel_type)
+    {
+    case PT_ANY:    result="ANY"   ; break;
+    case PT_GRAY:   result="GRAY"  ; break;
+    case PT_RGB:    result="RGB"   ; break;
+    case PT_CMY:    result="CMY"   ; break;
+    case PT_CMYK:   result="CMYK"  ; break;
+    case PT_YCbCr:  result="YCbCr" ; break;
+    case PT_YUV:    result="YUV (Lu'v')"; break;
+    case PT_XYZ:    result="XYZ"   ; break;
+    case PT_Lab:    result="Lab"   ; break;
+    case PT_YUVK:   result="YUVK (Lu'v'K)" ; break;
+    case PT_HSV:    result="HSV"   ; break;
+    case PT_HLS:    result="HLS"   ; break;
+    case PT_Yxy:    result="Yxy"   ; break;
+    case PT_HiFi:   result="HiFi"  ; break;
+    case PT_HiFi7:  result="HiFi7" ; break;
+    case PT_HiFi8:  result="HiFi8" ; break;
+    case PT_HiFi9:  result="HiFi9" ; break;
+    case PT_HiFi10: result="HiFi10"; break;
+    case PT_HiFi11: result="HiFi11"; break;
+    case PT_HiFi12: result="HiFi12"; break;
+    case PT_HiFi13: result="HiFi13"; break;
+    case PT_HiFi14: result="HiFi14"; break;
+    case PT_HiFi15: result="HiFi15"; break;
+    }
+
+  return result;
+}
+
 #endif /* defined(HasLCMS) */
 
 #define ProfileImageText "[%s] Color Transform Pixels..."
@@ -677,7 +713,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
       existing_profile=GetImageProfile(image,"ICM",&existing_profile_length);
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                            "Profile1: %lu bytes, Profile2: %lu bytes",
+                            "New Profile: %lu bytes, Existing Profile: %lu bytes",
                             (unsigned long) length,
                             (unsigned long) existing_profile_length);
 
@@ -857,6 +893,7 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
           /* Verify that source colorspace type is supported */
           if (!IsGrayColorspace(xform.source_colorspace) &&
               !IsCMYKColorspace(xform.source_colorspace) &&
+	      !IsLABColorspace(xform.source_colorspace) &&
               !IsYCbCrColorspace(xform.source_colorspace) &&
               !IsRGBColorspace(image->colorspace))
             {
@@ -867,8 +904,10 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
             }
 
           (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                "Source pixel format: COLORSPACE=%d SWAPFIRST=%d FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d EXTRA=%d CHANNELS=%d BYTES=%d",
-                                (int) T_COLORSPACE(xform.source_type),
+                                "Source pixel format: COLORSPACE=%s SWAPFIRST=%d "
+				"FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d "
+				"EXTRA=%d CHANNELS=%d BYTES=%d",
+                                PixelTypeToString((int) T_COLORSPACE(xform.source_type)),
                                 (int) T_SWAPFIRST(xform.source_type),
                                 (int) T_FLAVOR(xform.source_type),
                                 (int) T_PLANAR(xform.source_type),
@@ -879,8 +918,10 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
                                 (int) T_BYTES(xform.source_type));
 
           (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                                "Target pixel format: COLORSPACE=%d SWAPFIRST=%d FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d EXTRA=%d CHANNELS=%d BYTES=%d",
-                                (int) T_COLORSPACE(xform.target_type),
+                                "Target pixel format: COLORSPACE=%s SWAPFIRST=%d "
+				"FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d "
+				"EXTRA=%d CHANNELS=%d BYTES=%d",
+                                PixelTypeToString((int) T_COLORSPACE(xform.target_type)),
                                 (int) T_SWAPFIRST(xform.target_type),
                                 (int) T_FLAVOR(xform.target_type),
                                 (int) T_PLANAR(xform.target_type),
@@ -1128,7 +1169,8 @@ SetImageProfile(Image *image,const char *name, const unsigned char *profile,
                                              MagickMapDeallocateBlob);
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                            "Adding %s profile",name);
+                            "Adding %s profile with length %ld bytes",name,
+			    (unsigned long) length);
       status &= MagickMapAddEntry(image->profiles,name,profile,length,
                                   &image->exception);
     }
