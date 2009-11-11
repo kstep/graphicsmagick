@@ -1,4 +1,13 @@
-2009-11-08  Glenn Randers-Pehrson <glennrp@simple....>
+2009-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ConstituteImage, DispatchImage): 'A' and
+	'T' should indicate transparency and 'O' should indicate opacity.
+	Behavior was inconsistent.  In some cases 'O' meant transparency
+	while in other cases it meant opacity. Also, in a few cases, matte
+	was not getting enabled in the image as it should.  Problems were
+	reported by Scott Kuhl.
+
+2009-11-10  Glenn Randers-Pehrson <glennrp@simple....>
 
 	* coders/png.c: Also suppress new pedantic warnings from most
 	older libpng-1.4.0 betas.

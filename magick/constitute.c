@@ -69,7 +69,7 @@ typedef enum
   BlueMapQuanum,
   GreenMapQuantum,
   IntensityMapQuantum,
-  OpacityInvertedMapQuantum,
+  TransparencyMapQuantum,
   PadMapQuantum,
   RedMapQuantum,
   OpacityMapQuantum
@@ -78,10 +78,10 @@ typedef enum
 typedef enum {
   UndefinedDispatchType,
   BGRDispatchType,
-  BGRODispatchType,
+  BGRADispatchType,
   BGRPDispatchType,
   RGBDispatchType,
-  RGBODispatchType,
+  RGBADispatchType,
   IDispatchType
 } DispatchType;
 
@@ -1524,15 +1524,15 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         dispatch_type=UndefinedDispatchType;
 
       if (LocaleCompare(map,"BGR") == 0)
-        dispatch_type=BGRDispatchType;
-      else if (LocaleCompare(map,"BGRO") == 0)
-        dispatch_type=BGRODispatchType;
+	dispatch_type=BGRDispatchType;
+      else if (LocaleCompare(map,"BGRA") == 0)
+	dispatch_type=BGRADispatchType;
       else if (LocaleCompare(map,"BGRP") == 0)
-        dispatch_type=BGRPDispatchType;
+	dispatch_type=BGRPDispatchType;
       else if (LocaleCompare(map,"RGB") == 0)
-        dispatch_type=RGBDispatchType;
-      else if (LocaleCompare(map,"RGBO") == 0)
-        dispatch_type=RGBODispatchType;
+	dispatch_type=RGBDispatchType;
+      else if (LocaleCompare(map,"RGBA") == 0)
+	dispatch_type=RGBADispatchType;
       else if (LocaleCompare(map,"I") == 0)
         {
           if (!AllocateImageColormap(image,MaxColormapSize))
@@ -1567,8 +1567,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                       }
                     break;
                   }
-                case BGRODispatchType:
-                  { 
+                case BGRADispatchType:
+                  {
+		    image->matte=True;
                     for (x=(long) image->columns; x != 0; x--)
                       {
                         SetBlueSample(q,ScaleCharToQuantum(*p++));
@@ -1604,8 +1605,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                       }
                     break;
                   }
-                case RGBODispatchType:
+                case RGBADispatchType:
                   {
+		    image->matte=True;
                     for (x=(long) image->columns; x != 0; x--)
                       {
                         SetRedSample(q,ScaleCharToQuantum(*p++));
@@ -1671,7 +1673,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
           }
         case 'A':
           {
-            switch_map[i]=OpacityMapQuantum;
+            switch_map[i]=TransparencyMapQuantum;
             image->matte=True;
             break;
           }
@@ -1709,7 +1711,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
           }
         case 'O':
           {
-            switch_map[i]=OpacityInvertedMapQuantum;
+            switch_map[i]=OpacityMapQuantum;
             image->matte=True;
             break;
           }
@@ -1720,7 +1722,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
           }
         case 'T':
           {
-            switch_map[i]=OpacityMapQuantum;
+            switch_map[i]=TransparencyMapQuantum;
             image->matte=True;
             break;
           }
@@ -1837,7 +1839,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                     SetOpacitySample(q,quantum);
                     break;
                   }
-                case OpacityInvertedMapQuantum:
+                case TransparencyMapQuantum:
                   {
                     SetOpacitySample(q,MaxRGB-quantum);
                     break;
@@ -2002,14 +2004,14 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 
       if (LocaleCompare(map,"BGR") == 0)
         dispatch_type=BGRDispatchType;
-      else if (LocaleCompare(map,"BGRO") == 0)
-        dispatch_type=BGRODispatchType;
+      else if (LocaleCompare(map,"BGRA") == 0)
+        dispatch_type=BGRADispatchType;
       else if (LocaleCompare(map,"BGRP") == 0)
         dispatch_type=BGRPDispatchType;
       else if (LocaleCompare(map,"RGB") == 0)
         dispatch_type=RGBDispatchType;
-      else if (LocaleCompare(map,"RGBO") == 0)
-        dispatch_type=RGBODispatchType;
+      else if (LocaleCompare(map,"RGBA") == 0)
+        dispatch_type=RGBADispatchType;
       else if (LocaleCompare(map,"I") == 0)
         dispatch_type=IDispatchType;
 
@@ -2040,7 +2042,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                       }
                     break;
                   }
-                case BGRODispatchType:
+                case BGRADispatchType:
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
@@ -2075,7 +2077,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                       }
                     break;
                   }
-                case RGBODispatchType:
+                case RGBADispatchType:
                   {
                     for (x=(long) columns; x != 0; x--)
                       {
@@ -2144,7 +2146,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
         case 'A':
         case 'T':
           {
-            switch_map[i]=OpacityMapQuantum;
+            switch_map[i]=TransparencyMapQuantum;
             break;
           }
         case 'C':
@@ -2186,7 +2188,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
           }
         case 'O':
           {
-            switch_map[i]=OpacityInvertedMapQuantum;
+            switch_map[i]=OpacityMapQuantum;
             break;
           }
         case 'P':
@@ -2248,7 +2250,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                       }
                     break;
                   }
-                case OpacityInvertedMapQuantum:
+                case TransparencyMapQuantum:
                   {
                     if (image->matte)
                       quantum=GetOpacitySample(p);

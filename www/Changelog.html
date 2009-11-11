@@ -24,6 +24,28 @@
 2009-11-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (ConstituteImage, DispatchImage): 'A' and
+        'T' should indicate transparency and 'O' should indicate opacity.
+        Behavior was inconsistent.  In some cases 'O' meant transparency
+        while in other cases it meant opacity. Also, in a few cases, matte
+        was not getting enabled in the image as it should.  Problems were
+        reported by Scott Kuhl.
+
+</UL>
+<p>
+2009-11-10  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
+
+<UL>
+  <LI> coders/png.c: Also suppress new pedantic warnings from most
+        older libpng-1.4.0 betas.<BR>
+  <LI> coders/png.c: Added a warning when attempting to use libpng-1.4beta
+        older than 1.4.0beta67.
+
+</UL>
+<p>
+2009-11-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> magick/command.c (MogrifyImage): Only invoke ProfileImage() if
         an ICC CMS transform is to be performed.  Otherwise invoke
         SetImageProfile() to add the new profile.
