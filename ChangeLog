@@ -11,6 +11,7 @@
 
 	* coders/png.c: Also suppress new pedantic warnings from most
 	older libpng-1.4.0 betas.
+
 	* coders/png.c: Added a warning when attempting to use libpng-1.4beta
 	older than 1.4.0beta67.
 
