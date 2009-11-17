@@ -15,10 +15,6 @@
 extern "C" {
 #endif
 
-#if !defined(__GNUC__) && !defined(__attribute__)
-#  define __attribute__(x) /*nothing*/
-#endif
-
   /*
     Define declarations.
   */

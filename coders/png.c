@@ -1328,6 +1328,8 @@ static long mng_get_long(unsigned char *p)
   return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
+static void PNGErrorHandler(png_struct *ping,png_const_charp message) MAGICK_FUNC_NORETURN;
+
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image

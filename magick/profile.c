@@ -155,7 +155,7 @@ AppendImageProfile(Image *image,
     existing_profile=GetImageProfile(image,name,&existing_length);
 
   if ((profile_chunk == (const unsigned char *) NULL) ||
-      (existing_profile == (const unsigned char) NULL))
+      (existing_profile == (const unsigned char *) NULL))
     {
       status=SetImageProfile(image,name,profile_chunk,chunk_length);
     }

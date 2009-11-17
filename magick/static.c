@@ -100,7 +100,11 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,
       LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" filter module",tag);
     }
-
+#else
+  ARG_NOT_USED(tag);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
 #endif /* !defined(BuildMagickModules) */
   return(status);
 }

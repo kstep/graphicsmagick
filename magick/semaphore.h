@@ -31,8 +31,8 @@ extern MagickExport void
   These are deprecated.
 */
 extern MagickExport void
-  AcquireSemaphoreInfo(SemaphoreInfo **) __attribute__ ((deprecated)),
-  LiberateSemaphoreInfo(SemaphoreInfo **) __attribute__ ((deprecated));
+  AcquireSemaphoreInfo(SemaphoreInfo **) MAGICK_FUNC_DEPRECATED,
+  LiberateSemaphoreInfo(SemaphoreInfo **) MAGICK_FUNC_DEPRECATED;
 
 /*
   These should not be MagickExport.

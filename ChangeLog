@@ -1,3 +1,21 @@
+2009-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* win2k/IMDisplay/res/{IMDisplay.ico, IMDisplayDoc.ico}: Replaced
+	with GraphicsMagick icon prepared by Jaroslav Fojtik.
+
+	* coders/svg.c (ReadSVGImage): Use runtime initialization of
+	SAXModules rather than static initialization.
+
+	* magick/command.c: Commands now support reading an image from
+	stdin in conjunction with a subrange specification (e.g. "-[1]").
+	Problem was reported by Mario Becroft.
+
+	* magick/common.h: New header file to incorporate the common bits
+	shared by studio.h and api.h.
+
+	* ltdl/ltdl.c: Update libltdl to 2.2.6b in order to fix security
+	issue.  Resolves CVE-2009-3736 as it pertains to GraphicsMagick.
+
 2009-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ConstituteImage, DispatchImage): 'A' and

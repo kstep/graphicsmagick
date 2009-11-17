@@ -409,7 +409,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         tile=0;
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,1) shared(status, tile)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,1) shared(status, tile)
+#  endif
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -535,7 +537,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   }
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
                 {
                   tile++;
@@ -567,7 +571,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 
         (void) strlcpy(message,"[%s] Rotate: 180 degrees...",sizeof(message));
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,8) shared(row_count, status)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,8) shared(row_count, status)
+#  endif
 #endif
         for (y=0; y < (long) image->rows; y++)
           {
@@ -613,7 +619,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   thread_status=MagickFail;
               }
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
             {
               row_count++;
@@ -650,7 +658,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                      ((image->columns/tile_width_max)+1));
         tile=0;
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,1) shared(status, tile)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,1) shared(status, tile)
+#  endif
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -776,7 +786,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   }
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
                 {
                   tile++;

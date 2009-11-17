@@ -54,7 +54,9 @@
 
 #if defined(MSWINDOWS)
 /* The need for this under Visual C++ is a mystery to me */
-#  define M_PI MagickPI
+#  if !defined(M_PI)
+#    define M_PI MagickPI
+#  endif
 #endif
 
 #if defined(HasWMF) || defined(HasWMFlite)

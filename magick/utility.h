@@ -52,9 +52,6 @@ typedef struct _TokenInfo
 /*
   Utilities methods.
 */
-#if !defined(__GNUC__) && !defined(__attribute__)
-#  define __attribute__(x) /*nothing*/
-#endif
 
 #undef ARGUNUSED
 #define ARGUNUSED(arg) arg __attribute__((unused))
@@ -155,9 +152,9 @@ extern MagickExport magick_int64_t
   MagickSizeStrToInt64(const char *str,const unsigned int kilo);
 
 extern MagickExport size_t
-  MagickStrlCat(char *dst, const char *src, const size_t size),
-  MagickStrlCpy(char *dst, const char *src, const size_t size),
-  MagickStrlCpyTrunc(char *dst, const char *src, const size_t size);
+  MagickStrlCat(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL,
+  MagickStrlCpy(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL,
+  MagickStrlCpyTrunc(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL;
 
 #if defined(MAGICK_IMPLEMENTATION)
 

@@ -403,7 +403,7 @@ GetMagickInfo(const char *name,ExceptionInfo *ARGUNUSED(exception))
   if ((name != (const char *) NULL) &&
       (name[0] != '\0'))
     {
-      AcquireSemaphoreInfo(&module_semaphore);
+      LockSemaphoreInfo(module_semaphore);
       if (name[0] == '*')
 	{
 	  /*
@@ -423,7 +423,7 @@ GetMagickInfo(const char *name,ExceptionInfo *ARGUNUSED(exception))
 	      (void) OpenModule(name,exception);
 	    }
 	}
-      LiberateSemaphoreInfo(&module_semaphore);
+      UnlockSemaphoreInfo(module_semaphore);
     }
 #endif /* #if defined(SupportMagickModules) */
 

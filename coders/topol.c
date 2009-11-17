@@ -570,7 +570,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
 	    j = i; /* MEZ[i];	ignore MEZ!!! proper palete element after reindexing */	
           else
             j = MEZ[i];			/* ?? I do not know, big mess ?? */
-	  if(j>=image->colors) j=image->colors-1;
+	  if(j>=(long) image->colors) j=image->colors-1;
           image->colormap[j].red = ScaleCharToQuantum(ReadBlobByte(palette));
           image->colormap[j].green = ScaleCharToQuantum(ReadBlobByte(palette));
           image->colormap[j].blue = ScaleCharToQuantum(ReadBlobByte(palette));

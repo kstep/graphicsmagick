@@ -617,7 +617,10 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
         break;
       else
         option=(char *) "logo:Untitled";
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Option is a file name.
@@ -1841,7 +1844,10 @@ CompareImageCommand(ImageInfo *image_info,
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Read input images.
@@ -2672,7 +2678,10 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Read input images.
@@ -3827,7 +3836,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Read input image.
@@ -6223,7 +6235,10 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         break;
       else
         option=(char *) "logo:Untitled";
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Option is a file name.
@@ -7627,7 +7642,10 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         /*
           Identify image.
@@ -13045,7 +13063,10 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) ||
+	/* stdin + subexpression */
+	((option[0] == '-') && (option[1] == '[')) ||
+	((option[0] != '-') && option[0] != '+'))
       {
         k=i;
         for (scene=first_scene; scene <= last_scene ; scene++)
@@ -15844,6 +15865,5 @@ MagickExport int GMCommand(int argc,char **argv)
   DestroyExceptionInfo(&exception);
   DestroyMagick();
 
-  Exit(!status);
-  return(False);
+  return (!status);
 }

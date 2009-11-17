@@ -257,6 +257,8 @@ static void InitializeSource(j_decompress_ptr cinfo)
   source->start_of_blob=TRUE;
 }
 
+static void JPEGErrorHandler(j_common_ptr jpeg_info) MAGICK_FUNC_NORETURN;
+
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   ErrorManager

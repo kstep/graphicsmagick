@@ -2903,6 +2903,9 @@ static MagickPassFail funcDCM_TransferSyntax(Image *image,DicomStream *dcm,Excep
     type,
     subtype;
 
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(exception);
+
   p=(char *) dcm->data;
   if (strncmp(p,"1.2.840.10008.1.2",17) == 0)
     {

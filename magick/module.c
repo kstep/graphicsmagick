@@ -1258,6 +1258,8 @@ GetModuleInfo(const char *name,ExceptionInfo *exception)
   const ModuleInfo
     *module_info=(const ModuleInfo *) NULL;
 
+  ARG_NOT_USED(exception);
+
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
       module_info=module_list;
@@ -1887,6 +1889,8 @@ RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 {
   register CoderInfo
     *p;
+
+  ARG_NOT_USED(exception);
 
   /*
     Delete any existing tag.

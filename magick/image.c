@@ -2250,6 +2250,12 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
   assert(image_info->signature == MagickSignature);
   *magic='\0';
   p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+  /*
+    Sometimes the provided argument is a real file and we need to
+    account for that.  If it is not a real file and the argument ends
+    with ']' then the trailing part is likely a sub-image or size
+    specification.
+  */
   if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
     {
       /*
