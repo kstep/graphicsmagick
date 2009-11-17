@@ -1,3 +1,8 @@
+2009-11-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* ltdl/ltdl.c: Update libltdl to 2.2.6b in order to fix security
+	issue.  Resolves CVE-2009-3736 as it pertains to GraphicsMagick.
+
 2009-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): Convolve does not accept
