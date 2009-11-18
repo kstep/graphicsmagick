@@ -1045,6 +1045,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 			      (long) scale_factor,
 			      jpeg_info.scale_num,jpeg_info.scale_denom);
     }
+#if 0
   /*
     The subrange parameter is set by the filename array syntax similar
     to the way an image is requested from a list (e.g. myfile.jpg[2]).
@@ -1067,6 +1068,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 			      jpeg_info.scale_num,jpeg_info.scale_denom);
 
     }
+#endif
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
 #ifdef D_LOSSLESS_SUPPORTED
   image->interlace=

@@ -1,5 +1,9 @@
 2009-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (ParseSubImageSpecification): Try to match
+	behavior of previous sub-image specification parser.  Some
+	incantations did not produce the same results.
+
 	* win2k/IMDisplay/res/{IMDisplay.ico, IMDisplayDoc.ico}: Replaced
 	with GraphicsMagick icon prepared by Jaroslav Fojtik.
 

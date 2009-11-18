@@ -2135,6 +2135,7 @@ ParseSubImageSpecification(char *filename,
 
       subimage=value;
       subrange=subimage;
+      (void) CloneString(tile_ptr,spec);
 
       for (q=spec; *q != '\0'; )
 	{
@@ -2156,7 +2157,7 @@ ParseSubImageSpecification(char *filename,
 		break;
 	      last=value;
 	    }
-	  else if (*q != ',')
+	  else if ((*q != ',') && (*q != '\0'))
 	    {
 	      break; /* Parse error */
 	    }
@@ -2169,6 +2170,7 @@ ParseSubImageSpecification(char *filename,
 	}
       if (*q == '\0')
 	{
+	  subrange -= subimage-1;
 	  *subimage_ptr=subimage;
 	  *subrange_ptr=subrange;
 	  status=MagickPass;
@@ -2176,7 +2178,6 @@ ParseSubImageSpecification(char *filename,
       else if (IsGeometry(spec))
 	{
 	  status=MagickPass;
-	  (void) CloneString(tile_ptr,spec);
 	}
       else
 	{
@@ -2187,10 +2188,14 @@ ParseSubImageSpecification(char *filename,
 	}
       if (status == MagickPass)
 	{
-	  /* (void) CloneString(tile_ptr,spec); */
 	  /* Truncate filename */
 	  *(spec_start-1)='\0';
 	}
+#if 0
+      fprintf(stderr,"subimage=%lu subrange=%lu tile=\"%s\"\n",
+	      *subimage_ptr,*subrange_ptr,
+	      (*tile_ptr ? *tile_ptr : "(null)"));
+#endif
     }
 
   return status;
