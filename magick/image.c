@@ -308,18 +308,28 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strlcpy(allocate_image->magick,image_info->magick,MaxTextExtent);
   if (image_info->size != (char *) NULL)
     {
-      (void) GetGeometry(image_info->size,&allocate_image->tile_info.x,
-        &allocate_image->tile_info.y,&allocate_image->columns,
-        &allocate_image->rows);
+      (void) GetGeometry(image_info->size,
+			 &allocate_image->tile_info.x,
+			 &allocate_image->tile_info.y,
+			 &allocate_image->columns,
+			 &allocate_image->rows);
       allocate_image->offset=allocate_image->tile_info.x;
       allocate_image->tile_info.width=allocate_image->columns;
       allocate_image->tile_info.height=allocate_image->rows;
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
-      (void) GetGeometry(image_info->tile,&allocate_image->tile_info.x,
-        &allocate_image->tile_info.y,&allocate_image->columns,
-        &allocate_image->rows);
+      {
+        (void) GetGeometry(image_info->tile,
+			   &allocate_image->tile_info.x,
+			   &allocate_image->tile_info.y,
+			   &allocate_image->tile_info.width,
+			   &allocate_image->tile_info.height);
+	if (0 == allocate_image->columns)
+	  allocate_image->columns=allocate_image->tile_info.width;
+	if (0 == allocate_image->rows)
+	  allocate_image->rows=allocate_image->tile_info.height;
+      }
   allocate_image->compression=image_info->compression;
   allocate_image->dither=image_info->dither;
   allocate_image->interlace=image_info->interlace;

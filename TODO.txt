@@ -13,8 +13,17 @@ Short Term
 
 * Fix browser interoperability issues reported for PNG8.
 
-* Add ClonePixelWand(), ColorMatrixImage(), Compare, and Distortion
-  functions to the Wand API.
+* Add ColorMatrixImage(), Compare, GetImageBoundingBox() and Distortion
+  wrapper functions to the Wand API.
+
+* Add ClonePixelWand() to the Wand API:
+
+  PixelWand *ClonePixelWand(const PixelWand *);
+
+* Add MagickSetResolution() to the Wand API:
+
+  MagickBool MagickSetResolution(MagickWand *wand,
+              const double x_resolution,const double y_resolution);
 
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().

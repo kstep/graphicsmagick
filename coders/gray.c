@@ -135,6 +135,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                        image->filename);
     }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "Tile %lux%lu%+ld%+ld",
+			  image->tile_info.width,image->tile_info.height,
+			  image->tile_info.x,image->tile_info.y);
+
   /*
     Support depth in multiples of 8 bits.
   */

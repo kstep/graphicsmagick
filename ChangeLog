@@ -1,3 +1,9 @@
+2009-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (AllocateImage): The documented shorthand for
+	specifying image size via filename[WIDTHxHEIGHT] was not working
+	for raw formats which use the image tile_info data.
+
 2009-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (ParseSubImageSpecification): Try to match

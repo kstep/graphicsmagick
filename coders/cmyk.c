@@ -136,6 +136,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                            image->filename);
         }
     }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "Tile %lux%lu%+ld%+ld",
+			  image->tile_info.width,image->tile_info.height,
+			  image->tile_info.x,image->tile_info.y);
+
   /*
     Allocate memory for a scanline.
   */
