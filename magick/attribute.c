@@ -267,11 +267,10 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
       continue;
     length=profile[i+3] << 8;
     length|=profile[i+4];
-    attribute=MagickAllocateMemory(char *,length+MaxTextExtent);
+    attribute=MagickAllocateMemory(char *,length+1);
     if (attribute == (char *) NULL)
       continue;
-    (void) strlcpy(attribute,(char *) profile+i+5,length);
-    attribute[length]='\0';
+    (void) strlcpy(attribute,(char *) profile+i+5,length+1);
     (void) SetImageAttribute(image,key,(const char *) attribute);
     MagickFreeMemory(attribute);
     break;

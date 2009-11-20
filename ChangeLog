@@ -1,3 +1,8 @@
+2009-11-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (GenerateIPTCAttribute): Returned IPTC string
+	values were one character too short.
+
 2009-11-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ltdl/ltdl.c: Update libltdl to 2.2.6b in order to fix security
