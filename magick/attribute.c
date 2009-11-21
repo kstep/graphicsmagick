@@ -238,6 +238,71 @@ MagickExport void DestroyImageAttributes(Image *image)
 static unsigned int
 GenerateIPTCAttribute(Image *image,const char *key)
 {
+#if 0
+  static const struct
+  {
+    char *name;
+    int   dataset;
+    int   record;
+  }
+#define IPTC_ATTRIBUTE(dataset,record,name) {name,dataset,record}
+  IPTCAttributes[] =
+  {
+    IPTC_ATTRIBUTE(2,5,"Image Name"),
+    IPTC_ATTRIBUTE(2,7,"Edit Status"),
+    IPTC_ATTRIBUTE(2,10,"Priority"),
+    IPTC_ATTRIBUTE(2,15,"Category"),
+    IPTC_ATTRIBUTE(2,20,"Supplemental Category"),
+    IPTC_ATTRIBUTE(2,22,"Fixture Identifier"),
+    IPTC_ATTRIBUTE(2,25,"Keyword"),
+    IPTC_ATTRIBUTE(2,30,"Release Date"),
+    IPTC_ATTRIBUTE(2,35,"Release Time"),
+    IPTC_ATTRIBUTE(2,40,"Special Instructions"),
+    IPTC_ATTRIBUTE(2,45,"Reference Service"),
+    IPTC_ATTRIBUTE(2,47,"Reference Date"),
+    IPTC_ATTRIBUTE(2,50,"Reference Number"),
+    IPTC_ATTRIBUTE(2,55,"Created Date"),
+    IPTC_ATTRIBUTE(2,60,"Created Time"),
+    IPTC_ATTRIBUTE(2,65,"Originating Program"),
+    IPTC_ATTRIBUTE(2,70,"Program Version"),
+    IPTC_ATTRIBUTE(2,75,"Object Cycle"),
+    IPTC_ATTRIBUTE(2,80,"Byline"),
+    IPTC_ATTRIBUTE(2,85,"Byline Title"),
+    IPTC_ATTRIBUTE(2,90,"City"),
+    IPTC_ATTRIBUTE(2,95,"Province State"),
+    IPTC_ATTRIBUTE(2,100,"Country Code"),
+    IPTC_ATTRIBUTE(2,101,"Country"),
+    IPTC_ATTRIBUTE(2,103,"Original Transmission Reference"),
+    IPTC_ATTRIBUTE(2,105,"Headline"),
+    IPTC_ATTRIBUTE(2,110,"Credit"),
+    IPTC_ATTRIBUTE(2,115,"Source"),
+    IPTC_ATTRIBUTE(2,116,"Copyright String"),
+    IPTC_ATTRIBUTE(2,120,"Caption"),
+    IPTC_ATTRIBUTE(2,121,"Local Caption"),
+    IPTC_ATTRIBUTE(2,122,"Caption Writer"),
+    IPTC_ATTRIBUTE(2,200,"Custom Field 1"),
+    IPTC_ATTRIBUTE(2,201,"Custom Field 2"),
+    IPTC_ATTRIBUTE(2,202,"Custom Field 3"),
+    IPTC_ATTRIBUTE(2,203,"Custom Field 4"),
+    IPTC_ATTRIBUTE(2,204,"Custom Field 5"),
+    IPTC_ATTRIBUTE(2,205,"Custom Field 6"),
+    IPTC_ATTRIBUTE(2,206,"Custom Field 7"),
+    IPTC_ATTRIBUTE(2,207,"Custom Field 8"),
+    IPTC_ATTRIBUTE(2,208,"Custom Field 9"),
+    IPTC_ATTRIBUTE(2,209,"Custom Field 10"),
+    IPTC_ATTRIBUTE(2,210,"Custom Field 11"),
+    IPTC_ATTRIBUTE(2,211,"Custom Field 12"),
+    IPTC_ATTRIBUTE(2,212,"Custom Field 13"),
+    IPTC_ATTRIBUTE(2,213,"Custom Field 14"),
+    IPTC_ATTRIBUTE(2,214,"Custom Field 15"),
+    IPTC_ATTRIBUTE(2,215,"Custom Field 16"),
+    IPTC_ATTRIBUTE(2,216,"Custom Field 17"),
+    IPTC_ATTRIBUTE(2,217,"Custom Field 18"),
+    IPTC_ATTRIBUTE(2,218,"Custom Field 19"),
+    IPTC_ATTRIBUTE(2,219,"Custom Field 20")
+  };
+#endif
+
   char
     *attribute;
 
@@ -268,16 +333,21 @@ GenerateIPTCAttribute(Image *image,const char *key)
       if (profile[i] != 0x1cU)
 	continue;
       if (profile[i+1] != dataset)
-	continue;
+	{
+	  /* fprintf(stderr,"Skipping dataset %d\n",profile[i+1]); */
+	  continue;
+	}
       if (profile[i+2] != record)
-	continue;
+	{
+	  /* fprintf(stderr,"Skipping record %d\n",profile[i+2]); */
+	  continue;
+	}
       length=profile[i+3] << 8;
       length|=profile[i+4];
-      attribute=MagickAllocateMemory(char *,length+MaxTextExtent);
+      attribute=MagickAllocateMemory(char *,length+1);
       if (attribute == (char *) NULL)
 	continue;
-      (void) strlcpy(attribute,(char *) profile+i+5,length);
-      attribute[length]='\0';
+      (void) strlcpy(attribute,(char *) profile+i+5,length+1);
       (void) SetImageAttribute(image,key,(const char *) attribute);
       MagickFreeMemory(attribute);
       break;

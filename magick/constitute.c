@@ -8345,8 +8345,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (!magick_info->thread_support)
         LockSemaphoreInfo(constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
-        magick_info->description);
+        "Invoking \"%.1024s\" decoder (%.1024s) subimage=%lu subrange=%lu",
+			    magick_info->name,
+			    magick_info->description,
+			    clone_info->subimage,
+			    clone_info->subrange);
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
         UnlockSemaphoreInfo(constitute_semaphore);
@@ -8441,8 +8444,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (!magick_info->thread_support)
         LockSemaphoreInfo(constitute_semaphore);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
-        magick_info->description);
+        "Invoking \"%.1024s\" decoder (%.1024s) subimage=%lu subrange=%lu",
+			    magick_info->name,
+			    magick_info->description,
+			    clone_info->subimage,
+			    clone_info->subrange);
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
         UnlockSemaphoreInfo(constitute_semaphore);

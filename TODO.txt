@@ -25,6 +25,8 @@ Short Term
   MagickBool MagickSetResolution(MagickWand *wand,
               const double x_resolution,const double y_resolution);
 
+* Add Wand functions to access Set/GetImageAttribute().
+
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 
