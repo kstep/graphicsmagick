@@ -2620,6 +2620,46 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e A t t r i b u t e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageAttribute returns an image attribute as a string
+%
+%  The format of the MagickGetImageAttribute method is:
+%
+%      char *MagickGetImageAttribute(MagickWand *wand, const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: The name of the attribute
+%
+*/
+WandExport char *MagickGetImageAttribute(MagickWand *wand, const char *name)
+{
+  const ImageAttribute
+	  *attribute;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  attribute=GetImageAttribute(wand->image,name);
+  if (attribute != (ImageAttribute *) NULL)
+    return(AcquireString(attribute->value));
+  InheritException(&wand->exception,&wand->image->exception);
+  return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e B a c k g r o u n d C o l o r                 %
 %                                                                             %
 %                                                                             %
@@ -7057,6 +7097,47 @@ WandExport unsigned int MagickSetImage(MagickWand *wand,
   ReplaceImageInList(&wand->image,images);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e A t t r i b u t e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageAttribute sets an image attribute
+%
+%  The format of the MagickSetImageAttribute method is:
+%
+%      unsigned int MagickSetImageAttribute(MagickWand *wand, const char *name, const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: The name of the attribute
+%
+%    o value: The value of the attribute
+%
+*/
+WandExport unsigned int MagickSetImageAttribute(MagickWand *wand, const char *name, 
+  const char *value)
+{
+  unsigned int status;
+  
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status = SetImageAttribute(wand->image,name,value);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
 }
 
 /*
