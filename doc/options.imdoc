@@ -2306,10 +2306,10 @@ but not set as an image attribute (e.g. PNG images).</pp>
 
 
 
-<!-- ------------ -Gaussian ----------------------------------------- -->
+<!-- ------------ -gaussian ----------------------------------------- -->
 
 <utils apps=convert,mogrify>
-<dopt>-Gaussian <radius>{x<sigma>}</opt>
+<dopt>-gaussian <radius>{x<sigma>}</opt>
 
 <abs>blur the image with a Gaussian operator</abs>
 <pp>

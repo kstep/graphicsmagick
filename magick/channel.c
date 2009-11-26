@@ -74,13 +74,13 @@
 %
 */
 static MagickPassFail
-ChannelImagePixels(void *mutable_data,         /* User provided mutable data */
-                   const void *immutable_data, /* User provided immutable data */
-                   Image *image,               /* Modify image */
-                   PixelPacket *pixels,        /* Pixel row */
-                   IndexPacket *indexes,       /* Pixel row indexes */
-                   const long npixels,         /* Number of pixels in row */
-                   ExceptionInfo *exception)   /* Exception report */
+ChannelImagePixels(void *mutable_data,            /* User provided mutable data */
+                   const void *immutable_data,    /* User provided immutable data */
+                   Image *image,                  /* Modify image */
+                   PixelPacket * restrict pixels, /* Pixel row */
+                   IndexPacket * restrict indexes,/* Pixel row indexes */
+                   const long npixels,            /* Number of pixels in row */
+                   ExceptionInfo *exception)      /* Exception report */
 {
   /*
     Transform image so that it only represents the specified channel.

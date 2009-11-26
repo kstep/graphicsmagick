@@ -71,6 +71,12 @@ extern "C" {
 #  define inline __inline
 #endif
 
+// Visual C++ does not usually seem to support the C'99 restrict keyword
+// Maybe it will be added in some version.
+#if defined(_VISUALC_)  /* && (_MSC_VER <= 1500) */
+#  define restrict /* nothing */
+#endif
+
 #if !defined(chsize)
 # if defined(__BORLANDC__)
 #   define chsize(file,length) chsize(file,length)

@@ -1481,7 +1481,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
     y;
 
   PixelPacket
-    *q;
+    * restrict q;
 
   register Quantum
     quantum;
@@ -1490,7 +1490,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
     switch_map[MaxTextExtent/sizeof(MapQuantumType)];
 
   register IndexPacket
-    *indexes;
+    * restrict indexes;
 
   register long
     i,
@@ -1544,7 +1544,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       if (dispatch_type != UndefinedDispatchType)
         {
           register const unsigned char
-            *p = (const unsigned char*) pixels;
+            * restrict p = (const unsigned char*) pixels;
 
           for (y=0; y < (long) image->rows; y++)
             {
@@ -1977,7 +1977,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
     x;
 
   register const PixelPacket
-    *p;
+    * restrict p;
 
   register Quantum
     quantum;
@@ -2018,7 +2018,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
       if (dispatch_type != UndefinedDispatchType)
         {
           register unsigned char
-            *q = (unsigned char*) pixels;
+            * restrict q = (unsigned char*) pixels;
           
           for (y=0; y < (long) rows; y++)
             {
@@ -2463,13 +2463,13 @@ ExportViewPixelArea(const ViewInfo *view,
     *image;
 
   register const IndexPacket
-    *indexes;
+    * restrict indexes;
 
   register const PixelPacket
-    *p;
+    * restrict p;
 
   register unsigned char
-    *q;
+    * restrict q;
 
   register unsigned long
     x;
@@ -5095,7 +5095,7 @@ ImportViewPixelArea(ViewInfo *view,
     *image;
 
   register const unsigned char
-    *p;
+    * restrict p;
 
   register unsigned int
     index,
@@ -5103,13 +5103,13 @@ ImportViewPixelArea(ViewInfo *view,
     unsigned_value;
 
   register IndexPacket
-    *indexes;
+    * restrict indexes;
 
   register unsigned long
     x;
 
   register PixelPacket
-    *q;
+    * restrict q;
 
   MagickBool
     grayscale_miniswhite = MagickFalse;
@@ -7929,7 +7929,7 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
           x;                                                            \
                                                                         \
         basic_type                                                      \
-          *scanline;                                                    \
+          * restrict scanline;						\
                                                                         \
         scanline=(basic_type *) scanline_buffer;                        \
         if ((read_func)(image, scanline_octets, scanline) !=            \
