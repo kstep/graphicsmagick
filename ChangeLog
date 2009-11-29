@@ -1,3 +1,8 @@
+2009-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c (GammaImage): Improve performance a bit.
+	Preserve full precision in Q32 build.
+
 2009-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{channel.c,constitute.c,nt_base.h}: Start using the C'99
