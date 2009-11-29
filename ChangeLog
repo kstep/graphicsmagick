@@ -1,5 +1,8 @@
 2009-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (ConvolveImage): Moved here from fx.c since this
+	is a more suitable place for it to be.
+
 	* magick/enhance.c (GammaImage): Improve performance a bit.
 	Preserve full precision in Q32 build.
 
