@@ -1174,8 +1174,14 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         if (thread_status == MagickFail)
           continue;
 
+	/*
+	  Acquire rectangle of columns+width high, and width tall.
+	*/
         p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
                              exception);
+	/*
+	  Set one row.
+	*/
         q=SetImagePixelsEx(convolve_image,0,y,convolve_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           thread_status=MagickFail;

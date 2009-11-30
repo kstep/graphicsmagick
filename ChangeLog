@@ -1,3 +1,10 @@
+2009-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth1D):
+	In the Q32 build, convolution kernel size was estimated
+	incorrectly for large sigmas on 32-bit systems due to arithmetic
+	overflow.
+
 2009-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ConvolveImage): Moved here from fx.c since this
