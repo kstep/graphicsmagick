@@ -458,7 +458,7 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
   if (count == 1)
     {
       if (gamma.red == 1.0)
-        return(MagickFail);
+        return(MagickPass);
       gamma.green=gamma.red;
       gamma.blue=gamma.red;
     }
