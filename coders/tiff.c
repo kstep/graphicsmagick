@@ -93,7 +93,7 @@
 /*
   Global declarations.
 */
-static MagickTsdKey_t tsd_key = (MagickTsdKey_t) NULL;
+static MagickTsdKey_t tsd_key = (MagickTsdKey_t) 0;
 
 /* static ExceptionInfo */
 /*   *tiff_exception; */
@@ -2766,7 +2766,7 @@ RegisterTIFFImage(void)
   /*
     Initialize thread specific data key.
   */
-  if (tsd_key == (MagickTsdKey_t) NULL)
+  if (tsd_key == (MagickTsdKey_t) 0)
     (void) MagickTsdKeyCreate(&tsd_key);
 
   version[0]='\0';
@@ -2905,10 +2905,10 @@ UnregisterTIFFImage(void)
   /*
     Destroy thread specific data key.
   */
-  if (tsd_key != (MagickTsdKey_t) NULL)
+  if (tsd_key != (MagickTsdKey_t) 0)
     {
       (void) MagickTsdKeyDelete(tsd_key);
-      tsd_key = (MagickTsdKey_t) NULL;
+      tsd_key = (MagickTsdKey_t) 0;
     }
 #endif
 }

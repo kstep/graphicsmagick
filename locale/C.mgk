@@ -68,7 +68,7 @@
         Unable to read pixel cache
       </Message>
       <Message name="UnableToSyncCache">
-        Unable to sync cache
+        Unable to sync cache (check temporary file disk space)
       </Message>
     </Error>
     <FatalError>

@@ -4833,7 +4833,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
               points[0]=points[2];
               points[1]=points[3];
             }
-          for (i=0; i <= 4; i++)
+          for (i=0; i <= 3; i++)
             (q+i)->point=points[i];
           TraceBezier(q,4);
           q+=q->coordinates;

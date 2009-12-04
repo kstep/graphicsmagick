@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2009-12-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/widget.c: Warnings reduction.
+
+  <LI> magick/segment.c (Classify): Warnings reduction.
+
+  <LI> magick/magic.c (struct StaticMagic): Length and offset can never
+        be negative so use an unsigned type rather than size_t.
+
+  <LI> magick/render.c (TracePath): Fix access one beyond the end of
+        the points array.
+
+</UL>
+<p>
 2009-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1577,7 +1577,11 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
   MagickXWidgetInfo
     action_info,
     cancel_info,
-    expose_info,
+    expose_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     grab_info,
     list_info,
     mode_info,
@@ -4143,7 +4147,11 @@ MagickExport void MagickXFileBrowserWidget(Display *display,MagickXWindows *wind
   MagickXWidgetInfo
     action_info,
     cancel_info,
-    expose_info,
+    expose_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     special_info,
     list_info,
     home_info,
@@ -5366,7 +5374,11 @@ MagickExport void MagickXFontBrowserWidget(Display *display,MagickXWindows *wind
     action_info,
     back_info,
     cancel_info,
-    expose_info,
+    expose_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     list_info,
     mode_info,
     north_info,
@@ -6618,7 +6630,11 @@ MagickExport void MagickXListBrowserWidget(Display *display,MagickXWindows *wind
   MagickXWidgetInfo
     action_info,
     cancel_info,
-    expose_info,
+    expose_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     list_info,
     north_info,
     reply_info,
@@ -8776,7 +8792,11 @@ MagickExport void MagickXTextViewWidget(Display *display,
 
   MagickXWidgetInfo
     dismiss_info,
-    expose_info,
+    expose_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     list_info,
     north_info,
     scroll_info,

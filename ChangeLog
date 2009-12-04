@@ -1,3 +1,15 @@
+2009-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/widget.c: Warnings reduction.
+
+	* magick/segment.c (Classify): Warnings reduction.
+
+	* magick/magic.c (struct StaticMagic): Length and offset can never
+	be negative so use an unsigned type rather than size_t.
+
+	* magick/render.c (TracePath): Fix access one beyond the end of
+	the points array.
+
 2009-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth1D):

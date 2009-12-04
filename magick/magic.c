@@ -52,7 +52,7 @@ static const struct
   unsigned char
     *magic;
 
-  size_t
+  unsigned int
     length,
     offset;
 }
@@ -338,7 +338,7 @@ ListMagicInfo(FILE *file,ExceptionInfo *exception)
       (void) fprintf(file,"%.1024s",StaticMagic[i].name);
       for (j= (unsigned int) strlen(StaticMagic[i].name); j <= 9; j++)
 	(void) fprintf(file," ");
-      (void) fprintf(file,"%6d ",StaticMagic[i].offset);
+      (void) fprintf(file,"%6u ",StaticMagic[i].offset);
 
       (void) fprintf(file,"\"");
       c=StaticMagic[i].magic;

@@ -364,6 +364,12 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
   register size_t
     total_count;
 
+#if 0
+  fprintf(stderr,"FilePositionWrite file=%d, buffer=0x%p, length=%lu, "
+	  "offset=%" MAGICK_OFF_F "u\n",
+	  file,buffer,(unsigned long) length,offset);
+#endif
+
 #if !HAVE_PWRITE
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
     return (ssize_t)-1;
@@ -383,6 +389,12 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
       requested_io_size=length-total_count;
       io_file_offset=offset+total_count;
 #if HAVE_PWRITE
+#if 0
+  fprintf(stderr,"pwrite file=%d, io_buff_address=0x%p, requested_io_size=%lu, "
+	  "io_file_offset=%" MAGICK_OFF_F "u\n",
+	  file,io_buff_address,(unsigned long) requested_io_size,
+	  (magick_off_t) io_file_offset);
+#endif
       count=pwrite(file,io_buff_address,requested_io_size,io_file_offset);
 #else
       count=write(file,io_buff_address,requested_io_size);
