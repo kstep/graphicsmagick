@@ -116,6 +116,8 @@ MAGICK_API_LIBS=''
 #AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
 #AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
 #AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
+AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
+AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
