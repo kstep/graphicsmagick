@@ -121,7 +121,7 @@ Unable to read pixel cache
 MessageId       = +1
 SymbolicName    = CacheErrorUnableToSyncCache
 Language        = English
-Unable to sync cache
+Unable to sync cache (check temporary file disk space)
 .
 
 MessageId       = +1

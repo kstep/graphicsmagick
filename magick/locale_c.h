@@ -1149,7 +1149,7 @@ static const char *message_dat[] =
     "Unable to open cache",
     "Unable to persist pixel cache",
     "Unable to read pixel cache",
-    "Unable to sync cache",
+    "Unable to sync cache (check temporary file disk space)",
     "disk allocation failed",
     "Unable to extend pixel cache",
     "default warning",
