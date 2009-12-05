@@ -661,11 +661,17 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
+/* Enable all API extensions (for GNU Linux libc) */
+#undef _GNU_SOURCE
+
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
+
+/* Enable all API extensions (for NetBSD) */
+#undef _NETBSD_SOURCE
 
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__

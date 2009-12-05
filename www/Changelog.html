@@ -24,6 +24,10 @@
 2009-12-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> configure.ac: Define _GNU_SOURCE and _NETBSD_SOURCE so that
+        pwrite() and pread() prototypes are available under GNU Linux and
+        NetBSD.
+
   <LI> coders/tiff.c: Warnings reduction.
 
   <LI> magick/widget.c: Warnings reduction.
