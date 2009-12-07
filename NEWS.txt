@@ -139,14 +139,14 @@ New Features:
     color transformation to be easily created and replicated on any
     number of images.  The algorithm is accessed by the -hald-clut
     option of 'convert' and 'mogrify'.  Original algorithm by Eskil
-    Steenberg and adapted for GraphicsMagick by Clément Follet, with
-    additional work by Bob Friesenhahn.
+    Steenberg and adapted for GraphicsMagick by Clément Follet from
+    Workflowers, with additional work by Bob Friesenhahn.
 
   * Added support for the ASC CDL transform.  Available as -asc-cdl
     via the 'convert' and 'mogrify' subcommands.  Original
-    implementation by Clément Follet but considerably re-worked by Bob
-    Friesenhahn.  Implementation passes the +/- 1 count accuracy
-    requirement required by the ASC CDL SOP tests.
+    implementation by Clément Follet from Workflowers but considerably
+    re-worked by Bob Friesenhahn.  Implementation passes the +/- 1
+    count accuracy requirement required by the ASC CDL SOP tests.
 
   * Added support for reading CALS Type 1 format (contributed by John
     Sergeant).  CALS is a standard raster format used by the US

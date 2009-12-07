@@ -850,8 +850,8 @@
 
 	* magick/cdl.c (CdlImage): New function to apply an ASC CDL
 	transform to the image.  Original implementation by Clément Follet
-	but considerably re-worked by Bob Friesenhahn.  Available as
-	-asc-cdl via the 'convert' and 'mogrify' subcommands.
+	from Workflowers but considerably re-worked by Bob Friesenhahn.
+	Available as -asc-cdl via the 'convert' and 'mogrify' subcommands.
 
 2009-07-04 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
@@ -1046,8 +1046,8 @@
 	on any number of images.  The algorithm is accessed by the
 	-hald-clut option of 'convert' and 'mogrify'.  The original
 	algorithm is by Eskil Steenberg and was adapted for GraphicsMagick
-	by Clément Follet with some support from Cédric Lejeune of
-	workflowers.net.
+	by Clément Follet from Workflowers with support from Cédric
+	Lejeune of Workflowers.
 
 2009-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
