@@ -565,7 +565,10 @@ static MagickPassFail CompressColormapTransFirst(Image *image)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "    Could not compress colormap");
-      return(MagickTrue);
+      if (image->colors > 256 || image->colors == 0)
+        return(MagickFalse);
+      else
+        return(MagickTrue);
     }
   marker=MagickAllocateMemory(unsigned char *,image->colors);
   if (marker == (unsigned char *) NULL)
