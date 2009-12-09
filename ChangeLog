@@ -1,3 +1,11 @@
+2009-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (ModuleAliases): J2C is supported by the JP2
+	coder.
+
+	* coders/jp2.c: JP2 is now an alias for JPC since many files use
+	that extension.  Problem reported by Stefano Acerbetti.
+
 2009-12-09  Glenn Randers-Pehrson <glennrp@simple....>
 
 	* coders/png.c: The png8 encoder would fail when trying to write

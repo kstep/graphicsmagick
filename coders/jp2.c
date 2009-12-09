@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2009 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -669,6 +669,20 @@ ModuleExport void RegisterJP2Image(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("J2C");
+  entry->description="JPEG-2000 Code Stream Syntax";
+  entry->module="JP2";
+  entry->magick=(MagickHandler) IsJPC;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->thread_support=False;
+#if defined(HasJP2)
+  entry->decoder=(DecoderHandler) ReadJP2Image;
+  entry->encoder=(EncoderHandler) WriteJP2Image;
+#endif
+  entry->coder_class=StableCoderClass;
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("JP2");
   entry->description="JPEG-2000 JP2 File Format Syntax";
   entry->module="JP2";
@@ -685,7 +699,7 @@ ModuleExport void RegisterJP2Image(void)
 
   entry=SetMagickInfo("JPC");
   entry->description="JPEG-2000 Code Stream Syntax";
-  entry->module="JPC";
+  entry->module="JP2";
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->seekable_stream=True;
@@ -699,7 +713,7 @@ ModuleExport void RegisterJP2Image(void)
 
   entry=SetMagickInfo("PGX");
   entry->description="JPEG-2000 VM Format";
-  entry->module="PGX";
+  entry->module="JP2";
   entry->magick=(MagickHandler) IsJPC;
   entry->adjoin=False;
   entry->seekable_stream=True;
@@ -740,9 +754,10 @@ ModuleExport void RegisterJP2Image(void)
 */
 ModuleExport void UnregisterJP2Image(void)
 {
-  (void) UnregisterMagickInfo("JP2");
-  (void) UnregisterMagickInfo("JPC");
   (void) UnregisterMagickInfo("PGX");
+  (void) UnregisterMagickInfo("JPC");
+  (void) UnregisterMagickInfo("JP2");
+  (void) UnregisterMagickInfo("J2C");
 
 #if defined(HasJP2)
   /*
@@ -1012,6 +1027,11 @@ WriteJP2Image(const ImageInfo *image_info,Image *image)
           break;
   }
   (void) strlcpy(magick,image_info->magick,MaxTextExtent);
+  /*
+    J2C is an alias for JPC but Jasper only supports "JPC".
+  */
+  if (LocaleCompare(magick,"j2c") == 0)
+    (void) strlcpy(magick,"jpc",sizeof(magick));
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
 
