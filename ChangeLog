@@ -1,3 +1,8 @@
+2009-12-09  Glenn Randers-Pehrson <glennrp@simple....>
+
+	* coders/png.c: The png8 encoder would fail when trying to write
+	a 1-color image.  Problem reported by Bob Clark.
+
 2009-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Define _GNU_SOURCE and _NETBSD_SOURCE so that
