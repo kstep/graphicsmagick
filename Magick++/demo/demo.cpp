@@ -312,7 +312,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  operator rshift ..." << endl;
       example = model;
       example.label( "Operator RShift\n(All>>2)" );
-      example.quantumOperator( AllChannels, RShiftQuantumOp, static_cast<Quantum>(2));
+      example.quantumOperator( AllChannels, RShiftQuantumOp, 2.0);
       images.push_back( example );
 
       cout << "  ordered dither 2x2 ..." << endl;

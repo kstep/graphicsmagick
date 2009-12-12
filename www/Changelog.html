@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2009-12-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Magick++/demo/demo.cpp (main): Stop using deprecated functions.
+
+  <LI> wand/drawtest.c: Stop using deprecated functions.
+
+</UL>
+<p>
 2009-12-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -64,7 +73,7 @@
 2009-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth1D):
+  <LI> magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth2D):
         In the Q32 build, convolution kernel size was estimated
         incorrectly for large sigmas on 32-bit systems due to arithmetic
         overflow.

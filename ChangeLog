@@ -1,3 +1,9 @@
+2009-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/demo/demo.cpp (main): Stop using deprecated functions.
+
+	* wand/drawtest.c: Stop using deprecated functions.
+
 2009-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (ModuleAliases): J2C is supported by the JP2
@@ -31,7 +37,7 @@
 
 2009-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth1D):
+	* magick/gem.c (GetOptimalKernelWidth1D, GetOptimalKernelWidth2D):
 	In the Q32 build, convolution kernel size was estimated
 	incorrectly for large sigmas on 32-bit systems due to arithmetic
 	overflow.
