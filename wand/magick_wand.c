@@ -2781,19 +2781,22 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
 %
 %  MagickGetImageBoundingBox() obtains the crop bounding box required to
 %  remove a solid-color border from the image.  Color quantums which differ
-%  less than the current image fuzz setting are considered to be the same.
-%  If a border is not detected, then the the original image dimensions are
-%  returned.
+%  less than the fuzz setting are considered to be the same.  If a border is
+%  not detected, then the the original image dimensions are returned.  The
+%  crop bounding box estimation uses the same algorithm as MagickTrimImage().
 %
 %  The format of the MagickGetImageBoundingBox method is:
 %
 %      unsigned int MagickGetImageBoundingBox(MagickWand *wand,
+%                           const double fuzz,
 %                           unsigned long *width,unsigned long *height,
 %                           long *x, long *y)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
+%
+%    o fuzz: Color comparison fuzz factor.  Use 0.0 for exact match.
 %
 %    o width: The crop width
 %
@@ -2805,8 +2808,9 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
 %
 */
 WandExport unsigned int
-MagickGetImageBoundingBox(MagickWand *wand,unsigned long *width,
-			  unsigned long *height,long *x, long *y)
+MagickGetImageBoundingBox(MagickWand *wand,const double fuzz,
+			  unsigned long *width, unsigned long *height,
+			  long *x, long *y)
 {
   RectangleInfo
     rectangle;
@@ -2821,6 +2825,7 @@ MagickGetImageBoundingBox(MagickWand *wand,unsigned long *width,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
 
+  wand->image->fuzz=fuzz;
   rectangle=GetImageBoundingBox(wand->image,&wand->exception);
   *width=rectangle.width;
   *height=rectangle.height;
@@ -3458,6 +3463,40 @@ WandExport char *MagickGetImageFormat(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(AcquireString(wand->image->magick));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e F u z z                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageFuzz() returns the color comparison fuzz factor. Colors
+%  closer than the fuzz factor are considered to be the same when comparing
+%  colors.  Note that some other functions such as MagickColorFloodfillImage()
+%  implicitly set this value.
+%
+%  The format of the MagickGetImageFuzz method is:
+%
+%      double MagickGetImageFuzz(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport double MagickGetImageFuzz(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return wand->image->fuzz;
 }
 
 /*
@@ -7696,6 +7735,44 @@ WandExport unsigned int MagickSetImageFormat(MagickWand *wand,
   (void) CopyMagickString(wand->image->magick,magick,
                           sizeof(wand->image->magick));
   return MagickTrue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e F u z z                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageFuzz() sets the color comparison fuzz factor.  Colors
+%  closer than the fuzz factor are considered to be the same when comparing
+%  colors.  Note that some other functions such as MagickColorFloodfillImage()
+%  implicitly set this value.
+%
+%  The format of the MagickSetImageFuzz method is:
+%
+%      unsigned int MagickSetImageFuzz(MagickWand *wand,const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o fuzz: The color comparison fuzz factor
+%
+*/
+WandExport unsigned int
+MagickSetImageFuzz(MagickWand *wand,const double fuzz)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->fuzz=fuzz;
+  return(True);
 }
 
 /*

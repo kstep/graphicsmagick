@@ -3,6 +3,8 @@
 	* wand/magick_wand.c (MagickGetImageBoundingBox): New method to
 	return the crop bounding box required to remove any solid-color
 	border from the image.
+	(MagickGetImageFuzz/MagickSetImageFuzz): New methods to get and
+	set the color comparison fuzz factor
 
 	* wand/pixel_wand.c (ClonePixelWand): New method to deep-copy an
 	existing pixel wand.

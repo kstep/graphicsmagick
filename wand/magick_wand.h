@@ -85,6 +85,7 @@ extern WandExport DisposeType
 
 extern WandExport double
   MagickGetImageGamma(MagickWand *),
+  MagickGetImageFuzz(MagickWand *),
   *MagickGetSamplingFactors(MagickWand *,unsigned long *),
   *MagickQueryFontMetrics(MagickWand *,const DrawingWand *,const char *);
 
@@ -181,8 +182,8 @@ extern WandExport unsigned int
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
   MagickGetImageBluePrimary(MagickWand *,double *,double *),
   MagickGetImageBorderColor(MagickWand *,PixelWand *),
-  MagickGetImageBoundingBox(MagickWand *wand,unsigned long *width,
-			    unsigned long *height,long *x, long *y),
+  MagickGetImageBoundingBox(MagickWand *wand,const double fuzz,
+    unsigned long *width,unsigned long *height,long *x, long *y),
   MagickGetImageChannelExtrema(MagickWand *,const ChannelType,unsigned long *,
     unsigned long *),
   MagickGetImageChannelMean(MagickWand *,const ChannelType,double *,double *),
@@ -265,6 +266,7 @@ extern WandExport unsigned int
   MagickSetImageGamma(MagickWand *,const double),
   MagickSetImageFilename(MagickWand *,const char *),
   MagickSetImageFormat(MagickWand *wand,const char *format),
+  MagickSetImageFuzz(MagickWand *,const double),
   MagickSetImageIndex(MagickWand *,const long),
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
   MagickSetImageIterations(MagickWand *,const unsigned long),

@@ -13,15 +13,15 @@ Short Term
 
 * Fix browser interoperability issues reported for PNG8.
 
-* Add ColorMatrixImage(), Compare, GetImageBoundingBox() and Distortion
-  wrapper functions to the Wand API.
+* Add ColorMatrixImage(), Compare, and Distortion wrapper functions to
+  the Wand API.
 
- * Verify that delegate-subsystem exceptions propogate properly from
-   BlobToImage().
+* Verify that delegate-subsystem exceptions propogate properly from
+ BlobToImage().
 
- * atof(), atoi(), ctime(), localtime(), qsort(), rand(), readdir(),
-   and strerror(), all have reentrant forms and are not thread safe
-   under FreeBSD.
+* atof(), atoi(), ctime(), localtime(), qsort(), rand(), readdir(),
+  and strerror(), all have reentrant forms and are not thread safe
+  under FreeBSD.
 
 Longer Term
 ============
