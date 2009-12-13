@@ -181,6 +181,8 @@ extern WandExport unsigned int
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
   MagickGetImageBluePrimary(MagickWand *,double *,double *),
   MagickGetImageBorderColor(MagickWand *,PixelWand *),
+  MagickGetImageBoundingBox(MagickWand *wand,unsigned long *width,
+			    unsigned long *height,long *x, long *y),
   MagickGetImageChannelExtrema(MagickWand *,const ChannelType,unsigned long *,
     unsigned long *),
   MagickGetImageChannelMean(MagickWand *,const ChannelType,double *,double *),

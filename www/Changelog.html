@@ -24,9 +24,13 @@
 2009-12-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> wand/magick_wand.c (MagickGetImageBoundingBox): New method to
+        return the crop bounding box required to remove any solid-color
+        border from the image.
+
   <LI> wand/pixel_wand.c (ClonePixelWand): New method to deep-copy an
         existing pixel wand.<BR>
-        (ClonePixelWands): New method to deep-copy and array of existing
+        (ClonePixelWands): New method to deep-copy an array of existing
         pixel wands.
 
   <LI> wand/magick_wand.c (MagickSetResolution): New method to set the

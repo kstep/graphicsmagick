@@ -2773,6 +2773,68 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e B o u n d i n g B o x                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageBoundingBox() obtains the crop bounding box required to
+%  remove a solid-color border from the image.  Color quantums which differ
+%  less than the current image fuzz setting are considered to be the same.
+%  If a border is not detected, then the the original image dimensions are
+%  returned.
+%
+%  The format of the MagickGetImageBoundingBox method is:
+%
+%      unsigned int MagickGetImageBoundingBox(MagickWand *wand,
+%                           unsigned long *width,unsigned long *height,
+%                           long *x, long *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width: The crop width
+%
+%    o height: The crop height
+%
+%    o x: The crop x offset
+%
+%    o y: The crop y offset
+%
+*/
+WandExport unsigned int
+MagickGetImageBoundingBox(MagickWand *wand,unsigned long *width,
+			  unsigned long *height,long *x, long *y)
+{
+  RectangleInfo
+    rectangle;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  rectangle=GetImageBoundingBox(wand->image,&wand->exception);
+  *width=rectangle.width;
+  *height=rectangle.height;
+  *x=rectangle.x;
+  *y=rectangle.y;
+
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e C h a n n e l D e p t h                       %
 %                                                                             %
 %                                                                             %
