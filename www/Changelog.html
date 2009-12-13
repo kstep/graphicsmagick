@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2009-12-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/magick_wand.c (MagickSetResolution): New method to set the
+        wand resolution.  This one also works before the image has been
+        read (unlike MagickSetImageResolution()).
+        (MagickSetResolutionUnits): New method to set the wand resolution
+        units.  Use in conjunction with MagickSetResolution().  This one
+        also works before the image has been read (unlike
+        MagickSetImageUnits()).
+
+</UL>
+<p>
 2009-12-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -4313,7 +4313,7 @@ Mogrify(ref,...)
 
     char
       *attribute,
-      absolute_geometry[MaxTextExtent],
+      /* absolute_geometry[MaxTextExtent], */
       attribute_flag[MaxArguments],
       message[MaxTextExtent],
       *value;

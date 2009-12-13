@@ -1,3 +1,13 @@
+2009-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickSetResolution): New method to set the
+	wand resolution.  This one also works before the image has been
+	read (unlike MagickSetImageResolution()).
+	(MagickSetResolutionUnits): New method to set the wand resolution
+	units.  Use in conjunction with MagickSetResolution().  This one
+	also works before the image has been read (unlike
+	MagickSetImageUnits()).
+
 2009-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/demo/demo.cpp (main): Stop using deprecated functions.

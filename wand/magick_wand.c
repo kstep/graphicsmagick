@@ -8330,6 +8330,102 @@ WandExport unsigned int MagickSetInterlaceScheme(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t R e s o l u t i o n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetResolution() sets the resolution (density) of the magick wand.
+%  Set it before you read an EPS, PDF, or Postscript file in order to
+%  influence the size of the returned image, or after an image has already
+%  been created to influence the rendered image size when used with
+%  typesetting software.
+%
+%  Also see MagickSetResolutionUnits() which specifies the units to use for
+%  the image resolution.
+%
+%  The format of the MagickSetResolution method is:
+%
+%      unsigned int MagickSetResolution(MagickWand *wand,
+%              const double x_resolution,const double y_resolution)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o x_resolution: The horizontal resolution
+%
+%    o y_resolution: The vertical reesolution
+%
+%
+*/
+WandExport unsigned int
+MagickSetResolution(MagickWand *wand,
+		    const double x_resolution,const double y_resolution)
+{
+  char
+    geometry[MaxTextExtent];
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%gx%g",x_resolution,y_resolution);
+  (void) CloneString(&wand->image_info->density,geometry);
+  if (wand->image != (Image *) NULL)
+    {
+      wand->image->x_resolution=x_resolution;
+      wand->image->y_resolution=y_resolution;
+    }
+  return(MagickPass);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t R e s o l u t i o n U n i t s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetResolutionUnits() sets the resolution units of the magick wand.
+%  It should be used in conjunction with MagickSetResolution().
+%  This method works both before and after an image has been read.
+%
+%  Also see MagickSetImageUnits() which specifies the units which apply to
+%  the image resolution setting after an image has been read.
+%
+%  The format of the MagickSetResolutionUnits method is:
+%
+%      unsigned int MagickSetResolutionUnits(MagickWand *wand,
+%                                            const ResolutionType units)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o units: The image units of resolution : Undefinedresolution,
+%      PixelsPerInchResolution, or PixelsPerCentimeterResolution.
+%
+*/
+WandExport unsigned int
+MagickSetResolutionUnits(MagickWand *wand,const ResolutionType units)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->units=units;
+  if (wand->image != (Image *) NULL)
+    wand->image->units=units;
+  return(MagickPass);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t R e s o u r c e L i m i t                               %
 %                                                                             %
 %                                                                             %
