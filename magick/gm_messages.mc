@@ -2605,7 +2605,7 @@ unable to allocate type info
 MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateWand
 Language        = English
-unable to allocate wand '%s
+unable to allocate wand
 .
 
 MessageId       = +1

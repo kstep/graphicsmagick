@@ -16,10 +16,6 @@ Short Term
 * Add ColorMatrixImage(), Compare, GetImageBoundingBox() and Distortion
   wrapper functions to the Wand API.
 
-* Add ClonePixelWand() to the Wand API:
-
-  PixelWand *ClonePixelWand(const PixelWand *);
-
  * Verify that delegate-subsystem exceptions propogate properly from
    BlobToImage().
 

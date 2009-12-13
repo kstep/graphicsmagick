@@ -1,3 +1,4 @@
+/* Copyright (C) 2003-2009 GraphicsMagick Group */
 /*
  *
  * Test program for C drawing API

@@ -1563,7 +1563,7 @@ static const char *message_dat[] =
     "unable to allocate semaphore info",
     "unable to allocate string",
     "unable to allocate type info",
-    "unable to allocate wand '%s",
+    "unable to allocate wand",
     "unable to animate image sequence",
     "unable to clone blob info",
     "unable to clone cache info",

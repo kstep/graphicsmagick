@@ -1,3 +1,5 @@
+/* Copyright (C) 2003-2009 GraphicsMagick Group */
+
 /*
   ImageMagick MagickWand interface.
 */

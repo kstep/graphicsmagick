@@ -274,7 +274,7 @@
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-MagickWand *CloneMagickWand( MagickWand *wand );
+MagickWand *CloneMagickWand( const MagickWand *wand );
 </pre>
 </div>
 <div class="section" id="description">
@@ -282,12 +282,12 @@ MagickWand *CloneMagickWand( MagickWand *wand );
 <p>CloneMagickWand() makes an exact copy of the specified wand.</p>
 <p>The format of the CloneMagickWand method is:</p>
 <pre class="literal-block">
-MagickWand *CloneMagickWand( MagickWand *wand );
+MagickWand *CloneMagickWand( const MagickWand *wand );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
 <dt>wand:</dt>
-<dd>The magick wand.</dd>
+<dd>The magick wand to clone.</dd>
 </dl>
 </div>
 </div>
@@ -5990,7 +5990,7 @@ MagickWand NewMagickWand( void );
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-12-13 17:05 UTC.
+Generated on: 2009-12-13 19:22 UTC.
 
 </div>
 </body>

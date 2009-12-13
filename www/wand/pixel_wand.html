@@ -55,58 +55,106 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#destroypixelwand" id="id81">DestroyPixelWand</a></li>
-<li><a class="reference internal" href="#newpixelwand" id="id82">NewPixelWand</a></li>
-<li><a class="reference internal" href="#newpixelwands" id="id83">NewPixelWands</a></li>
-<li><a class="reference internal" href="#pixelgetexception" id="id84">PixelGetException</a></li>
-<li><a class="reference internal" href="#pixelgetblack" id="id85">PixelGetBlack</a></li>
-<li><a class="reference internal" href="#pixelgetblackquantum" id="id86">PixelGetBlackQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetblue" id="id87">PixelGetBlue</a></li>
-<li><a class="reference internal" href="#pixelgetbluequantum" id="id88">PixelGetBlueQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetcolorasstring" id="id89">PixelGetColorAsString</a></li>
-<li><a class="reference internal" href="#pixelgetcolorcount" id="id90">PixelGetColorCount</a></li>
-<li><a class="reference internal" href="#pixelgetcyan" id="id91">PixelGetCyan</a></li>
-<li><a class="reference internal" href="#pixelgetcyanquantum" id="id92">PixelGetCyanQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetgreen" id="id93">PixelGetGreen</a></li>
-<li><a class="reference internal" href="#pixelgetgreenquantum" id="id94">PixelGetGreenQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetmagenta" id="id95">PixelGetMagenta</a></li>
-<li><a class="reference internal" href="#pixelgetmagentaquantum" id="id96">PixelGetMagentaQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetopacity" id="id97">PixelGetOpacity</a></li>
-<li><a class="reference internal" href="#pixelgetopacityquantum" id="id98">PixelGetOpacityQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetred" id="id99">PixelGetRed</a></li>
-<li><a class="reference internal" href="#pixelgetredquantum" id="id100">PixelGetRedQuantum</a></li>
-<li><a class="reference internal" href="#pixelgetyellow" id="id101">PixelGetYellow</a></li>
-<li><a class="reference internal" href="#pixelgetyellowquantum" id="id102">PixelGetYellowQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetblack" id="id103">PixelSetBlack</a></li>
-<li><a class="reference internal" href="#pixelsetblackquantum" id="id104">PixelSetBlackQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetblue" id="id105">PixelSetBlue</a></li>
-<li><a class="reference internal" href="#pixelsetbluequantum" id="id106">PixelSetBlueQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetcolor" id="id107">PixelSetColor</a></li>
-<li><a class="reference internal" href="#pixelsetcolorcount" id="id108">PixelSetColorCount</a></li>
-<li><a class="reference internal" href="#pixelsetcyan" id="id109">PixelSetCyan</a></li>
-<li><a class="reference internal" href="#pixelsetcyanquantum" id="id110">PixelSetCyanQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetgreen" id="id111">PixelSetGreen</a></li>
-<li><a class="reference internal" href="#pixelsetgreenquantum" id="id112">PixelSetGreenQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetmagenta" id="id113">PixelSetMagenta</a></li>
-<li><a class="reference internal" href="#pixelsetmagentaquantum" id="id114">PixelSetMagentaQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetopacity" id="id115">PixelSetOpacity</a></li>
-<li><a class="reference internal" href="#pixelsetopacityquantum" id="id116">PixelSetOpacityQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetquantumcolor" id="id117">PixelSetQuantumColor</a></li>
-<li><a class="reference internal" href="#pixelsetred" id="id118">PixelSetRed</a></li>
-<li><a class="reference internal" href="#pixelsetredquantum" id="id119">PixelSetRedQuantum</a></li>
-<li><a class="reference internal" href="#pixelsetyellow" id="id120">PixelSetYellow</a></li>
-<li><a class="reference internal" href="#pixelsetyellowquantum" id="id121">PixelSetYellowQuantum</a></li>
+<li><a class="reference internal" href="#clonepixelwand" id="id89">ClonePixelWand</a></li>
+<li><a class="reference internal" href="#clonepixelwands" id="id90">ClonePixelWands</a></li>
+<li><a class="reference internal" href="#destroypixelwand" id="id91">DestroyPixelWand</a></li>
+<li><a class="reference internal" href="#newpixelwand" id="id92">NewPixelWand</a></li>
+<li><a class="reference internal" href="#newpixelwands" id="id93">NewPixelWands</a></li>
+<li><a class="reference internal" href="#pixelgetexception" id="id94">PixelGetException</a></li>
+<li><a class="reference internal" href="#pixelgetblack" id="id95">PixelGetBlack</a></li>
+<li><a class="reference internal" href="#pixelgetblackquantum" id="id96">PixelGetBlackQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetblue" id="id97">PixelGetBlue</a></li>
+<li><a class="reference internal" href="#pixelgetbluequantum" id="id98">PixelGetBlueQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetcolorasstring" id="id99">PixelGetColorAsString</a></li>
+<li><a class="reference internal" href="#pixelgetcolorcount" id="id100">PixelGetColorCount</a></li>
+<li><a class="reference internal" href="#pixelgetcyan" id="id101">PixelGetCyan</a></li>
+<li><a class="reference internal" href="#pixelgetcyanquantum" id="id102">PixelGetCyanQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetgreen" id="id103">PixelGetGreen</a></li>
+<li><a class="reference internal" href="#pixelgetgreenquantum" id="id104">PixelGetGreenQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetmagenta" id="id105">PixelGetMagenta</a></li>
+<li><a class="reference internal" href="#pixelgetmagentaquantum" id="id106">PixelGetMagentaQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetopacity" id="id107">PixelGetOpacity</a></li>
+<li><a class="reference internal" href="#pixelgetopacityquantum" id="id108">PixelGetOpacityQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetred" id="id109">PixelGetRed</a></li>
+<li><a class="reference internal" href="#pixelgetredquantum" id="id110">PixelGetRedQuantum</a></li>
+<li><a class="reference internal" href="#pixelgetyellow" id="id111">PixelGetYellow</a></li>
+<li><a class="reference internal" href="#pixelgetyellowquantum" id="id112">PixelGetYellowQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetblack" id="id113">PixelSetBlack</a></li>
+<li><a class="reference internal" href="#pixelsetblackquantum" id="id114">PixelSetBlackQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetblue" id="id115">PixelSetBlue</a></li>
+<li><a class="reference internal" href="#pixelsetbluequantum" id="id116">PixelSetBlueQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetcolor" id="id117">PixelSetColor</a></li>
+<li><a class="reference internal" href="#pixelsetcolorcount" id="id118">PixelSetColorCount</a></li>
+<li><a class="reference internal" href="#pixelsetcyan" id="id119">PixelSetCyan</a></li>
+<li><a class="reference internal" href="#pixelsetcyanquantum" id="id120">PixelSetCyanQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetgreen" id="id121">PixelSetGreen</a></li>
+<li><a class="reference internal" href="#pixelsetgreenquantum" id="id122">PixelSetGreenQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetmagenta" id="id123">PixelSetMagenta</a></li>
+<li><a class="reference internal" href="#pixelsetmagentaquantum" id="id124">PixelSetMagentaQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetopacity" id="id125">PixelSetOpacity</a></li>
+<li><a class="reference internal" href="#pixelsetopacityquantum" id="id126">PixelSetOpacityQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetquantumcolor" id="id127">PixelSetQuantumColor</a></li>
+<li><a class="reference internal" href="#pixelsetred" id="id128">PixelSetRed</a></li>
+<li><a class="reference internal" href="#pixelsetredquantum" id="id129">PixelSetRedQuantum</a></li>
+<li><a class="reference internal" href="#pixelsetyellow" id="id130">PixelSetYellow</a></li>
+<li><a class="reference internal" href="#pixelsetyellowquantum" id="id131">PixelSetYellowQuantum</a></li>
 </ul>
 </div>
-<div class="section" id="destroypixelwand">
-<h1><a class="toc-backref" href="#id81">DestroyPixelWand</a></h1>
+<div class="section" id="clonepixelwand">
+<h1><a class="toc-backref" href="#id89">ClonePixelWand</a></h1>
 <div class="section" id="synopsis">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+PixelWand *ClonePixelWand( const PixelWand *wand );
+</pre>
+</div>
+<div class="section" id="description">
+<h2>Description</h2>
+<p>ClonePixelWand() creates an exact copy of a PixelWand. PixelWand may not be
+a null pointer.</p>
+<p>The format of the ClonePixelWand method is:</p>
+<pre class="literal-block">
+PixelWand *ClonePixelWand( const PixelWand *wand );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The pixel wand to clone.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="clonepixelwands">
+<h1><a class="toc-backref" href="#id90">ClonePixelWands</a></h1>
+<div class="section" id="id1">
+<h2>Synopsis</h2>
+<p>None</p>
+</div>
+<div class="section" id="id2">
+<h2>Description</h2>
+<p>ClonePixelWands() creates a deep-copy an array of PixelWands.</p>
+<p>The format of the ClonePixelWand( method is:</p>
+<p>PixelWand <a href="#id3"><span class="problematic" id="id4">**</span></a>ClonePixelWand(const PixelWand <a href="#id5"><span class="problematic" id="id6">*</span></a>wands,
+const unsigned long number_wands)</p>
+<div class="system-message" id="id3">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-head/www/wand/pixel_wand.apirst</tt>, line 111); <em><a href="#id4">backlink</a></em></p>
+Inline strong start-string without end-string.</div>
+<div class="system-message" id="id5">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-head/www/wand/pixel_wand.apirst</tt>, line 111); <em><a href="#id6">backlink</a></em></p>
+Inline emphasis start-string without end-string.</div>
+<p>A description of each parameter follows:</p>
+<p>o wands: The pixel wands to clone.</p>
+<p>o number_wands: The number of wands in the array</p>
+</div>
+</div>
+<div class="section" id="destroypixelwand">
+<h1><a class="toc-backref" href="#id91">DestroyPixelWand</a></h1>
+<div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int DestroyPixelWand( PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="description">
+<div class="section" id="id8">
 <h2>Description</h2>
 <p>DestroyPixelWand() deallocates resources associated with a PixelWand.</p>
 <p>The format of the DestroyPixelWand method is:</p>
@@ -121,14 +169,14 @@ unsigned int DestroyPixelWand( PixelWand *wand );
 </div>
 </div>
 <div class="section" id="newpixelwand">
-<h1><a class="toc-backref" href="#id82">NewPixelWand</a></h1>
-<div class="section" id="id1">
+<h1><a class="toc-backref" href="#id92">NewPixelWand</a></h1>
+<div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 PixelWand NewPixelWand( void );
 </pre>
 </div>
-<div class="section" id="id2">
+<div class="section" id="id10">
 <h2>Description</h2>
 <p>NewPixelWand() returns a new pixel wand.</p>
 <p>The format of the NewPixelWand method is:</p>
@@ -138,14 +186,14 @@ PixelWand NewPixelWand( void );
 </div>
 </div>
 <div class="section" id="newpixelwands">
-<h1><a class="toc-backref" href="#id83">NewPixelWands</a></h1>
-<div class="section" id="id3">
+<h1><a class="toc-backref" href="#id93">NewPixelWands</a></h1>
+<div class="section" id="id11">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 PixelWand NewPixelWands( const unsigned long number_wands );
 </pre>
 </div>
-<div class="section" id="id4">
+<div class="section" id="id12">
 <h2>Description</h2>
 <p>NewPixelWands() returns an array of pixel wands.</p>
 <p>The format of the NewPixelWand method is:</p>
@@ -160,14 +208,14 @@ PixelWand NewPixelWands( const unsigned long number_wands );
 </div>
 </div>
 <div class="section" id="pixelgetexception">
-<h1><a class="toc-backref" href="#id84">PixelGetException</a></h1>
-<div class="section" id="id5">
+<h1><a class="toc-backref" href="#id94">PixelGetException</a></h1>
+<div class="section" id="id13">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelGetException( PixelWand *wand, char ** description );
 </pre>
 </div>
-<div class="section" id="id6">
+<div class="section" id="id14">
 <h2>Description</h2>
 <p>PixelGetException() returns the severity, reason, and description of any
 error that occurs when using the pixel wand methods.</p>
@@ -185,14 +233,14 @@ unsigned int PixelGetException( PixelWand *wand, char ** description );
 </div>
 </div>
 <div class="section" id="pixelgetblack">
-<h1><a class="toc-backref" href="#id85">PixelGetBlack</a></h1>
-<div class="section" id="id7">
+<h1><a class="toc-backref" href="#id95">PixelGetBlack</a></h1>
+<div class="section" id="id15">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetBlack( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id8">
+<div class="section" id="id16">
 <h2>Description</h2>
 <p>PixelGetBlack() returns the normalized black color of the pixel wand.</p>
 <p>The format of the PixelGetBlack method is:</p>
@@ -207,14 +255,14 @@ double PixelGetBlack( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetblackquantum">
-<h1><a class="toc-backref" href="#id86">PixelGetBlackQuantum</a></h1>
-<div class="section" id="id9">
+<h1><a class="toc-backref" href="#id96">PixelGetBlackQuantum</a></h1>
+<div class="section" id="id17">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetBlackQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id10">
+<div class="section" id="id18">
 <h2>Description</h2>
 <p>PixelGetBlackQuantum() returns the black color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -230,14 +278,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetblue">
-<h1><a class="toc-backref" href="#id87">PixelGetBlue</a></h1>
-<div class="section" id="id11">
+<h1><a class="toc-backref" href="#id97">PixelGetBlue</a></h1>
+<div class="section" id="id19">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetBlue( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id12">
+<div class="section" id="id20">
 <h2>Description</h2>
 <p>PixelGetBlue(const) returns the normalized blue color of the pixel wand.</p>
 <p>The format of the PixelGetBlue method is:</p>
@@ -252,14 +300,14 @@ double PixelGetBlue( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetbluequantum">
-<h1><a class="toc-backref" href="#id88">PixelGetBlueQuantum</a></h1>
-<div class="section" id="id13">
+<h1><a class="toc-backref" href="#id98">PixelGetBlueQuantum</a></h1>
+<div class="section" id="id21">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetBlueQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id14">
+<div class="section" id="id22">
 <h2>Description</h2>
 <p>PixelGetBlueQuantum(const ) returns the blue color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -275,14 +323,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetcolorasstring">
-<h1><a class="toc-backref" href="#id89">PixelGetColorAsString</a></h1>
-<div class="section" id="id15">
+<h1><a class="toc-backref" href="#id99">PixelGetColorAsString</a></h1>
+<div class="section" id="id23">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 char *PixelGetColorAsString( PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id16">
+<div class="section" id="id24">
 <h2>Description</h2>
 <p>PixelGetColorAsString() gets the color of the pixel wand.</p>
 <p>The format of the PixelGetColorAsString method is:</p>
@@ -297,14 +345,14 @@ char *PixelGetColorAsString( PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetcolorcount">
-<h1><a class="toc-backref" href="#id90">PixelGetColorCount</a></h1>
-<div class="section" id="id17">
+<h1><a class="toc-backref" href="#id100">PixelGetColorCount</a></h1>
+<div class="section" id="id25">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned long PixelGetColorCount( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id18">
+<div class="section" id="id26">
 <h2>Description</h2>
 <p>PixelGetColorCount() returns the color count associated with this color.</p>
 <p>The format of the PixelGetColorCount method is:</p>
@@ -319,14 +367,14 @@ unsigned long PixelGetColorCount( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetcyan">
-<h1><a class="toc-backref" href="#id91">PixelGetCyan</a></h1>
-<div class="section" id="id19">
+<h1><a class="toc-backref" href="#id101">PixelGetCyan</a></h1>
+<div class="section" id="id27">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetCyan( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id20">
+<div class="section" id="id28">
 <h2>Description</h2>
 <p>PixelGetCyan() returns the normalized cyan color of the pixel wand.</p>
 <p>The format of the PixelGetCyan method is:</p>
@@ -341,14 +389,14 @@ double PixelGetCyan( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetcyanquantum">
-<h1><a class="toc-backref" href="#id92">PixelGetCyanQuantum</a></h1>
-<div class="section" id="id21">
+<h1><a class="toc-backref" href="#id102">PixelGetCyanQuantum</a></h1>
+<div class="section" id="id29">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetCyanQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id22">
+<div class="section" id="id30">
 <h2>Description</h2>
 <p>PixelGetCyanQuantum() returns the cyan color of the pixel wand.  The color
 is in the range of [0..MaxRGB]</p>
@@ -364,14 +412,14 @@ is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetgreen">
-<h1><a class="toc-backref" href="#id93">PixelGetGreen</a></h1>
-<div class="section" id="id23">
+<h1><a class="toc-backref" href="#id103">PixelGetGreen</a></h1>
+<div class="section" id="id31">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetGreen( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id24">
+<div class="section" id="id32">
 <h2>Description</h2>
 <p>PixelGetGreen(const ) returns the normalized green color of the pixel wand.</p>
 <p>The format of the PixelGetGreen method is:</p>
@@ -386,14 +434,14 @@ double PixelGetGreen( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetgreenquantum">
-<h1><a class="toc-backref" href="#id94">PixelGetGreenQuantum</a></h1>
-<div class="section" id="id25">
+<h1><a class="toc-backref" href="#id104">PixelGetGreenQuantum</a></h1>
+<div class="section" id="id33">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetGreenQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id26">
+<div class="section" id="id34">
 <h2>Description</h2>
 <p>PixelGetGreenQuantum(const ) returns the green color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -409,14 +457,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetmagenta">
-<h1><a class="toc-backref" href="#id95">PixelGetMagenta</a></h1>
-<div class="section" id="id27">
+<h1><a class="toc-backref" href="#id105">PixelGetMagenta</a></h1>
+<div class="section" id="id35">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetMagenta( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id28">
+<div class="section" id="id36">
 <h2>Description</h2>
 <p>PixelGetMagenta() returns the normalized magenta color of the pixel wand.</p>
 <p>The format of the PixelGetMagenta method is:</p>
@@ -431,14 +479,14 @@ double PixelGetMagenta( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetmagentaquantum">
-<h1><a class="toc-backref" href="#id96">PixelGetMagentaQuantum</a></h1>
-<div class="section" id="id29">
+<h1><a class="toc-backref" href="#id106">PixelGetMagentaQuantum</a></h1>
+<div class="section" id="id37">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetMagentaQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id30">
+<div class="section" id="id38">
 <h2>Description</h2>
 <p>PixelGetMagentaQuantum() returns the magenta color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -454,14 +502,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetopacity">
-<h1><a class="toc-backref" href="#id97">PixelGetOpacity</a></h1>
-<div class="section" id="id31">
+<h1><a class="toc-backref" href="#id107">PixelGetOpacity</a></h1>
+<div class="section" id="id39">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetOpacity( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id32">
+<div class="section" id="id40">
 <h2>Description</h2>
 <p>PixelGetOpacity(const ) returns the normalized opacity color of the pixel
 wand.</p>
@@ -477,14 +525,14 @@ double PixelGetOpacity( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetopacityquantum">
-<h1><a class="toc-backref" href="#id98">PixelGetOpacityQuantum</a></h1>
-<div class="section" id="id33">
+<h1><a class="toc-backref" href="#id108">PixelGetOpacityQuantum</a></h1>
+<div class="section" id="id41">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetOpacityQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id34">
+<div class="section" id="id42">
 <h2>Description</h2>
 <p>PixelGetOpacityQuantum(const ) returns the opacity color of the pixel wand.
 The color is in the range of [0..MaxRGB]</p>
@@ -500,14 +548,14 @@ The color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetred">
-<h1><a class="toc-backref" href="#id99">PixelGetRed</a></h1>
-<div class="section" id="id35">
+<h1><a class="toc-backref" href="#id109">PixelGetRed</a></h1>
+<div class="section" id="id43">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetRed( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id36">
+<div class="section" id="id44">
 <h2>Description</h2>
 <p>PixelGetRed(const ) returns the normalized red color of the pixel wand.</p>
 <p>The format of the PixelGetRed method is:</p>
@@ -522,14 +570,14 @@ double PixelGetRed( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetredquantum">
-<h1><a class="toc-backref" href="#id100">PixelGetRedQuantum</a></h1>
-<div class="section" id="id37">
+<h1><a class="toc-backref" href="#id110">PixelGetRedQuantum</a></h1>
+<div class="section" id="id45">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetRedQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id38">
+<div class="section" id="id46">
 <h2>Description</h2>
 <p>PixelGetRedQuantum(const ) returns the red color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -545,14 +593,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelgetyellow">
-<h1><a class="toc-backref" href="#id101">PixelGetYellow</a></h1>
-<div class="section" id="id39">
+<h1><a class="toc-backref" href="#id111">PixelGetYellow</a></h1>
+<div class="section" id="id47">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 double PixelGetYellow( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id40">
+<div class="section" id="id48">
 <h2>Description</h2>
 <p>PixelGetYellow() returns the normalized yellow color of the pixel wand.</p>
 <p>The format of the PixelGetYellow method is:</p>
@@ -567,14 +615,14 @@ double PixelGetYellow( const PixelWand *wand );
 </div>
 </div>
 <div class="section" id="pixelgetyellowquantum">
-<h1><a class="toc-backref" href="#id102">PixelGetYellowQuantum</a></h1>
-<div class="section" id="id41">
+<h1><a class="toc-backref" href="#id112">PixelGetYellowQuantum</a></h1>
+<div class="section" id="id49">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#quantum">Quantum</a> PixelGetYellowQuantum( const PixelWand *wand );
 </pre>
 </div>
-<div class="section" id="id42">
+<div class="section" id="id50">
 <h2>Description</h2>
 <p>PixelGetYellowQuantum() returns the yellow color of the pixel wand.  The
 color is in the range of [0..MaxRGB]</p>
@@ -590,14 +638,14 @@ color is in the range of [0..MaxRGB]</p>
 </div>
 </div>
 <div class="section" id="pixelsetblack">
-<h1><a class="toc-backref" href="#id103">PixelSetBlack</a></h1>
-<div class="section" id="id43">
+<h1><a class="toc-backref" href="#id113">PixelSetBlack</a></h1>
+<div class="section" id="id51">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetBlack( PixelWand *wand, const double black );
 </pre>
 </div>
-<div class="section" id="id44">
+<div class="section" id="id52">
 <h2>Description</h2>
 <p>PixelSetBlack() sets the normalized black color of the pixel wand.</p>
 <p>The format of the PixelSetBlack method is:</p>
@@ -614,14 +662,14 @@ unsigned int PixelSetBlack( PixelWand *wand, const double black );
 </div>
 </div>
 <div class="section" id="pixelsetblackquantum">
-<h1><a class="toc-backref" href="#id104">PixelSetBlackQuantum</a></h1>
-<div class="section" id="id45">
+<h1><a class="toc-backref" href="#id114">PixelSetBlackQuantum</a></h1>
+<div class="section" id="id53">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetBlackQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> black );
 </pre>
 </div>
-<div class="section" id="id46">
+<div class="section" id="id54">
 <h2>Description</h2>
 <p>PixelSetBlackQuantum() sets the black color of the pixel wand.  The color
 must be in the range of [0..MaxRGB]</p>
@@ -638,14 +686,14 @@ unsigned int PixelSetBlackQuantum( PixelWand *wand, const <a class="reference ex
 </div>
 </div>
 <div class="section" id="pixelsetblue">
-<h1><a class="toc-backref" href="#id105">PixelSetBlue</a></h1>
-<div class="section" id="id47">
+<h1><a class="toc-backref" href="#id115">PixelSetBlue</a></h1>
+<div class="section" id="id55">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetBlue( PixelWand *wand, const double blue );
 </pre>
 </div>
-<div class="section" id="id48">
+<div class="section" id="id56">
 <h2>Description</h2>
 <p>PixelSetBlue() sets the normalized blue color of the pixel wand.</p>
 <p>The format of the PixelSetBlue method is:</p>
@@ -662,14 +710,14 @@ unsigned int PixelSetBlue( PixelWand *wand, const double blue );
 </div>
 </div>
 <div class="section" id="pixelsetbluequantum">
-<h1><a class="toc-backref" href="#id106">PixelSetBlueQuantum</a></h1>
-<div class="section" id="id49">
+<h1><a class="toc-backref" href="#id116">PixelSetBlueQuantum</a></h1>
+<div class="section" id="id57">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetBlueQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> blue );
 </pre>
 </div>
-<div class="section" id="id50">
+<div class="section" id="id58">
 <h2>Description</h2>
 <p>PixelSetBlueQuantum() sets the blue color of the pixel wand.  The color must
 be in the range of [0..MaxRGB]</p>
@@ -687,14 +735,14 @@ unsigned int PixelSetBlueQuantum( PixelWand *wand, const <a class="reference ext
 </div>
 </div>
 <div class="section" id="pixelsetcolor">
-<h1><a class="toc-backref" href="#id107">PixelSetColor</a></h1>
-<div class="section" id="id51">
+<h1><a class="toc-backref" href="#id117">PixelSetColor</a></h1>
+<div class="section" id="id59">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetColor( PixelWand *wand, const char *color );
 </pre>
 </div>
-<div class="section" id="id52">
+<div class="section" id="id60">
 <h2>Description</h2>
 <p>PixelSetColor() sets the color of the pixel wand with a string (e.g.
 &quot;blue&quot;, &quot;#0000ff&quot;, &quot;rgb(0,0,255)&quot;, etc.).</p>
@@ -712,14 +760,14 @@ unsigned int PixelSetColor( PixelWand *wand, const char *color );
 </div>
 </div>
 <div class="section" id="pixelsetcolorcount">
-<h1><a class="toc-backref" href="#id108">PixelSetColorCount</a></h1>
-<div class="section" id="id53">
+<h1><a class="toc-backref" href="#id118">PixelSetColorCount</a></h1>
+<div class="section" id="id61">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetColorCount( PixelWand *wand, const unsigned long count );
 </pre>
 </div>
-<div class="section" id="id54">
+<div class="section" id="id62">
 <h2>Description</h2>
 <p>PixelSetColorCount() sets the color count of the pixel wand.</p>
 <p>The format of the PixelSetColorCount method is:</p>
@@ -735,14 +783,14 @@ unsigned int PixelSetColorCount( PixelWand *wand, const unsigned long count );
 </div>
 </div>
 <div class="section" id="pixelsetcyan">
-<h1><a class="toc-backref" href="#id109">PixelSetCyan</a></h1>
-<div class="section" id="id55">
+<h1><a class="toc-backref" href="#id119">PixelSetCyan</a></h1>
+<div class="section" id="id63">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetCyan( PixelWand *wand, const double cyan );
 </pre>
 </div>
-<div class="section" id="id56">
+<div class="section" id="id64">
 <h2>Description</h2>
 <p>PixelSetCyan() sets the normalized cyan color of the pixel wand.</p>
 <p>The format of the PixelSetCyan method is:</p>
@@ -759,14 +807,14 @@ unsigned int PixelSetCyan( PixelWand *wand, const double cyan );
 </div>
 </div>
 <div class="section" id="pixelsetcyanquantum">
-<h1><a class="toc-backref" href="#id110">PixelSetCyanQuantum</a></h1>
-<div class="section" id="id57">
+<h1><a class="toc-backref" href="#id120">PixelSetCyanQuantum</a></h1>
+<div class="section" id="id65">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetCyanQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> cyan );
 </pre>
 </div>
-<div class="section" id="id58">
+<div class="section" id="id66">
 <h2>Description</h2>
 <p>PixelSetCyanQuantum() sets the cyan color of the pixel wand.  The color must
 be in the range of [0..MaxRGB]</p>
@@ -784,14 +832,14 @@ unsigned int PixelSetCyanQuantum( PixelWand *wand, const <a class="reference ext
 </div>
 </div>
 <div class="section" id="pixelsetgreen">
-<h1><a class="toc-backref" href="#id111">PixelSetGreen</a></h1>
-<div class="section" id="id59">
+<h1><a class="toc-backref" href="#id121">PixelSetGreen</a></h1>
+<div class="section" id="id67">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetGreen( PixelWand *wand, const double green );
 </pre>
 </div>
-<div class="section" id="id60">
+<div class="section" id="id68">
 <h2>Description</h2>
 <p>PixelSetGreen() sets the normalized green color of the pixel wand.</p>
 <p>The format of the PixelSetGreen method is:</p>
@@ -808,14 +856,14 @@ unsigned int PixelSetGreen( PixelWand *wand, const double green );
 </div>
 </div>
 <div class="section" id="pixelsetgreenquantum">
-<h1><a class="toc-backref" href="#id112">PixelSetGreenQuantum</a></h1>
-<div class="section" id="id61">
+<h1><a class="toc-backref" href="#id122">PixelSetGreenQuantum</a></h1>
+<div class="section" id="id69">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetGreenQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> green );
 </pre>
 </div>
-<div class="section" id="id62">
+<div class="section" id="id70">
 <h2>Description</h2>
 <p>PixelSetGreenQuantum() sets the green color of the pixel wand.  The color must
 be in the range of [0..MaxRGB]</p>
@@ -833,14 +881,14 @@ unsigned int PixelSetGreenQuantum( PixelWand *wand, const <a class="reference ex
 </div>
 </div>
 <div class="section" id="pixelsetmagenta">
-<h1><a class="toc-backref" href="#id113">PixelSetMagenta</a></h1>
-<div class="section" id="id63">
+<h1><a class="toc-backref" href="#id123">PixelSetMagenta</a></h1>
+<div class="section" id="id71">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetMagenta( PixelWand *wand, const double magenta );
 </pre>
 </div>
-<div class="section" id="id64">
+<div class="section" id="id72">
 <h2>Description</h2>
 <p>PixelSetMagenta() sets the normalized magenta color of the pixel wand.</p>
 <p>The format of the PixelSetMagenta method is:</p>
@@ -857,14 +905,14 @@ unsigned int PixelSetMagenta( PixelWand *wand, const double magenta );
 </div>
 </div>
 <div class="section" id="pixelsetmagentaquantum">
-<h1><a class="toc-backref" href="#id114">PixelSetMagentaQuantum</a></h1>
-<div class="section" id="id65">
+<h1><a class="toc-backref" href="#id124">PixelSetMagentaQuantum</a></h1>
+<div class="section" id="id73">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetMagentaQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> magenta );
 </pre>
 </div>
-<div class="section" id="id66">
+<div class="section" id="id74">
 <h2>Description</h2>
 <p>PixelSetMagentaQuantum() sets the magenta color of the pixel wand.  The
 color must be in the range of [0..MaxRGB]</p>
@@ -881,14 +929,14 @@ unsigned int PixelSetMagentaQuantum( PixelWand *wand, const <a class="reference 
 </div>
 </div>
 <div class="section" id="pixelsetopacity">
-<h1><a class="toc-backref" href="#id115">PixelSetOpacity</a></h1>
-<div class="section" id="id67">
+<h1><a class="toc-backref" href="#id125">PixelSetOpacity</a></h1>
+<div class="section" id="id75">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetOpacity( PixelWand *wand, const double opacity );
 </pre>
 </div>
-<div class="section" id="id68">
+<div class="section" id="id76">
 <h2>Description</h2>
 <p>PixelSetOpacity() sets the normalized opacity color of the pixel wand.</p>
 <p>The format of the PixelSetOpacity method is:</p>
@@ -905,14 +953,14 @@ unsigned int PixelSetOpacity( PixelWand *wand, const double opacity );
 </div>
 </div>
 <div class="section" id="pixelsetopacityquantum">
-<h1><a class="toc-backref" href="#id116">PixelSetOpacityQuantum</a></h1>
-<div class="section" id="id69">
+<h1><a class="toc-backref" href="#id126">PixelSetOpacityQuantum</a></h1>
+<div class="section" id="id77">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetOpacityQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> opacity );
 </pre>
 </div>
-<div class="section" id="id70">
+<div class="section" id="id78">
 <h2>Description</h2>
 <p>PixelSetOpacityQuantum() sets the opacity color of the pixel wand.  The
 color must be in the range of [0..MaxRGB]</p>
@@ -929,14 +977,14 @@ unsigned int PixelSetOpacityQuantum( PixelWand *wand, const <a class="reference 
 </div>
 </div>
 <div class="section" id="pixelsetquantumcolor">
-<h1><a class="toc-backref" href="#id117">PixelSetQuantumColor</a></h1>
-<div class="section" id="id71">
+<h1><a class="toc-backref" href="#id127">PixelSetQuantumColor</a></h1>
+<div class="section" id="id79">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 PixelSetQuantumColor( PixelWand *wand, <a class="reference external" href="../api/types.html#pixelpacket">PixelPacket</a> *color );
 </pre>
 </div>
-<div class="section" id="id72">
+<div class="section" id="id80">
 <h2>Description</h2>
 <p>PixelSetQuantumColor() sets the color of the pixel wand.</p>
 <p>The format of the PixelSetQuantumColor method is:</p>
@@ -953,14 +1001,14 @@ PixelSetQuantumColor( PixelWand *wand, <a class="reference external" href="../ap
 </div>
 </div>
 <div class="section" id="pixelsetred">
-<h1><a class="toc-backref" href="#id118">PixelSetRed</a></h1>
-<div class="section" id="id73">
+<h1><a class="toc-backref" href="#id128">PixelSetRed</a></h1>
+<div class="section" id="id81">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetRed( PixelWand *wand, const double red );
 </pre>
 </div>
-<div class="section" id="id74">
+<div class="section" id="id82">
 <h2>Description</h2>
 <p>PixelSetRed() sets the normalized red color of the pixel wand.</p>
 <p>The format of the PixelSetRed method is:</p>
@@ -977,14 +1025,14 @@ unsigned int PixelSetRed( PixelWand *wand, const double red );
 </div>
 </div>
 <div class="section" id="pixelsetredquantum">
-<h1><a class="toc-backref" href="#id119">PixelSetRedQuantum</a></h1>
-<div class="section" id="id75">
+<h1><a class="toc-backref" href="#id129">PixelSetRedQuantum</a></h1>
+<div class="section" id="id83">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetRedQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> red );
 </pre>
 </div>
-<div class="section" id="id76">
+<div class="section" id="id84">
 <h2>Description</h2>
 <p>PixelSetRedQuantum() sets the red color of the pixel wand.  The color must
 be in the range of [0..MaxRGB]</p>
@@ -1002,14 +1050,14 @@ unsigned int PixelSetRedQuantum( PixelWand *wand, const <a class="reference exte
 </div>
 </div>
 <div class="section" id="pixelsetyellow">
-<h1><a class="toc-backref" href="#id120">PixelSetYellow</a></h1>
-<div class="section" id="id77">
+<h1><a class="toc-backref" href="#id130">PixelSetYellow</a></h1>
+<div class="section" id="id85">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetYellow( PixelWand *wand, const double yellow );
 </pre>
 </div>
-<div class="section" id="id78">
+<div class="section" id="id86">
 <h2>Description</h2>
 <p>PixelSetYellow() sets the normalized yellow color of the pixel wand.</p>
 <p>The format of the PixelSetYellow method is:</p>
@@ -1026,14 +1074,14 @@ unsigned int PixelSetYellow( PixelWand *wand, const double yellow );
 </div>
 </div>
 <div class="section" id="pixelsetyellowquantum">
-<h1><a class="toc-backref" href="#id121">PixelSetYellowQuantum</a></h1>
-<div class="section" id="id79">
+<h1><a class="toc-backref" href="#id131">PixelSetYellowQuantum</a></h1>
+<div class="section" id="id87">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int PixelSetYellowQuantum( PixelWand *wand, const <a class="reference external" href="../api/types.html#quantum">Quantum</a> yellow );
 </pre>
 </div>
-<div class="section" id="id80">
+<div class="section" id="id88">
 <h2>Description</h2>
 <p>PixelSetYellowQuantum() sets the yellow color of the pixel wand.  The color
 must be in the range of [0..MaxRGB]</p>
@@ -1053,7 +1101,7 @@ unsigned int PixelSetYellowQuantum( PixelWand *wand, const <a class="reference e
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-16 02:30 UTC.
+Generated on: 2009-12-13 19:22 UTC.
 
 </div>
 </body>

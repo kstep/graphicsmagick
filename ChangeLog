@@ -1,5 +1,10 @@
 2009-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/pixel_wand.c (ClonePixelWand): New method to deep-copy an
+	existing pixel wand.
+	(ClonePixelWands): New method to deep-copy and array of existing
+	pixel wands.
+
 	* wand/magick_wand.c (MagickSetResolution): New method to set the
 	wand resolution.  This one also works before the image has been
 	read (unlike MagickSetImageResolution()).

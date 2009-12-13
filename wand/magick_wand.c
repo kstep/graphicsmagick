@@ -1,3 +1,4 @@
+/* Copyright (C) 2003-2009 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -150,11 +151,11 @@ static unsigned long
 %
 %  The format of the CloneMagickWand method is:
 %
-%      MagickWand *CloneMagickWand(MagickWand *wand)
+%      MagickWand *CloneMagickWand(const MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o wand: The magick wand.
+%    o wand: The magick wand to clone.
 %
 */
 WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
@@ -217,8 +218,8 @@ static MagickWand *CloneMagickWandWithImages(const MagickWand *wand,
   assert(wand->signature == MagickSignature);
   clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (clone_wand == (MagickWand *) NULL)
-    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
-      images->filename);
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
   (void) memset(clone_wand,0,sizeof(MagickWand));
   (void) FormatMagickString(clone_wand->id,MaxTextExtent,"MagickWand-%lu",
     GetMagickWandId());
@@ -9768,8 +9769,8 @@ WandExport MagickWand *NewMagickWand(void)
 
   wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (wand == (MagickWand *) NULL)
-    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
-      strerror(errno));
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
   (void) memset(wand,0,sizeof(MagickWand));
   (void) FormatMagickString(wand->id,MaxTextExtent,"MagickWand-%lu",
     GetMagickWandId());

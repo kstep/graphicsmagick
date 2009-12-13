@@ -1412,7 +1412,7 @@
           unable to allocate registry info
         </Message>
         <Message name="UnableToAllocateWand">
-          unable to allocate wand '%s'
+          unable to allocate wand
         </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed

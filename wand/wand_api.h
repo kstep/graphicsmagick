@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003-2009 GraphicsMagick Group
 
   GraphicsMagick Wand API Methods
 */
