@@ -3401,7 +3401,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     Compute desired/necessary number of bits per sample.
   */
   if ((definition_value=AccessDefinition(image_info,"dpx","bits-per-sample")))
-    bits_per_sample=atoi(definition_value);
+    bits_per_sample=MagickAtoI(definition_value);
 
   if (bits_per_sample == 0)
     {

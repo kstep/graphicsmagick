@@ -13,15 +13,25 @@ Short Term
 
 * Fix browser interoperability issues reported for PNG8.
 
-* Add ColorMatrixImage(), Compare, and Distortion wrapper functions to
+* Add MagickHaldClutImage() to Wand API
+  MagickHaldClutImage(MagickWand *wand,const MagickWand *hald_clut_wand)
+
+* Add MagickCdlImage(Image *image,const char *cdl) to Wand API.
+
+* AddCompare, and Distortion wrapper functions to
   the Wand API.
 
 * Verify that delegate-subsystem exceptions propogate properly from
  BlobToImage().
 
-* atof(), atoi(), ctime(), localtime(), qsort(), rand(), readdir(),
-  and strerror(), all have reentrant forms and are not thread safe
-  under FreeBSD.
+* ctime(), localtime(), and strerror(), all have reentrant
+  forms and are (perhaps) not thread safe under FreeBSD.
+
+    ctime()     -> ctime_r(const time_t *clock, char *buf, int buflen)
+    localtime() -> struct tm *localtime_r(const time_t *clock,  struct tm *res);
+    strerror()  -> strerror_r(int errnum, char *strerrbuf, size_t  buflen)
+
+  The ctime() function is equivalent to asctime(localtime(clock)).
 
 Longer Term
 ============

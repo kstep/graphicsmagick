@@ -3053,7 +3053,7 @@ static MagickPassFail funcDCM_NumberOfFrames(Image *image,DicomStream *dcm,Excep
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
 
-  dcm->number_scenes=atoi((char *) dcm->data);
+  dcm->number_scenes=MagickAtoI((char *) dcm->data);
   return MagickPass;
 }
 
@@ -3132,7 +3132,7 @@ static MagickPassFail funcDCM_WindowCenter(Image *image,DicomStream *dcm,Excepti
     p++;
   else
     p=(char *) dcm->data;
-  dcm->window_center=atof(p);
+  dcm->window_center=MagickAtoF(p);
   return MagickPass;
 }
 
@@ -3149,7 +3149,7 @@ static MagickPassFail funcDCM_WindowWidth(Image *image,DicomStream *dcm,Exceptio
     p++;
   else
     p=(char *) dcm->data;
-  dcm->window_width=atof(p);
+  dcm->window_width=MagickAtoF(p);
   return MagickPass;
 }
 
@@ -3166,7 +3166,7 @@ static MagickPassFail funcDCM_RescaleIntercept(Image *image,DicomStream *dcm,Exc
     p++;
   else
     p=(char *) dcm->data;
-  dcm->rescale_intercept=atof(p);
+  dcm->rescale_intercept=MagickAtoF(p);
   return MagickPass;
 }
 
@@ -3183,7 +3183,7 @@ static MagickPassFail funcDCM_RescaleSlope(Image *image,DicomStream *dcm,Excepti
     p++;
   else
     p=(char *) dcm->data;
-  dcm->rescale_slope=atof(p);
+  dcm->rescale_slope=MagickAtoF(p);
   return MagickPass;
 }
 

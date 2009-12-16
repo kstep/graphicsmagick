@@ -930,7 +930,7 @@ Generate8BIMAttribute(Image *image,const char *key)
     *name='\0';
   sub_number=1;
   if (*name == '#')
-    sub_number=atol(&name[1]);
+    sub_number=MagickAtoL(&name[1]);
   sub_number=Max(sub_number,1);
   resource=(char *) NULL;
 

@@ -347,10 +347,10 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) MagickAtoI(newstr);
                 break;
               case 1:
-                recnum = atoi(newstr);
+                recnum = MagickAtoI(newstr);
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
@@ -612,10 +612,10 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) MagickAtoI(newstr);
                 break;
               case 1:
-                recnum = atoi(newstr);
+                recnum = MagickAtoI(newstr);
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);

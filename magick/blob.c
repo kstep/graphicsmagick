@@ -978,6 +978,7 @@ MagickExport void CloseBlob(Image *image)
 MagickExport void DestroyBlob(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->blob != (BlobInfo *) NULL)
     {
       MagickBool

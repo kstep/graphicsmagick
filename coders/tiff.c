@@ -3885,7 +3885,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (value)
           {
             old_value=bits_per_sample;
-            bits_per_sample=atoi(value);
+            bits_per_sample=MagickAtoI(value);
             if (sample_format == SAMPLEFORMAT_IEEEFP)
               {
                 /*
@@ -3919,7 +3919,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (value)
           {
             old_value=samples_per_pixel;
-            samples_per_pixel=atoi(value);
+            samples_per_pixel=MagickAtoI(value);
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "User override (samples-per-pixel): %u "
@@ -4128,7 +4128,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             value;
 	
 	if ((value=AccessDefinition(image_info,"tiff","predictor")))
-	  predictor=(unsigned short) atoi(value);
+	  predictor=(unsigned short) MagickAtoI(value);
       }
 
       if (predictor != 0)
@@ -4154,7 +4154,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 old_value;
               
               old_value=rows_per_strip;
-              rows_per_strip=atoi(value);
+              rows_per_strip=MagickAtoI(value);
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "User override (rows_per_strip): %u rows"
@@ -4640,11 +4640,11 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 }
               if ((value=AccessDefinition(image_info,"tiff","tile-width")))
                 {
-                  tile_columns=atol(value);
+                  tile_columns=MagickAtoL(value);
                 }
               if ((value=AccessDefinition(image_info,"tiff","tile-height")))
                 {
-                  tile_rows=atol(value);
+                  tile_rows=MagickAtoL(value);
                 }
               
               TIFFDefaultTileSize(tiff,&tile_columns,&tile_rows);

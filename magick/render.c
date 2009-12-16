@@ -1721,27 +1721,27 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("affine",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.sx=atof(token);
+            affine.sx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.rx=atof(token);
+            affine.rx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ry=atof(token);
+            affine.ry=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.sy=atof(token);
+            affine.sy=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.tx=atof(token);
+            affine.tx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ty=atof(token);
+            affine.ty=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -1915,7 +1915,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=(Quantum)
-                ((double) MaxRGB*(1.0-factor*atof(token)));
+                ((double) MaxRGB*(1.0-factor*MagickAtoF(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -1935,7 +1935,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->pointsize=atof(token);
+            graphic_context[n]->pointsize=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
@@ -1979,7 +1979,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("font-weight",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->weight=atol(token);
+            graphic_context[n]->weight=MagickAtoL(token);
             if (LocaleCompare(token,"all") == 0)
               graphic_context[n]->weight=0;
             if (LocaleCompare(token,"bold") == 0)
@@ -2109,7 +2109,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             GetToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->opacity=(Quantum) ((double) MaxRGB*(1.0-((1.0-
-              graphic_context[n]->opacity/MaxRGB)*factor*atof(token)))+0.5);
+              graphic_context[n]->opacity/MaxRGB)*factor*MagickAtoF(token)))+0.5);
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -2213,29 +2213,29 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 (void) strlcpy(type,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                segment.x1=atof(token);
-/*                 element.cx=atof(token); */
+                segment.x1=MagickAtoF(token);
+/*                 element.cx=MagickAtoF(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                segment.y1=atof(token);
-/*                 element.cy=atof(token); */
+                segment.y1=MagickAtoF(token);
+/*                 element.cy=MagickAtoF(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                segment.x2=atof(token);
-/*                 element.major=atof(token); */
+                segment.x2=MagickAtoF(token);
+/*                 element.major=MagickAtoF(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                segment.y2=atof(token);
-/*                 element.minor=atof(token); */
+                segment.y2=MagickAtoF(token);
+/*                 element.minor=MagickAtoF(token); */
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetToken(q,&q,token);
                     if (*token == ',')
                       GetToken(q,&q,token);
-/*                     element.angle=atof(token); */
+/*                     element.angle=MagickAtoF(token); */
                   }
                 for (p=q; *q != '\0'; )
                 {
@@ -2280,19 +2280,19 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                bounds.x=(long) ceil(atof(token)-0.5);
+                bounds.x=(long) ceil(MagickAtoF(token)-0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.y=(long) ceil(atof(token)-0.5);
+                bounds.y=(long) ceil(MagickAtoF(token)-0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.width=(unsigned long) floor(atof(token)+0.5);
+                bounds.width=(unsigned long) floor(MagickAtoF(token)+0.5);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                bounds.height=(unsigned long) floor(atof(token)+0.5);
+                bounds.height=(unsigned long) floor(MagickAtoF(token)+0.5);
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);
@@ -2348,7 +2348,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("rotate",keyword) == 0)
           {
             GetToken(q,&q,token);
-            angle=atof(token);
+            angle=MagickAtoF(token);
             affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
             affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
             affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -2369,24 +2369,24 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("scale",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.sx=atof(token);
+            affine.sx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.sy=atof(token);
+            affine.sy=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
             GetToken(q,&q,token);
-            angle=atof(token);
+            angle=MagickAtoF(token);
             affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
             GetToken(q,&q,token);
-            angle=atof(token);
+            angle=MagickAtoF(token);
             affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
@@ -2419,7 +2419,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->stroke_antialias=atoi(token);
+            graphic_context[n]->stroke_antialias=MagickAtoI(token);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
@@ -2454,7 +2454,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   GetToken(q,&q,token);
                   if (*token == ',')
                     GetToken(q,&q,token);
-                  graphic_context[n]->dash_pattern[j]=atof(token);
+                  graphic_context[n]->dash_pattern[j]=MagickAtoF(token);
                 }
                 if (x & 0x01)
                   for ( ; j < (2*x); j++)
@@ -2469,7 +2469,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->dash_offset=atof(token);
+            graphic_context[n]->dash_offset=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
@@ -2517,7 +2517,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->miterlimit=atol(token);
+            graphic_context[n]->miterlimit=MagickAtoL(token);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
@@ -2526,13 +2526,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=(Quantum)
-                ((double) MaxRGB*(1.0-factor*atof(token)));
+                ((double) MaxRGB*(1.0-factor*MagickAtoF(token)));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->stroke_width=atof(token);
+            graphic_context[n]->stroke_width=MagickAtoF(token);
             break;
           }
         status=False;
@@ -2571,7 +2571,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->text_antialias=atoi(token);
+            graphic_context[n]->text_antialias=MagickAtoI(token);
             break;
           }
         if (LocaleCompare("text-undercolor",keyword) == 0)
@@ -2584,11 +2584,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("translate",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.tx=atof(token);
+            affine.tx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ty=atof(token);
+            affine.ty=MagickAtoF(token);
             break;
           }
         status=False;
@@ -2653,11 +2653,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (!IsPoint(q))
         break;
       GetToken(q,&q,token);
-      point.x=atof(token);
+      point.x=MagickAtoF(token);
       GetToken(q,&q,token);
       if (*token == ',')
         GetToken(q,&q,token);
-      point.y=atof(token);
+      point.y=MagickAtoF(token);
       GetToken(q,(char **) NULL,token);
       if (*token == ',')
         GetToken(q,&q,token);
@@ -4643,31 +4643,31 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        arc.x=atof(token);
+        arc.x=MagickAtoF(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        arc.y=atof(token);
+        arc.y=MagickAtoF(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        angle=atof(token);
+        angle=MagickAtoF(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        large_arc=atoi(token);
+        large_arc=MagickAtoI(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        sweep=atoi(token);
+        sweep=MagickAtoI(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        x=atof(token);
+        x=MagickAtoF(token);
         GetToken(p,&p,token);
         if (*token == ',')
           GetToken(p,&p,token);
-        y=atof(token);
+        y=MagickAtoF(token);
         end.x=attribute == 'A' ? x : point.x+x;
         end.y=attribute == 'A' ? y : point.y+y;
         TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
@@ -4689,11 +4689,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            x=atof(token);
+            x=MagickAtoF(token);
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            y=atof(token);
+            y=MagickAtoF(token);
             end.x=attribute == 'C' ? x : point.x+x;
             end.y=attribute == 'C' ? y : point.y+y;
             points[i]=end;
@@ -4714,7 +4714,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          x=atof(token);
+          x=MagickAtoF(token);
           point.x=attribute == 'H' ? x: point.x+x;
           TracePoint(q,point);
           q+=q->coordinates;
@@ -4729,11 +4729,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          x=atof(token);
+          x=MagickAtoF(token);
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          y=atof(token);
+          y=MagickAtoF(token);
           point.x=attribute == 'L' ? x : point.x+x;
           point.y=attribute == 'L' ? y : point.y+y;
           TracePoint(q,point);
@@ -4755,11 +4755,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          x=atof(token);
+          x=MagickAtoF(token);
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          y=atof(token);
+          y=MagickAtoF(token);
           point.x=attribute == 'M' ? x : point.x+x;
           point.y=attribute == 'M' ? y : point.y+y;
           TracePoint(q,point);
@@ -4782,11 +4782,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            x=atof(token);
+            x=MagickAtoF(token);
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            y=atof(token);
+            y=MagickAtoF(token);
             if (*p == ',')
               p++;
             end.x=attribute == 'Q' ? x : point.x+x;
@@ -4817,11 +4817,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            x=atof(token);
+            x=MagickAtoF(token);
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            y=atof(token);
+            y=MagickAtoF(token);
             if (*p == ',')
               p++;
             end.x=attribute == 'S' ? x : point.x+x;
@@ -4857,11 +4857,11 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            x=atof(token);
+            x=MagickAtoF(token);
             GetToken(p,&p,token);
             if (*token == ',')
               GetToken(p,&p,token);
-            y=atof(token);
+            y=MagickAtoF(token);
             end.x=attribute == 'T' ? x : point.x+x;
             end.y=attribute == 'T' ? y : point.y+y;
             points[i]=end;
@@ -4887,7 +4887,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           GetToken(p,&p,token);
           if (*token == ',')
             GetToken(p,&p,token);
-          y=atof(token);
+          y=MagickAtoF(token);
           point.y=attribute == 'V' ? y : point.y+y;
           TracePoint(q,point);
           q+=q->coordinates;

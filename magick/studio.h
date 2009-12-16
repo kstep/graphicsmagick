@@ -337,6 +337,15 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 
 #define DefineNameToString(value) #value
 #define DefineValueToString(define) DefineNameToString(define)
+
+/*
+  atof(), atoi(), and atol() are legacy functions which might not be
+  thread safe, might not enforce reasonable limits, and should not be
+  used for new code.  So we implement them via strtod and strtol.
+*/
+#define MagickAtoF(str) (strtod(str, (char **)NULL))
+#define MagickAtoI(str) ((int) strtol(str, (char **)NULL, 10))
+#define MagickAtoL(str) (strtol(str, (char **)NULL, 10))
 
 /*
   3D effects.

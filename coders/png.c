@@ -1441,7 +1441,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /* look for length */
   while (*sp == '\0' || *sp == ' ' || *sp == '\n')
     sp++;
-  length=atol(sp);
+  length=MagickAtoL(sp);
   while (*sp != ' ' && *sp != '\n')
     sp++;
   /* allocate space */

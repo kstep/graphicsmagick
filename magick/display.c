@@ -409,14 +409,14 @@ static unsigned int MagickXAnnotateEditImage(Display *display,
               break;
             if (entry != 8)
               {
-                degrees=atof(RotateMenu[entry]);
+                degrees=MagickAtoF(RotateMenu[entry]);
                 break;
               }
             (void) MagickXDialogWidget(display,windows,"OK","Enter rotation angle:",
               angle);
             if (*angle == '\0')
               break;
-            degrees=atof(angle);
+            degrees=MagickAtoF(angle);
             break;
           }
           case AnnotateHelpCommand:
@@ -2397,7 +2397,7 @@ static unsigned int MagickXCompositeImage(Display *display,
               GXinvert);
             if (*factor == '\0')
               break;
-            blend=atof(factor);
+            blend=MagickAtoF(factor);
             compose=DissolveCompositeOp;
             break;
           }
@@ -4009,14 +4009,14 @@ static unsigned int MagickXDrawEditImage(Display *display,
                 break;
               if (entry != 5)
                 {
-                  line_width=atoi(WidthsMenu[entry]);
+                  line_width=MagickAtoI(WidthsMenu[entry]);
                   break;
                 }
               (void) MagickXDialogWidget(display,windows,"Ok","Enter line width:",
                 width);
               if (*width == '\0')
                 break;
-              line_width=atoi(width);
+              line_width=MagickAtoI(width);
               break;
             }
             case DrawUndoCommand:
@@ -4931,7 +4931,7 @@ static CommandType MagickXImageWindowCommand(Display *display,
       last_symbol=key_symbol;
       delta[strlen(delta)+1]='\0';
       delta[strlen(delta)]=Digits[key_symbol-XK_0];
-      resource_info->quantum=atoi(delta);
+      resource_info->quantum=MagickAtoI(delta);
       return(NullCommand);
     }
   last_symbol=key_symbol;
@@ -6102,7 +6102,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=atol(colors);
+      quantize_info.number_colors=MagickAtoL(colors);
       quantize_info.dither=(status ? False : True);
       quantize_info.colorspace=(*image)->colorspace;
       (void) QuantizeImage(&quantize_info,*image);
@@ -6178,7 +6178,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,ReduceNoiseImage(*image,atol(radius),
+      ReplaceImage(*image,ReduceNoiseImage(*image,MagickAtoL(radius),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6334,7 +6334,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,EdgeImage(*image,atof(radius),
+      ReplaceImage(*image,EdgeImage(*image,MagickAtoF(radius),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6360,7 +6360,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,SpreadImage(*image,atoi(amount),
+      ReplaceImage(*image,SpreadImage(*image,MagickAtoI(amount),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6504,7 +6504,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,SwirlImage(*image,atof(degrees),
+      ReplaceImage(*image,SwirlImage(*image,MagickAtoF(degrees),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6530,7 +6530,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,ImplodeImage(*image,atof(factor),
+      ReplaceImage(*image,ImplodeImage(*image,MagickAtoF(factor),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6589,7 +6589,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       */
       MagickXSetCursorState(display,windows,True);
       MagickXCheckRefreshWindows(display,windows);
-      ReplaceImage(*image,OilPaintImage(*image,atof(radius),
+      ReplaceImage(*image,OilPaintImage(*image,MagickAtoF(radius),
         &(*image)->exception));
       MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -7039,7 +7039,7 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
-      resource_info->delay=atoi(delay);
+      resource_info->delay=MagickAtoI(delay);
       MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -7905,7 +7905,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            q->opacity=(Quantum) atol(matte);
+            q->opacity=(Quantum) MagickAtoL(matte);
             (void) SyncImagePixels(*image);
             break;
           }
@@ -7926,7 +7926,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
               for (x=0; x < (int) (*image)->columns; x++)
               {
                 if (FuzzyColorMatch(q,&target,(*image)->fuzz))
-                  q->opacity=(Quantum) atol(matte);
+                  q->opacity=(Quantum) MagickAtoL(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
@@ -7950,7 +7950,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
                 target.green=ScaleShortToQuantum(border_color.green);
                 target.blue=ScaleShortToQuantum(border_color.blue);
               }
-            (void) MatteFloodfillImage(*image,target,atoi(matte),x_offset,
+            (void) MatteFloodfillImage(*image,target,MagickAtoI(matte),x_offset,
               y_offset,method);
             break;
           }
@@ -7967,13 +7967,13 @@ static unsigned int MagickXMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                q->opacity=(Quantum) atol(matte);
+                q->opacity=(Quantum) MagickAtoL(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
                 break;
             }
-            if (atol(matte) == OpaqueOpacity)
+            if (MagickAtoL(matte) == OpaqueOpacity)
               (*image)->matte=False;
             break;
           }
@@ -8107,7 +8107,7 @@ static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_in
         seconds);
       if (*seconds == '\0')
         return((Image *) NULL);
-      MagickXDelay(display,1000*atol(seconds));
+      MagickXDelay(display,1000*MagickAtoL(seconds));
     }
   if ((LocaleCompare(image_info->magick,"CMYK") == 0) ||
       (LocaleCompare(image_info->magick,"GRAY") == 0) ||
@@ -10312,7 +10312,7 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
         quality);
       if (*quality == '\0')
         return(True);
-      image_info->quality=atol(quality);
+      image_info->quality=MagickAtoL(quality);
       image_info->interlace=status ? NoInterlace : PlaneInterlace;
     }
   if ((LocaleCompare(image_info->magick,"EPS") == 0) ||

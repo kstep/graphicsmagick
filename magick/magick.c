@@ -954,7 +954,7 @@ InitializeMagick(const char *path)
       block_size=16384;
     
     if ((p=getenv("MAGICK_IOBUF_SIZE")) != (const char *) NULL)
-      block_size = (size_t) atol(p);
+      block_size = (size_t) MagickAtoL(p);
     
     MagickSetFileSystemBlockSize(block_size);
   }

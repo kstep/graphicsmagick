@@ -1344,7 +1344,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	  int
 	    orientation;
 
-	  orientation=atoi(attribute->value);
+	  orientation=MagickAtoI(attribute->value);
 	  if ((orientation > UndefinedOrientation) &&
 	      (orientation <= LeftBottomOrientation))
 	    image->orientation=(OrientationType) orientation;
@@ -2222,7 +2222,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
         if (LocaleNCompare(profile_name,"APP",3) != 0)
           continue;
-        x=atol(profile_name+3);
+        x=MagickAtoL(profile_name+3);
         if (image->logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Profile: %s, %lu bytes",profile_name,
