@@ -816,6 +816,62 @@ WandExport unsigned int MagickBorderImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     M a g i c k C d l I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The MagickCdlImage() method applies ("bakes in") the ASC-CDL which is a
+%  format for the exchange of basic primary color grading information between
+%  equipment and software from different manufacturers. The format defines
+%  the math for three functions: slope, offset and power. Each function uses
+%  a number for the red, green, and blue color channels for a total of nine
+%  numbers comprising a single color decision. A tenth number for chrominance
+%  (saturation) has been proposed but is not yet standardized.
+%
+%  The cdl argument string is comma delimited and is in the form (but
+%  without invervening spaces or line breaks):
+%
+%    redslope, redoffset, redpower :
+%    greenslope, greenoffset, greenpower :
+%    blueslope, blueoffset, bluepower :
+%    saturation
+%
+%  with the unity (no change) specification being:
+%
+%    "1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"
+%
+%  See http://en.wikipedia.org/wiki/ASC_CDL for more information.
+%
+%  The format of the MagickCdlImage method is:
+%
+%      MagickPassFail MagickCdlImage(MagickWand *wand,const char *cdl)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The image wand.
+%
+%    o cdl: Define the coefficients for slope offset and power in the
+%      red green and blue channels, plus saturation.
+%
+*/
+WandExport MagickPassFail MagickCdlImage(MagickWand *wand,const char *cdl)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(cdl != (const char *) NULL);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  return CdlImage(wand->image,cdl);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %   M a g i c k C h a r c o a l I m a g e                                     %
 %                                                                             %

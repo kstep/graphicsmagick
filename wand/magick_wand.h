@@ -149,6 +149,7 @@ extern WandExport unsigned int
   MagickBlurImage(MagickWand *,const double,const double),
   MagickBorderImage(MagickWand *,const PixelWand *,const unsigned long,
     const unsigned long),
+  MagickCdlImage(MagickWand *wand,const char *cdl),
   MagickCharcoalImage(MagickWand *,const double,const double),
   MagickChopImage(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),

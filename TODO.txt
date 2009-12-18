@@ -16,8 +16,6 @@ Short Term
 * Add MagickHaldClutImage() to Wand API
   MagickHaldClutImage(MagickWand *wand,const MagickWand *hald_clut_wand)
 
-* Add MagickCdlImage(Image *image,const char *cdl) to Wand API.
-
 * AddCompare, and Distortion wrapper functions to
   the Wand API.
 
