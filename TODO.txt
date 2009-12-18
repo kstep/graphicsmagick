@@ -13,9 +13,6 @@ Short Term
 
 * Fix browser interoperability issues reported for PNG8.
 
-* Add MagickHaldClutImage() to Wand API
-  MagickHaldClutImage(MagickWand *wand,const MagickWand *hald_clut_wand)
-
 * AddCompare, and Distortion wrapper functions to
   the Wand API.
 

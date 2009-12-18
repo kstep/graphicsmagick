@@ -4644,6 +4644,67 @@ WandExport const char *MagickGetVersion(unsigned long *version)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     M a g i c k H a l d C l u t I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The MagickHaldClutImage() method apply a color lookup table (Hald CLUT) to
+%  the image.  The fundamental principle of the Hald CLUT algorithm is that
+%  application of an identity CLUT causes no change to the input image,
+%  but an identity CLUT image which has had its colors transformed in
+%  some way (e.g. in Adobe Photoshop) may be used to implement an identical
+%  transform on any other image.
+%
+%  The minimum CLUT level is 2, and the maximum depends on available memory
+%  (largest successfully tested is 24).  A CLUT image is required to have equal
+%  width and height. A CLUT of level 8 is an image of dimension 512x512, a CLUT
+%  of level 16 is an image of dimension 4096x4096.  Interpolation is used so
+%  extremely large CLUT images are not required.
+%
+%  GraphicsMagick provides an 'identity' coder which may be used to generate
+%  identity HLUTs.  For example, reading from "identity:8" creates an identity
+%  CLUT of order 8.
+%
+%  The Hald CLUT algorithm has been developed by Eskil Steenberg as described
+%  at http://www.quelsolaar.com/technology/clut.html, and was adapted for
+%  GraphicsMagick by Clément Follet with support from Cédric Lejeune of
+%  Workflowers.
+%
+%  The format of the HaldClutImage method is:
+%
+%      MagickPassFail MagickHaldClutImage(MagickWand *wand,const MagickWand *clut_wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The image wand.
+%
+%    o clut_wand: The color lookup table image wand
+%
+%
+*/
+WandExport MagickPassFail MagickHaldClutImage(MagickWand *wand,const MagickWand *clut_wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(clut_wand != (MagickWand *) NULL);
+  assert(clut_wand->signature == MagickSignature);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  if (clut_wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  return HaldClutImage(wand->image,clut_wand->image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k H a s N e x t I m a g e                                       %
 %                                                                             %
 %                                                                             %

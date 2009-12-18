@@ -22,6 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     H a l d C l u t I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -47,8 +48,8 @@
 %
 %  The Hald CLUT algorithm has been developed by Eskil Steenberg as described
 %  at http://www.quelsolaar.com/technology/clut.html, and was adapted for
-%  GraphicsMagick by Clément Follet with some support from Cédric Lejeune
-%  of workflowers.net.
+%  GraphicsMagick by Clément Follet with support from Cédric Lejeune of
+%  Workflowers.
 %
 %  The format of the HaldClutImage method is:
 %

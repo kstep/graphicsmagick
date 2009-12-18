@@ -2,6 +2,7 @@
 
 	* wand/magick_wand.c (MagickCdlImage): New method to apply the ASC
 	CDL to an image.
+	(MagickHaldClutImage): New method to apply a Hald CLUT to an image.
 
 2009-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

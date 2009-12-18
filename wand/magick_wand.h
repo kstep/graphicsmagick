@@ -198,6 +198,7 @@ extern WandExport unsigned int
   MagickGetImageResolution(MagickWand *,double *,double *),
   MagickGetImageWhitePoint(MagickWand *,double *,double *),
   MagickGetSize(const MagickWand *,unsigned long *,unsigned long *),
+  MagickHaldClutImage(MagickWand *wand,const MagickWand *clut_wand),
   MagickHasNextImage(MagickWand *),
   MagickHasPreviousImage(MagickWand *),
   MagickImplodeImage(MagickWand *,const double),
