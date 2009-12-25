@@ -1,3 +1,12 @@
+2009-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (DestroyModuleInfo): If the Jasper library is
+	used, then we can't invoke lt_dlexit() because this unloads the
+	Jasper library and Jasper sometimes registers an atexit() cleanup
+	handler.  Unfortunately, this may annoy memory leak checkers.
+
+	* coders/jp2.c: Defer Jasper initialization to point of use.
+
 2009-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickCdlImage): New method to apply the ASC

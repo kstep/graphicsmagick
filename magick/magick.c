@@ -150,6 +150,9 @@ DestroyMagick(void)
   if (MagickInitialized == InitUninitialized)
     return;
 
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+			"Destroy Magick");
+
   MagickDestroyCommandInfo();   /* Command parser */
 #if defined(HasX11)
   MagickXDestroyX11Resources();
@@ -500,7 +503,7 @@ GetMagickInfoArray(ExceptionInfo *exception)
   */
   (void) GetMagickInfo("*",exception);
   if (!magick_list)
-    return 0;
+    return ((MagickInfo **) NULL);
 
   LockSemaphoreInfo(magick_semaphore);
 
@@ -515,13 +518,12 @@ GetMagickInfoArray(ExceptionInfo *exception)
   /*
     Allocate array memory
   */
-  array=MagickAllocateMemory(MagickInfo **,sizeof(MagickInfo *)*(entries+1));
+  array=MagickAllocateArray(MagickInfo **,sizeof(MagickInfo *),(entries+1));
   if (!array)
     {
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
-      return False;
+      return ((MagickInfo **) NULL);
     }
-  (void) memset((void **)array,0,sizeof(MagickInfo *)*(entries+1));
 
   /*
     Add entries to array
@@ -529,6 +531,7 @@ GetMagickInfoArray(ExceptionInfo *exception)
   i=0;
   for (p=list; p != 0; p=p->next)
     array[i++]=p;
+  array[i]=(MagickInfo *) NULL;
 
   UnlockSemaphoreInfo(magick_semaphore);
 
@@ -945,6 +948,9 @@ InitializeMagick(const char *path)
   */
   if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
     (void) SetLogEventMask(p);
+
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+			"Initialize Magick");
 
   /*
     Set the filesystem block size.

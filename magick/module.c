@@ -409,9 +409,16 @@ DestroyModuleInfo(void)
     DestroyModuleInfoEntry(module_info);
   }
   module_list=(ModuleInfo *) NULL;
+  /*
+    Destroy the libltdl environment unless Jasper is used since Jasper
+    sometimes registers an atexit() handler to destroy itself and this
+    causes a crash if the Jasper library is already unloaded.
+  */
   if (ltdl_initialized)
     {
+#if !defined(HasJP2)
       (void) lt_dlexit();
+#endif
       ltdl_initialized=False;
     }
 }
