@@ -1654,7 +1654,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   length=Min(length,sizeof(switch_map)/sizeof(MapQuantumType));
   for (i=0; i < (long) length; i++)
     {
-      switch ((int) toupper(map[i]))
+      switch ((int) toupper((int) map[i]))
         {
         case 'R':
           {
@@ -2126,7 +2126,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
   */
   for (i=0; i < (long) length; i++)
     {
-      switch ((int) toupper(map[i]))
+      switch ((int) toupper((int) map[i]))
         {
         case 'R':
           {

@@ -4980,12 +4980,12 @@ static void StoreToken(TokenInfo *token_info,char *string,
   {
     case 1:
     {
-      string[i]=toupper(c);
+      string[i]=toupper((int) c);
       break;
     }
     case 2:
     {
-      string[i]=tolower(c);
+      string[i]=tolower((int) c);
       break;
     }
     default:

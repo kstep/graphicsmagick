@@ -1,3 +1,11 @@
+2009-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/{fits.c,meta.c,locale.c}: Fix benign warnings noticed
+	under Cygwin 1.7.
+
+	* magick/{constitute.c,resource.c,utility.c}: Fix benign warnings
+	noticed under Cygwin 1.7.
+
 2009-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (DestroyModuleInfo): If the Jasper library is

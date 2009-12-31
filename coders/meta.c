@@ -176,7 +176,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(toupper(*p)-toupper(*q));
+  return(toupper((int) *p)-toupper((int) *q));
 }
 
 static int convertHTMLcodes(char *s, int len)

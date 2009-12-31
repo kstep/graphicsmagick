@@ -811,7 +811,7 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
           FormatSize(resource_info[index].maximum,limit);
           strlcat(limit,resource_info[index].units,sizeof(limit));
         }
-      FormatString(heading,"%c%s",toupper(resource_info[index].name[0]),
+      FormatString(heading,"%c%s",toupper((int) resource_info[index].name[0]),
                    resource_info[index].name+1);
 
       (void) strlcpy(environment,resource_info[index].env,sizeof(environment));

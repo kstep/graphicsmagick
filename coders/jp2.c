@@ -771,7 +771,7 @@ ModuleExport void UnregisterJP2Image(void)
   */
   if (jasper_initialized)
     {
-      //jas_cleanup();
+      jas_cleanup();
       jasper_initialized=MagickFalse;
     }
 #endif

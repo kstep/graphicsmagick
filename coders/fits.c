@@ -315,7 +315,7 @@ ReadExtension:
           if (keyword[5] == 0) ax_number=-1;          
           else
 	  {
-            if(isdigit(keyword[5]))
+            if(isdigit((int) keyword[5]))
               ax_number = MagickAtoI(keyword+5);
             else ax_number=-2;			/*unsupported fits keyword*/
           }
