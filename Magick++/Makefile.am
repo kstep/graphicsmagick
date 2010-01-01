@@ -170,7 +170,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libGraphicsMagick___la_LDFLAGS = \
+Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
 

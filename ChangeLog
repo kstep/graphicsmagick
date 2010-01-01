@@ -1,5 +1,15 @@
 2009-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/unix_port.c (MagickSpawnVP): Remove unneeded new line
+	character in error message format.
+
+	* Magick++/Makefile.am: Allow Magick++ to be built as a shared
+	library under MinGW and Cygwin.  This requires a modern GCC in
+	order for C++ exceptions to work.
+
+	* utilities/tests/annotate.sh: MSYS is garbeling up draw command
+	so use a command file rather than using command line.
+
 	* coders/{fits.c,meta.c,locale.c}: Fix benign warnings noticed
 	under Cygwin 1.7.
 

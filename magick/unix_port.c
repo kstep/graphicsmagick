@@ -188,7 +188,7 @@ MagickExport int MagickSpawnVP(const unsigned int verbose,const char *file, char
             {
               int sig_num = WTERMSIG( child_status );
               status = -1;
-              FormatString(message, "child process quit due to signal %d\n", sig_num);
+              FormatString(message, "child process quit due to signal %d", sig_num);
             }
         }
     }
