@@ -1414,8 +1414,23 @@
         <Message name="UnableToAllocateWand">
           unable to allocate wand
         </Message>
+        <Message name="UnableToDestroySemaphore">
+          unable to destroy semaphore
+        </Message>
+        <Message name="UnableToInitializeSemaphore">
+          unable to initialize semaphore
+        </Message>
+        <Message name="UnableToLockSemaphore">
+          unable to lock semaphore
+        </Message>
+        <Message name="UnableToUnlockSemaphore">
+          unable to unlock semaphore
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
+        </Message>
+        <Message name="SemaporeOperationFailed">
+          Semaphore operation failed
         </Message>
         <Message name="UnableToAnimateImageSequence">
           unable to animate image sequence

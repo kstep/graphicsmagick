@@ -1,3 +1,11 @@
+2010-01-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/version.h.in: Update copyright years.
+
+	* magick/semaphore.c: The return code from all pthread mutex APIs
+	are now checked (not just initialize and destroy), and any error
+	results in an immediate fatal exit.
+
 2009-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/unix_port.c (MagickSpawnVP): Remove unneeded new line

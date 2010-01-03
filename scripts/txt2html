@@ -880,7 +880,7 @@ print q(	<STYLE>
         print q(<hr>) . "\n";
 	print q(<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002 - 2008</FONT></P>);
+GraphicsMagick Group 2002 - 2010</FONT></P>);
 
     }
 

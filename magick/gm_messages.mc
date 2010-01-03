@@ -2459,6 +2459,12 @@ Memory allocation failed
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorSemaporeOperationFailed
+Language        = English
+Semaphore operation failed
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateAscii85Info
 Language        = English
 unable to allocate ascii85 info
@@ -2657,6 +2663,12 @@ unable to create colormap
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToDestroySemaphore
+Language        = English
+unable to destroy semaphore
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToDisplayImage
 Language        = English
 unable to display image
@@ -2669,9 +2681,27 @@ unable to escape string
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToInitializeSemaphore
+Language        = English
+unable to initialize semaphore
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToInterpretMSLImage
 Language        = English
 unable to interpret MSL image
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToLockSemaphore
+Language        = English
+unable to lock semaphore
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToUnlockSemaphore
+Language        = English
+unable to unlock semaphore
 .
 
 MessageId       = +1
