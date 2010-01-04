@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -43,7 +43,7 @@ UTILITIES_X11_XFAIL_TESTS = \
 	utilities/tests/help-import.sh
 endif
 
-if !WITH_MODULES
+if !WITH_SHARED_LIBS
 UTILITIES_MODULES_XFAIL_TESTS = \
 	utilities/tests/list-module.sh
 endif

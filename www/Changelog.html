@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2010-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/render.c (DrawPolygonPrimitive): Use restrict keyword.
+
+  <LI> magick/pixel_iterator.c: Use restrict keyword.
+
+  <LI> utilities/Makefile.am: Modules are supported in the shared
+        library built so list-module.sh test should be expected to pass.
+
+  <LI> configure.ac: Add WITH_SHARED_LIBS conditional.
+
+</UL>
+<p>
 2010-01-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

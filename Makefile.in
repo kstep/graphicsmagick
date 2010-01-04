@@ -118,7 +118,7 @@
 # Makefile for building Wand API HTML files
 #
 
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -163,8 +163,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
-	$(PERLMAGICK_TESTS) $(UTILITIES_TESTS)
+TESTS = $(PERLMAGICK_TESTS) $(TESTS_TESTS) $(am__EXEEXT_6) \
+	$(WAND_TESTS) $(UTILITIES_TESTS)
 XFAIL_TESTS = $(TESTS_XFAIL_TESTS) $(am__EXEEXT_7) \
 	$(UTILITIES_XFAIL_TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
@@ -1979,7 +1979,6 @@ LN_S = @LN_S@
 LOCALSTATE_DIR = @LOCALSTATE_DIR@
 LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
-LTCXXLIBOPTS = @LTCXXLIBOPTS@
 LTDLDEPS = @LTDLDEPS@
 LTDLINCL = @LTDLINCL@
 LTDLOPEN = @LTDLOPEN@
@@ -3602,7 +3601,9 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+
+# -no-undefined -export-symbols-regex ".*"
+Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
@@ -5036,8 +5037,8 @@ utilities_gm_SOURCES = utilities/gm.c
 @HasX11_FALSE@	utilities/tests/help-animate.sh \
 @HasX11_FALSE@	utilities/tests/help-import.sh
 
-@WITH_MODULES_FALSE@UTILITIES_MODULES_XFAIL_TESTS = \
-@WITH_MODULES_FALSE@	utilities/tests/list-module.sh
+@WITH_SHARED_LIBS_FALSE@UTILITIES_MODULES_XFAIL_TESTS = \
+@WITH_SHARED_LIBS_FALSE@	utilities/tests/list-module.sh
 
 UTILITIES_XFAIL_TESTS = \
 	$(UTILITIES_JPEG_XFAIL_TESTS) \
@@ -11280,7 +11281,7 @@ perl-sources:
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	echo "Uninstall not supported for PerlMagick"
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(abs_top_builddir)/rungm.sh $(MAKE) CC='@CC@' test
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' )
@@ -11311,7 +11312,7 @@ perl-sources:
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(abs_top_builddir)/rungm.sh $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 

@@ -185,8 +185,7 @@ vm_open (lt_user_data LT__UNUSED loader_data, const char *filename,
 	}
     }
 
-  if (!lt__get_last_error())
-    LT__SETERROR (FILE_NOT_FOUND);
+  LT__SETERROR (FILE_NOT_FOUND);
 
  done:
   return module;

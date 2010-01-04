@@ -3294,7 +3294,7 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     bounds;
 
   ThreadViewDataSet
-    *polygon_set;
+    * restrict polygon_set;
 
   MagickPassFail
     status = MagickPass;
@@ -3315,7 +3315,7 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       Allocate and initialize thread-specific polygon sets.
     */
     PathInfo
-      *path_info;
+      * restrict path_info;
 
     path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
     if (path_info == (PathInfo *) NULL)
@@ -3352,7 +3352,7 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   */
   {
     const PolygonInfo
-      *polygon_info;
+      * restrict polygon_info;
 
     register long
       i;
@@ -3424,7 +3424,7 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 	    x;
 
 	  PixelPacket
-	    *q;
+	    * restrict q;
 
 	  MagickPassFail
 	    thread_status;
@@ -3503,10 +3503,10 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 	    x;
 
 	  PolygonInfo
-	    *polygon_info;
+	    * restrict polygon_info;
 
 	  PixelPacket
-	    *q;
+	    * restrict q;
 
 	  MagickPassFail
 	    thread_status;

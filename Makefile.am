@@ -75,10 +75,10 @@ TEST_EXTENSIONS = .sh
 
 # Tests to run
 TESTS = \
+	$(PERLMAGICK_TESTS) \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \
-	$(PERLMAGICK_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail

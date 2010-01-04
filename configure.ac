@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2009 GraphicsMagick Group
+# Copyright (C) 2003-2010 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -218,17 +218,14 @@ AC_EXEEXT
 AC_OBJEXT
 
 LIB_GDI32=''
-StaticCplusPlusLibraries='no'
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
   cygwin* )
-    StaticCplusPlusLibraries='yes'
     cygwin_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
   mingw* )
-    StaticCplusPlusLibraries='yes'
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
@@ -431,12 +428,7 @@ then
   libtool_build_static_libs='yes'
 fi
 
-# MinGW and Cygwin can't build C++ DLLs which support exceptions.
-if test "${StaticCplusPlusLibraries}" = 'yes'
-then
-  LTCXXLIBOPTS='--static'
-  AC_SUBST(LTCXXLIBOPTS)
-fi
+AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 
 #
 # Enable support for building loadable modules
