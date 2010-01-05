@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2010 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -249,6 +249,15 @@ int main(int argc,char **argv)
   status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
   if (status == False)
     ThrowAPIException(magick_wand);
+
+  MagickResetIterator(magick_wand);
+  while (MagickNextImage(magick_wand) != False)
+    {
+      MagickSetImageDepth( magick_wand, 8);
+      MagickSetImageCompression( magick_wand, RLECompression);
+    }
+  MagickResetIterator(magick_wand);
+
   (void) fprintf(stdout,"Write to wandtest_out.miff...\n");
   status=MagickWriteImages(magick_wand,"wandtest_out.miff",True);
   if (status == False)

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2010 GraphicsMagick Group */
 /*
  *
  * Test program for C drawing API
@@ -423,6 +423,18 @@ int main ( int argc, char **argv )
   if (MagickPass == status)
     if ((status = ScribbleImage( canvas ))  == MagickFail)
       printf ( "Failed draw on image\n" );
+
+  /*
+   * Set depth to 8
+   */
+  if (MagickPass == status)
+    status=MagickSetImageDepth( canvas, 8);
+
+  /*
+   * Set RLE compression
+   */
+  if (MagickPass == status)
+    status=MagickSetImageCompression( canvas, RLECompression);
 
   /*
    * Save image to file
