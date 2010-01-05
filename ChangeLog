@@ -1,3 +1,9 @@
+2010-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/version.h.in: Added MagickLibInterfaceNewest and
+	MagickLibInterfaceOldest preprocessor defines so that applications
+	may easily test for library versions while compiling.
+
 2009-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Define _GNU_SOURCE and _NETBSD_SOURCE so that

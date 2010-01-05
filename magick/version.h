@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -34,13 +34,28 @@ extern "C" {
   identifying the release.
 */
 #define MagickPackageName "GraphicsMagick"
-#define MagickCopyright  "Copyright (C) 2002-2009 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
+#define MagickCopyright  "Copyright (C) 2002-2010 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
 #define MagickLibVersion  0x020009
 #define MagickLibVersionText  "1.2.9"
 #define MagickLibVersionNumber 2,0,9
-#define MagickChangeDate   "20091204"
+#define MagickChangeDate   "20100105"
 #define MagickReleaseDate  "2009-09-16"
 
+/*
+  The MagickLibInterfaceNewest and MagickLibInterfaceOldest defines
+  provide both the newest and oldest interfaces supported by the
+  library.  The 'newest' interface is incremented if new interfaces
+  are added to the library.  The 'oldest' interface is reset to the
+  value of 'newest' if an existing interface is changed incompatibly,
+  or an interface is removed.  This scheme is similar to that used by
+  ELF libraries.
+
+  Note that the values used are related to those in
+  MagickLibVersionNumber, but these are broken out and simplified so
+  that they can be easily used in C pre-processor logic.
+*/
+#define MagickLibInterfaceNewest 2
+#define MagickLibInterfaceOldest 2
 
 #if (QuantumDepth == 8)
 #define MagickQuantumDepth  "Q8"
