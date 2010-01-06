@@ -1,3 +1,9 @@
+2010-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/version.h.in: Added MagickLibInterfaceNewest and
+	MagickLibInterfaceOldest preprocessor defines so that applications
+	may easily test for library versions while compiling.
+
 2010-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/render.c (DrawPolygonPrimitive): Use restrict keyword.

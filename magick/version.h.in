@@ -25,10 +25,10 @@ extern "C" {
   The most significant field (third byte from the right) defines the
   library major interface, which is incremented whenever the library
   ABI changes incompatibly with preceding versions. The second field
-  identifies an interface in a series of upward-compatible interfaces
-  with the same major interface (such as when only new functions have)
-  been added. The least significant field specifies the revision across
-  100% compatible interfaces.
+  identifies an interface (a span) in a series of upward-compatible
+  interfaces with the same major interface (such as when only new
+  functions have) been added. The least significant field specifies
+  the revision across 100% compatible interfaces.
 
   MagickLibVersionText provides a simple human-readable string for
   identifying the release.
@@ -40,7 +40,22 @@ extern "C" {
 #define MagickLibVersionNumber @MAGICK_LIB_VERSION_NUMBER@
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
+	
+/*
+  The MagickLibInterfaceNewest and MagickLibInterfaceOldest defines
+  provide both the newest and oldest interfaces supported by the
+  library.  The 'newest' interface is incremented if new interfaces
+  are added to the library.  The 'oldest' interface is reset to the
+  value of 'newest' if an existing interface is changed incompatibly,
+  or an interface is removed.  This scheme is similar to that used by
+  ELF libraries.
 
+  Note that the values used are related to those in
+  MagickLibVersionNumber, but these are broken out and simplified so
+  that they can be easily used in C pre-processor logic.
+*/
+#define MagickLibInterfaceNewest @MAGICK_LIB_INTERFACE_NEWEST@
+#define MagickLibInterfaceOldest @MAGICK_LIB_INTERFACE_OLDEST@
 
 #if (QuantumDepth == 8)
 #define MagickQuantumDepth  "Q8"
