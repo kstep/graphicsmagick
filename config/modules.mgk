@@ -41,6 +41,7 @@
   <module magick="IPTC" name="META" />
   <module magick="IPTCTEXT" name="META" />
   <module magick="IPTCWTEXT" name="META" />
+  <module magick="J2K" name="JP2" />
   <module magick="JBG" name="JBIG" />
   <module magick="JNG" name="PNG" />
   <module magick="JPC" name="JP2" />
