@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 16, 2009.
+This file was last updated on January 6, 2009.
 
 This release is a bug-fix release made from a stable maintenance
 branch and does not contain current new features.
@@ -16,6 +16,61 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.2.10 (January 6, 2010)
+==========================
+
+Security Fixes:
+
+  * Fix for CVE-2009-1882 "Integer overflow in the XMakeImage
+    function".
+
+  * Eliminate lockup due to hanging in loop while parsing malformed
+    sub-image specification (SourceForge issue 2886560).
+
+  * libltdl: Update libltdl to 2.2.6b in order to fix security issue.
+    Resolves CVE-2009-3736 as it pertains to GraphicsMagick.
+
+Bug fixes:
+
+  * The pixel cache was not working properly for large pixel cache
+    files (>2GB) under Linux.  This limited the maximum image size
+    which could be handled by a 32-bit application.
+
+  * -convolve: Convolve does not accept an argument which looks like a
+    geometry.  Resolves SourceForge issue #2890923 "Different handling
+    of -convolve between convert and mogrify".
+
+  * -convolve: In the Q32 build, convolution kernel size was estimated
+    incorrectly for large sigmas on 32-bit systems
+
+  * -draw: Eliminate read access beyond end of array.
+
+  * IPTC: Returned IPTC string values were one character too short.
+
+  * JPEG: Work properly with IJG JPEG library version 7.
+
+  * Magick++: Implementation fix for STL shadeImage function object.
+
+Feature improvements:
+
+  * TextureImage(): Matte channel indication is disabled if a texture
+    is rendered under the image.
+
+  * JPEG 2000: Fix reading/writing 12-bit JPEG 2000.  Support ".j2k"
+    as a file extension.
+
+  * X11 display: If an image is TrueColor and has an opacity channel,
+    then render it on top of a grid image to make the transparency
+    more apparent.
+
+  * Added MagickLibInterfaceNewest and MagickLibInterfaceOldest
+    preprocessor defines so that applications may easily test for
+    library versions while compiling.
+
+Performance improvments:
+
+  * None
 
 1.2.9 (September 16, 2009)
 ==========================
