@@ -96,7 +96,8 @@ CHANGELOGS = \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
 	ChangeLog.2007 \
-	ChangeLog.2008
+	ChangeLog.2008 \
+	ChangeLog.2009
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \

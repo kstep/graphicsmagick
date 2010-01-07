@@ -624,6 +624,4 @@ to list all DPX header attributes.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick_ Group 2002 - 2008
-
-
+Copyright |copy| GraphicsMagick_ Group 2002 - 2010

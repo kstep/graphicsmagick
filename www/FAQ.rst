@@ -693,7 +693,7 @@ To create a patterned canvas image using a user-supplied image::
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2009 GraphicsMagick Group
+| Copyright (C) 2002 - 2010 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 

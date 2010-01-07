@@ -650,7 +650,7 @@ ImageMagick when executed on small files.
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2008 GraphicsMagick Group
+| Copyright (C) 2008 - 2010 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

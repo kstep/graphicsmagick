@@ -102,6 +102,6 @@ regarding usage should be directed to `Bob Friesenhahn`_.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| Bob Friesenhahn 1999 - 2008
+Copyright |copy| Bob Friesenhahn 1999 - 2010
 
 

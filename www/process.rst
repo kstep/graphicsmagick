@@ -146,7 +146,7 @@ Magick++ demos) is visually inspected for correctness.
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2008 GraphicsMagick Group
+| Copyright (C) 2002 - 2010 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

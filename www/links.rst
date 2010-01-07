@@ -210,5 +210,5 @@ Stock Photos
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2009
+`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2010
 

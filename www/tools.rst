@@ -167,6 +167,6 @@ properties optionally appearing just below the individual tile.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2008
+Copyright |copy| GraphicsMagick Group 2002 - 2010
 
 
