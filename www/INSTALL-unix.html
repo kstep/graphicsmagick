@@ -249,9 +249,9 @@ follows (execute 'configure --help' to see all options).</p>
 </tr>
 <tr><td>&nbsp;</td><td>disable use of OpenMP (automatic multi-threaded loops) at all</td></tr>
 <tr><td class="option-group" colspan="2">
-<kbd><span class="option">--disable-openmp-slow</span></kbd></td>
+<kbd><span class="option">--enable-openmp-slow</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>disable OpenMP for algorithms which sometimes run slower</td></tr>
+<tr><td>&nbsp;</td><td>enable OpenMP for algorithms which sometimes run slower</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--enable-symbol-prefix</span></kbd></td>
 </tr>
@@ -662,18 +662,18 @@ be used. In order to obtain the best single-user performance, set
 OMP_NUM_THREADS equal to the number of available CPU cores.</p>
 </td></tr>
 <tr><td class="option-group" colspan="2">
-<kbd><span class="option">--disable-openmp-slow</span></kbd></td>
+<kbd><span class="option">--enable-openmp-slow</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Some operating systems provide a rather weak thread implementation
-where relatively fast algorithms actually run slower as threads are
-added via OpenMP.  Algorithms which are severe CPU hogs still
-substantially benefit from OpenMP on these systems.  If many
-algorithms run slower as threads are added, then add the
---disable-openmp-slow configure option to disable use of OpenMP for
-algorithms which are known to become slower.  This option is
-recommended for FreeBSD 7.0 and Apple's OS-X Leopard and earlier due
-to weak thread support.  It should not be necessary for AIX, Linux,
-or Solaris.</td></tr>
+<tr><td>&nbsp;</td><td>On some systems, relatively fast algorithms run slower (rather than
+faster) as threads are added via OpenMP.  This may be due to CPU
+cache and memory architecture implementation, or OS thread API
+implementation.  Since it is not known how a system will behave
+without testing, these algorithms are now disabled for OpenMP by
+default.  This option should usually be enabled for AIX, Linux, and
+Solaris, which work well with OpenMP.  AMD Opteron and AMD K10
+architecture chips works well with this option.  Intel Core 2 Duo
+works well, but Core 2 Quad does not.  IBM Power works well.
+UltraSPARC works well.</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--with-perl</span></kbd></td>
 <td><p class="first">Use this option to include PerlMagick in the GraphicsMagick build
@@ -943,7 +943,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-01-07 02:15 UTC.
+Generated on: 2010-01-10 17:38 UTC.
 
 </div>
 </body>

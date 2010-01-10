@@ -347,7 +347,12 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 MagickExport void DestroySemaphore(void)
 {
 #if defined(USE_POSIX_THREADS)
-  PTHREAD_MUTEX_DESTROY(&semaphore_mutex);
+  /*
+    We use static pthread mutex initialization with
+    PTHREAD_MUTEX_INITIALIZER so semaphore mutex should not be
+    destroyed.
+  */
+  /* PTHREAD_MUTEX_DESTROY(&semaphore_mutex); */
 #endif
 #if defined(USE_WIN32_THREADS)
 #if !defined(USE_SPINLOCKS)

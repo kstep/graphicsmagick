@@ -1839,7 +1839,7 @@ Optional Features:
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-openmp        do not use OpenMP
-  --disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower
+  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -6645,7 +6645,7 @@ CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 if test "${enable_openmp_slow+set}" = set; then :
   enableval=$enable_openmp_slow; with_openmp_slow=$enableval
 else
-  with_openmp_slow='yes'
+  with_openmp_slow='no'
 fi
 
 if test "$with_openmp_slow" = 'no'
@@ -19959,8 +19959,8 @@ for ac_func in atoll ctime_r directio _exit fcntl ftime getexecname \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign pread pwrite putc_unlocked raise \
   rand_r readdir_r readlink realpath select seekdir setrlimit sigemptyset \
-  sigaction strerror strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r \
-  times telldir ulltostr vsprintf vsnprintf qsort_r
+  sigaction spawnvp strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
+  tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"

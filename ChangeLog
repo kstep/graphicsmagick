@@ -1,3 +1,14 @@
+2010-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Add check for Windows spawnvp function.
+
+	* magick/semaphore.c (DestroySemaphore): POSIX mutex statically
+	initialized via PTHREAD_MUTEX_INITIALIZER should not be destroyed.
+
+	* configure.ac: DisableSlowOpenMP is now the default.  Use
+	--enable-openmp-slow to enable OpenMP for algorithms which
+	sometimes run slower rather than faster.
+
 2010-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/version.h.in: Added MagickLibInterfaceNewest and

@@ -356,9 +356,9 @@ AC_SUBST(OPENMP_CFLAGS)
 
 # Allow the user to disable use of OpenMP where algorithms sometimes run slower.
 AC_ARG_ENABLE(openmp-slow,
-	      [  --disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower],
+	      [  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower],
 	      [with_openmp_slow=$enableval],
-	      [with_openmp_slow='yes'])
+	      [with_openmp_slow='no'])
 if test "$with_openmp_slow" = 'no'
 then
   AC_DEFINE(DisableSlowOpenMP,1,[Disable OpenMP for algorithms which sometimes run slower])
@@ -1094,8 +1094,8 @@ AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign pread pwrite putc_unlocked raise \
   rand_r readdir_r readlink realpath select seekdir setrlimit sigemptyset \
-  sigaction strerror strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r \
-  times telldir ulltostr vsprintf vsnprintf qsort_r])
+  sigaction spawnvp strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
+  tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #
