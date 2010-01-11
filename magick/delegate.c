@@ -490,6 +490,7 @@ WindowsShellTextEscape(char *dst, const char *src, const size_t size)
   assert(src != (const char *) NULL);
   assert(size >= 1);
 
+
   /*
     Copy src to dst within bounds of size-1, while escaping special
     characters.
@@ -499,6 +500,11 @@ WindowsShellTextEscape(char *dst, const char *src, const size_t size)
         length++, p++, q++ )
     {
       register const char c = *q;
+#if 0
+      /*
+	FIXME: Currently the correct implementation is not known so we
+	don't alter arguments at the moment.
+      */
       if ((c == '\\') ||
           (c == '"') ||
           (c == '%%'))
@@ -509,6 +515,7 @@ WindowsShellTextEscape(char *dst, const char *src, const size_t size)
           p++;
           length++;
         }
+#endif
       *p = c;
     }
 
