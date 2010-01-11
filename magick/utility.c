@@ -3667,14 +3667,14 @@ MagickSpawnVP(const unsigned int verbose,const char *file, char *const argv[])
       Verify that we are allowed to run this program.
     */
     ExceptionInfo
-      exception_info;
+      exception;
     
-    GetExceptionInfo(&exception_info);
-    if (MagickConfirmAccess(FileExecuteConfirmAccessMode,argv[0],&exception_info)
+    GetExceptionInfo(&exception);
+    if (MagickConfirmAccess(FileExecuteConfirmAccessMode,argv[0],&exception)
 	== MagickFail)
       {
 	errno=EPERM;
-	DestroyExceptionInfo(&exception_info);
+	DestroyExceptionInfo(&exception);
 	return -1;
       }
   }
