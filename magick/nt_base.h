@@ -40,6 +40,8 @@ extern "C" {
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
+#define HAVE_SPAWNVP 1
+#define HAVE_PROCESS_H 1
 
 /*
   libtiff features.

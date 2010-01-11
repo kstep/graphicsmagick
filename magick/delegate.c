@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -473,6 +473,51 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
 }
 #endif /* POSIX */
 
+#if defined(MSWINDOWS)
+static size_t
+WindowsShellTextEscape(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  /*
+    Copy src to dst within bounds of size-1, while escaping special
+    characters.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    {
+      register const char c = *q;
+      if ((c == '\\') ||
+          (c == '"') ||
+          (c == '%%'))
+        {
+          if (length+1 >= size-1)
+            break;
+          *p = '\\';
+          p++;
+          length++;
+        }
+      *p = c;
+    }
+
+  dst[length]='\0';
+
+  return length;
+}
+#endif /* MSWINDOWS */
+
 MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   const char *decode,const char *encode,ExceptionInfo *exception)
 {
@@ -647,7 +692,6 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       status=False;
       goto error_exit;
     }
-#if defined(POSIX)
     {
       MagickBool
         needs_shell;
@@ -717,7 +761,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
             Expand sprintf-style codes in delegate command to command
             string, escaping replacement text appropriately
           */
-          command=TranslateTextEx(image_info,image,commands[i],UnixShellTextEscape);
+          command=TranslateTextEx(image_info,image,commands[i],
+#if defined(POSIX)
+				  UnixShellTextEscape
+#endif /* POSIX */
+#if defined(MSWINDOWS)
+				  WindowsShellTextEscape
+#endif /* MSWINDOWS */
+				  );
           if (command == (char *) NULL)
             break;
           /*
@@ -726,20 +777,6 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           status=SystemCommand(image_info->verbose,command);
         }
     }
-#else
-    {
-      /*
-        Expand sprintf-style codes in delegate command to command string
-      */
-      command=TranslateText(image_info,image,commands[i]);
-      if (command == (char *) NULL)
-        break;
-      /*
-        Execute delegate using command shell.
-      */
-      status=SystemCommand(image_info->verbose,command);
-    }
-#endif
     MagickFreeMemory(command);
     /* Liberate convenience temporary files */
     (void) LiberateTemporaryFile(image_info->unique);
@@ -914,7 +951,6 @@ InvokePostscriptDelegate(const unsigned int verbose,
 #endif /* defined(HasGS) || defined(MSWINDOWS) */
 
   status=MagickFail;
-#if defined(POSIX)
   {
     argv = StringToArgv(command,&argc);
     if (argv == (char **) NULL)
@@ -932,10 +968,7 @@ InvokePostscriptDelegate(const unsigned int verbose,
 	MagickFreeMemory(argv);
       }
   }
-#else
-  if (SystemCommand(verbose,command) == 0)
-    status=MagickPass;
-#endif
+
   return status;
 }
 

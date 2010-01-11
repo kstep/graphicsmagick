@@ -849,7 +849,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers 
-AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/resource.h sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h process.h sys/resource.h sys/times.h sys/types.h)
 
 ########
 #

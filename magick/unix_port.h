@@ -15,9 +15,6 @@
 extern "C" {
 #endif
 
-extern MagickExport int
-  MagickSpawnVP(const unsigned int verbose, const char *file, char *const argv[]);
-
 extern MagickExport long
   MagickGetMMUPageSize(void);
 

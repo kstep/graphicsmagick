@@ -24,7 +24,17 @@
 2010-01-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/delegate.c (InvokeDelegate): Use MagickSpawnVP() under
+        Windows as well.<BR>
+        (InvokePostscriptDelegate): Use MagickSpawnVP() under Windows as
+        well.
+
+  <LI> magick/utility.c (MagickSpawnVP): Moved from unix_port.c.
+        Updated implementation to use spawnvp() rather than fork()/exec()
+        under Windows.
+
   <LI> configure.ac: Add check for Windows spawnvp function.
+        Add check for process.h.
 
   <LI> magick/semaphore.c (DestroySemaphore): POSIX mutex statically
         initialized via PTHREAD_MUTEX_INITIALIZER should not be destroyed.

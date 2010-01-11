@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -99,6 +99,7 @@ extern MagickExport int
   GetMagickGeometry(const char *geometry,long *x,long *y,unsigned long *width,
     unsigned long *height),
   MagickRandReentrant(unsigned int *seed),
+  MagickSpawnVP(const unsigned int verbose, const char *file, char *const argv[]),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,size_t,char *,char *,char *,char *,
     char,char *,int *,char *);
