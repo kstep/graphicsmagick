@@ -426,12 +426,12 @@ adaptiveThreshold
 +++++++++++++++++
 
 Apply adaptive thresholding to the image (see
-http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm). Adaptive thresholding is
-useful if the ideal threshold level is not known in advance, or if the
-illumination gradient is not constant across the image. Adaptive
-thresholding works by evaulating the mean (average) of a pixel region
-(size specified by width and height) and using the mean as the
-thresholding value. In order to remove residual noise from the
+http://homepages.inf.ed.ac.uk/rbf/HIPR2/adpthrsh.htm). Adaptive
+thresholding is useful if the ideal threshold level is not known in
+advance, or if the illumination gradient is not constant across the
+image. Adaptive thresholding works by evaulating the mean (average) of
+a pixel region (size specified by width and height) and using the mean
+as the thresholding value. In order to remove residual noise from the
 background, the threshold may be adjusted by subtracting a constant
 offset (default zero) from the mean to compute the threshold::
 
