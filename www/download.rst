@@ -21,14 +21,13 @@ GraphicsMagick Download
 
 .. _Bob Friesenhahn : mailto:bfriesen@graphicsmagick.org
 .. _GraphicsMagick FTP : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/
-.. _beta : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/beta/README.html
 .. _delegates : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/
 .. _linux : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/linux/
 .. _snapshots : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/
 .. _windows : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/windows/
 .. _Cygwin : http://www.cygwin.com/
 .. _MinGW : http://www.mingw.org/
-.. _SourceForge Download : http://sourceforge.net/project/showfiles.php?group_id=73485
+.. _SourceForge Download : http://sourceforge.net/projects/graphicsmagick/files/
 .. _ftp.graphicsmagick.org: ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/
 
 The source distribution of GraphicsMagick as well as pre-compiled
@@ -52,8 +51,6 @@ following table:
 |                 | a minimal GraphicsMagick on a Unix system       |
 |                 | (including MacOS-X), or under the Cygwin and    |
 |                 | and MinGW environments for Windows.             |
-+-----------------+-------------------------------------------------+
-|         `beta`_ | Beta versions of GraphicsMagick.                |
 +-----------------+-------------------------------------------------+
 |    `delegates`_ | Add on third-party libraries and applications   |
 |                 | which extend the formats supported by           |

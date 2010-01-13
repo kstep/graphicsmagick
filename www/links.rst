@@ -49,7 +49,7 @@ Seach SecurityFocus Bugtraq for `GraphicsMagick`__ vulnerabilities.
 
 __ Bugtraq_GraphicsMagick_
 
-.. _Bugtraq_GraphicsMagick : http://www.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
+.. _Bugtraq_GraphicsMagick : http://search.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
 
 Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=GraphicsMagick&amp;searchon=names&amp;suite=all&amp;section=main>`_.
 
@@ -57,7 +57,7 @@ Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=Grap
 Image Processing Topics
 ============================
 
-`HyperMedia Image Processing Reference <http://www.cee.hw.ac.uk/hipr/html/hipr_top.html>`_,
+`HyperMedia Image Processing Reference <http://homepages.inf.ed.ac.uk/rbf/HIPR2/>`_,
 A guide to image processing algorithms, many of which are supported by GraphicsMagick.
 
 
@@ -67,7 +67,7 @@ Color Technology Related Topics
 Charles Poynton's `Color technology FAQs <http://www.poynton.com/Poynton-color.html>`_,
 very useful documentation on color technologies.
 
-Richard Kirk's excellent `Introduction To Standard Colour Spaces <http://www.filmlight.ltd.uk/documents/FL-TL-TN-0101-StdColourSpaces.pdf>`_ at `FilmLite <http://www.filmlight.ltd.uk/>`_.
+Richard Kirk's excellent `Standard Colour Spaces (FL-TL-TN-0282-StdColourSpaces.pdf) <http://www.filmlight.ltd.uk/services_support/library/truelight>`_ at `FilmLite <http://www.filmlight.ltd.uk/>`_.
 
 `Computer Graphics Colorspace <http://cs.fit.edu/~wds/classes/cse5255/cse5255/davis/>`_,
 tutorials (with figures) describing the operation of common colorspaces.
@@ -104,7 +104,7 @@ AWare Systems `TIFF <http://www.awaresystems.be/imaging/tiff.html>`_ site.
 Detailed TIFF-related information which goes beyond the TIFF specification,
 list archives for the libtiff mailing list, and information regarding the emerging Big TIFF format.
 
-`Digital Negative (DNG) <http://www.adobe.com/products/dng/main.html>`_,
+`Digital Negative (DNG) <http://www.adobe.com/products/dng/index.html>`_,
 Adobe TIFF specification for digital camera raw images.
 
 `LogLuv Encoding for TIFF Images <http://www.anyhere.com/gward/pixformat/tiffluv.html>`_,
@@ -126,7 +126,7 @@ information about medical images.
 Metadata (Associated Data) Topics
 =========================================
 
-`Extensible Metadata Platform (XMP) <http://www.adobe.com/products/xmp/main.html>`_,
+`Extensible Metadata Platform (XMP) <http://www.adobe.com/products/xmp/index.html>`_,
 Adobe's XML-based embedded metadata format.
 
 `EXIF <http://www.exif.org/>`_,
@@ -168,24 +168,24 @@ Other Software Packages
 truly outstanding image viewing/browsing software for Microsoft Windows.
 Visere is based on GraphicsMagick.
 
-`CinePaint <http://cinepaint.sourceforge.net/>`_,
+`CinePaint <http://www.cinepaint.org/>`_,
 GIMP-derived software targeted for the motion picture industry, and for other
 applications which require high color resolution.
 
-The `GIMP <http://gimp.org/>`_, interactive image editing software (like Photoshop).
+The `GIMP <http://www.gimp.org/>`_, interactive image editing software (like Photoshop).
 
 `ImageMagick <http://www.imagemagick.org/>`_, the ancestor of GraphicsMagick.
 
-`VIPS <http://www.vips.ecs.soton.ac.uk/>`_, an image processing system also useful with
+`VIPS <http://www.vips.ecs.soton.ac.uk/index.php?title=VIPS>`_, an image processing system also useful with
 large images, and which comes with an unusual GUI.
 
 `FreeImage <http://freeimage.sourceforge.net/index.html>`_,
 a free image processing library.
 
-`VIGRA <http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/>`_,
+`VIGRA <http://hci.iwr.uni-heidelberg.de/vigra/>`_,
 an image processing library in C++ based on generic algorithms.
 
-`Pstoedit <http://www.pstoedit.net/pstoedit>`_,
+`Pstoedit <http://www.pstoedit.net/>`_,
 A Postscript to editable vector translation utility.
 
 `UFRaw <http://ufraw.sourceforge.net/>`_,

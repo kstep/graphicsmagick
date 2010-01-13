@@ -954,7 +954,7 @@ GraphicsMagick support services:
     "http://sourceforge.net/projects/graphicsmagick/".
   * CVSWeb via "http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/".
   * CVS via cvs.graphicsmagick.org (find instructions at
-    "http://www.graphicsmagick.org/www/cvs.html").
+    "http://www.graphicsmagick.org/CVS.html").
   * FTP via "ftp://ftp.graphicsmagick.org/pub/GraphicsMagick".
 
 Project maintenance improvements:
