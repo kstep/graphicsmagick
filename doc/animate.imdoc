@@ -4,10 +4,6 @@
 <gm>
 <sect NAME="animate">gm animate
 </gm>
-<im>
-<sect NAME="top">NAME
-animate - animate a sequence of images
-</sect>
 <format type=html>
 <sect NAME="contents">Contents
 
