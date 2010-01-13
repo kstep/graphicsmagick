@@ -216,14 +216,15 @@ of the library-based packages listed here.
   to read the JBIG image format.
 
 * GraphicsMagick requires the Independent JPEG Group's software
-  available via anonymous FTP as
+  available from
 
-     ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
+     http://www.ijg.org/
 
   to read the JPEG v1 image format.
 
-  Apply this JPEG patch to Independent JPEG Group's source distribution
-  if you want to read lossless jpeg-encoded DICOM (medical) images:
+  Apply this JPEG patch to Independent JPEG Group's (6b release!)
+  source distribution if you want to read lossless jpeg-encoded DICOM
+  (medical) images:
 
      ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
 
