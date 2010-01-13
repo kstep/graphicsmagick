@@ -34,6 +34,17 @@ avoid possible conflicts and GraphicsMagick macros are only included
 within the *Magick++* implementation so they won't impact the user's
 application.
 
+The InitializeMagick() function *MUST* be invoked before constructing
+any Magick++ objects.  This used to be optional, but now it is
+absolutely required.  This function initalizes semaphores and
+configuration information necessary for the software to work
+correctly.  Failing to invoke InitializeMagick() is likely to lead to
+a program crash or thrown assertion.  If the program resides in the
+same directory as the GraphicsMagick files, then argv[0] may be passed
+as an argument so that GraphicsMagick knows where its files reside,
+otherwise NULL may be passed and GraphicsMagick will try to use other
+means (if necessary).
+
 The core class in *Magick++* is the `Image`_ class. The `Image`_ class
 provides methods to manipulate a single image frame (e.g. a JPEG image).
 Standard Template Library (`STL`_) compatible algorithms and function

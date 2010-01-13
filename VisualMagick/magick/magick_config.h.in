@@ -74,8 +74,9 @@
 //
 // When building GraphicsMagick using DLLs, include a DllMain()
 // function which automatically invokes InitializeMagick(NULL), and
-// DestroyMagick() so that the user doesn't need to. This is enabled
-// by default since no adverse effects have been found.
+// DestroyMagick() so that the user doesn't need to.  Note that
+// repeated calls to InitializeMagick() are ignored so if a path must
+// be passed to InitializeMagick(), then disable this setting.
 #define ProvideDllMain
 
 

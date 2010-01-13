@@ -77,22 +77,24 @@ example (notice that quotes are backward quotes)::
 Windows users may get started by manually editing a project file for one
 of the *Magick++* demo programs.
 
-It is useful to initialize the GraphicsMagick library prior to using the
-*Magick++* library. This initialization is performed by passing the path
-to the GraphicsMagick DLLs (assumed to be in the same directory as your
-program) to the InitializeMagick() function call. This is commonly
-performed by providing the path to your program (argv[0]) as shown in the
-following example::
+It is necessary to initialize the GraphicsMagick library prior to
+using the *Magick++* library. This initialization is performed by
+passing the path to the GraphicsMagick DLLs (assumed to be in the same
+directory as your program) to the InitializeMagick() function
+call. This is commonly performed by providing the path to your program
+(argv[0]) as shown in the following example::
 
   int main( int /*argc*/, char ** argv)
   {
     InitializeMagick(*argv);
 
-If you don't have the path to your executable, then pass NULL and usually
-the library will be found anyway. Besides helping to find the
+If you don't have the path to your executable, then pass NULL and
+usually the library will be found anyway. Besides helping to find the
 GraphicsMagick DLL/library and configuration files, InitializeMagick()
-initializes all of the semaphores necessary for a multi-threaded program
-to be thread safe.
+initializes all of the semaphores and data necessary for a
+multi-threaded program to be completely thread safe.  This step used
+to be optional, but it is now absolutely required.  Failure to
+initialize GraphicsMagick will result in an application crash.
 
 Reporting Bugs
 --------------

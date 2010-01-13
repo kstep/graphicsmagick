@@ -140,7 +140,6 @@ sub MY::test
     " t/read.t" .
     " t/montage.t" .
     " t/write.t" .
-    " t/hpgl/read.t" .
     " t/jbig/read.t" .
     " t/jbig/write.t" .
     " t/jng/read.t" .

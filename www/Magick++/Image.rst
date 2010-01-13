@@ -41,6 +41,17 @@ must either add the prefix " Magick:: " to each class/enumeration name
 or add the statement " using namespace Magick;" after including the
 Magick++.h header.
 
+The InitializeMagick() function *MUST* be invoked before constructing
+any Magick++ objects.  This used to be optional, but now it is
+absolutely required.  This function initalizes semaphores and
+configuration information necessary for the software to work
+correctly.  Failing to invoke InitializeMagick() is likely to lead to
+a program crash or thrown assertion.  If the program resides in the
+same directory as the GraphicsMagick files, then argv[0] may be passed
+as an argument so that GraphicsMagick knows where its files reside,
+otherwise NULL may be passed and GraphicsMagick will try to use other
+means (if necessary).
+
 The preferred way to allocate Image objects is via automatic
 allocation (on the stack). There is no concern that allocating Image
 objects on the stack will excessively enlarge the stack since Magick++
@@ -65,6 +76,8 @@ program which reads an image, crops it, and writes it to a new file
     using namespace Magick;
     int main(int argc,char **argv)
     {
+      InitializeMagick(*argv);
+
       // Construct the image object. Seperating image construction from the
       // the read operation ensures that a failure to read the image file
       // doesn't render the image object useless.
@@ -110,6 +123,7 @@ copied into containers).  The program accomplishes the following:
     using namespace Magick;
     int main(int argc,char **argv)
     {
+        InitializeMagick(*argv);
         Image master("horse.jpg");
         Image second = master;
         second.zoom("640x480");
@@ -132,6 +146,7 @@ it to a file::
     using namespace Magick;
     int main(int argc,char **argv)
     {
+        InitializeMagick(*argv);
         Image image( "100x100", "white" );
         image.pixelColor( 49, 49, "red" );
         image.write( "red_pixel.png" );

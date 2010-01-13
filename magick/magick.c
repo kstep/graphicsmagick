@@ -772,7 +772,7 @@ IsValidFilesystemPath(const char *path)
   Try and figure out the path and name of the client
  */
 MagickExport void
-InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
+InitializeMagickClientPathAndName(const char *path)
 {
 #if !defined(UseInstalledMagick)
   const char
@@ -843,6 +843,8 @@ InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
       (void) DefineClientPathAndName(execution_path);
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Valid path \"%s\"",spath);
     }
+#else
+  ARG_NOT_USED(path);
 #endif
 }
 
