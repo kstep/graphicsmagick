@@ -13,7 +13,7 @@ Magick++ API Documentation
 .. _Pixels : Pixels.html
 .. _STL : STL.html
 .. _TypeMetric : TypeMetric.html
-.. _`Image::fontTypeMetrics` : Image.html#fontTypeMetrics
+.. _`Image::fontTypeMetrics` : Image.html#fonttypemetrics
 .. _`algorithms and function objects` : STL.html
 .. _`coderInfoList` : STL.html#coderInfoList
 

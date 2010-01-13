@@ -10994,12 +10994,12 @@ magick-uninstall-local:
 
 # Build HTML version of news
 @WITH_PERL_TRUE@www/Magick++/NEWS.html: Magick++/NEWS
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/www/Magick++/NEWS.html
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(top_srcdir)/Magick++/NEWS  > $(top_srcdir)/www/Magick++/NEWS.html
 @WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 
 # Build HTML version of ChangeLog
 @WITH_PERL_TRUE@www/Magick++/ChangeLog.html: Magick++/ChangeLog
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
 @WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
 #all-local:
