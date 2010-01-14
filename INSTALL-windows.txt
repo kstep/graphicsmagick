@@ -559,7 +559,7 @@ Windows Distribution Build Procedure
     a. Download and install Inno Setup 5
        <"http://www.jrsoftware.org/isinfo.php">.
     b. Download and install ActiveState ActivePerl
-       <"http://www.activestate.com/store/activeperl/download/">.
+       <"http://www.activestate.com/activeperl/downloads/">.
 
   2. Open workspace VisualMagick\configure\configure.sln by double-clicking
      from Windows Explorer.

@@ -1,5 +1,5 @@
 .. _AffineMatrix:         ../api/types.html#affinematrix
-.. _BlobInfo:             ../api/types.html#blobInfo
+.. _BlobInfo:             ../api/types.html#blobinfo
 .. _Cache:                ../api/types.html#cache
 .. _ChannelType:          ../api/types.html#channeltype
 .. _ChromaticityInfo:     ../api/types.html#chromaticityinfo
