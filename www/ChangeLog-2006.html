@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>GraphicsMagick 1.4 ChangeLog (2006)</TITLE>
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		A:link { color: #00B04F }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#ffffff">
+<b><font face="Helvetica, Arial"><font color="#00B04F"><font size="+1">GraphicsMagick 1.4 ChangeLog (2006)</font></font></font></b></td>
+</tr>
+</table>
+<p>
+2006-11-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/Magick++/Image.html: Fix documentation regarding retrieving
+        EXIF attribute.<BR>
+  <LI> magick/command.c: Fix typo in usage messages.
+
+</UL>
+<p>
+2006-11-02  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> coders/dcm.c: (ReadDCMImage) Prevent buffer overflow of
+        'photometric' array in DCM coder. Original patch thanks to
+        M Joonas Pihlaja. (CVE-2006-5456)
+  <LI> coders/palm.c: (ReadPALMImage) Fix heap overflows of 'one_row'
+        array in PALM coder. Original patch thanks to M Joonas Pihlaja.
+<STRONG>(CVE-2006-5456)</STRONG>
+
+</UL>
+<p>
+2006-10-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Updated libtool to latest CVS head version (1.2352 2006/10/24)
+        in order to fix a bootstrap nit.
+
+</UL>
+<p>
+2006-10-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Updated autoconf to version 2.60, automake to version 1.10, and
+        libtool to latest CVS head version (1.2348 2006/10/22).
+
+</UL>
+<p>
+2006-09-11  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter 'max'
+        to prevent overflowing the 'string' array. (CVE-2006-3743)
+        (ReadOneLayer): Adjust callers of ReadBlobStringWithLongSize(), and
+        guard against infinite loops on premature end-of-file.
+        (ReadXCFImage): Adjust callers of ReadBlobStringWithLongSize(), and
+        guard against infinite loops on premature end-of-file.
+
+</UL>
+<p>
+2006-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/sgi.c (ReadSGIImage): Mostly applied Debian patch for
+        CVE-2006-4144 security issue related to RLE decoding.  Also added
+        complete verification of file header.
+  <LI> magick/image.c (ComputePixelError): Add progress monitor.
+        (GetImageStatisticsMean): Call progress monitor less often.
+        (GetImageStatisticsVariance): Call progress monitor less often.
+
+</UL>
+<p>
+2006-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (WriteTIFFImage): ImageInfo 'endian' option now
+        controls TIFF byte-order rather than bit-order when writing.
+  <LI> coders/png.c (ReadOnePNGImage): Fix compilation problem.  Patch
+        submitted by Aron Stansvik.
+
+</UL>
+<p>
+2006-07-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): Clear the JPEG library
+        structures in order to ensure a completely clean slate.
+
+</UL>
+<p>
+2006-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (ConvertImageCommand): Fix memory leaks which
+        occured when an image was not returned.
+  <LI> magick/command.c (IdentifyImageCommand): Ditto.
+  <LI> magick/command.c (MogrifyImageCommand): Ditto.
+
+</UL>
+<p>
+2006-06-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c: Add mention of -resample to convert and
+        mogrify usage messages.
+
+</UL>
+<p>
+2006-05-31  Ralf Wildenhues  &lt;Ralf.Wildenhues@gmx.de&gt;
+
+<UL>
+  <LI> configure.ac: Fix arguments to AC_CHECK_HEADER.
+
+</UL>
+<p>
+2006-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): -define tiff:alpha= override was
+        only working if the TIFFTAG_EXTRASAMPLES tag was present.  Now it
+        is always available when an alpha channel is present.
+
+</UL>
+<p>
+2006-05-11  JH  &lt;jh@ops.everybox.com&gt;
+
+<UL>
+  <LI> GraphicsMagick.spec.in (files devel): Include
+        %{_libdir}/lib%{name}Wand.so.
+
+</UL>
+<p>
+2006-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c (NTGhostscriptEnumerateVersions): Recent GNU
+        Ghostscript identifies itself as "GPL Ghostscript".
+
+</UL>
+<p>
+2006-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tiff: Updated bundled libtiff to version 3.8.2.
+
+</UL>
+<p>
+2006-04-05  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c: Sets image is_grayscale flag as well as added more
+        symbolic constants.
+
+</UL>
+<p>
+2006-04-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (IMAGE_DATA_ROUNDING): Thanks to Steve Sloan for
+        noticing that 8K is 8192 rather than 8092.  Added a define to
+        allow tailoring the pixel data alignment boundary in case 8K is
+        not the right answer for some reason.
+
+</UL>
+<p>
+2006-03-20  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c: Ensure that unusued opacity channel is set to opaque.
+  <LI> PerlMagick/t/input.art: New ART test image.
+  <LI> PerlMagick/t/input8.mat: New MATLAB test image (8-bit indexed).
+  <LI> PerlMagick/t/input_dbl.mat: New MATLAB test image (double grey)
+  <LI> PerlMagick/t/input_rgb.mat: New MATLAB test image (8-bit RGB)
+
+</UL>
+<p>
+2006-03-19  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c: Use symbolic constants rather than plain numbers
+        so the module is more maintainable.  Correct the format for the
+        day of the week.
+
+</UL>
+<p>
+2006-03-13  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c (WriteMATLABImage): Add RGB writer support for
+        MATLAB format.
+
+</UL>
+<p>
+2006-03-11  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c (ReadMATImage): RGB support for MAT reader.
+
+</UL>
+<p>
+2006-03-02  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
+
+<UL>
+  <LI> coders/mat.c: Fixes for observed crash.  Byte and word formats
+        are working.
+
+</UL>
+<p>
+2006-02-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/environment.imdoc: MAGICK_FONT_PATH has not been supported
+        since 1.1.  Remove mention of it!
+
+</UL>
+<p>
+2006-02-23  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: Updated to latest changes
+
+</UL>
+<p>
+2006-02-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/sgi.c (ReadSGIImage): Properly compute image depth for
+        16-bit SGI image files.
+
+</UL>
+<p>
+2006-01-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (GetExecutionPathUsingName): Search executable
+        search path for binary.
+
+</UL>
+<p>
+2006-01-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage, WriteDPXImage): Alpha channel in DPX
+        uses zero, or reference black, to represent an opaque pixel.
+
+</UL>
+<p>
+2006-01-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/semaphore.c (AllocateSemaphoreInfo): Allow semaphores to
+        recurse on POSIX systems which support recursive semaphores but
+        also warn if the semaphore recurses.
+  <LI> magick/log.c (SetLogEventMask): Avoid deadlock if invoked before
+        log.mgk has been loaded.<BR>
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Fix memory leak on
+        error which was reported by Micha³ Kowalczuk.
+
+</UL>
+<p>
+2006-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/constitute.c (ReadImage): Avoid crash if delegate fails
+        to return image.
+
+</UL>
+<p>
+2006-01-03  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Fix EXIF IFD stack
+        overflow vulnerability.<BR>
+  <LI> configure.ac: Fix typo in HTMLDecodeDelegate.
+
+</UL>
+<p>
+<HR>
+Copyright (C) 2006 GraphicsMagick Group
+
+<p>
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/Copyright.html.
+
+
+<hr>
+</BODY>
+</HTML>
