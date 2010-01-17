@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2010-01-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/shear.c (RotateImage, ShearImage): Ensure that errors
+        propagate up to the API user.  Don't overwrite a detailed
+        exception message with a generic one.  Don't return a bogus image
+        if there is an error.
+
+</UL>
+<p>
 2010-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
