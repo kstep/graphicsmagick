@@ -110,7 +110,7 @@
 // perform poorly for lightweight algorithms.  If the CPU cores need
 // to communicate via L3 cache or main memory, then performance may
 // suffer unless this define is used.
-// #undef DisableSlowOpenMP
+#define DisableSlowOpenMP
 
 
 /////////////

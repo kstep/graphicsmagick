@@ -47,7 +47,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/README.html \
 	$(WWWDIR)/authors.html \
 	$(WWWDIR)/benchmarks.html \
-	$(WWWDIR)/benchmarks-1.2.html \
 	$(WWWDIR)/bugs.html \
 	$(WWWDIR)/contribute.html \
 	$(WWWDIR)/download.html \
@@ -76,7 +75,6 @@ WWW_RST_FILES = \
 	www/api/api.rst \
 	www/authors.rst \
 	www/benchmarks.rst \
-	www/benchmarks-1.2.rst \
 	www/bugs.rst \
 	www/contribute.rst \
 	www/download.rst \
