@@ -568,7 +568,7 @@ coders_pdb_la_LIBADD       = $(LIBMAGICK)
 coders_pdf_la_SOURCES      = coders/pdf.c
 coders_pdf_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD       = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
+coders_pdf_la_LIBADD       = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_GS)
 
 # PICT coder module
 coders_pict_la_SOURCES     = coders/pict.c

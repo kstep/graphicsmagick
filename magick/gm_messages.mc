@@ -121,7 +121,7 @@ Unable to read pixel cache
 MessageId       = +1
 SymbolicName    = CacheErrorUnableToSyncCache
 Language        = English
-Unable to sync cache
+Unable to sync cache (check temporary file disk space)
 .
 
 MessageId       = +1
@@ -542,6 +542,12 @@ MessageId       = +1
 SymbolicName    = ConfigureErrorRegistryKeyLookupFailed
 Language        = English
 Registry key lookup failed. Package is not properly installed on this machine.
+.
+
+MessageId       = +1
+SymbolicName    = ConfigureErrorStringTokenLengthExceeded
+Language        = English
+String token maximum length exceeded
 .
 
 MessageId       = +1
@@ -1433,6 +1439,12 @@ input images already specified
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorInvalidSubimageSpecification
+Language        = English
+Invalid subimage specification
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorKernelRadiusIsTooSmall
 Language        = English
 kernel radius is too small
@@ -1442,6 +1454,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorKernelWidthMustBeAnOddNumber
 Language        = English
 kernel width must be an odd number
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorMatrixIsNotSquare
+Language        = English
+Matrix is not square (%s elements)
 .
 
 MessageId       = +1
@@ -2441,6 +2459,12 @@ Memory allocation failed
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorSemaporeOperationFailed
+Language        = English
+Semaphore operation failed
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateAscii85Info
 Language        = English
 unable to allocate ascii85 info
@@ -2587,7 +2611,7 @@ unable to allocate type info
 MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToAllocateWand
 Language        = English
-unable to allocate wand '%s
+unable to allocate wand
 .
 
 MessageId       = +1
@@ -2639,6 +2663,12 @@ unable to create colormap
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToDestroySemaphore
+Language        = English
+unable to destroy semaphore
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToDisplayImage
 Language        = English
 unable to display image
@@ -2651,9 +2681,27 @@ unable to escape string
 .
 
 MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToInitializeSemaphore
+Language        = English
+unable to initialize semaphore
+.
+
+MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToInterpretMSLImage
 Language        = English
 unable to interpret MSL image
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToLockSemaphore
+Language        = English
+unable to lock semaphore
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToUnlockSemaphore
+Language        = English
+unable to unlock semaphore
 .
 
 MessageId       = +1

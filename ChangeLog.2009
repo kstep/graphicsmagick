@@ -515,6 +515,8 @@
 
 2009-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh: Released GraphicsMagick 1.3.7.
+
 	* coders/msl.c, doc/conjure.imdoc: Add support for a new 'profile'
 	command in MSL/conjure which applies, adds, or removes one or more
 	IPTC, ICC or generic profiles from a file.  Work contributed by

@@ -83,7 +83,7 @@
 static Image *ReadDPSImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  char
+  const char
     *client_name;
 
   Display
@@ -174,7 +174,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   /*
     Get user defaults from X resource database.
   */
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=MagickXGetResourceDatabase(display,client_name);
   MagickXGetResourceInfo(resource_database,client_name,&resource_info);
   /*

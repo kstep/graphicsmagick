@@ -66,77 +66,6 @@ extern "C" {
 #  define STDC
 #endif /* !defined(const) */
 
-/**
- ** Borland C++ Builder DLL compilation defines
- **/
-#if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
-#  define _MAGICKDLL_
-#  define _MAGICKLIB_
-#  undef BuildMagickModules
-#  define SupportMagickModules
-#endif 
-
-#if defined(MSWINDOWS) && !defined(__CYGWIN__)
-#  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#    define _MAGICKDLL_
-#  endif
-#  if defined(_MAGICKDLL_)
-#    if defined(_VISUALC_)
-#      pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
-#    endif
-#    if !defined(_MAGICKLIB_)
-#      define MagickExport  __declspec(dllimport)
-#      if defined(_VISUALC_)
-#        pragma message( "Magick lib DLL import interface" )
-#      endif
-#    else
-#      define MagickExport  __declspec(dllexport)
-#      if defined(_VISUALC_)
-#         pragma message( "Magick lib DLL export interface" )
-#      endif
-#    endif
-#  else
-#    define MagickExport
-#    if defined(_VISUALC_)
-#      pragma message( "Magick lib static interface" )
-#    endif
-#  endif
-#  if defined(_DLL) && !defined(_LIB)
-#    define ModuleExport  __declspec(dllexport)
-#    if defined(_VISUALC_)
-#      pragma message( "Magick module DLL export interface" ) 
-#    endif
-#  else
-#    define ModuleExport
-#    if defined(_VISUALC_)
-#      pragma message( "Magick module static interface" ) 
-#    endif
-#  endif
-#  define MagickGlobal __declspec(thread)
-#  if defined(_VISUALC_)
-#    pragma warning(disable : 4018)
-#    pragma warning(disable : 4244)
-#    pragma warning(disable : 4142)
-#    pragma warning(disable : 4800)
-#    pragma warning(disable : 4786)
-#    pragma warning(disable : 4996) /* function deprecation warnings */
-#  endif
-#else
-#  define MagickExport
-#  define ModuleExport
-#  define MagickGlobal
-#endif
-
-/*
-  Enable use of numeric message IDs and a translation table in order
-  to support multiple locales.
- */
-#define MAGICK_IDBASED_MESSAGES 1
-#if defined(MAGICK_IDBASED_MESSAGES)
-#  include "magick/locale_c.h"
-#endif
-
 /*
   For the Windows Visual C++ DLL build, use a Windows resource based
   message lookup table (i.e. use FormatMessage()).
@@ -149,22 +78,6 @@ extern "C" {
 #  if ((defined(MSWINDOWS) && defined(_DLL)) && !defined(__MINGW32__))
 #    define MAGICK_WINDOWS_MESSAGE_TABLES 1
 #  endif
-#endif
-
-#define MagickSignature  0xabacadabUL
-
-/*
-  This size is the default minimum string allocation size (heap or
-  stack) for a C string in GraphicsMagick.  The weird size is claimed
-  to be based on 2*FILENAME_MAX (not including terminating NULL) on
-  some antique system.  Linux has a FILENAME_MAX definition, but it is
-  4096 bytes.  Many OSs have path limits of 1024 bytes.
-
-  The FormatString() function assumes that the buffer it is writing to
-  has at least this many bytes remaining.
-*/
-#if !defined(MaxTextExtent)
-#  define MaxTextExtent  2053
 #endif
 
 #include <stdarg.h>
@@ -199,14 +112,6 @@ extern "C" {
 #if !defined(ExtendedUnsignedIntegralType)
 #  define ExtendedUnsignedIntegralType magick_uint64_t
 #endif
-
-#define MagickPassFail unsigned int
-#define MagickPass     1
-#define MagickFail     0
-
-#define MagickBool     unsigned int
-#define MagickTrue     1
-#define MagickFalse    0
 
 #include <string.h>
 #include <ctype.h>
@@ -268,6 +173,18 @@ extern "C" {
 #undef y1
 #define y1 y1_magick
 
+/*
+  Include common bits shared with api.h
+*/
+#include "magick/common.h"
+/*
+  Enable use of numeric message IDs and a translation table in order
+  to support multiple locales.
+ */
+#define MAGICK_IDBASED_MESSAGES 1
+#if defined(MAGICK_IDBASED_MESSAGES)
+#  include "magick/locale_c.h"
+#endif
 #include "magick/magick_types.h"
 #include "magick/image.h"
 #include "magick/list.h"
@@ -406,10 +323,13 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
+#define NumberOfObjectsInArray(octets,size) ((octets+size-1)/size)
 #define QuantumTick(i,span) \
   ((((i) % ((Max(101,span)-1)/100)) == 0) || \
     ((magick_int64_t) (i) == ((magick_int64_t) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
+#define RoundUpToAlignment(offset,alignment)				\
+  (((offset)+((alignment)-1)) & ~((alignment)-1))
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
@@ -417,6 +337,15 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 
 #define DefineNameToString(value) #value
 #define DefineValueToString(define) DefineNameToString(define)
+
+/*
+  atof(), atoi(), and atol() are legacy functions which might not be
+  thread safe, might not enforce reasonable limits, and should not be
+  used for new code.  So we implement them via strtod and strtol.
+*/
+#define MagickAtoF(str) (strtod(str, (char **)NULL))
+#define MagickAtoI(str) ((int) strtol(str, (char **)NULL, 10))
+#define MagickAtoL(str) (strtol(str, (char **)NULL, 10))
 
 /*
   3D effects.
@@ -440,6 +369,10 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 
 #if !defined(MAP_FAILED)
 #  define MAP_FAILED      ((void *) -1)
+#endif
+
+#if !defined(PATH_MAX)
+#  define PATH_MAX 4096
 #endif
 
 #if defined(HasLTDL) || ( defined(MSWINDOWS) && defined(_DLL) )

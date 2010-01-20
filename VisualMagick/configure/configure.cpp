@@ -1032,6 +1032,10 @@ void CConfigureApp::process_library( const char *root,
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      if (name.compare("cals") == 0)
+        {
+          workspace->write_project_dependency(project,"CORE_tiff");
+        }
       if (name.compare("hdf") == 0)
         {
           workspace->write_project_dependency(project,"CORE_zlib");
@@ -1057,6 +1061,7 @@ void CConfigureApp::process_library( const char *root,
         }
       if (name.compare("tiff") == 0)
         {
+	  workspace->write_project_dependency(project,"CORE_jbig");
           workspace->write_project_dependency(project,"CORE_jpeg");
           workspace->write_project_dependency(project,"CORE_zlib");
         }
@@ -1126,6 +1131,11 @@ void CConfigureApp::process_module( const char *root,
   extra = "..\\magick";
   add_includes(includes_list, extra, levels-2);
 
+  if (name.compare("cals") == 0)
+    {
+      extra = "..\\tiff\\libtiff";
+      add_includes(includes_list, extra, levels-2);
+    }
   if (name.compare("png") == 0)
     {
       extra = "..\\zlib";
@@ -1308,6 +1318,10 @@ void CConfigureApp::process_module( const char *root,
         workspace->write_project_dependency(project,"CORE_magick");
         if (dependency.length() > 0)
           workspace->write_project_dependency(project,dependency.c_str());
+        if (name.compare("cals") == 0)
+          {
+            workspace->write_project_dependency(project,"CORE_tiff");
+          }
         if (name.compare("label") == 0)
           {
             if (useX11Stubs)
@@ -1447,6 +1461,10 @@ void CConfigureApp::process_3rd_party_library( const char *root,
             case MULTITHREADEDDLL:
               {
                 workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
+                if (name.compare("cals") == 0)
+                  {
+                    workspace->write_project_dependency(project,"CORE_tiff");
+                  }
                 if (name.compare("png") == 0)
                   {
                     workspace->write_project_dependency(project,"CORE_zlib");
@@ -1475,6 +1493,7 @@ void CConfigureApp::process_3rd_party_library( const char *root,
 #endif
                 if (name.compare("tiff") == 0)
                   {
+		    workspace->write_project_dependency(project,"CORE_jbig");
                     workspace->write_project_dependency(project,"CORE_jpeg");
                     workspace->write_project_dependency(project,"CORE_zlib");
                   }

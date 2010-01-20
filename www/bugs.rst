@@ -16,11 +16,6 @@ any additional bugs to the GraphicsMagick `bug tracker
    single-channel/grayscale 10-bit DPX files will only work for widths
    evenly divisible by three. (SF 1533184)
 
- * MPC "format" severely misbehaves when converting to another MPC file
-   or when outputting to a format which requires that the pixels or
-   colormap be modified (which would want to modify the read-only MPC
-   input file).
-
  * PSD reader is not working for some files. Can fix by extracting the
    already rendered image from the PSD file rather than the layers.
 
@@ -35,8 +30,3 @@ any additional bugs to the GraphicsMagick `bug tracker
    how to fix this due to how things work. (SF 1839932).
 
  * Text annotation options do not work perfectly (SF 1539050, 1539052, 1539059)
-
- * Due to long-standing design decision, Magick++ Color class may not be
-   used to assign color to transparent black since it is considered to be
-   an invalid color.
-

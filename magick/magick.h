@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2009 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -7,7 +7,7 @@
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  
-  ImageMagick Application Programming Interface declarations.
+  GraphicsMagick Application Programming Interface declarations.
 */
 #ifndef _MAGICK_MAGICK_H
 #define _MAGICK_MAGICK_H
@@ -146,4 +146,4 @@ extern MagickExport MagickInfo
 }
 #endif
 
-#endif
+#endif /* _MAGICK_MAGICK_H */

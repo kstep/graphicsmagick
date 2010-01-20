@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003-2009 GraphicsMagick Group
   Copyright (C) 2003 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -31,6 +31,8 @@ extern WandExport double
   PixelGetYellow(const PixelWand *);
 
 extern WandExport PixelWand
+  *ClonePixelWand(const PixelWand *),
+  **ClonePixelWands(const PixelWand **,const unsigned long),
   *NewPixelWand(void),
   **NewPixelWands(const unsigned long);
 

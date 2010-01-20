@@ -21,7 +21,7 @@ The licenses which components of this software fall under are as follows.
   from ImageMagick Studio's ImageMagick and applied the "MIT" style
   license:
 
-  Copyright (C) 2002 - 2009 GraphicsMagick Group
+  Copyright (C) 2002 - 2010 GraphicsMagick Group
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
@@ -270,6 +270,6 @@ The licenses which components of this software fall under are as follows.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2009 GraphicsMagick Group
+| Copyright (C) 2002 - 2010 GraphicsMagick Group
 
 

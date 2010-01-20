@@ -56,6 +56,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/analyze.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/channel.h"
@@ -75,16 +76,35 @@
 #include "magick/transform.h"
 #include "magick/utility.h"
 #if defined(HasPNG)
+
+/* Suppress libpng pedantic warnings */
+#define PNG_DEPRECATED  /* Use of this function is deprecated */
+#define PNG_USE_RESULT  /* The result of this function must be checked */
+#define PNG_NORETURN    /* This function does not return */
+/* #define PNG_ALLOCATED */ /* The result of the function is new memory */
+#define PNG_DEPSTRUCT   /* access to this struct member is deprecated */
+
 #include "png.h"
 #include "zlib.h"
 
-#if PNG_LIBPNG_VER < 10400
+
 /*
  * TO DO: rewrite using png_get_tRNS() instead of direct access to the
  * ping and ping_info structs.
  */
-#define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
-#define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#if PNG_LIBPNG_VER < 10400
+#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
+#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#else
+   /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
+    * Just don't use libpng-1.4.0beta32-34 or beta67-73
+    */
+#  ifndef  PNG_ER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
+#    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
+#  endif
+#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
+#    define trans_alpha  trans          /* Changed at libpng-1.4.0beta74 */
+#  endif
 #endif
 
 #if PNG_LIBPNG_VER > 95
@@ -496,6 +516,7 @@ static const char* PngColorTypeToString(const unsigned int color_type)
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
+%      This function updates image->colors and image->colormap.
 %
 %
 */
@@ -536,9 +557,19 @@ static MagickPassFail CompressColormapTransFirst(Image *image)
     Determine if colormap can be compressed.
   */
   assert(image != (Image *) NULL);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "    CompressColorMapTransFirst %s (%ld colors)",
+         image->filename,(long)image->colors);
   if (image->storage_class != PseudoClass || image->colors > 256 ||
       image->colors < 2)
-    return(MagickFail);
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    Could not compress colormap");
+      if (image->colors > 256 || image->colors == 0)
+        return(MagickFalse);
+      else
+        return(MagickTrue);
+    }
   marker=MagickAllocateMemory(unsigned char *,image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
@@ -1308,6 +1339,8 @@ static long mng_get_long(unsigned char *p)
   return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
+static void PNGErrorHandler(png_struct *ping,png_const_charp message) MAGICK_FUNC_NORETURN;
+
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image
@@ -1408,7 +1441,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /* look for length */
   while (*sp == '\0' || *sp == ' ' || *sp == '\n')
     sp++;
-  length=atol(sp);
+  length=MagickAtoL(sp);
   while (*sp != ' ' && *sp != '\n')
     sp++;
   /* allocate space */
@@ -1583,13 +1616,24 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.opacity=0;
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  AcquireSemaphoreInfo(&png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
 #if (PNG_LIBPNG_VER < 10007)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
+#endif
+
+#if (PNG_LIBPNG_VER >= 10400)
+#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
+  if (image_info->verbose)
+    {
+      printf("Your PNG library (libpng-%s) is an old beta version.\n",
+           PNG_LIBPNG_VER_STRING);
+      printf("Please update it.\n");
+    }
+#  endif
 #endif
 
   image=mng_info->image;
@@ -1628,7 +1672,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (png_pixels != (unsigned char *) NULL)
         MagickFreeMemory(png_pixels);
@@ -2121,7 +2165,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (image != (Image *) NULL)
         image->columns=0;
@@ -2171,8 +2215,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else
               row_offset=0;
             png_read_row(ping,png_pixels+row_offset,NULL);
-            /* FIXME: Use SetImagePixels? */
-            if (!GetImagePixels(image,0,y,image->columns,1))
+	    if (!SetImagePixels(image,0,y,image->columns,1))  /* Was GetImagePixels() */
               break;
 #if (QuantumDepth == 8)
             if (depth == 16)
@@ -2496,7 +2539,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2698,7 +2741,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   MagickFreeMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LiberateSemaphoreInfo(&png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging)
@@ -6210,7 +6253,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   png_pixels=(unsigned char *) NULL;
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  AcquireSemaphoreInfo(&png_semaphore);
+  LockSemaphoreInfo(png_semaphore);
 #endif
 
   if (setjmp(ping->jmpbuf))
@@ -6225,7 +6268,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       png_destroy_write_struct(&ping,&ping_info);
       MagickFreeMemory(png_pixels);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
+      UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFail);
     }
@@ -6388,7 +6431,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         if (CompressColormapTransFirst(image) == MagickFail)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                                image);
-        number_colors=image_colors;
+        number_colors=image->colors;
         image_colors=save_number_colors;
 #endif
         palette=MagickAllocateMemory(png_color *,
@@ -6398,7 +6441,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                image);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "  Setting up PLTE chunk");
+                                "  Setting up PLTE chunk with %d colors",
+                                (int) number_colors);
         for (i=0; i < (long) number_colors; i++)
           {
             palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
@@ -6774,7 +6818,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                           ThrowWriterException(ResourceLimitError,
                                                MemoryAllocationFailed,
                                                image);
-                        number_colors=image_colors;
+                        number_colors=image->colors;
                         image_colors=save_number_colors;
                       }
 #endif
@@ -6795,7 +6839,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                       }
                     if (logging)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                            "  Setting up PLTE chunk");
+                           "  Setting up PLTE chunk with %d colors",
+                           (int) number_colors);
                     png_set_PLTE(ping,ping_info,palette,(int) number_colors);
 #if (PNG_LIBPNG_VER > 10008)
                     MagickFreeMemory(palette);
@@ -7578,7 +7623,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   MagickFreeMemory(png_pixels);
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LiberateSemaphoreInfo(&png_semaphore);
+  UnlockSemaphoreInfo(png_semaphore);
 #endif
 
   if (logging)
@@ -8317,6 +8362,17 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
+#endif
+
+#if (PNG_LIBPNG_VER >= 10400)
+#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
+  if (image_info->verbose)
+    {
+      printf("Your PNG library (libpng-%s) is an old beta version.\n",
+           PNG_LIBPNG_VER_STRING);
+      printf("Please update it.\n");
+    }
+#  endif
 #endif
 
   /*

@@ -218,7 +218,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
   assert(string != (const char *) NULL);
   p=(char *) string;
   GetToken(p,&p,token);
-  value=atof(token);
+  value=MagickAtoF(token);
   if (strchr(token,'%') != (char *) NULL)
     {
       double
@@ -1186,27 +1186,27 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         p=(char *) value;
                         GetToken(p,&p,token);
-                        affine.sx=atof(value);
+                        affine.sx=MagickAtoF(value);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.rx=atof(token);
+                        affine.rx=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.ry=atof(token);
+                        affine.ry=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.sy=atof(token);
+                        affine.sy=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.tx=atof(token);
+                        affine.tx=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.ty=atof(token);
+                        affine.ty=MagickAtoF(token);
                         break;
                       }
                     break;
@@ -1753,27 +1753,27 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         p=(char *) value;
                         GetToken(p,&p,token);
-                        affine.sx=atof(value);
+                        affine.sx=MagickAtoF(value);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.rx=atof(token);
+                        affine.rx=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.ry=atof(token);
+                        affine.ry=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.sy=atof(token);
+                        affine.sy=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.tx=atof(token);
+                        affine.tx=MagickAtoF(token);
                         GetToken(p,&p,token);
                         if (*token == ',')
                           GetToken(p,&p,token);
-                        affine.ty=atof(token);
+                        affine.ty=MagickAtoF(token);
                         break;
                       }
                     break;
@@ -1882,21 +1882,21 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               p=(char *) value;
               GetToken(p,&p,token);
-              svg_info->view_box.x=atof(token);
+              svg_info->view_box.x=MagickAtoF(token);
               GetToken(p,&p,token);
               if (*token == ',')
                 GetToken(p,&p,token);
-              svg_info->view_box.y=atof(token);
+              svg_info->view_box.y=MagickAtoF(token);
               GetToken(p,&p,token);
               if (*token == ',')
                 GetToken(p,&p,token);
-              svg_info->view_box.width=atof(token);
+              svg_info->view_box.width=MagickAtoF(token);
               if (svg_info->bounds.width == 0)
                 svg_info->bounds.width=svg_info->view_box.width;
               GetToken(p,&p,token);
               if (*token == ',')
                 GetToken(p,&p,token);
-              svg_info->view_box.height=atof(token);
+              svg_info->view_box.height=MagickAtoF(token);
               if (svg_info->bounds.height == 0)
                 svg_info->bounds.height=svg_info->view_box.height;
               break;
@@ -2596,36 +2596,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   xmlSAXHandler
-    SAXModules =
-    {
-      SVGInternalSubset,
-      SVGIsStandalone,
-      SVGHasInternalSubset,
-      SVGHasExternalSubset,
-      SVGResolveEntity,
-      SVGGetEntity,
-      SVGEntityDeclaration,
-      SVGNotationDeclaration,
-      SVGAttributeDeclaration,
-      SVGElementDeclaration,
-      SVGUnparsedEntityDeclaration,
-      SVGSetDocumentLocator,
-      SVGStartDocument,
-      SVGEndDocument,
-      SVGStartElement,
-      SVGEndElement,
-      SVGReference,
-      SVGCharacters,
-      SVGIgnorableWhitespace,
-      SVGProcessingInstructions,
-      SVGComment,
-      SVGWarning,
-      SVGError,
-      SVGError,
-      SVGGetParameterEntity,
-      SVGCDataBlock,
-      SVGExternalSubset
-    };
+    SAXModules;
 
   char
     filename[MaxTextExtent],
@@ -2695,6 +2666,36 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&svg_info.size,image_info->size);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"begin SAX");
   (void) xmlSubstituteEntitiesDefault(1);
+
+  (void) memset(&SAXModules,0,sizeof(SAXModules));
+  SAXModules.internalSubset=SVGInternalSubset;
+  SAXModules.isStandalone=SVGIsStandalone;
+  SAXModules.hasInternalSubset=SVGHasInternalSubset;
+  SAXModules.hasExternalSubset=SVGHasExternalSubset;
+  SAXModules.resolveEntity=SVGResolveEntity;
+  SAXModules.getEntity=SVGGetEntity;
+  SAXModules.entityDecl=SVGEntityDeclaration;
+  SAXModules.notationDecl=SVGNotationDeclaration;
+  SAXModules.attributeDecl=SVGAttributeDeclaration;
+  SAXModules.elementDecl=SVGElementDeclaration;
+  SAXModules.unparsedEntityDecl=SVGUnparsedEntityDeclaration;
+  SAXModules.setDocumentLocator=SVGSetDocumentLocator;
+  SAXModules.startDocument=SVGStartDocument;
+  SAXModules.endDocument=SVGEndDocument;
+  SAXModules.startElement=SVGStartElement;
+  SAXModules.endElement=SVGEndElement;
+  SAXModules.reference=SVGReference;
+  SAXModules.characters=SVGCharacters;
+  SAXModules.ignorableWhitespace=SVGIgnorableWhitespace;
+  SAXModules.processingInstruction=SVGProcessingInstructions;
+  SAXModules.comment=SVGComment;
+  SAXModules.warning=SVGWarning;
+  SAXModules.error=SVGError;
+  SAXModules.fatalError=SVGError;
+  SAXModules.getParameterEntity=SVGGetParameterEntity;
+  SAXModules.cdataBlock=SVGCDataBlock;
+  SAXModules.externalSubset=SVGExternalSubset;
+
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
@@ -3170,34 +3171,34 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("affine",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.sx=atof(token);
+            affine.sx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.rx=atof(token);
+            affine.rx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ry=atof(token);
+            affine.ry=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.sy=atof(token);
+            affine.sy=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.tx=atof(token);
+            affine.tx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ty=atof(token);
+            affine.ty=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.rx=atof(token);
-            affine.ry=atof(token);
+            affine.rx=MagickAtoF(token);
+            affine.ry=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -3495,23 +3496,23 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 GetToken(q,&q,token);
                 (void) strlcpy(type,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                svg_info.segment.x1=atof(token);
-                svg_info.element.cx=atof(token);
+                svg_info.segment.x1=MagickAtoF(token);
+                svg_info.element.cx=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.segment.y1=atof(token);
-                svg_info.element.cy=atof(token);
+                svg_info.segment.y1=MagickAtoF(token);
+                svg_info.element.cy=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.segment.x2=atof(token);
-                svg_info.element.major=atof(token);
+                svg_info.segment.x2=MagickAtoF(token);
+                svg_info.element.major=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.segment.y2=atof(token);
-                svg_info.element.minor=atof(token);
+                svg_info.segment.y2=MagickAtoF(token);
+                svg_info.element.minor=MagickAtoF(token);
                 FormatString(message,"<%sGradient id=\"%s\" x1=\"%g\" "
                   "y1=\"%g\" x2=\"%g\" y2=\"%g\">\n",type,name,
                   svg_info.segment.x1,svg_info.segment.y1,svg_info.segment.x2,
@@ -3521,7 +3522,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                     GetToken(q,&q,token);
                     if (*token == ',')
                       GetToken(q,&q,token);
-                    svg_info.element.angle=atof(token);
+                    svg_info.element.angle=MagickAtoF(token);
                     FormatString(message,"<%sGradient id=\"%s\" cx=\"%g\" "
                       "cy=\"%g\" r=\"%g\" fx=\"%g\" fy=\"%g\">\n",type,name,
                       svg_info.element.cx,svg_info.element.cy,
@@ -3547,19 +3548,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 GetToken(q,&q,token);
                 (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                svg_info.bounds.x=atof(token);
+                svg_info.bounds.x=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.bounds.y=atof(token);
+                svg_info.bounds.y=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.bounds.width=atof(token);
+                svg_info.bounds.width=MagickAtoF(token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
-                svg_info.bounds.height=atof(token);
+                svg_info.bounds.height=MagickAtoF(token);
                 FormatString(message,"<pattern id=\"%s\" x=\"%g\" y=\"%g\" "
                   "width=\"%g\" height=\"%g\">\n",name,svg_info.bounds.x,
                   svg_info.bounds.y,svg_info.bounds.width,
@@ -3601,11 +3602,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("scale",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.sx=atof(token);
+            affine.sx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.sy=atof(token);
+            affine.sy=MagickAtoF(token);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
@@ -3743,11 +3744,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("translate",keyword) == 0)
           {
             GetToken(q,&q,token);
-            affine.tx=atof(token);
+            affine.tx=MagickAtoF(token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
-            affine.ty=atof(token);
+            affine.ty=MagickAtoF(token);
             break;
           }
         status=False;
@@ -3796,11 +3797,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (!IsPoint(q))
         break;
       GetToken(q,&q,token);
-      point.x=atof(token);
+      point.x=MagickAtoF(token);
       GetToken(q,&q,token);
       if (*token == ',')
         GetToken(q,&q,token);
-      point.y=atof(token);
+      point.y=MagickAtoF(token);
       GetToken(q,(char **) NULL,token);
       if (*token == ',')
         GetToken(q,&q,token);

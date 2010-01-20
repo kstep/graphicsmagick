@@ -30,6 +30,7 @@
 #   Don't try to link directories, avoiding error message "<dir> exists".
 #   Barf with Usage message if either DIRFROM *or* DIRTO is not a directory.
 
+SHELL=/bin/sh
 USAGE="Usage: $0 fromdir [todir]"
 
 if [ $# -lt 1 -o $# -gt 2 ]
@@ -90,7 +91,7 @@ do
 	    echo "$pwd: FROM and TO are identical!"
 	    exit 1
 	fi
-	$0 $DIRFROM/$file
+	${SHELL} $0 $DIRFROM/$file
 	)
     fi
 done

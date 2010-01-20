@@ -36,13 +36,13 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/analyze.h"
 #include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/colormap.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/enum_strings.h"
-#include "magick/fx.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
@@ -1003,6 +1003,260 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
       image->is_grayscale=True;
     }
   return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     C o n v o l v e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvolveImage() applies a custom convolution kernel to the image.
+%
+%  The format of the ConvolveImage method is:
+%
+%      Image *ConvolveImage(const Image *image,const unsigned int order,
+%        const double *kernel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o order: The number of columns and rows in the filter kernel.
+%
+%    o kernel: An array of double representing the convolution kernel.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+#define ConvolveImageText "[%s] Convolve: order %u..."
+MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
+                                  const double *kernel,ExceptionInfo *exception)
+{
+  double
+    *normal_kernel;
+
+  Image
+    *convolve_image;
+
+  long
+    width,
+    y;
+
+  MagickPassFail
+    status;
+
+  const MagickBool
+    matte=((image->matte) || (image->colorspace == CMYKColorspace));
+
+  /*
+    Initialize convolve image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=(long) order;
+  if ((width % 2) == 0)
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+                         KernelWidthMustBeAnOddNumber);
+  if (((long) image->columns < width) || ((long) image->rows < width))
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+                         ImageSmallerThanKernelWidth);
+  convolve_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (convolve_image == (Image *) NULL)
+    return((Image *) NULL);
+  convolve_image->storage_class=DirectClass;
+  {
+    /*
+      Build normalized kernel.
+    */
+    double
+      normalize;
+    
+    register long
+      i;
+
+    normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
+    if (normal_kernel == (double *) NULL)
+      {
+        DestroyImage(convolve_image);
+        ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+                            MagickMsg(OptionError,UnableToConvolveImage));
+      }
+    normalize=0.0;
+    for (i=0; i < (width*width); i++)
+      normalize+=kernel[i];
+    if (AbsoluteValue(normalize) <= MagickEpsilon)
+      normalize=1.0;
+    normalize=1.0/normalize;
+    for (i=0; i < (width*width); i++)
+      {
+        normal_kernel[i]=normalize*kernel[i];
+      }
+  }
+  
+  if (LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "  ConvolveImage with %ldx%ld kernel:",width,width))
+    {
+      /*
+        Log convolution matrix.
+      */
+      char
+        cell_text[MaxTextExtent],
+        row_text[MaxTextExtent];
+
+      const double
+        *k;
+
+      long
+        u,
+        v;
+
+      k=kernel;
+      for (v=0; v < width; v++)
+        {
+          *row_text='\0';
+          for (u=0; u < width; u++)
+            {
+              FormatString(cell_text,"%#12.4g",*k++);
+              (void) strlcat(row_text,cell_text,sizeof(row_text));
+              if (u%5 == 4)
+                {
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                        "   %.64s", row_text);
+                  *row_text='\0';
+                }
+            }
+          if (u > 5)
+            (void) strlcat(row_text,"\n",sizeof(row_text));
+          if (row_text[0] != '\0')
+            (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                  "   %s", row_text);
+        }
+    }
+
+  status=MagickPass;
+  /*
+    Convolve image.
+  */
+  {
+    unsigned long
+      row_count=0;
+
+    DoublePixelPacket
+      zero;
+
+    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
+#endif
+    for (y=0; y < (long) convolve_image->rows; y++)
+      {
+        const PixelPacket
+          *p;
+    
+        PixelPacket
+          *q;
+
+        long
+          x;
+
+        MagickBool
+          thread_status;
+
+        thread_status=status;
+        if (thread_status == MagickFail)
+          continue;
+
+	/*
+	  Acquire rectangle of columns+width high, and width tall.
+	*/
+        p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
+                             exception);
+	/*
+	  Set one row.
+	*/
+        q=SetImagePixelsEx(convolve_image,0,y,convolve_image->columns,1,exception);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          thread_status=MagickFail;
+
+        if (thread_status != MagickFail)
+          {
+            for (x=0; x < (long) convolve_image->columns; x++)
+              {
+                DoublePixelPacket
+                  pixel;
+
+                const PixelPacket
+                  *r;
+
+                long
+                  u,
+                  v;
+
+                const double
+                  *k;
+
+                r=p;
+                pixel=zero;
+                k=normal_kernel;
+                for (v=width; v > 0; v--)
+                  {
+                    for (u=0; u < width; u++)
+                      {
+                        pixel.red+=(*k)*r[u].red;
+                        pixel.green+=(*k)*r[u].green;
+                        pixel.blue+=(*k)*r[u].blue;
+                        if (matte)
+                          pixel.opacity+=(*k)*r[u].opacity;
+                        k++;
+                      }
+                    r+=image->columns+width;
+                  }
+                q->red=RoundDoubleToQuantum(pixel.red);
+                q->green=RoundDoubleToQuantum(pixel.green);
+                q->blue=RoundDoubleToQuantum(pixel.blue);
+                q->opacity=RoundDoubleToQuantum(pixel.opacity);
+                p++;
+                q++;
+              }
+            if (!SyncImagePixelsEx(convolve_image,exception))
+              thread_status=MagickFail;
+          }
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_ConvolveImage)
+#endif
+        {
+          row_count++;
+          if (QuantumTick(row_count,image->rows))
+            if (!MagickMonitorFormatted(row_count,image->rows,exception,
+                                        ConvolveImageText,
+                                        convolve_image->filename,
+					order))
+              thread_status=MagickFail;
+          
+          if (thread_status == MagickFail)
+            status=MagickFail;
+        }
+      }
+  }
+  MagickFreeMemory(normal_kernel);
+  if (MagickFail == status)
+    {
+      DestroyImage(convolve_image);
+      convolve_image=(Image *) NULL;
+    }
+  else
+    {
+      convolve_image->is_grayscale=image->is_grayscale;
+    }
+  return(convolve_image);
 }
 
 /*

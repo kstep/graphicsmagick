@@ -54,6 +54,8 @@ endif
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
+	magick/analyze.c \
+	magick/analyze.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
@@ -68,12 +70,15 @@ MAGICK_BASE_SRCS = \
 	magick/cdl.h \
 	magick/channel.c \
 	magick/channel.h \
+	magick/common.h \
 	magick/compare.c \
 	magick/compare.h \
 	magick/confirm_access.c \
 	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
+	magick/color_lookup.c \
+	magick/color_lookup.h \
 	magick/colormap.c \
 	magick/colormap.h \
 	magick/colorspace.c \
@@ -188,6 +193,7 @@ MAGICK_BASE_SRCS = \
 	magick/tsd.c \
 	magick/tsd.h \
 	magick/type.c \
+	magick/type.h \
 	magick/unix_port.c \
 	magick/utility.c \
 	magick/utility.h \
@@ -213,15 +219,18 @@ endif # if WIN32_NATIVE_BUILD
 
 MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
+	magick/analyze.h \
 	magick/attribute.h \
 	magick/average.h \
 	magick/blob.h \
 	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/color_lookup.h \
 	magick/colormap.h \
 	magick/colorspace.h \
 	magick/command.h \
+	magick/common.h \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
@@ -269,6 +278,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/texture.h \
 	magick/timer.h \
 	magick/transform.h \
+	magick/type.h \
 	magick/utility.h \
 	magick/version.h
 

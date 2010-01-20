@@ -15,27 +15,24 @@ GraphicsMagick Image Processing System
               Perl Magic, WebMagick, Web Magic, image processing,
               software development, image, software, Magick++, Gmagick
 
+
 .. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/1.3/
-.. _download GraphicsMagic-1.3 : http://sourceforge.net/project/showfiles.php?group_id=73485
+.. _download GraphicsMagic-1.3 : http://sourceforge.net/projects/graphicsmagick/files/
 .. _GraphicsMagic-1.2 : http://www.graphicsmagick.org/1.2/
-.. _download GraphicsMagic-1.2 : http://sourceforge.net/project/showfiles.php?group_id=73485
-.. _GraphicsMagic-1.1 : http://www.graphicsmagick.org/1.1/
-.. _download GraphicsMagic-1.1 : http://sourceforge.net/project/showfiles.php?group_id=73485
+.. _download GraphicsMagic-1.2 : http://sourceforge.net/projects/graphicsmagick/files/
 
 .. _programming : programming.html
 
 ===========================  =================================================
 Current Stable Branch:       1.3.7__ (Released September 17, 2009) download__
-Previous Stable Branch:      1.2.9__ (Released September 16, 2009) download__
-Legacy (EOL) Stable Branch:  1.1.15__ (Released April 1, 2009) download__
+Previous Stable Branch:      1.2.10__ (Released January 6, 2010) download__
 ===========================  =================================================
 
 __ `GraphicsMagic-1.3`_
 __ `download GraphicsMagic-1.3`_
 __ `GraphicsMagic-1.2`_
 __ `download GraphicsMagic-1.2`_
-__ `GraphicsMagic-1.1`_
-__ `download GraphicsMagic-1.1`_
+
 
 Check http://www.GraphicsMagick.org/ for the latest version of this page.
 
@@ -142,5 +139,5 @@ can do:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2009
+Copyright |copy| GraphicsMagick Group 2002 - 2010
 

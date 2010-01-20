@@ -17,7 +17,7 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
 
-MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -module -avoid-version
+MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.
 #
@@ -75,10 +75,10 @@ TEST_EXTENSIONS = .sh
 
 # Tests to run
 TESTS = \
+	$(PERLMAGICK_TESTS) \
 	$(TESTS_TESTS) \
 	$(MAGICKPP_TESTS) \
 	$(WAND_TESTS) \
-	$(PERLMAGICK_TESTS) \
 	$(UTILITIES_TESTS)
 
 # Tests which are expected to fail
@@ -96,7 +96,8 @@ CHANGELOGS = \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
 	ChangeLog.2007 \
-	ChangeLog.2008
+	ChangeLog.2008 \
+	ChangeLog.2009
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \

@@ -786,7 +786,7 @@ print q(	<STYLE>
         if ($title) {
 	    print q(<table BORDER=0 WIDTH="100%" >) . "\n";
 	    print q(<tr>) . "\n";
-	    print q(<td BGCOLOR="#ffffff"><img SRC="images/right_triangle.png" ALT=">" height=14 width=15>) . "\n";
+	    print q(<td BGCOLOR="#ffffff">) . "\n";
 	    print q(<b><font face="Helvetica, Arial"><font color="#00B04F"><font size="+1">);
 	    print "$title";
             print q(</font></font></font></b></td>) . "\n";
@@ -878,10 +878,6 @@ print q(	<STYLE>
         }
     } else {
         print q(<hr>) . "\n";
-	print q(<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002 - 2008</FONT></P>);
-
     }
 
     if(!$extract)

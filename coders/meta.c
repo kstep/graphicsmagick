@@ -176,7 +176,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(toupper(*p)-toupper(*q));
+  return(toupper((int) *p)-toupper((int) *q));
 }
 
 static int convertHTMLcodes(char *s, int len)
@@ -347,10 +347,10 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) MagickAtoI(newstr);
                 break;
               case 1:
-                recnum = atoi(newstr);
+                recnum = MagickAtoI(newstr);
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
@@ -612,10 +612,10 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 if (strcmp(newstr,"8BIM")==0)
                   dataset = 255;
                 else
-                  dataset = (unsigned char) atoi(newstr);
+                  dataset = (unsigned char) MagickAtoI(newstr);
                 break;
               case 1:
-                recnum = atoi(newstr);
+                recnum = MagickAtoI(newstr);
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
@@ -1583,15 +1583,17 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
     p+=4;
     blob_remaining-=4;
     if (tag_length > blob_remaining) break;
-
     /* Check whether we have the IPTC tag data */
     if (marker == IPTC_ID)
       {
         /* All looks good so return IPTC block "as is" */
         *offset=(unsigned long)(p-blob);
-        return blob_remaining;
+        return tag_length;
       }
-      
+
+    /* Allow for padding of data to even size */
+    if (tag_length & 1) tag_length++;
+
     /* Skip unwanted data */
     p+=tag_length;
     blob_remaining-=tag_length;

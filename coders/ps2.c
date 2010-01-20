@@ -36,6 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/analyze.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/pixel_cache.h"
@@ -147,6 +148,9 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
+  clone_info->type=BilevelType;
+  (void) AddDefinitions(clone_info,"tiff:fill-order=msb2lsb",
+                        &image->exception);
   status=WriteImage(clone_info,huffman_image);
   DestroyImageInfo(clone_info);
   DestroyImage(huffman_image);
@@ -491,9 +495,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     start,
     stop;
 
-  Image
-    *jpeg_image;
-
   int
     count,
     status;
@@ -791,13 +792,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             /*
               Write image in JPEG format.
             */
-            jpeg_image=CloneImage(image,0,0,True,&image->exception);
-            if (jpeg_image == (Image *) NULL)
-              ThrowWriterException2(CoderError,image->exception.reason,image);
-            (void) strcpy(jpeg_image->magick,"JPEG");
-            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
-            (void) WriteBlob(image,length,blob);
-            DestroyImage(jpeg_image);
+	    blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
+	    if (blob == (char *) NULL)
+	      ThrowWriterException2(CoderError,image->exception.reason,image);
+	    (void) WriteBlob(image,length,blob);
             MagickFreeMemory(blob);
             break;
           }
@@ -902,17 +900,14 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             case JPEGCompression:
             {
-              /*
-                Write image in JPEG format.
-              */
-              jpeg_image=CloneImage(image,0,0,True,&image->exception);
-              if (jpeg_image == (Image *) NULL)
-                ThrowWriterException2(CoderError,image->exception.reason,image);
-              (void) strcpy(jpeg_image->magick,"JPEG");
-              blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
-              (void) WriteBlob(image,length,blob);
-              DestroyImage(jpeg_image);
-              MagickFreeMemory(blob);
+	      /*
+		Write image in JPEG format.
+	      */
+	      blob=ImageToJPEGBlob(image,image_info,&length,&image->exception);
+	      if (blob == (char *) NULL)
+		ThrowWriterException2(CoderError,image->exception.reason,image);
+	      (void) WriteBlob(image,length,blob);
+	      MagickFreeMemory(blob);
               break;
             }
             case RLECompression:

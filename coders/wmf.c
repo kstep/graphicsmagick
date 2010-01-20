@@ -41,6 +41,7 @@
 #include "magick/blob.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/constitute.h"
 #include "magick/draw.h"
 #include "magick/log.h"
@@ -53,7 +54,9 @@
 
 #if defined(MSWINDOWS)
 /* The need for this under Visual C++ is a mystery to me */
-#  define M_PI MagickPI
+#  if !defined(M_PI)
+#    define M_PI MagickPI
+#  endif
 #endif
 
 #if defined(HasWMF) || defined(HasWMFlite)

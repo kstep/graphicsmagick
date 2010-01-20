@@ -312,7 +312,7 @@ int main( int /*argc*/, char ** argv)
       cout << "  operator rshift ..." << endl;
       example = model;
       example.label( "Operator RShift\n(All>>2)" );
-      example.quantumOperator( AllChannels, RShiftQuantumOp, static_cast<Quantum>(2));
+      example.quantumOperator( AllChannels, RShiftQuantumOp, 2.0);
       images.push_back( example );
 
       cout << "  ordered dither 2x2 ..." << endl;
@@ -521,9 +521,11 @@ int main( int /*argc*/, char ** argv)
       montage_image.composite( logo, placement, OverCompositeOp );
     }
 
+    for_each( montage.begin(), montage.end(), depthImage(8) );
+    for_each( montage.begin(), montage.end(), matteImage( false ) );
+    for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
+
     cout << "Writing image \"demo_out.miff\" ..." << endl;
-    montage_image.matte( false );
-    montage_image.compressType( RLECompression );
     writeImages(montage.begin(),montage.end(),"demo_out.miff");
 
     // Uncomment following lines to display image to screen

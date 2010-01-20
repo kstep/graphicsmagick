@@ -136,6 +136,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                            image->filename);
         }
     }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "Tile %lux%lu%+ld%+ld",
+			  image->tile_info.width,image->tile_info.height,
+			  image->tile_info.x,image->tile_info.y);
+
   /*
     Allocate memory for a scanline.
   */
@@ -153,8 +160,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       image->matte=True;
       packet_size=(quantum_size*5)/8;
     }
-  scanline=MagickAllocateMemory(unsigned char *,
-    packet_size*image->tile_info.width);
+  scanline=MagickAllocateArray(unsigned char *,
+			       packet_size,image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
@@ -640,7 +647,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   packet_size=(quantum_size*4)/8;
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     packet_size=(quantum_size*5)/8;
-  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
+  pixels=MagickAllocateArray(unsigned char *,packet_size,image->columns);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->interlace != PartitionInterlace)

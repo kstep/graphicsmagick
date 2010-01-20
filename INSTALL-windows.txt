@@ -28,8 +28,8 @@ Prerequisites
   version.
 
   While it is not a requirement, it is strongly recommended that the
-  `Ghostscript <http://www.cs.wisc.edu/~ghost/>`_ package (GraphicsMagick
-  is tested with version 8.62) be installed. GraphicsMagick uses
+  `Ghostscript <http://pages.cs.wisc.edu/~ghost/>`_ package (GraphicsMagick
+  is tested with version 8.70) be installed. GraphicsMagick uses
   Ghostscript to render Postscript and PDF files, as well as formats
   where a translator to Postscript is available. GraphicsMagick will also
   use the fonts delivered with Ghostscript to support the standard set of
@@ -39,7 +39,7 @@ Prerequisites
   The installation package includes the GraphicsMagick Perl extension (
   PerlMagick <perl.html>) as an installation option. If you would like to
   use this extension, then you must install
-  `ActiveState ActivePerl <http://www.activestate.com/store/activeperl/download/>`_
+  `ActiveState ActivePerl <http://www.activestate.com/activeperl/downloads/>`_
   prior to commencing with installation of GraphicsMagick.
 
 Retrieve Install Package
@@ -559,7 +559,7 @@ Windows Distribution Build Procedure
     a. Download and install Inno Setup 5
        <"http://www.jrsoftware.org/isinfo.php">.
     b. Download and install ActiveState ActivePerl
-       <"http://www.activestate.com/store/activeperl/download/">.
+       <"http://www.activestate.com/activeperl/downloads/">.
 
   2. Open workspace VisualMagick\configure\configure.sln by double-clicking
      from Windows Explorer.
@@ -631,10 +631,10 @@ Windows Distribution Build Procedure
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2003 - 2010 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+package; otherwise see http://www.graphicsmagick.org/Copyright.html.
 

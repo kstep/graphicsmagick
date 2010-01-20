@@ -9,14 +9,14 @@
 PACKAGE_NAME='GraphicsMagick'
 #
 # Package base version.  This is is the numeric version suffix applied to
-# PACKAGE_NAME (e.g. "1.3.7").
-PACKAGE_VERSION='1.3.7'
+# PACKAGE_NAME (e.g. "1.3.8").
+PACKAGE_VERSION='1.3.8'
 
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2009-09-17"
-#PACKAGE_RELEASE_DATE="unreleased"
+#PACKAGE_RELEASE_DATE="2009-09-17"
+PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Date of last ChangeLog update

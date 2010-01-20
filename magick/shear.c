@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -81,8 +81,9 @@
 %
 %
 */
-MagickExport Image *AffineTransformImage(const Image *image,
-  const AffineMatrix *affine,ExceptionInfo *exception)
+MagickExport Image *
+AffineTransformImage(const Image *image,const AffineMatrix *affine,
+		     ExceptionInfo *exception)
 {
   AffineMatrix
     transform;
@@ -172,7 +173,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %
 %  The format of the CropToFitImage method is:
 %
-%      Image *CropToFitImage(Image **image,const double x_shear,
+%      MagickPassFail CropToFitImage(Image **image,const double x_shear,
 %        const double x_shear,const double width,const double height,
 %        const unsigne int rotate,ExceptionInfo *exception)
 %
@@ -186,9 +187,11 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %
 %
 */
-static void CropToFitImage(Image **image,const double x_shear,
-  const double y_shear,const double width,const double height,
-  const unsigned int rotate,ExceptionInfo *exception)
+static MagickPassFail
+CropToFitImage(Image **image,
+	       const double x_shear,const double y_shear,
+	       const double width,const double height,
+	       const unsigned int rotate,ExceptionInfo *exception)
 {
   Image
     *crop_image;
@@ -243,11 +246,11 @@ static void CropToFitImage(Image **image,const double x_shear,
   geometry.y=(long) ceil(min.y-0.5);
   crop_image=CropImage(*image,&geometry,exception);
   if (crop_image != (Image *) NULL)
-    {
-      crop_image->page=(*image)->page;
-      DestroyImage(*image);
-      *image=crop_image;
-    }
+    crop_image->page=(*image)->page;
+  DestroyImage(*image);
+  *image=crop_image;
+
+  return (*image != (Image *) NULL ? MagickPass : MagickFail);
 }
 
 /*
@@ -279,6 +282,8 @@ static void CropToFitImage(Image **image,const double x_shear,
 %
 %    o rotations: Specifies the number of 90 degree rotations.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 #if 1
@@ -286,8 +291,9 @@ static void CropToFitImage(Image **image,const double x_shear,
 #  define IntegralRotateImageUseOpenMP
 #endif
 #endif
-static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
-                                  ExceptionInfo *exception)
+static Image *
+IntegralRotateImage(const Image *image,unsigned int rotations,
+		    ExceptionInfo *exception)
 {
   char
     message[MaxTextExtent];
@@ -409,7 +415,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         tile=0;
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,1) shared(status, tile)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,1) shared(status, tile)
+#  endif
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -535,7 +543,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   }
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
                 {
                   tile++;
@@ -567,7 +577,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 
         (void) strlcpy(message,"[%s] Rotate: 180 degrees...",sizeof(message));
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,8) shared(row_count, status)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,8) shared(row_count, status)
+#  endif
 #endif
         for (y=0; y < (long) image->rows; y++)
           {
@@ -613,7 +625,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   thread_status=MagickFail;
               }
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
             {
               row_count++;
@@ -650,7 +664,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                      ((image->columns/tile_width_max)+1));
         tile=0;
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp parallel for schedule(static,1) shared(status, tile)
+#  if defined(HAVE_OPENMP)
+#    pragma omp parallel for schedule(static,1) shared(status, tile)
+#  endif
 #endif
         for (tile_y=0; tile_y < (long) image->rows; tile_y+=tile_height_max)
           {
@@ -776,7 +792,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
                   }
 
 #if defined(IntegralRotateImageUseOpenMP)
-#  pragma omp critical (GM_IntegralRotateImage)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
 #endif
                 {
                   tile++;
@@ -825,9 +843,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 %
 %  The format of the XShearImage method is:
 %
-%      void XShearImage(Image *image,const double degrees,
+%      MagickPassFail XShearImage(Image *image,const double degrees,
 %        const unsigned long width,const unsigned long height,
-%        const long x_offset,long y_offset)
+%        const long x_offset,long y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -838,11 +856,14 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 %    o width, height, x_offset, y_offset: Defines a region of the image
 %      to shear.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 */
 
-static void XShearImage(Image *image,const double degrees,
-                        const unsigned long width,const unsigned long height,
-                        const long x_offset,long y_offset)
+static MagickPassFail
+XShearImage(Image *image,const double degrees,
+	    const unsigned long width,const unsigned long height,
+	    const long x_offset,long y_offset,ExceptionInfo *exception)
 {
 #define XShearImageText  "[%s] X Shear: %+g degrees, region %lux%lu%+ld%+ld...  "
 
@@ -922,7 +943,7 @@ static void XShearImage(Image *image,const double degrees,
                 */
                 if (step > x_offset)
                   break;
-                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -941,7 +962,7 @@ static void XShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels right-to-left.
                 */
-                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+                p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -956,7 +977,7 @@ static void XShearImage(Image *image,const double degrees,
                 break;
               }
             }
-          if (!SyncImagePixelsEx(image,&image->exception))
+          if (!SyncImagePixelsEx(image,exception))
             thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -965,7 +986,7 @@ static void XShearImage(Image *image,const double degrees,
           {
             row_count++;
             if (QuantumTick(row_count,height))
-              if (!MagickMonitorFormatted(row_count,height,&image->exception,
+              if (!MagickMonitorFormatted(row_count,height,exception,
                                           XShearImageText,image->filename,
 					  degrees,width,height,
 					  x_offset,y_offset))
@@ -991,7 +1012,7 @@ static void XShearImage(Image *image,const double degrees,
             */
             if (step > x_offset)
               break;
-            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1022,7 +1043,7 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels right-to-left.
             */
-            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,&image->exception);
+            p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1046,7 +1067,7 @@ static void XShearImage(Image *image,const double degrees,
             break;
           }
         }
-      if (!SyncImagePixelsEx(image,&image->exception))
+      if (!SyncImagePixelsEx(image,exception))
         thread_status=MagickFail;
 #if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_XShearImage)
@@ -1054,7 +1075,7 @@ static void XShearImage(Image *image,const double degrees,
       {
         row_count++;
         if (QuantumTick(row_count,height))
-          if (!MagickMonitorFormatted(row_count,height,&image->exception,
+          if (!MagickMonitorFormatted(row_count,height,exception,
                                           XShearImageText,image->filename,
 					  degrees,width,height,
 					  x_offset,y_offset))
@@ -1066,6 +1087,8 @@ static void XShearImage(Image *image,const double degrees,
     }
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
+
+  return status;
 }
 
 /*
@@ -1087,9 +1110,9 @@ static void XShearImage(Image *image,const double degrees,
 %
 %  The format of the YShearImage method is:
 %
-%      void YShearImage(Image *image,const double degrees,
+%      MagickPassFail YShearImage(Image *image,const double degrees,
 %        const unsigned long width,const unsigned long height,long x_offset,
-%        const long y_offset)
+%        const long y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1100,11 +1123,14 @@ static void XShearImage(Image *image,const double degrees,
 %    o width, height, x_offset, y_offset: Defines a region of the image
 %      to shear.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-static void YShearImage(Image *image,const double degrees,
-                        const unsigned long width,const unsigned long height,long x_offset,
-                        const long y_offset)
+static MagickPassFail
+YShearImage(Image *image,const double degrees,
+	    const unsigned long width,const unsigned long height,long x_offset,
+	    const long y_offset,ExceptionInfo *exception)
 {
 #define YShearImageText  "[%s] Y Shear: %+g degrees, region %lux%lu%+ld%+ld...  "
 
@@ -1184,7 +1210,7 @@ static void YShearImage(Image *image,const double degrees,
                 */
                 if (step > y_offset)
                   break;
-                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -1203,7 +1229,7 @@ static void YShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels bottom-to-top.
                 */
-                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
@@ -1218,7 +1244,7 @@ static void YShearImage(Image *image,const double degrees,
                 break;
               }
             }
-          if (!SyncImagePixelsEx(image,&image->exception))
+          if (!SyncImagePixelsEx(image,exception))
             thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -1227,7 +1253,7 @@ static void YShearImage(Image *image,const double degrees,
           {
             row_count++;
             if (QuantumTick(row_count,width))
-              if (!MagickMonitorFormatted(row_count,width,&image->exception,
+              if (!MagickMonitorFormatted(row_count,width,exception,
                                           YShearImageText,image->filename,
 					  degrees,width,height,
 					  x_offset,y_offset))
@@ -1253,7 +1279,7 @@ static void YShearImage(Image *image,const double degrees,
             */
             if (step > y_offset)
               break;
-            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1284,7 +1310,7 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels bottom-to-top.
             */
-            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,&image->exception);
+            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1308,7 +1334,7 @@ static void YShearImage(Image *image,const double degrees,
             break;
           }
         }
-      if (!SyncImagePixelsEx(image,&image->exception))
+      if (!SyncImagePixelsEx(image,exception))
         thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
@@ -1317,7 +1343,7 @@ static void YShearImage(Image *image,const double degrees,
       {
         row_count++;
         if (QuantumTick(row_count,width))
-          if (!MagickMonitorFormatted(row_count,width,&image->exception,
+          if (!MagickMonitorFormatted(row_count,width,exception,
                                       YShearImageText,image->filename,
 				      degrees,width,height,
 				      x_offset,y_offset))
@@ -1329,6 +1355,8 @@ static void YShearImage(Image *image,const double degrees,
     }
   if (is_grayscale && IsGray(image->background_color))
     image->is_grayscale=True;
+
+  return status;
 }
 
 /*
@@ -1375,15 +1403,15 @@ static void YShearImage(Image *image,const double degrees,
 %
 %
 */
-MagickExport Image *RotateImage(const Image *image,const double degrees,
-  ExceptionInfo *exception)
+MagickExport Image *
+RotateImage(const Image *image,const double degrees,ExceptionInfo *exception)
 {
   double
     angle;
 
   Image
-    *integral_image,
-    *rotate_image;
+    *integral_image = (Image *) NULL,
+    *rotate_image = (Image *) NULL;
 
   long
     x_offset,
@@ -1419,8 +1447,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   */
   integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToRotateImage);
+    goto rotate_image_exception;
+
   shear.x=(-tan(DegreesToRadians(angle)/2.0));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -1446,24 +1474,43 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   border_info.height=y_offset;
   rotate_image=BorderImage(integral_image,&border_info,exception);
   DestroyImage(integral_image);
+  integral_image=(Image *) NULL;
   if (rotate_image == (Image *) NULL)
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToRotateImage);
+    goto rotate_image_exception;
+
   /*
     Rotate the image.
   */
   rotate_image->storage_class=DirectClass;
   rotate_image->matte|=rotate_image->background_color.opacity != OpaqueOpacity;
-  XShearImage(rotate_image,shear.x,width,height,x_offset,
-    (long) (rotate_image->rows-height)/2);
-  YShearImage(rotate_image,shear.y,y_width,height,
-    (long) (rotate_image->columns-y_width)/2,y_offset);
-  XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
-    (long) (rotate_image->columns-y_width)/2,0);
-  CropToFitImage(&rotate_image,shear.x,shear.y,width,height,True,exception);
+  
+  if (XShearImage(rotate_image,shear.x,width,height,x_offset,
+		  (long) (rotate_image->rows-height)/2,exception) != MagickPass)
+    goto rotate_image_exception;
+
+  if (YShearImage(rotate_image,shear.y,y_width,height,
+		  (long) (rotate_image->columns-y_width)/2,y_offset,exception)
+      != MagickPass)
+    goto rotate_image_exception;
+
+  if (XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
+		  (long) (rotate_image->columns-y_width)/2,0,exception)
+      != MagickPass)
+    goto rotate_image_exception;
+
+  if (CropToFitImage(&rotate_image,shear.x,shear.y,width,height,True,exception)
+      != MagickPass)
+    goto rotate_image_exception;
+
   rotate_image->page.width=0;
   rotate_image->page.height=0;
   return(rotate_image);
+
+ rotate_image_exception:
+
+  DestroyImage(integral_image);
+  DestroyImage(rotate_image);
+  return (Image *) NULL;
 }
 
 /*
@@ -1511,12 +1558,13 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
 %
 %
 */
-MagickExport Image *ShearImage(const Image *image,const double x_shear,
-  const double y_shear,ExceptionInfo *exception)
+MagickExport Image *
+ShearImage(const Image *image,const double x_shear,
+	   const double y_shear,ExceptionInfo *exception)
 {
   Image
-    *integral_image,
-    *shear_image;
+    *integral_image = (Image *) NULL,
+    *shear_image = (Image *) NULL;
 
   long
     x_offset,
@@ -1543,8 +1591,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   */
   integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToShearImage);
+    goto shear_image_exception;
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -1563,22 +1610,38 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   border_info.width=x_offset;
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
-  if (shear_image == (Image *) NULL)
-    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToShearImage);
   DestroyImage(integral_image);
+  integral_image=(Image *) NULL;
+  if (shear_image == (Image *) NULL)
+    goto shear_image_exception;
   /*
     Shear the image.
   */
   shear_image->storage_class=DirectClass;
   shear_image->matte|=shear_image->background_color.opacity != OpaqueOpacity;
-  XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
-    (long) (shear_image->rows-image->rows)/2);
-  YShearImage(shear_image,shear.y,y_width,image->rows,
-    (long) (shear_image->columns-y_width)/2,y_offset);
-  CropToFitImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
-    False,exception);
+ 
+  if (XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
+		  (long) (shear_image->rows-image->rows)/2,exception)
+      != MagickPass)
+    goto shear_image_exception;
+  
+  if (YShearImage(shear_image,shear.y,y_width,image->rows,
+		  (long) (shear_image->columns-y_width)/2,y_offset,exception)
+      != MagickPass)
+    goto shear_image_exception;
+  
+  if (CropToFitImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
+		     False,exception) != MagickPass)
+    goto shear_image_exception;
+
   shear_image->page.width=0;
   shear_image->page.height=0;
+
   return(shear_image);
+
+ shear_image_exception:
+
+  DestroyImage(integral_image);
+  DestroyImage(shear_image);
+  return (Image *) NULL;
 }

@@ -12,7 +12,7 @@
 #
 # Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..26\n"; }
+BEGIN { $| = 1; $test=1; print "1..27\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -246,3 +246,11 @@ testRead( 'input_gray_32bit.tiff',
   '3317287375433c8a85db4e5f922d6cf8f5597e337cfed3da3d7c090638296f50',
   'e42d156f5c3278c3083409b6d2995b37efca165e1c437b2e25f4c67b4248a574',
   'b82c3738aadf26ee25b28d17eeb9cb185d6c7794d7e676692a2cacd90642973e');
+
+#
+# 27) Test Reading CALS Type 1 (Group4-based)
+# 
+++$test;
+print("CALS Type 1...\n");
+testRead ( 'input_gray_01bit_minwhite.cals',
+  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4' );

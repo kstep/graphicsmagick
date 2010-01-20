@@ -5,13 +5,13 @@
 <sect NAME="montage">gm montage
 </gm>
 <im>
-<sect NAME=mont-top">NAME
+<sect NAME="mont-top">NAME
 <p>
 montage - create a composite image by combining several separate images
 </p>
 </sect>
 <format type=html>
-<sect NAME=mont-contents">Contents
+<sect NAME="mont-contents">Contents
 
 <dl>
 <dt>
@@ -53,14 +53,14 @@ montage - create a composite image by combining several separate images
 </sect>
 </format>
 
-<sect NAME=mont-syno">Synopsis
+<sect NAME="mont-syno">Synopsis
 <p>
 <s>montage</s> <s>[</s> <i>options</i> <s>...]</s> <i>file</i> <s>[ [</s>
 <i>options</i> <s>...]</s> <i>file</i> <s>...]</s> <i>output_file</i>
 </p>
 </sect>
 
-<sect NAME=mont-desc">Description
+<sect NAME="mont-desc">Description
 </im>
 
 <p>
@@ -142,7 +142,7 @@ press a button to display it. See <s>display(1)</s> and <s>miff(5)</s></p>
 
 </sect>
 <back>
-<sect NAME=mont-exam">Examples
+<sect NAME="mont-exam">Examples
 
 <p>
 To create a montage of a cockatoo, a parrot, and a hummingbird and write
@@ -211,7 +211,7 @@ no label, no shadowing, no surrounding tile frame), use:</p>
 
 </sect>
 <back>
-<sect NAME=mont-opti">Options
+<sect NAME="mont-opti">Options
 
 <p>
 Any option you specify on the command line remains in effect for the group
@@ -267,7 +267,7 @@ Options, above.
 </sect>
 <back>
 
-<sect NAME=mont-xres">X Resources
+<sect NAME="mont-xres">X Resources
 
 <p>
 <s>Montage</s> options can appear on the command line or in your X resource
@@ -340,7 +340,7 @@ image.</p>
 </sect>
 <back>
 
-<sect NAME=mont-envi">Environment
+<sect NAME="mont-envi">Environment
 <include file=environment.imdoc>
 </sect>
 <back>
@@ -350,7 +350,7 @@ image.</p>
 </sect>
 <back>
 
-<sect NAME=mont-ackn">Acknowledgements
+<sect NAME="mont-ackn">Acknowledgements
 
 <p>
 The <s>MIT X Consortium</s> for making network transparent graphics a reality.
@@ -388,7 +388,7 @@ spatial subdivision color reduction algorithm is based on his Img software.</p>
 </sect>
 <im>
 <format type=man>
-<sect NAME=mont-also">See also
+<sect NAME="mont-also">See also
 <p>
 GraphicsMagick(1),
 animate(1),

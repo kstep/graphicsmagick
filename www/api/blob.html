@@ -84,7 +84,7 @@
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-void AttachBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
+void AttachBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
 </pre>
 </div>
 <div class="section" id="description">
@@ -92,7 +92,7 @@ void AttachBlob( <a class="reference external" href="../api/types.html#blobInfo"
 <p>AttachBlob() attaches a blob to the BlobInfo structure.</p>
 <p>The format of the AttachBlob method is:</p>
 <pre class="literal-block">
-void AttachBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
+void AttachBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info, const void *blob, const size_t length );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -227,7 +227,7 @@ understood by GraphicsMagick.</dd>
 <div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section" id="id10">
@@ -236,7 +236,7 @@ understood by GraphicsMagick.</dd>
 blob info is NULL, a new one.</p>
 <p>The format of the CloneBlobInfo method is:</p>
 <pre class="literal-block">
-<a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *CloneBlobInfo( const <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -277,7 +277,7 @@ void DestroyBlob( <a class="reference external" href="../api/types.html#image">I
 <div class="section" id="id13">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-void DestroyBlobInfo( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob );
+void DestroyBlobInfo( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob );
 </pre>
 </div>
 <div class="section" id="id14">
@@ -289,7 +289,7 @@ this function since it assures that the blob is closed prior to destruction.</p>
 <p>This function is no longer used within GraphicsMagick.</p>
 <p>The format of the DestroyBlobInfo method is:</p>
 <pre class="literal-block">
-void DestroyBlobInfo( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob );
+void DestroyBlobInfo( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -303,7 +303,7 @@ void DestroyBlobInfo( <a class="reference external" href="../api/types.html#blob
 <div class="section" id="id15">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-void DetachBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+void DetachBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section" id="id16">
@@ -311,7 +311,7 @@ void DetachBlob( <a class="reference external" href="../api/types.html#blobInfo"
 <p>DetachBlob() detaches a blob from the BlobInfo structure.</p>
 <p>The format of the DetachBlob method is:</p>
 <pre class="literal-block">
-void DetachBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+void DetachBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -379,7 +379,7 @@ FILE *GetBlobFileHandle( const <a class="reference external" href="../api/types.
 <div class="section" id="id21">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-void GetBlobInfo( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+void GetBlobInfo( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section" id="id22">
@@ -387,7 +387,7 @@ void GetBlobInfo( <a class="reference external" href="../api/types.html#blobInfo
 <p>GetBlobInfo() initializes the BlobInfo structure.</p>
 <p>The format of the GetBlobInfo method is:</p>
 <pre class="literal-block">
-void GetBlobInfo( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+void GetBlobInfo( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -599,7 +599,7 @@ understood by GraphicsMagick.</dd>
 <div class="section" id="id37">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-<a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> ReferenceBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> ReferenceBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 </div>
 <div class="section" id="id38">
@@ -608,7 +608,7 @@ understood by GraphicsMagick.</dd>
 blob, returning a pointer to the blob.</p>
 <p>The format of the ReferenceBlob method is:</p>
 <pre class="literal-block">
-<a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> ReferenceBlob( <a class="reference external" href="../api/types.html#blobInfo">BlobInfo</a> *blob_info );
+<a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> ReferenceBlob( <a class="reference external" href="../api/types.html#blobinfo">BlobInfo</a> *blob_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -673,7 +673,7 @@ the blob is temporary.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:43 UTC.
+Generated on: 2010-01-20 23:29 UTC.
 
 </div>
 </body>

@@ -38,10 +38,12 @@
 */
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
+#include "magick/analyze.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/channel.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/constitute.h"
 #include "magick/composite.h"
@@ -306,18 +308,28 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strlcpy(allocate_image->magick,image_info->magick,MaxTextExtent);
   if (image_info->size != (char *) NULL)
     {
-      (void) GetGeometry(image_info->size,&allocate_image->tile_info.x,
-        &allocate_image->tile_info.y,&allocate_image->columns,
-        &allocate_image->rows);
+      (void) GetGeometry(image_info->size,
+			 &allocate_image->tile_info.x,
+			 &allocate_image->tile_info.y,
+			 &allocate_image->columns,
+			 &allocate_image->rows);
       allocate_image->offset=allocate_image->tile_info.x;
       allocate_image->tile_info.width=allocate_image->columns;
       allocate_image->tile_info.height=allocate_image->rows;
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
-      (void) GetGeometry(image_info->tile,&allocate_image->tile_info.x,
-        &allocate_image->tile_info.y,&allocate_image->columns,
-        &allocate_image->rows);
+      {
+        (void) GetGeometry(image_info->tile,
+			   &allocate_image->tile_info.x,
+			   &allocate_image->tile_info.y,
+			   &allocate_image->tile_info.width,
+			   &allocate_image->tile_info.height);
+	if (0 == allocate_image->columns)
+	  allocate_image->columns=allocate_image->tile_info.width;
+	if (0 == allocate_image->rows)
+	  allocate_image->rows=allocate_image->tile_info.height;
+      }
   allocate_image->compression=image_info->compression;
   allocate_image->dither=image_info->dither;
   allocate_image->interlace=image_info->interlace;
@@ -436,7 +448,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   Image *image)
 {
-  char
+  const char
     *client_name;
 
   Display
@@ -456,12 +468,13 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     return(False);
   (void) XSetErrorHandler(MagickXError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=MagickXGetResourceDatabase(display,client_name);
   MagickXGetResourceInfo(resource_database,client_name,&resource);
   resource.image_info=CloneImageInfo(image_info);
   resource.immutable=True;
-  (void) MagickXAnimateImages(display,&resource,&client_name,1,image);
+  (void) MagickXAnimateImages(display,&resource,(char **) &client_name,
+			      1,image);
   (void) XCloseDisplay(display);
   DestroyImageInfo(resource.image_info);
   return(image->exception.severity == UndefinedException);
@@ -1104,11 +1117,11 @@ MagickExport void DestroyImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   destroy=False;
-  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   image->reference_count--;
   if (image->reference_count == 0)
     destroy=True;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   if (!destroy)
     return;
   /*
@@ -1145,8 +1158,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   MagickFreeMemory(image->ascii85);
   DestroyBlob(image);
-  if (image->semaphore)
-    DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   MagickFreeMemory(image);
 }
 
@@ -1228,7 +1240,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   Image *image)
 {
-  char
+  const char
     *client_name;
 
   Display
@@ -1254,7 +1266,7 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     return(MagickFail);
   (void) XSetErrorHandler(MagickXError);
-  client_name=SetClientName((char *) NULL);
+  client_name=GetClientName();
   resource_database=MagickXGetResourceDatabase(display,client_name);
   MagickXGetResourceInfo(resource_database,client_name,&resource_info);
   if (image_info->page != (char *) NULL)
@@ -1263,7 +1275,8 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   for (next=image; next; next=next->next)
   {
     state=DefaultState;
-    (void) MagickXDisplayImage(display,&resource_info,&client_name,1,&next,&state);
+    (void) MagickXDisplayImage(display,&resource_info,(char **) &client_name,
+			       1,&next,&state);
     if (state & ExitState)
       break;
   }
@@ -1294,180 +1307,6 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   return(MagickFail);
 }
 #endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t I m a g e B o u n d i n g B o x                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetImageBoundingBox returns the bounding box of an image canvas.
-%
-%  The format of the GetImageBoundingBox method is:
-%
-%      RectangleInfo GetImageBoundingBox(const Image *image,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o bounds: Method GetImageBoundingBox returns the bounding box of an
-%      image canvas.
-%
-%    o image: The image.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-#define GetImageBoundingBoxText "[%s] Get bounding box..."
-MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
-                                               ExceptionInfo *exception)
-{
-  MagickPassFail
-    status=MagickPass;
-
-  long
-    y;
-
-  unsigned long
-    row_count=0;
-
-  PixelPacket
-    corners[3];
-
-  RectangleInfo
-    bounds;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  bounds.width=0;
-  bounds.height=0;
-  bounds.x=(long) image->columns;
-  bounds.y=(long) image->rows;
-
-  (void) AcquireOnePixelByReference(image,&corners[0],0,0,exception);
-  (void) AcquireOnePixelByReference(image,&corners[1],(long) image->columns-1,0,exception);
-  (void) AcquireOnePixelByReference(image,&corners[2],0,(long) image->rows-1,exception);
-#if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
-#endif
-  for (y=0; y < (long) image->rows; y++)
-    {
-      register const PixelPacket
-        *p;
-    
-      register long
-        x;
-
-      RectangleInfo
-        thread_bounds;
-
-      MagickPassFail
-        thread_status;
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_GetImageBoundingBox)
-#endif
-      {
-        thread_status=status;
-        thread_bounds=bounds;
-      }
-      if (thread_status == MagickFail)
-        continue;
-
-      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        thread_status=MagickFail;
-      if (thread_status != MagickFail)
-        {
-          if (image->matte)
-            for (x=0; x < (long) image->columns; x++)
-              {
-                if (p->opacity != corners[0].opacity)
-                  if (x < thread_bounds.x)
-                    thread_bounds.x=x;
-                if (p->opacity != corners[1].opacity)
-                  if (x > (long) thread_bounds.width)
-                    thread_bounds.width=x;
-                if (p->opacity != corners[0].opacity)
-                  if (y < thread_bounds.y)
-                    thread_bounds.y=y;
-                if (p->opacity != corners[2].opacity)
-                  if (y > (long) thread_bounds.height)
-                    thread_bounds.height=y;
-                p++;
-              }
-          else
-            for (x=0; x < (long) image->columns; x++)
-              {
-                if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
-                  if (x < thread_bounds.x)
-                    thread_bounds.x=x;
-                if (!FuzzyColorMatch(p,&corners[1],image->fuzz))
-                  if (x > (long) thread_bounds.width)
-                    thread_bounds.width=x;
-                if (!FuzzyColorMatch(p,&corners[0],image->fuzz))
-                  if (y < thread_bounds.y)
-                    thread_bounds.y=y;
-                if (!FuzzyColorMatch(p,&corners[2],image->fuzz))
-                  if (y > (long) thread_bounds.height)
-                    thread_bounds.height=y;
-                p++;
-              }
-        }
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_GetImageBoundingBox)
-#endif
-      {
-        row_count++;
-        if (QuantumTick(row_count,image->rows))
-          if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                      GetImageBoundingBoxText,image->filename))
-            thread_status=MagickFail;
-
-        if (thread_bounds.x < bounds.x)
-          bounds.x=thread_bounds.x;
-        if (thread_bounds.y < bounds.y)
-          bounds.y=thread_bounds.y;
-        if (thread_bounds.width > bounds.width)
-          bounds.width=thread_bounds.width;
-        if (thread_bounds.height > bounds.height)
-          bounds.height=thread_bounds.height;
-
-        if (thread_status == MagickFail)
-          status=MagickFail;
-      }
-    }
-  if ((bounds.width != 0) || (bounds.height != 0))
-    {
-      bounds.width-=(bounds.x-1);
-      bounds.height-=(bounds.y-1);
-    }
-  if (bounds.x < 0)
-    bounds.x=0;
-  if (bounds.y < 0)
-    bounds.y=0;
-  /*
-    If we fail to find smaller bounds, then return original image
-    dimensions.
-  */
-  if ((bounds.width == 0) || (bounds.height == 0))
-    {
-      bounds.width=image->columns;
-      bounds.height=image->rows;
-      bounds.x=0;
-      bounds.y=0;
-    }
-
-  return(bounds);
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1522,217 +1361,6 @@ MagickExport Image *GetImageClipMask(const Image *image, ExceptionInfo *exceptio
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e D e p t h                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageDepth() returns the minimum bit depth of the image required to
-%  ensure that data is not lost in the red, green, blue, and opacity, channels.
-%  Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
-%  depending on the QuantumDepth value set when the software is compiled.
-%  GetImageDepth() returns the smallest modulus storage size which supports
-%  the scale of the pixel within the range (i.e. no information is lost).
-%  As an example, the value one is returned for a black and white image
-%  since only one bit of resolution is required to represent a black and white
-%  image.
-%
-%  The format of the GetImageDepth method is:
-%
-%      unsigned long GetImageDepth(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-static inline unsigned char MinimumDepthForValue(const Quantum quantum)
-{
-  register unsigned int
-    depth,
-    scale;
-  
-  for (depth=1 ; depth < MaxRGB; depth++)
-    {
-      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-      if (quantum == scale*(quantum/scale))
-        break;
-    }
-  
-  return depth;
-}
-#if MaxMap == MaxRGB
-static magick_uint8_t* AllocateDepthMap(void)
-{
-  magick_uint8_t 
-    *map;
-  
-  map = MagickAllocateArray(unsigned char *, MaxMap+1, sizeof(magick_uint8_t));
-  if (map != (unsigned char *) NULL)
-    {
-      unsigned int
-        i;
-      
-      for (i=0; i <= MaxMap; i++)
-        map[i] = (magick_uint8_t) MinimumDepthForValue(i);
-    }
-  return map;
-}
-#endif /* MaxMap == MaxRGB */
-#define GetImageDepthText "[%s] Get depth..."
-
-static MagickPassFail
-GetImageDepthCallBack(void *mutable_data,          /* User provided mutable data */
-                      const void *immutable_data,  /* User provided immutable data */
-                      const Image *image,          /* Input image */
-                      const PixelPacket *pixels,   /* Pixel row */
-                      const IndexPacket *indexes,  /* Pixel indexes */
-                      const long npixels,          /* Number of pixels in row */
-                      ExceptionInfo *exception     /* Exception report */
-                      )
-{
-  unsigned int
-    *current_depth=(unsigned int *) mutable_data;
-
-  magick_uint8_t
-    *map = (magick_uint8_t *) immutable_data;
-
-  register unsigned int
-    depth;
-
-  register long
-    i;
-
-  ARG_NOT_USED(indexes);
-  ARG_NOT_USED(exception);
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_GetImageDepthCallBack)
-#endif
-  {
-    depth=*current_depth;
-  }
-
-#if MaxMap == MaxRGB
-  if (map)
-    {
-      /*
-        Use fast table lookups if we can
-      */
-      for (i=0; i < npixels; i++)
-        {
-          depth=Max(depth,map[pixels[i].red]);
-          depth=Max(depth,map[pixels[i].green]);
-          depth=Max(depth,map[pixels[i].blue]);
-          if (image->matte)
-            depth=Max(depth,map[pixels[i].opacity]);
-          if (depth == QuantumDepth)
-            break;
-        }
-    }
-#else
-    {
-      /*
-        Use the slow, sure, way (Q32 only)
-      */
-      register unsigned int
-        scale;
-
-      ARG_NOT_USED(map);
-      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-      i=0;
-      while (i < npixels)
-        {
-          if ((pixels[i].red != scale*(pixels[i].red/scale)) ||
-              (pixels[i].green != scale*(pixels[i].green/scale)) ||
-              (pixels[i].blue != scale*(pixels[i].blue/scale)) ||
-              (image->matte &&
-               (pixels[i].opacity != scale*((pixels[i].opacity/scale)))))
-            {
-              depth++;
-              if (depth == QuantumDepth)
-                break;
-              scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-              continue;
-            }
-          i++;
-        }
-    }
-#endif
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_GetImageDepthCallBack)
-#endif
-  {
-    if (depth > *current_depth)
-      *current_depth=depth;
-  }
-
-  return (depth >= QuantumDepth ? MagickFail : MagickPass);
-}
-
-MagickExport unsigned long GetImageDepth(const Image *image,
-                                         ExceptionInfo *exception)
-{
-  magick_uint8_t
-    *map = (magick_uint8_t *) NULL;
-
-  unsigned int
-    depth=1;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  if (image->is_monochrome)
-    return depth;
-
-#if MaxMap == MaxRGB
-  /*
-    Use fast table lookups if we can
-  */
-  map = AllocateDepthMap();
-#endif
-  if ((image->storage_class == PseudoClass) && !(image->matte))
-    {
-      /*
-        PseudoClass
-      */
-      (void) GetImageDepthCallBack(&depth,map,image,
-                                   image->colormap,
-                                   (IndexPacket *) NULL,
-                                   image->colors,
-                                   exception);
-    }
-  else
-    {
-      /*
-        DirectClass.
-       
-        Notice that all pixels in the image must be inspected if the
-        image depth is less than QuantumDepth.
-      */
-     
-      (void) PixelIterateMonoRead(GetImageDepthCallBack,
-                                  NULL,
-                                  GetImageDepthText,
-                                  &depth,map,0,0,image->columns,
-                                  image->rows,image,exception);
-    }
-
-  MagickFreeMemory(map);
-
-  return depth;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t I m a g e E x c e p t i o n                                         %
 %                                                                             %
 %                                                                             %
@@ -1771,201 +1399,6 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
       CopyException(exception,&next->exception);
     next->exception.severity=UndefinedException;
   }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e C h a r a c t e r i s t i c s                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageCharacteristics obtains the basic characteristics of the image
-%  and stores the characterisistics in the user provided
-%  ImageCharacteristics structure.  If optimize is set to MagickTrue, then
-%  exhaustive testing of the image pixels is performed (as required).
-%  MagickPass is returned if this method executes without error.
-%
-%  The format of the GetImageCharacteristics method is:
-%
-%      MagickPassFail GetImageCharacteristics(const Image *image,
-%                               ImageCharacteristics *characteristics,
-%                               MagickBool optimize,
-%                               ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o characteristics: An ImageCharacteristics structure to update.
-%
-%    o optimize: Inspect image pixels (if required)
-%
-%    o exception: Any errors are reported here.
-%
-*/
-#define AnalyzeImageText "[%s] Analyze...  "
-MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
-                                                    ImageCharacteristics *characteristics,
-                                                    const MagickBool optimize,
-                                                    ExceptionInfo *exception)
-{
-  unsigned long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register unsigned long
-    x;
-
-  MagickBool
-    broke_loop = MagickFalse;
-
-  MagickPassFail
-    status = MagickPass;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(characteristics != (ImageCharacteristics *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-
-  characteristics->cmyk = (image->colorspace == CMYKColorspace ? MagickTrue : MagickFalse);
-  characteristics->grayscale = (image->is_grayscale ? MagickTrue : MagickFalse);
-  characteristics->monochrome = (image->is_monochrome ? MagickTrue : MagickFalse);
-  characteristics->opaque = (image->matte ? MagickFalse : MagickTrue);
-  characteristics->palette = (image->storage_class == PseudoClass ? MagickTrue : MagickFalse);
-
-  if ((optimize) && (GetPixelCachePresent(image)))
-    {
-      MagickBool
-        grayscale,
-        monochrome,
-        opaque;
-
-      /* Predicate to test */
-      grayscale=(image->is_grayscale ? MagickFalse : MagickTrue);
-      monochrome=(image->is_monochrome ? MagickFalse : MagickTrue);
-      opaque=(image->matte ? MagickTrue : MagickFalse);
-      switch (image->storage_class)
-        {
-        case DirectClass:
-        case UndefinedClass:
-          {
-            for (y=0; y < image->rows; y++)
-              {
-                p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-                if (p == (const PixelPacket *) NULL)
-                  {
-                    status = MagickFail;
-                    break;
-                  }
-                for (x=image->columns; x != 0; x--)
-                  {
-                    grayscale = ((grayscale) &&
-                                 (p->red == p->green) && (p->red == p->blue));
-                    monochrome = ((monochrome) && (grayscale) &&
-                                  ((0 == p->red) || (MaxRGB == p->red)));
-                    opaque = ((opaque) &&
-                              (p->opacity == OpaqueOpacity));
-                    if (!grayscale &&
-                        !monochrome &&
-                        !opaque)
-                      {
-                        broke_loop=MagickTrue;
-                        break;
-                      }
-                    p++;
-                  }
-                if (!grayscale &&
-                    !monochrome &&
-                    !opaque)
-                  break;
-                if (QuantumTick(y,image->rows))
-                  if (!MagickMonitorFormatted(y,image->rows,exception,
-                                              AnalyzeImageText,image->filename))
-                    break;
-              }
-            break;
-          }
-        case PseudoClass:
-          {
-            p=image->colormap;
-            for (x=image->colors; x != 0; x--)
-              {
-                grayscale = ((grayscale) &&
-                             (p->red == p->green) && (p->red == p->blue));
-                monochrome = ((monochrome) && (grayscale) &&
-                              ((0 == p->red) || (MaxRGB == p->red)));
-                if (!grayscale &&
-                    !monochrome)
-                  {
-                    broke_loop=MagickTrue;
-                    break;
-                  }
-                p++;
-              }
-            if (!opaque)
-              {
-                for (y=0; y < image->rows; y++)
-                  {
-                    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-                    if (p == (const PixelPacket *) NULL)
-                      {
-                        status = MagickFail;
-                        break;
-                      }
-                    for (x=image->columns; x != 0; x--)
-                      {
-                        opaque = ((opaque) &&
-                                  (p->opacity == OpaqueOpacity));
-                        if (!opaque)
-                          {
-                            broke_loop=MagickTrue;
-                            break;
-                          }
-                        p++;
-                      }
-                    if (!opaque)
-                      break;
-                    if (QuantumTick(y,image->rows))
-                      if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                  AnalyzeImageText,image->filename))
-                        break;
-                  }
-              }
-            break;
-          }
-        }
-      if (!characteristics->grayscale)
-        {
-          characteristics->grayscale=grayscale;
-          ((Image *)image)->is_grayscale=grayscale; /* Intentionally ignore const */
-        }
-      if (!characteristics->monochrome)
-        {
-          characteristics->monochrome=monochrome;
-          ((Image *)image)->is_monochrome=monochrome; /* Intentionally ignore const */
-        }
-      if (!characteristics->opaque)
-        characteristics->opaque=opaque;
-    }
-
-  /*
-    Force progress indication to 100%
-  */
-  if (broke_loop)
-    (void) MagickMonitorFormatted(image->rows-1,image->rows,exception,
-                                  AnalyzeImageText,image->filename);
-/*   printf("status=%s, cmyk=%u, grayscale=%u, monochrome=%u, opaque=%u, palette=%u\n", */
-/*          (status == MagickFail ? "Fail" : "Pass"),characteristics->cmyk,characteristics->grayscale, */
-/*          characteristics->monochrome,characteristics->opaque,characteristics->palette); */
-
-  return status;
 }
 
 /*
@@ -2129,65 +1562,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%   G e t I m a g e T y p e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageType() returns the type of image:
-%
-%        Bilevel        Grayscale       GrayscaleMatte
-%        Palette        PaletteMatte    TrueColor
-%        TrueColorMatte ColorSeparation ColorSeparationMatte
-%
-%
-%  The format of the GetImageType method is:
-%
-%      ImageType GetImageType(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-
-MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
-{
-  ImageCharacteristics
-    characteristics;
-
-  ImageType
-    image_type;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  image_type=UndefinedType;
-  if (GetImageCharacteristics(image,&characteristics,MagickTrue,exception))
-    {
-      if (characteristics.cmyk)
-        image_type=(characteristics.opaque ? ColorSeparationType : ColorSeparationMatteType);
-      else if (characteristics.monochrome)
-        image_type=BilevelType;
-      else if (characteristics.grayscale)
-        image_type=(characteristics.opaque ? GrayscaleType : GrayscaleMatteType);
-      else if (characteristics.palette)
-        image_type=(characteristics.opaque ? PaletteType : PaletteMatteType);
-      else
-        image_type=(characteristics.opaque ? TrueColorType : TrueColorMatteType);
-    }
-  return image_type;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 +     I s S u b i m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -2322,16 +1696,16 @@ MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
   assert(*image != (Image *) NULL);
   assert((*image)->signature == MagickSignature);
   clone=False;
-  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   if ((*image)->reference_count > 1)
     clone=True;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   if (!clone)
     return;
   clone_image=CloneImage(*image,0,0,True,exception);
-  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   (*image)->reference_count--;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) (*image)->semaphore);
   *image=clone_image;
 }
 
@@ -2363,9 +1737,9 @@ MagickExport Image *ReferenceImage(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  LockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   image->reference_count++;
-  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
+  UnlockSemaphoreInfo((SemaphoreInfo *) image->semaphore);
   return(image);
 }
 
@@ -2691,7 +2065,8 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %
 */
 
-static inline unsigned int IsFrame(const char *point)
+static inline unsigned int
+IsFrame(const char *point)
 {
   char
     *p;
@@ -2700,8 +2075,145 @@ static inline unsigned int IsFrame(const char *point)
   return(p != point);
 }
 
-MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
-  const MagickBool rectify,ExceptionInfo *exception)
+static MagickPassFail
+ParseSubImageSpecification(char *filename,
+			   char **tile_ptr,
+			   unsigned long *subimage_ptr,
+			   unsigned long *subrange_ptr,
+			   ExceptionInfo *exception)
+{
+  char
+    *spec_start,
+    *spec_end;
+
+  size_t
+    filename_length;
+
+  MagickPassFail
+    status=MagickPass;
+
+  assert(filename != (const char *) NULL);
+  assert(tile_ptr != (char **) NULL);
+  assert(subimage_ptr != (unsigned long *) NULL);
+  assert(subrange_ptr != (unsigned long *) NULL);
+  assert(exception != (ExceptionInfo*) NULL);
+
+  MagickFreeMemory(*tile_ptr);
+  filename_length=strlen(filename);
+  if ((filename_length > 2) &&
+      (filename_length < MaxTextExtent) &&
+      (filename[filename_length-1] == ']') &&
+      ((spec_start=strrchr(filename,'[')) != (const char *) NULL))
+    {
+      const char
+	*digits;
+
+      char
+	spec[MaxTextExtent],
+	*q;
+
+      unsigned long
+	subimage=0,
+	subrange=0;
+
+      unsigned long
+	first,
+	last;
+
+      long
+	value;
+
+      spec_end=&filename[filename_length-1];
+      spec_start++;
+      (void) strlcpy(spec,spec_start,sizeof(spec));
+      spec[spec_end-spec_start]='\0';
+
+      /*
+	Example of supported formats (as per documentation):
+
+	4
+	2,7,4
+	4-7
+	320x256+50+50
+      */
+
+      digits=spec;
+      q=0;
+      value=strtol(digits,&q,10);
+      if (q <= digits) /* Parse error */
+	goto invalid_subimage_specification;
+
+      subimage=value;
+      subrange=subimage;
+      (void) CloneString(tile_ptr,spec);
+
+      for (q=spec; *q != '\0'; )
+	{
+	  while (isspace((int)(unsigned char) *q) || (*q == ','))
+	    q++;
+	  digits=q;
+	  value=strtol(digits,&q,10);
+	  if (q <= digits) /* Parse error */
+	    break;
+	  first=value;
+	  last=first;
+	  while (isspace((int)(unsigned char) *q))
+	    q++;
+	  if (*q == '-')
+	    {
+	      digits=q+1;
+	      value=strtol(digits,&q,10);
+	      if (q <= digits) /* Parse error */
+		break;
+	      last=value;
+	    }
+	  else if ((*q != ',') && (*q != '\0'))
+	    {
+	      break; /* Parse error */
+	    }
+	  if (first > last)
+	    Swap(first,last);
+	  if (first < subimage)
+	    subimage=first;
+	  if (last > subrange)
+	    subrange=last;
+	}
+      if (*q == '\0')
+	{
+	  subrange -= subimage-1;
+	  *subimage_ptr=subimage;
+	  *subrange_ptr=subrange;
+	  status=MagickPass;
+	}
+      else if (IsGeometry(spec))
+	{
+	  status=MagickPass;
+	}
+      else
+	{
+	invalid_subimage_specification:
+	  ThrowException(exception,OptionError,
+			 InvalidSubimageSpecification,spec);
+	  status=MagickFail;
+	}
+      if (status == MagickPass)
+	{
+	  /* Truncate filename */
+	  *(spec_start-1)='\0';
+	}
+#if 0
+      fprintf(stderr,"subimage=%lu subrange=%lu tile=\"%s\"\n",
+	      *subimage_ptr,*subrange_ptr,
+	      (*tile_ptr ? *tile_ptr : "(null)"));
+#endif
+    }
+
+  return status;
+}
+
+MagickExport MagickPassFail
+SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
+	     ExceptionInfo *exception)
 {
   static const char
     *virtual_delegates[] =
@@ -2743,7 +2255,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   unsigned char
     magick[2*MaxTextExtent];
 
-  unsigned int
+  MagickPassFail
     status=MagickPass;
 
   /*
@@ -2753,51 +2265,22 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   *magic='\0';
   p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+  /*
+    Sometimes the provided argument is a real file and we need to
+    account for that.  If it is not a real file and the argument ends
+    with ']' then the trailing part is likely a sub-image or size
+    specification.
+  */
   if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
     {
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
       */
-      for (q=p; (q > image_info->filename) && (*q != '['); q--)
-        ;
-
-      if ((q > image_info->filename) && (*q == '[') && IsFrame(q+1))
-        {
-          unsigned long
-            first,
-            last;
-
-          (void) CloneString(&image_info->tile,q+1);
-          /* Copy image range spec. to tile spec. w/o brackets */
-          image_info->tile[p-q-1]='\0';
-          /* Cut image range spec. from filename */
-          *q='\0';
-          image_info->subimage=atol(image_info->tile);
-          image_info->subrange=image_info->subimage;
-
-          /* Parse the image range spec. now placed in tile */
-          for (q=image_info->tile; *q != '\0'; )
-          {
-            while (isspace((int)(unsigned char) *q) || (*q == ','))
-              q++;
-            first=strtol(q,&q,10);
-            last=first;
-            while (isspace((int)(unsigned char) *q))
-              q++;
-            if (*q == '-')
-              last=strtol(q+1,&q,10);
-            if (first > last)
-              Swap(first,last);
-            if (first < image_info->subimage)
-              image_info->subimage=first;
-            if (last > image_info->subrange)
-              image_info->subrange=last;
-          }
-          image_info->subrange-=image_info->subimage-1;
-        }
-
-      /* Restore p to end of modified filename */
-      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+      (void) ParseSubImageSpecification(image_info->filename,
+					&image_info->tile,
+					&image_info->subimage,
+					&image_info->subrange,
+					exception);
     }
 
   /*

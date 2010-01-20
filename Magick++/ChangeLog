@@ -1,3 +1,15 @@
+2010-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/shapes.cpp (main): Floodfill shape more agressively and
+	scale fuzz factor so that it provides the same results across
+	quantum depths.
+
+2009-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/STL.cpp, lib/Magick++/STL.h (shadeImage): ShadeImage was the
+	result of a botched cut-and-paste.  Corrected now.  Thanks to
+	Jukka Manner for making me aware of this.
+
 2009-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (cdl): New method to apply the ASC CDL.

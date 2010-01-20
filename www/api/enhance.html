@@ -118,7 +118,7 @@ unsigned int EqualizeImage( <a class="reference external" href="../api/types.htm
 <div class="section" id="id3">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int GammaImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level );
+MagickPassFail GammaImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level );
 </pre>
 </div>
 <div class="section" id="id4">
@@ -126,13 +126,14 @@ unsigned int GammaImage( <a class="reference external" href="../api/types.html#i
 <p>Use GammaImage() to gamma-correct an image.  The same image viewed on
 different devices will have perceptual differences in the way the
 image's intensities are represented on the screen.  Specify individual
-gamma levels for the red, green, and blue channels, or adjust all three
-with the gamma parameter.  Values typically range from 0.8 to 2.3.</p>
+gamma levels for the red, green, and blue channels (e.g. &quot;1.0,2.2,0.45&quot;),
+or adjust all three with a single gamma parameter.  Values typically range
+from 0.45 to 2.6.</p>
 <p>You can also reduce the influence of a particular channel with a gamma
 value of 0.</p>
 <p>The format of the GammaImage method is:</p>
 <pre class="literal-block">
-unsigned int GammaImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level );
+MagickPassFail GammaImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -291,7 +292,7 @@ unsigned int NormalizeImage( <a class="reference external" href="../api/types.ht
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:44 UTC.
+Generated on: 2010-01-20 23:29 UTC.
 
 </div>
 </body>

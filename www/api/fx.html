@@ -55,22 +55,21 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#charcoalimage" id="id23">CharcoalImage</a></li>
-<li><a class="reference internal" href="#colorizeimage" id="id24">ColorizeImage</a></li>
-<li><a class="reference internal" href="#colormatriximage" id="id25">ColorMatrixImage</a></li>
-<li><a class="reference internal" href="#convolveimage" id="id26">ConvolveImage</a></li>
-<li><a class="reference internal" href="#implodeimage" id="id27">ImplodeImage</a></li>
-<li><a class="reference internal" href="#morphimages" id="id28">MorphImages</a></li>
-<li><a class="reference internal" href="#oilpaintimage" id="id29">OilPaintImage</a></li>
-<li><a class="reference internal" href="#solarizeimage" id="id30">SolarizeImage</a></li>
-<li><a class="reference internal" href="#steganoimage" id="id31">SteganoImage</a></li>
-<li><a class="reference internal" href="#stereoimage" id="id32">StereoImage</a></li>
-<li><a class="reference internal" href="#swirlimage" id="id33">SwirlImage</a></li>
-<li><a class="reference internal" href="#waveimage" id="id34">WaveImage</a></li>
+<li><a class="reference internal" href="#charcoalimage" id="id21">CharcoalImage</a></li>
+<li><a class="reference internal" href="#colorizeimage" id="id22">ColorizeImage</a></li>
+<li><a class="reference internal" href="#colormatriximage" id="id23">ColorMatrixImage</a></li>
+<li><a class="reference internal" href="#implodeimage" id="id24">ImplodeImage</a></li>
+<li><a class="reference internal" href="#morphimages" id="id25">MorphImages</a></li>
+<li><a class="reference internal" href="#oilpaintimage" id="id26">OilPaintImage</a></li>
+<li><a class="reference internal" href="#solarizeimage" id="id27">SolarizeImage</a></li>
+<li><a class="reference internal" href="#steganoimage" id="id28">SteganoImage</a></li>
+<li><a class="reference internal" href="#stereoimage" id="id29">StereoImage</a></li>
+<li><a class="reference internal" href="#swirlimage" id="id30">SwirlImage</a></li>
+<li><a class="reference internal" href="#waveimage" id="id31">WaveImage</a></li>
 </ul>
 </div>
 <div class="section" id="charcoalimage">
-<h1><a class="toc-backref" href="#id23">CharcoalImage</a></h1>
+<h1><a class="toc-backref" href="#id21">CharcoalImage</a></h1>
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -105,7 +104,7 @@ shortage.</dd>
 </div>
 </div>
 <div class="section" id="colorizeimage">
-<h1><a class="toc-backref" href="#id24">ColorizeImage</a></h1>
+<h1><a class="toc-backref" href="#id22">ColorizeImage</a></h1>
 <div class="section" id="id1">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -138,7 +137,7 @@ percentage.</dd>
 </div>
 </div>
 <div class="section" id="colormatriximage">
-<h1><a class="toc-backref" href="#id25">ColorMatrixImage</a></h1>
+<h1><a class="toc-backref" href="#id23">ColorMatrixImage</a></h1>
 <div class="section" id="id3">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -182,45 +181,16 @@ MagickPassFail ColorMatrixImage( <a class="reference external" href="../api/type
 </dl>
 </div>
 </div>
-<div class="section" id="convolveimage">
-<h1><a class="toc-backref" href="#id26">ConvolveImage</a></h1>
-<div class="section" id="id5">
-<h2>Synopsis</h2>
-<pre class="literal-block">
-<a class="reference external" href="../api/types.html#image">Image</a> *ConvolveImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const unsigned int order,
-                      const double *kernel, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-</div>
-<div class="section" id="id6">
-<h2>Description</h2>
-<p>ConvolveImage() applies a custom convolution kernel to the image.</p>
-<p>The format of the ConvolveImage method is:</p>
-<pre class="literal-block">
-<a class="reference external" href="../api/types.html#image">Image</a> *ConvolveImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const unsigned int order,
-                      const double *kernel, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
-</pre>
-<dl class="docutils">
-<dt>image:</dt>
-<dd>The image.</dd>
-<dt>order:</dt>
-<dd>The number of columns and rows in the filter kernel.</dd>
-<dt>kernel:</dt>
-<dd>An array of double representing the convolution kernel.</dd>
-<dt>exception:</dt>
-<dd>Return any errors or warnings in this structure.</dd>
-</dl>
-</div>
-</div>
 <div class="section" id="implodeimage">
-<h1><a class="toc-backref" href="#id27">ImplodeImage</a></h1>
-<div class="section" id="id7">
+<h1><a class="toc-backref" href="#id24">ImplodeImage</a></h1>
+<div class="section" id="id5">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *ImplodeImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const double amount,
                      <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id8">
+<div class="section" id="id6">
 <h2>Description</h2>
 <p>Method ImplodeImage creates a new image that is a copy of an existing
 one with the image pixels &quot;implode&quot; by the specified percentage.  It
@@ -246,15 +216,15 @@ shortage.</dd>
 </div>
 </div>
 <div class="section" id="morphimages">
-<h1><a class="toc-backref" href="#id28">MorphImages</a></h1>
-<div class="section" id="id9">
+<h1><a class="toc-backref" href="#id25">MorphImages</a></h1>
+<div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *MorphImages( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const unsigned long number_frames,
                     <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id10">
+<div class="section" id="id8">
 <h2>Description</h2>
 <p>The MorphImages() method requires a minimum of two images.  The first
 image is transformed into the second by a number of intervening images
@@ -276,15 +246,15 @@ The more in-between frames, the smoother the morph.</dd>
 </div>
 </div>
 <div class="section" id="oilpaintimage">
-<h1><a class="toc-backref" href="#id29">OilPaintImage</a></h1>
-<div class="section" id="id11">
+<h1><a class="toc-backref" href="#id26">OilPaintImage</a></h1>
+<div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *OilPaintImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const double radius,
                       <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id12">
+<div class="section" id="id10">
 <h2>Description</h2>
 <p>OilPaintImage() applies a special effect filter that simulates an oil
 painting.  Each pixel is replaced by the most frequent color occurring
@@ -305,14 +275,14 @@ in a circular region defined by radius.</p>
 </div>
 </div>
 <div class="section" id="solarizeimage">
-<h1><a class="toc-backref" href="#id30">SolarizeImage</a></h1>
-<div class="section" id="id13">
+<h1><a class="toc-backref" href="#id27">SolarizeImage</a></h1>
+<div class="section" id="id11">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int SolarizeImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const double threshold );
 </pre>
 </div>
-<div class="section" id="id14">
+<div class="section" id="id12">
 <h2>Description</h2>
 <p>SolarizeImage() applies a special effect to the image, similar to the effect
 achieved in a photo darkroom by selectively exposing areas of photo
@@ -333,15 +303,15 @@ unsigned int SolarizeImage( <a class="reference external" href="../api/types.htm
 </div>
 </div>
 <div class="section" id="steganoimage">
-<h1><a class="toc-backref" href="#id31">SteganoImage</a></h1>
-<div class="section" id="id15">
+<h1><a class="toc-backref" href="#id28">SteganoImage</a></h1>
+<div class="section" id="id13">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *SteganoImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#image">Image</a> *watermark,
                      <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id16">
+<div class="section" id="id14">
 <h2>Description</h2>
 <p>Use SteganoImage() to hide a digital watermark within the image.
 Recover the hidden watermark later to prove that the authenticity of
@@ -363,15 +333,15 @@ the watermark.</p>
 </div>
 </div>
 <div class="section" id="stereoimage">
-<h1><a class="toc-backref" href="#id32">StereoImage</a></h1>
-<div class="section" id="id17">
+<h1><a class="toc-backref" href="#id29">StereoImage</a></h1>
+<div class="section" id="id15">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *StereoImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#image">Image</a> *offset_image,
                     <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id18">
+<div class="section" id="id16">
 <h2>Description</h2>
 <p>StereoImage() combines two images and produces a single image that is the
 composite of a left and right image of a stereo pair.  Special red-green
@@ -395,14 +365,14 @@ image.  A null image is returned if there is a memory shortage.</dd>
 </div>
 </div>
 <div class="section" id="swirlimage">
-<h1><a class="toc-backref" href="#id33">SwirlImage</a></h1>
-<div class="section" id="id19">
+<h1><a class="toc-backref" href="#id30">SwirlImage</a></h1>
+<div class="section" id="id17">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *SwirlImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, double degrees, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id20">
+<div class="section" id="id18">
 <h2>Description</h2>
 <p>SwirlImage() swirls the pixels about the center of the image, where
 degrees indicates the sweep of the arc through which each pixel is moved.
@@ -422,15 +392,15 @@ You get a more dramatic effect as the degrees move from 1 to 360.</p>
 </div>
 </div>
 <div class="section" id="waveimage">
-<h1><a class="toc-backref" href="#id34">WaveImage</a></h1>
-<div class="section" id="id21">
+<h1><a class="toc-backref" href="#id31">WaveImage</a></h1>
+<div class="section" id="id19">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *WaveImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const double amplitude, const double wave_length,
                   <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
-<div class="section" id="id22">
+<div class="section" id="id20">
 <h2>Description</h2>
 <p>The WaveImage() filter creates a &quot;ripple&quot; effect in the image by shifting
 the pixels vertically along a sine wave whose amplitude and wavelength
@@ -454,7 +424,7 @@ sine wave.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:44 UTC.
+Generated on: 2010-01-20 23:29 UTC.
 
 </div>
 </body>

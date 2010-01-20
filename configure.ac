@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2009 GraphicsMagick Group
+# Copyright (C) 2003-2010 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -42,10 +42,17 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 AC_CANONICAL_TARGET
 
+# Compute newest and oldest interface numbers.
+MAGICK_LIB_INTERFACE_NEWEST=$MAGICK_LIBRARY_CURRENT
+MAGICK_LIB_INTERFACE_OLDEST=`expr ${MAGICK_LIBRARY_CURRENT} - ${MAGICK_LIBRARY_AGE}`
+
 # Substitute Magick library versioning
 AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
 AC_SUBST(MAGICK_LIBRARY_REVISION)dnl
 AC_SUBST(MAGICK_LIBRARY_AGE)dnl
+
+AC_SUBST(MAGICK_LIB_INTERFACE_NEWEST)
+AC_SUBST(MAGICK_LIB_INTERFACE_OLDEST)
 
 # Substitute Magick++ library versioning
 AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_CURRENT)
@@ -119,6 +126,8 @@ MAGICK_API_LIBS=''
 #AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
 #AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
 #AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
+AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
+AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -216,17 +225,14 @@ AC_EXEEXT
 AC_OBJEXT
 
 LIB_GDI32=''
-StaticCplusPlusLibraries='no'
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
   cygwin* )
-    StaticCplusPlusLibraries='yes'
     cygwin_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
   mingw* )
-    StaticCplusPlusLibraries='yes'
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
@@ -350,9 +356,9 @@ AC_SUBST(OPENMP_CFLAGS)
 
 # Allow the user to disable use of OpenMP where algorithms sometimes run slower.
 AC_ARG_ENABLE(openmp-slow,
-	      [  --disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower],
+	      [  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower],
 	      [with_openmp_slow=$enableval],
-	      [with_openmp_slow='yes'])
+	      [with_openmp_slow='no'])
 if test "$with_openmp_slow" = 'no'
 then
   AC_DEFINE(DisableSlowOpenMP,1,[Disable OpenMP for algorithms which sometimes run slower])
@@ -429,12 +435,7 @@ then
   libtool_build_static_libs='yes'
 fi
 
-# MinGW and Cygwin can't build C++ DLLs which support exceptions.
-if test "${StaticCplusPlusLibraries}" = 'yes'
-then
-  LTCXXLIBOPTS='--static'
-  AC_SUBST(LTCXXLIBOPTS)
-fi
+AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 
 #
 # Enable support for building loadable modules
@@ -486,16 +487,6 @@ then
   AC_DEFINE(UseInstalledMagick,1,[GraphicsMagick is formally installed under prefix])
 else
   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-installed "
-fi
-
-# Enable verbose output from libtool (enable libtool's default)
-AC_ARG_ENABLE(libtool-verbose,
-	      [  --enable-libtool-verbose enable verbose libtool output (default disabled)],
-	      [with_libtool_verbose=$enableval],
-	      [with_libtool_verbose='no'])
-if test "$with_libtool_verbose" = 'no'
-then
-  LIBTOOL="$LIBTOOL --silent"
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
@@ -858,7 +849,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers 
-AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h sys/resource.h sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h process.h sys/resource.h sys/times.h sys/types.h)
 
 ########
 #
@@ -1101,10 +1092,10 @@ GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
-  posix_fallocate posix_madvise pread pwrite putc_unlocked raise rand_r \
-  readdir_r readlink realpath select seekdir setrlimit sigemptyset sigaction \
-  strerror strerror_r strlcat strlcpy strtoll sysconf tempnam tmpnam_r times \
-  telldir ulltostr vsprintf vsnprintf qsort_r])
+  posix_fallocate posix_madvise posix_memalign pread pwrite putc_unlocked raise \
+  rand_r readdir_r readlink realpath select seekdir setrlimit sigemptyset \
+  sigaction spawnvp strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
+  tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #

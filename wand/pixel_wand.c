@@ -1,3 +1,4 @@
+/* Copyright (C) 2003-2009 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -97,6 +98,97 @@ struct _PixelWand
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e P i x e l W a n d                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClonePixelWand() creates an exact copy of a PixelWand. PixelWand may not be
+%  a null pointer.
+%
+%  The format of the ClonePixelWand method is:
+%
+%      PixelWand *ClonePixelWand(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand to clone.
+%
+%
+*/
+WandExport PixelWand *
+ClonePixelWand(const PixelWand *wand)
+{
+  PixelWand
+    *clone_wand;
+
+  assert(wand != (PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+
+  clone_wand=NewPixelWand();
+  clone_wand->colorspace=wand->colorspace;
+  clone_wand->matte=wand->matte;
+  clone_wand->pixel=wand->pixel;
+  clone_wand->count=wand->count;
+
+  return clone_wand;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e P i x e l W a n d s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClonePixelWands() creates a deep-copy an array of PixelWands. 
+%
+%  The format of the ClonePixelWand( method is:
+%
+%      PixelWand **ClonePixelWand(const PixelWand *wands,
+%                                 const unsigned long number_wands)
+%
+%  A description of each parameter follows:
+%
+%    o wands: The pixel wands to clone.
+%
+%    o number_wands: The number of wands in the array
+%
+*/
+WandExport PixelWand **
+ClonePixelWands(const PixelWand **wands,const unsigned long number_wands)
+{
+  PixelWand
+    **clone_wands;
+
+  unsigned long
+    i;
+  
+  assert(wands != (const PixelWand **) NULL);
+  assert(number_wands > 0);
+
+  clone_wands=MagickAllocateArray(PixelWand **,
+				  sizeof(PixelWand *),number_wands);
+  if (clone_wands == (PixelWand **) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
+
+  for (i=0; i < number_wands; i++)
+    clone_wands[i]=ClonePixelWand(wands[i]);
+
+  return clone_wands;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y P i x e l W a n d                                           %
 %                                                                             %
 %                                                                             %
@@ -149,7 +241,7 @@ WandExport PixelWand *NewPixelWand(void)
   wand=(struct _PixelWand *) AcquireMagickMemory(sizeof(struct _PixelWand));
   if (wand == (PixelWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateImage);
+		      UnableToAllocateWand);
   (void) memset(wand,0,sizeof(PixelWand));
   GetExceptionInfo(&wand->exception);
   wand->colorspace=RGBColorspace;
@@ -190,8 +282,8 @@ WandExport PixelWand **NewPixelWands(const unsigned long number_wands)
   wands=(struct _PixelWand **)
     AcquireMagickMemory((size_t) number_wands*sizeof(struct _PixelWand *));
   if (wands == (PixelWand **) NULL)
-    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
-      strerror(errno));
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
   for (i=0; i < (long) number_wands; i++)
     wands[i]=NewPixelWand();
   return(wands);

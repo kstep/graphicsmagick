@@ -12,7 +12,7 @@ Platforms Note
 --------------
 
 Platform specific notes regarding specific operating systems may be found
-in the `PLATFORMS.txt <PLATFORMS.html>`_ file. The intructions in the
+in the `www/platforms.rst <platforms.html>`_ file. The intructions in the
 platforms document provide generic instructions which work in most common
 cases. Additional notes regarding Cygwin & MinGW are provided later in
 this file.
@@ -182,7 +182,7 @@ Optional Features
 
 --disable-openmp        disable use of OpenMP (automatic multi-threaded loops) at all
 
---disable-openmp-slow   disable OpenMP for algorithms which sometimes run slower
+--enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower
 
 --enable-symbol-prefix  enable prefixing library symbols with "Gm"
 
@@ -521,17 +521,17 @@ Several configure options require special note:
   be used. In order to obtain the best single-user performance, set
   OMP_NUM_THREADS equal to the number of available CPU cores.
 
---disable-openmp-slow
-  Some operating systems provide a rather weak thread implementation
-  where relatively fast algorithms actually run slower as threads are
-  added via OpenMP.  Algorithms which are severe CPU hogs still
-  substantially benefit from OpenMP on these systems.  If many
-  algorithms run slower as threads are added, then add the
-  --disable-openmp-slow configure option to disable use of OpenMP for
-  algorithms which are known to become slower.  This option is
-  recommended for FreeBSD 7.0 and Apple's OS-X Leopard and earlier due
-  to weak thread support.  It should not be necessary for AIX, Linux,
-  or Solaris.
+--enable-openmp-slow
+  On some systems, relatively fast algorithms run slower (rather than
+  faster) as threads are added via OpenMP.  This may be due to CPU
+  cache and memory architecture implementation, or OS thread API
+  implementation.  Since it is not known how a system will behave
+  without testing, these algorithms are now disabled for OpenMP by
+  default.  This option should usually be enabled for AIX, Linux, and
+  Solaris, which work well with OpenMP.  AMD Opteron and AMD K10
+  architecture chips works well with this option.  Intel Core 2 Duo
+  works well, but Core 2 Quad does not.  IBM Power works well.
+  UltraSPARC works well.
 
 --with-perl
 
@@ -810,11 +810,11 @@ the current release of all dependent libraries.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2003 - 2010 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+package; otherwise see http://www.graphicsmagick.org/Copyright.html.
 

@@ -102,8 +102,8 @@ MagickPassFail TextureImage( <a class="reference external" href="../api/types.ht
 <h2>Description</h2>
 <p>TextureImage() repeatedly tiles the texture image across and down the image
 canvas. If the image canvas includes a matte channel, then the tile is
-alpha-composited &quot;under&quot; the image. MagickFail is returned if an error is
-encountered.</p>
+alpha-composited &quot;under&quot; the image and the matte channel is removed.
+MagickFail is returned if an error is encountered.</p>
 <p>The format of the TextureImage method is:</p>
 <pre class="literal-block">
 MagickPassFail TextureImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#image">Image</a> *texture );
@@ -120,7 +120,7 @@ MagickPassFail TextureImage( <a class="reference external" href="../api/types.ht
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:45 UTC.
+Generated on: 2010-01-20 23:29 UTC.
 
 </div>
 </body>

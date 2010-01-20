@@ -135,6 +135,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                        image->filename);
     }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "Tile %lux%lu%+ld%+ld",
+			  image->tile_info.width,image->tile_info.height,
+			  image->tile_info.x,image->tile_info.y);
+
   /*
     Support depth in multiples of 8 bits.
   */
@@ -155,7 +162,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     quantum_size=32;
 
   packet_size=quantum_size/8;
-  scanline=MagickAllocateMemory(unsigned char *,packet_size*image->tile_info.width);
+  scanline=MagickAllocateArray(unsigned char *,packet_size,image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
@@ -483,7 +490,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       quantum_size=32;
     (void) TransformColorspace(image,RGBColorspace);
     packet_size=quantum_size/8;
-    scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
+    scanline=MagickAllocateArray(unsigned char *,packet_size,image->columns);
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*

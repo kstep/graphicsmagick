@@ -70,7 +70,7 @@ the GraphicsMagick project:
   (SWF), WebCGM <http://www.w3.org/Graphics/WebCGM/>, or WMF.
 
 * Create an OpenEXR coder based on the OpenEXR
-  <http://www.openexr.org/> library from Industrial Light & Magic.
+  <http://www.openexr.com/> library from Industrial Light & Magic.
 
 * Create a *pstoedit* module to import Postscript, EPS, and PDF
   files as vector data using pstoedit <http://www.pstoedit.net/> which
@@ -82,7 +82,7 @@ the GraphicsMagick project:
   TIFF formats.
 
 * Add integrated Adobe XMP
-  <http://www.adobe.com/products/xmp/main.html> profile support for
+  <http://www.adobe.com/products/xmp/index.html> profile support for
   TIFF, JPEG, PNG, PDF, EPS, and Postscript.
 
 * Port Erik Reinhard's super-cool Parameter Estimation For
@@ -104,10 +104,10 @@ the GraphicsMagick project:
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2009 GraphicsMagick Group
+| Copyright (C) 2002 - 2010 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+package; otherwise see http://www.graphicsmagick.org/Copyright.html.
 
 

@@ -118,7 +118,7 @@
 # Makefile for building Wand API HTML files
 #
 
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -163,8 +163,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(WAND_TESTS) \
-	$(PERLMAGICK_TESTS) $(UTILITIES_TESTS)
+TESTS = $(PERLMAGICK_TESTS) $(TESTS_TESTS) $(am__EXEEXT_6) \
+	$(WAND_TESTS) $(UTILITIES_TESTS)
 XFAIL_TESTS = $(TESTS_XFAIL_TESTS) $(am__EXEEXT_7) \
 	$(UTILITIES_XFAIL_TESTS)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
@@ -702,8 +702,6 @@ coders_pdb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_pdb_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pdb_la_rpath = -rpath $(codersdir)
 coders_pdf_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_pdf_la_OBJECTS = coders/coders_pdf_la-pdf.lo
 coders_pdf_la_OBJECTS = $(am_coders_pdf_la_OBJECTS)
@@ -1113,30 +1111,32 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(ltdl_shl_load_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
-	magick/alpha_composite.h magick/annotate.c magick/api.h \
-	magick/attribute.c magick/attribute.h magick/average.c \
-	magick/average.h magick/bit_stream.c magick/bit_stream.h \
-	magick/blob.c magick/blob.h magick/cdl.c magick/cdl.h \
-	magick/channel.c magick/channel.h magick/compare.c \
+	magick/alpha_composite.h magick/analyze.c magick/analyze.h \
+	magick/annotate.c magick/api.h magick/attribute.c \
+	magick/attribute.h magick/average.c magick/average.h \
+	magick/bit_stream.c magick/bit_stream.h magick/blob.c \
+	magick/blob.h magick/cdl.c magick/cdl.h magick/channel.c \
+	magick/channel.h magick/common.h magick/compare.c \
 	magick/compare.h magick/confirm_access.c \
 	magick/confirm_access.h magick/color.c magick/color.h \
-	magick/colormap.c magick/colormap.h magick/colorspace.c \
-	magick/colorspace.h magick/command.c magick/command.h \
-	magick/composite.c magick/composite.h magick/compress.c \
-	magick/compress.h magick/constitute.c magick/constitute.h \
-	magick/decorate.c magick/decorate.h magick/delegate.c \
-	magick/delegate.h magick/deprecate.c magick/deprecate.h \
-	magick/describe.c magick/describe.h magick/draw.c \
-	magick/draw.h magick/effect.c magick/effect.h magick/enhance.c \
-	magick/enhance.h magick/enum_strings.c magick/enum_strings.h \
-	magick/error.c magick/error.h magick/forward.h magick/fx.c \
-	magick/fx.h magick/gem.c magick/gem.h magick/gradient.c \
-	magick/gradient.h magick/hclut.c magick/hclut.h magick/image.c \
-	magick/image.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
-	magick/magic.h magick/magick.c magick/magick.h \
-	magick/magick_endian.c magick/magick_endian.h magick/map.c \
-	magick/map.h magick/memory.c magick/memory.h magick/module.c \
+	magick/color_lookup.c magick/color_lookup.h magick/colormap.c \
+	magick/colormap.h magick/colorspace.c magick/colorspace.h \
+	magick/command.c magick/command.h magick/composite.c \
+	magick/composite.h magick/compress.c magick/compress.h \
+	magick/constitute.c magick/constitute.h magick/decorate.c \
+	magick/decorate.h magick/delegate.c magick/delegate.h \
+	magick/deprecate.c magick/deprecate.h magick/describe.c \
+	magick/describe.h magick/draw.c magick/draw.h magick/effect.c \
+	magick/effect.h magick/enhance.c magick/enhance.h \
+	magick/enum_strings.c magick/enum_strings.h magick/error.c \
+	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
+	magick/gem.c magick/gem.h magick/gradient.c magick/gradient.h \
+	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
+	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
+	magick/log.c magick/log.h magick/magic.c magick/magic.h \
+	magick/magick.c magick/magick.h magick/magick_endian.c \
+	magick/magick_endian.h magick/map.c magick/map.h \
+	magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
@@ -1155,45 +1155,46 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/symbols.h magick/tempfile.c magick/tempfile.h \
 	magick/texture.c magick/texture.h magick/timer.c \
 	magick/timer.h magick/transform.c magick/transform.h \
-	magick/tsd.c magick/tsd.h magick/type.c magick/unix_port.c \
-	magick/utility.c magick/utility.h magick/version.c \
-	magick/version.h magick/animate.c magick/animate.h \
-	magick/display.c magick/display.h magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h magick/widget.c magick/widget.h \
-	magick/xwindow.c magick/xwindow.h magick/nt_feature.c \
-	magick/nt_feature.h magick/nt_base.c magick/nt_base.h \
-	coders/art.c coders/avi.c coders/avs.c coders/bmp.c \
-	coders/cals.c coders/caption.c coders/cineon.c coders/cmyk.c \
-	coders/cut.c coders/dcm.c coders/dcraw.c coders/dib.c \
-	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
-	coders/gradient.c coders/gray.c coders/histogram.c \
-	coders/hrz.c coders/html.c coders/icon.c coders/identity.c \
-	coders/label.c coders/locale.c coders/logo.c coders/map.c \
-	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
-	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
-	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
-	coders/otb.c coders/palm.c coders/pcd.c coders/pcl.c \
-	coders/pcx.c coders/pdb.c coders/pdf.c coders/pict.c \
-	coders/pix.c coders/plasma.c coders/pnm.c coders/preview.c \
-	coders/ps.c coders/ps2.c coders/ps3.c coders/psd.c \
-	coders/pwp.c coders/rgb.c coders/rla.c coders/rle.c \
-	coders/sct.c coders/sfw.c coders/sgi.c coders/stegano.c \
-	coders/sun.c coders/svg.c coders/tga.c coders/tile.c \
-	coders/tim.c coders/topol.c coders/ttf.c coders/txt.c \
-	coders/uil.c coders/url.c coders/uyvy.c coders/vicar.c \
-	coders/vid.c coders/viff.c coders/wbmp.c coders/wmf.c \
-	coders/wpg.c coders/xbm.c coders/xc.c coders/xcf.c \
-	coders/xpm.c coders/yuv.c coders/dps.c coders/clipboard.c \
-	coders/emf.c coders/fpx.c coders/jbig.c coders/jpeg.c \
-	coders/jp2.c coders/png.c coders/ept.c coders/tiff.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	magick/tsd.c magick/tsd.h magick/type.c magick/type.h \
+	magick/unix_port.c magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/animate.c \
+	magick/animate.h magick/display.c magick/display.h \
+	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/widget.c \
+	magick/widget.h magick/xwindow.c magick/xwindow.h \
+	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
+	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
+	coders/bmp.c coders/cals.c coders/caption.c coders/cineon.c \
+	coders/cmyk.c coders/cut.c coders/dcm.c coders/dcraw.c \
+	coders/dib.c coders/dpx.c coders/fax.c coders/fits.c \
+	coders/gif.c coders/gradient.c coders/gray.c \
+	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
+	coders/identity.c coders/label.c coders/locale.c coders/logo.c \
+	coders/map.c coders/mat.c coders/matte.c coders/meta.c \
+	coders/miff.c coders/mono.c coders/mpc.c coders/mpeg.c \
+	coders/mpr.c coders/msl.c coders/mtv.c coders/mvg.c \
+	coders/null.c coders/otb.c coders/palm.c coders/pcd.c \
+	coders/pcl.c coders/pcx.c coders/pdb.c coders/pdf.c \
+	coders/pict.c coders/pix.c coders/plasma.c coders/pnm.c \
+	coders/preview.c coders/ps.c coders/ps2.c coders/ps3.c \
+	coders/psd.c coders/pwp.c coders/rgb.c coders/rla.c \
+	coders/rle.c coders/sct.c coders/sfw.c coders/sgi.c \
+	coders/stegano.c coders/sun.c coders/svg.c coders/tga.c \
+	coders/tile.c coders/tim.c coders/topol.c coders/ttf.c \
+	coders/txt.c coders/uil.c coders/url.c coders/uyvy.c \
+	coders/vicar.c coders/vid.c coders/viff.c coders/wbmp.c \
+	coders/wmf.c coders/wpg.c coders/xbm.c coders/xc.c \
+	coders/xcf.c coders/xpm.c coders/yuv.c coders/dps.c \
+	coders/clipboard.c coders/emf.c coders/fpx.c coders/jbig.c \
+	coders/jpeg.c coders/jp2.c coders/png.c coders/ept.c \
+	coders/tiff.c coders/x.c coders/xwd.c filters/analyze.c
 @HasX11_TRUE@am__objects_2 =  \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-animate.lo \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-display.lo \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-PreRvIcccm.lo \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-widget.lo \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-xwindow.lo
-am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
+am__objects_3 = magick/magick_libGraphicsMagick_la-analyze.lo \
+	magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
 	magick/magick_libGraphicsMagick_la-average.lo \
 	magick/magick_libGraphicsMagick_la-bit_stream.lo \
@@ -1203,6 +1204,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-compare.lo \
 	magick/magick_libGraphicsMagick_la-confirm_access.lo \
 	magick/magick_libGraphicsMagick_la-color.lo \
+	magick/magick_libGraphicsMagick_la-color_lookup.lo \
 	magick/magick_libGraphicsMagick_la-colormap.lo \
 	magick/magick_libGraphicsMagick_la-colorspace.lo \
 	magick/magick_libGraphicsMagick_la-command.lo \
@@ -1977,7 +1979,6 @@ LN_S = @LN_S@
 LOCALSTATE_DIR = @LOCALSTATE_DIR@
 LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
-LTCXXLIBOPTS = @LTCXXLIBOPTS@
 LTDLDEPS = @LTDLDEPS@
 LTDLINCL = @LTDLINCL@
 LTDLOPEN = @LTDLOPEN@
@@ -2004,6 +2005,8 @@ MAGICK_LIBLTDL = @MAGICK_LIBLTDL@
 MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
 MAGICK_LIBRARY_CURRENT = @MAGICK_LIBRARY_CURRENT@
 MAGICK_LIBRARY_REVISION = @MAGICK_LIBRARY_REVISION@
+MAGICK_LIB_INTERFACE_NEWEST = @MAGICK_LIB_INTERFACE_NEWEST@
+MAGICK_LIB_INTERFACE_OLDEST = @MAGICK_LIB_INTERFACE_OLDEST@
 MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
@@ -2182,7 +2185,7 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
 	-I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl \
 	-I$(top_srcdir)/Magick++/lib
 ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
-MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -module -avoid-version
+MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.
 #
@@ -2235,7 +2238,8 @@ CHANGELOGS = \
 	ChangeLog.2005 \
 	ChangeLog.2006 \
 	ChangeLog.2007 \
-	ChangeLog.2008
+	ChangeLog.2008 \
+	ChangeLog.2009
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \
@@ -2275,8 +2279,7 @@ configsharedir = $(MagickShareConfigPath)
 configshare_DATA = \
 	config/colors.mgk \
 	config/log.mgk \
-	config/modules.mgk \
-	config/magic.mgk
+	config/modules.mgk
 
 
 # Where architecture-dependent configuration files get installed
@@ -2293,14 +2296,13 @@ CONFIG_EXTRA_DIST = \
         config/colors.mgk \
 	config/delegates.mgk.in \
         config/log.mgk \
-	config/magic.mgk \
 	config/modules.mgk \
 	config/type-ghostscript.mgk.in \
 	config/type-solaris.mgk.in \
 	config/type-windows.mgk.in \
 	config/type.mgk.in
 
-LTDL_VERSION_INFO = -version-info 9:0:2
+LTDL_VERSION_INFO = -version-info 9:1:2
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
@@ -2878,7 +2880,7 @@ coders_pdb_la_LIBADD = $(LIBMAGICK)
 coders_pdf_la_SOURCES = coders/pdf.c
 coders_pdf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_pdf_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
+coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_GS)
 
 # PICT coder module
 coders_pict_la_SOURCES = coders/pict.c
@@ -3178,6 +3180,8 @@ magick_libGraphicsMagick_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
+	magick/analyze.c \
+	magick/analyze.h \
 	magick/annotate.c \
 	magick/api.h \
 	magick/attribute.c \
@@ -3192,12 +3196,15 @@ MAGICK_BASE_SRCS = \
 	magick/cdl.h \
 	magick/channel.c \
 	magick/channel.h \
+	magick/common.h \
 	magick/compare.c \
 	magick/compare.h \
 	magick/confirm_access.c \
 	magick/confirm_access.h \
 	magick/color.c \
 	magick/color.h \
+	magick/color_lookup.c \
+	magick/color_lookup.h \
 	magick/colormap.c \
 	magick/colormap.h \
 	magick/colorspace.c \
@@ -3312,6 +3319,7 @@ MAGICK_BASE_SRCS = \
 	magick/tsd.c \
 	magick/tsd.h \
 	magick/type.c \
+	magick/type.h \
 	magick/unix_port.c \
 	magick/utility.c \
 	magick/utility.h \
@@ -3332,15 +3340,18 @@ MAGICK_BASE_SRCS = \
 
 MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
+	magick/analyze.h \
 	magick/attribute.h \
 	magick/average.h \
 	magick/blob.h \
 	magick/cdl.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/color_lookup.h \
 	magick/colormap.h \
 	magick/colorspace.h \
 	magick/command.h \
+	magick/common.h \
 	magick/compare.h \
 	magick/composite.h \
 	magick/compress.h \
@@ -3388,6 +3399,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/texture.h \
 	magick/timer.h \
 	magick/transform.h \
+	magick/type.h \
 	magick/utility.h \
 	magick/version.h
 
@@ -3592,7 +3604,9 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libGraphicsMagick___la_LDFLAGS = \
+
+# -no-undefined -export-symbols-regex ".*"
+Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
@@ -3818,6 +3832,10 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasPNG_FALSE@	tests/rwfile_PNG_truecolor16.sh
 
 @HasTIFF_FALSE@TESTS_TIFF_XFAIL_TESTS = \
+@HasTIFF_FALSE@	tests/rwblob_CALS_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwblob_CALS_gray.sh \
+@HasTIFF_FALSE@	tests/rwblob_CALS_pallette.sh \
+@HasTIFF_FALSE@	tests/rwblob_CALS_truecolor.sh \
 @HasTIFF_FALSE@	tests/rwblob_EPT_bilevel.sh \
 @HasTIFF_FALSE@	tests/rwblob_EPT_gray.sh \
 @HasTIFF_FALSE@	tests/rwblob_EPT_pallette.sh \
@@ -3826,6 +3844,13 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasTIFF_FALSE@	tests/rwblob_TIFF_gray.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_pallette.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_truecolor.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_gray.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_pallette.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor10.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor12.sh \
+@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor16.sh \
 @HasTIFF_FALSE@	tests/rwfile_EPT_bilevel.sh \
 @HasTIFF_FALSE@	tests/rwfile_EPT_gray.sh \
 @HasTIFF_FALSE@	tests/rwfile_EPT_pallette.sh \
@@ -3890,73 +3915,72 @@ TESTS_XFAIL_TESTS = \
 	$(TESTS_X11_XFAIL_TESTS)
 
 TESTS_TESTS = \
+	tests/constitute_char_bgr.sh \
 	tests/constitute_char_bgro.sh \
 	tests/constitute_char_bgrp.sh \
-	tests/constitute_char_bgr.sh \
-	tests/constitute_char_cmyk.sh \
 	tests/constitute_char_cmy.sh \
+	tests/constitute_char_cmyk.sh \
 	tests/constitute_char_i.sh \
 	tests/constitute_char_prgb.sh \
+	tests/constitute_char_rgb.sh \
 	tests/constitute_char_rgba.sh \
 	tests/constitute_char_rgbo.sh \
-	tests/constitute_char_rgb.sh \
 	tests/constitute_char_rgbt.sh \
+	tests/constitute_double_bgr.sh \
 	tests/constitute_double_bgro.sh \
 	tests/constitute_double_bgrp.sh \
-	tests/constitute_double_bgr.sh \
-	tests/constitute_double_cmyk.sh \
 	tests/constitute_double_cmy.sh \
+	tests/constitute_double_cmyk.sh \
 	tests/constitute_double_i.sh \
 	tests/constitute_double_prgb.sh \
+	tests/constitute_double_rgb.sh \
 	tests/constitute_double_rgba.sh \
 	tests/constitute_double_rgbo.sh \
-	tests/constitute_double_rgb.sh \
 	tests/constitute_double_rgbt.sh \
+	tests/constitute_float_bgr.sh \
 	tests/constitute_float_bgro.sh \
 	tests/constitute_float_bgrp.sh \
-	tests/constitute_float_bgr.sh \
-	tests/constitute_float_cmyk.sh \
 	tests/constitute_float_cmy.sh \
+	tests/constitute_float_cmyk.sh \
 	tests/constitute_float_i.sh \
 	tests/constitute_float_prgb.sh \
+	tests/constitute_float_rgb.sh \
 	tests/constitute_float_rgba.sh \
 	tests/constitute_float_rgbo.sh \
-	tests/constitute_float_rgb.sh \
 	tests/constitute_float_rgbt.sh \
+	tests/constitute_integer_bgr.sh \
 	tests/constitute_integer_bgro.sh \
 	tests/constitute_integer_bgrp.sh \
-	tests/constitute_integer_bgr.sh \
-	tests/constitute_integer_cmyk.sh \
 	tests/constitute_integer_cmy.sh \
+	tests/constitute_integer_cmyk.sh \
 	tests/constitute_integer_i.sh \
 	tests/constitute_integer_prgb.sh \
+	tests/constitute_integer_rgb.sh \
 	tests/constitute_integer_rgba.sh \
 	tests/constitute_integer_rgbo.sh \
-	tests/constitute_integer_rgb.sh \
 	tests/constitute_integer_rgbt.sh \
+	tests/constitute_long_bgr.sh \
 	tests/constitute_long_bgro.sh \
 	tests/constitute_long_bgrp.sh \
-	tests/constitute_long_bgr.sh \
-	tests/constitute_long_cmyk.sh \
 	tests/constitute_long_cmy.sh \
+	tests/constitute_long_cmyk.sh \
 	tests/constitute_long_i.sh \
 	tests/constitute_long_prgb.sh \
+	tests/constitute_long_rgb.sh \
 	tests/constitute_long_rgba.sh \
 	tests/constitute_long_rgbo.sh \
-	tests/constitute_long_rgb.sh \
 	tests/constitute_long_rgbt.sh \
+	tests/constitute_short_bgr.sh \
 	tests/constitute_short_bgro.sh \
 	tests/constitute_short_bgrp.sh \
-	tests/constitute_short_bgr.sh \
-	tests/constitute_short_cmyk.sh \
 	tests/constitute_short_cmy.sh \
+	tests/constitute_short_cmyk.sh \
 	tests/constitute_short_i.sh \
 	tests/constitute_short_prgb.sh \
+	tests/constitute_short_rgb.sh \
 	tests/constitute_short_rgba.sh \
 	tests/constitute_short_rgbo.sh \
-	tests/constitute_short_rgb.sh \
 	tests/constitute_short_rgbt.sh \
-	tests/drawtest.sh \
 	tests/rwblob_AVS_bilevel.sh \
 	tests/rwblob_AVS_gray.sh \
 	tests/rwblob_AVS_pallette.sh \
@@ -3965,6 +3989,10 @@ TESTS_TESTS = \
 	tests/rwblob_BMP_gray.sh \
 	tests/rwblob_BMP_pallette.sh \
 	tests/rwblob_BMP_truecolor.sh \
+	tests/rwblob_CALS_bilevel.sh \
+	tests/rwblob_CALS_gray.sh \
+	tests/rwblob_CALS_pallette.sh \
+	tests/rwblob_CALS_truecolor.sh \
 	tests/rwblob_CIN_bilevel.sh \
 	tests/rwblob_CIN_gray.sh \
 	tests/rwblob_CIN_pallette.sh \
@@ -4077,10 +4105,6 @@ TESTS_TESTS = \
 	tests/rwblob_PNG_gray.sh \
 	tests/rwblob_PNG_pallette.sh \
 	tests/rwblob_PNG_truecolor.sh \
-	tests/rwblob_PNM_bilevel.sh \
-	tests/rwblob_PNM_gray.sh \
-	tests/rwblob_PNM_pallette.sh \
-	tests/rwblob_PNM_truecolor.sh \
 	tests/rwblob_PPM_bilevel.sh \
 	tests/rwblob_PPM_gray.sh \
 	tests/rwblob_PPM_pallette.sh \
@@ -4153,16 +4177,14 @@ TESTS_TESTS = \
 	tests/rwfile_AVS_gray.sh \
 	tests/rwfile_AVS_pallette.sh \
 	tests/rwfile_AVS_truecolor.sh \
-	tests/rwfile_AVS_truecolor10.sh \
-	tests/rwfile_AVS_truecolor12.sh \
-	tests/rwfile_AVS_truecolor16.sh \
 	tests/rwfile_BMP_bilevel.sh \
 	tests/rwfile_BMP_gray.sh \
 	tests/rwfile_BMP_pallette.sh \
 	tests/rwfile_BMP_truecolor.sh \
-	tests/rwfile_BMP_truecolor10.sh \
-	tests/rwfile_BMP_truecolor12.sh \
-	tests/rwfile_BMP_truecolor16.sh \
+	tests/rwfile_CALS_bilevel.sh \
+	tests/rwfile_CALS_gray.sh \
+	tests/rwfile_CALS_pallette.sh \
+	tests/rwfile_CALS_truecolor.sh \
 	tests/rwfile_CIN_bilevel.sh \
 	tests/rwfile_CIN_gray.sh \
 	tests/rwfile_CIN_pallette.sh \
@@ -4175,9 +4197,6 @@ TESTS_TESTS = \
 	tests/rwfile_DIB_gray.sh \
 	tests/rwfile_DIB_pallette.sh \
 	tests/rwfile_DIB_truecolor.sh \
-	tests/rwfile_DIB_truecolor10.sh \
-	tests/rwfile_DIB_truecolor12.sh \
-	tests/rwfile_DIB_truecolor16.sh \
 	tests/rwfile_DPX_bilevel.sh \
 	tests/rwfile_DPX_gray.sh \
 	tests/rwfile_DPX_pallette.sh \
@@ -4189,51 +4208,30 @@ TESTS_TESTS = \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \
 	tests/rwfile_EPDF_truecolor.sh \
-	tests/rwfile_EPDF_truecolor10.sh \
-	tests/rwfile_EPDF_truecolor12.sh \
-	tests/rwfile_EPDF_truecolor16.sh \
 	tests/rwfile_EPI_bilevel.sh \
 	tests/rwfile_EPI_gray.sh \
 	tests/rwfile_EPI_pallette.sh \
 	tests/rwfile_EPI_truecolor.sh \
-	tests/rwfile_EPI_truecolor10.sh \
-	tests/rwfile_EPI_truecolor12.sh \
-	tests/rwfile_EPI_truecolor16.sh \
 	tests/rwfile_EPSF_bilevel.sh \
 	tests/rwfile_EPSF_gray.sh \
 	tests/rwfile_EPSF_pallette.sh \
 	tests/rwfile_EPSF_truecolor.sh \
-	tests/rwfile_EPSF_truecolor10.sh \
-	tests/rwfile_EPSF_truecolor12.sh \
-	tests/rwfile_EPSF_truecolor16.sh \
 	tests/rwfile_EPSI_bilevel.sh \
 	tests/rwfile_EPSI_gray.sh \
 	tests/rwfile_EPSI_pallette.sh \
 	tests/rwfile_EPSI_truecolor.sh \
-	tests/rwfile_EPSI_truecolor10.sh \
-	tests/rwfile_EPSI_truecolor12.sh \
-	tests/rwfile_EPSI_truecolor16.sh \
 	tests/rwfile_EPS_bilevel.sh \
 	tests/rwfile_EPS_gray.sh \
 	tests/rwfile_EPS_pallette.sh \
 	tests/rwfile_EPS_truecolor.sh \
-	tests/rwfile_EPS_truecolor10.sh \
-	tests/rwfile_EPS_truecolor12.sh \
-	tests/rwfile_EPS_truecolor16.sh \
 	tests/rwfile_EPT_bilevel.sh \
 	tests/rwfile_EPT_gray.sh \
 	tests/rwfile_EPT_pallette.sh \
 	tests/rwfile_EPT_truecolor.sh \
-	tests/rwfile_EPT_truecolor10.sh \
-	tests/rwfile_EPT_truecolor12.sh \
-	tests/rwfile_EPT_truecolor16.sh \
 	tests/rwfile_FAX_bilevel.sh \
 	tests/rwfile_FAX_gray.sh \
 	tests/rwfile_FAX_pallette.sh \
 	tests/rwfile_FAX_truecolor.sh \
-	tests/rwfile_FAX_truecolor10.sh \
-	tests/rwfile_FAX_truecolor12.sh \
-	tests/rwfile_FAX_truecolor16.sh \
 	tests/rwfile_FITS_bilevel.sh \
 	tests/rwfile_FITS_gray.sh \
 	tests/rwfile_FITS_pallette.sh \
@@ -4245,38 +4243,23 @@ TESTS_TESTS = \
 	tests/rwfile_FPX_gray.sh \
 	tests/rwfile_FPX_pallette.sh \
 	tests/rwfile_FPX_truecolor.sh \
-	tests/rwfile_FPX_truecolor10.sh \
-	tests/rwfile_FPX_truecolor12.sh \
-	tests/rwfile_FPX_truecolor16.sh \
 	tests/rwfile_GIF_bilevel.sh \
 	tests/rwfile_GIF_gray.sh \
 	tests/rwfile_GIF_pallette.sh \
 	tests/rwfile_GIF_truecolor.sh \
-	tests/rwfile_GIF_truecolor10.sh \
-	tests/rwfile_GIF_truecolor12.sh \
-	tests/rwfile_GIF_truecolor16.sh \
 	tests/rwfile_GRAY_bilevel.sh \
 	tests/rwfile_GRAY_gray.sh \
 	tests/rwfile_GRAY_pallette.sh \
 	tests/rwfile_GRAY_truecolor.sh \
-	tests/rwfile_GRAY_truecolor10.sh \
-	tests/rwfile_GRAY_truecolor12.sh \
-	tests/rwfile_GRAY_truecolor16.sh \
 	tests/rwfile_GRAY_truecolor_70x46.sh \
 	tests/rwfile_ICB_bilevel.sh \
 	tests/rwfile_ICB_gray.sh \
 	tests/rwfile_ICB_pallette.sh \
 	tests/rwfile_ICB_truecolor.sh \
-	tests/rwfile_ICB_truecolor10.sh \
-	tests/rwfile_ICB_truecolor12.sh \
-	tests/rwfile_ICB_truecolor16.sh \
 	tests/rwfile_JBIG_bilevel.sh \
 	tests/rwfile_JBIG_gray.sh \
 	tests/rwfile_JBIG_pallette.sh \
 	tests/rwfile_JBIG_truecolor.sh \
-	tests/rwfile_JBIG_truecolor10.sh \
-	tests/rwfile_JBIG_truecolor12.sh \
-	tests/rwfile_JBIG_truecolor16.sh \
 	tests/rwfile_JP2_bilevel.sh \
 	tests/rwfile_JP2_gray.sh \
 	tests/rwfile_JP2_pallette.sh \
@@ -4288,9 +4271,6 @@ TESTS_TESTS = \
 	tests/rwfile_JPEG_gray.sh \
 	tests/rwfile_JPEG_pallette.sh \
 	tests/rwfile_JPEG_truecolor.sh \
-	tests/rwfile_JPEG_truecolor10.sh \
-	tests/rwfile_JPEG_truecolor12.sh \
-	tests/rwfile_JPEG_truecolor16.sh \
 	tests/rwfile_MAT_bilevel.sh \
 	tests/rwfile_MAT_gray.sh \
 	tests/rwfile_MAT_pallette.sh \
@@ -4333,73 +4313,71 @@ TESTS_TESTS = \
 	tests/rwfile_MPR_gray.sh \
 	tests/rwfile_MPR_pallette.sh \
 	tests/rwfile_MPR_truecolor.sh \
-	tests/rwfile_MPR_truecolor10.sh \
-	tests/rwfile_MPR_truecolor12.sh \
-	tests/rwfile_MPR_truecolor16.sh \
 	tests/rwfile_MTV_bilevel.sh \
 	tests/rwfile_MTV_gray.sh \
 	tests/rwfile_MTV_pallette.sh \
 	tests/rwfile_MTV_truecolor.sh \
-	tests/rwfile_MTV_truecolor10.sh \
-	tests/rwfile_MTV_truecolor12.sh \
-	tests/rwfile_MTV_truecolor16.sh \
 	tests/rwfile_P7_bilevel.sh \
 	tests/rwfile_P7_gray.sh \
 	tests/rwfile_P7_pallette.sh \
 	tests/rwfile_P7_truecolor.sh \
-	tests/rwfile_P7_truecolor10.sh \
-	tests/rwfile_P7_truecolor12.sh \
-	tests/rwfile_P7_truecolor16.sh \
 	tests/rwfile_PAL_truecolor_70x46.sh \
 	tests/rwfile_PBM_bilevel.sh \
 	tests/rwfile_PBM_gray.sh \
 	tests/rwfile_PBM_pallette.sh \
 	tests/rwfile_PBM_truecolor.sh \
-	tests/rwfile_PBM_truecolor10.sh \
-	tests/rwfile_PBM_truecolor12.sh \
-	tests/rwfile_PBM_truecolor16.sh \
 	tests/rwfile_PCDS_bilevel.sh \
 	tests/rwfile_PCDS_gray.sh \
 	tests/rwfile_PCDS_pallette.sh \
 	tests/rwfile_PCDS_truecolor.sh \
-	tests/rwfile_PCDS_truecolor10.sh \
-	tests/rwfile_PCDS_truecolor12.sh \
-	tests/rwfile_PCDS_truecolor16.sh \
 	tests/rwfile_PCD_bilevel.sh \
 	tests/rwfile_PCD_gray.sh \
 	tests/rwfile_PCD_pallette.sh \
 	tests/rwfile_PCD_truecolor.sh \
-	tests/rwfile_PCD_truecolor10.sh \
-	tests/rwfile_PCD_truecolor12.sh \
-	tests/rwfile_PCD_truecolor16.sh \
 	tests/rwfile_PCX_bilevel.sh \
 	tests/rwfile_PCX_gray.sh \
 	tests/rwfile_PCX_pallette.sh \
 	tests/rwfile_PCX_truecolor.sh \
-	tests/rwfile_PCX_truecolor10.sh \
-	tests/rwfile_PCX_truecolor12.sh \
-	tests/rwfile_PCX_truecolor16.sh \
+	tests/rwfile_PDF_bilevel.sh \
+	tests/rwfile_PDF_bilevel_fax.sh \
+	tests/rwfile_PDF_bilevel_jpeg.sh \
+	tests/rwfile_PDF_bilevel_lzw.sh \
+	tests/rwfile_PDF_bilevel_none.sh \
+	tests/rwfile_PDF_bilevel_rle.sh \
+	tests/rwfile_PDF_bilevel_zip.sh \
+	tests/rwfile_PDF_gray.sh \
+	tests/rwfile_PDF_gray_fax.sh \
+	tests/rwfile_PDF_gray_jpeg.sh \
+	tests/rwfile_PDF_gray_lzw.sh \
+	tests/rwfile_PDF_gray_none.sh \
+	tests/rwfile_PDF_gray_rle.sh \
+	tests/rwfile_PDF_gray_zip.sh \
+	tests/rwfile_PDF_pallette.sh \
+	tests/rwfile_PDF_pallette_fax.sh \
+	tests/rwfile_PDF_pallette_jpeg.sh \
+	tests/rwfile_PDF_pallette_lzw.sh \
+	tests/rwfile_PDF_pallette_none.sh \
+	tests/rwfile_PDF_pallette_rle.sh \
+	tests/rwfile_PDF_pallette_zip.sh \
+	tests/rwfile_PDF_truecolor.sh \
+	tests/rwfile_PDF_truecolor_fax.sh \
+	tests/rwfile_PDF_truecolor_jpeg.sh \
+	tests/rwfile_PDF_truecolor_lzw.sh \
+	tests/rwfile_PDF_truecolor_none.sh \
+	tests/rwfile_PDF_truecolor_rle.sh \
+	tests/rwfile_PDF_truecolor_zip.sh \
 	tests/rwfile_PGM_bilevel.sh \
 	tests/rwfile_PGM_gray.sh \
 	tests/rwfile_PGM_pallette.sh \
 	tests/rwfile_PGM_truecolor.sh \
-	tests/rwfile_PGM_truecolor10.sh \
-	tests/rwfile_PGM_truecolor12.sh \
-	tests/rwfile_PGM_truecolor16.sh \
 	tests/rwfile_PICON_bilevel.sh \
 	tests/rwfile_PICON_gray.sh \
 	tests/rwfile_PICON_pallette.sh \
 	tests/rwfile_PICON_truecolor.sh \
-	tests/rwfile_PICON_truecolor10.sh \
-	tests/rwfile_PICON_truecolor12.sh \
-	tests/rwfile_PICON_truecolor16.sh \
 	tests/rwfile_PICT_bilevel.sh \
 	tests/rwfile_PICT_gray.sh \
 	tests/rwfile_PICT_pallette.sh \
 	tests/rwfile_PICT_truecolor.sh \
-	tests/rwfile_PICT_truecolor10.sh \
-	tests/rwfile_PICT_truecolor12.sh \
-	tests/rwfile_PICT_truecolor16.sh \
 	tests/rwfile_PNG_bilevel.sh \
 	tests/rwfile_PNG_gray.sh \
 	tests/rwfile_PNG_pallette.sh \
@@ -4411,9 +4389,6 @@ TESTS_TESTS = \
 	tests/rwfile_PNM_gray.sh \
 	tests/rwfile_PNM_pallette.sh \
 	tests/rwfile_PNM_truecolor.sh \
-	tests/rwfile_PNM_truecolor10.sh \
-	tests/rwfile_PNM_truecolor12.sh \
-	tests/rwfile_PNM_truecolor16.sh \
 	tests/rwfile_PPM_bilevel.sh \
 	tests/rwfile_PPM_gray.sh \
 	tests/rwfile_PPM_pallette.sh \
@@ -4425,16 +4400,10 @@ TESTS_TESTS = \
 	tests/rwfile_PSD_gray.sh \
 	tests/rwfile_PSD_pallette.sh \
 	tests/rwfile_PSD_truecolor.sh \
-	tests/rwfile_PSD_truecolor10.sh \
-	tests/rwfile_PSD_truecolor12.sh \
-	tests/rwfile_PSD_truecolor16.sh \
 	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \
 	tests/rwfile_PS_truecolor.sh \
-	tests/rwfile_PS_truecolor10.sh \
-	tests/rwfile_PS_truecolor12.sh \
-	tests/rwfile_PS_truecolor16.sh \
 	tests/rwfile_PTIF_bilevel.sh \
 	tests/rwfile_PTIF_gray.sh \
 	tests/rwfile_PTIF_pallette.sh \
@@ -4446,9 +4415,6 @@ TESTS_TESTS = \
 	tests/rwfile_RAS_gray.sh \
 	tests/rwfile_RAS_pallette.sh \
 	tests/rwfile_RAS_truecolor.sh \
-	tests/rwfile_RAS_truecolor10.sh \
-	tests/rwfile_RAS_truecolor12.sh \
-	tests/rwfile_RAS_truecolor16.sh \
 	tests/rwfile_RGBA_truecolor_70x46.sh \
 	tests/rwfile_RGB_truecolor_70x46.sh \
 	tests/rwfile_SGI_bilevel.sh \
@@ -4462,9 +4428,6 @@ TESTS_TESTS = \
 	tests/rwfile_SUN_gray.sh \
 	tests/rwfile_SUN_pallette.sh \
 	tests/rwfile_SUN_truecolor.sh \
-	tests/rwfile_SUN_truecolor10.sh \
-	tests/rwfile_SUN_truecolor12.sh \
-	tests/rwfile_SUN_truecolor16.sh \
 	tests/rwfile_TGA_bilevel.sh \
 	tests/rwfile_TGA_gray.sh \
 	tests/rwfile_TGA_pallette.sh \
@@ -4491,58 +4454,34 @@ TESTS_TESTS = \
 	tests/rwfile_VDA_gray.sh \
 	tests/rwfile_VDA_pallette.sh \
 	tests/rwfile_VDA_truecolor.sh \
-	tests/rwfile_VDA_truecolor10.sh \
-	tests/rwfile_VDA_truecolor12.sh \
-	tests/rwfile_VDA_truecolor16.sh \
 	tests/rwfile_VICAR_bilevel.sh \
 	tests/rwfile_VICAR_gray.sh \
 	tests/rwfile_VICAR_pallette.sh \
 	tests/rwfile_VICAR_truecolor.sh \
-	tests/rwfile_VICAR_truecolor10.sh \
-	tests/rwfile_VICAR_truecolor12.sh \
-	tests/rwfile_VICAR_truecolor16.sh \
 	tests/rwfile_VIFF_bilevel.sh \
 	tests/rwfile_VIFF_gray.sh \
 	tests/rwfile_VIFF_pallette.sh \
 	tests/rwfile_VIFF_truecolor.sh \
-	tests/rwfile_VIFF_truecolor10.sh \
-	tests/rwfile_VIFF_truecolor12.sh \
-	tests/rwfile_VIFF_truecolor16.sh \
 	tests/rwfile_VST_bilevel.sh \
 	tests/rwfile_VST_gray.sh \
 	tests/rwfile_VST_pallette.sh \
 	tests/rwfile_VST_truecolor.sh \
-	tests/rwfile_VST_truecolor10.sh \
-	tests/rwfile_VST_truecolor12.sh \
-	tests/rwfile_VST_truecolor16.sh \
 	tests/rwfile_WBMP_bilevel.sh \
 	tests/rwfile_WBMP_gray.sh \
 	tests/rwfile_WBMP_pallette.sh \
 	tests/rwfile_WBMP_truecolor.sh \
-	tests/rwfile_WBMP_truecolor10.sh \
-	tests/rwfile_WBMP_truecolor12.sh \
-	tests/rwfile_WBMP_truecolor16.sh \
 	tests/rwfile_XBM_bilevel.sh \
 	tests/rwfile_XBM_gray.sh \
 	tests/rwfile_XBM_pallette.sh \
 	tests/rwfile_XBM_truecolor.sh \
-	tests/rwfile_XBM_truecolor10.sh \
-	tests/rwfile_XBM_truecolor12.sh \
-	tests/rwfile_XBM_truecolor16.sh \
 	tests/rwfile_XPM_bilevel.sh \
 	tests/rwfile_XPM_gray.sh \
 	tests/rwfile_XPM_pallette.sh \
 	tests/rwfile_XPM_truecolor.sh \
-	tests/rwfile_XPM_truecolor10.sh \
-	tests/rwfile_XPM_truecolor12.sh \
-	tests/rwfile_XPM_truecolor16.sh \
 	tests/rwfile_XWD_bilevel.sh \
 	tests/rwfile_XWD_gray.sh \
 	tests/rwfile_XWD_pallette.sh \
 	tests/rwfile_XWD_truecolor.sh \
-	tests/rwfile_XWD_truecolor10.sh \
-	tests/rwfile_XWD_truecolor12.sh \
-	tests/rwfile_XWD_truecolor16.sh \
 	tests/rwfile_YUV_truecolor_70x46.sh
 
 TESTS_EXTRA_DIST = \
@@ -4567,6 +4506,7 @@ CHECK_DEEP_TYPES = truecolor10 truecolor12 truecolor16
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
+	CALS \
 	CIN \
 	DIB \
 	DPX \
@@ -4594,7 +4534,6 @@ CHECK_BLOB_FORMATS = \
 	PICON \
 	PICT \
 	PNG \
-	PNM \
 	PPM \
 	PSD \
 	RAS \
@@ -4617,6 +4556,7 @@ CHECK_BLOB_FORMATS = \
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
+	CALS \
 	CIN \
 	DIB \
 	DPX \
@@ -4645,6 +4585,7 @@ CHECK_FILE_FORMATS = \
 	PCD \
 	PCDS \
 	PCX \
+	PDF \
 	PGM \
 	PICON \
 	PICT \
@@ -4693,6 +4634,24 @@ CHECK_SIZED_FILE_FORMATS = \
 	UYVY \
 	YUV
 
+
+# File formats which support more than 8 bits per sample
+CHECK_DEEP_FILE_FORMATS = \
+	CIN \
+	DPX \
+	FITS \
+	JP2 \
+	MAT \
+	MIFF \
+	MNG \
+	PNG \
+	PPM \
+	PTIF \
+	SGI \
+	TIFF \
+	TGA \
+	TXT
+
 CHECK_CONSTITUTE_MAPS = \
 	bgr \
 	bgro \
@@ -4719,6 +4678,14 @@ CHECK_MIFF_FILE_COMPRESS = \
 	bzip \
 	zip \
 	rle
+
+CHECK_PDF_FILE_COMPRESS = \
+	none \
+	fax \
+	jpeg \
+	lzw \
+	rle \
+	zip
 
 wandincdir = $(topincludedir)/wand
 WAND_SOURCES = \
@@ -4809,7 +4776,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/README.html \
 	$(WWWDIR)/authors.html \
 	$(WWWDIR)/benchmarks.html \
-	$(WWWDIR)/benchmarks-1.2.html \
 	$(WWWDIR)/bugs.html \
 	$(WWWDIR)/contribute.html \
 	$(WWWDIR)/download.html \
@@ -4838,7 +4804,6 @@ WWW_RST_FILES = \
 	www/api/api.rst \
 	www/authors.rst \
 	www/benchmarks.rst \
-	www/benchmarks-1.2.rst \
 	www/bugs.rst \
 	www/contribute.rst \
 	www/download.rst \
@@ -4860,6 +4825,15 @@ WWW_RST_FILES = \
 WWW_HTML_FILES = \
 	www/CVS.html \
 	www/Changelog.html \
+	www/ChangeLog-2009.html \
+	www/ChangeLog-2008.html \
+	www/ChangeLog-2007.html \
+	www/ChangeLog-2006.html \
+	www/ChangeLog-2005.html \
+	www/ChangeLog-2004.html \
+	www/ChangeLog-2003.html \
+	www/ChangeLog-2002.html \
+	www/ChangeLog-2001.html \
 	www/Copyright.html \
 	www/FAQ.html \
 	www/GraphicsMagick.html \
@@ -4918,7 +4892,16 @@ WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color
 
 # txt2html requires perl.
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
-@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/Changelog.html
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/Changelog.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2009.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2008.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2007.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2006.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2005.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2004.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2003.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2002.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2001.html
 
 wwwapidir = $(htmldir)/api
 WWWAPIDIR = $(top_srcdir)/www/api
@@ -5069,11 +5052,20 @@ utilities_gm_SOURCES = utilities/gm.c
 @HasXML_FALSE@UTILITIES_XML_XFAIL_TESTS = \
 @HasXML_FALSE@	utilities/tests/msl_composite.sh
 
+@HasX11_FALSE@UTILITIES_X11_XFAIL_TESTS = \
+@HasX11_FALSE@	utilities/tests/help-animate.sh \
+@HasX11_FALSE@	utilities/tests/help-import.sh
+
+@WITH_SHARED_LIBS_FALSE@UTILITIES_MODULES_XFAIL_TESTS = \
+@WITH_SHARED_LIBS_FALSE@	utilities/tests/list-module.sh
+
 UTILITIES_XFAIL_TESTS = \
 	$(UTILITIES_JPEG_XFAIL_TESTS) \
 	$(UTILITIES_LCMS_XFAIL_TESTS) \
+	$(UTILITIES_MODULES_XFAIL_TESTS) \
 	$(UTILITIES_TTF_XFAIL_TESTS) \
-	$(UTILITIES_XML_XFAIL_TESTS)
+	$(UTILITIES_XML_XFAIL_TESTS) \
+	$(UTILITIES_X11_XFAIL_TESTS)
 
 
 # Tests to run
@@ -5105,10 +5097,31 @@ UTILITIES_TESTS = \
 	utilities/tests/grayscale.sh \
 	utilities/tests/hald-clut-identity.sh \
 	utilities/tests/hald-clut-transform.sh \
+	utilities/tests/help-animate.sh \
+	utilities/tests/help-benchmark.sh \
+	utilities/tests/help-compare.sh \
+	utilities/tests/help-composite.sh \
+	utilities/tests/help-conjure.sh \
+	utilities/tests/help-convert.sh \
+	utilities/tests/help-identify.sh \
+	utilities/tests/help-import.sh \
+	utilities/tests/help-mogrify.sh \
+	utilities/tests/help-montage.sh \
+	utilities/tests/help-time.sh \
+	utilities/tests/help-version.sh \
+	utilities/tests/help.sh \
 	utilities/tests/icc-transform.sh \
 	utilities/tests/identify.sh \
 	utilities/tests/implode.sh \
 	utilities/tests/level.sh \
+	utilities/tests/list-color.sh \
+	utilities/tests/list-delegate.sh \
+	utilities/tests/list-format.sh \
+	utilities/tests/list-magic.sh \
+	utilities/tests/list-module.sh \
+	utilities/tests/list-modulemap.sh \
+	utilities/tests/list-resource.sh \
+	utilities/tests/list-type.sh \
 	utilities/tests/mask.sh \
 	utilities/tests/medianfilter.sh \
 	utilities/tests/modulate.sh \
@@ -5170,7 +5183,8 @@ UTILITIES_TESTS = \
         utilities/tests/preview_spread.sh \
         utilities/tests/preview_swirl.sh \
         utilities/tests/preview_threshold.sh \
-        utilities/tests/preview_wave.sh
+        utilities/tests/preview_wave.sh \
+	utilities/tests/version.sh
 
 UTILITIES_MANS = \
 	utilities/gm.1 \
@@ -5995,6 +6009,8 @@ magick/$(am__dirstamp):
 magick/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) magick/$(DEPDIR)
 	@: > magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-analyze.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-annotate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-attribute.lo:  \
@@ -6015,6 +6031,8 @@ magick/magick_libGraphicsMagick_la-confirm_access.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-color.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-color_lookup.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colormap.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-colorspace.lo:  \
@@ -7113,6 +7131,8 @@ mostlyclean-compile:
 	-rm -f ltdl/ltdl_libltdlc_la-slist.lo
 	-rm -f magick/magick_libGraphicsMagick_la-PreRvIcccm.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-PreRvIcccm.lo
+	-rm -f magick/magick_libGraphicsMagick_la-analyze.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-analyze.lo
 	-rm -f magick/magick_libGraphicsMagick_la-animate.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-animate.lo
 	-rm -f magick/magick_libGraphicsMagick_la-annotate.$(OBJEXT)
@@ -7131,6 +7151,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-channel.lo
 	-rm -f magick/magick_libGraphicsMagick_la-color.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-color.lo
+	-rm -f magick/magick_libGraphicsMagick_la-color_lookup.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-color_lookup.lo
 	-rm -f magick/magick_libGraphicsMagick_la-colormap.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-colormap.lo
 	-rm -f magick/magick_libGraphicsMagick_la-colorspace.$(OBJEXT)
@@ -7536,6 +7558,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-animate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-attribute.Plo@am__quote@
@@ -7545,6 +7568,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-cdl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colormap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-colorspace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-command.Plo@am__quote@
@@ -8516,6 +8540,14 @@ ltdl/ltdl_libltdlc_la-slist.lo: ltdl/slist.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
 
+magick/magick_libGraphicsMagick_la-analyze.lo: magick/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-analyze.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Tpo -c -o magick/magick_libGraphicsMagick_la-analyze.lo `test -f 'magick/analyze.c' || echo '$(srcdir)/'`magick/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/analyze.c' object='magick/magick_libGraphicsMagick_la-analyze.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-analyze.lo `test -f 'magick/analyze.c' || echo '$(srcdir)/'`magick/analyze.c
+
 magick/magick_libGraphicsMagick_la-annotate.lo: magick/annotate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-annotate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Tpo -c -o magick/magick_libGraphicsMagick_la-annotate.lo `test -f 'magick/annotate.c' || echo '$(srcdir)/'`magick/annotate.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-annotate.Plo
@@ -8595,6 +8627,14 @@ magick/magick_libGraphicsMagick_la-color.lo: magick/color.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/color.c' object='magick/magick_libGraphicsMagick_la-color.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-color.lo `test -f 'magick/color.c' || echo '$(srcdir)/'`magick/color.c
+
+magick/magick_libGraphicsMagick_la-color_lookup.lo: magick/color_lookup.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-color_lookup.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Tpo -c -o magick/magick_libGraphicsMagick_la-color_lookup.lo `test -f 'magick/color_lookup.c' || echo '$(srcdir)/'`magick/color_lookup.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-color_lookup.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/color_lookup.c' object='magick/magick_libGraphicsMagick_la-color_lookup.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-color_lookup.lo `test -f 'magick/color_lookup.c' || echo '$(srcdir)/'`magick/color_lookup.c
 
 magick/magick_libGraphicsMagick_la-colormap.lo: magick/colormap.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-colormap.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-colormap.Tpo -c -o magick/magick_libGraphicsMagick_la-colormap.lo `test -f 'magick/colormap.c' || echo '$(srcdir)/'`magick/colormap.c
@@ -10952,32 +10992,36 @@ magick-uninstall-local:
 
 # Build HTML version of news
 @WITH_PERL_TRUE@www/Magick++/NEWS.html: Magick++/NEWS
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/www/Magick++/NEWS.html
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(top_srcdir)/Magick++/NEWS  > $(top_srcdir)/www/Magick++/NEWS.html
 @WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 
 # Build HTML version of ChangeLog
 @WITH_PERL_TRUE@www/Magick++/ChangeLog.html: Magick++/ChangeLog
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
 @WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
 #all-local:
 
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
-	echo "#!/bin/sh" > "$${sh_file}" ; \
-	echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" >> "$$sh_file" ; \
+	( \
+	  echo "#!/bin/sh" ; \
+	  echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	  echo ". \$${srcdir}/tests/common.shi" ; \
+	  echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" ; \
+	) > "$${sh_file}" ; \
 	chmod +x "$$sh_file"
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/constitute_$${storage_type}_$${map}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -10986,10 +11030,12 @@ generate-tests-scripts:
 	  for type in $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -10998,10 +11044,12 @@ generate-tests-scripts:
 	  for type in  $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -11010,10 +11058,12 @@ generate-tests-scripts:
 	  for type in truecolor_70x46 ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -11022,10 +11072,12 @@ generate-tests-scripts:
 	  for type in truecolor_70x46 ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
+	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -11034,22 +11086,40 @@ generate-tests-scripts:
 	  for type in $(CHECK_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_MIFF_$${type}_$${compress}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" >> "$$sh_file" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" ; \
+	    )  > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
-	for format in $(CHECK_FILE_FORMATS) ; \
+	for compress in $(CHECK_PDF_FILE_COMPRESS) ; \
+	do \
+	  for type in $(CHECK_TYPES) ; \
+	  do \
+	    sh_file="$(srcdir)/tests/rwfile_PDF_$${type}_$${compress}.sh" ; \
+	    ( \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff PDF" ; \
+	    )  > "$${sh_file}" ; \
+            chmod +x "$$sh_file" ; \
+	  done ; \
+	done
+	for format in $(CHECK_DEEP_FILE_FORMATS) ; \
 	do \
 	  for type in  $(CHECK_DEEP_TYPES) ; \
 	  do \
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
-	    echo "#!/bin/sh" > "$${sh_file}" ; \
-	    echo "# Copyright (C) 2004-2009 GraphicsMagick Group" >> "$${sh_file}" ; \
-	    echo ". \$${srcdir}/tests/common.shi" >> "$${sh_file}" ; \
-	    echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" >> "$$sh_file" ; \
+	    (  \
+	      echo "#!/bin/sh" ; \
+	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo ". \$${srcdir}/tests/common.shi" ; \
+	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" ; \
+	    ) > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
@@ -11088,11 +11158,46 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
 @MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
-# Build HTML version of ChangeLog
+# Build HTML version of ChangeLogs
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
 @MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
-@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog > \
-@MAINTAINER_MODE_TRUE@	$(top_srcdir)/www/Changelog.html
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2009.html: $(top_srcdir)/ChangeLog.2009 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2009)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2009 > $(top_srcdir)/www/ChangeLog-2009.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2008.html: $(top_srcdir)/ChangeLog.2008 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2008)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2008 > $(top_srcdir)/www/ChangeLog-2008.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2007.html: $(top_srcdir)/ChangeLog.2007 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2007)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2007 > $(top_srcdir)/www/ChangeLog-2007.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2006.html: $(top_srcdir)/ChangeLog.2006 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2006)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2006 > $(top_srcdir)/www/ChangeLog-2006.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2005.html: $(top_srcdir)/ChangeLog.2005 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2005)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2005 > $(top_srcdir)/www/ChangeLog-2005.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2004.html: $(top_srcdir)/ChangeLog.2004 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2004)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2004 > $(top_srcdir)/www/ChangeLog-2004.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2003.html: $(top_srcdir)/ChangeLog.2003 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2003)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2003 > $(top_srcdir)/www/ChangeLog-2003.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2002.html: $(top_srcdir)/ChangeLog.2002 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2002)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2002 > $(top_srcdir)/www/ChangeLog-2002.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2001.html: $(top_srcdir)/ChangeLog.2001 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2001)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2001 > $(top_srcdir)/www/ChangeLog-2001.html
 
 # Build color.html
 @MAINTAINER_MODE_TRUE@$(WWWDIR)/color.html : $(NAMED_COLORS)
@@ -11230,7 +11335,7 @@ perl-sources:
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	echo "Uninstall not supported for PerlMagick"
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(abs_top_builddir)/rungm.sh $(MAKE) CC='@CC@' test
 
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' )
@@ -11261,7 +11366,7 @@ perl-sources:
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(abs_top_builddir)/rungm.sh $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 

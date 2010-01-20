@@ -74,11 +74,18 @@ static int MagickToPhoto(
     magickblock.offset[3] = 3;
 
     /* RGB corresponds to pixelSize above. */
+    map = "RGBA";
+#if 0
+    /*
+      Prior to GraphicsMagick 1.3.8, ImageMagick and GraphicsMagick
+       required a different map.
+    */
     if (strcmp(MagickPackageName, "ImageMagick") == 0) {
 	map = "RGBA";
     } else {
 	map = "RGBO";
     }
+#endif
 
     if (MagickGetImagePixels (
 	    wand, 0, 0, (unsigned)magickblock.width, (unsigned)magickblock.height,

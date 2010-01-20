@@ -29,7 +29,7 @@ Availability
 The master ftp site for GraphicsMagick distributions is
 ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/. Bandwidth on this
 site is very limited, so it is recommended to download from SourceForge
-at http://sourceforge.net/project/showfiles.php?group_id=73485 if
+at http://sourceforge.net/projects/graphicsmagick/files/ if
 possible.
 
 
@@ -142,7 +142,7 @@ of the library-based packages listed here.
 * GraphicsMagick requires Ghostscript software (version 8.50 recommended)
   available from
 
-    http://www.cs.wisc.edu/~ghost/
+    http://pages.cs.wisc.edu/~ghost/
 
   to read the Postscript or the Portable Document format. Ghostscript
   is used to annotate an image when the FreeType library is not used,
@@ -216,14 +216,15 @@ of the library-based packages listed here.
   to read the JBIG image format.
 
 * GraphicsMagick requires the Independent JPEG Group's software
-  available via anonymous FTP as
+  available from
 
-     ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
+     http://www.ijg.org/
 
   to read the JPEG v1 image format.
 
-  Apply this JPEG patch to Independent JPEG Group's source distribution
-  if you want to read lossless jpeg-encoded DICOM (medical) images:
+  Apply this JPEG patch to Independent JPEG Group's (6b release!)
+  source distribution if you want to read lossless jpeg-encoded DICOM
+  (medical) images:
 
      ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/ljpeg-6b.tar.gz
 
@@ -300,7 +301,7 @@ of the library-based packages listed here.
 * GraphicsMagick may optionally use the umem memory allocation library
   which is included in Sun's Solaris operating system or available from
 
-     https://labs.omniti.com/trac/portableumem/
+     https://labs.omniti.com/trac/portableumem
 
   to provide enhanced versions of the standard memory allocation
   facilities. Use of umem may improve performance for multi-threaded
@@ -355,11 +356,7 @@ of the library-based packages listed here.
   server as part of their standard installation. For MacOS-X, X11 is a
   system install time option.
 
-  A free X server for Microsoft Windows is available from
-
-     http://sources.redhat.com/win32-x11/
-
-  The Cygwin port of XFree86 may also be used. It is included as part of
+  A free X server for Microsoft Windows is included as part of
   Cygwin and may be selected from the Cygwin installer. Cygwin is
   available from
 
@@ -367,7 +364,7 @@ of the library-based packages listed here.
 
   There is a nearly free X server available for Windows and Macintosh at
 
-     http://www.microimages.com/freestuf/mix/
+     http://www.microimages.com/downloads/mix/
 
 * GraphicsMagick requires libxml available from
 
@@ -384,12 +381,12 @@ of the library-based packages listed here.
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2008 GraphicsMagick Group
+| Copyright (C) 2003 - 2010 GraphicsMagick Group
 | Copyright (C) 2002 ImageMagick Studio
 | Copyright (C) 1999 E. I. du Pont de Nemours and Company
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+package; otherwise see http://www.graphicsmagick.org/Copyright.html.
 
 

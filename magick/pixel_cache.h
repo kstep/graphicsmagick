@@ -336,7 +336,7 @@ extern "C" {
   extern MagickExport PixelPacket
     InterpolateColor(const Image *image,const double x_offset,
       const double y_offset,ExceptionInfo *exception)
-      __attribute__ ((deprecated));
+      MAGICK_FUNC_DEPRECATED;
 
   extern MagickExport void
     InterpolateViewColor(const ViewInfo *view,PixelPacket *color,

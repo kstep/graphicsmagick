@@ -86,7 +86,7 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   order=8;
   if (image_info->filename[0] != '\0')
-    order=atol(image_info->filename);
+    order=MagickAtoL(image_info->filename);
   if (order < 2)
     order=8;
   

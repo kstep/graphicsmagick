@@ -1,3 +1,4 @@
+/* Copyright (C) 2003-2009 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -150,11 +151,11 @@ static unsigned long
 %
 %  The format of the CloneMagickWand method is:
 %
-%      MagickWand *CloneMagickWand(MagickWand *wand)
+%      MagickWand *CloneMagickWand(const MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
-%    o wand: The magick wand.
+%    o wand: The magick wand to clone.
 %
 */
 WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
@@ -217,8 +218,8 @@ static MagickWand *CloneMagickWandWithImages(const MagickWand *wand,
   assert(wand->signature == MagickSignature);
   clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (clone_wand == (MagickWand *) NULL)
-    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
-      images->filename);
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
   (void) memset(clone_wand,0,sizeof(MagickWand));
   (void) FormatMagickString(clone_wand->id,MaxTextExtent,"MagickWand-%lu",
     GetMagickWandId());
@@ -809,6 +810,62 @@ WandExport unsigned int MagickBorderImage(MagickWand *wand,
   ReplaceImageInList(&wand->image,border_image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     M a g i c k C d l I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The MagickCdlImage() method applies ("bakes in") the ASC-CDL which is a
+%  format for the exchange of basic primary color grading information between
+%  equipment and software from different manufacturers. The format defines
+%  the math for three functions: slope, offset and power. Each function uses
+%  a number for the red, green, and blue color channels for a total of nine
+%  numbers comprising a single color decision. A tenth number for chrominance
+%  (saturation) has been proposed but is not yet standardized.
+%
+%  The cdl argument string is comma delimited and is in the form (but
+%  without invervening spaces or line breaks):
+%
+%    redslope, redoffset, redpower :
+%    greenslope, greenoffset, greenpower :
+%    blueslope, blueoffset, bluepower :
+%    saturation
+%
+%  with the unity (no change) specification being:
+%
+%    "1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"
+%
+%  See http://en.wikipedia.org/wiki/ASC_CDL for more information.
+%
+%  The format of the MagickCdlImage method is:
+%
+%      MagickPassFail MagickCdlImage(MagickWand *wand,const char *cdl)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The image wand.
+%
+%    o cdl: Define the coefficients for slope offset and power in the
+%      red green and blue channels, plus saturation.
+%
+*/
+WandExport MagickPassFail MagickCdlImage(MagickWand *wand,const char *cdl)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(cdl != (const char *) NULL);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  return CdlImage(wand->image,cdl);
 }
 
 /*
@@ -2620,6 +2677,46 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e A t t r i b u t e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageAttribute returns an image attribute as a string
+%
+%  The format of the MagickGetImageAttribute method is:
+%
+%      char *MagickGetImageAttribute(MagickWand *wand, const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: The name of the attribute
+%
+*/
+WandExport char *MagickGetImageAttribute(MagickWand *wand, const char *name)
+{
+  const ImageAttribute
+	  *attribute;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  attribute=GetImageAttribute(wand->image,name);
+  if (attribute != (ImageAttribute *) NULL)
+    return(AcquireString(attribute->value));
+  InheritException(&wand->exception,&wand->image->exception);
+  return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e B a c k g r o u n d C o l o r                 %
 %                                                                             %
 %                                                                             %
@@ -2724,6 +2821,73 @@ WandExport unsigned int MagickGetImageBorderColor(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   PixelSetQuantumColor(border_color,&wand->image->border_color);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e B o u n d i n g B o x                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageBoundingBox() obtains the crop bounding box required to
+%  remove a solid-color border from the image.  Color quantums which differ
+%  less than the fuzz setting are considered to be the same.  If a border is
+%  not detected, then the the original image dimensions are returned.  The
+%  crop bounding box estimation uses the same algorithm as MagickTrimImage().
+%
+%  The format of the MagickGetImageBoundingBox method is:
+%
+%      unsigned int MagickGetImageBoundingBox(MagickWand *wand,
+%                           const double fuzz,
+%                           unsigned long *width,unsigned long *height,
+%                           long *x, long *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o fuzz: Color comparison fuzz factor.  Use 0.0 for exact match.
+%
+%    o width: The crop width
+%
+%    o height: The crop height
+%
+%    o x: The crop x offset
+%
+%    o y: The crop y offset
+%
+*/
+WandExport unsigned int
+MagickGetImageBoundingBox(MagickWand *wand,const double fuzz,
+			  unsigned long *width, unsigned long *height,
+			  long *x, long *y)
+{
+  RectangleInfo
+    rectangle;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  wand->image->fuzz=fuzz;
+  rectangle=GetImageBoundingBox(wand->image,&wand->exception);
+  *width=rectangle.width;
+  *height=rectangle.height;
+  *x=rectangle.x;
+  *y=rectangle.y;
+
   return(True);
 }
 
@@ -3355,6 +3519,40 @@ WandExport char *MagickGetImageFormat(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(AcquireString(wand->image->magick));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e F u z z                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageFuzz() returns the color comparison fuzz factor. Colors
+%  closer than the fuzz factor are considered to be the same when comparing
+%  colors.  Note that some other functions such as MagickColorFloodfillImage()
+%  implicitly set this value.
+%
+%  The format of the MagickGetImageFuzz method is:
+%
+%      double MagickGetImageFuzz(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport double MagickGetImageFuzz(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return wand->image->fuzz;
 }
 
 /*
@@ -4439,6 +4637,67 @@ WandExport unsigned int MagickGetSize(const MagickWand *wand,
 WandExport const char *MagickGetVersion(unsigned long *version)
 {
   return(GetMagickVersion(version));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     M a g i c k H a l d C l u t I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The MagickHaldClutImage() method apply a color lookup table (Hald CLUT) to
+%  the image.  The fundamental principle of the Hald CLUT algorithm is that
+%  application of an identity CLUT causes no change to the input image,
+%  but an identity CLUT image which has had its colors transformed in
+%  some way (e.g. in Adobe Photoshop) may be used to implement an identical
+%  transform on any other image.
+%
+%  The minimum CLUT level is 2, and the maximum depends on available memory
+%  (largest successfully tested is 24).  A CLUT image is required to have equal
+%  width and height. A CLUT of level 8 is an image of dimension 512x512, a CLUT
+%  of level 16 is an image of dimension 4096x4096.  Interpolation is used so
+%  extremely large CLUT images are not required.
+%
+%  GraphicsMagick provides an 'identity' coder which may be used to generate
+%  identity HLUTs.  For example, reading from "identity:8" creates an identity
+%  CLUT of order 8.
+%
+%  The Hald CLUT algorithm has been developed by Eskil Steenberg as described
+%  at http://www.quelsolaar.com/technology/clut.html, and was adapted for
+%  GraphicsMagick by Clément Follet with support from Cédric Lejeune of
+%  Workflowers.
+%
+%  The format of the HaldClutImage method is:
+%
+%      MagickPassFail MagickHaldClutImage(MagickWand *wand,const MagickWand *clut_wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The image wand.
+%
+%    o clut_wand: The color lookup table image wand
+%
+%
+*/
+WandExport MagickPassFail MagickHaldClutImage(MagickWand *wand,const MagickWand *clut_wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(clut_wand != (MagickWand *) NULL);
+  assert(clut_wand->signature == MagickSignature);
+
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  if (clut_wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+
+  return HaldClutImage(wand->image,clut_wand->image);
 }
 
 /*
@@ -7064,6 +7323,47 @@ WandExport unsigned int MagickSetImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t I m a g e A t t r i b u t e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageAttribute sets an image attribute
+%
+%  The format of the MagickSetImageAttribute method is:
+%
+%      unsigned int MagickSetImageAttribute(MagickWand *wand, const char *name, const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: The name of the attribute
+%
+%    o value: The value of the attribute
+%
+*/
+WandExport unsigned int MagickSetImageAttribute(MagickWand *wand, const char *name, 
+  const char *value)
+{
+  unsigned int status;
+  
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status = SetImageAttribute(wand->image,name,value);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e B a c k g r o u n d C o l o r                 %
 %                                                                             %
 %                                                                             %
@@ -7552,6 +7852,44 @@ WandExport unsigned int MagickSetImageFormat(MagickWand *wand,
   (void) CopyMagickString(wand->image->magick,magick,
                           sizeof(wand->image->magick));
   return MagickTrue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e F u z z                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageFuzz() sets the color comparison fuzz factor.  Colors
+%  closer than the fuzz factor are considered to be the same when comparing
+%  colors.  Note that some other functions such as MagickColorFloodfillImage()
+%  implicitly set this value.
+%
+%  The format of the MagickSetImageFuzz method is:
+%
+%      unsigned int MagickSetImageFuzz(MagickWand *wand,const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o fuzz: The color comparison fuzz factor
+%
+*/
+WandExport unsigned int
+MagickSetImageFuzz(MagickWand *wand,const double fuzz)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->fuzz=fuzz;
+  return(True);
 }
 
 /*
@@ -8242,6 +8580,102 @@ WandExport unsigned int MagickSetInterlaceScheme(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   wand->image_info->interlace=interlace_scheme;
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t R e s o l u t i o n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetResolution() sets the resolution (density) of the magick wand.
+%  Set it before you read an EPS, PDF, or Postscript file in order to
+%  influence the size of the returned image, or after an image has already
+%  been created to influence the rendered image size when used with
+%  typesetting software.
+%
+%  Also see MagickSetResolutionUnits() which specifies the units to use for
+%  the image resolution.
+%
+%  The format of the MagickSetResolution method is:
+%
+%      unsigned int MagickSetResolution(MagickWand *wand,
+%              const double x_resolution,const double y_resolution)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o x_resolution: The horizontal resolution
+%
+%    o y_resolution: The vertical reesolution
+%
+%
+*/
+WandExport unsigned int
+MagickSetResolution(MagickWand *wand,
+		    const double x_resolution,const double y_resolution)
+{
+  char
+    geometry[MaxTextExtent];
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%gx%g",x_resolution,y_resolution);
+  (void) CloneString(&wand->image_info->density,geometry);
+  if (wand->image != (Image *) NULL)
+    {
+      wand->image->x_resolution=x_resolution;
+      wand->image->y_resolution=y_resolution;
+    }
+  return(MagickPass);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t R e s o l u t i o n U n i t s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetResolutionUnits() sets the resolution units of the magick wand.
+%  It should be used in conjunction with MagickSetResolution().
+%  This method works both before and after an image has been read.
+%
+%  Also see MagickSetImageUnits() which specifies the units which apply to
+%  the image resolution setting after an image has been read.
+%
+%  The format of the MagickSetResolutionUnits method is:
+%
+%      unsigned int MagickSetResolutionUnits(MagickWand *wand,
+%                                            const ResolutionType units)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o units: The image units of resolution : Undefinedresolution,
+%      PixelsPerInchResolution, or PixelsPerCentimeterResolution.
+%
+*/
+WandExport unsigned int
+MagickSetResolutionUnits(MagickWand *wand,const ResolutionType units)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->units=units;
+  if (wand->image != (Image *) NULL)
+    wand->image->units=units;
+  return(MagickPass);
 }
 
 /*
@@ -9576,9 +10010,11 @@ static unsigned long GetMagickWandId(void)
   static unsigned long
     id = 0;
 
-  AcquireSemaphoreInfo(&wand_semaphore);
+  if (wand_semaphore == (SemaphoreInfo *) NULL)
+    wand_semaphore=AllocateSemaphoreInfo();
+  LockSemaphoreInfo(wand_semaphore);
   id++;
-  LiberateSemaphoreInfo(&wand_semaphore);
+  UnlockSemaphoreInfo(wand_semaphore);
   return(id);
 }
 
@@ -9589,8 +10025,8 @@ WandExport MagickWand *NewMagickWand(void)
 
   wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (wand == (MagickWand *) NULL)
-    MagickFatalError(ResourceLimitFatalError,UnableToAllocateWand,
-      strerror(errno));
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+		      UnableToAllocateWand);
   (void) memset(wand,0,sizeof(MagickWand));
   (void) FormatMagickString(wand->id,MaxTextExtent,"MagickWand-%lu",
     GetMagickWandId());

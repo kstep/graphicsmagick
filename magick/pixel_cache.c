@@ -89,6 +89,37 @@
 extern "C" {
 #endif
 
+  typedef magick_off_t pixel_off_t;
+
+  /*
+    Read only access to a linear pixel region.
+  */
+  MagickExport const PixelPacket
+  *AcquireImagePixelsDirect(const Image *image,
+			    const pixel_off_t offset,
+			    const unsigned long length,
+			    ExceptionInfo *exception);
+
+  /*
+    Read/write access to a linear pixel region (existing data read and
+    updated).
+  */
+  extern MagickExport PixelPacket
+  *GetImagePixelsDirect(Image *image,
+			const pixel_off_t offset,
+			const unsigned long length,
+			ExceptionInfo *exception);
+
+  /*
+    Write access to a linear pixel region (existing data ignored).
+  */
+  extern MagickExport PixelPacket
+  *SetImagePixelsDirect(Image *image,
+			const pixel_off_t offset,
+			const unsigned long length,
+			ExceptionInfo *exception);
+
+
 /*
   Enum declaractions.
 */
@@ -333,6 +364,12 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
   register size_t
     total_count;
 
+#if 0
+  fprintf(stderr,"FilePositionWrite file=%d, buffer=0x%p, length=%lu, "
+	  "offset=%" MAGICK_OFF_F "u\n",
+	  file,buffer,(unsigned long) length,offset);
+#endif
+
 #if !HAVE_PWRITE
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
     return (ssize_t)-1;
@@ -352,6 +389,12 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
       requested_io_size=length-total_count;
       io_file_offset=offset+total_count;
 #if HAVE_PWRITE
+#if 0
+  fprintf(stderr,"pwrite file=%d, io_buff_address=0x%p, requested_io_size=%lu, "
+	  "io_file_offset=%" MAGICK_OFF_F "u\n",
+	  file,io_buff_address,(unsigned long) requested_io_size,
+	  (magick_off_t) io_file_offset);
+#endif
       count=pwrite(file,io_buff_address,requested_io_size,io_file_offset);
 #else
       count=write(file,io_buff_address,requested_io_size);
@@ -404,13 +447,7 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   if (view_set == (ThreadViewSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
-  /*
-    omp_get_max_threads() returns the # threads which will be used in team by default.
-    omp_get_num_threads() returns the # of threads in current team (1 in main thread).
-  */
-  view_set->nviews=omp_get_max_threads();
-  /* printf("Allocated %d cache views ...\n",view_set->nviews); */
-  
+  view_set->nviews=(unsigned int) GetMagickResourceLimit(ThreadsResource);
   view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
     {
@@ -1691,16 +1728,8 @@ DestroyCacheInfo(Cache cache_info)
         break;
       }
     }
-  if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
-    {
-      DestroySemaphoreInfo(&cache_info->file_semaphore);
-      cache_info->file_semaphore=(SemaphoreInfo *) NULL;
-    }
-  if (cache_info->reference_semaphore != (SemaphoreInfo *) NULL)
-    {
-      DestroySemaphoreInfo(&cache_info->reference_semaphore);
-      cache_info->reference_semaphore=(SemaphoreInfo *) NULL;
-    }
+  DestroySemaphoreInfo(&cache_info->file_semaphore);
+  DestroySemaphoreInfo(&cache_info->reference_semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy cache %.1024s",
                         cache_info->filename);
   cache_info->signature=0;

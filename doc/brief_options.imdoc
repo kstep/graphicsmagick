@@ -273,7 +273,7 @@
 <abs>level of gamma correction</abs>
 </utils>
 <utils apps=convert,mogrify>
-<lopt>-Gaussian <radius>{x<sigma>}</opt>
+<lopt>-gaussian <radius>{x<sigma>}</opt>
 <abs>blur the image with a Gaussian operator</abs>
 </utils>
 <utils apps=animate,composite,convert,display,import,mogrify,montage>
@@ -355,7 +355,7 @@
 </utils>
 <utils apps=animate,compare,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-limit <type> <value></opt>
-<abs>Disk, File, Map, Memory, or Pixels resource limit</abs>
+<abs>Disk, File, Map, Memory, Pixels, or Threads resource limit</abs>
 </utils>
 <utils apps=mogrify>
 <opt>-linewidth</opt>

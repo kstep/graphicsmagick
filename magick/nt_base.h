@@ -40,6 +40,8 @@ extern "C" {
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
+#define HAVE_SPAWNVP 1
+#define HAVE_PROCESS_H 1
 
 /*
   libtiff features.
@@ -69,6 +71,12 @@ extern "C" {
 // Use Visual C++ C inline method extension to improve performance
 #if !defined(inline)
 #  define inline __inline
+#endif
+
+// Visual C++ does not usually seem to support the C'99 restrict keyword
+// Maybe it will be added in some version.
+#if defined(_VISUALC_)  /* && (_MSC_VER <= 1500) */
+#  define restrict /* nothing */
 #endif
 
 #if !defined(chsize)

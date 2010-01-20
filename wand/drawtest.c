@@ -1,3 +1,4 @@
+/* Copyright (C) 2003-2010 GraphicsMagick Group */
 /*
  *
  * Test program for C drawing API
@@ -19,14 +20,8 @@
 #include <time.h>
 #include <wand/magick_wand.h>
 
-#if !defined(True)
-# define True 1
-#endif
-
-#if !defined(False)
-# define False 0
-#endif
-static void ScribbleImage (Image *image)
+static MagickPassFail
+ScribbleImage (MagickWand *canvas)
 {
   DrawingWand
     *draw_wand;
@@ -34,11 +29,15 @@ static void ScribbleImage (Image *image)
   PixelWand
     *color;
 
-  draw_wand=DrawAllocateWand((DrawInfo*) NULL,image);
+  MagickPassFail
+    status;
+
+  draw_wand=NewDrawingWand();
   color=NewPixelWand();
   DrawPushGraphicContext(draw_wand);
   {
-    DrawSetViewbox(draw_wand,0,0,image->columns,image->rows);
+    DrawSetViewbox(draw_wand,0,0,MagickGetImageWidth(canvas),
+		   MagickGetImageHeight(canvas));
     DrawScale(draw_wand,1.101,1.08);
     DrawTranslate(draw_wand,-23.69,-22.97);
     DrawRotate(draw_wand,0);
@@ -50,7 +49,7 @@ static void ScribbleImage (Image *image)
     DrawSetFillColor(draw_wand,color);
     DrawSetStrokeColor(draw_wand,color);
 
-    DrawSetStrokeAntialias(draw_wand,True);
+    DrawSetStrokeAntialias(draw_wand,MagickTrue);
     DrawSetStrokeLineCap(draw_wand,RoundCap);
     DrawSetStrokeLineJoin(draw_wand,RoundJoin);
 
@@ -74,7 +73,7 @@ static void ScribbleImage (Image *image)
       
       DrawPushGraphicContext(draw_wand);
       {
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,4.032);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -90,7 +89,7 @@ static void ScribbleImage (Image *image)
       
       DrawPushGraphicContext(draw_wand);
       {
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,9);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -120,7 +119,7 @@ static void ScribbleImage (Image *image)
           { 378.1,81.72 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,2.016);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -136,7 +135,7 @@ static void ScribbleImage (Image *image)
       
       DrawPushGraphicContext(draw_wand);
       {
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,3.024);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -168,7 +167,7 @@ static void ScribbleImage (Image *image)
           { 207.4,31.82 }, { 209.2,28.87 }, { 211.3,26.64},  { 213.8,25.13 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,3.024);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -184,7 +183,7 @@ static void ScribbleImage (Image *image)
       
       DrawPushGraphicContext(draw_wand);
       {
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,12.02);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -199,7 +198,7 @@ static void ScribbleImage (Image *image)
 
       DrawPushGraphicContext(draw_wand);
       {
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,9);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -221,7 +220,7 @@ static void ScribbleImage (Image *image)
           { 77.26,578.6 }, { 180,504 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,9);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -244,7 +243,7 @@ static void ScribbleImage (Image *image)
           { 77.26,578.6 }, { 148.2,568.3 }, { 180,504 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,9);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -268,7 +267,7 @@ static void ScribbleImage (Image *image)
           { 540,172.8 },   { 540,223.2 },   { 540,288 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,5.976);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -290,7 +289,7 @@ static void ScribbleImage (Image *image)
           { 151.2,756 }, { 86.4,748.8 }, { 57.6,640.8 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,5.976);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -359,7 +358,7 @@ static void ScribbleImage (Image *image)
           { 27.86,565.3 }
         };
         
-        DrawSetStrokeAntialias(draw_wand,True);
+        DrawSetStrokeAntialias(draw_wand,MagickTrue);
         DrawSetStrokeWidth(draw_wand,5.904);
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
@@ -376,19 +375,22 @@ static void ScribbleImage (Image *image)
     DrawPopGraphicContext(draw_wand);
   }
   DrawPopGraphicContext(draw_wand);
-  DrawRender(draw_wand); /* FIXME: Use Wand MagickDrawImage() instead. */
+  status=MagickDrawImage(canvas,draw_wand);
   DestroyPixelWand(color);
   DestroyDrawingWand(draw_wand);
+  return status;
 }
 
 int main ( int argc, char **argv )
 {
-  Image *canvas = (Image *)NULL;
-  char outfile[MaxTextExtent];
-  int rows, columns = 0;
-  char size[MaxTextExtent];
-  ImageInfo *image_info;
-  ExceptionInfo exception;
+  MagickWand
+    *canvas = (MagickWand  *) NULL;
+
+  char
+    outfile[MaxTextExtent];
+
+  MagickPassFail
+    status=MagickPass;
 
   if ( argc != 2 )
     {
@@ -406,36 +408,43 @@ int main ( int argc, char **argv )
   /*
    * Create canvas image
    */
-  columns=596;
-  rows=842;
-  image_info=CloneImageInfo((ImageInfo*)NULL);
-  GetExceptionInfo( &exception );
-  FormatMagickString(size, MaxTextExtent, "%dx%d", columns, rows);
-  CloneString(&image_info->size, size);
-  strcpy( image_info->filename, "xc:white");
-  canvas = ReadImage ( image_info, &exception );
-  if (exception.severity != UndefinedException)
-    CatchException(&exception);
-  if ( canvas == (Image *)NULL )
-    {
-      printf ( "Failed to read canvas image %s\n", image_info->filename );
-      exit(1);
-    }
+  canvas=NewMagickWand();
+  if (MagickFail !=  status)
+    if ((status = MagickSetSize( canvas, 596, 842 )) == MagickFail)
+      printf ( "Failed to set image size\n" );
 
+  if (MagickPass == status)
+    if ((status = MagickReadImage( canvas, "xc:white" )) == MagickFail)
+      printf ( "Failed to read canvas image %s\n", MagickGetFilename(canvas) );
+  
   /*
    * Scribble on image
    */
-  ScribbleImage( canvas );
+  if (MagickPass == status)
+    if ((status = ScribbleImage( canvas ))  == MagickFail)
+      printf ( "Failed draw on image\n" );
+
+  /*
+   * Set depth to 8
+   */
+  if (MagickPass == status)
+    status=MagickSetImageDepth( canvas, 8);
+
+  /*
+   * Set RLE compression
+   */
+  if (MagickPass == status)
+    status=MagickSetImageCompression( canvas, RLECompression);
 
   /*
    * Save image to file
    */
-  CopyMagickString( canvas->filename, outfile, sizeof(image_info->filename));
-  WriteImage ( image_info, canvas );
-
-  DestroyExceptionInfo( &exception );
-  DestroyImage( canvas );
-  DestroyImageInfo( image_info );
+  if (MagickPass == status)
+    if ((status = MagickWriteImage ( canvas, outfile )) == MagickFail)
+      printf ( "Failed to write image file %s\n", outfile );
+  
+  DestroyMagickWand( canvas );
   DestroyMagick();
-  return 0;
+
+  return (MagickPass == status ? 0 : 1);
 }

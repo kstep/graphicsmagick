@@ -68,7 +68,7 @@
         Unable to read pixel cache
       </Message>
       <Message name="UnableToSyncCache">
-        Unable to sync cache
+        Unable to sync cache (check temporary file disk space)
       </Message>
     </Error>
     <FatalError>
@@ -307,6 +307,9 @@
       </Message>
       <Message name="UnableToAccessModuleFile">
         Unable to access module file
+      </Message>
+      <Message name="StringTokenLengthExceeded">
+        String token maximum length exceeded
       </Message>
     </Error>
     <FatalError>
@@ -810,6 +813,9 @@
       <Message name="ImageWidthsOrHeightsDiffer">
         image widths or heights differ
       </Message>
+      <Message name="InvalidSubimageSpecification">
+        Invalid subimage specification
+      </Message>
       <Message name="KernelRadiusIsTooSmall">
         kernel radius is too small
       </Message>
@@ -818,6 +824,9 @@
       </Message>
       <Message name="MatrixOrderOutOfRange">
         Matrix size is out of range
+      </Message>
+      <Message name="MatrixIsNotSquare">
+        Matrix is not square (%s elements)
       </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
@@ -1403,10 +1412,25 @@
           unable to allocate registry info
         </Message>
         <Message name="UnableToAllocateWand">
-          unable to allocate wand '%s'
+          unable to allocate wand
+        </Message>
+        <Message name="UnableToDestroySemaphore">
+          unable to destroy semaphore
+        </Message>
+        <Message name="UnableToInitializeSemaphore">
+          unable to initialize semaphore
+        </Message>
+        <Message name="UnableToLockSemaphore">
+          unable to lock semaphore
+        </Message>
+        <Message name="UnableToUnlockSemaphore">
+          unable to unlock semaphore
         </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
+        </Message>
+        <Message name="SemaporeOperationFailed">
+          Semaphore operation failed
         </Message>
         <Message name="UnableToAnimateImageSequence">
           unable to animate image sequence

@@ -12,7 +12,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..10\n"; }
+BEGIN { $| = 1; $test=1; print "1..11\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Graphics::Magick;
@@ -120,3 +120,13 @@ testReadWrite(  'input_gray_08bit_matte.tiff',
   'output_gray_08bit_matte.tiff',
   q//,
   '70e1e096e53af6a312ec6aa54890a59b35d3c6932dfc052d6b355f62733635be' );
+
+#
+# 11) CALS Type 1
+#
+++$test;
+print("CALS Type 1 ...\n");
+testReadWrite(  'input_gray_01bit_minwhite.cals',
+  'output_gray_01bit_minwhite.cals',
+  q//,
+  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4' );

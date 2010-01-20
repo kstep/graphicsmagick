@@ -23,7 +23,7 @@ GraphicsMagick Supported Formats
 .. _DPX : motion-picture.html
 .. _FIG : foo.bar
 .. _FITS : http://www.cv.nrao.edu/fits/
-.. _Ghostscript : http://www.cs.wisc.edu/~ghost/
+.. _Ghostscript : http://pages.cs.wisc.edu/~ghost/
 .. _GIF : http://www.fileformat.info/format/gif/egff.htm
 .. _`Hald CLUT` : http://www.quelsolaar.com/technology/clut.html
 .. _JBIG : http://www.jpeg.org/
@@ -796,7 +796,4 @@ automatically uncompressed while the image is read.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2009
-
-
-
+Copyright |copy| GraphicsMagick Group 2002-2010

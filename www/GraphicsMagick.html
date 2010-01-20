@@ -561,13 +561,14 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply ASC CDL color transform</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Applies ("bakes in") the ASC-CDL which is a format for the exchange of
-basic primary color grading information between equipment and software
-from different manufacturers. The format defines the math for three
-functions: slope, offset and power. Each function uses a number for
-the red, green, and blue color channels for a total of nine numbers
-comprising a single color decision. A tenth number for chrominance
-(saturation) has been proposed but is not yet standardized.</font></td></tr></table>
+Applies ("bakes in") the ASC CDL, which is a format for the exchange
+of basic primary color grading information between equipment and
+software from different manufacturers. The format defines the math for
+three functions: slope, offset and power. Each function uses a number
+for the red, green, and blue color channels for a total of nine
+numbers comprising a single color decision. The tenth number
+(optional) is for chromiance (saturation) as specified by ASC CDL
+1.2.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The argument string is comma delimited and is in the following form
 (but without invervening spaces or line breaks)</font></td></tr></table>
@@ -579,7 +580,7 @@ The argument string is comma delimited and is in the following form
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 with the unity (no change) specification being:
-"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:0.0"</font></td></tr></table>
+"1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:1.0"</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -861,6 +862,13 @@ width=15><b><font face="Helvetica, Arial"
 Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
 a colorization value list delimited with slashes (e.g. 0/0/50).</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-colorize</strong> option may be used in conjunction with <strong>-modulate</strong>
+to produce a nice sepia toned image like:</font></td></tr></table>
+<pre>
+  gm convert input.ppm -modulate 115,0,100 \
+     -colorize 7,21,50 output.ppm.
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1425,14 +1433,23 @@ compression. If defined, this value overrides the -quality
 setting. The default quality setting of 75 results in a rate value of
 0.06641.
 </dd>
+<dt>jpeg:block-smoothing={true|false}</dt>
+<dd>Enables or disables block smoothing when reading a JPEG file
+(default enabled).
+&lt;/dd/
 <dt>jpeg:dct-method=&lt;value&gt;</dt>
-<dd>Selects the IJG JPEG library DCT encoding implementation to use. The
-encoding implementations vary in speed and encoding error. The available
-choices for <strong>value</strong> are <strong>islow</strong>, <strong>ifast</strong>, <strong>float</strong>,
-<strong>default</strong> and <strong>fastest</strong>. Note that <strong>fastest</strong> might not
-necessarily be fastest on your CPU, depending on the choices made when
-the JPEG library was built and how your CPU behaves.
+<dd>Selects the IJG JPEG library DCT implementation to use. The
+encoding implementations vary in speed and encoding error. The
+available choices for <strong>value</strong> are <strong>islow</strong>, <strong>ifast</strong>,
+<strong>float</strong>, <strong>default</strong> and <strong>fastest</strong>. Note that
+<strong>fastest</strong> might not necessarily be fastest on your CPU, depending
+on the choices made when the JPEG library was built and how your CPU
+behaves.
 </dd>
+<dt>jpeg:fancy-upsampling={true|false}</dt>
+<dd>Enables or disables fancy upsampling when reading a JPEG file
+(default enabled).
+&lt;/dd/
 <dt>jpeg:optimize-coding={true|false}</dt>
 <dd>
 Selects if huffman encoding should be used. Huffman encoding is enabled
@@ -2477,7 +2494,7 @@ but not set as an image attribute (e.g. PNG images).</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
-    <a name="details-Gaussian"></a>-Gaussian <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
+    <a name="details-gaussian"></a>-gaussian <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blur the image with a Gaussian operator</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2871,15 +2888,17 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, or Pixels resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, resource limits are estimated based on the available
 resources of the system. The resource limits are <strong>Disk</strong>, maximum
 total disk space consumed; <strong>File</strong>, maximum number of file
-descriptors allowed to be open at once; <strong>Map</strong>, maximum total number
-of file bytes which may be memory mapped; <strong>Memory</strong>, maximum total
-number of bytes of heap memory used for image storage; and <strong>Pixels</strong>,
-maximum absolute image size (per image).</font></td></tr></table>
+descriptors allowed to be open at once; <strong>Map</strong>, maximum total
+number of file bytes which may be memory mapped; <strong>Memory</strong>,
+maximum total number of bytes of heap memory used for image storage;
+<strong>Pixels</strong>, maximum absolute image size (per image); and
+<strong>Threads</strong>, the maximum number of worker threads to use per OpenMP
+thread team.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 These resource limits are used to decide if (for a given image) the
 decoded image ("pixel cache") should be stored in heap memory (RAM), in a
@@ -2901,9 +2920,10 @@ megabytes and 64 megabytes respectively.</font></td></tr></table>
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
 <strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MAP</strong>,
-<strong>MAGICK_LIMIT_MEMORY</strong>, and <strong>MAGICK_LIMIT_PIXELS</strong> may be used to
-set the limits for disk space, open files, memory mapped size, heap
-memory, and per-image pixels respectively.</font></td></tr></table>
+<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>, and
+<strong>OMP_NUM_THREADS</strong> may be used to set the limits for disk space,
+open files, memory mapped size, heap memory, per-image pixels, and
+threads respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the option <tt>-list resource</tt> list the current limits.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -3954,7 +3974,7 @@ The default is quality is 75, which means nearly the best compression with
 adaptive filtering.  The quality setting has no effect on the appearance
 of PNG and MNG images, since the compression is always lossless.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a>
+For further information, see the <a href="http://www.w3.org/TR/">PNG</a>
 specification.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When writing a JNG image with transparency, two quality values are required,
@@ -4027,17 +4047,20 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a color translation matrix to image channels</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-A user supplied color translation matrix (expressed as a text
-string) is used to translate/blend the image channels based on
-weightings in a supplied matrix which may be of order 3 (color
-channels only), 4 (color channels plus opacity), or 5 (color channels
-plus opacity and offset).  Values in the columns of the matrix (red,
-green, blue, opacity) are used as multipliers with the existing
-channel values and added together according to the rows of the matrix.
-Matrix values are floating point and may be negative.  The offset
-column (column 5) is purely additive and is scaled such that 0.0 to
-1.0 represents the maximum quantum range (but values are not limited
-to this range).</font></td></tr></table>
+A user supplied color translation matrix (expressed as a text string)
+is used to translate/blend the image channels based on weightings in a
+supplied matrix which may be of order 3 (color channels only), 4
+(color channels plus opacity), or 5 (color channels plus opacity and
+offset).  Values in the columns of the matrix (red, green, blue,
+opacity) are used as multipliers with the existing channel values and
+added together according to the rows of the matrix.  Matrix values are
+floating point and may be negative.  The offset column (column 5) is
+purely additive and is scaled such that 0.0 to 1.0 represents the
+maximum quantum range (but values are not limited to this range). The
+math for the color translation matrix is similar to that used by Adobe
+Flash except that the offset is scaled to 1.0 (divide Flash offset by
+255 for use with GraphicsMagick) so that the results are independent
+of quantum depth.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 An <strong>identity</strong> matrix exists for each matrix order which
 results in no change to the image.  The translation matrix should be
@@ -5632,23 +5655,6 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
-    magic.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>file header magic test configuration file</td></tr></table>
-<pre>
-  &lt;?xml version="1.0"?&gt;
-  &lt;magicmap&gt;
-    &lt;magic name="AVI" offset="0" target="RIFF" /&gt;
-  &lt;/magicmap&gt;
-</pre>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
     modules.mgk
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>loadable modules configuration file</td></tr></table>
@@ -5725,7 +5731,7 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 - 2009 GraphicsMagick Group, an organization
+<strong>Copyright (C) 2002 - 2010 GraphicsMagick Group, an organization
 dedicated to making software imaging solutions freely available.</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining a
@@ -5755,15 +5761,15 @@ authorization from the GraphicsMagick Group.</strong>
 <strong>Additional copyrights and licenses apply to this software. You should
 have received a copy of Copyright.txt with this package, which describes
 additional copyrights and licenses which apply to this software;
-otherwise see http://www.graphicsmagick.org/www/Copyright.html.</strong>
+otherwise see http://www.graphicsmagick.org/Copyright.html.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
 <HR>
 
-[<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
+[<a href="index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2008</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2010</a></p></td>
 </tr></table>
 </body></html>

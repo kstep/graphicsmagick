@@ -81,7 +81,10 @@ DestroyMagick( void );
 </div>
 <div class="section" id="description">
 <h2>Description</h2>
-<p>DestroyMagick() destroys the GraphicsMagick environment.</p>
+<p>DestroyMagick() destroys the GraphicsMagick environment.  This function
+should be invoked in the primary (original) thread of the application's
+process while shutting down, and only after any threads which might be
+using GraphicsMagick functions have terminated.</p>
 <p>The format of the DestroyMagick function is:</p>
 <pre class="literal-block">
 DestroyMagick( void );
@@ -162,6 +165,8 @@ is returned. It is not safe to traverse the list by using the previous and
 next pointers in the MagickInfo structure since the list contents or order
 may be altered while the list is being traversed. If the list must be
 traversed, access it via the GetMagickInfoArray function instead.</p>
+<p>If GraphicsMagick has not been initialized via InitializeMagick()
+then this function will not work.</p>
 <p>The format of the GetMagickInfo method is:</p>
 <pre class="literal-block">
 const <a class="reference external" href="../api/types.html#magickinfo">MagickInfo</a> *GetMagickInfo( const char *name, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
@@ -216,7 +221,10 @@ InitializeMagick( const char *path );
 <h2>Description</h2>
 <p>InitializeMagick() initializes the GraphicsMagick environment.
 InitializeMagick() MUST be invoked by the using program before making
-use of GraphicsMagick functions or else the library may be unstable.</p>
+use of GraphicsMagick functions or else the library will be unusable.</p>
+<p>This function should be invoked in the primary (original) thread of the
+application's process, and before starting any OpenMP threads, as part
+of program initialization.</p>
 <p>The format of the InitializeMagick function is:</p>
 <pre class="literal-block">
 InitializeMagick( const char *path );
@@ -412,7 +420,7 @@ looking for.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2009-09-17 19:44 UTC.
+Generated on: 2010-01-20 23:29 UTC.
 
 </div>
 </body>

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -112,7 +112,6 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
     delegate_info=p;
@@ -128,7 +127,6 @@ MagickExport void DestroyDelegateInfo(void)
     MagickFreeMemory(delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
-  LiberateSemaphoreInfo(&delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 
@@ -256,17 +254,17 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 
   if (delegate_list == (DelegateInfo *) NULL)
     {
-      AcquireSemaphoreInfo(&delegate_semaphore);
+      LockSemaphoreInfo(delegate_semaphore);
       if (delegate_list == (DelegateInfo *) NULL)
         (void) ReadConfigureFile(DelegateFilename,0,exception);
-      LiberateSemaphoreInfo(&delegate_semaphore);
+      UnlockSemaphoreInfo(delegate_semaphore);
     }
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return((const DelegateInfo *) delegate_list);
   /*
     Search for requested delegate.
   */
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->mode > 0)
@@ -306,7 +304,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
         delegate_list->previous=p;
         delegate_list=p;
       }
-  LiberateSemaphoreInfo(&delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return((const DelegateInfo *) p);
 }
 
@@ -370,6 +368,33 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
       (void) strlcpy(delegate,"gs-color+alpha",sizeof(delegate));
     }
   return GetDelegateInfo(delegate,(char *) NULL,exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e D e l e g a t e I n f o                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeDelegateInfo initializes the delegate facility
+%
+%  The format of the InitializeDelegateInfo method is:
+%
+%      MagickPassFail InitializeDelegateInfo(void)
+%
+%
+*/
+MagickPassFail
+InitializeDelegateInfo(void)
+{
+  assert(delegate_semaphore == (SemaphoreInfo *) NULL);
+  delegate_semaphore=AllocateSemaphoreInfo();
+  return MagickPass;
 }
 
 /*
@@ -447,6 +472,58 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
   return length;
 }
 #endif /* POSIX */
+
+#if defined(MSWINDOWS)
+static size_t
+WindowsShellTextEscape(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+
+  /*
+    Copy src to dst within bounds of size-1, while escaping special
+    characters.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    {
+      register const char c = *q;
+#if 0
+      /*
+	FIXME: Currently the correct implementation is not known so we
+	don't alter arguments at the moment.
+      */
+      if ((c == '\\') ||
+          (c == '"') ||
+          (c == '%%'))
+        {
+          if (length+1 >= size-1)
+            break;
+          *p = '\\';
+          p++;
+          length++;
+        }
+#endif
+      *p = c;
+    }
+
+  dst[length]='\0';
+
+  return length;
+}
+#endif /* MSWINDOWS */
 
 MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   const char *decode,const char *encode,ExceptionInfo *exception)
@@ -622,7 +699,6 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       status=False;
       goto error_exit;
     }
-#if defined(POSIX)
     {
       MagickBool
         needs_shell;
@@ -692,7 +768,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
             Expand sprintf-style codes in delegate command to command
             string, escaping replacement text appropriately
           */
-          command=TranslateTextEx(image_info,image,commands[i],UnixShellTextEscape);
+          command=TranslateTextEx(image_info,image,commands[i],
+#if defined(POSIX)
+				  UnixShellTextEscape
+#endif /* POSIX */
+#if defined(MSWINDOWS)
+				  WindowsShellTextEscape
+#endif /* MSWINDOWS */
+				  );
           if (command == (char *) NULL)
             break;
           /*
@@ -701,20 +784,6 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           status=SystemCommand(image_info->verbose,command);
         }
     }
-#else
-    {
-      /*
-        Expand sprintf-style codes in delegate command to command string
-      */
-      command=TranslateText(image_info,image,commands[i]);
-      if (command == (char *) NULL)
-        break;
-      /*
-        Execute delegate using command shell.
-      */
-      status=SystemCommand(image_info->verbose,command);
-    }
-#endif
     MagickFreeMemory(command);
     /* Liberate convenience temporary files */
     (void) LiberateTemporaryFile(image_info->unique);
@@ -889,7 +958,6 @@ InvokePostscriptDelegate(const unsigned int verbose,
 #endif /* defined(HasGS) || defined(MSWINDOWS) */
 
   status=MagickFail;
-#if defined(POSIX)
   {
     argv = StringToArgv(command,&argc);
     if (argv == (char **) NULL)
@@ -907,10 +975,7 @@ InvokePostscriptDelegate(const unsigned int verbose,
 	MagickFreeMemory(argv);
       }
   }
-#else
-  if (SystemCommand(verbose,command) == 0)
-    status=MagickPass;
-#endif
+
   return status;
 }
 
@@ -954,7 +1019,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) GetDelegateInfo("*","*",exception);
-  AcquireSemaphoreInfo(&delegate_semaphore);
+  LockSemaphoreInfo(delegate_semaphore);
   for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if ((p->previous == (DelegateInfo *) NULL) ||
@@ -993,7 +1058,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       /* Format output so that command spans multiple lines if
          necessary */
       if (getenv("COLUMNS"))
-        screen_width=atoi(getenv("COLUMNS"))-1;
+        screen_width=MagickAtoI(getenv("COLUMNS"))-1;
       command_length=strlen(commands[0]);
       command_start_column=fprintf(file,"%8s%c=%c%s  ",p->decode ? p->decode : "",
         p->mode <= 0 ? '<' : ' ',p->mode >= 0 ? '>' : ' ',delegate);
@@ -1019,9 +1084,10 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     }
     for (i=0; commands[i] != (char *) NULL; i++)
       MagickFreeMemory(commands[i]);
+    MagickFreeMemory(commands);
   }
   (void) fflush(file);
-  LiberateSemaphoreInfo(&delegate_semaphore);
+  UnlockSemaphoreInfo(delegate_semaphore);
   return(True);
 }
 

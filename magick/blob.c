@@ -807,7 +807,6 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->file=blob_info->file;
   clone_info->data=blob_info->data;
   clone_info->reference_count=1;
-  clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
 }
 
@@ -979,6 +978,7 @@ MagickExport void CloseBlob(Image *image)
 MagickExport void DestroyBlob(Image *image)
 {
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image->blob != (BlobInfo *) NULL)
     {
       MagickBool
@@ -989,11 +989,11 @@ MagickExport void DestroyBlob(Image *image)
         (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                               "Destroy blob, image=%p, filename=\"%s\"",
                               image,image->filename);
-      AcquireSemaphoreInfo(&image->blob->semaphore);
+      LockSemaphoreInfo(image->blob->semaphore);
       image->blob->reference_count--;
       assert(image->blob->reference_count >= 0);
       destroy=(image->blob->reference_count > 0 ? MagickFalse : MagickTrue);
-      LiberateSemaphoreInfo(&image->blob->semaphore);
+      UnlockSemaphoreInfo(image->blob->semaphore);
       if (destroy)
         {
           /*
@@ -1003,8 +1003,7 @@ MagickExport void DestroyBlob(Image *image)
             CloseBlob(image);
           if (image->blob->mapped)
             (void) UnmapBlob(image->blob->data,image->blob->length);
-          if (image->blob->semaphore != (SemaphoreInfo *) NULL)
-            DestroySemaphoreInfo(&image->blob->semaphore);
+	  DestroySemaphoreInfo(&image->blob->semaphore);
           (void) memset((void *) image->blob,0xbf,sizeof(BlobInfo));
           MagickFreeMemory(image->blob);
         }
@@ -1048,17 +1047,16 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
         destroy;
 
       assert(blob->signature == MagickSignature);
-      AcquireSemaphoreInfo(&blob->semaphore);
+      LockSemaphoreInfo(blob->semaphore);
       blob->reference_count--;
       assert(blob->reference_count >= 0);
       destroy=(blob->reference_count > 0 ? MagickFalse : MagickTrue);
-      LiberateSemaphoreInfo(&blob->semaphore);
+      UnlockSemaphoreInfo(blob->semaphore);
       if (destroy)
         {
           if (blob->mapped)
             (void) UnmapBlob(blob->data,blob->length);
-          if (blob->semaphore != (SemaphoreInfo *) NULL)
-            DestroySemaphoreInfo(&blob->semaphore);
+	  DestroySemaphoreInfo(&blob->semaphore);
           (void) memset((void *)blob,0xbf,sizeof(BlobInfo));
           MagickFreeMemory(blob);
         }
@@ -1336,6 +1334,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   blob_info->quantum=DefaultBlobQuantum;
   blob_info->fsync=MagickFalse;
   blob_info->reference_count=1;
+  blob_info->semaphore=AllocateSemaphoreInfo();
   blob_info->signature=MagickSignature;
 }
 
@@ -3815,9 +3814,9 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
+  LockSemaphoreInfo(blob->semaphore);
   blob->reference_count++;
-  LiberateSemaphoreInfo(&blob->semaphore);
+  UnlockSemaphoreInfo(blob->semaphore);
   return(blob);
 }
 

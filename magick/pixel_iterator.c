@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004, 2008 GraphicsMagick Group
+% Copyright (C) 2004-2010 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -193,10 +193,10 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
         thread_status;
 
       const PixelPacket
-        *pixels;
+        * restrict pixels;
 
       const IndexPacket
-        *indexes;
+        * restrict indexes;
 
       thread_status=status;
       if (thread_status == MagickFail)
@@ -324,10 +324,10 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
         thread_status;
 
       PixelPacket
-        *pixels;
+        * restrict pixels;
 
       IndexPacket
-        *indexes;
+        * restrict indexes;
 
       thread_status=status;
       if (thread_status == MagickFail)
@@ -475,12 +475,12 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         second_row;
 
       const PixelPacket
-        *first_pixels,
-        *second_pixels;
+        * restrict first_pixels,
+        * restrict second_pixels;
 
       const IndexPacket
-        *first_indexes,
-        *second_indexes;
+        * restrict first_indexes,
+        * restrict second_indexes;
 
       thread_status=status;
       if (thread_status == MagickFail)
@@ -635,16 +635,16 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
         thread_status;
 
       const PixelPacket
-        *source_pixels;
+        * restrict source_pixels;
 
       const IndexPacket
-        *source_indexes;
+        * restrict source_indexes;
 
       PixelPacket
-        *update_pixels;
+        * restrict update_pixels;
 
       IndexPacket
-        *update_indexes;
+        * restrict update_indexes;
 
       register long
         source_row,
@@ -931,18 +931,18 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
         thread_status;
 
       const PixelPacket
-        *source1_pixels,
-        *source2_pixels;
+        * restrict source1_pixels,
+        * restrict source2_pixels;
 
       const IndexPacket
-        *source1_indexes,
-        *source2_indexes;
+        * restrict source1_indexes,
+        * restrict source2_indexes;
 
       PixelPacket
-        *update_pixels;
+        * restrict update_pixels;
 
       IndexPacket
-        *update_indexes;
+        * restrict update_indexes;
 
       long
         source_row,

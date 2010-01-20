@@ -170,7 +170,8 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libGraphicsMagick___la_LDFLAGS = \
+# -no-undefined -export-symbols-regex ".*"
+Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
 
@@ -267,12 +268,12 @@ MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 
 # Build HTML version of news
 www/Magick++/NEWS.html: Magick++/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/www/Magick++/NEWS.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(top_srcdir)/Magick++/NEWS  > $(top_srcdir)/www/Magick++/NEWS.html
 	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 
 # Build HTML version of ChangeLog
 www/Magick++/ChangeLog.html: Magick++/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
 	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
 else

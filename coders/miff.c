@@ -39,6 +39,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
+#include "magick/color_lookup.h"
 #include "magick/colormap.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
@@ -854,7 +855,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
                   {
-                    colors=atol(values);
+                    colors=MagickAtoL(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
@@ -881,7 +882,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
                   {
-                    image->columns= atol(values);
+                    image->columns= MagickAtoL(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -893,17 +894,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"delay") == 0)
                   {
-                    image->delay=atol(values);
+                    image->delay=MagickAtoL(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=atol(values);
+                    image->depth=MagickAtoL(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
                   {
-                    image->dispose=(DisposeType) atol(values);
+                    image->dispose=(DisposeType) MagickAtoL(values);
                     if (LocaleCompare(values,"Background") == 0)
                       image->dispose=BackgroundDispose;
                     else
@@ -923,7 +924,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"gamma") == 0)
                   {
-                    image->gamma=atof(values);
+                    image->gamma=MagickAtoF(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"green-primary") == 0)
@@ -947,7 +948,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
                   {
-                    image->iterations=atol(values);
+                    image->iterations=MagickAtoL(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -1012,7 +1013,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     if (profiles == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                     profiles[i].name=AllocateString(keyword+8);
-                    profiles[i].length=atol(values);
+                    profiles[i].length=MagickAtoL(values);
                     profiles[i].info=(unsigned char *) NULL;
                     number_of_profiles++;
                     break;
@@ -1055,7 +1056,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
                   {
-                    image->rows= atol(values);
+                    image->rows= MagickAtoL(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -1067,7 +1068,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"scene") == 0)
                   {
-                    image->scene=atol(values);
+                    image->scene=MagickAtoL(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -1096,7 +1097,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"version") == 0)
                   {
-                    version=atof(values);
+                    version=MagickAtoF(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
