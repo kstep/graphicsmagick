@@ -53,27 +53,182 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 27, 2009</p>
+<p>This file was last updated on January 21, 2010</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#september-17-2009" id="id1">1.3.7 (September 17, 2009)</a></li>
-<li><a class="reference internal" href="#july-25-2009" id="id2">1.3.6 (July 25, 2009)</a></li>
-<li><a class="reference internal" href="#january-26-2009" id="id3">1.3.5 (January 26, 2009)</a></li>
-<li><a class="reference internal" href="#january-13-2009" id="id4">1.3.4 (January 13, 2009)</a></li>
-<li><a class="reference internal" href="#december-9-2008" id="id5">1.3.3 (December 9, 2008)</a></li>
-<li><a class="reference internal" href="#november-29-2008" id="id6">1.3.2 (November 29, 2008)</a></li>
-<li><a class="reference internal" href="#november-17-2008" id="id7">1.3.1 (November 17, 2008)</a></li>
-<li><a class="reference internal" href="#november-9-2008" id="id8">1.3 (November 9, 2008)</a></li>
-<li><a class="reference internal" href="#april-29-2008" id="id9">1.2 (April 29, 2008)</a></li>
-<li><a class="reference internal" href="#released-april-4-2004" id="id10">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference internal" href="#released-in-may-2003" id="id11">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference internal" href="#january-21-2010" id="id1">1.3.8 (January 21, 2010)</a></li>
+<li><a class="reference internal" href="#september-17-2009" id="id2">1.3.7 (September 17, 2009)</a></li>
+<li><a class="reference internal" href="#july-25-2009" id="id3">1.3.6 (July 25, 2009)</a></li>
+<li><a class="reference internal" href="#january-26-2009" id="id4">1.3.5 (January 26, 2009)</a></li>
+<li><a class="reference internal" href="#january-13-2009" id="id5">1.3.4 (January 13, 2009)</a></li>
+<li><a class="reference internal" href="#december-9-2008" id="id6">1.3.3 (December 9, 2008)</a></li>
+<li><a class="reference internal" href="#november-29-2008" id="id7">1.3.2 (November 29, 2008)</a></li>
+<li><a class="reference internal" href="#november-17-2008" id="id8">1.3.1 (November 17, 2008)</a></li>
+<li><a class="reference internal" href="#november-9-2008" id="id9">1.3 (November 9, 2008)</a></li>
+<li><a class="reference internal" href="#april-29-2008" id="id10">1.2 (April 29, 2008)</a></li>
+<li><a class="reference internal" href="#released-april-4-2004" id="id11">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference internal" href="#released-in-may-2003" id="id12">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
+<div class="section" id="january-21-2010">
+<h1><a class="toc-backref" href="#id1">1.3.8 (January 21, 2010)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Fix for CVE-2009-1882 &quot;Integer overflow in the XMakeImage
+function&quot;.</li>
+<li>Fix lockup due to hanging in loop while parsing malformed
+sub-image specification (SourceForge issue 2886560).</li>
+<li>Libltdl: Updated libtool to 2.2.6b in order to fix security issue.
+Resolves CVE-2009-3736 as it pertains to GraphicsMagick.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>-convolve, -recolor: Validate that user-provided matrix is square
+when parsing -convolve and -recolor commands in order to avoid a
+core dump.</li>
+<li>CALS: Reading images taller than the image width resulted in a
+failure.</li>
+<li>ConstituteImage(), DispatchImage(): 'A' and 'T' should indicate
+transparency and 'O' should indicate opacity.  Behavior was
+inconsistent.  In some cases 'O' meant transparency while in other
+cases it meant opacity. Also, in a few cases, matte was not
+getting enabled in the image as it should.</li>
+<li>DCRAW: Module name was not registered so modules based builds were
+not supporting formats provided via 'dcraw'.</li>
+<li>GetOptimalKernelWidth1D(), GetOptimalKernelWidth2D(): In the Q32
+build, convolution kernel size was estimated incorrectly for large
+sigmas on 32-bit systems due to arithmetic overflow.  This could
+cause wrong results for -convolve, -blur, -sharpen, and other
+algorithms which use these functions.</li>
+<li>Image Size: Fixed the ability to pass the image size via the
+filename specification like &quot;myfile.jpg[640x480]&quot; rather than
+needing to use -size.</li>
+<li>IPTC: Blob data needed to be padded to an even size.  Size is now
+correctly reported.</li>
+<li>IPTC: Returned IPTC string values were one character too short.</li>
+<li>Large Files: Large pixel cache files were not working under GNU
+Linux.</li>
+<li>JP2: Fixed some value scaling problems.</li>
+<li>JP2: Fix possible crash at exit when Jasper is used by a modules
+build.</li>
+<li>MPC: is_monochrome and is_grayscale flags were not managed
+properly for the MPC coder.</li>
+<li>PCL: Page was not always being ejected.</li>
+<li>PNG: The png8 encoder would fail when trying to write a 1-color
+image.</li>
+<li>PSD: PSD parser was confused by 0x0 pixel layers, resulting in
+image data corruption of all following layers.</li>
+<li>-rotate, -shear: Some internally-reported errors were potentially
+being lost.</li>
+<li>Subrange/stdin: Commands now support reading an image from stdin
+in conjunction with a subrange specification (e.g. &quot;-[1]&quot;).</li>
+<li>Magick++ STL ShadeImage: Implementation was completely botched.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>CALS Type 1 files may now be written (Work contributed by John
+Sergeant).  CALS support is dependent on the TIFF library.</li>
+<li>GROUP4RAW encoder supports reading/writing RAW Group4 data.</li>
+<li>JP2: JPEG 2000 may now be written in arbitrary bit depths ranging
+from 2 to 16 rather than just 8 or 16.</li>
+<li>JPEG: IJG JPEG library version 7 is now supported.</li>
+<li>JPEG: Added jpeg:block-smoothing and jpeg:fancy-upsampling defines
+to control these JPEG library options.</li>
+<li>JPEG: Detect and apply colorspaces appropriately for ITU FAX JPEG.</li>
+<li>Resource Limits: There is now a &quot;threads&quot; resource limit which
+allows specifying the number of OpenMP threads which may be used,
+similar to the OMP_NUM_THREADS environment variable.</li>
+<li>TIFF: Allow CIELAB TIFF to be read.</li>
+<li>MagickGetImageAttribute()/MagickSetImageAttribute(): New Wand
+methods to support getting and setting an image attribute.
+Contributed by Mikko Koppanen.</li>
+<li>ClonePixelWand(): New Wand method to deep-copy an existing pixel
+wand.</li>
+<li>ClonePixelWands(): New Wand method to deep-copy an array of
+existing pixel wands.</li>
+<li>MagickCdlImage(): New Wand method to apply the ASC CDL to an
+image.</li>
+<li>MagickGetImageBoundingBox(): New Wand method to return the crop
+bounding box required to remove any solid-color border from the
+image.</li>
+<li>MagickGetImageFuzz(), MagickSetImageFuzz(): New Wand methods to
+get and set the color comparison fuzz factor.</li>
+<li>MagickHaldClutImage(): New Wand method to apply a Hald CLUT to an
+image.</li>
+<li>MagickSetResolution(): New Wand method to set the wand resolution.</li>
+<li>MagickSetResolutionUnits(): New Wand method to set the wand
+resolution units.</li>
+<li>Magick++: Allow Magick++ library to built as a DLL under MinGW and
+Cygwin.  This requires a modern GCC in order for C++ exceptions to
+work.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Cygwin: Cygwin 1.7 is now supported.</li>
+<li>JPEG compression settings are preserved (if possible) when
+inserting JPEG blobs into formats which use JPEG.</li>
+<li>PDF: If the original file used JPEG compression, then use JPEG
+compression with original settings (if possible).</li>
+<li>TIFF: Update Windows build to use libtiff 3.9.2.</li>
+<li>X11 Display: Apply a checkerboard pattern underneath transparent
+images which use more than simple binary transparency.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Gamma: Performance is improved for Q8 and Q16 builds.  Also
+preserve full precision in Q32 build.</li>
+<li>String data is dealt with a bit more efficiently (fewer
+allocations, less memory, and less CPU).</li>
+</ul>
+</blockquote>
+<p>Behavior Changes:</p>
+<blockquote>
+<ul class="simple">
+<li>InitializeMagick() MUST be invoked prior to using any Magick API
+function.  Failure to do so will likely lead to an immediate
+application crash.  This is due to initialization and runtime
+changes intended to improve thread safety and efficiency.
+Previously it was only strongly recommended to invoke
+InitializeMagick().</li>
+<li>ConstituteImage(), DispatchImage(): 'A' and 'T' should indicate
+transparency and 'O' should indicate opacity.  Behavior was
+inconsistent.  In some cases 'O' meant transparency while in other
+cases it meant opacity. Also, in a few cases, matte was not
+getting enabled in the image as it should.</li>
+<li>colors.mgk: Is now empty to default and is optional.  Previous
+content is now compiled into the library in an efficient way, but
+existing values may be modified, or new values added by adding
+entries to color.mgk.</li>
+<li>DisableSlowOpenMP is now the default.  Use --enable-openmp-slow to
+enable OpenMP for algorithms which sometimes run slower rather
+than faster.</li>
+<li>magic.mgk: This configuration file is no longer used since this
+data is now compiled into the library in an efficient way.</li>
+<li>modules.mgk: Is now empty to default and is optional.  Previous
+content is now compiled into the library in an efficient way, but
+existing values may be modified, or new values added by adding
+entries to modules.mgk.</li>
+<li>Third party executables not included in the Visual Studio build
+are no longer bundled in the GraphicsMagick installer.  This means
+that hp2xx.exe, mpeg2dec.exe, and mpeg2enc.exe are no longer
+distributed.</li>
+</ul>
+</blockquote>
+</div>
 <div class="section" id="september-17-2009">
-<h1><a class="toc-backref" href="#id1">1.3.7 (September 17, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id2">1.3.7 (September 17, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -163,7 +318,7 @@ structure is clean prior to invoking a function.</li>
 </blockquote>
 </div>
 <div class="section" id="july-25-2009">
-<h1><a class="toc-backref" href="#id2">1.3.6 (July 25, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id3">1.3.6 (July 25, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -297,7 +452,7 @@ progressive JPEG.</li>
 </blockquote>
 </div>
 <div class="section" id="january-26-2009">
-<h1><a class="toc-backref" href="#id3">1.3.5 (January 26, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id4">1.3.5 (January 26, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -336,7 +491,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="january-13-2009">
-<h1><a class="toc-backref" href="#id4">1.3.4 (January 13, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id5">1.3.4 (January 13, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -375,7 +530,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="december-9-2008">
-<h1><a class="toc-backref" href="#id5">1.3.3 (December 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id6">1.3.3 (December 9, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -407,7 +562,7 @@ used in a directory containing a million files.</li>
 </blockquote>
 </div>
 <div class="section" id="november-29-2008">
-<h1><a class="toc-backref" href="#id6">1.3.2 (November 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id7">1.3.2 (November 29, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -441,7 +596,7 @@ process the opacity channel unless the image has one.</li>
 </blockquote>
 </div>
 <div class="section" id="november-17-2008">
-<h1><a class="toc-backref" href="#id7">1.3.1 (November 17, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id8">1.3.1 (November 17, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -479,7 +634,7 @@ encoding is used via jpeg:optimize-coding define.</li>
 </blockquote>
 </div>
 <div class="section" id="november-9-2008">
-<h1><a class="toc-backref" href="#id8">1.3 (November 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id9">1.3 (November 9, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -687,7 +842,7 @@ dither any named channel.</li>
 </blockquote>
 </div>
 <div class="section" id="april-29-2008">
-<h1><a class="toc-backref" href="#id9">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id10">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -943,7 +1098,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section" id="released-april-4-2004">
-<h1><a class="toc-backref" href="#id10">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id11">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1183,7 +1338,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section" id="released-in-may-2003">
-<h1><a class="toc-backref" href="#id11">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id12">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1339,7 +1494,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-01-20 23:19 UTC.
+Generated on: 2010-01-21 19:49 UTC.
 
 </div>
 </body>
