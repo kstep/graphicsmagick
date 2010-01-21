@@ -47,7 +47,7 @@ class CModuelOverrideClass
       // MagickLib::InitializeTracingCriticalSection();
       // MagickLib::DebugString("DLL Attach -  path: %s\n",m_szAppPath);
       MagickLib::InitializeMagick(m_szAppPath);
-      MagickLib::RegisterStaticModules();
+      // MagickLib::RegisterStaticModules();
       MagickLib::GetExceptionInfo(&exception);
       // (void) MagickLib::GetMagicInfo((unsigned char *) NULL,0,&exception);
       (void) MagickLib::GetDelegateInfo("*","*",&exception);

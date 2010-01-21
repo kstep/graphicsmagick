@@ -483,10 +483,12 @@ namespace Magick
 
   // Resource types
   using MagickLib::ResourceType;
-  using MagickLib::FileResource;
-  using MagickLib::MemoryResource;
-  using MagickLib::MapResource;
   using MagickLib::DiskResource;
+  using MagickLib::FileResource;
+  using MagickLib::MapResource;
+  using MagickLib::MemoryResource;
+  using MagickLib::PixelsResource;
+  using MagickLib::ThreadsResource;
 
 #if defined(MAGICK_IMPLEMENTATION)
   //
