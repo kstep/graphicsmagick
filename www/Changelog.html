@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2010-01-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resource.c (SetMagickResourceLimit): Invoke
+        omp_set_num_threads() to set thread limit if ThreadsResource is
+        requested.
+
+  <LI> magick/pixel_cache.c (AllocateThreadViewSet): The number of
+        cache views to allocate needs to be obtained from
+        omp_get_max_threads().  Otherwise there is a crash if the number
+        of threads is reduced from the original value.
+
+</UL>
+<p>
 2010-01-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

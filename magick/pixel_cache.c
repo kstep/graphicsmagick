@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -447,7 +447,7 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   if (view_set == (ThreadViewSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
-  view_set->nviews=(unsigned int) GetMagickResourceLimit(ThreadsResource);
+  view_set->nviews=omp_get_max_threads();
   view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
     {
