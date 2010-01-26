@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -650,7 +650,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
               i++;
               for ( ; i < image->columns; i++)
                 {
-                  if (NotColorMatch(&scanline[i-1],&q[i]))
+		  if (NotPixelMatch(&scanline[i-1],&q[i],matte))
                     break;
                   scanline[i]=q[i];
                 }

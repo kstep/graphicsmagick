@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2010-01-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/effect.c (BlurImageScanlines): Solid color images which
+        only differed in the matte channel were not being blurred.
+
+  <LI> magick/color.h (NotPixelMatch,PixelMatch): New macros to
+        fully-compare a pixel, including matte.
+
+</UL>
+<p>
 2010-01-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
