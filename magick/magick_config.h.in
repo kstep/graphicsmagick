@@ -347,6 +347,9 @@
 /* Define to 1 if you have the `strtoll' function. */
 #undef HAVE_STRTOLL
 
+/* Define to 1 if you have the <sun_prefetch.h> header file. */
+#undef HAVE_SUN_PREFETCH_H
+
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
 

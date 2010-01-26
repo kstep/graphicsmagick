@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -61,13 +61,30 @@ extern MagickExport MagickBool
 /*
   Compare two colors
 */
-#define ColorMatch(p,q) (((p)->red == (q)->red) && \
-  ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define NotColorMatch(p,q) (((p)->red != (q)->red) || \
-  ((p)->green != (q)->green) || ((p)->blue != (q)->blue))
+#define ColorMatch(p,q)						\
+  (((p)->red == (q)->red) &&					\
+   ((p)->green == (q)->green) &&				\
+   ((p)->blue == (q)->blue))
+
+#define NotColorMatch(p,q)					\
+  (((p)->red != (q)->red) ||					\
+   ((p)->green != (q)->green) ||				\
+   ((p)->blue != (q)->blue))
 
 extern MagickExport unsigned int
   FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,const double fuzz);
+
+/*
+  Compare two pixels (including opacity)
+*/
+#define PixelMatch(p,q,matte)					\
+  (ColorMatch(p,q) &&						\
+   (!matte || ((p)->opacity == (q)->opacity)))
+
+#define NotPixelMatch(p,q,matte)				\
+  (NotColorMatch(p,q) ||					\
+   (matte && ((p)->opacity != (q)->opacity)))
+
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

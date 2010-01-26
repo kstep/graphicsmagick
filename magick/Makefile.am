@@ -154,6 +154,7 @@ MAGICK_BASE_SRCS = \
 	magick/pixel_iterator.h \
 	magick/plasma.c \
 	magick/plasma.h \
+	magick/prefetch.h \
 	magick/profile.c \
 	magick/profile.h \
 	magick/quantize.c \
@@ -292,6 +293,7 @@ MAGICK_NOINST_HDRS = \
 	magick/nt_base.h \
 	magick/nt_feature.h \
 	magick/omp_data_view.h \
+	magick/prefetch.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \

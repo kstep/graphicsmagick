@@ -1,3 +1,23 @@
+2010-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/prefetch.h: New header to provide wrapper macros for
+	compiler-specific explicit prefetch APIs.
+
+	* magick/effect.c (BlurImageScanlines): Solid color images which
+	only differed in the matte channel were not being blurred.
+
+	* magick/color.h (NotPixelMatch,PixelMatch): New macros to
+	fully-compare a pixel, including matte.
+
+	* magick/resource.c (SetMagickResourceLimit): Invoke
+	omp_set_num_threads() to set thread limit if ThreadsResource is
+	requested.
+
+	* magick/pixel_cache.c (AllocateThreadViewSet): The number of
+	cache views to allocate needs to be obtained from
+	omp_get_max_threads().  Otherwise there is a crash if the number
+	of threads is reduced from the original value.
+
 2010-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/benchmarks.rst: Update benchmark report to compare
