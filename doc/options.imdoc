@@ -3118,6 +3118,13 @@ The image size is halved using linear interpolation.</pp>
 
 <abs>mode of operation</abs>
 
+<pp>
+The available montage modes are <s>frame</s> to place the images in a
+rectangular grid while adding a decorative frame with dropshadow,
+<s>unframe</s> to place undecorated images in a rectangular grid, and
+<s>concatenate</s> to pack the images closely together without any
+well-defined grid or decoration. </pp>
+
 </utils>
 
 
