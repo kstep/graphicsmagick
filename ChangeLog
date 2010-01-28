@@ -1,3 +1,11 @@
+2010-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/transform.c (FlattenImages): Apply the image background
+	color under the initial canvas image if it is non-opaque.
+
+	* magick/composite.c (MagickCompositeImageUnderColor): New private
+	function to apply a color underneath a non-opaque image.
+
 2010-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/prefetch.h: New header to provide wrapper macros for

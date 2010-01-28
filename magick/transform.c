@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -43,6 +43,7 @@
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/resize.h"
+#include "magick/texture.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/log.h"
@@ -804,6 +805,14 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
     Clone first image in sequence to serve as canvas image
   */
   flatten_image=CloneImage(image,0,0,True,exception);
+
+  /*
+    Apply background color under image if it has a matte channel.
+  */
+  if ((flatten_image != (Image *) NULL) && (flatten_image->matte))
+    (void) MagickCompositeImageUnderColor(flatten_image,
+					  &flatten_image->background_color,
+					  exception);
 
   if ((flatten_image != (Image *) NULL) &&
       (image->next != (Image *) NULL))
