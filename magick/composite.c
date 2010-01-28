@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2473,6 +2473,86 @@ CompositeImageRegion(const CompositeOperator compose,
     {
       status=MagickFail;
     }
+
+  return status;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k C o m p o s i t e I m a g e U n d e r C o l o r               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCompositeImageUnderColor() composites a color underneath an image,
+%  removing any existing opacity.
+%
+%  The format of the MagickCompositeImageUnderColor method is:
+%
+%      MagickPassFail MagickCompositeImageUnderColor(Image *image,
+%                                              PixelPacket *undercolor,
+%                                              ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to modify.
+%
+%    o undercolor: Background color to apply.
+%
+%    o exception: Details of any error are reported here.
+%
+*/
+static MagickPassFail
+MagickCompositeImageUnderColorPixels(void *mutable_data,             /* User provided mutable data */
+				     const void *immutable_data,     /* User provided immutable data */
+				     Image *image,                   /* Modify image */
+				     PixelPacket * restrict pixels,  /* Pixel row */
+				     IndexPacket * restrict indexes, /* Pixel row indexes */
+				     const long npixels,             /* Number of pixels in row */
+				     ExceptionInfo *exception)       /* Exception report */
+{
+  const PixelPacket
+    * restrict background_color = (const PixelPacket *) immutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  for (i=0; i < npixels; i++)
+    {
+      AlphaCompositePixel(&pixels[i],&pixels[i],pixels[i].opacity,background_color,
+			  background_color->opacity);
+      pixels[i].opacity=OpaqueOpacity;
+    }
+
+  return MagickPass;
+}
+
+MagickExport MagickPassFail
+MagickCompositeImageUnderColor(Image *image,const PixelPacket *undercolor,
+			       ExceptionInfo *exception)
+{
+  MagickPassFail
+    status;
+
+  image->storage_class=DirectClass;
+  status=PixelIterateMonoModify(MagickCompositeImageUnderColorPixels,
+				NULL,
+				"[%s] Applying undercolor...",
+				NULL,undercolor,
+				0,0,image->columns,image->rows,
+				image,
+				exception);
+  image->matte=MagickFalse;
 
   return status;
 }

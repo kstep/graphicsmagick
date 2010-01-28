@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -42,7 +42,9 @@ extern MagickExport MagickPassFail
                        Image *canvas_image,
                        const long canvas_x,
                        const long canvas_y,
-                       ExceptionInfo *exception);
+                       ExceptionInfo *exception),
+  MagickCompositeImageUnderColor(Image *image,const PixelPacket *undercolor,
+				 ExceptionInfo *exception);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
