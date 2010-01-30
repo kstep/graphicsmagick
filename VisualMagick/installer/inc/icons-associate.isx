@@ -9,7 +9,7 @@
 #endif
 
 Name: "{group}\GraphicsMagick Web Pages"; Filename: "{app}\www\index.html"
-Name: "{group}\GraphicsMagick Windows Setup"; Filename: "{app}\www\windows.html"
+Name: "{group}\GraphicsMagick Windows Setup"; Filename: "{app}\www\INSTALL-windows.html"
 ; Name: "{group}\GraphicsMagick Readme"; Filename: "{app}\README.txt"
 ; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\GraphicsMagick License"; Filename: "{app}\Copyright.txt"
