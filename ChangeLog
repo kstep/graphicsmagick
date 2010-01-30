@@ -1,3 +1,13 @@
+2010-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/body.isx: Strip out executable
+	components which depend on proprietary MFC and ATL libraries.
+	This means that "gmdisplay.exe" and "ImageMagickObject" are no
+	longer distributed or installed via the Windows setup installer.
+	When a new display application is developed based on open source
+	libraries, then the display functionality and associations can be
+	restored.
+
 2010-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/transform.c (FlattenImages): Apply the image background

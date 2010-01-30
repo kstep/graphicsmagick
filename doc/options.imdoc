@@ -1126,7 +1126,7 @@ setting. The default quality setting of 75 results in a rate value of
 
 <dd>Enables or disables block smoothing when reading a JPEG file
 (default enabled).
-</dd/
+</dd>
 
 <dt>jpeg:dct-method=<value></dt>
 
@@ -1143,7 +1143,7 @@ behaves.
 
 <dd>Enables or disables fancy upsampling when reading a JPEG file
 (default enabled).
-</dd/
+</dd>
 
 <dt>jpeg:optimize-coding={true|false}</dt>
 <dd>

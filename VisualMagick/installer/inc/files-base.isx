@@ -9,7 +9,7 @@
 #endif
 
 ; Executables
-Source: "..\bin\imdisplay.exe"; DestDir: {#MagickAppDirectory}; DestName: "gmdisplay.exe"; Flags: ignoreversion
+; Source: "..\bin\imdisplay.exe"; DestDir: {#MagickAppDirectory}; DestName: "gmdisplay.exe"; Flags: ignoreversion
 Source: "..\bin\gm.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
 ; Third party executables not included in the Visual Studio build are no longer bundled with GraphicsMagick.
 ; Source: "..\bin\hp2xx.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
@@ -21,4 +21,4 @@ Source: "..\..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall";
 Source: "..\..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"; Flags: ignoreversion
 
 ; Icon file
-Source: "..\..\magick\ImageMagick.ico"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
+Source: "..\..\magick\GraphicsMagick.ico"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion

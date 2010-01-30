@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003, 2004, 2008 GraphicsMagick Group
+; Copyright (C) 2003 - 2010 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -27,7 +27,7 @@ AllowRootDirectory=no
 LicenseFile=txt\license.rtf
 InfoBeforeFile=txt\before.rtf
 InfoAfterFile=txt\after.rtf
-UninstallDisplayIcon={#MagickAppDirectory}\ImageMagick.ico
+UninstallDisplayIcon={#MagickAppDirectory}\GraphicsMagick.ico
 OutputDir=..\bin
 OutputBaseFilename={#MagickPackageName}-{#MagickPackageVersion}{#MagickPackageVersionAddendum}-Q{#QuantumDepth}-windows-{#MagickPackageType}
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
