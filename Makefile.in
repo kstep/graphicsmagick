@@ -70,7 +70,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008, 2009
+# Copyright (C) 1999 - 2010 Bob Friesenhahn
 #
 
 # Copyright (C) 2004-2009 GraphicsMagick Group
@@ -91,7 +91,7 @@
 # Makefile for building Wand library
 #
 
-# Copyright (C) 2008 GraphicsMagick Group
+# Copyright (C) 2008 - 2010 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -3526,8 +3526,6 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/AUTHORS \
 	Magick++/COPYING \
 	Magick++/ChangeLog \
-	Magick++/INSTALL \
-	Magick++/NEWS \
 	Magick++/README \
         Magick++/bin/GraphicsMagick++-config.1 \
 	Magick++/bin/GraphicsMagick++-config.in \
@@ -3675,7 +3673,7 @@ Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
 Magick___tests_readWriteBlob_LDADD = $(LIBMAGICKPP)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(LIBMAGICKPP)
-@WITH_PERL_TRUE@MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
+@WITH_PERL_TRUE@MAGICKPP_LOCAL_TARGETS = www/Magick++/ChangeLog.html
 TESTS_CHECK_PGRMS = \
 	tests/bitstream \
         tests/constitute \
@@ -4755,7 +4753,7 @@ WAND_CLEANFILES = \
 WWWDIR = $(top_srcdir)/www
 
 # Install HTML files
-DOCDIRS = www www/api www/images www/Magick++
+DOCDIRS = www www/api www/images www/Magick++ www/wand
 HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
@@ -10990,11 +10988,6 @@ magick-install-data-local:
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick_config.h
 
-# Build HTML version of news
-@WITH_PERL_TRUE@www/Magick++/NEWS.html: Magick++/NEWS
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(top_srcdir)/Magick++/NEWS  > $(top_srcdir)/www/Magick++/NEWS.html
-@WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
-
 # Build HTML version of ChangeLog
 @WITH_PERL_TRUE@www/Magick++/ChangeLog.html: Magick++/ChangeLog
 @WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
@@ -11123,14 +11116,17 @@ generate-tests-scripts:
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
-#	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+            case $$file in \
+              *.c | *.css | *.gif | *.html | *.ico | *.jpg | *.png ) \
+	        echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	        $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+                ;; \
+            esac \
 	  done ; \
 	done
 #	rm -f $(DESTDIR)$(htmldir)/index.html

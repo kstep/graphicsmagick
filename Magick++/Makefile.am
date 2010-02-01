@@ -1,7 +1,7 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004, 2008, 2009
+# Copyright (C) 1999 - 2010 Bob Friesenhahn
 #
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
@@ -88,8 +88,6 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/AUTHORS \
 	Magick++/COPYING \
 	Magick++/ChangeLog \
-	Magick++/INSTALL \
-	Magick++/NEWS \
 	Magick++/README \
         Magick++/bin/GraphicsMagick++-config.1 \
 	Magick++/bin/GraphicsMagick++-config.in \
@@ -264,12 +262,7 @@ Magick___tests_readWriteImages_LDADD	= $(LIBMAGICKPP)
 
 if WITH_PERL
 
-MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
-
-# Build HTML version of news
-www/Magick++/NEWS.html: Magick++/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(top_srcdir)/Magick++/NEWS  > $(top_srcdir)/www/Magick++/NEWS.html
-	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
+MAGICKPP_LOCAL_TARGETS = www/Magick++/ChangeLog.html
 
 # Build HTML version of ChangeLog
 www/Magick++/ChangeLog.html: Magick++/ChangeLog

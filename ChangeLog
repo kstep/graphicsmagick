@@ -1,3 +1,8 @@
+2010-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/Makefile.am (install-data-html): Make sure that only the
+	necessary documentation files are installed.
+
 2010-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/transform.c (FlattenImages): Apply the image background

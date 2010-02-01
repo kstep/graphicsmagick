@@ -3,7 +3,6 @@ Magick++ API for GraphicsMagick
 ===============================
 
 .. _GraphicsMagick : ../index.html
-.. _NEWS : NEWS.html
 .. _ChangeLog : ChangeLog.html
 .. _`Standard Template Library` : http://www.sgi.com/tech/stl/
 .. _STL : http://www.sgi.com/tech/stl/
@@ -23,8 +22,7 @@ Introduction
 
 *Magick++* is the object-oriented C++ API to the GraphicsMagick_
 image-processing library, the most comprehensive open-source image
-processing package available. Read the latest NEWS_ and ChangeLog_ for
-*Magick++*.
+processing package available. Read the ChangeLog_ for *Magick++*.
 
 *Magick++* supports an object model which is inspired by PerlMagick_.
 Images support implicit reference counting so that copy constructors and
