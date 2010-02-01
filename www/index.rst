@@ -87,7 +87,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is much more efficient (see the `benchmarks`_) so it gets the job
     done faster using fewer resources.
 
-  * GM is much smaller and tighter.
+  * GM is much smaller and tighter (3-5X smaller installation footprint).
 
   * GM is used to process billions of files at the world's largest photo
     sites (e.g. `Flickr`_, see `John Allspaw's presentation`_).

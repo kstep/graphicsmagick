@@ -1,3 +1,7 @@
+2010-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (Magick): Fix potential memory leak.
+
 2010-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* demo/shapes.cpp (main): Floodfill shape more agressively and

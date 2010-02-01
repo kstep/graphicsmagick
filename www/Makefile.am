@@ -1,4 +1,4 @@
-# Copyright (C) 2008 GraphicsMagick Group
+# Copyright (C) 2008 - 2010 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -10,16 +10,19 @@
 WWWDIR=$(top_srcdir)/www
 
 # Install HTML files
-DOCDIRS = www www/api www/images www/Magick++
+DOCDIRS = www www/api www/images www/Magick++ www/wand
 HTML_INSTALL_DATA_TARGETS = install-data-html
-#	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(htmldir)
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+            case $$file in \
+              *.c | *.css | *.gif | *.html | *.ico | *.jpg | *.png ) \
+	        echo "$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir" ; \
+	        $(INSTALL_DATA) "$$file" $(DESTDIR)$(htmldir)/$$dir ; \
+                ;; \
+            esac \
 	  done ; \
 	done
 

@@ -2337,7 +2337,10 @@ namespace Magick
     unlinkImages( first_, last_ );
 
     if ( errorStat != false )
-      return;
+      {
+	MagickLib::DestroyExceptionInfo( &exceptionInfo );
+	return;
+      }
 
     throwException( exceptionInfo );
   }
