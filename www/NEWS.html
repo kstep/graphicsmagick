@@ -53,7 +53,7 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on July 20, 2009</p>
+<p>This file was last updated on February 2, 2010</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -71,12 +71,78 @@ ChangeLog file for full details.</p>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
-<li>None.</li>
+<li>Fix for CVE-2009-1882 &quot;Integer overflow in the XMakeImage
+function&quot;.</li>
+<li>Fix lockup due to hanging in loop while parsing malformed
+sub-image specification (SourceForge issue 2886560).</li>
+<li>Libltdl: Updated libtool to 2.2.6b in order to fix security issue.
+Resolves CVE-2009-3736 as it pertains to GraphicsMagick.</li>
+<li>PCX: Detect improper rows, columns, or depth.  Fixes CVE-2008-1097
+&quot;Memory corruption in ImageMagick's PCX coder&quot;.</li>
+<li>DrawDashPolygon: Avoid a crash which sometimes occured with tiny
+polygons.</li>
 </ul>
 </blockquote>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
+<li>-convolve, -recolor: Validate that user-provided matrix is square
+when parsing -convolve and -recolor commands in order to avoid a
+core dump.</li>
+<li>CALS: Reading images taller than the image width resulted in a
+failure.</li>
+<li>ConstituteImage(), DispatchImage(): 'A' and 'T' should indicate
+transparency and 'O' should indicate opacity.  Behavior was
+inconsistent.  In some cases 'O' meant transparency while in other
+cases it meant opacity. Also, in a few cases, matte was not
+getting enabled in the image as it should.</li>
+<li>DCRAW: Module name was not registered so modules based builds were
+not supporting formats provided via 'dcraw'.</li>
+<li>GetOptimalKernelWidth1D(), GetOptimalKernelWidth2D(): In the Q32
+build, convolution kernel size was estimated incorrectly for large
+sigmas on 32-bit systems due to arithmetic overflow.  This could
+cause wrong results for -convolve, -blur, -sharpen, and other
+algorithms which use these functions.</li>
+<li>Image Size: Fixed the ability to pass the image size via the
+filename specification like &quot;myfile.jpg[640x480]&quot; rather than
+needing to use -size.</li>
+<li>IPTC: Blob data needed to be padded to an even size.  Size is now
+correctly reported.</li>
+<li>IPTC: Returned IPTC string values were one character too short.</li>
+<li>Large Files: Large pixel cache files were not working under GNU
+Linux.</li>
+<li>JP2: Fixed some value scaling problems.</li>
+<li>JP2: Fix possible crash at exit when Jasper is used by a modules
+build.</li>
+<li>MPC: is_monochrome and is_grayscale flags were not managed
+properly for the MPC coder.</li>
+<li>PCL: Page was not always being ejected.</li>
+<li>PNG: The png8 encoder would fail when trying to write a 1-color
+image.</li>
+<li>PSD: PSD parser was confused by 0x0 pixel layers, resulting in
+image data corruption of all following layers.</li>
+<li>-rotate, -shear: Some internally-reported errors were potentially
+being lost.</li>
+<li>Subrange/stdin: Commands now support reading an image from stdin
+in conjunction with a subrange specification (e.g. &quot;-[1]&quot;).</li>
+<li>Magick++ STL ShadeImage: Implementation was completely botched.</li>
+<li>JPEG: Profile chunks need to be concatentated in order to build
+the whole profile.  This was not working so embedded profiles
+larger than 32K or maybe 64K were being corrupted.  This bug was
+introduced in GraphicsMagick 1.2.</li>
+<li>Meta: Fix memory leaks.</li>
+<li>Meta: Work better with with IPTC record 2 blocks and deal better
+with IPTC embedded in an 8BIM profile.  Fixes by John Sergeant.</li>
+<li>MPC: Fix crash when reading MPC and the input image is modified.</li>
+<li>PNG: Ensure that the opacity channel is properly initialized.</li>
+<li>-profile: Lowercase arguments were sometimes not working as
+expected.</li>
+<li>Topol: Topol reader actually works now and is included in test
+suite.</li>
+<li>TIFF: Read and write JPEG-compressed grayscale TIFF correctly.</li>
+<li>VisualMagick configure now works properly when output paths are
+specified.</li>
+<li>WMF: Eliminate memory leaks.</li>
 <li>Now runs under Windows Vista (as a 32-bit application).</li>
 <li>Fix for colorspace transform math overflow in Q32 build.</li>
 <li>RPM build, Fixes to successfully build binary RPMs for Red Hat
@@ -134,6 +200,60 @@ was applied.</li>
 <p>New Features:</p>
 <blockquote>
 <ul class="simple">
+<li>CALS Type 1 files may now be written (Work contributed by John
+Sergeant).  CALS support is dependent on the TIFF library.</li>
+<li>GROUP4RAW encoder supports reading/writing RAW Group4 data.</li>
+<li>JP2: JPEG 2000 may now be written in arbitrary bit depths ranging
+from 2 to 16 rather than just 8 or 16.</li>
+<li>JPEG: IJG JPEG library version 7 is now supported.</li>
+<li>JPEG: Added jpeg:block-smoothing and jpeg:fancy-upsampling defines
+to control these JPEG library options.</li>
+<li>JPEG: Detect and apply colorspaces appropriately for ITU FAX JPEG.</li>
+<li>Resource Limits: There is now a &quot;threads&quot; resource limit which
+allows specifying the number of OpenMP threads which may be used,
+similar to the OMP_NUM_THREADS environment variable.</li>
+<li>TIFF: Allow CIELAB TIFF to be read.</li>
+<li>MagickGetImageAttribute()/MagickSetImageAttribute(): New Wand
+methods to support getting and setting an image attribute.
+Contributed by Mikko Koppanen.</li>
+<li>ClonePixelWand(): New Wand method to deep-copy an existing pixel
+wand.</li>
+<li>ClonePixelWands(): New Wand method to deep-copy an array of
+existing pixel wands.</li>
+<li>MagickCdlImage(): New Wand method to apply the ASC CDL to an
+image.</li>
+<li>MagickGetImageBoundingBox(): New Wand method to return the crop
+bounding box required to remove any solid-color border from the
+image.</li>
+<li>MagickGetImageFuzz(), MagickSetImageFuzz(): New Wand methods to
+get and set the color comparison fuzz factor.</li>
+<li>MagickHaldClutImage(): New Wand method to apply a Hald CLUT to an
+image.</li>
+<li>MagickSetResolution(): New Wand method to set the wand resolution.</li>
+<li>MagickSetResolutionUnits(): New Wand method to set the wand
+resolution units.</li>
+<li>Magick++: Allow Magick++ library to built as a DLL under MinGW and
+Cygwin.  This requires a modern GCC in order for C++ exceptions to
+work.</li>
+<li>MagickWand: New method MagickSetCompressionQuality() to allow
+setting the compression quality.</li>
+<li>MagickWand: New method CloneDrawingWand() to deep-copy a drawing
+wand.</li>
+<li>MagickWand: New method DrawGetException() to retrieve information
+regarding the last drawing wand exception (if any).</li>
+<li>MagickWand: New method DrawClearException() to clear a drawing wand
+exception.</li>
+<li>Magick++: New Image method cdl() to apply the ASC CDL.</li>
+<li>Magick++: New Image method colorMatrix() to apply a color matrix
+to the image channels.</li>
+<li>Magick++: New Image method haldClut() to apply a color lookup
+table (Hald CLUT) to the image.</li>
+<li>MSL/Conjure: Added a new 'profile' command which applies, adds, or
+removes one or more IPTC, ICC or generic profiles from a file.
+Work contributed by John Sergeant.</li>
+<li>Added a 'time' subcommand to provide Unix-style 'time' output when
+a 'time' capability is missing, or the reporting format is
+inconsistent.  For example 'gm time convert ...'.</li>
 <li>Windows build supports OpenMP and requires Windows 2000 or later
 (source code still supports Windows '98).</li>
 <li>Support large files under Windows.</li>
@@ -183,6 +303,21 @@ number of threads which will be used.</li>
 <p>Feature improvements:</p>
 <blockquote>
 <ul class="simple">
+<li>Cygwin: Cygwin 1.7 is now supported.</li>
+<li>JPEG compression settings are preserved (if possible) when
+inserting JPEG blobs into formats which use JPEG.</li>
+<li>PDF: If the original file used JPEG compression, then use JPEG
+compression with original settings (if possible).</li>
+<li>TIFF: Update Windows build to use libtiff 3.9.2.</li>
+<li>X11 Display: Apply a checkerboard pattern underneath transparent
+images which use more than simple binary transparency.</li>
+<li>ColorMatrixImage(): Add opaque opacity channel when needed.</li>
+<li>PDF &amp; PS: Use '-type palette' prior to input file name to cause
+Ghostscript to return a dithered colormapped image.</li>
+<li>PNG: Now compiles with libpng-1.4.0beta74 and later.</li>
+<li>TIFF: Libtiff in Windows build is upgraded to 3.9.1.  This allows
+GraphicsMagick to read and write 16 and 24 bit float TIFF files.</li>
+<li>Windows code to find Ghostscript is rewritten from scratch.</li>
 <li>Image resize now avoids adding &quot;halos&quot; around objects when
 resizing an image which contains transparency (patch contributed by
 Pavel Merdin).</li>
@@ -228,6 +363,15 @@ files.</li>
 <p>Performance Improvements:</p>
 <blockquote>
 <ul class="simple">
+<li>Gamma: Performance is improved for Q8 and Q16 builds.  Also
+preserve full precision in Q32 build.</li>
+<li>String data is dealt with a bit more efficiently (fewer
+allocations, less memory, and less CPU).</li>
+<li>Drawing of points, lines, and polygons (and complex shapes based
+on these) is now accelerated using OpenMP with excellent speed-up.</li>
+<li>ICC color transforms now see linear speedup from OpenMP.</li>
+<li>Rotate: For rotations of 90 or 270 degrees, tile sizes are
+selected more appropriately.</li>
 <li>Improve resource estimation for Microsoft Windows systems.</li>
 <li>OpenMP (parallel processing) improvements for these functions:<ul>
 <li>Rotate by 90 and 270 degrees (-rotate)</li>
@@ -246,6 +390,39 @@ added.</li>
 <p>Behavior Changes:</p>
 <blockquote>
 <ul class="simple">
+<li>InitializeMagick() MUST be invoked prior to using any Magick API
+function.  Failure to do so will likely lead to an immediate
+application crash.  This is due to initialization and runtime
+changes intended to improve thread safety and efficiency.
+Previously it was only strongly recommended to invoke
+InitializeMagick().</li>
+<li>ConstituteImage(), DispatchImage(): 'A' and 'T' should indicate
+transparency and 'O' should indicate opacity.  Behavior was
+inconsistent.  In some cases 'O' meant transparency while in other
+cases it meant opacity. Also, in a few cases, matte was not
+getting enabled in the image as it should.</li>
+<li>colors.mgk: Is now empty to default and is optional.  Previous
+content is now compiled into the library in an efficient way, but
+existing values may be modified, or new values added by adding
+entries to color.mgk.</li>
+<li>DisableSlowOpenMP is now the default.  Use --enable-openmp-slow to
+enable OpenMP for algorithms which sometimes run slower rather
+than faster.</li>
+<li>magic.mgk: This configuration file is no longer used since this
+data is now compiled into the library in an efficient way.</li>
+<li>modules.mgk: Is now empty to default and is optional.  Previous
+content is now compiled into the library in an efficient way, but
+existing values may be modified, or new values added by adding
+entries to modules.mgk.</li>
+<li>Third party executables not included in the Visual Studio build
+are no longer bundled in the GraphicsMagick installer.  This means
+that hp2xx.exe, mpeg2dec.exe, and mpeg2enc.exe are no longer
+distributed.</li>
+<li>No longer clear the exception structure at the start of
+ReadImage() and other similar functions since this sometimes masks
+errors.  The API user is expected to make sure that the exception
+structure is clean prior to invoking a function.</li>
+<li>SVG: Writer is now disabled since it usually does not work properly.</li>
 <li>PerlMagick is configured but no longer built by default.</li>
 <li>Use '-interlace Line' to produce an interlaced GIF, PNG, or
 progressive JPEG.</li>
@@ -1113,7 +1290,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 00:59 UTC.
+Generated on: 2010-02-02 22:34 UTC.
 
 </div>
 </body>
