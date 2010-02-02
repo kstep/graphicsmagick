@@ -15,6 +15,7 @@ Source: "..\..\README.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; Web pages
 Source: "..\..\www\*.c"; DestDir: "{app}\www"; Flags: ignoreversion
 Source: "..\..\www\*.css"; DestDir: "{app}\www"; Flags: ignoreversion
+Source: "..\..\www\favicon.ico"; DestDir: "{app}\www"; Flags: ignoreversion
 Source: "..\..\www\*.html"; DestDir: "{app}\www"; Flags: ignoreversion
 Source: "..\..\www\index.html"; DestDir: "{app}\www"; Flags: ignoreversion isreadme
 Source: "..\..\www\images\*.jpg"; DestDir: "{app}\www\images"; Flags: ignoreversion

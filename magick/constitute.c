@@ -1933,7 +1933,7 @@ MagickExport void DestroyConstitute(void)
 %
 %  The format of the DispatchImage method is:
 %
-%      unsigned int DispatchImage(const Image *image,const long x_offset,
+%      MagickPassFail DispatchImage(const Image *image,const long x_offset,
 %        const long y_offset,const unsigned long columns,
 %        const unsigned long rows,const char *map,const StorageType type,
 %        void *pixels,ExceptionInfo *exception)
