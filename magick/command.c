@@ -8610,9 +8610,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               kernel[x]=0.0;
             convolve_image=ConvolveImage(*image,order,kernel,
               &(*image)->exception);
+            MagickFreeMemory(kernel);
+	    if (convolve_image == (Image *) NULL)
+              break;
             DestroyImage(*image);
             *image=convolve_image;
-            MagickFreeMemory(kernel);
             continue;
           }
         if (LocaleCompare("crop",option+1) == 0)

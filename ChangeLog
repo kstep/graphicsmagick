@@ -1,5 +1,9 @@
 2010-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImage): Convolution failure results in
+	a crash rather than an error report.  Resolves Debian bug ID
+	539251.
+
 	* magick/deprecate.c: The string constants LoadImageText,
 	SaveImageText, LoadImagesText, and SaveImagesText should have been
 	deprecated, rather than being entirely removed.

@@ -35,10 +35,6 @@ Glenn Randers-Pehrson
 		authoring environment based on the <imdoc> format.
 		Maintains the SourceForge mailing lists.
 
-Daniel Kobras
-		Provided many security patches and fixes from the Debian
-		project.
-
 Jaroslav Fojtik
 		Authored the ART, CUT, MATLAB, TOPOL, and WPG
                 coder modules.
@@ -73,6 +69,10 @@ Former GraphicsMagick Contributors
 Mike Chiarappa
 		Created and maintains the Borland C++ Builder 6.0 build
 		environment for GraphicsMagick.
+
+Daniel Kobras
+		Provided many security patches and fixes from the Debian
+		project.
 
 William Radcliffe
 		Author of the VisualMagick project configure facility for
