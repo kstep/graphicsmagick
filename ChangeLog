@@ -1,3 +1,9 @@
+2010-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/deprecate.c: The string constants LoadImageText,
+	SaveImageText, LoadImagesText, and SaveImagesText should have been
+	deprecated, rather than being entirely removed.
+
 2010-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/Makefile.am (install-data-html): Make sure that only the
