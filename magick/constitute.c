@@ -8912,10 +8912,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 		    }
 		  (void) strlcpy(image->filename,tempfile,sizeof(tempfile));
 		}
-	      else if (!clone_info->adjoin)
+	      else
 		{
 		  /*
-		    OpenBlob expands image->filename so we need to restore it.
+		    OpenBlob may expand image->filename so we need to restore it.
 		  */
 		  (void) strlcpy(image->filename,clone_info->filename,sizeof(image->filename));
 		}

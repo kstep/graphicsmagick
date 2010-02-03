@@ -2450,7 +2450,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
             /*
               Form filename for multi-part images.
             */
-	    if (!image_info->adjoin)
+	    if (((image->previous != (Image *) NULL) ||
+		 (image->next != (Image *) NULL)) && 
+		(!image_info->adjoin))
 	      FormMultiPartFilename(image,image_info);
             (void) strcpy(filename,image->filename);
           }

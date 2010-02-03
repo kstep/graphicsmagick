@@ -1,5 +1,8 @@
 2010-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (OpenBlob): Only form multi-part filename when
+	required.
+
 	* magick/display.c (MagickXDisplayImage): The display '-update'
 	option was only working in conjunction with the '-delay' option
 	with a delay setting of 2 or greater.  Problem reported by Sami
