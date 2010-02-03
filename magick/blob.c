@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -2450,7 +2450,8 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
             /*
               Form filename for multi-part images.
             */
-            FormMultiPartFilename(image,image_info);
+	    if (!image_info->adjoin)
+	      FormMultiPartFilename(image,image_info);
             (void) strcpy(filename,image->filename);
           }
 #if defined(HasZLIB)

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1933,7 +1933,7 @@ MagickExport void DestroyConstitute(void)
 %
 %  The format of the DispatchImage method is:
 %
-%      unsigned int DispatchImage(const Image *image,const long x_offset,
+%      MagickPassFail DispatchImage(const Image *image,const long x_offset,
 %        const long y_offset,const unsigned long columns,
 %        const unsigned long rows,const char *map,const StorageType type,
 %        void *pixels,ExceptionInfo *exception)
@@ -8911,6 +8911,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 		      return(False);
 		    }
 		  (void) strlcpy(image->filename,tempfile,sizeof(tempfile));
+		}
+	      else if (!clone_info->adjoin)
+		{
+		  /*
+		    OpenBlob expands image->filename so we need to restore it.
+		  */
+		  (void) strlcpy(image->filename,clone_info->filename,sizeof(image->filename));
 		}
 	      CloseBlob(image);
 	    }

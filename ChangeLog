@@ -1,5 +1,17 @@
 2010-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (OpenBlob): Only apply scene substitution to
+	the filename if adjoin is false.
+
+	* magick/constitute.c (WriteImage): If adjoin is true, then
+	restore original filename specification since opening the blob
+	modifies it.  Resolves Debian bug ID 552998.
+
+	* magick/image.c (SetImageInfo): Don't check filename for scene
+	substitution if adjoin is intentionally false.  This allows saving
+	to file names which look like they contain a scene substitution
+	pattern.
+
 	* magick/command.c (MogrifyImage): Convolution failure results in
 	a crash rather than an error report.  Resolves Debian bug ID
 	539251.

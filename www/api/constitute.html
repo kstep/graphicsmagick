@@ -134,10 +134,10 @@ length varies depending on the values of width, height, map, and type.</dd>
 <div class="section" id="id1">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DispatchImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const long x_offset, const long y_offset,
-                            const unsigned long columns, const unsigned long rows,
-                            const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> type, void *pixels,
-                            <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail DispatchImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const long x_offset, const long y_offset,
+                              const unsigned long columns, const unsigned long rows,
+                              const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> type, void *pixels,
+                              <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 </div>
 <div class="section" id="id2">
@@ -157,10 +157,10 @@ character data in red-green-blue order:</p>
 <p>DispatchImage(image,0,0,640,1,&quot;RGB&quot;,0,pixels,exception);</p>
 <p>The format of the DispatchImage method is:</p>
 <pre class="literal-block">
-unsigned int DispatchImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const long x_offset, const long y_offset,
-                            const unsigned long columns, const unsigned long rows,
-                            const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> type, void *pixels,
-                            <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+MagickPassFail DispatchImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, const long x_offset, const long y_offset,
+                              const unsigned long columns, const unsigned long rows,
+                              const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> type, void *pixels,
+                              <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -605,7 +605,7 @@ unsigned int WriteImages( const <a class="reference external" href="../api/types
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-01-20 23:38 UTC.
+Generated on: 2010-02-03 02:24 UTC.
 
 </div>
 </body>
