@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 2, 2010
+This file was last updated on February 3, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -22,6 +22,15 @@ Security Fixes:
   * None
 
 Bug fixes:
+
+  * The display '-update' option was only working in conjunction with
+    the '-delay' option with a delay setting of 2 or greater.
+
+  * For formats which support multiple frames, output with +adjoing to
+    filenames containing a scene specification (e.g. foo%02d.tiff) was
+    resulting in wrong output file names.
+
+  * -convolve was crashing rather than reporting an error.
 
   * Fixed crash if the number of OpenMP threads was reduced from the
     original value via '-limit threads' or omp_set_num_threads().
@@ -49,8 +58,13 @@ Performance Improvements:
 
 Behavior Changes:
 
+  * For formats supporting multiple frames, there is no longer an
+    implicit 'adjoin' if an output filename contains an apparent scene
+    specification (e.g. foo%02d.tiff).  It is necessary to use
+    +adjoin.  For example ``gm convert foo.pdf +adjoin %02d.tiff``.
+
   * -flatten now applies the image background color under the first
-     image in the list if it is not already opaque.
+    image in the list if it is not already opaque.
 
 1.3.8 (January 21, 2010)
 ========================
