@@ -58,10 +58,11 @@ Performance Improvements:
 
 Behavior Changes:
 
-  * For formats supporting multiple frames, there is no longer an
-    implicit 'adjoin' if an output filename contains an apparent scene
-    specification (e.g. foo%02d.tiff).  It is necessary to use
-    +adjoin.  For example ``gm convert foo.pdf +adjoin %02d.tiff``.
+  * There is no longer an implicit 'adjoin' if an output filename
+    contains an apparent scene specification (e.g. foo%02d.tiff) and
+    multiple files are not needed to save the image..  It is necessary
+    to use +adjoin.  For example ``gm convert foo.pdf +adjoin
+    %02d.tiff``.
 
   * -flatten now applies the image background color under the first
     image in the list if it is not already opaque.

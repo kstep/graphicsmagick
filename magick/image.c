@@ -2421,7 +2421,7 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
       if ((!image_info->adjoin) &&
 	  (MagickSceneFileName(filename,image_info->filename,".%lu",
 			       MagickFalse,0)))
-        image_info->adjoin=False;
+        image_info->adjoin=MagickFalse;
 
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
@@ -2435,7 +2435,7 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
   */
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
-    return(False);
+    return(MagickFalse);
   (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
