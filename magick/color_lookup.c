@@ -1344,7 +1344,13 @@ QueryColorname(const Image *image,const PixelPacket *color,
   register const ColorInfo
     *p;
 
+  MagickBool
+    matte;
+
   *name='\0';
+  matte=image->matte;
+  if (compliance == XPMCompliance)
+    matte=MagickFalse;
   p=GetColorInfo("*",exception);
   if (p != (const ColorInfo *) NULL)
     {
@@ -1360,7 +1366,7 @@ QueryColorname(const Image *image,const PixelPacket *color,
         return(True);
       }
     }
-  GetColorTuple(color,image->depth,image->matte,True,name);
+  GetColorTuple(color,image->depth,matte,True,name);
   return(False);
 }
 
