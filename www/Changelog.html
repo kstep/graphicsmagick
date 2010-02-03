@@ -24,6 +24,11 @@
 2010-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/command.c (ImportImageCommand): Don't assign a pointer to
+        static constant data into an array which uses heap allocated data.
+        Avoids a "double free" error when using gm import -frame.  Patch
+        by Daniel Kobras.
+
   <LI> magick/color_lookup.c (QueryColorname): XPM does not support
         RGBA color syntax, but it does support RGB.  Patch by Daniel
         Kobras.
