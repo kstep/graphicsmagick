@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -2418,8 +2418,9 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
         this case, the filename contains a printf style string
         containing some variation of %d (e.g. "image%02d.miff");
       */
-
-      if (MagickSceneFileName(filename,image_info->filename,".%lu",MagickFalse,0))
+      if ((!image_info->adjoin) &&
+	  (MagickSceneFileName(filename,image_info->filename,".%lu",
+			       MagickFalse,0)))
         image_info->adjoin=False;
 
       magick_info=GetMagickInfo(magic,exception);
