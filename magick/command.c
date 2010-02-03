@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -14673,7 +14673,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("frame",option+1) == 0)
           {
-            argv[i]=(char *) "-ignore";  /* resolve option confict */
+            MagickFreeMemory(argv[i]);
+            argv[i]=AcquireString("-ignore");  /* resolve option confict */
             ximage_info.frame=(*option == '-');
             break;
           }
