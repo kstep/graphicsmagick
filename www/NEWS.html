@@ -53,7 +53,7 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on February 2, 2010</p>
+<p>This file was last updated on February 3, 2010</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -86,6 +86,20 @@ polygons.</li>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
+<li>The display '-update' option was only working in conjunction with
+the '-delay' option with a delay setting of 2 or greater.</li>
+<li>For formats which support multiple frames, output with +adjoing to
+filenames containing a scene specification (e.g. foo%02d.tiff) was
+resulting in wrong output file names.</li>
+<li>-convolve was crashing rather than reporting an error.</li>
+<li>Fixed crash if the number of OpenMP threads was reduced from the
+original value via '-limit threads' or omp_set_num_threads().</li>
+<li>-blur was not blurring the opacity channel for solid-color images.</li>
+<li>When installing HTML documentation, many files were included which
+are not part of the formatted documentation.</li>
+<li>Several deleted global string constants are restored with
+deprecated status in order to assure that symbols are not removed
+from the ABI.</li>
 <li>-convolve, -recolor: Validate that user-provided matrix is square
 when parsing -convolve and -recolor commands in order to avoid a
 core dump.</li>
@@ -390,6 +404,10 @@ added.</li>
 <p>Behavior Changes:</p>
 <blockquote>
 <ul class="simple">
+<li>For formats supporting multiple frames, there is no longer an
+implicit 'adjoin' if an output filename contains an apparent scene
+specification (e.g. foo%02d.tiff).  It is necessary to use
++adjoin.  For example <tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">foo.pdf</span> <span class="pre">+adjoin</span> <span class="pre">%02d.tiff</span></tt>.</li>
 <li>InitializeMagick() MUST be invoked prior to using any Magick API
 function.  Failure to do so will likely lead to an immediate
 application crash.  This is due to initialization and runtime
@@ -1290,7 +1308,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-02 22:34 UTC.
+Generated on: 2010-02-03 16:54 UTC.
 
 </div>
 </body>

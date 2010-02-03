@@ -12799,7 +12799,6 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
   */
   if (resource_info->delay > 1)
     display_image->delay=resource_info->delay;
-  timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
   update_time=0;
   if (resource_info->update)
     {
@@ -12809,7 +12808,10 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
       status=MagickStat(display_image->filename,&file_info);
       if (status == 0)
         update_time=file_info.st_mtime;
+      if (resource_info->delay <= 1)
+          display_image->delay=resource_info->update*100;
     }
+  timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
   *state&=(~FormerImageState);
   *state&=(~MontageImageState);
   *state&=(~NextImageState);
