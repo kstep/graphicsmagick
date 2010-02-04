@@ -1,3 +1,9 @@
+2010-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/bin/delegates.mgk: Sending output to "win:" now
+	sends output to Windows Picture and Fax Viewer (shimgvw.dll)
+	rather than gmdisplay.
+
 2010-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/imdoc2man: Bare single quotes at the beginning of a line

@@ -60,8 +60,7 @@
  -->
 <delegatemap>
 <delegate decode="autotrace" stealth="True" command='autotrace -output-format svg -output-file "%o" "%i"' />
-  <delegate decode="bmp" encode="launch" mode="encode" command='"@GMDisplayDelegate@" "%i."' />
-  <delegate decode="bmp" encode="win" mode="encode" command='"@GMDisplayDelegate@" "%i."' />
+  <delegate decode="bmp" encode="win" mode="encode" command='"cmd.exe" "/c" "%SystemRoot%/system32/rundll32.exe" "%SystemRoot%/system32/shimgvw.dll,ImageView_Fullscreen" "%i."' />
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start "http://www.GraphicsMagick.org/"'  />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
     "@GMDelegate@" convert -adjoin %o*.ps "%o"' />
@@ -113,6 +112,4 @@
   <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
   <delegate decode="shtml" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='enscript -o "%o" "%i"' />
-  <delegate decode="xcf" command='xcftopnm "%i" > "%o"' />
-  <delegate encode="compress" restrain="True" command='|compress -c > "%o"' />
 </delegatemap>
