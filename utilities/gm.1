@@ -1,4 +1,4 @@
-.TH gm 1 "2010/01/29" "GraphicsMagick"
+.TH gm 1 "2010/02/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1324,7 +1324,7 @@ the value obtained from the file's SMinSampleValue tag (if present).
 If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 images with the specified bits per sample, overriding any existing depth
 value. Value may be any in the range of 1 to 32, or 64 when the default
-'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
+\'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
 Please note that the baseline TIFF 6.0 specification only requires
 readers to handle certain powers of two, and the values to be handled
 depend on the nature of the image (e.g. colormapped, grayscale, RGB, CMYK).
@@ -5387,9 +5387,9 @@ In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the image is going to be downscaled to 120x120, allowing it to run
 faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
-'-resize 120x120' specifies the desired dimensions of the
+\'-resize 120x120' specifies the desired dimensions of the
 output image.  It will be scaled so its largest dimension is 120 pixels.  The
-'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
+\'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
 that might be present in the input and aren't needed in the thumbnail.
 
 To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
@@ -8365,9 +8365,9 @@ In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
 faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
-'-resize 120x120' specifies the desired dimensions of the
+\'-resize 120x120' specifies the desired dimensions of the
 output images.  It will be scaled so its largest dimension is 120 pixels.  The
-'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
+\'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
 that might be present in the input and aren't needed in the thumbnails.
 
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
