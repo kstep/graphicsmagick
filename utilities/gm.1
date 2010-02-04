@@ -1,4 +1,4 @@
-.TH gm 1 "2010/01/13" "GraphicsMagick"
+.TH gm 1 "2010/02/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1181,7 +1181,8 @@ setting. The default quality setting of 75 results in a rate value of
 .in 20
 Enables or disables block smoothing when reading a JPEG file
 (default enabled).
-</dd/
+
+.in 15
 .in 15
 .B "jpeg:dct-method=<value>"
 .in 20
@@ -1203,7 +1204,8 @@ behaves.
 .in 20
 Enables or disables fancy upsampling when reading a JPEG file
 (default enabled).
-</dd/
+
+.in 15
 .in 15
 .B "jpeg:optimize-coding={true|false}"
 .in 20
@@ -1322,7 +1324,7 @@ the value obtained from the file's SMinSampleValue tag (if present).
 If the tiff:bits-per-sample key is defined, GraphicsMagick will write
 images with the specified bits per sample, overriding any existing depth
 value. Value may be any in the range of 1 to 32, or 64 when the default
-'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
+\'unsigned' format is written, or 16/32/24/64 if IEEEFP format is written.
 Please note that the baseline TIFF 6.0 specification only requires
 readers to handle certain powers of two, and the values to be handled
 depend on the nature of the image (e.g. colormapped, grayscale, RGB, CMYK).
@@ -2491,6 +2493,12 @@ The image size is halved using linear interpolation.
 .TP
 .B "-mode \fI<value>"\fP
 \fRmode of operation
+
+The available montage modes are \fBframe\fP to place the images in a
+rectangular grid while adding a decorative frame with dropshadow,
+\fBunframe\fP to place undecorated images in a rectangular grid, and
+\fBconcatenate\fP to pack the images closely together without any
+well-defined grid or decoration. 
 .TP
 .B "-modulate \fIbrightness[,saturation[,hue]]"\fP
 \fRvary the brightness, saturation, and hue of an image
@@ -5379,9 +5387,9 @@ In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the image is going to be downscaled to 120x120, allowing it to run
 faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
-'-resize 120x120' specifies the desired dimensions of the
+\'-resize 120x120' specifies the desired dimensions of the
 output image.  It will be scaled so its largest dimension is 120 pixels.  The
-'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
+\'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
 that might be present in the input and aren't needed in the thumbnail.
 
 To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
@@ -8357,9 +8365,9 @@ In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
 faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
-'-resize 120x120' specifies the desired dimensions of the
+\'-resize 120x120' specifies the desired dimensions of the
 output images.  It will be scaled so its largest dimension is 120 pixels.  The
-'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
+\'+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
 that might be present in the input and aren't needed in the thumbnails.
 
 To scale an image of a cockatoo to exactly 640 pixels in width and 480

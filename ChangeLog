@@ -1,5 +1,9 @@
 2010-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* doc/imdoc2man: Bare single quotes at the beginning of a line
+	need to be escaped in order to make roff happy.  Problem reported
+	by Daniel Kobras.
+
 	* magick/command.c (ImportImageCommand): Don't assign a pointer to
 	static constant data into an array which uses heap allocated data.
 	Avoids a "double free" error when using gm import -frame.  Patch

@@ -94,6 +94,7 @@ echo ".TH $1 1 \"`date '+%Y/%m/%d'`\" \"GraphicsMagick\""
      s/<\/s>/\\\\fP/g
      s/<tt>//g
      s/<\/tt>//g
+     s/^\\'/\\\\'/g
 
      " $2
 

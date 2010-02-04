@@ -1126,7 +1126,7 @@ setting. The default quality setting of 75 results in a rate value of
 
 <dd>Enables or disables block smoothing when reading a JPEG file
 (default enabled).
-</dd/
+</dd>
 
 <dt>jpeg:dct-method=<value></dt>
 
@@ -1143,7 +1143,7 @@ behaves.
 
 <dd>Enables or disables fancy upsampling when reading a JPEG file
 (default enabled).
-</dd/
+</dd>
 
 <dt>jpeg:optimize-coding={true|false}</dt>
 <dd>
@@ -3117,6 +3117,13 @@ The image size is halved using linear interpolation.</pp>
 <opt>-mode <value></opt>
 
 <abs>mode of operation</abs>
+
+<pp>
+The available montage modes are <s>frame</s> to place the images in a
+rectangular grid while adding a decorative frame with dropshadow,
+<s>unframe</s> to place undecorated images in a rectangular grid, and
+<s>concatenate</s> to pack the images closely together without any
+well-defined grid or decoration. </pp>
 
 </utils>
 
