@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 3, 2010
+This file was last updated on February 4, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -22,6 +22,10 @@ Security Fixes:
   * None
 
 Bug fixes:
+
+  * Fix "double free" error when using gm import -frame.
+
+  * XPM does not support RGBA color syntax, so return RGB instead.
 
   * The display '-update' option was only working in conjunction with
     the '-delay' option with a delay setting of 2 or greater.
