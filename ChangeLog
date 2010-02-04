@@ -1,5 +1,7 @@
 2010-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh: Released GraphicsMagick 1.3.9.
+
 	* VisualMagick/bin/delegates.mgk: Sending output to "win:" now
 	sends output to Windows Picture and Fax Viewer (shimgvw.dll)
 	rather than gmdisplay.

@@ -146,12 +146,12 @@ line::
 
   cvs -z7 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 
-If you require a specific release of GraphicsMagick (e.g. 1.3.7), you may check
+If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may check
 it out like::
 
- cvs -z7 co-r GraphicsMagick-1_3_7 -P GraphicsMagick
+ cvs -z7 co-r GraphicsMagick-1_3_9 -P GraphicsMagick
 
-where the ``GraphicsMagick-1_3_7`` is the release tag. You can use::
+where the ``GraphicsMagick-1_3_9`` is the release tag. You can use::
 
   cvs status -v README.txt
 
@@ -160,7 +160,7 @@ tags are available.
 
 You can use::
 
-  cvs -z7 update -r GraphicsMagick-1_3_7
+  cvs -z7 update -r GraphicsMagick-1_3_9
 
 from within an existing checked out directory to move it up (or down) to that
 branch or release tag.
