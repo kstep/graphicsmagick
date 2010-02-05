@@ -30,7 +30,7 @@ Bug fixes:
   * The display '-update' option was only working in conjunction with
     the '-delay' option with a delay setting of 2 or greater.
 
-  * For formats which support multiple frames, output with +adjoing to
+  * For formats which support multiple frames, output with +adjoin to
     filenames containing a scene specification (e.g. foo%02d.tiff) was
     resulting in wrong output file names.
 
