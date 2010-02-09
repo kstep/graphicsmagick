@@ -698,7 +698,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info->blob=(void *) blob;
   clone_info->length=length;
   if (clone_info->magick[0] == '\0')
-    (void) SetImageInfo(clone_info,False,exception);
+    (void) SetImageInfo(clone_info,MagickFalse,exception);
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {
@@ -2450,9 +2450,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
             /*
               Form filename for multi-part images.
             */
-	    if (((image->previous != (Image *) NULL) ||
-		 (image->next != (Image *) NULL)) && 
-		(!image_info->adjoin))
+	    if (!image_info->adjoin)
 	      FormMultiPartFilename(image,image_info);
             (void) strcpy(filename,image->filename);
           }

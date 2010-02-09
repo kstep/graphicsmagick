@@ -2603,7 +2603,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strlcpy(image_info->filename,pattern,MaxTextExtent);
       GetExceptionInfo(&exception);
-      (void) SetImageInfo(image_info,True,&exception);
+      (void) SetImageInfo(image_info,MagickFalse,&exception);
       DestroyExceptionInfo(&exception);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&

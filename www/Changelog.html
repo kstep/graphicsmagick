@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2010-02-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/display.c (MagickXDisplayImage): Image number was
+        incorrect in window title.
+
+  <LI> magick/render.c (DrawImage): Path points data allocation was
+        much larger than it needed to be.  Patch by Vladimir Lukianov.
+        Resolves SourceForge issue 2947851 "Memory allocation error on
+        vector graphics (or mem bomb)".
+
+  <LI> magick/constitute.c (WriteImages): +adjoin was not working
+        correctly for the case when only one image frame is present.  With
+        +adjoin and writing one frame to "foo%d.jpg" it was outputting
+        "foo%d.jpg" rather than "foo0.jpg".  Problem reported by Frans
+        Coetzee.
+
+</UL>
+<p>
 2010-02-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

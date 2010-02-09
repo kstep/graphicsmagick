@@ -2263,6 +2263,7 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
+
   *magic='\0';
   p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
   /*
@@ -2426,6 +2427,7 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
+
       return(MagickTrue);
     }
   if (image_info->affirm)

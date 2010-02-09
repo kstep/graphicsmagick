@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -8093,7 +8093,7 @@ static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_in
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   GetExceptionInfo(&exception);
-  (void) SetImageInfo(image_info,False,&exception);
+  (void) SetImageInfo(image_info,MagickFalse,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
@@ -10297,7 +10297,7 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strlcpy(image_info->filename,filename,MaxTextExtent);
-  (void) SetImageInfo(image_info,False,&image->exception);
+  (void) SetImageInfo(image_info,MagickFalse,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {
@@ -12442,19 +12442,20 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
       (void ) CloneString(&windows->image.name,"");
       (void ) CloneString(&windows->image.icon_name,"");
       GetPathComponent(display_image->filename,TailPath,filename);
-      FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu]",filename,
-        display_image->scene);
+      FormatString(windows->image.name,"%s: %.1024s[%lu]",MagickPackageName,
+		   filename,display_image->scene);
       q=display_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu of %lu]",
-        filename,display_image->scene,count);
+      FormatString(windows->image.name,"%s: %.1024s[%lu of %lu]",
+		   MagickPackageName,filename,display_image->scene+1U,count);
       if ((display_image->previous == (Image *) NULL) &&
           (display_image->next == (Image *) NULL) &&
           (display_image->scene == 0))
-        FormatString(windows->image.name,"GraphicsMagick: %.1024s",filename);
+        FormatString(windows->image.name,"%s: %.1024s",MagickPackageName,
+		     filename);
       (void) strlcpy(windows->image.icon_name,filename,MaxTextExtent);
     }
   if (resource_info->immutable)
