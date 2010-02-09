@@ -8231,7 +8231,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   /*
     Obtain file magick from filename
   */
-  (void) SetImageInfo(clone_info,False,exception);
+  (void) SetImageInfo(clone_info,MagickFalse,exception);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                         "Magick=%s, Filename=%s", clone_info->magick,clone_info->filename);
   (void) strlcpy(filename,clone_info->filename,MaxTextExtent);
@@ -8413,7 +8413,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageList(image);
       image=(Image *) NULL;
       clone_info->temporary=True;
-      (void) SetImageInfo(clone_info,False,exception);
+      (void) SetImageInfo(clone_info,MagickFalse,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
       /*
         If there is no magick info entry for this format, or there is
@@ -8852,12 +8852,17 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->filename,image->filename,MaxTextExtent);
   (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);
-  (void) SetImageInfo(clone_info,True,&image->exception);
+  (void) SetImageInfo(clone_info,MagickFalse,&image->exception);
   (void) strlcpy(image->filename,clone_info->filename,MaxTextExtent);
   image->dither=image_info->dither;
+
 #if 0
   /*
-    FIXME: What is this chunk of "bi-modal delegate" code for?
+    This bi-modal delegate code allows short-circuiting GraphicsMagick
+    in case the delegates support a direct translation.  For example,
+    PDF to PS using Ghostscript.
+
+    This is currently disabled due to potential side-effects.
   */
   if (((image->next == (Image *) NULL) || clone_info->adjoin) &&
       (image->previous == (Image *) NULL) &&
@@ -8880,6 +8885,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         }
     }
 #endif
+
   /*
     Call appropriate image writer based on image type.
   */
@@ -9067,7 +9073,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
               if (strlcpy(p->filename,filename,MaxTextExtent) >= MaxTextExtent)
                 status &= MagickFail;
         }
-      (void) SetImageInfo(clone_info,True,exception);
+      (void) SetImageInfo(clone_info,MagickFalse,exception);
       for (p=image; p != (Image *) NULL; p=p->next)
         {          
           status &= WriteImage(clone_info,p);

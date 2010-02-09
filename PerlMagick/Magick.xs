@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1577,7 +1577,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
 
               GetExceptionInfo(&exception);
               FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
-              SetImageInfo(info->image_info,True,&exception);
+              SetImageInfo(info->image_info,MagickTrue,&exception);
               if (*info->image_info->magick == '\0')
                 MagickError(OptionError,UnrecognizedImageFormat,
                   info->image_info->filename);
@@ -2382,7 +2382,7 @@ Average(ref)
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
-    SetImageInfo(info->image_info,False,&image->exception);
+    SetImageInfo(info->image_info,MagickFalse,&image->exception);
     SvREFCNT_dec(MY_CXT.error_list);
     MY_CXT.error_jump=NULL;
     XSRETURN(1);
@@ -2990,7 +2990,7 @@ Flatten(ref)
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
-    SetImageInfo(info->image_info,False,&image->exception);
+    SetImageInfo(info->image_info,MagickFalse,&image->exception);
     SvREFCNT_dec(MY_CXT.error_list);
     MY_CXT.error_jump=NULL;
     XSRETURN(1);
@@ -4110,7 +4110,7 @@ ImageToBlob(ref,...)
       (void) strncpy(next->filename,filename,MaxTextExtent-1);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,True,&image->exception);
+    SetImageInfo(package_info->image_info,MagickTrue,&image->exception);
     EXTEND(sp,(long) GetImageListLength(image));
     GetExceptionInfo(&exception);
     for ( ; image; image=image->next)
@@ -6679,7 +6679,7 @@ Mosaic(ref)
     SvREFCNT_dec(sv);
     info=GetPackageInfo(aTHX_ (void *) av,info);
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
-    SetImageInfo(info->image_info,False,&image->exception);
+    SetImageInfo(info->image_info,MagickFalse,&image->exception);
     if (exception.severity != UndefinedException)
       CatchException(&exception);
     DestroyExceptionInfo(&exception);
@@ -7979,7 +7979,7 @@ Write(ref,...)
       (void) strncpy(next->filename,filename,MaxTextExtent-1);
       next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,True,&image->exception);
+    SetImageInfo(package_info->image_info,MagickTrue,&image->exception);
     for (next=image; next; next=next->next)
     {
       (void) WriteImage(package_info->image_info,next);

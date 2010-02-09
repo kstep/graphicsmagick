@@ -2842,28 +2842,43 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           *s,
           *t;
 
+	size_t
+	  path_max_points;
+
         GetToken(q,&q,token);
-        length=1;
+
+	/*
+	  Reserved Memory size is:
+	  path_max_points  = length *3/2
+	  
+	  Where:
+	  length                               - Number of tokens (length)
+	  *3                                   - Maximum points number to render one segment with bezier
+	  / 2                                  - 1 point have 2 coords 
+	  +Some additional 6*BezierQuantum+360 - some approximation similar to TraceStrokePolygon code 
+	*/
+	length=1;
         t=token;
-        for (s=token; *s != '\0'; s=t)
-        {
-          (void) strtod(s,&t);
-          if (s == t)
-            {
-              t++;
-              continue;
-            }
-          length++;
-        }
-        if (i > (long) (number_points-6*BezierQuantum*length/3-1))
+	for (s=token; *s != '\0'; s=t)
+	  {
+	    (void) strtod(s,&t);
+	    if (s == t)
+	      {
+		t++;
+		continue;
+	      }
+	    length++;
+	  }
+	path_max_points = length*3/2+6*BezierQuantum+360; 
+        if (i > (long) (number_points-path_max_points))
           {
-            number_points+=6*BezierQuantum*length/3;
+	    number_points+=path_max_points;
             MagickReallocMemory(PrimitiveInfo *,primitive_info,
-              number_points*sizeof(PrimitiveInfo));
+				number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException3(&image->exception,ResourceLimitError,
-                  MemoryAllocationFailed,UnableToDrawOnImage);
+				MemoryAllocationFailed,UnableToDrawOnImage);
                 break;
               }
           }

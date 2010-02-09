@@ -1,3 +1,19 @@
+2010-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/display.c (MagickXDisplayImage): Image number was
+	incorrect in window title.
+
+	* magick/render.c (DrawImage): Path points data allocation was
+	much larger than it needed to be.  Patch by Vladimir Lukianov.
+	Resolves SourceForge issue 2947851 "Memory allocation error on
+	vector graphics (or mem bomb)".
+
+	* magick/constitute.c (WriteImages): +adjoin was not working
+	correctly for the case when only one image frame is present.  With
+	+adjoin and writing one frame to "foo%d.jpg" it was outputting
+	"foo%d.jpg" rather than "foo0.jpg".  Problem reported by Frans
+	Coetzee.
+
 2010-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/imdoc2man: Bare single quotes at the beginning of a line
