@@ -46,8 +46,9 @@ and debugging its code.
 
 GraphicsMagick is much smaller than ImageMagick and has dramatically
 fewer dependencies on external libraries. For example, on the FreeBSD
-operating system, a fully-featured install of GraphicsMagick depends on
-36 libraries whereas ImageMagick requires 64.
+operating system, a fully-featured install of GraphicsMagick depends
+on 36 libraries whereas ImageMagick requires 64.  GraphicsMagick's
+installation footprint is 3-5X smaller than ImageMagick.
 
 GraphicsMagick is usually faster than ImageMagick. The baseline execution
 overhead for simple commands is much lower, and GraphicsMagick is also
@@ -76,8 +77,37 @@ Authors of new features are encouraged to independently contribute
 their work to the GraphicsMagick project so that it can be released
 under GraphicsMagick's MIT X11 style license without additional
 encumberment.  In order for a work to be accepted, it must have been
-developed entirely outside the ImageMagick source code to avoid any
+developed entirely outside the ImageMagick source base to avoid any
 possibility of copyright taint.
+
+Are there any plans to use OpenCL or CUDA to use a GPU?
+-------------------------------------------------------
+
+It is well known that some math-intensive algorithms run very quickly
+on video-card (and stand-alone) GPUs.  Video card vendors encourage
+you to buy an expensive video card with quite a lot of installed RAM
+and modify applications to use the GPU.  GPUs are quite effective at
+producing images for real-time display, such as for video games and
+virtual reality.  GraphicsMagick has been significantly updated to use
+multiple CPU cores to speed up the image processing, and work
+continues to thread the few remaining algorithms, or remove
+inefficiencies in algorithms which don't see as much speed-up as they
+should.  We have already observed multi-core speedup of up to 32X (on
+a UltraSPARC-T2 CPU) and expect that upward trend to continue.
+
+It is my belief that stand-alone GPUs are a poor design (expensive,
+inefficient, failure-prone, bandwidth bottlenecked, lack
+functionality, are insecure, and are not supported in servers) and
+that multi-core will ultimately prevail.  Functionality which
+currently works best in a GPU will simply be integrated into
+tomorrow's multi-core CPUs and C compilers will naturally support that
+functionality.  Once GPU capabilities are integrated into CPUs, there
+will be no more need to develop special code for a GPU.  Today
+(February, 2010) 6 core CPUs are readily available, and in less than
+two years 16-core CPUs will be readily available.  These CPUs will use
+a similar amount of power to today's CPUs and will fit into a very
+small (1U) chassis.  Due to this trend, there is no value obtained by
+expending energy toward developing specialized code for today's GPUs.
 
 How can I process many files at once?
 -------------------------------------

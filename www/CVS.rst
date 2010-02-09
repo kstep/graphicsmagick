@@ -138,6 +138,7 @@ and only the files which have changed will be updated.
 The available modules relating to GraphicsMagick are:
 
 *  ``GraphicsMagick`` (core sources)
+*  ``GraphicsMagick-Base`` (core sources plus maintained extras)
 *  ``GraphicsMagick-NT`` (everything needed for Microsoft Windows)
 *  ``GraphicsMagick-World`` (everything related to GraphicsMagick)
 
