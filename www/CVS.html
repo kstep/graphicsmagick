@@ -198,6 +198,7 @@ cvs update -P -d
 <p>The available modules relating to GraphicsMagick are:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">GraphicsMagick</span></tt> (core sources)</li>
+<li><tt class="docutils literal"><span class="pre">GraphicsMagick-Base</span></tt> (core sources plus maintained extras)</li>
 <li><tt class="docutils literal"><span class="pre">GraphicsMagick-NT</span></tt> (everything needed for Microsoft Windows)</li>
 <li><tt class="docutils literal"><span class="pre">GraphicsMagick-World</span></tt> (everything related to GraphicsMagick)</li>
 </ul>
@@ -206,12 +207,12 @@ line:</p>
 <pre class="literal-block">
 cvs -z7 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 </pre>
-<p>If you require a specific release of GraphicsMagick (e.g. 1.3.6), you may check
+<p>If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may check
 it out like:</p>
 <pre class="literal-block">
-cvs -z7 co-r GraphicsMagick-1_3_6 -P GraphicsMagick
+cvs -z7 co-r GraphicsMagick-1_3_9 -P GraphicsMagick
 </pre>
-<p>where the <tt class="docutils literal"><span class="pre">GraphicsMagick-1_3_6</span></tt> is the release tag. You can use:</p>
+<p>where the <tt class="docutils literal"><span class="pre">GraphicsMagick-1_3_9</span></tt> is the release tag. You can use:</p>
 <pre class="literal-block">
 cvs status -v README.txt
 </pre>
@@ -219,7 +220,7 @@ cvs status -v README.txt
 tags are available.</p>
 <p>You can use:</p>
 <pre class="literal-block">
-cvs -z7 update -r GraphicsMagick-1_3_6
+cvs -z7 update -r GraphicsMagick-1_3_9
 </pre>
 <p>from within an existing checked out directory to move it up (or down) to that
 branch or release tag.</p>
@@ -248,7 +249,7 @@ numerous other web sites.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 00:59 UTC.
+Generated on: 2010-02-09 21:33 UTC.
 
 </div>
 </body>

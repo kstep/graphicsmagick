@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2009
+// Copyright (C) Copyright 1999 - 2010 Bob Friesenhahn
 //
 // Simple demo program for Magick++
 //
@@ -22,7 +22,7 @@ using namespace Magick;
 int main( int /*argc*/, char ** argv)
 {
 
-  // Initialize ImageMagick install location for Windows
+  // Initialize Magick
   InitializeMagick(*argv);
   
   try {
@@ -526,7 +526,7 @@ int main( int /*argc*/, char ** argv)
     for_each( montage.begin(), montage.end(), compressTypeImage( RLECompression) );
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
-    writeImages(montage.begin(),montage.end(),"demo_out.miff");
+    writeImages(montage.begin(),montage.end(),"demo_out_%d.miff",false);
 
     // Uncomment following lines to display image to screen
     //    cout <<  "Display image..." << endl;

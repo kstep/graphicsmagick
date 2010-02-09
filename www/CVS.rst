@@ -138,6 +138,7 @@ and only the files which have changed will be updated.
 The available modules relating to GraphicsMagick are:
 
 *  ``GraphicsMagick`` (core sources)
+*  ``GraphicsMagick-Base`` (core sources plus maintained extras)
 *  ``GraphicsMagick-NT`` (everything needed for Microsoft Windows)
 *  ``GraphicsMagick-World`` (everything related to GraphicsMagick)
 
@@ -146,12 +147,12 @@ line::
 
   cvs -z7 co -P -r GraphicsMagick-1_3 GraphicsMagick-NT
 
-If you require a specific release of GraphicsMagick (e.g. 1.3.6), you may check
+If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may check
 it out like::
 
- cvs -z7 co-r GraphicsMagick-1_3_6 -P GraphicsMagick
+ cvs -z7 co-r GraphicsMagick-1_3_9 -P GraphicsMagick
 
-where the ``GraphicsMagick-1_3_6`` is the release tag. You can use::
+where the ``GraphicsMagick-1_3_9`` is the release tag. You can use::
 
   cvs status -v README.txt
 
@@ -160,7 +161,7 @@ tags are available.
 
 You can use::
 
-  cvs -z7 update -r GraphicsMagick-1_3_6
+  cvs -z7 update -r GraphicsMagick-1_3_9
 
 from within an existing checked out directory to move it up (or down) to that
 branch or release tag.

@@ -97,16 +97,17 @@ a UltraSPARC-T2 CPU) and expect that upward trend to continue.
 
 It is my belief that stand-alone GPUs are a poor design (expensive,
 inefficient, failure-prone, bandwidth bottlenecked, lack
-functionality, and are insecure) and that multi-core will prevail.
-Functionality which currently works best in a GPU will simply be
-integrated into tomorrow's multi-core CPUs.  Once GPU capabilities are
-integrated into CPUs, there will be no more need to develop special
-code for GPU.  Today (February, 2010) 6 core CPUs are readily
-available, and in less than two years 16-core CPUs will be readily
-available.  These CPUs will use a similar amount of power to today's
-CPUs and will fit into a very small chassis.  Due to this trend, there
-is no value obtained by expending energy toward developing code for
-today's GPUs.
+functionality, are insecure, and are not supported in servers) and
+that multi-core will ultimately prevail.  Functionality which
+currently works best in a GPU will simply be integrated into
+tomorrow's multi-core CPUs and C compilers will naturally support that
+functionality.  Once GPU capabilities are integrated into CPUs, there
+will be no more need to develop special code for a GPU.  Today
+(February, 2010) 6 core CPUs are readily available, and in less than
+two years 16-core CPUs will be readily available.  These CPUs will use
+a similar amount of power to today's CPUs and will fit into a very
+small (1U) chassis.  Due to this trend, there is no value obtained by
+expending energy toward developing specialized code for today's GPUs.
 
 How can I process many files at once?
 -------------------------------------
