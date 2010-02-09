@@ -90,7 +90,7 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 <p>
 <s>gm convert</s> <s>[ [</s> <i>options ...</i> <s>] [</s> <i>input-file ...</i>
-<s>]</s> <i>...</i> <s>[</s> <i>output-file</i> <s>] ]</s></p>
+<s>] [</s> <i>options ...</i> <s>] ]</s> <i>output-file</i> </p>
 
 <p>
 <s>gm display</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i>
