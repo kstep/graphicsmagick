@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 4, 2010
+This file was last updated on February 10, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,42 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.10 (February 10, 2010)
+==========================
+
+Security Fixes:
+
+  * None
+
+Bug fixes:
+
+  * +adjoin was not working correctly for the case when only one image
+    frame is present.  With +adjoin and writing one frame to
+    "foo%d.jpg" it was outputting "foo%d.jpg" rather than "foo0.jpg".
+
+  * When drawing paths, memory allocation for the points was much
+    larger than it needed to be (patch by Vladimir Lukianov).
+
+New Features:
+
+  * None
+
+Feature improvements:
+
+  * None
+
+Performance Improvements:
+
+  * None
+
+Behavior Changes:
+
+  * To reiterate the change which first appeared in 1.3.9, there is no
+    longer an implicit +adjoin if the output file name happens to
+    contain a %d sequence, or there are multiple frames and the output
+    file format only supports storing one frame.  Specify +adjoin if
+    scene number substition is desired in the output file names.
 
 1.3.9 (February 4, 2010)
 ========================

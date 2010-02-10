@@ -1,3 +1,7 @@
+2010-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Released GraphicsMagick 1.3.10.
+
 2010-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/demo/demo.cpp (main): Split demo output frames into
