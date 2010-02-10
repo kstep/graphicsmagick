@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 4, 2010
+This file was last updated on February 10, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -35,6 +35,9 @@ Security Fixes:
     polygons.
 
 Bug fixes:
+
+  * When drawing paths, memory allocation for the points was much
+    larger than it needed to be (patch by Vladimir Lukianov).
 
   * Fix "double free" error when using gm import -frame.
 

@@ -24,7 +24,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  =================================================
-Current Stable Branch:       1.3.9__ (Released February 4, 2010) download__
+Current Stable Branch:       1.3.10__ (Released February 10, 2010) download__
 Old Stable Branch:           1.2.10__ (Released January 6, 2010) download__
 ===========================  =================================================
 
