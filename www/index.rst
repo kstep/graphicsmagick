@@ -63,8 +63,7 @@ GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
 GraphicsMagick is available for virtually any Unix or Unix-like system,
 including Linux. It also runs under `Windows <INSTALL-windows.html>`_
-2000 and later (Windows 2000, XP, and Vista), and MacOS-X. The source
-code still supports execution under Windows '98.
+2000 and later (Windows 2000, XP, and Vista), and MacOS-X.
 
 GraphicsMagick supports huge images and has been tested with
 gigapixel-size images. GraphicsMagick can create new images on the
