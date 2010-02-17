@@ -932,7 +932,7 @@ Windows XP / MinGW / Intel Core 2 Quad
 
 .. Last update: Mon Jul 20 16:32:57 CDT 2009
 
-TDM's GCC/mingw32 build 1.902.0 was downloaded from
+TDM's GCC/mingw32 4.4.1-tdm-2 (build 1.908.0) was downloaded from
 http://www.tdragon.net/recentgcc/ and installed on the same Windows XP
 system with the 2.83 GHz Core 2 Quad Processor (Q9550) as described
 above.  This processor is a multi-chip module (MCM) based on two Core
