@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2010-02-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (LocaleCompare, LocaleNCompare): Fix array
+        index underflow which occurs if the char type is signed and the
+        character value is in the extended range.  Problem reported by
+        Arseny Solokha.  Resolves SourceForge patch #2953314.
+
+</UL>
+<p>
 2010-02-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
