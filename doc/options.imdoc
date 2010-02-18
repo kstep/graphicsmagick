@@ -4902,6 +4902,27 @@ subcommand with it's <s>Threshold</s>, <s>Threshold-White</s>, or
 
 
 
+<!-- ------------ -thumbnail ------------------------------------------ -->
+
+<utils apps=composite,convert,import,mogrify,montage>
+<dopt>-thumbnail <width>x<height>{%}{@}{!}{<}{>}</opt>
+
+<abs>resize an image (quickly)</abs>
+
+<pp>
+The <s>-thumbnail</s> command resizes the image as quickly as
+possible, with more concern for speed than resulting image quality.
+Regardless, resulting image quality should be acceptable for many
+uses.  It is primarily intended to be used to generate smaller
+versions of the image, but may also be used to enlarge the image.  The
+<s>-thumbnail</s> <s>geometry</s> argument observes the same syntax
+and rules as it does for <s>-resize</s>.</pp>
+
+</utils>
+
+
+
+
 
 <!-- ------------ -tile [convert, mogrify] -------------------------- -->
 
