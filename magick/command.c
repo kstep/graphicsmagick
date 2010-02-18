@@ -3393,6 +3393,16 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       }
       case 't':
       {
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowCompositeException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("tile",option+1) == 0)
           {
             option_info.tile=(*option == '-');
@@ -3646,6 +3656,7 @@ static void CompositeUsage(void)
       "-size geometry       width and height of image",
       "-stegano offset      hide watermark within an image",
       "-stereo              combine two image to create a stereo anaglyph",
+      "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-tile                repeat composite operation across image",
       "-transform           affine transform image",
       "-treedepth value     color tree depth",
@@ -5333,6 +5344,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("threshold",option+1) == 0)
           {
             if (*option == '-')
@@ -5721,6 +5742,7 @@ static void ConvertUsage(void)
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
+      "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-tile filename       tile image when filling a graphic primitive",
       "-transform           affine transform image",
       "-transparent color   make this color transparent within the image",
@@ -10144,6 +10166,26 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             continue;
           }
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            Image
+              *resize_image;
+
+            /*
+              Resize image.
+            */
+            (void) GetImageGeometry(*image,argv[++i],True,&geometry);
+            if ((geometry.width == (*image)->columns) &&
+                (geometry.height == (*image)->rows))
+              break;
+            resize_image=ThumbnailImage(*image,geometry.width,geometry.height,
+              &(*image)->exception);
+            if (resize_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=resize_image;
+            continue;
+          }
         if (LocaleCompare("tile",option+1) == 0)
           {
             Image
@@ -12552,6 +12594,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("tile",option+1) == 0)
           {
             i++;
@@ -12884,6 +12936,7 @@ static void MogrifyUsage(void)
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
+      "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-tile filename       tile image when filling a graphic primitive",
       "-transform           affine transform image",
       "-transparent color   make this color transparent within the image",
@@ -13920,6 +13973,16 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMontageException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("tile",option+1) == 0)
           {
             (void) CloneString(&montage_info->tile,(char *) NULL);
@@ -14184,6 +14247,7 @@ static void MontageUsage(void)
       "-stroke color        color to use when stroking a graphic primitive",
       "-strokewidth value   stroke (line) width",
       "-texture filename    name of texture to tile onto the image background",
+      "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-tile geometry       number of tiles per row and column",
       "-title string        thumbnail title",
       "-transform           affine transform image",
@@ -14969,6 +15033,16 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       }
       case 't':
       {
+        if (LocaleCompare("thumbnail",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickFatalError(OptionFatalError,MissingArgument,option);
+              }
+            break;
+          }
         if (LocaleCompare("transparent",option+1) == 0)
           {
             if (*option == '-')
@@ -15168,6 +15242,7 @@ static void ImportUsage(void)
       "-set attribute value set image attribute",
       "-silent              operate silently, i.e. don't ring any bells ",
       "-snaps value         number of screen snapshots",
+      "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     color tree depth",
       "-trim                trim image edges",

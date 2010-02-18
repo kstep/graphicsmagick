@@ -1,4 +1,4 @@
-.TH gm 1 "2010/02/08" "GraphicsMagick"
+.TH gm 1 "2010/02/18" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3656,6 +3656,17 @@ In order to threshold individual channels, use the \fB-operator\fP
 subcommand with it's \fBThreshold\fP, \fBThreshold-White\fP, or
 \fBThreshold-Black\fP options.
 .TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
+
+The \fB-thumbnail\fP command resizes the image as quickly as
+possible, with more concern for speed than resulting image quality.
+Regardless, resulting image quality should be acceptable for many
+uses.  It is primarily intended to be used to generate smaller
+versions of the image, but may also be used to enlarge the image.  The
+\fB-thumbnail\fP \fBgeometry\fP argument observes the same syntax
+and rules as it does for \fB-resize\fP.
+.TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
 .TP
@@ -4768,6 +4779,9 @@ Options, above.
 .B "-stereo"
 \fRcomposite two images to create a stereo anaglyph
 .TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
+.TP
 .B "-treedepth \fI<value>"\fP
 \fRtree depth for the color reduction algorithm
 .TP
@@ -5841,6 +5855,9 @@ Options, above.
 .TP
 .B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
+.TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
 .TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
@@ -8325,6 +8342,9 @@ Options, above.
 .B "-snaps \fI<value>"\fP
 \fRnumber of screen snapshots
 .TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
+.TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
 .TP
@@ -8735,6 +8755,9 @@ Options, above.
 .B "-threshold \fI<value>{%}"\fP
 \fRthreshold the image
 .TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
+.TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
 .TP
@@ -9069,6 +9092,9 @@ Options, above.
 .TP
 .B "-texture \fI<filename>"\fP
 \fRname of texture to tile onto the image background
+.TP
+.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
+\fRresize an image (quickly)
 .TP
 .B "-tile \fI<geometry>"\fP
 \fRlayout of images [\fImontage\fP]

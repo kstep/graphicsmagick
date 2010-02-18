@@ -685,6 +685,10 @@
 <lopt>-threshold <value>{%}</opt>
 <abs>threshold the image</abs>
 </utils>
+<utils apps=composite,convert,import,mogrify,montage>
+<lopt>-thumbnail <width>x<height>{%}{@}{!}{<}{>}</opt>
+<abs>resize an image (quickly)</abs>
+</utils>
 <utils apps=convert,mogrify>
 <opt>-tile <filename></opt>
 <abs>tile image when filling a graphic primitive</abs>
