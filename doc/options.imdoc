@@ -1820,6 +1820,32 @@ Use <s>+endian</s> to revert to unspecified endianness.</pp>
 
 
 
+<!-- ------------ -extent ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-extent <width>x<height>{+-}<x>{+-}<y></opt>
+
+<abs>composite image on background color canvas image</abs>
+
+<pp>
+This option composites the image on a background color
+(<s>-background</s>) canvas image. The existing image content is
+composited at the position specified by geometry x and y offset and/or
+desired gravity (<s>-gravity</s>) using the current image compose
+(<s>-compose</s>) method.  Image content which falls outside the
+bounds of the new image dimensions is discarded.</pp>
+
+<pp>
+For example, this command creates a thumbnail of an image, and centers
+it on a red color backdrop image:</pp>
+<pre>
+    convert infile.jpg -thumbnail 120x80 -background red -gravity center -extent 140x100 outfile.jpg
+</pre>
+
+</utils>
+
+
+
 <!-- ------------ -file ----------------------------------------- -->
 
 <utils apps=compare>

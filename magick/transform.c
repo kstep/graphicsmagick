@@ -283,6 +283,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     C o a l e s c e I m a g e s                                             %
 %                                                                             %
 %                                                                             %
@@ -573,6 +574,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     D e c o n s t r u c t I m a g e s                                       %
 %                                                                             %
 %                                                                             %
@@ -763,6 +765,85 @@ MagickExport Image *DeconstructImages(const Image *image,
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x t e n t I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Use ExtentImage() to change the image dimensions as specified by geometry
+%  width and hight.  The existing image content is composited at the position
+%  specified by geometry x and y using the image compose method.  Existing
+%  image content which falls outside the bounds of the new image dimensions
+%  is discarded.
+%
+%  The format of the ExtentImage method is:
+%
+%      Image *ExtentImage(const Image *image,const RectangleInfo *geometry,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o geometry: Define the new image dimension with width and height, and
+%        the top left coordinate to place the existing image content with
+%        x and y.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *ExtentImage(const Image *image,const RectangleInfo *geometry,
+				ExceptionInfo *exception)
+{
+  Image
+    *extent_image;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(geometry != (const RectangleInfo *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
+  /*
+    Allocate canvas image
+  */
+  if ((extent_image=CloneImage(image,geometry->width,geometry->height,
+			       MagickTrue,exception)) == (Image *) NULL)
+    return((Image *) NULL);
+
+  /*
+    Set canvas image color to background color
+  */
+  if ((SetImage(extent_image,image->background_color.opacity)) == MagickFail)
+    {
+      CopyException(exception,&extent_image->exception);
+      DestroyImage(extent_image);
+      return((Image *) NULL);
+    }
+
+  /*
+    Composite existing image at position using requested composition
+    operator.
+  */
+  if ((CompositeImage(extent_image,image->compose,image,geometry->x,
+		      geometry->y)) == MagickFail)
+    {
+      CopyException(exception,&extent_image->exception);
+      DestroyImage(extent_image);
+      return((Image *) NULL);
+    }
+
+  return(extent_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %     F l a t t e n I m a g e                                                 %

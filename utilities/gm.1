@@ -1,4 +1,4 @@
-.TH gm 1 "2010/02/18" "GraphicsMagick"
+.TH gm 1 "2010/02/19" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1735,6 +1735,21 @@ Use \fB+endian\fP to revert to unspecified endianness.
 .TP
 .B "-equalize"
 \fRperform histogram equalization to the image
+.TP
+.B "-extent \fI<width>x<height>{+-}<x>{+-}<y>"\fP
+\fRcomposite image on background color canvas image
+
+This option composites the image on a background color
+(\fB-background\fP) canvas image. The existing image content is
+composited at the position specified by geometry x and y offset and/or
+desired gravity (\fB-gravity\fP) using the current image compose
+(\fB-compose\fP) method.  Image content which falls outside the
+bounds of the new image dimensions is discarded.
+
+For example, this command creates a thumbnail of an image, and centers
+it on a red color backdrop image:
+
+    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center -extent 140x100 outfile.jpg
 .TP
 .B "-file \fI<filename>"\fP
 \fRwrite annotated difference image to file
@@ -5610,6 +5625,9 @@ Options, above.
 .B "-equalize"
 \fRperform histogram equalization to the image
 .TP
+.B "-extent \fI<width>x<height>{+-}<x>{+-}<y>"\fP
+\fRcomposite image on background color canvas image
+.TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
 .TP
@@ -8520,6 +8538,9 @@ Options, above.
 .TP
 .B "-equalize"
 \fRperform histogram equalization to the image
+.TP
+.B "-extent \fI<width>x<height>{+-}<x>{+-}<y>"\fP
+\fRcomposite image on background color canvas image
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive

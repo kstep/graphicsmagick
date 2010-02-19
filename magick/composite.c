@@ -1801,6 +1801,8 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 */
 static PixelIteratorDualModifyCallback
 GetCompositionPixelIteratorCallback(const CompositeOperator compose,
+				    const MagickBool canvas_matte,
+				    const MagickBool change_matte,
                                     MagickBool *clear)
 {
   PixelIteratorDualModifyCallback
@@ -1817,7 +1819,10 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       /* Does nothing */
       break;
     case OverCompositeOp:
-      call_back=OverCompositePixels;
+      if (canvas_matte || change_matte)
+	call_back=OverCompositePixels;
+      else
+	call_back=CopyCompositePixels;
       break;
     case InCompositeOp:
       call_back=InCompositePixels;
@@ -1826,7 +1831,10 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       call_back=OutCompositePixels;
       break;
     case AtopCompositeOp:
-      call_back=AtopCompositePixels;
+      if (canvas_matte || change_matte)
+	call_back=AtopCompositePixels;
+      else
+	call_back=CopyCompositePixels;
       break;
     case XorCompositeOp:
       call_back=XorCompositePixels;
@@ -1854,7 +1862,6 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       break;
     case CopyCompositeOp:
       call_back=CopyCompositePixels;
-      clear_flag=MagickTrue;
       break;
     case CopyRedCompositeOp:
       call_back=CopyRedCompositePixels;
@@ -1870,7 +1877,6 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       break;
     case ClearCompositeOp:
       call_back=ClearCompositePixels;
-      clear_flag=MagickTrue;
       break;
     case DissolveCompositeOp:
       call_back=DissolveCompositePixels;
@@ -1930,6 +1936,10 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
         break;
       }
     }
+
+  if ((CopyCompositePixels == call_back) ||
+      (ClearCompositePixels == call_back))
+    clear_flag=MagickTrue;
 
   *clear=clear_flag;
   return call_back;
@@ -2223,7 +2233,10 @@ CompositeImage(Image *canvas_image,
 	rows = Min(canvas_image->rows - canvas_y,
 		   change_image->rows - composite_y);
 
-        call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
+        call_back=GetCompositionPixelIteratorCallback(compose,
+						      canvas_image->matte,
+						      change_image->matte,
+						      &clear_pixels);
         if (call_back != (PixelIteratorDualModifyCallback) NULL)
           {
             const char
@@ -2386,7 +2399,10 @@ CompositeImageRegion(const CompositeOperator compose,
 
   canvas_image->storage_class=DirectClass;
 
-  call_back=GetCompositionPixelIteratorCallback(compose,&clear_pixels);
+  call_back=GetCompositionPixelIteratorCallback(compose,
+						canvas_image->matte,
+						update_image->matte,
+						&clear_pixels);
   if (call_back != (PixelIteratorDualModifyCallback) NULL)
     {
       const char

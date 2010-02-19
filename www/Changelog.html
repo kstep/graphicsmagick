@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2010-02-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (GetCompositionPixelIteratorCallback):
+        OverCompositeOp and AtopCompositeOp may be replaced with
+        CopyCompositeOp in the case where neither image has a matte
+        channel.
+
+  <LI> magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+        Added -extent option to apply a background color canvas behind the
+        image. Added -compose option to allow specifying the composition
+        operator to use.
+
+  <LI> magick/transform.c (ExtentImage): New function apply a
+        background color canvas behind the image.
+
+</UL>
+<p>
 2010-02-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
