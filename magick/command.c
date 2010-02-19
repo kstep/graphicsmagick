@@ -4075,6 +4075,20 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if (i == argc)
+		  ThrowConvertException(OptionError,MissingArgument,option);
+		option=argv[i];
+		if ((StringToCompositeOperator(option)) == UndefinedCompositeOp)
+		  ThrowConvertException(OptionError,UnrecognizedComposeOperator,
+					option);
+	      }
+            break;
+          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             if (*option == '-')
@@ -4330,6 +4344,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("equalize",option+1) == 0)
           break;
+        if (LocaleCompare("extent",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowConvertException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
       }
       case 'f':
@@ -4457,24 +4481,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if (LocaleCompare("NorthWest",option) == 0)
-                  gravity=NorthWestGravity;
-                if (LocaleCompare("North",option) == 0)
-                  gravity=NorthGravity;
-                if (LocaleCompare("NorthEast",option) == 0)
-                  gravity=NorthEastGravity;
-                if (LocaleCompare("West",option) == 0)
-                  gravity=WestGravity;
-                if (LocaleCompare("Center",option) == 0)
-                  gravity=CenterGravity;
-                if (LocaleCompare("East",option) == 0)
-                  gravity=EastGravity;
-                if (LocaleCompare("SouthWest",option) == 0)
-                  gravity=SouthWestGravity;
-                if (LocaleCompare("South",option) == 0)
-                  gravity=SouthGravity;
-                if (LocaleCompare("SouthEast",option) == 0)
-                  gravity=SouthEastGravity;
+		gravity=StringToGravityType(option);
                 if (gravity == ForgetGravity)
                   ThrowConvertException(OptionError,UnrecognizedGravityType,
                     option);
@@ -5636,6 +5643,7 @@ static void ConvertUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
+      "-compose operator    composite operator",
       "-compress type       image compression type",
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
@@ -5657,6 +5665,7 @@ static void ConvertUsage(void)
       "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
+      "-extent              composite image on background color canvas image",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-flatten             flatten a sequence of images",
@@ -8866,6 +8875,28 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) EqualizeImage(*image);
             continue;
           }
+        if (LocaleCompare("extent",option+1) == 0)
+          {
+	    Image
+              *extent_image;
+
+            /*
+              Extent image.
+            */
+            (void) GetImageGeometry(*image,argv[++i],MagickFalse,&geometry);
+            if (geometry.width == 0)
+              geometry.width=(*image)->columns;
+            if (geometry.height == 0)
+              geometry.height=(*image)->rows;
+            geometry.x=(-geometry.x);
+            geometry.y=(-geometry.y);
+            extent_image=ExtentImage(*image,&geometry,&(*image)->exception);
+            if (extent_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=extent_image;
+            continue;
+	  }
         break;
       }
       case 'f':
@@ -9027,25 +9058,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 continue;
               }
             option=argv[++i];
-            gravity=(GravityType) ForgetGravity;
-            if (LocaleCompare("NorthWest",option) == 0)
-              gravity=(GravityType) NorthWestGravity;
-            if (LocaleCompare("North",option) == 0)
-              gravity=(GravityType) NorthGravity;
-            if (LocaleCompare("NorthEast",option) == 0)
-              gravity=(GravityType) NorthEastGravity;
-            if (LocaleCompare("West",option) == 0)
-              gravity=(GravityType) WestGravity;
-            if (LocaleCompare("Center",option) == 0)
-              gravity=(GravityType) CenterGravity;
-            if (LocaleCompare("East",option) == 0)
-              gravity=(GravityType) EastGravity;
-            if (LocaleCompare("SouthWest",option) == 0)
-              gravity=(GravityType) SouthWestGravity;
-            if (LocaleCompare("South",option) == 0)
-              gravity=(GravityType) SouthGravity;
-            if (LocaleCompare("SouthEast",option) == 0)
-              gravity=(GravityType) SouthEastGravity;
+	    gravity=StringToGravityType(option);
             draw_info->gravity=gravity;
             (*image)->gravity=gravity;
             continue;
@@ -11360,6 +11373,20 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+	    if (*option == '-')
+              {
+		i++;
+		if (i == argc)
+		  ThrowMogrifyException(OptionError,MissingArgument,option);
+		option=argv[i];
+		if ((StringToCompositeOperator(option)) == UndefinedCompositeOp)
+		  ThrowMogrifyException(OptionError,UnrecognizedComposeOperator,
+					option);
+	      }
+            break;
+          }
         if (LocaleCompare("compress",option+1) == 0)
           {
             image_info->compression=NoCompression;
@@ -11586,6 +11613,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("equalize",option+1) == 0)
           break;
+       if (LocaleCompare("extent",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,MissingArgument,option);
+              }
+            break;
+          }
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
       case 'f':
@@ -11721,24 +11758,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if (LocaleCompare("NorthWest",option) == 0)
-                  gravity=NorthWestGravity;
-                if (LocaleCompare("North",option) == 0)
-                  gravity=NorthGravity;
-                if (LocaleCompare("NorthEast",option) == 0)
-                  gravity=NorthEastGravity;
-                if (LocaleCompare("West",option) == 0)
-                  gravity=WestGravity;
-                if (LocaleCompare("Center",option) == 0)
-                  gravity=CenterGravity;
-                if (LocaleCompare("East",option) == 0)
-                  gravity=EastGravity;
-                if (LocaleCompare("SouthWest",option) == 0)
-                  gravity=SouthWestGravity;
-                if (LocaleCompare("South",option) == 0)
-                  gravity=SouthGravity;
-                if (LocaleCompare("SouthEast",option) == 0)
-                  gravity=SouthEastGravity;
+		gravity=StringToGravityType(option);
                 if (gravity == ForgetGravity)
                   ThrowMogrifyException(OptionError,UnrecognizedGravityType,
                     option);
@@ -12835,6 +12855,7 @@ static void MogrifyUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
+      "-compose operator    composite operator",
       "-compress type       image compression type",
       "-contrast            enhance or reduce the image contrast",
       "-create-directories  create output directories if required",
@@ -12856,6 +12877,7 @@ static void MogrifyUsage(void)
       "-endian type         multibyte word order (LSB, MSB, or Native)",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
+      "-extent              composite image on background color canvas image",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",

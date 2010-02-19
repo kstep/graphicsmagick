@@ -216,6 +216,10 @@
 <opt>-equalize</opt>
 <abs>perform histogram equalization to the image</abs>
 </utils>
+<utils apps=convert,mogrify>
+<lopt>-extent <width>x<height>{+-}<x>{+-}<y></opt>
+<abs>composite image on background color canvas image</abs>
+</utils>
 <utils apps=compare>
 <lopt>-file <filename></opt>
 <abs>write annotated difference image to file</abs>

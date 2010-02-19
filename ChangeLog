@@ -1,3 +1,18 @@
+2010-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (GetCompositionPixelIteratorCallback):
+	OverCompositeOp and AtopCompositeOp may be replaced with
+	CopyCompositeOp in the case where neither image has a matte
+	channel.
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+	Added -extent option to apply a background color canvas behind the
+	image. Added -compose option to allow specifying the composition
+	operator to use.
+
+	* magick/transform.c (ExtentImage): New function apply a
+	background color canvas behind the image.
+
 2010-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Added a -thumbnail command to all of the GM
