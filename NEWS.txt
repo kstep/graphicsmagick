@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 10, 2010
+This file was last updated on February 21, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -18,6 +18,10 @@ ChangeLog file for full details.
 ======================
 
 Security Fixes:
+
+  * Fixed array underflow on systems using signed char which could
+    result in a program crash due to extended characters in filenames
+    or in certain file formats.
 
   * Fix for CVE-2009-1882 "Integer overflow in the XMakeImage
     function".
@@ -35,6 +39,10 @@ Security Fixes:
     polygons.
 
 Bug fixes:
+
+  * Fixed array underflow on systems using signed char which could
+    result in a program crash due to extended characters in filenames
+    or in certain file formats.
 
   * When drawing paths, memory allocation for the points was much
     larger than it needed to be (patch by Vladimir Lukianov).
@@ -231,6 +239,17 @@ Bug fixes:
     was applied.
 
 New Features:
+
+  * Added a -thumbnail command to 'convert' and 'mogrify'.  This is a
+    faster way to scale down the image when speed is a primary
+    concern.
+
+  * Added a -extent command to 'convert' and 'mogrify' which
+    composites the image on top of a backing canvas image of solid
+    color.
+
+  * Added support for -compose to the 'convert' and 'mogrify', which
+    were documented to support it (but did not).
 
   * CALS Type 1 files may now be written (Work contributed by John
     Sergeant).  CALS support is dependent on the TIFF library.
@@ -456,6 +475,10 @@ Feature improvements:
     files.
 
 Performance Improvements:
+
+  * Requests for 'Over' and 'Atop' composition are converted to a
+    request for the (faster) 'Copy' composition when both images are
+    opaque.
 
   * Gamma: Performance is improved for Q8 and Q16 builds.  Also
     preserve full precision in Q32 build.

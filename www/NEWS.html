@@ -53,7 +53,7 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on February 10, 2010</p>
+<p>This file was last updated on February 21, 2010</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -71,6 +71,9 @@ ChangeLog file for full details.</p>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
+<li>Fixed array underflow on systems using signed char which could
+result in a program crash due to extended characters in filenames
+or in certain file formats.</li>
 <li>Fix for CVE-2009-1882 &quot;Integer overflow in the XMakeImage
 function&quot;.</li>
 <li>Fix lockup due to hanging in loop while parsing malformed
@@ -86,6 +89,9 @@ polygons.</li>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
+<li>Fixed array underflow on systems using signed char which could
+result in a program crash due to extended characters in filenames
+or in certain file formats.</li>
 <li>When drawing paths, memory allocation for the points was much
 larger than it needed to be (patch by Vladimir Lukianov).</li>
 <li>Fix &quot;double free&quot; error when using gm import -frame.</li>
@@ -218,6 +224,14 @@ was applied.</li>
 <p>New Features:</p>
 <blockquote>
 <ul class="simple">
+<li>Added a -thumbnail command to 'convert' and 'mogrify'.  This is a
+faster way to scale down the image when speed is a primary
+concern.</li>
+<li>Added a -extent command to 'convert' and 'mogrify' which
+composites the image on top of a backing canvas image of solid
+color.</li>
+<li>Added support for -compose to the 'convert' and 'mogrify', which
+were documented to support it (but did not).</li>
 <li>CALS Type 1 files may now be written (Work contributed by John
 Sergeant).  CALS support is dependent on the TIFF library.</li>
 <li>GROUP4RAW encoder supports reading/writing RAW Group4 data.</li>
@@ -381,6 +395,9 @@ files.</li>
 <p>Performance Improvements:</p>
 <blockquote>
 <ul class="simple">
+<li>Requests for 'Over' and 'Atop' composition are converted to a
+request for the (faster) 'Copy' composition when both images are
+opaque.</li>
 <li>Gamma: Performance is improved for Q8 and Q16 builds.  Also
 preserve full precision in Q32 build.</li>
 <li>String data is dealt with a bit more efficiently (fewer
@@ -1313,7 +1330,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-10 21:27 UTC.
+Generated on: 2010-02-21 20:54 UTC.
 
 </div>
 </body>
