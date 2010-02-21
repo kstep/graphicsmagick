@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 10, 2010
+This file was last updated on February 21, 2010
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,48 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.11 (February 21, 2010)
+==========================
+
+Security Fixes:
+
+  * Fixed array underflow on systems using signed char which could
+    result in a program crash due to extended characters in filenames
+    or in certain file formats.
+
+Bug fixes:
+
+  * Fixed array underflow on systems using signed char which could
+    result in a program crash due to extended characters in filenames
+    or in certain file formats.
+
+New Features:
+
+  * Added a -thumbnail command to 'convert' and 'mogrify'.  This is a
+    faster way to scale down the image when speed is a primary
+    concern.
+
+  * Added a -extent command to 'convert' and 'mogrify' which
+    composites the image on top of a backing canvas image of solid
+    color.
+
+  * Added support for -compose to the 'convert' and 'mogrify', which
+    were documented to support it (but did not).
+
+Feature improvements:
+
+  * None
+
+Performance Improvements:
+
+  * Requests for 'Over' and 'Atop' composition are converted to a
+    request for the (faster) 'Copy' composition when both images are
+    opaque.
+
+Behavior Changes:
+
+  * None
 
 1.3.10 (February 10, 2010)
 ==========================

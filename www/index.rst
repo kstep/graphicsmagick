@@ -24,7 +24,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  =================================================
-Current Stable Branch:       1.3.10__ (Released February 10, 2010) download__
+Current Stable Branch:       1.3.11__ (Released February 21, 2010) download__
 Old Stable Branch:           1.2.10__ (Released January 6, 2010) download__
 ===========================  =================================================
 
@@ -47,8 +47,8 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 
 GraphicsMagick is the swiss army knife of image processing. Comprised
-of 259K physical lines (according to David A. Wheeler's `SLOCCount`_)
-of source code in the base package (or 900K including 3rd party
+of 282K physical lines (according to David A. Wheeler's `SLOCCount`_)
+of source code in the base package (or 952K including 3rd party
 libraries) it provides a robust and efficient collection of tools and
 libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
@@ -63,8 +63,7 @@ GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
 GraphicsMagick is available for virtually any Unix or Unix-like system,
 including Linux. It also runs under `Windows <INSTALL-windows.html>`_
-2000 and later (Windows 2000, XP, and Vista), and MacOS-X. The source
-code still supports execution under Windows '98.
+2000 and later (Windows 2000, XP, and Vista), and MacOS-X.
 
 GraphicsMagick supports huge images and has been tested with
 gigapixel-size images. GraphicsMagick can create new images on the
@@ -87,7 +86,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is much more efficient (see the `benchmarks`_) so it gets the job
     done faster using fewer resources.
 
-  * GM is much smaller and tighter.
+  * GM is much smaller and tighter (3-5X smaller installation footprint).
 
   * GM is used to process billions of files at the world's largest photo
     sites (e.g. `Flickr`_, see `John Allspaw's presentation`_).
