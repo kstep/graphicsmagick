@@ -1,3 +1,15 @@
+2010-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/static.h: DCRAW module registration function prototypes
+	were missing.
+
+	* coders/jp2.c (RegisterJP2Image): entry->module needs to be
+	assigned an allocated string rather than a static string.  This
+	was causing a crash under FreeBSD.
+
+	* magick/resize.c (HorizontalFilter, VerticalFilter): Stop GCC
+	warnings if OpenMP is not supported.
+
 2010-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: GraphicsMagick 1.2.10 released.

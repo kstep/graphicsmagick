@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2010-02-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/static.h: DCRAW module registration function prototypes
+        were missing.
+
+  <LI> coders/jp2.c (RegisterJP2Image): entry-&gt;module needs to be
+        assigned an allocated string rather than a static string.  This
+        was causing a crash under FreeBSD.
+
+  <LI> magick/resize.c (HorizontalFilter, VerticalFilter): Stop GCC
+        warnings if OpenMP is not supported.
+
+</UL>
+<p>
 2010-01-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -913,7 +913,9 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
       break;
     source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
-#pragma omp parallel for private(i)
+#if defined(_OPENMP)
+#  pragma omp parallel for private(i)
+#endif
     for (y=0; y < (long) destination->rows; y++)
     {
       double
@@ -1073,7 +1075,9 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
       break;
     source_indexes=GetIndexes(source);
     indexes=GetIndexes(destination);
-#pragma omp parallel for private(i)
+#if defined(_OPENMP)
+#  pragma omp parallel for private(i)
+#endif
     for (x=0; x < (long) destination->columns; x++)
     {
       double
