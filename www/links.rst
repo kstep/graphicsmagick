@@ -93,6 +93,42 @@ A standard default color space for the Internet.
 `High Dynamic Range Image Encodings <http://www.anyhere.com/gward/hdrenc/hdr_encodings.html>`_,
 an analysis by Greg Ward of various HDR encodings.
 
+Gamma Related Topics
+======================================
+
+While most computer images are encoded with a gamma of 2.2 (really 2.2
+to 2.6), GraphicsMagick does not attempt to convert images to
+linear-light before applying image processing operations since it is
+not possible to know for sure to know how to do so.  Some algorithms
+such as resize, blur, and composition, will produce more accurate
+results when performed on images encoded in a linear-light scaled
+space.
+
+For a typical sRGB image encoded in a gamma-corrected space with gamma
+2.2, the option ``-gamma 0.45`` (1/2.2 = 0.45) will remove that
+encoding for subsequent algorithms so that they are done in
+linear-light space.  When processing is completed, then ``-gamma 2.2``
+will restore gamma-correction for viewing.  It is recommended to use a
+Q16 or Q32 build of GraphicsMagick when doing this since linear-light
+space encoding is not efficient and will lose accuracy if stored with
+less than 14 bits per sample.
+
+The following documents and pages provide interesting information on
+gamma-related topics:
+
+`Charles Poynton's Gamma FAQ <http://www.poynton.com/GammaFAQ.html>`_,
+provides an excellent description of what gamma is, why it is good,
+and when you don't want it.
+
+`Interpolation and Gamma Correction
+<http://www.all-in-one.ee/~dersch/gamma/gamma.html>`_, provides a
+discussion of how affine transforms on gamma-corrected images can
+cause distortion.
+
+`Gamma error in picture scaling
+<http://www.4p8.com/eric.brasseur/gamma.html>`_, provides a discussion
+of how image resize on gamma-corrected images can cause distortion.
+
 
 TIFF Related Topics
 ============================
