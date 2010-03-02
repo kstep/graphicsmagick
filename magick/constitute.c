@@ -8231,7 +8231,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   /*
     Obtain file magick from filename
   */
-  (void) SetImageInfo(clone_info,MagickFalse,exception);
+  (void) SetImageInfo(clone_info,SETMAGICK_READ,exception);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                         "Magick=%s, Filename=%s", clone_info->magick,clone_info->filename);
   (void) strlcpy(filename,clone_info->filename,MaxTextExtent);
@@ -8413,7 +8413,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageList(image);
       image=(Image *) NULL;
       clone_info->temporary=True;
-      (void) SetImageInfo(clone_info,MagickFalse,exception);
+      (void) SetImageInfo(clone_info,SETMAGICK_READ,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
       /*
         If there is no magick info entry for this format, or there is
@@ -8852,7 +8852,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->filename,image->filename,MaxTextExtent);
   (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);
-  (void) SetImageInfo(clone_info,MagickFalse,&image->exception);
+  (void) SetImageInfo(clone_info,SETMAGICK_WRITE,&image->exception);
   (void) strlcpy(image->filename,clone_info->filename,MaxTextExtent);
   image->dither=image_info->dither;
 
@@ -8931,15 +8931,19 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 
       if (!magick_info->thread_support)
         LockSemaphoreInfo(constitute_semaphore);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			    "Invoking \"%.1024s\" encoder (%.1024s): "
-			    "monochrome=%s grayscale=%s class=%s colorspace=%s",
-                            magick_info->name,
-                            magick_info->description,
-                            MagickBoolToString(image->is_monochrome),
-                            MagickBoolToString(image->is_grayscale),
-                            ClassTypeToString(image->storage_class),
-                            ColorspaceTypeToString(image->colorspace));
+      if (image->logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "Invoking \"%.1024s\" encoder (%.1024s): "
+			      "adjoin=%s type=%s monochrome=%s grayscale=%s "
+			      "class=%s colorspace=%s",
+			      magick_info->name,
+			      magick_info->description,
+			      MagickBoolToString(clone_info->adjoin),
+			      ImageTypeToString(clone_info->type),
+			      MagickBoolToString(image->is_monochrome),
+			      MagickBoolToString(image->is_grayscale),
+			      ClassTypeToString(image->storage_class),
+			      ColorspaceTypeToString(image->colorspace));
       status=(magick_info->encoder)(clone_info,image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			    "Returned from \"%.1024s\" encoder",magick_info->name);
@@ -9040,7 +9044,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 %
 */
 MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image,
-  const char *filename,ExceptionInfo *exception)
+					const char *filename,ExceptionInfo *exception)
 {
   ImageInfo
     *clone_info;
@@ -9073,9 +9077,12 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
               if (strlcpy(p->filename,filename,MaxTextExtent) >= MaxTextExtent)
                 status &= MagickFail;
         }
-      (void) SetImageInfo(clone_info,MagickFalse,exception);
+      (void) SetImageInfo(clone_info,
+			  (SETMAGICK_WRITE |
+			   (!clone_info->adjoin ? SETMAGICK_RECTIFY : 0U)),
+			  exception);
       for (p=image; p != (Image *) NULL; p=p->next)
-        {          
+        {
           status &= WriteImage(clone_info,p);
           if(p->exception.severity > exception->severity)
             CopyException(exception,&p->exception);

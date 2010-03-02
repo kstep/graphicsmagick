@@ -526,7 +526,7 @@ static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
             (void) strcpy(p->filename, filename);
             p->scene=scene++;
           }
-          SetImageInfo(clone_info,MagickTrue,&image->exception);
+          SetImageInfo(clone_info,SETMAGICK_WRITE,&image->exception);
           (void) strcpy(image->magick,clone_info->magick);
           GetExceptionInfo(&exception);
           if (*blob_length == 0)

@@ -859,3 +859,11 @@
 
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 #endif /* defined(_MAGICK_SYMBOLS_H) */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

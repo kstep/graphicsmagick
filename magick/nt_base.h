@@ -342,3 +342,11 @@ extern MagickExport long
 #endif /* !C++ */
 
 #endif /* !_MAGICK_NTBASE_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

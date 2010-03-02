@@ -42,3 +42,11 @@ extern MagickExport MagickPassFail
 #endif
 
 #endif /* _MAGICK_CHANNEL_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

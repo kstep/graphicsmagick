@@ -67,7 +67,7 @@ Color Technology Related Topics
 Charles Poynton's `Color technology FAQs <http://www.poynton.com/Poynton-color.html>`_,
 very useful documentation on color technologies.
 
-Richard Kirk's excellent `Standard Colour Spaces (FL-TL-TN-0282-StdColourSpaces.pdf) <http://www.filmlight.ltd.uk/services_support/library/truelight>`_ at `FilmLite <http://www.filmlight.ltd.uk/>`_.
+Richard Kirk's excellent `Standard Colour Spaces (FL-TL-TN-0282-StdColourSpaces.pdf) <http://www.filmlight.ltd.uk/services_support/library/truelight>`_ at `FilmLight <http://www.filmlight.ltd.uk/>`_.
 
 `Computer Graphics Colorspace <http://cs.fit.edu/~wds/classes/cse5255/cse5255/davis/>`_,
 tutorials (with figures) describing the operation of common colorspaces.

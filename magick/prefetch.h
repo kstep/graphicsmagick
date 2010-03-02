@@ -60,3 +60,11 @@
 #endif
 
 #endif /* _MAGICK_PREFETCH_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

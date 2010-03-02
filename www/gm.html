@@ -2433,14 +2433,15 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-fuzz"></a>-fuzz <i>&lt;distance&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this distance are considered equal</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this Euclidean distance are considered equal</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 A number of algorithms search for a target color. By default the color
-must be exact. Use this option to match colors that are close to the target
-color in RGB space. For example, if you want to automatically trim the
-edges of an image with <strong>-trim</strong> but the image was scanned and the
-target background color may differ by a small amount. This option can account
-for these differences.</font></td></tr></table>
+must be exact. Use this option to match colors that are close (in
+Euclidean distance) to the target color in RGB 3D space. For example,
+if you want to automatically trim the edges of an image with
+<strong>-trim</strong> but the image was scanned and the target background color
+may differ by a small amount. This option can account for these
+differences.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <em>distance</em> can be in absolute intensity units or, by appending
 <em>"%"</em>, as a percentage of the maximum possible intensity (255,
@@ -3390,10 +3391,12 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>change this color to the pen color within the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The color is specified using the format described under the <strong>-fill</strong>
-option.</font></td></tr></table>
+The color is specified using the format described under the
+<strong>-fill</strong> option.  The color is replaced if it is identical to the
+target color, or close enough to the target color in a 3D space as
+defined by the Euclidean distance specified by <strong>-fuzz</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-See <strong>-fill</strong> for more details.</font></td></tr></table>
+See <strong>-fill</strong> and <strong>-fuzz</strong> for more details.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8361,7 +8364,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-fuzz">-fuzz</a> <i>&lt;distance&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this distance are considered equal</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this Euclidean distance are considered equal</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14302,7 +14305,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-fuzz">-fuzz</a> <i>&lt;distance&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this distance are considered equal</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this Euclidean distance are considered equal</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

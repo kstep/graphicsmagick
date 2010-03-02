@@ -1,3 +1,29 @@
+2010-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile_DCX_*.sh: Add tests for reading and writing DCX.
+
+	* coders/pcx.c (WritePCXImage): DCX is not the same as PCX so only
+	write DCX when requested to (and vice-versa).
+
+	* utilities/tests/convert-pipe-out.sh: New test to verify that
+	'convert' can write to stdout.
+
+	* utilities/tests/convert-pipe-in.sh: New test to verify that
+	'convert' can read from stdin.
+
+	* utilities/tests/convert-pipe-filter.sh: New test to verify that
+	'convert' works properly as a filter.
+
+	* magick/image.c (SetImageInfo): The 'rectify' parameter was found
+	to not be sufficient to meet requirements since it was
+	overloaded. The utilities would malfunction (hang or throw an
+	exception) if requested to write to stdout.  As a result, this
+	parameter has been changed to a binary flag type parameter.
+	Existing True/False values are mapped to equivalents using the new
+	binary flag.  This is intended to resolve Debian bug 571719
+	"graphicsmagick: "convert" command is broken", reported by
+	Vladimir Stavrinov.
+
 2010-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c (GetCompositionPixelIteratorCallback):

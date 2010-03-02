@@ -68,6 +68,9 @@ UTILITIES_TESTS = \
 	utilities/tests/charcoal.sh \
 	utilities/tests/composite.sh \
 	utilities/tests/contrast.sh \
+	utilities/tests/convert-pipe-filter.sh \
+	utilities/tests/convert-pipe-in.sh \
+	utilities/tests/convert-pipe-out.sh \
 	utilities/tests/convolve.sh \
 	utilities/tests/crop.sh \
 	utilities/tests/despeckle.sh \

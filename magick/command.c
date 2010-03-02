@@ -1835,7 +1835,7 @@ CompareImageCommand(ImageInfo *image_info,
   filename=(char *) NULL;
   compare_image=NewImageList();
   (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,exception);
+  (void) SetImageInfo(image_info,SETMAGICK_WRITE,exception);
 
   status=True;
   /*
@@ -2663,7 +2663,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   option_info.geometry=(char *) NULL;
   image=NewImageList();
   (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,exception);
+  (void) SetImageInfo(image_info,SETMAGICK_WRITE,exception);
   mask_image=NewImageList();
   option_info.stegano=0;
   option_info.stereo=False;
@@ -3833,7 +3833,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   image=NewImageList();
   image_list=(Image *) NULL;
   (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,exception);
+  (void) SetImageInfo(image_info,SETMAGICK_WRITE,exception);
   ping=False;
   option=(char *) NULL;
   status=True;
@@ -6372,7 +6372,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 */
                 (void) strlcpy(image->filename,resource_info.write_filename,
                   MaxTextExtent);
-                (void) SetImageInfo(image_info,MagickFalse,&image->exception);
+                (void) SetImageInfo(image_info,SETMAGICK_WRITE,&image->exception);
                 status&=WriteImage(image_info,image);
                 (void) CatchImageException(image);
               }
@@ -11686,7 +11686,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 (void) CloneString(&format,argv[i]);
                 (void) strlcpy(image_info->filename,format,MaxTextExtent);
                 (void) strcat(image_info->filename,":");
-                (void) SetImageInfo(image_info,MagickFalse,exception);
+                (void) SetImageInfo(image_info,SETMAGICK_WRITE,exception);
                 if (*image_info->magick == '\0')
                   ThrowMogrifyException(OptionError,UnrecognizedImageFormat,format);
               }
@@ -13124,7 +13124,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       (char *) NULL);
 
   (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,exception);
+  (void) SetImageInfo(image_info,SETMAGICK_WRITE,exception);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;

@@ -104,3 +104,11 @@ typedef struct _MagickRandomKernel
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 #endif /* ifndef _MAGICK_RANDOM_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

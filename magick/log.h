@@ -104,3 +104,11 @@ extern MagickPassFail
 #endif
 
 #endif /* _MAGICK_LOG_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

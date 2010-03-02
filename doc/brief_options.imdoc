@@ -270,7 +270,7 @@
 </utils>
 <utils apps=convert,mogrify>
 <lopt>-fuzz <distance>{%}</opt>
-<abs>colors within this distance are considered equal</abs>
+<abs>colors within this Euclidean distance are considered equal</abs>
 </utils>
 <utils apps=animate,convert,display,mogrify,montage>
 <lopt>-gamma <value></opt>

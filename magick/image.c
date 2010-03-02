@@ -2038,27 +2038,72 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageInfo() initializes the `magick' field of the ImageInfo structure.
-%  It is set to a type of image format based on the prefix or suffix of the
-%  filename.  For example, `ps:image' returns PS indicating a Postscript image.
-%  JPEG is returned for this filename: `image.jpg'.  The filename prefix has
-%  precendence over the suffix.  Use an optional index enclosed in brackets
-%  after a file name to specify a desired subimage of a multi-resolution image
-%  format like Photo CD (e.g. img0001.pcd[4]).  A True (non-zero) return value
-%  indicates success.
+%  SetImageInfo() inspects the filename field of the ImageInfo
+%  structure.  Based on what it finds, it may update the `affirm',
+%  `filename', `magick', `subimage', `subrange', `temporary', and
+%  `tile' fields in the ImageInfo structure, and may even allocate a
+%  temporary file. This is a powerful, mysterious, and anchient
+%  function which supports the many special features associated with
+%  input and output file specifications, and is intended for use only
+%  within GraphicsMagick code.
+%
+%  If the file will be read and the file specification includes an
+%  index enclosed in brackets after the file name and the file exists,
+%  then it is assumed to specify a subimage of a multi-resolution image
+%  format like Photo CD (e.g.  img0001.pcd[4]).  The `tile' `subimage',
+%  and `subrange' fields will be updated.  The filename specification
+%  is then truncated to remove the subimage specification.
+%
+%  The filename is inspected for an image format prefix. For example,
+%  `ps:image' returns PS indicating a Postscript image.  If a format
+%  prefix was found, then `filename' is updated to remove it.  The
+%  `magick' field is set to the specified format and the `affirm' field
+%  is set to indicate an explicit user request for the format (which
+%  will not be overridden).
+%
+%  If the format is not yet known, the filename is inspected for an
+%  image format extension.  If format support exists for this
+%  extension, then the official format designator for that format is
+%  written into the `magick' field. For example, "JPEG" is set in the
+%  `magick' field for the filename: `image.jpg'. Some file extensions
+%  are intentionally ignored due to potential confusion or security
+%  issues.  The file extension is used as a strong hint of the file
+%  format but is not authoritative.
+%
+%  If the file will be read, then its content is inspected for its
+%  type.  If the input is not seekable, then its content is copied to a
+%  temporary file, `filename` is updated with the name of the temporary
+%  file, and `temporary' is set to true so that the temporary file may
+%  be automatically deleted later.  The `magick' field is updated if
+%  file header matches a known type.
+%
+%  If rectify mode is requested, then the file specification is
+%  inspected to see if it has a scene specifier (e.g. "foo-%02d.bar")
+%  and if it does, then the 'adjoin' flag in ImageInfo is set to
+%  MagickFalse.
+%
+%  If the file is to be written, and `adjoin' is currently true, then
+%  the responsible coder is queried to see if it supports adjoin
+%  (multiple frames per file) mode.  If it does not, then the 'adjoin'
+%  flag is cleared.
+%
+%  MagickFail is returned if an error is encountered.
 %
 %  The format of the SetImageInfo method is:
 %
-%      unsigned int SetImageInfo(ImageInfo *image_info,
-%        const unsigned int rectify,ExceptionInfo *exception)
+%      MagickPassFail SetImageInfo(ImageInfo *image_info,
+%        const unsigned int flags,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info..
 %
-%    o rectify: an unsigned value other than zero rectifies the attribute for
-%      multi-frame support (user may want multi-frame but image format may not
-%      support it).
+%    o flags: Flag options based on an OR of SETMAGICK_READ, SETMAGICK_WRITE,
+%        and SETMAGICK_RECTIFY. SETMAGICK_READ indicates that the file is to
+%        be read, SETMAGICK_WRITE indicates that the the file will be written,
+%        and SETMAGICK_RECTIFY indicates that the file specification should be
+%        inspected for an embedded scene specification, and adjust the 'ajoin'
+%        accordingly.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -2212,7 +2257,7 @@ ParseSubImageSpecification(char *filename,
 }
 
 MagickExport MagickPassFail
-SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
+SetImageInfo(ImageInfo *image_info,const unsigned int flags,
 	     ExceptionInfo *exception)
 {
   static const char
@@ -2252,36 +2297,58 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
   size_t
     magick_length;
 
+  unsigned int
+    lflags;
+
   unsigned char
     magick[2*MaxTextExtent];
 
   MagickPassFail
     status=MagickPass;
 
-  /*
-    Look for 'image.format' in filename.
-  */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
 
-  *magic='\0';
-  p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
   /*
-    Sometimes the provided argument is a real file and we need to
-    account for that.  If it is not a real file and the argument ends
-    with ']' then the trailing part is likely a sub-image or size
-    specification.
+    Ensure backward compatiblity with previous flags which used
+    True/False logic.
   */
-  if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
+  lflags=flags;
+  if (MagickFalse == flags)
+    lflags=SETMAGICK_WRITE;
+  else if (MagickTrue == flags)
+    lflags=(SETMAGICK_WRITE | SETMAGICK_RECTIFY);
+
+#if 0
+  fprintf(stderr,"SetImageInfo \"%s\" Read=%d Write=%d Rectify=%d\n",
+	  image_info->filename,
+	  ((lflags & SETMAGICK_READ) > 0),
+	  ((lflags & SETMAGICK_WRITE) > 0),
+	  ((lflags & SETMAGICK_RECTIFY) > 0));
+#endif
+
+  *magic='\0';
+
+  if (lflags & SETMAGICK_READ)
     {
       /*
-        Look for sub-image specification (e.g. img0001.pcd[4]).
+	Look for sub-image specification (e.g. img0001.pcd[4]).
       */
-      (void) ParseSubImageSpecification(image_info->filename,
-					&image_info->tile,
-					&image_info->subimage,
-					&image_info->subrange,
-					exception);
+      p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
+      /*
+	Sometimes the provided argument is a real file and we need to
+	account for that.  If it is not a real file and the argument ends
+	with ']' then the trailing part is likely a sub-image or size
+	specification.
+      */
+      if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
+	{
+	  (void) ParseSubImageSpecification(image_info->filename,
+					    &image_info->tile,
+					    &image_info->subimage,
+					    &image_info->subrange,
+					    exception);
+	}
     }
 
   /*
@@ -2412,7 +2479,7 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
         }
     }
 
-  if (rectify)
+  if (lflags & SETMAGICK_RECTIFY)
     {
       /*
         Test for multiple image support in file filename template. In
@@ -2423,66 +2490,73 @@ SetImageInfo(ImageInfo *image_info,const MagickBool rectify,
 	  (MagickSceneFileName(filename,image_info->filename,".%lu",
 			       MagickFalse,0)))
         image_info->adjoin=MagickFalse;
-
-      magick_info=GetMagickInfo(magic,exception);
-      if (magick_info != (const MagickInfo *) NULL)
-        image_info->adjoin&=magick_info->adjoin;
-
-      return(MagickTrue);
+    }
+  if (lflags & SETMAGICK_WRITE)
+    {
+      if (image_info->adjoin)
+	{
+	  magick_info=GetMagickInfo(magic,exception);
+	  if (magick_info != (const MagickInfo *) NULL)
+	    image_info->adjoin&=magick_info->adjoin;
+	}
     }
   if (image_info->affirm)
-    return(MagickTrue);
-  /*
-    Determine the image format from the first few bytes of the file.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return(MagickFalse);
-  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == MagickFail)
-    {
-      DestroyImage(image);
-      return(MagickFail);
-    }
-  if (!BlobIsSeekable(image))
+    return(MagickPass);
+  if (lflags & SETMAGICK_READ)
     {
       /*
-        Copy standard input or pipe to temporary file.
+	Determine the file format from the first few bytes of the
+	file.
       */
-      if(!AcquireTemporaryFileName(filename))
-        {
-          CloseBlob(image);
-          DestroyImage(image);
-          return(False);
-        }
-      (void) ImageToFile(image,filename,exception);
-      CloseBlob(image);
-      (void) strcpy(image->filename,filename);
+      image=AllocateImage(image_info);
+      if (image == (Image *) NULL)
+	return(MagickFail);
+      (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == MagickFail)
-        {
-          DestroyImage(image);
-          return(MagickFail);
-        }
-      (void) strcpy(image_info->filename,filename);
-      image_info->temporary=MagickTrue;
+	{
+	  DestroyImage(image);
+	  return(MagickFail);
+	}
+      if (!BlobIsSeekable(image))
+	{
+	  /*
+	    Copy standard input or pipe to temporary file.
+	  */
+	  if(!AcquireTemporaryFileName(filename))
+	    {
+	      CloseBlob(image);
+	      DestroyImage(image);
+	      return(MagickFail);
+	    }
+	  (void) ImageToFile(image,filename,exception);
+	  CloseBlob(image);
+	  (void) strcpy(image->filename,filename);
+	  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+	  if (status == MagickFail)
+	    {
+	      DestroyImage(image);
+	      return(MagickFail);
+	    }
+	  (void) strcpy(image_info->filename,filename);
+	  image_info->temporary=MagickTrue;
+	}
+      magick[0]='\0';
+      magick_length = ReadBlob(image,2*MaxTextExtent,magick);
+      CloseBlob(image);
+      DestroyImage(image);
+      /*
+	Check format using magic.mgk configuration file.  Use of an
+	external config file is absolutely necessary when using loadable
+	modules since otherwise the code necessary to perform the test
+	might not be available yet.
+      */
+      if (GetMagickFileFormat(magick,magick_length,image_info->magick,
+			      MaxTextExtent,exception))
+	return(MagickPass);
     }
-  magick[0]='\0';
-  magick_length = ReadBlob(image,2*MaxTextExtent,magick);
-  CloseBlob(image);
-  DestroyImage(image);
-  /*
-    Check format using magic.mgk configuration file.  Use of an
-    external config file is absolutely necessary when using loadable
-    modules since otherwise the code necessary to perform the test
-    might not be available yet.
-  */
-  if (GetMagickFileFormat(magick,magick_length,image_info->magick,
-                          MaxTextExtent,exception))
-    return(MagickPass);
 
-  return(MagickFail);
+  return(MagickPass);
 }
 
 /*

@@ -128,3 +128,11 @@ extern WandExport size_t
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #endif /* _MAGICK_COMPAT_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */
