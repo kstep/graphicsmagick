@@ -1,4 +1,4 @@
-2010-03-03  Glenn Randers-Pehrson  <gblennrp@simple.dallas.tx.us>
+2010-03-03  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: restored missing "US" in PNG_USER_CHUNK_CACHE_MAX
         at line 102.  Added some (unsigned long) typecasts on print statements
