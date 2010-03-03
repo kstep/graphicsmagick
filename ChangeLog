@@ -1,3 +1,8 @@
+2010-03-03  Glenn Randers-Pehrson  <gblennrp@simple.dallas.tx.us>
+
+	* coders/png.c: restored missing "US" in PNG_USER_CHUNK_CACHE_MAX
+        at line 102.
+
 2010-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Updated libpng to 1.2.43.  Resolves CVE-2010-0205 as

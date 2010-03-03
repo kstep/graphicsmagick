@@ -99,7 +99,7 @@
    /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
     * Just don't use libpng-1.4.0beta32-34 or beta67-73
     */
-#  ifndef  PNG_ER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
+#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
 #    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
 #  endif
 #  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
