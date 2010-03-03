@@ -88,15 +88,13 @@ EXT       :ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick
 PSERVER   :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick
 ========  ===========================================================
 
-
 To specify the cvs root directly on the command line::
 
   cvs -d :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick command args...
 
-Or to set as an environment variable::
+Or to set as an environment variable (sh/ksh/bash syntax)::
 
   export CVSROOT=:ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick
-  setenv CVSROOT :ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick
 
 When using the PSERVER protocol, a CVS login is needed prior to checking out the
 sources::
@@ -104,8 +102,15 @@ sources::
   cvs login
 
 This will ask you for a password. The password is anonymous. Enter it and press
-Return. The EXT protocol does not currently require a password when used for
-anonymous access.
+Return.
+
+The EXT protocol does not currently require a password when used for
+anonymous access.  The EXT protocol requires that CVS use 'ssh' as the
+connection protocol.  If your CVS does not do this by default (some
+use the old insecure 'rsh'), then set the CVS_RSH environment variable
+to 'ssh' (sh/ksh/bash syntax)::
+
+  export CVS_RSH=ssh
 
 The CVS program supports a configuration file (``$HOME/.cvsrc``). Many command
 options used in the remaining instructions may be set as defaults (so they don't

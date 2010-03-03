@@ -17,7 +17,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib cgm hpgl jbig jng jp2 jpeg lcms mpeg png ps rad tiff ttf wmf x xfig zlib/) {
+foreach $delegate (qw/ bzlib jbig jng jp2 jpeg lcms png ps tiff ttf wmf x xfig zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }
@@ -43,25 +43,31 @@ WriteMakefile
    'DEFINE'	=> ' -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES=1  -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/local/include/libxml2',
+   'INC'	=> '-I../ -I/home/bfriesen/src/graphics/GraphicsMagick-head -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/include/libxml2',
+
+   # C compiler
+   'CC'	        => 'gcc-4.4.3 -std=gnu99',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS'    => "$Config{'cppflags'} -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/local/include/libxml2",
+   # 'CPPFLAGS'    => "$Config{'cppflags'} -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/openwin/include/X11 -I/usr/include/libxml2",
 
    # C compiler flags (e.g. -O -g)
-   'CCFLAGS'     => "$Config{'ccflags'} -fopenmp -O2 -Wall -D_REENTRANT -pthreads",
+   'CCFLAGS'     => "$Config{'ccflags'} -fopenmp -march=opteron-sse3 -O2 -g -Wall -Winline -W -Wformat-security -Wpointer-arith -Wdisabled-optimization -Wmissing-noreturn -Wno-unknown-pragmas -Wall -D_REENTRANT -pthreads",
+
+   # Linker
+   'LD'          => $Config{'ld'} == $Config{'cc'} ? 'gcc-4.4.3 -std=gnu99' : $Config{'ld'},
 
    # Linker flags for building an executable
-   'LDFLAGS'    =>  "-L/home/fojtik/GraphicsMagick/magick/.libs $Config{'ldflags'}",
+   'LDFLAGS'    =>  "-L/home/bfriesen/build/GraphicsMagick-16-static/magick/.libs $Config{'ldflags'}",
 
    # Linker flags for building a dynamically loadable module
-   'LDDLFLAGS'  => "-L/home/fojtik/GraphicsMagick/magick/.libs $Config{'lddlflags'}",
+   'LDDLFLAGS'  => "-L/home/bfriesen/build/GraphicsMagick-16-static/magick/.libs $Config{'lddlflags'}",
 
    # Install PerlMagick binary into GraphicsMagick bin directory
    'INSTALLBIN'	=> '/usr/local/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/home/fojtik/GraphicsMagick/magick/.libs -lGraphicsMagick -L/usr/local/lib -R/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/local/lib -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lwmflite -ldpstk -ldps -lXext -lSM -lICE -lX11 -lsocket -lnsl -lbz2 -lxml2 -lz -lm -lgomp -lpthread'],
+   'LIBS'	=> ['-L/home/bfriesen/build/GraphicsMagick-16-static/magick/.libs -lGraphicsMagick -Wl,-zlazyload -L/usr/local/lib -R/usr/local/lib -L/usr/local/lib -R/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/lib -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lwmflite -ldpstk -ldps -lXext -lSM -lICE -lX11 -lsocket -lnsl -lbz2 -lxml2 -lz -lm -lgomp -lpthread'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
@@ -70,7 +76,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as GraphicsMagick
-   'PERLMAINCC'	=> 'gcc-4.2.4',
+   'PERLMAINCC'	=> 'gcc-4.4.3',
 
    # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
@@ -95,18 +101,18 @@ sub MY::makeaperl {
      # tries to insert our library path first. Also, use the same compiler used
      # to build perlmain.c to link so that a C++ compiler may be used if
      # necessary.
-     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/home/fojtik/GraphicsMagick/magick/.libs: ;
+     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L/home/bfriesen/build/GraphicsMagick-16-static/magick/.libs: ;
      $inherited;
  }
 
 #
 # Substitutions for "test" section.
 #
-sub MY::test {
-     package MY; # so that "SUPER" works right
-     my $inherited = shift->SUPER::test(@_);
-
+#sub MY::test {
+#     package MY; # so that "SUPER" works right
+#     my $inherited = shift->SUPER::test(@_);
+#
      # Run tests in our environment
-     $inherited =~ s:PERL_DL_NONLAZY=1:/bin/bash ../rungm.sh PERL_DL_NONLAZY=1:g ;
-     $inherited;
- }
+#     $inherited =~ s:PERL_DL_NONLAZY=1:/bin/bash ../rungm.sh PERL_DL_NONLAZY=1:g ;
+#     $inherited;
+# }

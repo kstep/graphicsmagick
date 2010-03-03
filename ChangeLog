@@ -1,3 +1,9 @@
+2010-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Makefile.am: Update PerlMagick/Magick.pm in the
+	source tree (as required) since it is distributed source and
+	contains the current version number.
+
 2010-03-03  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: restored missing "US" in PNG_USER_CHUNK_CACHE_MAX

@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004 - 2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -8,7 +8,8 @@
 #
 #
 
-# If source files missing, see if they can be obtained via VPATH
+# If source files are missing, see if they can be obtained via VPATH
+# and create a linked tree.
 perl-sources:
 	@if test -n "$(VPATH)" ; then \
 	  echo "Linking PerlMagick Sources ..." ; \
@@ -17,6 +18,16 @@ perl-sources:
 	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
 	fi ; \
 	touch perl-sources
+
+# The substituted file Magick.pm needs to be copied to the PerlMagick
+# source directory since it becomes part of the source distribution.
+$(top_srcdir)/$(PERLMAGICK)/Magick.pm : $(PERLMAGICK)/Magick.pm
+	@if test -n "$(VPATH)" ; then \
+	    echo "Updating  $(PERLMAGICK)/Magick.pm ..." ; \
+	    cp $(PERLMAGICK)/Magick.pm $(top_srcdir)/$(PERLMAGICK)/Magick.pm ; \
+	fi
+
+PERLMAGICK_MAINTAINER_TARGETS=$(top_srcdir)/$(PERLMAGICK)/Magick.pm
 
 if WITH_PERL
 
