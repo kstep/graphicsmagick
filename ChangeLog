@@ -1,3 +1,8 @@
+2010-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Updated libpng to 1.2.43.  Resolves CVE-2010-0205 as
+	pertains to GraphicsMagick Windows build.
+
 2010-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/rwfile_DCX_*.sh: Add tests for reading and writing DCX.
