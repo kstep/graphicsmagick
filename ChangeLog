@@ -1,3 +1,8 @@
+2010-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Updated libpng to 1.2.43.  Resolves CVE-2010-0205 as
+	pertains to GraphicsMagick Windows build.
+
 2010-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: Released GraphicsMagick 1.3.11.
