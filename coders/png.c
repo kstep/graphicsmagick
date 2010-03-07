@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -99,7 +99,7 @@
    /* We could parse PNG_LIBPNG_VER_STRING here but it's too much bother..
     * Just don't use libpng-1.4.0beta32-34 or beta67-73
     */
-#  ifndef  PNG_ER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
+#  ifndef  PNG_USER_CHUNK_CACHE_MAX     /* Added at libpng-1.4.0beta32 */
 #    define trans_color  trans_values   /* Changed at libpng-1.4.0beta35 */
 #  endif
 #  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
@@ -1761,7 +1761,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    PNG width: %lu, height: %lu",
-                            ping_info->width, ping_info->height);
+                            (unsigned long)ping_info->width,
+                            (unsigned long)ping_info->height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    PNG color_type: %d, bit_depth: %d",
                             ping_info->color_type, ping_info->bit_depth);
@@ -1910,7 +1911,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Reading PNG pHYs chunk:"
                               " xres: %lu, yres: %lu, units: %d.",
-                              x_resolution, y_resolution, unit_type);
+                              (unsigned long)x_resolution,
+                              (unsigned long)y_resolution,
+                              unit_type);
     }
   else
     {
@@ -3052,10 +3055,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                         "    jng_width:      %16lu",
-                                        jng_width);
+                                        (unsigned long)jng_width);
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "    jng_width:      %16lu",
-                                        jng_height);
+                                        "    jng_height:     %16lu",
+                                        (unsigned long)jng_height);
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                         "    jng_color_type: %16d",
                                         jng_color_type);
@@ -6096,7 +6099,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
   if (image_info->verbose)
     {
       (void) printf("writing raw profile: type=%.1024s, length=%lu\n",
-                    profile_type, length);
+                    profile_type, (unsigned long)length);
     }
 #if (PNG_LIBPNG_VER > 10005)
   text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
@@ -6114,7 +6117,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
   (void) strcpy(dp,(const char *) profile_description);
   dp+=description_length;
   *dp++='\n';
-  (void) sprintf(dp,"%8lu ",length);
+  (void) sprintf(dp,"%8lu ",(unsigned long)length);
   dp+=8;
   for (i=0; i < (long) length; i++)
     {
@@ -6290,9 +6293,11 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   if (logging)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "    width=%lu",ping_info->width);
+                            "    width=%lu",
+                            (unsigned long)ping_info->width);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "    height=%lu",ping_info->height);
+                            "    height=%lu",
+                            (unsigned long)ping_info->height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    image->depth=%u",image_depth);
     }
@@ -7465,9 +7470,11 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "  Writing PNG image data");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "    Width: %lu",ping_info->width);
+                            "    Width: %lu",
+                            (unsigned long)ping_info->width);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "    Height: %lu",ping_info->height);
+                            "    Height: %lu",
+                            (unsigned long)ping_info->height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    PNG sample depth: %d",ping_info->bit_depth);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8815,13 +8822,13 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "     TERM delay: %lu",
-                                    (png_uint_32)
+                                    (unsigned long)
                                     (mng_info->ticks_per_second*
                                     final_delay/100));
               if (image->iterations == 0)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "     TERM iterations: %lu",
-                                      PNG_MAX_UINT);
+                                      (unsigned long)PNG_MAX_UINT);
               else
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "     Image iterations: %lu",

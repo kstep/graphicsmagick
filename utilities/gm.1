@@ -1,4 +1,4 @@
-.TH gm 1 "2010/02/21" "GraphicsMagick"
+.TH gm 1 "2010/03/07" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2038,14 +2038,15 @@ command line option.
 \fRinclude the X window frame in the imported image
 .TP
 .B "-fuzz \fI<distance>{%}"\fP
-\fRcolors within this distance are considered equal
+\fRcolors within this Euclidean distance are considered equal
 
 A number of algorithms search for a target color. By default the color
-must be exact. Use this option to match colors that are close to the target
-color in RGB space. For example, if you want to automatically trim the
-edges of an image with \fB-trim\fP but the image was scanned and the
-target background color may differ by a small amount. This option can account
-for these differences.
+must be exact. Use this option to match colors that are close (in
+Euclidean distance) to the target color in RGB 3D space. For example,
+if you want to automatically trim the edges of an image with
+\fB-trim\fP but the image was scanned and the target background color
+may differ by a small amount. This option can account for these
+differences.
 
 The \fIdistance\fP can be in absolute intensity units or, by appending
 \fI"%"\fP, as a percentage of the maximum possible intensity (255,
@@ -2622,10 +2623,12 @@ This is a contrast enhancement technique.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 
-The color is specified using the format described under the \fB-fill\fP
-option.
+The color is specified using the format described under the
+\fB-fill\fP option.  The color is replaced if it is identical to the
+target color, or close enough to the target color in a 3D space as
+defined by the Euclidean distance specified by \fB-fuzz\fP.
 
-See \fB-fill\fP for more details.
+See \fB-fill\fP and \fB-fuzz\fP for more details.
 .TP
 .B "-operator \fIchannel operator rvalue[%]"\fP
 \fRapply a mathematical, bitwise, or value operator to an image channel
@@ -5650,7 +5653,7 @@ Options, above.
 \fRsurround the image with an ornamental border
 .TP
 .B "-fuzz \fI<distance>{%}"\fP
-\fRcolors within this distance are considered equal
+\fRcolors within this Euclidean distance are considered equal
 .TP
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
@@ -8564,7 +8567,7 @@ Options, above.
 \fRsurround the image with an ornamental border
 .TP
 .B "-fuzz \fI<distance>{%}"\fP
-\fRcolors within this distance are considered equal
+\fRcolors within this Euclidean distance are considered equal
 .TP
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction

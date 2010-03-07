@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004, 2008 GraphicsMagick Group
+% Copyright (C) 2004 - 2010 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -36,6 +36,7 @@
 */
 #include "magick/studio.h"
 #include "magick/channel.h"
+#include "magick/enum_strings.h"
 #include "magick/image.h"
 #include "magick/operator.h"
 #include "magick/pixel_iterator.h"
@@ -167,6 +168,7 @@ ChannelImagePixels(void *mutable_data,            /* User provided mutable data 
         image->matte=False;
         break;
       }
+
     case UndefinedChannel:
     case AllChannels:
     case GrayChannel:
@@ -185,7 +187,8 @@ ChannelImagePixels(void *mutable_data,            /* User provided mutable data 
 }
 MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 {
-#define ChannelImageText "[%s] Extract channel...  "
+  char
+    progress_message[MaxTextExtent];
 
   ChannelType
     channel_type = channel;
@@ -199,9 +202,13 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
+  FormatString(progress_message,"[%%s] Extract %s channel...  ",
+	       ChannelTypeToString(channel));
+
+  image->storage_class=DirectClass;
   status=PixelIterateMonoModify(ChannelImagePixels,
                                 NULL,
-                                ChannelImageText,
+                                progress_message,
                                 NULL,&channel_type,0,0,image->columns,image->rows,
                                 image,&image->exception);
 

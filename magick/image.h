@@ -1010,7 +1010,7 @@ extern MagickExport MagickPassFail
   SetImage(Image *,const Quantum),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
-  SetImageInfo(ImageInfo *,const MagickBool,ExceptionInfo *),
+  SetImageInfo(ImageInfo *image_info,const unsigned int flags,ExceptionInfo *exception),
   SetImageType(Image *,const ImageType),
   SyncImage(Image *);
 
@@ -1023,8 +1023,27 @@ extern MagickExport void
   ModifyImage(Image **,ExceptionInfo *),
   SetImageOpacity(Image *,const unsigned int);
 
+#if defined(MAGICK_IMPLEMENTATION)
+  /*
+    SetImageInfo flags specification.
+  */
+#  define SETMAGICK_FALSE    0x00000 /* MagickFalse ("read") */
+#  define SETMAGICK_TRUE     0x00001 /* MagickTrue ("write+rectify") */
+#  define SETMAGICK_READ     0x00002 /* Filespec will be read */
+#  define SETMAGICK_WRITE    0x00004 /* Filespec will be written */
+#  define SETMAGICK_RECTIFY  0x00008 /* Look for adjoin in filespec */
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
 #endif /* _MAGICK_IMAGE_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

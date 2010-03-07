@@ -470,3 +470,11 @@ do { \
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 #endif /* !defined(_MAGICK_ERROR_H) */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

@@ -82,7 +82,7 @@ A guide to image processing algorithms, many of which are supported by GraphicsM
 <h1>Color Technology Related Topics</h1>
 <p>Charles Poynton's <a class="reference external" href="http://www.poynton.com/Poynton-color.html">Color technology FAQs</a>,
 very useful documentation on color technologies.</p>
-<p>Richard Kirk's excellent <a class="reference external" href="http://www.filmlight.ltd.uk/services_support/library/truelight">Standard Colour Spaces (FL-TL-TN-0282-StdColourSpaces.pdf)</a> at <a class="reference external" href="http://www.filmlight.ltd.uk/">FilmLite</a>.</p>
+<p>Richard Kirk's excellent <a class="reference external" href="http://www.filmlight.ltd.uk/services_support/library/truelight">Standard Colour Spaces (FL-TL-TN-0282-StdColourSpaces.pdf)</a> at <a class="reference external" href="http://www.filmlight.ltd.uk/">FilmLight</a>.</p>
 <p><a class="reference external" href="http://cs.fit.edu/~wds/classes/cse5255/cse5255/davis/">Computer Graphics Colorspace</a>,
 tutorials (with figures) describing the operation of common colorspaces.</p>
 <p><a class="reference external" href="http://www.color.org/">International Color Consortium</a>,
@@ -99,6 +99,34 @@ offering interesting information related to color science and working spaces.</p
 A standard default color space for the Internet.</p>
 <p><a class="reference external" href="http://www.anyhere.com/gward/hdrenc/hdr_encodings.html">High Dynamic Range Image Encodings</a>,
 an analysis by Greg Ward of various HDR encodings.</p>
+</div>
+<div class="section" id="gamma-related-topics">
+<h1>Gamma Related Topics</h1>
+<p>While most computer images are encoded with a gamma of 2.2 (really 2.2
+to 2.6), GraphicsMagick does not attempt to convert images to
+linear-light before applying image processing operations since it is
+not possible to know for sure to know how to do so.  Some algorithms
+such as resize, blur, and composition, will produce more accurate
+results when performed on images encoded in a linear-light scaled
+space.</p>
+<p>For a typical sRGB image encoded in a gamma-corrected space with gamma
+2.2, the option <tt class="docutils literal"><span class="pre">-gamma</span> <span class="pre">0.45</span></tt> (1/2.2 = 0.45) will remove that
+encoding for subsequent algorithms so that they are done in
+linear-light space.  When processing is completed, then <tt class="docutils literal"><span class="pre">-gamma</span> <span class="pre">2.2</span></tt>
+will restore gamma-correction for viewing.  It is recommended to use a
+Q16 or Q32 build of GraphicsMagick when doing this since linear-light
+space encoding is not efficient and will lose accuracy if stored with
+less than 14 bits per sample.</p>
+<p>The following documents and pages provide interesting information on
+gamma-related topics:</p>
+<p><a class="reference external" href="http://www.poynton.com/GammaFAQ.html">Charles Poynton's Gamma FAQ</a>,
+provides an excellent description of what gamma is, why it is good,
+and when you don't want it.</p>
+<p><a class="reference external" href="http://www.all-in-one.ee/~dersch/gamma/gamma.html">Interpolation and Gamma Correction</a>, provides a
+discussion of how affine transforms on gamma-corrected images can
+cause distortion.</p>
+<p><a class="reference external" href="http://www.4p8.com/eric.brasseur/gamma.html">Gamma error in picture scaling</a>, provides a discussion
+of how image resize on gamma-corrected images can cause distortion.</p>
 </div>
 <div class="section" id="tiff-related-topics">
 <h1>TIFF Related Topics</h1>
@@ -188,7 +216,7 @@ animation industries.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 01:02 UTC.
+Generated on: 2010-03-07 19:43 UTC.
 
 </div>
 </body>

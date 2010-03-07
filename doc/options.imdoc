@@ -2280,15 +2280,16 @@ command line option.</pp>
 <utils apps=convert,mogrify>
 <dopt>-fuzz <distance>{%}</opt>
 
-<abs>colors within this distance are considered equal</abs>
+<abs>colors within this Euclidean distance are considered equal</abs>
 
 <pp>
 A number of algorithms search for a target color. By default the color
-must be exact. Use this option to match colors that are close to the target
-color in RGB space. For example, if you want to automatically trim the
-edges of an image with <s>-trim</s> but the image was scanned and the
-target background color may differ by a small amount. This option can account
-for these differences.</pp>
+must be exact. Use this option to match colors that are close (in
+Euclidean distance) to the target color in RGB 3D space. For example,
+if you want to automatically trim the edges of an image with
+<s>-trim</s> but the image was scanned and the target background color
+may differ by a small amount. This option can account for these
+differences.</pp>
 
 <pp>
 The <i>distance</i> can be in absolute intensity units or, by appending
@@ -3383,11 +3384,13 @@ This is a contrast enhancement technique.</pp>
 <abs>change this color to the pen color within the image</abs>
 
 <pp>
-The color is specified using the format described under the <s>-fill</s>
-option.</pp>
+The color is specified using the format described under the
+<s>-fill</s> option.  The color is replaced if it is identical to the
+target color, or close enough to the target color in a 3D space as
+defined by the Euclidean distance specified by <s>-fuzz</s>.</pp>
 
 <pp>
-See <s>-fill</s> for more details.</pp>
+See <s>-fill</s> and <s>-fuzz</s> for more details.</pp>
 
 </utils>
 

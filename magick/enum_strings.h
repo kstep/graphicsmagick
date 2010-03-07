@@ -70,3 +70,11 @@ extern "C" {
 #endif
 
 #endif /* _ENUM_STRINGS_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

@@ -109,6 +109,15 @@ a similar amount of power to today's CPUs and will fit into a very
 small (1U) chassis.  Due to this trend, there is no value obtained by
 expending energy toward developing specialized code for today's GPUs.
 
+What is the meaning of "magick"?
+--------------------------------
+
+According to the infamous British accultist `Aleister Crowley
+<http://en.wikipedia.org/wiki/Aleister_Crowley>`_, the definition of
+`magick <http://en.wikipedia.org/wiki/Magick_(Aleister_Crowley)>`_ is
+"the science and art of causing change to occur in conformity with the
+will".
+
 How can I process many files at once?
 -------------------------------------
 

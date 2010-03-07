@@ -8093,7 +8093,7 @@ static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_in
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   GetExceptionInfo(&exception);
-  (void) SetImageInfo(image_info,MagickFalse,&exception);
+  (void) SetImageInfo(image_info,SETMAGICK_READ,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
@@ -10297,7 +10297,7 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
     }
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strlcpy(image_info->filename,filename,MaxTextExtent);
-  (void) SetImageInfo(image_info,MagickFalse,&image->exception);
+  (void) SetImageInfo(image_info,SETMAGICK_WRITE,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
     {

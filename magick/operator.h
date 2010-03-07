@@ -68,3 +68,11 @@ extern MagickExport MagickPassFail
 #endif
 
 #endif
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

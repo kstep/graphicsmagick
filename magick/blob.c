@@ -698,7 +698,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info->blob=(void *) blob;
   clone_info->length=length;
   if (clone_info->magick[0] == '\0')
-    (void) SetImageInfo(clone_info,MagickFalse,exception);
+    (void) SetImageInfo(clone_info,SETMAGICK_READ,exception);
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {

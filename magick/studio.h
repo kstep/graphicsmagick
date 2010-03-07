@@ -477,3 +477,11 @@ extern MagickExport const unsigned long
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 #endif /* ifndef _MAGICK_STUDIO_H */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

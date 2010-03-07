@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -549,6 +549,10 @@ TESTS_TESTS = \
 	tests/rwfile_CIN_truecolor12.sh \
 	tests/rwfile_CIN_truecolor16.sh \
 	tests/rwfile_CMYK_truecolor_70x46.sh \
+	tests/rwfile_DCX_bilevel.sh \
+	tests/rwfile_DCX_gray.sh \
+	tests/rwfile_DCX_pallette.sh \
+	tests/rwfile_DCX_truecolor.sh \
 	tests/rwfile_DIB_bilevel.sh \
 	tests/rwfile_DIB_gray.sh \
 	tests/rwfile_DIB_pallette.sh \
@@ -915,6 +919,7 @@ CHECK_FILE_FORMATS = \
 	BMP \
 	CALS \
 	CIN \
+	DCX \
 	DIB \
 	DPX \
 	EPDF \
@@ -1045,7 +1050,7 @@ generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	( \
 	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	  echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	  echo ". \$${srcdir}/tests/common.shi" ; \
 	  echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" ; \
 	) > "$${sh_file}" ; \
@@ -1057,7 +1062,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/constitute_$${storage_type}_$${map}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" ; \
 	    ) > "$$sh_file" ; \
@@ -1071,7 +1076,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
@@ -1085,7 +1090,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
@@ -1099,7 +1104,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
@@ -1113,7 +1118,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
@@ -1127,7 +1132,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_MIFF_$${type}_$${compress}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" ; \
 	    )  > "$${sh_file}" ; \
@@ -1141,7 +1146,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_PDF_$${type}_$${compress}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff PDF" ; \
 	    )  > "$${sh_file}" ; \
@@ -1155,7 +1160,7 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    (  \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2009 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" ; \
 	    ) > "$${sh_file}" ; \

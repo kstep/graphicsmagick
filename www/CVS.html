@@ -156,10 +156,9 @@ shown in the following table.</p>
 <pre class="literal-block">
 cvs -d :pserver:anonymous&#64;cvs.graphicsmagick.org:/GraphicsMagick command args...
 </pre>
-<p>Or to set as an environment variable:</p>
+<p>Or to set as an environment variable (sh/ksh/bash syntax):</p>
 <pre class="literal-block">
 export CVSROOT=:ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick
-setenv CVSROOT :ext:anoncvs&#64;cvs.graphicsmagick.org:/GraphicsMagick
 </pre>
 <p>When using the PSERVER protocol, a CVS login is needed prior to checking out the
 sources:</p>
@@ -167,8 +166,15 @@ sources:</p>
 cvs login
 </pre>
 <p>This will ask you for a password. The password is anonymous. Enter it and press
-Return. The EXT protocol does not currently require a password when used for
-anonymous access.</p>
+Return.</p>
+<p>The EXT protocol does not currently require a password when used for
+anonymous access.  The EXT protocol requires that CVS use 'ssh' as the
+connection protocol.  If your CVS does not do this by default (some
+use the old insecure 'rsh'), then set the CVS_RSH environment variable
+to 'ssh' (sh/ksh/bash syntax):</p>
+<pre class="literal-block">
+export CVS_RSH=ssh
+</pre>
 <p>The CVS program supports a configuration file (<tt class="docutils literal"><span class="pre">$HOME/.cvsrc</span></tt>). Many command
 options used in the remaining instructions may be set as defaults (so they don't
 need to be repeated) by creating a .cvsrc file in your home directory with the
@@ -249,7 +255,7 @@ numerous other web sites.</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-09 21:33 UTC.
+Generated on: 2010-03-07 19:43 UTC.
 
 </div>
 </body>
