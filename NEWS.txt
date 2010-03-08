@@ -14,6 +14,40 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
+1.3.12 (March 8, 2010)
+==========================
+
+Security Fixes:
+
+  * Updated libpng Windows sources to 1.2.43 in order to resolve
+    CVE-2010-0205 as it pertains to the GraphicsMagick Windows build.
+
+Bug fixes:
+
+  * Filter mode (write to stdout) was completely broken.
+
+  * Should now compile with libpng 1.4.
+
+  * Windows PerlMagick build identified itself as the wrong version.
+
+New Features:
+
+  * None
+
+Feature improvements:
+
+  * None
+
+Performance Improvements:
+
+  * None
+
+Behavior Changes:
+
+  * DCX output format is only written on request.  Previously the PCX
+    coder would automatically switch to DCX format if multiple frames
+    would be written.
+
 1.3.11 (February 21, 2010)
 ==========================
 

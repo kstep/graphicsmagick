@@ -59,25 +59,70 @@ branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#february-21-2010" id="id1">1.3.11 (February 21, 2010)</a></li>
-<li><a class="reference internal" href="#february-10-2010" id="id2">1.3.10 (February 10, 2010)</a></li>
-<li><a class="reference internal" href="#february-4-2010" id="id3">1.3.9 (February 4, 2010)</a></li>
-<li><a class="reference internal" href="#january-21-2010" id="id4">1.3.8 (January 21, 2010)</a></li>
-<li><a class="reference internal" href="#september-17-2009" id="id5">1.3.7 (September 17, 2009)</a></li>
-<li><a class="reference internal" href="#july-25-2009" id="id6">1.3.6 (July 25, 2009)</a></li>
-<li><a class="reference internal" href="#january-26-2009" id="id7">1.3.5 (January 26, 2009)</a></li>
-<li><a class="reference internal" href="#january-13-2009" id="id8">1.3.4 (January 13, 2009)</a></li>
-<li><a class="reference internal" href="#december-9-2008" id="id9">1.3.3 (December 9, 2008)</a></li>
-<li><a class="reference internal" href="#november-29-2008" id="id10">1.3.2 (November 29, 2008)</a></li>
-<li><a class="reference internal" href="#november-17-2008" id="id11">1.3.1 (November 17, 2008)</a></li>
-<li><a class="reference internal" href="#november-9-2008" id="id12">1.3 (November 9, 2008)</a></li>
-<li><a class="reference internal" href="#april-29-2008" id="id13">1.2 (April 29, 2008)</a></li>
-<li><a class="reference internal" href="#released-april-4-2004" id="id14">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference internal" href="#released-in-may-2003" id="id15">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference internal" href="#march-8-2010" id="id1">1.3.12 (March 8, 2010)</a></li>
+<li><a class="reference internal" href="#february-21-2010" id="id2">1.3.11 (February 21, 2010)</a></li>
+<li><a class="reference internal" href="#february-10-2010" id="id3">1.3.10 (February 10, 2010)</a></li>
+<li><a class="reference internal" href="#february-4-2010" id="id4">1.3.9 (February 4, 2010)</a></li>
+<li><a class="reference internal" href="#january-21-2010" id="id5">1.3.8 (January 21, 2010)</a></li>
+<li><a class="reference internal" href="#september-17-2009" id="id6">1.3.7 (September 17, 2009)</a></li>
+<li><a class="reference internal" href="#july-25-2009" id="id7">1.3.6 (July 25, 2009)</a></li>
+<li><a class="reference internal" href="#january-26-2009" id="id8">1.3.5 (January 26, 2009)</a></li>
+<li><a class="reference internal" href="#january-13-2009" id="id9">1.3.4 (January 13, 2009)</a></li>
+<li><a class="reference internal" href="#december-9-2008" id="id10">1.3.3 (December 9, 2008)</a></li>
+<li><a class="reference internal" href="#november-29-2008" id="id11">1.3.2 (November 29, 2008)</a></li>
+<li><a class="reference internal" href="#november-17-2008" id="id12">1.3.1 (November 17, 2008)</a></li>
+<li><a class="reference internal" href="#november-9-2008" id="id13">1.3 (November 9, 2008)</a></li>
+<li><a class="reference internal" href="#april-29-2008" id="id14">1.2 (April 29, 2008)</a></li>
+<li><a class="reference internal" href="#released-april-4-2004" id="id15">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference internal" href="#released-in-may-2003" id="id16">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
+<div class="section" id="march-8-2010">
+<h1><a class="toc-backref" href="#id1">1.3.12 (March 8, 2010)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Updated libpng Windows sources to 1.2.43 in order to resolve
+CVE-2010-0205 as it pertains to the GraphicsMagick Windows build.</li>
+</ul>
+</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Filter mode (write to stdout) was completely broken.</li>
+<li>Should now compile with libpng 1.4.</li>
+<li>Windows PerlMagick build identified itself as the wrong version.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>None</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>None</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>None</li>
+</ul>
+</blockquote>
+<p>Behavior Changes:</p>
+<blockquote>
+<ul class="simple">
+<li>DCX output format is only written on request.  Previously the PCX
+coder would automatically switch to DCX format if multiple frames
+would be written.</li>
+</ul>
+</blockquote>
+</div>
 <div class="section" id="february-21-2010">
-<h1><a class="toc-backref" href="#id1">1.3.11 (February 21, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id2">1.3.11 (February 21, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -129,7 +174,7 @@ opaque.</li>
 </blockquote>
 </div>
 <div class="section" id="february-10-2010">
-<h1><a class="toc-backref" href="#id2">1.3.10 (February 10, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id3">1.3.10 (February 10, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -176,7 +221,7 @@ scene number substition is desired in the output file names.</li>
 </blockquote>
 </div>
 <div class="section" id="february-4-2010">
-<h1><a class="toc-backref" href="#id3">1.3.9 (February 4, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id4">1.3.9 (February 4, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -236,7 +281,7 @@ image in the list if it is not already opaque.</li>
 </blockquote>
 </div>
 <div class="section" id="january-21-2010">
-<h1><a class="toc-backref" href="#id4">1.3.8 (January 21, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id5">1.3.8 (January 21, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -390,7 +435,7 @@ distributed.</li>
 </blockquote>
 </div>
 <div class="section" id="september-17-2009">
-<h1><a class="toc-backref" href="#id5">1.3.7 (September 17, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id6">1.3.7 (September 17, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -480,7 +525,7 @@ structure is clean prior to invoking a function.</li>
 </blockquote>
 </div>
 <div class="section" id="july-25-2009">
-<h1><a class="toc-backref" href="#id6">1.3.6 (July 25, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id7">1.3.6 (July 25, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -614,7 +659,7 @@ progressive JPEG.</li>
 </blockquote>
 </div>
 <div class="section" id="january-26-2009">
-<h1><a class="toc-backref" href="#id7">1.3.5 (January 26, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id8">1.3.5 (January 26, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -653,7 +698,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="january-13-2009">
-<h1><a class="toc-backref" href="#id8">1.3.4 (January 13, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id9">1.3.4 (January 13, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -692,7 +737,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="december-9-2008">
-<h1><a class="toc-backref" href="#id9">1.3.3 (December 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id10">1.3.3 (December 9, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -724,7 +769,7 @@ used in a directory containing a million files.</li>
 </blockquote>
 </div>
 <div class="section" id="november-29-2008">
-<h1><a class="toc-backref" href="#id10">1.3.2 (November 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id11">1.3.2 (November 29, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -758,7 +803,7 @@ process the opacity channel unless the image has one.</li>
 </blockquote>
 </div>
 <div class="section" id="november-17-2008">
-<h1><a class="toc-backref" href="#id11">1.3.1 (November 17, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id12">1.3.1 (November 17, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -796,7 +841,7 @@ encoding is used via jpeg:optimize-coding define.</li>
 </blockquote>
 </div>
 <div class="section" id="november-9-2008">
-<h1><a class="toc-backref" href="#id12">1.3 (November 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id13">1.3 (November 9, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1004,7 +1049,7 @@ dither any named channel.</li>
 </blockquote>
 </div>
 <div class="section" id="april-29-2008">
-<h1><a class="toc-backref" href="#id13">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id14">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1260,7 +1305,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section" id="released-april-4-2004">
-<h1><a class="toc-backref" href="#id14">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id15">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1500,7 +1545,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section" id="released-in-may-2003">
-<h1><a class="toc-backref" href="#id15">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id16">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
@@ -1656,7 +1701,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-21 20:49 UTC.
+Generated on: 2010-03-08 19:16 UTC.
 
 </div>
 </body>
