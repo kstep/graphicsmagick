@@ -7,9 +7,7 @@ Magick.xs
 Makefile.PL
 Makefile.PL.in
 Makefile.am
-Makefile.in
 Makefile.nt
-Makefile.old
 PerlMagickCheck.sh.in
 README.txt
 build_manifest.sh
@@ -381,6 +379,7 @@ t/reference/wmf/wizard.miff
 t/reference/write/output_p7.miff
 t/setattribute.t
 t/subroutines.pl
+t/tiff/input_gray_01bit_minwhite.cals
 t/tiff/input_gray_01bit_minwhite.tiff
 t/tiff/input_gray_04bit.tiff
 t/tiff/input_gray_04bit_matte.tiff
