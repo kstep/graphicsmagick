@@ -647,7 +647,11 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,exception);
           if (exception->severity > UndefinedException)
-            CatchException(exception);
+	    {
+	      CatchException(exception);
+	      DestroyExceptionInfo(exception);
+	      GetExceptionInfo(exception);
+	    }
           status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;
@@ -1854,6 +1858,8 @@ CompareImageCommand(ImageInfo *image_info,
         */
         filename=argv[i];
         (void) strlcpy(image_info->filename,filename,MaxTextExtent);
+	DestroyExceptionInfo(exception);
+	GetExceptionInfo(exception);
         if (reference_image == (Image *) NULL)
           {
             reference_image=ReadImage(image_info,exception);
@@ -5955,7 +5961,11 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,exception);
     if (exception->severity > UndefinedException)
-      CatchException(exception);
+      {
+	CatchException(exception);
+	DestroyExceptionInfo(exception);
+	GetExceptionInfo(exception);
+      }
     status&=(image != (Image *) NULL);
     if (image != (Image *) NULL)
       DestroyImageList(image);
@@ -6295,14 +6305,20 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
+	  DestroyExceptionInfo(exception);
+	  GetExceptionInfo(exception);
           image=ReadImage(image_info,exception);
           if (exception->severity > UndefinedException)
-            CatchException(exception);
+	    {
+	      CatchException(exception);
+	      DestroyExceptionInfo(exception);
+	      GetExceptionInfo(exception);
+	    }
           status&=image != (Image *) NULL;
           if (image == (Image *) NULL)
             continue;
           status&=MogrifyImage(image_info,i-j,argv+j,&image);
-          (void) CatchImageException(image);
+	  (void) CatchImageException(image);
           do
           {
             /*
@@ -7696,7 +7712,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           image=PingImage(image_info,exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
-          continue;
+	  {
+	    CatchException(exception);
+	    DestroyExceptionInfo(exception);
+	    GetExceptionInfo(exception);
+	    continue;
+	  }
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           if (p->scene == 0)

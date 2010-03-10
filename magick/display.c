@@ -8143,6 +8143,8 @@ static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_in
   handler=(MonitorHandler) NULL;
   if (LocaleCompare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
+  DestroyExceptionInfo(&exception);
+  GetExceptionInfo(&exception);
   nexus=ReadImage(image_info,&exception);
   if (exception.severity != UndefinedException)
     CatchException(&exception);
@@ -11395,6 +11397,8 @@ static Image *MagickXVisualDirectoryImage(Display *display,
     (void) strlcpy(clone_info->filename,filelist[i],MaxTextExtent);
     *clone_info->magick='\0';
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
+    DestroyExceptionInfo(&exception);
+    GetExceptionInfo(&exception);
     next_image=ReadImage(clone_info,&exception);
     if (exception.severity != UndefinedException)
       CatchException(&exception);

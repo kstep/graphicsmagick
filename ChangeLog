@@ -1,3 +1,10 @@
+2010-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{command.c, display.c}: Make sure that 'animate',
+	'display', and 'identify' report any error only once, and then
+	proceed to the next file name rather than quitting.  Problem was
+	reported by Patrick Welche.
+
 2010-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Makefile.am: Update PerlMagick/Magick.pm in the
