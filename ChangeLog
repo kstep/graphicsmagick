@@ -1,3 +1,9 @@
+2010-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick): Don't initialize locale
+	settings in InitializeMagick().  Resolves SourceForge bug #2967282
+	"setlocale called by GraphicsMagick".
+
 2010-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{command.c, display.c}: Make sure that 'animate',

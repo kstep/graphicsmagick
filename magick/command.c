@@ -518,11 +518,6 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
     resource_database;
 
   /*
-    Initialize command line arguments.
-  */
-  InitializeMagick(*argv);
-
-  /*
     Set defaults.
   */
   SetNotifyHandlers;
@@ -15904,6 +15899,17 @@ MagickExport int GMCommand(int argc,char **argv)
 
   unsigned int
     status=True;
+
+  /*
+    Initialize locale from environment variables (LANG, LC_CTYPE,
+    LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES,LC_ALL),
+    but require that LC_NUMERIC use common conventions.  The
+    LC_NUMERIC variable affects the decimal point character and
+    thousands separator character for the formatted input/output
+    functions and string conversion functions.
+  */
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
 
 #if defined(MSWINDOWS)
   InitializeMagick((char *) NULL);

@@ -928,9 +928,6 @@ InitializeMagick(const char *path)
   }
 # endif /* defined(_DEBUG) */
 #endif /* defined(MSWINDOWS) */
-  
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
 
   /* Initialize semaphores */
   InitializeSemaphore();
