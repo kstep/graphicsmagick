@@ -15902,8 +15902,8 @@ MagickExport int GMCommand(int argc,char **argv)
 
   /*
     Initialize locale from environment variables (LANG, LC_CTYPE,
-    LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES,LC_ALL),
-    but require that LC_NUMERIC use common conventions.  The
+    LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES,
+    LC_ALL), but require that LC_NUMERIC use common conventions.  The
     LC_NUMERIC variable affects the decimal point character and
     thousands separator character for the formatted input/output
     functions and string conversion functions.

@@ -367,6 +367,14 @@ MagickExport const DelegateInfo *GetPostscriptDelegateInfo(const ImageInfo *imag
     {
       (void) strlcpy(delegate,"gs-color+alpha",sizeof(delegate));
     }
+  else if (ColorSeparationType == image_info->type)
+    {
+      (void) strlcpy(delegate,"gs-cmyk",sizeof(delegate));
+    }
+  else if (ColorSeparationMatteType == image_info->type)
+    {
+      (void) strlcpy(delegate,"gs-cmyka",sizeof(delegate));
+    }
   return GetDelegateInfo(delegate,(char *) NULL,exception);
 }
 
