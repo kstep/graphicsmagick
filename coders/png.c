@@ -6180,11 +6180,11 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   int
     num_passes,
     pass,
-    ping_info_bit_depth,
-    ping_info_color_type,
-    ping_info_interlace_method,
-    ping_info_compression_method,
-    ping_info_filter_method;
+    ping_info_bit_depth = 0,
+    ping_info_color_type = 0,
+    ping_info_interlace_method = 0,
+    ping_info_compression_method = 0,
+    ping_info_filter_method = 0;
 
   png_colorp
     palette;
@@ -7264,6 +7264,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                ping_info_compression_method,
                ping_info_filter_method);
 
+/* } */
   png_write_info(ping,ping_info);
 
 #if (PNG_LIBPNG_VER == 10206)
