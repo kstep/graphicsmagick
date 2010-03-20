@@ -1,3 +1,7 @@
+2010-03-20  Glenn Randers-Pehrson  <glennrp@simple...>
+	* coders/png.c (ReadOnePNGImage): Eliminated some of the deprecated
+	direct access to ping_info->members.
+
 2010-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/delegate.c (GetPostscriptDelegateInfo): Add support for
