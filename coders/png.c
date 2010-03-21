@@ -52,13 +52,6 @@
     ((color).blue == (target).blue))
 #endif
 
-#if !defined(RGBColorMatchExactM)
-#define RGBColorMatchExactM(color,target) \
-   (((color)->red == (target).red) && \
-    ((color)->green == (target).green) && \
-    ((color)->blue == (target).blue))
-#endif
-
 /*
   Include declarations.
 */
@@ -476,7 +469,6 @@ static const char* PngColorTypeToString(const unsigned int color_type)
   return result;
 }
 
-#if PNG_LIBPNG_VER > 10011
 #if defined(PNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -769,7 +761,6 @@ static MagickPassFail CompressColormapTransFirst(Image *image)
   return(MagickPass);
 }
 #endif
-#endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* HasPNG */
 
 /*
@@ -1360,19 +1351,8 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_USER_MEM_SUPPORTED
 static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
-#if (PNG_LIBPNG_VER < 10012)
-  png_voidp
-    ret;
-  
-  png_ptr=png_ptr;
-  ret=MagickAllocateMemory(png_voidp,(size_t) size);
-  if (ret == NULL)
-    png_error("Insufficient memory.");
-  return (ret);
-#else
   png_ptr=png_ptr;
   return MagickAllocateMemory(png_voidp,(size_t) size);
-#endif
 }
 
 /*
@@ -2236,7 +2216,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else
               row_offset=0;
             png_read_row(ping,png_pixels+row_offset,NULL);
-	    if (!SetImagePixels(image,0,y,image->columns,1))  /* Was GetImagePixels() */
+	    if (!SetImagePixels(image,0,y,image->columns,1))
               break;
 #if (QuantumDepth == 8)
             if (depth == 16)
