@@ -1554,6 +1554,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *ping;
 
   png_uint_32
+    ping_rowbytes,
     ping_info_width,
     ping_info_height;
 
@@ -1727,6 +1728,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       &ping_trans_color);
 
   (void) png_get_bKGD(ping, ping_info, &ping_background);
+
+  ping_rowbytes=png_get_rowbytes(ping,ping_info);
 
 #if (QuantumDepth == 8)
   image->depth=8;
@@ -2180,10 +2183,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                           "    Reading PNG IDAT chunk(s)");
   if (num_passes > 1)
     png_pixels=MagickAllocateMemory(unsigned char *,
-                                    ping_info->rowbytes*image->rows);
+                                    ping_rowbytes*image->rows);
   else
-    png_pixels=MagickAllocateMemory(unsigned char *,
-                                    ping_info->rowbytes);
+    png_pixels=MagickAllocateMemory(unsigned char *, ping_rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
@@ -2212,7 +2214,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         for (y=0; y < (long) image->rows; y++)
           {
             if (num_passes > 1)
-              row_offset=ping_info->rowbytes*y;
+              row_offset=ping_rowbytes*y;
             else
               row_offset=0;
             png_read_row(ping,png_pixels+row_offset,NULL);
@@ -2383,7 +2385,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               *p;
 
             if (num_passes > 1)
-              row_offset=ping_info->rowbytes*y;
+              row_offset=ping_rowbytes*y;
             else
               row_offset=0;
             png_read_row(ping,png_pixels+row_offset,NULL);
@@ -6608,7 +6610,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
             {
               /*
                 No transparent pixels are present.  Change 4 or 6 to 0 or 2,
-                and do not set the PNG_INFO_tRNS flag in ping_info->valid.
+                and do not set the PNG_INFO_tRNS flag.
               */
               image_matte=MagickFalse;
               ping_info_color_type&=0x03;
