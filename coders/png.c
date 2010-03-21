@@ -1574,6 +1574,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   PixelPacket
     transparent_color;
 
+#if 0
+  png_bytep
+     ping_trans_alpha;
+#endif
+
+  png_color_16p
+     ping_trans_color;
+
   png_info
     *end_info,
     *ping_info;
@@ -2002,12 +2010,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   png_color_16
                     background;
 
+                  png_color_16p
+                    png_background;
+
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                   if (mng_info->have_saved_bkgd_index)
                     background.index=mng_info->saved_bkgd_index;
-                  else
 #endif
-                    background.index=ping_info->background.index;
+                  if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
+                    {
+                      (void) png_get_bKGD(ping, ping_info, &png_background);
+                      background.index=png_background->index;
+                    }
                   background.red=(png_uint_16)
                     mng_info->global_plte[background.index].red;
                   background.green=(png_uint_16)
@@ -2031,33 +2045,40 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     image->background_color=mng_info->mng_global_bkgd;
   if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
     {
+      png_color_16p png_background;
+
       /*
         Set image background color.
       */
+
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Reading PNG bKGD chunk.");
+
+      (void) png_get_bKGD(ping, ping_info, &png_background);
+
       if (ping_info_bit_depth <= QuantumDepth)
         {
-          image->background_color.red=ping_info->background.red;
-          image->background_color.green=ping_info->background.green;
-          image->background_color.blue=ping_info->background.blue;
+          image->background_color.red  = png_background->red;
+          image->background_color.green= png_background->green;
+          image->background_color.blue = png_background->blue;
         }
       else
         {
           image->background_color.red=
-            ScaleShortToQuantum(ping_info->background.red);
+            ScaleShortToQuantum(png_background->red);
           image->background_color.green=
-            ScaleShortToQuantum(ping_info->background.green);
+            ScaleShortToQuantum(png_background->green);
           image->background_color.blue=
-            ScaleShortToQuantum(ping_info->background.blue);
+            ScaleShortToQuantum(png_background->blue);
         }
     }
 #endif
   if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
     {
       int
-        bit_mask;
+        bit_mask,
+        num_trans;
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2068,15 +2089,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         Image has a transparent background.
       */
+
+      if (png_get_tRNS(ping, ping_info, NULL, &num_trans,
+         &ping_trans_color))
       transparent_color.red=
-        (Quantum)(ping_info->trans_color.red & bit_mask);
+        (Quantum)(ping_trans_color->red & bit_mask);
       transparent_color.green=
-        (Quantum) (ping_info->trans_color.green & bit_mask);
+        (Quantum) (ping_trans_color->green & bit_mask);
       transparent_color.blue=
-        (Quantum) (ping_info->trans_color.blue & bit_mask);
+        (Quantum) (ping_trans_color->blue & bit_mask);
       transparent_color.opacity=
-        (Quantum) (ping_info->trans_color.gray & bit_mask);
-      if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+        (Quantum) (ping_trans_color->gray & bit_mask);
+      if (ping_info_color_type == PNG_COLOR_TYPE_GRAY)
         {
           transparent_color.red=transparent_color.opacity;
           transparent_color.green=transparent_color.opacity;
@@ -2315,7 +2339,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       *r++=*p++;
                       p++;
                     }
-                else if (ping_info-_olor_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+                else if (ping_info_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
                   for (x=(long) (2*image->columns); x > 0; x--)
                     {
                       *r++=*p++;
@@ -7264,7 +7288,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                ping_info_compression_method,
                ping_info_filter_method);
 
-/* } */
   png_write_info(ping,ping_info);
 
 #if (PNG_LIBPNG_VER == 10206)
