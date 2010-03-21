@@ -139,10 +139,14 @@ of the library-based packages listed here.
   include/freetype/config/ftoption.h will produce better glyph
   renderings but may violate an Apple patent.
 
-* GraphicsMagick requires Ghostscript software (version 8.50 recommended)
-  available from
+* GraphicsMagick requires Ghostscript software (version 8.64
+  recommended) available from
 
     http://pages.cs.wisc.edu/~ghost/
+
+      or
+
+    http://sourceforge.net/projects/ghostscript/
 
   to read the Postscript or the Portable Document format. Ghostscript
   is used to annotate an image when the FreeType library is not used,
