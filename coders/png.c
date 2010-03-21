@@ -95,7 +95,7 @@
 #include "zlib.h"
 
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 /*
   Optional declarations. Define or undefine them as you like.
 */
@@ -152,10 +152,6 @@ static SemaphoreInfo
   PNG_MNG_FEATURES_SUPPORTED is disabled by default in libpng-1.0.9 and
   will be enabled by default in libpng-1.2.0.
 */
-#if (PNG_LIBPNG_VER == 10009)  /* work around libpng-1.0.9 bug */
-#  undef PNG_READ_EMPTY_PLTE_SUPPORTED
-#  undef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-#endif
 #ifdef PNG_MNG_FEATURES_SUPPORTED
 #  ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
 #    define PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -480,7 +476,7 @@ static const char* PngColorTypeToString(const unsigned int color_type)
   return result;
 }
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 #if defined(PNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -773,7 +769,7 @@ static MagickPassFail CompressColormapTransFirst(Image *image)
   return(MagickPass);
 }
 #endif
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* HasPNG */
 
 /*
@@ -895,7 +891,7 @@ static MagickPassFail IsPNG(const unsigned char *magick,const size_t length)
 extern "C" {
 #endif
 
-#if (PNG_LIBPNG_VER > 95)
+#if (PNG_LIBPNG_VER > 10011)
 static size_t WriteBlobMSBULong(Image *image,const unsigned long value)
 {
   unsigned char
@@ -944,13 +940,13 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
         "  Writing %c%c%c%c chunk, length: %lu",
         type[0],type[1],type[2],type[3],length);
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1364,7 +1360,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_USER_MEM_SUPPORTED
 static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
-#if (PNG_LIBPNG_VER < 10011)
+#if (PNG_LIBPNG_VER < 10012)
   png_voidp
     ret;
   
@@ -1628,21 +1624,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   LockSemaphoreInfo(png_semaphore);
 #endif
 
-#if (PNG_LIBPNG_VER < 10007)
+#if (PNG_LIBPNG_VER < 10012)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
-#endif
-
-#if (PNG_LIBPNG_VER >= 10400)
-#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
-  if (image_info->verbose)
-    {
-      printf("Your PNG library (libpng-%s) is an old beta version.\n",
-           PNG_LIBPNG_VER_STRING);
-      printf("Please update it.\n");
-    }
-#  endif
 #endif
 
   image=mng_info->image;
@@ -1798,7 +1783,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                             ping_info_filter_method);
     }
 
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
+#if defined(PNG_READ_iCCP_SUPPORTED)
     if (png_get_valid(ping, ping_info, PNG_INFO_iCCP))
     {
       int
@@ -1827,7 +1812,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
         }
     }
-#endif /* #if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED) */
+#endif /* #if defined(PNG_READ_iCCP_SUPPORTED) */
 #if defined(PNG_READ_sRGB_SUPPORTED)
   {
     int
@@ -5767,7 +5752,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadMNGImage()");
   return(image);
 }
-#else /* PNG_LIBPNG_VER > 95 */
+#else /* PNG_LIBPNG_VER > 10011 */
 static Image *ReadPNGImage(const ImageInfo *image_info,
                            ExceptionInfo *exception)
 {
@@ -5782,7 +5767,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 {
   return (ReadPNGImage(image_info,exception));
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 #endif
 
 /*
@@ -5993,7 +5978,7 @@ ModuleExport void UnregisterPNGImage(void)
 }
 
 #if defined(HasPNG)
-#if PNG_LIBPNG_VER > 95
+#if PNG_LIBPNG_VER > 10011
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -6076,20 +6061,6 @@ ModuleExport void UnregisterPNGImage(void)
 */
 
 
-#if (PNG_LIBPNG_VER > 99 && PNG_LIBPNG_VER < 10007)
-/* This function became available in libpng version 1.0.6g. */
-static void
-png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
-{
-  if (png_ptr->zbuf)
-    png_free(png_ptr, png_ptr->zbuf); png_ptr->zbuf=NULL;
-  png_ptr->zbuf_size=(png_size_t) size;
-  png_ptr->zbuf=(png_bytep) png_malloc(png_ptr, size);
-  if (!png_ptr->zbuf)
-    png_error(png_ptr,"Unable to allocate zbuf");
-}
-#endif
-
 static void
 png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
                       png_info *ping_info, const char *profile_type,
@@ -6097,7 +6068,6 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
                       const unsigned char *profile_data,
                       png_uint_32 length)
 {
-#if (PNG_LIBPNG_VER > 10005)
   png_textp
     text;
 
@@ -6116,25 +6086,12 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 
   unsigned char
     hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-#endif
 
-#if (PNG_LIBPNG_VER <= 10005)
-  if (image_info->verbose)
-    (void) printf("Not ");
-  (void) image_info;
-  (void) ping;
-  (void) ping_info;
-  (void) profile_type;
-  (void) profile_description;
-  (void) profile_data;
-  (void) length;
-#endif
   if (image_info->verbose)
     {
       (void) printf("writing raw profile: type=%.1024s, length=%lu\n",
                     profile_type, (unsigned long)length);
     }
-#if (PNG_LIBPNG_VER > 10005)
   text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
   description_length=strlen((const char *) profile_description);
   allocated_length=(png_uint_32) (length*2 + (length >> 5) + 20
@@ -6170,7 +6127,6 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
   png_free(ping,text[0].text);
   png_free(ping,text[0].key);
   png_free(ping,text);
-#endif
 }
 
 static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
@@ -6526,9 +6482,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
           }
         png_set_PLTE(ping,ping_info,palette,(int) number_colors);
-#if (PNG_LIBPNG_VER > 10008)
         MagickFreeMemory(palette);
-#endif
         /*
           Identify which colormap entry is transparent.
         */
@@ -6907,9 +6861,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                            "  Setting up PLTE chunk with %d colors",
                            (int) number_colors);
                     png_set_PLTE(ping,ping_info,palette,(int) number_colors);
-#if (PNG_LIBPNG_VER > 10008)
                     MagickFreeMemory(palette);
-#endif
                   }
                 ping_info_bit_depth=1;
                 while ((1UL << ping_info_bit_depth) < number_colors)
@@ -7065,12 +7017,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  Setting up deflate compression");
-#if (PNG_LIBPNG_VER > 99)
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Compression buffer size: 32768");
   png_set_compression_buffer_size(ping,32768L);
-#endif
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Compression mem level: 9");
@@ -7159,7 +7109,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           {
             if (LocaleCompare(profile_name,"ICM") == 0)
               {
-#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+#if defined(PNG_WRITE_iCCP_SUPPORTED)
                 {
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7557,21 +7507,15 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   /*
     Generate text chunks.
   */
-#if (PNG_LIBPNG_VER <= 10005)
-  ping_info->num_text=0;
-#endif
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (const ImageAttribute *) NULL;
         attribute=attribute->next)
     {
-#if (PNG_LIBPNG_VER > 10005)
       png_textp
         text;
-#endif
 
       if (*attribute->key == '[')
         continue;
-#if (PNG_LIBPNG_VER > 10005)
       text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
       text[0].key=attribute->key;
       text[0].text=attribute->value;
@@ -7588,40 +7532,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         }
       png_set_text(ping,ping_info,text,1);
       png_free(ping,text);
-#else
-      /* Work directly with ping_info struct;
-       * png_set_text before libpng version
-       * 1.0.5a is leaky */
-      if (ping_info->num_text == 0)
-        {
-          ping_info->text=MagickAllocateMemory(png_text *,
-                                               256*sizeof(png_text));
-          if (ping_info->text == (png_text *) NULL)
-            (void) ThrowException(&image->exception,(ExceptionType)
-                                  ResourceLimitError,MemoryAllocationFailed,
-                                  image->filename);
-        }
-      i=ping_info->num_text++;
-      if (i > 255)
-        (void) ThrowException(&image->exception,(ExceptionType)
-                              ResourceLimitError,
-                              "Cannot write more than 256 PNG text chunks",
-                              image->filename);
-      ping_info->text[i].key=attribute->key;
-      ping_info->text[i].text=attribute->value;
-      ping_info->text[i].text_length=strlen(attribute->value);
-      ping_info->text[i].compression=
-        image_info->compression == NoCompression ||
-        (image_info->compression == UndefinedCompression &&
-         ping_info->text[i].text_length < 128) ? -1 : 0;
-      if (logging)
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "  Setting up text chunk");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "    keyword: %s",ping_info->text[i].key);
-        }
-#endif
     }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7682,13 +7592,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   /*
     Free PNG resources.
   */
-#if (PNG_LIBPNG_VER < 10007)
-  if (png_get_valid(ping, ping_info, PNG_INFO_PLTE))
-    {
-      MagickFreeMemory(ping_info->palette);
-      png_set_invalid(ping, ping_info, PNG_INFO_PLTE);
-    }
-#endif
   png_destroy_write_struct(&ping,&ping_info);
 
   MagickFreeMemory(png_pixels);
@@ -8429,21 +8332,10 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     final_delay=0,
     initial_delay;
 
-#if (PNG_LIBPNG_VER < 10007)
+#if (PNG_LIBPNG_VER < 10200)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
-#endif
-
-#if (PNG_LIBPNG_VER >= 10400)
-#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
-  if (image_info->verbose)
-    {
-      printf("Your PNG library (libpng-%s) is an old beta version.\n",
-           PNG_LIBPNG_VER_STRING);
-      printf("Please update it.\n");
-    }
-#  endif
 #endif
 
   /*
@@ -9260,7 +9152,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteMNGImage()");
   return(MagickPass);
 }
-#else /* PNG_LIBPNG_VER > 95 */
+#else /* PNG_LIBPNG_VER > 10011 */
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   image=image;
@@ -9272,5 +9164,5 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 {
   return (WritePNGImage(image_info,image));
 }
-#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* PNG_LIBPNG_VER > 10011 */
 #endif
