@@ -1605,7 +1605,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   LockSemaphoreInfo(png_semaphore);
 #endif
 
-#if (PNG_LIBPNG_VER < 10012)
+#if (PNG_LIBPNG_VER < 10200)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
            PNG_LIBPNG_VER_STRING);
@@ -5805,13 +5805,11 @@ ModuleExport void RegisterPNGImage(void)
 #if defined(PNG_LIBPNG_VER_STRING)
       (void) strlcat(version,"libpng ",MaxTextExtent);
       (void) strlcat(version,PNG_LIBPNG_VER_STRING,MaxTextExtent);
-#if (PNG_LIBPNG_VER > 10005)
       if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
         {
           (void) strlcat(version,",",MaxTextExtent);
           (void) strlcat(version,png_get_libpng_ver(NULL),MaxTextExtent);
         }
-#endif
 #endif
 
 #if defined(ZLIB_VERSION)
