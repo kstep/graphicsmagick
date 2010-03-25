@@ -1,4 +1,7 @@
-2010-03-20  Glenn Randers-Pehrson  <glennrp@simple...>
+2010-03-24  Glenn Randers-Pehrson  <glennrp@simple...>
+	* Revised coders/jpeg.c to preserve the Exif profile.
+
+2010-03-24  Glenn Randers-Pehrson  <glennrp@simple...>
 	* coders/png.c (ReadOnePNGImage): Eliminated some of the deprecated
 	direct access to ping_info->members.
         Eliminated support of very old libpng versions (1.0.11 and earlier).
