@@ -2220,8 +2220,20 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
         register long
           j;
 
-        if (LocaleNCompare(profile_name,"APP",3) != 0 &&
-            LocaleNCompare(profile_name,"Exif",4) != 0)
+        if (LocaleNCompare(profile_name,"Exif",4) == 0)
+        {
+          x=1;
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Profile: %s, %lu bytes",profile_name,
+                                  (unsigned long) profile_length);
+          for (j=0; j < (long) profile_length; j+=65533L)
+            jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
+                              profile_info+j,(int)
+                              Min(profile_length-j,65533L));
+        }
+
+        if (LocaleNCompare(profile_name,"APP",3) != 0)
           continue;
         x=MagickAtoL(profile_name+3);
         if (image->logging)
