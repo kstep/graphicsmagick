@@ -2235,7 +2235,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       {
                         *r++=*p++;
                         p++;
-                        if (png_get_valid(ping, ping_info, PNG_INFO_tRNS)) &&
+                        if ((png_get_valid(ping, ping_info, PNG_INFO_tRNS)) &&
                             (((*(p-2) << 8)|*(p-1))
                             == transparent_color.opacity))
                           {
