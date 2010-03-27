@@ -3920,7 +3920,7 @@ option appears after all of the input images, all images are processed.</pp>
 
 <pp>
 <tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image
+(newswire information), or a generic (including Exif) profile to the image
 </pp>.
 <pp>
 Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>, or
@@ -3931,6 +3931,12 @@ an exclamation point.  For example, <tt>+profile '!icm,*'</tt> strips
 all profiles except for the ICM profile.  Use <tt>identify
 -verbose</tt> to find out what profiles are in the image file.  Use
 <tt>+profile "*"</tt> to remove all profiles.</pp>
+<pp>Writing the image to a format that does not support profiles will
+of course also cause all profiles to be removed.  The JPEG and PNG
+formats will store any profiles that have been read and not removed.
+In JPEG they are stored in APP1 markers, and in PNG they are stored
+as hex-coded binary in compressed zTXt chunks, except for the iCC
+chunk which is stored in the iCCP chunk.</pp>
 <pp>
 To extract a profile, the <s>-profile</s> option is not used.  Instead,
 simply write the file to an image
@@ -3942,6 +3948,10 @@ in the <i>APP1</i> profile), use
 <pre>
     convert cockatoo.jpg exifdata.app1
 </pre>
+<pp>Note that GraphicsMagick does not attempt to update any profile to
+reflect changes made to the image, e.g., rotation from portrait to landscape
+orientation, so it is possible that the preserved profile may contain
+invalid data.</pp>
 
 </utils>
 
