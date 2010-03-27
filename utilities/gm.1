@@ -1,4 +1,4 @@
-.TH gm 1 "2010/03/01" "GraphicsMagick"
+.TH gm 1 "2010/03/27" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3121,7 +3121,7 @@ option appears after all of the input images, all images are processed.
 \fRadd ICM, IPTC, or generic profile  to image
 
 -profile filename adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image
+(newswire information), or a generic (including Exif) profile to the image
 .
 
 Use +profile icm, +profile iptc, or
@@ -3132,6 +3132,12 @@ an exclamation point.  For example, +profile '!icm,*' strips
 all profiles except for the ICM profile.  Use identify
 -verbose to find out what profiles are in the image file.  Use
 +profile "*" to remove all profiles.
+Writing the image to a format that does not support profiles will
+of course also cause all profiles to be removed.  The JPEG and PNG
+formats will store any profiles that have been read and not removed.
+In JPEG they are stored in APP1 markers, and in PNG they are stored
+as hex-coded binary in compressed zTXt chunks, except for the iCC
+chunk which is stored in the iCCP chunk.
 
 To extract a profile, the \fB-profile\fP option is not used.  Instead,
 simply write the file to an image
@@ -3142,6 +3148,10 @@ in the \fIAPP1\fP profile), use
 
 
     gm convert cockatoo.jpg exifdata.app1
+Note that GraphicsMagick does not attempt to update any profile to
+reflect changes made to the image, e.g., rotation from portrait to landscape
+orientation, so it is possible that the preserved profile may contain
+invalid data.
 .TP
 .B "+progress"
 \fRdisable progress monitor and busy cursor
