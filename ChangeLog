@@ -1,5 +1,9 @@
 2010-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* GraphicsMagick.spec.in: Fix RPM build.  PerlMagick was not being
+	built due to Makefile changes.  Resolves SourceForge issue
+	#2952696 "RPM build broken: (Perl) file not found by glob".
+
 	* magick/quantize.c (ReduceImageColors): Progress message should
 	include the image file name.
 
