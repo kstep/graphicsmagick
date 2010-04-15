@@ -2488,7 +2488,13 @@ AC_SUBST(windows_font_dir)
 
 # Adobe Postscript fonts on various systems
 case $host_os in
-  solaris*) type_include_files="$type_include_files "'<include file="type-solaris.mgk" />';;
+  solaris*)
+    # Check for OpenWindows Type 1 fonts.  Not available under OpenSolaris
+    if test -f /usr/openwin/lib/X11/fonts/Type1/afm/Helvetica.afm
+    then
+      type_include_files="$type_include_files "'<include file="type-solaris.mgk" />'
+    fi
+    ;;
 esac
 
 # Ghostscript

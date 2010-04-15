@@ -1,3 +1,8 @@
+2010-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/CoderInfo.h: Add default constructor, copy
+	constructor, and assignment operator.
+
 2010-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (Magick): Fix potential memory leak.

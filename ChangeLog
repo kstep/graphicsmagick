@@ -1,3 +1,9 @@
+2010-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Under Solaris, make sure that OpenWindows Type1
+	fonts do exist before deciding to use them.  OpenSolaris does not
+	provide these fonts.
+
 2010-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: Fix RPM build.  PerlMagick was not being
