@@ -120,9 +120,6 @@ GraphicsMagick C interface, however.
 # uncomment the two lines below.  You may be using an older
 # libtool that sometimes has trouble linking the files.
 
-#GM=$RPM_BUILD_DIR/%{name}-%{version}
-#export LDFLAGS="-L$GM/magick/.libs $LDFLAGS"
-
 %if %{perlm}
 # Maybe this will fix perl installation issues.
 if [ -z "`perl -v | grep 5.8`" ]; then
@@ -134,8 +131,9 @@ fi
 rm -f PerlMagick/Makefile.PL
 
 %configure --with-included-ltdl \
-        --enable-shared --disable-static \
+        --enable-shared \
 	--with-modules --with-frozenpaths \
+	--docdir=%{_datadir}/doc/%{name}-%{base_version} \
 %if %{perlm}
 	--with-perl \
 	--with-perl-options="$PERLOPTS" \
@@ -173,7 +171,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, 755)
-%doc ChangeLog Copyright.txt README.txt NEWS.txt
 %doc %{_datadir}/%{name}-%{base_version}
 %{_libdir}/lib%{name}.so.*
 %{_libdir}/lib%{name}Wand.so.*
@@ -186,8 +183,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644, root, man) %{_mandir}/man1/gm.1.gz
 %attr(644, root, man) %{_mandir}/man4/*gz
 %attr(644, root, man) %{_mandir}/man5/*gz
-%docdir %{_datadir}/doc/%{name}
-%{_datadir}/doc/%{name}/*
+%docdir %{_datadir}/doc/%{name}-%{base_version}
+%{_datadir}/doc/%{name}-%{base_version}/*
 
 %files devel
 %defattr(644, root, root, 755)
@@ -200,7 +197,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.*a
 %{_libdir}/lib%{name}.so
 %dir %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}
-%{_libdir}/%{name}-%{base_version}/modules-Q%{quant}/*/*.la
 %{_libdir}/pkgconfig/%{name}.pc
 %{_libdir}/pkgconfig/%{name}Wand.pc
 #%{_bindir}/%{name}-config
@@ -239,6 +235,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Apr 16 2010 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.3.13
+- Avoided duplicate copies of documentation files.  Put documentation
+  into a versioned directory as used by Red Hat and CentOS.  Include
+  archive libraries in developer package.
+
 * Tue Apr 13 2010 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.3.13
 - Fixed PerlMagick build and install which was broken by Makefile
   changes.

@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003-2010 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998,1999 E. I. du Pont de Nemours and Company
 #
@@ -13,6 +13,17 @@
 
 use ExtUtils::MakeMaker;
 use Config;
+
+my $magick_CPPFLAGS='@CPPFLAGS@';
+my $magick_DEFS='@LFS_CPPFLAGS@ @DEFS@';
+my $magick_CFLAGS='@CFLAGS@';
+my $magick_CC='@CC@';
+my $magick_CPPFLAGS='-I../ -I@top_srcdir@ @CPPFLAGS@';
+my $magick_LDFLAGS='@LDFLAGS@';
+my $magick_BIN_DIR="$ENV{'DESTDIR'}@BIN_DIR@";
+my $magick_DEP_LIBS='@MAGICK_DEP_LIBS@';
+my $magick_PERLMAINCC='@PERLMAINCC@';
+my $magick_LIB_DIR="$ENV{'DESTDIR'}@MAGICKLIBDIR@";
 
 # Compute test specification
 my $delegate_tests='t/*.t';
@@ -40,34 +51,34 @@ WriteMakefile
    'VERSION'   => '@PACKAGE_VERSION@',
 
    # Preprocessor defines
-   'DEFINE'	=> '@LFS_CPPFLAGS@  @DEFS@',     # e.g., '-DHAVE_SOMETHING' 
+   'DEFINE'	=> $magick_DEFS,     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
+   'INC'	=> $magick_CPPFLAGS,
 
    # C compiler
-   'CC'	        => '@CC@',
+   'CC'	        => $magick_CC,
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS'    => "$Config{'cppflags'} @CPPFLAGS@",
+   # 'CPPFLAGS'    => "$Config{'cppflags'} $magick_CPPFLAGS",
 
    # C compiler flags (e.g. -O -g)
-   'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
+   'CCFLAGS'     => "$Config{'ccflags'} $magick_CFLAGS",
 
    # Linker
-   'LD'          => $Config{'ld'} == $Config{'cc'} ? '@CC@' : $Config{'ld'},
+   'LD'          => $Config{'ld'} == $Config{'cc'} ? $magick_CC : $Config{'ld'},
 
    # Linker flags for building an executable
-   'LDFLAGS'    =>  "-L@MAGICKLIBDIR@ $Config{'ldflags'}",
+   'LDFLAGS'    =>  "-L$magick_LIB_DIR $Config{'ldflags'}",
 
    # Linker flags for building a dynamically loadable module
-   'LDDLFLAGS'  => "-L@MAGICKLIBDIR@ $Config{'lddlflags'}",
+   'LDDLFLAGS'  => "-L$magick_LIB_DIR $Config{'lddlflags'}",
 
    # Install PerlMagick binary into GraphicsMagick bin directory
-   'INSTALLBIN'	=> '@BIN_DIR@',
+   'INSTALLBIN'	=> $magick_BIN_DIR,
 
    # Library specification
-   'LIBS'	=> ['-L@MAGICKLIBDIR@ -lGraphicsMagick @LDFLAGS@ @MAGICK_DEP_LIBS@'],
+   'LIBS'	=> ["-L$magick_LIB_DIR -lGraphicsMagick $magick_LDFLAGS $magick_DEP_LIBS"],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
@@ -76,7 +87,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as GraphicsMagick
-   'PERLMAINCC'	=> '@PERLMAINCC@',
+   'PERLMAINCC'	=> $magick_PERLMAINCC,
 
    # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '@prefix@',

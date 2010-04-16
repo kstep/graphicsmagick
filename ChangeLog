@@ -1,3 +1,13 @@
+2010-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Avoid duplicate copies of documentation
+	files.  Put documentation into a versioned directory as used by
+	Red Hat and CentOS.  Include archive libraries in developer
+	package.
+
+	* PerlMagick/Makefile.PL.in: Include support for DESTDIR so that
+	RPM builds find the installed GraphicsMagick library.
+
 2010-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Under Solaris, make sure that OpenWindows Type1

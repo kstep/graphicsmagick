@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -217,7 +217,8 @@ check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
 # drd: valgrind's newer thread error detector
 drd:
-	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
+	  --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # helgrind: valgrind's older thread error detector
 helgrind:
@@ -225,7 +226,8 @@ helgrind:
 
 # memcheck: valgrind's memory access checker
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
+	  --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:
@@ -289,7 +291,8 @@ $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
-	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) \
+	  -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
 if HAS_P7ZIP
 	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
@@ -311,8 +314,8 @@ $(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 	@echo ==============================================================
 
-RPMDIR=redhat
-RPMARCH=i386
+RPMDIR=rpmbuild
+RPMARCH=$(MAGICK_TARGET_CPU)
 
 DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
@@ -324,11 +327,12 @@ DIST_ARCHIVE_RPM= \
 .PHONY: rpm
 rpm:
 	rm -rf $(RPMDIR)
-	mkdir $(RPMDIR)
-	mkdir $(RPMDIR)/BUILD
-	mkdir $(RPMDIR)/RPMS
-	$(MAKE) distcheck
-	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb GraphicsMagick.spec
+	$(MKDIR_P) $(RPMDIR)
+	$(MKDIR_P) $(RPMDIR)/BUILD
+	$(MKDIR_P) $(RPMDIR)/RPMS
+	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" \
+	  --define="_builddir `pwd`/$(RPMDIR)/BUILD" --define='quant $(QuantumDepth)' \
+	  --nodeps -bb GraphicsMagick.spec
 	rm -rf rpmbuild
 	@echo ==============================================================
 	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
