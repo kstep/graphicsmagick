@@ -297,7 +297,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     {
       MagickBool
         thread_status;
-    
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_FrameImage)
+#endif    
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -494,7 +497,10 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise_flag)
     {
       MagickBool
         thread_status;
-    
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_RaiseImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;

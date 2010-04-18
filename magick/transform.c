@@ -160,6 +160,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ChopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -228,6 +231,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ChopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -523,6 +529,9 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_CropImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -983,6 +992,9 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_FlipImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1105,6 +1117,9 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_FlopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;

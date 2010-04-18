@@ -577,7 +577,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 		ImportPixelAreaInfo
 		  import_info;
-          
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ReadPNMImage)
+#endif
                 thread_status=status;
                 if (thread_status == MagickFail)
                   continue;
@@ -665,7 +668,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   x;
 
                 register PixelPacket
-                  *q;
+                  *q = (PixelPacket *) NULL;
 
                 void
                   *pixels;
@@ -678,7 +681,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 unsigned long
                   thread_row_count;
-          
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ReadPNMImage)
+#endif
                 thread_status=status;
                 if (thread_status == MagickFail)
                   continue;
@@ -794,7 +800,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   x;
 
                 register PixelPacket
-                  *q;
+                  *q = (PixelPacket *) NULL;
 
                 void
                   *pixels;
@@ -808,7 +814,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             
                 unsigned long
                   thread_row_count;
-            
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ReadPNMImage)
+#endif
                 thread_status=status;
                 if (thread_status == MagickFail)
                   continue;

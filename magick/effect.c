@@ -154,6 +154,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_AdaptiveThresholdImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -632,6 +635,9 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
           MagickBool
             thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_BlurImageScanlines)
+#endif
           thread_status=status;
           if (thread_status == MagickFail)
             continue;
@@ -1170,6 +1176,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_ConvolveImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -1387,6 +1396,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_DespeckleImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1463,7 +1475,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
           (void) memset(buffer,0,length);
           for (i=0; i < 4; i++)
             {
-              if (status == MagickFail)
+              if (thread_status == MagickFail)
                 continue;
 #if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_DespeckleImage)
@@ -1819,6 +1831,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_EnhanceImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -2402,6 +2417,9 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_MedianFilterImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -2648,6 +2666,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_MotionBlurImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -2920,7 +2941,10 @@ RandomChannelThresholdImage(Image *image,const char *channel,
 
         MagickBool
           thread_status;
-        
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_RandomChannelThresholdImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -3373,6 +3397,9 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_ReduceNoiseImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -3527,6 +3554,9 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_ShadeImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -3869,6 +3899,9 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_SpreadImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -4057,6 +4090,9 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ThresholdImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;

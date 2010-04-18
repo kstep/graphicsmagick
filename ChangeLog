@@ -1,3 +1,8 @@
+2010-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/*.c, magick/*.c: Eliminate many benign data race
+	conditions.
+
 2010-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: Avoid duplicate copies of documentation

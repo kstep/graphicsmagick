@@ -1596,13 +1596,11 @@ BenchmarkImageCommand(ImageInfo *image_info,
     if (concurrent)
       {
 	MagickBool
-	  quit;
+	  quit = MagickFalse;
 
 	long
-	  count;
+	  count = 0;
 
-	count=0;
-	quit=MagickFalse;
 	omp_set_nested(MagickTrue);
 	if (duration > 0)
 	  {
@@ -1613,7 +1611,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		MagickPassFail
 		  thread_status;
 
-		if (quit)
+		MagickBool
+		  thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		thread_quit=quit;
+		
+		if (thread_quit)
 		  continue;
 
 		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
@@ -1623,12 +1627,14 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  if (!thread_status)
 		    {
 		      status=thread_status;
-		      quit=MagickTrue;
+		      thread_quit=MagickTrue;
 		    }
 		  if (GetElapsedTime(&timer) > duration)
-		    quit=MagickTrue;
+		    thread_quit=MagickTrue;
 		  else
 		    (void) ContinueTimer(&timer);
+		  if (thread_quit)
+		    quit=thread_quit;
 		}
 	      }
 	  }
@@ -1640,7 +1646,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		MagickPassFail
 		  thread_status;
 
-		if (quit)
+		MagickBool
+		  thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		thread_quit=quit;
+
+		if (thread_quit)
 		  continue;
 
 		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
@@ -1650,8 +1662,10 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  if (!thread_status)
 		    {
 		      status=thread_status;
-		      quit=MagickTrue;
+		      thread_quit=MagickTrue;
 		    }
+		  if (thread_quit)
+		    quit=thread_quit;
 		}
 	      }
 	  }

@@ -2307,6 +2307,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               unsigned long
                 thread_row_count;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ReadDPXImage)
+#endif
               thread_status=status;
               if (thread_status == MagickFail)
                 continue;

@@ -27,11 +27,12 @@ $(top_srcdir)/$(PERLMAGICK)/Magick.pm : $(PERLMAGICK)/Magick.pm
 	    cp $(PERLMAGICK)/Magick.pm $(top_srcdir)/$(PERLMAGICK)/Magick.pm ; \
 	fi
 
+
+PERLMAGICK=PerlMagick
 PERLMAGICK_MAINTAINER_TARGETS=$(top_srcdir)/$(PERLMAGICK)/Magick.pm
 
 if WITH_PERL
 
-PERLMAGICK=PerlMagick
 PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
 PERLMAKEFILE=$(PERLMAGICK)/Makefile
 

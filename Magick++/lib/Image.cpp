@@ -1180,7 +1180,7 @@ void Magick::Image::map ( const Image &mapImage_ , const bool dither_ )
   modifyImage();
   MapImage ( image(),
              mapImage_.constImage(),
-             dither_ == true ? 1 : 0 );
+             (dither_ == true ? 1 : 0) );
   throwImageException();
 }
 // Floodfill designated area with replacement opacity value
@@ -1256,7 +1256,7 @@ void            Magick::Image::motionBlur ( const double radius_,
 void Magick::Image::negate ( const bool grayscale_ )
 {
   modifyImage();
-  NegateImage ( image(), grayscale_ == true ? 1 : 0 );
+  NegateImage ( image(), (grayscale_ == true ? 1 : 0) );
   throwImageException();
 }
 
@@ -1430,7 +1430,7 @@ void Magick::Image::raise ( const Geometry &geometry_ ,
 {
   RectangleInfo raiseInfo = geometry_;
   modifyImage();
-  RaiseImage ( image(), &raiseInfo, raisedFlag_ == true ? 1 : 0 );
+  RaiseImage ( image(), &raiseInfo, (raisedFlag_ == true ? 1 : 0) );
   throwImageException();
 }
 
@@ -1698,7 +1698,7 @@ void Magick::Image::shade ( const double azimuth_,
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     ShadeImage( image(),
-		colorShading_ == true ? 1 : 0,
+		(colorShading_ == true ? 1 : 0),
 		azimuth_,
 		elevation_,
 		&exceptionInfo);
@@ -3275,7 +3275,7 @@ std::string Magick::Image::signature ( const bool force_ ) const
   Lock( &_imgRef->_mutexLock );
 
   // Re-calculate image signature if necessary
-  if ( force_ ||
+  if ( (force_) ||
        !GetImageAttribute(constImage(), "Signature") ||
        constImage()->taint )
     {

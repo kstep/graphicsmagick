@@ -611,6 +611,9 @@ Classify(Image *image,short **extrema,
       int
 	num_threads;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_Classify)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;

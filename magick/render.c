@@ -1100,6 +1100,9 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
       register long
         x;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_DrawAffineImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -3444,6 +3447,9 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 	  MagickPassFail
 	    thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_DrawPolygonPrimitive_Status)
+#endif
 	  thread_status=status;
 	  if (thread_status == MagickFail)
 	    continue;
@@ -3526,6 +3532,9 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 	  MagickPassFail
 	    thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_DrawPolygonPrimitive_Status)
+#endif
 	  thread_status=status;
 	  if (thread_status == MagickFail)
 	    continue;

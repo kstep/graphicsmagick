@@ -427,6 +427,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -601,6 +606,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -676,6 +686,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -802,13 +817,13 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!MagickMonitorFormatted(tile,total_tiles,exception,
                                                 message,image->filename))
                       thread_status=MagickFail;
+
+		  if (thread_status == MagickFail)
+		    status=MagickFail;
                 }
 
                 if (thread_status == MagickFail)
-                  {
-                    status=MagickFail;
-                    break;
-                  }
+		  break;
               }
           }
         Swap(page.width,page.height);
@@ -912,7 +927,10 @@ XShearImage(Image *image,const double degrees,
 
       MagickPassFail
         thread_status;
-      
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_XShearImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1179,7 +1197,10 @@ YShearImage(Image *image,const double degrees,
 
       MagickPassFail
         thread_status;
-      
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_YShearImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
