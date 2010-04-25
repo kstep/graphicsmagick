@@ -1,3 +1,12 @@
+2010-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Documentation for -flatten and -mosaic has
+	been improved.
+
+	* magick/transform.c (MosaicImages): The -mosaic command now
+	respects the composition option specified by -compose as well as
+	the image background color specified by -background.
+
 2010-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/*.c, magick/*.c: Eliminate many benign data race

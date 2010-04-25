@@ -1,4 +1,4 @@
-.TH gm 1 "2010/03/27" "GraphicsMagick"
+.TH gm 1 "2010/04/25" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1825,13 +1825,31 @@ being enlarged, otherwise the \fBLanczos\fP filter is used.
 .B "-flatten"
 \fRflatten a sequence of images
 
-The sequence of images is replaced by a single image created by composing each
-image after the first over the first image.
+In some file formats (e.g. Photoshop's PSD) complex images may be
+represented by "layers" (independent images) which must be composited
+in order to obtain the final rendition.  The \fB-flatten\fP option
+accomplishes this composition.  The sequence of images is replaced by
+a single image created by compositing each image in turn, while
+respecting composition operators and page offsets.  While
+\fB-flatten\fP is immediately useful for eliminating layers, it is
+also useful as a general-purpose composition tool.
 
-The sequence of images
-is terminated by the appearance of any option.
-If the \fB-flatten\fP
-option appears after all of the input images, all images are flattened.
+The sequence of images is terminated by the appearance of any option.
+If the \fB-flatten\fP option appears after all of the input images,
+all images are flattened.  Also see \fB-mosaic\fP which is similar to
+\fB-flatten\fP except that it adds a suitably-sized canvas base
+image.
+
+For example, this composites an image on top of a 640x400 transparent
+black canvas image:
+
+     gm convert -size 640x300 xc:transparent \\
+          -compose over -page +0-100 frame.png \\
+          -flatten output.png
+
+and this flattens a Photoshop PSD file:
+
+     gm convert input.psd -flatten output.png.
 .TP
 .B "-flip"
 \fRcreate a "mirror image"
@@ -2556,14 +2574,38 @@ option appears after all of the input images, all images are morphed.
 .B "-mosaic"
 \fRcreate a mosaic from an image or an image sequence
 
-The \fB-page\fP option can be used to establish the dimensions of the mosaic
-and to locate the images within the mosaic.
+The \fB-mosaic\fP option provides a flexible way to composite one or
+more images onto a solid-color canvas image. It works similar to
+\fB-flatten\fP except that a base canvas image is automatically
+created with a suitable size given the image size, page dimensions,
+and page offsets of images to be composited.  The color of the base
+canvas image may be set via the \fB-background\fP option.  The
+default canvas color is 'white', but 'black' or 'transparent' may be
+more suitable depending on the composition algorithm requested.
 
-The sequence of images
-is terminated by the appearance of any option.
-If the \fB-mosaic\fP
-option appears after all of the input images, all images are included
-in the mosaic.
+The \fB-compose\fP option may be used to specify the composition
+algorithm to use when compositing the subsequent image on the base
+canvas.
+
+The \fB-page\fP option can be used to establish the dimensions of the
+mosaic and to position the subsequent image within the mosaic.  If the
+\fB-page\fP argument does not specify width and height, then the
+canvas dimensions are evaluated based on the image sizes and
+offsets.
+
+The sequence of images is terminated by the appearance of any option.
+If the \fB-mosaic\fP option appears after all of the input images,
+all images are included in the mosaic.
+
+The following is an example of composing an image based on red, green,
+and blue layers extracted from a sequence of images and pasted on the
+canvas image at specified offsets:
+
+     gm convert -background black \\
+       -compose CopyRed   -page +0-100 red.png \\
+       -compose CopyGreen -page +0+40  green.png \\
+       -compose CopyBlue  -page +0+180 blue.png \\
+       -mosaic output.png
 .TP
 .B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
 \fRSimulate motion blur

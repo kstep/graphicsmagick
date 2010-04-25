@@ -2143,13 +2143,33 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>flatten a sequence of images</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The sequence of images is replaced by a single image created by composing each
-image after the first over the first image.</font></td></tr></table>
+In some file formats (e.g. Photoshop's PSD) complex images may be
+represented by "layers" (independent images) which must be composited
+in order to obtain the final rendition.  The <strong>-flatten</strong> option
+accomplishes this composition.  The sequence of images is replaced by
+a single image created by compositing each image in turn, while
+respecting composition operators and page offsets.  While
+<strong>-flatten</strong> is immediately useful for eliminating layers, it is
+also useful as a general-purpose composition tool.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The sequence of images
-is terminated by the appearance of any option.
-If the <strong>-flatten</strong>
-option appears after all of the input images, all images are flattened.</font></td></tr></table>
+The sequence of images is terminated by the appearance of any option.
+If the <strong>-flatten</strong> option appears after all of the input images,
+all images are flattened.  Also see <strong>-mosaic</strong> which is similar to
+<strong>-flatten</strong> except that it adds a suitably-sized canvas base
+image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For example, this composites an image on top of a 640x400 transparent
+black canvas image:</font></td></tr></table>
+<pre>
+     gm convert -size 640x300 xc:transparent \
+          -compose over -page +0-100 frame.png \
+          -flatten output.png
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+and this flattens a Photoshop PSD file:</font></td></tr></table>
+<pre>
+     gm convert input.psd -flatten output.png.
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3267,14 +3287,39 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>create a mosaic from an image or an image sequence</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The <strong>-page</strong> option can be used to establish the dimensions of the mosaic
-and to locate the images within the mosaic.</font></td></tr></table>
+The <strong>-mosaic</strong> option provides a flexible way to composite one or
+more images onto a solid-color canvas image. It works similar to
+<strong>-flatten</strong> except that a base canvas image is automatically
+created with a suitable size given the image size, page dimensions,
+and page offsets of images to be composited.  The color of the base
+canvas image may be set via the <strong>-background</strong> option.  The
+default canvas color is 'white', but 'black' or 'transparent' may be
+more suitable depending on the composition algorithm requested.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The sequence of images
-is terminated by the appearance of any option.
-If the <strong>-mosaic</strong>
-option appears after all of the input images, all images are included
-in the mosaic.</font></td></tr></table>
+The <strong>-compose</strong> option may be used to specify the composition
+algorithm to use when compositing the subsequent image on the base
+canvas.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-page</strong> option can be used to establish the dimensions of the
+mosaic and to position the subsequent image within the mosaic.  If the
+<strong>-page</strong> argument does not specify width and height, then the
+canvas dimensions are evaluated based on the image sizes and
+offsets.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The sequence of images is terminated by the appearance of any option.
+If the <strong>-mosaic</strong> option appears after all of the input images,
+all images are included in the mosaic.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The following is an example of composing an image based on red, green,
+and blue layers extracted from a sequence of images and pasted on the
+canvas image at specified offsets:</font></td></tr></table>
+<pre>
+     gm convert -background black \
+       -compose CopyRed   -page +0-100 red.png \
+       -compose CopyGreen -page +0+40  green.png \
+       -compose CopyBlue  -page +0+180 blue.png \
+       -mosaic output.png
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

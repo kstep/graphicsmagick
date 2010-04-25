@@ -8300,6 +8300,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert((*image)->signature == MagickSignature);
   if (argc <= 0)
     return(True);
+
+#if defined(DEBUG_COMMAND_PARSER)
+  fprintf(stderr,"  MogrifyImage (0x%p->%s):", *image, (*image)->filename);
+  for (i=0; i < argc; i++)
+    fprintf(stderr," %s",argv[i]);
+  fprintf(stderr,"\n");
+#endif /* DEBUG_COMMAND_PARSER */
+
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
       MagickFatalError(OptionFatalError,OptionLengthExceedsLimit,argv[i]);
@@ -8325,7 +8333,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Transmogrify the image.
   */
-
   for (i=0; i < argc; i++)
   {
     option=argv[i];
@@ -8588,9 +8595,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("compose",option+1) == 0)
           {
-            option=argv[++i];
-            (*image)->compose=StringToCompositeOperator(option);
-            break;
+	    (*image)->compose=CopyCompositeOp;
+	    if (*option == '-')
+	      (*image)->compose=StringToCompositeOperator(argv[++i]);
+            continue;
           }
         if (LocaleCompare("compress",option+1) == 0)
           {
@@ -10594,6 +10602,21 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert((*images)->signature == MagickSignature);
   if ((argc <= 0) || (*argv == (char *) NULL))
     return(True);
+
+#if defined(DEBUG_COMMAND_PARSER)
+  fprintf(stderr,"MogrifyImages (");
+  for (image=*images; image; image=image->next)
+    {
+      if (image != *images)
+	fprintf(stderr,", ");
+      fprintf(stderr,"0x%p->%s", image, image->filename);
+    }
+  fprintf(stderr,"):");
+  for (i=0; i < argc; i++)
+    fprintf(stderr," %s",argv[i]);
+  fprintf(stderr,"\n");
+#endif /* DEBUG_COMMAND_PARSER */
+
   scene=False;
   for (i=0; i < argc; i++)
   {

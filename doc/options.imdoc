@@ -1962,13 +1962,47 @@ being enlarged, otherwise the <s>Lanczos</s> filter is used.</pp>
 <abs>flatten a sequence of images</abs>
 
 <pp>
-The sequence of images is replaced by a single image created by composing each
-image after the first over the first image.</pp>
+
+In some file formats (e.g. Photoshop's PSD) complex images may be
+represented by "layers" (independent images) which must be composited
+in order to obtain the final rendition.  The <s>-flatten</s> option
+accomplishes this composition.  The sequence of images is replaced by
+a single image created by compositing each image in turn, while
+respecting composition operators and page offsets.  While
+<s>-flatten</s> is immediately useful for eliminating layers, it is
+also useful as a general-purpose composition tool.</pp>
+
 <pp>
-The sequence of images
-is terminated by the appearance of any option.
-If the <s>-flatten</s>
-option appears after all of the input images, all images are flattened.</pp>
+
+The sequence of images is terminated by the appearance of any option.
+If the <s>-flatten</s> option appears after all of the input images,
+all images are flattened.  Also see <s>-mosaic</s> which is similar to
+<s>-flatten</s> except that it adds a suitably-sized canvas base
+image.</pp>
+
+<pp>
+
+For example, this composites an image on top of a 640x400 transparent
+black canvas image:</pp>
+
+<pre>
+
+     gm convert -size 640x300 xc:transparent \
+          -compose over -page +0-100 frame.png \
+          -flatten output.png
+
+</pre>
+
+<pp>
+
+and this flattens a Photoshop PSD file:</pp>
+
+<pre>
+
+     gm convert input.psd -flatten output.png.
+
+</pre>
+
 
 </utils>
 
@@ -3245,15 +3279,51 @@ option appears after all of the input images, all images are morphed.</pp>
 <abs>create a mosaic from an image or an image sequence</abs>
 
 <pp>
-The <s>-page</s> option can be used to establish the dimensions of the mosaic
-and to locate the images within the mosaic.</pp>
+
+The <s>-mosaic</s> option provides a flexible way to composite one or
+more images onto a solid-color canvas image. It works similar to
+<s>-flatten</s> except that a base canvas image is automatically
+created with a suitable size given the image size, page dimensions,
+and page offsets of images to be composited.  The color of the base
+canvas image may be set via the <s>-background</s> option.  The
+default canvas color is 'white', but 'black' or 'transparent' may be
+more suitable depending on the composition algorithm requested.</pp>
 
 <pp>
-The sequence of images
-is terminated by the appearance of any option.
-If the <s>-mosaic</s>
-option appears after all of the input images, all images are included
-in the mosaic.</pp>
+
+The <s>-compose</s> option may be used to specify the composition
+algorithm to use when compositing the subsequent image on the base
+canvas.</pp>
+
+<pp>
+
+The <s>-page</s> option can be used to establish the dimensions of the
+mosaic and to position the subsequent image within the mosaic.  If the
+<s>-page</s> argument does not specify width and height, then the
+canvas dimensions are evaluated based on the image sizes and
+offsets.</pp>
+
+<pp>
+
+The sequence of images is terminated by the appearance of any option.
+If the <s>-mosaic</s> option appears after all of the input images,
+all images are included in the mosaic.</pp>
+
+<pp>
+
+The following is an example of composing an image based on red, green,
+and blue layers extracted from a sequence of images and pasted on the
+canvas image at specified offsets:</pp>
+
+<pre>
+
+     gm convert -background black \
+       -compose CopyRed   -page +0-100 red.png \
+       -compose CopyGreen -page +0+40  green.png \
+       -compose CopyBlue  -page +0+180 blue.png \
+       -mosaic output.png
+
+</pre>
 
 </utils>
 
