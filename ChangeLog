@@ -1,3 +1,8 @@
+2010-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (ReadTXTImage): Matte channel was not being enabled
+	for non-opaque images.
+
 2010-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Documentation for -flatten and -mosaic has
