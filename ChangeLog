@@ -2,6 +2,8 @@
 
 	* coders/txt.c (ReadTXTImage): Matte channel was not being enabled
 	for non-opaque images.
+	(ReadTXTImage): Opacity values need to be inverted prior to
+	ingestion.
 
 2010-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

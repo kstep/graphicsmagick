@@ -325,10 +325,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TypeMetric
     metrics;
 
-  unsigned int
+  MagickPassFail
     status;
 
-  int
+  MagickBool
     logging;
 
   /*
@@ -402,22 +402,29 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       switch(status)
 	{
 	case TXT_GM8B_HEX:
-	case TXT_GM8B_HEX_Q:  max=255; break;
+	case TXT_GM8B_HEX_Q:
+	  max=255;
+	  break;
 	case TXT_GM16B_HEX:
-	case TXT_GM16B_HEX_Q: max=65535; break;	
+	case TXT_GM16B_HEX_Q:
+	  max=65535;
+	  break;	
 	case TXT_GM32B_HEX:	
-	case TXT_GM32B_HEX_Q: max=65536; break;
+	case TXT_GM32B_HEX_Q:
+	  max=65536;
+	  break;
 	}
 
       /*
 	Set opacity flag.
       */
+      image->matte=MagickFalse;
       if (status >= IMAGEMAGICK_TXT_Q)
 	image->matte=MagickTrue;
 
       if (!strncmp(p,"# ImageMagick pixel enumeration:",32))
 	{
-	  if (sscanf(p+32,"%u,%u,%u",&x_min,&y_curr,&x_max)==3)
+	  if (sscanf(p+32,"%u,%u,%u",&x_min,&y_curr,&x_max) == 3)
 	    {
 	      if (strstr(p+32,",rgb")!=NULL)
 		{
@@ -437,7 +444,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	while (!EOFBlob(image))	/* auto detect sizes and num of planes */
 	  {
 	    while (!(ch >= '0' && ch <= '9'))
-	      {             /* go to the begin of number */
+	      {
+		/* go to the begin of number */
 		ch = ReadBlobByte(image);
 		if (ch == EOF)
 		  goto EndReading;
@@ -446,7 +454,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		    readln(image,&ch);
 		    continue;
 		  }
-		if (ch == 0 || ch > 128 || (ch >= 'a' && ch <= 'z') ||
+		if (ch == 0 || ch > 128 ||
+		    (ch >= 'a' && ch <= 'z') ||
 		    (ch >= 'A' && ch <= 'Z'))
 		  {
 		  TXT_FAIL:			/* not a text data */
@@ -519,7 +528,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    if (B > max)
 	      max=B;
 
-	    if (status>16)
+	    if (status >= IMAGEMAGICK_TXT_Q)
 	      {
 		while (ch != ',')
 		  {
@@ -572,7 +581,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   
       BImgBuff = MagickAllocateArray(unsigned char *,
 				     (size_t)(x+1),
-				     ( ((status>16)?4:3) * NumOfPlanes/8));
+				     ( ((image->matte) ? 4 : 3)
+				       * NumOfPlanes/8));
       WImgBuff = (magick_uint16_t *)BImgBuff;
       DImgBuff = (magick_uint32_t *)BImgBuff;  
       if (BImgBuff == NULL) 
@@ -583,7 +593,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       (void) SeekBlob(image,0,SEEK_SET);
 
-      while (!EOFBlob(image)) 	/* load picture data */
+      /*
+	Load picture data
+      */
+      while (!EOFBlob(image))
 	{
 	  x=0;
 	  while (!(ch >= '0' && ch <= '9'))
@@ -613,13 +626,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  while (ch != ':')
 	    {
 	      ch = ReadBlobByte(image);
-	      if (ch==EOF)
+	      if (ch == EOF)
 		break;
 	    }
 	  while (ch != '(')
 	    {
 	      ch = ReadBlobByte(image);
-	      if (ch==EOF)
+	      if (ch == EOF)
 		break;
 	    }
 	  ch=0;
@@ -628,7 +641,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  while (ch != ',')
 	    {
 	      ch = ReadBlobByte(image);
-	      if (ch==EOF)
+	      if (ch == EOF)
 		break;
 	    }
 	  ch=0;
@@ -643,7 +656,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  ch=0;
 	  B = ReadInt(image,&ch);		/* B */
 
-	  if (status > 16)
+	  if (image->matte)
 	    {
 	      while (ch != ',')
 		{
@@ -672,7 +685,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	      if (q == (PixelPacket *)NULL)
 		break;
 
-	      if (status > 16)
+	      if (image->matte)
 		(void)ImportImagePixelArea(image,RGBAQuantum,NumOfPlanes,
 					   BImgBuff + 4*x_min*(NumOfPlanes/8),
 					   &import_options,0);
@@ -690,7 +703,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	  if (x < image->columns)
 	    {
-	      if (status > 16)
+	      if (image->matte)
 		{
 		  switch(NumOfPlanes)
 		    {
@@ -698,19 +711,19 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		      BImgBuff[0+4*x] = R;
 		      BImgBuff[1+4*x] = G;
 		      BImgBuff[2+4*x] = B;
-		      BImgBuff[3+4*x] = A;
+		      BImgBuff[3+4*x] = 255U-A;
 		      break;
 		    case 16:
 		      WImgBuff[0+4*x] = R;
 		      WImgBuff[1+4*x] = G;
 		      WImgBuff[2+4*x] = B;
-		      WImgBuff[3+4*x] = A;
+		      WImgBuff[3+4*x] = 65535U-A;
 		      break;
 		    case 32:
 		      DImgBuff[0+4*x] = R;
 		      DImgBuff[1+4*x] = G;
 		      DImgBuff[2+4*x] = B;
-		      DImgBuff[3+4*x] = A;
+		      DImgBuff[3+4*x] = 4294967295U-A;
 		      break;
 		    }    
 		}
@@ -755,7 +768,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);	  
 	  if (q != (PixelPacket *)NULL)
 	    {
-	      if (status > 16)        
+	      if (image->matte)        
 		(void)ImportImagePixelArea(image, RGBAQuantum, NumOfPlanes,
 					   BImgBuff + 4*x_min*(NumOfPlanes/8),
 					   &import_options, 0);
