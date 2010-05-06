@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -1003,16 +1003,17 @@ extern MagickExport MagickPassFail
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AnimateImages(const ImageInfo *image_info,Image *image),
-  ClipImage(Image *),
+  ClipImage(Image *image),
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   DisplayImages(const ImageInfo *image_info,Image *image),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
-  SetImage(Image *,const Quantum),
+  SetImage(Image *image,const Quantum),
+  SetImageColor(Image *image,const PixelPacket *pixel),
   SetImageClipMask(Image *image,const Image *clip_mask),
-  SetImageDepth(Image *,const unsigned long),
+  SetImageDepth(Image *image,const unsigned long),
   SetImageInfo(ImageInfo *image_info,const unsigned int flags,ExceptionInfo *exception),
-  SetImageType(Image *,const ImageType),
-  SyncImage(Image *);
+  SetImageType(Image *image,const ImageType),
+  SyncImage(Image *image);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

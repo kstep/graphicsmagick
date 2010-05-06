@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1022,6 +1022,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].red=ScaleCharToQuantum(*p++);
           image->colormap[i].green=ScaleCharToQuantum(*p++);
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
+          if (i == opacity)
+	    image->colormap[i].opacity=(Quantum) TransparentOpacity;
         }
         image->background_color=
           image->colormap[Min(background,image->colors-1)];
@@ -1048,6 +1050,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].red=ScaleCharToQuantum(*p++);
           image->colormap[i].green=ScaleCharToQuantum(*p++);
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
+          if (i == opacity)
+            image->colormap[i].opacity=(Quantum) TransparentOpacity;
         }
         MagickFreeMemory(colormap);
       }

@@ -497,7 +497,8 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     A p p e n d I m a g e s                                                 %
+%                                                                             %
+%   A p p e n d I m a g e s                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1562,7 +1563,8 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-+     I s S u b i m a g e                                                     %
+%                                                                             %
++   I s S u b i m a g e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1613,7 +1615,8 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s T a i n t I m a g e                                                 %
+%                                                                             %
+%   I s T a i n t I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1830,6 +1833,7 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %   S e t I m a g e                                                           %
 %                                                                             %
 %                                                                             %
@@ -1925,7 +1929,59 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
   image->is_monochrome=IsMonochrome(image->background_color);
   return status;
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e C o l o r                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageColor() sets the red, green, blue and opacity components of each
+%  pixel to a specified level.
+%
+%  The format of the SetImageColor method is:
+%
+%      void SetImageColor(Image *image,const PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o pixel: Set each pixel in the image to this pixel's color and transparency.
+%
+%
+*/
+MagickExport MagickPassFail SetImageColor(Image *image,
+					  const PixelPacket *pixel)
+{
+  MagickPassFail
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(pixel != (PixelPacket *) NULL);
+  assert(image->signature == MagickSignature);
+  status=MagickPass;
+
+  if (pixel->opacity != OpaqueOpacity)
+    image->matte=MagickTrue;
+  image->colorspace=RGBColorspace;
+  image->storage_class=DirectClass;
+
+  status=PixelIterateMonoModify(SetImageColorCallBack,NULL,
+                                SetImageColorText,
+                                NULL,pixel,0,0,
+                                image->columns,image->rows,
+                                image,&image->exception);
+
+  image->is_grayscale=IsGray(image->background_color);
+  image->is_monochrome=IsMonochrome(image->background_color);
+  return status;
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2563,7 +2619,8 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     S e t I m a g e O p a c i t y                                           %
+%                                                                             %
+%   S e t I m a g e O p a c i t y                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %

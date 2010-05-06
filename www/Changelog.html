@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2010-05-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/gif.c (ReadGIFImage): Set the opacity value of the opaque
+        color to transparent.  Patch by Tim Baker.
+
+  <LI> magick/image.c (SetImageColor): New function which is similar to
+        SetImage() but which accepts the pixel color as a parameter rather
+        than using the image background color.  Patch by Tim Baker.
+
+  <LI> magick/transform.c (CoalesceImages): When applying background
+        disposal, fill the image with the transparent color, if one
+        exists.  Patch by Tim Baker.  Resolves SourceForge patch ID
+        2989472.
+
+</UL>
+<p>
 2010-05-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

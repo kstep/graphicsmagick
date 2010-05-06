@@ -323,6 +323,12 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   register const Image
     *next;
 
+  register long
+    i;
+  
+  MagickBool
+    found_transparency=False;
+
   /*
     Coalesce the image sequence.
   */
@@ -358,9 +364,21 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       }
       case BackgroundDispose:
       {
+        /*
+	  Fill image with transparent color, if one exists.
+	*/
         coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
-        if (coalesce_image->next != (Image *) NULL)
-          (void) SetImage(coalesce_image->next,OpaqueOpacity);
+        if (coalesce_image->next != (Image *) NULL) {
+          for (i = 0; i < (long) coalesce_image->colors; i++) {
+            if (coalesce_image->colormap[i].opacity == TransparentOpacity) {
+              found_transparency = True;
+              (void) SetImageColor(coalesce_image->next,&coalesce_image->colormap[i]);
+              break;
+            }
+          }
+          if (!found_transparency)
+            (void) SetImage(coalesce_image->next,OpaqueOpacity);
+        }
         break;
       }
       case PreviousDispose:
@@ -382,6 +400,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   }
+
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
   return(coalesce_image);
