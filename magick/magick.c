@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -147,8 +147,15 @@ MagickSetFileSystemBlockSize(const size_t block_size)
 MagickExport void
 DestroyMagick(void)
 {
+  /* Acquire destruction lock */
+  SPINLOCK_WAIT;
+
   if (MagickInitialized == InitUninitialized)
-    return;
+    {
+      /* Release destruction lock */
+      SPINLOCK_RELEASE;
+      return;
+    }
 
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
 			"Destroy Magick");
@@ -176,8 +183,11 @@ DestroyMagick(void)
   DestroyLogInfo();             /* Logging configuration */
   DestroySemaphore();           /* Semaphores framework */
 
+  /* Now uninitialized */
   MagickInitialized=InitUninitialized;
 
+  /* Release destruction lock */
+  SPINLOCK_RELEASE;
 }
 /*
   Destroy MagickInfo structure.
@@ -898,21 +908,27 @@ InitializeMagickSignalHandlers(void)
 MagickExport void
 InitializeMagick(const char *path)
 {
+  /*
+    NOTE: This routine sets up the path to the client which needs to
+    be determined before almost anything else works right. This also
+    includes logging!!! So we can't start logging until the path is
+    actually saved. As soon as we know what the path is we make the
+    same call to DefineClientSettings to set it up. Please make sure
+    that this rule is followed in any future updates the this code!!!
+  */
+
   const char
     *p;
 
-  /* NOTE: This routine sets up the path to the client which needs to
-     be determined before almost anything else works right. This also
-     includes logging!!! So we can't start logging until the path is
-     actually saved. As soon as we know what the path is we make the
-     same call to DefineClientSettings to set it up. Please make sure
-     that this rule is followed in any future updates the this code!!!
-  */
-  if (MagickInitialized == InitInitialized)
-    return;
+  /* Acquire initialization lock */
   SPINLOCK_WAIT;
-  MagickInitialized=InitInitialized;
-  SPINLOCK_RELEASE;
+
+  if (MagickInitialized == InitInitialized)
+    {
+      /* Release initialization lock */
+      SPINLOCK_RELEASE;
+      return;
+    }
   
 #if defined(MSWINDOWS)
 # if defined(_DEBUG) && !defined(__BORLANDC__)
@@ -981,11 +997,11 @@ InitializeMagick(const char *path)
   if ((p=getenv("MAGICK_CODER_STABILITY")) != (const char *) NULL)
     {
       if (LocaleCompare(p,"UNSTABLE") == 0)
-        MinimumCoderClass=UnstableCoderClass;
+	MinimumCoderClass=UnstableCoderClass;
       else if (LocaleCompare(p,"STABLE") == 0)
-        MinimumCoderClass=StableCoderClass;
+	MinimumCoderClass=StableCoderClass;
       else if (LocaleCompare(p,"PRIMARY") == 0)
-        MinimumCoderClass=PrimaryCoderClass;
+	MinimumCoderClass=PrimaryCoderClass;
     }
 
   InitializeMagickSignalHandlers(); /* Signal handlers */
@@ -1002,8 +1018,14 @@ InitializeMagick(const char *path)
 
   /* Let's log the three important setting as we exit this routine */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Path: \"%s\" Name: \"%s\" Filename: \"%s\"",
-      GetClientPath(),GetClientName(),GetClientFilename());
+			"Path: \"%s\" Name: \"%s\" Filename: \"%s\"",
+			GetClientPath(),GetClientName(),GetClientFilename());
+
+  /* Now initialized */
+  MagickInitialized=InitInitialized;
+
+  /* Release initialization lock */
+  SPINLOCK_RELEASE;
 }
 
 /*

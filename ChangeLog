@@ -1,3 +1,8 @@
+2010-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick, DestroyMagick):
+	InitializeMagick and DestroyMagick should be fully thread safe.
+
 2010-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c (ReadGIFImage): Set the opacity value of the opaque
