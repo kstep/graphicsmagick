@@ -45,6 +45,7 @@
 #include "magick/alpha_composite.h"
 #include "magick/color.h"
 #include "magick/decorate.h"
+#include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
@@ -1615,7 +1616,9 @@ ShearImage(const Image *image,const double x_shear,
     goto shear_image_exception;
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
-  if ((shear.x == 0.0) || (shear.y == 0.0))
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+			"Shear angles x,y: %g,%g degrees", shear.x, shear.y);
+  if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
 
   /*

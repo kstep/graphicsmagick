@@ -1,3 +1,11 @@
+2010-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c (ShearImage): When one of the shear angles was
+	specified as zero, the shear request was ignored entirely.  An
+	simple optimization was using || rather than && to test the
+	angles.  Resolves SourceForge issue #2991685 "Shear command does
+	not handle zero angles correctly".
+
 2010-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (InitializeMagick, DestroyMagick):
