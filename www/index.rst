@@ -36,15 +36,20 @@ __ `download GraphicsMagic-1.2`_
 
 Check http://www.GraphicsMagick.org/ for the latest version of this page.
 
-.. _ImageMagick : http://www.imagemagick.org/
-.. _Open Source Initiative : http://www.opensource.org/
 .. _FSF : http://www.fsf.org/
 .. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
+.. _ImageMagick : http://www.imagemagick.org/
+.. _Open Source Initiative : http://www.opensource.org/
 .. _OpenMP : OpenMP.html
-.. _`benchmarks` : benchmarks.html
-.. _`SLOCCount` : http://www.dwheeler.com/sloccount/
+.. _`ChangeLog` : Changelog.html
 .. _`Flickr` : http://www.flickr.com/
 .. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
+.. _`NEWS` : NEWS.html
+.. _`SLOCCount` : http://www.dwheeler.com/sloccount/
+.. _`authors` : authors.html
+.. _`benchmarks` : benchmarks.html
+.. _`manual page` : GraphicsMagick.html
+.. _`valgrind` : http://www.valgrind.org/
 
 GraphicsMagick is the swiss army knife of image processing. Comprised
 of 282K physical lines (according to David A. Wheeler's `SLOCCount`_)
@@ -54,10 +59,10 @@ libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
 JPEG-2000, PNG, PDF, PNM, and TIFF.
 
-Image processing is multi-threaded using OpenMP_ so that CPU-bound tasks
-scale linearly as processor cores are added. OpenMP_ support requires
-compilation with GCC 4.2 (or later), or use of any C compiler supporting
-at least the OpenMP_ 2.0 specification.
+Image processing may be multi-threaded using OpenMP_ so that CPU-bound
+tasks scale linearly as processor cores are added. OpenMP_ support
+requires compilation with GCC 4.2 (or later), or use of any C compiler
+supporting at least the OpenMP_ 2.0 specification.
 
 GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
@@ -75,16 +80,16 @@ available from the command line, as well as through C, C++, Perl, PHP,
 Tcl, Ruby, or Windows COM programming interfaces. With some
 modification, language extensions for ImageMagick may be used.
 
-GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has been
-completely independent of the ImageMagick project since then. Since the
-fork from ImageMagick in 2002, many improvements have been made (`see
-news <NEWS.html>`_) by `many authors <authors.html>`_ using an open
-development model but without breaking the API or utilities operation.
+GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has
+been completely independent of the ImageMagick project since
+then. Since the fork from ImageMagick in 2002, many improvements have
+been made (see `NEWS`_) by many `authors`_ using an open development
+model but without breaking the API or utilities operation.
 
 Here are some reasons to prefer GraphicsMagick over ImageMagick:
 
-  * GM is much more efficient (see the `benchmarks`_) so it gets the job
-    done faster using fewer resources.
+  * GM is more efficient (see the `benchmarks`_) so it gets the job
+  * done faster using fewer resources.
 
   * GM is much smaller and tighter (3-5X smaller installation footprint).
 
@@ -94,13 +99,15 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM does not does not conflict with other installed software.
 
   * GM suffers from fewer security issues and exploits.
+
+  * GM `valgrind`_'s 100% clean (memcheck and helgrind).
   
-  * GM comes with a comprehensive manual page.
+  * GM comes with a comprehensive `manual page`_.
   
   * GM provides API and ABI stability and managed releases that you can
     count on.
   
-  * GM provides detailed yet comprehensible ChangeLog and NEWS files.
+  * GM provides detailed yet comprehensible `ChangeLog`_ and `NEWS`_ files.
   
   * GM is available for free, and may be used to support both open and
     proprietary applications.
@@ -113,8 +120,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
 GraphicsMagick is `copyrighted <Copyright.html>`_ by the GraphicsMagick
 Group as well as many others.
 
-Here are just a few `examples <images/examples.jpg>`_ of what GraphicsMagick
-can do:
+Here are just a few examples of what GraphicsMagick can do:
 
   * Convert an image from one format to another (e.g. TIFF to JPEG)
   
@@ -124,6 +130,8 @@ can do:
   * Create a montage of image thumbnails  
   
   * Create a transparent image suitable for use on the Web
+
+  * Compare two images
   
   * Turn a group of images into a GIF animation sequence
   
