@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003=2010 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -149,16 +149,17 @@ static long ReadInt(Image *image, int *pch)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsTXT returns MagickTrue if the image format type, identified by the
-%  magick string, is TXT.
+%  Method IsTXT returns an enumerated value which indicates the raw TXT
+%  image encoding subformat based on the file or blob header.  If the data
+%  is not an ASCII encoded raw image, then the value NO_TXT is returned.
 %
 %  The format of the IsTXT method is:
 %
-%      unsigned int IsTXT(const unsigned char *magick,const size_t length)
+%      TXT_TYPE IsTXT(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsTXT returns MagickTrue if the image format type is TXT.
+%    o status:  Method IsTXT returns a value from the TXT_TYPE enumeration.
 %
 %    o magick: This string is generally the first few bytes of an image file
 %      or blob.
@@ -167,10 +168,10 @@ static long ReadInt(Image *image, int *pch)
 %
 %
 */
-static unsigned int IsTXT(const unsigned char *magick,const size_t length)
+static TXT_TYPE IsTXT(const unsigned char *magick,const size_t length)
 {
   if (length < 20)
-    return (False);
+    return (NO_TXT);
 
   {
     unsigned long
@@ -262,7 +263,7 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
       return TXT_GM8B_PLAIN2;
 
   }
-  return (False);
+  return (NO_TXT);
 }
 
 /*
@@ -299,31 +300,14 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
 static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
     *p,
     text[MaxTextExtent];
 
-  double
-    dx_resolution,
-    dy_resolution;
-
-  DrawInfo
-    *draw_info;
-
   Image
-    *image,
-    *texture;
+    *image;
 
-  long
-    count,
-    offset;
-
-  RectangleInfo
-    page;
-
-  TypeMetric
-    metrics;
+  TXT_TYPE
+    txt_subformat;
 
   MagickPassFail
     status;
@@ -339,18 +323,16 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
-  logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter"); 
+  logging = IsEventLogging();
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 
   p = ReadBlobString(image,text);
-  status = IsTXT((unsigned char *)p,strlen(p));
-  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-				    "File type: %d", status);
+  txt_subformat = IsTXT((unsigned char *)p,strlen(p));
 
-  if (status)
+  if (txt_subformat != NO_TXT)
     {
       unsigned
 	x,
@@ -392,6 +374,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ImportPixelAreaOptions
 	import_options;
 
+      if (logging)
+	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "File RAW TXT type: %d", (int) txt_subformat);
+
       (void) SeekBlob(image,0,SEEK_SET);    
 
       A=0;
@@ -399,7 +385,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       y=0;
       max=0;
 
-      switch(status)
+      switch(txt_subformat)
 	{
 	case TXT_GM8B_HEX:
 	case TXT_GM8B_HEX_Q:
@@ -413,13 +399,15 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	case TXT_GM32B_HEX_Q:
 	  max=65536;
 	  break;
+	default:
+	  break;
 	}
 
       /*
 	Set opacity flag.
       */
       image->matte=MagickFalse;
-      if (status >= IMAGEMAGICK_TXT_Q)
+      if (txt_subformat >= IMAGEMAGICK_TXT_Q)
 	image->matte=MagickTrue;
 
       if (!strncmp(p,"# ImageMagick pixel enumeration:",32))
@@ -434,7 +422,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		}
 	      if (strstr(p+32,",rgba")!=NULL)
 		{
-		  status = IMAGEMAGICK_TXT_Q;
+		  txt_subformat = IMAGEMAGICK_TXT_Q;
 		}
 	    }
 	}
@@ -488,7 +476,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		if (ch == EOF)
 		  break;
 	      }
-	    if (status != TXT_GM8B_PLAIN2_Q)
+	    if (txt_subformat != TXT_GM8B_PLAIN2_Q)
 	      while (ch != '(')
 		{
 		  ch = ReadBlobByte(image);
@@ -528,7 +516,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    if (B > max)
 	      max=B;
 
-	    if (status >= IMAGEMAGICK_TXT_Q)
+	    if (txt_subformat >= IMAGEMAGICK_TXT_Q)
 	      {
 		while (ch != ',')
 		  {
@@ -544,7 +532,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  max=A;
 	      }
 
-	    if (status != TXT_GM8B_PLAIN2_Q)
+	    if (txt_subformat != TXT_GM8B_PLAIN2_Q)
 	      while (ch != ')')
 		{
 		  ch = ReadBlobByte(image);
@@ -748,8 +736,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		      break;
 		    }    
 		}
-	      if (x_min > x_max) 
-		x_max=x_min=x;
+	      if (x_min > x_max)
+		{
+		  x_max=x_min=x;
+		}
 	      else
 		{
 		  if (x < x_min)
@@ -790,130 +780,201 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       goto TXT_FINISH;    
     }
 
-  /*
-    Set the page geometry.
-  */
-  dx_resolution=72.0;
-  dy_resolution=72.0;
-  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
-    {
-      char
-        density[MaxTextExtent];
+  {
+    /*
+      Render arbitrary ASCII text as image.
+    */
+    char
+      filename[MaxTextExtent],
+      geometry[MaxTextExtent];
 
-      (void) strcpy(density,PSDensityGeometry);
-      count=GetMagickDimension(density,&image->x_resolution,
-			       &image->y_resolution,NULL,NULL);
-      if (count != 2)
-        image->y_resolution=image->x_resolution;
-    }
-  SetGeometry(image,&page);
-  page.width=612;
-  page.height=792;
-  (void) GetGeometry("612x792+43+43",&page.x,&page.y,&page.width,&page.height);
-  if (image_info->page != (char *) NULL)
-    (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
-		       &page.height);
-  /*
-    Initialize Image structure.
-  */
-  image->columns=(unsigned long)
-    ceil(((page.width*image->x_resolution)/dx_resolution)-0.5);
-  image->rows=(unsigned long)
-    ceil(((page.height*image->y_resolution)/dy_resolution)-0.5);
-  texture=(Image *) NULL;
-  if (image_info->texture != (char *) NULL)
-    {
-      ImageInfo
-        *clone_info;
+    double
+      dx_resolution,
+      dy_resolution;
 
-      clone_info=CloneImageInfo(image_info);
-      clone_info->blob=(void *) NULL;
-      clone_info->length=0;
-      (void) strlcpy(clone_info->filename,image_info->texture,MaxTextExtent);
-      texture=ReadImage(clone_info,exception);
-      DestroyImageInfo(clone_info);
-    }
-  /*
-    Annotate the text image.
-  */
-  (void) SetImage(image,OpaqueOpacity);
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->fill=image_info->pen;
-  (void) CloneString(&draw_info->text,image_info->filename);
-  FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
-  (void) CloneString(&draw_info->geometry,geometry);
-  status=GetTypeMetrics(image,draw_info,&metrics);
-  if (status == False)
-    ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
-  (void) strlcpy(filename,image_info->filename,MaxTextExtent);
-  if (draw_info->text != '\0')
-    *draw_info->text='\0';  
+    Image
+      *texture;
 
-  for (offset=2*page.y; p != (char *) NULL; )
-    {
-      /*
-	Annotate image with text.
-      */
-      (void) ConcatenateString(&draw_info->text,text);
-      (void) ConcatenateString(&draw_info->text,"\\n");
-      offset+=(long) (metrics.ascent-metrics.descent);
-      if (image->previous == (Image *) NULL)
-	if (QuantumTick(offset,image->rows))
-	  if (!MagickMonitorFormatted(offset,image->rows,&image->exception,
-				      LoadImageText,image->filename,
-				      image->columns,image->rows))
+    long
+      count,
+      line_num,
+      lines_per_page,
+      margins,
+      page_num,
+      pixels_per_line;
+
+    DrawInfo
+      *draw_info;
+    
+    RectangleInfo
+      page;
+    
+    TypeMetric
+      metrics;
+
+    /*
+      Set the page geometry.
+    */
+    dx_resolution=72.0;
+    dy_resolution=72.0;
+    if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+      {
+	char
+	  density[MaxTextExtent];
+
+	(void) strcpy(density,PSDensityGeometry);
+	count=GetMagickDimension(density,&image->x_resolution,
+				 &image->y_resolution,NULL,NULL);
+	if (count != 2)
+	  image->y_resolution=image->x_resolution;
+      }
+    SetGeometry(image,&page);
+    page.width=612;
+    page.height=792;
+    (void) GetGeometry("612x792+43+43",&page.x,&page.y,&page.width,&page.height);
+    if (image_info->page != (char *) NULL)
+      (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
+			 &page.height);
+    if (logging)
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+			   "Page Geometry: %lux%lu%+ld%+ld",
+			   page.width,page.height,page.x,page.y);
+    /*
+      Initialize Image structure.
+    */
+    image->columns=(unsigned long)
+      ceil(((page.width*image->x_resolution)/dx_resolution)-0.5);
+    image->rows=(unsigned long)
+      ceil(((page.height*image->y_resolution)/dy_resolution)-0.5);
+    texture=(Image *) NULL;
+    if (image_info->texture != (char *) NULL)
+      {
+	ImageInfo
+	  *clone_info;
+
+	clone_info=CloneImageInfo(image_info);
+	clone_info->blob=(void *) NULL;
+	clone_info->length=0;
+	(void) strlcpy(clone_info->filename,image_info->texture,MaxTextExtent);
+	texture=ReadImage(clone_info,exception);
+	DestroyImageInfo(clone_info);
+      }
+    /*
+      Annotate the text image.
+    */
+    (void) SetImage(image,OpaqueOpacity);
+    draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+    draw_info->fill=image_info->pen;
+    (void) CloneString(&draw_info->text,image_info->filename);
+    FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
+    (void) CloneString(&draw_info->geometry,geometry);
+    status=GetTypeMetrics(image,draw_info,&metrics);
+    if (status == False)
+      ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+    if (logging)
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+			   "Type metrics: ascent=%g descent=%g"
+			   " height=%g max_advance=%g",
+			   metrics.ascent,metrics.descent,
+			   metrics.height,metrics.max_advance);
+    pixels_per_line=(long) (metrics.ascent-metrics.descent);
+    margins=2*page.y;
+    lines_per_page=((image->rows+1)-margins)/pixels_per_line+1;
+    if (logging)
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+			   "Pixels per line: %ld",
+			   pixels_per_line);
+    if (logging)
+      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+			   "Lines per page: %ld",
+			   lines_per_page);
+    (void) strlcpy(filename,image_info->filename,MaxTextExtent);
+    if (draw_info->text != '\0')
+      *draw_info->text='\0';  
+
+    page_num=1;
+    line_num=0;
+    while (p != (char *) NULL)
+      {
+	/*
+	  Annotate image with text.
+
+	  Text lines are concatenated so that a full page is
+	  rendered at a time via AnnotateImage().
+	*/
+	(void) ConcatenateString(&draw_info->text,text);
+	(void) ConcatenateString(&draw_info->text,"\\n");
+	line_num++;
+
+	if (image->previous == (Image *) NULL)
+	  if (QuantumTick(line_num,lines_per_page))
+	    if (!MagickMonitorFormatted(line_num,lines_per_page,&image->exception,
+					LoadImageText,image->filename,
+					image->columns,image->rows))
+	      break;
+
+	p=ReadBlobString(image,text);
+	if ((line_num < lines_per_page) && (p != (char *) NULL))
+	  continue;
+	if (texture != (Image *) NULL)
+	  {
+	    MonitorHandler
+	      handler;
+
+	    handler=SetMonitorHandler((MonitorHandler) NULL);
+	    (void) TextureImage(image,texture);
+	    (void) SetMonitorHandler(handler);
+	  }
+	(void) AnnotateImage(image,draw_info);
+	if (p == (char *) NULL)
+	  break;
+
+	if (logging)
+	  (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+			       "page %ld scene %ld ",page_num, image->scene);
+
+	if ((image_info->subimage != 0) || (image_info->subrange != 0))
+	  if (image->scene >= (image_info->subimage+image_info->subrange-1))
 	    break;
-      p=ReadBlobString(image,text);
-      if ((offset < (long) image->rows) && (p != (char *) NULL))
-	continue;
-      if (texture != (Image *) NULL)
-	{
-	  MonitorHandler
-	    handler;
 
-	  handler=SetMonitorHandler((MonitorHandler) NULL);
-	  (void) TextureImage(image,texture);
-	  (void) SetMonitorHandler(handler);
-	}
-      (void) AnnotateImage(image,draw_info);
-      if (p == (char *) NULL)
-	break;
-      /*
-	Page is full-- allocate next image structure.
-      */
-      *draw_info->text='\0';
-      offset=2*page.y;
-      AllocateNextImage(image_info,image);
-      if (image->next == (Image *) NULL)
-	{
-	  DestroyImageList(image);
-	  return ((Image *) NULL);
-	}
-      image->next->columns=image->columns;
-      image->next->rows=image->rows;
-      image=SyncNextImageInList(image);
-      (void) strlcpy(image->filename,filename,MaxTextExtent);
-      (void) SetImage(image,OpaqueOpacity);
-      if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
-				  LoadImagesText,image->filename))
-	break;
-    }
+	/*
+	  Page is full-- allocate next image structure.
+	*/
+	*draw_info->text='\0';
+	page_num++;
+	line_num=0;
+	AllocateNextImage(image_info,image);
+	if (image->next == (Image *) NULL)
+	  {
+	    DestroyImageList(image);
+	    return ((Image *) NULL);
+	  }
+	image->next->columns=image->columns;
+	image->next->rows=image->rows;
+	image=SyncNextImageInList(image);
+	(void) strlcpy(image->filename,filename,MaxTextExtent);
+	(void) SetImage(image,OpaqueOpacity);
+	if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),exception,
+				    LoadImagesText,image->filename))
+	  break;
+      }
 
-  if (texture != (Image *) NULL)
-    {
-      MonitorHandler
-        handler;
+    if (texture != (Image *) NULL)
+      {
+	MonitorHandler
+	  handler;
 
-      handler=SetMonitorHandler((MonitorHandler) NULL);
-      (void) TextureImage(image,texture);
-      (void) SetMonitorHandler(handler);
-    }
-  (void) AnnotateImage(image,draw_info);
-  if (texture != (Image *) NULL)
-    DestroyImage(texture);
-  DestroyDrawInfo(draw_info);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+	handler=SetMonitorHandler((MonitorHandler) NULL);
+	(void) TextureImage(image,texture);
+	(void) SetMonitorHandler(handler);
+      }
+    (void) AnnotateImage(image,draw_info);
+    if (texture != (Image *) NULL)
+      DestroyImage(texture);
+    DestroyDrawInfo(draw_info);
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
+  }
  TXT_FINISH:
   CloseBlob(image);
   return (image);
@@ -951,14 +1012,14 @@ ModuleExport void RegisterTXTImage(void)
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
   entry->raw=MagickTrue;
-  entry->description="Text";
+  entry->description="ASCII Text";
   entry->module="TXT";
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("TXT");
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
-  entry->description="Text";
+  entry->description="ASCII Text";
   entry->module="TXT";
   (void) RegisterMagickInfo(entry);
 }

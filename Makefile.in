@@ -11443,12 +11443,14 @@ drd:
 
 # helgrind: valgrind's older thread error detector
 helgrind:
-	$(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=helgrind --error-exitcode=2 --quiet \
+	$(VALGRIND_EXTRA_OPTS)' check
 
 # memcheck: valgrind's memory access checker
 memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
-	  --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+	--error-exitcode=2 --track-origins=yes --num-callers=12 \
+	--quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:

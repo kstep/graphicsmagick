@@ -1,3 +1,9 @@
+2010-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (DispatchImage): 'K' channel was always
+	output as black for "CMYK" specification unless image matte flag
+	was True.  Bug report and proposed solution by Lance Brown.
+
 2010-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c (ShearImage): When one of the shear angles was

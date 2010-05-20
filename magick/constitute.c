@@ -2259,7 +2259,8 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                   }
                 case OpacityMapQuantum:
                   {
-                    if (image->matte)
+                    if ((image->matte) ||
+			(image->colorspace == CMYKColorspace))
                       quantum=GetOpacitySample(p);
                     break;
                   }
