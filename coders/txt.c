@@ -25,7 +25,7 @@
 %                                John Cristy                                  %
 %                                 July 1992                                   %
 %                              Jaroslav Fojtik                                %
-%                                   2009                                      %
+%                                2009 - 2010                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -371,6 +371,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       const PixelPacket
 	*q;
 
+      ExtendedSignedIntegralType NextImagePos = 0;
+
       ImportPixelAreaOptions
 	import_options;
 
@@ -378,7 +380,18 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			      "File RAW TXT type: %d", (int) txt_subformat);
 
-      (void) SeekBlob(image,0,SEEK_SET);    
+      do {
+      (void) SeekBlob(image,NextImagePos,SEEK_SET);
+
+      if(NextImagePos!=0)
+      {
+		/* Allocate next image structure. */
+        AllocateNextImage(image_info,image);
+        if(image->next == (Image *)NULL) break;
+        image = SyncNextImageInList(image);
+        image->columns = image->rows = 0;
+        image->colors=0;
+      }
 
       A=0;
       x=0;
@@ -451,9 +464,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		  }
 	      }
 	    /* x,y: (R,G,B) */
-	    i = ReadInt(image,&ch);		/* x */
-	    if (i > x)
-	      x=i;
+	    x_min = ReadInt(image,&ch);		/* x */	     
+	    if (x_min > x)
+	      x = x_min;
 
 	    while (ch != ',')
 	      {  
@@ -465,6 +478,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	      }
 	    ch=0;
 	    i=ReadInt(image,&ch);		/* y */
+
+		/* Check for next image start. */
+	    if(x_min==0 && i==0 && x>0 && y>0) 
+	    	goto EndReading;
+
 	    if (i > y)
 	      y=i;
 
@@ -551,9 +569,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       y_curr = 0;
 
       NumOfPlanes=8;
-      /*   if (max>=    2) i=2; */
-      /*   if (max>=    4) i=4; */
-      /*   if (max>=   16) i=8; */
+      /*   if (max>=    2) NumOfPlanes=2; */
+      /*   if (max>=    4) NumOfPlanes=4; */
+      /*   if (max>=   16) NumOfPlanes=8; */
       if (max >=  256)
 	NumOfPlanes=16;
       if (max >=65536)
@@ -579,7 +597,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->columns = x+1;
       image->rows = y+1;
 
-      (void) SeekBlob(image,0,SEEK_SET);
+      (void) SeekBlob(image,NextImagePos,SEEK_SET);
+      NextImagePos = 0;
 
       /*
 	Load picture data
@@ -603,26 +622,33 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  x = ReadInt(image,&ch);		/* x */
 
 	  while (ch != ',')
-	    {
-	      ch = ReadBlobByte(image);       
-	      if (ch == EOF)
+	  {
+	    ch = ReadBlobByte(image);       
+	    if (ch == EOF)
 		break;
-	    }
+	  }
 	  ch = 0;
 	  y = ReadInt(image,&ch);		/* y */
 
+		/* New image detected. */
+	  if(x==0 && y==0 && y_curr>0 && x_max>0)
+	  {
+	    NextImagePos = TellBlob(image) - 4;
+	    break;
+	  }
+
 	  while (ch != ':')
-	    {
-	      ch = ReadBlobByte(image);
-	      if (ch == EOF)
+	  {
+	    ch = ReadBlobByte(image);
+	    if (ch == EOF)
 		break;
-	    }
+	  }
 	  while (ch != '(')
-	    {
-	      ch = ReadBlobByte(image);
+	  {
+	    ch = ReadBlobByte(image);
 	      if (ch == EOF)
 		break;
-	    }
+	  }
 	  ch=0;
 	  R = ReadInt(image,&ch);		/* R */
 
@@ -666,7 +692,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    }
 
 
-	  /* a new line has been detected */
+	  /* A new line has been detected */
 	  if (y != y_curr)
 	    {
 	      q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);
@@ -752,8 +778,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  readln(image,&ch);
 	}
 
-    FINISH:
-      if (x_min <= x_max)
+FINISH:
+    if (x_min <= x_max)
 	{
 	  q = SetImagePixels(image,x_min,y_curr,x_max-x_min+1,1);	  
 	  if (q != (PixelPacket *)NULL)
@@ -775,10 +801,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	    }
 	}
+    MagickFreeMemory(BImgBuff);
+    } while(!EOFBlob(image) && NextImagePos>0);	
 
-      MagickFreeMemory(BImgBuff);
-      goto TXT_FINISH;    
-    }
+    goto FINISH_TXT;
+  }
 
   {
     /*
@@ -959,24 +986,52 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  break;
       }
 
-    if (texture != (Image *) NULL)
-      {
-	MonitorHandler
-	  handler;
+  if (texture != (Image *) NULL)
+    {
+      MonitorHandler
+        handler;
 
-	handler=SetMonitorHandler((MonitorHandler) NULL);
-	(void) TextureImage(image,texture);
-	(void) SetMonitorHandler(handler);
-      }
-    (void) AnnotateImage(image,draw_info);
-    if (texture != (Image *) NULL)
-      DestroyImage(texture);
-    DestroyDrawInfo(draw_info);
-    while (image->previous != (Image *) NULL)
-      image=image->previous;
+      handler=SetMonitorHandler((MonitorHandler) NULL);
+      (void) TextureImage(image,texture);
+      (void) SetMonitorHandler(handler);
+    }
+  (void) AnnotateImage(image,draw_info);
+  if (texture != (Image *) NULL)
+    DestroyImage(texture);
+  DestroyDrawInfo(draw_info);
   }
- TXT_FINISH:
+
+FINISH_TXT:
   CloseBlob(image);
+  {
+    Image *p;    
+    long scene=0;
+    
+    /*
+      Rewind list, removing any empty images while rewinding.
+    */
+    p=image;
+    image=NULL;
+    while(p != (Image *) NULL)
+      {
+        Image *tmp=p;
+        if ((p->rows == 0) || (p->columns == 0)) {
+          p=p->previous;
+          DeleteImageFromList(&tmp);
+        } else {
+          image=p;
+          p=p->previous;
+        }
+      }
+    
+    /*
+      Fix scene numbers
+    */
+    for(p=image; p != (Image *)NULL; p=p->next)
+      p->scene=scene++;
+  }
+
+  if(logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");  
   return (image);
 }
 
