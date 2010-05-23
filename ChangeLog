@@ -1,3 +1,7 @@
+2010-05-23 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/txt.c (ReadTXTImage): Ability to read multiple images.
+
 2010-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (DispatchImage): 'K' channel was always
