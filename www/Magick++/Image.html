@@ -2791,7 +2791,7 @@ PixelPacket *pixel_cache = image.getPixels(20,30,columns,40);
 // Set pixel at column 5, and row 10 in the pixel cache to red.
 int column = 5;
 int row = 10;
-PixelPacket *pixel = pixel_cache+row*columns*sizeof(PixelPacket)+column;
+PixelPacket *pixel = pixel_cache+row*columns+column;
 *pixel = Color(&quot;red&quot;);
 
 // Save changes to underlying image .
@@ -2890,7 +2890,7 @@ void writePixels ( const QuantumType quantum_,
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 00:59 UTC.
+Generated on: 2010-05-23 19:18 UTC.
 
 </div>
 </body>

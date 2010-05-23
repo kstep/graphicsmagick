@@ -1,3 +1,9 @@
+2010-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/Magick++/Image.rst: Fix documentation error which wrongly
+	recommended multiplication by size of PixelPacket.  Correction by
+	Roel Baardman.
+
 2010-05-23 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/txt.c (ReadTXTImage): Ability to read multiple images.
