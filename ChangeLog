@@ -1,4 +1,5 @@
 2010-06-02  Glenn Randers-Pehrson  <glennrp@simple...>
+
 	* coders/png.c correctly scale bKGD chunk data in Q16 build
 
 2010-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
