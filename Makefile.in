@@ -2150,7 +2150,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 ltdl_LIBOBJS = @ltdl_LIBOBJS@
 ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = @mandir@
@@ -2305,7 +2304,7 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.mgk.in \
 	config/type.mgk.in
 
-LTDL_VERSION_INFO = -version-info 9:1:2
+LTDL_VERSION_INFO = -version-info 9:2:2
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
