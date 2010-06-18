@@ -291,7 +291,7 @@ extern MagickExport WarningHandler
   (ThrowLoggedException(exception_,severity_,reason_,description_,\
     GetMagickModule()))
 
-/* Serverity and description IDs translated */
+/* Severity and description IDs translated */
 #    define ThrowException3(exception_,severity_,reason_,description_) \
   (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(\
     MGK_##severity_##reason_),GetLocaleMessageFromID(\

@@ -186,7 +186,8 @@ of the library-based packages listed here.
   format. HP printers usually accept PCL format rather than HPGL
   format.  Ghostscript (see above) is also required.
 
-* GraphicsMagick requires the LCMS library available from
+* GraphicsMagick requires the lcms library (1.11 or later, including
+  2.X) available from
 
      http://www.littlecms.com/
 

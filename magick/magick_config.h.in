@@ -171,6 +171,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if you have the <lcms2.h> header file. */
+#undef HAVE_LCMS2_H
+
+/* Define if you have the <lcms2/lcms2.h> header file. */
+#undef HAVE_LCMS2_LCMS2_H
+
 /* Define if you have the <lcms.h> header file. */
 #undef HAVE_LCMS_H
 
@@ -460,7 +466,7 @@
 /* Define if you have JPEG library */
 #undef HasJPEG
 
-/* Define if you have LCMS library */
+/* Define if you have LCMS (v1.11 or later) library */
 #undef HasLCMS
 
 /* Define if using libltdl to support dynamically loadable modules */

@@ -40,6 +40,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
 .. _ImageMagick : http://www.imagemagick.org/
 .. _Open Source Initiative : http://www.opensource.org/
+.. _OSSCC : http://www.osscc.net/en/index.html
 .. _OpenMP : OpenMP.html
 .. _`ChangeLog` : Changelog.html
 .. _`Flickr` : http://www.flickr.com/
@@ -113,7 +114,8 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
     proprietary applications.
   
   * GM is distributed under an X11-style license ("MIT License"),
-    approved by the `Open Source Initiative`_.
+    approved by the `Open Source Initiative`_ and recommended for use
+    by the `OSSCC`_.
 
   * GM developers contribute to other free projects for the public good.
 
