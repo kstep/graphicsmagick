@@ -1,3 +1,9 @@
+2010-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/files-documentation.isx: There are
+	not currently any JPEG files in the www/images directory to
+	distribute.
+
 2010-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ltdl/config/ltmain.sh: Update libtool to 2.2.10.

@@ -282,8 +282,10 @@ static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
 static MagickBool CommandProgressMonitor(const char *task,
 					 const magick_int64_t quantum,
 					 const magick_uint64_t span,
-					 ExceptionInfo *ARGUNUSED(exception))
+					 ExceptionInfo *exception)
 {
+  ARG_NOT_USED(exception);
+
   if ((span > 1) && (quantum >= 0) && ((magick_uint64_t) quantum < span))
     {
       const char
