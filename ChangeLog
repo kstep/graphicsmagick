@@ -1,5 +1,9 @@
 2010-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/PerlMagickCheck.sh.in: Run PerlMagick tests in
+	verbose mode so that all test output appears in "test-suite.log"
+	if there is a failure.
+
 	* coders/Makefile.am (coders_mat_la_LIBADD): MAT coder is
 	optionally dependent on zlib so zlib should be listed as a
 	dependency.
