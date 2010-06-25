@@ -1,5 +1,9 @@
 2010-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (BlobToImage): If a temporary file must be used
+	and the user has specified magic, then preserve the magic
+	specifier when reading the temporary file.
+
 	* coders/mat.c (RegisterMATImage): More accurately describe MATLAB
 	format support as "MATLAB Level 5".
 

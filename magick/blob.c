@@ -700,7 +700,7 @@ MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
 %
 */
 MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
-  const size_t length,ExceptionInfo *exception)
+				const size_t length,ExceptionInfo *exception)
 {
   const MagickInfo
     *magick_info;
@@ -711,20 +711,18 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   ImageInfo
     *clone_info;
 
-  unsigned int
-    status;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+
+  image=(Image *) NULL;
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Entering BlobToImage");
-  /* SetExceptionInfo(exception,UndefinedException); */
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,OptionError,NullBlobArgument,
-        image_info->magick);
+		     image_info->magick);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Leaving BlobToImage");
+			    "Leaving BlobToImage");
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(image_info);
@@ -737,7 +735,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     {
       DestroyImageInfo(clone_info);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Leaving BlobToImage");
+			    "Leaving BlobToImage");
       return((Image *) NULL);
     }
   if (magick_info->blob_support)
@@ -746,42 +744,51 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         Native blob support for this image format.
       */
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Using native BLOB support");
+			    "Using native BLOB support");
       (void) strlcpy(clone_info->filename,image_info->filename,
-        MaxTextExtent);
+		     MaxTextExtent);
       (void) strlcpy(clone_info->magick,image_info->magick,MaxTextExtent);
       image=ReadImage(clone_info,exception);
       if (image != (Image *) NULL)
         DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Leaving BlobToImage");
+			    "Leaving BlobToImage");
       return(image);
     }
   /*
     Write blob to a temporary file on disk.
   */
-  clone_info->blob=(void *) NULL;
-  clone_info->length=0;
-  if(!AcquireTemporaryFileName(clone_info->filename))
-    {
-      ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
-        clone_info->filename);
-      DestroyImageInfo(clone_info);
-      return((Image *) NULL);
-    }
-  status=BlobToFile(clone_info->filename,blob,length,exception);
-  if (status == MagickFail)
-    {
-      DestroyImageInfo(clone_info);
+  {
+    char
+      temporary_file[MaxTextExtent];
+
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Leaving BlobToImage");
-      return((Image *) NULL);
-    }
-  image=ReadImage(clone_info,exception);
-  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Removing temporary file \"%s\"",clone_info->filename);
-  (void) LiberateTemporaryFile(clone_info->filename);
+			    "Using temporary file");
+    clone_info->blob=(void *) NULL;
+    clone_info->length=0;
+    
+    if(!AcquireTemporaryFileName(temporary_file))
+      {
+	ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
+		       clone_info->filename);
+      }
+    else
+      {
+	if (BlobToFile(temporary_file,blob,length,exception) != MagickFail)
+	  {
+	    clone_info->filename[0]='\0';
+	    if (clone_info->magick[0] != '\0')
+	      {
+		(void) strlcpy(clone_info->filename,clone_info->magick,sizeof(clone_info->filename));
+		(void) strlcat(clone_info->filename,":",sizeof(clone_info->filename));
+	      }
+	    (void) strlcat(clone_info->filename,temporary_file,sizeof(clone_info->filename));
+	    image=ReadImage(clone_info,exception);
+	  }
+	(void) LiberateTemporaryFile(temporary_file);
+      }
+  }
   DestroyImageInfo(clone_info);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
   return(image);
