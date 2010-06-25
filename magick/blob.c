@@ -595,7 +595,7 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
 %
 */
 MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
-  const size_t length,ExceptionInfo *exception)
+				       const size_t length,ExceptionInfo *exception)
 {
   ssize_t
     count;
@@ -606,10 +606,13 @@ MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
   register size_t
     i;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(filename != (const char *) NULL);
   assert(blob != (const void *) NULL);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Copying memory BLOB to file %s\n",filename);
+			"Copying memory BLOB to file %s\n",filename);
   if (MagickConfirmAccess(FileWriteConfirmAccessMode,filename,exception)
       == MagickFail)
     return MagickFail;
@@ -617,21 +620,51 @@ MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
   if (file == -1)
     {
       ThrowException(exception,BlobError,UnableToWriteBlob,filename);
-      return(MagickFail);
+      status=MagickFail;
     }
-  for (i=0; i < length; i+=count)
-  {
-    count=write(file,(char *) blob+i,length-i);
-    if (count <= 0)
-      break;
-  }
-  (void) close(file);
-  if (i < length)
+  if (status != MagickFail)
     {
-      ThrowException(exception,BlobError,UnableToWriteBlob,filename);
-      return(MagickFail);
+      const char
+	*env = NULL;
+
+      /*
+	Write data to file.
+      */
+      for (i=0; i < length; i+=count)
+	{
+	  count=write(file,(char *) blob+i,length-i);
+	  if (count <= 0)
+	    break;
+	}
+
+      if (i < length)
+	{
+	  if (status != MagickFail)
+	    ThrowException(exception,BlobError,UnableToWriteBlob,filename);
+	  status=MagickFail;
+	}
+
+      /*
+	Explicitly synchronize file to disk if requested.
+      */
+      env = getenv("MAGICK_IO_FSYNC");
+      if ((env != (const char *) NULL) && (LocaleCompare(env,"TRUE") == 0))
+	{
+	  if (fsync(file) == -1)
+	    {
+	      if (status != MagickFail)
+		ThrowException(exception,BlobError,UnableToWriteBlob,filename);
+	      status=MagickFail;
+	    }
+	}
+      if (close(file) == -1)
+	{
+	  if (status != MagickFail)
+	    ThrowException(exception,BlobError,UnableToWriteBlob,filename);
+	  status=MagickFail;
+	}
     }
-  return(MagickPass);
+  return status;
 }
 
 /*

@@ -460,7 +460,7 @@ coders_map_la_LIBADD       = $(LIBMAGICK)
 coders_mat_la_SOURCES      = coders/mat.c
 coders_mat_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mat_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mat_la_LIBADD       = $(LIBMAGICK) $(LIB_MATH)
+coders_mat_la_LIBADD       = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES    = coders/matte.c
@@ -478,7 +478,7 @@ coders_meta_la_LIBADD      = $(LIBMAGICK)
 coders_miff_la_SOURCES     = coders/miff.c
 coders_miff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_miff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_miff_la_LIBADD      = $(LIBMAGICK) $(LIB_ZLIB)  $(LIB_BZLIB)
+coders_miff_la_LIBADD      = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_BZLIB)
 
 # MONO coder module
 coders_mono_la_SOURCES     = coders/mono.c

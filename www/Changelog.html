@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2010-06-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/Makefile.am (coders_mat_la_LIBADD): MAT coder is
+        optionally dependent on zlib so zlib should be listed as a
+        dependency.
+
+  <LI> magick/blob.c (BlobToFile): MAGICK_IO_FSYNC=TRUE in the
+        environment should cause file data to be explicitly synchronized
+        prior to close.
+
+</UL>
+<p>
 2010-06-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
