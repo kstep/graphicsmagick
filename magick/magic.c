@@ -103,6 +103,7 @@ StaticMagic[] =
   MAGIC("JPEG", 0, "\377\330\377"),
   MAGIC("JPC", 0, "\377\117"),
   MAGIC("JP2", 4, "\152\120\040\040\015"),
+  MAGIC("MAT", 0, "MATLAB 5.0 MAT-file,"),
   MAGIC("MIFF", 0, "Id=ImageMagick"),
   MAGIC("MIFF", 0, "id=ImageMagick"),
   MAGIC("MNG", 0, "\212MNG\r\n\032\n"),

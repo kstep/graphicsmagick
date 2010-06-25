@@ -612,7 +612,7 @@ MagickExport MagickPassFail BlobToFile(const char *filename,const void *blob,
   assert(filename != (const char *) NULL);
   assert(blob != (const void *) NULL);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-			"Copying memory BLOB to file %s\n",filename);
+			"Copying memory BLOB to file %s",filename);
   if (MagickConfirmAccess(FileWriteConfirmAccessMode,filename,exception)
       == MagickFail)
     return MagickFail;
@@ -780,7 +780,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     }
   image=ReadImage(clone_info,exception);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Removing temporary file \"%s\"\n",clone_info->filename);
+    "Removing temporary file \"%s\"",clone_info->filename);
   (void) LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");

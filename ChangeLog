@@ -1,5 +1,11 @@
 2010-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mat.c (RegisterMATImage): More accurately describe MATLAB
+	format support as "MATLAB Level 5".
+
+	* magick/magic.c (StaticMagic): Automatically detect MATLAB Level
+	5 format based on file header.
+
 	* PerlMagick/PerlMagickCheck.sh.in: Run PerlMagick tests in
 	verbose mode so that all test output appears in "test-suite.log"
 	if there is a failure.
