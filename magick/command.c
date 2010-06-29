@@ -8271,7 +8271,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     *draw_info;
 
   Image
-    *map_image,
     *region_image;
 
   ImageInfo
@@ -8319,17 +8318,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
-  map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
-  quantize_info.dither=True;
-  if (clone_info->monochrome)
-    if (!IsMonochromeImage(*image,&(*image)->exception))
-      {
-        quantize_info.number_colors=2;
-        quantize_info.tree_depth=8;
-        quantize_info.colorspace=GRAYColorspace;
-      }
+  quantize_info.dither=MagickTrue;
   SetGeometry(*image,&region_geometry);
   region_image=(Image *) NULL;
   /*
@@ -8565,6 +8556,39 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info.number_colors=MagickAtoL(argv[++i]);
+
+	    if ( IsGrayColorspace(quantize_info.colorspace) )
+	      {
+		/*
+		  If color reduction is requested, then quantize to the requested
+		  number of colors in the gray colorspace, otherwise simply
+		  transform the image to the gray colorspace.
+		*/
+		if ( quantize_info.number_colors != 0 )
+		  (void) QuantizeImage(&quantize_info,*image);
+		else
+		  (void) TransformColorspace(*image,quantize_info.colorspace);
+	      }
+	    else
+	      {
+		/*
+		  If color reduction is requested, and the image is DirectClass,
+		  or the image is PseudoClass and the number of colors exceeds
+		  the number requested, then quantize the image colors. Otherwise
+		  compress an existing colormap.
+		*/
+		if ( quantize_info.number_colors != 0 )
+		  {
+		    if (((*image)->storage_class == DirectClass) ||
+			((*image)->colors > quantize_info.number_colors))
+		      (void) QuantizeImage(&quantize_info,*image);
+		    else
+		      CompressImageColormap(*image);
+		  }
+	      }
+
+	    quantize_info.number_colors=0;
+	    
             continue;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -8820,6 +8844,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             clone_info->dither=(*option == '-');
             quantize_info.dither=clone_info->dither;
+	    (*image)->dither=quantize_info.dither;
             continue;
           }
         if (LocaleCompare("draw",option+1) == 0)
@@ -9281,7 +9306,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (*option == '+')
               continue;
             (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
-            map_image=ReadImage(clone_info,&(*image)->exception);
+	    {
+	      Image
+		*map_image;
+
+	      if ((map_image=ReadImage(clone_info,&(*image)->exception)) !=
+		  (Image *) NULL)
+		{
+		  (void) MapImage(*image,map_image,quantize_info.dither);
+		  DestroyImage(map_image);
+		}
+	    }
             continue;
           }
         if (LocaleCompare("mask",option+1) == 0)
@@ -9394,10 +9429,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if ((LocaleCompare("mono",option+1) == 0) ||
             (LocaleCompare("monochrome",option+1) == 0))
           {
-            clone_info->monochrome=True;
-            quantize_info.number_colors=2;
-            quantize_info.tree_depth=8;
-            quantize_info.colorspace=GRAYColorspace;
+            clone_info->monochrome=MagickTrue;
+	    (void) SetImageType(*image,BilevelType);
             continue;
           }
         if (LocaleCompare("motion-blur",option+1) == 0)
@@ -10498,7 +10531,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       *image=region_image;
       (*image)->matte=matte;
     }
-
+#if 0
   if ( IsGrayColorspace(quantize_info.colorspace) )
     {
       /*
@@ -10530,12 +10563,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             CompressImageColormap(*image);
         }
     }
+#endif
 
-  if (map_image != (Image *) NULL)
-    {
-      (void) MapImage(*image,map_image,quantize_info.dither);
-      DestroyImage(map_image);
-    }
   /*
     Free resources.
   */

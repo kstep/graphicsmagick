@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2010-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): The -colors, -map, and
+        -monochrome options now take effect immediately rather than at the
+        end of all other processing.  This is is more intuitive and
+        reasonable but may impact the output of scripts which place these
+        options prior to additional image processing operations.
+
+</UL>
+<p>
 2010-06-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
