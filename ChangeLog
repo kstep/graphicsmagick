@@ -1,3 +1,23 @@
+2010-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c: Deal with formats which don't have an extension
+	by prepending the magic specifier to the file name specification.
+
+	* coders/mpr.c (RegisterMPRImage): MPR and MPRI are not useful
+	file extensions.
+
+	* magick/command.c (CommandAccessMonitor): If the environment
+	variable MAGICK_ACCESS_MONITOR is set to TRUE then also log
+	invocations of the access monitor callback when -monitor is
+	specified.  This feature is intended to assist with understanding
+	when the access monitor is invoked, and the arguments which are
+	passed.
+
+	* magick/blob.c (OpenBlob): Throw an exception on error rather
+	than depending on the invoking code to do so.  Resolves
+	SourceForge bug #3023437 "Magick::Image::ping() does not throw
+	exception in all cases".
+
 2010-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): The -colors, -map, and

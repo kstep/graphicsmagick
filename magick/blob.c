@@ -2761,7 +2761,14 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
       image->next=(Image *) NULL;
       image->previous=(Image *) NULL;
     }
-  return(image->blob->type != UndefinedStream);
+  if (UndefinedStream == image->blob->type)
+    {
+      if (UndefinedException == exception->severity)
+	ThrowException(exception,FileOpenError,UnableToOpenFile,filename);
+      return MagickFail;
+    }
+
+  return MagickPass;
 }
 
 /*

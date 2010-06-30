@@ -1,4 +1,11 @@
 /*
+ * Copyright (C) 2003 - 2010 GraphicsMagick Group
+ * Copyright (C) 2003 ImageMagick Studio
+ * Copyright 1991-1999 E. I. du Pont de Nemours and Company
+ *
+ * This program is covered by multiple licenses, which are described in
+ * Copyright.txt. You should have received a copy of Copyright.txt with this
+ * package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  *
  * Test file encode/decode operations via write/read/write/read
  * sequence to detect any data corruption problems.  This does not
@@ -27,6 +34,7 @@ int main ( int argc, char **argv )
     *magick_info;
 
   char
+    basefilespec[MaxTextExtent],
     filename[MaxTextExtent],
     format[MaxTextExtent],
     infile[MaxTextExtent],
@@ -36,8 +44,6 @@ int main ( int argc, char **argv )
   int
     arg = 1,
     exit_status = 0,
-    rows = 0,
-    columns = 0,
     pause = 0;
 
   MagickBool
@@ -59,7 +65,7 @@ int main ( int argc, char **argv )
 
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
-  strcpy(filespec,"out_%d.%s");
+  strcpy(basefilespec,"out_%d.%s");
 
   for (arg=1; arg < argc; arg++)
     {
@@ -117,8 +123,7 @@ int main ( int argc, char **argv )
             }
 	  else if (LocaleCompare("filespec",option+1) == 0)
 	    {
-	      (void) strcpy(filespec,argv[++arg]);
-	      (void) strcat(filespec,".%s");
+	      (void) strcpy(basefilespec,argv[++arg]);
 	    }
           else if (LocaleCompare("log",option+1) == 0)
             {
@@ -197,14 +202,34 @@ int main ( int argc, char **argv )
     }
 
   /*
-   * Obtain original image size if format requires it
-   */
-  rows    = original->rows;
-  columns = original->columns;
+    Get file format information.
+  */
   size[0] = '\0';
   magick_info=GetMagickInfo(format,&exception);
-  if (magick_info && magick_info->raw)
-    FormatString( size, "%dx%d", columns, rows );
+  strcat(filespec,basefilespec);
+  if (magick_info)
+    {
+      if (magick_info->raw)
+	{
+	  /*
+	   * Specify original image size if format requires it
+	   */
+	  FormatString( size, "%lux%lu", original->columns, original->rows );
+	}
+      if (IgnoreExtensionTreatment == magick_info->extension_treatment)
+	{
+	  /*
+	    Prepend magic specifier if extension will be ignored.
+	  */
+	  (void) strcpy(filespec,format);
+	  (void) strcat(filespec,":");
+	  (void) strcat(filespec,basefilespec);
+	}
+      else
+	{
+	  (void) strcat(filespec,".%s");
+	}
+    }
 
   /*
    * Save image to file
