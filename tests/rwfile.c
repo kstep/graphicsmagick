@@ -206,7 +206,7 @@ int main ( int argc, char **argv )
   */
   size[0] = '\0';
   magick_info=GetMagickInfo(format,&exception);
-  strcat(filespec,basefilespec);
+  strcpy(filespec,basefilespec);
   if (magick_info)
     {
       if (magick_info->raw)
