@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -72,7 +72,9 @@
 /*
   Set to 1 in order to log low-level BLOB I/O at "coder" level.
 */
-#define LOG_BLOB_IO 0
+#if !defined(LOG_TIFF_BLOB_IO)
+#  define LOG_TIFF_BLOB_IO 0
+#endif /* !defined(LOG_TIFF_BLOB_IO) */
 
 #if !defined(PREDICTOR_NONE)
 #define     PREDICTOR_NONE              1
@@ -581,10 +583,10 @@ TIFFCloseBlob(thandle_t image_handle)
 {
   Image
     *image = (Image *) image_handle;
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"TIFF close blob");
-#endif /* LOG_BLOB_IO */
+#endif /* LOG_TIFF_BLOB_IO */
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -621,7 +623,7 @@ TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 
   if (*base)
     {
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
       if (((Image *) image)->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			      "TIFF mapped blob: base=0x%p size=%" MAGICK_OFF_F
@@ -641,13 +643,13 @@ TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 
   result=(tsize_t) ReadBlob((Image *) image,(size_t) size,data);
 
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "TIFF read blob: data=0x%p size=%ld, returns %"
 			  MAGICK_OFF_F "d",
 			  data, (long) size, (magick_off_t) result);
-#endif /* LOG_BLOB_IO */
+#endif /* LOG_TIFF_BLOB_IO */
 
   return result;
 }
@@ -660,7 +662,7 @@ TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
     result;
 
   result=SeekBlob((Image *) image,offset,whence);
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "TIFF seek blob: offset=%" MAGICK_OFF_F
@@ -671,7 +673,7 @@ TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
                            (whence == SEEK_CUR ? "CUR" :
                             (whence == SEEK_END ? "END" : "unknown"))),
 			  (magick_off_t) result);
-#endif  /* LOG_BLOB_IO */
+#endif  /* LOG_TIFF_BLOB_IO */
   return result;
 }
 
@@ -684,12 +686,12 @@ TIFFGetBlobSize(thandle_t image)
 
   result=(toff_t) GetBlobSize((Image *) image);
 
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			  "TIFF get blob size returns %" MAGICK_OFF_F "d",
 			  (magick_off_t) result);
-#endif /* LOG_BLOB_IO */
+#endif /* LOG_TIFF_BLOB_IO */
 
   return result;
 }
@@ -700,12 +702,12 @@ TIFFUnmapBlob(thandle_t ARGUNUSED(image),
                           tdata_t ARGUNUSED(base),
                           toff_t ARGUNUSED(size))
 {
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			  "TIFF unmap blob: base=%p size=%" MAGICK_OFF_F "d",
 			  base,(magick_off_t) size);
-#endif  /* LOG_BLOB_IO */
+#endif  /* LOG_TIFF_BLOB_IO */
 }
 
 /* Report warnings. */
@@ -739,14 +741,14 @@ TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 
   result=(tsize_t) WriteBlob((Image *) image,(size_t) size,data);
 
-#if LOG_BLOB_IO
+#if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			  "TIFF write blob: data=%p size=%" MAGICK_OFF_F
 			  "u, returns %" MAGICK_OFF_F "d",
 			  data, (magick_off_t) size,
 			  (magick_off_t) result);
-#endif  /* LOG_BLOB_IO */
+#endif  /* LOG_TIFF_BLOB_IO */
 
   return result;
 }

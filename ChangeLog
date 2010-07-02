@@ -1,3 +1,10 @@
+2010-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (LOG_TIFF_BLOB_IO): Define LOG_TIFF_BLOB_IO=1 when
+	building GraphicsMagick in order to enable verbose logging from
+	the TIFFClientOpen() registered callbacks when 'coder' logging is
+	enabled.
+
 2010-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/rwfile.c: Deal with formats which don't have an extension
