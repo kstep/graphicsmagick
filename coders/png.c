@@ -221,6 +221,16 @@ static png_byte FARDATA mng_tIME[5]={116,  73,  77,  69, '\0'};
 static png_byte FARDATA mng_zTXt[5]={122,  84,  88, 116, '\0'};
 */
 
+typedef struct _UShortPixelPacket
+{
+  unsigned short
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} UShortPixelPacket;
+
 typedef struct _MngBox
 {
   long
@@ -1536,7 +1546,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_filter_method,
     ping_num_trans;
 
-  PixelPacket
+  UShortPixelPacket
     transparent_color;
 
   png_bytep
@@ -2079,15 +2089,36 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
 
       transparent_color.red=
-        (Quantum)(ping_trans_color->red & bit_mask);
+        (unsigned short)(ping_trans_color->red & bit_mask);
       transparent_color.green=
-        (Quantum) (ping_trans_color->green & bit_mask);
+        (unsigned short) (ping_trans_color->green & bit_mask);
       transparent_color.blue=
-        (Quantum) (ping_trans_color->blue & bit_mask);
+        (unsigned short) (ping_trans_color->blue & bit_mask);
       transparent_color.opacity=
-        (Quantum) (ping_trans_color->gray & bit_mask);
+        (unsigned short) (ping_trans_color->gray & bit_mask);
+
       if (ping_colortype == PNG_COLOR_TYPE_GRAY)
         {
+#if (Quantum_depth == 8)
+          if (ping_bit_depth < Quantum_depth)
+#endif
+            transparent_color.opacity=(unsigned short) (
+                ping_trans_color->gray *
+                (65535L/((1UL << ping_bit_depth)-1)));
+
+#if (Quantum_depth == 8)
+          else
+            transparent_color.opacity=(unsigned short) (
+                (ping_trans_color->gray * 65535L)/
+                ((1UL << ping_bit_depth)-1));
+#endif
+          if (logging != MagickFalse)
+            {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    Raw tRNS graylevel is %d.",ping_trans_color->gray);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                   "    scaled graylevel is %d.",transparent_color.opacity);
+            }
           transparent_color.red=transparent_color.opacity;
           transparent_color.green=transparent_color.opacity;
           transparent_color.blue=transparent_color.opacity;
@@ -2630,7 +2661,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     q->red=image->colormap[index].red;
                     q->green=image->colormap[index].green;
                     q->blue=image->colormap[index].blue;
-                    if (q->red == transparent_color.opacity)
+                    if (ScaleQuantumToShort(q->red) ==
+                        transparent_color.opacity)
                       q->opacity=TransparentOpacity;
 		    else
 		      q->opacity=OpaqueOpacity;
@@ -2640,9 +2672,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           else
             for (x=(long) image->columns; x > 0; x--)
               {
-                if (q->red == transparent_color.red &&
-                    q->green == transparent_color.green &&
-                    q->blue == transparent_color.blue)
+                if (ScaleQuantumToShort(q->red) == transparent_color.red &&
+                    ScaleQuantumToShort(q->green) == transparent_color.green &&
+                    ScaleQuantumToShort(q->blue) == transparent_color.blue)
                   q->opacity=TransparentOpacity;
 		else
 		  q->opacity=OpaqueOpacity;

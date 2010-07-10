@@ -1,3 +1,9 @@
+2010-07-10  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* coders/png.c: Always scale tRNS color to 16-bit short.  Otherwise,
+	transparency was sometimes lost while reading PNG files whose depth
+	is different from the Quantum depth.
+
 2010-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (LOG_TIFF_BLOB_IO): Define LOG_TIFF_BLOB_IO=1 when
