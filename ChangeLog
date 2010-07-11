@@ -1,3 +1,15 @@
+2010-07-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am (TESTS_PS_XFAIL_TESTS): PDF tests are expected
+	to fail if Ghostscript is not available.
+
+	* magick/utility.c (MagickStrlCat, MagickStrlCpy): Add handling
+	for the case where size is zero in order to be conformant with the
+	strlcat() and strlcpy() formal descriptions.  GraphicsMagick does
+	its best to never pass a size of zero so an assertion that size is
+	not zero remains in order to help catch bugs in GraphicsMagick.
+	Issue was reported by Albert Cahalan.
+
 2010-07-10  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: Always scale tRNS color to 16-bit short.  Otherwise,

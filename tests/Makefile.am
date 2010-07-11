@@ -145,6 +145,34 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwfile_EPS_truecolor10.sh \
 	tests/rwfile_EPS_truecolor12.sh \
 	tests/rwfile_EPS_truecolor16.sh \
+	tests/rwfile_PDF_bilevel.sh \
+	tests/rwfile_PDF_bilevel_fax.sh \
+	tests/rwfile_PDF_bilevel_jpeg.sh \
+	tests/rwfile_PDF_bilevel_lzw.sh \
+	tests/rwfile_PDF_bilevel_none.sh \
+	tests/rwfile_PDF_bilevel_rle.sh \
+	tests/rwfile_PDF_bilevel_zip.sh \
+	tests/rwfile_PDF_gray.sh \
+	tests/rwfile_PDF_gray_fax.sh \
+	tests/rwfile_PDF_gray_jpeg.sh \
+	tests/rwfile_PDF_gray_lzw.sh \
+	tests/rwfile_PDF_gray_none.sh \
+	tests/rwfile_PDF_gray_rle.sh \
+	tests/rwfile_PDF_gray_zip.sh \
+	tests/rwfile_PDF_pallette.sh \
+	tests/rwfile_PDF_pallette_fax.sh \
+	tests/rwfile_PDF_pallette_jpeg.sh \
+	tests/rwfile_PDF_pallette_lzw.sh \
+	tests/rwfile_PDF_pallette_none.sh \
+	tests/rwfile_PDF_pallette_rle.sh \
+	tests/rwfile_PDF_pallette_zip.sh \
+	tests/rwfile_PDF_truecolor.sh \
+	tests/rwfile_PDF_truecolor_fax.sh \
+	tests/rwfile_PDF_truecolor_jpeg.sh \
+	tests/rwfile_PDF_truecolor_lzw.sh \
+	tests/rwfile_PDF_truecolor_none.sh \
+	tests/rwfile_PDF_truecolor_rle.sh \
+	tests/rwfile_PDF_truecolor_zip.sh \
 	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \

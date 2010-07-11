@@ -4026,10 +4026,11 @@ MagickExport MagickBool MagickSceneFileName(char *filename,
 %
 %  Method MagickStrlCat appends the NULL-terminated string src to the end
 %  of dst.  It will append at most size - strlen(dst) - 1 bytes, NULL-
-%  terminating the result. The total length of the string which would have
-%  been created given sufficient buffer size (may be longer than size) is
-%  returned.  This function substitutes for strlcat() which is available
-%  under FreeBSD and Solaris 9.
+%  terminating the result. If size is zero, then the result is not NULL
+%  terminated. The total length of the string which would have been created
+%  given sufficient buffer size (may be longer than size) is returned.  This
+%  function substitutes for strlcat() which is available under FreeBSD,
+%  Apple's OS-X, and Solaris 8.
 %
 %  Buffer overflow can be checked as  follows:
 %
@@ -4054,9 +4055,6 @@ MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
   size_t
     length;
 
-  char
-    *p;
-
   const char
     *q;
 
@@ -4070,12 +4068,19 @@ MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
     Copy remaining characters from src while constraining length to
     size - 1.
   */
-  for ( p = dst + length, q = src;
-        (*q != 0) && (length < size - 1) ;
-        length++, p++, q++ )
-    *p = *q;
+  q = src;
+  if (size >= 1)
+    {
+      char
+	*p;
 
-  dst[length]='\0';
+      for ( p = dst + length ;
+	    (*q != 0) && (length < size - 1) ;
+	    length++, p++, q++ )
+	*p = *q;
+      
+      dst[length]='\0';
+    }
 
   /*
     Add remaining length of src to length.
@@ -4098,10 +4103,11 @@ MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MagickStrlCpy copies up to size - 1 characters from the NULL-
-%  terminated string src to dst, NULL-terminating the result. The total
-%  length of the string which would have been created given sufficient
-%  buffer size (may be longer than size) is returned. This function
-%  substitutes for strlcpy() which is available under FreeBSD and Solaris 9.
+%  terminated string src to dst, NULL-terminating the result. If size is
+%  zero, then the result is not NULL terminated.  The total length of the
+%  string which would have been created given sufficient buffer size (may
+%  be longer than size) is returned. This function substitutes for strlcpy()
+%  which is available under FreeBSD, Apple's OS-X, and Solaris 8.
 %
 %  Buffer overflow can be checked as  follows:
 %
@@ -4124,10 +4130,7 @@ MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
 MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
 {
   size_t
-    length=0;
-
-  char
-    *p;
+    length;
 
   const char
     *q;
@@ -4139,12 +4142,20 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
   /*
     Copy src to dst within bounds of size-1.
   */
-  for ( p=dst, q=src, length=0 ;
-        (*q != 0) && (length < size-1) ;
-        length++, p++, q++ )
-    *p = *q;
+  length=0;
+  q=src;
+  if (size >= 1)
+    {
+      char
+	*p;
 
-  dst[length]='\0';
+      for ( p=dst ;
+	    (*q != 0) && (length < size-1) ;
+	    length++, p++, q++ )
+	*p = *q;
+      
+      dst[length]='\0';
+    }
 
   /*
     Add remaining length of src to length.
@@ -4167,10 +4178,11 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MagickStrlCpyTrunc copies up to size - 1 characters from the NULL-
-%  terminated string src to dst, NULL-terminating the result.  The number of
-%  bytes copied (not including the terminating NULL) is returned.  This
-%  function is a useful alternative to using MagickStrlCpy() when the
-%  actual size copied is more useful than knowledge that truncation occured.
+%  terminated string src to dst, NULL-terminating the result.  If size is
+%  zero, then the result is not NULL terminated.  The number of bytes copied
+%  (not including the terminating NULL) is returned.  This function is a
+%  useful alternative to using MagickStrlCpy() when the actual size copied
+%  is more useful than knowledge that truncation occured.
 %
 %  The format of the MagickStrlCat method is:
 %
@@ -4188,10 +4200,7 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
 MagickExport size_t MagickStrlCpyTrunc(char *dst, const char *src, const size_t size)
 {
   size_t
-    length=0;
-
-  char
-    *p;
+    length;
 
   const char
     *q;
@@ -4203,12 +4212,19 @@ MagickExport size_t MagickStrlCpyTrunc(char *dst, const char *src, const size_t 
   /*
     Copy src to dst within bounds of size-1.
   */
-  for ( p=dst, q=src, length=0 ;
-        (*q != 0) && (length < size-1) ;
-        length++, p++, q++ )
-    *p = *q;
+  length=0;
+  if (size >= 1)
+    {
+      char
+	*p;
 
-  dst[length]='\0';
+      for ( p=dst, q=src;
+	    (*q != 0) && (length < size-1) ;
+	    length++, p++, q++ )
+	*p = *q;
+      
+      dst[length]='\0';
+    }
 
   return length;
 }

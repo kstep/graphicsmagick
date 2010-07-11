@@ -21,6 +21,30 @@
 </tr>
 </table>
 <p>
+2010-07-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am (TESTS_PS_XFAIL_TESTS): PDF tests are expected
+        to fail if Ghostscript is not available.
+
+  <LI> magick/utility.c (MagickStrlCat, MagickStrlCpy): Add handling
+        for the case where size is zero in order to be conformant with the
+        strlcat() and strlcpy() formal descriptions.  GraphicsMagick does
+        its best to never pass a size of zero so an assertion that size is
+        not zero remains in order to help catch bugs in GraphicsMagick.
+        Issue was reported by Albert Cahalan.
+
+</UL>
+<p>
+2010-07-10  Glenn Randers-Pehrson  &lt;glennrp@simple...&gt;
+
+<UL>
+  <LI> coders/png.c: Always scale tRNS color to 16-bit short.  Otherwise,
+        transparency was sometimes lost while reading PNG files whose depth
+        is different from the Quantum depth.
+
+</UL>
+<p>
 2010-07-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
