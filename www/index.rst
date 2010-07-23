@@ -43,7 +43,8 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _OSSCC : http://www.osscc.net/en/index.html
 .. _OpenMP : OpenMP.html
 .. _`ChangeLog` : Changelog.html
-.. _`Flickr` : http://www.flickr.com/
+.. _`Flickr` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
+.. _`Etsy` : http://codeascraft.etsy.com/2010/07/09/batch-processing-millions-of-images/
 .. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 .. _`NEWS` : NEWS.html
 .. _`SLOCCount` : http://www.dwheeler.com/sloccount/
@@ -95,7 +96,7 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is much smaller and tighter (3-5X smaller installation footprint).
 
   * GM is used to process billions of files at the world's largest photo
-    sites (e.g. `Flickr`_, see `John Allspaw's presentation`_).
+    sites (e.g. `Flickr`_ and `Etsy`_).
   
   * GM does not does not conflict with other installed software.
 

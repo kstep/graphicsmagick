@@ -806,15 +806,6 @@ The members of the Image structure are shown in the following table:
    +--------------------------------+------------------+----------------------------------------------------+
    |             Member             |       Type       |                    Description                     |
    +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | Image attribute list. Consists of a                |
-   |                                |                  | doubly-linked-list of ImageAttribute structures,   |
-   |                                |                  | each of which has an associated key and value.     |
-   | attribute                      | ImageAttribute*  | Access/update list via SetImageAttribute() and     |
-   |                                |                  | GetImageAttribute().  Key-strings used by          |
-   |                                |                  | GraphicsMagick include "Comment" (image comment) , |
-   |                                |                  | "Label" (image label), and "Signature" (image      |
-   |                                |                  | signature).                                        |
-   +--------------------------------+------------------+----------------------------------------------------+
    | background_color               | PixelPacket      | Image background color                             |
    +--------------------------------+------------------+----------------------------------------------------+
    | blur                           | double           | Blur factor to apply to the image when zooming     |
@@ -823,10 +814,6 @@ The members of the Image structure are shown in the following table:
    +--------------------------------+------------------+----------------------------------------------------+
    | chromaticity                   | ChromaticityInfo | Red, green, blue, and white-point chromaticity     |
    |                                |                  | values.                                            |
-   +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | ICC color profile. Specifications are available    |
-   | color_profile                  | ProfileInfo      | from the International Color Consortium for the    |
-   |                                |                  | format of ICC color profiles.                      |
    +--------------------------------+------------------+----------------------------------------------------+
    | colormap                       | PixelPacket *    | PseudoColor palette array.                         |
    +--------------------------------+------------------+----------------------------------------------------+
@@ -841,8 +828,6 @@ The members of the Image structure are shown in the following table:
    +--------------------------------+------------------+----------------------------------------------------+
    | columns                        | unsigned int     | Image width                                        |
    +--------------------------------+------------------+----------------------------------------------------+
-   | comments                       | char *           | Image comments                                     |
-   +--------------------------------+------------------+----------------------------------------------------+
    | compression                    | CompressionType  | Image compresion type. The default is the          |
    |                                |                  | compression type of the specified image file.      |
    +--------------------------------+------------------+----------------------------------------------------+
@@ -852,8 +837,8 @@ The members of the Image structure are shown in the following table:
    |                                |                  | regulating the animation of a sequence of GIF      |
    |                                |                  | images within Netscape.                            |
    +--------------------------------+------------------+----------------------------------------------------+
-   | depth                          | unsigned int     | Image depth (8 or 16). QuantumLeap must be defined |
-   |                                |                  | before a depth of 16 is valid.                     |
+   | depth                          | unsigned int     | Image depth.  Number of encoding bits per sample.  |
+   |                                |                  | Usually 8 or 16, but sometimes 10 or 12.           |
    +--------------------------------+------------------+----------------------------------------------------+
    |                                |                  | Tile names from within an image montage. Only      |
    | directory                      | char *           | valid after calling MontageImages() or reading a   |
@@ -867,16 +852,8 @@ The members of the Image structure are shown in the following table:
    | exception                      | ExceptionInfo    | Record of any error which occurred when updating   |
    |                                |                  | image.                                             |
    +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | Stdio stream to read image from or write image to. |
-   |                                |                  | If set, GraphicsMagick will read from or write to  |
-   | file                           | FILE *           | the stream rather than opening a file. Used by     |
-   |                                |                  | ReadImage() and WriteImage(). The stream is closed |
-   |                                |                  | when the operation completes.                      |
-   +--------------------------------+------------------+----------------------------------------------------+
    | filename                       | char             | Image file name to read or write.                  |
    |                                | [MaxTextExtent]  |                                                    |
-   +--------------------------------+------------------+----------------------------------------------------+
-   | filesize                       | long int         | Number of bytes of the encoded file.               |
    +--------------------------------+------------------+----------------------------------------------------+
    |                                |                  | Filter to use when resizing image. The reduction   |
    |                                |                  | filter employed has a significant effect on the    |
@@ -912,14 +889,8 @@ The members of the Image structure are shown in the following table:
    |                                |                  | to create an interlaced GIF or progressive JPEG    |
    |                                |                  | image.                                             |
    +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | IPTC profile. Specifications are available from    |
-   | iptc_profile                   | ProfileInfo      | the International Press Telecommunications Council |
-   |                                |                  | for IPTC profiles.                                 |
-   +--------------------------------+------------------+----------------------------------------------------+
    | iterations                     | unsigned int     | Number of iterations to loop an animation (e.g.    |
    |                                |                  | Netscape loop extension) for.                      |
-   +--------------------------------+------------------+----------------------------------------------------+
-   | list                           | struct _Image *  | Undo image list (used only by 'display')           |
    +--------------------------------+------------------+----------------------------------------------------+
    | magick                         | char             | Image encoding format (e.g. "GIF").                |
    |                                | [MaxTextExtent]  |                                                    |
@@ -936,25 +907,10 @@ The members of the Image structure are shown in the following table:
    +--------------------------------+------------------+----------------------------------------------------+
    | matte_color                    | PixelPacket      | Image matte (transparent) color                    |
    +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | The mean error per pixel computed when an image is |
-   | mean_error_per_pixel           | unsigned int     | color reduced. This parameter is only valid if     |
-   |                                |                  | verbose is set to true and the image has just been |
-   |                                |                  | quantized.                                         |
-   +--------------------------------+------------------+----------------------------------------------------+
    | montage                        | char *           | Tile size and offset within an image montage. Only |
    |                                |                  | valid for montage images.                          |
    +--------------------------------+------------------+----------------------------------------------------+
    | next                           | struct _Image *  | Next image frame in sequence                       |
-   +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | The normalized max error per pixel computed when   |
-   | normalized_maximum_error       | double           | an image is color reduced. This parameter is only  |
-   |                                |                  | valid if verbose is set to true and the image has  |
-   |                                |                  | just been quantized.                               |
-   +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | The normalized mean error per pixel computed when  |
-   | normalized_mean_error          | double           | an image is color reduced. This parameter is only  |
-   |                                |                  | valid if verbose is set to true and the image has  |
-   |                                |                  | just been quantized.                               |
    +--------------------------------+------------------+----------------------------------------------------+
    | offset                         | int              | Number of initial bytes to skip over when reading  |
    |                                |                  | raw image.                                         |
@@ -962,21 +918,7 @@ The members of the Image structure are shown in the following table:
    | orientation                    | OrientationType  | Orientation of the image. Specifies scanline       |
    |                                |                  | orientation and starting coordinate of image.      |
    +--------------------------------+------------------+----------------------------------------------------+
-   | orphan                         | unsigned int     | When set, CloneImage() clones only the current     |
-   |                                |                  | frame, creating an "orphan" frame.                 |
-   +--------------------------------+------------------+----------------------------------------------------+
    | page                           | RectangleInfo    | Equivalent size of Postscript page.                |
-   +--------------------------------+------------------+----------------------------------------------------+
-   |                                |                  | Set to True if image is read/written from/to a     |
-   |                                |                  | POSIX pipe. To read from (or write to) an open     |
-   |                                |                  | pipe, set this member to True, set the file member |
-   | pipe                           | int              | to a stdio stream representing the pipe (obtained  |
-   |                                |                  | from popen()), and invoke ReadImage()/WriteImage() |
-   |                                |                  | . The pipe is automatically closed via pclose()    |
-   |                                |                  | when the operation completes.                      |
-   +--------------------------------+------------------+----------------------------------------------------+
-   | pixels                         | PixelPacket *    | Image pixels retrieved via GetPixelCache() or      |
-   |                                |                  | initialized via SetPixelCache().                   |
    +--------------------------------+------------------+----------------------------------------------------+
    | previous                       | struct _Image *  | Previous image frame in sequence.                  |
    +--------------------------------+------------------+----------------------------------------------------+
@@ -987,12 +929,9 @@ The members of the Image structure are shown in the following table:
    | scene                          | unsigned int     | Image frame scene number.                          |
    +--------------------------------+------------------+----------------------------------------------------+
    |                                |                  | Image storage class. If DirectClass then the image |
-   | storage_type                   | ClassType        | packets contain valid RGB or CMYK colors. If       |
+   | storage_class                  | ClassType        | packets contain valid RGB or CMYK colors. If       |
    |                                |                  | PseudoClass then the image has a colormap          |
    |                                |                  | referenced by pixel's index member.                |
-   +--------------------------------+------------------+----------------------------------------------------+
-   | tainted                        | int              | Set to  non-zero (True) if the image pixels have   |
-   |                                |                  | been modified.                                     |
    +--------------------------------+------------------+----------------------------------------------------+
    |                                |                  | Describes a tile within an image.  For example, if |
    | tile_info                      | RectangleInfo    | your images is 640x480 you may only want 320x256   |

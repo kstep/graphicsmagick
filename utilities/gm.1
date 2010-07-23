@@ -1,4 +1,4 @@
-.TH gm 1 "2010/04/25" "GraphicsMagick"
+.TH gm 1 "2010/07/23" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2660,7 +2660,18 @@ desired.
 .B "-normalize"
 \fRtransform image to span the full range of color values
 
-This is a contrast enhancement technique.
+This is a contrast enhancement technique based on the image histogram.
+
+When computing the contrast enhancement values, the histogram edges
+are truncated so that the majority of the image pixels are considered
+in the constrast enhancement, and outliers (e.g. random noise or
+minute details) are ignored.  The default is that 0.1 percent of the
+histogram entries are ignored.  The percentage of the histogram to
+ignore may be specified by using the \fB-set\fP option with the
+\fBhistogram-threshold\fP parameter similar to \fB-set
+histogram-threshold 0.01\fP to specify 0.01 percent.  Use 0 percent
+to use the entire histogram, with possibly diminished contrast
+enhancement.
 .TP
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image

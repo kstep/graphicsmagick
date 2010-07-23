@@ -3460,7 +3460,18 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform image to span the full range of color values</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is a contrast enhancement technique.</font></td></tr></table>
+This is a contrast enhancement technique based on the image histogram.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+When computing the contrast enhancement values, the histogram edges
+are truncated so that the majority of the image pixels are considered
+in the constrast enhancement, and outliers (e.g. random noise or
+minute details) are ignored.  The default is that 0.1 percent of the
+histogram entries are ignored.  The percentage of the histogram to
+ignore may be specified by using the <strong>-set</strong> option with the
+<strong>histogram-threshold</strong> parameter similar to <strong>-set
+histogram-threshold 0.01</strong> to specify 0.01 percent.  Use 0 percent
+to use the entire histogram, with possibly diminished contrast
+enhancement.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

@@ -3439,7 +3439,19 @@ desired.</pp>
 <abs>transform image to span the full range of color values</abs>
 
 <pp>
-This is a contrast enhancement technique.</pp>
+This is a contrast enhancement technique based on the image histogram.</pp>
+
+<pp>
+When computing the contrast enhancement values, the histogram edges
+are truncated so that the majority of the image pixels are considered
+in the constrast enhancement, and outliers (e.g. random noise or
+minute details) are ignored.  The default is that 0.1 percent of the
+histogram entries are ignored.  The percentage of the histogram to
+ignore may be specified by using the <s>-set</s> option with the
+<s>histogram-threshold</s> parameter similar to <s>-set
+histogram-threshold 0.01</s> to specify 0.01 percent.  Use 0 percent
+to use the entire histogram, with possibly diminished contrast
+enhancement.</pp>
 
 </utils>
 

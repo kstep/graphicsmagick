@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2010-07-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/options.imdoc: Document histogram-threshold setting.
+
+  <LI> magick/enhance.c (NormalizeImage): Add support for
+        histogram-threshold setting to specify the percentage of the
+        histogram to discard when computing image normalization parameters
+        (default is 0.1%).  For example '-set histogram-threshold 0.01
+        -normalize'.
+
+  <LI> www/api/types.rst: Update Image structure member documentation.
+
+</UL>
+<p>
+2010-07-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Add a test for posix_spawnp().  Results may be
+        used in later development.
+
+</UL>
+<p>
 2010-07-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

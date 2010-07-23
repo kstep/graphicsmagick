@@ -1110,10 +1110,10 @@ GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
-  posix_fallocate posix_madvise posix_memalign pread pwrite putc_unlocked raise \
-  rand_r readdir_r readlink realpath select seekdir setrlimit sigemptyset \
-  sigaction spawnvp strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
-  tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
+  posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
+  putc_unlocked raise rand_r readdir_r readlink realpath select seekdir \
+  setrlimit sigemptyset sigaction spawnvp strerror strerror_r strlcat strlcpy \
+  strtoll sysconf tempnam tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #
