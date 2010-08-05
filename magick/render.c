@@ -1570,12 +1570,11 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %
 %
 */
-
 static inline unsigned int IsPoint(const char *point)
 {
   char
     *p;
-
+  
   (void) strtol(point,&p,10);
   return(p != point);
 }
@@ -2011,51 +2010,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("gravity",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("NorthWest",token) == 0)
-              {
-                graphic_context[n]->gravity=NorthWestGravity;
-                break;
-              }
-            if (LocaleCompare("North",token) == 0)
-              {
-                graphic_context[n]->gravity=NorthGravity;
-                break;
-              }
-            if (LocaleCompare("NorthEast",token) == 0)
-              {
-                graphic_context[n]->gravity=NorthEastGravity;
-                break;
-              }
-            if (LocaleCompare("West",token) == 0)
-              {
-                graphic_context[n]->gravity=WestGravity;
-                break;
-              }
-            if (LocaleCompare("Center",token) == 0)
-              {
-                graphic_context[n]->gravity=CenterGravity;
-                break;
-              }
-            if (LocaleCompare("East",token) == 0)
-              {
-                graphic_context[n]->gravity=EastGravity;
-                break;
-              }
-            if (LocaleCompare("SouthWest",token) == 0)
-              {
-                graphic_context[n]->gravity=SouthWestGravity;
-                break;
-              }
-            if (LocaleCompare("South",token) == 0)
-              {
-                graphic_context[n]->gravity=SouthGravity;
-                break;
-              }
-            if (LocaleCompare("SouthEast",token) == 0)
-              {
-                graphic_context[n]->gravity=SouthEastGravity;
-                break;
-              }
+	    graphic_context[n]->gravity=StringToGravityType(token);
+	    if (ForgetGravity != graphic_context[n]->gravity)
+	      break;
             status=False;
             break;
           }
