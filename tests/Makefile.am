@@ -110,6 +110,10 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwblob_EPDF_gray.sh \
 	tests/rwblob_EPDF_pallette.sh \
 	tests/rwblob_EPDF_truecolor.sh \
+	tests/rwblob_EPT_bilevel.sh \
+	tests/rwblob_EPT_gray.sh \
+	tests/rwblob_EPT_pallette.sh \
+	tests/rwblob_EPT_truecolor.sh \
 	tests/rwfile_EPDF_bilevel.sh \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \
@@ -145,6 +149,13 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwfile_EPS_truecolor10.sh \
 	tests/rwfile_EPS_truecolor12.sh \
 	tests/rwfile_EPS_truecolor16.sh \
+	tests/rwfile_EPT_bilevel.sh \
+	tests/rwfile_EPT_gray.sh \
+	tests/rwfile_EPT_pallette.sh \
+	tests/rwfile_EPT_truecolor.sh \
+	tests/rwfile_EPT_truecolor10.sh \
+	tests/rwfile_EPT_truecolor12.sh \
+	tests/rwfile_EPT_truecolor16.sh \
 	tests/rwfile_PDF_bilevel.sh \
 	tests/rwfile_PDF_bilevel_fax.sh \
 	tests/rwfile_PDF_bilevel_jpeg.sh \

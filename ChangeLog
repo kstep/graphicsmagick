@@ -1,5 +1,8 @@
 2010-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/Makefile.am (TESTS_PS_XFAIL_TESTS): Expect EPT tests to
+	fail if Ghostscript is missing.
+
 	* configure.ac: Updated to Autoconf 2.67.
 
 	* magick/render.c (DrawImage): Use StringToGravityType() to parse

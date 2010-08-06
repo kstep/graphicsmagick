@@ -3767,6 +3767,10 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_gray.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_pallette.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_truecolor.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_bilevel.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_gray.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_pallette.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_truecolor.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_bilevel.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_gray.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_pallette.sh \
@@ -3802,6 +3806,13 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor10.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor12.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor16.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_bilevel.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_gray.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_pallette.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor10.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor12.sh \
+@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor16.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_fax.sh \
 @HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_jpeg.sh \
