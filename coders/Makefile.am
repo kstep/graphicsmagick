@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -80,6 +80,7 @@ MAGICK_CODER_SRCS = \
 	coders/html.c \
 	coders/icon.c \
 	coders/identity.c \
+	coders/info.c \
 	coders/label.c \
 	coders/locale.c \
 	coders/logo.c \
@@ -177,6 +178,7 @@ coders_LTLIBRARIES = \
 	coders/html.la \
 	coders/icon.la \
 	coders/identity.la \
+	coders/info.la \
 	coders/label.la \
 	coders/locale.la \
 	coders/logo.la \
@@ -413,6 +415,12 @@ coders_identity_la_SOURCES  = coders/identity.c
 coders_identity_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_identity_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 coders_identity_la_LIBADD   = $(LIBMAGICK)
+
+# Info coder module
+coders_info_la_SOURCES     = coders/info.c
+coders_info_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_info_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_info_la_LIBADD      = $(LIBMAGICK)
 
 # JBIG coder module
 coders_jbig_la_SOURCES     = coders/jbig.c

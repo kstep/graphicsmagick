@@ -1,3 +1,10 @@
+2010-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/info.c (WriteINFOImage): Added an 'INFO' coder which
+	produces textual image description output similar to 'identify'
+	but may be used with convert like "gm convert myfile info:-".
+	Feature suggested by Stefan Schramowski.
+
 2010-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am (TESTS_PS_XFAIL_TESTS): Expect EPT tests to

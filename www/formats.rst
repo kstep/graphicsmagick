@@ -471,6 +471,10 @@ following table lists these pseudo image formats:
    |              |      | image                     | The order is specified as an argument like "IDENTITY:8".    |
    |              |      |                           | The default order is eight, producing a 512x512 image.      |
    +--------------+------+---------------------------+-------------------------------------------------------------+
+   | INFO         | W    | Image descriptive         | Writes descriptive information similar to 'identify'        |
+   |              |      | information and           |                                                             |
+   |              |      | statistics                |                                                             |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
    | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.              |
    |              |      |                           | "label:This is a label").                                   |
    +--------------+------+---------------------------+-------------------------------------------------------------+

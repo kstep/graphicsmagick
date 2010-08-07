@@ -4403,8 +4403,6 @@ MagickExport size_t WriteBlobByte(Image *image,const magick_uint8_t value)
 %
 %  A description of each parameter follows.
 %
-%    o count:  Method WriteBlobByte returns the number of bytes written.
-%
 %    o image: The image.
 %
 %    o filename: The filename to copy to blob.

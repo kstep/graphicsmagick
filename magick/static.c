@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -170,6 +170,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterHTMLImage();
   RegisterICONImage();
   RegisterIDENTITYImage();
+  RegisterINFOImage();
 #if defined(HasJBIG)
   RegisterJBIGImage();
 #endif
@@ -320,6 +321,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterHTMLImage();
   UnregisterICONImage();
   UnregisterIDENTITYImage();
+  UnregisterINFOImage();
 #if defined(HasJBIG)
   UnregisterJBIGImage();
 #endif
