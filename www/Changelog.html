@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2010-08-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c (ModifyCache): Fix deadlock in
+        ClonePixelCache() which was caused by using the same semaphore
+        pointer in the source and destination images.  Problem was
+        reported by Stefan Schramowski.
+
+</UL>
+<p>
 2010-08-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

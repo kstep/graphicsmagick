@@ -782,9 +782,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=c;
               c=ReadBlobByte(image);
-            } while (isalnum(c) || (c == '-'));
+            } while ((isalnum(c) || (c == '-')) && (c != EOF));
             *p='\0';
-            while (isspace(c) || (c == '='))
+            while ((isspace(c) || (c == '=')) && (c != EOF))
               c=ReadBlobByte(image);
             p=values;
             while ((c != '}') && (c != EOF))

@@ -2775,6 +2775,12 @@ ModifyCache(Image *image, ExceptionInfo *exception)
           /* fprintf(stderr,"ModifyCache: Thread %d enters (cache_info = %p)\n",
              omp_get_thread_num(),image->cache); */
           clone_image=(*image);
+	  /*
+	    Semaphore and reference count need to be initialized for the temporary
+	    Image copy since otherwise there may be deadlock in ClonePixelCache.
+	  */
+	  clone_image.semaphore=AllocateSemaphoreInfo();
+	  clone_image.reference_count=1;
 
           GetCacheInfo(&clone_image.cache);
           status=OpenCache(&clone_image,IOMode,exception);
@@ -2785,6 +2791,8 @@ ModifyCache(Image *image, ExceptionInfo *exception)
               */
               status=ClonePixelCache(image,&clone_image,exception);
             }
+	  DestroySemaphoreInfo(&clone_image.semaphore);
+
           if (status != MagickFail)
             {
 	      destroy_cache=MagickTrue;
