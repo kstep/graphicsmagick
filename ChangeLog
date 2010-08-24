@@ -1,3 +1,8 @@
+2010-08-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Use AC_USE_SYSTEM_EXTENSIONS to enable system API
+	extensions.
+
 2010-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (ModifyCache): Fix deadlock in

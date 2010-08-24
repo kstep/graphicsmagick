@@ -135,8 +135,9 @@ MAGICK_API_LIBS=''
 #AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
 #AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
 #AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
-AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
-AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
+#AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
+#AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
+AC_USE_SYSTEM_EXTENSIONS
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -1107,7 +1108,7 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
+AC_CHECK_FUNCS([atoll ctime_r _exit fcntl ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
