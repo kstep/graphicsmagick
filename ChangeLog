@@ -1,3 +1,7 @@
+2010-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Update to Automake 1.11.1.
+
 2010-08-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Use AC_USE_SYSTEM_EXTENSIONS to enable system API
