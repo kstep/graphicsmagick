@@ -1,3 +1,11 @@
+2010-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MontageImageCommand): Fix memory leak of
+	MontageInfo structure allocation in error handling path.
+
+	* magick/montage.c (MontageImages): Fix crash observed with
+	"-geometry x+0+0".  Problem reported by Simon Rainer.
+
 2010-08-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Update to Automake 1.11.1.

@@ -13129,6 +13129,7 @@ static void MogrifyUsage(void)
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
+  DestroyMontageInfo(montage_info); \
   ThrowException(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
   return(False); \
@@ -13138,6 +13139,7 @@ static void MogrifyUsage(void)
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
+  DestroyMontageInfo(montage_info); \
   ThrowException3(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
   return(False); \
