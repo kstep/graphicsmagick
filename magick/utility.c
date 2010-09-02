@@ -4676,7 +4676,13 @@ MagickExport char **StringToList(const char *text)
         if (textlist[i] == (char *) NULL)
           MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
             UnableToConvertText);
-        (void) strlcpy(textlist[i],p,q-p+1);
+	/*
+	  Don't use strlcpy here because it spends too much time
+	  looking for the trailing null in order to report the
+	  characters not copied.
+	*/
+	(void) strncpy(textlist[i],p,q-p);
+        textlist[i][q-p]='\0';
         if (*q == '\r')
           q++;
         p=q+1;

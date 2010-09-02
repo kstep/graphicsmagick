@@ -1,3 +1,11 @@
+2010-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (StringToList): Fix performance problem caused
+	by using strlcpy.
+
+	* coders/pnm.c (ReadPNMImage): Q8 build should be able to read
+	16-bit PGM images.
+
 2010-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MontageImageCommand): Fix memory leak of

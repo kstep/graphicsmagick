@@ -313,7 +313,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image Depth: %u",
                             image->depth); 
-      if ((format != '3') && (format != '6'))
+      if ((format != '3') && (format != '6') && (max_value < MaxColormapSize))
         {
           image->storage_class=PseudoClass;
           image->colors=
@@ -443,22 +443,46 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                indexes=AccessMutableIndexes(image);
-                for (x=0; x < image->columns; x++)
-                  {
-                    intensity=PNMInteger(image,10);
-                    ValidateScalingIndex(image, intensity, max_value);
-                    if (EOFBlob(image))
-                      break;
-                    if (scale != (Quantum *) NULL)
-                      intensity=scale[intensity];
-                    index=intensity;
-                    VerifyColormapIndex(image,index);
-                    indexes[x]=index;
-                    *q=image->colormap[index];
-                    is_monochrome &= IsMonochrome(*q);
-                    q++;
-                  }
+		if (image->storage_class == PseudoClass)
+		  {
+		    /*
+		      PseudoClass
+		    */
+		    indexes=AccessMutableIndexes(image);
+		    for (x=0; x < image->columns; x++)
+		      {
+			intensity=PNMInteger(image,10);
+			ValidateScalingIndex(image, intensity, max_value);
+			if (EOFBlob(image))
+			  break;
+			if (scale != (Quantum *) NULL)
+			  intensity=scale[intensity];
+			index=intensity;
+			VerifyColormapIndex(image,index);
+			indexes[x]=index;
+			*q=image->colormap[index];
+			is_monochrome &= IsMonochrome(*q);
+			q++;
+		      }
+		  }
+		else
+		  {
+		    /*
+		      DirectClass
+		    */
+		    for (x=0; x < image->columns; x++)
+		      {
+			intensity=PNMInteger(image,10);
+			ValidateScalingIndex(image, intensity, max_value);
+			if (EOFBlob(image))
+			  break;
+			if (scale != (Quantum *) NULL)
+			  intensity=scale[intensity];
+			q->red=q->green=q->blue=intensity;
+			is_monochrome &= IsMonochrome(*q);
+			q++;
+		      }
+		  }
                 if (EOFBlob(image))
                   break;
                 if (!SyncImagePixels(image))
