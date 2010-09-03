@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2010-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/draw.c, wand/drawing_wand.c: Pass full user-provided
+        double precision resolution to renderer.  Truncating the
+        resolution causes problems in some cases.  Resolves SourceForge
+        bug 3058387 "Incorrect Copy Compositing through C interface".
+
+</UL>
+<p>
 2010-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

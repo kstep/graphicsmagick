@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2010 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -324,7 +324,7 @@ static void MvgAppendPointsCommand(DrawingWand *drawing_wand,
   (void) MvgPrintf(drawing_wand, "%s", command);
   for (i=number_coordinates, coordinate=coordinates; i; i--)
     {
-      (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",coordinate->x,coordinate->y);
+      (void) MvgAutoWrapPrintf(drawing_wand," %g,%g",coordinate->x,coordinate->y);
       coordinate++;
     }
   (void) MvgPrintf(drawing_wand, "\n");
@@ -569,7 +569,7 @@ WandExport void DrawAnnotation(DrawingWand *drawing_wand,const double x,
   assert(drawing_wand->signature == MagickSignature);
   assert(text != (const unsigned char *) NULL);
   escaped_text=EscapeString((const char*)text,'\'');
-  (void) MvgPrintf(drawing_wand,"text %.4g,%.4g '%.1024s'\n",x,y,escaped_text);
+  (void) MvgPrintf(drawing_wand,"text %g,%g '%.1024s'\n",x,y,escaped_text);
   escaped_text=(char *) RelinquishMagickMemory(escaped_text);
 }
 
@@ -698,7 +698,7 @@ WandExport void DrawArc(DrawingWand *drawing_wand,const double sx,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",sx,sy,ex,ey,
+  (void) MvgPrintf(drawing_wand,"arc %g,%g %g,%g %g,%g\n",sx,sy,ex,ey,
     sd,ed);
 }
 
@@ -774,7 +774,7 @@ WandExport void DrawCircle(DrawingWand *drawing_wand,const double ox,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand, "circle %.4g,%.4g %.4g,%.4g\n",ox,oy,px,py);
+  (void) MvgPrintf(drawing_wand, "circle %g,%g %g,%g\n",ox,oy,px,py);
 }
 
 /*
@@ -1179,7 +1179,7 @@ WandExport void DrawColor(DrawingWand *drawing_wand,const double x,
       break;
   }
   if (p != NULL)
-    (void) MvgPrintf(drawing_wand, "color %.4g,%.4g %s\n", x, y, p);
+    (void) MvgPrintf(drawing_wand, "color %g,%g %s\n", x, y, p);
 }
 
 /*
@@ -1253,7 +1253,7 @@ WandExport void DrawEllipse(DrawingWand *drawing_wand,const double ox,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",ox,oy,rx,ry,
+  (void) MvgPrintf(drawing_wand,"ellipse %g,%g %g,%g %g,%g\n",ox,oy,rx,ry,
     start,end);
 }
 
@@ -1468,7 +1468,7 @@ WandExport void DrawSetFillOpacity(DrawingWand *drawing_wand,
   if (drawing_wand->filter_off || (CurrentContext->opacity != opacity))
     {
       CurrentContext->opacity=opacity;
-      (void) MvgPrintf(drawing_wand,"fill-opacity %.4g\n",fill_opacity);
+      (void) MvgPrintf(drawing_wand,"fill-opacity %g\n",fill_opacity);
     }
 }
 
@@ -1757,7 +1757,7 @@ WandExport void DrawSetFontSize(DrawingWand *drawing_wand,
      (AbsoluteValue(CurrentContext->pointsize-pointsize) > MagickEpsilon))
     {
       CurrentContext->pointsize=pointsize;
-      (void) MvgPrintf(drawing_wand,"font-size %.4g\n",pointsize);
+      (void) MvgPrintf(drawing_wand,"font-size %g\n",pointsize);
     }
 }
 
@@ -2235,7 +2235,7 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
       int
         remaining;
 
-      (void) MvgPrintf(drawing_wand,"image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
+      (void) MvgPrintf(drawing_wand,"image %s %g,%g %g,%g 'data:%s;base64,\n",
         mode,x,y,width,height,media_type);
       remaining=(int) encoded_length;
       str=base64;
@@ -2289,7 +2289,7 @@ WandExport void DrawLine(DrawingWand *drawing_wand,const double sx,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"line %.4g,%.4g %.4g,%.4g\n",sx,sy,ex,ey);
+  (void) MvgPrintf(drawing_wand,"line %g,%g %g,%g\n",sx,sy,ex,ey);
 }
 
 /*
@@ -2358,7 +2358,7 @@ WandExport void DrawMatte(DrawingWand *drawing_wand,const double x,
       break;
   }
   if (p != NULL)
-    (void) MvgPrintf(drawing_wand,"matte %.4g,%.4g %s\n",x,y,p);
+    (void) MvgPrintf(drawing_wand,"matte %g,%g %s\n",x,y,p);
 }
 
 /*
@@ -2446,11 +2446,11 @@ static void DrawPathCurveTo(DrawingWand *drawing_wand,const PathMode mode,
     {
       drawing_wand->path_operation=PathCurveToOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand, "%c%g,%g %g,%g %g,%g",
         mode == AbsolutePathMode ? 'C' : 'c',x1,y1,x2,y2,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g %.4g,%.4g",
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g %g,%g %g,%g",
       x1,y1,x2,y2,x,y);
 }
 
@@ -2557,11 +2557,11 @@ static void DrawPathCurveToQuadraticBezier(DrawingWand *drawing_wand,
     {
       drawing_wand->path_operation=PathCurveToQuadraticBezierOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand, "%c%g,%g %g,%g",
         mode == AbsolutePathMode ? 'Q' : 'q',x1,y1,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x1,y1,x,y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g %g,%g",x1,y1,x,y);
 }
 
 WandExport void DrawPathCurveToQuadraticBezierAbsolute(
@@ -2665,11 +2665,11 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawingWand *drawing_wand,
     {
       drawing_wand->path_operation=PathCurveToQuadraticBezierSmoothOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand, "%c%g,%g",
         mode == AbsolutePathMode ? 'T' : 't',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g",x,y);
 }
 
 WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(
@@ -2777,11 +2777,11 @@ static void DrawPathCurveToSmooth(DrawingWand *drawing_wand,const PathMode mode,
     {
       drawing_wand->path_operation=PathCurveToSmoothOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand,"%c%g,%g %g,%g",
         mode == AbsolutePathMode ? 'S' : 's',x2,y2,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x2,y2,x,y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g %g,%g",x2,y2,x,y);
 }
 
 WandExport void DrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
@@ -2903,12 +2903,12 @@ static void DrawPathEllipticArc(DrawingWand *drawing_wand, const PathMode mode,
     {
       drawing_wand->path_operation=PathEllipticArcOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand, "%c%g,%g %g %u %u %g,%g",
         mode == AbsolutePathMode ? 'A' : 'a',rx,ry,x_axis_rotation,
         large_arc_flag,sweep_flag,x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g %u %u %.4g,%.4g",rx,ry,
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g %g %u %u %g,%g",rx,ry,
       x_axis_rotation,large_arc_flag,sweep_flag,x,y);
 }
 
@@ -3049,11 +3049,11 @@ static void DrawPathLineTo(DrawingWand *drawing_wand,const PathMode mode,
     {
       drawing_wand->path_operation=PathLineToOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand,"%c%g,%g",
         mode == AbsolutePathMode ? 'L' : 'l',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g",x,y);
 }
 
 WandExport void DrawPathLineToAbsolute(DrawingWand *drawing_wand,
@@ -3139,11 +3139,11 @@ static void DrawPathLineToHorizontal(DrawingWand *drawing_wand,
     {
       drawing_wand->path_operation=PathLineToHorizontalOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand,"%c%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand,"%c%g",
         mode == AbsolutePathMode ? 'H' : 'h',x);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g",x);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g",x);
 }
 
 WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
@@ -3225,11 +3225,11 @@ static void DrawPathLineToVertical(DrawingWand *drawing_wand,
     {
       drawing_wand->path_operation=PathLineToVerticalOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand,"%c%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand,"%c%g",
         mode == AbsolutePathMode ? 'V' : 'v',y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g",y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g",y);
 }
 
 WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
@@ -3313,11 +3313,11 @@ static void DrawPathMoveTo(DrawingWand *drawing_wand,const PathMode mode,
     {
       drawing_wand->path_operation=PathMoveToOperation;
       drawing_wand->path_mode=mode;
-      (void) MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(drawing_wand,"%c%g,%g",
         mode == AbsolutePathMode ? 'M' : 'm',x,y);
     }
   else
-    (void) MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
+    (void) MvgAutoWrapPrintf(drawing_wand," %g,%g",x,y);
 }
 
 WandExport void DrawPathMoveToAbsolute(DrawingWand *drawing_wand,
@@ -3466,7 +3466,7 @@ WandExport void DrawPoint(DrawingWand *drawing_wand,const double x,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"point %.4g,%.4g\n",x,y);
+  (void) MvgPrintf(drawing_wand,"point %g,%g\n",x,y);
 }
 
 /*
@@ -3864,7 +3864,7 @@ WandExport void DrawPushPattern(DrawingWand *drawing_wand,
     ThrowException(&drawing_wand->exception,DrawError,
       AlreadyPushingPatternDefinition,drawing_wand->pattern_id);
   drawing_wand->filter_off=MagickTrue;
-  (void) MvgPrintf(drawing_wand,"push pattern %s %.4g,%.4g %.4g,%.4g\n",pattern_id,
+  (void) MvgPrintf(drawing_wand,"push pattern %s %g,%g %g,%g\n",pattern_id,
     x,y,width,height);
   drawing_wand->indent_depth++;
   drawing_wand->pattern_id=AcquireString(pattern_id);
@@ -3910,7 +3910,7 @@ WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"rectangle %.4g,%.4g %.4g,%.4g\n",x1,y1,x2,y2);
+  (void) MvgPrintf(drawing_wand,"rectangle %g,%g %g,%g\n",x1,y1,x2,y2);
 }
 
 /*
@@ -3987,7 +3987,7 @@ WandExport void DrawRotate(DrawingWand *drawing_wand,const double degrees)
   affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
   affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
   AdjustAffine(drawing_wand,&affine);
-  (void) MvgPrintf(drawing_wand,"rotate %.4g\n",degrees);
+  (void) MvgPrintf(drawing_wand,"rotate %g\n",degrees);
 }
 
 /*
@@ -4032,7 +4032,7 @@ WandExport void DrawRoundRectangle(DrawingWand *drawing_wand,double x1,
 {
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  (void) MvgPrintf(drawing_wand,"roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
+  (void) MvgPrintf(drawing_wand,"roundrectangle %g,%g %g,%g %g,%g\n",
     x1,y1,x2,y2,rx,ry);
 }
 
@@ -4075,7 +4075,7 @@ WandExport void DrawScale(DrawingWand *drawing_wand,const double x,
   affine.sx=x;
   affine.sy=y;
   AdjustAffine( drawing_wand, &affine );
-  (void) MvgPrintf(drawing_wand,"scale %.4g,%.4g\n",x,y);
+  (void) MvgPrintf(drawing_wand,"scale %g,%g\n",x,y);
 }
 
 /*
@@ -4113,7 +4113,7 @@ WandExport void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
   GetAffineMatrix(&affine);
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
   AdjustAffine(drawing_wand,&affine);
-  (void) MvgPrintf(drawing_wand,"skewX %.4g\n",degrees);
+  (void) MvgPrintf(drawing_wand,"skewX %g\n",degrees);
 }
 
 /*
@@ -4151,7 +4151,7 @@ WandExport void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
   GetAffineMatrix(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawAffine(drawing_wand,&affine);
-  (void) MvgPrintf(drawing_wand,"skewY %.4g\n",degrees);
+  (void) MvgPrintf(drawing_wand,"skewY %g\n",degrees);
 }
 #if 0
 
@@ -4580,9 +4580,9 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
         {
           p=dash_array;
           i=n_new;
-          (void) MvgPrintf(drawing_wand,"%.4g",*p++);
+          (void) MvgPrintf(drawing_wand,"%g",*p++);
           while (i--)
-            (void) MvgPrintf(drawing_wand,",%.4g",*p++);
+            (void) MvgPrintf(drawing_wand,",%g",*p++);
         }
       (void) MvgPrintf(drawing_wand,"0 \n");
     }
@@ -4654,7 +4654,7 @@ WandExport void DrawSetStrokeDashOffset(DrawingWand *drawing_wand,
      (AbsoluteValue(CurrentContext->dash_offset-dash_offset) > MagickEpsilon))
     {
       CurrentContext->dash_offset=dash_offset;
-      (void) MvgPrintf(drawing_wand,"stroke-dashoffset %.4g\n",dash_offset);
+      (void) MvgPrintf(drawing_wand,"stroke-dashoffset %g\n",dash_offset);
     }
 }
 
@@ -4979,7 +4979,7 @@ WandExport void DrawSetStrokeOpacity(DrawingWand *drawing_wand,
   if (drawing_wand->filter_off || (CurrentContext->stroke.opacity != opacity))
     {
       CurrentContext->stroke.opacity=(Quantum) (opacity+0.5);
-      (void) MvgPrintf(drawing_wand,"stroke-opacity %.4g\n",stroke_opacity);
+      (void) MvgPrintf(drawing_wand,"stroke-opacity %g\n",stroke_opacity);
     }
 }
 
@@ -5048,7 +5048,7 @@ WandExport void DrawSetStrokeWidth(DrawingWand *drawing_wand,
      (AbsoluteValue(CurrentContext->stroke_width-stroke_width) > MagickEpsilon))
     {
       CurrentContext->stroke_width=stroke_width;
-      (void) MvgPrintf(drawing_wand,"stroke-width %.4g\n",stroke_width);
+      (void) MvgPrintf(drawing_wand,"stroke-width %g\n",stroke_width);
     }
 }
 
@@ -5407,7 +5407,7 @@ WandExport void DrawTranslate(DrawingWand *drawing_wand,const double x,
   affine.tx=x;
   affine.ty=y;
   AdjustAffine(drawing_wand,&affine );
-  (void) MvgPrintf(drawing_wand,"translate %.4g,%.4g\n",x,y);
+  (void) MvgPrintf(drawing_wand,"translate %g,%g\n",x,y);
 }
 
 /*

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2010 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -529,7 +529,7 @@ static void MvgAppendPointsCommand(DrawContext context, const char* command,
   (void) MvgPrintf(context, "%.1024s", command);
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
-      (void) MvgAutoWrapPrintf(context," %.4g,%.4g", coordinate->x, coordinate->y);
+      (void) MvgAutoWrapPrintf(context," %g,%g", coordinate->x, coordinate->y);
       ++coordinate;
     }
 
@@ -599,7 +599,7 @@ MagickExport void DrawAnnotation(DrawContext context,
   assert(text != (const unsigned char *) NULL);
 
   escaped_text=EscapeString((const char*)text,'\'');
-  (void) MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_text);
+  (void) MvgPrintf(context, "text %g,%g '%.1024s'\n", x, y, escaped_text);
   MagickFreeMemory(escaped_text);
 }
 
@@ -777,7 +777,7 @@ MagickExport void DrawArc(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
+  (void) MvgPrintf(context, "arc %g,%g %g,%g %g,%g\n",
                    sx, sy, ex, ey, sd, ed);
 }
 
@@ -855,7 +855,7 @@ MagickExport void DrawCircle(DrawContext context, const double ox,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "circle %.4g,%.4g %.4g,%.4g\n", ox, oy, px, py);
+  (void) MvgPrintf(context, "circle %g,%g %g,%g\n", ox, oy, px, py);
 }
 
 /*
@@ -1195,7 +1195,7 @@ MagickExport void DrawColor(DrawContext context,
     }
 
   if (p != NULL)
-    (void) MvgPrintf(context, "color %.4g,%.4g %s\n", x, y, p);
+    (void) MvgPrintf(context, "color %g,%g %s\n", x, y, p);
 }
 
 /*
@@ -1342,7 +1342,7 @@ MagickExport void DrawEllipse(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
+  (void) MvgPrintf(context, "ellipse %g,%g %g,%g %g,%g\n",
                    ox, oy, rx, ry, start, end);
 }
 
@@ -1599,7 +1599,7 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
   if (context->filter_off || (CurrentContext->fill.opacity != quantum_opacity))
     {
       CurrentContext->fill.opacity = quantum_opacity;
-      (void) (void) MvgPrintf(context, "fill-opacity %.4g\n", validated_opacity);
+      (void) (void) MvgPrintf(context, "fill-opacity %g\n", validated_opacity);
     }
 }
 
@@ -1901,7 +1901,7 @@ MagickExport void DrawSetFontSize(DrawContext context,
     {
       CurrentContext->pointsize=pointsize;
 
-      (void) MvgPrintf(context, "font-size %.4g\n", pointsize);
+      (void) MvgPrintf(context, "font-size %g\n", pointsize);
     }
 }
 
@@ -2402,7 +2402,7 @@ MagickExport void DrawComposite(DrawContext context,
       int
         remaining;
 
-      (void) MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
+      (void) MvgPrintf(context, "image %s %g,%g %g,%g 'data:%s;base64,\n",
                 mode, x, y, width, height, media_type);
 
       remaining = (int)encoded_length;
@@ -2463,7 +2463,7 @@ MagickExport void DrawLine(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "line %.4g,%.4g %.4g,%.4g\n", sx, sy, ex, ey);
+  (void) MvgPrintf(context, "line %g,%g %g,%g\n", sx, sy, ex, ey);
 }
 
 /*
@@ -2534,7 +2534,7 @@ MagickExport void DrawMatte(DrawContext context,
     }
 
   if (p != NULL)
-    (void) MvgPrintf(context, "matte %.4g,%.4g %s\n", x, y, p);
+    (void) MvgPrintf(context, "matte %g,%g %s\n", x, y, p);
 }
 
 /*
@@ -2625,12 +2625,12 @@ static void DrawPathCurveTo(DrawContext context,
     {
       context->path_operation = PathCurveToOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g %g,%g %g,%g",
                         mode == AbsolutePathMode ? 'C' : 'c',
                         x1, y1, x2, y2, x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g",
+    (void) MvgAutoWrapPrintf(context, " %g,%g %g,%g %g,%g",
                       x1, y1, x2, y2, x, y);
 }
 MagickExport void DrawPathCurveToAbsolute(DrawContext context,
@@ -2746,11 +2746,11 @@ static void DrawPathCurveToQuadraticBezier(DrawContext context,
     {
       context->path_operation = PathCurveToQuadraticBezierOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g %g,%g",
                         mode == AbsolutePathMode ? 'Q' : 'q', x1, y1, x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x1, y1, x, y);
+    (void) MvgAutoWrapPrintf(context, " %g,%g %g,%g", x1, y1, x, y);
 }
 MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
                                                          const double x1,
@@ -2865,11 +2865,11 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
     {
       context->path_operation = PathCurveToQuadraticBezierSmoothOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g",
                         mode == AbsolutePathMode ? 'T' : 't', x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    (void) MvgAutoWrapPrintf(context, " %g,%g", x, y);
 }
 MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
                                                                context,
@@ -2986,11 +2986,11 @@ static void DrawPathCurveToSmooth(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathCurveToSmoothOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g %g,%g",
                         mode == AbsolutePathMode ? 'S' : 's', x2, y2, x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x2, y2, x, y);
+    (void) MvgAutoWrapPrintf(context, " %g,%g %g,%g", x2, y2, x, y);
 }
 MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
                                                 const double x2, const double y2,
@@ -3120,12 +3120,12 @@ static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathEllipticArcOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g %g %u %u %g,%g",
                         mode == AbsolutePathMode ? 'A' : 'a', rx, ry, x_axis_rotation,
                         large_arc_flag, sweep_flag, x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g %u %u %.4g,%.4g", rx, ry,
+    (void) MvgAutoWrapPrintf(context, " %g,%g %g %u %u %g,%g", rx, ry,
                       x_axis_rotation, large_arc_flag, sweep_flag, x, y);
 }
 MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
@@ -3275,11 +3275,11 @@ static void DrawPathLineTo(DrawContext context,
     {
       context->path_operation = PathLineToOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g",
                         mode == AbsolutePathMode ? 'L' : 'l', x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    (void) MvgAutoWrapPrintf(context, " %g,%g", x, y);
 }
 MagickExport void DrawPathLineToAbsolute(DrawContext context,
                                          const double x, const double y)
@@ -3367,11 +3367,11 @@ static void DrawPathLineToHorizontal(DrawContext context,
     {
       context->path_operation = PathLineToHorizontalOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g",
                         mode == AbsolutePathMode ? 'H' : 'h', x);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g", x);
+    (void) MvgAutoWrapPrintf(context, " %g", x);
 }
 MagickExport void DrawPathLineToHorizontalAbsolute(DrawContext context,
                                                    const double x)
@@ -3452,11 +3452,11 @@ static void DrawPathLineToVertical(DrawContext context, const PathMode mode,
     {
       context->path_operation = PathLineToVerticalOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g",
                         mode == AbsolutePathMode ? 'V' : 'v', y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g", y);
+    (void) MvgAutoWrapPrintf(context, " %g", y);
 }
 MagickExport void DrawPathLineToVerticalAbsolute(DrawContext context,
                                                  const double y)
@@ -3542,11 +3542,11 @@ MagickExport void DrawPathLineToVerticalRelative(DrawContext context,
     {
       context->path_operation = PathMoveToOperation;
       context->path_mode = mode;
-      (void) MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
+      (void) MvgAutoWrapPrintf(context, "%c%g,%g",
                         mode == AbsolutePathMode ? 'M' : 'm', x, y);
     }
   else
-    (void) MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    (void) MvgAutoWrapPrintf(context, " %g,%g", x, y);
 }
 
 MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
@@ -3702,7 +3702,7 @@ MagickExport void DrawPoint(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "point %.4g,%.4g\n", x, y);
+  (void) MvgPrintf(context, "point %g,%g\n", x, y);
 }
 
 /*
@@ -4128,7 +4128,7 @@ MagickExport void DrawPushPattern(DrawContext context,
 
   context->filter_off = True;
 
-  (void) MvgPrintf(context, "push pattern %s %.4g,%.4g %.4g,%.4g\n",
+  (void) MvgPrintf(context, "push pattern %s %g,%g %g,%g\n",
             pattern_id, x, y, width, height);
   context->indent_depth++;
 
@@ -4178,7 +4178,7 @@ MagickExport void DrawRectangle(DrawContext context,
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-  (void) MvgPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
+  (void) MvgPrintf(context, "rectangle %g,%g %g,%g\n", x1, y1, x2, y2);
 }
 
 /*
@@ -4256,7 +4256,7 @@ MagickExport void DrawRotate(DrawContext context, const double degrees)
   affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
   AdjustAffine( context, &affine );
 
-  (void) MvgPrintf(context, "rotate %.4g\n", degrees);
+  (void) MvgPrintf(context, "rotate %g\n", degrees);
 }
 
 /*
@@ -4306,7 +4306,7 @@ MagickExport void DrawRoundRectangle(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  (void) MvgPrintf(context, "roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
+  (void) MvgPrintf(context, "roundrectangle %g,%g %g,%g %g,%g\n",
             x1, y1, x2, y2, rx, ry);
 }
 
@@ -4351,7 +4351,7 @@ MagickExport void DrawScale(DrawContext context,
   affine.sy=y;
   AdjustAffine( context, &affine );
 
-  (void) MvgPrintf(context, "scale %.4g,%.4g\n", x, y);
+  (void) MvgPrintf(context, "scale %g,%g\n", x, y);
 }
 
 /*
@@ -4391,7 +4391,7 @@ MagickExport void DrawSkewX(DrawContext context, const double degrees)
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
   AdjustAffine(context,&affine);
 
-  (void) MvgPrintf(context, "skewX %.4g\n", degrees);
+  (void) MvgPrintf(context, "skewX %g\n", degrees);
 }
 
 /*
@@ -4431,7 +4431,7 @@ MagickExport void DrawSkewY(DrawContext context, const double degrees)
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawAffine(context,&affine);
 
-  (void) MvgPrintf(context, "skewY %.4g\n", degrees);
+  (void) MvgPrintf(context, "skewY %g\n", degrees);
 }
 
 #if 0
@@ -4912,9 +4912,9 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
         {
           p = dasharray;
           i = n_new;
-          (void) MvgPrintf(context, "%.4g", *p++);
+          (void) MvgPrintf(context, "%g", *p++);
           while (i--)
-            (void) MvgPrintf(context, ",%.4g", *p++);
+            (void) MvgPrintf(context, ",%g", *p++);
         }
       (void) MvgPrintf(context, "0 \n");
     }
@@ -4988,7 +4988,7 @@ MagickExport void DrawSetStrokeDashOffset(DrawContext context,
     {
       CurrentContext->dash_offset = dash_offset;
 
-      (void) MvgPrintf(context, "stroke-dashoffset %.4g\n", dash_offset);
+      (void) MvgPrintf(context, "stroke-dashoffset %g\n", dash_offset);
     }
 }
 
@@ -5326,7 +5326,7 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
   if (context->filter_off || (CurrentContext->stroke.opacity != quantum_opacity))
     {
       CurrentContext->stroke.opacity = quantum_opacity;
-      (void) MvgPrintf(context, "stroke-opacity %.4g\n", validated_opacity);
+      (void) MvgPrintf(context, "stroke-opacity %g\n", validated_opacity);
     }
 }
 
@@ -5397,7 +5397,7 @@ MagickExport void DrawSetStrokeWidth(DrawContext context,
     {
       CurrentContext->stroke_width = stroke_width;
 
-      (void) MvgPrintf(context, "stroke-width %.4g\n", stroke_width);
+      (void) MvgPrintf(context, "stroke-width %g\n", stroke_width);
     }
 }
 
@@ -5796,7 +5796,7 @@ MagickExport void DrawTranslate(DrawContext context,
   affine.ty=y;
   AdjustAffine( context, &affine );
 
-  (void) MvgPrintf(context, "translate %.4g,%.4g\n", x, y);
+  (void) MvgPrintf(context, "translate %g,%g\n", x, y);
 }
 
 /*
