@@ -1020,6 +1020,7 @@ enable_static
 with_pic
 enable_fast_install
 enable_libtool_lock
+with_gnu_ld
 with_included_ltdl
 with_ltdl_include
 with_ltdl_lib
@@ -1071,10 +1072,24 @@ LDFLAGS
 LIBS
 CPPFLAGS
 CPP
+CPPFLAGS
+CC
+LDFLAGS
+LIBS
+CPPFLAGS
+CPP
+CPPFLAGS
 CXX
 CXXFLAGS
+LIBS
+CPPFLAGS
 CCC
 CXXCPP
+CPPFLAGS
+CXX
+CXXFLAGS
+LIBS
+CCC
 XMKMF'
 
 

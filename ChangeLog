@@ -1,3 +1,9 @@
+2010-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Applied Automake 1.11.1 patch by Ralf Wildenhues
+	which is necessary for the test suite to pass under Windows/MinGW
+	due to command line length limits.
+
 2010-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/draw.c, wand/drawing_wand.c: Pass full user-provided
