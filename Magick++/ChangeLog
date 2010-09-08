@@ -1,3 +1,9 @@
+2010-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (backgroundColor, borderColor, matteColor):
+	Opacity part of user-specified color needs to be preserved.
+	Problem was reported by Alexander Zheltov.
+
 2010-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/CoderInfo.h: Add default constructor, copy
