@@ -142,6 +142,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     geometry[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
+  const char
+    *value;
+
   const DelegateInfo
     *delegate_info;
 
@@ -167,6 +170,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     antialias=4;
 
+  MagickBool
+    use_crop_box = MagickFalse;
+
   RectangleInfo
     box,
     page;
@@ -185,10 +191,17 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height,
     width;
 
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  
+  if ((value=AccessDefinition(image_info,"pdf","use-cropbox"))) 
+    {
+      if (strcmp(value,"true") == 0)
+	use_crop_box = True;
+    }
 
   /*
     Select Postscript delegate driver
@@ -328,11 +341,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       options[MaxTextExtent];
 
     options[0]='\0';
+
+    if (use_crop_box)
+      FormatString(options,"-dUseCropBox");
     /*
       Append subrange.
     */
     if (image_info->subrange != 0)
-      FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
+      FormatString(options+strlen(options)," -dFirstPage=%lu -dLastPage=%lu",
 		   image_info->subimage+1,image_info->subimage+image_info->subrange);
     /*
       Append authentication string.

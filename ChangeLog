@@ -1,3 +1,10 @@
+2010-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (ReadPDFImage): Enable use of PDF crop box via
+	-define pdf:use-cropbox=true. Patch contributed by Chris Gilling.
+	SourceForge patch ID 3063794, "Add support for using crop box for
+	pdf import".
+
 2010-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/Image.cpp (backgroundColor, borderColor, matteColor):
