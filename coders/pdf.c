@@ -139,7 +139,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     density[MaxTextExtent],
     command[MaxTextExtent],
     filename[MaxTextExtent],
-    geometry[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
   const char
@@ -164,7 +163,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     count,
-    rotate,
     status;
 
   unsigned int
@@ -172,24 +170,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBool
     use_crop_box = MagickFalse;
-
-  RectangleInfo
-    box,
-    page;
-
-  register char
-    *p,
-    *q;
-
-  register long
-    c;
-
-  SegmentInfo
-    bounds;
-
-  unsigned long
-    height,
-    width;
 
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -235,102 +215,130 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
-  /*
-    Determine page geometry from the PDF media box.
-
-    Note that we can use Ghostscript to obtain the bounding box info like
-
-    gs -q -dBATCH -dNOPAUSE -sDEVICE=bbox ENV.003.01.pdf
-    %%BoundingBox: 70 61 2089 2954
-    %%HiResBoundingBox: 70.737537 61.199998 2088.587889 2953.601629
-  */
-  rotate=0;
-  (void) memset(&page,0,sizeof(RectangleInfo));
-  (void) memset(&box,0,sizeof(RectangleInfo));
-  for (p=command; ; )
   {
-    c=ReadBlobByte(image);
-    if (c == EOF)
-      break;
-    (void) fputc(c,file);
-    *p++=(char) c;
-    if ((c != '\n') && (c != '\r') && ((p-command) < (MaxTextExtent-1)))
-      continue;
-    *p='\0';
-    p=command;
     /*
-      Continue unless this is a MediaBox statement.
-    */
-    if (LocaleNCompare(command,"/Rotate ",8) == 0)
-      {
-        count=sscanf(command,"/Rotate %d",&rotate);
-        if (count > 0)
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "Rotate by %d degrees",rotate);
-          }
-      }
-    q=strstr(command,MediaBox);
-    if (q == (char *) NULL)
-      continue;
-    count=sscanf(q,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
-      &bounds.x2,&bounds.y2);
-    if (count != 4)
-      count=sscanf(q,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
-        &bounds.x2,&bounds.y2);
-    if (count == 4)
-      {
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Parsed: MediaBox %lf %lf %lf %lf",
-                              bounds.x1,bounds.y1,
-                              bounds.x2,bounds.y2);
-      }
-    if (count != 4)
-      continue;
-    if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
-      continue;
-    /*
-      Set Postscript render geometry.
-    */
-    width=(unsigned long) (bounds.x2-bounds.x1+0.5);
-    height=(unsigned long) (bounds.y2-bounds.y1+0.5);
-    if ((width <= box.width) && (height <= box.height))
-      continue;
-    page.width=width;
-    page.height=height;
-    box=page;
-  }
-  /*
-    If page is rotated right or left, then swap width and height values.
-  */
-  if ((90 == AbsoluteValue(rotate)) || (270 == AbsoluteValue(rotate)))
-    {
-      double
-        value;
+      Determine page geometry from the PDF media box.
 
-      value=page.width;
-      page.width=page.height;
-      page.height=value;
-    }
-  if ((page.width == 0) || (page.height == 0))
-    {
-      SetGeometry(image,&page);
-      (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
-        &page.height);
-    }
-  if (image_info->page != (char *) NULL)
-    (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
-      &page.height);
-  geometry[0]='\0';
-  FormatString(geometry,"%lux%lu",
-    (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
-    (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
-  if (ferror(file))
-    {
-      (void) fclose(file);
-      ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
-        image)
-    }
+      Note that we can use Ghostscript to obtain the bounding box info like
+
+      gs -q -dBATCH -dNOPAUSE -sDEVICE=bbox ENV.003.01.pdf
+      %%BoundingBox: 70 61 2089 2954
+      %%HiResBoundingBox: 70.737537 61.199998 2088.587889 2953.601629
+    */
+
+    char
+      geometry[MaxTextExtent];
+
+    RectangleInfo
+      box,
+      page;
+
+    SegmentInfo
+      bounds;
+
+    unsigned long
+      height,
+      width;
+
+    int
+      rotate;
+
+    register char
+      *p,
+      *q;
+
+    register long
+      c;
+
+    rotate=0;
+    (void) memset(&page,0,sizeof(RectangleInfo));
+    (void) memset(&box,0,sizeof(RectangleInfo));
+    for (p=command; ; )
+      {
+	c=ReadBlobByte(image);
+	if (c == EOF)
+	  break;
+	(void) fputc(c,file);
+	*p++=(char) c;
+	if ((c != '\n') && (c != '\r') && ((p-command) < (MaxTextExtent-1)))
+	  continue;
+	*p='\0';
+	p=command;
+	/*
+	  Continue unless this is a MediaBox statement.
+	*/
+	if (LocaleNCompare(command,"/Rotate ",8) == 0)
+	  {
+	    count=sscanf(command,"/Rotate %d",&rotate);
+	    if (count > 0)
+	      {
+		(void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				      "Rotate by %d degrees",rotate);
+	      }
+	  }
+	q=strstr(command,MediaBox);
+	if (q == (char *) NULL)
+	  continue;
+	count=sscanf(q,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+		     &bounds.x2,&bounds.y2);
+	if (count != 4)
+	  count=sscanf(q,"/MediaBox[%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+		       &bounds.x2,&bounds.y2);
+	if (count == 4)
+	  {
+	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				  "Parsed: MediaBox %lf %lf %lf %lf",
+				  bounds.x1,bounds.y1,
+				  bounds.x2,bounds.y2);
+	  }
+	if (count != 4)
+	  continue;
+	if ((bounds.x1 > bounds.x2) || (bounds.y1 > bounds.y2))
+	  continue;
+	/*
+	  Set Postscript render geometry.
+	*/
+	width=(unsigned long) (bounds.x2-bounds.x1+0.5);
+	height=(unsigned long) (bounds.y2-bounds.y1+0.5);
+	if ((width <= box.width) && (height <= box.height))
+	  continue;
+	page.width=width;
+	page.height=height;
+	box=page;
+      }
+    /*
+      If page is rotated right or left, then swap width and height values.
+    */
+    if ((90 == AbsoluteValue(rotate)) || (270 == AbsoluteValue(rotate)))
+      {
+	double
+	  value;
+
+	value=page.width;
+	page.width=page.height;
+	page.height=value;
+      }
+    if ((page.width == 0) || (page.height == 0))
+      {
+	SetGeometry(image,&page);
+	(void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
+			   &page.height);
+      }
+    if (image_info->page != (char *) NULL)
+      (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
+			 &page.height);
+    geometry[0]='\0';
+    FormatString(geometry,"%lux%lu",
+		 (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
+		 (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+    if (ferror(file))
+      {
+	(void) fclose(file);
+	ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
+			     image);
+      }
+  }
+
   (void) fclose(file);
   CloseBlob(image);
   /*
