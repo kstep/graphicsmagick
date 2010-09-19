@@ -1,3 +1,10 @@
+2010-09-19  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* coders/png.c: removed an apparently harmless extra invocation
+	of ScaleShortToQuantum() due to cut-and-paste error in the
+	update of 2010-06-02.  Also added a line to explicitly set
+	the opacity of the background_color to OpaqueOpacity.
+
 2010-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (ReadPDFImage): Enable use of PDF crop box via
