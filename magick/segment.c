@@ -1657,7 +1657,7 @@ ZeroCrossHistogram(double *second_derivative,const double smoothing_threshold,
 %
 %  The format of the SegmentImage method is:
 %
-%      unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
+%      MagickPassFail SegmentImage(Image *image,const ColorspaceType colorspace,
 %        const unsigned int verbose,const double cluster_threshold,
 %        const double smoothing_threshold)
 %

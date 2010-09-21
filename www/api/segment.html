@@ -63,9 +63,9 @@
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int SegmentImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#colorspacetype">ColorspaceType</a> colorspace,
-                           const unsigned int verbose, const double cluster_threshold,
-                           const double smoothing_threshold );
+MagickPassFail SegmentImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#colorspacetype">ColorspaceType</a> colorspace,
+                             const unsigned int verbose, const double cluster_threshold,
+                             const double smoothing_threshold );
 </pre>
 </div>
 <div class="section" id="description">
@@ -80,9 +80,9 @@ As the value is increased, you can expect a smoother second derivative.
 The default is 1.5.</p>
 <p>The format of the SegmentImage method is:</p>
 <pre class="literal-block">
-unsigned int SegmentImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#colorspacetype">ColorspaceType</a> colorspace,
-                           const unsigned int verbose, const double cluster_threshold,
-                           const double smoothing_threshold );
+MagickPassFail SegmentImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#colorspacetype">ColorspaceType</a> colorspace,
+                             const unsigned int verbose, const double cluster_threshold,
+                             const double smoothing_threshold );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -113,7 +113,7 @@ causes small variations (could be noise) to be ignored.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-04-17 23:15 UTC.
+Generated on: 2010-09-18 21:38 UTC.
 
 </div>
 </body>

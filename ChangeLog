@@ -1,3 +1,12 @@
+2010-09-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document pcl:fit-to-page define.
+
+	* coders/pcl.c: Fix issue with printing a bi-level image on
+	Konica-Minolta printers.  Define pcl:fit-to-page in order for the
+	printer to scale the image to fit the page.  Patch by John
+	Sergeant.
+
 2010-09-19  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: removed an apparently harmless extra invocation

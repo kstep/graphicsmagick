@@ -1164,6 +1164,11 @@ input file, the quality setting is preserved but the sampling-factors
 are not.
 </dd>
 
+<dt>pcl:fit-to-page</dt>
+<dd>If the pcl:fit-to-page flag is defined, then the printer is
+requested to scale the image to fit the page size (width and/or
+height).</dd>
+
 <dt>pdf:use-cropbox</dt>
 <dd>If the pdf:use-cropbox flag is defined, then Ghostscript is
 requested to apply the PDF crop box.

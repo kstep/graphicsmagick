@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2010-09-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/options.imdoc: Document pcl:fit-to-page define.
+
+  <LI> coders/pcl.c: Fix issue with printing a bi-level image on
+        Konica-Minolta printers.  Define pcl:fit-to-page in order for the
+        printer to scale the image to fit the page.  Patch by John
+        Sergeant.
+
+</UL>
+<p>
+2010-09-19  Glenn Randers-Pehrson  &lt;glennrp@simple...&gt;
+
+<UL>
+  <LI> coders/png.c: removed an apparently harmless extra invocation
+        of ScaleShortToQuantum() due to cut-and-paste error in the
+        update of 2010-06-02.  Also added a line to explicitly set
+        the opacity of the background_color to OpaqueOpacity.
+
+</UL>
+<p>
 2010-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
