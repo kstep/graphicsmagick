@@ -209,24 +209,40 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
-#define ValidateScalingIndex(image, index, max) \
-  do \
-  { \
-    if (index > max) \
-      ThrowReaderException(CorruptImageError,CorruptImage, image); \
-  } while (0)
+#define ValidateScalingIndex(image, index, max)				\
+  do									\
+    {									\
+      if (index > max)							\
+	ThrowReaderException(CorruptImageError,CorruptImage, image);	\
+    } while (0)
 
-#define ValidateScalingPixel(image, pixel, max) \
-  do \
-  { \
-    ValidateScalingIndex(image, pixel.red, max); \
-    ValidateScalingIndex(image, pixel.green, max); \
-    ValidateScalingIndex(image, pixel.blue, max); \
-  } while (0)
+#define ValidateScalingPixel(image, pixel, max)		\
+  do							\
+    {							\
+      ValidateScalingIndex(image, pixel.red, max);	\
+      ValidateScalingIndex(image, pixel.green, max);	\
+      ValidateScalingIndex(image, pixel.blue, max);	\
+    } while (0)
+
+typedef enum
+  {
+    Undefined_PNM_Format,
+    PBM_ASCII_Format, /* P1 */
+    PGM_ASCII_Format, /* P2 */
+    PPM_ASCII_Format, /* P3 */
+    PBM_RAW_Format, /* P4 */
+    PGM_RAW_Format, /* P5 */
+    PPM_RAW_Format, /* P6 */
+    PAM_Format, /* P7 */
+    XV_332_Format /* P7 332 */
+  } PNMSubformat;
 
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
+    id;
+
+  PNMSubformat
     format;
 
   Image
@@ -250,13 +266,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     index,
-    raw_sample_bits;
+    bits_per_sample;
 
   MagickPassFail
     status;
 
   unsigned int
     max_value,
+    samples_per_pixel,
     packets;
 
   Quantum
@@ -276,44 +293,253 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
-  count=ReadBlob(image,1,(char *) &format);
+  count=ReadBlob(image,1,(char *) &id);
   do
     {
       /*
         Initialize image structure.
       */
-      if ((count == 0) || (format != 'P'))
+      max_value=0;
+      bits_per_sample=0;
+      samples_per_pixel=0;
+
+      if ((count == 0) || (id != 'P'))
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-      format=ReadBlobByte(image);
+      id=ReadBlobByte(image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"PNM Format Id: P%c",
-                            format);
-      if (format == '7')
-        (void) PNMInteger(image,10);
-      image->columns=PNMInteger(image,10);
-      image->rows=PNMInteger(image,10);
+                            id);
+
+      switch (id)
+	{
+	case '1': format=PBM_ASCII_Format; break;
+	case '2': format=PGM_ASCII_Format; break;
+	case '3': format=PPM_ASCII_Format; break;
+	case '4': format=PBM_RAW_Format; break;
+	case '5': format=PGM_RAW_Format; break;
+	case '6': format=PPM_RAW_Format; break;
+	case '7':
+	  {
+	    if ((ReadBlobByte(image) == ' ') && 
+		(PNMInteger(image,10) == 332))
+	      format=XV_332_Format;
+	    else
+	      format=PAM_Format;
+	    break;
+	  }
+	default:
+	  {
+	    format=Undefined_PNM_Format;
+	  }
+	}
+
+      if (PAM_Format == format)
+	{
+	  /*
+	    PAM header format
+
+	    P7
+	    WIDTH 227
+	    HEIGHT 149
+	    DEPTH 3
+	    MAXVAL 255
+	    TUPLTYPE RGB
+	    ENDHDR
+	  */
+
+	  char
+	    keyword[MaxTextExtent];
+
+	  register char
+	    *p;
+
+	  int
+	    c;
+
+	  while (1)
+	    {
+	      p=keyword;
+	      c=ReadBlobByte(image);
+	      do
+		{
+		  if ((p-keyword) < (MaxTextExtent-1))
+		    *p++=c;
+		  c=ReadBlobByte(image);
+		} while (isalnum(c) && (EOF != c));
+	      *p='\0';
+
+	      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				    "Keyword \"%s\"",keyword);
+	      if ((EOF == c) || (LocaleCompare(keyword,"ENDHDR") == 0))
+		{
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+					"Exiting header!");
+		  break;
+		}
+	      else if (LocaleCompare(keyword,"HEIGHT") == 0)
+		{
+		  image->rows=PNMInteger(image,10);
+		}
+	      else if (LocaleCompare(keyword,"WIDTH") == 0)
+		{
+		  image->columns=PNMInteger(image,10);
+		}
+	      else if (LocaleCompare(keyword,"DEPTH") == 0)
+		{
+		  samples_per_pixel=PNMInteger(image,10);
+		}
+	      else if (LocaleCompare(keyword,"MAXVAL") == 0)
+		{
+		  max_value=PNMInteger(image,10);
+		}
+	      else if (LocaleCompare(keyword,"TUPLTYPE") == 0)
+		{
+		  /* Skip white space */
+		  do
+		    {
+		      c=ReadBlobByte(image);
+		    } while (isspace(c) && (EOF != c));
+		  if (EOF == c)
+		    break;
+		  /* Tupletype argument */
+		  p=keyword;
+		  do
+		    {
+		      if ((p-keyword) < (MaxTextExtent-1))
+			*p++=c;
+		      c=ReadBlobByte(image);
+		    } while (('\n' != c) && (EOF != c));
+		  *p='\0';
+		  if (EOF == c)
+		    break;
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+					"TUPLTYPE \"%s\"",keyword);
+		  if (LocaleNCompare(keyword,"BLACKANDWHITE",13) == 0)
+		    {
+		      image->colorspace=GRAYColorspace;
+		      image->is_monochrome=MagickTrue;
+		    }
+		  else if (LocaleNCompare(keyword,"CMYK",4) == 0)
+		    {
+		      image->colorspace=CMYKColorspace;
+		    }
+		  else if (LocaleNCompare(keyword,"GRAYSCALE",9) == 0)
+		    {
+		      image->colorspace=GRAYColorspace;
+		    }
+		  else if (LocaleNCompare(keyword,"RGB",3) == 0)
+		    {
+		    }
+
+		  /*
+		    Check for alpha flag.
+		  */
+		  count=strlen(keyword);
+		  if ((count > 6) && (LocaleNCompare(keyword+count-6,"_ALPHA",6) == 0))
+		    {
+		      image->matte=MagickTrue;
+		    }
+		}
+	      else if (LocaleNCompare(keyword,"#",1) == 0)
+		{
+		  /* Skip white space */
+		  do
+		    {
+		      c=ReadBlobByte(image);
+		    } while (isspace(c) && (EOF != c));
+		  if (EOF == c)
+		    break;
+
+		  /* Comment */
+		  p=keyword;
+		  do
+		    {
+		      if ((p-keyword) < (MaxTextExtent-1))
+			*p++=c;
+		      c=ReadBlobByte(image);
+		    } while (('\n' != c) && (EOF != c));
+		  *p='\0';
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+					"Comment: \"%s\"",keyword);
+		}
+	      else
+		{
+		  /* Unknown! */
+		  break;
+		  do
+		    {
+		      c=ReadBlobByte(image);
+		    } while (('\n' != c) && (EOF != c));
+		}
+	    }
+	}
+      else
+	{
+	  /*
+	    PNM header type format
+
+	    P1
+	    # feep.pbm
+	    24 7
+
+	    P3
+	    # feep.ppm
+	    4 4
+	    15
+	  */
+	  image->columns=PNMInteger(image,10);
+	  image->rows=PNMInteger(image,10);
+
+	  if ((format == PBM_ASCII_Format) || (format == PBM_RAW_Format))
+	    max_value=1;  /* bitmap */
+	  else
+	    max_value=PNMInteger(image,10);
+
+	  switch (format)
+	    {
+	    case PBM_ASCII_Format:
+	    case PBM_RAW_Format:
+	    case PGM_ASCII_Format:
+	    case PGM_RAW_Format:
+	    case XV_332_Format:
+	      {
+		samples_per_pixel=1;
+		break;
+	      }
+	    case PPM_ASCII_Format:
+	    case PPM_RAW_Format:
+	      {
+		samples_per_pixel=3;
+		break;
+	      }
+	    default:
+	      {
+	      }
+	    }
+	}
+
+      if (max_value <= 1)
+        bits_per_sample=1;
+      else if (max_value <= 255U)
+        bits_per_sample=8;
+      else if (max_value <= 65535U)
+        bits_per_sample=16;
+      else if (max_value <= 4294967295U)
+        bits_per_sample=32;
+
+      image->depth=Min(bits_per_sample,QuantumDepth);
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
+			    max_value);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Dimensions: %lux%lu",
                             image->columns,image->rows);
-      if ((format == '1') || (format == '4'))
-        max_value=1;  /* bitmap */
-      else
-        max_value=PNMInteger(image,10);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
-                            max_value);
-      if (max_value <= 1)
-        image->depth=1;
-      else if (max_value <= 255U)
-        image->depth=8;
-      else if (max_value <= 65535U)
-        image->depth=16;
-      else if (max_value <= 4294967295U)
-        image->depth=32;
-      raw_sample_bits=image->depth;
-    
-      image->depth=Min(image->depth,QuantumDepth);
-
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image Depth: %u",
-                            image->depth); 
-      if ((format != '3') && (format != '6') && (max_value < MaxColormapSize))
+                            image->depth);
+
+      if (EOFBlob(image))
+	ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+		       image->filename);
+
+      if ((format != PPM_ASCII_Format) && (format != PPM_RAW_Format) && (max_value < MaxColormapSize))
         {
           image->storage_class=PseudoClass;
           image->colors=
@@ -333,7 +559,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!AllocateImageColormap(image,image->colors))
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
-          if ((format == '7') && (image->colors == 256))
+          if ((format == XV_332_Format) && (image->colors == 256))
             {
               /*
                 Initialize 332 colormap.
@@ -374,7 +600,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       switch (format)
         {
-        case '1':
+        case PBM_ASCII_Format:
           {
             /*
               Convert PBM image to pixel packets.
@@ -418,7 +644,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              image->filename);
             break;
           }
-        case '2':
+        case PGM_ASCII_Format:
           {
             /*
               Convert PGM image to pixel packets.
@@ -501,7 +727,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              image->filename);
             break;
           }
-        case '3':
+        case PPM_ASCII_Format:
           {
             /*
               Convert PNM image to pixel packets.
@@ -562,7 +788,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              image->filename);
             break;
           }
-        case '4':
+        case PBM_RAW_Format:
           {
             ImportPixelAreaOptions
               import_options;
@@ -658,8 +884,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              image->filename);
             break;
           }
-        case '5':
-        case '7':
+        case PGM_RAW_Format:
+        case XV_332_Format:
           {
             /*
               Convert PGM raw image to pixel packets.
@@ -676,7 +902,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThreadViewDataSet
               *scanline_set;
 
-            packets=(raw_sample_bits+7)/8;
+            packets=(bits_per_sample+7)/8;
             bytes_per_row=packets*image->columns;
 
             scanline_set=AllocateThreadViewDataArray(image,exception,bytes_per_row,1);
@@ -742,7 +968,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     thread_status=MagickFail;
 
                 if (thread_status != MagickFail)
-                  if (!ImportImagePixelArea(image,GrayQuantum,raw_sample_bits,
+                  if (!ImportImagePixelArea(image,GrayQuantum,bits_per_sample,
                                             pixels,0,0))
                     thread_status=MagickFail;
                 /*
@@ -787,7 +1013,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             break;
           }
-        case '6':
+        case PPM_RAW_Format:
           {
             /*
               Convert PPM raw raster image to pixel packets.
@@ -807,7 +1033,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         
             is_grayscale=MagickTrue;
             is_monochrome=MagickTrue;
-            packets=((raw_sample_bits+7)/8)*3;
+            packets=((bits_per_sample+7)/8)*3;
             bytes_per_row=packets*image->columns;
         
             scanline_set=AllocateThreadViewDataArray(image,exception,bytes_per_row,1);
@@ -876,7 +1102,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     thread_status=MagickFail;
 
                 if (thread_status != MagickFail)
-                  if (!ImportImagePixelArea(image,RGBQuantum,raw_sample_bits,pixels,0,0))
+                  if (!ImportImagePixelArea(image,RGBQuantum,bits_per_sample,pixels,0,0))
                     thread_status=MagickFail;
                 /*
                   Check all pixels for gray/monochrome status since this
@@ -921,6 +1147,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              image->filename);
             break;
           }
+	case PAM_Format:
+	  {
+	    break;
+	  }
         default:
           ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
         }
@@ -932,7 +1162,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_info->subrange != 0)
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
-      if ((format == '1') || (format == '2') || (format == '3'))
+      if ((format == PBM_ASCII_Format) || (format == PGM_ASCII_Format) || (format == PPM_ASCII_Format))
         do
           {
             /*
@@ -1002,6 +1232,14 @@ ModuleExport void RegisterPNMImage(void)
   entry->module="PNM";
   (void) RegisterMagickInfo(entry);
 
+  entry=SetMagickInfo("PAM");
+  entry->decoder=(DecoderHandler) ReadPNMImage;
+  entry->encoder=(EncoderHandler) WritePNMImage;
+  entry->description="Portable Arbitrary Map format";
+  entry->module="PNM";
+  entry->coder_class=PrimaryCoderClass;
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("PBM");
   entry->decoder=(DecoderHandler) ReadPNMImage;
   entry->encoder=(EncoderHandler) WritePNMImage;
@@ -1058,6 +1296,7 @@ ModuleExport void RegisterPNMImage(void)
 ModuleExport void UnregisterPNMImage(void)
 {
   (void) UnregisterMagickInfo("P7");
+  (void) UnregisterMagickInfo("PAM");
   (void) UnregisterMagickInfo("PBM");
   (void) UnregisterMagickInfo("PGM");
   (void) UnregisterMagickInfo("PNM");

@@ -2036,6 +2036,7 @@ MAGICK_WAND_LIBRARY_REVISION = @MAGICK_WAND_LIBRARY_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANDelegate = @MANDelegate@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MAN_DIR = @MAN_DIR@
 MKDIR_P = @MKDIR_P@
 MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
@@ -2127,6 +2128,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -2317,7 +2319,7 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.mgk.in \
 	config/type.mgk.in
 
-LTDL_VERSION_INFO = -version-info 9:2:2
+LTDL_VERSION_INFO = -version-info 10:0:3
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \

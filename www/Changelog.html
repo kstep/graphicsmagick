@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2010-11-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> libtool: Upgrade to libtool 2.4.
+
+  <LI> coders/pnm.c (ReadPNMImage): Start work on reading NetPBM PAM
+        format.  Parses PAM header but pixels are not returned yet.
+
+  <LI> magick/magic.c (StaticMagic): Be more specific when itentifying
+        PNM subformats.  Return the specific subformat name PBM, PGM, or
+        PPM rather than PNM.  XV P7 format is now identified as "P7 332".
+        Add detection of NetPBM PAM format.
+
+</UL>
+<p>
+2010-11-04  Glenn Randers-Pehrson  &lt;glennrp@simple...&gt;
+
+<UL>
+  <LI> magick/effect.c: Added 5x5, 6x6, and 7x7 circular ordered dither
+          patterns to create a halftone effect.
+
+</UL>
+<p>
 2010-09-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

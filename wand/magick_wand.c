@@ -8470,6 +8470,7 @@ WandExport unsigned int MagickSetImageType(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image_info->type=image_type;
   return(SetImageType(wand->image,image_type));
 }
 
