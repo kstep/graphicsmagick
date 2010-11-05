@@ -2767,8 +2767,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %    o channel: The channel or channels to be thresholded.
 %
 %    o thresholds: a geometry string containing LOWxHIGH thresholds.
-%      If the string contains 2x2, 3x3, or 4x4, then an ordered
-%      dither of order 2, 3, or 4 will be performed instead.
+%      If the string contains 2x2, 3x3, 4x4, 5x5, 6x6, or 7x7, then
+%      an ordered dither of order 2, 3, 4, 5, 6, or 7 will be performed
+%      instead.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -2780,16 +2781,46 @@ RandomChannelThresholdImage(Image *image,const char *channel,
 #define RandomChannelThresholdImageText "[%s] Random-channel threshold...  "
 
   const double
-    o2[4]={0.2,0.6,0.8,0.4};
+    o2[4]={1.0, 3.0,
+           4.0, 2.0};
 
   const double
-    o3[9]={0.1,0.6,0.3,0.7,0.5,0.8,0.4,0.9,0.2};
+    o3[9]={1.0, 6.0, 3.0,
+           7.0, 5.0, 8.0,
+           4.0, 9.0, 2.0};
 
   const double
-    o4[16]={0.1,0.7,1.1,0.3,1.0,0.5,1.5,0.8,1.4,1.6,0.6,1.2,0.4,0.9,1.3,0.2};
+    o4[16]={ 1.0,  7.0, 11.0,  3.0,
+            10.0,  5.0, 15.0,  8.0,
+            14.0, 16.0,  6.0, 12.0,
+             4.0,  9.0, 13.0,  2.0};
+
+  const double
+    o5[25]={25.0, 21.0, 10.0, 11.0, 22.0,
+            20.0,  9.0,  6.0,  7.0, 12.0,
+            19.0,  5.0,  1.0,  2.0, 13.0,
+            18.0,  8.0,  4.0,  3.0, 14.0,
+            24.0, 17.0, 16.0, 15.0, 23.0};
+
+  const double
+    o6[36]={36.0,  32.0,  23.0,  24.0,  25.0,  33.0,
+            31.0,  15.0,   9.0,  10.0,  16.0,  26.0,
+            22.0,   8.0,   2.0,   3.0,  11.0,  17.0,
+            21.0,   7.0,   1.0,   4.0,  12.0,  18.0,
+            30.0,  14.0,   6.0,   5.0,  13.0,  27.0,
+            35.0,  29.0,  20.0,  19.0,  28.0,  34.0};
+
+  const double
+    o7[49]={49.0,  42.0,  32.0,  18.0,  19.0,  33.0, 48.0,
+            41.0,  31.0,  17.0,  10.0,  11.0,  20.0, 34.0,
+            40.0,  30.0,   9.0,   2.0,   3.0,  12.0, 21.0,
+            39.0,  29.0,   8.0,   1.0,   4.0,   5.0, 22.0,
+            43.0,  28.0,  16.0,   7.0,   6.0,  13.0, 23.0,
+            44.0,  38.0,  27.0,  15.0,  14.0,  24.0, 35.0,
+            46.0,  45.0,  37.0,  26.0,  25.0,  36.0, 47.0};
 
   Quantum
-    matrix[16];
+    matrix[49];
 
   Quantum
     lower_threshold=0U,
@@ -2805,7 +2836,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
   const MagickBool
     is_grayscale=image->is_grayscale,
     is_monochrome=image->is_monochrome;
-  
+
   MagickBool
     logging;
 
@@ -2834,6 +2865,12 @@ RandomChannelThresholdImage(Image *image,const char *channel,
     order=3;
   else if (LocaleCompare(thresholds,"4x4") == 0)
     order=4;
+  else if (LocaleCompare(thresholds,"5x5") == 0)
+    order=5;
+  else if (LocaleCompare(thresholds,"6x6") == 0)
+    order=6;
+  else if (LocaleCompare(thresholds,"7x7") == 0)
+    order=7;
   else
     {
       double
@@ -2886,19 +2923,37 @@ RandomChannelThresholdImage(Image *image,const char *channel,
     if (2 == order)
       for (i=0;i < (sizeof(o2)/sizeof(double)); i++)
         {
-          value=o2[i]*MaxRGBDouble;
+          value=o2[i]*(MaxRGBDouble/5.0);
           matrix[i]=RoundDoubleToQuantum(value);
         }
     else if (3 == order)
       for (i=0;i < (sizeof(o3)/sizeof(double)); i++)
         {
-          value=o3[i]*MaxRGBDouble;
+          value=o3[i]*(MaxRGBDouble/10.0);
           matrix[i]=RoundDoubleToQuantum(value);
         }
     else if (4 == order)
       for (i=0;i < (sizeof(o4)/sizeof(double)); i++)
         {
-          value=o4[i]*MaxRGBDouble/1.7;
+          value=o4[i]*(MaxRGBDouble/17.0);
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else if (5 == order)
+      for (i=0;i < (sizeof(o5)/sizeof(double)); i++)
+        {
+          value=o5[i]*(MaxRGBDouble/26.0);
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else if (6 == order)
+      for (i=0;i < (sizeof(o6)/sizeof(double)); i++)
+        {
+          value=o6[i]*(MaxRGBDouble/37.0);
+          matrix[i]=RoundDoubleToQuantum(value);
+        }
+    else if (7 == order)
+      for (i=0;i < (sizeof(o7)/sizeof(double)); i++)
+        {
+          value=o7[i]*(MaxRGBDouble/50.0);
           matrix[i]=RoundDoubleToQuantum(value);
         }
     else
@@ -2965,7 +3020,8 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                   case 1:
                     for (x=(long) image->columns; x > 0; x--)
                       {
-                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
+                        intensity=(is_grayscale ?
+                            q->red : PixelIntensityToQuantum(q));
                         if (intensity < lower_threshold)
                           threshold=lower_threshold;
                         else if (intensity > upper_threshold)
@@ -2979,32 +3035,16 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                       }
                     break;
                   case 2:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
-                        threshold=matrix[(x%2)+2*(y%2)];
-                        index=intensity <= threshold ? 0U : 1U;
-                        *indexes++=index;
-                        q->red=q->green=q->blue=image->colormap[index].red;
-                        q++;
-                      }
-                    break;
                   case 3:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
-                        threshold=matrix[(x%3)+3*(y%3)];
-                        index=intensity <= threshold ? 0U : 1U;
-                        *indexes++=index;
-                        q->red=q->green=q->blue=image->colormap[index].red;
-                        q++;
-                      }
-                    break;
                   case 4:
+                  case 5:
+                  case 6:
+                  case 7:
                     for (x=(long) image->columns; x > 0; x--)
                       {
-                        intensity=(is_grayscale ? q->red : PixelIntensityToQuantum(q));
-                        threshold=matrix[(x%4)+4*(y%4)];
+                        intensity=(is_grayscale ?
+                            q->red : PixelIntensityToQuantum(q));
+                        threshold=matrix[(x%order)+order*(y%order)];
                         index=intensity <= threshold ? 0U : 1U;
                         *indexes++=index;
                         q->red=q->green=q->blue=image->colormap[index].red;
@@ -3035,25 +3075,14 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                         }
                       break;
                     case 2:
-                      for (x=(long) image->columns; x > 0; x--)
-                        {
-                          threshold=matrix[(x%2)+2*(y%2)];
-                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
-                          q++;
-                        }
-                      break;
                     case 3:
-                      for (x=(long) image->columns; x > 0; x--)
-                        {
-                          threshold=matrix[(x%3)+3*(y%3)];
-                          q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
-                          q++;
-                        }
-                      break;
                     case 4:
+                    case 5:
+                    case 6:
+                    case 7:
                       for (x=(long) image->columns; x > 0; x--)
                         {
-                          threshold=matrix[(x%4)+4*(y%4)];
+                          threshold=matrix[(x%order)+order*(y%order)];
                           q->opacity=(q->opacity <= threshold ? 0U : MaxRGB);
                           q++;
                         }
@@ -3080,25 +3109,14 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                       }
                     break;
                   case 2:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%2)+2*(y%2)];
-                        q->red=(q->red <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 3:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%3)+3*(y%3)];
-                        q->red=(q->red <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 4:
+                  case 5:
+                  case 6:
+                  case 7:
                     for (x=(long) image->columns; x > 0; x--)
                       {
-                        threshold=matrix[(x%4)+4*(y%4)];
+                        threshold=matrix[(x%order)+order*(y%order)];
                         q->red=(q->red <= threshold ? 0U : MaxRGB);
                         q++;
                       }
@@ -3125,25 +3143,14 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                       }
                     break;
                   case 2:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%2)+2*(y%2)];
-                        q->green=(q->green <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 3:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%3)+3*(y%3)];
-                        q->green=(q->green <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 4:
+                  case 5:
+                  case 6:
+                  case 7:
                     for (x=(long) image->columns; x > 0; x--)
                       {
-                        threshold=matrix[(x%4)+4*(y%4)];
+                        threshold=matrix[(x%order)+order*(y%order)];
                         q->green=(q->green <= threshold ? 0U : MaxRGB);
                         q++;
                       }
@@ -3170,26 +3177,15 @@ RandomChannelThresholdImage(Image *image,const char *channel,
                       }
                     break;
                   case 2:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%2)+2*(y%2)];
-                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 3:
-                    for (x=(long) image->columns; x > 0; x--)
-                      {
-                        threshold=matrix[(x%3)+3*(y%3)];
-                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
-                        q++;
-                      }
-                    break;
                   case 4:
+                  case 5:
+                  case 6:
+                  case 7:
                     for (x=(long) image->columns; x > 0; x--)
                       {
-                        threshold=matrix[(x%4)+4*(y%4)];
-                        q->blue=(q->opacity <= threshold ? 0U : MaxRGB);
+                        threshold=matrix[(x%order)+order*(y%order)];
+                        q->blue=(q->blue <= threshold ? 0U : MaxRGB);
                         q++;
                       }
                     break;
