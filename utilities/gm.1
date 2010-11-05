@@ -1,4 +1,4 @@
-.TH gm 1 "2010/09/17" "GraphicsMagick"
+.TH gm 1 "2010/11/05" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3017,11 +3017,20 @@ dithered. When \fBchanneltype\fP is "opacity" or "matte", only the
 opacity channel is dithered. When a color channel is specified, only that
 channel is dithered.
 
-The choices for N are 2, 3, or 4. When N is 2, the image is divided into
-2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
-white depending on their intensity.  When N is 3, there are 3x3 tiles
-and 10 levels of gray can be represented.  When N is 4, there are 4x4
-tiles and 17 levels of gray.
+The choices for N are 2 through 7. The image is divided into
+NxN pixel tiles.  In each tile, some or all pixels are turned to
+white depending on their intensity.  For each N, (N**2)+1 levels
+of gray can be represented.  For N == 2, 3, or 4, the pixels
+are turned to white in an order that maximizes dispersion (i.e.,
+reduces granularity), while
+for N == 5, 6, and 7, they are turned to white in an order that
+creates a roughly circular black blob in the middle of each tile.
+An attractive "half-tone" looking image can be obtained by first
+rotating the image 45 degrees, performing a 5x5 ordered-dither
+operation, then rotating it back to the original orientation and
+cropping to the original image dimensions.  If the original image
+is gamma-encoded, it is adviseable to convert it to linear intensity
+first, e.g., with the "-gamma 0.45455" option.
 .TP
 .B "-output-directory \fI<directory>"\fP
 \fRoutput files to directory
