@@ -1857,8 +1857,8 @@ This command reduces or expands a JPEG image to fit exactly on an 800x600
 display:
 <pre>
    gm convert -size 800x600 input.jpg -resize 800x600 -background black \
-            -compose Copy -gravity center -extent 800x600 \
-            -quality 92 output.jpg
+              -compose Copy -gravity center -extent 800x600 \
+              -quality 92 output.jpg
 </pre>
 
 
