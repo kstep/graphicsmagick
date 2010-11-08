@@ -1,4 +1,4 @@
-.TH gm 1 "2010/11/05" "GraphicsMagick"
+.TH gm 1 "2010/11/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -563,7 +563,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-     gm convert -clip -negate cockatoo.tif negated.tif
+   gm convert -clip -negate cockatoo.tif negated.tif
 
 only the pixels within the clipping path are negated.
 
@@ -591,8 +591,8 @@ a colorization value list delimited with slashes (e.g. 0/0/50).
 The \fB-colorize\fP option may be used in conjunction with \fB-modulate\fP
 to produce a nice sepia toned image like:
 
-  gm convert input.ppm -modulate 115,0,100 \\
-     -colorize 7,21,50 output.ppm.
+   gm convert input.ppm -modulate 115,0,100 \\
+              -colorize 7,21,50 output.ppm.
 .TP
 .B "-colormap \fI<type>"\fP
 \fRdefine the colormap type
@@ -995,7 +995,7 @@ or \fB+contrast\fP to reduce the image contrast.
 
 For a more pronounced effect you can repeat the option:
 
-    gm convert rose: -contrast -contrast rose_c2.png
+   gm convert rose: -contrast -contrast rose_c2.png
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
@@ -1062,7 +1062,7 @@ Render,Resource, TemporaryFile,
 Transform, Warning, X11, or User.
 For example, to log cache and blob events, use
 
-    gm convert -debug "Cache,Blob" rose: rose.png
+   gm convert -debug "Cache,Blob" rose: rose.png
 
 The "User" domain is normally empty, but developers can log "User" events
 in their private copy of GraphicsMagick.
@@ -1447,7 +1447,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:
 
-    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -1781,7 +1781,23 @@ bounds of the new image dimensions is discarded.
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:
 
-    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center -extent 140x100 outfile.jpg
+   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \\
+              -extent 140x100 outfile.jpg
+
+This command reduces or expands a JPEG image to fit on an 800x600
+display: 
+
+
+   gm convert -size 800x600 input.jpg \\
+              -resize 800x600 -background black \\
+              -compose Copy -gravity center \\
+              -extent 800x600 \\
+              -quality 92 output.jpg
+
+If the aspect ratio of the input image isn't exactly 8x6, then the
+image is centered on an 800x600 black canvas. 
+
+
 .TP
 .B "-file \fI<filename>"\fP
 \fRwrite annotated difference image to file
@@ -1816,9 +1832,9 @@ or the parentheses from being interpreted by your shell.
 
 For example,
 
-    gm convert -fill blue ...
-    gm convert -fill "#ddddff" ...
-    gm convert -fill "rgb(65000,65000,65535)" ...
+   gm convert -fill blue ...
+   gm convert -fill "#ddddff" ...
+   gm convert -fill "rgb(65000,65000,65535)" ...
 
 The shorter forms are scaled up, if necessary by replication.  For example, 
 #3af, #33aaff, and #3333aaaaffff are all equivalent.
@@ -1875,13 +1891,15 @@ image.
 For example, this composites an image on top of a 640x400 transparent
 black canvas image:
 
-     gm convert -size 640x300 xc:transparent \\
-          -compose over -page +0-100 frame.png \\
-          -flatten output.png
+   gm convert -size 640x300 xc:transparent \\
+              -compose over -page +0-100 \\
+              frame.png -flatten output.png
 
 and this flattens a Photoshop PSD file:
 
-     gm convert input.psd -flatten output.png.
+   gm convert input.psd -flatten output.png
+
+
 .TP
 .B "-flip"
 \fRcreate a "mirror image"
@@ -2256,6 +2274,8 @@ order for the \fBIDENTITY\fP CLUT generator is 8.  Interpolation is
 used so it is not usually necessary for CLUT images to be very large.
 The PNG file format is ideal for storing Hald CLUT images because it
 compresses them very well.
+
+
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -2264,6 +2284,8 @@ compresses them very well.
 \fRpixel annotation color
 
 Specifies the color to use when annotating difference pixels.
+
+
 .TP
 .B "-highlight-style \fI<style>"\fP
 \fRpixel annotation style
@@ -2282,6 +2304,8 @@ and \fBXOR\fP does an XOR between the pixel and the highlight color.
 Offsets, if present in the geometry specification, are handled in
 the same manner as the \fB-geometry\fP option, using X11 style to handle
 negative offsets.
+
+
 .TP
 .B "-iconic"
 \fRiconic animation
@@ -2301,6 +2325,8 @@ Choose from these intents:
 \fBAbsolute, Perceptual, Relative, Saturation\fP.
 
 The default intent is undefined.
+
+
 .TP
 .B "-interlace \fI<type>"\fP
 \fRthe type of interlacing scheme
@@ -2324,6 +2350,8 @@ is like plane except the different planes are saved to individual files
 
 Use \fBLine\fP to create an \fBinterlaced PNG\fP or \fB GIF\fP or
 \fBprogressive JPEG\fP image.
+
+
 .TP
 .B "-label \fI<name>"\fP
 \fRassign a label to an image
@@ -2355,6 +2383,8 @@ string to print above the image. Specify the label font with
 When creating a montage, by default the label associated with an image
 is displayed with the corresponding tile in the montage.  Use the
 \fB+label\fP option to suppress this behavior.
+
+
 .TP
 .B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
 \fRperform local adaptive thresholding
@@ -2363,6 +2393,8 @@ Perform local adaptive thresholding using the specified width, height,
 and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
 as a percentage.
+
+
 .TP
 .B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
 \fRadjust the level of image contrast
@@ -2453,7 +2485,7 @@ special format characters:
 
 For example:
 
-    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 
 The default behavior is to print all of the components.
 .TP
@@ -2633,11 +2665,11 @@ The following is an example of composing an image based on red, green,
 and blue layers extracted from a sequence of images and pasted on the
 canvas image at specified offsets:
 
-     gm convert -background black \\
-       -compose CopyRed   -page +0-100 red.png \\
-       -compose CopyGreen -page +0+40  green.png \\
-       -compose CopyBlue  -page +0+180 blue.png \\
-       -mosaic output.png
+   gm convert -background black \\
+              -compose CopyRed   -page +0-100 red.png \\
+              -compose CopyGreen -page +0+40  green.png \\
+              -compose CopyBlue  -page +0+180 blue.png \\
+              -mosaic output.png
 .TP
 .B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
 \fRSimulate motion blur
@@ -2991,12 +3023,12 @@ As an example, the \fBAssign\fP operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:
 
-  gm convert in.bmp -operator red assign "50%" out.bmp
+   gm convert in.bmp -operator red assign "50%" out.bmp
 
 The following applies 50% thresholding to the image and returns a gray
 image:
 
-  gm convert in.bmp -operator gray threshold "50%" out.bmp
+   gm convert in.bmp -operator gray threshold "50%" out.bmp
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -3241,7 +3273,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the \fIAPP1\fP profile), use
 
 
-    gm convert cockatoo.jpg exifdata.app1
+   gm convert cockatoo.jpg exifdata.app1
 Note that GraphicsMagick does not attempt to update any profile to
 reflect changes made to the image, e.g., rotation from portrait to landscape
 orientation, so it is possible that the preserved profile may contain
@@ -3771,7 +3803,7 @@ is applied, then the threshold is a percentage of the available range.
 
 To efficiently create a black and white image from a color image, use
 
-    gm convert -threshold 50% in.png out.png
+   gm convert -threshold 50% in.png out.png
 
 The optimum threshold value depends on the nature of the image.
 In order to threshold individual channels, use the \fB-operator\fP
@@ -3818,7 +3850,7 @@ titled bird.miff and whose width is 512 and height is 480.
 This option applies the transformation matrix from a previous
 \fB-affine\fP option.
 
-    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -3877,7 +3909,7 @@ Sometimes a specific subformat is desired. For example, to force a JPEG
 image to be written in TrueColor RGB format even though only gray pixels
 are present, use
 
-    gm convert bird.pgm -type TrueColor bird.jpg
+   gm convert bird.pgm -type TrueColor bird.jpg
 
 Similarly, using -type TrueColorMatte will force the encoder to
 write an alpha channel even though the image is opaque, if the output
@@ -3887,7 +3919,7 @@ Some pseudo-formats (e.g. the XC format) will respect the requested
 type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use
 
-    gm convert -size 640x480 -type TrueColor xc:red red.miff
+   gm convert -size 640x480 -type TrueColor xc:red red.miff
 
 Likewise, specify \fB-type\fP \fBBilevel\fP, \fBGrayscale\fP,
 \fBTrueColor\fP, or \fBTrueColorMatte\fP prior to reading a Postscript
@@ -4109,8 +4141,8 @@ processing continues using that image. The following is an example of how
 several sizes of an image may be generated in one command (repeat as
 often as needed):
 
-    gm convert input.jpg -resize 50% -write input50.jpg
-      -resize 25% input25.jpg
+   gm convert input.jpg -resize 50% -write input50.jpg \\
+              -resize 25% input25.jpg
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]

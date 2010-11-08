@@ -1854,13 +1854,24 @@ it on a red color backdrop image:</pp>
 </pre>
 <pp>
 This command reduces or expands a JPEG image to fit on an 800x600
-display.  If the aspect ratio of the input image isn't exactly 8x6, then the
-image is centered on an 800x600 black canvas:
+display: </pp>
+
+<pp>
 <pre>
-   gm convert -size 800x600 input.jpg -resize 800x600 -background black \
-              -compose Copy -gravity center -extent 800x600 \
+   gm convert -size 800x600 input.jpg \
+              -resize 800x600 -background black \
+              -compose Copy -gravity center \
+              -extent 800x600 \
               -quality 92 output.jpg
+
 </pre>
+
+<pp>
+If the aspect ratio of the input image isn't exactly 8x6, then the
+image is centered on an 800x600 black canvas. </pp>
+
+<pp>
+</pp>
 
 
 </utils>
@@ -2008,8 +2019,8 @@ black canvas image:</pp>
 
 <pre>
    gm convert -size 640x300 xc:transparent \
-              -compose over -page +0-100 frame.png \
-              -flatten output.png
+              -compose over -page +0-100 \
+              frame.png -flatten output.png
 </pre>
 
 <pp>
@@ -2018,9 +2029,12 @@ and this flattens a Photoshop PSD file:</pp>
 
 <pre>
 
-   gm convert input.psd -flatten output.png.
+   gm convert input.psd -flatten output.png
 
 </pre>
+
+<pp>
+</pp>
 
 
 </utils>
@@ -2590,6 +2604,9 @@ used so it is not usually necessary for CLUT images to be very large.
 The PNG file format is ideal for storing Hald CLUT images because it
 compresses them very well.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2614,6 +2631,9 @@ compresses them very well.</pp>
 
 <pp>
 Specifies the color to use when annotating difference pixels.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2650,6 +2670,9 @@ and <s>XOR</s> does an XOR between the pixel and the highlight color.</pp>
 Offsets, if present in the geometry specification, are handled in
 the same manner as the <s>-geometry</s> option, using X11 style to handle
 negative offsets.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2709,6 +2732,9 @@ Choose from these intents:
 <pp>
 The default intent is undefined.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2744,6 +2770,9 @@ is like plane except the different planes are saved to individual files
 <pp>
 Use <s>Line</s> to create an <s>interlaced PNG</s> or <s> GIF</s> or
 <s>progressive JPEG</s> image.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2793,6 +2822,9 @@ When creating a montage, by default the label associated with an image
 is displayed with the corresponding tile in the montage.  Use the
 <s>+label</s> option to suppress this behavior.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2810,6 +2842,9 @@ Perform local adaptive thresholding using the specified width, height,
 and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
 as a percentage.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
