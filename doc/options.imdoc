@@ -1867,7 +1867,7 @@ display: </pp>
 </pre>
 
 <pp>
-If the aspect ratio of the input image isn't exactly 8x6, then the
+If the aspect ratio of the input image isn't exactly 4:3, then the
 image is centered on an 800x600 black canvas. </pp>
 
 <pp>
