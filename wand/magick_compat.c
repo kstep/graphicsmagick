@@ -269,13 +269,16 @@ WandExport size_t ConcatenateMagickString(char *destination,
 %
 %    o image: The image.
 %
-%    o x_offset, y_offset, columns, rows:  These values define the perimeter
-%      of a region of pixels you want to define.
+%    o x_offset, y_offset: Offset (from top left) on base image on which
+%      to composite image data.
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale).
+%      A = alpha (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, or I = intensity
+%      (for grayscale). Specify "P" = pad, to skip over a quantum which is
+%      intentionally ignored. Creation of an alpha channel for CMYK images
+%      is currently not supported.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..MaxRGB].  Choose from these types:

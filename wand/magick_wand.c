@@ -8185,26 +8185,27 @@ WandExport unsigned int MagickSetImageOption(MagickWand *wand,
 %
 %  The format of the MagickSetImagePixels method is:
 %
-%      unsigned int MagickSetImagePixels(MagickWand *wand,const long x_offset,
-%        const long y_offset,const unsigned long columns,
-%        const unsigned long rows,const char *map,const StorageType storage,
-%        void *pixels)
+%       unsigned int MagickSetImagePixels(MagickWand *wand,
+%          const long x_offset,const long y_offset,const unsigned long columns,
+%          const unsigned long rows,const char *map,const StorageType storage,
+%          unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
 %
-%    o x_offset, y_offset, columns, rows:  These values define the perimeter
-%      of a region of pixels you want to define.
+%    o x_offset, y_offset: Offset (from top left) on base canvas image on
+%      which to composite image data.
 %
-%    o map:  This string reflects the pixel data type and expected ordering of
-%      the pixel array.  The first character of the map must be one of: "C" for
-%      character, "S" for short, "I" for integer, "L" for long, "F" for float,
-%      or "D" for double.  Note, Float and double types are normalized to
-%      [0..1] otherwise [0..MaxRGB].  The remaining characters of the map
-%      reflect the ordering of the pixel array.  It can be any combination or
-%      order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-%      M = magenta, K = black, or I = intensity (for grayscale).
+%    o columns, rows: Dimensions of image.
+%
+%    o map:  This string reflects the expected ordering of the pixel array.
+%      It can be any combination or order of R = red, G = green, B = blue,
+%      A = alpha (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, or I = intensity
+%      (for grayscale). Specify "P" = pad, to skip over a quantum which is
+%      intentionally ignored. Creation of an alpha channel for CMYK images
+%      is currently not supported.
 %
 %    o storage: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
