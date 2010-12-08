@@ -3929,7 +3929,7 @@ void MagickDLLDecl Magick::InitializeMagick(const char *path_)
   if (!magick_initialized)
     {
       magick_initialized=true;
-      atexit(MagickPlusPlusDestroyMagick);
+//       atexit(MagickPlusPlusDestroyMagick);
     }
 }
 

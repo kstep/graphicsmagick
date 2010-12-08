@@ -10511,7 +10511,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 (void) strlcpy(clone_image->filename,argv[i],sizeof(clone_image->filename));
                 (void) WriteImage(clone_info,clone_image);
                 if (clone_info->verbose)
-                  (void) DescribeImage(clone_image,stdout,False);
+                  (void) DescribeImage(clone_image,stderr,False);
                 DestroyImage(clone_image);
                 clone_image=(Image *) NULL;
               }
@@ -10689,7 +10689,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 	    if (scene)
 	      p->scene += i;
 	    if (image_info->verbose)
-	      (void) DescribeImage(p,stdout,False);
+	      (void) DescribeImage(p,stderr,False);
 	    i++;
 	  }
       }
