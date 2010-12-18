@@ -521,6 +521,9 @@ MagickExport const char* CompressionTypeToString(const CompressionType compressi
     case ZipCompression:
       compression_string="Zip";
       break;
+    case LZMACompression:
+      compression_string="LZMA";
+      break;
     }
   return compression_string;
 }
@@ -545,6 +548,9 @@ MagickExport CompressionType StringToCompressionType(const char *option)
     compression_type=JPEGCompression;
   else if (LocaleCompare("Lossless",option) == 0)
     compression_type=LosslessJPEGCompression;
+  else if ((LocaleCompare("LZMA",option) == 0) ||
+	   (LocaleCompare("LZMA2",option) == 0))
+    compression_type=LZMACompression;
   else if (LocaleCompare("LZW",option) == 0)
     compression_type=LZWCompression;
   else if (LocaleCompare("RLE",option) == 0)

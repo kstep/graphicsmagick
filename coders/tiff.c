@@ -340,6 +340,15 @@ CompressionSupported(const CompressionType compression,
         strlcpy(compression_name,"Lossless JPEG",MaxTextExtent);
         break;
       }
+    case LZMACompression:
+      {
+        strlcpy(compression_name,"LZMA",MaxTextExtent);
+#if defined(COMPRESSION_LZMA)
+        compress_tag=COMPRESSION_LZMA;
+        status=MagickTrue;
+#endif
+        break;
+      }
     case LZWCompression:
       {
         strlcpy(compression_name,"LZW",MaxTextExtent);
@@ -1536,6 +1545,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case COMPRESSION_JPEG: image->compression=JPEGCompression; break;
         case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
         case COMPRESSION_LZW: image->compression=LZWCompression; break;
+	case COMPRESSION_LZMA: image->compression=LZMACompression; break;
         case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
         case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
         default: image->compression=RLECompression; break;
@@ -3510,6 +3520,13 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             compress_tag=COMPRESSION_LZW;
             break;
           }
+#if defined(COMPRESSION_LZMA)
+        case LZMACompression:
+          {
+            compress_tag=COMPRESSION_LZMA;
+            break;
+          }
+#endif /* defined(COMPRESSION_LZMA) */
         case RLECompression:
           {
             compress_tag=COMPRESSION_PACKBITS;
@@ -4103,6 +4120,69 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
               rows_per_strip=(uint32) image->rows;
             break;
           }
+#if defined(COMPRESSION_LZMA)
+        case COMPRESSION_LZMA:
+          {
+	    unsigned int
+	      lzma_quality;
+
+	    /*
+	      Lzma quality has a useful range of 1-9.
+	    */
+	    lzma_quality=image_info->quality / 10;
+	    if (lzma_quality < 1)
+	      lzma_quality=1;
+	    if (lzma_quality > 9)
+	      lzma_quality=9;
+	    (void) TIFFSetField(tiff,TIFFTAG_LZMAPRESET,lzma_quality);
+	    if (logging)
+	      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				    "LZMAPRESET tag (compression level) set to %u", lzma_quality);
+
+	    {
+	      /*
+		Provide a default rows-per-strip which is suitably
+		tailored for the compression level.
+	      */
+	      
+	      /*
+		Strip memory target for various compression preset levels.
+		Values are arbitrarily about 32% of what the compressor requires.
+	      */
+	      static const long
+		lzma_memory_mb[] =
+		{      /* Level  Compress  Decompress */
+		  1,   /*   1       2 MB      1 MB    */
+		  4 ,  /*   2      12 MB      2 MB    */
+		  4,   /*   3      12 MB      1 MB    */
+		  6 ,  /*   4      16 MB      2 MB    */
+		  8 ,  /*   5      26 MB      3 MB    */
+		  14,  /*   6      45 MB      5 MB    */
+		  26,  /*   7      83 MB      9 MB    */
+		  50,  /*   8     159 MB     17 MB    */
+		  100  /*   9     311 MB     33 MB    */
+		};
+	      
+	      rows_per_strip = (uint32) ((lzma_memory_mb[lzma_quality-1]*1024*1024))/
+		(((bits_per_sample*samples_per_pixel)/8)*image->rows);
+	      if (rows_per_strip < 1)
+		rows_per_strip=1;
+	      if (rows_per_strip > image->rows)
+		rows_per_strip=image->rows;
+	    }
+
+            /*
+              Use horizontal differencing (type 2) for images which are
+              likely to be continuous tone.  The TIFF spec says that this
+              usually leads to better compression.
+            */
+            if (((photometric == PHOTOMETRIC_RGB) ||
+                 (photometric == PHOTOMETRIC_MINISBLACK)) &&
+                ((bits_per_sample == 8) || (bits_per_sample == 16)))
+	      predictor=PREDICTOR_HORIZONTAL;
+            break;
+          }
+#endif /* COMPRESSION_LZMA */
         case COMPRESSION_LZW:
           {
             /*

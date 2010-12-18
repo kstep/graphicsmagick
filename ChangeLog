@@ -1,3 +1,7 @@
+2010-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add TIFF LZMA compressor support.
+
 2010-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImages): Should send -verbose output to
