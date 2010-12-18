@@ -1067,7 +1067,7 @@ static int wandObjCmd(
         "undefined", "none",   "bzip",
         "fax",       "group4", "jpeg",
         "jpeg-ls",   "lzw",    "rle",
-        "zip",
+        "zip", "lzma",
         (char *) NULL
     };
     static CompressionType compressTypes[] = {

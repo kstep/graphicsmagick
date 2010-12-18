@@ -791,7 +791,7 @@ And here is a list of all the image attributes you can set:
    |                |                                    |comment.           |
    +----------------+------------------------------------+-------------------+
    |compression     |{None, BZip, Fax, Group4, JPEG,     |type of image      |
-   |                |LosslessJPEG, LZW, RLE, Zip}        |compression        |
+   |                |LosslessJPEG, LZW, RLE, Zip, LZMA}  |compression        |
    +----------------+------------------------------------+-------------------+
    |                |{No, Configure, Annotate, Render,   |log copious        |
    |debug           |Transform, Locale, Coder, X11,      |debugging          |

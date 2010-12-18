@@ -1545,7 +1545,9 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         case COMPRESSION_JPEG: image->compression=JPEGCompression; break;
         case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
         case COMPRESSION_LZW: image->compression=LZWCompression; break;
+#if defined(COMPRESSION_LZMA)
 	case COMPRESSION_LZMA: image->compression=LZMACompression; break;
+#endif /* defined(COMPRESSION_LZMA) */
         case COMPRESSION_DEFLATE: image->compression=ZipCompression; break;
         case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
         default: image->compression=RLECompression; break;

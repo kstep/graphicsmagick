@@ -217,6 +217,7 @@ namespace Magick
   using MagickLib::LZWCompression;
   using MagickLib::RLECompression;
   using MagickLib::ZipCompression;
+  using MagickLib::LZMACompression;
 
   using MagickLib::DisposeType;
   using MagickLib::UndefinedDispose;
