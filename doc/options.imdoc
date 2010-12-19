@@ -838,7 +838,7 @@ space, then the change-image pixel intensities are used.
 Choices are: <i>None</i>, <i>BZip</i>, <i>Fax</i>,
 <i>Group4</i>,
 <i>JPEG</i>, <i>Lossless</i>,
-<i>LZW</i>, <i>RLE</i> or <i>Zip</i>.
+<i>LZW</i>, <i>RLE</i>, <i>Zip</i>, or <i>LZMA</i>.
 </pp>
 
 <pp>

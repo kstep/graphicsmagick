@@ -378,6 +378,15 @@ of the library-based packages listed here.
   to read the SVG image format and to retrieve files from over a
   network via FTP and HTTP.
 
+* GraphicsMagick requires the liblzma library from XZ Utils available from
+
+     http://www.tukaani.org/xz/
+
+  to support TIFF with LZMA compression and future LZMA-compression
+  features (yet to be developed).  The utilities from this package are
+  also necessary in order to decompress GraphicsMagick packages
+  distributed with ".xz" or ".lzma" extensions.
+
 * GraphicsMagick requires the ZLIB library from
 
      http://www.zlib.net/
