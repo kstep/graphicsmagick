@@ -1,3 +1,12 @@
+2010-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Default to using a LZMAPRESET
+	value of 1 based on testing which observed minimal benefit, and
+	substantially more cost, from larger values.  Value may be
+	specified by the user using command line syntax like '-define
+	tiff:lzmapreset=7' for purposes of further experimentation.  Also
+	adjusted default strip memory values for each preset level.
+
 2010-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Add LZMA support to PerlMagick.

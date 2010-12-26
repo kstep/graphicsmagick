@@ -4126,20 +4126,33 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         case COMPRESSION_LZMA:
           {
 	    unsigned int
-	      lzma_quality;
+	      lzma_preset;
+
+	    const char *
+	      lzma_preset_str;
 
 	    /*
-	      Lzma quality has a useful range of 1-9.
+	      Lzma preset has a useful range of 1-9.
+
+	      We default to 1 since testing does not show much benefit
+	      from use of larger values.  However, we allow the
+	      power-user who wants to experiment to change the preset
+	      value via syntax like '-define tiff:lzmapreset=7'.  This
+	      ability is intentionally not documented other than here.
 	    */
-	    lzma_quality=image_info->quality / 10;
-	    if (lzma_quality < 1)
-	      lzma_quality=1;
-	    if (lzma_quality > 9)
-	      lzma_quality=9;
-	    (void) TIFFSetField(tiff,TIFFTAG_LZMAPRESET,lzma_quality);
+
+	    lzma_preset=1;
+	    if ((lzma_preset_str=AccessDefinition(image_info,"tiff","lzmapreset")))
+	      lzma_preset=(unsigned short) MagickAtoI(lzma_preset_str);
+
+	    if (lzma_preset < 1)
+	      lzma_preset=1;
+	    if (lzma_preset > 9)
+	      lzma_preset=9;
+	    (void) TIFFSetField(tiff,TIFFTAG_LZMAPRESET,lzma_preset);
 	    if (logging)
 	      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-				    "LZMAPRESET tag (compression level) set to %u", lzma_quality);
+				    "LZMA PRESET set to %u", lzma_preset);
 
 	    {
 	      /*
@@ -4149,7 +4162,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 	      
 	      /*
 		Strip memory target for various compression preset levels.
-		Values are arbitrarily about 32% of what the compressor requires.
+		Values are arbitrary.  LZMA is a memory and CPU pig.
 	      */
 	      static const long
 		lzma_memory_mb[] =
@@ -4157,15 +4170,15 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		  1,   /*   1       2 MB      1 MB    */
 		  4 ,  /*   2      12 MB      2 MB    */
 		  4,   /*   3      12 MB      1 MB    */
-		  6 ,  /*   4      16 MB      2 MB    */
-		  8 ,  /*   5      26 MB      3 MB    */
-		  14,  /*   6      45 MB      5 MB    */
-		  26,  /*   7      83 MB      9 MB    */
-		  50,  /*   8     159 MB     17 MB    */
-		  100  /*   9     311 MB     33 MB    */
+		  4,   /*   4      16 MB      2 MB    */
+		  6,   /*   5      26 MB      3 MB    */
+		  10,  /*   6      45 MB      5 MB    */
+		  18,  /*   7      83 MB      9 MB    */
+		  34,  /*   8     159 MB     17 MB    */
+		  66   /*   9     311 MB     33 MB    */
 		};
 	      
-	      rows_per_strip = (uint32) ((lzma_memory_mb[lzma_quality-1]*1024*1024))/
+	      rows_per_strip = (uint32) ((lzma_memory_mb[lzma_preset-1]*1024*1024))/
 		(((bits_per_sample*samples_per_pixel)/8)*image->rows);
 	      if (rows_per_strip < 1)
 		rows_per_strip=1;
