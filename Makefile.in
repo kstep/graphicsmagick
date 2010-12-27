@@ -1181,7 +1181,7 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	coders/fits.c coders/gif.c coders/gradient.c coders/gray.c \
 	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
 	coders/identity.c coders/info.c coders/label.c coders/locale.c \
-	coders/logo.c coders/map.c coders/mat.c coders/matte.c \
+	coders/logo.c coders/mac.c coders/map.c coders/mat.c coders/matte.c \
 	coders/meta.c coders/miff.c coders/mono.c coders/mpc.c \
 	coders/mpeg.c coders/mpr.c coders/msl.c coders/mtv.c \
 	coders/mvg.c coders/null.c coders/otb.c coders/palm.c \
