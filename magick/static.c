@@ -336,6 +336,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterLABELImage();
   UnregisterLOCALEImage();
   UnregisterLOGOImage();
+  UnregisterMACImage();
   UnregisterMAPImage();
   UnregisterMATImage();
   UnregisterMATTEImage();

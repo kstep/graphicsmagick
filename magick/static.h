@@ -205,6 +205,7 @@ extern ModuleExport void
   UnregisterLABELImage(void),
   UnregisterLOCALEImage(void),
   UnregisterLOGOImage(void),
+  UnregisterMACImage(void),
   UnregisterMAPImage(void),
   UnregisterMATImage(void),
   UnregisterMATTEImage(void),

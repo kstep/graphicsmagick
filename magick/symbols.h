@@ -769,6 +769,7 @@
 #define UnregisterLABELImage GmUnregisterLABELImage
 #define UnregisterLOCALEImage GmUnregisterLOCALEImage
 #define UnregisterLOGOImage GmUnregisterLOGOImage
+#define UnregisterMACImage GmUnregisterMATImage
 #define UnregisterMAPImage GmUnregisterMAPImage
 #define UnregisterMATImage GmUnregisterMATImage
 #define UnregisterMATTEImage GmUnregisterMATTEImage
