@@ -581,6 +581,7 @@
 #define RegisterLABELImage GmRegisterLABELImage
 #define RegisterLOCALEImage GmRegisterLOCALEImage
 #define RegisterLOGOImage GmRegisterLOGOImage
+#define RegisterMACImage GmRegisterMACImage
 #define RegisterMAPImage GmRegisterMAPImage
 #define RegisterMATImage GmRegisterMATImage
 #define RegisterMATTEImage GmRegisterMATTEImage

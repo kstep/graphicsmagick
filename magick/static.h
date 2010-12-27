@@ -68,6 +68,7 @@ extern ModuleExport void
   RegisterLABELImage(void),
   RegisterLOCALEImage(void),
   RegisterLOGOImage(void),
+  RegisterMACImage(void),
   RegisterMAPImage(void),
   RegisterMATImage(void),
   RegisterMATTEImage(void),

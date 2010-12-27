@@ -1,3 +1,7 @@
+2010-12-27 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mac.c New MacPaint image format reader added.
+
 2010-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Default to using a LZMAPRESET

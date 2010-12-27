@@ -120,7 +120,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterStaticModules() statically registers all the available module
+%  
+RegisterStaticModules() statically registers all the available module
 %  handlers.
 %
 %  The format of the RegisterStaticModules method is:
@@ -183,6 +184,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterLABELImage();
   RegisterLOCALEImage();
   RegisterLOGOImage();
+  RegisterMACImage();
   RegisterMAPImage();
   RegisterMATImage();
   RegisterMATTEImage();
