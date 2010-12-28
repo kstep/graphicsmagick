@@ -84,6 +84,7 @@ MAGICK_CODER_SRCS = \
 	coders/label.c \
 	coders/locale.c \
 	coders/logo.c \
+	coders/mac.c \
 	coders/map.c \
 	coders/mat.c \
 	coders/matte.c \
@@ -457,6 +458,12 @@ coders_logo_la_SOURCES     = coders/logo.c
 coders_logo_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_logo_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_logo_la_LIBADD      = $(LIBMAGICK)
+
+# MAC coder module
+coders_mac_la_SOURCES      = coders/mac.c
+coders_mac_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_mac_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_mac_la_LIBADD       = $(LIBMAGICK)
 
 # MAP coder module
 coders_map_la_SOURCES      = coders/map.c

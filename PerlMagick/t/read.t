@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..76\n"; }
+BEGIN { $| = 1; $test=1; print "1..77\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -105,6 +105,10 @@ testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0, 
 print("HRZ Slow scan TV ...\n");
 ++$test;
 testReadCompare('input.hrz', 'reference/read/input_hrz.miff', q//, 0, 0);
+
+print("MacPaint ...\n");
+++$test;
+testReadCompare('input.mac', 'reference/read/input_mac.bmp', q//, 0, 0);
 
 print("MAT (MatLab logical 8-bit LSB integer) ...\n");
 ++$test;
