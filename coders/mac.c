@@ -116,13 +116,13 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping) goto DONE_READING;
 
   /* ----- Load RLE compressed raster ----- */
-  BImgBuff = MagickAllocateMemory(unsigned char *,((size_t) ldblk));  /*Ldblk was set in the check phase*/
+  ldblk = (image->depth*image->columns) /8;
+  BImgBuff = MagickAllocateMemory(unsigned char *, ((size_t)ldblk));
   if(BImgBuff==NULL)
     NoMemory:
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   
-  DataPtr = BImgBuff;
-  ldblk = (image->depth*image->columns) /8;
+  DataPtr = BImgBuff;  
   x8=0; y=0;
 
   while(y<image->rows)
