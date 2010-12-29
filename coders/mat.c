@@ -1106,7 +1106,12 @@ ModuleExport void RegisterMATImage(void)
   entry->decoder = (DecoderHandler) ReadMATImage;
   entry->encoder = (EncoderHandler) WriteMATLABImage;
   entry->seekable_stream = True;
-  entry->description = "MATLAB Level 5 image format";
+  entry->description =
+#if defined(HasZLIB)
+                        "MATLAB Level 5.0-7.0 image formats";
+#else
+			"MATLAB Level 5.0-6.0 image formats";
+#endif
   entry->module = "MAT";
   entry->blob_support=False;
   (void) RegisterMagickInfo(entry);

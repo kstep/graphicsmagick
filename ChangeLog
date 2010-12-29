@@ -1,3 +1,7 @@
+2010-12-30 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Maltab file level clarification.
+
 2010-12-27 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mac.c New MacPaint image format reader added.

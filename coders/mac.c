@@ -151,10 +151,9 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	  DataPtr = BImgBuff;
 	  y++;
-	  if(y<image->rows)
+	  if(y>=image->rows)
 	  {
-	    //DataPtr = (BYTE *)Raster->GetRow(y);
-	    //if AlineProc!=nil then AlineProc^.NextLine;
+	    break;	    
 	  }
 	}
       }
@@ -179,10 +178,9 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 	  DataPtr = BImgBuff;
 	  y++;
-	  if(y<image->rows)
+	  if(y>=image->rows)
 	  {
-	    //DataPtr = (BYTE *)Raster->GetRow(y);
-	    //if AlineProc!=nil then AlineProc^.NextLine;
+	    break;
 	  }
         }
       }
