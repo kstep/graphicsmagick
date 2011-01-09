@@ -419,30 +419,48 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       }
     context->mvg[context->mvg_length] = 0;
 
-    va_start(argp, format);
+    /*
+      According to C99, vsnprintf() returns the number of formatted
+      bytes which WOULD have been written (not including trailing
+      '\0') if there was sufficient space available.  If an output
+      error occurs, then a negative value is returned.
+
+      Under Linux glibc 2.0.6 and earlier, -1 is returned when the
+      output has been truncated.
+    */
+    {
+      long
+	space_available;
+      
+      space_available=context->mvg_alloc - context->mvg_length - 1;
+      formatted_length = -1;
+      if (space_available > 0)
+	{
+	  va_start(argp, format);
 #if defined(HAVE_VSNPRINTF)
-    formatted_length =
-      vsnprintf(context->mvg + context->mvg_length,
-                context->mvg_alloc - context->mvg_length - 1, format, argp);
+	  formatted_length =
+	    vsnprintf(context->mvg + context->mvg_length,(size_t) space_available, format, argp);
 #else
 #  if defined(HAVE_VSPRINTF)
-    formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
+	  formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
 #  else
 #    error Neither vsnprintf or vsprintf is available.
 #  endif
 #endif
-    va_end(argp);
-
-    if (formatted_length < 0)
-      {
-        ThrowException(&context->image->exception,DrawError,UnableToPrint,
-          format);
-      }
-    else
-      {
-        context->mvg_length += formatted_length;
-        context->mvg_width += formatted_length;
-      }
+	  va_end(argp);
+	}
+      
+      if ((formatted_length < 0) || (formatted_length > space_available))
+	{
+	  ThrowException(&context->image->exception,DrawError,UnableToPrint,
+			 format);
+	}
+      else
+	{
+	  context->mvg_length += formatted_length;
+	  context->mvg_width += formatted_length;
+	}
+    }
     context->mvg[context->mvg_length] = 0;
 
     /* Re-evaluate mvg_width */
@@ -599,8 +617,11 @@ MagickExport void DrawAnnotation(DrawContext context,
   assert(text != (const unsigned char *) NULL);
 
   escaped_text=EscapeString((const char*)text,'\'');
-  (void) MvgPrintf(context, "text %g,%g '%.1024s'\n", x, y, escaped_text);
-  MagickFreeMemory(escaped_text);
+  if (escaped_text != (char *) NULL)
+    {
+      (void) MvgPrintf(context, "text %g,%g '%s'\n", x, y, escaped_text);
+      MagickFreeMemory(escaped_text);
+    }
 }
 
 /*

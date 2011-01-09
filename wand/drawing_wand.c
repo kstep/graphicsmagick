@@ -235,25 +235,46 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
       drawing_wand->mvg_width++;
     }
     drawing_wand->mvg[drawing_wand->mvg_length]=0;
-    va_start(argp, format);
+
+    /*
+      According to C99, vsnprintf() returns the number of formatted
+      bytes which WOULD have been written (not including trailing
+      '\0') if there was sufficient space available.  If an output
+      error occurs, then a negative value is returned.
+
+      Under Linux glibc 2.0.6 and earlier, -1 is returned when the
+      output has been truncated.
+    */
+    {
+      long
+	space_available;
+      
+      space_available=drawing_wand->mvg_alloc-drawing_wand->mvg_length-1;
+      formatted_length = -1;
+      if (space_available > 0)
+	{
+	  
+	  va_start(argp, format);
 #if defined(HAVE_VSNPRINTF)
-    formatted_length=vsnprintf(drawing_wand->mvg+drawing_wand->mvg_length,
-      drawing_wand->mvg_alloc-drawing_wand->mvg_length-1,format,argp);
+	  formatted_length=vsnprintf(drawing_wand->mvg+drawing_wand->mvg_length,
+				     (size_t) space_available,format,argp);
 #else
-    formatted_length=vsprintf(drawing_wand->mvg+drawing_wand->mvg_length,
-      format,argp);
+	  formatted_length=vsprintf(drawing_wand->mvg+drawing_wand->mvg_length,
+				    format,argp);
 #endif
-    va_end(argp);
-    if (formatted_length < 0)
-      {
-        ThrowException(&drawing_wand->exception,DrawError,
-          UnableToPrint,format);
-      }
-    else
-      {
-        drawing_wand->mvg_length+=formatted_length;
-        drawing_wand->mvg_width+=formatted_length;
-      }
+	  va_end(argp);
+	}
+      if ((formatted_length < 0) || (formatted_length > space_available))
+	{
+	  ThrowException(&drawing_wand->exception,DrawError,
+			 UnableToPrint,format);
+	}
+      else
+	{
+	  drawing_wand->mvg_length+=formatted_length;
+	  drawing_wand->mvg_width+=formatted_length;
+	}
+    }
     drawing_wand->mvg[drawing_wand->mvg_length]=0;
     if ((drawing_wand->mvg_length > 1) &&
         (drawing_wand->mvg[drawing_wand->mvg_length-1] == '\n'))
@@ -569,7 +590,7 @@ WandExport void DrawAnnotation(DrawingWand *drawing_wand,const double x,
   assert(drawing_wand->signature == MagickSignature);
   assert(text != (const unsigned char *) NULL);
   escaped_text=EscapeString((const char*)text,'\'');
-  (void) MvgPrintf(drawing_wand,"text %g,%g '%.1024s'\n",x,y,escaped_text);
+  (void) MvgPrintf(drawing_wand,"text %g,%g '%s'\n",x,y,escaped_text);
   escaped_text=(char *) RelinquishMagickMemory(escaped_text);
 }
 

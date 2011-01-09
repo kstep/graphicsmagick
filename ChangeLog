@@ -1,6 +1,17 @@
+2011-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c, wand/drawing_wand.c (MvgPrintf): Update to handle
+	C99 vsnprintf() return values.
+
+	* magick/draw.c, wand/drawing_wand.c (DrawAnnotation): Linux
+	glibc does not pass extended text characters if "%.1024s"
+	formatting convention is used.  Apparently it assumes that such
+	characters may be UTF8 and returns -1 rather than outputting the
+	string, even if it is assured to fit.
+
 2010-12-30 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* coders/mat.c Maltab file level clarification.
+	* coders/mat.c Matlab file level clarification.
 
 2010-12-27 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
