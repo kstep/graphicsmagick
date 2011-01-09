@@ -1750,8 +1750,9 @@ information. Use</p>
 ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
 $image-&gt;QueryFontMetrics(parameters);
 
-Where parameters is any parameter of the Annotate method. The return values
-are
+Where parameters is any parameter of the Annotate method.  The
+'text' parameter must be specified since there can be no default for
+the text to render. The return values are
 
 * character width
 * character height
@@ -2032,7 +2033,7 @@ die &quot;unable to continue&quot; if ($1 == ResourceLimitError);
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-12-18 21:33 UTC.
+Generated on: 2011-01-09 22:41 UTC.
 
 </div>
 </body>

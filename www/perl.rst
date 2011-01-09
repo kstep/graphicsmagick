@@ -1268,8 +1268,9 @@ information. Use
   ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
   $image->QueryFontMetrics(parameters);
 
-  Where parameters is any parameter of the Annotate method. The return values
-  are
+  Where parameters is any parameter of the Annotate method.  The
+  'text' parameter must be specified since there can be no default for
+  the text to render. The return values are
 
   * character width
   * character height
