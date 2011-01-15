@@ -25,7 +25,8 @@ configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 
-	./configure --with-tcl=/usr/lib/tcl$(TCLVERSION)/ --with-tk=/usr/lib/tk$(TCLVERSION)/ --with-magick=/usr/bin/Wand-config --enable-threads  --with-tclinclude=/usr/include/tcl$(TCLVERSION)/ --with-tkinclude=/usr/include/tk/
+	./configure --with-tcl=/usr/lib/tcl${TCLVERSION}/ --with-tk=/usr/lib/tk${TCLVERSION}/ --with-magick=/usr/bin/Wand-config --enable-threads  --with-tclinclude=/usr/include/tcl${TCLVERSION}/ --with-tkinclude=/usr/include/tcl${TCLVERSION}/
+	#./configure --with-tcl=/usr/lib/tcl$(TCLVERSION)/ --with-tk=/usr/lib/tk$(TCLVERSION)/ --with-magick=/usr/bin/Wand-config --enable-threads  --with-tclinclude=/usr/include/tcl$(TCLVERSION)/ --with-tkinclude=/usr/include/tk/
 	touch configure-stamp
 
 
