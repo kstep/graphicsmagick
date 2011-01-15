@@ -5,3 +5,20 @@ If, at some point in the future, GraphicsMagick were to be packaged,
 this could depend on that instead.
 
  -- David N. Welton <davidw@debian.org>, Sun Sep 19 20:45:49 2004
+
+How to build and test a Debian package
+--------------------------------------
+
+Build the package:
+
+  dpkg-buildpackage -us -uc -b -rfakeroot
+  sudo dpkg -i ~/usrc/tclmagick_0.45-1_i386.deb
+
+Test the package:
+
+  cd    ~/usrc/TclMagick/tests/
+  tclsh test-bmp-compare.tcl
+  tclsh test-draw.tcl
+  tclsh test-pixel.tcl
+  tclsh test-wand.tcl
+  tclsh tkmagick.tcl
