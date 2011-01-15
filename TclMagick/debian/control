@@ -2,7 +2,7 @@ Source: tclmagick
 Section: graphics
 Priority: optional
 Maintainer: David N. Welton <davidw@debian.org>
-Build-Depends: debhelper (>= 4.0.0), libmagick6-dev, tcl8.4-dev, tk8.4-dev
+Build-Depends: debhelper (>= 4.0.0), fakeroot, libmagick9-dev, tcl8.4-dev, tk8.4-dev
 Standards-Version: 3.6.0
 
 Package: tclmagick
