@@ -6,8 +6,9 @@ package require Tk
 
 set dirname [file dirname [info script]]
 
-load [file join $dirname .. generic .libs libTclMagick[info sharedlibextension]]
-load [file join $dirname .. generic .libs libTkMagick[info sharedlibextension]]
+# load [file join $dirname .. generic .libs libTclMagick[info sharedlibextension]]
+# load [file join $dirname .. generic .libs libTkMagick[info sharedlibextension]]
+package require TkMagick
 
 # magickimage --
 #

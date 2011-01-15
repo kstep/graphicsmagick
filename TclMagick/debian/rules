@@ -6,8 +6,19 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-
+#
+# Tcl version.  Using 8.4 but 8.5 already available
+#
 TCLVERSION=8.4
+
+#
+# GraphicsMagick/ImageMagick Wand library selection.
+
+# GraphicsMagick
+#WAND=GraphicsMagickWand
+
+# ImageMagick
+WAND=Wand
 
 CFLAGS = -Wall -g
 
@@ -25,8 +36,7 @@ configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 
-	./configure --with-tcl=/usr/lib/tcl${TCLVERSION}/ --with-tk=/usr/lib/tk${TCLVERSION}/ --with-magick=/usr/bin/Wand-config --enable-threads  --with-tclinclude=/usr/include/tcl${TCLVERSION}/ --with-tkinclude=/usr/include/tcl${TCLVERSION}/
-	#./configure --with-tcl=/usr/lib/tcl$(TCLVERSION)/ --with-tk=/usr/lib/tk$(TCLVERSION)/ --with-magick=/usr/bin/Wand-config --enable-threads  --with-tclinclude=/usr/include/tcl$(TCLVERSION)/ --with-tkinclude=/usr/include/tk/
+	./configure --with-tcl=/usr/lib/tcl${TCLVERSION}/ --with-tk=/usr/lib/tk${TCLVERSION}/ --with-magick=/usr/bin/${WAND}-config --enable-threads  --with-tclinclude=/usr/include/tcl${TCLVERSION}/ --with-tkinclude=/usr/include/tcl${TCLVERSION}/
 	touch configure-stamp
 
 

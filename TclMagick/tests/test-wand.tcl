@@ -130,7 +130,7 @@ set TestFunctions {
     MedianFilterImage           img     1
     MinifyImage                 img     1
     ModulateImage               img     1
-    MontageImage                seq     1
+    MontageImage                seq     0
     MorphImages                 seq     1
     MosaicImages                seq     1
     MotionBlurImage             img     1
