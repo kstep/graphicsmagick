@@ -35,6 +35,7 @@ set TMP  "../tmp"
 ##########################################
 # Check which tests should be performed
 #
+# ImageMagick only: FxImage, FxImageChannel, PreviewImages, TintImage
 set TestFunctions {
     AdaptiveThresholdImage      img     1
     AddImage                    seq     1
@@ -73,8 +74,8 @@ set TestFunctions {
     FlipImage                   img     1
     FlopImage                   img     1
     FrameImage                  img     1
-    FxImage                     img     1
-    FxImageChannel              img     1
+    FxImage                     img     0
+    FxImageChannel              img     0
     GammaImage                  img     1
     GammaImageChannel           img     1
 
@@ -130,7 +131,7 @@ set TestFunctions {
     MedianFilterImage           img     1
     MinifyImage                 img     1
     ModulateImage               img     1
-    MontageImage                seq     0
+    MontageImage                seq     1
     MorphImages                 seq     1
     MosaicImages                seq     1
     MotionBlurImage             img     1
@@ -142,7 +143,7 @@ set TestFunctions {
     OilPaintImage               img     1
     OpaqueImage                 img     1
     PingImage                   SEQ     1
-    PreviewImages               img     1
+    PreviewImages               img     0
     QuantizeImage               img     1
     QueryFontMetrics            img     1
     RaiseImage                  img     1
@@ -172,7 +173,7 @@ set TestFunctions {
     TextureImage                img     1    
     ThresholdImage              img     1
     ThresholdImageChannel       img     1
-    TintImage                   img     1
+    TintImage                   img     0
     TransformImage              img     1
     TransparentImage            img     1
     TrimImage                   img     1

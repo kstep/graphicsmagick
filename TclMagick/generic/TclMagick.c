@@ -6070,7 +6070,7 @@ static int pixelObjCmd(
  *----------------------------------------------------------------------
  */
 static int drawObjCmd(
-    ClientData  clientData,         /* PixelWand pointer */
+    ClientData  clientData,         /* DrawingWand pointer */
     Tcl_Interp  *interp,            /* Interpreter containing image */
     int         objc,               /* Number of arguments */
     Tcl_Obj     *CONST objv[] )     /* List of arguments */
@@ -7113,12 +7113,10 @@ static int drawObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
 	    return TCL_ERROR;
 	}
-	/* FIXME: DrawRender() is deprecated.  Use MagickDrawImage() instead. */
-/* #if HAVE_MAGICKDRAWIMAGE */
-/* 	unsigned int MagickDrawImage(MagickWand *wand, */
-/* 				     const DrawingWand *drawing_wand); */
-/* #else */
-/* #endif */
+	/*
+	  FIXME: DrawRender() is deprecated.  Use MagickDrawImage() instead.
+	  Note that TM_DRAW or TM_DRAW_IMAGE already draw on the image. so "render" is not needed.
+	*/
 	DrawRender(wandPtr);
 	break;
     }
