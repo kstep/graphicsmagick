@@ -3946,6 +3946,7 @@ WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawRender() renders all preceding drawing commands onto the image.
+%  This function is deprecated.  Use MagickDrawImage() instead.
 %
 %  The format of the DrawRender method is:
 %

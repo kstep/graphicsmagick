@@ -293,7 +293,7 @@ extern WandExport unsigned int
   DrawClearException(DrawingWand *),
   DrawGetStrokeAntialias(const DrawingWand *),
   DrawGetTextAntialias(const DrawingWand *),
-  DrawRender(const DrawingWand *) __attribute__ ((deprecated));
+  DrawRender(const DrawingWand *) __attribute__ ((deprecated)); /* Use MagickDrawImage() instead */
 
 extern WandExport unsigned long
   DrawGetFontWeight(const DrawingWand *),

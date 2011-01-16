@@ -7114,6 +7114,11 @@ static int drawObjCmd(
 	    return TCL_ERROR;
 	}
 	/* FIXME: DrawRender() is deprecated.  Use MagickDrawImage() instead. */
+/* #if HAVE_MAGICKDRAWIMAGE */
+/* 	unsigned int MagickDrawImage(MagickWand *wand, */
+/* 				     const DrawingWand *drawing_wand); */
+/* #else */
+/* #endif */
 	DrawRender(wandPtr);
 	break;
     }
