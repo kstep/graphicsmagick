@@ -11,9 +11,6 @@
 
 #define DEBUG 1
 
-static CONST char *objTypeNames[] = {
-    "wand", "drawing", "pixel", (char *) NULL
-};
 enum objTypes {
     TM_TYPE_WAND, TM_TYPE_DRAWING, TM_TYPE_PIXEL, TM_TYPE_ANY
 };
@@ -61,3 +58,11 @@ EXPORT(int, myMagickError)(Tcl_Interp  *interp, MagickWand *wandPtr );
 
 
 #endif
+/* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 4
+ * fill-column: 78
+ * End:
+ */
