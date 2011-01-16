@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2011 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1221,8 +1221,14 @@ MagickExport int EOFBlob(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FileToBlob() returns the contents of a file as a blob.  It returns the
-%  file as a blob and its length.  If an error occurs, NULL is returned.
+%  FileToBlob() returns the contents of a file in a buffer allocated via
+%  MagickMalloc() (which is equivalent to the system malloc() by default).
+%  The character '\0' is appended to the buffer in case the buffer will be
+%  accessed as a string.  The length of the buffer (not including the extra
+%  terminating '\0' character) is returned via the 'length' parameter.
+%  If an error occurs, a NULL pointer is returned.  The returned buffer
+%  must be freed by the user in a matter compatible with MagickMalloc()
+%  (e.g. via MagickFree()).
 %
 %  The format of the FileToBlob method is:
 %

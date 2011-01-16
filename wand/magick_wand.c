@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2011 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1689,8 +1689,10 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickDescribeImage()  describes an image by printing its attributes to the
-%  file.  Attributes include the image width, height, size, and others.
+%  MagickDescribeImage()  describes an image by formatting its attributes
+%  to an allocated string which must be freed by the user.  Attributes
+%  include the image width, height, size, and others.  The string is
+%  similar to the output of 'identify -verbose'.
 %
 %  The format of the MagickDescribeImage method is:
 %
@@ -1710,9 +1712,6 @@ WandExport char *MagickDescribeImage(MagickWand *wand)
   FILE
     *file;
 
-  int
-    unique_file;
-
   size_t
     length;
 
@@ -1721,22 +1720,20 @@ WandExport char *MagickDescribeImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   description=(char *) NULL;
-  unique_file=AcquireUniqueFileResource(filename);
-  file=(FILE *) NULL;
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
+  filename[0]='\0';
+  length=0;
+  if ((file = AcquireTemporaryFileStream(filename, TextFileIOMode)) == (FILE *) NULL)
     {
       ThrowException(&wand->exception,FileOpenError,
-                           UnableToCreateTemporaryFile,filename);
+		     UnableToCreateTemporaryFile,filename);
     }
   else
     {
-      (void) DescribeImage(wand->image,file,True);
+      (void) DescribeImage(wand->image,file,MagickTrue);
       (void) fclose(file);
       description=(char *) FileToBlob(filename,&length,&wand->exception);
+      (void) LiberateTemporaryFile(filename);
     }
-  (void) RelinquishUniqueFileResource(filename);
   return(description);
 }
 

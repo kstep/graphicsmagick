@@ -639,8 +639,8 @@ FillRule
   } FillRule;
 
 
-FilterType
-==========
+FilterTypes
+===========
 
 FilterTypes is used to adjust the filter algorithm used when resizing
 images. Different filters experience varying degrees of success with

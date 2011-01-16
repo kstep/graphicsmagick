@@ -330,8 +330,14 @@ void *FileToBlob( const char *filename, size_t *length, <a class="reference exte
 </div>
 <div class="section" id="id18">
 <h2>Description</h2>
-<p>FileToBlob() returns the contents of a file as a blob.  It returns the
-file as a blob and its length.  If an error occurs, NULL is returned.</p>
+<p>FileToBlob() returns the contents of a file in a buffer allocated via
+MagickMalloc() (which is equivalent to the system malloc() by default).
+The character '0' is appended to the buffer in case the buffer will be
+accessed as a string.  The length of the buffer (not including the extra
+terminating '0' character) is returned via the 'length' parameter.
+If an error occurs, a NULL pointer is returned.  The returned buffer
+must be freed by the user in a matter compatible with MagickMalloc()
+(e.g. via MagickFree()).</p>
 <p>The format of the FileToBlob method is:</p>
 <pre class="literal-block">
 void *FileToBlob( const char *filename, size_t *length, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
@@ -673,7 +679,7 @@ the blob is temporary.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-08-07 21:27 UTC.
+Generated on: 2011-01-16 22:06 UTC.
 
 </div>
 </body>
