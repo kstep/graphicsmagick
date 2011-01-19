@@ -77,7 +77,7 @@
 static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
-  int y;  
+  unsigned int y;  
   unsigned char x8, rep, b;
   long ldblk;
   unsigned char *BImgBuff = NULL;
