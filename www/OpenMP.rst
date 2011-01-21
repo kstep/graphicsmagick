@@ -18,9 +18,10 @@ operations using multiple threads. OpenMP originates in the
 super-computing world and has been available in one form or another
 since the late '90s.
 
-Since GCC 4.2 has introduced excellent OpenMP support, OpenMP has
-become available to the masses. Microsoft Visual Studio Professional
-2005 and 2008 support OpenMP so Windows users can benefit as well. Any
+Since GCC 4.2 has introduced excellent OpenMP support via `GOMP
+<http://gcc.gnu.org/onlinedocs/libgomp/>`_, OpenMP has become
+available to the masses. Microsoft Visual Studio Professional 2005 and
+2008 support OpenMP so Windows users can benefit as well. Any
 multi-CPU and/or multi-core system is potentially a good candidate for
 use with OpenMP. Unfortunately, some older multi-CPU hardware is more
 suitable for multi-processing than multi-threading. Modern multi-core
