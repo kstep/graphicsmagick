@@ -567,6 +567,13 @@ coders_logo_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_logo_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_logo_la_rpath = -rpath $(codersdir)
+coders_mac_la_DEPENDENCIES = $(LIBMAGICK)
+am_coders_mac_la_OBJECTS = coders/coders_mac_la-mac.lo
+coders_mac_la_OBJECTS = $(am_coders_mac_la_OBJECTS)
+coders_mac_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(coders_mac_la_LDFLAGS) $(LDFLAGS) -o $@
+@WITH_MODULES_TRUE@am_coders_mac_la_rpath = -rpath $(codersdir)
 coders_map_la_DEPENDENCIES = $(LIBMAGICK)
 am_coders_map_la_OBJECTS = coders/coders_map_la-map.lo
 coders_map_la_OBJECTS = $(am_coders_map_la_OBJECTS)
@@ -1621,43 +1628,43 @@ SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_info_la_SOURCES) $(coders_jbig_la_SOURCES) \
 	$(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) \
 	$(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) \
-	$(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) \
-	$(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) \
-	$(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) \
-	$(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) \
-	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
-	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
-	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
-	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
-	$(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) \
-	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
-	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) \
-	$(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
-	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
-	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) \
+	$(coders_logo_la_SOURCES) $(coders_mac_la_SOURCES) \
+	$(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) \
+	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
+	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
+	$(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) \
+	$(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) \
+	$(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) \
+	$(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) \
+	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
+	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
+	$(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) \
+	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
+	$(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
+	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
+	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
 	$(magick_libGraphicsMagick_la_SOURCES) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -1701,43 +1708,43 @@ DIST_SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_info_la_SOURCES) $(coders_jbig_la_SOURCES) \
 	$(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) \
 	$(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) \
-	$(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) \
-	$(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) \
-	$(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) \
-	$(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) \
-	$(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) \
-	$(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) \
-	$(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) \
-	$(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) \
-	$(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) \
-	$(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) \
-	$(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) \
-	$(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) \
-	$(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) \
-	$(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) \
-	$(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) \
-	$(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) \
-	$(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) \
-	$(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) \
-	$(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) \
-	$(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) \
-	$(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) \
-	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
-	$(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) \
-	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) \
+	$(coders_logo_la_SOURCES) $(coders_mac_la_SOURCES) \
+	$(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) \
+	$(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) \
+	$(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) \
+	$(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) \
+	$(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) \
+	$(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) \
+	$(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) \
+	$(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) \
+	$(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) \
+	$(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) \
+	$(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) \
+	$(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) \
+	$(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) \
+	$(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) \
+	$(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) \
+	$(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) \
+	$(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) \
+	$(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) \
+	$(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) \
+	$(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) \
+	$(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) \
+	$(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) \
+	$(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) \
+	$(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(ltdl_dld_link_la_SOURCES) $(ltdl_dlopen_la_SOURCES) \
+	$(ltdl_dyld_la_SOURCES) $(ltdl_libltdl_la_SOURCES) \
+	$(ltdl_libltdlc_la_SOURCES) $(ltdl_load_add_on_la_SOURCES) \
+	$(ltdl_loadlibrary_la_SOURCES) $(ltdl_shl_load_la_SOURCES) \
 	$(am__magick_libGraphicsMagick_la_SOURCES_DIST) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -2261,7 +2268,8 @@ CHANGELOGS = \
 	ChangeLog.2006 \
 	ChangeLog.2007 \
 	ChangeLog.2008 \
-	ChangeLog.2009
+	ChangeLog.2009 \
+	ChangeLog.2010
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \
@@ -2519,6 +2527,7 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_TRUE@	coders/label.la \
 @WITH_MODULES_TRUE@	coders/locale.la \
 @WITH_MODULES_TRUE@	coders/logo.la \
+@WITH_MODULES_TRUE@	coders/mac.la \
 @WITH_MODULES_TRUE@	coders/map.la \
 @WITH_MODULES_TRUE@	coders/mat.la \
 @WITH_MODULES_TRUE@	coders/matte.la \
@@ -4974,6 +4983,7 @@ WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color
 # txt2html requires perl.
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@TXT2HTML_TARGETS = \
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/Changelog.html \
+@MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2010.html \
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2009.html \
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2008.html \
 @MAINTAINER_MODE_TRUE@@WITH_PERL_TRUE@	$(WWWDIR)/ChangeLog-2007.html \
@@ -5767,6 +5777,10 @@ coders/coders_logo_la-logo.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/logo.la: $(coders_logo_la_OBJECTS) $(coders_logo_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_logo_la_LINK) $(am_coders_logo_la_rpath) $(coders_logo_la_OBJECTS) $(coders_logo_la_LIBADD) $(LIBS)
+coders/coders_mac_la-mac.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/mac.la: $(coders_mac_la_OBJECTS) $(coders_mac_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_mac_la_LINK) $(am_coders_mac_la_rpath) $(coders_mac_la_OBJECTS) $(coders_mac_la_LIBADD) $(LIBS)
 coders/coders_map_la-map.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/map.la: $(coders_map_la_OBJECTS) $(coders_map_la_DEPENDENCIES) coders/$(am__dirstamp)
@@ -6864,6 +6878,8 @@ mostlyclean-compile:
 	-rm -f coders/coders_locale_la-locale.lo
 	-rm -f coders/coders_logo_la-logo.$(OBJEXT)
 	-rm -f coders/coders_logo_la-logo.lo
+	-rm -f coders/coders_mac_la-mac.$(OBJEXT)
+	-rm -f coders/coders_mac_la-mac.lo
 	-rm -f coders/coders_map_la-map.$(OBJEXT)
 	-rm -f coders/coders_map_la-map.lo
 	-rm -f coders/coders_mat_la-mat.$(OBJEXT)
@@ -7478,6 +7494,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_label_la-label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_locale_la-locale.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_logo_la-logo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_mac_la-mac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_map_la-map.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_mat_la-mat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_matte_la-matte.Plo@am__quote@
@@ -8051,6 +8068,14 @@ coders/coders_logo_la-logo.lo: coders/logo.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/logo.c' object='coders/coders_logo_la-logo.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_logo_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_logo_la-logo.lo `test -f 'coders/logo.c' || echo '$(srcdir)/'`coders/logo.c
+
+coders/coders_mac_la-mac.lo: coders/mac.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_mac_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_mac_la-mac.lo -MD -MP -MF coders/$(DEPDIR)/coders_mac_la-mac.Tpo -c -o coders/coders_mac_la-mac.lo `test -f 'coders/mac.c' || echo '$(srcdir)/'`coders/mac.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/coders_mac_la-mac.Tpo coders/$(DEPDIR)/coders_mac_la-mac.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='coders/mac.c' object='coders/coders_mac_la-mac.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_mac_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_mac_la-mac.lo `test -f 'coders/mac.c' || echo '$(srcdir)/'`coders/mac.c
 
 coders/coders_map_la-map.lo: coders/map.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_map_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_map_la-map.lo -MD -MP -MF coders/$(DEPDIR)/coders_map_la-map.Tpo -c -o coders/coders_map_la-map.lo `test -f 'coders/map.c' || echo '$(srcdir)/'`coders/map.c
@@ -11292,6 +11317,10 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
 @MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
 @MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2010.html: $(top_srcdir)/ChangeLog.2010 $(top_srcdir)/scripts/txt2html
+@MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2010)' \
+@MAINTAINER_MODE_TRUE@	< $(top_srcdir)/ChangeLog.2010 > $(top_srcdir)/www/ChangeLog-2010.html
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2009.html: $(top_srcdir)/ChangeLog.2009 $(top_srcdir)/scripts/txt2html
 @MAINTAINER_MODE_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2009)' \

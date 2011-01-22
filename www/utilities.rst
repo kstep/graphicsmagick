@@ -30,27 +30,27 @@ GraphicsMagick Utilities
 .. _montage : montage.html
 
 
-GraphicsMagick provides a powerful command line utility which may be used
-to access all GraphicsMagick functions. Gm uses a consistent set of
-options (`see options documentation <GraphicsMagick.html>`_).
-GraphicsMagick provides access to major command modes via a single
+GraphicsMagick provides a powerful command line utility which may be
+used to access all GraphicsMagick functions. Gm uses a consistent set
+of options (`see options documentation <GraphicsMagick.html>`_).
+GraphicsMagick provides access to major commands via a single
 executable command-line program called ``gm``; for example, to use the
-"convert" mode, type ``gm convert ...``. The available command modes and
+"convert" command, type ``gm convert ...``. The available commands and
 links to their documentation are shown in the following table:
 
 ===============  =========================================================================
-GM Command Mode  Description
+Command          Description
 ===============  =========================================================================
-gm animate_      animate a sequence of images
-gm composite_    composite images together
-gm conjure_      execute a Magick Scripting Language (MSL) XML script
-gm compare_      compare two images using statistics and/or visual differencing
-gm convert_      convert an image or sequence of images
-gm display_      display an image on a workstation running X
-gm identify_     describe an image or image sequence
-gm import_       capture an application or X server screen
-gm mogrify_      transform an image or sequence of images
-gm montage_      create a composite image (in a grid) from separate images
+animate_         Animate a sequence of images
+composite_       Composite images together
+conjure_         Cxecute a Magick Scripting Language (MSL) XML script
+compare_         Compare two images using statistics and/or visual differencing
+convert_         Convert an image or sequence of images
+display_         Display an image on a workstation running X
+identify_        Describe an image or image sequence
+import_          Capture an application or X server screen
+mogrify_         Transform an image or sequence of images
+montage_         Create a composite image (in a grid) from separate images
 ===============  =========================================================================
 
 The ``gm`` utility makes it easy to perform complex image processing
@@ -58,8 +58,9 @@ operations using a single command. It may be invoked from scripts, or
 from other programs in order to automate the processing of thousands of
 images.
 
+--------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2010
+Copyright |copy| GraphicsMagick Group 2002 - 2011
 

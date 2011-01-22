@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick News</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -29,7 +29,7 @@
 <li><a href="Copyright.html">License</a></li>
 <li><a href="mission.html">Mission</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
+<li><a href="README.html">Install</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
 <li><a href="NEWS.html">News</a> </li>
 <li><a href="formats.html">Formats</a></li>
@@ -40,9 +40,9 @@
 <li><a href="process.html">Process</a></li>
 <li><a href="contribute.html">Contribute</a></li>
 <li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -379,7 +379,7 @@ JPEG compression.</li>
 <li>TXT: The TXT reader is now capable of reading image files written
 by the TXT writer, as well continuing to render ASCII text into an
 image (work contributed by Fojtik Jaroslav).</li>
-<li>+profile now supports an exclusion syntax.  For example <tt class="docutils literal"><span class="pre">+profile</span>
+<li>+profile now supports an exclusion syntax.  For example <tt class="docutils literal">+profile
 <span class="pre">'!icm,*'</span></tt> removes all of the profiles except for the ICM profile.
 The new syntax also allows multiple profiles to be listed at once.</li>
 <li>Utilities &#64;file.txt syntax for including a list of files to use as
@@ -428,8 +428,8 @@ added.</li>
 <li>There is no longer an implicit 'adjoin' if an output filename
 contains an apparent scene specification (e.g. foo%02d.tiff) and
 multiple files are not needed to save the image..  It is necessary
-to use +adjoin.  For example <tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">foo.pdf</span> <span class="pre">+adjoin</span>
-<span class="pre">%02d.tiff</span></tt>.</li>
+to use +adjoin.  For example <tt class="docutils literal">gm convert foo.pdf +adjoin
+%02d.tiff</tt>.</li>
 <li>InitializeMagick() MUST be invoked prior to using any Magick API
 function.  Failure to do so will likely lead to an immediate
 application crash.  This is due to initialization and runtime
@@ -1320,17 +1320,12 @@ ImageMagick, several days before the ImageMagick 5.5.2 release.</p>
 </ul>
 </blockquote>
 <hr class="docutils" />
-<div class="line-block">
-<div class="line">Copyright (C) 2003 - 2010 GraphicsMagick Group</div>
-</div>
-<p>This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/Copyright.html">http://www.graphicsmagick.org/Copyright.html</a>.</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-21 20:54 UTC.
+Generated on: 2011-01-22 21:07 UTC.
 
 </div>
 </body>

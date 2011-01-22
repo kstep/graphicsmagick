@@ -50,6 +50,7 @@ Ruby_           RMagick provides a Ruby language extension
 *Some of these languages and scripting environments are supported by the
 GraphicsMagick Group while others are developed and supported by third parties.*
 
+--------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 

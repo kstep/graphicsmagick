@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Supported Formats</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -29,7 +29,7 @@
 <li><a href="Copyright.html">License</a></li>
 <li><a href="mission.html">Mission</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
+<li><a href="README.html">Install</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
 <li><a href="NEWS.html">News</a> </li>
 <li><a href="formats.html">Formats</a></li>
@@ -40,9 +40,9 @@
 <li><a href="process.html">Process</a></li>
 <li><a href="contribute.html">Contribute</a></li>
 <li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -390,7 +390,7 @@ for high-performance image processing.</p>
 image. When writing the MPC format, a file with
 extension &quot;.mpc&quot; is used to store information
 about the image, while a file with extension
-<tt class="docutils literal"><span class="pre">.cache</span></tt> stores the image pixels. The storage
+<tt class="docutils literal">.cache</tt> stores the image pixels. The storage
 space required by a MPC image (or an image in
 memory) may be calculated by the equation
 (QuantumDepth*Rows*Columns*5)/8.</p>
@@ -805,7 +805,7 @@ shading as part of the filename.  For example:</p>
 The output format is always ImageMagick <a class="reference external" href="miff.html">MIFF</a>
 (regardless of file extension). For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.tiff</span> <span class="pre">histogram:file.miff</span></tt></blockquote>
+<tt class="docutils literal">gm convert file.tiff histogram:file.miff</tt></blockquote>
 </td>
 </tr>
 <tr><td>IDENTITY</td>
@@ -855,7 +855,7 @@ when evaluating image read performance.</td>
 <td><p class="first">Creates an image using the plasma fractal. For
 example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">640x480</span> <span class="pre">plasma:</span> <span class="pre">file.miff</span></tt></blockquote>
+<tt class="docutils literal">gm convert <span class="pre">-size</span> 640x480 plasma: file.miff</tt></blockquote>
 </td>
 </tr>
 <tr><td>PREVIEW</td>
@@ -871,7 +871,7 @@ output file is always written in the
 ImageMagick <a class="reference external" href="miff.html">MIFF</a> format.</p>
 <p>For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.tiff</span> <span class="pre">-preview</span> <span class="pre">gamma</span> <span class="pre">preview:file.miff</span></tt></blockquote>
+<tt class="docutils literal">gm convert file.tiff <span class="pre">-preview</span> gamma preview:file.miff</tt></blockquote>
 </td>
 </tr>
 <tr><td>PRINT</td>
@@ -904,7 +904,7 @@ size. The image is specified similar to
 &quot;TILE:image.miff&quot;.
 For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">800x600</span> <span class="pre">tile:image.jpg</span> <span class="pre">out.jpg</span></tt></blockquote>
+<tt class="docutils literal">gm convert <span class="pre">-size</span> 800x600 tile:image.jpg out.jpg</tt></blockquote>
 </td>
 </tr>
 <tr><td>VID</td>
@@ -916,7 +916,7 @@ used to select images to view via the display
 program, or saved to a <a class="reference external" href="miff.html">MIFF</a> or SHTML file.
 For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">vid:&quot;*.jpg&quot;</span> <span class="pre">index.miff</span></tt></blockquote>
+<tt class="docutils literal">gm convert <span class="pre">vid:&quot;*.jpg&quot;</span> index.miff</tt></blockquote>
 </td>
 </tr>
 <tr><td>WIN</td>
@@ -926,7 +926,7 @@ display image to your
 computer screen</td>
 <td><p class="first">Only supported under Microsoft Windows. For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.jpg</span> <span class="pre">-rotate</span> <span class="pre">90</span> <span class="pre">win:</span></tt></blockquote>
+<tt class="docutils literal">gm convert file.jpg <span class="pre">-rotate</span> 90 win:</tt></blockquote>
 </td>
 </tr>
 <tr><td>X</td>
@@ -936,7 +936,7 @@ display image to your X
 server screen</td>
 <td><p class="first">Also see the import and display programs. For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">file.jpg</span> <span class="pre">-rotate</span> <span class="pre">90</span> <span class="pre">x:</span></tt></blockquote>
+<tt class="docutils literal">gm convert file.jpg <span class="pre">-rotate</span> 90 x:</tt></blockquote>
 </td>
 </tr>
 <tr><td>XC</td>
@@ -950,16 +950,16 @@ specifications include &quot;XC:red&quot; and &quot;XC:#
 FF0000&quot;.  See the <a class="reference external" href="color.html">color</a> reference for the
 numeric values used for named colors.  For example:</p>
 <blockquote class="last">
-<tt class="docutils literal"><span class="pre">gm</span> <span class="pre">convert</span> <span class="pre">-size</span> <span class="pre">640x480</span> <span class="pre">xc:red</span> <span class="pre">red.jpg</span></tt></blockquote>
+<tt class="docutils literal">gm convert <span class="pre">-size</span> 640x480 xc:red red.jpg</tt></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
 <p>GraphicsMagick includes a number of built-in (embedded) images which may
-be referenced as if they were an image file. The <tt class="docutils literal"><span class="pre">IMAGE:</span></tt> format tag may
+be referenced as if they were an image file. The <tt class="docutils literal">IMAGE:</tt> format tag may
 be used via the syntax &quot;IMAGE:name&quot; to request an embedded image (e.g.
-<tt class="docutils literal"><span class="pre">IMAGE:LOGO</span></tt>). For backwards compatibility, the image specifications
-<tt class="docutils literal"><span class="pre">GRANITE:</span></tt>, <tt class="docutils literal"><span class="pre">LOGO:</span></tt>, <tt class="docutils literal"><span class="pre">NETSCAPE:</span></tt>, and <tt class="docutils literal"><span class="pre">ROSE:</span></tt> may also be used to request
+<tt class="docutils literal">IMAGE:LOGO</tt>). For backwards compatibility, the image specifications
+<tt class="docutils literal">GRANITE:</tt>, <tt class="docutils literal">LOGO:</tt>, <tt class="docutils literal">NETSCAPE:</tt>, and <tt class="docutils literal">ROSE:</tt> may also be used to request
 images with those names.</p>
 <p>A new canvas image of a specified size may be created using one of these pattern
 images using a command similar to:</p>
@@ -1287,11 +1287,11 @@ extensions: .gz for Zip compression, .Z for Unix compression, and .bz2
 for block compression. For example, a PNM image called image.pnm.gz is
 automatically uncompressed while the image is read.</p>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002-2010</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-08-07 20:24 UTC.
+Generated on: 2011-01-22 21:07 UTC.
 
 </div>
 </body>

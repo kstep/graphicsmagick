@@ -193,7 +193,8 @@ The best place to look for the latest version of CVS is at the `CVS Home Page`_.
 There is also a lot of information and documentation about CVS available on
 numerous other web sites.
 
+--------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2010
+Copyright |copy| GraphicsMagick Group 2002 - 2011

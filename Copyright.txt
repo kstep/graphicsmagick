@@ -268,8 +268,8 @@ The licenses which components of this software fall under are as follows.
   bundled with (or compiled with) "delegate" libraries, a copy of the
   licenses for these libraries is provided in a "licenses" directory.
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2010 GraphicsMagick Group
+.. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

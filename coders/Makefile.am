@@ -183,6 +183,7 @@ coders_LTLIBRARIES = \
 	coders/label.la \
 	coders/locale.la \
 	coders/logo.la \
+	coders/mac.la \
 	coders/map.la \
 	coders/mat.la \
 	coders/matte.la \

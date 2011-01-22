@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Motion Picture Features</title>
 <meta content="Describes GraphicsMagick's support for Cineon and SMPTE DPX formats. " name="description" />
 <meta content="GraphicsMagick, Cineon, DPX, SMPTE 268M, Motion Picture" name="keywords" />
@@ -31,7 +31,7 @@
 <li><a href="Copyright.html">License</a></li>
 <li><a href="mission.html">Mission</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
+<li><a href="README.html">Install</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
 <li><a href="NEWS.html">News</a> </li>
 <li><a href="formats.html">Formats</a></li>
@@ -42,9 +42,9 @@
 <li><a href="process.html">Process</a></li>
 <li><a href="contribute.html">Contribute</a></li>
 <li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -312,9 +312,9 @@ image atop 500,400 &quot;0,0 &quot;gm-125x80t.png&quot;
 <pre class="literal-block">
 gm convert infile.dpx -resize '720x576!' -draw '&#64;drawcmd.txt' outfile.dpx
 </pre>
-<p>The <tt class="docutils literal"><span class="pre">0,0</span></tt> in the image composition command argument says to use the image as
+<p>The <tt class="docutils literal">0,0</tt> in the image composition command argument says to use the image as
 is. If the composited image should be automatically resized, then simply
-replace the <tt class="docutils literal"><span class="pre">0,0</span></tt> with the desired size.</p>
+replace the <tt class="docutils literal">0,0</tt> with the desired size.</p>
 <p>There are a number of powerful scripting environments for <a class="reference external" href="index.html">GraphicsMagick</a>. One
 of these is RMagick (Ruby language interface to <a class="reference external" href="index.html">GraphicsMagick</a>). In Ruby, the
 same effect may be obtained via a script that looks like:</p>
@@ -505,7 +505,7 @@ colorspace the DPX file uses. This overrides the colorspace type
 implied by the DPX header (if any). Currently files with the transfer
 characteristic Printing Density are assumed to be log encoded density
 while files marked as Linear are assumed to be linear. Hint: use
-<tt class="docutils literal"><span class="pre">-define</span> <span class="pre">dpx:colorspace=rgb</span></tt> in order to avoid the log to linear
+<tt class="docutils literal"><span class="pre">-define</span> dpx:colorspace=rgb</tt> in order to avoid the log to linear
 transformation for DPX files which use Printing Density.</dd>
 <dt>-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</dt>
 <dd>DPX samples may be output within 32-bit words. They may be tightly packed
@@ -639,7 +639,7 @@ gm identify -format '%[dpx:*]' foo.dpx
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 00:59 UTC.
+Generated on: 2011-01-22 18:23 UTC.
 
 </div>
 </body>

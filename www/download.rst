@@ -107,9 +107,8 @@ If you get the message::
 it means the site has reached its limit of anonymous users. You will need to
 try another site or try again later.
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2010
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

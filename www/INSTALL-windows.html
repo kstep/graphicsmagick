@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Windows Installation</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -29,7 +29,7 @@
 <li><a href="Copyright.html">License</a></li>
 <li><a href="mission.html">Mission</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
+<li><a href="README.html">Install</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
 <li><a href="NEWS.html">News</a> </li>
 <li><a href="formats.html">Formats</a></li>
@@ -40,9 +40,9 @@
 <li><a href="process.html">Process</a></li>
 <li><a href="contribute.html">Contribute</a></li>
 <li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -286,7 +286,7 @@ supports multi-threaded concurrent use.</p>
 <p>When GraphicsMagick is installed, entries are added to the Windows
 Registry so that other programs may obtain information regarding the
 most recently installed GraphicsMagick. These entries are available
-under the registry path <tt class="docutils literal"><span class="pre">HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\Current</span></tt>.</p>
+under the registry path <tt class="docutils literal">HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\Current</tt>.</p>
 <p>These registry keys are currently available:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -400,8 +400,8 @@ specific reason to do so.</p>
 Edit &quot;magick_config.h&quot;</blockquote>
 <p>Clicking this button brings up magick_config.h in Windows notepad for
 optionally changing any preprocessor defines in GraphicsMagick's
-magick_config.h file. This file is copied to <tt class="docutils literal"><span class="pre">magick\magick_config.h</span></tt>. You
-may safely open <tt class="docutils literal"><span class="pre">magick\magick_config.h</span></tt>, modify it, and recompile without
+magick_config.h file. This file is copied to <tt class="docutils literal">magick\magick_config.h</tt>. You
+may safely open <tt class="docutils literal">magick\magick_config.h</tt>, modify it, and recompile without
 re-running the configure program. In fact, using notepad to edit the
 copied file may be preferable since it preserves the original
 magick_config.h file.</p>
@@ -456,7 +456,7 @@ system installation.</p>
 C++ wrapper by default. This add-on layer has a large number of demo
 and test files that can be found in <tt class="docutils literal"><span class="pre">GraphicsMagick\Magick++\demo</span></tt>, and
 <tt class="docutils literal"><span class="pre">GraphicsMagick\Magick++\tests</span></tt>. There are also a variety of tests that
-use the straight C API as well in <tt class="docutils literal"><span class="pre">GraphicsMagick\tests</span></tt>.</p>
+use the straight C API as well in <tt class="docutils literal">GraphicsMagick\tests</tt>.</p>
 <p>All of these programs are NOT configured to be built in the default
 workspace created by the configure program. You can cause all of these
 demos and test programs to be built by checking the box in configure
@@ -485,7 +485,7 @@ and can actually be copied and used as templates to get a particular
 custom application compiling with little effort.</p>
 <p>With this feature enabled, you should be able to nab a copy of...</p>
 <blockquote>
-<p><tt class="docutils literal"><span class="pre">VisualMagick\utilities\UTIL_convert_xxx_exe.dsp</span></tt>  (for C)</p>
+<p><tt class="docutils literal">VisualMagick\utilities\UTIL_convert_xxx_exe.dsp</tt>  (for C)</p>
 <blockquote>
 -or-</blockquote>
 <p><tt class="docutils literal"><span class="pre">VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp</span></tt> (for C++)</p>
@@ -498,8 +498,8 @@ and the source and hacking away.</p>
 <p>The choice of what to use as a starting point is very easy...</p>
 <p>For straight C API command line applications use something from</p>
 <blockquote>
-<p><tt class="docutils literal"><span class="pre">GraphicsMagick\tests</span></tt> or <tt class="docutils literal"><span class="pre">GraphicsMagick\utilities</span></tt> (source code)</p>
-<p><tt class="docutils literal"><span class="pre">GraphicsMagick\VisualMagick\tests</span></tt> or <tt class="docutils literal"><span class="pre">GraphicsMagick\Visualmagick\utilities</span></tt>
+<p><tt class="docutils literal">GraphicsMagick\tests</tt> or <tt class="docutils literal">GraphicsMagick\utilities</tt> (source code)</p>
+<p><tt class="docutils literal">GraphicsMagick\VisualMagick\tests</tt> or <tt class="docutils literal">GraphicsMagick\Visualmagick\utilities</tt>
 (project - DSP)</p>
 </blockquote>
 <p>For C++ and Magick++ command line applications use something from</p>
@@ -510,8 +510,8 @@ and the source and hacking away.</p>
 </blockquote>
 <p>For C++ and Magick++ and MFC windows applications use</p>
 <blockquote>
-<p><tt class="docutils literal"><span class="pre">GraphicsMagick\win2k\IMDisplay</span></tt> (source code)</p>
-<p><tt class="docutils literal"><span class="pre">GraphicsMagick\VisualMagick\win32\NtMagick</span></tt> (project - DSP)</p>
+<p><tt class="docutils literal">GraphicsMagick\win2k\IMDisplay</tt> (source code)</p>
+<p><tt class="docutils literal">GraphicsMagick\VisualMagick\win32\NtMagick</tt> (project - DSP)</p>
 </blockquote>
 <p>Note #2:</p>
 <p>The GraphicsMagick distribution is very modular. The default
@@ -537,7 +537,7 @@ following files:</p>
 very important &quot;modules.mgk&quot; file.</p>
 <p>With this default setup, you can use any of the command line tools
 and run scripts as normal. You can actually get by quite nicely this
-way by doing something like <tt class="docutils literal"><span class="pre">pushd</span> <span class="pre">e:\xxx\yyy\bin</span></tt> in any scripts you
+way by doing something like <tt class="docutils literal">pushd <span class="pre">e:\xxx\yyy\bin</span></tt> in any scripts you
 write to execute &quot;out of&quot; this directory.</p>
 <p>By default the core of GraphicsMagick on Win32 always looks in the place
 were the exe program is run from in order to find all of the files as
@@ -591,10 +591,10 @@ purposes.</p>
 way. Two #defines are applicable.</p>
 <p>defines.h has</p>
 <blockquote>
-<tt class="docutils literal"><span class="pre">#define</span> <span class="pre">MagickConfigurePath</span>&nbsp; <span class="pre">&quot;c:\\GraphicsMagick\\&quot;</span></tt></blockquote>
+<tt class="docutils literal">#define MagickConfigurePath&nbsp; <span class="pre">&quot;c:\\GraphicsMagick\\&quot;</span></tt></blockquote>
 <p>To view any image in a Microsoft window, type</p>
 <blockquote>
-<tt class="docutils literal"><span class="pre">convert</span> <span class="pre">image.ext</span> <span class="pre">win:</span></tt></blockquote>
+<tt class="docutils literal">convert image.ext win:</tt></blockquote>
 <p>Make sure Ghostscript is installed, otherwise, you will be unable to
 convert or view a Postscript document, and Postscript standard fonts will
 not be available.</p>
@@ -639,17 +639,17 @@ Windows Explorer or opening workpace via Visual C++ dialog.<ol class="loweralpha
 </ol>
 </li>
 <li>Build ImageMagickObject<ol class="loweralpha">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">contrib\win32\ATL7\ImageMagickObject</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">BuildImageMagickObject</span> <span class="pre">clean</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">BuildImageMagickObject</span> <span class="pre">release</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">..\..\..\..</span></tt></li>
+<li><tt class="docutils literal">cd contrib\win32\ATL7\ImageMagickObject</tt></li>
+<li><tt class="docutils literal">BuildImageMagickObject clean</tt></li>
+<li><tt class="docutils literal">BuildImageMagickObject release</tt></li>
+<li><tt class="docutils literal">cd <span class="pre">..\..\..\..</span></tt></li>
 </ol>
 </li>
 <li>Open Windows Command Shell Window<ol class="loweralpha">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">PerlMagick</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">nmake</span> <span class="pre">clean</span></tt> (only if this is a rebuild)</li>
-<li><tt class="docutils literal"><span class="pre">perl</span> <span class="pre">Makefile.nt</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">nmake</span> <span class="pre">release</span></tt></li>
+<li><tt class="docutils literal">cd PerlMagick</tt></li>
+<li><tt class="docutils literal">nmake clean</tt> (only if this is a rebuild)</li>
+<li><tt class="docutils literal">perl Makefile.nt</tt></li>
+<li><tt class="docutils literal">nmake release</tt></li>
 </ol>
 </li>
 </ol>
@@ -664,27 +664,27 @@ that can be used to do this manually after you open up a command prompt.</p>
 </ol>
 </li>
 <li>Test PerlMagick.<ol class="loweralpha">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">PerlMagick</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">nmake</span> <span class="pre">test</span></tt> (All tests must pass!)</li>
+<li><tt class="docutils literal">cd PerlMagick</tt></li>
+<li><tt class="docutils literal">nmake test</tt> (All tests must pass!)</li>
 </ol>
 </li>
 <li>Test file format read and write.<ol class="loweralpha">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">VisualMagick\tests</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">run_rwfile.bat</span></tt> (All tests must pass!)</li>
-<li><tt class="docutils literal"><span class="pre">run_rwblob.bat</span></tt> (All tests must pass!)</li>
+<li><tt class="docutils literal">cd VisualMagick\tests</tt></li>
+<li><tt class="docutils literal">run_rwfile.bat</tt> (All tests must pass!)</li>
+<li><tt class="docutils literal">run_rwblob.bat</tt> (All tests must pass!)</li>
 </ol>
 </li>
 <li>Run Magick++ test programs.<ol class="loweralpha">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">Magick++/tests</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">run_tests.bat</span></tt> (All tests must pass!)</li>
+<li><tt class="docutils literal">cd <span class="pre">Magick++/tests</span></tt></li>
+<li><tt class="docutils literal">run_tests.bat</tt> (All tests must pass!)</li>
 </ol>
 </li>
 <li>Run Magick++ demo programs.</li>
 </ol>
 <blockquote>
 <ol class="loweralpha simple">
-<li><tt class="docutils literal"><span class="pre">cd</span> <span class="pre">Magick++/demo</span></tt></li>
-<li><tt class="docutils literal"><span class="pre">run_demos.bat</span></tt></li>
+<li><tt class="docutils literal">cd <span class="pre">Magick++/demo</span></tt></li>
+<li><tt class="docutils literal">run_demos.bat</tt></li>
 <li>Use <em>gmdisplay</em> to visually inspect all output files.</li>
 </ol>
 </blockquote>
@@ -693,20 +693,13 @@ that can be used to do this manually after you open up a command prompt.</p>
 <tt class="docutils literal"><span class="pre">VisualMagick\bin\GraphicsMagick-1.0-Q8-dll.exe</span></tt></li>
 </ol>
 </blockquote>
-<hr class="docutils" />
-<div class="line-block">
-<div class="line">Copyright (C) 2003 - 2010 GraphicsMagick Group</div>
-<div class="line">Copyright (C) 2002 ImageMagick Studio</div>
-</div>
-<p>This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/Copyright.html">http://www.graphicsmagick.org/Copyright.html</a>.</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-02-01 00:59 UTC.
+Generated on: 2011-01-22 21:07 UTC.
 
 </div>
 </body>

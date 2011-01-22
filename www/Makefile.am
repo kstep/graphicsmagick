@@ -172,6 +172,7 @@ if WITH_PERL
 # txt2html requires perl.
 TXT2HTML_TARGETS = \
 	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2007.html \
@@ -206,6 +207,10 @@ $(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
 	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
 	< $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+
+$(top_srcdir)/www/ChangeLog-2010.html: $(top_srcdir)/ChangeLog.2010 $(top_srcdir)/scripts/txt2html
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2010)' \
+	< $(top_srcdir)/ChangeLog.2010 > $(top_srcdir)/www/ChangeLog-2010.html
 
 $(top_srcdir)/www/ChangeLog-2009.html: $(top_srcdir)/ChangeLog.2009 $(top_srcdir)/scripts/txt2html
 	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2009)' \

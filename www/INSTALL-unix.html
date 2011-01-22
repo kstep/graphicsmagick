@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>UNIX/Cygwin/MinGW Compilation</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -29,7 +29,7 @@
 <li><a href="Copyright.html">License</a></li>
 <li><a href="mission.html">Mission</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
+<li><a href="README.html">Install</a></li>
 <li><a href="FAQ.html">FAQ</a></li>
 <li><a href="NEWS.html">News</a> </li>
 <li><a href="formats.html">Formats</a></li>
@@ -40,9 +40,9 @@
 <li><a href="process.html">Process</a></li>
 <li><a href="contribute.html">Contribute</a></li>
 <li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -805,16 +805,16 @@ pre-built, as part of the GnuWin32 project, from</p>
 <a class="reference external" href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a></blockquote>
 <p>The relevant packages are bzip2, freetype, jbigkit, libintl, jpeg,
 libpng, libtiff, libwmf and zlib. However, note that for freetype
-to be detected by configure, you must move the <tt class="docutils literal"><span class="pre">freetype</span></tt> directory
-out of <tt class="docutils literal"><span class="pre">GnuWin32\include\freetype2</span></tt> and into <tt class="docutils literal"><span class="pre">GnuWin32\include</span></tt>.</p>
+to be detected by configure, you must move the <tt class="docutils literal">freetype</tt> directory
+out of <tt class="docutils literal">GnuWin32\include\freetype2</tt> and into <tt class="docutils literal">GnuWin32\include</tt>.</p>
 <p>Since C++ exceptions do not currently work properly when thrown from a
 DLL, the Magick++ library is always built as a static library. Be sure
 to not specify --disable-static if you are building the Magick++
 library since that would surely lead to problems.</p>
 <p>Note that the default installation prefix is MSYS's notion of
-<tt class="docutils literal"><span class="pre">/usr/local</span></tt> which installs the package into a MSYS directory. To
+<tt class="docutils literal">/usr/local</tt> which installs the package into a MSYS directory. To
 install outside of the MSYS directory tree, you may specify an
-installation prefix like <tt class="docutils literal"><span class="pre">/c/GraphicsMagick</span></tt> which causes the package
+installation prefix like <tt class="docutils literal">/c/GraphicsMagick</tt> which causes the package
 to be installed under the Windows directory <tt class="docutils literal"><span class="pre">C:\GraphicsMagick</span></tt>. The
 installation directory structure will look very much like the Unix
 installation layout (e.g. <tt class="docutils literal"><span class="pre">C:\GraphicsMagick\bin</span></tt>,
@@ -938,20 +938,12 @@ even though the results are ok. Differences between the developer's
 environment environment and your own may include the compiler, the CPU
 type, and the library versions used. The GraphicsMagick developers use
 the current release of all dependent libraries.</p>
-<hr class="docutils" />
-<div class="line-block">
-<div class="line">Copyright (C) 2003 - 2010 GraphicsMagick Group</div>
-<div class="line">Copyright (C) 2002 ImageMagick Studio</div>
-<div class="line">Copyright (C) 1999 E. I. du Pont de Nemours and Company</div>
-</div>
-<p>This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see <a class="reference external" href="http://www.graphicsmagick.org/Copyright.html">http://www.graphicsmagick.org/Copyright.html</a>.</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2010-12-19 00:21 UTC.
+Generated on: 2011-01-22 21:07 UTC.
 
 </div>
 </body>

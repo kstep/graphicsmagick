@@ -47,7 +47,7 @@ nav_template = """
 <li><a href="%(url_prefix)sCopyright.html">License</a></li>
 <li><a href="%(url_prefix)smission.html">Mission</a></li>
 <li><a href="%(url_prefix)sdownload.html">Download</a></li>
-<li><a href="%(url_prefix)sREADME.html">Installation</a></li>
+<li><a href="%(url_prefix)sREADME.html">Install</a></li>
 <li><a href="%(url_prefix)sFAQ.html">FAQ</a></li>
 <li><a href="%(url_prefix)sNEWS.html">News</a> </li>
 <li><a href="%(url_prefix)sformats.html">Formats</a></li>
@@ -58,9 +58,9 @@ nav_template = """
 <li><a href="%(url_prefix)sprocess.html">Process</a></li>
 <li><a href="%(url_prefix)scontribute.html">Contribute</a></li>
 <li><a href="%(url_prefix)sCVS.html">CVS</a></li>
-<li><a href="%(url_mailinglist)s" target="top_">Mailing Lists</a></li>
-<li><a href="%(url_prefix)sChangelog.html">ChangeLog</a></li>
-<li><a href="%(url_sourceforge)s" target="top_">Report Bugs</a></li>
+<li><a href="%(url_mailinglist)s" target="top_">Lists</a></li>
+<li><a href="%(url_prefix)sChangelog.html">Changes</a></li>
+<li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
 <li><a href="%(url_prefix)sutilities.html">Utilities</a></li>
 <li><a href="%(url_prefix)sprogramming.html">Programming</a></li>
 <li><a href="%(url_prefix)slinks.html">Links</a></li>
@@ -72,7 +72,7 @@ nav_template = """
 footer_template = """
 <hr class="divider">
 <div class="footer">
-    <p><a href="%(url_prefix)sCopyright.html">Copyright</a>GraphicsMagick Group 2002 - 2010</p>
+    <p><a href="%(url_prefix)sCopyright.html">Copyright</a>GraphicsMagick Group 2002 - 2011</p>
 </div>
 """
 
