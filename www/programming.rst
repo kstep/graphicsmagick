@@ -22,6 +22,7 @@ GraphicsMagick Programming Interfaces
 .. _C++ : Magick++/index.html
 .. _PHP : http://pecl.php.net/package/gmagick
 .. _Perl : perl.html
+.. _Python: https://bitbucket.org/hhatto/pgmagick/
 .. _Ruby : http://rmagick.rubyforge.org/
 .. _Tcl/Tk : http://www.graphicsmagick.org/TclMagick/doc/
 .. _Windows OLE : ImageMagickObject.html
@@ -39,11 +40,11 @@ Language        Description
 `C++`_          Magick++ provides an abstract object-oriented C++ interface.
 PHP_		Gmagick provides a small and fast extension for PHP.
 Perl_           PerlMagick provides an object-oriented Perl interface.
+Python_         PgMagick provides the power and ease of the C++ API, but in Python.
 Ruby_           RMagick provides a Ruby language extension  
 `Tcl/Tk`_       TclMagick provides a scripting environment based on Tcl or Tcl/Tk.
 `Windows OLE`_  The ImageMagickObject OLE control supports utility-style access via
-                a COM+ object from C++, C#, Visual Basic, Windows Script Host, ASP,
-                and Delphi, programs under Microsoft Windows.
+                a COM+ object.
 ==============  ====================================================================
 
 *Some of these languages and scripting environments are supported by the
@@ -52,4 +53,4 @@ GraphicsMagick Group while others are developed and supported by third parties.*
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2010
+Copyright |copy| GraphicsMagick Group 2002 - 2011
