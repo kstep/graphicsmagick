@@ -87,18 +87,20 @@ XFAIL_TESTS = \
 	$(MAGICKPP_XFAIL_TESTS) \
 	$(UTILITIES_XFAIL_TESTS)
 
+# Be sure to list CHANGELOGS in reverse chronological order in case we
+# should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
-	ChangeLog.2001 \
-	ChangeLog.2002 \
-	ChangeLog.2003 \
-	ChangeLog.2004 \
-	ChangeLog.2005 \
-	ChangeLog.2006 \
-	ChangeLog.2007 \
-	ChangeLog.2008 \
+	ChangeLog.2010 \
 	ChangeLog.2009 \
-	ChangeLog.2010
+	ChangeLog.2008 \
+	ChangeLog.2007 \
+	ChangeLog.2006 \
+	ChangeLog.2005 \
+	ChangeLog.2004 \
+	ChangeLog.2003 \
+	ChangeLog.2002 \
+	ChangeLog.2001
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \

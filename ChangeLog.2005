@@ -5,6 +5,7 @@
 2005-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Updated with latest changes.
+
 	* tiff: Update to libtiff 3.7.4.
 
 2005-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -16,6 +17,7 @@
 	* magick/enhance.c (LevelImage): Fix -level command parsing when a
 	percent symbol is supplied within the argument rather than at the
 	end.
+
 	* magick/utility.c (GetGeometry): Bounds-check geometry string
 	length.
 
@@ -46,9 +48,10 @@
 
 	* magick/image.h: Added some useful macros for accessing
 	PixelPacket members in a generic way.
-	* coders/dpx.c (ReadDPXImage): For YCbCr with 'A' sample, 'A'
+
+	* coders/dpx.c (ReadDPXImage): For YCbCr with `A` sample, `A`
 	sample levels are like Luma.
-	(WriteDPXImage): For YCbCr with 'A' sample, 'A' sample levels are
+	(WriteDPXImage): For YCbCr with `A` sample, `A` sample levels are
 	like Luma.
 
 2005-12-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -67,6 +70,7 @@
 	YCbCr files.  Handle files which use Printing Density on top of
 	YCbCr.  Default YCbCr to Rec.709 if the transfer characteristic is
 	User Defined.
+
 	* coders/pcd.c (Upsample): Moved Upsample from gem.c to here since
 	PCD is the only user and it is not a general purpose function.
 
@@ -79,16 +83,20 @@
 
 	* wand/magick_compat.c (FormatMagickStringList): MagickExport since this
 	function is used by Ch extension.
+
 	* magick/log.c (LogMagickEventList): MagickExport since this
 	function is used by Ch extension.
+
 	* magick/utility.c (FormatStringList): MagickExport since this
 	function is used by Ch extension.
+
 	* coders/dpx.c (ReadDPXImage): Added support for dpx:swap-samples
 	define in order to handle files with Cb and Cr swapped.  Fixed a
 	bug in the header reading which caused some valid files to fail to
 	read at all.
 	(WriteDPXImage): Added support for dpx:swap-samples define in
 	order to write files with Cb and Cr swapped.
+
 	* magick/profile.c (ProfileImage): Add support for ICC CMS
 	profiles in YCbCr space.
 
@@ -106,11 +114,12 @@
 2005-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_types.h.in: Add patch for Ch.
+
 	* magick/command.c (TransmogrifyImage): Complete re-write of
 	mogrify file handling.  Former version wrote to a temporary file
 	and then moved temporary file to replace original if necessary.
 	New version moves an existing writable file to a backup file with
-	tilde ('~') added to end of file name, writes to the final output
+	tilde (`~`) added to end of file name, writes to the final output
 	file name, and removes the backup file on success.  The new
 	approach satisfies formats which embed the output name in the file
 	(e.g. the DPX format) and still works when the output file exists
@@ -130,7 +139,8 @@
 
 	* magick/attribute.c (GetImageAttribute): Add more general support
 	for retrieving wildcarded attributes so that an identify -format
-	specification like '%[dpx:*]' works as expected.
+	specification like `%[dpx:*]` works as expected.
+
 	* coders/tiff.c (WriteTIFFImage): Transform quality value into zip
 	compression quality level similar to what is done for MIFF/MNG/PNG.
 	Since default quality value is 75, this means that the default zip
@@ -156,6 +166,7 @@
 2005-09-18  Stepan Kasal  <kasal@ucw.cz>
 
 	* Makefile.am (BUILT_SOURCES): Removed.
+
 	* magick/Makefile.am (MAGICK_BUILT_SRCS): Removed, too.
 
 2005-09-12 Glenn Randers-Pehrson <glennrp@glennrp.com>
@@ -167,6 +178,7 @@
 
 	* magick/api.h: Eliminate requirement to include certain system
 	headers prior to including <magick/api.h>.
+
 	* utilities/gm.c: Move utility implementation to GMCommand() in
 	command.c
 
@@ -174,18 +186,22 @@
 
 	* coders/dpx.c: Added support for reading and writing DPX Luma
 	files using proper video levels.
+
 	* magick/colorspace.h (enum ColorspaceType): Decided that
 	GRAYColorspace should be reserved for full-range grayscale data
 	while Rec601LumaColorspace and Rec709LumaColorspace should be for
 	video colorspaces.  Therefore, GRAYColorspace is no longer a
 	synonym for Rec601LumaColorspace.
+
 	* magick/colorspace.c: Added support for influencing Cineon Log
 	colorspace transformations via image attributes.	
 	Perform colorspace transformations in floating point rather than
 	integer in order to reduce the amount of noise added by
 	transform table quantization.
+
 	* coders/psd.c (WritePSDImage): Ensure that output image is 8 or
 	16-bits regardless of specific image depth.
+
 	* coders/dpx.c: Added support for planar YCbCr 4:2:2.
 
 2005-08-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -219,44 +235,53 @@
 
 	* coders/jp2.c: Change how Jasper is intialized.  Hopefully
 	eliminate memory leak when reading ICC color profile.
+
 	* Overall: Compilation warning elimination with GCC 4.0.1.
+
 	* magick/utility.c (SystemCommand): Always report error status if
 	a command fails.
 
 2005-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* zlib: Updated to version 1.2.3.
+
 	* coders/dpx.c: Use TriangleFilter for scaling chroma.
 
 2005-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Support proper encode and decode of YCbCr video
 	levels.
+
 	* magick/colorspace.c: Support Rec709YCbCrColorspace colorspace.
 
 2005-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{animate.c, display.c, import.c, xwindow.c}: Rename all
-	symbols starting with 'X' so that they are prefixed with 'Magick'.
+	symbols starting with `X` so that they are prefixed with `Magick`.
 	This eases maintenance since it is almost impossible to understand
 	code which pretends to be the X11 libraries.  The few programs
-	which use the GraphicsMagick 'X' functions will need to alter the
+	which use the GraphicsMagick `X` functions will need to alter the
 	symbol names they use.  Sorry.
+
 	* magick/command.c (DisplayImageCommand): Don't invoke
 	XrmDestroyDatabase() to destroy the resource database associated
 	with the display since it seems that XCloseDisplay() does this for
 	us.
+
 	* magick/image.c (DisplayImages): Don't invoke
 	XrmDestroyDatabase() to destroy the resource database associated
 	with the display since it seems that XCloseDisplay() does this for
 	us.
+
 	* coders/uyvy.c: Enforce image width restrictions.
+
 	* coders/dpx.c: Enforce image width restrictions when subsampling.
 
 2005-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Support reading and writing subsampled CbYCr
 	images.  Colorimetery is not right yet.
+
 	* magick/colorspace.h (enum Rec709YCbCrColorspace): New
 	enumeration for Rec. 709 YcBCr colorspace.
 
@@ -306,6 +331,7 @@
 	* coders/dpx.c (ReadDPXImage): Change existing
 	dpx:source-colorspace define to dpx:colorspace so it is easier to
 	remember.
+
 	* coders/cineon.c (ReadCINEONImage): Extract Cineon header
 	attributes in DPX compatible form so that it is possible to
 	convert Cineon to DPX while losing as little header information as
@@ -316,6 +342,7 @@
 
 	* coders/jpeg.c (ReadJPEGImage): Report actual depth of JPEG file
 	(8 or 12 bits).
+
 	* coders/cineon.c (ReadCINEONImage): Report depth as 10 bits.
 
 2005-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -362,8 +389,10 @@
 
 	* coders/jp2.c (ReadJP2Image): Return JP2 images as DirectClass
 	grayscale rather than PseudoClass.
+
 	* coders/gray.c (ReadGRAYImage): Return GRAY images as DirectClass
 	grayscale rather than PseudoClass.
+
 	* coders/dpx.c: Rewrote the DPX pixel reading/writing code yet
 	again to obtain up to 2X better performance.  In the process,
 	support little-endian pixel storage.
@@ -372,8 +401,10 @@
 
 	* coders/dpx.c: Added some performance optimizations for reading
 	and writing.  Write the motion picture and television headers.
+
 	* magick/colorspace.c (TransformRGBImage): Update image colorspace
 	to RGB when transforming from Cineon log space to RGB.
+
 	* coders/dpx.c (WriteDPXImage): Set image date & time field.
 	(ReadDPXImage): Retrieve television header SMTPE time code and
 	user bits and return them as a formatted string.
@@ -383,16 +414,21 @@
 2005-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Default to big-endian output.
+
 	* magick/delegate.c (InvokePostscriptDelegate): Improved
 	Ghostscript API-based error reporting and logging.
+
 	* magick/attribute.c (GenerateEXIFAttribute): Extend EXIF
 	knowledge a bit.  Pass more characters from EXIF_FMT_BYTE in case
 	the byte stream contains nulls.
+
 	* coders/dpx.c: Re-wrote the DPX read/write support in order to
 	hopefully surmount problems noticed when testing with files sent
 	to me.
+
 	* wand/pixel_wand.c (PixelSetYellowQuantum): Wrong PixelPacket
 	member was being set.  Thanks to Cristy for the heads-up.
+
 	* magick/image.c (SetImageType): Revert change from 2005-03-12.
 	Some coders require that when the image is set to Bilevel type,
 	that it be PseudoClass.
@@ -411,6 +447,7 @@
 
 	* coders/png.c: Initialize several variables to avoid new
 	GCC 4.0.0 warnings.
+
 	* coders/pnm.c: Defend against malicious "P7" files that try
 	to set the colormap less than 256 bytes (bug fix from ImageMagick)
 
@@ -418,13 +455,16 @@
 
 	* coders/dpx.c (WriteDPXImage): Fill out source information
 	header.
+
 	* Magick++: Added image leveling methods for Magick++.
 
 2005-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Update with latest news.
+
 	* magick/blob.c (WriteBlob): Move BlobStream write support to a
 	subroutine for easier maintenance.
+
 	* coders/dpx.c (ReadDPXImage): Support retrieving all DPX
 	attributes as image attributes.
 	(WriteDPXImage): Buffer writes for better performance on some
@@ -453,17 +493,23 @@
 2005-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (WriteMIFFImage): Normalize image depth to 8/16/32.
+
 	* coders/gray.c (WriteGRAYImage): Normalize image depth to 8/16/32.
+
 	* coders/fits.c (WriteFITSImage): Normalize image depth to 8/16.
+
 	* tests/Makefile.am: Extended read/write tests to include 10, 12,
 	and 16-bit original test images.
+
 	* coders/dpx.c (ReadDPXImage): If samples are log encoded, then
 	set the image to CineonLogRGBColorspace.
 	(WriteDPXImage): If image samples are log encoded, then mark DPX
 	file as being log encoded.
+
 	* magick/colorspace.c (TransformRGBImage): Support translation
 	from log RGB to linear RGB based on Cineon guidelines.
 	(RGBTransformImage): Support translation from linear RGB to log RGB.
+
 	* magick/colorspace.h (enum CineonLogRGBColorspace): New
 	enumeration to record that the RGB values are log encoded in a
 	2.048 density range as defined for the Cineon Digital Film System.
@@ -472,6 +518,7 @@
 
 	* magick/command.c: Take advantage of ColorspaceTypeToString() and
 	StringToColorspaceType() functions in implementation.
+
 	* magick/colorspace.c (RGBTransformImage): Added support for
 	converting to Rec 709 grayscale colorspace.
 	(ColorspaceTypeToString): New function to translate from
@@ -489,11 +536,14 @@
 
 	* magick/command.c (IdentifyImageCommand): Use +ping to force
 	identify to read the image pixels.
+
 	* magick/constitute.c (PingImage): Intentionally clear
 	user/elapsed timer when ping is used on an image since the results
 	are misleading.
+
 	* magick/image.c (DescribeImage): Only display pixel read rate if
 	the time accumulated is at least the timer's resolution.
+
 	* magick/cache.c (OpenCache): Fix a memory resource leak noticed
 	by Stefan v. Wachter <svwa-dev@mnet-online.de>.  This error with
 	keeping track of resources may eventually cause GraphicsMagick to
@@ -535,6 +585,7 @@
 
 	* coders/jpeg.c (ReadJPEGImage): Throw a "Corrupt Image" exception
 	if EOF is encountered while reading scanlines.
+
 	* coders/pcx.c (ReadPCXImage): Throw a "Corrupt Image" exception
 	if EOF is encountered while reading pixels.
 
@@ -542,6 +593,7 @@
 
 	* coders/dpx.c (ReadDPXImage): First pass at a new SMPTE268M-2003
 	DPX reader.
+
 	* magick/bit_stream.h (WordStreamLSBRead): New function to parse
 	values from a stream which is defined by 32-bit words.  Values are
 	read starting with the least significant bits.
@@ -555,11 +607,14 @@
 
 	* magick/endian.c: Imported libtiff's swab.c since its functions
 	are so useful and well-tested.
+
 	* magick/utility.c (FormatSize): Extend to support incredibly
 	large sizes.
+
 	* magick/image.c (DescribeImage): Use GetTimerResolution() when
 	computing pixels-per-second rate in order to avoid computing
 	astronomical rates when the time consumed is too small to measure.
+
 	* magick/timer.c (GetTimerResolution): New function to return the
 	timer's resolution.
 
@@ -572,10 +627,12 @@
 
 	* magick/nt_base.h (lt_dlerror): Needed to provide a mapping to
 	NTdlerror().
+
 	* coders/tiff.c (TIFFErrors): Update to make thread safe via
 	thread specific data.
 	(TIFFWarnings): Update to make thread safe via thread specific
 	data.
+
 	* magick/tsd.c (MagickTsdKeyCreate): New function to support
 	thread specific data.
 	(MagickTsdKeyDelete): ditto
@@ -587,10 +644,12 @@
 	* magick/image.c (ReplaceImageColormap): New function to replace
 	the image colormap with a user-provided one. Colormap indexes are
 	adjusted to point to identical colors in the new colormap.
+
 	* magick/nt_base.h: Reorganized a bit to cluster code supporting
 	similar features in the same area of the header.
+
 	* magick/nt_base.c: Renamed wrappers for standard functions so
-	that they have the prefix 'NT'. Macros are used to apply the new
+	that they have the prefix `NT`. Macros are used to apply the new
 	names. This assures that there will not be conflicts if the library
 	is linked with a different package's wrapper functions.
 
@@ -602,9 +661,11 @@
 2005-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* jp2: Updated Jasper library to version 1.701.0.
+
 	* magick/nt_base.c (NTGhostscriptFonts): Fixed a coding error
 	which was added when strcpy/strcat code was replaced with
 	strlcpy/strlcat.  Ghostscript fonts were not being found.
+
 	* magick/constitute.c (ReadImage): Don't attempt to access image
 	members if image pointer is null.  Oops!
 
@@ -612,17 +673,21 @@
 
 	* magick/image.c (SetImageType): Bilevel image is not required to
 	be PseudoClass type.
+
 	* coders/mpc.c (WriteMPCImage): Persist is_monochrome and
 	is_grayscale flags.
 	(ReadMPCImage): Restore is_monochrome and is_grayscale flags.
+
 	* magick/constitute.c (WriteImage): Extended logging to include
 	monochrome and grayscale flags.
 	(ReadImage): Extended logging to include monochrome and grayscale
 	flags.
+
 	* magick/image.c (DescribeImage): Include the effective pixel I/O
 	rate alongside the image read/write time.  This provides an easier
 	way to evaluate image read/write performance when looking at
-	'identify' or 'convert -verbose' output.
+	`identify` or `convert -verbose` output.
+
 	* coders/sun.c (ReadSUNImage): Ensure that pixel length value does
 	not overflow for large images.
 
@@ -641,7 +706,7 @@
 2005-03-09  Arne Rusek  <zonk@matfyz.cz>
 
 	* magick/attribute.c (GenerateEXIFAttribute): Offset type
-	correction to fix loop termination if size_t type is not 'long'.
+	correction to fix loop termination if size_t type is not `long`.
 
 2005-03-09  Alexander Yaworsky  <yaworsky@users.sourceforge.net>
 
@@ -654,6 +719,7 @@
 
 	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since
 	last update.
+
 	* BCBMagick\magick\libMagick.bpr: Updated to reflect changes since
 	last update.
 
@@ -662,19 +728,24 @@
 	* magick/alpha_composite.h (AlphaComposite): Moved AlphaComposite
 	to new alpha_composite.h header since it was causing porting
 	problems.
+
 	* magick/constitute.h (enum QuantumType): Added CIEYQuantum and
 	CIEXYZQuantum quantum import options.
+
 	* coders/tiff.c (ReadTIFFImage): Import LogLuv image data within
 	GraphicsMagick (rather than libtiff) so that color resolution is
 	not lost.  Results in a small speedup as well.
+
 	* magick/constitute.c (ImportImagePixelArea): Add a speed-up for
 	importing bi-level images.  Add support for importing pixels in
 	CIE XYZ and CIE Y colorspaces.
+
 	* coders/tiff.c (ReadTIFFImage): Support reading TIFF images which
 	fail to properly scale the samples to the sample size (e.g. 12
 	bits in a 16-bit sample).
 	(WriteTIFFImage): Adjustments to strip-size (rows-per-strip)
 	estimation.
+
 	* magick/constitute.c (ExportImagePixelArea): Support exporting
 	unsigned samples with values which span only part of the range.
 	For example, 12 bit data may be exported within 16 bit samples,
@@ -687,6 +758,7 @@
 	* coders/tiff.c (ReadTIFFImage): Support reading TIFF files in
 	IEEEFP format.
 	(WriteTIFFImage): Support writing TIFF files in IEEEFP format.
+
 	* magick/constitute.c (ExportImagePixelArea): Support exporting
 	floating point data.
 	(ImportImagePixelArea): Support importing floating point data.
@@ -695,6 +767,7 @@
 
 	* acinclude.m4 (AC_CXX_IOS_BINARY): Added macro to detect if the
 	C++ compiler lacks support for ios::binary.
+
 	* configure.ac: Use  AC_CXX_IOS_BINARY.
 
 2005-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -710,13 +783,16 @@
 
 	* win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage): Use
 	TextureImage to apply background pattern.
+
 	* magick/image.c (TextureImage): Alpha blend the texture onto the
 	background if the image has a matte channel.
+
 	* magick/constitute.h (enum QuantumType): Eliminated
 	GrayInvertedQuantum and GrayInvertedAlphaQuantum which were added
 	since GraphicsMagick 1.1.  Replaced this "inverted" gray
 	functionality with the grayscale_inverted flag in
 	ExportPixelAreaOptions and ImportPixelAreaOptions.
+
 	* magick/constitute.c (ExportImagePixelArea): Added an extra
 	parameter for passing seldom used options via an
 	ExportPixelAreaOptions structure.
@@ -726,8 +802,10 @@
 	ExportPixelAreaOptions structure with defaults.
 	(ImportPixelAreaOptionsInit): New function to intialize the
 	ImportPixelAreaOptions structure with defaults.
+
 	* coders/jpeg.c (WriteJPEGImage): Don't use jpeglib private
 	BITS_IN_JSAMPLE definition to select JPEG bit depth.
+
 	* coders/tiff.c (ReadTIFFImage): Support using -define
 	tiff:alpha={unspecified|associated|unassociated} to specify the
 	alpha channel type in case the alpha channel is marked
@@ -753,9 +831,12 @@
 2005-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Re-wrote TIFF writing code.
+
 	* magick/image.h (MaxValueGivenBits): Renamed MaxRGBGivenBits
 	macro to MaxValueGivenBits.
+
 	* magick/constitute.h (enum QuantumType): Added UndefinedQuantum.
+
 	* magick/static.c (RegisterStaticModules): Support compiling
 	without PNG.
 
@@ -763,8 +844,10 @@
 
 	* magick/color.c (IsPaletteImage): Fix memory leak reported by
 	Stefan v. Wachter <svwa-dev@mnet-online.de>.
+
 	* magick/Makefile.am (MAGICK_INCLUDE_HDRS): Needed to install
 	magick/operator.h.
+
 	* coders/tiff.c (ReadTIFFImage): Re-wrote TIFF reading code again
 	for more flexibility and performance.
 
@@ -778,6 +861,7 @@
 	* coders/tga.c (WriteTGAImage): Incorporated patch from Stefan
 	v. Wachter to enable writing grayscale images as well as adding
 	more image type option smarts.
+
 	* coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
 	reported by Andrei Nigmatulin. See http://lwn.net/Articles/119713/
 	for details.
@@ -798,12 +882,16 @@
 	* magick/image.c (DescribeImage): Report statistics for a virtual
 	gray channel for grayscale images rather than discrete red, green,
 	and blue.
+
 	* PerlMagick/Makefile.nt: JNG and JP2 to test list.
+
 	* configure.ac: Changed --without-fpx to --with-fpx due to
-	decision to default FlashPIX to 'no'.  FlashPIX library is not
+	decision to default FlashPIX to `no`.  FlashPIX library is not
 	very portable and is only known to work properly under SPARC
 	Solaris and Windows.
+
 	* NEWS: Updated with latest news.
+
 	* lcms: Updated to LCMS 1.14.
 
 2005-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -811,13 +899,16 @@
 	* coders/jp2.c (ReadJP2Image): Handle images in YCBCR colorspace.
 	(ReadJP2Image): Retrieve and store an ICC ICM color profile if
 	present.
+
 	* PerlMagick/t/tiff/read.t: Added test for reading truecolor
 	planar TIFF image.
 	Added test for reading 32-bit TrueColor TIFF image.
 	Added test for reading 32-bit grayscale TIFF image.
+
 	* coders/tiff.c (ReadTIFFImage): Fixed stripped TIFF reader.
 
 2005-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Only set TIFFTAG_PREDICTOR to 2
 	for bits-per-sample values that libtiff supports.
+

@@ -2,14 +2,16 @@
 
 	* www/Magick++/Image.html: Fix documentation regarding retrieving
 	EXIF attribute.
+
 	* magick/command.c: Fix typo in usage messages.
 
 2006-11-02  Daniel Kobras  <kobras@debian.org>
 
 	* coders/dcm.c: (ReadDCMImage) Prevent buffer overflow of
-	'photometric' array in DCM coder. Original patch thanks to
+	`photometric` array in DCM coder. Original patch thanks to
 	M Joonas Pihlaja. (CVE-2006-5456)
-	* coders/palm.c: (ReadPALMImage) Fix heap overflows of 'one_row'
+
+	* coders/palm.c: (ReadPALMImage) Fix heap overflows of `one_row`
 	array in PALM coder. Original patch thanks to M Joonas Pihlaja.
 	(CVE-2006-5456)
 
@@ -25,8 +27,8 @@
 
 2006-09-11  Daniel Kobras  <kobras@debian.org>
 
-	* coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter 'max'
-	to prevent overflowing the 'string' array. (CVE-2006-3743)
+	* coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter `max`
+	to prevent overflowing the `string` array. (CVE-2006-3743)
 	(ReadOneLayer): Adjust callers of ReadBlobStringWithLongSize(), and
 	guard against infinite loops on premature end-of-file.
 	(ReadXCFImage): Adjust callers of ReadBlobStringWithLongSize(), and
@@ -37,14 +39,16 @@
 	* coders/sgi.c (ReadSGIImage): Mostly applied Debian patch for
 	CVE-2006-4144 security issue related to RLE decoding.  Also added
 	complete verification of file header.
+
 	* magick/image.c (ComputePixelError): Add progress monitor.
 	(GetImageStatisticsMean): Call progress monitor less often.
 	(GetImageStatisticsVariance): Call progress monitor less often.
 
 2006-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/tiff.c (WriteTIFFImage): ImageInfo 'endian' option now
+	* coders/tiff.c (WriteTIFFImage): ImageInfo `endian` option now
 	controls TIFF byte-order rather than bit-order when writing.
+
 	* coders/png.c (ReadOnePNGImage): Fix compilation problem.  Patch
 	submitted by Aron Stansvik.
 
@@ -57,7 +61,9 @@
 
 	* magick/command.c (ConvertImageCommand): Fix memory leaks which
 	occured when an image was not returned.
+
 	* magick/command.c (IdentifyImageCommand): Ditto.
+
 	* magick/command.c (MogrifyImageCommand): Ditto.
 
 2006-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -104,9 +110,13 @@
 2006-03-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: Ensure that unusued opacity channel is set to opaque.
+
 	* PerlMagick/t/input.art: New ART test image.
+
 	* PerlMagick/t/input8.mat: New MATLAB test image (8-bit indexed).
+
 	* PerlMagick/t/input_dbl.mat: New MATLAB test image (double grey)
+
 	* PerlMagick/t/input_rgb.mat: New MATLAB test image (8-bit RGB)
 
 2006-03-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
@@ -158,8 +168,10 @@
 	* magick/semaphore.c (AllocateSemaphoreInfo): Allow semaphores to
 	recurse on POSIX systems which support recursive semaphores but
 	also warn if the semaphore recurses.
+
 	* magick/log.c (SetLogEventMask): Avoid deadlock if invoked before
         log.mgk has been loaded.
+
 	* magick/attribute.c (GenerateEXIFAttribute): Fix memory leak on
 	error which was reported by Micha³ Kowalczuk.
 
@@ -172,4 +184,6 @@
 
 	* magick/attribute.c (GenerateEXIFAttribute): Fix EXIF IFD stack
 	overflow vulnerability.
+
 	* configure.ac: Fix typo in HTMLDecodeDelegate.
+

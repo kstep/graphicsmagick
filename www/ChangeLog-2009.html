@@ -172,7 +172,7 @@
 
 <UL>
   <LI> magick/{channel.c,constitute.c,nt_base.h}: Start using the C'99
-        'restrict' keyword.
+        `restrict` keyword.
 
 </UL>
 <p>
@@ -230,9 +230,9 @@
 2009-11-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/constitute.c (ConstituteImage, DispatchImage): 'A' and
-        'T' should indicate transparency and 'O' should indicate opacity.
-        Behavior was inconsistent.  In some cases 'O' meant transparency
+  <LI> magick/constitute.c (ConstituteImage, DispatchImage): `A` and
+        `T` should indicate transparency and `O` should indicate opacity.
+        Behavior was inconsistent.  In some cases `O` meant transparency
         while in other cases it meant opacity. Also, in a few cases, matte
         was not getting enabled in the image as it should.  Problems were
         reported by Scott Kuhl.
@@ -552,7 +552,7 @@
         (SubstituteString): Re-implemented in a more compact way which
         might avoid some reallocations.
 
-  <LI> magick/magick.c (ListModuleMap): Don't crash if 'module' was not
+  <LI> magick/magick.c (ListModuleMap): Don't crash if `module` was not
         set.
 
   <LI> magick/delegate.c (ListDelegateInfo): Fix insignificant memory
@@ -674,7 +674,7 @@
 2009-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> coders/msl.c, doc/conjure.imdoc: Add support for a new 'profile'
+  <LI> coders/msl.c, doc/conjure.imdoc: Add support for a new `profile`
         command in MSL/conjure which applies, adds, or removes one or more
         IPTC, ICC or generic profiles from a file.  Work contributed by
         John Sergeant.
@@ -825,7 +825,7 @@
 <UL>
   <LI> magick/delegate.c (GetPostscriptDelegateInfo): Add a gs-palette
         delegate entry in order to force Ghostscript to output a
-        colormapped image if '-type palette' is specified prior to the
+        colormapped image if `-type palette` is specified prior to the
         input filename.  Ghostscript's dithering is much courser than
         GraphicsMagick's -colors default (more similar to
         -ordered-dither), but it is fast and produces smaller intermediate
@@ -836,7 +836,7 @@
         rather than image_info-&gt;filename as it should have.
 
   <LI> magick/delegate.c (InvokePostscriptDelegate): Added an
-        'exception' argument so that failure details can be returned.
+        `exception` argument so that failure details can be returned.
         Tried to reorganize the code so that it is more tolerant of errors
         such as a dynamically-loadable DLL failing to load.  On POSIX
         systems, Ghostscript was not being invoked as securely as
@@ -845,7 +845,7 @@
   <LI> coders/Makefile.am: Only build the DPS module if the Display
         Postscript library is available.
 
-  <LI> coders/ept.c (ReadEPTImage): If we don't have the Display
+  <LI> coders/ept.c (ReadEPTImage): If we don`t have the Display
         Postscript library, then don't try to use it as a fallback.
 
   <LI> coders/ps.c (ReadPSImage): If we don't have the Display
@@ -941,11 +941,11 @@
 2009-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/command.c (TimeImageCommand): Add a simple 'time'
+  <LI> magick/command.c (TimeImageCommand): Add a simple `time`
         sub-command to time the execution of any other GraphicsMagick
-        sub-command.  Similar in concept to the 'benchmark' sub-command
-        but produces output similar to the 'time' command offered by the
-        zsh command shell.  Handy for when 'time' is not available, or
+        sub-command.  Similar in concept to the `benchmark` sub-command
+        but produces output similar to the `time` command offered by the
+        zsh command shell.  Handy for when `time` is not available, or
         consistent output is desired.
 
   <LI> magick/magick.c (MagickGetFileSystemBlockSize): New private
@@ -1187,8 +1187,8 @@
 
 <UL>
   <LI> coders/tiff.c (WriteTIFFImage): Add the ability for the user to
-        manually specify the predictor using syntax like '-define
-        tiff:predictor=2'.
+        manually specify the predictor using syntax like `-define
+        tiff:predictor=2`.
 
 </UL>
 <p>
@@ -1226,7 +1226,7 @@
   <LI> magick/cdl.c (CdlImage): New function to apply an ASC CDL
         transform to the image.  Original implementation by Clément Follet
         from Workflowers but considerably re-worked by Bob Friesenhahn.
-        Available as -asc-cdl via the 'convert' and 'mogrify' subcommands.
+        Available as -asc-cdl via the `convert` and `mogrify` subcommands.
 
 </UL>
 <p>
@@ -1415,8 +1415,8 @@
   <LI> magick/colorspace.c (CMYKToRGBTransform): Use symbolic notation
         to access pixel quantum values.
 
-  <LI> utilities/tests/identify.sh: Added a test for 'identify
-        -verbose' on a well-populated JPEG file.
+  <LI> utilities/tests/identify.sh: Added a test for `identify
+        -verbose` on a well-populated JPEG file.
 
   <LI> PerlMagick/t/{jpeg/write.t, jng/read.t, jng/write.t}: Relax
         allowed error for JPEG-related tests.
@@ -1488,7 +1488,7 @@
         described at http://www.quelsolaar.com/technology/clut.html.  This
         allows a color transformation to be easily created and replicated
         on any number of images.  The algorithm is accessed by the
-        -hald-clut option of 'convert' and 'mogrify'.  The original
+        -hald-clut option of `convert` and `mogrify`.  The original
         algorithm is by Eskil Steenberg and was adapted for GraphicsMagick
         by Clément Follet from Workflowers with support from Cédric
         Lejeune of Workflowers.
@@ -1498,7 +1498,7 @@
 2009-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> magick/utility.c (GetMagickGeometry): Support '^' modifier to
+  <LI> magick/utility.c (GetMagickGeometry): Support `^` modifier to
         geometry specification which indicates that specified size is a
         minimum bounding box rather than a maximum bounding box while
         preserving the image aspect ratio.
@@ -1509,8 +1509,8 @@
 
 <UL>
   <LI> magick/resource.c (ListMagickResourceInfo): If supporting
-        OpenMP, then include a "Threads" limit in the output of '-list
-        resource'.
+        OpenMP, then include a "Threads" limit in the output of `-list
+        resource`.
 
   <LI> coders/pnm.c (ReadPNMImage): Fix multi-thread issue detected by
         valgrind's helgrind tool.  Diminish compilation warnings.
@@ -1557,7 +1557,7 @@
 
 <UL>
   <LI> magick/command.c (CompareImageCommand): Add a -maximum-error
-        option to 'compare' so that it can easily be used in boolean logic
+        option to `compare` so that it can easily be used in boolean logic
         when comparing images.
 
 </UL>
@@ -1674,11 +1674,15 @@
 2009-05-24  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
 
 <UL>
-  <LI> /coders/txt.c Small optimization:
-        Before: 2000 iter 34.08s user 34.24s total 58.420 iter/s
-        After: 2000 iter 21.55s user 21.76s total 91.891 iter/s
+  <LI> coders/txt.c Small optimization:
 
 </UL>
+<p>
+        Before: 2000 iter 34.08s user 34.24s total 58.420 iter/s
+
+<p>
+        After: 2000 iter 21.55s user 21.76s total 91.891 iter/s
+
 <p>
 2009-05-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
@@ -1858,7 +1862,7 @@
 2009-05-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> utilities/Makefile.am (MAGICKPROGRAMS): Add a 'compare'
+  <LI> utilities/Makefile.am (MAGICKPROGRAMS): Add a `compare`
         ImageMagick compatibility link.
 
   <LI> INSTALL-unix.txt: Apply patch regarding GnuWin32 from John Wye,
@@ -1914,9 +1918,9 @@
 2009-05-01  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
 
 <UL>
-  <LI> coders/png.c (WriteOnePNGImage and WriteOneJNGImage):
-        Changed internal attribute png_bit_depth to png:bit-depth-written
-        to avoid confusion with planned new public png:bit-depth attribute.
+  <LI> coders/png.c (WriteOnePNGImage and WriteOneJNGImage): Changed
+        internal attribute png_bit_depth to png:bit-depth-written to avoid
+        confusion with planned new public png:bit-depth attribute.
 
 </UL>
 <p>
@@ -1930,7 +1934,7 @@
   <LI> magick/transform.c (TransformImage): Image which is updated may
         be a list so account for that.
 
-  <LI> configure.ac: Add a test for the 'restrict' keyword so that
+  <LI> configure.ac: Add a test for the `restrict` keyword so that
         eventually we can use it.
 
   <LI> coders/jpeg.c (ReadJPEGImage): Tidy JPEG reader by moving JPEG
@@ -1950,8 +1954,8 @@
 2009-04-20  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
 
 <UL>
-  <LI> coders/png.c: Cosmetic-only, change "True" to "MagickTrue" or
-          "MagickPass" and "False" to "MagickFalse" or MagickFail".
+  <LI> coders/png.c: Cosmetic-only, change `True` to `MagickTrue` or
+        `MagickPass` and `False` to `MagickFalse` or `MagickFail`.
 
 </UL>
 <p>
@@ -1965,8 +1969,8 @@
 2009-04-20  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
 
 <UL>
-  <LI> coders/png.c: Refrain from modifying image struct
-          members (matte, colors, depth) while writing a PNG.
+  <LI> coders/png.c: Refrain from modifying image struct members
+        (matte, colors, depth) while writing a PNG.
 
 </UL>
 <p>
@@ -1981,21 +1985,21 @@
 
 <UL>
   <LI> magick/log.c (LogMagickEventList): Use MagickPackageName from
-        version.h rather than hard-coding "GraphicsMagick".
+        version.h rather than hard-coding `GraphicsMagick`.
 
 </UL>
 <p>
 2009-04-18  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
 
 <UL>
-  <LI> coders/jpeg.c: Fixed a warning about "shadowed" variables.
+  <LI> coders/jpeg.c: Fixed a warning about `shadowed` variables.
 
 </UL>
 <p>
 2009-04-17  Glenn Randers-Pehrson &lt;glennrp@simple....&gt;
 
 <UL>
-  <LI> coders/png.c: Fixed some warnings about "shadowed" variables.
+  <LI> coders/png.c: Fixed some warnings about `shadowed` variables.
 
 </UL>
 <p>
@@ -2007,8 +2011,8 @@
 
   <LI> magick/composite.c (CompositeImage): Fix problem with
         compositing images where the change image overlaps off the left
-        side of the canvas.  Should fix SourceForge issue #2766200 "memory
-        allocation error when compositing small images".
+        side of the canvas.  Should fix SourceForge issue #2766200 `memory
+        allocation error when compositing small images`.
 
 </UL>
 <p>
@@ -2042,7 +2046,7 @@
         incorrect or not globally applicable so don't specify bounding box
         when reading PDF files.  Postscript files do need the bounding box
         so make sure that it is still supplied.  Resolves SF tracker issue
-        2487651 "convert from pdf chops off rhs".
+        2487651 `convert from pdf chops off rhs`.
 
 </UL>
 <p>
@@ -2102,7 +2106,7 @@
 
   <LI> PerlMagick/t/read.t: Add a test for HRZ Slow scan TV.
 
-  <LI> magick/pixel_cache.c (ModifyCache): Set image 'taint' flag and
+  <LI> magick/pixel_cache.c (ModifyCache): Set image `taint` flag and
         clear monochrome and grayscale flags when pixels are accessed
         read/write rather than at sync.
 
@@ -2193,8 +2197,8 @@
 
 <UL>
   <LI> coders/bmp.c (ReadBMPImage): Fix assertion thrown for BMP files
-        with negative image height values.  Resolves SF issue 2523536 "bug
-        in bmp coder".
+        with negative image height values.  Resolves SF issue 2523536 `bug
+        in bmp coder`.
 
   <LI> Makefile.am: Don't install Magick++ headers if Magick++ is
         disabled.
@@ -2277,17 +2281,6 @@
         temporary file.  Use TIFFClientOpen() for writing.
 
 </UL>
-<p>
-<HR>
-
-<p>
-Copyright (C) 2009 GraphicsMagick Group
-
-<p>
-This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/Copyright.html.
-
 
 <hr>
 </BODY>

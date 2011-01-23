@@ -25,7 +25,8 @@
 
 <UL>
   <LI> www/Magick++/Image.html: Fix documentation regarding retrieving
-        EXIF attribute.<BR>
+        EXIF attribute.
+
   <LI> magick/command.c: Fix typo in usage messages.
 
 </UL>
@@ -34,9 +35,10 @@
 
 <UL>
   <LI> coders/dcm.c: (ReadDCMImage) Prevent buffer overflow of
-        'photometric' array in DCM coder. Original patch thanks to
+        `photometric` array in DCM coder. Original patch thanks to
         M Joonas Pihlaja. (CVE-2006-5456)
-  <LI> coders/palm.c: (ReadPALMImage) Fix heap overflows of 'one_row'
+
+  <LI> coders/palm.c: (ReadPALMImage) Fix heap overflows of `one_row`
         array in PALM coder. Original patch thanks to M Joonas Pihlaja.
 <STRONG>(CVE-2006-5456)</STRONG>
 
@@ -61,8 +63,8 @@
 2006-09-11  Daniel Kobras  &lt;kobras@debian.org&gt;
 
 <UL>
-  <LI> coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter 'max'
-        to prevent overflowing the 'string' array. (CVE-2006-3743)
+  <LI> coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter `max`
+        to prevent overflowing the `string` array. (CVE-2006-3743)
         (ReadOneLayer): Adjust callers of ReadBlobStringWithLongSize(), and
         guard against infinite loops on premature end-of-file.
         (ReadXCFImage): Adjust callers of ReadBlobStringWithLongSize(), and
@@ -76,6 +78,7 @@
   <LI> coders/sgi.c (ReadSGIImage): Mostly applied Debian patch for
         CVE-2006-4144 security issue related to RLE decoding.  Also added
         complete verification of file header.
+
   <LI> magick/image.c (ComputePixelError): Add progress monitor.
         (GetImageStatisticsMean): Call progress monitor less often.
         (GetImageStatisticsVariance): Call progress monitor less often.
@@ -85,8 +88,9 @@
 2006-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> coders/tiff.c (WriteTIFFImage): ImageInfo 'endian' option now
+  <LI> coders/tiff.c (WriteTIFFImage): ImageInfo `endian` option now
         controls TIFF byte-order rather than bit-order when writing.
+
   <LI> coders/png.c (ReadOnePNGImage): Fix compilation problem.  Patch
         submitted by Aron Stansvik.
 
@@ -105,7 +109,9 @@
 <UL>
   <LI> magick/command.c (ConvertImageCommand): Fix memory leaks which
         occured when an image was not returned.
+
   <LI> magick/command.c (IdentifyImageCommand): Ditto.
+
   <LI> magick/command.c (MogrifyImageCommand): Ditto.
 
 </UL>
@@ -179,9 +185,13 @@
 
 <UL>
   <LI> coders/mat.c: Ensure that unusued opacity channel is set to opaque.
+
   <LI> PerlMagick/t/input.art: New ART test image.
+
   <LI> PerlMagick/t/input8.mat: New MATLAB test image (8-bit indexed).
+
   <LI> PerlMagick/t/input_dbl.mat: New MATLAB test image (double grey)
+
   <LI> PerlMagick/t/input_rgb.mat: New MATLAB test image (8-bit RGB)
 
 </UL>
@@ -263,8 +273,10 @@
   <LI> magick/semaphore.c (AllocateSemaphoreInfo): Allow semaphores to
         recurse on POSIX systems which support recursive semaphores but
         also warn if the semaphore recurses.
+
   <LI> magick/log.c (SetLogEventMask): Avoid deadlock if invoked before
-        log.mgk has been loaded.<BR>
+        log.mgk has been loaded.
+
   <LI> magick/attribute.c (GenerateEXIFAttribute): Fix memory leak on
         error which was reported by Micha³ Kowalczuk.
 
@@ -282,21 +294,11 @@
 
 <UL>
   <LI> magick/attribute.c (GenerateEXIFAttribute): Fix EXIF IFD stack
-        overflow vulnerability.<BR>
+        overflow vulnerability.
+
   <LI> configure.ac: Fix typo in HTMLDecodeDelegate.
 
 </UL>
-<p>
-<HR>
-
-<p>
-Copyright (C) 2006 GraphicsMagick Group
-
-<p>
-This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/Copyright.html.
-
 
 <hr>
 </BODY>
