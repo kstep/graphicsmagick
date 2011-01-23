@@ -175,6 +175,7 @@
 	* configure.ac: Fix typo in HTMLDecodeDelegate.
 
 ---------------------------------------------------------------------------
+
 Copyright (C) 2006 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in

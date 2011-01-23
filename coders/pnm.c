@@ -240,7 +240,7 @@ typedef enum
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    id;
+    c;
 
   PNMSubformat
     format;
@@ -293,7 +293,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
-  count=ReadBlob(image,1,(char *) &id);
+  count=ReadBlob(image,1,(char *) &c);
   do
     {
       /*
@@ -303,13 +303,20 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bits_per_sample=0;
       samples_per_pixel=0;
 
-      if ((count == 0) || (id != 'P'))
+      if (count == 0)
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-      id=ReadBlobByte(image);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"PNM Format Id: P%c",
-                            id);
 
-      switch (id)
+      if (c != 'P')
+	{
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Read %c rather than expected 'P'!",c);
+	  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+	}
+
+      c=ReadBlobByte(image);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"PNM Format Id: P%c",
+                            c);
+
+      switch (c)
 	{
 	case '1': format=PBM_ASCII_Format; break;
 	case '2': format=PGM_ASCII_Format; break;
@@ -1168,12 +1175,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Skip to end of line.
             */
-            count=ReadBlob(image,1,&format);
+            count=ReadBlob(image,1,&c);
             if (count == 0)
               break;
-          } while (format != '\n');
-      count=ReadBlob(image,1,(char *) &format);
-      if ((count != 0) && (format == 'P'))
+          } while (c != '\n');
+      count=ReadBlob(image,1,&c);
+      if ((count != 0) && (c == 'P'))
         {
           /*
             Allocate next image structure.
@@ -1190,7 +1197,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                       image->filename))
             break;
         }
-    } while ((count != 0) && (format == 'P'));
+    } while ((count != 0) && (c == 'P'));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

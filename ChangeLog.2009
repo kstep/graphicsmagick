@@ -1704,6 +1704,7 @@
 	temporary file.  Use TIFFClientOpen() for writing.
 
 ---------------------------------------------------------------------------
+
 Copyright (C) 2009 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in

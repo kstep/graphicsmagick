@@ -1872,6 +1872,7 @@
 	reading standard input if stdin fails isatty() test.
 
 ---------------------------------------------------------------------------
+
 Copyright (C) 2008 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
