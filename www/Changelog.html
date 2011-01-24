@@ -1,57 +1,93 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
-<TITLE>GraphicsMagick 1.4 ChangeLog</TITLE>
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		A:link { color: #00B04F }
-		A:visited { color: #800080 }
-	-->
-	</STYLE>
-</HEAD>
-<body LANG="en-US" TEXT="#000000" LINK="#00B04F" VLINK="#007B37" BGCOLOR="#ffffff">
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td BGCOLOR="#ffffff">
-<b><font face="Helvetica, Arial"><font color="#00B04F"><font size="+1">GraphicsMagick 1.4 ChangeLog</font></font></font></b></td>
-</tr>
-</table>
-<p>
-2011-01-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="docutils-articles.css" type="text/css" />
+</head>
+<body>
 
-<UL>
-  <LI> coders/pnm.c (ReadPNMImage): Support for multi-frame PNM was
-        botched due to on-going edits to support PAM format.
+<div class="banner">
+<span>
+<img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+    Search&nbsp;site
+	<input type=hidden name="domains" value="www.graphicsmagick.org" />
+	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
+    <input type=text name="q" size="25" maxlength="255" />
+    <input type=submit name="sa" value="Search" />
+</form>
+</span>
+</div>
 
-</UL>
-<p>
-2011-01-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+<div class="navmenu">
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="Copyright.html">License</a></li>
+<li><a href="mission.html">Mission</a></li>
+<li><a href="download.html">Download</a></li>
+<li><a href="README.html">Install</a></li>
+<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="NEWS.html">News</a> </li>
+<li><a href="formats.html">Formats</a></li>
+</ul>
+</div>
+<div class="navmenu">
+<ul>
+<li><a href="process.html">Process</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="CVS.html">CVS</a></li>
+<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
+<li><a href="Changelog.html">Changes</a></li>
+<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
+<li><a href="utilities.html">Utilities</a></li>
+<li><a href="programming.html">Programming</a></li>
+<li><a href="links.html">Links</a></li>
+</ul>
+</div>
+<div class="document">
 
-<UL>
-  <LI> wand/magick_wand.c (MagickDescribeImage): Was sending
-        descriptive output to stdout rather than returning it in an
-        allocated string as intended.
 
-</UL>
-<p>
-2011-01-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+<p>2011-01-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>scripts/changelog2rst.sh: Simple utility to format ChangeLog
+format into something resembling reStructuredText.</li>
+<li>www/Makefile.am: Use reStructuredText to format the ChangeLog
+files to HTML so that we can inherit the improved formatting and
+page style.</li>
+<li>coders/pnm.c (ReadPNMImage): Support for multi-frame PNM was
+botched due to on-going edits to support PAM format.</li>
+</ul>
+</blockquote>
+<p>2011-01-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>wand/magick_wand.c (MagickDescribeImage): Was sending
+descriptive output to stdout rather than returning it in an
+allocated string as intended.</li>
+</ul>
+</blockquote>
+<p>2011-01-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/draw.c, wand/drawing_wand.c (MvgPrintf): Update to handle
+C99 vsnprintf() return values.</li>
+<li>magick/draw.c, wand/drawing_wand.c (DrawAnnotation): Linux
+glibc does not pass extended text characters if &quot;%.1024s&quot;
+formatting convention is used.  Apparently it assumes that such
+characters may be UTF8 and returns -1 rather than outputting the
+string, even if it is assured to fit.</li>
+</ul>
+</blockquote>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2011-01-24 01:11 UTC.
 
-<UL>
-  <LI> magick/draw.c, wand/drawing_wand.c (MvgPrintf): Update to handle
-        C99 vsnprintf() return values.
-
-  <LI> magick/draw.c, wand/drawing_wand.c (DrawAnnotation): Linux
-        glibc does not pass extended text characters if "%.1024s"
-        formatting convention is used.  Apparently it assumes that such
-        characters may be UTF8 and returns -1 rather than outputting the
-        string, even if it is assured to fit.
-
-</UL>
-
-<hr>
-</BODY>
-</HTML>
+</div>
+</body>
+</html>

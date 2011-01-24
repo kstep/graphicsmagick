@@ -166,7 +166,7 @@ NAMED_COLORS=$(top_srcdir)/scripts/named_colors.py
 RST2HTMLDECO=$(top_srcdir)/scripts/rst2htmldeco.py
 RELPATH=$(top_srcdir)/scripts/relpath.py
 OMP_DECIMAL_ALIGN=$(top_srcdir)/scripts/omp_decimal_align.py
-RST2HTML_COMMAND = $(RST2HTMLDECO) --link-stylesheet=docutils-articles.css
+RST2HTML_COMMAND = $(RST2HTMLDECO) --cloak-email-addresses --link-stylesheet=docutils-articles.css
 
 if WITH_PERL
 # txt2html requires perl.
@@ -203,51 +203,43 @@ $(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
 	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
 	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
+#
 # Build HTML version of ChangeLogs
-$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' \
-	< $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
+#
+CHANGELOG2RST=$(top_srcdir)/scripts/changelog2rst.sh
 
-$(top_srcdir)/www/ChangeLog-2010.html: $(top_srcdir)/ChangeLog.2010 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2010)' \
-	< $(top_srcdir)/ChangeLog.2010 > $(top_srcdir)/www/ChangeLog-2010.html
+$(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2009.html: $(top_srcdir)/ChangeLog.2009 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2009)' \
-	< $(top_srcdir)/ChangeLog.2009 > $(top_srcdir)/www/ChangeLog-2009.html
+$(top_srcdir)/www/ChangeLog-2010.rst: $(top_srcdir)/ChangeLog.2010
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2008.html: $(top_srcdir)/ChangeLog.2008 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2008)' \
-	< $(top_srcdir)/ChangeLog.2008 > $(top_srcdir)/www/ChangeLog-2008.html
+$(top_srcdir)/www/ChangeLog-2009.rst: $(top_srcdir)/ChangeLog.2009
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2007.html: $(top_srcdir)/ChangeLog.2007 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2007)' \
-	< $(top_srcdir)/ChangeLog.2007 > $(top_srcdir)/www/ChangeLog-2007.html
+$(top_srcdir)/www/ChangeLog-2008.rst: $(top_srcdir)/ChangeLog.2008
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2006.html: $(top_srcdir)/ChangeLog.2006 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2006)' \
-	< $(top_srcdir)/ChangeLog.2006 > $(top_srcdir)/www/ChangeLog-2006.html
+$(top_srcdir)/www/ChangeLog-2007.rst: $(top_srcdir)/ChangeLog.2007
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2005.html: $(top_srcdir)/ChangeLog.2005 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2005)' \
-	< $(top_srcdir)/ChangeLog.2005 > $(top_srcdir)/www/ChangeLog-2005.html
+$(top_srcdir)/www/ChangeLog-2006.rst: $(top_srcdir)/ChangeLog.2006
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2004.html: $(top_srcdir)/ChangeLog.2004 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2004)' \
-	< $(top_srcdir)/ChangeLog.2004 > $(top_srcdir)/www/ChangeLog-2004.html
+$(top_srcdir)/www/ChangeLog-2005.rst: $(top_srcdir)/ChangeLog.2005
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2003.html: $(top_srcdir)/ChangeLog.2003 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2003)' \
-	< $(top_srcdir)/ChangeLog.2003 > $(top_srcdir)/www/ChangeLog-2003.html
+$(top_srcdir)/www/ChangeLog-2004.rst: $(top_srcdir)/ChangeLog.2004
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2002.html: $(top_srcdir)/ChangeLog.2002 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2002)' \
-	< $(top_srcdir)/ChangeLog.2002 > $(top_srcdir)/www/ChangeLog-2002.html
+$(top_srcdir)/www/ChangeLog-2003.rst: $(top_srcdir)/ChangeLog.2003
+	$(CHANGELOG2RST) < $^ > $@
 
-$(top_srcdir)/www/ChangeLog-2001.html: $(top_srcdir)/ChangeLog.2001 $(top_srcdir)/scripts/txt2html
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog (2001)' \
-	< $(top_srcdir)/ChangeLog.2001 > $(top_srcdir)/www/ChangeLog-2001.html
+$(top_srcdir)/www/ChangeLog-2002.rst: $(top_srcdir)/ChangeLog.2002
+	$(CHANGELOG2RST) < $^ > $@
 
+$(top_srcdir)/www/ChangeLog-2001.rst: $(top_srcdir)/ChangeLog.2001
+	$(CHANGELOG2RST) < $^ > $@
 
 # Build color.html
 $(WWWDIR)/color.html : $(NAMED_COLORS)

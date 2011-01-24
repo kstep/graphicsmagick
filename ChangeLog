@@ -1,5 +1,12 @@
 2011-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* scripts/changelog2rst.sh: Simple utility to format ChangeLog
+	format into something resembling reStructuredText.
+
+	* www/Makefile.am: Use reStructuredText to format the ChangeLog
+	files to HTML so that we can inherit the improved formatting and
+	page style.
+
 	* coders/pnm.c (ReadPNMImage): Support for multi-frame PNM was
 	botched due to on-going edits to support PAM format.
 
