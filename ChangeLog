@@ -1,5 +1,8 @@
 2011-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/Changes.rst: Add a new Changes page to wrap up the yearly
+	change logs to lessen download size.
+
 	* scripts/changelog2rst.sh: Simple utility to format ChangeLog
 	format into something resembling reStructuredText.
 

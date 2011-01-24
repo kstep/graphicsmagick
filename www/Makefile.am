@@ -1,4 +1,4 @@
-# Copyright (C) 2008 - 2010 GraphicsMagick Group
+# Copyright (C) 2008 - 2011 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -41,6 +41,18 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/api/api.html \
 	$(WWWDIR)/wand/wand.html \
 	$(WWWDIR)/CVS.html \
+	$(WWWDIR)/Changes.html \
+	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2009.html \
+	$(WWWDIR)/ChangeLog-2008.html \
+	$(WWWDIR)/ChangeLog-2007.html \
+	$(WWWDIR)/ChangeLog-2006.html \
+	$(WWWDIR)/ChangeLog-2005.html \
+	$(WWWDIR)/ChangeLog-2004.html \
+	$(WWWDIR)/ChangeLog-2003.html \
+	$(WWWDIR)/ChangeLog-2002.html \
+	$(WWWDIR)/ChangeLog-2001.html
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
 	$(WWWDIR)/INSTALL-unix.html \
@@ -70,6 +82,7 @@ RST2HTML_TARGETS = \
 
 WWW_RST_FILES = \
 	www/CVS.rst \
+	www/Changes.rst \
 	www/FAQ.rst \
 	www/OpenMP.rst \
 	www/Magick++/Image.rst \
@@ -98,6 +111,7 @@ WWW_RST_FILES = \
 
 WWW_HTML_FILES = \
 	www/CVS.html \
+	www/Changes.html \
 	www/Changelog.html \
 	www/ChangeLog-2009.html \
 	www/ChangeLog-2008.html \
@@ -158,7 +172,7 @@ WWW_HTML_FILES = \
 
 WWWW_EXTRA_DIST=$(WWW_HTML_FILES) $(WWW_RST_FILES)
 
-WWW_MAINTAINER_TARGETS=$(RST2HTML_TARGETS) $(TXT2HTML_TARGETS) $(WWWDIR)/color.html
+WWW_MAINTAINER_TARGETS=$(RST2HTML_TARGETS) $(WWWDIR)/color.html
 
 if MAINTAINER_MODE
 
@@ -167,22 +181,6 @@ RST2HTMLDECO=$(top_srcdir)/scripts/rst2htmldeco.py
 RELPATH=$(top_srcdir)/scripts/relpath.py
 OMP_DECIMAL_ALIGN=$(top_srcdir)/scripts/omp_decimal_align.py
 RST2HTML_COMMAND = $(RST2HTMLDECO) --cloak-email-addresses --link-stylesheet=docutils-articles.css
-
-if WITH_PERL
-# txt2html requires perl.
-TXT2HTML_TARGETS = \
-	$(WWWDIR)/Changelog.html \
-	$(WWWDIR)/ChangeLog-2010.html \
-	$(WWWDIR)/ChangeLog-2009.html \
-	$(WWWDIR)/ChangeLog-2008.html \
-	$(WWWDIR)/ChangeLog-2007.html \
-	$(WWWDIR)/ChangeLog-2006.html \
-	$(WWWDIR)/ChangeLog-2005.html \
-	$(WWWDIR)/ChangeLog-2004.html \
-	$(WWWDIR)/ChangeLog-2003.html \
-	$(WWWDIR)/ChangeLog-2002.html \
-	$(WWWDIR)/ChangeLog-2001.html
-endif # WITH_PERL
 
 $(RST2HTML_TARGETS) : \
 	$(top_srcdir)/scripts/html_fragments.py \

@@ -59,7 +59,7 @@ nav_template = """
 <li><a href="%(url_prefix)scontribute.html">Contribute</a></li>
 <li><a href="%(url_prefix)sCVS.html">CVS</a></li>
 <li><a href="%(url_mailinglist)s" target="top_">Lists</a></li>
-<li><a href="%(url_prefix)sChangelog.html">Changes</a></li>
+<li><a href="%(url_prefix)sChanges.html">Changes</a></li>
 <li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
 <li><a href="%(url_prefix)sutilities.html">Utilities</a></li>
 <li><a href="%(url_prefix)sprogramming.html">Programming</a></li>

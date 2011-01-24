@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2010 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
