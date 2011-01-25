@@ -4853,6 +4853,8 @@ HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
 HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
+
+# These files are built from reStructuredText
 RST2HTML_TARGETS = \
 	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
@@ -4862,7 +4864,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Changelog.html \
-	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2007.html \
@@ -4871,100 +4872,130 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2004.html \
 	$(WWWDIR)/ChangeLog-2003.html \
 	$(WWWDIR)/ChangeLog-2002.html \
-	$(WWWDIR)/ChangeLog-2001.html
+	$(WWWDIR)/ChangeLog-2001.html \
+	$(WWWDIR)/Copyright.html \
+	$(WWWDIR)/FAQ.html \
+	$(WWWDIR)/INSTALL-unix.html \
+	$(WWWDIR)/INSTALL-windows.html \
+	$(WWWDIR)/NEWS.html \
+	$(WWWDIR)/OpenMP.html \
+	$(WWWDIR)/README.html \
+	$(WWWDIR)/authors.html \
+	$(WWWDIR)/benchmarks.html \
+	$(WWWDIR)/bugs.html \
+	$(WWWDIR)/contribute.html \
+	$(WWWDIR)/download.html \
+	$(WWWDIR)/formats.html \
+	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/index.html \
+	$(WWWDIR)/links.html \
+	$(WWWDIR)/miff.html \
+	$(WWWDIR)/mission.html \
+	$(WWWDIR)/motion-picture.html \
+	$(WWWDIR)/perl.html \
+	$(WWWDIR)/platforms.html \
+	$(WWWDIR)/process.html \
+	$(WWWDIR)/programming.html \
+	$(WWWDIR)/quantize.html \
+	$(WWWDIR)/tools.html \
+	$(WWWDIR)/utilities.html
 
+
+# These files are existing reStructuredText files
 WWW_RST_FILES = \
-	www/CVS.rst \
-	www/Changes.rst \
-	www/FAQ.rst \
-	www/OpenMP.rst \
-	www/Magick++/Image.rst \
-	www/Magick++/index.rst \
-	www/Magick++/Documentation.rst \
-	www/api/api.rst \
-	www/authors.rst \
-	www/benchmarks.rst \
-	www/bugs.rst \
-	www/contribute.rst \
-	www/download.rst \
-	www/formats.rst \
-	www/ImageMagickObject.rst \
-	www/index.rst \
-	www/links.rst \
-	www/miff.rst \
-	www/mission.rst \
-	www/motion-picture.rst \
-	www/perl.rst \
-	www/platforms.rst \
-	www/process.rst \
-	www/programming.rst \
-	www/quantize.rst \
-	www/tools.rst \
-	www/utilities.rst
+	$(WWWDIR)/CVS.rst \
+	$(WWWDIR)/Changes.rst \
+	$(WWWDIR)/FAQ.rst \
+	$(WWWDIR)/OpenMP.rst \
+	$(WWWDIR)/Magick++/Image.rst \
+	$(WWWDIR)/Magick++/index.rst \
+	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/api/api.rst \
+	$(WWWDIR)/authors.rst \
+	$(WWWDIR)/benchmarks.rst \
+	$(WWWDIR)/bugs.rst \
+	$(WWWDIR)/contribute.rst \
+	$(WWWDIR)/download.rst \
+	$(WWWDIR)/formats.rst \
+	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/index.rst \
+	$(WWWDIR)/links.rst \
+	$(WWWDIR)/miff.rst \
+	$(WWWDIR)/mission.rst \
+	$(WWWDIR)/motion-picture.rst \
+	$(WWWDIR)/perl.rst \
+	$(WWWDIR)/platforms.rst \
+	$(WWWDIR)/process.rst \
+	$(WWWDIR)/programming.rst \
+	$(WWWDIR)/quantize.rst \
+	$(WWWDIR)/tools.rst \
+	$(WWWDIR)/utilities.rst
 
+
+# These are the HTML files which are packaged
 WWW_HTML_FILES = \
-	www/CVS.html \
-	www/Changes.html \
-	www/Changelog.html \
-	www/ChangeLog-2009.html \
-	www/ChangeLog-2008.html \
-	www/ChangeLog-2007.html \
-	www/ChangeLog-2006.html \
-	www/ChangeLog-2005.html \
-	www/ChangeLog-2004.html \
-	www/ChangeLog-2003.html \
-	www/ChangeLog-2002.html \
-	www/ChangeLog-2001.html \
-	www/Copyright.html \
-	www/FAQ.html \
-	www/GraphicsMagick.html \
-	www/INSTALL-unix.html \
-	www/INSTALL-windows.html \
-	www/ImageMagickObject.html \
-	www/ImageMagickObject.rst \
-	www/Magick++/Documentation.html \
-	www/Magick++/Documentation.rst \
-	www/Magick++/Image.html \
-	www/Magick++/index.html \
-	www/NEWS.html \
-	www/OpenMP.html \
-	www/README.html \
-	www/animate.html \
-	www/api/api.html \
-	www/authors.html \
-	www/benchmarks.html \
-	www/bugs.html \
-	www/color.html \
-	www/compare.html \
-	www/composite.html \
-	www/conjure.html \
-	www/contribute.html \
-	www/convert.html \
-	www/display.html \
-	www/docutils-api.css \
-	www/docutils-articles.css \
-	www/download.html \
-	www/formats.html \
-	www/gm.html \
-	www/identify.html \
-	www/import.html \
-	www/index.html \
-	www/links.html \
-	www/miff.html \
-	www/mission.html \
-	www/mogrify.html \
-	www/montage.html \
-	www/motion-picture.html \
-	www/perl.html \
-	www/platforms.html \
-	www/process.html \
-	www/programming.html \
-	www/quantize.html \
-	www/tools.html \
-	www/utilities.html
+	$(WWWDIR)/CVS.html \
+	$(WWWDIR)/Changes.html \
+	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/ChangeLog-2009.html \
+	$(WWWDIR)/ChangeLog-2008.html \
+	$(WWWDIR)/ChangeLog-2007.html \
+	$(WWWDIR)/ChangeLog-2006.html \
+	$(WWWDIR)/ChangeLog-2005.html \
+	$(WWWDIR)/ChangeLog-2004.html \
+	$(WWWDIR)/ChangeLog-2003.html \
+	$(WWWDIR)/ChangeLog-2002.html \
+	$(WWWDIR)/ChangeLog-2001.html \
+	$(WWWDIR)/Copyright.html \
+	$(WWWDIR)/FAQ.html \
+	$(WWWDIR)/GraphicsMagick.html \
+	$(WWWDIR)/INSTALL-unix.html \
+	$(WWWDIR)/INSTALL-windows.html \
+	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/Magick++/Image.html \
+	$(WWWDIR)/Magick++/index.html \
+	$(WWWDIR)/NEWS.html \
+	$(WWWDIR)/OpenMP.html \
+	$(WWWDIR)/README.html \
+	$(WWWDIR)/animate.html \
+	$(WWWDIR)/api/api.html \
+	$(WWWDIR)/authors.html \
+	$(WWWDIR)/benchmarks.html \
+	$(WWWDIR)/bugs.html \
+	$(WWWDIR)/color.html \
+	$(WWWDIR)/compare.html \
+	$(WWWDIR)/composite.html \
+	$(WWWDIR)/conjure.html \
+	$(WWWDIR)/contribute.html \
+	$(WWWDIR)/convert.html \
+	$(WWWDIR)/display.html \
+	$(WWWDIR)/docutils-api.css \
+	$(WWWDIR)/docutils-articles.css \
+	$(WWWDIR)/download.html \
+	$(WWWDIR)/formats.html \
+	$(WWWDIR)/gm.html \
+	$(WWWDIR)/identify.html \
+	$(WWWDIR)/import.html \
+	$(WWWDIR)/index.html \
+	$(WWWDIR)/links.html \
+	$(WWWDIR)/miff.html \
+	$(WWWDIR)/mission.html \
+	$(WWWDIR)/mogrify.html \
+	$(WWWDIR)/montage.html \
+	$(WWWDIR)/motion-picture.html \
+	$(WWWDIR)/perl.html \
+	$(WWWDIR)/platforms.html \
+	$(WWWDIR)/process.html \
+	$(WWWDIR)/programming.html \
+	$(WWWDIR)/quantize.html \
+	$(WWWDIR)/tools.html \
+	$(WWWDIR)/utilities.html
 
 WWWW_EXTRA_DIST = $(WWW_HTML_FILES) $(WWW_RST_FILES)
-WWW_MAINTAINER_TARGETS = $(RST2HTML_TARGETS) $(WWWDIR)/color.html
+WWW_MAINTAINER_TARGETS = $(WWW_HTML_FILES) $(WWWDIR)/color.html
 @MAINTAINER_MODE_TRUE@NAMED_COLORS = $(top_srcdir)/scripts/named_colors.py
 @MAINTAINER_MODE_TRUE@RST2HTMLDECO = $(top_srcdir)/scripts/rst2htmldeco.py
 @MAINTAINER_MODE_TRUE@RELPATH = $(top_srcdir)/scripts/relpath.py
@@ -11274,32 +11305,6 @@ uninstall-data-html:
 	for dir in $(DOCDIRS) ; do \
 	  rm -f -r $(DESTDIR)$(htmldir)/$$dir ; \
 	done
-	$(WWWDIR)/Copyright.html \
-	$(WWWDIR)/FAQ.html \
-	$(WWWDIR)/INSTALL-unix.html \
-	$(WWWDIR)/INSTALL-windows.html \
-	$(WWWDIR)/NEWS.html \
-	$(WWWDIR)/OpenMP.html \
-	$(WWWDIR)/README.html \
-	$(WWWDIR)/authors.html \
-	$(WWWDIR)/benchmarks.html \
-	$(WWWDIR)/bugs.html \
-	$(WWWDIR)/contribute.html \
-	$(WWWDIR)/download.html \
-	$(WWWDIR)/formats.html \
-	$(WWWDIR)/ImageMagickObject.html \
-	$(WWWDIR)/index.html \
-	$(WWWDIR)/links.html \
-	$(WWWDIR)/miff.html \
-	$(WWWDIR)/mission.html \
-	$(WWWDIR)/motion-picture.html \
-	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
-	$(WWWDIR)/process.html \
-	$(WWWDIR)/programming.html \
-	$(WWWDIR)/quantize.html \
-	$(WWWDIR)/tools.html \
-	$(WWWDIR)/utilities.html
 
 @MAINTAINER_MODE_TRUE@$(RST2HTML_TARGETS) : \
 @MAINTAINER_MODE_TRUE@	$(top_srcdir)/scripts/html_fragments.py \
@@ -11313,10 +11318,6 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/%.html: $(top_srcdir)/%.rst
-@MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
-@MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
-
-@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/%.html: $(top_srcdir)/www/%.rst
 @MAINTAINER_MODE_TRUE@	$(RST2HTMLDECO)  --link-stylesheet=`$(RELPATH) $(top_srcdir)/www $@`docutils-articles.css \
 @MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 

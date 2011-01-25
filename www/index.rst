@@ -41,7 +41,8 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _ImageMagick : http://www.imagemagick.org/
 .. _Open Source Initiative : http://www.opensource.org/
 .. _OSSCC : http://www.osscc.net/en/index.html
-.. _OpenMP : OpenMP.html
+.. _OpenMP : http://www.openmp.org/
+.. _`multi-threaded` : OpenMP.html
 .. _`ChangeLog` : Changelog.html
 .. _`Flickr` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 .. _`Etsy` : http://codeascraft.etsy.com/2010/07/09/batch-processing-millions-of-images/
@@ -61,10 +62,10 @@ libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
 JPEG-2000, PNG, PDF, PNM, and TIFF.
 
-Image processing may be multi-threaded using OpenMP_ so that CPU-bound
-tasks scale linearly as processor cores are added. OpenMP_ support
-requires compilation with GCC 4.2 (or later), or use of any C compiler
-supporting at least the OpenMP_ 2.0 specification.
+Image processing may be `multi-threaded`_ using OpenMP_ so that
+CPU-bound tasks scale linearly as processor cores are added. OpenMP_
+support requires compilation with GCC 4.2 (or later), or use of any C
+compiler supporting at least the OpenMP_ 2.0 specification.
 
 GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
