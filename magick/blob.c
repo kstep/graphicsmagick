@@ -1889,8 +1889,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImageToBlob() implements direct to memory image formats.  It returns the
-%  image as a blob and its length.  The magick member of the Image structure
-%  determines the format of the returned blob(GIG, JPEG,  PNG, etc.)
+%  image frame (one frame!) as a blob and its length.  The magick member of
+%  the Image structure determines the format of the returned blob (GIF, JPEG,
+%  PNG, etc.).  This function is the equivalent of WriteImage(), but writes
+%  the formatted "file" to a memory buffer rather than to an actual file.
 %
 %  The format of the ImageToBlob method is:
 %
@@ -1899,7 +1901,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %
 %  A description of each parameter follows:
 %
-%    o image_info: The image info..
+%    o image_info: The image info.
 %
 %    o image: The image.
 %
@@ -1943,6 +1945,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
      {
+       ThrowException(exception,MissingDelegateError,
+		      NoDecodeDelegateForThisImageFormat,clone_info->magick);
        DestroyImageInfo(clone_info);
        if (image->logging)
          (void) LogMagickEvent(BlobEvent,GetMagickModule(),
@@ -1965,14 +1969,20 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
                                   "Exiting ImageToBlob");
           return((void *) NULL);
         }
+      /* Blob length is initially zero */
       clone_info->length=0;
+      /* Blob file descriptor should not be closed */
       image->blob->exempt=True;
+      /* There is no filename for a memory blob */
       *image->filename='\0';
+      /* Write the image to the blob */
       status=WriteImage(clone_info,image);
       if (status == False)
         {
-          ThrowException(exception,BlobError,UnableToWriteBlob,
-            clone_info->magick);
+	  /* Only assert our own exception if an exception was not already reported. */
+	  if (image->exception.severity == UndefinedException)
+	    ThrowException(exception,BlobError,UnableToWriteBlob,
+			   clone_info->magick);
           MagickFreeMemory(image->blob->data);
           DestroyImageInfo(clone_info);
           if (image->logging)
@@ -1980,9 +1990,12 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
                                   "Exiting ImageToBlob");
           return((void *) NULL);
         }
+      /* Request to truncate memory allocation down to memory actually used. */
       MagickReallocMemory(unsigned char *,image->blob->data,image->blob->length+1);
+      /* Pass blob data and length to user parameters */
       blob=image->blob->data;
       *length=image->blob->length;
+      /* Reset BlobInfo to original state (without freeing blob data). */
       DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
       if (image->logging)
@@ -4092,17 +4105,27 @@ static int SyncBlob(Image *image)
   int
     status;
 
-  register Image
-    *p;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
-  for (p=image; p->previous != (Image *) NULL; p=p->previous);
-  for ( ; p->next != (Image *) NULL; p=p->next)
-    if (p->blob != image->blob)
-      *p->blob=(*image->blob);
+
+#if 0
+  {
+    register Image
+      *p;
+
+    /*
+      FIXME: It is not clear why doing a sync on the blob stream
+      should try to propogate the blob stream object across the whole
+      image list.  Note that code below is not yet using the blob from
+      the current image (as desired).
+    */
+    for ( p=GetFirstImageInList(image); p != (Image *) NULL;
+	  p=SyncNextImageInList(p));
+  }
+#endif
+
   status=0;
   switch (image->blob->type)
   {

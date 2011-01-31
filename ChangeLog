@@ -1,3 +1,17 @@
+2011-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwblob.c, tests/rwfile.c: Validate the data in each image
+	frame, validate that each read returns the same number of frames,
+	and validate that the correct number of frames was ultimately
+	returned.
+
+	* magick/blob.c (SyncBlob): Disable bogus code which attempted to
+	replicate the blob I/O object across all images in the list when
+	the blob is synced.  Leave a less bogus bit of code in place (but
+	commented out) in case such functionality is deemed to actually be
+	needed in the future.  The previous code was copying structs on
+	top of each other, including a pointer member to a semaphore.
+
 2011-01-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/Changes.rst: Add a new Changes page to wrap up the yearly

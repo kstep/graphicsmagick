@@ -555,7 +555,7 @@ unsigned int WriteImage( const <a class="reference external" href="../api/types.
 </div>
 <div class="section" id="id22">
 <h2>Description</h2>
-<p>Use Write() to write an image or an image sequence to a file or
+<p>Use WriteImage() to write an image or an image sequence to a file or
 filehandle.  If writing to a file on disk, the name is defined by the
 filename member of the image structure.  Write() returns 0 is there is a
 memory shortage or if the image cannot be written.  Check the exception
@@ -584,7 +584,14 @@ unsigned int WriteImages( const <a class="reference external" href="../api/types
 </div>
 <div class="section" id="id24">
 <h2>Description</h2>
-<p>WriteImages() writes an image sequence.</p>
+<p>WriteImages() writes an image sequence into one or more files.  While
+WriteImage() will also write an image sequence, it is limited to writing
+the sequence into a single file using a format which supports multiple
+frames.  WriteImages() does not have that limitation since it will
+generate multiple output files if necessary (or when requested).  When
+ImageInfo's adjoin flag is set to MagickFalse, the file name is expected
+to include a printf-style formatting string for the frame number (e.g.
+&quot;image%02d.miff&quot;) so that the frames may be written.</p>
 <p>The format of the WriteImages method is:</p>
 <pre class="literal-block">
 unsigned int WriteImages( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference external" href="../api/types.html#image">Image</a> *image,
@@ -605,7 +612,7 @@ unsigned int WriteImages( const <a class="reference external" href="../api/types
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-01-25 02:38 UTC.
+Generated on: 2011-01-31 00:35 UTC.
 
 </div>
 </body>

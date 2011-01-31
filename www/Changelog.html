@@ -51,6 +51,21 @@
 <div class="document">
 
 
+<p>2011-01-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>tests/rwblob.c, tests/rwfile.c: Validate the data in each image
+frame, validate that each read returns the same number of frames,
+and validate that the correct number of frames was ultimately
+returned.</li>
+<li>magick/blob.c (SyncBlob): Disable bogus code which attempted to
+replicate the blob I/O object across all images in the list when
+the blob is synced.  Leave a less bogus bit of code in place (but
+commented out) in case such functionality is deemed to actually be
+needed in the future.  The previous code was copying structs on
+top of each other, including a pointer member to a semaphore.</li>
+</ul>
+</blockquote>
 <p>2011-01-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -88,7 +103,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-01-25 02:44 UTC.
+Generated on: 2011-01-31 04:04 UTC.
 
 </div>
 </body>
