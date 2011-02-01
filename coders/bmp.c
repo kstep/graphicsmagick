@@ -774,9 +774,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((magick_off_t) bmp_info.file_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,LengthAndFilesizeDoNotMatch,
         image);
-    else if ((magick_off_t) bmp_info.file_size < GetBlobSize(image))
-      ThrowReaderException(CorruptImageWarning,LengthAndFilesizeDoNotMatch,
-        image);
+    if (logging && (magick_off_t) bmp_info.file_size < GetBlobSize(image))
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "Discarding all data beyond bmp_info.file_size");
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
     if (bmp_info.height == 0)
