@@ -44,6 +44,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2007.html \
@@ -115,6 +116,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/CVS.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2007.html \

@@ -815,6 +815,7 @@ ModuleExport void RegisterCINEONImage(void)
   entry->magick=(MagickHandler) IsCINEON;
   entry->description="Cineon Image File";
   entry->module="CINEON";
+  entry->adjoin=MagickFalse;
   (void) RegisterMagickInfo(entry);
 }
 

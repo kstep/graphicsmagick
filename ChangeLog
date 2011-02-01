@@ -1,9 +1,17 @@
+2011-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwblob.c, tests/rwfile.c: Fixes to help tests work when
+	testing with multiple frames.
+
+	* coders/sgi.c: SGI format is not documented to support multiple
+	frames.  Remove the half-baked extension for it.
+
 2011-02-01  Glenn Randers-Pehrson  <glennrp@simple...>
 
-        * coders/bmp.c (ReadBMPImage): Changed file_size greater than
-        expected from a corrupt-image error to a debug log entry.  File_size
-        too small is still an error, and made that so also for BI_RGB
-        images which were previously exempted from the test.
+	* coders/bmp.c (ReadBMPImage): Changed file_size greater than
+	expected from a corrupt-image error to a debug log entry.
+	File_size too small is still an error, and made that so also for
+	BI_RGB images which were previously exempted from the test.
 
 2011-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

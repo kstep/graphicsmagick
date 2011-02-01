@@ -49,9 +49,9 @@ int main ( int argc, char **argv )
   unsigned long
     original_frames;
 
-
   MagickBool
-    check = MagickTrue;
+    check = MagickTrue,
+    check_for_added_frames = MagickTrue;
 
   ImageInfo
     *imageInfo;
@@ -177,10 +177,23 @@ int main ( int argc, char **argv )
   arg++;
   (void) strncpy( format, argv[arg], MaxTextExtent-1 );
 
-  /*   for (arg=0; arg < argc; arg++) */
-  /*     (void) printf("%s ", argv[arg]); */
-  /*   (void) printf("\n"); */
-  /*   (void) fflush(stdout); */
+  magick_info=GetMagickInfo(format,&exception);
+  if (magick_info == (MagickInfo *) NULL)
+    {
+      fprintf(stderr, "No support for \"%s\" format.\n",format);
+      exit(1);
+    }
+
+  /*
+    Some formats intentionally modify the number of frames.
+    FAX & JBIG write multiple frames, but read only one frame.
+  */
+  if ((!strcmp( "FAX", format )) ||
+      (!strcmp( "JBIG", format )) ||
+      (!strcmp( "MNG", format )) ||
+      (!strcmp( "PSD", format )) ||
+      (!strcmp( "PTIF", format )) )
+    check_for_added_frames = MagickFalse;
 
   /*
    * Read original image
@@ -188,7 +201,10 @@ int main ( int argc, char **argv )
 
   imageInfo->dither = 0;
   (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
-  (void) fflush(stdout);
+
+  if (!magick_info->adjoin && !check_for_added_frames)
+    (void) strcat( imageInfo->filename, "[0]" );
+
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
@@ -218,28 +234,26 @@ int main ( int argc, char **argv )
   size[0] = '\0';
   magick_info=GetMagickInfo(format,&exception);
   strcpy(filespec,basefilespec);
-  if (magick_info)
+
+  if (magick_info->raw)
     {
-      if (magick_info->raw)
-	{
-	  /*
-	   * Specify original image size if format requires it
-	   */
-	  FormatString( size, "%lux%lu", original->columns, original->rows );
-	}
-      if (IgnoreExtensionTreatment == magick_info->extension_treatment)
-	{
-	  /*
-	    Prepend magic specifier if extension will be ignored.
-	  */
-	  (void) strcpy(filespec,format);
-	  (void) strcat(filespec,":");
-	  (void) strcat(filespec,basefilespec);
-	}
-      else
-	{
-	  (void) strcat(filespec,".%s");
-	}
+      /*
+       * Specify original image size if format requires it
+       */
+      FormatString( size, "%lux%lu", original->columns, original->rows );
+    }
+  if (IgnoreExtensionTreatment == magick_info->extension_treatment)
+    {
+      /*
+	Prepend magic specifier if extension will be ignored.
+      */
+      (void) strcpy(filespec,format);
+      (void) strcat(filespec,":");
+      (void) strcat(filespec,basefilespec);
+    }
+  else
+    {
+      (void) strcat(filespec,".%s");
     }
 
   /*
@@ -335,9 +349,6 @@ int main ( int argc, char **argv )
       double
 	fuzz_factor = 0;
 
-      double
-	check_for_added_frames = MagickTrue;
-
       /*
 	Some formats are lossy.
       */
@@ -357,12 +368,6 @@ int main ( int argc, char **argv )
           (final->compression == JPEGCompression))
         fuzz_factor = 0.06;
 
-      /*
-	Some formats intentionally modify the number of frames.
-      */
-      if (!strcmp( "PTIF", format ) )
-	check_for_added_frames = MagickFalse;
-
       {
 	Image
 	  *o,
@@ -378,6 +383,7 @@ int main ( int argc, char **argv )
 	     ((o != (Image *) NULL) && (f != (Image *) NULL)) ;
 	     o = o->next, f = f->next, frame++)
 	  {
+	    printf("Checking frame %ld...\n",frame);
 	    if ( !IsImagesEqual(o, f ) &&
 		 (original->error.normalized_mean_error > fuzz_factor) )
 	      {
@@ -415,9 +421,7 @@ int main ( int argc, char **argv )
 	      that frames are not lost (or spuriously added) due to
 	      read/write of format.
 	    */
-	    if (((magick_info=GetMagickInfo(original->magick,&exception))
-		 != (MagickInfo *) NULL) &&
-		(magick_info->adjoin))
+	    if (magick_info->adjoin)
 	      {
 		unsigned long
 		  final_frames;
