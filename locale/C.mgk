@@ -471,6 +471,9 @@
         <Message name="SkipToSyncByte">
           Corrupt PCD image, skipping to sync byte
         </Message>
+        <Message name="LengthAndFilesizeDoNotMatch">
+          Length and filesize do not match
+        </Message>
       </Warning>
     </Image>
   </Corrupt>

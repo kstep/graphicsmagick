@@ -651,6 +651,11 @@ SymbolicName    = ImageErrorLengthAndFilesizeDoNotMatch
 Language        = English
 Length and filesize do not match
 .
+MessageId       = +1
+SymbolicName    = ImageWarningLengthAndFilesizeDoNotMatch
+Language        = English
+Length and filesize do not match
+.
 
 MessageId       = +1
 SymbolicName    = ImageErrorMissingImageChannel
