@@ -200,14 +200,14 @@ int main ( int argc, char **argv )
    */
 
   imageInfo->dither = 0;
+
   (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
-
-  if (!magick_info->adjoin && !check_for_added_frames)
+  if (!magick_info->adjoin || !check_for_added_frames)
     (void) strcat( imageInfo->filename, "[0]" );
-
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Reading image %s", imageInfo->filename);
+			"Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
+
   if (exception.severity != UndefinedException)
     {
       CatchException(&exception);
@@ -256,6 +256,9 @@ int main ( int argc, char **argv )
       (void) strcat(filespec,".%s");
     }
 
+  (void) sprintf( filename, basefilespec, 1, format );
+  (void) remove(filename);
+
   /*
    * Save image to file
    */
@@ -303,6 +306,9 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
+  (void) sprintf( filename, basefilespec, 2, format );
+  (void) remove(filename);
+
   (void) sprintf( filename, filespec, 2, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
   (void) strncpy( original->filename, filename, MaxTextExtent-1 );
