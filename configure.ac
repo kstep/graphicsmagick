@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2010 GraphicsMagick Group
+# Copyright (C) 2003-2011 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -2834,6 +2834,7 @@ GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
 GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
+GSCMYKDevice=pam
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
@@ -2905,6 +2906,16 @@ then
   fi
   AC_MSG_RESULT($GSMonoDevice)
 
+  # GSCMYKDevice
+  AC_MSG_CHECKING([for gs CMYK device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pam -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSCMYKDevice=pam
+  else
+    GSCMYKDevice==$GSColorDevice
+  fi
+  AC_MSG_RESULT($GSCMYKDevice)
+
   # GSPDFDevice
   AC_MSG_CHECKING([for gs PDF writing device])
   if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
@@ -2938,6 +2949,7 @@ then
 fi
 
 AC_SUBST(GSMonoDevice)
+AC_SUBST(GSCMYKDevice)
 AC_SUBST(GSGrayDevice)
 AC_SUBST(GSPaletteDevice)
 AC_SUBST(GSColorDevice)

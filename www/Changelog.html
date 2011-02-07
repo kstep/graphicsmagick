@@ -51,6 +51,21 @@
 <div class="document">
 
 
+<p>2011-02-06  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>config/delegates.mgk.in: Added gs-cmyk entry.  Used if '-type
+ColorSeparation' is specified on the command-line prior to the PDF
+or Postscript file name.  This entry specifies use of the
+Ghostscript PAM driver which is capable of supporting CMYK output.
+This may be useful if it is desired to apply CMYK color profiles
+to the image returned from the PDF.  As fair warning, it seems
+that Ghostscript 8.62 outputs CMYK even if the PDF was in RGB
+space if the PAM driver is used.</li>
+<li>coders/pnm.c (ReadPNMImage): Add support for reading netpbm's
+PAM format.</li>
+</ul>
+</blockquote>
 <p>2011-02-01  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -121,7 +136,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-02-01 23:03 UTC.
+Generated on: 2011-02-07 00:15 UTC.
 
 </div>
 </body>

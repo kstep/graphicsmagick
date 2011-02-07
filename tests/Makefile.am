@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2010 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -791,6 +791,10 @@ TESTS_TESTS = \
 	tests/rwfile_PPM_truecolor10.sh \
 	tests/rwfile_PPM_truecolor12.sh \
 	tests/rwfile_PPM_truecolor16.sh \
+	tests/rwfile_PSD_bilevel.sh \
+	tests/rwfile_PSD_gray.sh \
+	tests/rwfile_PSD_pallette.sh \
+	tests/rwfile_PSD_truecolor.sh \
 	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \
@@ -985,6 +989,7 @@ CHECK_FILE_FORMATS = \
 	PNM \
 	PPM \
 	PS \
+	PSD \
 	PTIF \
 	RAS \
 	SGI \

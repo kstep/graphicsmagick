@@ -647,6 +647,7 @@ GSColorAlphaDevice
 GSColorDevice
 GSPaletteDevice
 GSGrayDevice
+GSCMYKDevice
 GSMonoDevice
 HAS_ZIP_FALSE
 HAS_ZIP_TRUE
@@ -29661,6 +29662,7 @@ GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
 GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
+GSCMYKDevice=pam
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
@@ -29744,6 +29746,18 @@ $as_echo_n "checking for gs mono device... " >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSMonoDevice" >&5
 $as_echo "$GSMonoDevice" >&6; }
 
+  # GSCMYKDevice
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs CMYK device" >&5
+$as_echo_n "checking for gs CMYK device... " >&6; }
+  if $PSDelegate -q -dBATCH -sDEVICE=pam -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSCMYKDevice=pam
+  else
+    GSCMYKDevice==$GSColorDevice
+  fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSCMYKDevice" >&5
+$as_echo "$GSCMYKDevice" >&6; }
+
   # GSPDFDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PDF writing device" >&5
 $as_echo_n "checking for gs PDF writing device... " >&6; }
@@ -29781,6 +29795,7 @@ $as_echo_n "checking for gs EPS writing device... " >&6; }
 $as_echo "$GSEPSDevice" >&6; }
 
 fi
+
 
 
 
