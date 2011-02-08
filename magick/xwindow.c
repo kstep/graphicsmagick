@@ -867,13 +867,17 @@ MagickXBestFont(Display *display,
       "-*-arial-medium-r-normal--12-*-*-*-*-*-iso8859-1",
       "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-15",
       "-*-arial-medium-r-normal--12-*-*-*-*-*-iso8859-15",
+      "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
+      "-*-arial-medium-r-normal--12-*-*-*-*-*-*-*",
       "variable",
+      "fixed",
       (char *) NULL
     },
     *TextFonts[]=
     {
-      "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1",
-      "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-15",
+      "-*-courier-medium-r-normal-*-12-*-*-*-*-*-iso8859-1",
+      "-*-courier-medium-r-normal-*-12-*-*-*-*-*-iso8859-15",
+      "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-*-*",
       "fixed",
       (char *) NULL
     };

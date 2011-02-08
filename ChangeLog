@@ -1,3 +1,9 @@
+2011-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXBestFont): Check for a few more common
+	font names, and ensure to always check for "fixed" as a final
+	fallback.
+
 2011-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* config/delegates.mgk.in: Added gs-cmyk entry.  Used if '-type
