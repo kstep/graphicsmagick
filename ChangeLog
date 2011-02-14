@@ -1,3 +1,12 @@
+2011-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (ReadPNMImage): Fix mis-placed break in PAM header
+	parser.
+
+	* wand/magick_wand.c (MagickWriteImageBlob): Improve the
+	documentation to mention the related use of MagickSetImageFormat()
+	and MagickResetIterator().
+
 2011-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXBestFont): Check for a few more common

@@ -9866,8 +9866,14 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickWriteImageBlob() implements direct to memory image formats.  It
-%  returns the image as a blob and its length.  The magick member of the Image
-%  structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)
+%  returns the image as a blob (a formatted "file" in memory) and its
+%  length, starting from the current position in the image sequence.
+%  Use MagickSetImageFormat() to set the format to write to the blob
+%  (GIF, JPEG,  PNG, etc.).
+%
+%  Use MagickResetIterator() on the wand if it is desired to write
+%  a sequence from the beginning and the iterator is not currently
+%  at the beginning.
 %
 %  The format of the MagickWriteImageBlob method is:
 %
@@ -9946,7 +9952,9 @@ WandExport unsigned int MagickWriteImageFile(MagickWand *wand,FILE *file)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickWriteImages() writes an image or image sequence.
+%  MagickWriteImages() writes an image or image sequence.  If the wand
+%  represents an image sequence, then it is written starting at the first
+%  frame in the sequence.
 %
 %  The format of the MagickWriteImages method is:
 %

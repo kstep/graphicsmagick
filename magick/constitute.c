@@ -9092,7 +9092,7 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
       for (p=image; p != (Image *) NULL; p=p->next)
         {
           status &= WriteImage(clone_info,p);
-          if(p->exception.severity > exception->severity)
+          if (p->exception.severity > exception->severity)
             CopyException(exception,&p->exception);
           GetImageException(p,exception);
           if (clone_info->adjoin)

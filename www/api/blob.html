@@ -513,10 +513,10 @@ void *ImageToBlob( const <a class="reference external" href="../api/types.html#i
 <div class="section" id="id32">
 <h2>Description</h2>
 <p>ImageToBlob() implements direct to memory image formats.  It returns the
-image frame (one frame!) as a blob and its length.  The magick member of
-the Image structure determines the format of the returned blob (GIF, JPEG,
-PNG, etc.).  This function is the equivalent of WriteImage(), but writes
-the formatted &quot;file&quot; to a memory buffer rather than to an actual file.</p>
+image as a formatted blob and its length.  The magick member of the Image
+structure determines the format of the returned blob (GIF, JPEG, PNG,
+etc.).  This function is the equivalent of WriteImage(), but writes the
+formatted &quot;file&quot; to a memory buffer rather than to an actual file.</p>
 <p>The format of the ImageToBlob method is:</p>
 <pre class="literal-block">
 void *ImageToBlob( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference external" href="../api/types.html#image">Image</a> *image, size_t *length,
@@ -681,7 +681,7 @@ the blob is temporary.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-01-31 04:28 UTC.
+Generated on: 2011-02-13 20:54 UTC.
 
 </div>
 </body>

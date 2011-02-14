@@ -471,11 +471,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	      else
 		{
 		  /* Unknown! */
-		  break;
 		  do
 		    {
 		      c=ReadBlobByte(image);
 		    } while (('\n' != c) && (EOF != c));
+		  break;
 		}
 	    }
 	}
