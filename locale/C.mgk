@@ -778,6 +778,26 @@
       </Message>
     </Warning>
   </Module>
+  <Monitor>
+    <Error>
+      <Message name="Default">
+        default error
+      </Message>
+    </Error>
+    <FatalError>
+      <Message name="UserRequestedTerminationBySignal">
+        User requested termination (via signal)
+      </Message>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
+  </Monitor>
   <Option>
     <Error>
       <Message name="BevelWidthIsNegative">

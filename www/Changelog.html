@@ -42,7 +42,7 @@
 <li><a href="CVS.html">CVS</a></li>
 <li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
 <li><a href="Changes.html">Changes</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
 <li><a href="links.html">Links</a></li>
@@ -51,6 +51,24 @@
 <div class="document">
 
 
+<p>2011-02-20  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/magick.c (MagickPanicSignalHandler,MagickSignalHandler):
+Don't invoke DestroyMagick() since there may be OpenMP worker
+threads still running which are using data which would be
+deallocated.  Instead we invoke PurgeTemporaryFiles() to remove
+any existing temporary files. Valgrind will report leaks if the
+program is terminated by a signal but this causes no actual harm.
+Resolves SourceForge issue 3165456 &quot;^C causes semaphore failure in
+MacOSX&quot;.
+(MagickPanicSignalHandler): Invoke abort() in panic signal handler
+so that we will reliably get a core dump.</li>
+<li>magick/tempfile.c (PurgeTemporaryFiles): New private function to
+remove any existing temporary files but without destroying
+temporary file semaphore.</li>
+</ul>
+</blockquote>
 <p>2011-02-13  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -154,7 +172,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-02-14 00:08 UTC.
+Generated on: 2011-02-20 17:42 UTC.
 
 </div>
 </body>

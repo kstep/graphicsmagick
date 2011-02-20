@@ -10,7 +10,7 @@ GraphicsMagick web site pages.
 
 
 url_mailinglist = "http://sourceforge.net/mail/?group_id=73485"
-url_sourceforge = "http://sourceforge.net/projects/graphicsmagick/"
+url_sourceforge = "https://sourceforge.net/tracker/?group_id=73485"
 
 banner_logo = 'images/gm-107x76.png' # relative to top directory
 

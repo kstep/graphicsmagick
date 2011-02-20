@@ -49,6 +49,7 @@
 #include "magick/magic.h"
 #include "magick/magick.h"
 #include "magick/module.h"
+#include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/random.h"
 #include "magick/registry.h"
@@ -86,6 +87,9 @@ static SemaphoreInfo
 
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
+
+static unsigned int panic_signal_handler_call_count = 0;
+static unsigned int quit_signal_handler_call_count = 0;
 
 static MagickInitializationState MagickInitialized = InitDefault;
 static CoderClass MinimumCoderClass = UnstableCoderClass;
@@ -133,10 +137,15 @@ MagickSetFileSystemBlockSize(const size_t block_size)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagick() destroys the GraphicsMagick environment.  This function
+%  DestroyMagick() destroys the GraphicsMagick environment, releasing all
+%  allocated semaphores, memory, and temporary files.  This function
 %  should be invoked in the primary (original) thread of the application's
 %  process while shutting down, and only after any threads which might be
-%  using GraphicsMagick functions have terminated.
+%  using GraphicsMagick functions have terminated.  Since GraphicsMagick
+%  uses threads internally via OpenMP, it is also necessary for any function
+%  calls into GraphicsMagick to have already returned so that OpenMP worker
+%  threads are quiesced and won't be accessing any semaphores or data
+%  structures which are destroyed by this function.
 %
 %  The format of the DestroyMagick function is:
 %
@@ -600,8 +609,8 @@ typedef RETSIGTYPE Sigfunc(int);
 # define SIG_DFL (Sigfunc *)0
 #endif
 
-static RETSIGTYPE MagickPanicSignalHandler(int signo) __attribute__ ((noreturn));
-static RETSIGTYPE MagickSignalHandler(int signo) __attribute__ ((noreturn));
+static RETSIGTYPE MagickPanicSignalHandler(int signo);
+static RETSIGTYPE MagickSignalHandler(int signo);
 
 /*
   Signal function which prevents interrupted system calls from
@@ -694,52 +703,78 @@ MagickPanicSignalHandler(int signo)
 {
   /* fprintf(stderr,"Caught panic signal %d\n", signo); */
 
-  /*
-    Restore default handling for the signal
-  */
-  (void) MagickSignal(signo,SIG_DFL);
+  panic_signal_handler_call_count++;
 
   /*
-    Release resources
+    Only handle signal one time.
   */
-  DestroyTemporaryFiles();
+  if (1 == panic_signal_handler_call_count)
+    {
+      if (MagickInitialized == InitInitialized)
+	{
+	  /*
+	    Release persistent resources
+	  */
+	  PurgeTemporaryFiles();
+	}
 
-  /*
-    Raise signal again to invoke default handler
-    This may cause a core dump or immediate exit.
-  */
-#if defined(HAVE_RAISE)
-  (void) fflush(stdout);
-  (void) raise(signo);
-#endif
-
-  SignalHandlerExit(signo);
+      /*
+	Call abort so that we quit with core dump.
+      */
+      abort();
+    }
 }
+
+static MagickBool QuitProgressMonitor(const char *task,
+				      const magick_int64_t quantum,
+				      const magick_uint64_t span,
+				      ExceptionInfo *exception)
+{
+  ARG_NOT_USED(task);
+  ARG_NOT_USED(quantum);
+  ARG_NOT_USED(span);
+
+  /* Report an error message */
+  if (exception->severity < FatalErrorException)
+    ThrowException(exception,MonitorFatalError,UserRequestedTerminationBySignal,0);
+
+  return MagickFail;
+}
+
 
 static RETSIGTYPE
 MagickSignalHandler(int signo)
 {
   /* fprintf(stderr,"Caught signal %d\n", signo); */
 
-  /*
-    Restore default handling for the signal
-  */
-  (void) MagickSignal(signo,SIG_DFL);
+  quit_signal_handler_call_count++;
 
   /*
-    Release resources
+    Only handle signal one time.
   */
-  DestroyMagick();
+  if (1 == quit_signal_handler_call_count)
+    {
+      if (MagickInitialized == InitInitialized)
+	{
 
-  /*
-    Raise signal again to invoke default handler
-    This may cause a core dump or immediate exit.
-  */
-#if defined(HAVE_RAISE)
-  (void) raise(signo);
-#endif
+	  /*
+	    Set progress monitor handler to one which always returns
+	    MagickFail.
+	  */
+	  (void) SetMonitorHandler(QuitProgressMonitor);
 
-  SignalHandlerExit(signo);
+	  /*
+	    Release persistent resources
+	  */
+	  PurgeTemporaryFiles();
+	}
+
+      /*
+	Invoke _exit(signo) (or equivalent) which avoids invoking
+	registered atexit() functions.
+      */
+      SignalHandlerExit(signo);
+    }
 }
 
 /*
@@ -875,11 +910,11 @@ InitializeMagickSignalHandlers(void)
 #if defined(SIGHUP)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);
 #endif
-  /* interrupt (rubout), default terminate */
+  /* interrupt (CONTROL-c), default terminate */
 #if defined(SIGINT) && !defined(MSWINDOWS)
   (void) MagickCondSignal(SIGINT,MagickSignalHandler);
 #endif
-  /* quit (ASCII FS), default terminate with core */
+  /* quit (CONTROL-\), default terminate with core */
 #if defined(SIGQUIT)
   (void) MagickCondSignal(SIGQUIT,MagickPanicSignalHandler);
 #endif

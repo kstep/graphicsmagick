@@ -1,3 +1,20 @@
+2011-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (MagickPanicSignalHandler,MagickSignalHandler):
+	Don't invoke DestroyMagick() since there may be OpenMP worker
+	threads still running which are using data which would be
+	deallocated.  Instead we invoke PurgeTemporaryFiles() to remove
+	any existing temporary files. Valgrind will report leaks if the
+	program is terminated by a signal but this causes no actual harm.
+	Resolves SourceForge issue 3165456 "^C causes semaphore failure in
+	MacOSX".
+	(MagickPanicSignalHandler): Invoke abort() in panic signal handler
+	so that we will reliably get a core dump.
+
+	* magick/tempfile.c (PurgeTemporaryFiles): New private function to
+	remove any existing temporary files but without destroying
+	temporary file semaphore.
+
 2011-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): Fix mis-placed break in PAM header

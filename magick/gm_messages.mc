@@ -1373,6 +1373,30 @@ default warning
 .
 
 MessageId       = +1
+SymbolicName    = MonitorErrorDefault
+Language        = English
+default error
+.
+
+MessageId       = +1
+SymbolicName    = MonitorFatalErrorDefault
+Language        = English
+default error
+.
+
+MessageId       = +1
+SymbolicName    = MonitorFatalErrorUserRequestedTerminationBySignal
+Language        = English
+User requested termination (via signal)
+.
+
+MessageId       = +1
+SymbolicName    = MonitorWarningDefault
+Language        = English
+default warning
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorBevelWidthIsNegative
 Language        = English
 bevel width is negative

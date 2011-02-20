@@ -42,7 +42,7 @@
 <li><a href="../CVS.html">CVS</a></li>
 <li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
 <li><a href="../Changes.html">Changes</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
 <li><a href="../links.html">Links</a></li>
@@ -81,10 +81,15 @@ DestroyMagick( void );
 </div>
 <div class="section" id="description">
 <h2>Description</h2>
-<p>DestroyMagick() destroys the GraphicsMagick environment.  This function
+<p>DestroyMagick() destroys the GraphicsMagick environment, releasing all
+allocated semaphores, memory, and temporary files.  This function
 should be invoked in the primary (original) thread of the application's
 process while shutting down, and only after any threads which might be
-using GraphicsMagick functions have terminated.</p>
+using GraphicsMagick functions have terminated.  Since GraphicsMagick
+uses threads internally via OpenMP, it is also necessary for any function
+calls into GraphicsMagick to have already returned so that OpenMP worker
+threads are quiesced and won't be accessing any semaphores or data
+structures which are destroyed by this function.</p>
 <p>The format of the DestroyMagick function is:</p>
 <pre class="literal-block">
 DestroyMagick( void );
@@ -420,7 +425,7 @@ looking for.</dd>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-01-25 02:39 UTC.
+Generated on: 2011-02-20 17:42 UTC.
 
 </div>
 </body>
