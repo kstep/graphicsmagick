@@ -1,3 +1,8 @@
+2011-03-14  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* coders/png.c (WriteOnePNGImage(): Fixed a rounding error in
+	writing the pHYs chunk (it was truncating instead of rounding).
+
 2011-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (MagickPanicSignalHandler,MagickSignalHandler):

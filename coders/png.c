@@ -6397,14 +6397,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       if (image->units == PixelsPerInchResolution)
         {
           unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) (100.0*image->x_resolution/2.54);
-          y_resolution=(png_uint_32) (100.0*image->y_resolution/2.54);
+          x_resolution=(png_uint_32) ((100.0*image->x_resolution+0.5)/2.54);
+          y_resolution=(png_uint_32) ((100.0*image->y_resolution+0.5)/2.54);
         }
       else if (image->units == PixelsPerCentimeterResolution)
         {
           unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) (100.0*image->x_resolution);
-          y_resolution=(png_uint_32) (100.0*image->y_resolution);
+          x_resolution=(png_uint_32) (100.0*image->x_resolution+0.5);
+          y_resolution=(png_uint_32) (100.0*image->y_resolution+0.5);
         }
       else
         {
@@ -6412,10 +6412,20 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           x_resolution=(png_uint_32) image->x_resolution;
           y_resolution=(png_uint_32) image->y_resolution;
         }
+
       png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
+
       if (logging)
+      {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Setting up pHYs chunk");
+             "    Setting up pHYs chunk");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      x_resolution=%lu",(unsigned long) x_resolution);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      y_resolution=%lu",(unsigned long) y_resolution);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      unit_type=%lu",(unsigned long) unit_type);
+      }
     }
 #endif
 #if defined(PNG_oFFs_SUPPORTED)
