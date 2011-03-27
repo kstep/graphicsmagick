@@ -394,7 +394,7 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickTell(fildes) /* __int64 */ _telli64(fildes)
 #else
 #  define MagickSeek(fildes,offset,whence)  lseek(fildes,offset,whence)
-#  define MagickTell(fildes) tell(filedes)
+#  define MagickTell(fildes) (MagickSeek(fildes,0,SEEK_CUR))
 #endif
 
 #if defined(MSWINDOWS) && !defined(Windows95) && !defined(__BORLANDC__) && \
