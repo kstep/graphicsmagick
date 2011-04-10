@@ -35,6 +35,7 @@ GraphicsMagick Supported Formats
 .. _MPEG : http://www.mpeg.org/
 .. _MTV : http://www.fileformat.info/format/mtv/egff.htm
 .. _MathWorks : http://www.mathworks.com/
+.. _PAM : http://netpbm.sourceforge.net/doc/pam.html
 .. _PBM : http://www.fileformat.info/format/pbm/egff.htm
 .. _PCX : http://www.fileformat.info/format/pcx/egff.htm
 .. _PWP : http://www.photoworks.com/
@@ -273,6 +274,9 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | PALM         | RW   | Palm pixmap               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
+   | PAM_         | RW   | Portable Arbitrary Map    | Superset of PNM (PPM, PGM, PPM) raw type formats.|
+   |              |      | format                    | Supports bilevel, gray, RGB, CMYK, alpha channel.|
+   +--------------+------+---------------------------+--------------------------------------------------+
    | PBM_         | RW   | Portable bitmap format    |                                                  |
    |              |      | (black and white)         |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -321,8 +325,8 @@ image formats.
    |              |      |                           | the image.                                       |
    |              |      |                           |                                                  |
    |              |      |                           | The default is to write the binary version of    |
-   |              |      |                           | the formats. Use +compress to write the ASCII    |
-   |              |      |                           | version of the formats.                          |
+   |              |      |                           | the formats. Use '-quality 0' to write the       |
+   |              |      |                           | ASCII version of the formats.                    |
    +--------------+------+---------------------------+--------------------------------------------------+
    | PPM          | RW   | Portable pixmap format    |                                                  |
    |              |      | (color)                   |                                                  |

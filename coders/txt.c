@@ -330,6 +330,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
 
   p = ReadBlobString(image,text);
+  if (p == NULL)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   txt_subformat = IsTXT((unsigned char *)p,strlen(p));
 
   if (txt_subformat != NO_TXT)
@@ -1074,6 +1076,7 @@ ModuleExport void RegisterTXTImage(void)
   entry=SetMagickInfo("TXT");
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
+  entry->seekable_stream=MagickTrue;
   entry->description="ASCII Text";
   entry->module="TXT";
   (void) RegisterMagickInfo(entry);

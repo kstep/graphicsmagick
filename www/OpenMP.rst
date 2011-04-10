@@ -1,6 +1,10 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
+.. _`Amdahl's law` : http://en.wikipedia.org/wiki/Amdahl%27s_law
+.. _`GOMP` : http://gcc.gnu.org/onlinedocs/libgomp/
+.. _`OpenMP` : http://openmp.org/
+
 ========================
 OpenMP in GraphicsMagick
 ========================
@@ -11,24 +15,23 @@ OpenMP in GraphicsMagick
 Overview
 ========
 
-GraphicsMagick has been transformed to use `OpenMP
-<http://openmp.org/>`_ for the 1.3 release series. OpenMP is a
-portable framework for accelerating CPU-bound and memory-bound
-operations using multiple threads. OpenMP originates in the
-super-computing world and has been available in one form or another
-since the late '90s.
+GraphicsMagick has been transformed to use OpenMP_ for the 1.3 release
+series. OpenMP is a portable framework for accelerating CPU-bound and
+memory-bound operations using multiple threads. OpenMP originates in
+the super-computing world and has been available in one form or
+another since the late '90s.
 
-Since GCC 4.2 has introduced excellent OpenMP support via `GOMP
-<http://gcc.gnu.org/onlinedocs/libgomp/>`_, OpenMP has become
-available to the masses. Microsoft Visual Studio Professional 2005 and
-2008 support OpenMP so Windows users can benefit as well. Any
-multi-CPU and/or multi-core system is potentially a good candidate for
-use with OpenMP. Unfortunately, some older multi-CPU hardware is more
-suitable for multi-processing than multi-threading. Modern multi-core
-chipsets from AMD, Intel and Sun/Oracle perform very well with
-OpenMP. The operating system makes a difference when it comes to
-OpenMP acceleration, with IBM's AIX, Linux, and Sun's Solaris working
-exceptionally well, and FreeBSD and Apple's OS-X working less well.
+Since GCC 4.2 has introduced excellent OpenMP support via GOMP_,
+OpenMP has become available to the masses. Microsoft Visual Studio
+Professional 2005 and 2008 support OpenMP so Windows users can benefit
+as well. Any multi-CPU and/or multi-core system is potentially a good
+candidate for use with OpenMP. Unfortunately, some older multi-CPU
+hardware is more suitable for multi-processing than
+multi-threading. Modern multi-core chipsets from AMD, Intel and
+Sun/Oracle perform very well with OpenMP. The operating system makes a
+difference when it comes to OpenMP acceleration, with IBM's AIX,
+Linux, and Sun's Solaris working exceptionally well, and FreeBSD and
+Apple's OS-X working less well.
 
 Most image processing routines are comprised of loops which iterate
 through the image pixels, image rows, or image regions. These loops are
@@ -42,18 +45,18 @@ multi-CPU systems split the system memory across CPUs so each CPU adds
 more memory bandwidth as well.
 
 For severely CPU-bound algorithms, it is not uncommon to see a linear
-speed-up due to the number of cores. For example, a two core system
-executes the algorithm twice as fast, and a four core system executes
-the algorithm four times as fast. Memory-bound algorithms scale based
-on the memory bandwith available to the cores. For example,
-memory-bound algorithms scale up to almost 1.5X on my four core
-Opteron system due to its NUMA architecture. Some systems/CPUs are
-able to immediately context switch to another thread if the core would
-be blocked waiting for memory, allowing multiple memory accesses to be
-pending at once, and thereby improving throughput.  For example,
-typical speedup of 20-32X (average 24X) has been observed on the Sun
-SPARC T2 CPU, which provides 8 cores, with 8 virtual CPUs per core (64
-threads).
+speed-up (within the constraints of `Amdahl's law`_) due to the number
+of cores. For example, a two core system executes the algorithm twice
+as fast, and a four core system executes the algorithm four times as
+fast. Memory-bound algorithms scale based on the memory bandwith
+available to the cores. For example, memory-bound algorithms scale up
+to almost 1.5X on my four core Opteron system due to its NUMA
+architecture. Some systems/CPUs are able to immediately context switch
+to another thread if the core would be blocked waiting for memory,
+allowing multiple memory accesses to be pending at once, and thereby
+improving throughput.  For example, typical speedup of 20-32X (average
+24X) has been observed on the Sun SPARC T2 CPU, which provides 8
+cores, with 8 virtual CPUs per core (64 threads).
 
 An approach used in GraphicsMagick is to recognize the various access
 patterns in the existing code, and re-write the algorithms (sometimes

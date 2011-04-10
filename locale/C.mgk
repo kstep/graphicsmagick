@@ -610,6 +610,9 @@
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
+      <Message name="ImageColorspaceMismatch">
+        image colorspace mismatch
+      </Message>
       <Message name="ImageDifferenceExceedsLimit">
         image difference exceeds limit (%s)
       </Message>
@@ -666,6 +669,9 @@
       </Message>
       <Message name="UnableToFlattenImage">
         unable to flatten image
+      </Message>
+      <Message name="UnableToHandleImageChannel">
+        unable to handle image channel
       </Message>
       <Message name="UnableToResizeImage">
         unable to resize image

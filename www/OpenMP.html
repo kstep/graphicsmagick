@@ -72,21 +72,22 @@
 </div>
 <div class="section" id="overview">
 <h1><a class="toc-backref" href="#id1">Overview</a></h1>
-<p>GraphicsMagick has been transformed to use <a class="reference external" href="http://openmp.org/">OpenMP</a> for the 1.3 release series. OpenMP is a
-portable framework for accelerating CPU-bound and memory-bound
-operations using multiple threads. OpenMP originates in the
-super-computing world and has been available in one form or another
-since the late '90s.</p>
-<p>Since GCC 4.2 has introduced excellent OpenMP support via <a class="reference external" href="http://gcc.gnu.org/onlinedocs/libgomp/">GOMP</a>, OpenMP has become
-available to the masses. Microsoft Visual Studio Professional 2005 and
-2008 support OpenMP so Windows users can benefit as well. Any
-multi-CPU and/or multi-core system is potentially a good candidate for
-use with OpenMP. Unfortunately, some older multi-CPU hardware is more
-suitable for multi-processing than multi-threading. Modern multi-core
-chipsets from AMD, Intel and Sun/Oracle perform very well with
-OpenMP. The operating system makes a difference when it comes to
-OpenMP acceleration, with IBM's AIX, Linux, and Sun's Solaris working
-exceptionally well, and FreeBSD and Apple's OS-X working less well.</p>
+<p>GraphicsMagick has been transformed to use <a class="reference external" href="http://openmp.org/">OpenMP</a> for the 1.3 release
+series. OpenMP is a portable framework for accelerating CPU-bound and
+memory-bound operations using multiple threads. OpenMP originates in
+the super-computing world and has been available in one form or
+another since the late '90s.</p>
+<p>Since GCC 4.2 has introduced excellent OpenMP support via <a class="reference external" href="http://gcc.gnu.org/onlinedocs/libgomp/">GOMP</a>,
+OpenMP has become available to the masses. Microsoft Visual Studio
+Professional 2005 and 2008 support OpenMP so Windows users can benefit
+as well. Any multi-CPU and/or multi-core system is potentially a good
+candidate for use with OpenMP. Unfortunately, some older multi-CPU
+hardware is more suitable for multi-processing than
+multi-threading. Modern multi-core chipsets from AMD, Intel and
+Sun/Oracle perform very well with OpenMP. The operating system makes a
+difference when it comes to OpenMP acceleration, with IBM's AIX,
+Linux, and Sun's Solaris working exceptionally well, and FreeBSD and
+Apple's OS-X working less well.</p>
 <p>Most image processing routines are comprised of loops which iterate
 through the image pixels, image rows, or image regions. These loops are
 accelerated using OpenMP by executing portions of the total loops in
@@ -98,18 +99,18 @@ Opteron is a NUMA (Non-Uniform Memory Architecture) design such that
 multi-CPU systems split the system memory across CPUs so each CPU adds
 more memory bandwidth as well.</p>
 <p>For severely CPU-bound algorithms, it is not uncommon to see a linear
-speed-up due to the number of cores. For example, a two core system
-executes the algorithm twice as fast, and a four core system executes
-the algorithm four times as fast. Memory-bound algorithms scale based
-on the memory bandwith available to the cores. For example,
-memory-bound algorithms scale up to almost 1.5X on my four core
-Opteron system due to its NUMA architecture. Some systems/CPUs are
-able to immediately context switch to another thread if the core would
-be blocked waiting for memory, allowing multiple memory accesses to be
-pending at once, and thereby improving throughput.  For example,
-typical speedup of 20-32X (average 24X) has been observed on the Sun
-SPARC T2 CPU, which provides 8 cores, with 8 virtual CPUs per core (64
-threads).</p>
+speed-up (within the constraints of <a class="reference external" href="http://en.wikipedia.org/wiki/Amdahl%27s_law">Amdahl's law</a>) due to the number
+of cores. For example, a two core system executes the algorithm twice
+as fast, and a four core system executes the algorithm four times as
+fast. Memory-bound algorithms scale based on the memory bandwith
+available to the cores. For example, memory-bound algorithms scale up
+to almost 1.5X on my four core Opteron system due to its NUMA
+architecture. Some systems/CPUs are able to immediately context switch
+to another thread if the core would be blocked waiting for memory,
+allowing multiple memory accesses to be pending at once, and thereby
+improving throughput.  For example, typical speedup of 20-32X (average
+24X) has been observed on the Sun SPARC T2 CPU, which provides 8
+cores, with 8 virtual CPUs per core (64 threads).</p>
 <p>An approach used in GraphicsMagick is to recognize the various access
 patterns in the existing code, and re-write the algorithms (sometimes
 from scratch) to be based on a framework that we call &quot;pixel iterators&quot;.
@@ -8634,7 +8635,7 @@ package; otherwise see <a class="reference external" href="http://www.graphicsma
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-02-20 02:31 UTC.
+Generated on: 2011-03-23 14:09 UTC.
 
 </div>
 </body>

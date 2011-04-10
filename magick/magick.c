@@ -701,7 +701,7 @@ MagickIgnoreSignalHandler(int signo)
 static RETSIGTYPE
 MagickPanicSignalHandler(int signo)
 {
-  /* fprintf(stderr,"Caught panic signal %d\n", signo); */
+  ARG_NOT_USED(signo);
 
   panic_signal_handler_call_count++;
 

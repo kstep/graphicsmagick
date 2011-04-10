@@ -226,6 +226,7 @@ ModuleExport void RegisterMACImage(void)
   entry=SetMagickInfo("MAC");
   entry->decoder = (DecoderHandler)ReadMACImage;
   entry->description="Mac Paint";
+  entry->seekable_stream = True;
   entry->module="MAC";
   (void) RegisterMagickInfo(entry);
 }

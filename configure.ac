@@ -40,15 +40,16 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 . ${srcdir}/version.sh
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
-AC_CANONICAL_TARGET
+dnl Compute the canonical host (run-time) system type variable
+AC_CANONICAL_HOST
 
-MAGICK_TARGET_CPU=$target_cpu
+MAGICK_TARGET_CPU=$host_cpu
 AC_SUBST(MAGICK_TARGET_CPU)
 
-MAGICK_TARGET_VENDOR=$target_vendor
+MAGICK_TARGET_VENDOR=$host_vendor
 AC_SUBST(MAGICK_TARGET_VENDOR)
 
-MAGICK_TARGET_OS=$target_os
+MAGICK_TARGET_OS=$host_os
 AC_SUBST(MAGICK_TARGET_OS)
 
 # Compute newest and oldest interface numbers.
@@ -1117,7 +1118,7 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r _exit fcntl ftime getexecname \
+AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \

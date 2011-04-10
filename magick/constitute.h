@@ -186,6 +186,9 @@ extern MagickExport MagickPassFail
     unsigned scanline_octets, void *scanline_buffer,
     double *min, double *max);
 
+extern MagickExport unsigned int
+  MagickGetQuantumSamplesPerPixel(const QuantumType quantum_type);
+
 #if defined(MAGICK_IMPLEMENTATION)
 
 extern MagickExport void

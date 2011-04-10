@@ -1590,6 +1590,7 @@ ModuleExport void RegisterMIFFImage(void)
   entry->encoder=(EncoderHandler) WriteMIFFImage;
   entry->magick=(MagickHandler) IsMIFF;
   entry->description="Magick Image File Format";
+  entry->seekable_stream=MagickTrue;
   if (*version != '\0')
     entry->version=version;
   entry->module="MIFF";

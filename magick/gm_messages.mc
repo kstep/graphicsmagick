@@ -1079,6 +1079,12 @@ image colorspace differs
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorImageColorspaceMismatch
+Language        = English
+image colorspace mismatch
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorImageDifferenceExceedsLimit
 Language        = English
 image difference exceeds limit (%s)
@@ -1202,6 +1208,12 @@ MessageId       = +1
 SymbolicName    = ImageErrorUnableToGetClipMask
 Language        = English
 Unable to get clip mask
+.
+
+MessageId       = +1
+SymbolicName    = ImageErrorUnableToHandleImageChannel
+Language        = English
+unable to handle image channel
 .
 
 MessageId       = +1

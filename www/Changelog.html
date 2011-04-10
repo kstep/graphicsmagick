@@ -51,6 +51,38 @@
 <div class="document">
 
 
+<p>2011-04-10  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/channel.c (ChannelImage): Report an error if the
+requested channel is not compatible with the image colorspace.
+Only deals with CMYK/RGB conflicts.  Resolves SourceForge issue
+3283046 &quot;Bug in CMYK&quot;.</li>
+</ul>
+</blockquote>
+<p>2011-03-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/txt.c (ReadTXTImage): Throw error if attempt to read
+empty file.</li>
+<li>coders/{fits.c,mac.c,miff.c,pcd.c,pict.c,ps3.c,rla.c,txt.c}:
+Format requires seekable stream.</li>
+<li>coders/pnm.c (WritePNMImage): Implement writer for PAM format.</li>
+<li>coders/ept.c (WriteEPTImage): Fix error handling for case when
+TIFF writer fails.</li>
+<li>magick/constitute.c (ReadImage): Use of GetBlobStatus() to
+evaluate image reader success is bogus.
+(MagickGetQuantumSamplesPerPixel): New private method to return
+the number of samples returned per pixel for a given quantum type.</li>
+</ul>
+</blockquote>
+<p>2011-03-14  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;&#46;&#46;">glennrp<span>&#64;</span>simple<span>&#46;</span><span>&#46;</span><span>&#46;</span></a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (WriteOnePNGImage(): Fixed a rounding error in
+writing the pHYs chunk (it was truncating instead of rounding).</li>
+</ul>
+</blockquote>
 <p>2011-02-20  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -172,7 +204,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-02-20 17:42 UTC.
+Generated on: 2011-04-10 17:27 UTC.
 
 </div>
 </body>

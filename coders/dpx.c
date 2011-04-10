@@ -2103,9 +2103,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (dpx_image_info.element_info[element].data_offset != 0U))
         {
           pixels_offset=dpx_image_info.element_info[element].data_offset;
-#if 0
-          offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
-#else
           if (pixels_offset >= offset)
             {
               /* Data is at, or ahead of current position.  Good! */
@@ -2121,7 +2118,6 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /* Verify that we reached our offset objective */
           if ( pixels_offset != offset)
             ThrowReaderException(BlobError,UnableToSeekToOffset,image);
-#endif
         }
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
       element_descriptor=(DPXImageElementDescriptor)
@@ -2588,9 +2584,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   magick_off_t reported_file_offset = TellBlob(image);
                   if (EOFBlob(image))
                     {
-                      (void) fprintf(stderr,"### File length %u, TellBlob says %ld\n",
+                      (void) fprintf(stderr,"### File length %u, TellBlob says %" MAGICK_OFF_F "d\n",
                                      dpx_file_info.file_size,
-                                     (long) reported_file_offset);
+                                     reported_file_offset);
                       break;
                     }
                 }
@@ -4022,15 +4018,20 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         swap_word_datums = MagickFalse;
 
 
-      if (BlobIsSeekable(image))
+      /*
+	Validate that what we are writing matches the header offsets.
+      */
         {
-          magick_off_t reported_file_offset = TellBlob(image);
-          if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
-              reported_file_offset)
+          magick_off_t
+	    reported_file_offset;
+	  
+          if (((reported_file_offset = TellBlob(image)) != -1) &&
+	      ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
+	       reported_file_offset))
             {
-              (void) fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %ld\n",
+              (void) fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %" MAGICK_OFF_F "d\n",
                              element+1, dpx_image_info.element_info[element].data_offset,
-                             (long) reported_file_offset);
+                             reported_file_offset);
             }
         }
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
@@ -4339,16 +4340,22 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         }
     }
   
-  if (BlobIsSeekable(image))
-    {
-      magick_off_t reported_file_offset = TellBlob(image);
-      if ((magick_off_t) dpx_file_info.file_size != reported_file_offset)
-        {
-          (void) fprintf(stderr,"### File length %u, TellBlob says %ld\n",
-                         dpx_file_info.file_size,
-                         (long) reported_file_offset);
-        }
-    }
+  /*
+    Validate that what we are writing matches the header offsets.
+  */
+  {
+    magick_off_t
+      reported_file_offset;
+
+    reported_file_offset = TellBlob(image);
+    if ((reported_file_offset != -1) &&
+	((magick_off_t) dpx_file_info.file_size != reported_file_offset))
+      {
+	(void) fprintf(stderr,"### File length %u, TellBlob says %" MAGICK_OFF_F "d\n",
+		       dpx_file_info.file_size,
+		       reported_file_offset);
+      }
+  }
   
   MagickFreeMemory(map_CbCr);
   MagickFreeMemory(map_Y);

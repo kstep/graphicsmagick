@@ -1,3 +1,28 @@
+2011-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/channel.c (ChannelImage): Report an error if the
+	requested channel is not compatible with the image colorspace.
+	Only deals with CMYK/RGB conflicts.  Resolves SourceForge issue
+	3283046 "Bug in CMYK".
+
+2011-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (ReadTXTImage): Throw error if attempt to read
+	empty file.
+
+	* coders/{fits.c,mac.c,miff.c,pcd.c,pict.c,ps3.c,rla.c,txt.c}:
+	Format requires seekable stream.
+
+	* coders/pnm.c (WritePNMImage): Implement writer for PAM format.
+
+	* coders/ept.c (WriteEPTImage): Fix error handling for case when
+	TIFF writer fails.
+
+	* magick/constitute.c (ReadImage): Use of GetBlobStatus() to
+	evaluate image reader success is bogus.
+	(MagickGetQuantumSamplesPerPixel): New private method to return
+	the number of samples returned per pixel for a given quantum type.
+
 2011-03-14  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c (WriteOnePNGImage(): Fixed a rounding error in

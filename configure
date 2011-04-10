@@ -968,10 +968,6 @@ MAGICK_LIBRARY_CURRENT
 MAGICK_TARGET_OS
 MAGICK_TARGET_VENDOR
 MAGICK_TARGET_CPU
-target_os
-target_vendor
-target_cpu
-target
 host_os
 host_vendor
 host_cpu
@@ -1035,7 +1031,6 @@ with_pic
 enable_fast_install
 with_sysroot
 enable_libtool_lock
-with_gnu_ld
 with_included_ltdl
 with_ltdl_include
 with_ltdl_lib
@@ -1064,7 +1059,6 @@ with_jpeg
 with_jp2
 with_lcms
 with_lcms2
-with_bzlib
 with_png
 with_tiff
 with_trio
@@ -1088,24 +1082,10 @@ LDFLAGS
 LIBS
 CPPFLAGS
 CPP
-CPPFLAGS
-CC
-LDFLAGS
-LIBS
-CPPFLAGS
-CPP
-CPPFLAGS
 CXX
 CXXFLAGS
-LIBS
-CPPFLAGS
 CCC
 CXXCPP
-CPPFLAGS
-CXX
-CXXFLAGS
-LIBS
-CCC
 XMKMF'
 
 
@@ -1718,7 +1698,6 @@ X features:
 System types:
   --build=BUILD     configure for building on BUILD [guessed]
   --host=HOST       cross-compile to build programs to run on HOST [BUILD]
-  --target=TARGET   configure for building compilers for TARGET [HOST]
 _ACEOF
 fi
 
@@ -3206,53 +3185,14 @@ IFS=$ac_save_IFS
 case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking target system type" >&5
-$as_echo_n "checking target system type... " >&6; }
-if ${ac_cv_target+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test "x$target_alias" = x; then
-  ac_cv_target=$ac_cv_host
-else
-  ac_cv_target=`$SHELL "$ac_aux_dir/config.sub" $target_alias` ||
-    as_fn_error $? "$SHELL $ac_aux_dir/config.sub $target_alias failed" "$LINENO" 5
-fi
 
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_target" >&5
-$as_echo "$ac_cv_target" >&6; }
-case $ac_cv_target in
-*-*-*) ;;
-*) as_fn_error $? "invalid value of canonical target" "$LINENO" 5;;
-esac
-target=$ac_cv_target
-ac_save_IFS=$IFS; IFS='-'
-set x $ac_cv_target
-shift
-target_cpu=$1
-target_vendor=$2
-shift; shift
-# Remember, the first character of IFS is used to create $*,
-# except with old shells:
-target_os=$*
-IFS=$ac_save_IFS
-case $target_os in *\ *) target_os=`echo "$target_os" | sed 's/ /-/g'`;; esac
+MAGICK_TARGET_CPU=$host_cpu
 
 
-# The aliases save the names the user supplied, while $host etc.
-# will get canonicalized.
-test -n "$target_alias" &&
-  test "$program_prefix$program_suffix$program_transform_name" = \
-    NONENONEs,x,x, &&
-  program_prefix=${target_alias}-
-
-MAGICK_TARGET_CPU=$target_cpu
+MAGICK_TARGET_VENDOR=$host_vendor
 
 
-MAGICK_TARGET_VENDOR=$target_vendor
-
-
-MAGICK_TARGET_OS=$target_os
+MAGICK_TARGET_OS=$host_os
 
 
 # Compute newest and oldest interface numbers.
@@ -21900,7 +21840,7 @@ $as_echo "#define HAVE_MMAP_FILEIO 1" >>confdefs.h
 fi
 rm -f conftest.mmap
 
-for ac_func in atoll ctime_r _exit fcntl ftime getexecname \
+for ac_func in atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \

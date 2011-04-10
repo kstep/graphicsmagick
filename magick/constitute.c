@@ -8052,6 +8052,100 @@ MagickFindRawImageMinMax(Image *image, EndianType endian,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   M a g i c k G e t Q u a n t u m S a m p l e s P e r P i x e l             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetQuantumSamplesPerPixel() returns the number of discrete samples
+%  which will be encoded/decoded per-pixel for the specified QuantumType.
+%
+%  The format of the MagickGetQuantumSamplesPerPixel method is:
+%
+%      unsigned int MagickGetQuantumSamplesPerPixel(const QuantumType quantum_type)
+%
+%  A description of each parameter follows:
+%
+%    o quantum_type: Quantum type
+%
+%
+*/
+MagickExport unsigned int
+MagickGetQuantumSamplesPerPixel(const QuantumType quantum_type)
+{
+  unsigned int
+    samples=0;
+
+  switch (quantum_type)
+    {
+    case UndefinedQuantum:
+      samples=0;
+      break;
+    case IndexQuantum:
+      samples=1;
+      break;
+    case GrayQuantum:
+      samples=1;
+      break;
+    case IndexAlphaQuantum:
+      samples=2;
+      break;
+    case GrayAlphaQuantum:
+      samples=2;
+      break;
+    case RedQuantum:
+      samples=1;
+      break;
+    case CyanQuantum:
+      samples=1;
+      break;
+    case GreenQuantum:
+      samples=1;
+      break;
+    case YellowQuantum:
+      samples=1;
+      break;
+    case BlueQuantum:
+      samples=1;
+      break;
+    case MagentaQuantum:
+      samples=1;
+      break;
+    case AlphaQuantum:
+      samples=1;
+      break;
+    case BlackQuantum:
+      samples=1;
+      break;
+    case RGBQuantum:
+      samples=3;
+      break;
+    case RGBAQuantum:
+      samples=4;
+      break;
+    case CMYKQuantum:
+      samples=4;
+      break;
+    case CMYKAQuantum:
+      samples=5;
+      break;
+    case CIEYQuantum:
+      samples=1;
+      break;
+    case CIEXYZQuantum:
+      samples=3;
+      break;
+    }
+
+  return samples;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   I n i t i a l i z e C o n s t i t u t e                                   %
 %                                                                             %
 %                                                                             %
@@ -8575,14 +8669,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=subimages;
         }
     }
+#if 0
+  /*
+    Following error-check seems bogus.  Coder should not return an
+    image if it was not read correctly.
+  */
   if (GetBlobStatus(image))
     {
       ThrowException(exception,CorruptImageError,
                      AnErrorHasOccurredReadingFromFile,
                      clone_info->filename);
+      DestroyImageList(image);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
+#endif
   for (next=image; next; next=next->next)
   {
 #if 0
