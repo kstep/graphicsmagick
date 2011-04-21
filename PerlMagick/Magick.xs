@@ -6001,14 +6001,16 @@ Mogrify(ref,...)
         }
         case 77:  /* AdaptiveThreshold */
         {
+	  double
+	    offset;
+
           unsigned long
             height,
-            offset,
             width;
 
           height=3;
           width=3;
-          offset=0;
+          offset=0.0;
           if (attribute_flag[1])
             width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -6017,7 +6019,7 @@ Mogrify(ref,...)
             offset=argument_list[3].int_reference;;
           if (attribute_flag[0])
             {
-              (void) sscanf(argument_list[0].string_reference,"%lux%lu%lu",
+              (void) sscanf(argument_list[0].string_reference,"%lux%lu%lf",
                 &width,&height,&offset);
                if (strchr(argument_list[0].string_reference,'%') != (char *) NULL)
                  offset*=(double) MaxRGB/100.0;

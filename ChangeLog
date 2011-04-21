@@ -1,5 +1,11 @@
 2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/Magick.xs: AdaptiveThreshold offset argument was
+	being parsed into an 'unsigned long' rather than 'double' as it
+	should have been.  This resulted in inability to handle negative
+	offsets. Fixes SourceForge bug 3288735 "PerlMagick issue with
+	AdaptiveThreshold".
+
 	* coders/jpeg.c (ReadIPTCProfile): JPEG may deliver IPTC profile
 	in chunks but code was only allowing one chunk, even though it was
 	otherwise prepared to concatenate chunks.  Fixes SourceForge bug

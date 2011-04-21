@@ -54,6 +54,11 @@
 <p>2011-04-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>PerlMagick/Magick.xs: AdaptiveThreshold offset argument was
+being parsed into an 'unsigned long' rather than 'double' as it
+should have been.  This resulted in inability to handle negative
+offsets. Fixes SourceForge bug 3288735 &quot;PerlMagick issue with
+AdaptiveThreshold&quot;.</li>
 <li>coders/jpeg.c (ReadIPTCProfile): JPEG may deliver IPTC profile
 in chunks but code was only allowing one chunk, even though it was
 otherwise prepared to concatenate chunks.  Fixes SourceForge bug
@@ -216,7 +221,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-04-21 19:11 UTC.
+Generated on: 2011-04-21 19:31 UTC.
 
 </div>
 </body>
