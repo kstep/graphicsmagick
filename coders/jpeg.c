@@ -508,47 +508,44 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 #endif
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  if (GetImageProfile(image,"IPTC",(size_t *) NULL) == 0)
-    {
 #ifdef GET_ONLY_IPTC_DATA
-      /*
-        Find the beginning of the IPTC portion of the binary data.
-      */
-      for (*tag='\0'; length > 0; )
-      {
-        *tag=GetCharacter(jpeg_info);
-        *(tag+1)=GetCharacter(jpeg_info);
-        length-=2;
-        if ((*tag == 0x1c) && (*(tag+1) == 0x02))
-          break;
-      }
-      tag_length=2;
-#else
-      /*
-        Validate that this was written as a Photoshop resource format slug.
-      */
-      for (i=0; i < 10; i++)
-        magick[i]=GetCharacter(jpeg_info);
-      magick[10]='\0';
-      length-=10;
-      if (LocaleCompare(magick,"Photoshop ") != 0)
-        {
-          /*
-            Not a ICC profile, return.
-          */
-          for (i=0; i < length; i++)
-            (void) GetCharacter(jpeg_info);
-          return(True);
-        }
-      /*
-        Remove the version number.
-      */
-      for (i=0; i < 4; i++)
-        (void) GetCharacter(jpeg_info);
-      length-=4;
-      tag_length=0;
-#endif
+  /*
+    Find the beginning of the IPTC portion of the binary data.
+  */
+  for (*tag='\0'; length > 0; )
+    {
+      *tag=GetCharacter(jpeg_info);
+      *(tag+1)=GetCharacter(jpeg_info);
+      length-=2;
+      if ((*tag == 0x1c) && (*(tag+1) == 0x02))
+	break;
     }
+  tag_length=2;
+#else
+  /*
+    Validate that this was written as a Photoshop resource format slug.
+  */
+  for (i=0; i < 10; i++)
+    magick[i]=GetCharacter(jpeg_info);
+  magick[10]='\0';
+  length-=10;
+  if (LocaleCompare(magick,"Photoshop ") != 0)
+    {
+      /*
+	Not a ICC profile, return.
+      */
+      for (i=0; i < length; i++)
+	(void) GetCharacter(jpeg_info);
+      return(True);
+    }
+  /*
+    Remove the version number.
+  */
+  for (i=0; i < 4; i++)
+    (void) GetCharacter(jpeg_info);
+  length-=4;
+  tag_length=0;
+#endif
   if (length <= 0)
     return(True);
 

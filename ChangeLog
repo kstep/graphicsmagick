@@ -1,5 +1,10 @@
 2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c (ReadIPTCProfile): JPEG may deliver IPTC profile
+	in chunks but code was only allowing one chunk, even though it was
+	otherwise prepared to concatenate chunks.  Fixes SourceForge bug
+	2978422 "Clipping paths in JPG images are truncated".
+
 	* magick/utility.c (GetToken): Fix case where parser may run off
 	end of string.  Also add asserts to check for passing null
 	pointer.
