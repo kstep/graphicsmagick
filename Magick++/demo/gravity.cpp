@@ -24,7 +24,7 @@ using namespace Magick;
 int main( int /*argc*/, char ** argv)
 {
 
-  // Initialize ImageMagick install location for Windows
+  // Initialize GraphicsMagick
   InitializeMagick(*argv);
 
   try {

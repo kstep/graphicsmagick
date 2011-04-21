@@ -1,3 +1,9 @@
+2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetToken): Fix case where parser may run off
+	end of string.  Also add asserts to check for passing null
+	pointer.
+
 2011-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/channel.c (ChannelImage): Report an error if the

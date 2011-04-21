@@ -2454,7 +2454,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %
 %    o start: the start of the token sequence.
 %
-%    o end: point to the end of the token sequence.
+%    o end: point to the end of the token sequence (may be NULL).
 %
 %    o token: copy the token to this buffer.
 %
@@ -2467,6 +2467,9 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 
   register long
     i;
+
+  assert(start != (const char *) NULL);
+  assert(token != (char *) NULL);
 
   i=0;
   p=(char *) start;
@@ -2515,8 +2518,8 @@ MagickExport void GetToken(const char *start,char **end,char *token)
               token[i++]=(*p++);
             break;
           }
-        if (!isalpha((int) *p) && (*p != *DirectorySeparator) && (*p != '#') &&
-            (*p != '<'))
+        if ((*p != '\0') && !isalpha((int) *p) && (*p != *DirectorySeparator) &&
+	    (*p != '#') && (*p != '<'))
           {
             token[i++]=(*p++);
             break;
