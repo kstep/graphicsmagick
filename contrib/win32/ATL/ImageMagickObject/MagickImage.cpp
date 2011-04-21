@@ -535,14 +535,6 @@ HRESULT CMagickImage::FormatRequest(BSTR *pVal)
     bstrResult.CopyTo(pVal);
     hr = S_OK;
   }
-  else if (m_bstrIOType == L"xtrnstream")
-  {
-    wsprintf(sz, _T("xtrnstream:0x%lx,0x%lx,%S"),
-      (unsigned long)(&COMMagickFifoBuffer),(unsigned long)this,m_bstrName);
-    bstrResult = sz;
-    bstrResult.CopyTo(pVal);
-    hr = S_OK;
-  }
   else if (m_bstrIOType == L"xtrnarray")
   {
     wsprintf(sz, _T("xtrnarray:0x%lx,%S"),

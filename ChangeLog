@@ -1,5 +1,19 @@
 2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/module.c (ModuleAliases): Delete "XTRNBSTR"-entry. Fix by
+	Stefan Graff.
+
+	* contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp
+	(Perform): Member "Perform" - out-commented SafeArrayAccessData
+	and following SafeArrayUnaccessData. Fix by Stefan Graff.
+
+	* contrib/win32/ATL/ImageMagickObject/MagickImage.cpp: Delete
+	"XTRNSTREAM"-branch because "XTRNSTREAM" doesn't exist
+	anymore. Fix by Stefan Graff.
+
+	* coders/xtrn.c: In function "WriteXTRNImage" there is no branch
+	for XTRNARRAY. Fix by Stefan Graff.
+
 	* PerlMagick/Magick.xs: AdaptiveThreshold offset argument was
 	being parsed into an 'unsigned long' rather than 'double' as it
 	should have been.  This resulted in inability to handle negative
