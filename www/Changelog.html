@@ -54,6 +54,11 @@
 <p>2011-04-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/jpeg.c (WriteJPEGImage): Properly handle errors reported
+by the JPEG library when writing.  Up to now, JPEG library simply
+invoked exit(), which crashed or hung if driven by Magick++ API.
+Fixes SourceForge bug 3106947 &quot;Assertion failure when saving an
+&quot;invalid&quot; image as JPEG&quot;.</li>
 <li>magick/module.c (ModuleAliases): Delete &quot;XTRNBSTR&quot;-entry. Fix by
 Stefan Graff.</li>
 <li>contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp
@@ -231,7 +236,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-04-21 22:23 UTC.
+Generated on: 2011-04-22 03:13 UTC.
 
 </div>
 </body>

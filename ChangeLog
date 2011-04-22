@@ -1,5 +1,11 @@
 2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c (WriteJPEGImage): Properly handle errors reported
+	by the JPEG library when writing.  Up to now, JPEG library simply
+	invoked exit(), which crashed or hung if driven by Magick++ API.
+	Fixes SourceForge bug 3106947 "Assertion failure when saving an
+	"invalid" image as JPEG".
+
 	* magick/module.c (ModuleAliases): Delete "XTRNBSTR"-entry. Fix by
 	Stefan Graff.
 

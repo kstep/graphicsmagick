@@ -263,7 +263,7 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   ErrorManager
     *error_manager;
-
+ 
   (void) EmitMessage(jpeg_info,0);
   error_manager=( ErrorManager *) jpeg_info->client_data;
   longjmp(error_manager->error_recovery,1);
@@ -973,6 +973,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   jpeg_info.client_data=(void *) &error_manager;
+
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
@@ -1675,6 +1676,9 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 
 static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
+  ErrorManager
+    error_manager;
+
   const ImageAttribute
     *attribute;
 
@@ -1732,6 +1736,16 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  (void) memset(&error_manager,0,sizeof(error_manager));
+  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
+  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
+
+  /*
+    Transform image to user-requested colorspace.
+  */
+  if (UndefinedColorspace != image_info->colorspace)
+    (void) TransformColorspace(image,image_info->colorspace);
   
   /*
     Analyze image to be written.
@@ -1745,59 +1759,78 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
 
   /*
-    Initialize JPEG parameters.
+    Set initial longjmp based error handler.
   */
-  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
-  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
-  /* jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler; */
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
+  error_manager.image=image;
+  if (setjmp(error_manager.error_recovery))
+    {
+      jpeg_destroy_compress(&jpeg_info);
+      CloseBlob(image);
+      return MagickFail ;
+    }
+  jpeg_info.client_data=(void *) &error_manager;
+
   jpeg_create_compress(&jpeg_info);
   JPEGDestinationManager(&jpeg_info,image);
   jpeg_info.image_width=(unsigned int) image->columns;
   jpeg_info.image_height=(unsigned int) image->rows;
   jpeg_info.input_components=3;
   jpeg_info.in_color_space=JCS_RGB;
-  switch (image_info->colorspace)
+
+  /*
+    Set JPEG colorspace as per user request.
+  */
   {
-    case CMYKColorspace:
-    {
-      jpeg_info.input_components=4;
-      jpeg_info.in_color_space=JCS_CMYK;
-      (void) TransformColorspace(image,CMYKColorspace);
-      break;
-    }
-    case YCbCrColorspace:
-    {
-      jpeg_info.in_color_space=JCS_YCbCr;
-      (void) TransformColorspace(image,YCbCrColorspace);
-      break;
-    }
-    case GRAYColorspace:
-    case Rec601LumaColorspace:
-    case Rec709LumaColorspace:
-    {
-      jpeg_info.in_color_space=JCS_GRAYSCALE;
-      (void) TransformColorspace(image,image_info->colorspace);
-      break;
-    }
-    default:
-    {
-      if (image->colorspace == CMYKColorspace)
-        {
-          jpeg_info.input_components=4;
-          jpeg_info.in_color_space=JCS_CMYK;
-          break;
-        }
-      if (image->colorspace == YCbCrColorspace)
-        {
-          jpeg_info.in_color_space=JCS_YCbCr;
-          break;
-        }
-      (void) TransformColorspace(image,RGBColorspace);
-      break;
-    }
+    MagickBool
+      colorspace_set=MagickFalse;
+    
+    if (IsCMYKColorspace(image_info->colorspace))
+      {
+	jpeg_info.input_components=4;
+	jpeg_info.in_color_space=JCS_CMYK;
+	colorspace_set=MagickTrue;
+      }
+    else if (IsYCbCrColorspace(image_info->colorspace))
+      {
+	jpeg_info.input_components=3;
+	jpeg_info.in_color_space=JCS_YCbCr;
+	colorspace_set=MagickTrue;
+      }
+    else if (IsGrayColorspace(image_info->colorspace))
+      {
+	jpeg_info.input_components=1;
+	jpeg_info.in_color_space=JCS_GRAYSCALE;
+	colorspace_set=MagickTrue;
+      }
+
+    if (!colorspace_set)
+      {
+	if (IsCMYKColorspace(image->colorspace))
+	  {
+	    jpeg_info.input_components=4;
+	    jpeg_info.in_color_space=JCS_CMYK;
+	  }
+	else if (IsYCbCrColorspace(image->colorspace))
+	  {
+	    jpeg_info.input_components=3;
+	    jpeg_info.in_color_space=JCS_YCbCr;
+	  }
+	else if ((IsGrayColorspace(image->colorspace) ||
+		  (characteristics.grayscale)))
+	  {
+	    jpeg_info.input_components=1;
+	    jpeg_info.in_color_space=JCS_GRAYSCALE;
+	  }
+	else
+	  {
+	    jpeg_info.input_components=3;
+	    jpeg_info.in_color_space=JCS_RGB;
+	  }
+      }
   }
 
   input_colorspace=UndefinedColorspace;
@@ -1862,17 +1895,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
     }
 
-  if ((image_info->type != TrueColorType) &&
-      (image_info->type != TrueColorMatteType) &&
-      (image_info->type != ColorSeparationType) &&
-      (image_info->type != ColorSeparationMatteType) &&
-      (image->colorspace != CMYKColorspace) &&
-      (characteristics.grayscale))
-    {
-      jpeg_info.input_components=1;
-      jpeg_info.in_color_space=JCS_GRAYSCALE;
-    }
   jpeg_set_defaults(&jpeg_info);
+
   /*
     Determine bit depth.
   */
