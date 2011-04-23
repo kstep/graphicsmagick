@@ -1,3 +1,8 @@
+2011-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: For MinGW32 use 64-bit value formatting
+	conventions which will work with any version of the WIN32 CRT.
+
 2011-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (WriteJPEGImage): Properly handle errors reported

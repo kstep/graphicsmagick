@@ -21613,6 +21613,11 @@ then
   INT64_T='signed long long'
   INT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    INT64_F='"I64"'
+    ;;
+esac
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $INT64_T" >&5
 $as_echo "$INT64_T" >&6; }
 
@@ -21631,6 +21636,11 @@ then
   UINT64_T='unsigned long long'
   UINT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    UINT64_F='"I64"'
+    ;;
+esac
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UINT64_T" >&5
 $as_echo "$UINT64_T" >&6; }
 

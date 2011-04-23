@@ -1059,6 +1059,11 @@ then
   INT64_T='signed long long'
   INT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    INT64_F='"I64"'
+    ;;
+esac
 AC_MSG_RESULT($INT64_T)
 AC_SUBST(INT64_T)
 AC_SUBST(INT64_F)
@@ -1075,6 +1080,11 @@ then
   UINT64_T='unsigned long long'
   UINT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    UINT64_F='"I64"'
+    ;;
+esac
 AC_MSG_RESULT($UINT64_T)
 AC_SUBST(UINT64_T)
 AC_SUBST(UINT64_F)
