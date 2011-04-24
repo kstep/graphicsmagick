@@ -326,6 +326,20 @@ CompressionSupported(const CompressionType compression,
 #endif
         break;
       }
+    case JBIG1Compression:
+      {
+	strlcpy(compression_name,"JBIG",MaxTextExtent);
+#if defined(COMPRESSION_JBIG)
+        compress_tag=COMPRESSION_JBIG;
+        status=MagickTrue;
+#endif
+	break;
+      }
+    case JBIG2Compression:
+      {
+	strlcpy(compression_name,"JBIG2",MaxTextExtent);
+	break;
+      }
     case JPEGCompression:
       {
         strlcpy(compression_name,"JPEG",MaxTextExtent);
@@ -333,6 +347,11 @@ CompressionSupported(const CompressionType compression,
         compress_tag=COMPRESSION_JPEG;
         status=MagickTrue;
 #endif
+        break;
+      }
+    case JPEG2000Compression:
+      {
+        strlcpy(compression_name,"JPEG2000",MaxTextExtent);
         break;
       }
     case LosslessJPEGCompression:
@@ -384,7 +403,12 @@ CompressionSupported(const CompressionType compression,
       if (compress_tag != COMPRESSION_NONE)
         {
           if (TIFFIsCODECConfigured(compress_tag))
-            status = MagickTrue;
+	    status = MagickTrue;
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				"TIFFIsCODECConfigured says support for %s "
+				"compression %s configured.",
+				compression_name,
+				(status == MagickTrue ? "is" : "is not"));
         }
 #else
       switch (compress_tag)
@@ -3512,6 +3536,13 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             fill_order=FILLORDER_LSB2MSB;
             break;
           }
+#if defined(COMPRESSION_JBIG)
+        case JBIG1Compression:
+          {
+            compress_tag=COMPRESSION_JBIG;
+            break;
+          }
+#endif /* defined(COMPRESSION_JBIG) */
         case JPEGCompression:
           {
             compress_tag=COMPRESSION_JPEG;
@@ -3630,6 +3661,16 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                   "Using MINISWHITE photometric due to request"
 				  " for Group4 FAX compression.");
         }
+#if defined(COMPRESSION_JBIG)
+      else if (compress_tag == COMPRESSION_JBIG)
+        {
+          photometric=PHOTOMETRIC_MINISWHITE;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Using MINISWHITE photometric due to request"
+				  " for JBIG compression.");
+        }
+#endif /* defined(COMPRESSION_JBIG) */
 
       /*
         Allow user to override the photometric.
@@ -3733,6 +3774,18 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                   "Ignoring request for Group4 FAX compression"
 				  " due to incompatible photometric.");
         }
+#if defined(COMPRESSION_JBIG)
+      else if ((compress_tag == COMPRESSION_JBIG) &&
+               (photometric != PHOTOMETRIC_MINISWHITE))
+        {
+          compress_tag=COMPRESSION_NONE;
+          fill_order=FILLORDER_MSB2LSB;
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Ignoring request for JBIG compression"
+				  " due to incompatible photometric.");
+        }
+#endif /* defined(COMPRESSION_JBIG) */
 
       /*
         Bilevel presents a bit of a quandary since the user is free to
@@ -4198,6 +4251,22 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           }
 #endif /* COMPRESSION_LZMA */
+#if defined(COMPRESSION_JBIG)
+	case COMPRESSION_JBIG:
+	  {
+            /*
+              It is recommended (but not required) to output FAX as
+              one strip. We will limit strip size to 16 megapixels by
+              default.
+            */
+            rows_per_strip=16000000UL/image->columns;
+            if (rows_per_strip < 1)
+              rows_per_strip=1;
+            if (rows_per_strip > image->rows)
+              rows_per_strip=(uint32) image->rows;
+	    break;
+	  }
+#endif /* COMPRESSION_JBIG */
         case COMPRESSION_LZW:
           {
             /*

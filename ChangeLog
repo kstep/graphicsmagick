@@ -1,5 +1,8 @@
 2011-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (WriteTIFFImage): Added TIFF writer support for
+	JBIG1 compression.  Not proven to work yet.
+
 	* magick/image.h (CompressionType): Added Group3Compression as an
 	alias for already existing FaxCompression.  Added
 	JPEG2000Compression, JBIG1Compression, and JBIG2Compression for
