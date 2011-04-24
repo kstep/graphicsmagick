@@ -1,3 +1,10 @@
+2011-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.h (CompressionType): Added Group3Compression as an
+	alias for already existing FaxCompression.  Added
+	JPEG2000Compression, JBIG1Compression, and JBIG2Compression for
+	future use.
+
 2011-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: For MinGW32 use 64-bit value formatting

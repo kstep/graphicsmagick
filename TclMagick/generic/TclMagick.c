@@ -1066,20 +1066,22 @@ static int wandObjCmd(
         DarkenCompositeOp,    LightenCompositeOp,     HueCompositeOp,        SaturateCompositeOp,
         ColorizeCompositeOp,  LuminizeCompositeOp,    ScreenCompositeOp,     OverlayCompositeOp,
         CopyCyanCompositeOp,  CopyMagentaCompositeOp, CopyYellowCompositeOp, CopyBlackCompositeOp,
-        ReplaceCompositeOp,
+        ReplaceCompositeOp
     };
     static CONST char *compressNames[] = {
         "undefined", "none",   "bzip",
         "fax",       "group4", "jpeg",
         "jpeg-ls",   "lzw",    "rle",
-        "zip", "lzma",
+        "zip",       "lzma",   "jpeg2000",
+	"jbig1",     "jbig2",
         (char *) NULL
     };
     static CompressionType compressTypes[] = {
         UndefinedCompression,    NoCompression,     BZipCompression,
         FaxCompression,          Group4Compression, JPEGCompression,
         LosslessJPEGCompression, LZWCompression,    RLECompression,
-        ZipCompression,
+        ZipCompression,          LZMACompression,   JPEG2000Compression,
+	JBIG1Compression,        JBIG2Compression
     };
     static CONST char *disposeNames[] = {
         "undefined", "none",    "background",    "previous",

@@ -212,12 +212,16 @@ namespace Magick
   using MagickLib::NoCompression;
   using MagickLib::BZipCompression;
   using MagickLib::FaxCompression;
+  using MagickLib::Group3Compression;
   using MagickLib::Group4Compression;
   using MagickLib::JPEGCompression;
   using MagickLib::LZWCompression;
   using MagickLib::RLECompression;
   using MagickLib::ZipCompression;
   using MagickLib::LZMACompression;
+  using MagickLib::JPEG2000Compression;
+  using MagickLib::JBIG1Compression;
+  using MagickLib::JBIG2Compression;
 
   using MagickLib::DisposeType;
   using MagickLib::UndefinedDispose;

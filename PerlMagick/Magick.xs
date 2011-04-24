@@ -205,7 +205,7 @@ static char
   *CompressionTypes[] =
   {
     "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LosslessJPEG",
-    "LZW", "RLE", "Zip", "LZMA", (char *) NULL
+    "LZW", "RLE", "Zip", "LZMA", "JPEG2000", "JBIG1", "JBIG2", (char *) NULL
   },
   *DisposeTypes[] =
   {

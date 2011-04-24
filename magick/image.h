@@ -232,13 +232,17 @@ typedef enum
   NoCompression,
   BZipCompression,
   FaxCompression,
+  Group3Compression = FaxCompression,
   Group4Compression,
   JPEGCompression,
   LosslessJPEGCompression,
   LZWCompression,
   RLECompression,
   ZipCompression,
-  LZMACompression
+  LZMACompression,              /* Lempel-Ziv-Markov chain algorithm */
+  JPEG2000Compression,          /* ISO/IEC std 15444-1 */
+  JBIG1Compression,             /* ISO/IEC std 11544 / ITU-T rec T.82 */
+  JBIG2Compression              /* ISO/IEC std 14492 / ITU-T rec T.88 */
 } CompressionType;
 
 typedef enum
