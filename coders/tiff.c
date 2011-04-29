@@ -413,22 +413,22 @@ CompressionSupported(const CompressionType compression,
 #else
       switch (compress_tag)
         {
-#if defined(CCITT_SUPPORT)
+#  if defined(CCITT_SUPPORT)
         case COMPRESSION_CCITTFAX3:
         case COMPRESSION_CCITTFAX4:
-#endif
-#if defined(YCBCR_SUPPORT) && defined(JPEG_SUPPORT)
+#  endif
+#  if defined(YCBCR_SUPPORT) && defined(JPEG_SUPPORT)
         case COMPRESSION_JPEG:
-#endif
-#if defined(LZW_SUPPORT)
+#  endif
+#  if defined(LZW_SUPPORT)
         case COMPRESSION_LZW:
-#endif
-#if defined(PACKBITS_SUPPORT)
+#  endif
+#  if defined(PACKBITS_SUPPORT)
         case COMPRESSION_PACKBITS:
-#endif
-#if defined(ZIP_SUPPORT)
+#  endif
+#  if defined(ZIP_SUPPORT)
         case COMPRESSION_ADOBE_DEFLATE:
-#endif
+#  endif
         case COMPRESSION_NONE:
           {
             status = MagickTrue;
@@ -3540,6 +3540,7 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         case JBIG1Compression:
           {
             compress_tag=COMPRESSION_JBIG;
+	    fill_order=FILLORDER_LSB2MSB;
             break;
           }
 #endif /* defined(COMPRESSION_JBIG) */

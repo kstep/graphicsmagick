@@ -1,3 +1,9 @@
+2011-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageColorRegion): New function to set the
+	constant pixel color for a specified region of the image.
+	(AppendImages): Only color background pixels when needed.
+
 2011-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Added TIFF writer support for

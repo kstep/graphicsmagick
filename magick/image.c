@@ -554,7 +554,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException3(ImageError, ImageSequenceIsRequired,
-      UnableToAppendImage);
+			 UnableToAppendImage);
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
@@ -576,7 +576,6 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   append_image=CloneImage(image,width,height,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImage(append_image,OpaqueOpacity);
   scene=0;
   if (stack)
     {
@@ -589,6 +588,10 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         if (next->storage_class == DirectClass)
           (void) SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
+	if (append_image->columns > next->columns)
+	  SetImageColorRegion(append_image,next->columns,y,
+			      append_image->columns-next->columns,next->rows,
+			      &append_image->background_color);
         y+=next->rows;
         status=MagickMonitorFormatted(scene,GetImageListLength(image),
                                       exception,AppendImageText,
@@ -608,6 +611,11 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     if (next->storage_class == DirectClass)
       (void) SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
+    if (append_image->rows > next->rows)
+      SetImageColorRegion(append_image,x,next->rows,
+			  next->columns,
+			  append_image->rows-next->rows,
+			  &append_image->background_color);
     x+=next->columns;
     status=MagickMonitorFormatted(scene++,GetImageListLength(image),
                                   exception,AppendImageText,
@@ -1929,7 +1937,6 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
   image->is_monochrome=IsMonochrome(image->background_color);
   return status;
 }
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1942,11 +1949,11 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetImageColor() sets the red, green, blue and opacity components of each
-%  pixel to a specified level.
+%  pixel to those from a specified pixel value.
 %
 %  The format of the SetImageColor method is:
 %
-%      void SetImageColor(Image *image,const PixelPacket *pixel)
+%      MagickPassFail SetImageColor(Image *image,const PixelPacket *pixel)
 %
 %  A description of each parameter follows:
 %
@@ -1959,13 +1966,66 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
 MagickExport MagickPassFail SetImageColor(Image *image,
 					  const PixelPacket *pixel)
 {
+  image->is_grayscale=IsGray(*pixel);
+  image->is_monochrome=IsMonochrome(*pixel);
+  return SetImageColorRegion(image,0,0,image->columns,image->rows,pixel);
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e C o l o r R e g i o n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageColorRegion() sets the red, green, blue and opacity components
+%  of each pixel in the specified region to those from a specified pixel
+%  value.
+%
+%  The format of the SetImageColorRegion method is:
+%
+%      MagickPassFail SetImageColorRegion(Image *image,
+%                                         long x,
+%                                         long y,
+%                                         unsigned long width,
+%                                         unsigned long height,
+%                                         const PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o pixel: Set each pixel in the image to this pixel's color and transparency.
+%
+%
+*/
+MagickExport MagickPassFail
+SetImageColorRegion(Image *image,
+		    long x,
+		    long y,
+		    unsigned long width,
+		    unsigned long height,
+		    const PixelPacket *pixel)
+{
   MagickPassFail
     status;
+
+  MagickBool
+    is_grayscale;
+
+  MagickBool
+    is_monochrome;
 
   assert(image != (Image *) NULL);
   assert(pixel != (PixelPacket *) NULL);
   assert(image->signature == MagickSignature);
   status=MagickPass;
+
+  is_grayscale=(image->is_grayscale && IsGray(*pixel));
+  is_monochrome=(image->is_monochrome && IsMonochrome(*pixel));
 
   if (pixel->opacity != OpaqueOpacity)
     image->matte=MagickTrue;
@@ -1973,13 +2033,13 @@ MagickExport MagickPassFail SetImageColor(Image *image,
   image->storage_class=DirectClass;
 
   status=PixelIterateMonoModify(SetImageColorCallBack,NULL,
-                                SetImageColorText,
-                                NULL,pixel,0,0,
-                                image->columns,image->rows,
-                                image,&image->exception);
+				SetImageColorText,
+				NULL,pixel,x,y,
+				width,height,
+				image,&image->exception);
 
-  image->is_grayscale=IsGray(image->background_color);
-  image->is_monochrome=IsMonochrome(image->background_color);
+  image->is_grayscale=is_grayscale;
+  image->is_monochrome=is_monochrome;
   return status;
 }
 /*
