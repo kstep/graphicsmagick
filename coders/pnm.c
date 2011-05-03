@@ -1707,6 +1707,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 	      Deduce correct export parameters.
 	    */
 	    bits_per_sample=(depth > 8 ? 16 : 8);
+	    quantum_type=RGBQuantum;
 	    if (PBM_RAW_Format == format)
 	      {
 		bits_per_sample=1;

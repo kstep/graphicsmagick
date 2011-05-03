@@ -236,6 +236,7 @@ static PCL_CompressionType PCL_ChooseCompression(unsigned long row_width,
   q=row;
   this_char=0;
   last_char=!*q;
+  rep=0;
   while (x < row_width)
     {
       /*
