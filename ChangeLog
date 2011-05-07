@@ -1,3 +1,9 @@
+2011-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (AppendImages): If the input list only contains
+	one image, then return a new handle to the one image in the list
+	rather than reporting an exception.
+
 2011-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageColorRegion): New function to set the

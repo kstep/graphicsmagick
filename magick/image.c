@@ -553,8 +553,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException3(ImageError, ImageSequenceIsRequired,
-			 UnableToAppendImage);
+    return CloneImage(image,0,0,MagickTrue,exception);
+
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
