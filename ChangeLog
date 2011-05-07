@@ -1,8 +1,15 @@
+2011-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (EmitMessage): Treat an unhandled EXP marker as a
+	warning rather than a hard error.  Resolves SourceForge issue
+	3297995 "Unsupported marker type 0xdf".
+
 2011-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (AppendImages): If the input list only contains
 	one image, then return a new handle to the one image in the list
-	rather than reporting an exception.
+	rather than reporting an exception.  Problem was reported by Ravil
+	Rakhimgulov ("Hunter1972").
 
 2011-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
