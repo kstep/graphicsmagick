@@ -4232,7 +4232,6 @@ static MagickPassFail DCM_ReadPlanarRGBImage(Image *image,DicomStream *dcm,Excep
 static MagickPassFail DCM_ReadRGBImage(Image *image,DicomStream *dcm,ExceptionInfo *exception)
 {
   unsigned long
-    i,
     y,
     x;
 
@@ -4244,14 +4243,9 @@ static MagickPassFail DCM_ReadRGBImage(Image *image,DicomStream *dcm,ExceptionIn
     green,
     red;
 
-  unsigned char
-    byte;
-
   red=0;
   green=0;
   blue=0;
-  i=0;
-  byte=0;
 
   for (y=0; y < image->rows; y++)
     {

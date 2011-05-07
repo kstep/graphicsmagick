@@ -1430,8 +1430,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     scene,
     type;
 
-  const unsigned char
-    *color_profile=0;
+/*   const unsigned char */
+/*     *color_profile=0; */
 
   size_t
     color_profile_length=0;
@@ -1457,8 +1457,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 
   /*
     Retrieve color profile from Image (if any)
+    FIXME: is color profile support writing not properly implemented?
   */
-  color_profile=GetImageProfile(image,"ICM",&color_profile_length);
+  /* color_profile= */ (void) GetImageProfile(image,"ICM",&color_profile_length);
 
   do
   {

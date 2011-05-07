@@ -3331,9 +3331,6 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   EndianType
     endian_type;
 
-  MagickBool
-    is_grayscale;
-
   /*
     Open output image file.
   */
@@ -3344,7 +3341,6 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  is_grayscale=image->is_grayscale;
 
   /*
     Support user-selection of big/little endian output.

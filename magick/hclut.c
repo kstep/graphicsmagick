@@ -105,9 +105,6 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
     i,
     k;
 
-  long
-    clut_pixels;
-
   double
     sums[9],
     r,
@@ -121,7 +118,6 @@ HaldClutImagePixels(void *mutable_data,         /* User provided mutable data */
   ARG_NOT_USED(exception);
 
   level *= level;
-  clut_pixels = (level*level*level);
 	
   for(k = 0; k < npixels ; k++)
     {

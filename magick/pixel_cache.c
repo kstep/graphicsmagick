@@ -4230,15 +4230,11 @@ SyncCacheViewPixels(const ViewInfo *view,ExceptionInfo *exception)
   View
     *view_info = (View *) view;
 
-  CacheInfo
-    *cache_info;
-
   MagickPassFail
     status;
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  cache_info=(CacheInfo *) view_info->image->cache;
   status=SyncCacheNexus(view_info->image,view_info->nexus_info,exception);
   return status;
 }

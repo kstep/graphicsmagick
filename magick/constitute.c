@@ -918,10 +918,10 @@ int convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode)
   unsigned char  expt = 0, new_expt; /* exponent bits */
   unsigned char  m2, m1;    /* MSB to LSB of mantissa */
   unsigned char  new_m3, new_m2, new_m1;
-  unsigned short mant;
-  unsigned int   new_mant;
+  /* unsigned short mant; */
+  /* unsigned int   new_mant; */
   unsigned int   little_endian = 1;
-  unsigned char *mp;
+  /* unsigned char *mp; */
   unsigned char *src;
   unsigned char *dst;
 
@@ -944,10 +944,10 @@ int convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode)
 
   src = (unsigned char *)fp24;
   dst = (unsigned char *)fp32;
-  mp  = (unsigned char *)&mant;
+  /* mp  = (unsigned char *)&mant; */
 
   new_expt = expt = 0;
-  new_mant = mant = 0;
+  /* new_mant = mant = 0; */
   new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
 
   if ((int)*fp24 == 0)
@@ -976,7 +976,7 @@ int convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode)
 
       if (expt != 0)
 	new_expt = expt - 63 + 127;
-      mant = (m2 << 8) | m1;
+      /* mant = (m2 << 8) | m1; */
       new_m3  =  (m2 & 0xFE) >> 1;
       new_m2  = ((m2 & 0x01) << 7) | ((m1 & 0xFE) >> 1);
       new_m1  =  (m1 & 0x01) << 7;

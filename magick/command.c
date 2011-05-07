@@ -1511,9 +1511,6 @@ BenchmarkImageCommand(ImageInfo *image_info,
   unsigned int
     status=True;
 
-  int
-    i;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -1540,7 +1537,6 @@ BenchmarkImageCommand(ImageInfo *image_info,
   */
   argc--;
   argv++;
-  i=0;
 #if defined(HAVE_OPENMP)
   concurrent=MagickFalse;
 #endif /* HAVE_OPENMP */
@@ -1709,13 +1705,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
       double
         rate_cpu,
         rate_total,
-        resolution,
+        /* resolution, */
         user_time;
 
       double
         elapsed_time;
 
-      resolution=GetTimerResolution();
+      /* resolution=GetTimerResolution(); */
       user_time=GetUserTime(&timer);
       elapsed_time=GetElapsedTime(&timer);
       rate_total=(((double) iteration)/elapsed_time);
@@ -15456,7 +15452,7 @@ TimeImageCommand(ImageInfo *image_info,
 {
   double
     elapsed_time,
-    resolution,
+    /* resolution, */
     user_time;
 
   TimerInfo
@@ -15516,7 +15512,7 @@ TimeImageCommand(ImageInfo *image_info,
   status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
   (void) SetClientName(client_name);
 
-  resolution=GetTimerResolution();
+  /* resolution=GetTimerResolution(); */
   user_time=GetUserTime(&timer);
   elapsed_time=GetElapsedTime(&timer);
   (void) fflush(stdout);

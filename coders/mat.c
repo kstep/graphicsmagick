@@ -441,7 +441,6 @@ static Image *ReadMATImage(const ImageInfo *image_info, ExceptionInfo *exception
   long ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
-  magick_uint32_t Unknown6;
   unsigned z;
   int logging;
   int sample_size;
@@ -555,7 +554,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     {     
       case  8: z=1; break;			/* 2D matrix*/
       case 12: z = ReadBlobXXXLong(image2);	/* 3D matrix RGB*/
-  	       Unknown6 = ReadBlobXXXLong(image2);
+	       (void) ReadBlobXXXLong(image2);  /* Unknown6 */
 	       if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
 	       break;
@@ -945,7 +944,6 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
 {
   long y;
   unsigned z;
-  const PixelPacket *q;
   unsigned int status;
   int logging;
   unsigned long DataSize;
@@ -1043,7 +1041,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
         for (y=0; y<(long)image->columns; y++)
 	{
           progress_quantum++;
-          q = AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
+          (void) AcquireImagePixels(image,y,0,1,image->rows,&image->exception);
           (void) ExportImagePixelArea(image,z2qtype[z],8,pixels,0,0);
           (void) WriteBlob(image,image->rows,pixels);
           if (QuantumTick(progress_quantum,progress_span))
