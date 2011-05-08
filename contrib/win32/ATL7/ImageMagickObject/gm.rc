@@ -68,7 +68,7 @@ BEGIN
             VALUE "FileDescription", "GraphicsMagick Utility\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "GM\0"
-            VALUE "LegalCopyright", "Copyright 2003\0"
+            VALUE "LegalCopyright", "Copyright GraphicsMagick Group 2003-2011\0"
             VALUE "OriginalFilename", "GM.EXE\0"
             VALUE "ProductName", "GraphicsMagick Utility\0"
             VALUE "ProductVersion", "1, 0, 0, 1\0"
@@ -91,7 +91,7 @@ END
 
 COLORS.MGK              IMAGEMAGICK DISCARDABLE "colors.mgk"
 DELEGATES.MGK           IMAGEMAGICK DISCARDABLE "delegates.mgk"
-MAGIC.MGK               IMAGEMAGICK DISCARDABLE "magic.mgk"
+//MAGIC.MGK               IMAGEMAGICK DISCARDABLE "magic.mgk"
 MODULES.MGK             IMAGEMAGICK DISCARDABLE "modules.mgk"
 TYPE.MGK                IMAGEMAGICK DISCARDABLE "type.mgk"
 TYPE-GHOSTSCRIPT.MGK    IMAGEMAGICK DISCARDABLE "type-ghostscript.mgk"
