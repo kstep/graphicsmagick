@@ -51,6 +51,18 @@
 <div class="document">
 
 
+<p>2011-05-08  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/jpeg.c (ReadJPEGImage): Treat exceptions thrown by
+jpeg_finish_decompress() as warnings rather than errors.
+(JPEGErrorHandler): Handle JPEG errors directly rather than
+passing them to a message formatting routine for handling.  Also
+added useful logging.
+(JPEGMessageHandler): Only handle JPEG traces and warnings.  Also
+added useful logging.</li>
+</ul>
+</blockquote>
 <p>2011-05-07  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -279,7 +291,7 @@ string, even if it is assured to fit.</li>
 </div>
 <div class="footer">
 <hr class="footer" />
-Generated on: 2011-05-07 20:20 UTC.
+Generated on: 2011-05-08 21:08 UTC.
 
 </div>
 </body>

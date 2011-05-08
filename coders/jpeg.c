@@ -138,8 +138,12 @@ typedef struct _ErrorManager
   Image
     *image;
 
+  MagickBool
+    completed;
+
   jmp_buf
     error_recovery;
+
 } ErrorManager;
 
 typedef struct _SourceManager
@@ -190,7 +194,12 @@ typedef struct _SourceManager
 %
 */
 
-static unsigned int EmitMessage(j_common_ptr jpeg_info,int msg_level)
+/*
+  Format a libjpeg warning or trace event.  Warnings are converted to
+  GraphicsMagick warning exceptions while traces are optionally
+  logged.
+*/
+static unsigned int JPEGMessageHandler(j_common_ptr jpeg_info,int msg_level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -208,34 +217,39 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int msg_level)
   err=jpeg_info->err;
   error_manager=(ErrorManager *) jpeg_info->client_data;
   image=error_manager->image;
-  /* err->msg_code err->msg_parm.i[n] or err->msg_parm.s */
-  (err->format_message)(jpeg_info,message);
-  if (image->logging)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			    "Message: level=%d code=%d parms=0x%02x,0x%02x,"
-			    "0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x",
-			    msg_level, err->msg_code,
-			    err->msg_parm.i[0], err->msg_parm.i[1],
-			    err->msg_parm.i[2], err->msg_parm.i[3],
-			    err->msg_parm.i[4], err->msg_parm.i[5],
-			    err->msg_parm.i[6], err->msg_parm.i[7]);
-    }
   /* msg_level is -1 for warnings, 0 and up for trace messages. */
-  if ((msg_level < 0) ||
-      /* Treat unknown EXP "Expand reference image(s)" marker as a warning. */
-      ((JERR_UNKNOWN_MARKER == err->msg_code) &&
-       (0xdf == err->msg_parm.i[0])))
+  if (msg_level < 0)
     {
+      /* A warning */
+      (err->format_message)(jpeg_info,message);
+
+      if (image->logging)
+	{
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				"[%s] JPEG Warning: \"%s\" (code=%d, parms=0x%02x,0x%02x,"
+				"0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x)",
+				image->filename,message,err->msg_code,
+				err->msg_parm.i[0], err->msg_parm.i[1],
+				err->msg_parm.i[2], err->msg_parm.i[3],
+				err->msg_parm.i[4], err->msg_parm.i[5],
+				err->msg_parm.i[6], err->msg_parm.i[7]);
+	}
       if ((err->num_warnings == 0) ||
           (err->trace_level >= 3))
-        ThrowBinaryException2(CorruptImageWarning,(char *) message,
-          image->filename);
+	ThrowBinaryException2(CorruptImageWarning,(char *) message,
+			      image->filename);
       err->num_warnings++;
     }
   else
-    if (err->trace_level >= msg_level)
-      ThrowBinaryException2(CoderError,(char *) message,image->filename);
+    {
+      /* A trace message */
+      if ((image->logging) && (msg_level >= err->trace_level))
+	{
+	  (err->format_message)(jpeg_info,message);
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				"[%s] JPEG Trace: \"%s\"",image->filename,message);
+	}
+    }
   return(True);
 }
 
@@ -278,15 +292,47 @@ static void InitializeSource(j_decompress_ptr cinfo)
   source->start_of_blob=TRUE;
 }
 
+/*
+  Format and report a libjpeg error event.  Errors are reported via a
+  GraphicsMagick error exception. The function terminates with
+  longjmp() so it never returns to the caller.
+*/
 static void JPEGErrorHandler(j_common_ptr jpeg_info) MAGICK_FUNC_NORETURN;
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
+  char
+    message[JMSG_LENGTH_MAX];
+
+  struct jpeg_error_mgr
+    *err;
+
   ErrorManager
     *error_manager;
- 
-  (void) EmitMessage(jpeg_info,0);
-  error_manager=( ErrorManager *) jpeg_info->client_data;
+
+  Image
+    *image;
+
+  message[0]='\0';
+  err=jpeg_info->err;
+  error_manager=(ErrorManager *) jpeg_info->client_data;
+  image=error_manager->image;
+  (err->format_message)(jpeg_info,message);
+  if (image->logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "[%s] JPEG Error: \"%s\" (code=%d, parms=0x%02x,0x%02x,"
+			    "0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x)",
+			    image->filename,message,err->msg_code,
+			    err->msg_parm.i[0], err->msg_parm.i[1],
+			    err->msg_parm.i[2], err->msg_parm.i[3],
+			    err->msg_parm.i[4], err->msg_parm.i[5],
+			    err->msg_parm.i[6], err->msg_parm.i[7]);
+    }
+  if (error_manager->completed)
+    ThrowException2(&image->exception,CoderWarning,(char *) message,image->filename);
+  else
+    ThrowException2(&image->exception,CoderError,(char *) message,image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
@@ -964,10 +1010,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
-    {
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-			   image);
-    }
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
@@ -978,7 +1021,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) memset(&jpeg_info,0,sizeof(jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
   error_manager.image=image;
@@ -1262,9 +1305,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	}
       indexes=AccessMutableIndexes(image);
 
-      /* FIXME .... */
       if (jpeg_read_scanlines(&jpeg_info,scanline,1) != 1)
-	ThrowReaderException(CorruptImageError,CorruptImage,image);
+	{
+	  status=MagickFail;
+	  break;
+	}
 
       p=jpeg_pixels;
 
@@ -1335,6 +1380,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 				    image->columns,image->rows))
 	  {
 	    status=MagickFail;
+	    jpeg_abort_decompress(&jpeg_info);
 	    break;
 	  }
     }
@@ -1342,7 +1388,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     Free jpeg resources.
   */
   if (status == MagickPass)
-    (void) jpeg_finish_decompress(&jpeg_info);
+    {
+      /*
+	jpeg_finish_decompress() may throw an exception while it is
+	finishing the remainder of the JPEG file.  At this point we
+	have already decoded the image so we handle exceptions from
+	jpeg_finish_decompress() specially, mapping reported
+	exceptions as warnings rather than errors.  We try using
+	jpeg_finish_decompress() and if it results in a longjmp(),
+	then we skip over it again.
+      */
+      error_manager.completed=MagickTrue;
+      if (!setjmp(error_manager.error_recovery))
+	(void) jpeg_finish_decompress(&jpeg_info);
+    }
   jpeg_destroy_decompress(&jpeg_info);
   MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
@@ -1766,7 +1825,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
   */
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   error_manager.image=image;
   if (setjmp(error_manager.error_recovery))

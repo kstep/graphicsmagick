@@ -1,3 +1,13 @@
+2011-05-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Treat exceptions thrown by
+	jpeg_finish_decompress() as warnings rather than errors.
+	(JPEGErrorHandler): Handle JPEG errors directly rather than
+	passing them to a message formatting routine for handling.  Also
+	added useful logging.
+	(JPEGMessageHandler): Only handle JPEG traces and warnings.  Also
+	added useful logging.
+
 2011-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (EmitMessage): Treat an unhandled EXP marker as a
