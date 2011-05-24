@@ -258,7 +258,7 @@ Optional Packages/Options
 --without-lcms2
     disable lcms (v2.X) support
 
---without-lcms2
+--without-lzma
     disable LZMA support
 
 --without-png

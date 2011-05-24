@@ -1,3 +1,12 @@
+2011-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* scripts/rst2htmldeco.py (docutils_opts): Do not include a
+	datestamp of any kind since it unnecessarily churns the
+	repository, particularly if the output file did not otherwise
+	change.
+
+	* INSTALL-unix.txt: Fix typo in description of --without-lzma.
+
 2011-05-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (ReadJPEGImage): Treat exceptions thrown by
