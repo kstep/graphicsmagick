@@ -36,38 +36,37 @@ uninstall-data-html:
 
 # These files are built from reStructuredText
 RST2HTML_TARGETS = \
-	$(WWWDIR)/Magick++/Image.html \
-	$(WWWDIR)/Magick++/index.html \
-	$(WWWDIR)/Magick++/Documentation.html \
-	$(WWWDIR)/api/api.html \
-	$(WWWDIR)/wand/wand.html \
-	$(WWWDIR)/CVS.html \
-	$(WWWDIR)/Changes.html \
-	$(WWWDIR)/Changelog.html \
-	$(WWWDIR)/ChangeLog-2010.html \
-	$(WWWDIR)/ChangeLog-2009.html \
-	$(WWWDIR)/ChangeLog-2008.html \
-	$(WWWDIR)/ChangeLog-2007.html \
-	$(WWWDIR)/ChangeLog-2006.html \
-	$(WWWDIR)/ChangeLog-2005.html \
-	$(WWWDIR)/ChangeLog-2004.html \
-	$(WWWDIR)/ChangeLog-2003.html \
-	$(WWWDIR)/ChangeLog-2002.html \
 	$(WWWDIR)/ChangeLog-2001.html \
+	$(WWWDIR)/ChangeLog-2002.html \
+	$(WWWDIR)/ChangeLog-2003.html \
+	$(WWWDIR)/ChangeLog-2004.html \
+	$(WWWDIR)/ChangeLog-2005.html \
+	$(WWWDIR)/ChangeLog-2006.html \
+	$(WWWDIR)/ChangeLog-2007.html \
+	$(WWWDIR)/ChangeLog-2008.html \
+	$(WWWDIR)/ChangeLog-2009.html \
+	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
+	$(WWWDIR)/Hg.html \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
+	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/Magick++/Image.html \
+	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/NEWS.html \
 	$(WWWDIR)/OpenMP.html \
 	$(WWWDIR)/README.html \
+	$(WWWDIR)/api/api.html \
 	$(WWWDIR)/authors.html \
 	$(WWWDIR)/benchmarks.html \
 	$(WWWDIR)/bugs.html \
 	$(WWWDIR)/contribute.html \
 	$(WWWDIR)/download.html \
 	$(WWWDIR)/formats.html \
-	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/index.html \
 	$(WWWDIR)/links.html \
 	$(WWWDIR)/miff.html \
@@ -79,17 +78,19 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/quantize.html \
 	$(WWWDIR)/tools.html \
-	$(WWWDIR)/utilities.html
+	$(WWWDIR)/utilities.html \
+	$(WWWDIR)/wand/wand.html
 
 # These files are existing reStructuredText files
 WWW_RST_FILES = \
-	$(WWWDIR)/CVS.rst \
 	$(WWWDIR)/Changes.rst \
 	$(WWWDIR)/FAQ.rst \
-	$(WWWDIR)/OpenMP.rst \
+	$(WWWDIR)/Hg.rst \
+	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/Documentation.rst \
 	$(WWWDIR)/Magick++/Image.rst \
 	$(WWWDIR)/Magick++/index.rst \
-	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/OpenMP.rst \
 	$(WWWDIR)/api/api.rst \
 	$(WWWDIR)/authors.rst \
 	$(WWWDIR)/benchmarks.rst \
@@ -97,7 +98,6 @@ WWW_RST_FILES = \
 	$(WWWDIR)/contribute.rst \
 	$(WWWDIR)/download.rst \
 	$(WWWDIR)/formats.rst \
-	$(WWWDIR)/ImageMagickObject.rst \
 	$(WWWDIR)/index.rst \
 	$(WWWDIR)/links.rst \
 	$(WWWDIR)/miff.rst \
@@ -113,22 +113,22 @@ WWW_RST_FILES = \
 
 # These are the HTML files which are packaged
 WWW_HTML_FILES = \
-	$(WWWDIR)/CVS.html \
-	$(WWWDIR)/Changes.html \
-	$(WWWDIR)/Changelog.html \
-	$(WWWDIR)/ChangeLog-2010.html \
-	$(WWWDIR)/ChangeLog-2009.html \
-	$(WWWDIR)/ChangeLog-2008.html \
-	$(WWWDIR)/ChangeLog-2007.html \
-	$(WWWDIR)/ChangeLog-2006.html \
-	$(WWWDIR)/ChangeLog-2005.html \
-	$(WWWDIR)/ChangeLog-2004.html \
-	$(WWWDIR)/ChangeLog-2003.html \
-	$(WWWDIR)/ChangeLog-2002.html \
 	$(WWWDIR)/ChangeLog-2001.html \
+	$(WWWDIR)/ChangeLog-2002.html \
+	$(WWWDIR)/ChangeLog-2003.html \
+	$(WWWDIR)/ChangeLog-2004.html \
+	$(WWWDIR)/ChangeLog-2005.html \
+	$(WWWDIR)/ChangeLog-2006.html \
+	$(WWWDIR)/ChangeLog-2007.html \
+	$(WWWDIR)/ChangeLog-2008.html \
+	$(WWWDIR)/ChangeLog-2009.html \
+	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/Changelog.html \
+	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
 	$(WWWDIR)/FAQ.html \
 	$(WWWDIR)/GraphicsMagick.html \
+	$(WWWDIR)/Hg.html \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \

@@ -57,7 +57,7 @@ nav_template = """
 <ul>
 <li><a href="%(url_prefix)sprocess.html">Process</a></li>
 <li><a href="%(url_prefix)scontribute.html">Contribute</a></li>
-<li><a href="%(url_prefix)sCVS.html">CVS</a></li>
+<li><a href="%(url_prefix)sHg.html">Source</a></li>
 <li><a href="%(url_mailinglist)s" target="top_">Lists</a></li>
 <li><a href="%(url_prefix)sChanges.html">Changes</a></li>
 <li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
