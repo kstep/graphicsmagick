@@ -57,7 +57,8 @@ directory, issue the command::
 Selecting a version of the code
 ========================================
 
-By default the cloned directory is populated with files from the `tip` (i.e. head) version of the code.
+By default the cloned directory is populated with files from the
+`default` (i.e. head) branch of the code.
 
 If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may select it like::
 
@@ -70,6 +71,16 @@ or if you require a specific branch of GraphicsMagick (e.g. 1.3), you may use::
 or you may request the files which were current on a specific date::
 
   hg update -d 2009-01-14
+
+Use::
+
+  hg branches
+
+to see the available branches, and::
+
+  hg tags
+
+to see the available release tags.
 
 Updating from the Mercurial Repository
 ========================================

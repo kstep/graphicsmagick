@@ -86,7 +86,8 @@ hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsm
 </div>
 <div class="section" id="selecting-a-version-of-the-code">
 <h1>Selecting a version of the code</h1>
-<p>By default the cloned directory is populated with files from the <cite>tip</cite> (i.e. head) version of the code.</p>
+<p>By default the cloned directory is populated with files from the
+<cite>default</cite> (i.e. head) branch of the code.</p>
 <p>If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may select it like:</p>
 <pre class="literal-block">
 hg update -r GraphicsMagick-1_3_9
@@ -99,6 +100,15 @@ hg update -r GraphicsMagick-1_3
 <pre class="literal-block">
 hg update -d 2009-01-14
 </pre>
+<p>Use:</p>
+<pre class="literal-block">
+hg branches
+</pre>
+<p>to see the available branches, and:</p>
+<pre class="literal-block">
+hg tags
+</pre>
+<p>to see the available release tags.</p>
 </div>
 <div class="section" id="updating-from-the-mercurial-repository">
 <h1>Updating from the Mercurial Repository</h1>
