@@ -159,7 +159,7 @@ you may use these steps:
 
 1. Clone the stable respository at SourceForge::
 
-     hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GraphicsMagick
+     hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
 
 2. Adjust your local repository path default to use the unstable repository.
 
