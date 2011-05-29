@@ -52,7 +52,7 @@ Cloning the Mercurial Repository
 To get the tree and place it in a sub-directory of your current working
 directory, issue the command::
 
-  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GraphicsMagick
+  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
 
 Selecting a version of the code
 ========================================
@@ -140,7 +140,11 @@ The repository hierarchy is as follows:
 2. Unstable
 
   The unstable development repository is available via ssh at
-  "ssh://hg.GraphicsMagick.org//hg/GraphicsMagick".
+  "ssh://yourid@hg.GraphicsMagick.org//hg/GraphicsMagick".
+
+  Where `yourid` is the Unix user ID on the GraphicsMagick server.
+  The `yourid@` part may left out if your client system uses the same
+  user ID as on the GraphicsMagick server.
 
 3. Stable
 
@@ -162,9 +166,11 @@ you may use these steps:
    Edit .hg/hgrc in your local repository so that it contains::
 
      [paths]
-     default = ssh://hg.GraphicsMagick.org//hg/GraphicsMagick
+     default = ssh://yourid@hg.GraphicsMagick.org//hg/GraphicsMagick
 
-3. Pull any additional updates from the unstable repository::
+   where `yourid` is the Unix user ID on the GraphicsMagick server.
+
+3. Pull any additional pending updates from the unstable repository::
 
      hg pull -u
 

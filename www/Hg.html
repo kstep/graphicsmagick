@@ -81,7 +81,7 @@ you may also clone a new repository from this interface via the same URL.</p>
 <p>To get the tree and place it in a sub-directory of your current working
 directory, issue the command:</p>
 <pre class="literal-block">
-hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GraphicsMagick
+hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
 </pre>
 </div>
 <div class="section" id="selecting-a-version-of-the-code">
@@ -165,8 +165,12 @@ preserved.</blockquote>
 <li>Unstable</li>
 </ol>
 <blockquote>
-The unstable development repository is available via ssh at
-&quot;<a class="reference external" href="ssh://hg.GraphicsMagick.org//hg/GraphicsMagick">ssh://hg.GraphicsMagick.org//hg/GraphicsMagick</a>&quot;.</blockquote>
+<p>The unstable development repository is available via ssh at
+&quot;<a class="reference external" href="ssh://yourid&#64;hg.GraphicsMagick.org//hg/GraphicsMagick">ssh://yourid&#64;hg.GraphicsMagick.org//hg/GraphicsMagick</a>&quot;.</p>
+<p>Where <cite>yourid</cite> is the Unix user ID on the GraphicsMagick server.
+The <cite>yourid&#64;</cite> part may left out if your client system uses the same
+user ID as on the GraphicsMagick server.</p>
+</blockquote>
 <ol class="arabic simple" start="3">
 <li>Stable</li>
 </ol>
@@ -188,10 +192,11 @@ hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsm
 <p>Edit .hg/hgrc in your local repository so that it contains:</p>
 <pre class="literal-block">
 [paths]
-default = ssh://hg.GraphicsMagick.org//hg/GraphicsMagick
+default = ssh://yourid&#64;hg.GraphicsMagick.org//hg/GraphicsMagick
 </pre>
+<p>where <cite>yourid</cite> is the Unix user ID on the GraphicsMagick server.</p>
 </li>
-<li><p class="first">Pull any additional updates from the unstable repository:</p>
+<li><p class="first">Pull any additional pending updates from the unstable repository:</p>
 <pre class="literal-block">
 hg pull -u
 </pre>
