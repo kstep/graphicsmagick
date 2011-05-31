@@ -4148,7 +4148,17 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
               bit 2 = 1 for byte-aligned EOLs
 
             */
-            (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,4);
+	    uint32
+	      group_three_options = 4;
+
+	    const char *
+	      value;
+	
+	    if ((value=AccessDefinition(image_info,"tiff","group-three-options")))
+	      {
+		group_three_options=(uint32) strtol(value,(char **)NULL, 10);
+	      }
+	    (void) TIFFSetField(tiff,TIFFTAG_GROUP3OPTIONS,group_three_options);
 
             /*
               It is recommended (but not required) to output FAX as

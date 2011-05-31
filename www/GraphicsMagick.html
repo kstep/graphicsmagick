@@ -1518,6 +1518,12 @@ only exception to this is when Group3 or Group4 FAX compression is
 requested since FAX machines send data in bit-reversed order and
 therefore RFC 2301 recommends using reverse order.
 </dd>
+<dt>tiff:group-three-options=&lt;value&gt;</dt>
+<dd>If the tiff:group-three-options key is defined, GraphicsMagick
+will use it to set the group3 options tag when writing
+group3-compressed TIFF.  Please see the TIFF specification for the
+usage of this tag.  The default value is 4.
+</dd>
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
 <dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
 determine the sample format used while writing TIFF files. The default is

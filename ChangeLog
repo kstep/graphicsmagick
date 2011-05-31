@@ -1,3 +1,10 @@
+2011-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document tiff:group-three-options define.
+	* coders/tiff.c (WriteTIFFImage): Add support for a
+	tiff:group-three-options define to allow power-users to set the
+	value of the GROUP3OPTIONS tag.
+
 2011-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/Makefile.am: Include Hg.*, remove CVS.*.
