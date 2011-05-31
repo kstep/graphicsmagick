@@ -1892,7 +1892,6 @@ CGMDecodeDelegate = @CGMDecodeDelegate@
 CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CVS_BRANCH_TAG = @CVS_BRANCH_TAG@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -1937,6 +1936,7 @@ GSPSDevice = @GSPSDevice@
 GSPaletteDevice = @GSPaletteDevice@
 GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HG_BRANCH_TAG = @HG_BRANCH_TAG@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 HTML_DIR = @HTML_DIR@
@@ -11629,8 +11629,7 @@ $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
-	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) \
-	  -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	hg --repository $(top_srcdir) archive --rev $(HG_BRANCH_TAG) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_P7ZIP_TRUE@	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 @HAS_P7ZIP_TRUE@	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_P7ZIP_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)

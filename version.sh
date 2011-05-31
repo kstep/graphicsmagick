@@ -39,9 +39,9 @@ else
 fi
 
 #
-# CVS branch that this release is on.
+# Mercurial branch that this release is on.
 #
-CVS_BRANCH_TAG=HEAD
+HG_BRANCH_TAG=default
 
 #
 # Libtool library revision control info

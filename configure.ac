@@ -80,8 +80,8 @@ AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 
-# Substitute CVS branch tag
-AC_SUBST(CVS_BRANCH_TAG)dnl
+# Substitute Mercurial branch tag
+AC_SUBST(HG_BRANCH_TAG)dnl
 
 # Definition used to define MagickLibVersion in version.h
 MAGICK_LIB_VERSION="0x"

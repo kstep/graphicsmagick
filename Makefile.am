@@ -296,8 +296,7 @@ $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
-	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) \
-	  -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	hg --repository $(top_srcdir) archive --rev $(HG_BRANCH_TAG) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 if HAS_P7ZIP
 	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
