@@ -495,7 +495,7 @@ Environment Variables
    you wish to run any of utilities from another location then you must
    add the path to your "bin" directory in. For instance, you might add:
 
-      ``D:\CVS\GraphicsMagick\VisualMagick\bin``
+      ``D:\Devel\GraphicsMagick\VisualMagick\bin``
 
    to do this for the default build environment like I do.
 
