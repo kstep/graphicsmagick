@@ -36,8 +36,8 @@ GraphicsMagick Tools
 Animate: animate a sequence of images
 =====================================
 
-Animate_ displays a sequence of images or an animation on any workstation
-display running an X server.
+Animate_ displays a sequence of images or an animation on any display
+running an X server.
 
 Compare: compare two images using statistics and/or visual differencing
 =======================================================================
