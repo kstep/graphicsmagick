@@ -53,6 +53,19 @@
 <div class="document" id="graphicsmagick-mercurial">
 <h1 class="title">GraphicsMagick Mercurial</h1>
 
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#what-is-mercurial" id="id1">What is Mercurial?</a></li>
+<li><a class="reference internal" href="#web-access" id="id2">Web Access</a></li>
+<li><a class="reference internal" href="#cloning-the-mercurial-repository" id="id3">Cloning the Mercurial Repository</a></li>
+<li><a class="reference internal" href="#selecting-a-version-of-the-code" id="id4">Selecting a version of the code</a></li>
+<li><a class="reference internal" href="#updating-from-the-mercurial-repository" id="id5">Updating from the Mercurial Repository</a></li>
+<li><a class="reference internal" href="#mercurial-software" id="id6">Mercurial Software</a></li>
+<li><a class="reference internal" href="#mercurial-for-graphicsmagick-developers" id="id7">Mercurial for GraphicsMagick Developers</a></li>
+<li><a class="reference internal" href="#email-notifications" id="id8">Email Notifications</a></li>
+</ul>
+</div>
 <p>The GraphicsMagick source code is now available via <a class="reference external" href="http://mercurial.selenic.com/">Mercurial</a>.
 Previously GraphicsMagick source control was via CVS (which is still
 working in a read-only mode), but now the repository has been migrated
@@ -60,7 +73,7 @@ to <a class="reference external" href="http://mercurial.selenic.com/">Mercurial<
 around the country or world to download the GraphicsMagick source, fix
 bugs, or add new features.</p>
 <div class="section" id="what-is-mercurial">
-<h1>What is Mercurial?</h1>
+<h1><a class="toc-backref" href="#id1">What is Mercurial?</a></h1>
 <p><a class="reference external" href="http://mercurial.selenic.com/">Mercurial</a> (also known as <cite>Hg</cite> due to the abbreviation for Mercury in
 the periodic table of the elements) is a modern source control system
 which provides anyone who clones a repository with a stand-alone local
@@ -70,14 +83,14 @@ fully-functional, you may use the same repository to manage your local
 changes to GraphicsMagick code.</p>
 </div>
 <div class="section" id="web-access">
-<h1>Web Access</h1>
+<h1><a class="toc-backref" href="#id2">Web Access</a></h1>
 <p>A <a class="reference external" href="http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/">GraphicsMagick Hg</a> web interface is available which may be used to
 interactively view the latest versions of files, or the changes to
 files, using your web browser.  Due to the way that <a class="reference external" href="http://mercurial.selenic.com/">Mercurial</a> works,
 you may also clone a new repository from this interface via the same URL.</p>
 </div>
 <div class="section" id="cloning-the-mercurial-repository">
-<h1>Cloning the Mercurial Repository</h1>
+<h1><a class="toc-backref" href="#id3">Cloning the Mercurial Repository</a></h1>
 <p>To get the tree and place it in a sub-directory of your current working
 directory, issue the command:</p>
 <pre class="literal-block">
@@ -85,7 +98,7 @@ hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsm
 </pre>
 </div>
 <div class="section" id="selecting-a-version-of-the-code">
-<h1>Selecting a version of the code</h1>
+<h1><a class="toc-backref" href="#id4">Selecting a version of the code</a></h1>
 <p>By default the cloned directory is populated with files from the
 <cite>default</cite> (i.e. head) branch of the code.</p>
 <p>If you require a specific release of GraphicsMagick (e.g. 1.3.9), you may select it like:</p>
@@ -111,7 +124,7 @@ hg tags
 <p>to see the available release tags.</p>
 </div>
 <div class="section" id="updating-from-the-mercurial-repository">
-<h1>Updating from the Mercurial Repository</h1>
+<h1><a class="toc-backref" href="#id5">Updating from the Mercurial Repository</a></h1>
 <p>To pull more changes from the repository, execute:</p>
 <pre class="literal-block">
 hg pull
@@ -128,7 +141,7 @@ hg pull -u
 automatically does a merge.</p>
 </div>
 <div class="section" id="mercurial-software">
-<h1>Mercurial Software</h1>
+<h1><a class="toc-backref" href="#id6">Mercurial Software</a></h1>
 <p>The best place to look for the latest version of Mercurial (<cite>Hg</cite>) is
 at the <a class="reference external" href="http://mercurial.selenic.com/">Mercurial</a> web site.  Most free operating systems (e.g. Linux,
 OpenSolaris, and *BSD) will offer a version of Mercurial as an
@@ -138,7 +151,7 @@ provides a very nice graphical interface.  <a class="reference external" href="h
 available on Linux and other systems.</p>
 </div>
 <div class="section" id="mercurial-for-graphicsmagick-developers">
-<h1>Mercurial for GraphicsMagick Developers</h1>
+<h1><a class="toc-backref" href="#id7">Mercurial for GraphicsMagick Developers</a></h1>
 <p>Since <a class="reference external" href="http://mercurial.selenic.com/">Mercurial</a> is a distributed revision control system, you may
 clone the GraphicsMagick repository and work for days or weeks (making
 your own local commits) before you deside to push some or all of your
@@ -214,7 +227,7 @@ ssh = ssh -C
 site-by-site basis (e.g. via .ssh/config).</p>
 </div>
 <div class="section" id="email-notifications">
-<h1>Email Notifications</h1>
+<h1><a class="toc-backref" href="#id8">Email Notifications</a></h1>
 <p>An email notification is sent to the <a class="reference external" href="https://lists.sourceforge.net/lists/listinfo/graphicsmagick-commit">graphicsmagick-commit</a> mailing
 list at SourceForge whenever a change is submitted to the development
 (unstable) repository.  Subscribe to this list if you would like to be

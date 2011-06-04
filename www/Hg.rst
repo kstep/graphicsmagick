@@ -20,6 +20,8 @@ GraphicsMagick Mercurial
 .. _TortoiseHg : http://tortoisehg.bitbucket.org/
 .. _`GraphicsMagick Hg` : http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
 
+.. contents::
+
 The GraphicsMagick source code is now available via Mercurial_.
 Previously GraphicsMagick source control was via CVS (which is still
 working in a read-only mode), but now the repository has been migrated
