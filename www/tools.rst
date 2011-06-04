@@ -12,9 +12,8 @@ GraphicsMagick Tools
                  save your completed work in the same or differing image format.
 
    :keywords: GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick,
-              Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick,
-              Web Magic, visualization, image processing, software development,
-              simulation, image, software, AniMagick, Animagic,  Magick++
+              Perl Magic, image processing, software development, image, software,
+              Magick++
 
 .. _programming : programming.html
 .. _Animate : animate.html
