@@ -12,8 +12,8 @@ GraphicsMagick Image Processing System
                  save your completed work in the same or differing image format.
 
    :keywords: GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick,
-              Perl Magic, WebMagick, Web Magic, image processing,
-              software development, image, software, Magick++, Gmagick
+              Perl Magic, image processing, software development, image, software,
+              Magick++
 
 
 .. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/1.3/
