@@ -185,6 +185,16 @@ compression is to put this in your local .hgrc::
 but ssh also provides its own way to enable compression on a
 site-by-site basis (e.g. via .ssh/config).
 
+Email Notifications
+===================
+
+.. _`graphicsmagick-commit` : https://lists.sourceforge.net/lists/listinfo/graphicsmagick-commit
+
+An email notification is sent to the `graphicsmagick-commit`_ mailing
+list at SourceForge whenever a change is submitted to the development
+(unstable) repository.  Subscribe to this list if you would like to be
+notified by email of changes when they occur.
+
 
 --------------------------------------------------------------------------
 
