@@ -19,7 +19,7 @@ GraphicsMagick Project Information
 .. _News : NEWS.html
 .. _`Source Control` : Hg.html
 
-`Change Logs`_ - Read the change logs to see what changed.
+`Change Logs`_ - Read the detailed change logs to see what changed.
 
 License_ - Copyrights and usage terms for GraphicsMagick.
 

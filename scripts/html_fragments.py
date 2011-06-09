@@ -29,7 +29,6 @@ banner_template = """
 <img src="%(url_prefix)s%(banner_logo)s" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
 	<input type=hidden name="domains" value="www.graphicsmagick.org" />
 	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
     <input type=text name="q" size="25" maxlength="255" />
@@ -44,30 +43,18 @@ nav_template = """
 <div class="navmenu">
 <ul>
 <li><a href="%(url_prefix)sindex.html">Home</a></li>
-<li><a href="%(url_prefix)sCopyright.html">License</a></li>
-<li><a href="%(url_prefix)smission.html">Mission</a></li>
+<li><a href="%(url_prefix)sproject.html">Project</a></li>
 <li><a href="%(url_prefix)sdownload.html">Download</a></li>
 <li><a href="%(url_prefix)sREADME.html">Install</a></li>
-<li><a href="%(url_prefix)sFAQ.html">FAQ</a></li>
-<li><a href="%(url_prefix)sNEWS.html">News</a> </li>
-<li><a href="%(url_prefix)sformats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="%(url_prefix)sprocess.html">Process</a></li>
-<li><a href="%(url_prefix)scontribute.html">Contribute</a></li>
 <li><a href="%(url_prefix)sHg.html">Source</a></li>
-<li><a href="%(url_mailinglist)s" target="top_">Lists</a></li>
-<li><a href="%(url_prefix)sChanges.html">Changes</a></li>
+<li><a href="%(url_prefix)sNEWS.html">News</a> </li>
 <li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
 <li><a href="%(url_prefix)sutilities.html">Utilities</a></li>
 <li><a href="%(url_prefix)sprogramming.html">Programming</a></li>
-<li><a href="%(url_prefix)slinks.html">Links</a></li>
+<li><a href="%(url_prefix)sreference.html">Reference</a></li>
 </ul>
 </div>
 """
-
 
 footer_template = """
 <hr class="divider">

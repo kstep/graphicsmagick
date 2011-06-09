@@ -77,6 +77,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/project.html \
+	$(WWWDIR)/reference.html \
 	$(WWWDIR)/quantize.html \
 	$(WWWDIR)/tools.html \
 	$(WWWDIR)/utilities.html \
@@ -109,6 +110,7 @@ WWW_RST_FILES = \
 	$(WWWDIR)/process.rst \
 	$(WWWDIR)/programming.rst \
 	$(WWWDIR)/project.rst \
+	$(WWWDIR)/reference.rst \
 	$(WWWDIR)/quantize.rst \
 	$(WWWDIR)/tools.rst \
 	$(WWWDIR)/utilities.rst
@@ -172,6 +174,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/project.html \
+	$(WWWDIR)/reference.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/quantize.html \
 	$(WWWDIR)/tools.html \
