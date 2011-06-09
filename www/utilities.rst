@@ -29,20 +29,18 @@ GraphicsMagick Utilities
 .. _montage : montage.html
 
 
-GraphicsMagick provides a powerful command line utility which may be
-used to access all GraphicsMagick functions. Gm uses a consistent set
-of options (`see options documentation <GraphicsMagick.html>`_).
-GraphicsMagick provides access to major commands via a single
-executable command-line program called ``gm``; for example, to use the
-"convert" command, type ``gm convert ...``. The available commands and
-links to their documentation are shown in the following table:
+GraphicsMagick provides a powerful command line utility `gm`, which
+may be used to access all GraphicsMagick functions. Gm uses a
+consistent set of options (`see options documentation
+<GraphicsMagick.html>`_).  GraphicsMagick provides access to major
+commands via a single executable command-line program; for example, to
+use the "convert" sub-command, type ``gm convert ...``. The available
+commands are as follows:
 
-===============  =========================================================================
-Command          Description
 ===============  =========================================================================
 animate_         Animate a sequence of images
 composite_       Composite images together
-conjure_         Cxecute a Magick Scripting Language (MSL) XML script
+conjure_         Execute a Magick Scripting Language (MSL) XML script
 compare_         Compare two images using statistics and/or visual differencing
 convert_         Convert an image or sequence of images
 display_         Display an image on a workstation running X
@@ -51,11 +49,6 @@ import_          Capture an application or X server screen
 mogrify_         Transform an image or sequence of images
 montage_         Create a composite image (in a grid) from separate images
 ===============  =========================================================================
-
-The ``gm`` utility makes it easy to perform complex image processing
-operations using a single command. It may be invoked from scripts, or
-from other programs in order to automate the processing of thousands of
-images.
 
 --------------------------------------------------------------------------
 
