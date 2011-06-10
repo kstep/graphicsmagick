@@ -25,7 +25,6 @@ url_prefix = '' # trailing slash always needed
 
 banner_template = """
 <div class="banner">
-<span>
 <img src="%(url_prefix)s%(banner_logo)s" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
