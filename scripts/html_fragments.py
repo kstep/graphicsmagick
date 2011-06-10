@@ -12,7 +12,7 @@ GraphicsMagick web site pages.
 url_mailinglist = "http://sourceforge.net/mail/?group_id=73485"
 url_sourceforge = "https://sourceforge.net/tracker/?group_id=73485"
 
-banner_logo = 'images/gm-107x76.png' # relative to top directory
+banner_logo = 'images/gm-107x76.gif' # relative to top directory
 
 
 # banner_template and nav_template contain chunk which has to be created at
@@ -31,10 +31,8 @@ banner_template = """
 <form action="http://www.google.com/search">
 	<input type=hidden name="domains" value="www.graphicsmagick.org" />
 	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+    <span class='nowrap'><input type=text name="q" size="25" maxlength="255" />&nbsp;<input type=submit name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 """
 

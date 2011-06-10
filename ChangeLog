@@ -1,3 +1,11 @@
+2011-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* scripts/html_fragments.py (banner_template): HTML banner
+	improvements to go along with style-sheet changes.
+
+	* www/docutils-articles.css: Style-sheet improvements by Mark
+	Mitchell to work better on small screens.
+
 2011-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/project.rst: Add a page for links to pages about the
