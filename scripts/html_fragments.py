@@ -12,7 +12,7 @@ GraphicsMagick web site pages.
 url_mailinglist = "http://sourceforge.net/mail/?group_id=73485"
 url_sourceforge = "https://sourceforge.net/tracker/?group_id=73485"
 
-banner_logo = 'images/gm-107x76.gif' # relative to top directory
+banner_logo = 'images/gm-107x76.png' # relative to top directory
 
 
 # banner_template and nav_template contain chunk which has to be created at
