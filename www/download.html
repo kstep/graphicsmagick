@@ -5,8 +5,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Download</title>
-<meta content="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD. With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications. You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format. " name="description" />
-<meta content="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic, Magick++" name="keywords" />
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -45,109 +43,37 @@ At the moment, the fastest way to obtain formal releases is from the
 <a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/files/">SourceForge Download</a> page since SourceForge has lots of bandwidth, and
 many mirror sites. Snapshot packages should usually be retrieved from
 the <a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/">GraphicsMagick FTP</a> site.</p>
-<p>The organization of the GraphicsMagick directory on ftp sites is shown in the
-following table:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="26%" />
-<col width="74%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Directory</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/">GraphicsMagick
-FTP</a></td>
-<td>Contains the core GraphicsMagick sources in a
-file named similar to
-GraphicsMagick-1.2.tar.gz, or
-GraphicsMagick-1.2.tar.lzma
-These core sources are sufficient to compile
-a minimal GraphicsMagick on a Unix system
-(including MacOS-X), or under the Cygwin and
-and MinGW environments for Windows.</td>
-</tr>
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/">delegates</a></td>
-<td>Add on third-party libraries and applications
-which extend the formats supported by
-GraphicsMagick may be obtained from this
-directory. Windows users can usually ignore the
-contents of this directory since all common
-delegates are included in the Windows source
-and binaries packages.</td>
-</tr>
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/linux/">linux</a></td>
-<td>Linux source RPM (SRPM) packages for Red Hat
-Linux, other Linux systems, or any system with
-RPM installed, may be found here.</td>
-</tr>
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/">snapshots</a></td>
-<td>Snapshots (between releases) copies of
-GraphicsMagick may be found here. New snapshots
-may be cut every few days as time permits.
-Quality may vary.</td>
-</tr>
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/windows/">windows</a></td>
-<td>Installable binary packages and the extended
-source code package for use with Microsoft
-Visual C++ (including configured delegates and
-a Visual C++ workspace) may be found here.</td>
-</tr>
-</tbody>
-</table>
-<p>If you operate an GraphicsMagick mirror site, or know of additional mirrors of
-the GraphicsMagick archives, please send E-mail to Bob Friesenhahn so that they
-can be listed here. Known mirror sites are provided with privileged access to
-the master site so that they are not denied access when the default user limit
-has been reached.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="40%" />
-<col width="9%" />
-<col width="13%" />
-<col width="39%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Site</th>
-<th class="head">Max
-Users</th>
-<th class="head">Location</th>
-<th class="head">Notes</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/files/">SourceForge Download</a></td>
-<td>1000</td>
-<td>Fremont,
-CA USA</td>
-<td>HTTP download.</td>
-</tr>
-<tr><td><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/">ftp.graphicsmagick.org</a></td>
-<td>5</td>
-<td>Dallas,
-Texas
-USA</td>
-<td>Master GraphicsMagick ftp
-site. This is a good site to
-mirror from. If you provide a
-public mirror of
-GraphicsMagick (and can
-provide a verifiable URL),
-please send an email to
-<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;graphicsmagick&#46;org">bfriesen<span>&#64;</span>graphicsmagick<span>&#46;</span>org</a>
-for your mirror to be given
-priority access.</td>
-</tr>
-</tbody>
-</table>
-<p>If you get the message:</p>
-<pre class="literal-block">
-530 User anonymous access denied.
-</pre>
-<p>it means the site has reached its limit of anonymous users. You will need to
-try another site or try again later.</p>
+<p>The organization of the GraphicsMagick directory on ftp sites is as
+follows:</p>
+<p><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/">GraphicsMagick FTP</a></p>
+<blockquote>
+Contains the core GraphicsMagick sources in a file named similar to
+GraphicsMagick-1.2.tar.gz, or GraphicsMagick-1.2.tar.lzma These
+core sources are sufficient to compile. These core sources are
+sufficient to compile a minimal GraphicsMagick on a Unix system
+(including MacOS-X), or under the Cygwin and MinGW environments for
+Windows.</blockquote>
+<p><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/">delegates</a></p>
+<blockquote>
+Add on third-party libraries and applications which extend the
+formats supported by GraphicsMagick may be obtained from this
+directory. Windows users can usually ignore the contents of this
+directory since all common delegates are included in the Windows
+source and binaries packages.</blockquote>
+<p><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/linux/">linux</a></p>
+<blockquote>
+Linux source RPM (SRPM) packages for Red Hat Linux, other Linux
+systems, or any system with RPM installed, may be found here.</blockquote>
+<p><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/">snapshots</a></p>
+<blockquote>
+Snapshots (between releases) copies of GraphicsMagick may be found
+here. New snapshots may be cut every few days as time
+permits. Quality may vary (but is usually excellent).</blockquote>
+<p><a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/windows/">windows</a></p>
+<blockquote>
+Installable binary packages and the extended source code package for
+use with Microsoft Visual C++ (including configured delegates and a
+Visual C++ workspace) may be found here.</blockquote>
 <hr class="docutils" />
 <p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
