@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2011 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -2819,10 +2819,9 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity_val)
 %
 %  (void) SetImageType() sets the type of image.  Choose from these types:
 %
-%        Bilevel        Grayscale       GrayscaleMatte
-%        Palette        PaletteMatte    TrueColor
-%        TrueColorMatte ColorSeparation ColorSeparationMatte
-%        OptimizeType
+%      BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType,
+%      PaletteMatteType, TrueColorType, TrueColorMatteType,
+%      ColorSeparationType, ColorSeparationMatteType, OptimizeType
 %
 %  The format of the (void) SetImageType method is:
 %
