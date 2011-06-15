@@ -1,3 +1,11 @@
+2011-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/docutils-articles.css: Style sheet syntax fixes. Patch by
+	Mark Mitchell.
+
+	* scripts/html_fragments.py: Use proper quoting in banner search
+	HTML.  Patch by Mark Mitchell.
+
 2011-06-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageType): Fix documentation for enumeration

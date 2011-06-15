@@ -1,6 +1,8 @@
 .*\~
 .*\.bak
 .*\.tmp
+.*\.rej
+.*\.orig
 \.deps
 config\.log
 config\.status

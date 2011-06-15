@@ -722,7 +722,7 @@ typedef struct _Image
     gravity;            /* Image placement gravity */
 
   CompositeOperator
-    compose;            /* Image placement composition */
+    compose;            /* Image placement composition (default OverCompositeOp) */
 
   DisposeType
     dispose;            /* GIF disposal option */

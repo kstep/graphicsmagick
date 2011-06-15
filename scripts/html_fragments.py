@@ -28,9 +28,9 @@ banner_template = """
 <img src="%(url_prefix)s%(banner_logo)s" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <span class='nowrap'><input type=text name="q" size="25" maxlength="255" />&nbsp;<input type=submit name="sa" value="Search" /></span>
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
 </div>
 """

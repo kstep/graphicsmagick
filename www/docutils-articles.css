@@ -591,7 +591,6 @@ table.docinfo {
 
 table.docinfo th,
 table.docinfo td {
-	border-style : none;
 	border : none;
 	background-color : #EEEEEE;
 	padding-left : 0.5em;
@@ -618,18 +617,9 @@ th.field-name {
 
 table.option-list {
 	border : none;
-	padding : none;
+	padding : 0;
 	background-color : #FFFFFF;
 	border-collapse : collapse;
-	border : none;
-}
-
-table.option-list {
-	border : none;
-	padding : none;
-	background-color : #FFFFFF;
-	border-collapse : collapse;
-	border : none;
 }
 
 table.option-list tr {
