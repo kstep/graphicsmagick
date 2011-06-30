@@ -11,6 +11,8 @@ GraphicsMagick Topics
 
 `FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
+`NetBSD/pkgsrc port <http://pkgsrc.se/graphics/GraphicsMagick/>`_ for GraphicsMagick.
+
 `FreshMeat <http://freshmeat.net/projects/graphicsmagick>`_ GraphicsMagick Entry.
 
 `Gmane <http://dir.gmane.org/gmane.comp.video.graphicsmagick.announce>`_ GraphicsMagick Announce List.
