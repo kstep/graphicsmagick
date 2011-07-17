@@ -3809,8 +3809,12 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                  sizeof(dpx_file_info.image_filename));
   GenerateDPXTimeStamp(dpx_file_info.creation_datetime,
                        sizeof(dpx_file_info.creation_datetime));
-  (void) strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
-                 sizeof(dpx_file_info.creator));
+#if 0 /* To enable use of original file creator. */
+  AttributeToString(image_info,image,"DPX:file.creator",dpx_file_info.creator);
+  if (dpx_file_info.creator[0] == '\0')
+#endif
+    (void) strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
+		   sizeof(dpx_file_info.creator));
   AttributeToString(image_info,image,"DPX:file.project.name",dpx_file_info.project_name);
   AttributeToString(image_info,image,"DPX:file.copyright",dpx_file_info.copyright);
   AttributeToU32(image_info,image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
