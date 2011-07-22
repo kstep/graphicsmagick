@@ -1915,6 +1915,34 @@ then
     passed=0
     AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
        failed=`expr $failed + 1`,)
+
+# Test for compatible LIBPNG15 library
+if test $passed -gt 0; then
+failed=0
+passed=0
+AC_CACHE_CHECK(for LIBPNG is version 15, ac_cv_libpng_version_ok,
+[AC_TRY_COMPILE(
+#include <stdio.h>
+#include <stdlib.h>
+#include <png.h>
+,
+changequote(<<, >>)dnl
+<<
+#if PNG_LIBPNG_VER_SONUM != 15
+#error LIBPNG library must be version 15!
+Kaboom, Kaboom
+#endif
+return 0;
+>>,
+changequote([, ])dnl
+ac_cv_libpng_version_ok='yes',
+ac_cv_libpng_version_ok='no')])
+if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ passed=`expr $passed + 1`
+else
+ failed=`expr $failed + 1`
+fi
+fi
     AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
        failed=`expr $failed + 1`,)
     AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
@@ -1945,6 +1973,34 @@ then
       passed=0
       AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
          failed=`expr $failed + 1`,)
+
+# Test for compatible LIBPNG14 library
+if test $passed -gt 0; then
+failed=0
+passed=0
+AC_CACHE_CHECK(for LIBPNG is version 14, ac_cv_libpng_version_ok,
+[AC_TRY_COMPILE(
+#include <stdio.h>
+#include <stdlib.h>
+#include <png.h>
+,
+changequote(<<, >>)dnl
+<<
+#if PNG_LIBPNG_VER_SONUM != 14
+#error LIBPNG library must be version 14!
+Kaboom, Kaboom
+#endif
+return 0;
+>>,
+changequote([, ])dnl
+ac_cv_libpng_version_ok='yes',
+ac_cv_libpng_version_ok='no')])
+if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ passed=`expr $passed + 1`
+else
+ failed=`expr $failed + 1`
+fi
+fi
       AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
          failed=`expr $failed + 1`,)
       AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
@@ -1975,8 +2031,36 @@ then
         AC_MSG_RESULT()
         failed=0
         passed=0
-        AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+        AC_CHECK_HEADER(libpng12/png.h,passed=`expr $passed + 1`,
            failed=`expr $failed + 1`,)
+
+# Test for compatible LIBPNG12 library
+if test $passed -gt 0; then
+failed=0
+passed=0
+AC_CACHE_CHECK(for LIBPNG is version 12, ac_cv_libpng_version_ok,
+[AC_TRY_COMPILE(
+#include <stdio.h>
+#include <stdlib.h>
+#include <png.h>
+,
+changequote(<<, >>)dnl
+<<
+#if PNG_LIBPNG_VER_DLLNUM  != 13
+#error LIBPNG library must be version 12!
+Kaboom, Kaboom
+#endif
+return 0;
+>>,
+changequote([, ])dnl
+ac_cv_libpng_version_ok='yes',
+ac_cv_libpng_version_ok='no')])
+if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ passed=`expr $passed + 1`
+else
+ failed=`expr $failed + 1`
+fi
+fi
         AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
            failed=`expr $failed + 1`,)
         AC_MSG_CHECKING(if png12 package is complete)
