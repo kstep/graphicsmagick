@@ -1909,29 +1909,125 @@ have_png='no'
 LIB_PNG=''
 if test "$with_png" != 'no'
 then
-    AC_MSG_CHECKING(for PNG support )
+    AC_MSG_CHECKING(for LIBPNG15 support )
     AC_MSG_RESULT()
     failed=0
     passed=0
-    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if PNG package is complete)
+    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+       failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
+       failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
+       failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if png15 package is complete)
     if test $passed -gt 0
     then
-    if test $failed -gt 0
+      if test $failed -gt 0
+      then
+	  AC_MSG_RESULT(no -- some components failed test)
+	  have_png='no (failed tests)'
+      else
+	  LIB_PNG='-lpng15'
+	  LIBS="$LIB_PNG $LIBS"
+	  AC_DEFINE(HasPNG,1,Define if you have PNG library)
+	  AC_MSG_RESULT(yes)
+	  have_png='yes'
+      fi
+    else
+      AC_MSG_RESULT(no)
+    fi
+
+    if test "$have_png" != 'yes'
     then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_png='no (failed tests)'
-    else
-	LIB_PNG='-lpng'
-	LIBS="$LIB_PNG $LIBS"
-	AC_DEFINE(HasPNG,1,Define if you have PNG library)
-	AC_MSG_RESULT(yes)
-	have_png='yes'
+      AC_MSG_CHECKING(for LIBPNG14 support )
+      AC_MSG_RESULT()
+      failed=0
+      passed=0
+      AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+         failed=`expr $failed + 1`,)
+      AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
+         failed=`expr $failed + 1`,)
+      AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
+         failed=`expr $failed + 1`,)
+      AC_MSG_CHECKING(if png14 package is complete)
+      if test $passed -gt 0
+      then
+        if test $failed -gt 0
+        then
+	  AC_MSG_RESULT(no -- some components failed test)
+	  have_png='no (failed tests)'
+        else
+	  LIB_PNG='-lpng14'
+	  LIBS="$LIB_PNG $LIBS"
+	  AC_DEFINE(HasPNG,1,Define if you have PNG library)
+	  AC_MSG_RESULT(yes)
+	  have_png='yes'
+        fi
+      else
+        AC_MSG_RESULT(no)
+      fi
     fi
-    else
-    AC_MSG_RESULT(no)
+
+
+    if test "$have_png" != 'yes'
+    then
+        AC_MSG_CHECKING(for LIBPNG12 support )
+        AC_MSG_RESULT()
+        failed=0
+        passed=0
+        AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+           failed=`expr $failed + 1`,)
+        AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
+           failed=`expr $failed + 1`,)
+        AC_MSG_CHECKING(if png12 package is complete)
+        if test $passed -gt 0
+        then
+          if test $failed -gt 0
+          then
+	    AC_MSG_RESULT(no -- some components failed test)
+	    have_png='no (failed tests)'
+          else
+	    LIB_PNG='-lpng12'
+	    LIBS="$LIB_PNG $LIBS"
+	    AC_DEFINE(HasPNG,1,Define if you have PNG library)
+	    AC_MSG_RESULT(yes)
+	    have_png='yes'
+          fi
+        else
+          AC_MSG_RESULT(no)
+        fi
     fi
+
+
+    if test "$have_png" != 'yes'
+    then
+          AC_MSG_CHECKING(for LIBPNG support )
+          AC_MSG_RESULT()
+          failed=0
+          passed=0
+          AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+             failed=`expr $failed + 1`,)
+          AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,
+             failed=`expr $failed + 1`,)
+          AC_MSG_CHECKING(if png package is complete)
+          if test $passed -gt 0
+          then
+            if test $failed -gt 0
+            then
+	        AC_MSG_RESULT(no -- some components failed test)
+	        have_png='no (failed tests)'
+            else
+	        LIB_PNG='-lpng'
+	        LIBS="$LIB_PNG $LIBS"
+	        AC_DEFINE(HasPNG,1,Define if you have PNG library)
+	        AC_MSG_RESULT(yes)
+	        have_png='yes'
+            fi
+          else
+            AC_MSG_RESULT(no)
+          fi
+    fi
+
 fi
 AM_CONDITIONAL(HasPNG, test "$have_png" = 'yes')
 AC_SUBST(LIB_PNG)

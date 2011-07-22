@@ -25980,8 +25980,8 @@ have_png='no'
 LIB_PNG=''
 if test "$with_png" != 'no'
 then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG support " >&5
-$as_echo_n "checking for PNG support ... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG15 support " >&5
+$as_echo_n "checking for LIBPNG15 support ... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
     failed=0
@@ -25994,7 +25994,341 @@ else
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }
+if ${ac_cv_lib_png15_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng15  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png15_png_get_io_ptr=yes
+else
+  ac_cv_lib_png15_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png15_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png15_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png15_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng15" >&5
+$as_echo_n "checking for png_longjmp in -lpng15... " >&6; }
+if ${ac_cv_lib_png15_png_longjmp+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng15  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_longjmp ();
+int
+main ()
+{
+return png_longjmp ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png15_png_longjmp=yes
+else
+  ac_cv_lib_png15_png_longjmp=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png15_png_longjmp" >&5
+$as_echo "$ac_cv_lib_png15_png_longjmp" >&6; }
+if test "x$ac_cv_lib_png15_png_longjmp" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png15 package is complete" >&5
+$as_echo_n "checking if png15 package is complete... " >&6; }
+    if test $passed -gt 0
+    then
+      if test $failed -gt 0
+      then
+	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+	  have_png='no (failed tests)'
+      else
+	  LIB_PNG='-lpng15'
+	  LIBS="$LIB_PNG $LIBS"
+
+$as_echo "#define HasPNG 1" >>confdefs.h
+
+	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	  have_png='yes'
+      fi
+    else
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+
+    if test "$have_png" != 'yes'
+    then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG14 support " >&5
+$as_echo_n "checking for LIBPNG14 support ... " >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+      failed=0
+      passed=0
+      ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
+if test "x$ac_cv_header_png_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng14" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng14... " >&6; }
+if ${ac_cv_lib_png14_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng14  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png14_png_get_io_ptr=yes
+else
+  ac_cv_lib_png14_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png14_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png14_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png14_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_state in -lpng14" >&5
+$as_echo_n "checking for png_get_io_state in -lpng14... " >&6; }
+if ${ac_cv_lib_png14_png_get_io_state+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng14  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_state ();
+int
+main ()
+{
+return png_get_io_state ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png14_png_get_io_state=yes
+else
+  ac_cv_lib_png14_png_get_io_state=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png14_png_get_io_state" >&5
+$as_echo "$ac_cv_lib_png14_png_get_io_state" >&6; }
+if test "x$ac_cv_lib_png14_png_get_io_state" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png14 package is complete" >&5
+$as_echo_n "checking if png14 package is complete... " >&6; }
+      if test $passed -gt 0
+      then
+        if test $failed -gt 0
+        then
+	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+	  have_png='no (failed tests)'
+        else
+	  LIB_PNG='-lpng14'
+	  LIBS="$LIB_PNG $LIBS"
+
+$as_echo "#define HasPNG 1" >>confdefs.h
+
+	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	  have_png='yes'
+        fi
+      else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      fi
+    fi
+
+
+    if test "$have_png" != 'yes'
+    then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG12 support " >&5
+$as_echo_n "checking for LIBPNG12 support ... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+        failed=0
+        passed=0
+        ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
+if test "x$ac_cv_header_png_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng12" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng12... " >&6; }
+if ${ac_cv_lib_png12_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng12  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png12_png_get_io_ptr=yes
+else
+  ac_cv_lib_png12_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png12_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png12_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png12_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png12 package is complete" >&5
+$as_echo_n "checking if png12 package is complete... " >&6; }
+        if test $passed -gt 0
+        then
+          if test $failed -gt 0
+          then
+	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+	    have_png='no (failed tests)'
+          else
+	    LIB_PNG='-lpng12'
+	    LIBS="$LIB_PNG $LIBS"
+
+$as_echo "#define HasPNG 1" >>confdefs.h
+
+	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	    have_png='yes'
+          fi
+        else
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+        fi
+    fi
+
+
+    if test "$have_png" != 'yes'
+    then
+          { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG support " >&5
+$as_echo_n "checking for LIBPNG support ... " >&6; }
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+          failed=0
+          passed=0
+          ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
+if test "x$ac_cv_header_png_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+          { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng... " >&6; }
 if ${ac_cv_lib_png_png_get_io_ptr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26036,29 +26370,31 @@ else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if PNG package is complete" >&5
-$as_echo_n "checking if PNG package is complete... " >&6; }
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+          { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png package is complete" >&5
+$as_echo_n "checking if png package is complete... " >&6; }
+          if test $passed -gt 0
+          then
+            if test $failed -gt 0
+            then
+	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-	have_png='no (failed tests)'
-    else
-	LIB_PNG='-lpng'
-	LIBS="$LIB_PNG $LIBS"
+	        have_png='no (failed tests)'
+            else
+	        LIB_PNG='-lpng'
+	        LIBS="$LIB_PNG $LIBS"
 
 $as_echo "#define HasPNG 1" >>confdefs.h
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	have_png='yes'
-    fi
-    else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+	        have_png='yes'
+            fi
+          else
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+          fi
     fi
+
 fi
  if test "$have_png" = 'yes'; then
   HasPNG_TRUE=
