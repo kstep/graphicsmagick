@@ -1,5 +1,10 @@
 2011-07-20  Glenn Randers-Pehrson  <glennrp@simple...>
 
+	* coders/png.c: account for changed typecast of png_get_iCCP
+	argument in libpng15 
+
+2011-07-20  Glenn Randers-Pehrson  <glennrp@simple...>
+
 	* configure.ac: look for libpng15, libpng14, libpng12, and libpng
         in that order.
 

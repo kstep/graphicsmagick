@@ -1780,8 +1780,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         compression;
 
+#if (PNG_LIBPNG_VER < 10500)
       png_charp
-        info,
+        info;
+#else
+      png_bytep
+        info;
+#endif
+
+      png_charp
         name;
 
       png_uint_32
@@ -7176,8 +7183,15 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                           "  Setting up iCCP chunk");
+
                   png_set_iCCP(ping,ping_info,(png_charp) "icm",
-                               (int) 0, (png_charp) profile_info,
+                               (int) 0,
+#if (PNG_LIBPNG_VER < 10500)
+                               (png_charp) profile_info,
+#else
+                               (png_const_bytep) profile_info,
+#endif
+
                                (png_uint_32) profile_length);
                 }
 #else
