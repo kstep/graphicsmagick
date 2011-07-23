@@ -26001,7 +26001,7 @@ failed=0
 passed=0
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 15" >&5
 $as_echo_n "checking for LIBPNG is version 15... " >&6; }
-if ${ac_cv_libpng_version_ok+:} false; then :
+if ${ac_cv_libpng15_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -26025,15 +26025,15 @@ return 0;
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng_version_ok='yes'
+  ac_cv_libpng15_ok='yes'
 else
-  ac_cv_libpng_version_ok='no'
+  ac_cv_libpng15_ok='no'
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng_version_ok" >&5
-$as_echo "$ac_cv_libpng_version_ok" >&6; }
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng15_ok" >&5
+$as_echo "$ac_cv_libpng15_ok" >&6; }
+if test "$ac_cv_libpng15_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`
@@ -26170,7 +26170,7 @@ failed=0
 passed=0
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 14" >&5
 $as_echo_n "checking for LIBPNG is version 14... " >&6; }
-if ${ac_cv_libpng_version_ok+:} false; then :
+if ${ac_cv_libpng14_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -26194,15 +26194,15 @@ return 0;
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng_version_ok='yes'
+  ac_cv_libpng14_ok='yes'
 else
-  ac_cv_libpng_version_ok='no'
+  ac_cv_libpng14_ok='no'
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng_version_ok" >&5
-$as_echo "$ac_cv_libpng_version_ok" >&6; }
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng14_ok" >&5
+$as_echo "$ac_cv_libpng14_ok" >&6; }
+if test "$ac_cv_libpng14_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`
@@ -26326,8 +26326,8 @@ $as_echo_n "checking for LIBPNG12 support ... " >&6; }
 $as_echo "" >&6; }
         failed=0
         passed=0
-        ac_fn_c_check_header_mongrel "$LINENO" "libpng12/png.h" "ac_cv_header_libpng12_png_h" "$ac_includes_default"
-if test "x$ac_cv_header_libpng12_png_h" = xyes; then :
+        ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
+if test "x$ac_cv_header_png_h" = xyes; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
@@ -26341,7 +26341,7 @@ failed=0
 passed=0
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 12" >&5
 $as_echo_n "checking for LIBPNG is version 12... " >&6; }
-if ${ac_cv_libpng_version_ok+:} false; then :
+if ${ac_cv_libpng12_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -26365,15 +26365,15 @@ return 0;
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng_version_ok='yes'
+  ac_cv_libpng12_ok='yes'
 else
-  ac_cv_libpng_version_ok='no'
+  ac_cv_libpng12_ok='no'
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng_version_ok" >&5
-$as_echo "$ac_cv_libpng_version_ok" >&6; }
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng12_ok" >&5
+$as_echo "$ac_cv_libpng12_ok" >&6; }
+if test "$ac_cv_libpng12_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`

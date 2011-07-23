@@ -1920,7 +1920,7 @@ then
 if test $passed -gt 0; then
 failed=0
 passed=0
-AC_CACHE_CHECK(for LIBPNG is version 15, ac_cv_libpng_version_ok,
+AC_CACHE_CHECK(for LIBPNG is version 15, ac_cv_libpng15_ok,
 [AC_TRY_COMPILE(
 #include <stdio.h>
 #include <stdlib.h>
@@ -1935,9 +1935,9 @@ Kaboom, Kaboom
 return 0;
 >>,
 changequote([, ])dnl
-ac_cv_libpng_version_ok='yes',
-ac_cv_libpng_version_ok='no')])
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ac_cv_libpng15_ok='yes',
+ac_cv_libpng15_ok='no')])
+if test "$ac_cv_libpng15_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`
@@ -1978,7 +1978,7 @@ fi
 if test $passed -gt 0; then
 failed=0
 passed=0
-AC_CACHE_CHECK(for LIBPNG is version 14, ac_cv_libpng_version_ok,
+AC_CACHE_CHECK(for LIBPNG is version 14, ac_cv_libpng14_ok,
 [AC_TRY_COMPILE(
 #include <stdio.h>
 #include <stdlib.h>
@@ -1993,9 +1993,9 @@ Kaboom, Kaboom
 return 0;
 >>,
 changequote([, ])dnl
-ac_cv_libpng_version_ok='yes',
-ac_cv_libpng_version_ok='no')])
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ac_cv_libpng14_ok='yes',
+ac_cv_libpng14_ok='no')])
+if test "$ac_cv_libpng14_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`
@@ -2031,14 +2031,14 @@ fi
         AC_MSG_RESULT()
         failed=0
         passed=0
-        AC_CHECK_HEADER(libpng12/png.h,passed=`expr $passed + 1`,
+        AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
            failed=`expr $failed + 1`,)
 
 # Test for compatible LIBPNG12 library
 if test $passed -gt 0; then
 failed=0
 passed=0
-AC_CACHE_CHECK(for LIBPNG is version 12, ac_cv_libpng_version_ok,
+AC_CACHE_CHECK(for LIBPNG is version 12, ac_cv_libpng12_ok,
 [AC_TRY_COMPILE(
 #include <stdio.h>
 #include <stdlib.h>
@@ -2053,9 +2053,9 @@ Kaboom, Kaboom
 return 0;
 >>,
 changequote([, ])dnl
-ac_cv_libpng_version_ok='yes',
-ac_cv_libpng_version_ok='no')])
-if test "$ac_cv_libpng_version_ok" = 'yes' ; then
+ac_cv_libpng12_ok='yes',
+ac_cv_libpng12_ok='no')])
+if test "$ac_cv_libpng12_ok" = 'yes' ; then
  passed=`expr $passed + 1`
 else
  failed=`expr $failed + 1`
