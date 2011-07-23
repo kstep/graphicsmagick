@@ -1907,7 +1907,8 @@ AC_SUBST(LIB_LCMS)
 #
 have_png='no'
 LIB_PNG=''
-if test "$with_png" != 'no'
+if test "$with_png" != 'no' -a "$with_png" != 'libpng14' -a "$with_png" != 'libpng12'
+        
 then
     AC_MSG_CHECKING(for LIBPNG15 support )
     AC_MSG_RESULT()
@@ -1965,7 +1966,7 @@ fi
       AC_MSG_RESULT(no)
     fi
 
-    if test "$have_png" != 'yes'
+    if test "$have_png" != 'yes' -a "$with_png" != 'libpng15' -a "$with_png" != 'libpng12'
     then
       AC_MSG_CHECKING(for LIBPNG14 support )
       AC_MSG_RESULT()
@@ -2024,8 +2025,7 @@ fi
       fi
     fi
 
-
-    if test "$have_png" != 'yes'
+    if test "$have_png" != 'yes' -a "$with_png" != 'libpng15' -a "$with_png" != 'libpng14'
     then
         AC_MSG_CHECKING(for LIBPNG12 support )
         AC_MSG_RESULT()
@@ -2081,7 +2081,6 @@ fi
           AC_MSG_RESULT(no)
         fi
     fi
-
 
     if test "$have_png" != 'yes'
     then
@@ -3463,7 +3462,12 @@ echo "LCMS v2           --with-lcms2=$with_lcms2        	$have_lcms2"
 echo "LZMA              --with-lzma=$with_lzma        	$have_lzma"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl            	$have_perl"
+if test "${LIB_PNG}x" != 'x'
+then
+echo "PNG               --with-png=$with_png          	$have_png ($LIB_PNG)"
+else
 echo "PNG               --with-png=$with_png          	$have_png"
+fi
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
 echo "TRIO              --with-trio=$with_trio        	$have_trio"
 result_windows_font_dir='none'
