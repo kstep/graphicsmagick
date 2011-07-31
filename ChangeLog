@@ -1,3 +1,9 @@
+2011-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (AcquireOneCacheViewPixelInlined): Only use
+	image colormap if the image storage class is PseudoClass.
+	Eliminates a core dump when the image is in CMYK space.
+
 2011-07-20  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: account for changed typecast of png_get_iCCP

@@ -1131,7 +1131,7 @@ AcquireOneCacheViewPixelInlined(const View *view_info,
         offset;
       
       offset=y*(magick_off_t) cache_info->columns+x;
-      if (cache_info->indexes_valid)
+      if ((cache_info->indexes_valid) && (PseudoClass == image->storage_class))
         *pixel=image->colormap[cache_info->indexes[offset]];
       else
         *pixel=cache_info->pixels[offset];
