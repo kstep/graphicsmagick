@@ -167,9 +167,9 @@ and mid has the range 0-10.</dd>
 <div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int LevelImageChannel( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level,
-                                const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel, const double black_point,
-                                const double mid_point, const double white_point );
+MagickPassFail LevelImageChannel( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel,
+                                  const double black_point, const double mid_point,
+                                  const double white_point );
 </pre>
 </div>
 <div class="section" id="id8">
@@ -184,9 +184,9 @@ White point specifies the lightest color in the image.  Colors brighter
 than the white point are set to the maximum quantum value.</p>
 <p>The format of the LevelImage method is:</p>
 <pre class="literal-block">
-unsigned int LevelImageChannel( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *level,
-                                const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel, const double black_point,
-                                const double mid_point, const double white_point );
+MagickPassFail LevelImageChannel( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel,
+                                  const double black_point, const double mid_point,
+                                  const double white_point );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>

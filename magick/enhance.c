@@ -890,9 +890,11 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 %
 %  The format of the LevelImage method is:
 %
-%      unsigned int LevelImageChannel(Image *image,const char *level,
-%        const ChannelType channel,const double black_point,
-%        const double mid_point,const double white_point)
+%      MagickPassFail LevelImageChannel(Image *image,
+%                                       const ChannelType channel,
+%                                       const double black_point,
+%                                       const double mid_point,
+%                                       const double white_point)
 %
 %  A description of each parameter follows:
 %
