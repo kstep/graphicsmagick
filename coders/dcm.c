@@ -4342,7 +4342,7 @@ static MagickPassFail DCM_ReadOffsetTable(Image *image,DicomStream *dcm,Exceptio
     }
 
   dcm->offset_arr=MagickAllocateArray(magick_uint32_t *,dcm->offset_ct,sizeof(magick_uint32_t));  
-  if (dcm->offset_arr == (magick_uint32_t) NULL)
+  if (dcm->offset_arr == (magick_uint32_t *) NULL)
     {
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,image->filename);
       return MagickFail;

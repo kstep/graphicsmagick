@@ -1,3 +1,8 @@
+2011-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcm.c (DCM_ReadOffsetTable): Fix wrong cast noticed when
+	compiling with LLVM.
+
 2011-08-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (LevelImageChannel): Fix documented prototype.
