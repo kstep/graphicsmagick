@@ -307,11 +307,15 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 
     PTHREAD_MUTEXATTR_INIT(&mutexattr);
 
-#if 1
-#if defined(PTHREAD_MUTEX_RECURSIVE)
-    PTHREAD_MUTEXATTR_SETTYPE(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
-#endif /* PTHREAD_MUTEX_RECURSIVE */
-#endif
+    /*
+      If MAGICK_DEBUG is defined then enable pthread mutex error
+      checks.
+    */
+#if MAGICK_DEBUG
+#if defined(PTHREAD_MUTEX_ERRORCHECK)
+    PTHREAD_MUTEXATTR_SETTYPE(&mutexattr, PTHREAD_MUTEX_ERRORCHECK);
+#endif /* PTHREAD_MUTEX_ERRORCHECK */
+#endif /* MAGICK_DEBUG */
 
     PTHREAD_MUTEX_INIT(&semaphore_info->mutex,&mutexattr);
     PTHREAD_MUTEXATTR_DESTROY(&mutexattr);

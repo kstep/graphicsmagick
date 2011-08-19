@@ -1,3 +1,12 @@
+2011-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c (AllocateSemaphoreInfo): Enable pthread mutex
+	error checking if MAGICK_DEBUG is defined when the code is
+	compiled.  This mode helps validate that mutexes are used
+	correctly.  No longer enable recursive mutexes since the
+	GraphicsMagick logic should be able to operate without this
+	assistance.
+
 2011-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dcm.c (DCM_ReadOffsetTable): Fix wrong cast noticed when

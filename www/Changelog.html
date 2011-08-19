@@ -36,6 +36,17 @@
 <div class="document">
 
 
+<p>2011-08-19  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/semaphore.c (AllocateSemaphoreInfo): Enable pthread mutex
+error checking if MAGICK_DEBUG is defined when the code is
+compiled.  This mode helps validate that mutexes are used
+correctly.  No longer enable recursive mutexes since the
+GraphicsMagick logic should be able to operate without this
+assistance.</li>
+</ul>
+</blockquote>
 <p>2011-08-10  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
