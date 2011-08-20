@@ -5403,10 +5403,14 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
         Save image.
       */
       status=MagickXSaveImage(display,resource_info,windows,*image);
-      if (status == False)
+      if (status == MagickFail)
         {
-          MagickXNoticeWidget(display,windows,"Unable to write X image:",
-            (*image)->filename);
+	  char reason[MaxTextExtent];
+
+	  FormatString(reason,"%s \"%s\"",
+		       (*image)->exception.reason ? (*image)->exception.reason : "",
+		       (*image)->exception.description ? (*image)->exception.description : "");
+	  MagickXNoticeWidget(display,windows,"Unable to save file:",reason);
           break;
         }
       break;
@@ -5419,8 +5423,12 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       status=MagickXPrintImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          MagickXNoticeWidget(display,windows,"Unable to print X image:",
-            (*image)->filename);
+	  char reason[MaxTextExtent];
+
+	  FormatString(reason,"%s \"%s\"",
+		       (*image)->exception.reason ? (*image)->exception.reason : "",
+		       (*image)->exception.description ? (*image)->exception.description : "");
+          MagickXNoticeWidget(display,windows,"Unable to print image:",reason);
           break;
         }
       break;
@@ -8838,6 +8846,8 @@ static unsigned int MagickXPrintImage(Display *display,MagickXResourceInfo *reso
   FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
  error_return:
+  if (MagickFail == status)
+    CopyException(&image->exception,&print_image->exception);
   DestroyImage(print_image);
   DestroyImageInfo(image_info);
   MagickXSetCursorState(display,windows,False);
@@ -10354,8 +10364,10 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
   */
   (void) strlcpy(save_image->filename,filename,MaxTextExtent);
   status=WriteImage(image_info,save_image);
-  if (status != False)
+  if (status != MagickFail)
     image->taint=False;
+  else
+    CopyException(&image->exception,&save_image->exception);
   DestroyImage(save_image);
   DestroyImageInfo(image_info);
   MagickXSetCursorState(display,windows,False);
