@@ -196,6 +196,46 @@ typedef unsigned int JDIMENSION;
 /* a reference to a GLOBAL function: */
 #define EXTERN(type)		extern type
 
+#if defined(_VISUALC_)
+#  undef GLOBAL
+#  undef EXTERN
+   //
+   // Under VISUALC we have single threaded static libraries, or
+   // mutli-threaded DLLs using the multithreaded runtime DLLs.
+   //
+#  if defined(_MT) && defined(_DLL) && !defined(_JPEGDLL_) && !defined(_LIB)
+#    define _JPEGDLL_
+#  endif
+#  if defined(_JPEGDLL_)
+#    pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#    if !defined(_JPEGLIB_)
+       // a function referenced thru EXTERNs:
+#      define GLOBAL(type) __declspec(dllimport) type
+       // a reference to a GLOBAL function:
+#      define EXTERN(type) extern __declspec(dllimport) type
+#    else
+       // a function referenced thru EXTERNs:
+#      define GLOBAL(type) __declspec(dllexport) type
+       // a reference to a GLOBAL function:
+#      define EXTERN(type) extern __declspec(dllexport) type
+#    endif
+#  else
+     // a function referenced thru EXTERNs:
+#    define GLOBAL(type) type
+     // a reference to a GLOBAL function:
+#    define EXTERN(type) extern type
+#  endif
+
+#  pragma warning(disable : 4018)
+#  pragma warning(disable : 4244)
+#  pragma warning(disable : 4142)
+
+#  ifndef INLINE
+#    define INLINE __inline  /* MSVC uses __inline */
+#  endif
+
+#endif /* defined(_VISUALC_) */
+
 
 /* This macro is used to declare a "method", that is, a function pointer.
  * We want to supply prototype parameters if the compiler can cope.
