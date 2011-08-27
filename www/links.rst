@@ -194,6 +194,9 @@ site by Jack James dedicated to the digital intermediate industry.
 `Digital Cinema Initiatives <http://www.dcimovies.com/>`_,
 DCI offers the first complete specification for digital cinema delivery.
 
+`Ingex <http://ingex.sourceforge.net/index.html>`_ Tapeless video &
+audio capture, transcoding and network file serving.  From the BBC.
+
 Video Topics
 =============
 
