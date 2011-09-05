@@ -11,6 +11,7 @@
 #define IN_LIBXML
 #include "libxml.h"
 
+#ifdef LIBXML_XPTR_ENABLED
 #include <string.h> /* for memset() only */
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
@@ -147,9 +148,9 @@ xlinkIsLink	(xmlDocPtr doc, xmlNodePtr node) {
      */
     type = xmlGetNsProp(node, BAD_CAST"type", XLINK_NAMESPACE);
     if (type != NULL) {
-	if (!xmlStrEqual(type, BAD_CAST "simple")) {
+	if (xmlStrEqual(type, BAD_CAST "simple")) {
             ret = XLINK_TYPE_SIMPLE;
-	} if (!xmlStrEqual(type, BAD_CAST "extended")) {
+	} if (xmlStrEqual(type, BAD_CAST "extended")) {
 	    role = xmlGetNsProp(node, BAD_CAST "role", XLINK_NAMESPACE);
 	    if (role != NULL) {
 		xmlNsPtr xlink;
@@ -177,3 +178,6 @@ xlinkIsLink	(xmlDocPtr doc, xmlNodePtr node) {
     if (role != NULL) xmlFree(role);
     return(ret);
 }
+#endif /* LIBXML_XPTR_ENABLED */
+#define bottom_xlink
+#include "elfgcchack.h"

@@ -27,14 +27,28 @@ xmlinc_HEADERS = \
 		valid.h \
 		xlink.h \
 		xmlversion.h \
-		xmlwin32version.h \
 		DOCBparser.h \
 		catalog.h \
 		threads.h \
 		globals.h \
-		c14n.h
+		c14n.h \
+		xmlautomata.h \
+		xmlregexp.h \
+		xmlmodule.h \
+		xmlschemas.h \
+		schemasInternals.h \
+		xmlschemastypes.h \
+		xmlstring.h \
+		xmlunicode.h \
+		xmlreader.h \
+		relaxng.h \
+		dict.h \
+		SAX2.h \
+		xmlexports.h \
+		xmlwriter.h \
+		chvalid.h \
+		pattern.h \
+		xmlsave.h \
+		schematron.h
 
-install-exec-hook:
-	$(mkinstalldirs) $(DESTDIR)$(xmlincdir)
-
-EXTRA_DIST = xmlversion.h.in xmlwin32version.h.in
+EXTRA_DIST = xmlversion.h.in

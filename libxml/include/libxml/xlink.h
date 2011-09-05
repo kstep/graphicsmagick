@@ -1,23 +1,24 @@
 /*
- * xlink.h : interfaces to the hyperlinks detection module
+ * Summary: unfinished XLink detection module
+ * Description: unfinished XLink detection module
  *
- * See Copyright for the status of this software.
+ * Copy: See Copyright for the status of this software.
  *
- * Related specification: http://www.w3.org/TR/xlink
- *                        http://www.w3.org/HTML/
- *     and XBase 
- *
- * daniel@veillard.com
+ * Author: Daniel Veillard
  */
 
 #ifndef __XML_XLINK_H__
 #define __XML_XLINK_H__
 
+#include <libxml/xmlversion.h>
 #include <libxml/tree.h>
+
+#ifdef LIBXML_XPTR_ENABLED
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 /**
  * Various defines for the various Link properties.
  *
@@ -62,7 +63,7 @@ typedef enum {
  */
 typedef void (*xlinkNodeDetectFunc) (void *ctx, xmlNodePtr node);
 
-/**
+/*
  * The link detection module interact with the upper layers using
  * a set of callback registered at parsing time.
  */
@@ -159,22 +160,30 @@ struct _xlinkHandler {
  * detection callbacks. 
  */
 
-xlinkNodeDetectFunc	xlinkGetDefaultDetect	(void);
-void			xlinkSetDefaultDetect	(xlinkNodeDetectFunc func);
+XMLPUBFUN xlinkNodeDetectFunc XMLCALL	
+		xlinkGetDefaultDetect	(void);
+XMLPUBFUN void XMLCALL			
+		xlinkSetDefaultDetect	(xlinkNodeDetectFunc func);
 
 /*
  * Routines to set/get the default handlers.
  */
-xlinkHandlerPtr	xlinkGetDefaultHandler	(void);
-void		xlinkSetDefaultHandler	(xlinkHandlerPtr handler);
+XMLPUBFUN xlinkHandlerPtr XMLCALL	
+		xlinkGetDefaultHandler	(void);
+XMLPUBFUN void XMLCALL		
+		xlinkSetDefaultHandler	(xlinkHandlerPtr handler);
 
 /*
  * Link detection module itself.
  */
-xlinkType	 xlinkIsLink		(xmlDocPtr doc,
+XMLPUBFUN xlinkType XMLCALL	 
+		xlinkIsLink		(xmlDocPtr doc,
 					 xmlNodePtr node);
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* LIBXML_XPTR_ENABLED */
+
 #endif /* __XML_XLINK_H__ */

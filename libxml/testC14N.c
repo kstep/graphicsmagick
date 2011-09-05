@@ -7,7 +7,7 @@
  * Author: Aleksey Sanin <aleksey@aleksey.com>
  */
 #include "libxml.h"
-#if defined(LIBXML_C14N_ENABLED)
+#if defined(LIBXML_C14N_ENABLED) && defined(LIBXML_OUTPUT_ENABLED)
 
 #include <stdio.h>
 #include <string.h>
@@ -32,25 +32,28 @@ static void usage(const char *name) {
 	    name);
     fprintf(stderr, "where <mode> is one of following:\n");
     fprintf(stderr,
-	"--with-comments       \t XML file canonization w comments\n");
+	"--with-comments       \t XML file canonicalization v1.0 w comments \n");
     fprintf(stderr,
-	"--without-comments    \t XML file canonization w/o comments\n");
+	"--without-comments    \t XML file canonicalization v1.0 w/o comments\n");
     fprintf(stderr,
-    "--exc-with-comments   \t Exclusive XML file canonization w comments\n");
+	"--1-1-with-comments       \t XML file canonicalization v1.1 w comments\n");
     fprintf(stderr,
-    "--exc-without-comments\t Exclusive XML file canonization w/o comments\n");
+	"--1-1-without-comments    \t XML file canonicalization v1.1 w/o comments\n");
+    fprintf(stderr,
+    "--exc-with-comments   \t Exclusive XML file canonicalization v1.0 w comments\n");
+    fprintf(stderr,
+    "--exc-without-comments\t Exclusive XML file canonicalization v1.0 w/o comments\n");
 }
 
-xmlXPathObjectPtr
+static xmlXPathObjectPtr
 load_xpath_expr (xmlDocPtr parent_doc, const char* filename);
 
-xmlChar **parse_list(xmlChar *str);
+static xmlChar **parse_list(xmlChar *str);
 
-void
-print_xpath_nodes(xmlXPathObjectPtr ptr);
+/* static void print_xpath_nodes(xmlNodeSetPtr nodes); */
 
 static int 
-test_c14n(const char* xml_filename, int with_comments, int exclusive,
+test_c14n(const char* xml_filename, int with_comments, int mode,
 	const char* xpath_filename, xmlChar **inclusive_namespaces) {
     xmlDocPtr doc;
     xmlXPathObjectPtr xpath = NULL; 
@@ -64,7 +67,7 @@ test_c14n(const char* xml_filename, int with_comments, int exclusive,
     xmlLoadExtDtdDefaultValue = XML_DETECT_IDS | XML_COMPLETE_ATTRS;
     xmlSubstituteEntitiesDefault(1);
 
-    doc = xmlParseFile(xml_filename);
+    doc = xmlReadFile(xml_filename, NULL, XML_PARSE_DTDATTR | XML_PARSE_NOENT);
     if (doc == NULL) {
 	fprintf(stderr, "Error: unable to parse file \"%s\"\n", xml_filename);
 	return(-1);
@@ -97,7 +100,7 @@ test_c14n(const char* xml_filename, int with_comments, int exclusive,
     /* fprintf(stderr,"File \"%s\" loaded: start canonization\n", xml_filename); */
     ret = xmlC14NDocDumpMemory(doc, 
 	    (xpath) ? xpath->nodesetval : NULL, 
-	    exclusive, inclusive_namespaces,
+	    mode, inclusive_namespaces,
 	    with_comments, &result);
     if(ret >= 0) {
 	if(result != NULL) {
@@ -136,22 +139,26 @@ int main(int argc, char **argv) {
 	fprintf(stderr, "Error: wrong number of arguments.\n");
 	usage(argv[0]);
     } else if(strcmp(argv[1], "--with-comments") == 0) {
-	ret = test_c14n(argv[2], 1, 0, (argc > 3) ? argv[3] : NULL, NULL);
+	ret = test_c14n(argv[2], 1, XML_C14N_1_0, (argc > 3) ? argv[3] : NULL, NULL);
     } else if(strcmp(argv[1], "--without-comments") == 0) {
-	ret = test_c14n(argv[2], 0, 0, (argc > 3) ? argv[3] : NULL, NULL);
+	ret = test_c14n(argv[2], 0, XML_C14N_1_0, (argc > 3) ? argv[3] : NULL, NULL);
+    } else if(strcmp(argv[1], "--1-1-with-comments") == 0) {
+	ret = test_c14n(argv[2], 1, XML_C14N_1_1, (argc > 3) ? argv[3] : NULL, NULL);
+    } else if(strcmp(argv[1], "--1-1-without-comments") == 0) {
+	ret = test_c14n(argv[2], 0, XML_C14N_1_1, (argc > 3) ? argv[3] : NULL, NULL);
     } else if(strcmp(argv[1], "--exc-with-comments") == 0) {
 	xmlChar **list;
 	
 	/* load exclusive namespace from command line */
 	list = (argc > 4) ? parse_list((xmlChar *)argv[4]) : NULL;
-	ret = test_c14n(argv[2], 1, 1, (argc > 3) ? argv[3] : NULL, list);
+	ret = test_c14n(argv[2], 1, XML_C14N_EXCLUSIVE_1_0, (argc > 3) ? argv[3] : NULL, list);
 	if(list != NULL) xmlFree(list);
     } else if(strcmp(argv[1], "--exc-without-comments") == 0) {
 	xmlChar **list;
 	
 	/* load exclusive namespace from command line */
 	list = (argc > 4) ? parse_list((xmlChar *)argv[4]) : NULL;
-	ret = test_c14n(argv[2], 0, 1, (argc > 3) ? argv[3] : NULL, list);
+	ret = test_c14n(argv[2], 0, XML_C14N_EXCLUSIVE_1_0, (argc > 3) ? argv[3] : NULL, list);
 	if(list != NULL) xmlFree(list);
     } else {
 	fprintf(stderr, "Error: bad option.\n");
@@ -163,7 +170,7 @@ int main(int argc, char **argv) {
      */
     xmlCleanupParser();
     xmlMemoryDump();
-    
+
     return((ret >= 0) ? 0 : 1);
 }
 
@@ -173,22 +180,29 @@ int main(int argc, char **argv) {
 #define growBufferReentrant() {						\
     buffer_size *= 2;							\
     buffer = (xmlChar **)						\
-    		xmlRealloc(buffer, buffer_size * sizeof(xmlChar*));	\
+		xmlRealloc(buffer, buffer_size * sizeof(xmlChar*));	\
     if (buffer == NULL) {						\
 	perror("realloc failed");					\
 	return(NULL);							\
     }									\
 }
 
-xmlChar **parse_list(xmlChar *str) {
+static xmlChar **
+parse_list(xmlChar *str) {
     xmlChar **buffer;
     xmlChar **out = NULL;
     int buffer_size = 0;
+    int len;
 
     if(str == NULL) {
 	return(NULL);
     }
 
+    len = xmlStrlen(str);
+    if((str[0] == '\'') && (str[len - 1] == '\'')) {
+	str[len - 1] = '\0';
+	str++;
+    }
     /*
      * allocate an translation buffer.
      */
@@ -199,7 +213,7 @@ xmlChar **parse_list(xmlChar *str) {
 	return(NULL);
     }
     out = buffer;
-    
+
     while(*str != '\0') {
 	if (out - buffer > buffer_size - 10) {
 	    int indx = out - buffer;
@@ -215,7 +229,7 @@ xmlChar **parse_list(xmlChar *str) {
     return buffer;
 }
 
-xmlXPathObjectPtr
+static xmlXPathObjectPtr
 load_xpath_expr (xmlDocPtr parent_doc, const char* filename) {
     xmlXPathObjectPtr xpath; 
     xmlDocPtr doc;
@@ -230,7 +244,7 @@ load_xpath_expr (xmlDocPtr parent_doc, const char* filename) {
     xmlLoadExtDtdDefaultValue = XML_DETECT_IDS | XML_COMPLETE_ATTRS;
     xmlSubstituteEntitiesDefault(1);
 
-    doc = xmlParseFile(filename);
+    doc = xmlReadFile(filename, NULL, XML_PARSE_DTDATTR | XML_PARSE_NOENT);
     if (doc == NULL) {
 	fprintf(stderr, "Error: unable to parse file \"%s\"\n", filename);
 	return(NULL);
@@ -298,7 +312,7 @@ load_xpath_expr (xmlDocPtr parent_doc, const char* filename) {
         return(NULL);
     }
 
-    /* print_xpath_nodes(xpath); */
+    /* print_xpath_nodes(xpath->nodesetval); */
 
     xmlFree(expr); 
     xmlXPathFreeContext(ctx); 
@@ -306,26 +320,43 @@ load_xpath_expr (xmlDocPtr parent_doc, const char* filename) {
     return(xpath);
 }
 
-void
-print_xpath_nodes(xmlXPathObjectPtr ptr) {
+/*
+static void
+print_xpath_nodes(xmlNodeSetPtr nodes) {
     xmlNodePtr cur;
     int i;
     
-    if(ptr == NULL || ptr->nodesetval == NULL ){ 
+    if(nodes == NULL ){ 
 	fprintf(stderr, "Error: no nodes set defined\n");
 	return;
     }
     
-    for(i = 0; i < ptr->nodesetval->nodeNr; ++i) {
-	cur = ptr->nodesetval->nodeTab[i];    
-	fprintf(stderr, "node %s. type %d\n", cur->name, cur->type);
+    fprintf(stderr, "Nodes Set:\n-----\n");
+    for(i = 0; i < nodes->nodeNr; ++i) {
+	if(nodes->nodeTab[i]->type == XML_NAMESPACE_DECL) {
+	    xmlNsPtr ns;
+	    
+	    ns = (xmlNsPtr)nodes->nodeTab[i];
+	    cur = (xmlNodePtr)ns->next;
+	    fprintf(stderr, "namespace \"%s\"=\"%s\" for node %s:%s\n", 
+		    ns->prefix, ns->href,
+		    (cur->ns) ? cur->ns->prefix : BAD_CAST "", cur->name);
+	} else if(nodes->nodeTab[i]->type == XML_ELEMENT_NODE) {
+	    cur = nodes->nodeTab[i];    
+	    fprintf(stderr, "element node \"%s:%s\"\n", 
+		    (cur->ns) ? cur->ns->prefix : BAD_CAST "", cur->name);
+	} else {
+	    cur = nodes->nodeTab[i];    
+	    fprintf(stderr, "node \"%s\": type %d\n", cur->name, cur->type);
+	}
     }
 }
+*/
 
 #else
 #include <stdio.h>
-int main(int argc, char **argv) {
-    printf("%s : XPath/Canonicalization support not compiled in\n", argv[0]);
+int main(int argc ATTRIBUTE_UNUSED, char **argv ATTRIBUTE_UNUSED) {
+    printf("%s : XPath/Canonicalization and output support not compiled in\n", argv[0]);
     return(0);
 }
 #endif /* LIBXML_C14N_ENABLED */
