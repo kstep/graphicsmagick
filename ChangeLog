@@ -1,3 +1,9 @@
+2011-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/list.c (AppendImageToList): Documentation for
+	AppendImageToList() was wrong.  Problem was reported by Brad
+	Harder.
+
 2011-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/display.c (MagickXMagickCommand): Display 'save' and
