@@ -1,15 +1,13 @@
 #
-# LCMS configure script
-# Written by Bob Friesenhahn, June 2003
-# The bugs were introduced by Marti Maria 
+# LittleCMS 2 configure script
 #
 
-AC_PREREQ(2.57)
+AC_PREREQ(2.60)
 
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.18)
+AC_INIT(lcms2,2.2)
 
 #
 # Libtool library revision control info
@@ -32,24 +30,18 @@ AC_INIT(lcms,1.18)
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 #
-LIBRARY_CURRENT=1
-LIBRARY_REVISION=18
+LIBRARY_CURRENT=2
+LIBRARY_REVISION=2
 LIBRARY_AGE=0
-
 
 AC_SUBST(LIBRARY_CURRENT)dnl
 AC_SUBST(LIBRARY_REVISION)dnl
 AC_SUBST(LIBRARY_AGE)dnl
 
-
 # Obtain system type by running config.guess
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 
-# Ensure that make can run correctly
-AM_SANITY_CHECK
-
-
-AM_INIT_AUTOMAKE([foreign 1.7.2 no-define dist-zip dist-bzip2])
+AM_INIT_AUTOMAKE([foreign 1.7.2 no-define dist-zip])
 
 # Disable JPEG.
 AC_ARG_WITH(jpeg,
@@ -69,44 +61,16 @@ AC_ARG_WITH(zlib,
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
-# Disable Python
-AC_ARG_WITH(python,
-	      [  --with-python           enable building python extension],
-	      [with_python=$withval],
-	      [with_python='no'])
-
 # Check for programs
-AC_PROG_CC
 AC_PROG_CC_STDC
 AC_PROG_CPP
-AM_PROG_LD
-AC_SUBST(LD)
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
-AC_PROG_LN_S
 AC_PROG_CXX
 
-# Configure python. AM_PATH_PYTHON is basically braindead 
-PYTHON=''
-if test "$with_python" = 'yes'
-then
-  AM_PATH_PYTHON(2.2,PYTHON_OK='yes',PYTHON_OK='no')  
-  if test -n "$PYTHON"
-  then
-	LCMS_PYTHON_PREFIX=`$PYTHON -c "import sys; print sys.prefix"`
-	LCMS_PYEXECDIR=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(1)"`
-    LCMS_PYINCLUDE=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_inc()"`	
-	LCMS_PYLIB=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(0,1)"`
-	AC_CHECK_FILE([$LCMS_PYINCLUDE/Python.h],PYTHON_OK='yes',PYTHON_OK='no')
-    AC_SUBST(LCMS_PYEXECDIR)
-    AC_SUBST(LCMS_PYINCLUDE)
-    AC_SUBST(LCMS_PYLIB)
-#	AC_SUBST(PYTHON_OK)
-  fi     
-fi
-
-# If python is found then enable python support
-AM_CONDITIONAL(SUPPORT_PYTHON,test -n "$PYTHON" -a "$PYTHON_OK" = 'yes')
+#AM_PROG_LD
+#AC_SUBST(LD)
+#AC_PROG_INSTALL
+#AC_PROG_MAKE_SET
+#AC_PROG_LN_S
 
 #
 # Tests for Windows
@@ -127,10 +91,6 @@ AC_SUBST(LIBTOOL_DEPS)
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
-# If the C compiler does not fully support the ANSI C qualifier const,
-# define const to be empty.
-#AC_C_CONST
-
 # If the C compiler supports the keyword inline, do nothing. Otherwise
 # define inline to __inline__ or __inline if it accepts one of those,
 # otherwise define inline to be empty.
@@ -140,122 +100,6 @@ AC_SUBST(inline)
 # If words are stored with the most significant byte first (like
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
 AC_C_BIGENDIAN
-
-# Obtain size of an 'char' and define as SIZEOF_CHAR
-# Sets $ac_cv_sizeof_char
-#AC_CHECK_SIZEOF(char)
-
-# Obtain size of an 'unsigned char' and define as SIZEOF_UNSIGNED_CHAR
-# Sets $ac_cv_sizeof_unsigned_char
-#AC_CHECK_SIZEOF(unsigned char)
-
-# Obtain size of an 'short' and define as SIZEOF_SHORT
-# Sets $ac_cv_sizeof_short
-#AC_CHECK_SIZEOF(short)
-
-# Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
-# Sets $ac_cv_sizeof_unsigned_short
-#AC_CHECK_SIZEOF(unsigned short)
-
-# Obtain size of an 'int' and define as SIZEOF_INT
-# Sets $ac_cv_sizeof_int
-AC_CHECK_SIZEOF(int)
-
-# Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
-# Sets $ac_cv_sizeof_unsigned_int
-AC_CHECK_SIZEOF(unsigned int)
-
-# Obtain size of a 'long' and define as SIZEOF_LONG
-# Sets $ac_cv_sizeof_long
-AC_CHECK_SIZEOF(long)
-
-# Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
-# Sets $ac_cv_sizeof_unsigned_long
-AC_CHECK_SIZEOF(unsigned long)
-
-# Obtain size of a 'long long' and define as SIZEOF_LONG_LONG.  If
-# 'long long' is not supported then the value defined is zero.
-# Sets $ac_cv_sizeof_long_long
-AC_CHECK_SIZEOF(long long)
-
-# Obtain size of a 'unsigned long long' and define as
-# SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
-# supported then the value defined is zero.
-# Sets $ac_cv_sizeof_unsigned_long_long
-AC_CHECK_SIZEOF(unsigned long long)
-
-#
-# Compute sized types for current CPU and compiler options
-#
-
-AC_MSG_CHECKING(for signed 8-bit type)
-INT8_T='char'
-AC_MSG_RESULT($INT8_T)
-AC_SUBST(INT8_T)
-
-AC_MSG_CHECKING(for unsigned 8-bit type)
-UINT8_T='unsigned char'
-AC_MSG_RESULT($UINT8_T)
-AC_SUBST(UINT8_T)
-
-AC_MSG_CHECKING(for signed 16-bit type)
-INT16_T='short'
-AC_MSG_RESULT($INT16_T)
-AC_SUBST(INT16_T)
-
-AC_MSG_CHECKING(for unsigned 16-bit type)
-UINT16_T='unsigned short'
-AC_MSG_RESULT($UINT16_T)
-AC_SUBST(UINT16_T)
-
-AC_MSG_CHECKING(for signed 32-bit type)
-INT32_T='none'
-if test $ac_cv_sizeof_int -eq 4
-then
-  INT32_T='int'
-elif test $ac_cv_sizeof_long -eq 4
-then
-  INT32_T='long'
-fi
-AC_MSG_RESULT($INT32_T)
-AC_SUBST(INT32_T)
-
-AC_MSG_CHECKING(for unsigned 32-bit type)
-UINT32_T='none'
-if test $ac_cv_sizeof_unsigned_int -eq 4
-then
-  UINT32_T='unsigned int'
-elif test $ac_cv_sizeof_unsigned_long -eq 4
-then
-  UINT32_T='unsigned long'
-fi
-AC_MSG_RESULT($UINT32_T)
-AC_SUBST(UINT32_T)
-
-AC_MSG_CHECKING(for signed 64-bit type)
-INT64_T='none'
-if test $ac_cv_sizeof_long -eq 8
-then
-  INT64_T='long'
-elif test $ac_cv_sizeof_long_long -eq 8
-then
-  INT64_T='long long'
-fi
-AC_MSG_RESULT($INT64_T)
-AC_SUBST(INT64_T)
-
-AC_MSG_CHECKING(for unsigned 64-bit type)
-UINT64_T='none'
-if test $ac_cv_sizeof_unsigned_long -eq 8
-then
-  UINT64_T='unsigned long'
-elif test $ac_cv_sizeof_unsigned_long_long -eq 8
-then
-  UINT64_T='unsigned long long'
-fi
-AC_MSG_RESULT($UINT64_T)
-AC_SUBST(UINT64_T)
-
 
 #
 # Find math library
@@ -425,18 +269,17 @@ AC_SUBST(TIFFICC_DEPLIBS)
 
 LIBS=''
 
-
 #
 # Perform substitutions
 #
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([lcms.pc])
-AC_CONFIG_FILES([include/icc34.h])
+AC_CONFIG_FILES([lcms2.pc])
 AC_CONFIG_FILES([include/Makefile])
-AC_CONFIG_FILES([jpegicc/Makefile])
-AC_CONFIG_FILES([python/Makefile])
-AC_CONFIG_FILES([samples/Makefile])
-AC_CONFIG_FILES([testbed/Makefile])
-AC_CONFIG_FILES([tifficc/Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([utils/tificc/Makefile])
+AC_CONFIG_FILES([utils/transicc/Makefile])
+AC_CONFIG_FILES([utils/linkicc/Makefile])
+AC_CONFIG_FILES([utils/jpgicc/Makefile])
+AC_CONFIG_FILES([utils/psicc/Makefile])
+AC_CONFIG_FILES([testbed/Makefile])
 AC_OUTPUT

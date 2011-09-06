@@ -1,13 +1,7 @@
 #
 # Makefile for include directory
-# Written by Bob Friesenhahn, June 2003
-# Bugs added by Marti Maria Dec-2004
+# Based on a work by Bob Friesenhahn
 
-include_HEADERS = icc34.h lcms.h
+include_HEADERS = lcms2.h lcms2_plugin.h
 
-EXTRA_DIST = icc34.h.in lcms.h
-
-# For windows, we need a copy of icc34.h.in named as the header
-
-distclean-local: 
-	cp icc34.h.in icc34.h
+EXTRA_DIST = lcms2.h lcms2_plugin.h
