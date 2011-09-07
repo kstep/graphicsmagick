@@ -115,7 +115,7 @@ out_.*\.+
 ^VisualMagick/.+\.res
 ^VisualMagick/.+\.rsp
 ^VisualMagick/.+\.sln
-^VisualMagick/UpgradeLog\.XML
+^VisualMagick/UpgradeLog.*\.XML
 ^VisualMagick/_UpgradeReport_Files
 ^VisualMagick/bin/CORE_.+
 ^VisualMagick/bin/IM_MOD.+
@@ -139,7 +139,6 @@ out_.*\.+
 ^PerlMagick/blib/lib/Graphics/Magick\.pm
 ^PerlMagick/blib/lib/auto/Graphics/Magick/autosplit\.ix
 ^PerlMagick/pm_to_blib
-^VisualMagick/UpgradeLog2\.XML
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.dll
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.exp
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.h
