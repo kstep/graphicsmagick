@@ -92,9 +92,6 @@ out_.*\.+
 ^PerlMagick/PerlMagickCheck\.sh
 
 # Microsoft Visual Studio
-^jpeg/jconfig\.h
-^tiff/libtiff/tif_config\.h
-^tiff/libtiff/tiffconf\.h
 ^wmf/wmfconfig\.h
 ^VisualMagick/.*/BuildLog.htm
 ^VisualMagick/.*CORE_DB_.+_\.dll
