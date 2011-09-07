@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: iptcutil.c,v 1.7 2010-06-08 18:55:15 bfriesen Exp $ */
 
 #include "tif_config.h"
 
@@ -294,7 +294,10 @@ int formatIPTC(FILE *ifile, FILE *ofile)
     {
       c = str[tagindx] = getc(ifile);
       if (c == EOF)
-        return -1;
+      {
+          free(str);
+          return -1;
+      }
     }
     str[ taglen ] = 0;
 
@@ -332,12 +335,12 @@ char *super_fgets(char *b, int *blen, FILE *file)
     c=fgetc(file);
     if (c == EOF || c == '\n')
       break;
-    if (((int)q - (int)b + 1 ) >= (int) len)
+    if (((long)q - (long)b + 1 ) >= (long) len)
       {
-        int
+        long
           tlen;
 
-        tlen=(int)q-(int)b;
+        tlen=(long)q-(long)b;
         len<<=1;
         b=(char *) realloc((char *) b,(len+2));
         if ((char *) b == (char *) NULL)
@@ -352,7 +355,7 @@ char *super_fgets(char *b, int *blen, FILE *file)
       int
         tlen;
 
-      tlen=(int)q - (int)b;
+      tlen=(long)q - (long)b;
       if (tlen == 0)
         return (char *) NULL;
       b[tlen] = '\0';
@@ -385,7 +388,7 @@ int main(int argc, char *argv[])
 
   if( argc < 2 )
     {
-      printf("%s\n", usage);
+      puts(usage);
 	    return 1;
     }
 
@@ -444,7 +447,7 @@ int main(int argc, char *argv[])
       }
     else
       {
-        printf("%s\n", usage);
+        puts(usage);
 	      return 1;
       }
   }
@@ -932,3 +935,10 @@ byebye:
 
   return 0;
 }
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */
