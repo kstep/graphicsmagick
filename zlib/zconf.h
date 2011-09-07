@@ -270,6 +270,18 @@
 #  endif
 #endif
 
+/* This part added for GraphicsMagick */
+#if defined (_VISUALC_)
+#  if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#    define ZLIB_DLL
+#else
+#    define ZLIB_LIB
+#  endif
+// Disable deprecation warning for POSIX calls
+#  pragma warning(disable : 4996 )
+#endif
+/* End of GraphicsMagick part. */
+
 #if defined(WINDOWS) || defined(WIN32)
    /* If building or using zlib as a DLL, define ZLIB_DLL.
     * This is not mandatory, but it offers a little performance increase.
@@ -424,5 +436,7 @@ typedef uLong FAR uLongf;
   #pragma map(inflate_fast,"INFA")
   #pragma map(inflate_copyright,"INCOPY")
 #endif
+
+/* End of GraphicsMagick part. */
 
 #endif /* ZCONF_H */
