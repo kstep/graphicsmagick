@@ -242,6 +242,10 @@ a facinating web-based photo album organizer.  Works with GraphicsMagick!.
 playback and image processing software for the film and computer
 animation industries.
 
+`OpenImageIO <https://sites.google.com/site/openimageio/>`_ library
+for reading and writing images, and a bunch of related classes,
+utilities, and applications.
+
 Stock Photos
 =============
 
