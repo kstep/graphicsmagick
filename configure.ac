@@ -2462,7 +2462,7 @@ then
     AC_MSG_CHECKING(for XML support )
     AC_MSG_RESULT()
     xml2_config=''
-    AC_CHECK_PROGS(xml2_config,xml2-config,)dnl
+    AC_PATH_PROG(xml2_config,xml2-config,)dnl
     if test -n "$xml2_config"
     then
         # Debian installs libxml headers under /usr/include/libxml2/libxml with
@@ -2477,8 +2477,15 @@ then
      fi
     failed=0
     passed=0
+    # Incantation tested with libxml2 2.7.8 configured with
+    #   --with-minimum --with-http --with-ftp --with-push --with-zlib --with-sax1
+    # Note that SAX1 interfaces don't seem to be directly used but parsers fail to work
+    # as expected without SAX1 support compiled in.
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml2,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml2,xmlSAXVersion,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    # Next two require --with-push to be enabled
+    AC_CHECK_LIB(xml2,xmlParseChunk,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml2,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)
     if test $passed -gt 0
     then
