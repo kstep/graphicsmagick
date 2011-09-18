@@ -1,5 +1,17 @@
 2011-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* jpeg: Record that jpeg sources were updated to release v8c.
+
+	* lcms: Record that lcms sources were updated to release 2.2.
+
+	* png: Record that png sources were updated to release 1.5.4.
+
+	* tiff: Record that tiff sources were updated to release 4.0.0beta7.
+
+	* xml: Record that libxml2 sources were updated to release 2.7.8.
+
+	* zlib: Record that zlib sources were updated to release 1.2.5.
+
 	* VisualMagick/installer/inc/body.isx: Set MagickConfigDirectory
 	for DLL build so that .mgk files are put in application top
 	directory.  This makes installation layout between static and DLL
