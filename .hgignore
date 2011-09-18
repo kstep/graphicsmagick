@@ -139,6 +139,9 @@ out_.*\.+
 ^PerlMagick/blib/lib/Graphics/Magick\.pm
 ^PerlMagick/blib/lib/auto/Graphics/Magick/autosplit\.ix
 ^PerlMagick/pm_to_blib
+^PerlMagick/t/.*_tmp\..*
+^PerlMagick/blib/.*
+^PerlMagick/t/.*output.*
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.dll
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.exp
 ^contrib/win32/ATL7/ImageMagickObject/ImageMagickObject\.h
