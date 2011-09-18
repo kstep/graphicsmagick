@@ -37,7 +37,7 @@ __ `download GraphicsMagic-1.2`_
 Check http://www.GraphicsMagick.org/ for the latest version of this page.
 
 .. _FSF : http://www.fsf.org/
-.. _GPL Version 2 :  http://www.fsf.org/licenses/licenses.html
+.. _`GNU GPL` :  http://www.fsf.org/licenses/licenses.html
 .. _ImageMagick : http://www.imagemagick.org/
 .. _Open Source Initiative : http://www.opensource.org/
 .. _OSSCC : http://www.osscc.net/en/index.html
@@ -47,6 +47,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _`Flickr` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
 .. _`Etsy` : http://codeascraft.etsy.com/2010/07/09/batch-processing-millions-of-images/
 .. _`John Allspaw's presentation` : http://www.kitchensoap.com/2009/04/03/slides-from-web20-expo-2009-and-somethin-else-interestin/
+.. _Mercurial : http://mercurial.selenic.com/
 .. _`NEWS` : NEWS.html
 .. _`SLOCCount` : http://www.dwheeler.com/sloccount/
 .. _`authors` : authors.html
@@ -56,7 +57,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 
 GraphicsMagick is the swiss army knife of image processing. Comprised
 of 282K physical lines (according to David A. Wheeler's `SLOCCount`_)
-of source code in the base package (or 952K including 3rd party
+of source code in the base package (or 964K including 3rd party
 libraries) it provides a robust and efficient collection of tools and
 libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
@@ -71,7 +72,7 @@ GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
 GraphicsMagick is available for virtually any Unix or Unix-like system,
 including Linux. It also runs under `Windows <INSTALL-windows.html>`_
-2000 and later (Windows 2000, XP, and Vista), and MacOS-X.
+2000 and later (Windows 2000, XP, Vista, and 7), and MacOS-X.
 
 GraphicsMagick supports huge images and has been tested with
 gigapixel-size images. GraphicsMagick can create new images on the
@@ -116,8 +117,12 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
     proprietary applications.
   
   * GM is distributed under an X11-style license ("MIT License"),
-    approved by the `Open Source Initiative`_ and recommended for use
-    by the `OSSCC`_.
+    approved by the `Open Source Initiative`_, recommended for use
+    by the `OSSCC`_, and compatible with the `GNU GPL`_.
+
+  * GM source code is managed in Mercurial_, a distributed source
+    control management tool which supports management of local
+    changes.
 
   * GM developers contribute to other free projects for the public good.
 
