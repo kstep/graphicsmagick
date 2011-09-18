@@ -209,7 +209,12 @@ compression is to put this in your local .hgrc:</p>
 ssh = ssh -C
 </pre>
 <p>but ssh also provides its own way to enable compression on a
-site-by-site basis (e.g. via .ssh/config).</p>
+site-by-site basis (e.g. via .ssh/config).  For example an entry in
+.ssh/config will enable use of compression:</p>
+<pre class="literal-block">
+Host graphicsmagick.hg.sourceforge.net
+  Compression yes
+</pre>
 </div>
 <div class="section" id="email-notifications">
 <h1><a class="toc-backref" href="#id8">Email Notifications</a></h1>

@@ -185,7 +185,11 @@ compression is to put this in your local .hgrc::
   ssh = ssh -C
 
 but ssh also provides its own way to enable compression on a
-site-by-site basis (e.g. via .ssh/config).
+site-by-site basis (e.g. via .ssh/config).  For example an entry in
+.ssh/config will enable use of compression::
+
+  Host graphicsmagick.hg.sourceforge.net
+    Compression yes
 
 Email Notifications
 ===================
