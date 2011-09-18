@@ -17,7 +17,7 @@
   #define MagickPackageType "dll"
   #define MagickAppDirectory "{app}"
   #define MagickLibDirectory "{app}"
-  #define MagickConfigDirectory "{app}\config"
+  #define MagickConfigDirectory "{app}"
   #define MagickCodersDirectory "{app}"
   #define MagickFiltersDirectory "{app}"
 #endif
