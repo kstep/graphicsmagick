@@ -59,6 +59,13 @@ int main ( int argc, char **argv )
   ExceptionInfo
     exception;
 
+  (void) memset(basefilespec,0,sizeof(basefilespec));
+  (void) memset(filename,0,sizeof(filename));
+  (void) memset(format,0,sizeof(format));
+  (void) memset(infile,0,sizeof(infile));
+  (void) memset(size,0,sizeof(size));
+  (void) memset(filespec,0,sizeof(filespec));
+
   if (LocaleNCompare("rwfile",argv[0],7) == 0)
     InitializeMagick((char *) NULL);
   else
@@ -66,7 +73,8 @@ int main ( int argc, char **argv )
 
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
-  strcpy(basefilespec,"out_%d.%s");
+
+  (void) strcpy(basefilespec,"out_%d.%s");
 
   for (arg=1; arg < argc; arg++)
     {
