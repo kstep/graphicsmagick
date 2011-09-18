@@ -62,7 +62,7 @@
 2011-07-20  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* configure.ac: look for libpng15, libpng14, libpng12, and libpng
-        in that order.
+	in that order.
 
 2011-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
