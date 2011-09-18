@@ -1,5 +1,8 @@
 2011-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/module.c (ModuleAliases): PAM format is handled by PNM
+	coder.
+
 	* jpeg: Record that jpeg sources were updated to release v8c.
 
 	* lcms: Record that lcms sources were updated to release 2.2.
