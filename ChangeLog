@@ -1,5 +1,9 @@
 2011-09-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/installer/inc/tasks-install-perlmagick.isx: Windows
+	setup installer now installs PerlMagick built against ActiveState
+	Perl v5.12.4 build 1205.
+
 	* magick/annotate.c (RenderFreetype): Eliminate spurious "out of
 	memory" exceptions due to empty text string.
 

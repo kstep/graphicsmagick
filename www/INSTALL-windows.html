@@ -164,15 +164,16 @@ options:</p>
 <li>Create a desktop icon</li>
 <li>Update executable search path</li>
 <li>Associate supported file extensions with GraphicsMagick</li>
-<li>Install PerlMagick for ActiveState Perl v5.8.7 build 815</li>
+<li>Install PerlMagick for ActiveState Perl v5.12.4 build 1205</li>
 <li>Install ImageMagickObject OLE Control for VBscript, Visual Basic,
 and WSH.</li>
 </ul>
-<p>&quot;Creating a desktop icon&quot; and &quot;Update the executable search path&quot; are
-selected by default. The remaining options default to un-selected.
-Select the options you prefer. Note that ActiveState Perl packages are
-intended to be binary compatible across a build series (i.e. 800 series
-builds should be binary compatible).</p>
+<p>&quot;Creating a desktop icon&quot; and &quot;Update the executable search path&quot;
+are selected by default. The remaining options default to
+un-selected.  Select the options you prefer. Note that ActiveState
+Perl packages are intended to be binary compatible across a build
+series.  See the ActiveState Perl documentation for more information
+on this topic.</p>
 <p>Think twice before selecting &quot;<em>Associate supported file extensions with
 GraphicsMagick</em>&quot; since this will set up approximately fifty file
 associations, including common formats like JPEG, GIF, PNG, TIFF, and
@@ -592,7 +593,7 @@ the GraphicsMagick documentation.</p>
 <h2><a class="toc-backref" href="#id21">Windows Distribution Build Procedure</a></h2>
 <blockquote>
 <p>The following are the instructions for how to build a Q:8 DLL-based
-distribution installer package using Visual C++ 7.0:</p>
+distribution installer package using Visual Studio 2008 Professional:</p>
 <ol class="arabic simple">
 <li>Install prerequisite software:</li>
 </ol>
@@ -620,6 +621,11 @@ and ProvideDllMain are defined.</li>
 <li>Open workspace VisualMagickVisualDynamicMT.sln by double-clicking from
 Windows Explorer or opening workpace via Visual C++ dialog.<ol class="loweralpha">
 <li>Build -&gt; &quot;Set Active Configuration&quot; -&gt; &quot;All - Win32 Release&quot; -&gt; OK</li>
+<li>If using Visual Studio Professional Edition, and OpenMP
+support is desired, then select 'CORE_magick' in the Solution
+Explorer pane and use the right mouse button menu to select
+&quot;Properties&quot;.  In &quot;Configuration Properties / C/C++ / Language&quot;
+set OpenMP support to 'yes'.</li>
 <li>Build -&gt; &quot;Rebuild All&quot;</li>
 </ol>
 </li>

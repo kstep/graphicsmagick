@@ -111,16 +111,17 @@ Select Additional Tasks
 
   * Associate supported file extensions with GraphicsMagick
 
-  * Install PerlMagick for ActiveState Perl v5.8.7 build 815
+  * Install PerlMagick for ActiveState Perl v5.12.4 build 1205
 
   * Install ImageMagickObject OLE Control for VBscript, Visual Basic,
     and WSH.
 
-  "Creating a desktop icon" and "Update the executable search path" are
-  selected by default. The remaining options default to un-selected.
-  Select the options you prefer. Note that ActiveState Perl packages are
-  intended to be binary compatible across a build series (i.e. 800 series
-  builds should be binary compatible).
+  "Creating a desktop icon" and "Update the executable search path"
+  are selected by default. The remaining options default to
+  un-selected.  Select the options you prefer. Note that ActiveState
+  Perl packages are intended to be binary compatible across a build
+  series.  See the ActiveState Perl documentation for more information
+  on this topic.
 
   Think twice before selecting "*Associate supported file extensions with
   GraphicsMagick*" since this will set up approximately fifty file
@@ -552,7 +553,7 @@ Windows Distribution Build Procedure
 ------------------------------------
 
   The following are the instructions for how to build a Q:8 DLL-based
-  distribution installer package using Visual C++ 7.0:
+  distribution installer package using Visual Studio 2008 Professional:
 
   1. Install prerequisite software:
 
@@ -577,7 +578,12 @@ Windows Distribution Build Procedure
      Windows Explorer or opening workpace via Visual C++ dialog.
 
      a. Build -> "Set Active Configuration" -> "All - Win32 Release" -> OK
-     b. Build -> "Rebuild All"
+     b. If using Visual Studio Professional Edition, and OpenMP
+        support is desired, then select 'CORE_magick' in the Solution
+        Explorer pane and use the right mouse button menu to select
+        "Properties".  In "Configuration Properties / C/C++ / Language"
+        set OpenMP support to 'yes'.
+     c. Build -> "Rebuild All"
 
   4. Build ImageMagickObject
 
