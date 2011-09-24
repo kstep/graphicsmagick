@@ -1,3 +1,8 @@
+2011-09-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): Eliminate spurious "out of
+	memory" exceptions due to empty text string.
+
 2011-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (ModuleAliases): PAM format is handled by PNM

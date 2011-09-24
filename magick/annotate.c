@@ -1005,7 +1005,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     *p;
 
   size_t
-    length;
+    length = 0;
 
   static FT_Outline_Funcs
     OutlineMethods =
@@ -1106,6 +1106,18 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=face->underline_position/64.0;
   metrics->underline_thickness=face->underline_thickness/64.0;
+
+  /*
+    If the user-provided text string is NULL or empty, then nothing
+    more to do.
+  */
+  if ((draw_info->text == NULL) || (draw_info->text[0] == '\0'))
+    {
+      (void) FT_Done_Face(face);
+      (void) FT_Done_FreeType(library);
+      return MagickPass;
+    }
+
   /*
     Convert text to 2-byte format as prescribed by the encoding.
   */
@@ -1145,6 +1157,13 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
+      (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
+			    "Text encoding failed: encoding_type=%ld "
+			    "draw_info->encoding=\"%s\" draw_info->text=\"%s\" length=%ld",
+			    (long) encoding_type,
+			    (draw_info->encoding ? draw_info->encoding : "(null)"),
+			    (draw_info->text ? draw_info->text : "(null)"),
+			    (long) length);
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         draw_info->font)
     }
