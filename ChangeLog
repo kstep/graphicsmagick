@@ -1,5 +1,8 @@
 2011-10-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (AdaptiveThresholdImage): Reduce or eliminate
+	expensive floating point calculations when possible.
+
 	* wand/magick_wand.c (MagickSetFormat): New Wand function to allow
 	setting the file or blob format before it has been read.
 
