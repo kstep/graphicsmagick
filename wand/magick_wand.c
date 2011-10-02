@@ -6499,16 +6499,9 @@ WandExport unsigned int MagickReadImageBlob(MagickWand *wand,
   Image
     *images;
 
-  ImageInfo
-    *read_info;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  read_info=CloneImageInfo(wand->image_info);
-  read_info->blob=(_BlobInfoPtr_) blob;
-  read_info->length=length;
-  images=ReadImage(read_info,&wand->exception);
-  DestroyImageInfo(read_info);
+  images=BlobToImage(wand->image_info,blob,length,&wand->exception);
   if (images == (Image *) NULL)
     return(False);
   AppendImageToList(&wand->images,images);
@@ -7234,6 +7227,40 @@ WandExport unsigned int MagickSetCompressionQuality(MagickWand *wand,
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->image_info->quality=quality;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t D e p t h                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetDepth() sets the sample depth to be used when reading from a
+%  raw image or a format which requires that the depth be specified in
+%  advance by the user.
+%
+%  The format of the MagickSetDepth method is:
+%
+%      unsigned int MagickSetDepth(MagickWand *wand,const size_t depth)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o depth: The sample depth.
+%
+*/
+WandExport unsigned int MagickSetDepth(MagickWand *wand,const size_t depth)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->depth = depth;
   return(True);
 }
 

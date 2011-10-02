@@ -1,5 +1,10 @@
 2011-10-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.c (MagickSetDepth): New function to set the
+	depth used when reading from an image format which requires that
+	the depth be specified in advance.
+	(MagickReadImageBlob): Use BlobToImage() to read the blob.
+
 	* magick/effect.c (AdaptiveThresholdImage): Reduce or eliminate
 	expensive floating point calculations when possible.
 
