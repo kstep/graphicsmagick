@@ -7274,6 +7274,43 @@ WandExport unsigned int MagickSetFilename(MagickWand *wand,const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t F o r m a t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetFormat() sets the file or blob format (e.g. "BMP") to be used
+%  when a file or blob is read.  Usually this is not necessary because
+%  GraphicsMagick is able to auto-detect the format based on the file
+%  header (or the file extension), but some formats do not use a unique
+%  header or the selection may be ambigious. Use MagickSetImageFormat()
+%  to set the format to be used when a file or blob is to be written.
+%
+%  The format of the MagickSetFormat method is:
+%
+%      unsigned int MagickSetFormat(MagickWand *wand,const char *format)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o filename: The file or blob format.
+%
+*/
+WandExport unsigned int MagickSetFormat(MagickWand *wand,const char *format)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  (void) CopyMagickString(wand->image_info->magick,format,MaxTextExtent);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e                                               %
 %                                                                             %
 %                                                                             %
