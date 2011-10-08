@@ -1,3 +1,7 @@
+2011-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: libpng sources were updated to release 1.5.4.
+
 2011-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): TIFFGetField() on
