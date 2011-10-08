@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003 - 2010 GraphicsMagick Group
+; Copyright (C) 2003 - 2011 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -29,9 +29,13 @@
 
 ; Optional Tasks
 [Tasks]
-; #include "tasks-desktopicon.isx"
+#ifdef MSVCProprietary
+  #include "tasks-desktopicon.isx"
+#endif
 #include "tasks-update-path.isx"
-; #include "tasks-extensions.isx"
+#ifdef MSVCProprietary
+  #include "tasks-extensions.isx"
+#endif
 #ifdef MagickDynamicPackage
 ; Checkbox item to include development headers and libraries
 ;  #include "tasks-install-devel.isx"
@@ -39,13 +43,16 @@
 ; Checkbox item to install PerlMagick
   #include "tasks-install-perlmagick.isx"
 #endif
-; #include "tasks-install-com.isx"
-
+#ifdef MSVCProprietary
+  #include "tasks-install-com.isx"
+#endif
 
 ; Windows registry settings
 [Registry]
 #include "registry-application.isx"
-; #include "registry-associations.isx"
+#ifdef MSVCProprietary
+  #include "registry-associations.isx"
+#endif
 
 [Files]
 #include "files-base.isx"
@@ -62,7 +69,9 @@
 ; Install development headers and libraries
 ;  #include "files-development.isx"
 #endif
-; #include "files-com.isx"
+#ifdef MSVCProprietary
+  #include "files-com.isx"
+#endif
 
 [Icons]
 #include "icons-associate.isx"
@@ -73,12 +82,15 @@
 #ifdef MagickDynamicPackage
   #include "run-ppm.isx"
 #endif
-; #include "run-register-com.isx"
+#ifdef MSVCProprietary
+  #include "run-register-com.isx"
+#endif
 
 [UninstallRun]
 #include "uninstallrun-pathtool.isx"
 #ifdef MagickDynamicPackage
   #include "uninstallrun-ppm.isx"
 #endif
-; #include "uninstallrun-unregister-com.isx"
-
+#ifdef MSVCProprietary
+  #include "uninstallrun-unregister-com.isx"
+#endif
