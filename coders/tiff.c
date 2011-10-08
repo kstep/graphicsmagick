@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2011 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -90,6 +90,13 @@
 #endif
 #if !defined(SAMPLEFORMAT_COMPLEXIEEEFP)
 #define     SAMPLEFORMAT_COMPLEXIEEEFP  6
+#endif
+
+#if !defined(TIFFTAG_COPYRIGHT)
+#define     TIFFTAG_COPYRIGHT 33432
+#endif
+#if !defined(TIFFTAG_OPIIMAGEID)
+#define     TIFFTAG_OPIIMAGEID 32781
 #endif
 
 /*
@@ -1681,7 +1688,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
         (void) SetImageAttribute(image,"artist",text);
 
-      if (TIFFGetField(tiff,33432,&text) == 1) /* TIFFTAG_COPYRIGHT */
+      if (TIFFGetField(tiff,TIFFTAG_COPYRIGHT,&text) == 1) /* TIFFTAG_COPYRIGHT */
         (void) SetImageAttribute(image,"copyright",text);
 
       if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
@@ -1696,9 +1703,6 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
         (void) SetImageAttribute(image,"comment",text);
 
-      if (TIFFGetField(tiff,32781,&text) == 1) /* TIFFTAG_OPIIMAGEID */
-        (void) SetImageAttribute(image,"imageid",text);
-
       if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
         (void) SetImageAttribute(image,"make",text);
 
@@ -1711,13 +1715,34 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
         (void) SetImageAttribute(image,"software",text);
 
-#if 0
-      if (TIFFGetField(tiff,33423,&text) == 1)
-        (void) SetImageAttribute(image,"kodak-33423",text);
+      {
+	/*
+	  "Unsupported" tags return two arguments.
+	*/
 
-      if (TIFFGetField(tiff,36867,&text) == 1)
-        (void) SetImageAttribute(image,"kodak-36867",text);
-#endif
+	uint32
+	  count;
+
+	char attribute[MaxTextExtent];
+
+	if (TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text) == 1)
+	  {
+	    (void) strlcpy(attribute,text,Min(sizeof(attribute),(count+1)));
+	    (void) SetImageAttribute(image,"imageid",attribute);
+	  }
+	
+	if (TIFFGetField(tiff,33423,&count,&text) == 1)
+	  {
+	    (void) strlcpy(attribute,text,Min(sizeof(attribute),(count+1)));
+	    (void) SetImageAttribute(image,"kodak-33423",attribute);
+	  }
+	
+	if (TIFFGetField(tiff,36867,&count,&text) == 1)
+	  {
+	    (void) strlcpy(attribute,text,Min(sizeof(attribute),(count+1)));
+	    (void) SetImageAttribute(image,"kodak-36867",attribute);
+	  }
+      }
 
       if ((photometric == PHOTOMETRIC_PALETTE) ||
           ((photometric == PHOTOMETRIC_MINISWHITE ||
@@ -1983,7 +2008,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               *strip;
 
             long
-              pixels_per_strip,
+              /* pixels_per_strip, */
               stride,
               rows_remaining;
 
@@ -2006,7 +2031,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "Using stripped read method with %u bits per sample",
                                     bits_per_sample);
-            pixels_per_strip=rows_per_strip*image->columns;
+            /* pixels_per_strip=rows_per_strip*image->columns; */
             p=0;
             strip_size=0;
             strip_id=0;
@@ -3179,7 +3204,7 @@ WritePTIFImage(const ImageInfo *image_info,Image *image)
   do
     {
       pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
-                                      pyramid_image->rows/2,TriangleFilter,
+                                      pyramid_image->rows/2,filter,
                                       1.0,&image->exception);
       if (pyramid_image->next == (Image *) NULL)
         ThrowWriterException2(FileOpenError,image->exception.reason,image);
@@ -4531,10 +4556,6 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       attribute=GetImageAttribute(image,"comment");
       if (attribute != (const ImageAttribute *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
-      
-      attribute=GetImageAttribute(image,"imageid");
-      if (attribute != (const ImageAttribute *) NULL)
-        (void) TIFFSetField(tiff,32781,attribute->value); /* TIFFTAG_OPIIMAGEID */
 
       attribute=GetImageAttribute(image,"make");
       if (attribute != (const ImageAttribute *) NULL)
@@ -4550,6 +4571,16 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
       (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
                           GetMagickVersion((unsigned long *) NULL));
+
+#if 0
+      /*
+	This tag is not supported by libtiff so the tag extension
+	mechanism would need to be used to add support for it.
+      */
+      attribute=GetImageAttribute(image,"imageid");
+      if (attribute != (const ImageAttribute *) NULL)
+        (void) TIFFSetField(tiff,TIFFTAG_OPIIMAGEID,attribute->value);
+#endif
 
       if (photometric == PHOTOMETRIC_PALETTE)
         {

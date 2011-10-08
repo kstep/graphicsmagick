@@ -1,3 +1,10 @@
+2011-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): TIFFGetField() on
+	TIFFTAG_OPIIMAGEID was causing a crash due to an argument
+	mis-match between GraphicsMagick and libtiff.  Also fixed a few
+	GCC 4.6 warnings.  Problem was reported by Dylan Millikin.
+
 2011-10-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickSetDepth): New function to set the
