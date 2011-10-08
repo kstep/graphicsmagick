@@ -18,15 +18,15 @@ AC_PREREQ(2.59)
 
 dnl Version number stuff here:
 
-AC_INIT([libpng], [1.5.4], [png-mng-implement@lists.sourceforge.net])
+AC_INIT([libpng], [1.5.5], [png-mng-implement@lists.sourceforge.net])
 AM_INIT_AUTOMAKE
 dnl stop configure from automagically running automake
 AM_MAINTAINER_MODE
 
-PNGLIB_VERSION=1.5.4
+PNGLIB_VERSION=1.5.5
 PNGLIB_MAJOR=1
 PNGLIB_MINOR=5
-PNGLIB_RELEASE=4
+PNGLIB_RELEASE=5
 
 dnl End of version number stuff
 
@@ -95,6 +95,18 @@ LIBPNG_DEFINES=$LIBPNG_DEFINES
 AC_SUBST(LIBPNG_DEFINES)
 
 AC_MSG_CHECKING([if libraries can be versioned])
+
+AC_MSG_CHECKING([if using Solaris linker])
+SLD=`$LD --version 2>&1 | grep Solaris`
+if test "$SLD"; then
+    have_solaris_ld=yes
+    AC_MSG_RESULT(yes)
+else
+    have_solaris_ld=no
+    AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(HAVE_SOLARIS_LD, test "$have_solaris_ld" = "yes")
+
 # Special case for PE/COFF platforms: ld reports
 # support for version-script, but doesn't actually
 # DO anything with it.
@@ -104,7 +116,13 @@ case $host in
     AC_MSG_RESULT(no)
 ;;
 * )
-GLD=`$LD --help < /dev/null 2>/dev/null | grep version-script`
+
+if test "$have_solaris_ld" = "yes"; then
+    GLD=`$LD --help < /dev/null 2>&1 | grep 'M mapfile'`
+else
+    GLD=`$LD --help < /dev/null 2>/dev/null | grep version-script`
+fi
+
 if test "$GLD"; then
     have_ld_version_script=yes
     AC_MSG_RESULT(yes)

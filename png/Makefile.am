@@ -44,11 +44,16 @@ libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS = -no-undefined -export-dynamic \
 	-version-number @PNGLIB_MAJOR@@PNGLIB_MINOR@:@PNGLIB_RELEASE@:0
 
 if HAVE_LD_VERSION_SCRIPT
-  # Versioned symbols and restricted exports
+#   Versioned symbols and restricted exports
+if HAVE_SOLARIS_LD
+  libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS += -Wl,-M Wl,libpng.vers
+else
   libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS += -Wl,--version-script=libpng.vers
+endif
+
   libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libpng.vers
 else
-  # Only restricted exports when possible
+#   Only restricted exports when possible
   libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS += -export-symbols libpng.sym
   libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libpng.sym
 endif
@@ -97,7 +102,7 @@ $(PNGLIB_BASENAME)-config: libpng-config
 	cp libpng-config $@
 
 scripts/sym.out scripts/vers.out: png.h pngconf.h pnglibconf.h
-scripts/symbols.out: png.h pngconf.h scripts/pnglibconf.h.prebuilt
+scripts/symbols.out: png.h pngconf.h $(srcdir)/scripts/pnglibconf.h.prebuilt
 
 libpng.sym: scripts/sym.out
 	rm -f $@
@@ -108,7 +113,8 @@ libpng.vers: scripts/vers.out
 pnglibconf.h: pnglibconf.out
 	rm -f $@
 	cp $? $@
-scripts/pnglibconf.h.prebuilt:
+$(srcdir)/scripts/pnglibconf.h.prebuilt:
+	@echo "Attempting to build $@" >&2
 	@echo "This is a machine generated file, but if you want to make" >&2
 	@echo "a new one simply make 'scripts/pnglibconf.out' and copy that" >&2
 	@exit 1
@@ -119,8 +125,8 @@ scripts/pnglibconf.h.prebuilt:
 pngvalid.o pngtest.o: pnglibconf.h
 
 # We must use -DPNG_NO_USE_READ_MACROS here even when the library may actually
-# be built with PNG_USE_READ_MACROS; this stops the read macros interfering
-# with the symbol file format.
+# be built with PNG_USE_READ_MACROS; this prevents the read macros from
+# interfering with the symbol file format.
 SYMBOL_CFLAGS = -DPNGLIB_LIBNAME='PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0'\
 		-DPNGLIB_VERSION='@PNGLIB_VERSION@'\
 		-DSYMBOL_PREFIX='$(SYMBOL_PREFIX)'\
@@ -162,7 +168,7 @@ scripts/pnglibconf.dfn: scripts/pnglibconf.dfa scripts/options.awk
 	test -z "$(CPPFLAGS)"
 	echo "com @PNGLIB_VERSION@ STANDARD API DEFINITION" |\
 	$(AWK) -f ${srcdir}/scripts/options.awk out=dfn1.out\
-	    logunsupported=4 - ${srcdir}/scripts/pnglibconf.dfa 1>&2
+	    logunsupported=1 - ${srcdir}/scripts/pnglibconf.dfa 1>&2
 	$(AWK) -f ${srcdir}/scripts/options.awk out=dfn2.out dfn1.out 1>&2
 	rm dfn1.out
 	mv dfn2.out $@
