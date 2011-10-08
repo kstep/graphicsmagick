@@ -2316,7 +2316,7 @@ then
       freetype_prefix=`${freetype_config} --prefix`
       freetype_exec_prefix=`${freetype_config} --exec-prefix`
       LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
+      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
     fi
 
 dnl First see if there is a library
