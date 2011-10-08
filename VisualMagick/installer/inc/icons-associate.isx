@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003 - 2010 GraphicsMagick Group
+; Copyright (C) 2003 - 2011 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -13,5 +13,7 @@ Name: "{group}\GraphicsMagick For Windows Page"; Filename: "{app}\www\INSTALL-wi
 ; Name: "{group}\GraphicsMagick Readme"; Filename: "{app}\README.txt"
 ; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\GraphicsMagick License"; Filename: "{app}\Copyright.txt"
-; Name: "{group}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"
-; Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
+#ifdef MSVCProprietary
+  Name: "{group}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"
+  Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
+#endif
