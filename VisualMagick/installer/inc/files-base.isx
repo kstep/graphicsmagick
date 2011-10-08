@@ -9,8 +9,10 @@
 #endif
 
 ; Executables
-; Source: "..\bin\imdisplay.exe"; DestDir: {#MagickAppDirectory}; DestName: "gmdisplay.exe"; Flags: ignoreversion
 Source: "..\bin\gm.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
+#ifdef MSVCProprietary
+  Source: "..\bin\imdisplay.exe"; DestDir: {#MagickAppDirectory}; DestName: "gmdisplay.exe"; Flags: ignoreversion
+#endif
 ; Third party executables not included in the Visual Studio build are no longer bundled with GraphicsMagick.
 ; Source: "..\bin\hp2xx.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
 ; Source: "..\bin\mpeg2dec.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
