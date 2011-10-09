@@ -5500,6 +5500,11 @@ WandExport DrawingWand *NewDrawingWand(void)
   DrawingWand
     *drawing_wand;
 
+  /*
+    Initialize GraphicsMagick in case it is not already initialized.
+  */
+  InitializeMagick(NULL);
+
   drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
   if (drawing_wand == (DrawingWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,

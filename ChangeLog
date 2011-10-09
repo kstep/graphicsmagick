@@ -1,5 +1,14 @@
 2011-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/pixel_wand.c (NewPixelWand): Invoke InitializeMagick()
+	automatically in case user forgets to do so.
+
+	* wand/drawing_wand.c (NewDrawingWand): Invoke InitializeMagick()
+	automatically in case user forgets to do so.
+
+	* wand/magick_wand.c (NewMagickWand): Invoke InitializeMagick()
+	automatically in case user forgets to do so.
+
 	* png: libpng sources were updated to release 1.5.4.
 
 2011-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

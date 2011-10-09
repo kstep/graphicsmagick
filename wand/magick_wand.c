@@ -10094,6 +10094,11 @@ WandExport MagickWand *NewMagickWand(void)
   MagickWand
     *wand;
 
+  /*
+    Initialize GraphicsMagick in case it is not already initialized.
+  */
+  InitializeMagick(NULL);
+
   wand=(MagickWand *) AcquireMagickMemory(sizeof(MagickWand));
   if (wand == (MagickWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,

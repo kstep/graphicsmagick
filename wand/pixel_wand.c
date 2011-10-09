@@ -238,6 +238,11 @@ WandExport PixelWand *NewPixelWand(void)
   struct _PixelWand
     *wand;
 
+  /*
+    Initialize GraphicsMagick in case it is not already initialized.
+  */
+  InitializeMagick(NULL);
+
   wand=(struct _PixelWand *) AcquireMagickMemory(sizeof(struct _PixelWand));
   if (wand == (PixelWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
