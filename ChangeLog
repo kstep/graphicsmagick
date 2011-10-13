@@ -1,3 +1,7 @@
+2011-10-12  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* Use a "for" loop in configure.ac to find libpngNN.
+
 2011-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/pixel_wand.c (NewPixelWand): Invoke InitializeMagick()

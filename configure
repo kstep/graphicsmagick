@@ -25973,21 +25973,35 @@ $as_echo "#define HasLCMS 1" >>confdefs.h
 fi
 
 
+if test "$have_zlib" = 'yes'; then
 #
-# Check for PNG
+# Check for PNG delegate library.
 #
+
+# Check whether --with-png was given.
+if test "${with_png+set}" = set; then :
+  withval=$with_png; with_png=$withval
+else
+  with_png='yes'
+fi
+
+
+if test "$with_png" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
+fi
+
 have_png='no'
 LIB_PNG=''
-if test "$with_png" != 'no' -a "$with_png" != 'libpng14' -a "$with_png" != 'libpng12'
 
+if test "$with_png" != 'no'
 then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG15 support " >&5
-$as_echo_n "checking for LIBPNG15 support ... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PNG support " >&5
+$as_echo_n "checking for PNG support ... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
+  failed=0
+  passed=0
+  ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
 if test "x$ac_cv_header_png_h" = xyes; then :
   passed=`expr $passed + 1`
 else
@@ -25996,16 +26010,23 @@ fi
 
 
 
-# Test for compatible LIBPNG15 library
-if test $passed -gt 0; then
-failed=0
-passed=0
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 15" >&5
-$as_echo_n "checking for LIBPNG is version 15... " >&6; }
-if ${ac_cv_libpng15_ok+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  if test $passed -gt 0; then
+    for var in 5 4 2 '' ; do
+      if test "x${var}" = 'x' ; then
+        pnglib='png'
+      else
+        pnglib="png1${var}"
+      fi
+      if test "$have_png" = 'no' ; then
+
+#       Test for compatible LIBPNG library
+        failed=0
+        passed=0
+        if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
+          if test "${pnglib}" != 'png' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG1${var} support " >&5
+$as_echo_n "checking for LIBPNG1${var} support ... " >&6; }
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26015,8 +26036,8 @@ int
 main ()
 {
 
-#if PNG_LIBPNG_VER_SONUM != 15
-#error LIBPNG library must be version 15!
+#if PNG_LIBPNG_VER_MINOR != ${var}
+#error LIBPNG library must be version 1${var}!
 Kaboom, Kaboom
 #endif
 return 0;
@@ -26026,21 +26047,31 @@ return 0;
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng15_ok='yes'
+              ac_cv_libpng_ok='yes'
 else
-  ac_cv_libpng15_ok='no'
+  ac_cv_libpng_ok='no'
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng15_ok" >&5
-$as_echo "$ac_cv_libpng15_ok" >&6; }
-if test "$ac_cv_libpng15_ok" = 'yes' ; then
- passed=`expr $passed + 1`
-else
- failed=`expr $failed + 1`
-fi
-fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
+            if test "$ac_cv_libpng_ok" = 'yes' ; then
+              passed=`expr $passed + 1`
+              { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+            else
+              failed=`expr $failed + 1`
+              { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+            fi
+          else
+            passed=`expr $passed + 1`
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+          fi
+        fi
+
+        if test $passed -gt 0 -a $failed -le 0
+        then
+          if test "1${var}" = '15' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }
 if ${ac_cv_lib_png15_png_get_io_ptr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26082,7 +26113,7 @@ else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng15" >&5
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng15" >&5
 $as_echo_n "checking for png_longjmp in -lpng15... " >&6; }
 if ${ac_cv_lib_png15_png_longjmp+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26124,92 +26155,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png15 package is complete" >&5
-$as_echo_n "checking if png15 package is complete... " >&6; }
-    if test $passed -gt 0
-    then
-      if test $failed -gt 0
-      then
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-	  have_png='no (failed tests)'
-      else
-	  LIB_PNG='-lpng15'
-	  LIBS="$LIB_PNG $LIBS"
-
-$as_echo "#define HasPNG 1" >>confdefs.h
-
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	  have_png='yes'
-      fi
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
-
-    if test "$have_png" != 'yes' -a "$with_png" != 'libpng15' -a "$with_png" != 'libpng12'
-    then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG14 support " >&5
-$as_echo_n "checking for LIBPNG14 support ... " >&6; }
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-      failed=0
-      passed=0
-      ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
-if test "x$ac_cv_header_png_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-
-# Test for compatible LIBPNG14 library
-if test $passed -gt 0; then
-failed=0
-passed=0
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 14" >&5
-$as_echo_n "checking for LIBPNG is version 14... " >&6; }
-if ${ac_cv_libpng14_ok+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <png.h>
-
-int
-main ()
-{
-
-#if PNG_LIBPNG_VER_SONUM != 14
-#error LIBPNG library must be version 14!
-Kaboom, Kaboom
-#endif
-return 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng14_ok='yes'
-else
-  ac_cv_libpng14_ok='no'
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng14_ok" >&5
-$as_echo "$ac_cv_libpng14_ok" >&6; }
-if test "$ac_cv_libpng14_ok" = 'yes' ; then
- passed=`expr $passed + 1`
-else
- failed=`expr $failed + 1`
-fi
-fi
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng14" >&5
+          fi
+          if test "1${var}" = '14' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng14" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng14... " >&6; }
 if ${ac_cv_lib_png14_png_get_io_ptr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26251,7 +26199,7 @@ else
   failed=`expr $failed + 1`
 fi
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_state in -lpng14" >&5
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_state in -lpng14" >&5
 $as_echo_n "checking for png_get_io_state in -lpng14... " >&6; }
 if ${ac_cv_lib_png14_png_get_io_state+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26293,93 +26241,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png14 package is complete" >&5
-$as_echo_n "checking if png14 package is complete... " >&6; }
-      if test $passed -gt 0
-      then
-        if test $failed -gt 0
-        then
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-	  have_png='no (failed tests)'
-        else
-	  LIB_PNG='-lpng14'
-	  LIBS="$LIB_PNG $LIBS"
-
-$as_echo "#define HasPNG 1" >>confdefs.h
-
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	  have_png='yes'
-        fi
-      else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      fi
-    fi
-
-    if test "$have_png" != 'yes' -a "$with_png" != 'libpng15' -a "$with_png" != 'libpng14'
-    then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG12 support " >&5
-$as_echo_n "checking for LIBPNG12 support ... " >&6; }
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-        failed=0
-        passed=0
-        ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
-if test "x$ac_cv_header_png_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-
-# Test for compatible LIBPNG12 library
-if test $passed -gt 0; then
-failed=0
-passed=0
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG is version 12" >&5
-$as_echo_n "checking for LIBPNG is version 12... " >&6; }
-if ${ac_cv_libpng12_ok+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <png.h>
-
-int
-main ()
-{
-
-#if PNG_LIBPNG_VER_DLLNUM  != 13
-#error LIBPNG library must be version 12!
-Kaboom, Kaboom
-#endif
-return 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_libpng12_ok='yes'
-else
-  ac_cv_libpng12_ok='no'
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_libpng12_ok" >&5
-$as_echo "$ac_cv_libpng12_ok" >&6; }
-if test "$ac_cv_libpng12_ok" = 'yes' ; then
- passed=`expr $passed + 1`
-else
- failed=`expr $failed + 1`
-fi
-fi
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng12" >&5
+          fi
+          if test "1${var}" = '12' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng12" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng12... " >&6; }
 if ${ac_cv_lib_png12_png_get_io_ptr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26421,48 +26285,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png12 package is complete" >&5
-$as_echo_n "checking if png12 package is complete... " >&6; }
-        if test $passed -gt 0
-        then
-          if test $failed -gt 0
-          then
-	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-	    have_png='no (failed tests)'
-          else
-	    LIB_PNG='-lpng12'
-	    LIBS="$LIB_PNG $LIBS"
-
-$as_echo "#define HasPNG 1" >>confdefs.h
-
-	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	    have_png='yes'
           fi
-        else
-          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-        fi
-    fi
-
-    if test "$have_png" != 'yes'
-    then
-          { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG support " >&5
-$as_echo_n "checking for LIBPNG support ... " >&6; }
-          { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-          failed=0
-          passed=0
-          ac_fn_c_check_header_mongrel "$LINENO" "png.h" "ac_cv_header_png_h" "$ac_includes_default"
-if test "x$ac_cv_header_png_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-          { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng" >&5
+          if test "1${var}" = '1' ; then
+              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng... " >&6; }
 if ${ac_cv_lib_png_png_get_io_ptr+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26504,17 +26329,17 @@ else
   failed=`expr $failed + 1`
 fi
 
-          { $as_echo "$as_me:${as_lineno-$LINENO}: checking if png package is complete" >&5
-$as_echo_n "checking if png package is complete... " >&6; }
-          if test $passed -gt 0
-          then
-            if test $failed -gt 0
-            then
+          fi
+          if test $passed -gt 0 -a $failed -le 0 ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking if ${pnglib} package is complete" >&5
+$as_echo_n "checking if ${pnglib} package is complete... " >&6; }
+            if test $passed -gt 0 ; then
+              if test $failed -gt 0 ; then
 	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
 	        have_png='no (failed tests)'
-            else
-	        LIB_PNG='-lpng'
+              else
+	        LIB_PNG="-l${pnglib}"
 	        LIBS="$LIB_PNG $LIBS"
 
 $as_echo "#define HasPNG 1" >>confdefs.h
@@ -26522,14 +26347,15 @@ $as_echo "#define HasPNG 1" >>confdefs.h
 	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	        have_png='yes'
+              fi
             fi
-          else
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
           fi
-    fi
-
+        fi
+      fi
+    done
+  fi
 fi
+
  if test "$have_png" = 'yes'; then
   HasPNG_TRUE=
   HasPNG_FALSE='#'
@@ -26539,6 +26365,10 @@ else
 fi
 
 
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: PNG requires zlib support" >&5
+$as_echo "PNG requires zlib support" >&6; }
+fi
 
 #
 # Check for JPEG
