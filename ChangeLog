@@ -1,3 +1,9 @@
+2011-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Fix syntax error with GSCMYKDevice ('==' rather
+	than '=').  Thanks to Glenn Randers-Pehrson for noticing and
+	reporting the issue.
+
 2011-10-12  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* Use a "for" loop in configure.ac to find libpngNN.

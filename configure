@@ -1779,6 +1779,7 @@ Optional Packages:
   --without-zlib          disable ZLIB support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
   --with-x                use the X Window System
+  --without-png           disable PNG support
 
 Some influential environment variables:
   CC          C compiler command
@@ -30090,7 +30091,7 @@ $as_echo_n "checking for gs CMYK device... " >&6; }
   then
     GSCMYKDevice=pam
   else
-    GSCMYKDevice==$GSColorDevice
+    GSCMYKDevice=$GSColorDevice
   fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSCMYKDevice" >&5
 $as_echo "$GSCMYKDevice" >&6; }

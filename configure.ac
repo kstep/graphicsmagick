@@ -3015,7 +3015,7 @@ then
   then
     GSCMYKDevice=pam
   else
-    GSCMYKDevice==$GSColorDevice
+    GSCMYKDevice=$GSColorDevice
   fi
   AC_MSG_RESULT($GSCMYKDevice)
 
