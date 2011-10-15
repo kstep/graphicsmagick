@@ -11588,7 +11588,16 @@ helgrind:
 	$(MAKE) MEMCHECK='valgrind --tool=helgrind --error-exitcode=2 --quiet \
 	$(VALGRIND_EXTRA_OPTS)' check
 
-# memcheck: valgrind's memory access checker
+# memcheck: valgrind's memory access checker.
+# The suppressions which come with valgrind are usually insufficient
+# to handle certain pthread library aspects and gomp and so errors
+# will be reported which are unrelated to GraphicsMagick.  When first
+# starting with a new system (or after a major system update), it is
+# good to execute the test suite like 'make memcheck
+# VALGRIND_EXTRA_OPTS=--gen-suppressions=all' to create valgrind
+# suppression entries in the test log.  Tell valgrind about the
+# suppressions by creating a .valgrindrc file with content like:
+#   --memcheck:suppressions=mysupp.supp.
 memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
 	--error-exitcode=2 --track-origins=yes --num-callers=12 \
