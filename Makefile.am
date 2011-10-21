@@ -9,7 +9,8 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-lzma foreign
+# Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-xz foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -237,7 +238,7 @@ helgrind:
 # VALGRIND_EXTRA_OPTS=--gen-suppressions=all' to create valgrind
 # suppression entries in the test log.  Tell valgrind about the
 # suppressions by creating a .valgrindrc file with content like:
-#   --memcheck:suppressions=mysupp.supp.
+#   --memcheck:suppressions=mysupp.supp
 memcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
 	--error-exitcode=2 --track-origins=yes --num-callers=12 \
