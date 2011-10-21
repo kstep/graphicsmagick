@@ -1,3 +1,15 @@
+2011-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* libtool: Updated to libtool 2.4.2.
+
+	* configure.ac: Automake conditional for HasPNG can not itself be
+	conditional.  Indent PNG script code appropriately.
+
+2011-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Distribute lzma-compressed
+	tarball in 'xz' format rather than deprecated 'lzma' format.
+
 2011-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Fix syntax error with GSCMYKDevice ('==' rather

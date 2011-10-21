@@ -540,6 +540,9 @@
    */
 #undef LT_OBJDIR
 
+/* Define to the shared library suffix, say, ".dylib". */
+#undef LT_SHARED_EXT
+
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
 
