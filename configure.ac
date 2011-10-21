@@ -1902,48 +1902,49 @@ then
 fi
 AC_SUBST(LIB_LCMS)
 
-if test "$have_zlib" = 'yes'; then
-#
-# Check for PNG delegate library.
-#
-AC_ARG_WITH(png,
-    [AC_HELP_STRING([--without-png],
-                    [disable PNG support])],
-    [with_png=$withval],
-    [with_png='yes'])
-
-if test "$with_png" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
-fi
-
 have_png='no'
 LIB_PNG=''
-
-if test "$with_png" != 'no'
+if test "$have_zlib" = 'yes'
 then
-  AC_MSG_CHECKING(for PNG support )
-  AC_MSG_RESULT()
-  failed=0
-  passed=0
-  AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
-     failed=`expr $failed + 1`,)
-
-  if test $passed -gt 0; then
-    for var in 5 4 2 '' ; do
-      if test "x${var}" = 'x' ; then
-        pnglib='png'
-      else
-        pnglib="png1${var}"
-      fi
-      if test "$have_png" = 'no' ; then
-
-#       Test for compatible LIBPNG library
-        failed=0
-        passed=0
-        if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
-          if test "${pnglib}" != 'png' ; then
-            AC_MSG_CHECKING(for LIBPNG1${var} support )
-            AC_TRY_COMPILE(
+  #
+  # Check for PNG delegate library.
+  #
+  AC_ARG_WITH(png,
+      [AC_HELP_STRING([--without-png],
+                      [disable PNG support])],
+      [with_png=$withval],
+      [with_png='yes'])
+  
+  if test "$with_png" != 'yes'; then
+      DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
+  fi
+  
+  
+  if test "$with_png" != 'no' ; then
+    AC_MSG_CHECKING(for PNG support )
+    AC_MSG_RESULT()
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+       failed=`expr $failed + 1`,)
+  
+    if test $passed -gt 0; then
+      for var in 5 4 2 '' ; do
+        if test "x${var}" = 'x' ; then
+          pnglib='png'
+        else
+          pnglib="png1${var}"
+        fi
+        if test "$have_png" = 'no'
+	then
+  
+  	  # Test for compatible LIBPNG library
+          failed=0
+          passed=0
+          if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
+            if test "${pnglib}" != 'png' ; then
+              AC_MSG_CHECKING(for LIBPNG1${var} support )
+              AC_TRY_COMPILE(
 #include <stdio.h>
 #include <stdlib.h>
 #include <png.h>
@@ -1956,70 +1957,69 @@ Kaboom, Kaboom
 #endif
 return 0;
 >>,
-            changequote([, ])dnl
-            ac_cv_libpng_ok='yes',
-            ac_cv_libpng_ok='no')
-            if test "$ac_cv_libpng_ok" = 'yes' ; then
+              changequote([, ])dnl
+              ac_cv_libpng_ok='yes',
+              ac_cv_libpng_ok='no')
+              if test "$ac_cv_libpng_ok" = 'yes' ; then
+                passed=`expr $passed + 1`
+                AC_MSG_RESULT(yes)
+              else
+                failed=`expr $failed + 1`
+                AC_MSG_RESULT(no)
+              fi
+            else
               passed=`expr $passed + 1`
               AC_MSG_RESULT(yes)
-            else
-              failed=`expr $failed + 1`
-              AC_MSG_RESULT(no)
             fi
-          else
-            passed=`expr $passed + 1`
-            AC_MSG_RESULT(yes)
           fi
-        fi
-
-        if test $passed -gt 0 -a $failed -le 0
-        then
-          if test "1${var}" = '15' ; then
-            AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '14' ; then
-            AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '12' ; then
-            AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
-               failed=`expr $failed + 1`,)
-          fi
-          if test "1${var}" = '1' ; then
-              AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,
+  
+          if test $passed -gt 0 -a $failed -le 0
+          then
+            if test "1${var}" = '15' ; then
+              AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
                  failed=`expr $failed + 1`,)
-          fi
-          if test $passed -gt 0 -a $failed -le 0 ; then
-            AC_MSG_CHECKING(if ${pnglib} package is complete)
-            if test $passed -gt 0 ; then
-              if test $failed -gt 0 ; then
-	        AC_MSG_RESULT(no -- some components failed test)
-	        have_png='no (failed tests)'
-              else
-	        LIB_PNG="-l${pnglib}"
-	        LIBS="$LIB_PNG $LIBS"
-	        AC_DEFINE(HasPNG,1,Define if you have PNG library)
-	        AC_MSG_RESULT(yes)
-	        have_png='yes'
+              AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '14' ; then
+              AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+              AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '12' ; then
+              AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '1' ; then
+                AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,
+                   failed=`expr $failed + 1`,)
+            fi
+            if test $passed -gt 0 -a $failed -le 0 ; then
+              AC_MSG_CHECKING(if ${pnglib} package is complete)
+              if test $passed -gt 0 ; then
+                if test $failed -gt 0 ; then
+  	        AC_MSG_RESULT(no -- some components failed test)
+  	        have_png='no (failed tests)'
+                else
+  	        LIB_PNG="-l${pnglib}"
+  	        LIBS="$LIB_PNG $LIBS"
+  	        AC_DEFINE(HasPNG,1,Define if you have PNG library)
+  	        AC_MSG_RESULT(yes)
+  	        have_png='yes'
+                fi
               fi
             fi
           fi
         fi
-      fi
-    done
+      done
+    fi
   fi
-fi
-
-AM_CONDITIONAL(HasPNG, test "$have_png" = 'yes')
-AC_SUBST(LIB_PNG)
 else
   AC_MSG_RESULT(PNG requires zlib support)
 fi
+AM_CONDITIONAL(HasPNG, test "$have_png" = 'yes')
+AC_SUBST(LIB_PNG)
 
 #
 # Check for JPEG
