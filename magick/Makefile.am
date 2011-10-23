@@ -109,6 +109,8 @@ MAGICK_BASE_SRCS = \
 	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
+	magick/floats.c \
+	magick/floats.h \
 	magick/forward.h \
 	magick/fx.c \
 	magick/fx.h \
@@ -288,6 +290,7 @@ MAGICK_NOINST_HDRS = \
 	magick/animate.h \
 	magick/bit_stream.h \
 	magick/display.h \
+	magick/floats.h \
 	magick/locale_c.h \
 	magick/map.h \
 	magick/nt_base.h \

@@ -1147,8 +1147,9 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/describe.h magick/draw.c magick/draw.h magick/effect.c \
 	magick/effect.h magick/enhance.c magick/enhance.h \
 	magick/enum_strings.c magick/enum_strings.h magick/error.c \
-	magick/error.h magick/forward.h magick/fx.c magick/fx.h \
-	magick/gem.c magick/gem.h magick/gradient.c magick/gradient.h \
+	magick/error.h magick/floats.c magick/floats.h \
+	magick/forward.h magick/fx.c magick/fx.h magick/gem.c \
+	magick/gem.h magick/gradient.c magick/gradient.h \
 	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
 	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
 	magick/log.c magick/log.h magick/magic.c magick/magic.h \
@@ -1239,6 +1240,7 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-analyze.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
 	magick/magick_libGraphicsMagick_la-enum_strings.lo \
 	magick/magick_libGraphicsMagick_la-error.lo \
+	magick/magick_libGraphicsMagick_la-floats.lo \
 	magick/magick_libGraphicsMagick_la-fx.lo \
 	magick/magick_libGraphicsMagick_la-gem.lo \
 	magick/magick_libGraphicsMagick_la-gradient.lo \
@@ -3280,6 +3282,8 @@ MAGICK_BASE_SRCS = \
 	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
+	magick/floats.c \
+	magick/floats.h \
 	magick/forward.h \
 	magick/fx.c \
 	magick/fx.h \
@@ -3454,6 +3458,7 @@ MAGICK_NOINST_HDRS = \
 	magick/animate.h \
 	magick/bit_stream.h \
 	magick/display.h \
+	magick/floats.h \
 	magick/locale_c.h \
 	magick/map.h \
 	magick/nt_base.h \
@@ -6179,6 +6184,8 @@ magick/magick_libGraphicsMagick_la-enum_strings.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-error.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-floats.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-fx.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-gem.lo: magick/$(am__dirstamp) \
@@ -7317,6 +7324,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-enum_strings.lo
 	-rm -f magick/magick_libGraphicsMagick_la-error.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-error.lo
+	-rm -f magick/magick_libGraphicsMagick_la-floats.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-floats.lo
 	-rm -f magick/magick_libGraphicsMagick_la-fx.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-fx.lo
 	-rm -f magick/magick_libGraphicsMagick_la-gem.$(OBJEXT)
@@ -7719,6 +7728,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Plo@am__quote@
@@ -8903,6 +8913,14 @@ magick/magick_libGraphicsMagick_la-error.lo: magick/error.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/error.c' object='magick/magick_libGraphicsMagick_la-error.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-error.lo `test -f 'magick/error.c' || echo '$(srcdir)/'`magick/error.c
+
+magick/magick_libGraphicsMagick_la-floats.lo: magick/floats.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-floats.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Tpo -c -o magick/magick_libGraphicsMagick_la-floats.lo `test -f 'magick/floats.c' || echo '$(srcdir)/'`magick/floats.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/floats.c' object='magick/magick_libGraphicsMagick_la-floats.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-floats.lo `test -f 'magick/floats.c' || echo '$(srcdir)/'`magick/floats.c
 
 magick/magick_libGraphicsMagick_la-fx.lo: magick/fx.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-fx.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Tpo -c -o magick/magick_libGraphicsMagick_la-fx.lo `test -f 'magick/fx.c' || echo '$(srcdir)/'`magick/fx.c

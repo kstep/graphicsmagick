@@ -1,3 +1,8 @@
+2011-10-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/floats.c: Move Richard Nolde's floating point conversion
+	functions from constitute.c to new file float.c.
+
 2011-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Updated to libtool 2.4.2.
