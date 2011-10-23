@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -109,6 +109,7 @@ MAGICK_BASE_SRCS = \
 	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
+	magick/export.c \
 	magick/floats.c \
 	magick/floats.h \
 	magick/forward.h \
@@ -122,6 +123,7 @@ MAGICK_BASE_SRCS = \
 	magick/hclut.h \
 	magick/image.c \
 	magick/image.h \
+	magick/import.c \
 	magick/list.c \
 	magick/list.h \
 	magick/locale.c \

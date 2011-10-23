@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 GraphicsMagick Group
+# Copyright (C) 2008-2011 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -33,9 +33,11 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/effect.html \
 	$(WWWAPIDIR)/enhance.html \
 	$(WWWAPIDIR)/error.html \
+	$(WWWAPIDIR)/export.html \
 	$(WWWAPIDIR)/fx.html \
 	$(WWWAPIDIR)/hclut.html \
 	$(WWWAPIDIR)/image.html \
+	$(WWWAPIDIR)/import.html \
 	$(WWWAPIDIR)/list.html \
 	$(WWWAPIDIR)/magick.html \
 	$(WWWAPIDIR)/memory.html \
@@ -82,11 +84,13 @@ WWWWAPI_FILES = \
 	www/api/display.html \
 	www/api/draw.html \
 	www/api/effect.html \
+	www/api/export.html \
 	www/api/enhance.html \
 	www/api/error.html \
 	www/api/fx.html \
 	www/api/hclut.html \
 	www/api/image.html \
+	www/api/import.html \
 	www/api/list.html \
 	www/api/magick.html \
 	www/api/memory.html \

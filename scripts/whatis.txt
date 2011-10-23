@@ -18,6 +18,7 @@ decorate.c         Add decorative frames and borders
 deprecate.c        Methods which should no longer be used
 describe.c	   Methods to describe an image
 display.c          Interactively display and edit an image
+export.c	   Export image pixels into common representations
 render.c           Low-level methods to draw on an image
 draw.c             User-friendly methods to draw on an image
 effect.c           Image effects methods
@@ -26,6 +27,7 @@ enhance.c          Methods to enhance or adjust an image
 error.c            Error reporting methods
 hclut.c		   Apply Hald CLUT to image
 image.c            Miscellaneous image methods
+import.c	   Import image pixels from common representations
 list.c             Image list support
 magick.c           Image format support interfaces
 memory.c           Memory allocation/deallocation functions

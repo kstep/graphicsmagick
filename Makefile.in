@@ -47,7 +47,7 @@
 #
 #
 
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -100,7 +100,7 @@
 # Makefile for building HTML files
 #
 
-# Copyright (C) 2008-2009 GraphicsMagick Group
+# Copyright (C) 2008-2011 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1147,15 +1147,15 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/describe.h magick/draw.c magick/draw.h magick/effect.c \
 	magick/effect.h magick/enhance.c magick/enhance.h \
 	magick/enum_strings.c magick/enum_strings.h magick/error.c \
-	magick/error.h magick/floats.c magick/floats.h \
+	magick/error.h magick/export.c magick/floats.c magick/floats.h \
 	magick/forward.h magick/fx.c magick/fx.h magick/gem.c \
 	magick/gem.h magick/gradient.c magick/gradient.h \
 	magick/hclut.c magick/hclut.h magick/image.c magick/image.h \
-	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
-	magick/log.c magick/log.h magick/magic.c magick/magic.h \
-	magick/magick.c magick/magick.h magick/magick_endian.c \
-	magick/magick_endian.h magick/map.c magick/map.h \
-	magick/memory.c magick/memory.h magick/module.c \
+	magick/import.c magick/list.c magick/list.h magick/locale.c \
+	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
+	magick/magic.h magick/magick.c magick/magick.h \
+	magick/magick_endian.c magick/magick_endian.h magick/map.c \
+	magick/map.h magick/memory.c magick/memory.h magick/module.c \
 	magick/module.h magick/monitor.c magick/monitor.h \
 	magick/montage.c magick/montage.h magick/omp_data_view.c \
 	magick/omp_data_view.h magick/operator.c magick/operator.h \
@@ -1240,12 +1240,14 @@ am__objects_3 = magick/magick_libGraphicsMagick_la-analyze.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
 	magick/magick_libGraphicsMagick_la-enum_strings.lo \
 	magick/magick_libGraphicsMagick_la-error.lo \
+	magick/magick_libGraphicsMagick_la-export.lo \
 	magick/magick_libGraphicsMagick_la-floats.lo \
 	magick/magick_libGraphicsMagick_la-fx.lo \
 	magick/magick_libGraphicsMagick_la-gem.lo \
 	magick/magick_libGraphicsMagick_la-gradient.lo \
 	magick/magick_libGraphicsMagick_la-hclut.lo \
 	magick/magick_libGraphicsMagick_la-image.lo \
+	magick/magick_libGraphicsMagick_la-import.lo \
 	magick/magick_libGraphicsMagick_la-list.lo \
 	magick/magick_libGraphicsMagick_la-locale.lo \
 	magick/magick_libGraphicsMagick_la-log.lo \
@@ -3282,6 +3284,7 @@ MAGICK_BASE_SRCS = \
 	magick/enum_strings.h \
 	magick/error.c \
 	magick/error.h \
+	magick/export.c \
 	magick/floats.c \
 	magick/floats.h \
 	magick/forward.h \
@@ -3295,6 +3298,7 @@ MAGICK_BASE_SRCS = \
 	magick/hclut.h \
 	magick/image.c \
 	magick/image.h \
+	magick/import.c \
 	magick/list.c \
 	magick/list.h \
 	magick/locale.c \
@@ -5034,9 +5038,11 @@ WWWAPI_HTML_TARGETS = \
 	$(WWWAPIDIR)/effect.html \
 	$(WWWAPIDIR)/enhance.html \
 	$(WWWAPIDIR)/error.html \
+	$(WWWAPIDIR)/export.html \
 	$(WWWAPIDIR)/fx.html \
 	$(WWWAPIDIR)/hclut.html \
 	$(WWWAPIDIR)/image.html \
+	$(WWWAPIDIR)/import.html \
 	$(WWWAPIDIR)/list.html \
 	$(WWWAPIDIR)/magick.html \
 	$(WWWAPIDIR)/memory.html \
@@ -5083,11 +5089,13 @@ WWWWAPI_FILES = \
 	www/api/display.html \
 	www/api/draw.html \
 	www/api/effect.html \
+	www/api/export.html \
 	www/api/enhance.html \
 	www/api/error.html \
 	www/api/fx.html \
 	www/api/hclut.html \
 	www/api/image.html \
+	www/api/import.html \
 	www/api/list.html \
 	www/api/magick.html \
 	www/api/memory.html \
@@ -6184,6 +6192,8 @@ magick/magick_libGraphicsMagick_la-enum_strings.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-error.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-export.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-floats.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-fx.lo: magick/$(am__dirstamp) \
@@ -6195,6 +6205,8 @@ magick/magick_libGraphicsMagick_la-gradient.lo:  \
 magick/magick_libGraphicsMagick_la-hclut.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-image.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-import.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-list.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
@@ -7324,6 +7336,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-enum_strings.lo
 	-rm -f magick/magick_libGraphicsMagick_la-error.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-error.lo
+	-rm -f magick/magick_libGraphicsMagick_la-export.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-export.lo
 	-rm -f magick/magick_libGraphicsMagick_la-floats.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-floats.lo
 	-rm -f magick/magick_libGraphicsMagick_la-fx.$(OBJEXT)
@@ -7336,6 +7350,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-hclut.lo
 	-rm -f magick/magick_libGraphicsMagick_la-image.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-image.lo
+	-rm -f magick/magick_libGraphicsMagick_la-import.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-import.lo
 	-rm -f magick/magick_libGraphicsMagick_la-list.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-list.lo
 	-rm -f magick/magick_libGraphicsMagick_la-locale.$(OBJEXT)
@@ -7728,12 +7744,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enum_strings.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-export.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-gradient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-hclut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-import.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-list.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-locale.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-log.Plo@am__quote@
@@ -8914,6 +8932,14 @@ magick/magick_libGraphicsMagick_la-error.lo: magick/error.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-error.lo `test -f 'magick/error.c' || echo '$(srcdir)/'`magick/error.c
 
+magick/magick_libGraphicsMagick_la-export.lo: magick/export.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-export.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-export.Tpo -c -o magick/magick_libGraphicsMagick_la-export.lo `test -f 'magick/export.c' || echo '$(srcdir)/'`magick/export.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-export.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-export.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/export.c' object='magick/magick_libGraphicsMagick_la-export.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-export.lo `test -f 'magick/export.c' || echo '$(srcdir)/'`magick/export.c
+
 magick/magick_libGraphicsMagick_la-floats.lo: magick/floats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-floats.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Tpo -c -o magick/magick_libGraphicsMagick_la-floats.lo `test -f 'magick/floats.c' || echo '$(srcdir)/'`magick/floats.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-floats.Plo
@@ -8961,6 +8987,14 @@ magick/magick_libGraphicsMagick_la-image.lo: magick/image.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/image.c' object='magick/magick_libGraphicsMagick_la-image.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-image.lo `test -f 'magick/image.c' || echo '$(srcdir)/'`magick/image.c
+
+magick/magick_libGraphicsMagick_la-import.lo: magick/import.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-import.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-import.Tpo -c -o magick/magick_libGraphicsMagick_la-import.lo `test -f 'magick/import.c' || echo '$(srcdir)/'`magick/import.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libGraphicsMagick_la-import.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-import.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/import.c' object='magick/magick_libGraphicsMagick_la-import.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-import.lo `test -f 'magick/import.c' || echo '$(srcdir)/'`magick/import.c
 
 magick/magick_libGraphicsMagick_la-list.lo: magick/list.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-list.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-list.Tpo -c -o magick/magick_libGraphicsMagick_la-list.lo `test -f 'magick/list.c' || echo '$(srcdir)/'`magick/list.c
