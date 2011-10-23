@@ -16,23 +16,6 @@
 */
 #include "magick/studio.h"
 #include "magick/floats.h"
-/* #include "magick/analyze.h" */
-/* #include "magick/attribute.h" */
-/* #include "magick/bit_stream.h" */
-/* #include "magick/blob.h" */
-/* #include "magick/color.h" */
-/* #include "magick/colormap.h" */
-/* #include "magick/constitute.h" */
-/* #include "magick/delegate.h" */
-/* #include "magick/describe.h" */
-/* #include "magick/enum_strings.h" */
-/* #include "magick/log.h" */
-/* #include "magick/magick.h" */
-/* #include "magick/monitor.h" */
-/* #include "magick/pixel_cache.h" */
-/* #include "magick/semaphore.h" */
-/* #include "magick/tempfile.h" */
-/* #include "magick/utility.h" */
 
 #define FP16_MANT_BITS 10
 #define FP24_MANT_BITS 16
