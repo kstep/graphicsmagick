@@ -1,4 +1,4 @@
-.TH gm 1 "2011/05/31" "GraphicsMagick"
+.TH gm 1 "2011/10/29" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2403,7 +2403,10 @@ is displayed with the corresponding tile in the montage.  Use the
 Perform local adaptive thresholding using the specified width, height,
 and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
-as a percentage.
+as a percentage.  If the percent option is supplied, then the offset
+is computed as a percentage of the quantum range.  It is strongly
+recommended to use the percent option so that results are not
+sensitive to pixel quantum depth.
 
 
 .TP
