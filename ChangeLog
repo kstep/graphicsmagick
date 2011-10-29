@@ -1,3 +1,8 @@
+2011-10-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/meta.c (GetIPTCStream): Eliminate possible use of
+	uninitialized data when parsing long format tag length.
+
 2011-10-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/import.c: Move low-level pixel import functions from
@@ -7,7 +12,7 @@
 	constitute.c to new file export.c.
 
 	* magick/floats.c: Move Richard Nolde's floating point conversion
-	functions from constitute.c to new file float.c.
+	functions from constitute.c to new file floats.c.
 
 2011-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

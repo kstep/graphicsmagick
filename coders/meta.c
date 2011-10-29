@@ -1534,7 +1534,7 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
     *p;
 
   unsigned char
-    buffer[4],
+/*     buffer[4], */
     c;
 
   unsigned int
@@ -1662,6 +1662,18 @@ iptc_find:
     info_length++;
     if (c & (unsigned char) 0x80)
       {
+	/* long format */
+	tag_length=0;
+	for (i=0; i < 4; i++)
+        {
+	  tag_length <<= 8;
+          tag_length |= (*p++);
+          blob_length--;
+          if (blob_length == 0)
+            break;
+          info_length++;
+        }
+#if 0
         for (i=0; i < 4; i++)
         {
           buffer[i]=(*p++);
@@ -1672,9 +1684,11 @@ iptc_find:
         }
         tag_length=(((long) buffer[0]) << 24) | (((long) buffer[1]) << 16) |
           (((long) buffer[2]) << 8) | (((long) buffer[3]));
+#endif
       }
     else
       {
+	/* short format */
         tag_length=((long) c) << 8;
         c=(*p++);
         blob_length--;
