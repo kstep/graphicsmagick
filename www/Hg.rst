@@ -18,16 +18,17 @@ GraphicsMagick Mercurial
 
 .. _Mercurial : http://mercurial.selenic.com/
 .. _TortoiseHg : http://tortoisehg.bitbucket.org/
-.. _`GraphicsMagick Hg` : http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
+.. _`GraphicsMagick repository at SourceForge` : http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
 
 .. contents::
 
 The GraphicsMagick source code is now available via Mercurial_.
-Previously GraphicsMagick source control was via CVS (which is still
-working in a read-only mode), but now the repository has been migrated
-to Mercurial_.  Mercurial_ is a convenient way for developers from
-around the country or world to download the GraphicsMagick source, fix
-bugs, or add new features.
+Previously GraphicsMagick source control was via CVS, but now the
+repository has been migrated to Mercurial_.  Mercurial_ is a
+convenient way for developers from around the country or world to
+download the GraphicsMagick source, fix bugs, or add new features.
+Due to the way Mercurial_ works, it may also be used to manage local
+changes to GraphicsMagick.
 
 What is Mercurial?
 ==================
@@ -38,15 +39,17 @@ which provides anyone who clones a repository with a stand-alone local
 repository containing the full development history and the ability to
 select any version of the code.  Since the local repository is
 fully-functional, you may use the same repository to manage your local
-changes to GraphicsMagick code.
+changes to GraphicsMagick code and you may use the repository to share
+your changes with others.
 
 Web Access
 =============
 
-A `GraphicsMagick Hg`_ web interface is available which may be used to
-interactively view the latest versions of files, or the changes to
-files, using your web browser.  Due to the way that Mercurial_ works,
-you may also clone a new repository from this interface via the same URL.
+The `GraphicsMagick repository at SourceForge`_ web interface is
+available which may be used to interactively view the latest versions
+of files, or the changes to files, using your web browser.  Due to the
+way that Mercurial_ works, you may also clone a new repository from
+this interface via the same URL.
 
 Cloning the Mercurial Repository
 ==================================
@@ -200,6 +203,13 @@ An email notification is sent to the `graphicsmagick-commit`_ mailing
 list at SourceForge whenever a change is submitted to the development
 (unstable) repository.  Subscribe to this list if you would like to be
 notified by email of changes when they occur.
+
+Mercurial Topics
+====================
+
+`Merge Program <http://mercurial.selenic.com/wiki/MergeProgram>`_
+`Merge Tool Configuration <http://mercurial.selenic.com/wiki/MergeToolConfiguration>`_
+`Keep "My" or "Their" files when doing a merge <http://mercurial.selenic.com/wiki/TipsAndTricks#mergemineortheir>`_
 
 
 --------------------------------------------------------------------------
