@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: tiff-bi.c,v 1.3 2010-06-08 18:55:15 bfriesen Exp $ */
 
 /*
  * tiff-bi.c -- create a Class B (bilevel) TIFF file
@@ -82,3 +82,10 @@ int main(int argc, char **argv)
     TIFFClose(tif);
     return 0;
 }
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

@@ -3,49 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>blob</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="../index.html">Home</a></li>
-<li><a href="../Copyright.html">License</a></li>
-<li><a href="../mission.html">Mission</a></li>
+<li><a href="../project.html">Project</a></li>
 <li><a href="../download.html">Download</a></li>
-<li><a href="../README.html">Installation</a></li>
-<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="../formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="../process.html">Process</a></li>
-<li><a href="../contribute.html">Contribute</a></li>
-<li><a href="../CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="../Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
-<li><a href="../links.html">Links</a></li>
+<li><a href="../reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="blob">
@@ -330,8 +315,14 @@ void *FileToBlob( const char *filename, size_t *length, <a class="reference exte
 </div>
 <div class="section" id="id18">
 <h2>Description</h2>
-<p>FileToBlob() returns the contents of a file as a blob.  It returns the
-file as a blob and its length.  If an error occurs, NULL is returned.</p>
+<p>FileToBlob() returns the contents of a file in a buffer allocated via
+MagickMalloc() (which is equivalent to the system malloc() by default).
+The character '0' is appended to the buffer in case the buffer will be
+accessed as a string.  The length of the buffer (not including the extra
+terminating '0' character) is returned via the 'length' parameter.
+If an error occurs, a NULL pointer is returned.  The returned buffer
+must be freed by the user in a matter compatible with MagickMalloc()
+(e.g. via MagickFree()).</p>
 <p>The format of the FileToBlob method is:</p>
 <pre class="literal-block">
 void *FileToBlob( const char *filename, size_t *length, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
@@ -507,8 +498,10 @@ void *ImageToBlob( const <a class="reference external" href="../api/types.html#i
 <div class="section" id="id32">
 <h2>Description</h2>
 <p>ImageToBlob() implements direct to memory image formats.  It returns the
-image as a blob and its length.  The magick member of the Image structure
-determines the format of the returned blob(GIG, JPEG,  PNG, etc.)</p>
+image as a formatted blob and its length.  The magick member of the Image
+structure determines the format of the returned blob (GIF, JPEG, PNG,
+etc.).  This function is the equivalent of WriteImage(), but writes the
+formatted &quot;file&quot; to a memory buffer rather than to an actual file.</p>
 <p>The format of the ImageToBlob method is:</p>
 <pre class="literal-block">
 void *ImageToBlob( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference external" href="../api/types.html#image">Image</a> *image, size_t *length,
@@ -516,7 +509,7 @@ void *ImageToBlob( const <a class="reference external" href="../api/types.html#i
 </pre>
 <dl class="docutils">
 <dt>image_info:</dt>
-<dd>The image info..</dd>
+<dd>The image info.</dd>
 <dt>image:</dt>
 <dd>The image.</dd>
 <dt>length:</dt>
@@ -670,11 +663,6 @@ the blob is temporary.</dd>
 </dl>
 </div>
 </div>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2010-03-07 19:17 UTC.
-
 </div>
 </body>
 </html>

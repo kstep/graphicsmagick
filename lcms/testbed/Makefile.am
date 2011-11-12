@@ -1,23 +1,31 @@
 #
 # Makefile for building testcms
-# Written by Bob Friesenhahn, June 2003
 #
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-INCLUDES	=  -I$(top_builddir)/include -I$(top_srcdir)/include
+INCLUDES	=  -I$(top_builddir)/include -I$(top_srcdir)/include -I$(top_srcdir)/src
 
 check_PROGRAMS = testcms
 
-testcms_LDADD = $(top_builddir)/src/liblcms.la 
-testcms_LDFLAGS = @LDFLAGS@
-testcms_SOURCES = testcms.c
+CFLAGS = --pedantic -Wall -std=c99 -O2
 
-EXTRA_DIST = sRGBSpac.icm
+testcms_LDADD = $(top_builddir)/src/liblcms2.la 
+testcms_LDFLAGS = @LDFLAGS@
+testcms_SOURCES = testcms2.c
+
+EXTRA_DIST = test1.icc bad.icc toosmall.icc test2.icc \
+             test3.icc test4.icc \
+             test5.icc  
 
 check:
+	if [ $(top_srcdir) != $(top_builddir) ]; then \
+		cp $(top_srcdir)/testbed/*.ic? $(top_builddir)/testbed; \
+	fi
 	./testcms
+	if [ $(top_srcdir) != $(top_builddir) ]; then \
+		rm -f $(top_builddir)/testbed/*.ic?; \
+	fi
 
-dist-hook:
-	cp -p $(srcdir)/"sRGB Color Space Profile.icm" $(distdir)
+

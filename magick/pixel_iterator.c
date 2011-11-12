@@ -198,6 +198,9 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
       const IndexPacket
         * restrict indexes;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_PixelIterateMonoRead)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -329,6 +332,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
       IndexPacket
         * restrict indexes;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_PixelIterateMonoModify)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -482,6 +488,9 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         * restrict first_indexes,
         * restrict second_indexes;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_PixelIterateDualRead)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -650,6 +659,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
         source_row,
         update_row;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_PixelIterateDualImplementation)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -948,6 +960,9 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
         source_row,
         update_row;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_PixelIterateTripleImplementation)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -990,14 +1005,15 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
       update_indexes=AccessMutableIndexes(update_image);
 
       if (thread_status != MagickFail)
-        status=(call_back)(mutable_data,immutable_data,
-                           source1_image,source1_pixels,source1_indexes,
-                           source2_image,source2_pixels,source2_indexes,
-                           update_image,update_pixels,update_indexes,
-                           columns,exception);
-      
-      if (!SyncImagePixelsEx(update_image,exception))
-        thread_status=MagickFail;
+        thread_status=(call_back)(mutable_data,immutable_data,
+				  source1_image,source1_pixels,source1_indexes,
+				  source2_image,source2_pixels,source2_indexes,
+				  update_image,update_pixels,update_indexes,
+				  columns,exception);
+
+      if (thread_status != MagickFail)
+	if (!SyncImagePixelsEx(update_image,exception))
+	  thread_status=MagickFail;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_PixelIterateTripleImplementation)

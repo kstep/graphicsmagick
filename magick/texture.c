@@ -90,6 +90,9 @@ MagickExport Image *ConstituteTextureImage(const unsigned long columns,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ConstituteTextureImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -252,6 +255,9 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_TextureImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;

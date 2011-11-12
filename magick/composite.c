@@ -2239,8 +2239,11 @@ CompositeImage(Image *canvas_image,
 						      &clear_pixels);
         if (call_back != (PixelIteratorDualModifyCallback) NULL)
           {
-            const char
-              *description = "[%s] Composite image pixels ...";
+            char
+              description[MaxTextExtent];
+
+	    FormatString(description,"[%%s] Composite %s image pixels ...",
+			 CompositeOperatorToString(compose));
 
             if (clear_pixels)
               {

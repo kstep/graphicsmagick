@@ -107,9 +107,6 @@
 /* Have a /dev/urandom device for producing random bytes */
 #undef HAVE_DEV_URANDOM
 
-/* Define to 1 if you have the `directio' function. */
-#undef HAVE_DIRECTIO
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
@@ -147,6 +144,9 @@
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 
+/* Define to 1 if you have the `fstatvfs' function. */
+#undef HAVE_FSTATVFS
+
 /* Define to 1 if you have the <ft2build.h> header file. */
 #undef HAVE_FT2BUILD_H
 
@@ -170,6 +170,12 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define if you have the <lcms2.h> header file. */
+#undef HAVE_LCMS2_H
+
+/* Define if you have the <lcms2/lcms2.h> header file. */
+#undef HAVE_LCMS2_LCMS2_H
 
 /* Define if you have the <lcms.h> header file. */
 #undef HAVE_LCMS_H
@@ -250,6 +256,9 @@
 
 /* Define to 1 if you have the `posix_memalign' function. */
 #undef HAVE_POSIX_MEMALIGN
+
+/* Define to 1 if you have the `posix_spawnp' function. */
+#undef HAVE_POSIX_SPAWNP
 
 /* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
@@ -346,6 +355,9 @@
 
 /* Define to 1 if you have the `strtoll' function. */
 #undef HAVE_STRTOLL
+
+/* Define to 1 if you have the <sun_prefetch.h> header file. */
+#undef HAVE_SUN_PREFETCH_H
 
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
@@ -457,11 +469,14 @@
 /* Define if you have JPEG library */
 #undef HasJPEG
 
-/* Define if you have LCMS library */
+/* Define if you have LCMS (v1.11 or later) library */
 #undef HasLCMS
 
 /* Define if using libltdl to support dynamically loadable modules */
 #undef HasLTDL
+
+/* Define if you have lzma compression library */
+#undef HasLZMA
 
 /* Define if you have PNG library */
 #undef HasPNG
@@ -511,6 +526,9 @@
 /* The archive extension */
 #undef LT_LIBEXT
 
+/* The archive prefix */
+#undef LT_LIBPREFIX
+
 /* Define to the extension used for runtime loadable modules, say, ".so". */
 #undef LT_MODULE_EXT
 
@@ -521,6 +539,9 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* Define to the shared library suffix, say, ".dylib". */
+#undef LT_SHARED_EXT
 
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
@@ -643,6 +664,28 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Enable extensions on AIX 3, Interix.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
+/* Enable threading extensions on Solaris.  */
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions on HP NonStop.  */
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
+
+
 /* GraphicsMagick is formally installed under prefix */
 #undef UseInstalledMagick
 
@@ -667,17 +710,21 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
-/* Enable all API extensions (for GNU Linux libc) */
-#undef _GNU_SOURCE
-
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
 
-/* Enable all API extensions (for NetBSD) */
-#undef _NETBSD_SOURCE
+/* Define to 1 if on MINIX. */
+#undef _MINIX
+
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
 
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__

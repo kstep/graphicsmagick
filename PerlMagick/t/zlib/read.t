@@ -38,9 +38,9 @@ testRead( 'input_gray_lsb_08bit_zip.mat',
   'cd0e75dd75bce03537c17bf067e19e97d1e28feb18a5ba54dddaf3309097c255' );
 
 #
-# 3) Test reading Zip compressed MIFF (.gz extension)
+# 3) Test reading Zip stream-compressed MIFF (.gz extension)
 #
-print("Reading Zip compressed MIFF (.gz extension) ...\n");
+print("Reading Zip stream-compressed MIFF (.gz extension) ...\n");
 ++$test;
 testRead( 'input.miff.gz',
   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );

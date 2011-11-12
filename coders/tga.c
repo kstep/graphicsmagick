@@ -139,9 +139,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  size_t
-    count;
-
   TGAInfo
     tga_info;
 
@@ -548,7 +545,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_info->subrange != 0)
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
-      count=ReadBlob(image,1,(char *) &tga_info.id_length);
+      (void) ReadBlob(image,1,(char *) &tga_info.id_length); /* count */
       tga_info.colormap_type=ReadBlobByte(image);
       tga_info.image_type=ReadBlobByte(image);
       status=((tga_info.image_type == TGAColormap) ||

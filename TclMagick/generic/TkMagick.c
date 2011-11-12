@@ -41,6 +41,8 @@ static int MagickToPhoto(
     char *photoname = NULL;
     char *map = NULL;
 
+    (void) clientData; /* Unused */
+
     if( objc != 3 ) {
         Tcl_WrongNumArgs( interp, 1, objv, "magickwand image" );
         return TCL_ERROR;
@@ -64,9 +66,9 @@ static int MagickToPhoto(
     magickblock.pixelSize = 4;
     magickblock.width = MagickGetImageWidth (wand);
     magickblock.height = MagickGetImageHeight (wand);
-    magickblock.pixelPtr = ckalloc((unsigned)magickblock.height *
-				   (unsigned)magickblock.width *
-				   magickblock.pixelSize);
+    magickblock.pixelPtr = (unsigned char *) ckalloc((unsigned)magickblock.height *
+						     (unsigned)magickblock.width *
+						     magickblock.pixelSize);
     magickblock.pitch = magickblock.width * magickblock.pixelSize;
     magickblock.offset[0] = 0;
     magickblock.offset[1] = 1;
@@ -101,12 +103,12 @@ static int MagickToPhoto(
     if (Tk_PhotoPutBlock(interp, photohandle, &magickblock,
 			 0, 0, magickblock.width, magickblock.height,
 			 TK_PHOTO_COMPOSITE_SET) != TCL_OK) {
-	ckfree(magickblock.pixelPtr);
+        ckfree((char *) magickblock.pixelPtr);
 	return TCL_ERROR;
     }
 #endif /* TCL_MAJOR_VERSION <= 8 && TCL_MINOR_VERSION <= 4 */
 
-    ckfree(magickblock.pixelPtr);
+    ckfree((char *) magickblock.pixelPtr);
     return TCL_OK;
 }
 
@@ -144,6 +146,8 @@ static int PhotoToMagick(
     char *photoname = NULL;
     int result = 0;
     char map[5] = { 0x0, 0x0, 0x0, 0x0, 0x0 };
+
+    (void) clientData; /* Unused */
 
     if( objc != 3 ) {
         Tcl_WrongNumArgs( interp, 1, objv, "image magickwand" );
@@ -243,3 +247,12 @@ EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
 
     return TCL_OK;
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 4
+ * fill-column: 78
+ * End:
+ */

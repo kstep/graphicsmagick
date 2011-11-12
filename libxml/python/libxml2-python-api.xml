@@ -2,6 +2,7 @@
 <api name='libxml2-python'>
   <symbols>
     <function name='xmlRegisterXPathFunction' file='python'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Register a Python written function to the XPath interpreter</info>
       <return type='int' info="1 in case of success, 0 or -1 in case of error"/>
       <arg name='ctx' type='xmlXPathContextPtr' info='the xpathContext'/>
@@ -14,12 +15,6 @@
       <return type='xmlNodePtr' info="A new element node"/>
       <arg name='name' type='xmlChar *' info='the node name'/>
     </function>
-    <function name='xmlRegisterErrorHandler' file='python'>
-      <info>Register a Python written function to for error reporting. The function is called back as f(ctx, error).</info>
-      <return type='int' info="1 in case of success, 0 or -1 in case of error"/>
-      <arg name='f' type='pythonObject' info='the python function'/>
-      <arg name='ctx' type='pythonObject' info='a context for the callback'/>
-    </function>
     <function name='xmlCreatePushParser' file='python'>
       <info>Create a progressive XML parser context to build either an event flow if the SAX object is not None, or a DOM tree otherwise.</info>
       <return type='xmlParserCtxtPtr' info="the parser context or None in case of error"/>
@@ -29,6 +24,7 @@
       <arg name='URI' type='xmlChar *' info='The URI used for base computations'/>
     </function>
     <function name='htmlCreatePushParser' file='python'>
+      <cond>defined(LIBXML_HTML_ENABLED)</cond>
       <info>Create a progressive HTML parser context to build either an event flow if the SAX object is not None, or a DOM tree otherwise.</info>
       <return type='xmlParserCtxtPtr' info="the parser context or None in case of error"/>
       <arg name='SAX' type='pythonObject' info='the SAX callback object or None'/>
@@ -44,11 +40,29 @@
       <arg name='recover' type='int' info='allow recovery in case of error'/>
     </function>
     <function name='htmlSAXParseFile' file='python'>
+      <cond>defined(LIBXML_HTML_ENABLED)</cond>
       <info>Interface to parse an HTML file or resource pointed by an URI to build an event flow to the SAX object</info>
       <return type='void'/>
       <arg name='SAX' type='pythonObject' info='the SAX callback object or None'/>
       <arg name='URI' type='xmlChar *' info='The URI of the resource'/>
       <arg name='encoding' type='const char *' info='encoding or None'/>
+    </function>
+    <function name='xmlCreateOutputBuffer' file='python'>
+      <info>Create a libxml2 output buffer from a Python file</info>
+      <return type='xmlOutputBufferPtr' info="the output buffer"/>
+      <arg name='file' type='pythonObject' info='the Python file'/>
+      <arg name='encoding' type='xmlChar *' info='an optionnal encoding'/>
+    </function>
+    <function name='xmlCreateInputBuffer' file='python'>
+      <info>Create a libxml2 input buffer from a Python file</info>
+      <return type='xmlParserInputBufferPtr' info="the input buffer"/>
+      <arg name='file' type='pythonObject' info='the Python file'/>
+      <arg name='encoding' type='xmlChar *' info='an optionnal encoding'/>
+    </function>
+    <function name='xmlSetEntityLoader' file='python'>
+      <info>Set the entity resolver as a python function</info>
+      <return type='int' info="0 in case of success, -1 for error"/>
+      <arg name='resolver' type='pythonObject' info='the Python function'/>
     </function>
     <!-- xmlParserCtxtPtr accessors -->
     <function name='xmlParserGetDoc' file='python_accessor'>
@@ -118,48 +132,57 @@
     </function>
     <!-- xmlXPathContextPtr accessors -->
     <function name='xmlXPathParserGetContext' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the xpathContext from an xpathParserContext</info>
       <return type='xmlXPathContextPtr' info="The XPath context" field="context"/>
       <arg name='ctxt' type='xmlXPathParserContextPtr' info='the XPath parser context'/>
     </function>
     <function name='xmlXPathGetContextDoc' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the doc from an xpathContext</info>
       <return type='xmlDocPtr' info="The doc context" field="doc"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
     </function>
     <function name='xmlXPathGetContextNode' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the current node from an xpathContext</info>
       <return type='xmlNodePtr' info="The node context" field="node"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
     </function>
     <function name='xmlXPathSetContextDoc' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Set the doc of an xpathContext</info>
       <return type='void'/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
       <arg name="doc" type='xmlDocPtr' info="The doc context"/>
     </function>
     <function name='xmlXPathSetContextNode' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Set the current node of an xpathContext</info>
       <return type='void'/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
       <arg name="node" type='xmlNodePtr' info="The node context"/>
     </function>
     <function name='xmlXPathGetContextPosition' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the current node from an xpathContext</info>
       <return type='int' info="The node context" field="proximityPosition"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
     </function>
     <function name='xmlXPathGetContextSize' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the current node from an xpathContext</info>
       <return type='int' info="The node context" field="contextSize"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
     </function>
     <function name='xmlXPathGetFunction' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the current function name xpathContext</info>
       <return type='const xmlChar *' info="The function name" field="function"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
     </function>
     <function name='xmlXPathGetFunctionURI' file='python_accessor'>
+      <cond>defined(LIBXML_XPATH_ENABLED)</cond>
       <info>Get the current function name URI xpathContext</info>
       <return type='const xmlChar *' info="The function name URI" field="functionURI"/>
       <arg name='ctxt' type='xmlXPathContextPtr' info='the XPath context'/>
@@ -242,6 +265,17 @@
       <arg name='URI' type='xmlURIPtr' info='the URI'/>
       <arg name='query' type='char *' info='The URI query part'/>
     </function>
+    <function name='xmlURIGetQueryRaw' file='python_accessor'>
+      <info>Get the raw query part from an URI (i.e. the unescaped form).</info>
+      <return type='const char *' info="The URI query" field="query_raw"/>
+      <arg name='URI' type='xmlURIPtr' info='the URI'/>
+    </function>
+    <function name='xmlURISetQueryRaw' file='python_accessor'>
+      <info>Set the raw query part of an URI (i.e. the unescaped form).</info>
+      <return type='void'/>
+      <arg name='URI' type='xmlURIPtr' info='the URI'/>
+      <arg name='query_raw' type='char *' info='The raw URI query part'/>
+    </function>
     <function name='xmlURIGetFragment' file='python_accessor'>
       <info>Get the fragment part from an URI</info>
       <return type='const char *' info="The URI fragment" field="fragment"/>
@@ -263,6 +297,45 @@
       <return type='void'/>
       <arg name='URI' type='xmlURIPtr' info='the URI'/>
       <arg name='port' type='int' info='The URI port part'/>
+    </function>
+    <!-- xmlErrorPtr accessors -->
+    <function name='xmlErrorGetDomain' file='python_accessor'>
+      <info>What part of the library raised this error</info>
+      <return type='int' info="The error domain" field="domain"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlErrorGetCode' file='python_accessor'>
+      <info>The error code, e.g. an xmlParserError</info>
+      <return type='int' info="The error code" field="code"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlErrorGetMessage' file='python_accessor'>
+      <info>human-readable informative error message</info>
+      <return type='const char *' info="The error message" field="message"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlErrorGetLevel' file='python_accessor'>
+      <info>how consequent is the error</info>
+      <return type='int' info="The error level" field="level"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlErrorGetFile' file='python_accessor'>
+      <info>the filename</info>
+      <return type='const char *' info="The error file" field="file"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlErrorGetLine' file='python_accessor'>
+      <info>the line number if available</info>
+      <return type='int' info="The error line" field="line"/>
+      <arg name='Error' type='xmlErrorPtr' info='the Error'/>
+    </function>
+    <function name='xmlPythonCleanupParser' file='python'>
+      <info>Cleanup function for the XML library. It tries to reclaim all parsing related global memory allocated for the library processing. It doesn't deallocate any document related memory. Calling this function should not prevent reusing the library but one should call xmlCleanupParser() only when the process has finished using the library or XML document built with it.</info>
+      <return type='void'/>
+    </function>
+    <function name='xmlMemoryUsed' file='python'>
+      <info>Returns the total amount of memory allocated by libxml2</info>
+      <return type='int' info='number of bytes allocated'/>
     </function>
   </symbols>
 </api>

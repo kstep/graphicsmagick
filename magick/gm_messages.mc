@@ -827,6 +827,12 @@ Improper image header
 .
 
 MessageId       = +1
+SymbolicName    = ImageWarningLengthAndFilesizeDoNotMatch
+Language        = English
+Length and filesize do not match
+.
+
+MessageId       = +1
 SymbolicName    = ImageWarningNegativeOrZeroImageSize
 Language        = English
 Negative or zero image size
@@ -1073,6 +1079,12 @@ image colorspace differs
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorImageColorspaceMismatch
+Language        = English
+image colorspace mismatch
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorImageDifferenceExceedsLimit
 Language        = English
 image difference exceeds limit (%s)
@@ -1196,6 +1208,12 @@ MessageId       = +1
 SymbolicName    = ImageErrorUnableToGetClipMask
 Language        = English
 Unable to get clip mask
+.
+
+MessageId       = +1
+SymbolicName    = ImageErrorUnableToHandleImageChannel
+Language        = English
+unable to handle image channel
 .
 
 MessageId       = +1
@@ -1362,6 +1380,30 @@ Unable to initialize module loader
 
 MessageId       = +1
 SymbolicName    = ModuleWarningDefault
+Language        = English
+default warning
+.
+
+MessageId       = +1
+SymbolicName    = MonitorErrorDefault
+Language        = English
+default error
+.
+
+MessageId       = +1
+SymbolicName    = MonitorFatalErrorDefault
+Language        = English
+default error
+.
+
+MessageId       = +1
+SymbolicName    = MonitorFatalErrorUserRequestedTerminationBySignal
+Language        = English
+User requested termination (via signal)
+.
+
+MessageId       = +1
+SymbolicName    = MonitorWarningDefault
 Language        = English
 default warning
 .

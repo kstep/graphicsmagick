@@ -1,4 +1,4 @@
-# Copyright (C) 2004 - 2010 GraphicsMagick Group
+# Copyright (C) 2004-2010 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -27,11 +27,12 @@ $(top_srcdir)/$(PERLMAGICK)/Magick.pm : $(PERLMAGICK)/Magick.pm
 	    cp $(PERLMAGICK)/Magick.pm $(top_srcdir)/$(PERLMAGICK)/Magick.pm ; \
 	fi
 
+
+PERLMAGICK=PerlMagick
 PERLMAGICK_MAINTAINER_TARGETS=$(top_srcdir)/$(PERLMAGICK)/Magick.pm
 
 if WITH_PERL
 
-PERLMAGICK=PerlMagick
 PERLMAKEMAKER=$(PERLMAGICK)/Makefile.PL
 PERLMAKEFILE=$(PERLMAGICK)/Makefile
 
@@ -57,8 +58,7 @@ $(PERLMAKEFILE): perl-sources $(LIBMAGICK) $(PERLMAKEMAKER)
 
 install-exec-perl: $(PERLMAKEFILE)
 	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
-	$(MAKE) CC='@CC@' install && \
-	$(MAKE) clean && rm -f  Makefile.old )
+	$(MAKE) CC='@CC@' install )
 
 all-perl: perl-sources
 

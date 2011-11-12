@@ -700,6 +700,7 @@ HRESULT MagickImage::Perform(unsigned int (*func)(MagickLib::ImageInfo *image_in
                                           ThrowPerformException(exception,MagickLib::ErrorException,
                                             "Perform","Input blob support requires a 1d array (2)");
                                         }
+/*
                                         else
                                         {
                                           LPCWSTR pReturnBuffer = NULL;
@@ -708,6 +709,7 @@ HRESULT MagickImage::Perform(unsigned int (*func)(MagickLib::ImageInfo *image_in
 	                                        if(SUCCEEDED(hr))
                                             hr = SafeArrayUnaccessData(psax);
                                         }
+*/
                                         CW2T str(pvarFirst->bstrVal);
                                         wsprintf(sz, _T("xtrnarray:0x%lx,%s"),
                                           (unsigned long)(psax),(LPCTSTR)str);

@@ -730,14 +730,8 @@ To create a patterned canvas image using a user-supplied image::
 
   gm convert -size 640x480 tile:myimage.tiff canvas.tiff
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2010 GraphicsMagick Group
-| Copyright (C) 2002 ImageMagick Studio
-| Copyright (C) 1999 E. I. du Pont de Nemours and Company
+.. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/Copyright.html.
-
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

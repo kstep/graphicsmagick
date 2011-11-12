@@ -3,49 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>magick_wand</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="../index.html">Home</a></li>
-<li><a href="../Copyright.html">License</a></li>
-<li><a href="../mission.html">Mission</a></li>
+<li><a href="../project.html">Project</a></li>
 <li><a href="../download.html">Download</a></li>
-<li><a href="../README.html">Installation</a></li>
-<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="../formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="../process.html">Process</a></li>
-<li><a href="../contribute.html">Contribute</a></li>
-<li><a href="../CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="../Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
-<li><a href="../links.html">Links</a></li>
+<li><a href="../reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="magick-wand">
@@ -55,227 +40,229 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#clonemagickwand" id="id433">CloneMagickWand</a></li>
-<li><a class="reference internal" href="#destroymagickwand" id="id434">DestroyMagickWand</a></li>
-<li><a class="reference internal" href="#magickadaptivethresholdimage" id="id435">MagickAdaptiveThresholdImage</a></li>
-<li><a class="reference internal" href="#magickaddimage" id="id436">MagickAddImage</a></li>
-<li><a class="reference internal" href="#magickaddnoiseimage" id="id437">MagickAddNoiseImage</a></li>
-<li><a class="reference internal" href="#magickaffinetransformimage" id="id438">MagickAffineTransformImage</a></li>
-<li><a class="reference internal" href="#magickannotateimage" id="id439">MagickAnnotateImage</a></li>
-<li><a class="reference internal" href="#magickanimateimages" id="id440">MagickAnimateImages</a></li>
-<li><a class="reference internal" href="#magickappendimages" id="id441">MagickAppendImages</a></li>
-<li><a class="reference internal" href="#magickaverageimages" id="id442">MagickAverageImages</a></li>
-<li><a class="reference internal" href="#magickblackthresholdimage" id="id443">MagickBlackThresholdImage</a></li>
-<li><a class="reference internal" href="#magickblurimage" id="id444">MagickBlurImage</a></li>
-<li><a class="reference internal" href="#magickborderimage" id="id445">MagickBorderImage</a></li>
-<li><a class="reference internal" href="#magickcdlimage" id="id446">MagickCdlImage</a></li>
-<li><a class="reference internal" href="#magickcharcoalimage" id="id447">MagickCharcoalImage</a></li>
-<li><a class="reference internal" href="#magickchopimage" id="id448">MagickChopImage</a></li>
-<li><a class="reference internal" href="#magickclipimage" id="id449">MagickClipImage</a></li>
-<li><a class="reference internal" href="#magickclippathimage" id="id450">MagickClipPathImage</a></li>
-<li><a class="reference internal" href="#magickcoalesceimages" id="id451">MagickCoalesceImages</a></li>
-<li><a class="reference internal" href="#magickcolorfloodfillimage" id="id452">MagickColorFloodfillImage</a></li>
-<li><a class="reference internal" href="#magickcolorizeimage" id="id453">MagickColorizeImage</a></li>
-<li><a class="reference internal" href="#magickcommentimage" id="id454">MagickCommentImage</a></li>
-<li><a class="reference internal" href="#magickcompareimagechannels" id="id455">MagickCompareImageChannels</a></li>
-<li><a class="reference internal" href="#magickcompareimages" id="id456">MagickCompareImages</a></li>
-<li><a class="reference internal" href="#magickcompositeimage" id="id457">MagickCompositeImage</a></li>
-<li><a class="reference internal" href="#magickcontrastimage" id="id458">MagickContrastImage</a></li>
-<li><a class="reference internal" href="#magickconvolveimage" id="id459">MagickConvolveImage</a></li>
-<li><a class="reference internal" href="#magickcropimage" id="id460">MagickCropImage</a></li>
-<li><a class="reference internal" href="#magickcyclecolormapimage" id="id461">MagickCycleColormapImage</a></li>
-<li><a class="reference internal" href="#magickdeconstructimages" id="id462">MagickDeconstructImages</a></li>
-<li><a class="reference internal" href="#magickdescribeimage" id="id463">MagickDescribeImage</a></li>
-<li><a class="reference internal" href="#magickdespeckleimage" id="id464">MagickDespeckleImage</a></li>
-<li><a class="reference internal" href="#magickdisplayimage" id="id465">MagickDisplayImage</a></li>
-<li><a class="reference internal" href="#magickdisplayimages" id="id466">MagickDisplayImages</a></li>
-<li><a class="reference internal" href="#magickdrawimage" id="id467">MagickDrawImage</a></li>
-<li><a class="reference internal" href="#magickedgeimage" id="id468">MagickEdgeImage</a></li>
-<li><a class="reference internal" href="#magickembossimage" id="id469">MagickEmbossImage</a></li>
-<li><a class="reference internal" href="#magickenhanceimage" id="id470">MagickEnhanceImage</a></li>
-<li><a class="reference internal" href="#magickequalizeimage" id="id471">MagickEqualizeImage</a></li>
-<li><a class="reference internal" href="#magickflattenimages" id="id472">MagickFlattenImages</a></li>
-<li><a class="reference internal" href="#magickflipimage" id="id473">MagickFlipImage</a></li>
-<li><a class="reference internal" href="#magickflopimage" id="id474">MagickFlopImage</a></li>
-<li><a class="reference internal" href="#magickframeimage" id="id475">MagickFrameImage</a></li>
-<li><a class="reference internal" href="#magickfximage" id="id476">MagickFxImage</a></li>
-<li><a class="reference internal" href="#magickfximagechannel" id="id477">MagickFxImageChannel</a></li>
-<li><a class="reference internal" href="#magickgammaimage" id="id478">MagickGammaImage</a></li>
-<li><a class="reference internal" href="#magickgammaimagechannel" id="id479">MagickGammaImageChannel</a></li>
-<li><a class="reference internal" href="#magickgetconfigureinfo" id="id480">MagickGetConfigureInfo</a></li>
-<li><a class="reference internal" href="#magickgetcopyright" id="id481">MagickGetCopyright</a></li>
-<li><a class="reference internal" href="#magickgetexception" id="id482">MagickGetException</a></li>
-<li><a class="reference internal" href="#magickgetfilename" id="id483">MagickGetFilename</a></li>
-<li><a class="reference internal" href="#magickgethomeurl" id="id484">MagickGetHomeURL</a></li>
-<li><a class="reference internal" href="#magickgetimage" id="id485">MagickGetImage</a></li>
-<li><a class="reference internal" href="#magickgetimageattribute" id="id486">MagickGetImageAttribute</a></li>
-<li><a class="reference internal" href="#magickgetimagebackgroundcolor" id="id487">MagickGetImageBackgroundColor</a></li>
-<li><a class="reference internal" href="#magickgetimageblueprimary" id="id488">MagickGetImageBluePrimary</a></li>
-<li><a class="reference internal" href="#magickgetimagebordercolor" id="id489">MagickGetImageBorderColor</a></li>
-<li><a class="reference internal" href="#magickgetimageboundingbox" id="id490">MagickGetImageBoundingBox</a></li>
-<li><a class="reference internal" href="#magickgetimagechanneldepth" id="id491">MagickGetImageChannelDepth</a></li>
-<li><a class="reference internal" href="#magickgetimagechannelextrema" id="id492">MagickGetImageChannelExtrema</a></li>
-<li><a class="reference internal" href="#magickgetimagechannelmean" id="id493">MagickGetImageChannelMean</a></li>
-<li><a class="reference internal" href="#magickgetimagecolormapcolor" id="id494">MagickGetImageColormapColor</a></li>
-<li><a class="reference internal" href="#magickgetimagecolors" id="id495">MagickGetImageColors</a></li>
-<li><a class="reference internal" href="#magickgetimagecolorspace" id="id496">MagickGetImageColorspace</a></li>
-<li><a class="reference internal" href="#magickgetimagecompose" id="id497">MagickGetImageCompose</a></li>
-<li><a class="reference internal" href="#magickgetimagecompression" id="id498">MagickGetImageCompression</a></li>
-<li><a class="reference internal" href="#magickgetimagedelay" id="id499">MagickGetImageDelay</a></li>
-<li><a class="reference internal" href="#magickgetimagedepth" id="id500">MagickGetImageDepth</a></li>
-<li><a class="reference internal" href="#magickgetimageextrema" id="id501">MagickGetImageExtrema</a></li>
-<li><a class="reference internal" href="#magickgetimagedispose" id="id502">MagickGetImageDispose</a></li>
-<li><a class="reference internal" href="#magickgetimagefilename" id="id503">MagickGetImageFilename</a></li>
-<li><a class="reference internal" href="#magickgetimageformat" id="id504">MagickGetImageFormat</a></li>
-<li><a class="reference internal" href="#magickgetimagefuzz" id="id505">MagickGetImageFuzz</a></li>
-<li><a class="reference internal" href="#magickgetimagegamma" id="id506">MagickGetImageGamma</a></li>
-<li><a class="reference internal" href="#magickgetimagegreenprimary" id="id507">MagickGetImageGreenPrimary</a></li>
-<li><a class="reference internal" href="#magickgetimageheight" id="id508">MagickGetImageHeight</a></li>
-<li><a class="reference internal" href="#magickgetimagehistogram" id="id509">MagickGetImageHistogram</a></li>
-<li><a class="reference internal" href="#magickgetimageindex" id="id510">MagickGetImageIndex</a></li>
-<li><a class="reference internal" href="#magickgetimageinterlacescheme" id="id511">MagickGetImageInterlaceScheme</a></li>
-<li><a class="reference internal" href="#magickgetimageiterations" id="id512">MagickGetImageIterations</a></li>
-<li><a class="reference internal" href="#magickgetimagemattecolor" id="id513">MagickGetImageMatteColor</a></li>
-<li><a class="reference internal" href="#magickgetimagepixels" id="id514">MagickGetImagePixels</a></li>
-<li><a class="reference internal" href="#magickgetimageprofile" id="id515">MagickGetImageProfile</a></li>
-<li><a class="reference internal" href="#magickgetimageredprimary" id="id516">MagickGetImageRedPrimary</a></li>
-<li><a class="reference internal" href="#magickgetimagerenderingintent" id="id517">MagickGetImageRenderingIntent</a></li>
-<li><a class="reference internal" href="#magickgetimageresolution" id="id518">MagickGetImageResolution</a></li>
-<li><a class="reference internal" href="#magickgetimagescene" id="id519">MagickGetImageScene</a></li>
-<li><a class="reference internal" href="#magickgetimagesignature" id="id520">MagickGetImageSignature</a></li>
-<li><a class="reference internal" href="#magickgetimagesize" id="id521">MagickGetImageSize</a></li>
-<li><a class="reference internal" href="#magickgetimagetype" id="id522">MagickGetImageType</a></li>
-<li><a class="reference internal" href="#magickgetimageunits" id="id523">MagickGetImageUnits</a></li>
-<li><a class="reference internal" href="#magickgetimagevirtualpixelmethod" id="id524">MagickGetImageVirtualPixelMethod</a></li>
-<li><a class="reference internal" href="#magickgetimagewhitepoint" id="id525">MagickGetImageWhitePoint</a></li>
-<li><a class="reference internal" href="#magickgetimagewidth" id="id526">MagickGetImageWidth</a></li>
-<li><a class="reference internal" href="#magickgetnumberimages" id="id527">MagickGetNumberImages</a></li>
-<li><a class="reference internal" href="#magickgetpackagename" id="id528">MagickGetPackageName</a></li>
-<li><a class="reference internal" href="#magickgetquantumdepth" id="id529">MagickGetQuantumDepth</a></li>
-<li><a class="reference internal" href="#magickgetreleasedate" id="id530">MagickGetReleaseDate</a></li>
-<li><a class="reference internal" href="#magickgetresourcelimit" id="id531">MagickGetResourceLimit</a></li>
-<li><a class="reference internal" href="#magickgetsamplingfactors" id="id532">MagickGetSamplingFactors</a></li>
-<li><a class="reference internal" href="#magickgetsize" id="id533">MagickGetSize</a></li>
-<li><a class="reference internal" href="#magickgetversion" id="id534">MagickGetVersion</a></li>
-<li><a class="reference internal" href="#magickhaldclutimage" id="id535">MagickHaldClutImage</a></li>
-<li><a class="reference internal" href="#magickhasnextimage" id="id536">MagickHasNextImage</a></li>
-<li><a class="reference internal" href="#magickhaspreviousimage" id="id537">MagickHasPreviousImage</a></li>
-<li><a class="reference internal" href="#magickimplodeimage" id="id538">MagickImplodeImage</a></li>
-<li><a class="reference internal" href="#magicklabelimage" id="id539">MagickLabelImage</a></li>
-<li><a class="reference internal" href="#magicklevelimage" id="id540">MagickLevelImage</a></li>
-<li><a class="reference internal" href="#magicklevelimagechannel" id="id541">MagickLevelImageChannel</a></li>
-<li><a class="reference internal" href="#magickmagnifyimage" id="id542">MagickMagnifyImage</a></li>
-<li><a class="reference internal" href="#magickmapimage" id="id543">MagickMapImage</a></li>
-<li><a class="reference internal" href="#magickmattefloodfillimage" id="id544">MagickMatteFloodfillImage</a></li>
-<li><a class="reference internal" href="#magickmedianfilterimage" id="id545">MagickMedianFilterImage</a></li>
-<li><a class="reference internal" href="#magickminifyimage" id="id546">MagickMinifyImage</a></li>
-<li><a class="reference internal" href="#magickmodulateimage" id="id547">MagickModulateImage</a></li>
-<li><a class="reference internal" href="#magickmontageimage" id="id548">MagickMontageImage</a></li>
-<li><a class="reference internal" href="#magickmorphimages" id="id549">MagickMorphImages</a></li>
-<li><a class="reference internal" href="#magickmosaicimages" id="id550">MagickMosaicImages</a></li>
-<li><a class="reference internal" href="#magickmotionblurimage" id="id551">MagickMotionBlurImage</a></li>
-<li><a class="reference internal" href="#magicknegateimage" id="id552">MagickNegateImage</a></li>
-<li><a class="reference internal" href="#magicknegateimagechannel" id="id553">MagickNegateImageChannel</a></li>
-<li><a class="reference internal" href="#magicknextimage" id="id554">MagickNextImage</a></li>
-<li><a class="reference internal" href="#magicknormalizeimage" id="id555">MagickNormalizeImage</a></li>
-<li><a class="reference internal" href="#magickoilpaintimage" id="id556">MagickOilPaintImage</a></li>
-<li><a class="reference internal" href="#magickopaqueimage" id="id557">MagickOpaqueImage</a></li>
-<li><a class="reference internal" href="#magickpingimage" id="id558">MagickPingImage</a></li>
-<li><a class="reference internal" href="#magickpreviewimages" id="id559">MagickPreviewImages</a></li>
-<li><a class="reference internal" href="#magickpreviousimage" id="id560">MagickPreviousImage</a></li>
-<li><a class="reference internal" href="#magickprofileimage" id="id561">MagickProfileImage</a></li>
-<li><a class="reference internal" href="#magickquantizeimage" id="id562">MagickQuantizeImage</a></li>
-<li><a class="reference internal" href="#magickquantizeimages" id="id563">MagickQuantizeImages</a></li>
-<li><a class="reference internal" href="#magickqueryfontmetrics" id="id564">MagickQueryFontMetrics</a></li>
-<li><a class="reference internal" href="#magickqueryfonts" id="id565">MagickQueryFonts</a></li>
-<li><a class="reference internal" href="#magickqueryformats" id="id566">MagickQueryFormats</a></li>
-<li><a class="reference internal" href="#magickradialblurimage" id="id567">MagickRadialBlurImage</a></li>
-<li><a class="reference internal" href="#magickraiseimage" id="id568">MagickRaiseImage</a></li>
-<li><a class="reference internal" href="#magickreadimage" id="id569">MagickReadImage</a></li>
-<li><a class="reference internal" href="#magickreadimageblob" id="id570">MagickReadImageBlob</a></li>
-<li><a class="reference internal" href="#magickreadimagefile" id="id571">MagickReadImageFile</a></li>
-<li><a class="reference internal" href="#magickreducenoiseimage" id="id572">MagickReduceNoiseImage</a></li>
-<li><a class="reference internal" href="#magickrelinquishmemory" id="id573">MagickRelinquishMemory</a></li>
-<li><a class="reference internal" href="#magickremoveimage" id="id574">MagickRemoveImage</a></li>
-<li><a class="reference internal" href="#magickremoveimageprofile" id="id575">MagickRemoveImageProfile</a></li>
-<li><a class="reference internal" href="#magickresetiterator" id="id576">MagickResetIterator</a></li>
-<li><a class="reference internal" href="#magickresampleimage" id="id577">MagickResampleImage</a></li>
-<li><a class="reference internal" href="#magickresizeimage" id="id578">MagickResizeImage</a></li>
-<li><a class="reference internal" href="#magickrollimage" id="id579">MagickRollImage</a></li>
-<li><a class="reference internal" href="#magickrotateimage" id="id580">MagickRotateImage</a></li>
-<li><a class="reference internal" href="#magicksampleimage" id="id581">MagickSampleImage</a></li>
-<li><a class="reference internal" href="#magickscaleimage" id="id582">MagickScaleImage</a></li>
-<li><a class="reference internal" href="#magickseparateimagechannel" id="id583">MagickSeparateImageChannel</a></li>
-<li><a class="reference internal" href="#magicksetcompressionquality" id="id584">MagickSetCompressionQuality</a></li>
-<li><a class="reference internal" href="#magicksetfilename" id="id585">MagickSetFilename</a></li>
-<li><a class="reference internal" href="#magicksetimage" id="id586">MagickSetImage</a></li>
-<li><a class="reference internal" href="#magicksetimageattribute" id="id587">MagickSetImageAttribute</a></li>
-<li><a class="reference internal" href="#magicksetimagebackgroundcolor" id="id588">MagickSetImageBackgroundColor</a></li>
-<li><a class="reference internal" href="#magicksetimageblueprimary" id="id589">MagickSetImageBluePrimary</a></li>
-<li><a class="reference internal" href="#magicksetimagebordercolor" id="id590">MagickSetImageBorderColor</a></li>
-<li><a class="reference internal" href="#magicksetimagecolormapcolor" id="id591">MagickSetImageColormapColor</a></li>
-<li><a class="reference internal" href="#magicksetimagecolorspace" id="id592">MagickSetImageColorspace</a></li>
-<li><a class="reference internal" href="#magicksetimagecompose" id="id593">MagickSetImageCompose</a></li>
-<li><a class="reference internal" href="#magicksetimagecompression" id="id594">MagickSetImageCompression</a></li>
-<li><a class="reference internal" href="#magicksetimagedelay" id="id595">MagickSetImageDelay</a></li>
-<li><a class="reference internal" href="#magicksetimagechanneldepth" id="id596">MagickSetImageChannelDepth</a></li>
-<li><a class="reference internal" href="#magicksetimagedepth" id="id597">MagickSetImageDepth</a></li>
-<li><a class="reference internal" href="#magicksetimagedispose" id="id598">MagickSetImageDispose</a></li>
-<li><a class="reference internal" href="#magicksetimagefilename" id="id599">MagickSetImageFilename</a></li>
-<li><a class="reference internal" href="#magicksetimageformat" id="id600">MagickSetImageFormat</a></li>
-<li><a class="reference internal" href="#magicksetimagefuzz" id="id601">MagickSetImageFuzz</a></li>
-<li><a class="reference internal" href="#magicksetimagegamma" id="id602">MagickSetImageGamma</a></li>
-<li><a class="reference internal" href="#magicksetimagegreenprimary" id="id603">MagickSetImageGreenPrimary</a></li>
-<li><a class="reference internal" href="#magicksetimageindex" id="id604">MagickSetImageIndex</a></li>
-<li><a class="reference internal" href="#magicksetimageinterlacescheme" id="id605">MagickSetImageInterlaceScheme</a></li>
-<li><a class="reference internal" href="#magicksetimageiterations" id="id606">MagickSetImageIterations</a></li>
-<li><a class="reference internal" href="#magicksetimagemattecolor" id="id607">MagickSetImageMatteColor</a></li>
-<li><a class="reference internal" href="#magicksetimageoption" id="id608">MagickSetImageOption</a></li>
-<li><a class="reference internal" href="#magicksetimagepixels" id="id609">MagickSetImagePixels</a></li>
-<li><a class="reference internal" href="#magicksetimageprofile" id="id610">MagickSetImageProfile</a></li>
-<li><a class="reference internal" href="#magicksetimageredprimary" id="id611">MagickSetImageRedPrimary</a></li>
-<li><a class="reference internal" href="#magicksetimagerenderingintent" id="id612">MagickSetImageRenderingIntent</a></li>
-<li><a class="reference internal" href="#magicksetimageresolution" id="id613">MagickSetImageResolution</a></li>
-<li><a class="reference internal" href="#magicksetimagescene" id="id614">MagickSetImageScene</a></li>
-<li><a class="reference internal" href="#magicksetimagetype" id="id615">MagickSetImageType</a></li>
-<li><a class="reference internal" href="#magicksetimageunits" id="id616">MagickSetImageUnits</a></li>
-<li><a class="reference internal" href="#magicksetimagevirtualpixelmethod" id="id617">MagickSetImageVirtualPixelMethod</a></li>
-<li><a class="reference internal" href="#magicksetinterlacescheme" id="id618">MagickSetInterlaceScheme</a></li>
-<li><a class="reference internal" href="#magicksetresolution" id="id619">MagickSetResolution</a></li>
-<li><a class="reference internal" href="#magicksetresolutionunits" id="id620">MagickSetResolutionUnits</a></li>
-<li><a class="reference internal" href="#magicksetresourcelimit" id="id621">MagickSetResourceLimit</a></li>
-<li><a class="reference internal" href="#magicksetsamplingfactors" id="id622">MagickSetSamplingFactors</a></li>
-<li><a class="reference internal" href="#magicksetsize" id="id623">MagickSetSize</a></li>
-<li><a class="reference internal" href="#magicksetimagewhitepoint" id="id624">MagickSetImageWhitePoint</a></li>
-<li><a class="reference internal" href="#magicksetpassphrase" id="id625">MagickSetPassphrase</a></li>
-<li><a class="reference internal" href="#magicksharpenimage" id="id626">MagickSharpenImage</a></li>
-<li><a class="reference internal" href="#magickshaveimage" id="id627">MagickShaveImage</a></li>
-<li><a class="reference internal" href="#magickshearimage" id="id628">MagickShearImage</a></li>
-<li><a class="reference internal" href="#magicksolarizeimage" id="id629">MagickSolarizeImage</a></li>
-<li><a class="reference internal" href="#magickspreadimage" id="id630">MagickSpreadImage</a></li>
-<li><a class="reference internal" href="#magicksteganoimage" id="id631">MagickSteganoImage</a></li>
-<li><a class="reference internal" href="#magickstereoimage" id="id632">MagickStereoImage</a></li>
-<li><a class="reference internal" href="#magickstripimage" id="id633">MagickStripImage</a></li>
-<li><a class="reference internal" href="#magickswirlimage" id="id634">MagickSwirlImage</a></li>
-<li><a class="reference internal" href="#magicktextureimage" id="id635">MagickTextureImage</a></li>
-<li><a class="reference internal" href="#magickthresholdimage" id="id636">MagickThresholdImage</a></li>
-<li><a class="reference internal" href="#magickthresholdimagechannel" id="id637">MagickThresholdImageChannel</a></li>
-<li><a class="reference internal" href="#magicktintimage" id="id638">MagickTintImage</a></li>
-<li><a class="reference internal" href="#magicktransformimage" id="id639">MagickTransformImage</a></li>
-<li><a class="reference internal" href="#magicktransparentimage" id="id640">MagickTransparentImage</a></li>
-<li><a class="reference internal" href="#magicktrimimage" id="id641">MagickTrimImage</a></li>
-<li><a class="reference internal" href="#magickunsharpmaskimage" id="id642">MagickUnsharpMaskImage</a></li>
-<li><a class="reference internal" href="#magickwaveimage" id="id643">MagickWaveImage</a></li>
-<li><a class="reference internal" href="#magickwhitethresholdimage" id="id644">MagickWhiteThresholdImage</a></li>
-<li><a class="reference internal" href="#magickwriteimage" id="id645">MagickWriteImage</a></li>
-<li><a class="reference internal" href="#magickwriteimageblob" id="id646">MagickWriteImageBlob</a></li>
-<li><a class="reference internal" href="#magickwriteimagefile" id="id647">MagickWriteImageFile</a></li>
-<li><a class="reference internal" href="#magickwriteimages" id="id648">MagickWriteImages</a></li>
-<li><a class="reference internal" href="#newmagickwand" id="id649">NewMagickWand</a></li>
+<li><a class="reference internal" href="#clonemagickwand" id="id437">CloneMagickWand</a></li>
+<li><a class="reference internal" href="#destroymagickwand" id="id438">DestroyMagickWand</a></li>
+<li><a class="reference internal" href="#magickadaptivethresholdimage" id="id439">MagickAdaptiveThresholdImage</a></li>
+<li><a class="reference internal" href="#magickaddimage" id="id440">MagickAddImage</a></li>
+<li><a class="reference internal" href="#magickaddnoiseimage" id="id441">MagickAddNoiseImage</a></li>
+<li><a class="reference internal" href="#magickaffinetransformimage" id="id442">MagickAffineTransformImage</a></li>
+<li><a class="reference internal" href="#magickannotateimage" id="id443">MagickAnnotateImage</a></li>
+<li><a class="reference internal" href="#magickanimateimages" id="id444">MagickAnimateImages</a></li>
+<li><a class="reference internal" href="#magickappendimages" id="id445">MagickAppendImages</a></li>
+<li><a class="reference internal" href="#magickaverageimages" id="id446">MagickAverageImages</a></li>
+<li><a class="reference internal" href="#magickblackthresholdimage" id="id447">MagickBlackThresholdImage</a></li>
+<li><a class="reference internal" href="#magickblurimage" id="id448">MagickBlurImage</a></li>
+<li><a class="reference internal" href="#magickborderimage" id="id449">MagickBorderImage</a></li>
+<li><a class="reference internal" href="#magickcdlimage" id="id450">MagickCdlImage</a></li>
+<li><a class="reference internal" href="#magickcharcoalimage" id="id451">MagickCharcoalImage</a></li>
+<li><a class="reference internal" href="#magickchopimage" id="id452">MagickChopImage</a></li>
+<li><a class="reference internal" href="#magickclipimage" id="id453">MagickClipImage</a></li>
+<li><a class="reference internal" href="#magickclippathimage" id="id454">MagickClipPathImage</a></li>
+<li><a class="reference internal" href="#magickcoalesceimages" id="id455">MagickCoalesceImages</a></li>
+<li><a class="reference internal" href="#magickcolorfloodfillimage" id="id456">MagickColorFloodfillImage</a></li>
+<li><a class="reference internal" href="#magickcolorizeimage" id="id457">MagickColorizeImage</a></li>
+<li><a class="reference internal" href="#magickcommentimage" id="id458">MagickCommentImage</a></li>
+<li><a class="reference internal" href="#magickcompareimagechannels" id="id459">MagickCompareImageChannels</a></li>
+<li><a class="reference internal" href="#magickcompareimages" id="id460">MagickCompareImages</a></li>
+<li><a class="reference internal" href="#magickcompositeimage" id="id461">MagickCompositeImage</a></li>
+<li><a class="reference internal" href="#magickcontrastimage" id="id462">MagickContrastImage</a></li>
+<li><a class="reference internal" href="#magickconvolveimage" id="id463">MagickConvolveImage</a></li>
+<li><a class="reference internal" href="#magickcropimage" id="id464">MagickCropImage</a></li>
+<li><a class="reference internal" href="#magickcyclecolormapimage" id="id465">MagickCycleColormapImage</a></li>
+<li><a class="reference internal" href="#magickdeconstructimages" id="id466">MagickDeconstructImages</a></li>
+<li><a class="reference internal" href="#magickdescribeimage" id="id467">MagickDescribeImage</a></li>
+<li><a class="reference internal" href="#magickdespeckleimage" id="id468">MagickDespeckleImage</a></li>
+<li><a class="reference internal" href="#magickdisplayimage" id="id469">MagickDisplayImage</a></li>
+<li><a class="reference internal" href="#magickdisplayimages" id="id470">MagickDisplayImages</a></li>
+<li><a class="reference internal" href="#magickdrawimage" id="id471">MagickDrawImage</a></li>
+<li><a class="reference internal" href="#magickedgeimage" id="id472">MagickEdgeImage</a></li>
+<li><a class="reference internal" href="#magickembossimage" id="id473">MagickEmbossImage</a></li>
+<li><a class="reference internal" href="#magickenhanceimage" id="id474">MagickEnhanceImage</a></li>
+<li><a class="reference internal" href="#magickequalizeimage" id="id475">MagickEqualizeImage</a></li>
+<li><a class="reference internal" href="#magickflattenimages" id="id476">MagickFlattenImages</a></li>
+<li><a class="reference internal" href="#magickflipimage" id="id477">MagickFlipImage</a></li>
+<li><a class="reference internal" href="#magickflopimage" id="id478">MagickFlopImage</a></li>
+<li><a class="reference internal" href="#magickframeimage" id="id479">MagickFrameImage</a></li>
+<li><a class="reference internal" href="#magickfximage" id="id480">MagickFxImage</a></li>
+<li><a class="reference internal" href="#magickfximagechannel" id="id481">MagickFxImageChannel</a></li>
+<li><a class="reference internal" href="#magickgammaimage" id="id482">MagickGammaImage</a></li>
+<li><a class="reference internal" href="#magickgammaimagechannel" id="id483">MagickGammaImageChannel</a></li>
+<li><a class="reference internal" href="#magickgetconfigureinfo" id="id484">MagickGetConfigureInfo</a></li>
+<li><a class="reference internal" href="#magickgetcopyright" id="id485">MagickGetCopyright</a></li>
+<li><a class="reference internal" href="#magickgetexception" id="id486">MagickGetException</a></li>
+<li><a class="reference internal" href="#magickgetfilename" id="id487">MagickGetFilename</a></li>
+<li><a class="reference internal" href="#magickgethomeurl" id="id488">MagickGetHomeURL</a></li>
+<li><a class="reference internal" href="#magickgetimage" id="id489">MagickGetImage</a></li>
+<li><a class="reference internal" href="#magickgetimageattribute" id="id490">MagickGetImageAttribute</a></li>
+<li><a class="reference internal" href="#magickgetimagebackgroundcolor" id="id491">MagickGetImageBackgroundColor</a></li>
+<li><a class="reference internal" href="#magickgetimageblueprimary" id="id492">MagickGetImageBluePrimary</a></li>
+<li><a class="reference internal" href="#magickgetimagebordercolor" id="id493">MagickGetImageBorderColor</a></li>
+<li><a class="reference internal" href="#magickgetimageboundingbox" id="id494">MagickGetImageBoundingBox</a></li>
+<li><a class="reference internal" href="#magickgetimagechanneldepth" id="id495">MagickGetImageChannelDepth</a></li>
+<li><a class="reference internal" href="#magickgetimagechannelextrema" id="id496">MagickGetImageChannelExtrema</a></li>
+<li><a class="reference internal" href="#magickgetimagechannelmean" id="id497">MagickGetImageChannelMean</a></li>
+<li><a class="reference internal" href="#magickgetimagecolormapcolor" id="id498">MagickGetImageColormapColor</a></li>
+<li><a class="reference internal" href="#magickgetimagecolors" id="id499">MagickGetImageColors</a></li>
+<li><a class="reference internal" href="#magickgetimagecolorspace" id="id500">MagickGetImageColorspace</a></li>
+<li><a class="reference internal" href="#magickgetimagecompose" id="id501">MagickGetImageCompose</a></li>
+<li><a class="reference internal" href="#magickgetimagecompression" id="id502">MagickGetImageCompression</a></li>
+<li><a class="reference internal" href="#magickgetimagedelay" id="id503">MagickGetImageDelay</a></li>
+<li><a class="reference internal" href="#magickgetimagedepth" id="id504">MagickGetImageDepth</a></li>
+<li><a class="reference internal" href="#magickgetimageextrema" id="id505">MagickGetImageExtrema</a></li>
+<li><a class="reference internal" href="#magickgetimagedispose" id="id506">MagickGetImageDispose</a></li>
+<li><a class="reference internal" href="#magickgetimagefilename" id="id507">MagickGetImageFilename</a></li>
+<li><a class="reference internal" href="#magickgetimageformat" id="id508">MagickGetImageFormat</a></li>
+<li><a class="reference internal" href="#magickgetimagefuzz" id="id509">MagickGetImageFuzz</a></li>
+<li><a class="reference internal" href="#magickgetimagegamma" id="id510">MagickGetImageGamma</a></li>
+<li><a class="reference internal" href="#magickgetimagegreenprimary" id="id511">MagickGetImageGreenPrimary</a></li>
+<li><a class="reference internal" href="#magickgetimageheight" id="id512">MagickGetImageHeight</a></li>
+<li><a class="reference internal" href="#magickgetimagehistogram" id="id513">MagickGetImageHistogram</a></li>
+<li><a class="reference internal" href="#magickgetimageindex" id="id514">MagickGetImageIndex</a></li>
+<li><a class="reference internal" href="#magickgetimageinterlacescheme" id="id515">MagickGetImageInterlaceScheme</a></li>
+<li><a class="reference internal" href="#magickgetimageiterations" id="id516">MagickGetImageIterations</a></li>
+<li><a class="reference internal" href="#magickgetimagemattecolor" id="id517">MagickGetImageMatteColor</a></li>
+<li><a class="reference internal" href="#magickgetimagepixels" id="id518">MagickGetImagePixels</a></li>
+<li><a class="reference internal" href="#magickgetimageprofile" id="id519">MagickGetImageProfile</a></li>
+<li><a class="reference internal" href="#magickgetimageredprimary" id="id520">MagickGetImageRedPrimary</a></li>
+<li><a class="reference internal" href="#magickgetimagerenderingintent" id="id521">MagickGetImageRenderingIntent</a></li>
+<li><a class="reference internal" href="#magickgetimageresolution" id="id522">MagickGetImageResolution</a></li>
+<li><a class="reference internal" href="#magickgetimagescene" id="id523">MagickGetImageScene</a></li>
+<li><a class="reference internal" href="#magickgetimagesignature" id="id524">MagickGetImageSignature</a></li>
+<li><a class="reference internal" href="#magickgetimagesize" id="id525">MagickGetImageSize</a></li>
+<li><a class="reference internal" href="#magickgetimagetype" id="id526">MagickGetImageType</a></li>
+<li><a class="reference internal" href="#magickgetimageunits" id="id527">MagickGetImageUnits</a></li>
+<li><a class="reference internal" href="#magickgetimagevirtualpixelmethod" id="id528">MagickGetImageVirtualPixelMethod</a></li>
+<li><a class="reference internal" href="#magickgetimagewhitepoint" id="id529">MagickGetImageWhitePoint</a></li>
+<li><a class="reference internal" href="#magickgetimagewidth" id="id530">MagickGetImageWidth</a></li>
+<li><a class="reference internal" href="#magickgetnumberimages" id="id531">MagickGetNumberImages</a></li>
+<li><a class="reference internal" href="#magickgetpackagename" id="id532">MagickGetPackageName</a></li>
+<li><a class="reference internal" href="#magickgetquantumdepth" id="id533">MagickGetQuantumDepth</a></li>
+<li><a class="reference internal" href="#magickgetreleasedate" id="id534">MagickGetReleaseDate</a></li>
+<li><a class="reference internal" href="#magickgetresourcelimit" id="id535">MagickGetResourceLimit</a></li>
+<li><a class="reference internal" href="#magickgetsamplingfactors" id="id536">MagickGetSamplingFactors</a></li>
+<li><a class="reference internal" href="#magickgetsize" id="id537">MagickGetSize</a></li>
+<li><a class="reference internal" href="#magickgetversion" id="id538">MagickGetVersion</a></li>
+<li><a class="reference internal" href="#magickhaldclutimage" id="id539">MagickHaldClutImage</a></li>
+<li><a class="reference internal" href="#magickhasnextimage" id="id540">MagickHasNextImage</a></li>
+<li><a class="reference internal" href="#magickhaspreviousimage" id="id541">MagickHasPreviousImage</a></li>
+<li><a class="reference internal" href="#magickimplodeimage" id="id542">MagickImplodeImage</a></li>
+<li><a class="reference internal" href="#magicklabelimage" id="id543">MagickLabelImage</a></li>
+<li><a class="reference internal" href="#magicklevelimage" id="id544">MagickLevelImage</a></li>
+<li><a class="reference internal" href="#magicklevelimagechannel" id="id545">MagickLevelImageChannel</a></li>
+<li><a class="reference internal" href="#magickmagnifyimage" id="id546">MagickMagnifyImage</a></li>
+<li><a class="reference internal" href="#magickmapimage" id="id547">MagickMapImage</a></li>
+<li><a class="reference internal" href="#magickmattefloodfillimage" id="id548">MagickMatteFloodfillImage</a></li>
+<li><a class="reference internal" href="#magickmedianfilterimage" id="id549">MagickMedianFilterImage</a></li>
+<li><a class="reference internal" href="#magickminifyimage" id="id550">MagickMinifyImage</a></li>
+<li><a class="reference internal" href="#magickmodulateimage" id="id551">MagickModulateImage</a></li>
+<li><a class="reference internal" href="#magickmontageimage" id="id552">MagickMontageImage</a></li>
+<li><a class="reference internal" href="#magickmorphimages" id="id553">MagickMorphImages</a></li>
+<li><a class="reference internal" href="#magickmosaicimages" id="id554">MagickMosaicImages</a></li>
+<li><a class="reference internal" href="#magickmotionblurimage" id="id555">MagickMotionBlurImage</a></li>
+<li><a class="reference internal" href="#magicknegateimage" id="id556">MagickNegateImage</a></li>
+<li><a class="reference internal" href="#magicknegateimagechannel" id="id557">MagickNegateImageChannel</a></li>
+<li><a class="reference internal" href="#magicknextimage" id="id558">MagickNextImage</a></li>
+<li><a class="reference internal" href="#magicknormalizeimage" id="id559">MagickNormalizeImage</a></li>
+<li><a class="reference internal" href="#magickoilpaintimage" id="id560">MagickOilPaintImage</a></li>
+<li><a class="reference internal" href="#magickopaqueimage" id="id561">MagickOpaqueImage</a></li>
+<li><a class="reference internal" href="#magickpingimage" id="id562">MagickPingImage</a></li>
+<li><a class="reference internal" href="#magickpreviewimages" id="id563">MagickPreviewImages</a></li>
+<li><a class="reference internal" href="#magickpreviousimage" id="id564">MagickPreviousImage</a></li>
+<li><a class="reference internal" href="#magickprofileimage" id="id565">MagickProfileImage</a></li>
+<li><a class="reference internal" href="#magickquantizeimage" id="id566">MagickQuantizeImage</a></li>
+<li><a class="reference internal" href="#magickquantizeimages" id="id567">MagickQuantizeImages</a></li>
+<li><a class="reference internal" href="#magickqueryfontmetrics" id="id568">MagickQueryFontMetrics</a></li>
+<li><a class="reference internal" href="#magickqueryfonts" id="id569">MagickQueryFonts</a></li>
+<li><a class="reference internal" href="#magickqueryformats" id="id570">MagickQueryFormats</a></li>
+<li><a class="reference internal" href="#magickradialblurimage" id="id571">MagickRadialBlurImage</a></li>
+<li><a class="reference internal" href="#magickraiseimage" id="id572">MagickRaiseImage</a></li>
+<li><a class="reference internal" href="#magickreadimage" id="id573">MagickReadImage</a></li>
+<li><a class="reference internal" href="#magickreadimageblob" id="id574">MagickReadImageBlob</a></li>
+<li><a class="reference internal" href="#magickreadimagefile" id="id575">MagickReadImageFile</a></li>
+<li><a class="reference internal" href="#magickreducenoiseimage" id="id576">MagickReduceNoiseImage</a></li>
+<li><a class="reference internal" href="#magickrelinquishmemory" id="id577">MagickRelinquishMemory</a></li>
+<li><a class="reference internal" href="#magickremoveimage" id="id578">MagickRemoveImage</a></li>
+<li><a class="reference internal" href="#magickremoveimageprofile" id="id579">MagickRemoveImageProfile</a></li>
+<li><a class="reference internal" href="#magickresetiterator" id="id580">MagickResetIterator</a></li>
+<li><a class="reference internal" href="#magickresampleimage" id="id581">MagickResampleImage</a></li>
+<li><a class="reference internal" href="#magickresizeimage" id="id582">MagickResizeImage</a></li>
+<li><a class="reference internal" href="#magickrollimage" id="id583">MagickRollImage</a></li>
+<li><a class="reference internal" href="#magickrotateimage" id="id584">MagickRotateImage</a></li>
+<li><a class="reference internal" href="#magicksampleimage" id="id585">MagickSampleImage</a></li>
+<li><a class="reference internal" href="#magickscaleimage" id="id586">MagickScaleImage</a></li>
+<li><a class="reference internal" href="#magickseparateimagechannel" id="id587">MagickSeparateImageChannel</a></li>
+<li><a class="reference internal" href="#magicksetcompressionquality" id="id588">MagickSetCompressionQuality</a></li>
+<li><a class="reference internal" href="#magicksetdepth" id="id589">MagickSetDepth</a></li>
+<li><a class="reference internal" href="#magicksetfilename" id="id590">MagickSetFilename</a></li>
+<li><a class="reference internal" href="#magicksetformat" id="id591">MagickSetFormat</a></li>
+<li><a class="reference internal" href="#magicksetimage" id="id592">MagickSetImage</a></li>
+<li><a class="reference internal" href="#magicksetimageattribute" id="id593">MagickSetImageAttribute</a></li>
+<li><a class="reference internal" href="#magicksetimagebackgroundcolor" id="id594">MagickSetImageBackgroundColor</a></li>
+<li><a class="reference internal" href="#magicksetimageblueprimary" id="id595">MagickSetImageBluePrimary</a></li>
+<li><a class="reference internal" href="#magicksetimagebordercolor" id="id596">MagickSetImageBorderColor</a></li>
+<li><a class="reference internal" href="#magicksetimagecolormapcolor" id="id597">MagickSetImageColormapColor</a></li>
+<li><a class="reference internal" href="#magicksetimagecolorspace" id="id598">MagickSetImageColorspace</a></li>
+<li><a class="reference internal" href="#magicksetimagecompose" id="id599">MagickSetImageCompose</a></li>
+<li><a class="reference internal" href="#magicksetimagecompression" id="id600">MagickSetImageCompression</a></li>
+<li><a class="reference internal" href="#magicksetimagedelay" id="id601">MagickSetImageDelay</a></li>
+<li><a class="reference internal" href="#magicksetimagechanneldepth" id="id602">MagickSetImageChannelDepth</a></li>
+<li><a class="reference internal" href="#magicksetimagedepth" id="id603">MagickSetImageDepth</a></li>
+<li><a class="reference internal" href="#magicksetimagedispose" id="id604">MagickSetImageDispose</a></li>
+<li><a class="reference internal" href="#magicksetimagefilename" id="id605">MagickSetImageFilename</a></li>
+<li><a class="reference internal" href="#magicksetimageformat" id="id606">MagickSetImageFormat</a></li>
+<li><a class="reference internal" href="#magicksetimagefuzz" id="id607">MagickSetImageFuzz</a></li>
+<li><a class="reference internal" href="#magicksetimagegamma" id="id608">MagickSetImageGamma</a></li>
+<li><a class="reference internal" href="#magicksetimagegreenprimary" id="id609">MagickSetImageGreenPrimary</a></li>
+<li><a class="reference internal" href="#magicksetimageindex" id="id610">MagickSetImageIndex</a></li>
+<li><a class="reference internal" href="#magicksetimageinterlacescheme" id="id611">MagickSetImageInterlaceScheme</a></li>
+<li><a class="reference internal" href="#magicksetimageiterations" id="id612">MagickSetImageIterations</a></li>
+<li><a class="reference internal" href="#magicksetimagemattecolor" id="id613">MagickSetImageMatteColor</a></li>
+<li><a class="reference internal" href="#magicksetimageoption" id="id614">MagickSetImageOption</a></li>
+<li><a class="reference internal" href="#magicksetimagepixels" id="id615">MagickSetImagePixels</a></li>
+<li><a class="reference internal" href="#magicksetimageprofile" id="id616">MagickSetImageProfile</a></li>
+<li><a class="reference internal" href="#magicksetimageredprimary" id="id617">MagickSetImageRedPrimary</a></li>
+<li><a class="reference internal" href="#magicksetimagerenderingintent" id="id618">MagickSetImageRenderingIntent</a></li>
+<li><a class="reference internal" href="#magicksetimageresolution" id="id619">MagickSetImageResolution</a></li>
+<li><a class="reference internal" href="#magicksetimagescene" id="id620">MagickSetImageScene</a></li>
+<li><a class="reference internal" href="#magicksetimagetype" id="id621">MagickSetImageType</a></li>
+<li><a class="reference internal" href="#magicksetimageunits" id="id622">MagickSetImageUnits</a></li>
+<li><a class="reference internal" href="#magicksetimagevirtualpixelmethod" id="id623">MagickSetImageVirtualPixelMethod</a></li>
+<li><a class="reference internal" href="#magicksetinterlacescheme" id="id624">MagickSetInterlaceScheme</a></li>
+<li><a class="reference internal" href="#magicksetresolution" id="id625">MagickSetResolution</a></li>
+<li><a class="reference internal" href="#magicksetresolutionunits" id="id626">MagickSetResolutionUnits</a></li>
+<li><a class="reference internal" href="#magicksetresourcelimit" id="id627">MagickSetResourceLimit</a></li>
+<li><a class="reference internal" href="#magicksetsamplingfactors" id="id628">MagickSetSamplingFactors</a></li>
+<li><a class="reference internal" href="#magicksetsize" id="id629">MagickSetSize</a></li>
+<li><a class="reference internal" href="#magicksetimagewhitepoint" id="id630">MagickSetImageWhitePoint</a></li>
+<li><a class="reference internal" href="#magicksetpassphrase" id="id631">MagickSetPassphrase</a></li>
+<li><a class="reference internal" href="#magicksharpenimage" id="id632">MagickSharpenImage</a></li>
+<li><a class="reference internal" href="#magickshaveimage" id="id633">MagickShaveImage</a></li>
+<li><a class="reference internal" href="#magickshearimage" id="id634">MagickShearImage</a></li>
+<li><a class="reference internal" href="#magicksolarizeimage" id="id635">MagickSolarizeImage</a></li>
+<li><a class="reference internal" href="#magickspreadimage" id="id636">MagickSpreadImage</a></li>
+<li><a class="reference internal" href="#magicksteganoimage" id="id637">MagickSteganoImage</a></li>
+<li><a class="reference internal" href="#magickstereoimage" id="id638">MagickStereoImage</a></li>
+<li><a class="reference internal" href="#magickstripimage" id="id639">MagickStripImage</a></li>
+<li><a class="reference internal" href="#magickswirlimage" id="id640">MagickSwirlImage</a></li>
+<li><a class="reference internal" href="#magicktextureimage" id="id641">MagickTextureImage</a></li>
+<li><a class="reference internal" href="#magickthresholdimage" id="id642">MagickThresholdImage</a></li>
+<li><a class="reference internal" href="#magickthresholdimagechannel" id="id643">MagickThresholdImageChannel</a></li>
+<li><a class="reference internal" href="#magicktintimage" id="id644">MagickTintImage</a></li>
+<li><a class="reference internal" href="#magicktransformimage" id="id645">MagickTransformImage</a></li>
+<li><a class="reference internal" href="#magicktransparentimage" id="id646">MagickTransparentImage</a></li>
+<li><a class="reference internal" href="#magicktrimimage" id="id647">MagickTrimImage</a></li>
+<li><a class="reference internal" href="#magickunsharpmaskimage" id="id648">MagickUnsharpMaskImage</a></li>
+<li><a class="reference internal" href="#magickwaveimage" id="id649">MagickWaveImage</a></li>
+<li><a class="reference internal" href="#magickwhitethresholdimage" id="id650">MagickWhiteThresholdImage</a></li>
+<li><a class="reference internal" href="#magickwriteimage" id="id651">MagickWriteImage</a></li>
+<li><a class="reference internal" href="#magickwriteimageblob" id="id652">MagickWriteImageBlob</a></li>
+<li><a class="reference internal" href="#magickwriteimagefile" id="id653">MagickWriteImageFile</a></li>
+<li><a class="reference internal" href="#magickwriteimages" id="id654">MagickWriteImages</a></li>
+<li><a class="reference internal" href="#newmagickwand" id="id655">NewMagickWand</a></li>
 </ul>
 </div>
 <div class="section" id="clonemagickwand">
-<h1><a class="toc-backref" href="#id433">CloneMagickWand</a></h1>
+<h1><a class="toc-backref" href="#id437">CloneMagickWand</a></h1>
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -297,7 +284,7 @@ MagickWand *CloneMagickWand( const MagickWand *wand );
 </div>
 </div>
 <div class="section" id="destroymagickwand">
-<h1><a class="toc-backref" href="#id434">DestroyMagickWand</a></h1>
+<h1><a class="toc-backref" href="#id438">DestroyMagickWand</a></h1>
 <div class="section" id="id1">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -319,7 +306,7 @@ void DestroyMagickWand( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickadaptivethresholdimage">
-<h1><a class="toc-backref" href="#id435">MagickAdaptiveThresholdImage</a></h1>
+<h1><a class="toc-backref" href="#id439">MagickAdaptiveThresholdImage</a></h1>
 <div class="section" id="id3">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -351,7 +338,7 @@ unsigned int MagickAdaptiveThresholdImage( MagickWand *wand, const unsigned long
 </div>
 </div>
 <div class="section" id="magickaddimage">
-<h1><a class="toc-backref" href="#id436">MagickAddImage</a></h1>
+<h1><a class="toc-backref" href="#id440">MagickAddImage</a></h1>
 <div class="section" id="id5">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -374,7 +361,7 @@ unsigned int MagickAddImage( MagickWand *wand, const MagickWand *add_wand );
 </div>
 </div>
 <div class="section" id="magickaddnoiseimage">
-<h1><a class="toc-backref" href="#id437">MagickAddNoiseImage</a></h1>
+<h1><a class="toc-backref" href="#id441">MagickAddNoiseImage</a></h1>
 <div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -398,7 +385,7 @@ Impulse, Laplacian, or Poisson.</dd>
 </div>
 </div>
 <div class="section" id="magickaffinetransformimage">
-<h1><a class="toc-backref" href="#id438">MagickAffineTransformImage</a></h1>
+<h1><a class="toc-backref" href="#id442">MagickAffineTransformImage</a></h1>
 <div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -422,7 +409,7 @@ unsigned int MagickAffineTransformImage( MagickWand *wand, const DrawingWand *dr
 </div>
 </div>
 <div class="section" id="magickannotateimage">
-<h1><a class="toc-backref" href="#id439">MagickAnnotateImage</a></h1>
+<h1><a class="toc-backref" href="#id443">MagickAnnotateImage</a></h1>
 <div class="section" id="id11">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -457,7 +444,7 @@ unsigned int MagickAnnotateImage( MagickWand *wand, const DrawingWand *drawing_w
 </div>
 </div>
 <div class="section" id="magickanimateimages">
-<h1><a class="toc-backref" href="#id440">MagickAnimateImages</a></h1>
+<h1><a class="toc-backref" href="#id444">MagickAnimateImages</a></h1>
 <div class="section" id="id13">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -480,7 +467,7 @@ unsigned int MagickAnimateImages( MagickWand *wand, const char *server_name );
 </div>
 </div>
 <div class="section" id="magickappendimages">
-<h1><a class="toc-backref" href="#id441">MagickAppendImages</a></h1>
+<h1><a class="toc-backref" href="#id445">MagickAppendImages</a></h1>
 <div class="section" id="id15">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -504,7 +491,7 @@ to stack them top-to-bottom.</dd>
 </div>
 </div>
 <div class="section" id="magickaverageimages">
-<h1><a class="toc-backref" href="#id442">MagickAverageImages</a></h1>
+<h1><a class="toc-backref" href="#id446">MagickAverageImages</a></h1>
 <div class="section" id="id17">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -526,7 +513,7 @@ MagickWand *MagickAverageImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickblackthresholdimage">
-<h1><a class="toc-backref" href="#id443">MagickBlackThresholdImage</a></h1>
+<h1><a class="toc-backref" href="#id447">MagickBlackThresholdImage</a></h1>
 <div class="section" id="id19">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -551,7 +538,7 @@ unsigned int MagickBlackThresholdImage( MagickWand *wand, const PixelWand *thres
 </div>
 </div>
 <div class="section" id="magickblurimage">
-<h1><a class="toc-backref" href="#id444">MagickBlurImage</a></h1>
+<h1><a class="toc-backref" href="#id448">MagickBlurImage</a></h1>
 <div class="section" id="id21">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -580,7 +567,7 @@ pixel.</dd>
 </div>
 </div>
 <div class="section" id="magickborderimage">
-<h1><a class="toc-backref" href="#id445">MagickBorderImage</a></h1>
+<h1><a class="toc-backref" href="#id449">MagickBorderImage</a></h1>
 <div class="section" id="id23">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -610,7 +597,7 @@ unsigned int MagickBorderImage( MagickWand *wand, const PixelWand *bordercolor,
 </div>
 </div>
 <div class="section" id="magickcdlimage">
-<h1><a class="toc-backref" href="#id446">MagickCdlImage</a></h1>
+<h1><a class="toc-backref" href="#id450">MagickCdlImage</a></h1>
 <div class="section" id="id25">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -650,7 +637,7 @@ red green and blue channels, plus saturation.</dd>
 </div>
 </div>
 <div class="section" id="magickcharcoalimage">
-<h1><a class="toc-backref" href="#id447">MagickCharcoalImage</a></h1>
+<h1><a class="toc-backref" href="#id451">MagickCharcoalImage</a></h1>
 <div class="section" id="id27">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -676,7 +663,7 @@ pixel.</dd>
 </div>
 </div>
 <div class="section" id="magickchopimage">
-<h1><a class="toc-backref" href="#id448">MagickChopImage</a></h1>
+<h1><a class="toc-backref" href="#id452">MagickChopImage</a></h1>
 <div class="section" id="id29">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -708,7 +695,7 @@ unsigned int MagickChopImage( MagickWand *wand, const unsigned long width,
 </div>
 </div>
 <div class="section" id="magickclipimage">
-<h1><a class="toc-backref" href="#id449">MagickClipImage</a></h1>
+<h1><a class="toc-backref" href="#id453">MagickClipImage</a></h1>
 <div class="section" id="id31">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -731,7 +718,7 @@ unsigned int MagickClipImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickclippathimage">
-<h1><a class="toc-backref" href="#id450">MagickClipPathImage</a></h1>
+<h1><a class="toc-backref" href="#id454">MagickClipPathImage</a></h1>
 <div class="section" id="id33">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -763,7 +750,7 @@ Otherwise later operations take effect outside clipping path.</dd>
 </div>
 </div>
 <div class="section" id="magickcoalesceimages">
-<h1><a class="toc-backref" href="#id451">MagickCoalesceImages</a></h1>
+<h1><a class="toc-backref" href="#id455">MagickCoalesceImages</a></h1>
 <div class="section" id="id35">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -790,7 +777,7 @@ MagickWand *MagickCoalesceImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickcolorfloodfillimage">
-<h1><a class="toc-backref" href="#id452">MagickColorFloodfillImage</a></h1>
+<h1><a class="toc-backref" href="#id456">MagickColorFloodfillImage</a></h1>
 <div class="section" id="id37">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -831,7 +818,7 @@ as the same color for the purposes of the floodfill.</dd>
 </div>
 </div>
 <div class="section" id="magickcolorizeimage">
-<h1><a class="toc-backref" href="#id453">MagickColorizeImage</a></h1>
+<h1><a class="toc-backref" href="#id457">MagickColorizeImage</a></h1>
 <div class="section" id="id39">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -858,7 +845,7 @@ unsigned int MagickColorizeImage( MagickWand *wand, const PixelWand *colorize,
 </div>
 </div>
 <div class="section" id="magickcommentimage">
-<h1><a class="toc-backref" href="#id454">MagickCommentImage</a></h1>
+<h1><a class="toc-backref" href="#id458">MagickCommentImage</a></h1>
 <div class="section" id="id41">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -882,7 +869,7 @@ unsigned int MagickCommentImage( MagickWand *wand, const char *comment );
 </div>
 </div>
 <div class="section" id="magickcompareimagechannels">
-<h1><a class="toc-backref" href="#id455">MagickCompareImageChannels</a></h1>
+<h1><a class="toc-backref" href="#id459">MagickCompareImageChannels</a></h1>
 <div class="section" id="id43">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -916,7 +903,7 @@ MagickWand *MagickCompareImageChannels( MagickWand *wand, const MagickWand *refe
 </div>
 </div>
 <div class="section" id="magickcompareimages">
-<h1><a class="toc-backref" href="#id456">MagickCompareImages</a></h1>
+<h1><a class="toc-backref" href="#id460">MagickCompareImages</a></h1>
 <div class="section" id="id45">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -946,7 +933,7 @@ MagickWand *MagickCompareImages( MagickWand *wand, const MagickWand *reference,
 </div>
 </div>
 <div class="section" id="magickcompositeimage">
-<h1><a class="toc-backref" href="#id457">MagickCompositeImage</a></h1>
+<h1><a class="toc-backref" href="#id461">MagickCompositeImage</a></h1>
 <div class="section" id="id47">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -988,7 +975,7 @@ DisplaceCompositeOP</p>
 </div>
 </div>
 <div class="section" id="magickcontrastimage">
-<h1><a class="toc-backref" href="#id458">MagickContrastImage</a></h1>
+<h1><a class="toc-backref" href="#id462">MagickContrastImage</a></h1>
 <div class="section" id="id49">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1013,7 +1000,7 @@ unsigned int MagickContrastImage( MagickWand *wand, const unsigned int sharpen )
 </div>
 </div>
 <div class="section" id="magickconvolveimage">
-<h1><a class="toc-backref" href="#id459">MagickConvolveImage</a></h1>
+<h1><a class="toc-backref" href="#id463">MagickConvolveImage</a></h1>
 <div class="section" id="id51">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1040,7 +1027,7 @@ unsigned int MagickConvolveImage( MagickWand *wand, const unsigned long order,
 </div>
 </div>
 <div class="section" id="magickcropimage">
-<h1><a class="toc-backref" href="#id460">MagickCropImage</a></h1>
+<h1><a class="toc-backref" href="#id464">MagickCropImage</a></h1>
 <div class="section" id="id53">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1071,7 +1058,7 @@ unsigned int MagickCropImage( MagickWand *wand, const unsigned long width,
 </div>
 </div>
 <div class="section" id="magickcyclecolormapimage">
-<h1><a class="toc-backref" href="#id461">MagickCycleColormapImage</a></h1>
+<h1><a class="toc-backref" href="#id465">MagickCycleColormapImage</a></h1>
 <div class="section" id="id55">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1096,7 +1083,7 @@ unsigned int MagickCycleColormapImage( MagickWand *wand, const long displace );
 </div>
 </div>
 <div class="section" id="magickdeconstructimages">
-<h1><a class="toc-backref" href="#id462">MagickDeconstructImages</a></h1>
+<h1><a class="toc-backref" href="#id466">MagickDeconstructImages</a></h1>
 <div class="section" id="id57">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1120,7 +1107,7 @@ MagickWand *MagickDeconstructImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickdescribeimage">
-<h1><a class="toc-backref" href="#id463">MagickDescribeImage</a></h1>
+<h1><a class="toc-backref" href="#id467">MagickDescribeImage</a></h1>
 <div class="section" id="id59">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1129,8 +1116,10 @@ const char *MagickDescribeImage( MagickWand *wand );
 </div>
 <div class="section" id="id60">
 <h2>Description</h2>
-<p>MagickDescribeImage()  describes an image by printing its attributes to the
-file.  Attributes include the image width, height, size, and others.</p>
+<p>MagickDescribeImage()  describes an image by formatting its attributes
+to an allocated string which must be freed by the user.  Attributes
+include the image width, height, size, and others.  The string is
+similar to the output of 'identify -verbose'.</p>
 <p>The format of the MagickDescribeImage method is:</p>
 <pre class="literal-block">
 const char *MagickDescribeImage( MagickWand *wand );
@@ -1143,7 +1132,7 @@ const char *MagickDescribeImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickdespeckleimage">
-<h1><a class="toc-backref" href="#id464">MagickDespeckleImage</a></h1>
+<h1><a class="toc-backref" href="#id468">MagickDespeckleImage</a></h1>
 <div class="section" id="id61">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1166,7 +1155,7 @@ unsigned int MagickDespeckleImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickdisplayimage">
-<h1><a class="toc-backref" href="#id465">MagickDisplayImage</a></h1>
+<h1><a class="toc-backref" href="#id469">MagickDisplayImage</a></h1>
 <div class="section" id="id63">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1190,7 +1179,7 @@ unsigned int MagickDisplayImage( MagickWand *wand, const char *server_name );
 </div>
 </div>
 <div class="section" id="magickdisplayimages">
-<h1><a class="toc-backref" href="#id466">MagickDisplayImages</a></h1>
+<h1><a class="toc-backref" href="#id470">MagickDisplayImages</a></h1>
 <div class="section" id="id65">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1213,7 +1202,7 @@ unsigned int MagickDisplayImages( MagickWand *wand, const char *server_name );
 </div>
 </div>
 <div class="section" id="magickdrawimage">
-<h1><a class="toc-backref" href="#id467">MagickDrawImage</a></h1>
+<h1><a class="toc-backref" href="#id471">MagickDrawImage</a></h1>
 <div class="section" id="id67">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1236,7 +1225,7 @@ unsigned int MagickDrawImage( MagickWand *wand, const DrawingWand *drawing_wand 
 </div>
 </div>
 <div class="section" id="magickedgeimage">
-<h1><a class="toc-backref" href="#id468">MagickEdgeImage</a></h1>
+<h1><a class="toc-backref" href="#id472">MagickEdgeImage</a></h1>
 <div class="section" id="id69">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1262,7 +1251,7 @@ unsigned int MagickEdgeImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magickembossimage">
-<h1><a class="toc-backref" href="#id469">MagickEmbossImage</a></h1>
+<h1><a class="toc-backref" href="#id473">MagickEmbossImage</a></h1>
 <div class="section" id="id71">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1292,7 +1281,7 @@ pixel.</dd>
 </div>
 </div>
 <div class="section" id="magickenhanceimage">
-<h1><a class="toc-backref" href="#id470">MagickEnhanceImage</a></h1>
+<h1><a class="toc-backref" href="#id474">MagickEnhanceImage</a></h1>
 <div class="section" id="id73">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1315,7 +1304,7 @@ unsigned int MagickEnhanceImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickequalizeimage">
-<h1><a class="toc-backref" href="#id471">MagickEqualizeImage</a></h1>
+<h1><a class="toc-backref" href="#id475">MagickEqualizeImage</a></h1>
 <div class="section" id="id75">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1337,7 +1326,7 @@ unsigned int MagickEqualizeImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickflattenimages">
-<h1><a class="toc-backref" href="#id472">MagickFlattenImages</a></h1>
+<h1><a class="toc-backref" href="#id476">MagickFlattenImages</a></h1>
 <div class="section" id="id77">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1360,7 +1349,7 @@ MagickWand *MagickFlattenImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickflipimage">
-<h1><a class="toc-backref" href="#id473">MagickFlipImage</a></h1>
+<h1><a class="toc-backref" href="#id477">MagickFlipImage</a></h1>
 <div class="section" id="id79">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1383,7 +1372,7 @@ unsigned int MagickFlipImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickflopimage">
-<h1><a class="toc-backref" href="#id474">MagickFlopImage</a></h1>
+<h1><a class="toc-backref" href="#id478">MagickFlopImage</a></h1>
 <div class="section" id="id81">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1406,7 +1395,7 @@ unsigned int MagickFlopImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickframeimage">
-<h1><a class="toc-backref" href="#id475">MagickFrameImage</a></h1>
+<h1><a class="toc-backref" href="#id479">MagickFrameImage</a></h1>
 <div class="section" id="id83">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1444,7 +1433,7 @@ unsigned int MagickFrameImage( MagickWand *wand, const PixelWand *matte_color,
 </div>
 </div>
 <div class="section" id="magickfximage">
-<h1><a class="toc-backref" href="#id476">MagickFxImage</a></h1>
+<h1><a class="toc-backref" href="#id480">MagickFxImage</a></h1>
 <div class="section" id="id85">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1468,7 +1457,7 @@ MagickWand *MagickFxImage( MagickWand *wand, const char *expression );
 </div>
 </div>
 <div class="section" id="magickfximagechannel">
-<h1><a class="toc-backref" href="#id477">MagickFxImageChannel</a></h1>
+<h1><a class="toc-backref" href="#id481">MagickFxImageChannel</a></h1>
 <div class="section" id="id87">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1498,7 +1487,7 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magickgammaimage">
-<h1><a class="toc-backref" href="#id478">MagickGammaImage</a></h1>
+<h1><a class="toc-backref" href="#id482">MagickGammaImage</a></h1>
 <div class="section" id="id89">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1528,7 +1517,7 @@ unsigned int MagickGammaImage( MagickWand *wand, const double gamma );
 </div>
 </div>
 <div class="section" id="magickgammaimagechannel">
-<h1><a class="toc-backref" href="#id479">MagickGammaImageChannel</a></h1>
+<h1><a class="toc-backref" href="#id483">MagickGammaImageChannel</a></h1>
 <div class="section" id="id91">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1561,7 +1550,7 @@ unsigned int MagickGammaImageChannel( MagickWand *wand, const <a class="referenc
 </div>
 </div>
 <div class="section" id="magickgetconfigureinfo">
-<h1><a class="toc-backref" href="#id480">MagickGetConfigureInfo</a></h1>
+<h1><a class="toc-backref" href="#id484">MagickGetConfigureInfo</a></h1>
 <div class="section" id="id93">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1586,7 +1575,7 @@ char *MagickGetConfigureInfo( MagickWand *wand, const char *name );
 </div>
 </div>
 <div class="section" id="magickgetcopyright">
-<h1><a class="toc-backref" href="#id481">MagickGetCopyright</a></h1>
+<h1><a class="toc-backref" href="#id485">MagickGetCopyright</a></h1>
 <div class="section" id="id95">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1603,7 +1592,7 @@ const char *MagickGetCopyright( void );
 </div>
 </div>
 <div class="section" id="magickgetexception">
-<h1><a class="toc-backref" href="#id482">MagickGetException</a></h1>
+<h1><a class="toc-backref" href="#id486">MagickGetException</a></h1>
 <div class="section" id="id97">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1628,7 +1617,7 @@ char *MagickGetException( const MagickWand *wand, <a class="reference external" 
 </div>
 </div>
 <div class="section" id="magickgetfilename">
-<h1><a class="toc-backref" href="#id483">MagickGetFilename</a></h1>
+<h1><a class="toc-backref" href="#id487">MagickGetFilename</a></h1>
 <div class="section" id="id99">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1650,7 +1639,7 @@ const char *MagickGetFilename( const MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgethomeurl">
-<h1><a class="toc-backref" href="#id484">MagickGetHomeURL</a></h1>
+<h1><a class="toc-backref" href="#id488">MagickGetHomeURL</a></h1>
 <div class="section" id="id101">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1667,7 +1656,7 @@ const char *MagickGetHomeURL( void );
 </div>
 </div>
 <div class="section" id="magickgetimage">
-<h1><a class="toc-backref" href="#id485">MagickGetImage</a></h1>
+<h1><a class="toc-backref" href="#id489">MagickGetImage</a></h1>
 <div class="section" id="id103">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1689,7 +1678,7 @@ MagickWand *MagickGetImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageattribute">
-<h1><a class="toc-backref" href="#id486">MagickGetImageAttribute</a></h1>
+<h1><a class="toc-backref" href="#id490">MagickGetImageAttribute</a></h1>
 <div class="section" id="id105">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1713,7 +1702,7 @@ char *MagickGetImageAttribute( MagickWand *wand, const char *name );
 </div>
 </div>
 <div class="section" id="magickgetimagebackgroundcolor">
-<h1><a class="toc-backref" href="#id487">MagickGetImageBackgroundColor</a></h1>
+<h1><a class="toc-backref" href="#id491">MagickGetImageBackgroundColor</a></h1>
 <div class="section" id="id107">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1736,7 +1725,7 @@ unsigned int MagickGetImageBackgroundColor( MagickWand *wand, PixelWand *backgro
 </div>
 </div>
 <div class="section" id="magickgetimageblueprimary">
-<h1><a class="toc-backref" href="#id488">MagickGetImageBluePrimary</a></h1>
+<h1><a class="toc-backref" href="#id492">MagickGetImageBluePrimary</a></h1>
 <div class="section" id="id109">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1762,7 +1751,7 @@ unsigned int MagickGetImageBluePrimary( MagickWand *wand, double *x, double *y )
 </div>
 </div>
 <div class="section" id="magickgetimagebordercolor">
-<h1><a class="toc-backref" href="#id489">MagickGetImageBorderColor</a></h1>
+<h1><a class="toc-backref" href="#id493">MagickGetImageBorderColor</a></h1>
 <div class="section" id="id111">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1785,7 +1774,7 @@ unsigned int MagickGetImageBorderColor( MagickWand *wand, PixelWand *border_colo
 </div>
 </div>
 <div class="section" id="magickgetimageboundingbox">
-<h1><a class="toc-backref" href="#id490">MagickGetImageBoundingBox</a></h1>
+<h1><a class="toc-backref" href="#id494">MagickGetImageBoundingBox</a></h1>
 <div class="section" id="id113">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1824,7 +1813,7 @@ unsigned int MagickGetImageBoundingBox( MagickWand *wand, const double fuzz,
 </div>
 </div>
 <div class="section" id="magickgetimagechanneldepth">
-<h1><a class="toc-backref" href="#id491">MagickGetImageChannelDepth</a></h1>
+<h1><a class="toc-backref" href="#id495">MagickGetImageChannelDepth</a></h1>
 <div class="section" id="id115">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1849,7 +1838,7 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magickgetimagechannelextrema">
-<h1><a class="toc-backref" href="#id492">MagickGetImageChannelExtrema</a></h1>
+<h1><a class="toc-backref" href="#id496">MagickGetImageChannelExtrema</a></h1>
 <div class="section" id="id117">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1881,7 +1870,7 @@ or BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magickgetimagechannelmean">
-<h1><a class="toc-backref" href="#id493">MagickGetImageChannelMean</a></h1>
+<h1><a class="toc-backref" href="#id497">MagickGetImageChannelMean</a></h1>
 <div class="section" id="id119">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1913,7 +1902,7 @@ or BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magickgetimagecolormapcolor">
-<h1><a class="toc-backref" href="#id494">MagickGetImageColormapColor</a></h1>
+<h1><a class="toc-backref" href="#id498">MagickGetImageColormapColor</a></h1>
 <div class="section" id="id121">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1941,7 +1930,7 @@ unsigned int MagickGetImageColormapColor( MagickWand *wand, const unsigned long 
 </div>
 </div>
 <div class="section" id="magickgetimagecolors">
-<h1><a class="toc-backref" href="#id495">MagickGetImageColors</a></h1>
+<h1><a class="toc-backref" href="#id499">MagickGetImageColors</a></h1>
 <div class="section" id="id123">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1963,7 +1952,7 @@ unsigned long MagickGetImageColors( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagecolorspace">
-<h1><a class="toc-backref" href="#id496">MagickGetImageColorspace</a></h1>
+<h1><a class="toc-backref" href="#id500">MagickGetImageColorspace</a></h1>
 <div class="section" id="id125">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -1985,7 +1974,7 @@ unsigned long MagickGetImageColors( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagecompose">
-<h1><a class="toc-backref" href="#id497">MagickGetImageCompose</a></h1>
+<h1><a class="toc-backref" href="#id501">MagickGetImageCompose</a></h1>
 <div class="section" id="id127">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2008,7 +1997,7 @@ image.</p>
 </div>
 </div>
 <div class="section" id="magickgetimagecompression">
-<h1><a class="toc-backref" href="#id498">MagickGetImageCompression</a></h1>
+<h1><a class="toc-backref" href="#id502">MagickGetImageCompression</a></h1>
 <div class="section" id="id129">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2030,7 +2019,7 @@ image.</p>
 </div>
 </div>
 <div class="section" id="magickgetimagedelay">
-<h1><a class="toc-backref" href="#id499">MagickGetImageDelay</a></h1>
+<h1><a class="toc-backref" href="#id503">MagickGetImageDelay</a></h1>
 <div class="section" id="id131">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2052,7 +2041,7 @@ unsigned long MagickGetImageDelay( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagedepth">
-<h1><a class="toc-backref" href="#id500">MagickGetImageDepth</a></h1>
+<h1><a class="toc-backref" href="#id504">MagickGetImageDepth</a></h1>
 <div class="section" id="id133">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2074,7 +2063,7 @@ unsigned long MagickGetImageDepth( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageextrema">
-<h1><a class="toc-backref" href="#id501">MagickGetImageExtrema</a></h1>
+<h1><a class="toc-backref" href="#id505">MagickGetImageExtrema</a></h1>
 <div class="section" id="id135">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2101,7 +2090,7 @@ unsigned int MagickGetImageExtrema( MagickWand *wand, unsigned long *min,
 </div>
 </div>
 <div class="section" id="magickgetimagedispose">
-<h1><a class="toc-backref" href="#id502">MagickGetImageDispose</a></h1>
+<h1><a class="toc-backref" href="#id506">MagickGetImageDispose</a></h1>
 <div class="section" id="id137">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2123,7 +2112,7 @@ DisposeType MagickGetImageDispose( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagefilename">
-<h1><a class="toc-backref" href="#id503">MagickGetImageFilename</a></h1>
+<h1><a class="toc-backref" href="#id507">MagickGetImageFilename</a></h1>
 <div class="section" id="id139">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2146,7 +2135,7 @@ const char MagickGetImageFilename( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageformat">
-<h1><a class="toc-backref" href="#id504">MagickGetImageFormat</a></h1>
+<h1><a class="toc-backref" href="#id508">MagickGetImageFormat</a></h1>
 <div class="section" id="id141">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2169,7 +2158,7 @@ const char MagickGetImageFormat( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagefuzz">
-<h1><a class="toc-backref" href="#id505">MagickGetImageFuzz</a></h1>
+<h1><a class="toc-backref" href="#id509">MagickGetImageFuzz</a></h1>
 <div class="section" id="id143">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2194,7 +2183,7 @@ double MagickGetImageFuzz( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagegamma">
-<h1><a class="toc-backref" href="#id506">MagickGetImageGamma</a></h1>
+<h1><a class="toc-backref" href="#id510">MagickGetImageGamma</a></h1>
 <div class="section" id="id145">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2216,7 +2205,7 @@ double MagickGetImageGamma( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagegreenprimary">
-<h1><a class="toc-backref" href="#id507">MagickGetImageGreenPrimary</a></h1>
+<h1><a class="toc-backref" href="#id511">MagickGetImageGreenPrimary</a></h1>
 <div class="section" id="id147">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2241,7 +2230,7 @@ unsigned int MagickGetImageGreenPrimary( MagickWand *wand, double *x, double *y 
 </div>
 </div>
 <div class="section" id="magickgetimageheight">
-<h1><a class="toc-backref" href="#id508">MagickGetImageHeight</a></h1>
+<h1><a class="toc-backref" href="#id512">MagickGetImageHeight</a></h1>
 <div class="section" id="id149">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2263,7 +2252,7 @@ unsigned long MagickGetImageHeight( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagehistogram">
-<h1><a class="toc-backref" href="#id509">MagickGetImageHistogram</a></h1>
+<h1><a class="toc-backref" href="#id513">MagickGetImageHistogram</a></h1>
 <div class="section" id="id151">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2288,7 +2277,7 @@ of pixel wands returned.</dd>
 </div>
 </div>
 <div class="section" id="magickgetimageindex">
-<h1><a class="toc-backref" href="#id510">MagickGetImageIndex</a></h1>
+<h1><a class="toc-backref" href="#id514">MagickGetImageIndex</a></h1>
 <div class="section" id="id153">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2310,7 +2299,7 @@ unsigned int MagickGetImageIndex( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageinterlacescheme">
-<h1><a class="toc-backref" href="#id511">MagickGetImageInterlaceScheme</a></h1>
+<h1><a class="toc-backref" href="#id515">MagickGetImageInterlaceScheme</a></h1>
 <div class="section" id="id155">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2332,7 +2321,7 @@ unsigned int MagickGetImageIndex( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageiterations">
-<h1><a class="toc-backref" href="#id512">MagickGetImageIterations</a></h1>
+<h1><a class="toc-backref" href="#id516">MagickGetImageIterations</a></h1>
 <div class="section" id="id157">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2354,7 +2343,7 @@ unsigned long MagickGetImageIterations( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagemattecolor">
-<h1><a class="toc-backref" href="#id513">MagickGetImageMatteColor</a></h1>
+<h1><a class="toc-backref" href="#id517">MagickGetImageMatteColor</a></h1>
 <div class="section" id="id159">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2377,7 +2366,7 @@ unsigned int MagickGetImageMatteColor( MagickWand *wand, PixelWand *matte_color 
 </div>
 </div>
 <div class="section" id="magickgetimagepixels">
-<h1><a class="toc-backref" href="#id514">MagickGetImagePixels</a></h1>
+<h1><a class="toc-backref" href="#id518">MagickGetImagePixels</a></h1>
 <div class="section" id="id161">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2427,7 +2416,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section" id="magickgetimageprofile">
-<h1><a class="toc-backref" href="#id515">MagickGetImageProfile</a></h1>
+<h1><a class="toc-backref" href="#id519">MagickGetImageProfile</a></h1>
 <div class="section" id="id163">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2454,7 +2443,7 @@ unsigned char *MagickGetImageProfile( MagickWand *wand, const char *name,
 </div>
 </div>
 <div class="section" id="magickgetimageredprimary">
-<h1><a class="toc-backref" href="#id516">MagickGetImageRedPrimary</a></h1>
+<h1><a class="toc-backref" href="#id520">MagickGetImageRedPrimary</a></h1>
 <div class="section" id="id165">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2479,7 +2468,7 @@ unsigned int MagickGetImageRedPrimary( MagickWand *wand, double *x, double *y );
 </div>
 </div>
 <div class="section" id="magickgetimagerenderingintent">
-<h1><a class="toc-backref" href="#id517">MagickGetImageRenderingIntent</a></h1>
+<h1><a class="toc-backref" href="#id521">MagickGetImageRenderingIntent</a></h1>
 <div class="section" id="id167">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2501,7 +2490,7 @@ unsigned int MagickGetImageRedPrimary( MagickWand *wand, double *x, double *y );
 </div>
 </div>
 <div class="section" id="magickgetimageresolution">
-<h1><a class="toc-backref" href="#id518">MagickGetImageResolution</a></h1>
+<h1><a class="toc-backref" href="#id522">MagickGetImageResolution</a></h1>
 <div class="section" id="id169">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2526,7 +2515,7 @@ unsigned int MagickGetImageResolution( MagickWand *wand, double *x, double *y );
 </div>
 </div>
 <div class="section" id="magickgetimagescene">
-<h1><a class="toc-backref" href="#id519">MagickGetImageScene</a></h1>
+<h1><a class="toc-backref" href="#id523">MagickGetImageScene</a></h1>
 <div class="section" id="id171">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2548,7 +2537,7 @@ unsigned long MagickGetImageScene( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagesignature">
-<h1><a class="toc-backref" href="#id520">MagickGetImageSignature</a></h1>
+<h1><a class="toc-backref" href="#id524">MagickGetImageSignature</a></h1>
 <div class="section" id="id173">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2571,7 +2560,7 @@ const char MagickGetImageSignature( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagesize">
-<h1><a class="toc-backref" href="#id521">MagickGetImageSize</a></h1>
+<h1><a class="toc-backref" href="#id525">MagickGetImageSize</a></h1>
 <div class="section" id="id175">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2593,7 +2582,7 @@ MagickSizeType MagickGetImageSize( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagetype">
-<h1><a class="toc-backref" href="#id522">MagickGetImageType</a></h1>
+<h1><a class="toc-backref" href="#id526">MagickGetImageType</a></h1>
 <div class="section" id="id177">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2615,7 +2604,7 @@ MagickSizeType MagickGetImageSize( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimageunits">
-<h1><a class="toc-backref" href="#id523">MagickGetImageUnits</a></h1>
+<h1><a class="toc-backref" href="#id527">MagickGetImageUnits</a></h1>
 <div class="section" id="id179">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2637,7 +2626,7 @@ MagickSizeType MagickGetImageSize( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetimagevirtualpixelmethod">
-<h1><a class="toc-backref" href="#id524">MagickGetImageVirtualPixelMethod</a></h1>
+<h1><a class="toc-backref" href="#id528">MagickGetImageVirtualPixelMethod</a></h1>
 <div class="section" id="id181">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2660,7 +2649,7 @@ sepcified image.</p>
 </div>
 </div>
 <div class="section" id="magickgetimagewhitepoint">
-<h1><a class="toc-backref" href="#id525">MagickGetImageWhitePoint</a></h1>
+<h1><a class="toc-backref" href="#id529">MagickGetImageWhitePoint</a></h1>
 <div class="section" id="id183">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2685,7 +2674,7 @@ unsigned int MagickGetImageWhitePoint( MagickWand *wand, double *x, double *y );
 </div>
 </div>
 <div class="section" id="magickgetimagewidth">
-<h1><a class="toc-backref" href="#id526">MagickGetImageWidth</a></h1>
+<h1><a class="toc-backref" href="#id530">MagickGetImageWidth</a></h1>
 <div class="section" id="id185">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2707,7 +2696,7 @@ unsigned long MagickGetImageWidth( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetnumberimages">
-<h1><a class="toc-backref" href="#id527">MagickGetNumberImages</a></h1>
+<h1><a class="toc-backref" href="#id531">MagickGetNumberImages</a></h1>
 <div class="section" id="id187">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2730,7 +2719,7 @@ unsigned long MagickGetNumberImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickgetpackagename">
-<h1><a class="toc-backref" href="#id528">MagickGetPackageName</a></h1>
+<h1><a class="toc-backref" href="#id532">MagickGetPackageName</a></h1>
 <div class="section" id="id189">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2747,7 +2736,7 @@ const char *MagickGetPackageName( void );
 </div>
 </div>
 <div class="section" id="magickgetquantumdepth">
-<h1><a class="toc-backref" href="#id529">MagickGetQuantumDepth</a></h1>
+<h1><a class="toc-backref" href="#id533">MagickGetQuantumDepth</a></h1>
 <div class="section" id="id191">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2769,7 +2758,7 @@ const char *MagickGetQuantumDepth( unsigned long *depth );
 </div>
 </div>
 <div class="section" id="magickgetreleasedate">
-<h1><a class="toc-backref" href="#id530">MagickGetReleaseDate</a></h1>
+<h1><a class="toc-backref" href="#id534">MagickGetReleaseDate</a></h1>
 <div class="section" id="id193">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2786,7 +2775,7 @@ const char *MagickGetReleaseDate( void );
 </div>
 </div>
 <div class="section" id="magickgetresourcelimit">
-<h1><a class="toc-backref" href="#id531">MagickGetResourceLimit</a></h1>
+<h1><a class="toc-backref" href="#id535">MagickGetResourceLimit</a></h1>
 <div class="section" id="id195">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2808,7 +2797,7 @@ unsigned long MagickGetResourceLimit( const <a class="reference external" href="
 </div>
 </div>
 <div class="section" id="magickgetsamplingfactors">
-<h1><a class="toc-backref" href="#id532">MagickGetSamplingFactors</a></h1>
+<h1><a class="toc-backref" href="#id536">MagickGetSamplingFactors</a></h1>
 <div class="section" id="id197">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2831,7 +2820,7 @@ double *MagickGetSamplingFactors( MagickWand *wand, unsigned long *number_factor
 </div>
 </div>
 <div class="section" id="magickgetsize">
-<h1><a class="toc-backref" href="#id533">MagickGetSize</a></h1>
+<h1><a class="toc-backref" href="#id537">MagickGetSize</a></h1>
 <div class="section" id="id199">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2858,7 +2847,7 @@ unsigned int MagickGetSize( const MagickWand *wand, unsigned long *columns,
 </div>
 </div>
 <div class="section" id="magickgetversion">
-<h1><a class="toc-backref" href="#id534">MagickGetVersion</a></h1>
+<h1><a class="toc-backref" href="#id538">MagickGetVersion</a></h1>
 <div class="section" id="id201">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2881,7 +2870,7 @@ const char *MagickGetVersion( unsigned long *version );
 </div>
 </div>
 <div class="section" id="magickhaldclutimage">
-<h1><a class="toc-backref" href="#id535">MagickHaldClutImage</a></h1>
+<h1><a class="toc-backref" href="#id539">MagickHaldClutImage</a></h1>
 <div class="section" id="id203">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2922,7 +2911,7 @@ MagickPassFail MagickHaldClutImage( MagickWand *wand, const MagickWand *clut_wan
 </div>
 </div>
 <div class="section" id="magickhasnextimage">
-<h1><a class="toc-backref" href="#id536">MagickHasNextImage</a></h1>
+<h1><a class="toc-backref" href="#id540">MagickHasNextImage</a></h1>
 <div class="section" id="id205">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2945,7 +2934,7 @@ unsigned int MagickHasNextImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickhaspreviousimage">
-<h1><a class="toc-backref" href="#id537">MagickHasPreviousImage</a></h1>
+<h1><a class="toc-backref" href="#id541">MagickHasPreviousImage</a></h1>
 <div class="section" id="id207">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2968,7 +2957,7 @@ unsigned int MagickHasPreviousImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickimplodeimage">
-<h1><a class="toc-backref" href="#id538">MagickImplodeImage</a></h1>
+<h1><a class="toc-backref" href="#id542">MagickImplodeImage</a></h1>
 <div class="section" id="id209">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -2995,7 +2984,7 @@ unsigned int MagickImplodeImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magicklabelimage">
-<h1><a class="toc-backref" href="#id539">MagickLabelImage</a></h1>
+<h1><a class="toc-backref" href="#id543">MagickLabelImage</a></h1>
 <div class="section" id="id211">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3019,7 +3008,7 @@ unsigned int MagickLabelImage( MagickWand *wand, const char *label );
 </div>
 </div>
 <div class="section" id="magicklevelimage">
-<h1><a class="toc-backref" href="#id540">MagickLevelImage</a></h1>
+<h1><a class="toc-backref" href="#id544">MagickLevelImage</a></h1>
 <div class="section" id="id213">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3055,7 +3044,7 @@ unsigned int MagickLevelImage( MagickWand *wand, const double black_point, const
 </div>
 </div>
 <div class="section" id="magicklevelimagechannel">
-<h1><a class="toc-backref" href="#id541">MagickLevelImageChannel</a></h1>
+<h1><a class="toc-backref" href="#id545">MagickLevelImageChannel</a></h1>
 <div class="section" id="id215">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3097,7 +3086,7 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magickmagnifyimage">
-<h1><a class="toc-backref" href="#id542">MagickMagnifyImage</a></h1>
+<h1><a class="toc-backref" href="#id546">MagickMagnifyImage</a></h1>
 <div class="section" id="id217">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3120,7 +3109,7 @@ unsigned int MagickMagnifyImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickmapimage">
-<h1><a class="toc-backref" href="#id543">MagickMapImage</a></h1>
+<h1><a class="toc-backref" href="#id547">MagickMapImage</a></h1>
 <div class="section" id="id219">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3149,7 +3138,7 @@ the mapped image.</dd>
 </div>
 </div>
 <div class="section" id="magickmattefloodfillimage">
-<h1><a class="toc-backref" href="#id544">MagickMatteFloodfillImage</a></h1>
+<h1><a class="toc-backref" href="#id548">MagickMatteFloodfillImage</a></h1>
 <div class="section" id="id221">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3190,7 +3179,7 @@ as the same color for the purposes of the floodfill.</dd>
 </div>
 </div>
 <div class="section" id="magickmedianfilterimage">
-<h1><a class="toc-backref" href="#id545">MagickMedianFilterImage</a></h1>
+<h1><a class="toc-backref" href="#id549">MagickMedianFilterImage</a></h1>
 <div class="section" id="id223">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3215,7 +3204,7 @@ unsigned int MagickMedianFilterImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magickminifyimage">
-<h1><a class="toc-backref" href="#id546">MagickMinifyImage</a></h1>
+<h1><a class="toc-backref" href="#id550">MagickMinifyImage</a></h1>
 <div class="section" id="id225">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3238,7 +3227,7 @@ unsigned int MagickMinifyImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickmodulateimage">
-<h1><a class="toc-backref" href="#id547">MagickModulateImage</a></h1>
+<h1><a class="toc-backref" href="#id551">MagickModulateImage</a></h1>
 <div class="section" id="id227">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3268,7 +3257,7 @@ unsigned int MagickModulateImage( MagickWand *wand, const double brightness,
 </div>
 </div>
 <div class="section" id="magickmontageimage">
-<h1><a class="toc-backref" href="#id548">MagickMontageImage</a></h1>
+<h1><a class="toc-backref" href="#id552">MagickMontageImage</a></h1>
 <div class="section" id="id229">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3308,7 +3297,7 @@ The frame color is that of the thumbnail's matte color.</dd>
 </div>
 </div>
 <div class="section" id="magickmorphimages">
-<h1><a class="toc-backref" href="#id549">MagickMorphImages</a></h1>
+<h1><a class="toc-backref" href="#id553">MagickMorphImages</a></h1>
 <div class="section" id="id231">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3333,7 +3322,7 @@ MagickWand *MagickMorphImages( MagickWand *wand, const unsigned long number_fram
 </div>
 </div>
 <div class="section" id="magickmosaicimages">
-<h1><a class="toc-backref" href="#id550">MagickMosaicImages</a></h1>
+<h1><a class="toc-backref" href="#id554">MagickMosaicImages</a></h1>
 <div class="section" id="id233">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3357,7 +3346,7 @@ MagickWand *MagickMosaicImages( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickmotionblurimage">
-<h1><a class="toc-backref" href="#id551">MagickMotionBlurImage</a></h1>
+<h1><a class="toc-backref" href="#id555">MagickMotionBlurImage</a></h1>
 <div class="section" id="id235">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3391,7 +3380,7 @@ the center pixel.</dd>
 </div>
 </div>
 <div class="section" id="magicknegateimage">
-<h1><a class="toc-backref" href="#id552">MagickNegateImage</a></h1>
+<h1><a class="toc-backref" href="#id556">MagickNegateImage</a></h1>
 <div class="section" id="id237">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3419,7 +3408,7 @@ unsigned int MagickNegateImage( MagickWand *wand, const unsigned int gray );
 </div>
 </div>
 <div class="section" id="magicknegateimagechannel">
-<h1><a class="toc-backref" href="#id553">MagickNegateImageChannel</a></h1>
+<h1><a class="toc-backref" href="#id557">MagickNegateImageChannel</a></h1>
 <div class="section" id="id239">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3453,7 +3442,7 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magicknextimage">
-<h1><a class="toc-backref" href="#id554">MagickNextImage</a></h1>
+<h1><a class="toc-backref" href="#id558">MagickNextImage</a></h1>
 <div class="section" id="id241">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3476,7 +3465,7 @@ unsigned int MagickNextImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magicknormalizeimage">
-<h1><a class="toc-backref" href="#id555">MagickNormalizeImage</a></h1>
+<h1><a class="toc-backref" href="#id559">MagickNormalizeImage</a></h1>
 <div class="section" id="id243">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3501,7 +3490,7 @@ unsigned int MagickNormalizeImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickoilpaintimage">
-<h1><a class="toc-backref" href="#id556">MagickOilPaintImage</a></h1>
+<h1><a class="toc-backref" href="#id560">MagickOilPaintImage</a></h1>
 <div class="section" id="id245">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3527,7 +3516,7 @@ unsigned int MagickOilPaintImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magickopaqueimage">
-<h1><a class="toc-backref" href="#id557">MagickOpaqueImage</a></h1>
+<h1><a class="toc-backref" href="#id561">MagickOpaqueImage</a></h1>
 <div class="section" id="id247">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3562,7 +3551,7 @@ as the same color for the purposes of the floodfill.</dd>
 </div>
 </div>
 <div class="section" id="magickpingimage">
-<h1><a class="toc-backref" href="#id558">MagickPingImage</a></h1>
+<h1><a class="toc-backref" href="#id562">MagickPingImage</a></h1>
 <div class="section" id="id249">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3589,7 +3578,7 @@ unsigned int MagickPingImage( MagickWand *wand, const char *filename );
 </div>
 </div>
 <div class="section" id="magickpreviewimages">
-<h1><a class="toc-backref" href="#id559">MagickPreviewImages</a></h1>
+<h1><a class="toc-backref" href="#id563">MagickPreviewImages</a></h1>
 <div class="section" id="id251">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3615,7 +3604,7 @@ MagickWand *MagickPreviewImages( MagickWand *wand, const PreviewType preview );
 </div>
 </div>
 <div class="section" id="magickpreviousimage">
-<h1><a class="toc-backref" href="#id560">MagickPreviousImage</a></h1>
+<h1><a class="toc-backref" href="#id564">MagickPreviousImage</a></h1>
 <div class="section" id="id253">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3638,7 +3627,7 @@ unsigned int MagickPreviousImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickprofileimage">
-<h1><a class="toc-backref" href="#id561">MagickProfileImage</a></h1>
+<h1><a class="toc-backref" href="#id565">MagickProfileImage</a></h1>
 <div class="section" id="id255">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3670,7 +3659,7 @@ unsigned int MagickProfileImage( MagickWand *wand, const char *name,
 </div>
 </div>
 <div class="section" id="magickquantizeimage">
-<h1><a class="toc-backref" href="#id562">MagickQuantizeImage</a></h1>
+<h1><a class="toc-backref" href="#id566">MagickQuantizeImage</a></h1>
 <div class="section" id="id257">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3723,7 +3712,7 @@ pixel value and its quantized value.</dd>
 </div>
 </div>
 <div class="section" id="magickquantizeimages">
-<h1><a class="toc-backref" href="#id563">MagickQuantizeImages</a></h1>
+<h1><a class="toc-backref" href="#id567">MagickQuantizeImages</a></h1>
 <div class="section" id="id259">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3776,7 +3765,7 @@ pixel value and its quantized value.</dd>
 </div>
 </div>
 <div class="section" id="magickqueryfontmetrics">
-<h1><a class="toc-backref" href="#id564">MagickQueryFontMetrics</a></h1>
+<h1><a class="toc-backref" href="#id568">MagickQueryFontMetrics</a></h1>
 <div class="section" id="id261">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3814,7 +3803,7 @@ double *MagickQueryFontMetrics( MagickWand *wand, const DrawingWand *drawing_wan
 </div>
 </div>
 <div class="section" id="magickqueryfonts">
-<h1><a class="toc-backref" href="#id565">MagickQueryFonts</a></h1>
+<h1><a class="toc-backref" href="#id569">MagickQueryFonts</a></h1>
 <div class="section" id="id263">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3838,7 +3827,7 @@ char ** MagickQueryFonts( const char *pattern, unsigned long *number_fonts );
 </div>
 </div>
 <div class="section" id="magickqueryformats">
-<h1><a class="toc-backref" href="#id566">MagickQueryFormats</a></h1>
+<h1><a class="toc-backref" href="#id570">MagickQueryFormats</a></h1>
 <div class="section" id="id265">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3863,7 +3852,7 @@ list.</dd>
 </div>
 </div>
 <div class="section" id="magickradialblurimage">
-<h1><a class="toc-backref" href="#id567">MagickRadialBlurImage</a></h1>
+<h1><a class="toc-backref" href="#id571">MagickRadialBlurImage</a></h1>
 <div class="section" id="id267">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3887,7 +3876,7 @@ unsigned int MagickRadialBlurImage( MagickWand *wand, const double angle );
 </div>
 </div>
 <div class="section" id="magickraiseimage">
-<h1><a class="toc-backref" href="#id568">MagickRaiseImage</a></h1>
+<h1><a class="toc-backref" href="#id572">MagickRaiseImage</a></h1>
 <div class="section" id="id269">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3920,7 +3909,7 @@ otherwise it has a lowered effect.</dd>
 </div>
 </div>
 <div class="section" id="magickreadimage">
-<h1><a class="toc-backref" href="#id569">MagickReadImage</a></h1>
+<h1><a class="toc-backref" href="#id573">MagickReadImage</a></h1>
 <div class="section" id="id271">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3944,7 +3933,7 @@ unsigned int MagickReadImage( MagickWand *wand, const char *filename );
 </div>
 </div>
 <div class="section" id="magickreadimageblob">
-<h1><a class="toc-backref" href="#id570">MagickReadImageBlob</a></h1>
+<h1><a class="toc-backref" href="#id574">MagickReadImageBlob</a></h1>
 <div class="section" id="id273">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3971,7 +3960,7 @@ unsigned int MagickReadImageBlob( MagickWand *wand, const unsigned char *blob,
 </div>
 </div>
 <div class="section" id="magickreadimagefile">
-<h1><a class="toc-backref" href="#id571">MagickReadImageFile</a></h1>
+<h1><a class="toc-backref" href="#id575">MagickReadImageFile</a></h1>
 <div class="section" id="id275">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -3996,7 +3985,7 @@ unsigned int MagickReadImageFile( MagickWand *wand, FILE *file );
 </div>
 </div>
 <div class="section" id="magickreducenoiseimage">
-<h1><a class="toc-backref" href="#id572">MagickReduceNoiseImage</a></h1>
+<h1><a class="toc-backref" href="#id576">MagickReduceNoiseImage</a></h1>
 <div class="section" id="id277">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4023,7 +4012,7 @@ unsigned int MagickReduceNoiseImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magickrelinquishmemory">
-<h1><a class="toc-backref" href="#id573">MagickRelinquishMemory</a></h1>
+<h1><a class="toc-backref" href="#id577">MagickRelinquishMemory</a></h1>
 <div class="section" id="id279">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4046,7 +4035,7 @@ unsigned int MagickRelinquishMemory( void *resource );
 </div>
 </div>
 <div class="section" id="magickremoveimage">
-<h1><a class="toc-backref" href="#id574">MagickRemoveImage</a></h1>
+<h1><a class="toc-backref" href="#id578">MagickRemoveImage</a></h1>
 <div class="section" id="id281">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4068,7 +4057,7 @@ unsigned int MagickRemoveImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickremoveimageprofile">
-<h1><a class="toc-backref" href="#id575">MagickRemoveImageProfile</a></h1>
+<h1><a class="toc-backref" href="#id579">MagickRemoveImageProfile</a></h1>
 <div class="section" id="id283">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4095,7 +4084,7 @@ unsigned char *MagickRemoveImageProfile( MagickWand *wand, const char *name,
 </div>
 </div>
 <div class="section" id="magickresetiterator">
-<h1><a class="toc-backref" href="#id576">MagickResetIterator</a></h1>
+<h1><a class="toc-backref" href="#id580">MagickResetIterator</a></h1>
 <div class="section" id="id285">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4119,12 +4108,12 @@ void MagickResetIterator( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickresampleimage">
-<h1><a class="toc-backref" href="#id577">MagickResampleImage</a></h1>
+<h1><a class="toc-backref" href="#id581">MagickResampleImage</a></h1>
 <div class="section" id="id287">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickResampleImage( MagickWand *wand, const double x_resolution,
-                                  const double y_resolution, const <a href="#id650"><span class="problematic" id="id651">`FilterTypes`_</span></a> filter,
+                                  const double y_resolution, const <a class="reference external" href="../api/types.html#filtertype">FilterTypes</a> filter,
                                   const double blur );
 </pre>
 </div>
@@ -4142,7 +4131,7 @@ are windowed (brought down to zero) with the Blackman filter.</p>
 <p>The format of the MagickResampleImage method is:</p>
 <pre class="literal-block">
 unsigned int MagickResampleImage( MagickWand *wand, const double x_resolution,
-                                  const double y_resolution, const <a href="#id652"><span class="problematic" id="id653">`FilterTypes`_</span></a> filter,
+                                  const double y_resolution, const <a class="reference external" href="../api/types.html#filtertype">FilterTypes</a> filter,
                                   const double blur );
 </pre>
 <dl class="docutils">
@@ -4160,12 +4149,12 @@ unsigned int MagickResampleImage( MagickWand *wand, const double x_resolution,
 </div>
 </div>
 <div class="section" id="magickresizeimage">
-<h1><a class="toc-backref" href="#id578">MagickResizeImage</a></h1>
+<h1><a class="toc-backref" href="#id582">MagickResizeImage</a></h1>
 <div class="section" id="id289">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickResizeImage( MagickWand *wand, const unsigned long columns,
-                                const unsigned long rows, const <a href="#id654"><span class="problematic" id="id655">`FilterTypes`_</span></a> filter,
+                                const unsigned long rows, const <a class="reference external" href="../api/types.html#filtertype">FilterTypes</a> filter,
                                 const double blur );
 </pre>
 </div>
@@ -4184,7 +4173,7 @@ are windowed (brought down to zero) with the Blackman filter.</p>
 <p>The format of the MagickResizeImage method is:</p>
 <pre class="literal-block">
 unsigned int MagickResizeImage( MagickWand *wand, const unsigned long columns,
-                                const unsigned long rows, const <a href="#id656"><span class="problematic" id="id657">`FilterTypes`_</span></a> filter,
+                                const unsigned long rows, const <a class="reference external" href="../api/types.html#filtertype">FilterTypes</a> filter,
                                 const double blur );
 </pre>
 <dl class="docutils">
@@ -4202,7 +4191,7 @@ unsigned int MagickResizeImage( MagickWand *wand, const unsigned long columns,
 </div>
 </div>
 <div class="section" id="magickrollimage">
-<h1><a class="toc-backref" href="#id579">MagickRollImage</a></h1>
+<h1><a class="toc-backref" href="#id583">MagickRollImage</a></h1>
 <div class="section" id="id291">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4229,7 +4218,7 @@ unsigned int MagickRollImage( MagickWand *wand, const long x_offset,
 </div>
 </div>
 <div class="section" id="magickrotateimage">
-<h1><a class="toc-backref" href="#id580">MagickRotateImage</a></h1>
+<h1><a class="toc-backref" href="#id584">MagickRotateImage</a></h1>
 <div class="section" id="id293">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4258,7 +4247,7 @@ unsigned int MagickRotateImage( MagickWand *wand, const PixelWand *background,
 </div>
 </div>
 <div class="section" id="magicksampleimage">
-<h1><a class="toc-backref" href="#id581">MagickSampleImage</a></h1>
+<h1><a class="toc-backref" href="#id585">MagickSampleImage</a></h1>
 <div class="section" id="id295">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4287,7 +4276,7 @@ unsigned int MagickSampleImage( MagickWand *wand, const unsigned long columns,
 </div>
 </div>
 <div class="section" id="magickscaleimage">
-<h1><a class="toc-backref" href="#id582">MagickScaleImage</a></h1>
+<h1><a class="toc-backref" href="#id586">MagickScaleImage</a></h1>
 <div class="section" id="id297">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4314,7 +4303,7 @@ unsigned int MagickScaleImage( MagickWand *wand, const unsigned long columns,
 </div>
 </div>
 <div class="section" id="magickseparateimagechannel">
-<h1><a class="toc-backref" href="#id583">MagickSeparateImageChannel</a></h1>
+<h1><a class="toc-backref" href="#id587">MagickSeparateImageChannel</a></h1>
 <div class="section" id="id299">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4341,7 +4330,7 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magicksetcompressionquality">
-<h1><a class="toc-backref" href="#id584">MagickSetCompressionQuality</a></h1>
+<h1><a class="toc-backref" href="#id588">MagickSetCompressionQuality</a></h1>
 <div class="section" id="id301">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -4419,15 +4408,41 @@ unsigned int MagickSetCompressionQuality( MagickWand *wand, const unsigned long 
 </dl>
 </div>
 </div>
-<div class="section" id="magicksetfilename">
-<h1><a class="toc-backref" href="#id585">MagickSetFilename</a></h1>
+<div class="section" id="magicksetdepth">
+<h1><a class="toc-backref" href="#id589">MagickSetDepth</a></h1>
 <div class="section" id="id303">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+unsigned int MagickSetDepth( MagickWand *wand, const size_t depth );
+</pre>
+</div>
+<div class="section" id="id304">
+<h2>Description</h2>
+<p>MagickSetDepth() sets the sample depth to be used when reading from a
+raw image or a format which requires that the depth be specified in
+advance by the user.</p>
+<p>The format of the MagickSetDepth method is:</p>
+<pre class="literal-block">
+unsigned int MagickSetDepth( MagickWand *wand, const size_t depth );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The magick wand.</dd>
+<dt>depth:</dt>
+<dd>The sample depth.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="magicksetfilename">
+<h1><a class="toc-backref" href="#id590">MagickSetFilename</a></h1>
+<div class="section" id="id305">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetFilename( MagickWand *wand, const char *filename );
 </pre>
 </div>
-<div class="section" id="id304">
+<div class="section" id="id306">
 <h2>Description</h2>
 <p>MagickSetFilename() sets the filename before you read or write an image file.</p>
 <p>The format of the MagickSetFilename method is:</p>
@@ -4443,15 +4458,44 @@ unsigned int MagickSetFilename( MagickWand *wand, const char *filename );
 </dl>
 </div>
 </div>
+<div class="section" id="magicksetformat">
+<h1><a class="toc-backref" href="#id591">MagickSetFormat</a></h1>
+<div class="section" id="id307">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+unsigned int MagickSetFormat( MagickWand *wand, const char *format );
+</pre>
+</div>
+<div class="section" id="id308">
+<h2>Description</h2>
+<p>MagickSetFormat() sets the file or blob format (e.g. &quot;BMP&quot;) to be used
+when a file or blob is read.  Usually this is not necessary because
+GraphicsMagick is able to auto-detect the format based on the file
+header (or the file extension), but some formats do not use a unique
+header or the selection may be ambigious. Use MagickSetImageFormat()
+to set the format to be used when a file or blob is to be written.</p>
+<p>The format of the MagickSetFormat method is:</p>
+<pre class="literal-block">
+unsigned int MagickSetFormat( MagickWand *wand, const char *format );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>wand:</dt>
+<dd>The magick wand.</dd>
+<dt>filename:</dt>
+<dd>The file or blob format.</dd>
+</dl>
+</div>
+</div>
 <div class="section" id="magicksetimage">
-<h1><a class="toc-backref" href="#id586">MagickSetImage</a></h1>
-<div class="section" id="id305">
+<h1><a class="toc-backref" href="#id592">MagickSetImage</a></h1>
+<div class="section" id="id309">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImage( MagickWand *wand, const MagickWand *set_wand );
 </pre>
 </div>
-<div class="section" id="id306">
+<div class="section" id="id310">
 <h2>Description</h2>
 <p>MagickSetImage() replaces the last image returned by MagickSetImageIndex(),
 MagickNextImage(), MagickPreviousImage() with the images from the specified
@@ -4470,15 +4514,15 @@ unsigned int MagickSetImage( MagickWand *wand, const MagickWand *set_wand );
 </div>
 </div>
 <div class="section" id="magicksetimageattribute">
-<h1><a class="toc-backref" href="#id587">MagickSetImageAttribute</a></h1>
-<div class="section" id="id307">
+<h1><a class="toc-backref" href="#id593">MagickSetImageAttribute</a></h1>
+<div class="section" id="id311">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageAttribute( MagickWand *wand, const char *name,
                                       const char *value );
 </pre>
 </div>
-<div class="section" id="id308">
+<div class="section" id="id312">
 <h2>Description</h2>
 <p>MagickSetImageAttribute sets an image attribute</p>
 <p>The format of the MagickSetImageAttribute method is:</p>
@@ -4498,14 +4542,14 @@ unsigned int MagickSetImageAttribute( MagickWand *wand, const char *name,
 </div>
 </div>
 <div class="section" id="magicksetimagebackgroundcolor">
-<h1><a class="toc-backref" href="#id588">MagickSetImageBackgroundColor</a></h1>
-<div class="section" id="id309">
+<h1><a class="toc-backref" href="#id594">MagickSetImageBackgroundColor</a></h1>
+<div class="section" id="id313">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageBackgroundColor( MagickWand *wand, const PixelWand *background );
 </pre>
 </div>
-<div class="section" id="id310">
+<div class="section" id="id314">
 <h2>Description</h2>
 <p>MagickSetImageBackgroundColor() sets the image background color.</p>
 <p>The format of the MagickSetImageBackgroundColor method is:</p>
@@ -4521,14 +4565,14 @@ unsigned int MagickSetImageBackgroundColor( MagickWand *wand, const PixelWand *b
 </div>
 </div>
 <div class="section" id="magicksetimageblueprimary">
-<h1><a class="toc-backref" href="#id589">MagickSetImageBluePrimary</a></h1>
-<div class="section" id="id311">
+<h1><a class="toc-backref" href="#id595">MagickSetImageBluePrimary</a></h1>
+<div class="section" id="id315">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageBluePrimary( MagickWand *wand, const double x, const double y );
 </pre>
 </div>
-<div class="section" id="id312">
+<div class="section" id="id316">
 <h2>Description</h2>
 <p>MagickSetImageBluePrimary() sets the image chromaticity blue primary point.</p>
 <p>The format of the MagickSetImageBluePrimary method is:</p>
@@ -4546,14 +4590,14 @@ unsigned int MagickSetImageBluePrimary( MagickWand *wand, const double x, const 
 </div>
 </div>
 <div class="section" id="magicksetimagebordercolor">
-<h1><a class="toc-backref" href="#id590">MagickSetImageBorderColor</a></h1>
-<div class="section" id="id313">
+<h1><a class="toc-backref" href="#id596">MagickSetImageBorderColor</a></h1>
+<div class="section" id="id317">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageBorderColor( MagickWand *wand, const PixelWand *border );
 </pre>
 </div>
-<div class="section" id="id314">
+<div class="section" id="id318">
 <h2>Description</h2>
 <p>MagickSetImageBorderColor() sets the image border color.</p>
 <p>The format of the MagickSetImageBorderColor method is:</p>
@@ -4569,15 +4613,15 @@ unsigned int MagickSetImageBorderColor( MagickWand *wand, const PixelWand *borde
 </div>
 </div>
 <div class="section" id="magicksetimagecolormapcolor">
-<h1><a class="toc-backref" href="#id591">MagickSetImageColormapColor</a></h1>
-<div class="section" id="id315">
+<h1><a class="toc-backref" href="#id597">MagickSetImageColormapColor</a></h1>
+<div class="section" id="id319">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageColormapColor( MagickWand *wand, const unsigned long index,
                                           const PixelWand *color );
 </pre>
 </div>
-<div class="section" id="id316">
+<div class="section" id="id320">
 <h2>Description</h2>
 <p>MagickSetImageColormapColor() sets the color of the specified colormap
 index.</p>
@@ -4597,14 +4641,14 @@ unsigned int MagickSetImageColormapColor( MagickWand *wand, const unsigned long 
 </div>
 </div>
 <div class="section" id="magicksetimagecolorspace">
-<h1><a class="toc-backref" href="#id592">MagickSetImageColorspace</a></h1>
-<div class="section" id="id317">
+<h1><a class="toc-backref" href="#id598">MagickSetImageColorspace</a></h1>
+<div class="section" id="id321">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageColorspace( MagickWand *wand, const <a class="reference external" href="../api/types.html#colorspacetype">ColorspaceType</a> colorspace );
 </pre>
 </div>
-<div class="section" id="id318">
+<div class="section" id="id322">
 <h2>Description</h2>
 <p>MagickSetImageColorspace() sets the image colorspace.</p>
 <p>The format of the MagickSetImageColorspace method is:</p>
@@ -4624,14 +4668,14 @@ HSLColorspace, or HWBColorspace.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimagecompose">
-<h1><a class="toc-backref" href="#id593">MagickSetImageCompose</a></h1>
-<div class="section" id="id319">
+<h1><a class="toc-backref" href="#id599">MagickSetImageCompose</a></h1>
+<div class="section" id="id323">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageCompose( MagickWand *wand, const <a class="reference external" href="../api/types.html#compositeoperator">CompositeOperator</a> compose );
 </pre>
 </div>
-<div class="section" id="id320">
+<div class="section" id="id324">
 <h2>Description</h2>
 <p>MagickSetImageCompose() sets the image composite operator, useful for
 specifying how to composite the image thumbnail when using the
@@ -4649,15 +4693,15 @@ unsigned int MagickSetImageCompose( MagickWand *wand, const <a class="reference 
 </div>
 </div>
 <div class="section" id="magicksetimagecompression">
-<h1><a class="toc-backref" href="#id594">MagickSetImageCompression</a></h1>
-<div class="section" id="id321">
+<h1><a class="toc-backref" href="#id600">MagickSetImageCompression</a></h1>
+<div class="section" id="id325">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageCompression( MagickWand *wand,
                                         const <a class="reference external" href="../api/types.html#compressiontype">CompressionType</a> compression );
 </pre>
 </div>
-<div class="section" id="id322">
+<div class="section" id="id326">
 <h2>Description</h2>
 <p>MagickSetImageCompression() sets the image compression.</p>
 <p>The format of the MagickSetImageCompression method is:</p>
@@ -4674,14 +4718,14 @@ unsigned int MagickSetImageCompression( MagickWand *wand,
 </div>
 </div>
 <div class="section" id="magicksetimagedelay">
-<h1><a class="toc-backref" href="#id595">MagickSetImageDelay</a></h1>
-<div class="section" id="id323">
+<h1><a class="toc-backref" href="#id601">MagickSetImageDelay</a></h1>
+<div class="section" id="id327">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageDelay( MagickWand *wand, const unsigned long delay );
 </pre>
 </div>
-<div class="section" id="id324">
+<div class="section" id="id328">
 <h2>Description</h2>
 <p>MagickSetImageDelay() sets the image delay.</p>
 <p>The format of the MagickSetImageDelay method is:</p>
@@ -4697,15 +4741,15 @@ unsigned int MagickSetImageDelay( MagickWand *wand, const unsigned long delay );
 </div>
 </div>
 <div class="section" id="magicksetimagechanneldepth">
-<h1><a class="toc-backref" href="#id596">MagickSetImageChannelDepth</a></h1>
-<div class="section" id="id325">
+<h1><a class="toc-backref" href="#id602">MagickSetImageChannelDepth</a></h1>
+<div class="section" id="id329">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageChannelDepth( MagickWand *wand, const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel,
                                          const unsigned long depth );
 </pre>
 </div>
-<div class="section" id="id326">
+<div class="section" id="id330">
 <h2>Description</h2>
 <p>MagickSetImageChannelDepth() sets the depth of a particular image channel.</p>
 <p>The format of the MagickSetImageChannelDepth method is:</p>
@@ -4726,14 +4770,14 @@ BlackChannel.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimagedepth">
-<h1><a class="toc-backref" href="#id597">MagickSetImageDepth</a></h1>
-<div class="section" id="id327">
+<h1><a class="toc-backref" href="#id603">MagickSetImageDepth</a></h1>
+<div class="section" id="id331">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageDepth( MagickWand *wand, const unsigned long depth );
 </pre>
 </div>
-<div class="section" id="id328">
+<div class="section" id="id332">
 <h2>Description</h2>
 <p>MagickSetImageDepth() sets the image depth.</p>
 <p>The format of the MagickSetImageDepth method is:</p>
@@ -4749,14 +4793,14 @@ unsigned int MagickSetImageDepth( MagickWand *wand, const unsigned long depth );
 </div>
 </div>
 <div class="section" id="magicksetimagedispose">
-<h1><a class="toc-backref" href="#id598">MagickSetImageDispose</a></h1>
-<div class="section" id="id329">
+<h1><a class="toc-backref" href="#id604">MagickSetImageDispose</a></h1>
+<div class="section" id="id333">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageDispose( MagickWand *wand, const DisposeType dispose );
 </pre>
 </div>
-<div class="section" id="id330">
+<div class="section" id="id334">
 <h2>Description</h2>
 <p>MagickSetImageDispose() sets the image disposal method.</p>
 <p>The format of the MagickSetImageDispose method is:</p>
@@ -4772,14 +4816,14 @@ unsigned int MagickSetImageDispose( MagickWand *wand, const DisposeType dispose 
 </div>
 </div>
 <div class="section" id="magicksetimagefilename">
-<h1><a class="toc-backref" href="#id599">MagickSetImageFilename</a></h1>
-<div class="section" id="id331">
+<h1><a class="toc-backref" href="#id605">MagickSetImageFilename</a></h1>
+<div class="section" id="id335">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageFilename( MagickWand *wand, const char *filename );
 </pre>
 </div>
-<div class="section" id="id332">
+<div class="section" id="id336">
 <h2>Description</h2>
 <p>MagickSetImageFilename() sets the filename of a particular image in a
 sequence.</p>
@@ -4796,14 +4840,14 @@ unsigned int MagickSetImageFilename( MagickWand *wand, const char *filename );
 </div>
 </div>
 <div class="section" id="magicksetimageformat">
-<h1><a class="toc-backref" href="#id600">MagickSetImageFormat</a></h1>
-<div class="section" id="id333">
+<h1><a class="toc-backref" href="#id606">MagickSetImageFormat</a></h1>
+<div class="section" id="id337">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageFormat( MagickWand *wand, const char *format );
 </pre>
 </div>
-<div class="section" id="id334">
+<div class="section" id="id338">
 <h2>Description</h2>
 <p>MagickSetImageFormat() sets the format of a particular image in a
 sequence.  The format is designated by a magick string (e.g. &quot;GIF&quot;).</p>
@@ -4820,14 +4864,14 @@ unsigned int MagickSetImageFormat( MagickWand *wand, const char *format );
 </div>
 </div>
 <div class="section" id="magicksetimagefuzz">
-<h1><a class="toc-backref" href="#id601">MagickSetImageFuzz</a></h1>
-<div class="section" id="id335">
+<h1><a class="toc-backref" href="#id607">MagickSetImageFuzz</a></h1>
+<div class="section" id="id339">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageFuzz( MagickWand *wand, const double fuzz );
 </pre>
 </div>
-<div class="section" id="id336">
+<div class="section" id="id340">
 <h2>Description</h2>
 <p>MagickSetImageFuzz() sets the color comparison fuzz factor.  Colors
 closer than the fuzz factor are considered to be the same when comparing
@@ -4847,14 +4891,14 @@ unsigned int MagickSetImageFuzz( MagickWand *wand, const double fuzz );
 </div>
 </div>
 <div class="section" id="magicksetimagegamma">
-<h1><a class="toc-backref" href="#id602">MagickSetImageGamma</a></h1>
-<div class="section" id="id337">
+<h1><a class="toc-backref" href="#id608">MagickSetImageGamma</a></h1>
+<div class="section" id="id341">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageGamma( MagickWand *wand, const double gamma );
 </pre>
 </div>
-<div class="section" id="id338">
+<div class="section" id="id342">
 <h2>Description</h2>
 <p>MagickSetImageGamma() sets the image gamma.</p>
 <p>The format of the MagickSetImageGamma method is:</p>
@@ -4871,14 +4915,14 @@ unsigned int MagickSetImageGamma( MagickWand *wand, const double gamma );
 </div>
 </div>
 <div class="section" id="magicksetimagegreenprimary">
-<h1><a class="toc-backref" href="#id603">MagickSetImageGreenPrimary</a></h1>
-<div class="section" id="id339">
+<h1><a class="toc-backref" href="#id609">MagickSetImageGreenPrimary</a></h1>
+<div class="section" id="id343">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageGreenPrimary( MagickWand *wand, const double x, const double y );
 </pre>
 </div>
-<div class="section" id="id340">
+<div class="section" id="id344">
 <h2>Description</h2>
 <p>MagickSetImageGreenPrimary() sets the image chromaticity green primary
 point.</p>
@@ -4897,14 +4941,14 @@ unsigned int MagickSetImageGreenPrimary( MagickWand *wand, const double x, const
 </div>
 </div>
 <div class="section" id="magicksetimageindex">
-<h1><a class="toc-backref" href="#id604">MagickSetImageIndex</a></h1>
-<div class="section" id="id341">
+<h1><a class="toc-backref" href="#id610">MagickSetImageIndex</a></h1>
+<div class="section" id="id345">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageIndex( MagickWand *wand, const long index );
 </pre>
 </div>
-<div class="section" id="id342">
+<div class="section" id="id346">
 <h2>Description</h2>
 <p>MagickSetImageIndex() set the current image to the position of the list
 specified with the index parameter.</p>
@@ -4922,15 +4966,15 @@ unsigned int MagickSetImageIndex( MagickWand *wand, const long index );
 </div>
 </div>
 <div class="section" id="magicksetimageinterlacescheme">
-<h1><a class="toc-backref" href="#id605">MagickSetImageInterlaceScheme</a></h1>
-<div class="section" id="id343">
+<h1><a class="toc-backref" href="#id611">MagickSetImageInterlaceScheme</a></h1>
+<div class="section" id="id347">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageInterlaceScheme( MagickWand *wand,
                                             const <a class="reference external" href="../api/types.html#interlacetype">InterlaceType</a> interlace_scheme );
 </pre>
 </div>
-<div class="section" id="id344">
+<div class="section" id="id348">
 <h2>Description</h2>
 <p>MagickSetImageInterlaceScheme() sets the image compression.</p>
 <p>The format of the MagickSetImageInterlaceScheme method is:</p>
@@ -4948,14 +4992,14 @@ PlaneInterlace, PartitionInterlace.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimageiterations">
-<h1><a class="toc-backref" href="#id606">MagickSetImageIterations</a></h1>
-<div class="section" id="id345">
+<h1><a class="toc-backref" href="#id612">MagickSetImageIterations</a></h1>
+<div class="section" id="id349">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageIterations( MagickWand *wand, const unsigned long iterations );
 </pre>
 </div>
-<div class="section" id="id346">
+<div class="section" id="id350">
 <h2>Description</h2>
 <p>MagickSetImageIterations() sets the image iterations.</p>
 <p>The format of the MagickSetImageIterations method is:</p>
@@ -4971,14 +5015,14 @@ unsigned int MagickSetImageIterations( MagickWand *wand, const unsigned long ite
 </div>
 </div>
 <div class="section" id="magicksetimagemattecolor">
-<h1><a class="toc-backref" href="#id607">MagickSetImageMatteColor</a></h1>
-<div class="section" id="id347">
+<h1><a class="toc-backref" href="#id613">MagickSetImageMatteColor</a></h1>
+<div class="section" id="id351">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageMatteColor( MagickWand *wand, const PixelWand *matte );
 </pre>
 </div>
-<div class="section" id="id348">
+<div class="section" id="id352">
 <h2>Description</h2>
 <p>MagickSetImageMatteColor() sets the image matte color.</p>
 <p>The format of the MagickSetImageMatteColor method is:</p>
@@ -4994,15 +5038,15 @@ unsigned int MagickSetImageMatteColor( MagickWand *wand, const PixelWand *matte 
 </div>
 </div>
 <div class="section" id="magicksetimageoption">
-<h1><a class="toc-backref" href="#id608">MagickSetImageOption</a></h1>
-<div class="section" id="id349">
+<h1><a class="toc-backref" href="#id614">MagickSetImageOption</a></h1>
+<div class="section" id="id353">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageOption( MagickWand *wand, const char *format, const char *key,
                                    const char *value );
 </pre>
 </div>
-<div class="section" id="id350">
+<div class="section" id="id354">
 <h2>Description</h2>
 <p>MagickSetImageOption() associates one or options with a particular image
 format (.e.g MagickSetImageOption(wand,&quot;jpeg&quot;,&quot;perserve&quot;,&quot;yes&quot;).</p>
@@ -5024,17 +5068,17 @@ unsigned int MagickSetImageOption( MagickWand *wand, const char *format, const c
 </div>
 </div>
 <div class="section" id="magicksetimagepixels">
-<h1><a class="toc-backref" href="#id609">MagickSetImagePixels</a></h1>
-<div class="section" id="id351">
+<h1><a class="toc-backref" href="#id615">MagickSetImagePixels</a></h1>
+<div class="section" id="id355">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImagePixels( MagickWand *wand, const long x_offset, const long y_offset,
                                    const unsigned long columns, const unsigned long rows,
                                    const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> storage,
-                                   void *pixels );
+                                   unsigned char *pixels );
 </pre>
 </div>
-<div class="section" id="id352">
+<div class="section" id="id356">
 <h2>Description</h2>
 <p>MagickSetImagePixels() accepts pixel data and stores it in the image at the
 location you specify.  The method returns False on success otherwise True
@@ -5048,23 +5092,24 @@ character data in red-green-blue order:</p>
 unsigned int MagickSetImagePixels( MagickWand *wand, const long x_offset, const long y_offset,
                                    const unsigned long columns, const unsigned long rows,
                                    const char *map, const <a class="reference external" href="../api/types.html#storagetype">StorageType</a> storage,
-                                   void *pixels );
+                                   unsigned char *pixels );
 </pre>
 <dl class="docutils">
 <dt>wand:</dt>
 <dd>The magick wand.</dd>
-<dt>x_offset, y_offset, columns, rows:</dt>
-<dd>These values define the perimeter
-of a region of pixels you want to define.</dd>
+<dt>x_offset, y_offset:</dt>
+<dd>Offset (from top left) on base canvas image on
+which to composite image data.</dd>
+<dt>columns, rows:</dt>
+<dd>Dimensions of image.</dd>
 <dt>map:</dt>
-<dd>This string reflects the pixel data type and expected ordering of
-the pixel array.  The first character of the map must be one of: &quot;C&quot; for
-character, &quot;S&quot; for short, &quot;I&quot; for integer, &quot;L&quot; for long, &quot;F&quot; for float,
-or &quot;D&quot; for double.  Note, Float and double types are normalized to
-[0..1] otherwise [0..MaxRGB].  The remaining characters of the map
-reflect the ordering of the pixel array.  It can be any combination or
-order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-M = magenta, K = black, or I = intensity (for grayscale).</dd>
+<dd>This string reflects the expected ordering of the pixel array.
+It can be any combination or order of R = red, G = green, B = blue,
+A = alpha (same as Transparency), O = Opacity, T = Transparency,
+C = cyan, Y = yellow, M = magenta, K = black, or I = intensity
+(for grayscale). Specify &quot;P&quot; = pad, to skip over a quantum which is
+intentionally ignored. Creation of an alpha channel for CMYK images
+is currently not supported.</dd>
 <dt>storage:</dt>
 <dd>Define the data type of the pixels.  Float and double types are
 expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
@@ -5078,8 +5123,8 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimageprofile">
-<h1><a class="toc-backref" href="#id610">MagickSetImageProfile</a></h1>
-<div class="section" id="id353">
+<h1><a class="toc-backref" href="#id616">MagickSetImageProfile</a></h1>
+<div class="section" id="id357">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageProfile( MagickWand *wand, const char *name,
@@ -5087,7 +5132,7 @@ unsigned int MagickSetImageProfile( MagickWand *wand, const char *name,
                                     const unsigned long length );
 </pre>
 </div>
-<div class="section" id="id354">
+<div class="section" id="id358">
 <h2>Description</h2>
 <p>MagickSetImageProfile() adds a named profile to the magick wand.  If a
 profile with the same name already exists, it is replaced.  This method
@@ -5112,14 +5157,14 @@ unsigned int MagickSetImageProfile( MagickWand *wand, const char *name,
 </div>
 </div>
 <div class="section" id="magicksetimageredprimary">
-<h1><a class="toc-backref" href="#id611">MagickSetImageRedPrimary</a></h1>
-<div class="section" id="id355">
+<h1><a class="toc-backref" href="#id617">MagickSetImageRedPrimary</a></h1>
+<div class="section" id="id359">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageRedPrimary( MagickWand *wand, const double x, const double y );
 </pre>
 </div>
-<div class="section" id="id356">
+<div class="section" id="id360">
 <h2>Description</h2>
 <p>MagickSetImageRedPrimary() sets the image chromaticity red primary point.</p>
 <p>The format of the MagickSetImageRedPrimary method is:</p>
@@ -5137,15 +5182,15 @@ unsigned int MagickSetImageRedPrimary( MagickWand *wand, const double x, const d
 </div>
 </div>
 <div class="section" id="magicksetimagerenderingintent">
-<h1><a class="toc-backref" href="#id612">MagickSetImageRenderingIntent</a></h1>
-<div class="section" id="id357">
+<h1><a class="toc-backref" href="#id618">MagickSetImageRenderingIntent</a></h1>
+<div class="section" id="id361">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageRenderingIntent( MagickWand *wand,
                                             const <a class="reference external" href="../api/types.html#renderingintent">RenderingIntent</a> rendering_intent );
 </pre>
 </div>
-<div class="section" id="id358">
+<div class="section" id="id362">
 <h2>Description</h2>
 <p>MagickSetImageRenderingIntent() sets the image rendering intent.</p>
 <p>The format of the MagickSetImageRenderingIntent method is:</p>
@@ -5163,15 +5208,15 @@ SaturationIntent, PerceptualIntent, AbsoluteIntent, or RelativeIntent.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimageresolution">
-<h1><a class="toc-backref" href="#id613">MagickSetImageResolution</a></h1>
-<div class="section" id="id359">
+<h1><a class="toc-backref" href="#id619">MagickSetImageResolution</a></h1>
+<div class="section" id="id363">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageResolution( MagickWand *wand, const double x_resolution,
                                        const doubtl y_resolution );
 </pre>
 </div>
-<div class="section" id="id360">
+<div class="section" id="id364">
 <h2>Description</h2>
 <p>MagickSetImageResolution() sets the image resolution.</p>
 <p>The format of the MagickSetImageResolution method is:</p>
@@ -5190,14 +5235,14 @@ unsigned int MagickSetImageResolution( MagickWand *wand, const double x_resoluti
 </div>
 </div>
 <div class="section" id="magicksetimagescene">
-<h1><a class="toc-backref" href="#id614">MagickSetImageScene</a></h1>
-<div class="section" id="id361">
+<h1><a class="toc-backref" href="#id620">MagickSetImageScene</a></h1>
+<div class="section" id="id365">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageScene( MagickWand *wand, const unsigned long scene );
 </pre>
 </div>
-<div class="section" id="id362">
+<div class="section" id="id366">
 <h2>Description</h2>
 <p>MagickSetImageScene() sets the image scene.</p>
 <p>The format of the MagickSetImageScene method is:</p>
@@ -5213,14 +5258,14 @@ unsigned int MagickSetImageScene( MagickWand *wand, const unsigned long scene );
 </div>
 </div>
 <div class="section" id="magicksetimagetype">
-<h1><a class="toc-backref" href="#id615">MagickSetImageType</a></h1>
-<div class="section" id="id363">
+<h1><a class="toc-backref" href="#id621">MagickSetImageType</a></h1>
+<div class="section" id="id367">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageType( MagickWand *wand, const <a class="reference external" href="../api/types.html#imagetype">ImageType</a> image_type );
 </pre>
 </div>
-<div class="section" id="id364">
+<div class="section" id="id368">
 <h2>Description</h2>
 <p>MagickSetImageType() sets the image type.</p>
 <p>The format of the MagickSetImageType method is:</p>
@@ -5239,14 +5284,14 @@ or OptimizeType.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimageunits">
-<h1><a class="toc-backref" href="#id616">MagickSetImageUnits</a></h1>
-<div class="section" id="id365">
+<h1><a class="toc-backref" href="#id622">MagickSetImageUnits</a></h1>
+<div class="section" id="id369">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageUnits( MagickWand *wand, const <a class="reference external" href="../api/types.html#resolutiontype">ResolutionType</a> units );
 </pre>
 </div>
-<div class="section" id="id366">
+<div class="section" id="id370">
 <h2>Description</h2>
 <p>MagickSetImageUnits() sets the image units of resolution.</p>
 <p>The format of the MagickSetImageUnits method is:</p>
@@ -5263,15 +5308,15 @@ PixelsPerInchResolution, or PixelsPerCentimeterResolution.</dd>
 </div>
 </div>
 <div class="section" id="magicksetimagevirtualpixelmethod">
-<h1><a class="toc-backref" href="#id617">MagickSetImageVirtualPixelMethod</a></h1>
-<div class="section" id="id367">
+<h1><a class="toc-backref" href="#id623">MagickSetImageVirtualPixelMethod</a></h1>
+<div class="section" id="id371">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageVirtualPixelMethod( MagickWand *wand,
                                                const <a class="reference external" href="../api/types.html#virtualpixelmethod">VirtualPixelMethod</a> method );
 </pre>
 </div>
-<div class="section" id="id368">
+<div class="section" id="id372">
 <h2>Description</h2>
 <p>MagickSetImageVirtualPixelMethod() sets the image virtual pixel method.</p>
 <p>The format of the MagickSetImageVirtualPixelMethod method is:</p>
@@ -5290,15 +5335,15 @@ MirrorVirtualPixelMethod, or TileVirtualPixelMethod.</dd>
 </div>
 </div>
 <div class="section" id="magicksetinterlacescheme">
-<h1><a class="toc-backref" href="#id618">MagickSetInterlaceScheme</a></h1>
-<div class="section" id="id369">
+<h1><a class="toc-backref" href="#id624">MagickSetInterlaceScheme</a></h1>
+<div class="section" id="id373">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetInterlaceScheme( MagickWand *wand,
                                        const <a class="reference external" href="../api/types.html#interlacetype">InterlaceType</a> interlace_scheme );
 </pre>
 </div>
-<div class="section" id="id370">
+<div class="section" id="id374">
 <h2>Description</h2>
 <p>MagickSetInterlaceScheme() sets the image compression.</p>
 <p>The format of the MagickSetInterlaceScheme method is:</p>
@@ -5316,15 +5361,15 @@ PlaneInterlace, PartitionInterlace.</dd>
 </div>
 </div>
 <div class="section" id="magicksetresolution">
-<h1><a class="toc-backref" href="#id619">MagickSetResolution</a></h1>
-<div class="section" id="id371">
+<h1><a class="toc-backref" href="#id625">MagickSetResolution</a></h1>
+<div class="section" id="id375">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetResolution( MagickWand *wand, const double x_resolution,
                                   const double y_resolution );
 </pre>
 </div>
-<div class="section" id="id372">
+<div class="section" id="id376">
 <h2>Description</h2>
 <p>MagickSetResolution() sets the resolution (density) of the magick wand.
 Set it before you read an EPS, PDF, or Postscript file in order to
@@ -5349,14 +5394,14 @@ unsigned int MagickSetResolution( MagickWand *wand, const double x_resolution,
 </div>
 </div>
 <div class="section" id="magicksetresolutionunits">
-<h1><a class="toc-backref" href="#id620">MagickSetResolutionUnits</a></h1>
-<div class="section" id="id373">
+<h1><a class="toc-backref" href="#id626">MagickSetResolutionUnits</a></h1>
+<div class="section" id="id377">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetResolutionUnits( MagickWand *wand, const <a class="reference external" href="../api/types.html#resolutiontype">ResolutionType</a> units );
 </pre>
 </div>
-<div class="section" id="id374">
+<div class="section" id="id378">
 <h2>Description</h2>
 <p>MagickSetResolutionUnits() sets the resolution units of the magick wand.
 It should be used in conjunction with MagickSetResolution().
@@ -5377,14 +5422,14 @@ PixelsPerInchResolution, or PixelsPerCentimeterResolution.</dd>
 </div>
 </div>
 <div class="section" id="magicksetresourcelimit">
-<h1><a class="toc-backref" href="#id621">MagickSetResourceLimit</a></h1>
-<div class="section" id="id375">
+<h1><a class="toc-backref" href="#id627">MagickSetResourceLimit</a></h1>
+<div class="section" id="id379">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetResourceLimit( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long *limit );
 </pre>
 </div>
-<div class="section" id="id376">
+<div class="section" id="id380">
 <h2>Description</h2>
 <p>MagickSetResourceLimit() sets the limit for a particular resource in
 megabytes.</p>
@@ -5401,15 +5446,15 @@ DiskResource, FileResource.</dd>
 </div>
 </div>
 <div class="section" id="magicksetsamplingfactors">
-<h1><a class="toc-backref" href="#id622">MagickSetSamplingFactors</a></h1>
-<div class="section" id="id377">
+<h1><a class="toc-backref" href="#id628">MagickSetSamplingFactors</a></h1>
+<div class="section" id="id381">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetSamplingFactors( MagickWand *wand, const unsigned long number_factors,
                                        const double *sampling_factors );
 </pre>
 </div>
-<div class="section" id="id378">
+<div class="section" id="id382">
 <h2>Description</h2>
 <p>MagickSetSamplingFactors() sets the image sampling factors.</p>
 <p>The format of the MagickSetSamplingFactors method is:</p>
@@ -5429,15 +5474,15 @@ for each color component (in RGB order).</dd>
 </div>
 </div>
 <div class="section" id="magicksetsize">
-<h1><a class="toc-backref" href="#id623">MagickSetSize</a></h1>
-<div class="section" id="id379">
+<h1><a class="toc-backref" href="#id629">MagickSetSize</a></h1>
+<div class="section" id="id383">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetSize( MagickWand *wand, const unsigned long columns,
                             const unsigned long rows );
 </pre>
 </div>
-<div class="section" id="id380">
+<div class="section" id="id384">
 <h2>Description</h2>
 <p>MagickSetSize() sets the size of the magick wand.  Set it before you
 read a raw image format such as RGB, GRAY, or CMYK.</p>
@@ -5457,14 +5502,14 @@ unsigned int MagickSetSize( MagickWand *wand, const unsigned long columns,
 </div>
 </div>
 <div class="section" id="magicksetimagewhitepoint">
-<h1><a class="toc-backref" href="#id624">MagickSetImageWhitePoint</a></h1>
-<div class="section" id="id381">
+<h1><a class="toc-backref" href="#id630">MagickSetImageWhitePoint</a></h1>
+<div class="section" id="id385">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetImageWhitePoint( MagickWand *wand, const double x, const double y );
 </pre>
 </div>
-<div class="section" id="id382">
+<div class="section" id="id386">
 <h2>Description</h2>
 <p>MagickSetImageWhitePoint() sets the image chromaticity white point.</p>
 <p>The format of the MagickSetImageWhitePoint method is:</p>
@@ -5482,14 +5527,14 @@ unsigned int MagickSetImageWhitePoint( MagickWand *wand, const double x, const d
 </div>
 </div>
 <div class="section" id="magicksetpassphrase">
-<h1><a class="toc-backref" href="#id625">MagickSetPassphrase</a></h1>
-<div class="section" id="id383">
+<h1><a class="toc-backref" href="#id631">MagickSetPassphrase</a></h1>
+<div class="section" id="id387">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSetPassphrase( MagickWand *wand, const char *passphrase );
 </pre>
 </div>
-<div class="section" id="id384">
+<div class="section" id="id388">
 <h2>Description</h2>
 <p>MagickSetPassphrase() sets the passphrase.</p>
 <p>The format of the MagickSetPassphrase method is:</p>
@@ -5506,14 +5551,14 @@ unsigned int MagickSetPassphrase( MagickWand *wand, const char *passphrase );
 </div>
 </div>
 <div class="section" id="magicksharpenimage">
-<h1><a class="toc-backref" href="#id626">MagickSharpenImage</a></h1>
-<div class="section" id="id385">
+<h1><a class="toc-backref" href="#id632">MagickSharpenImage</a></h1>
+<div class="section" id="id389">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSharpenImage( MagickWand *wand, const double radius, const double sigma );
 </pre>
 </div>
-<div class="section" id="id386">
+<div class="section" id="id390">
 <h2>Description</h2>
 <p>MagickSharpenImage() sharpens an image.  We convolve the image with a Gaussian
 operator of the given radius and standard deviation (sigma).
@@ -5535,15 +5580,15 @@ pixel.</dd>
 </div>
 </div>
 <div class="section" id="magickshaveimage">
-<h1><a class="toc-backref" href="#id627">MagickShaveImage</a></h1>
-<div class="section" id="id387">
+<h1><a class="toc-backref" href="#id633">MagickShaveImage</a></h1>
+<div class="section" id="id391">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickShaveImage( MagickWand *wand, const unsigned long columns,
                                const unsigned long rows );
 </pre>
 </div>
-<div class="section" id="id388">
+<div class="section" id="id392">
 <h2>Description</h2>
 <p>MagickShaveImage() shaves pixels from the image edges.  It allocates the
 memory necessary for the new Image structure and returns a pointer to the
@@ -5564,15 +5609,15 @@ unsigned int MagickShaveImage( MagickWand *wand, const unsigned long columns,
 </div>
 </div>
 <div class="section" id="magickshearimage">
-<h1><a class="toc-backref" href="#id628">MagickShearImage</a></h1>
-<div class="section" id="id389">
+<h1><a class="toc-backref" href="#id634">MagickShearImage</a></h1>
+<div class="section" id="id393">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickShearImage( MagickWand *wand, const PixelWand *background,
                                const double x_shear, onst double y_shear );
 </pre>
 </div>
-<div class="section" id="id390">
+<div class="section" id="id394">
 <h2>Description</h2>
 <p>MagickShearImage() slides one edge of an image along the X or Y axis,
 creating a parallelogram.  An X direction shear slides an edge along the X
@@ -5599,14 +5644,14 @@ unsigned int MagickShearImage( MagickWand *wand, const PixelWand *background,
 </div>
 </div>
 <div class="section" id="magicksolarizeimage">
-<h1><a class="toc-backref" href="#id629">MagickSolarizeImage</a></h1>
-<div class="section" id="id391">
+<h1><a class="toc-backref" href="#id635">MagickSolarizeImage</a></h1>
+<div class="section" id="id395">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSolarizeImage( MagickWand *wand, const double threshold );
 </pre>
 </div>
-<div class="section" id="id392">
+<div class="section" id="id396">
 <h2>Description</h2>
 <p>MagickSolarizeImage() applies a special effect to the image, similar to the
 effect achieved in a photo darkroom by selectively exposing areas of photo
@@ -5626,14 +5671,14 @@ unsigned int MagickSolarizeImage( MagickWand *wand, const double threshold );
 </div>
 </div>
 <div class="section" id="magickspreadimage">
-<h1><a class="toc-backref" href="#id630">MagickSpreadImage</a></h1>
-<div class="section" id="id393">
+<h1><a class="toc-backref" href="#id636">MagickSpreadImage</a></h1>
+<div class="section" id="id397">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSpreadImage( MagickWand *wand, const double radius );
 </pre>
 </div>
-<div class="section" id="id394">
+<div class="section" id="id398">
 <h2>Description</h2>
 <p>MagickSpreadImage() is a special effects method that randomly displaces each
 pixel in a block defined by the radius parameter.</p>
@@ -5651,15 +5696,15 @@ unsigned int MagickSpreadImage( MagickWand *wand, const double radius );
 </div>
 </div>
 <div class="section" id="magicksteganoimage">
-<h1><a class="toc-backref" href="#id631">MagickSteganoImage</a></h1>
-<div class="section" id="id395">
+<h1><a class="toc-backref" href="#id637">MagickSteganoImage</a></h1>
+<div class="section" id="id399">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickWand *MagickSteganoImage( MagickWand *wand, const MagickWand *watermark_wand,
                                 const long offset );
 </pre>
 </div>
-<div class="section" id="id396">
+<div class="section" id="id400">
 <h2>Description</h2>
 <p>Use MagickSteganoImage() to hide a digital watermark within the image.
 Recover the hidden watermark later to prove that the authenticity of
@@ -5681,14 +5726,14 @@ MagickWand *MagickSteganoImage( MagickWand *wand, const MagickWand *watermark_wa
 </div>
 </div>
 <div class="section" id="magickstereoimage">
-<h1><a class="toc-backref" href="#id632">MagickStereoImage</a></h1>
-<div class="section" id="id397">
+<h1><a class="toc-backref" href="#id638">MagickStereoImage</a></h1>
+<div class="section" id="id401">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickWand *MagickStereoImage( MagickWand *wand, const MagickWand *offset_wand );
 </pre>
 </div>
-<div class="section" id="id398">
+<div class="section" id="id402">
 <h2>Description</h2>
 <p>MagickStereoImage() composites two images and produces a single image that
 is the composite of a left and right image of a stereo pair</p>
@@ -5705,14 +5750,14 @@ MagickWand *MagickStereoImage( MagickWand *wand, const MagickWand *offset_wand )
 </div>
 </div>
 <div class="section" id="magickstripimage">
-<h1><a class="toc-backref" href="#id633">MagickStripImage</a></h1>
-<div class="section" id="id399">
+<h1><a class="toc-backref" href="#id639">MagickStripImage</a></h1>
+<div class="section" id="id403">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickStripImage( MagickWand *wand );
 </pre>
 </div>
-<div class="section" id="id400">
+<div class="section" id="id404">
 <h2>Description</h2>
 <p>MagickStripImage() strips an image of all profiles and comments.</p>
 <p>The format of the MagickStripImage method is:</p>
@@ -5727,14 +5772,14 @@ unsigned int MagickStripImage( MagickWand *wand );
 </div>
 </div>
 <div class="section" id="magickswirlimage">
-<h1><a class="toc-backref" href="#id634">MagickSwirlImage</a></h1>
-<div class="section" id="id401">
+<h1><a class="toc-backref" href="#id640">MagickSwirlImage</a></h1>
+<div class="section" id="id405">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickSwirlImage( MagickWand *wand, const double degrees );
 </pre>
 </div>
-<div class="section" id="id402">
+<div class="section" id="id406">
 <h2>Description</h2>
 <p>MagickSwirlImage() swirls the pixels about the center of the image, where
 degrees indicates the sweep of the arc through which each pixel is moved.
@@ -5753,14 +5798,14 @@ unsigned int MagickSwirlImage( MagickWand *wand, const double degrees );
 </div>
 </div>
 <div class="section" id="magicktextureimage">
-<h1><a class="toc-backref" href="#id635">MagickTextureImage</a></h1>
-<div class="section" id="id403">
+<h1><a class="toc-backref" href="#id641">MagickTextureImage</a></h1>
+<div class="section" id="id407">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickWand *MagickTextureImage( MagickWand *wand, const MagickWand *texture_wand );
 </pre>
 </div>
-<div class="section" id="id404">
+<div class="section" id="id408">
 <h2>Description</h2>
 <p>MagickTextureImage() repeatedly tiles the texture image across and down the
 image canvas.</p>
@@ -5777,14 +5822,14 @@ MagickWand *MagickTextureImage( MagickWand *wand, const MagickWand *texture_wand
 </div>
 </div>
 <div class="section" id="magickthresholdimage">
-<h1><a class="toc-backref" href="#id636">MagickThresholdImage</a></h1>
-<div class="section" id="id405">
+<h1><a class="toc-backref" href="#id642">MagickThresholdImage</a></h1>
+<div class="section" id="id409">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickThresholdImage( MagickWand *wand, const double threshold );
 </pre>
 </div>
-<div class="section" id="id406">
+<div class="section" id="id410">
 <h2>Description</h2>
 <p>MagickThresholdImage() changes the value of individual pixels based on
 the intensity of each pixel compared to threshold.  The result is a
@@ -5802,15 +5847,15 @@ unsigned int MagickThresholdImage( MagickWand *wand, const double threshold );
 </div>
 </div>
 <div class="section" id="magickthresholdimagechannel">
-<h1><a class="toc-backref" href="#id637">MagickThresholdImageChannel</a></h1>
-<div class="section" id="id407">
+<h1><a class="toc-backref" href="#id643">MagickThresholdImageChannel</a></h1>
+<div class="section" id="id411">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickThresholdImageChannel( MagickWand *wand, const <a class="reference external" href="../api/types.html#channeltype">ChannelType</a> channel,
                                           const double threshold );
 </pre>
 </div>
-<div class="section" id="id408">
+<div class="section" id="id412">
 <h2>Description</h2>
 <p>MagickThresholdImageChannel() changes the value of individual pixel
 component based on the intensity of each pixel compared to threshold.  The
@@ -5831,15 +5876,15 @@ unsigned int MagickThresholdImageChannel( MagickWand *wand, const <a class="refe
 </div>
 </div>
 <div class="section" id="magicktintimage">
-<h1><a class="toc-backref" href="#id638">MagickTintImage</a></h1>
-<div class="section" id="id409">
+<h1><a class="toc-backref" href="#id644">MagickTintImage</a></h1>
+<div class="section" id="id413">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickTintImage( MagickWand *wand, const PixelWand *tint,
                               const PixelWand *opacity );
 </pre>
 </div>
-<div class="section" id="id410">
+<div class="section" id="id414">
 <h2>Description</h2>
 <p>MagickTintImage() applies a color vector to each pixel in the image.  The
 length of the vector is 0 for black and white and at its maximum for the
@@ -5861,15 +5906,15 @@ unsigned int MagickTintImage( MagickWand *wand, const PixelWand *tint,
 </div>
 </div>
 <div class="section" id="magicktransformimage">
-<h1><a class="toc-backref" href="#id639">MagickTransformImage</a></h1>
-<div class="section" id="id411">
+<h1><a class="toc-backref" href="#id645">MagickTransformImage</a></h1>
+<div class="section" id="id415">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickWand *MagickTransformImage( MagickWand *wand, const char *crop,
                                   const char *geometry );
 </pre>
 </div>
-<div class="section" id="id412">
+<div class="section" id="id416">
 <h2>Description</h2>
 <p>MagickTransformImage() is a convenience method that behaves like
 MagickResizeImage() or MagickCropImage() but accepts scaling and/or cropping
@@ -5893,15 +5938,15 @@ size of the image.</dd>
 </div>
 </div>
 <div class="section" id="magicktransparentimage">
-<h1><a class="toc-backref" href="#id640">MagickTransparentImage</a></h1>
-<div class="section" id="id413">
+<h1><a class="toc-backref" href="#id646">MagickTransparentImage</a></h1>
+<div class="section" id="id417">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickTransparentImage( MagickWand *wand, const PixelWand *target,
                                      const unsigned int opacity, const double fuzz );
 </pre>
 </div>
-<div class="section" id="id414">
+<div class="section" id="id418">
 <h2>Description</h2>
 <p>MagickTransparentImage() changes any pixel that matches color with the color
 defined by fill.</p>
@@ -5929,14 +5974,14 @@ as the same color for the purposes of the floodfill.</dd>
 </div>
 </div>
 <div class="section" id="magicktrimimage">
-<h1><a class="toc-backref" href="#id641">MagickTrimImage</a></h1>
-<div class="section" id="id415">
+<h1><a class="toc-backref" href="#id647">MagickTrimImage</a></h1>
+<div class="section" id="id419">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickTrimImage( MagickWand *wand, const double fuzz );
 </pre>
 </div>
-<div class="section" id="id416">
+<div class="section" id="id420">
 <h2>Description</h2>
 <p>MagickTrimImage() remove edges that are the background color from the image.</p>
 <p>The format of the MagickTrimImage method is:</p>
@@ -5958,15 +6003,15 @@ as the same color for the purposes of the floodfill.</dd>
 </div>
 </div>
 <div class="section" id="magickunsharpmaskimage">
-<h1><a class="toc-backref" href="#id642">MagickUnsharpMaskImage</a></h1>
-<div class="section" id="id417">
+<h1><a class="toc-backref" href="#id648">MagickUnsharpMaskImage</a></h1>
+<div class="section" id="id421">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickUnsharpMaskImage( MagickWand *wand, const double radius, const double sigma,
                                      const double amount, const double threshold );
 </pre>
 </div>
-<div class="section" id="id418">
+<div class="section" id="id422">
 <h2>Description</h2>
 <p>MagickUnsharpMaskImage() sharpens an image.  We convolve the image with a
 Gaussian operator of the given radius and standard deviation (sigma).
@@ -5994,15 +6039,15 @@ blur image that is added back into the original.</dd>
 </div>
 </div>
 <div class="section" id="magickwaveimage">
-<h1><a class="toc-backref" href="#id643">MagickWaveImage</a></h1>
-<div class="section" id="id419">
+<h1><a class="toc-backref" href="#id649">MagickWaveImage</a></h1>
+<div class="section" id="id423">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickWaveImage( MagickWand *wand, const double amplitude,
                               const double wave_length );
 </pre>
 </div>
-<div class="section" id="id420">
+<div class="section" id="id424">
 <h2>Description</h2>
 <p>MagickWaveImage()  creates a &quot;ripple&quot; effect in the image by shifting
 the pixels vertically along a sine wave whose amplitude and wavelength
@@ -6022,14 +6067,14 @@ sine wave.</dd>
 </div>
 </div>
 <div class="section" id="magickwhitethresholdimage">
-<h1><a class="toc-backref" href="#id644">MagickWhiteThresholdImage</a></h1>
-<div class="section" id="id421">
+<h1><a class="toc-backref" href="#id650">MagickWhiteThresholdImage</a></h1>
+<div class="section" id="id425">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickWhiteThresholdImage( MagickWand *wand, const PixelWand *threshold );
 </pre>
 </div>
-<div class="section" id="id422">
+<div class="section" id="id426">
 <h2>Description</h2>
 <p>MagickWhiteThresholdImage() is like ThresholdImage() but  forces all pixels
 above the threshold into white while leaving all pixels below the threshold
@@ -6047,14 +6092,14 @@ unsigned int MagickWhiteThresholdImage( MagickWand *wand, const PixelWand *thres
 </div>
 </div>
 <div class="section" id="magickwriteimage">
-<h1><a class="toc-backref" href="#id645">MagickWriteImage</a></h1>
-<div class="section" id="id423">
+<h1><a class="toc-backref" href="#id651">MagickWriteImage</a></h1>
+<div class="section" id="id427">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickWriteImage( MagickWand *wand, const char *filename );
 </pre>
 </div>
-<div class="section" id="id424">
+<div class="section" id="id428">
 <h2>Description</h2>
 <p>MagickWriteImage() writes an image.</p>
 <p>The format of the MagickWriteImage method is:</p>
@@ -6071,18 +6116,23 @@ unsigned int MagickWriteImage( MagickWand *wand, const char *filename );
 </div>
 </div>
 <div class="section" id="magickwriteimageblob">
-<h1><a class="toc-backref" href="#id646">MagickWriteImageBlob</a></h1>
-<div class="section" id="id425">
+<h1><a class="toc-backref" href="#id652">MagickWriteImageBlob</a></h1>
+<div class="section" id="id429">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned char *MagickWriteImageBlob( MagickWand *wand, size_t *length );
 </pre>
 </div>
-<div class="section" id="id426">
+<div class="section" id="id430">
 <h2>Description</h2>
 <p>MagickWriteImageBlob() implements direct to memory image formats.  It
-returns the image as a blob and its length.  The magick member of the Image
-structure determines the format of the returned blob (GIF, JPEG,  PNG, etc.)</p>
+returns the image as a blob (a formatted &quot;file&quot; in memory) and its
+length, starting from the current position in the image sequence.
+Use MagickSetImageFormat() to set the format to write to the blob
+(GIF, JPEG,  PNG, etc.).</p>
+<p>Use MagickResetIterator() on the wand if it is desired to write
+a sequence from the beginning and the iterator is not currently
+at the beginning.</p>
 <p>The format of the MagickWriteImageBlob method is:</p>
 <pre class="literal-block">
 unsigned char *MagickWriteImageBlob( MagickWand *wand, size_t *length );
@@ -6097,14 +6147,14 @@ unsigned char *MagickWriteImageBlob( MagickWand *wand, size_t *length );
 </div>
 </div>
 <div class="section" id="magickwriteimagefile">
-<h1><a class="toc-backref" href="#id647">MagickWriteImageFile</a></h1>
-<div class="section" id="id427">
+<h1><a class="toc-backref" href="#id653">MagickWriteImageFile</a></h1>
+<div class="section" id="id431">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickWriteImageFile( MagickWand *wand, FILE *file );
 </pre>
 </div>
-<div class="section" id="id428">
+<div class="section" id="id432">
 <h2>Description</h2>
 <p>MagickWriteImageFile() writes an image to an open file descriptor.</p>
 <p>The format of the MagickWandToFile method is:</p>
@@ -6121,17 +6171,19 @@ unsigned int MagickWriteImageFile( MagickWand *wand, FILE *file );
 </div>
 </div>
 <div class="section" id="magickwriteimages">
-<h1><a class="toc-backref" href="#id648">MagickWriteImages</a></h1>
-<div class="section" id="id429">
+<h1><a class="toc-backref" href="#id654">MagickWriteImages</a></h1>
+<div class="section" id="id433">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int MagickWriteImages( MagickWand *wand, const char *filename,
                                 const unsigned int adjoin );
 </pre>
 </div>
-<div class="section" id="id430">
+<div class="section" id="id434">
 <h2>Description</h2>
-<p>MagickWriteImages() writes an image or image sequence.</p>
+<p>MagickWriteImages() writes an image or image sequence.  If the wand
+represents an image sequence, then it is written starting at the first
+frame in the sequence.</p>
 <p>The format of the MagickWriteImages method is:</p>
 <pre class="literal-block">
 unsigned int MagickWriteImages( MagickWand *wand, const char *filename,
@@ -6148,14 +6200,14 @@ unsigned int MagickWriteImages( MagickWand *wand, const char *filename,
 </div>
 </div>
 <div class="section" id="newmagickwand">
-<h1><a class="toc-backref" href="#id649">NewMagickWand</a></h1>
-<div class="section" id="id431">
+<h1><a class="toc-backref" href="#id655">NewMagickWand</a></h1>
+<div class="section" id="id435">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 MagickWand NewMagickWand( void );
 </pre>
 </div>
-<div class="section" id="id432">
+<div class="section" id="id436">
 <h2>Description</h2>
 <p>NewMagickWand() returns a wand required for all other methods in the API.</p>
 <p>The format of the NewMagickWand method is:</p>
@@ -6164,26 +6216,6 @@ MagickWand NewMagickWand( void );
 </pre>
 </div>
 </div>
-<div class="system-messages section">
-<h1>Docutils System Messages</h1>
-<div class="system-message" id="id650">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-1.3/www/wand/magick_wand.apirst</tt>, line 4623); <em><a href="#id651">backlink</a></em></p>
-Unknown target name: &quot;filtertypes&quot;.</div>
-<div class="system-message" id="id652">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-1.3/www/wand/magick_wand.apirst</tt>, line 4645); <em><a href="#id653">backlink</a></em></p>
-Unknown target name: &quot;filtertypes&quot;.</div>
-<div class="system-message" id="id654">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-1.3/www/wand/magick_wand.apirst</tt>, line 4673); <em><a href="#id655">backlink</a></em></p>
-Unknown target name: &quot;filtertypes&quot;.</div>
-<div class="system-message" id="id656">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">/home/bfriesen/src/graphics/GraphicsMagick-1.3/www/wand/magick_wand.apirst</tt>, line 4696); <em><a href="#id657">backlink</a></em></p>
-Unknown target name: &quot;filtertypes&quot;.</div>
-</div>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2010-01-20 23:38 UTC.
-
 </div>
 </body>
 </html>

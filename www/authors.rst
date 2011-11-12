@@ -36,7 +36,7 @@ Glenn Randers-Pehrson
 		Maintains the SourceForge mailing lists.
 
 Jaroslav Fojtik
-		Authored the ART, CUT, MATLAB, TOPOL, and WPG
+		Authored the ART, CUT, MAC, MATLAB, TOPOL, and WPG
                 coder modules.
 
 Rolf Schroedter

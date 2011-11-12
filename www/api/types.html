@@ -3,49 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Types</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="../index.html">Home</a></li>
-<li><a href="../Copyright.html">License</a></li>
-<li><a href="../mission.html">Mission</a></li>
+<li><a href="../project.html">Project</a></li>
 <li><a href="../download.html">Download</a></li>
-<li><a href="../README.html">Installation</a></li>
-<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="../formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="../process.html">Process</a></li>
-<li><a href="../contribute.html">Contribute</a></li>
-<li><a href="../CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="../Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
-<li><a href="../links.html">Links</a></li>
+<li><a href="../reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="graphicsmagick-types">
@@ -73,7 +58,7 @@
 <li><a class="reference internal" href="#exceptioninfo" id="id18">ExceptionInfo</a></li>
 <li><a class="reference internal" href="#exceptiontype" id="id19">ExceptionType</a></li>
 <li><a class="reference internal" href="#fillrule" id="id20">FillRule</a></li>
-<li><a class="reference internal" href="#filtertype" id="id21">FilterType</a></li>
+<li><a class="reference internal" href="#filtertypes" id="id21">FilterTypes</a></li>
 <li><a class="reference internal" href="#frameinfo" id="id22">FrameInfo</a></li>
 <li><a class="reference internal" href="#gravitytype" id="id23">GravityType</a></li>
 <li><a class="reference internal" href="#image" id="id24">Image</a></li>
@@ -993,8 +978,8 @@ typedef enum
 } FillRule;
 </pre>
 </div>
-<div class="section" id="filtertype">
-<h1><a class="toc-backref" href="#id21">FilterType</a></h1>
+<div class="section" id="filtertypes">
+<h1><a class="toc-backref" href="#id21">FilterTypes</a></h1>
 <p>FilterTypes is used to adjust the filter algorithm used when resizing
 images. Different filters experience varying degrees of success with
 various images and can take significantly different amounts of processing
@@ -1192,17 +1177,6 @@ GraphicsMagick's pixel representation and simplifies the implementation.</p>
 <td>Type</td>
 <td>Description</td>
 </tr>
-<tr><td>attribute</td>
-<td>ImageAttribute*</td>
-<td>Image attribute list. Consists of a
-doubly-linked-list of ImageAttribute structures,
-each of which has an associated key and value.
-Access/update list via SetImageAttribute() and
-GetImageAttribute().  Key-strings used by
-GraphicsMagick include &quot;Comment&quot; (image comment) ,
-&quot;Label&quot; (image label), and &quot;Signature&quot; (image
-signature).</td>
-</tr>
 <tr><td>background_color</td>
 <td>PixelPacket</td>
 <td>Image background color</td>
@@ -1219,12 +1193,6 @@ signature).</td>
 <td>ChromaticityInfo</td>
 <td>Red, green, blue, and white-point chromaticity
 values.</td>
-</tr>
-<tr><td>color_profile</td>
-<td>ProfileInfo</td>
-<td>ICC color profile. Specifications are available
-from the International Color Consortium for the
-format of ICC color profiles.</td>
 </tr>
 <tr><td>colormap</td>
 <td>PixelPacket *</td>
@@ -1247,10 +1215,6 @@ Otherwise the colorspace is ignored.</td>
 <td>unsigned int</td>
 <td>Image width</td>
 </tr>
-<tr><td>comments</td>
-<td>char *</td>
-<td>Image comments</td>
-</tr>
 <tr><td>compression</td>
 <td>CompressionType</td>
 <td>Image compresion type. The default is the
@@ -1266,8 +1230,8 @@ images within Netscape.</td>
 </tr>
 <tr><td>depth</td>
 <td>unsigned int</td>
-<td>Image depth (8 or 16). QuantumLeap must be defined
-before a depth of 16 is valid.</td>
+<td>Image depth.  Number of encoding bits per sample.
+Usually 8 or 16, but sometimes 10 or 12.</td>
 </tr>
 <tr><td>directory</td>
 <td>char *</td>
@@ -1287,22 +1251,10 @@ a GIF animation.</td>
 <td>Record of any error which occurred when updating
 image.</td>
 </tr>
-<tr><td>file</td>
-<td>FILE *</td>
-<td>Stdio stream to read image from or write image to.
-If set, GraphicsMagick will read from or write to
-the stream rather than opening a file. Used by
-ReadImage() and WriteImage(). The stream is closed
-when the operation completes.</td>
-</tr>
 <tr><td>filename</td>
 <td>char
 [MaxTextExtent]</td>
 <td>Image file name to read or write.</td>
-</tr>
-<tr><td>filesize</td>
-<td>long int</td>
-<td>Number of bytes of the encoded file.</td>
 </tr>
 <tr><td>filter</td>
 <td>FilterTypes</td>
@@ -1348,20 +1300,10 @@ and image.B). Use LineInterlace or PlaneInterlace
 to create an interlaced GIF or progressive JPEG
 image.</td>
 </tr>
-<tr><td>iptc_profile</td>
-<td>ProfileInfo</td>
-<td>IPTC profile. Specifications are available from
-the International Press Telecommunications Council
-for IPTC profiles.</td>
-</tr>
 <tr><td>iterations</td>
 <td>unsigned int</td>
 <td>Number of iterations to loop an animation (e.g.
 Netscape loop extension) for.</td>
-</tr>
-<tr><td>list</td>
-<td>struct _Image *</td>
-<td>Undo image list (used only by 'display')</td>
 </tr>
 <tr><td>magick</td>
 <td>char
@@ -1390,13 +1332,6 @@ represents the alpha channel.</td>
 <td>PixelPacket</td>
 <td>Image matte (transparent) color</td>
 </tr>
-<tr><td>mean_error_per_pixel</td>
-<td>unsigned int</td>
-<td>The mean error per pixel computed when an image is
-color reduced. This parameter is only valid if
-verbose is set to true and the image has just been
-quantized.</td>
-</tr>
 <tr><td>montage</td>
 <td>char *</td>
 <td>Tile size and offset within an image montage. Only
@@ -1405,20 +1340,6 @@ valid for montage images.</td>
 <tr><td>next</td>
 <td>struct _Image *</td>
 <td>Next image frame in sequence</td>
-</tr>
-<tr><td>normalized_maximum_error</td>
-<td>double</td>
-<td>The normalized max error per pixel computed when
-an image is color reduced. This parameter is only
-valid if verbose is set to true and the image has
-just been quantized.</td>
-</tr>
-<tr><td>normalized_mean_error</td>
-<td>double</td>
-<td>The normalized mean error per pixel computed when
-an image is color reduced. This parameter is only
-valid if verbose is set to true and the image has
-just been quantized.</td>
 </tr>
 <tr><td>offset</td>
 <td>int</td>
@@ -1430,29 +1351,9 @@ raw image.</td>
 <td>Orientation of the image. Specifies scanline
 orientation and starting coordinate of image.</td>
 </tr>
-<tr><td>orphan</td>
-<td>unsigned int</td>
-<td>When set, CloneImage() clones only the current
-frame, creating an &quot;orphan&quot; frame.</td>
-</tr>
 <tr><td>page</td>
 <td>RectangleInfo</td>
 <td>Equivalent size of Postscript page.</td>
-</tr>
-<tr><td>pipe</td>
-<td>int</td>
-<td>Set to True if image is read/written from/to a
-POSIX pipe. To read from (or write to) an open
-pipe, set this member to True, set the file member
-to a stdio stream representing the pipe (obtained
-from popen()), and invoke ReadImage()/WriteImage()
-. The pipe is automatically closed via pclose()
-when the operation completes.</td>
-</tr>
-<tr><td>pixels</td>
-<td>PixelPacket *</td>
-<td>Image pixels retrieved via GetPixelCache() or
-initialized via SetPixelCache().</td>
 </tr>
 <tr><td>previous</td>
 <td>struct _Image *</td>
@@ -1470,17 +1371,12 @@ initialized via SetPixelCache().</td>
 <td>unsigned int</td>
 <td>Image frame scene number.</td>
 </tr>
-<tr><td>storage_type</td>
+<tr><td>storage_class</td>
 <td>ClassType</td>
 <td>Image storage class. If DirectClass then the image
 packets contain valid RGB or CMYK colors. If
 PseudoClass then the image has a colormap
 referenced by pixel's index member.</td>
-</tr>
-<tr><td>tainted</td>
-<td>int</td>
-<td>Set to  non-zero (True) if the image pixels have
-been modified.</td>
 </tr>
 <tr><td>tile_info</td>
 <td>RectangleInfo</td>
@@ -2941,11 +2837,6 @@ typedef struct _XResourceInfo
 <hr class="docutils" />
 <p>Copyright © GraphicsMagick Group 2002 - 2010</p>
 </div>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2010-01-20 23:38 UTC.
-
 </div>
 </body>
 </html>

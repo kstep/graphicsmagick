@@ -8,13 +8,15 @@ libdir=@libdir@
 usage()
 {
     cat <<EOF
-Usage: xml-config [OPTION]
+Usage: xml2-config [OPTION]
 
 Known values for OPTION are:
 
   --prefix=DIR		change libxml prefix [default $prefix]
+  --exec-prefix=DIR	change libxml exec prefix [default $exec_prefix]
   --libs		print library linking information
   --cflags		print pre-processor and compiler flags
+  --modules		module support enabled
   --help		display this help and exit
   --version		output version information
 EOF
@@ -38,11 +40,22 @@ while test $# -gt 0; do
     case "$1" in
     --prefix=*)
 	prefix=$optarg
+	includedir=$prefix/include
+	libdir=$prefix/lib
 	;;
 
     --prefix)
 	echo $prefix
 	;;
+
+    --exec-prefix=*)
+      exec_prefix=$optarg
+      libdir=$exec_prefix/lib
+      ;;
+
+    --exec-prefix)
+      echo $exec_prefix
+      ;;
 
     --version)
 	echo @VERSION@
@@ -57,8 +70,29 @@ while test $# -gt 0; do
        	echo @XML_INCLUDEDIR@ @XML_CFLAGS@
        	;;
 
+    --libtool-libs)
+	if [ -r ${libdir}/@XML_LIBTOOLLIBS@ ]
+	then
+	    echo ${libdir}/@XML_LIBTOOLLIBS@
+	fi
+        ;;
+
+    --modules)
+       	echo @WITH_MODULES@
+       	;;
+
     --libs)
-       	echo @XML_LIBDIR@ @XML_LIBS@ 
+        if [ "`uname`" = "Linux" ]
+	then
+	    if [ "@XML_LIBDIR@" = "-L/usr/lib" -o "@XML_LIBDIR@" = "-L/usr/lib64" ]
+	    then
+		echo @XML_LIBS@ 
+	    else
+		echo @XML_LIBDIR@ @XML_LIBS@ 
+	    fi
+	else
+	    echo @XML_LIBDIR@ @XML_LIBS@ @WIN32_EXTRA_LIBADD@
+	fi
        	;;
 
     *)

@@ -10,7 +10,7 @@ GraphicsMagick web site pages.
 
 
 url_mailinglist = "http://sourceforge.net/mail/?group_id=73485"
-url_sourceforge = "http://sourceforge.net/projects/graphicsmagick/"
+url_sourceforge = "https://sourceforge.net/tracker/?group_id=73485"
 
 banner_logo = 'images/gm-107x76.png' # relative to top directory
 
@@ -25,17 +25,13 @@ url_prefix = '' # trailing slash always needed
 
 banner_template = """
 <div class="banner">
-<span>
 <img src="%(url_prefix)s%(banner_logo)s" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 """
 
@@ -44,35 +40,23 @@ nav_template = """
 <div class="navmenu">
 <ul>
 <li><a href="%(url_prefix)sindex.html">Home</a></li>
-<li><a href="%(url_prefix)sCopyright.html">License</a></li>
-<li><a href="%(url_prefix)smission.html">Mission</a></li>
+<li><a href="%(url_prefix)sproject.html">Project</a></li>
 <li><a href="%(url_prefix)sdownload.html">Download</a></li>
-<li><a href="%(url_prefix)sREADME.html">Installation</a></li>
-<li><a href="%(url_prefix)sFAQ.html">FAQ</a></li>
+<li><a href="%(url_prefix)sREADME.html">Install</a></li>
+<li><a href="%(url_prefix)sHg.html">Source</a></li>
 <li><a href="%(url_prefix)sNEWS.html">News</a> </li>
-<li><a href="%(url_prefix)sformats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="%(url_prefix)sprocess.html">Process</a></li>
-<li><a href="%(url_prefix)scontribute.html">Contribute</a></li>
-<li><a href="%(url_prefix)sCVS.html">CVS</a></li>
-<li><a href="%(url_mailinglist)s" target="top_">Mailing Lists</a></li>
-<li><a href="%(url_prefix)sChangelog.html">ChangeLog</a></li>
-<li><a href="%(url_sourceforge)s" target="top_">Report Bugs</a></li>
+<li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
 <li><a href="%(url_prefix)sutilities.html">Utilities</a></li>
 <li><a href="%(url_prefix)sprogramming.html">Programming</a></li>
-<li><a href="%(url_prefix)slinks.html">Links</a></li>
+<li><a href="%(url_prefix)sreference.html">Reference</a></li>
 </ul>
 </div>
 """
 
-
 footer_template = """
 <hr class="divider">
 <div class="footer">
-    <p><a href="%(url_prefix)sCopyright.html">Copyright</a>GraphicsMagick Group 2002 - 2010</p>
+    <p><a href="%(url_prefix)sCopyright.html">Copyright</a>GraphicsMagick Group 2002 - 2011</p>
 </div>
 """
 

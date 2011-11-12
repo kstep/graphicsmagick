@@ -29,9 +29,9 @@ testRead( 'input.miff',
   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
 
 #
-# 2) Test reading BZip compressed MIFF (.bz2 extension)
+# 2) Test reading BZip stream-compressed MIFF (.bz2 extension)
 #
-print("Reading Zip compressed MIFF (.bz2 extension) ...\n");
+print("Reading BZip stream-compressed MIFF (.bz2 extension) ...\n");
 ++$test;
 testRead( 'input.miff.bz2',
   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );

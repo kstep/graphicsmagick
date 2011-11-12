@@ -37,6 +37,7 @@ coders/jpeg.c
 coders/label.c
 coders/locale.c
 coders/logo.c
+coders/mac.c
 coders/map.c
 coders/mat.c
 coders/matte.c

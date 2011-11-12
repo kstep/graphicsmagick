@@ -1,4 +1,11 @@
 /*
+ * Copyright (C) 2003 - 2011 GraphicsMagick Group
+ * Copyright (C) 2003 ImageMagick Studio
+ * Copyright 1991-1999 E. I. du Pont de Nemours and Company
+ *
+ * This program is covered by multiple licenses, which are described in
+ * Copyright.txt. You should have received a copy of Copyright.txt with this
+ * package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  *
  * Test file encode/decode operations via write/read/write/read
  * sequence to detect any data corruption problems.  This does not
@@ -27,6 +34,7 @@ int main ( int argc, char **argv )
     *magick_info;
 
   char
+    basefilespec[MaxTextExtent],
     filename[MaxTextExtent],
     format[MaxTextExtent],
     infile[MaxTextExtent],
@@ -36,21 +44,27 @@ int main ( int argc, char **argv )
   int
     arg = 1,
     exit_status = 0,
-    rows = 0,
-    columns = 0,
     pause = 0;
 
-  MagickBool
-    check = MagickTrue;
+  unsigned long
+    original_frames;
 
-  double
-    fuzz_factor = 0;
+  MagickBool
+    check = MagickTrue,
+    check_for_added_frames = MagickTrue;
 
   ImageInfo
     *imageInfo;
 
   ExceptionInfo
     exception;
+
+  (void) memset(basefilespec,0,sizeof(basefilespec));
+  (void) memset(filename,0,sizeof(filename));
+  (void) memset(format,0,sizeof(format));
+  (void) memset(infile,0,sizeof(infile));
+  (void) memset(size,0,sizeof(size));
+  (void) memset(filespec,0,sizeof(filespec));
 
   if (LocaleNCompare("rwfile",argv[0],7) == 0)
     InitializeMagick((char *) NULL);
@@ -59,7 +73,8 @@ int main ( int argc, char **argv )
 
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
-  strcpy(filespec,"out_%d.%s");
+
+  (void) strcpy(basefilespec,"out_%d.%s");
 
   for (arg=1; arg < argc; arg++)
     {
@@ -107,9 +122,11 @@ int main ( int argc, char **argv )
                   exit_status = 1;
                   goto program_exit;
                 }
-              if(imageInfo->depth != 8 && imageInfo->depth != 16 && imageInfo->depth != 32)
+              if(imageInfo->depth != 8 && imageInfo->depth != 16 &&
+		 imageInfo->depth != 32)
                 {
-                  (void) printf("-depth (%ld) not 8, 16, or 32\n", imageInfo->depth);
+                  (void) printf("-depth (%ld) not 8, 16, or 32\n",
+				imageInfo->depth);
                   (void) fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
@@ -117,8 +134,7 @@ int main ( int argc, char **argv )
             }
 	  else if (LocaleCompare("filespec",option+1) == 0)
 	    {
-	      (void) strcpy(filespec,argv[++arg]);
-	      (void) strcat(filespec,".%s");
+	      (void) strcpy(basefilespec,argv[++arg]);
 	    }
           else if (LocaleCompare("log",option+1) == 0)
             {
@@ -157,7 +173,9 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
-      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -filespec spec -log format -nocheck -size geometry -verbose] infile format\n", argv[0] );
+      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth "
+		      "integer -filespec spec -log format -nocheck "
+		      "-size geometry -verbose] infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -167,21 +185,37 @@ int main ( int argc, char **argv )
   arg++;
   (void) strncpy( format, argv[arg], MaxTextExtent-1 );
 
-  /*   for (arg=0; arg < argc; arg++) */
-  /*     (void) printf("%s ", argv[arg]); */
-  /*   (void) printf("\n"); */
-  /*   (void) fflush(stdout); */
+  magick_info=GetMagickInfo(format,&exception);
+  if (magick_info == (MagickInfo *) NULL)
+    {
+      fprintf(stderr, "No support for \"%s\" format.\n",format);
+      exit(1);
+    }
+
+  /*
+    Some formats intentionally modify the number of frames.
+    FAX & JBIG write multiple frames, but read only one frame.
+  */
+  if ((!strcmp( "FAX", format )) ||
+      (!strcmp( "JBIG", format )) ||
+      (!strcmp( "MNG", format )) ||
+      (!strcmp( "PSD", format )) ||
+      (!strcmp( "PTIF", format )) )
+    check_for_added_frames = MagickFalse;
 
   /*
    * Read original image
    */
 
   imageInfo->dither = 0;
+
   (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
-  (void) fflush(stdout);
+  if (!magick_info->adjoin || !check_for_added_frames)
+    (void) strcat( imageInfo->filename, "[0]" );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Reading image %s", imageInfo->filename);
+			"Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
+
   if (exception.severity != UndefinedException)
     {
       CatchException(&exception);
@@ -190,21 +224,48 @@ int main ( int argc, char **argv )
     }
   if ( original == (Image *)NULL )
     {
-      (void) printf ( "Failed to read original image %s\n", imageInfo->filename );
+      (void) printf ( "Failed to read original image %s\n",
+		      imageInfo->filename );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
 
   /*
-   * Obtain original image size if format requires it
-   */
-  rows    = original->rows;
-  columns = original->columns;
+    Save first input file number of frames for later verifications.
+  */
+  original_frames=GetImageListLength(original);
+
+  /*
+    Get file format information.
+  */
   size[0] = '\0';
   magick_info=GetMagickInfo(format,&exception);
-  if (magick_info && magick_info->raw)
-    FormatString( size, "%dx%d", columns, rows );
+  strcpy(filespec,basefilespec);
+
+  if (magick_info->raw)
+    {
+      /*
+       * Specify original image size if format requires it
+       */
+      FormatString( size, "%lux%lu", original->columns, original->rows );
+    }
+  if (IgnoreExtensionTreatment == magick_info->extension_treatment)
+    {
+      /*
+	Prepend magic specifier if extension will be ignored.
+      */
+      (void) strcpy(filespec,format);
+      (void) strcat(filespec,":");
+      (void) strcat(filespec,basefilespec);
+    }
+  else
+    {
+      (void) strcat(filespec,".%s");
+    }
+
+  (void) sprintf( filename, basefilespec, 1, format );
+  (void) remove(filename);
 
   /*
    * Save image to file
@@ -253,6 +314,9 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
+  (void) sprintf( filename, basefilespec, 2, format );
+  (void) remove(filename);
+
   (void) sprintf( filename, filespec, 2, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
   (void) strncpy( original->filename, filename, MaxTextExtent-1 );
@@ -296,7 +360,12 @@ int main ( int argc, char **argv )
       /*
        * Check final output
        */
+      double
+	fuzz_factor = 0;
 
+      /*
+	Some formats are lossy.
+      */
       if ((!strcmp( "CIN", format ) && (QuantumDepth == 8)) ||
           (!strcmp( "CMYK", format )) ||
           (!strcmp( "GRAY", format )) ||
@@ -313,17 +382,77 @@ int main ( int argc, char **argv )
           (final->compression == JPEGCompression))
         fuzz_factor = 0.06;
 
-      if ( !IsImagesEqual(original, final ) &&
-           (original->error.normalized_mean_error > fuzz_factor) )
-        {
-          (void) printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-                         format,(unsigned int) original->error.mean_error_per_pixel,
-                         original->error.normalized_mean_error,
-                         original->error.normalized_maximum_error);
-          (void) fflush(stdout);
-          exit_status = 1;
-          goto program_exit;
-        }
+      {
+	Image
+	  *o,
+	  *f;
+	
+	unsigned long
+	  frame=0;
+
+	/*
+	  Verify that frame pixels are identical (or close enough).
+	*/
+	for (o=original, f=final, frame=0;
+	     ((o != (Image *) NULL) && (f != (Image *) NULL)) ;
+	     o = o->next, f = f->next, frame++)
+	  {
+	    printf("Checking frame %ld...\n",frame);
+	    if ( !IsImagesEqual(o, f ) &&
+		 (original->error.normalized_mean_error > fuzz_factor) )
+	      {
+		(void) printf( "R/W file check for format \"%s\" failed "
+			       "(frame = %ld): %.6f/%.6f/%.6fe\n",
+			       format,frame,
+			       original->error.mean_error_per_pixel,
+			       original->error.normalized_mean_error,
+			       original->error.normalized_maximum_error);
+		(void) fflush(stdout);
+		exit_status = 1;
+		goto program_exit;
+	      }
+	  }
+ 
+	if (check_for_added_frames)
+	  {
+	    /*
+	      Verify that reads from file R/W #1 and file R/W #2 did
+	      return the same number of frames.
+	    */
+	    if ((o != (Image *) NULL) && (f != (Image *) NULL))
+	      {
+		(void) printf("R/W file check for format \"%s\" failed due to "
+			      "differing number of returned frames (%ld vs %ld)\n",
+			      format,
+			      GetImageListLength(original),
+			      GetImageListLength(final));
+		exit_status = 1;
+		goto program_exit;
+	      }
+
+	    /*
+	      If format supports multiple frames, then we should expect
+	      that frames are not lost (or spuriously added) due to
+	      read/write of format.
+	    */
+	    if (magick_info->adjoin)
+	      {
+		unsigned long
+		  final_frames;
+
+		final_frames=GetImageListLength(final);
+		if (original_frames != final_frames)
+		  {
+		    (void) printf("R/W file check for format \"%s\" failed due "
+				  "to differing number of returned frames (%ld "
+				  "vs %ld) from original file\n",
+				  format,original_frames,final_frames);
+		    exit_status = 1;
+		    goto program_exit;
+		  }
+	      }
+	  }
+      }
     }
 
  program_exit:

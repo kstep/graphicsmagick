@@ -22,9 +22,11 @@ GraphicsMagick Core C API
 .. _Effect : effect.html
 .. _Enhance : enhance.html
 .. _Error : error.html
+.. _Export : export.html
 .. _FX : fx.html
 .. _`Hald CLUT` : hclut.html
 .. _Image : image.html
+.. _Import : import.html
 .. _List : list.html
 .. _Magick : magick.html
 .. _Memory : memory.html
@@ -81,9 +83,11 @@ documentation, please reference the types_ documentation as required:
   * Enhance_: Contrast, equalize, gamma, level, level channel, modulate, negate,
     and normalize
   * Error_: Error reporting methods
+  * Export_ : Export image pixels to common representations
   * FX_: Special effects methods
   * `Hald CLUT`_ : Apply Hald CLUT to image
   * Image_: Miscellaneous image methods
+  * Import_ : Import image pixels from common representations
   * List_: Manage image lists
   * Magick_: Image format support interfaces
   * Memory_: Memory allocation methods

@@ -33,41 +33,18 @@ at http://sourceforge.net/projects/graphicsmagick/files/ if
 possible.
 
 
-GraphicsMagick is a continual work in progress. The very latest code is
-available from CVS. GraphicsMagick may be retrieved via CVS using the
-following procedure:
+GraphicsMagick is a continual work in progress. The very latest code
+is available via the Mercurial distributed source control management
+tool (http://mercurial.selenic.com/). GraphicsMagick may be retrieved
+via the following command:
 
-  To use CVS over SSH::
+  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
 
-    export CVS_RSH=ssh
-    export CVSROOT=":ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick"
-
-  or to use CVS with its built-in (and insecure) pserver protocol::
-
-    export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
-
-  to set CVSROOT in the environment (adjust for your shell), or prepend
-  -d followed by the CVS root to every command. For example::
-
-    cvs -d ":pserver:anonymous@cvs ...
-
-  For brevity the following examples assume that CVSROOT is set in the
-  environment::
-
-    cvs login
-    [ enter "anonymous" ]
-    cvs co GraphicsMagick
-
-  If you would like to retrieve the (huge) Windows source package which
-  includes the core GraphicsMagick sources along with all necessary
-  third-party libraries use::
-
-    cvs co GraphicsMagick-NT
-
-  If  you  would like to retrieve *everything* associated with
-  GraphicsMagick (useful or not) use::
-
-    cvs co GraphicsMagick-World
+Mercurial provides a complete stand-alone repository which contains
+the full history of the GraphicsMagick project.  You may use the
+cloned repository for your own purposes related to GraphicsMagick
+(e.g. manage local GraphicsMagick changes), and can easily pull
+GraphicsMagick updates from the main repository whenever you like.
 
 Documentation
 -------------
@@ -96,9 +73,9 @@ Add-On Libraries & Programs
 ---------------------------
 
 To further enhance the capabilities of GraphicsMagick, you may want to
-get these programs or libraries. Note that the Windows source package
-(equivalent to CVS module "GraphicsMagick-NT") includes (and builds) all
-of the library-based packages listed here.
+get these programs or libraries. Note that these packages are already
+integrated into the GraphicsMagick Mercurial repository for use when
+building under Microsoft Windows:
 
 * GraphicsMagick requires the BZLIB library from
 
@@ -139,10 +116,14 @@ of the library-based packages listed here.
   include/freetype/config/ftoption.h will produce better glyph
   renderings but may violate an Apple patent.
 
-* GraphicsMagick requires Ghostscript software (version 8.50 recommended)
-  available from
+* GraphicsMagick requires Ghostscript software (version 8.64
+  recommended) available from
 
     http://pages.cs.wisc.edu/~ghost/
+
+      or
+
+    http://sourceforge.net/projects/ghostscript/
 
   to read the Postscript or the Portable Document format. Ghostscript
   is used to annotate an image when the FreeType library is not used,
@@ -182,7 +163,8 @@ of the library-based packages listed here.
   format. HP printers usually accept PCL format rather than HPGL
   format.  Ghostscript (see above) is also required.
 
-* GraphicsMagick requires the LCMS library available from
+* GraphicsMagick requires the lcms library (1.11 or later, including
+  2.X) available from
 
      http://www.littlecms.com/
 
@@ -339,18 +321,6 @@ of the library-based packages listed here.
    .exe form, but the Linux folks have found ways to deal with that on
    non-Windows systems.
 
-* GraphicsMagick requires the FlashPIX library version 1.2.0 from the
-  Digital Imaging Group in order to support the FlashPIX format. The
-  FlashPIX library may be obtained from GraphicsMagick anonymous CVS by
-  checking out the 'fpx' module, or retrieving the file
-  libfpx-1.2.0.10.tar.gz from the ftp directory.
-
-     ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/.
-
-  Please note that this library is not very portable. It is known to
-  work properly under SPARC Solaris and Windows, but exhibits severe
-  problems under FreeBSD and Linux.
-
 * GraphicsMagick requires an X server for the 'display', 'animate', and
   'import' functions to work properly. Unix systems usually provide an X
   server as part of their standard installation. For MacOS-X, X11 is a
@@ -373,20 +343,24 @@ of the library-based packages listed here.
   to read the SVG image format and to retrieve files from over a
   network via FTP and HTTP.
 
+* GraphicsMagick requires the liblzma library from XZ Utils available from
+
+     http://www.tukaani.org/xz/
+
+  to support TIFF with LZMA compression and future LZMA-compression
+  features (yet to be developed).  The utilities from this package are
+  also necessary in order to decompress GraphicsMagick packages
+  distributed with ".xz" or ".lzma" extensions.
+
 * GraphicsMagick requires the ZLIB library from
 
      http://www.zlib.net/
 
   to read or write the PNG or Zip compressed MIFF images.
 
----------------------------------------------------------------------------
 
-| Copyright (C) 2003 - 2010 GraphicsMagick Group
-| Copyright (C) 2002 ImageMagick Studio
-| Copyright (C) 1999 E. I. du Pont de Nemours and Company
+--------------------------------------------------------------------------
 
-This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/Copyright.html.
+.. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

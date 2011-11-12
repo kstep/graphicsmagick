@@ -53,11 +53,19 @@ a:hover {
 
 div.banner {
 	border-bottom : 1px solid #3A4841;
-	padding : 2ex 0 1ex 5em;
+	padding : 2ex 0 1ex 4%;
 	border-top : 1px solid #3A4841;
-	background : #75EFB2 url(images/banner_bg.png) repeat-x;
+	background : #fff url(images/banner_bg.png) repeat-x;
 	overflow : hidden;
 	margin : 0;
+}
+
+span.nowrap { white-space:nowrap;
+margin: 2ex 2% 0 0;
+}
+.right {
+float: right;
+width: auto;
 }
 
 div.banner img {
@@ -94,6 +102,7 @@ div.navmenu {
 }
 
 div.navmenu ul {
+	max-width : 960px;
 	padding : 5px;
 	margin : 0;
 }
@@ -117,11 +126,11 @@ div.navmenu ul li a:hover {
 
 div.document {
 	height : auto;
-	padding : 1em;
+	padding : 1em 1% 1em 1%;
 	width : auto;
 	background : #FFFFFF;
 	max-width : 960px;
-	margin : 2ex 2em 1ex 3em;
+	margin : 2ex 3% 1ex 3%;
 	line-height : 140%;
 	text-align : left;
 }
@@ -582,7 +591,6 @@ table.docinfo {
 
 table.docinfo th,
 table.docinfo td {
-	border-style : none;
 	border : none;
 	background-color : #EEEEEE;
 	padding-left : 0.5em;
@@ -609,18 +617,9 @@ th.field-name {
 
 table.option-list {
 	border : none;
-	padding : none;
+	padding : 0;
 	background-color : #FFFFFF;
 	border-collapse : collapse;
-	border : none;
-}
-
-table.option-list {
-	border : none;
-	padding : none;
-	background-color : #FFFFFF;
-	border-collapse : collapse;
-	border : none;
 }
 
 table.option-list tr {

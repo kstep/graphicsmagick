@@ -3,49 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>image</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="../index.html">Home</a></li>
-<li><a href="../Copyright.html">License</a></li>
-<li><a href="../mission.html">Mission</a></li>
+<li><a href="../project.html">Project</a></li>
 <li><a href="../download.html">Download</a></li>
-<li><a href="../README.html">Installation</a></li>
-<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="../formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="../process.html">Process</a></li>
-<li><a href="../contribute.html">Contribute</a></li>
-<li><a href="../CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="../Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
-<li><a href="../links.html">Links</a></li>
+<li><a href="../reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="image">
@@ -55,36 +40,38 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#accessdefinition" id="id52">AccessDefinition</a></li>
-<li><a class="reference internal" href="#adddefinitions" id="id53">AddDefinitions</a></li>
-<li><a class="reference internal" href="#allocateimage" id="id54">AllocateImage</a></li>
-<li><a class="reference internal" href="#allocatenextimage" id="id55">AllocateNextImage</a></li>
-<li><a class="reference internal" href="#animateimages" id="id56">AnimateImages</a></li>
-<li><a class="reference internal" href="#appendimages" id="id57">AppendImages</a></li>
-<li><a class="reference internal" href="#catchimageexception" id="id58">CatchImageException</a></li>
-<li><a class="reference internal" href="#clippathimage" id="id59">ClipPathImage</a></li>
-<li><a class="reference internal" href="#cloneimage" id="id60">CloneImage</a></li>
-<li><a class="reference internal" href="#cloneimageinfo" id="id61">CloneImageInfo</a></li>
-<li><a class="reference internal" href="#destroyimage" id="id62">DestroyImage</a></li>
-<li><a class="reference internal" href="#destroyimageinfo" id="id63">DestroyImageInfo</a></li>
-<li><a class="reference internal" href="#displayimages" id="id64">DisplayImages</a></li>
-<li><a class="reference internal" href="#getimageclipmask" id="id65">GetImageClipMask</a></li>
-<li><a class="reference internal" href="#getimageexception" id="id66">GetImageException</a></li>
-<li><a class="reference internal" href="#getimagegeometry" id="id67">GetImageGeometry</a></li>
-<li><a class="reference internal" href="#getimageinfo" id="id68">GetImageInfo</a></li>
-<li><a class="reference internal" href="#istaintimage" id="id69">IsTaintImage</a></li>
-<li><a class="reference internal" href="#modifyimage" id="id70">ModifyImage</a></li>
-<li><a class="reference internal" href="#referenceimage" id="id71">ReferenceImage</a></li>
-<li><a class="reference internal" href="#removedefinitions" id="id72">RemoveDefinitions</a></li>
-<li><a class="reference internal" href="#setimage" id="id73">SetImage</a></li>
-<li><a class="reference internal" href="#setimageclipmask" id="id74">SetImageClipMask</a></li>
-<li><a class="reference internal" href="#setimagedepth" id="id75">SetImageDepth</a></li>
-<li><a class="reference internal" href="#setimageopacity" id="id76">SetImageOpacity</a></li>
-<li><a class="reference internal" href="#setimagetype" id="id77">SetImageType</a></li>
+<li><a class="reference internal" href="#accessdefinition" id="id56">AccessDefinition</a></li>
+<li><a class="reference internal" href="#adddefinitions" id="id57">AddDefinitions</a></li>
+<li><a class="reference internal" href="#allocateimage" id="id58">AllocateImage</a></li>
+<li><a class="reference internal" href="#allocatenextimage" id="id59">AllocateNextImage</a></li>
+<li><a class="reference internal" href="#animateimages" id="id60">AnimateImages</a></li>
+<li><a class="reference internal" href="#appendimages" id="id61">AppendImages</a></li>
+<li><a class="reference internal" href="#catchimageexception" id="id62">CatchImageException</a></li>
+<li><a class="reference internal" href="#clippathimage" id="id63">ClipPathImage</a></li>
+<li><a class="reference internal" href="#cloneimage" id="id64">CloneImage</a></li>
+<li><a class="reference internal" href="#cloneimageinfo" id="id65">CloneImageInfo</a></li>
+<li><a class="reference internal" href="#destroyimage" id="id66">DestroyImage</a></li>
+<li><a class="reference internal" href="#destroyimageinfo" id="id67">DestroyImageInfo</a></li>
+<li><a class="reference internal" href="#displayimages" id="id68">DisplayImages</a></li>
+<li><a class="reference internal" href="#getimageclipmask" id="id69">GetImageClipMask</a></li>
+<li><a class="reference internal" href="#getimageexception" id="id70">GetImageException</a></li>
+<li><a class="reference internal" href="#getimagegeometry" id="id71">GetImageGeometry</a></li>
+<li><a class="reference internal" href="#getimageinfo" id="id72">GetImageInfo</a></li>
+<li><a class="reference internal" href="#istaintimage" id="id73">IsTaintImage</a></li>
+<li><a class="reference internal" href="#modifyimage" id="id74">ModifyImage</a></li>
+<li><a class="reference internal" href="#referenceimage" id="id75">ReferenceImage</a></li>
+<li><a class="reference internal" href="#removedefinitions" id="id76">RemoveDefinitions</a></li>
+<li><a class="reference internal" href="#setimage" id="id77">SetImage</a></li>
+<li><a class="reference internal" href="#setimagecolor" id="id78">SetImageColor</a></li>
+<li><a class="reference internal" href="#setimagecolorregion" id="id79">SetImageColorRegion</a></li>
+<li><a class="reference internal" href="#setimageclipmask" id="id80">SetImageClipMask</a></li>
+<li><a class="reference internal" href="#setimagedepth" id="id81">SetImageDepth</a></li>
+<li><a class="reference internal" href="#setimageopacity" id="id82">SetImageOpacity</a></li>
+<li><a class="reference internal" href="#setimagetype" id="id83">SetImageType</a></li>
 </ul>
 </div>
 <div class="section" id="accessdefinition">
-<h1><a class="toc-backref" href="#id52">AccessDefinition</a></h1>
+<h1><a class="toc-backref" href="#id56">AccessDefinition</a></h1>
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -112,7 +99,7 @@ const char *AccessDefinition( const <a class="reference external" href="../api/t
 </div>
 </div>
 <div class="section" id="adddefinitions">
-<h1><a class="toc-backref" href="#id53">AddDefinitions</a></h1>
+<h1><a class="toc-backref" href="#id57">AddDefinitions</a></h1>
 <div class="section" id="id2">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -143,7 +130,7 @@ length string as value for a key.</dd>
 </div>
 </div>
 <div class="section" id="allocateimage">
-<h1><a class="toc-backref" href="#id54">AllocateImage</a></h1>
+<h1><a class="toc-backref" href="#id58">AllocateImage</a></h1>
 <div class="section" id="id4">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -168,7 +155,7 @@ and others.</dd>
 </div>
 </div>
 <div class="section" id="allocatenextimage">
-<h1><a class="toc-backref" href="#id55">AllocateNextImage</a></h1>
+<h1><a class="toc-backref" href="#id59">AllocateNextImage</a></h1>
 <div class="section" id="id6">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -196,7 +183,7 @@ and others.</dd>
 </div>
 </div>
 <div class="section" id="animateimages">
-<h1><a class="toc-backref" href="#id56">AnimateImages</a></h1>
+<h1><a class="toc-backref" href="#id60">AnimateImages</a></h1>
 <div class="section" id="id8">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -222,7 +209,7 @@ unsigned int AnimateImages( const <a class="reference external" href="../api/typ
 </div>
 </div>
 <div class="section" id="appendimages">
-<h1><a class="toc-backref" href="#id57">AppendImages</a></h1>
+<h1><a class="toc-backref" href="#id61">AppendImages</a></h1>
 <div class="section" id="id10">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -250,7 +237,7 @@ other top-to-bottom if the stack parameter is true, otherwise left-to-right.</p>
 </div>
 </div>
 <div class="section" id="catchimageexception">
-<h1><a class="toc-backref" href="#id58">CatchImageException</a></h1>
+<h1><a class="toc-backref" href="#id62">CatchImageException</a></h1>
 <div class="section" id="id12">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -274,7 +261,7 @@ it as a warning or error depending on the severity.</p>
 </div>
 </div>
 <div class="section" id="clippathimage">
-<h1><a class="toc-backref" href="#id59">ClipPathImage</a></h1>
+<h1><a class="toc-backref" href="#id63">ClipPathImage</a></h1>
 <div class="section" id="id14">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -304,7 +291,7 @@ Otherwise later operations take effect outside clipping path.</dd>
 </div>
 </div>
 <div class="section" id="cloneimage">
-<h1><a class="toc-backref" href="#id60">CloneImage</a></h1>
+<h1><a class="toc-backref" href="#id64">CloneImage</a></h1>
 <div class="section" id="id16">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -345,7 +332,7 @@ NULL.</dd>
 </div>
 </div>
 <div class="section" id="cloneimageinfo">
-<h1><a class="toc-backref" href="#id61">CloneImageInfo</a></h1>
+<h1><a class="toc-backref" href="#id65">CloneImageInfo</a></h1>
 <div class="section" id="id18">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -369,7 +356,7 @@ default values.</p>
 </div>
 </div>
 <div class="section" id="destroyimage">
-<h1><a class="toc-backref" href="#id62">DestroyImage</a></h1>
+<h1><a class="toc-backref" href="#id66">DestroyImage</a></h1>
 <div class="section" id="id20">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -392,7 +379,7 @@ void DestroyImage( <a class="reference external" href="../api/types.html#image">
 </div>
 </div>
 <div class="section" id="destroyimageinfo">
-<h1><a class="toc-backref" href="#id63">DestroyImageInfo</a></h1>
+<h1><a class="toc-backref" href="#id67">DestroyImageInfo</a></h1>
 <div class="section" id="id22">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -415,7 +402,7 @@ void DestroyImageInfo( <a class="reference external" href="../api/types.html#ima
 </div>
 </div>
 <div class="section" id="displayimages">
-<h1><a class="toc-backref" href="#id64">DisplayImages</a></h1>
+<h1><a class="toc-backref" href="#id68">DisplayImages</a></h1>
 <div class="section" id="id24">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -441,7 +428,7 @@ unsigned int DisplayImages( const <a class="reference external" href="../api/typ
 </div>
 </div>
 <div class="section" id="getimageclipmask">
-<h1><a class="toc-backref" href="#id65">GetImageClipMask</a></h1>
+<h1><a class="toc-backref" href="#id69">GetImageClipMask</a></h1>
 <div class="section" id="id26">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -478,7 +465,7 @@ the image colormap is globally shared by all pixels in a PseudoClass image.</p>
 </div>
 </div>
 <div class="section" id="getimageexception">
-<h1><a class="toc-backref" href="#id66">GetImageException</a></h1>
+<h1><a class="toc-backref" href="#id70">GetImageException</a></h1>
 <div class="section" id="id28">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -503,7 +490,7 @@ void GetImageException( <a class="reference external" href="../api/types.html#im
 </div>
 </div>
 <div class="section" id="getimagegeometry">
-<h1><a class="toc-backref" href="#id67">GetImageGeometry</a></h1>
+<h1><a class="toc-backref" href="#id71">GetImageGeometry</a></h1>
 <div class="section" id="id30">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -536,7 +523,7 @@ respect to the image and its gravity.</dd>
 </div>
 </div>
 <div class="section" id="getimageinfo">
-<h1><a class="toc-backref" href="#id68">GetImageInfo</a></h1>
+<h1><a class="toc-backref" href="#id72">GetImageInfo</a></h1>
 <div class="section" id="id32">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -558,7 +545,7 @@ void GetImageInfo( <a class="reference external" href="../api/types.html#imagein
 </div>
 </div>
 <div class="section" id="istaintimage">
-<h1><a class="toc-backref" href="#id69">IsTaintImage</a></h1>
+<h1><a class="toc-backref" href="#id73">IsTaintImage</a></h1>
 <div class="section" id="id34">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -581,7 +568,7 @@ unsigned int IsTaintImage( const <a class="reference external" href="../api/type
 </div>
 </div>
 <div class="section" id="modifyimage">
-<h1><a class="toc-backref" href="#id70">ModifyImage</a></h1>
+<h1><a class="toc-backref" href="#id74">ModifyImage</a></h1>
 <div class="section" id="id36">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -607,7 +594,7 @@ ModifyImage( <a class="reference external" href="../api/types.html#image">Image<
 </div>
 </div>
 <div class="section" id="referenceimage">
-<h1><a class="toc-backref" href="#id71">ReferenceImage</a></h1>
+<h1><a class="toc-backref" href="#id75">ReferenceImage</a></h1>
 <div class="section" id="id38">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -630,7 +617,7 @@ returning a pointer to the image.</p>
 </div>
 </div>
 <div class="section" id="removedefinitions">
-<h1><a class="toc-backref" href="#id72">RemoveDefinitions</a></h1>
+<h1><a class="toc-backref" href="#id76">RemoveDefinitions</a></h1>
 <div class="section" id="id40">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -662,7 +649,7 @@ succeeds.</dd>
 </div>
 </div>
 <div class="section" id="setimage">
-<h1><a class="toc-backref" href="#id73">SetImage</a></h1>
+<h1><a class="toc-backref" href="#id77">SetImage</a></h1>
 <div class="section" id="id42">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -688,15 +675,67 @@ void SetImage( <a class="reference external" href="../api/types.html#image">Imag
 </dl>
 </div>
 </div>
-<div class="section" id="setimageclipmask">
-<h1><a class="toc-backref" href="#id74">SetImageClipMask</a></h1>
+<div class="section" id="setimagecolor">
+<h1><a class="toc-backref" href="#id78">SetImageColor</a></h1>
 <div class="section" id="id44">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+MagickPassFail SetImageColor( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#pixelpacket">PixelPacket</a> *pixel );
+</pre>
+</div>
+<div class="section" id="id45">
+<h2>Description</h2>
+<p>SetImageColor() sets the red, green, blue and opacity components of each
+pixel to those from a specified pixel value.</p>
+<p>The format of the SetImageColor method is:</p>
+<pre class="literal-block">
+MagickPassFail SetImageColor( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#pixelpacket">PixelPacket</a> *pixel );
+</pre>
+<p>A description of each parameter follows:</p>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>pixel:</dt>
+<dd>Set each pixel in the image to this pixel's color and transparency.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="setimagecolorregion">
+<h1><a class="toc-backref" href="#id79">SetImageColorRegion</a></h1>
+<div class="section" id="id46">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+MagickPassFail SetImageColorRegion( <a class="reference external" href="../api/types.html#image">Image</a> *image, long x, long y, unsigned long width,
+                                    unsigned long height, const <a class="reference external" href="../api/types.html#pixelpacket">PixelPacket</a> *pixel );
+</pre>
+</div>
+<div class="section" id="id47">
+<h2>Description</h2>
+<p>SetImageColorRegion() sets the red, green, blue and opacity components
+of each pixel in the specified region to those from a specified pixel
+value.</p>
+<p>The format of the SetImageColorRegion method is:</p>
+<pre class="literal-block">
+MagickPassFail SetImageColorRegion( <a class="reference external" href="../api/types.html#image">Image</a> *image, long x, long y, unsigned long width,
+                                    unsigned long height, const <a class="reference external" href="../api/types.html#pixelpacket">PixelPacket</a> *pixel );
+</pre>
+<dl class="docutils">
+<dt>image:</dt>
+<dd>The image.</dd>
+<dt>pixel:</dt>
+<dd>Set each pixel in the image to this pixel's color and transparency.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="setimageclipmask">
+<h1><a class="toc-backref" href="#id80">SetImageClipMask</a></h1>
+<div class="section" id="id48">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int SetImageClipMask( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#image">Image</a> *clip_mask );
 </pre>
 </div>
-<div class="section" id="id45">
+<div class="section" id="id49">
 <h2>Description</h2>
 <p>SetImageClipMask() associates a clip mask with the image.  The clip mask
 must be the same dimensions as the image.</p>
@@ -723,14 +762,14 @@ unsigned int SetImageClipMask( <a class="reference external" href="../api/types.
 </div>
 </div>
 <div class="section" id="setimagedepth">
-<h1><a class="toc-backref" href="#id75">SetImageDepth</a></h1>
-<div class="section" id="id46">
+<h1><a class="toc-backref" href="#id81">SetImageDepth</a></h1>
+<div class="section" id="id50">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 unsigned int SetImageDepth( <a class="reference external" href="../api/types.html#image">Image</a> *image, const unsigned long depth );
 </pre>
 </div>
-<div class="section" id="id47">
+<div class="section" id="id51">
 <h2>Description</h2>
 <p>SetImageDepth() translates the pixel quantums across all of the channels
 so that if they are later divided to fit within the specified bit
@@ -753,14 +792,14 @@ unsigned int SetImageDepth( <a class="reference external" href="../api/types.htm
 </div>
 </div>
 <div class="section" id="setimageopacity">
-<h1><a class="toc-backref" href="#id76">SetImageOpacity</a></h1>
-<div class="section" id="id48">
+<h1><a class="toc-backref" href="#id82">SetImageOpacity</a></h1>
+<div class="section" id="id52">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 void SetImageOpacity( <a class="reference external" href="../api/types.html#image">Image</a> *image, const unsigned int opacity );
 </pre>
 </div>
-<div class="section" id="id49">
+<div class="section" id="id53">
 <h2>Description</h2>
 <p>SetImageOpacity() attenuates the opacity channel of an image.  If the
 image pixels are opaque, they are set to the specified opacity level.
@@ -781,20 +820,19 @@ fully transparent.</dd>
 </div>
 </div>
 <div class="section" id="setimagetype">
-<h1><a class="toc-backref" href="#id77">SetImageType</a></h1>
-<div class="section" id="id50">
+<h1><a class="toc-backref" href="#id83">SetImageType</a></h1>
+<div class="section" id="id54">
 <h2>Synopsis</h2>
 <pre class="literal-block">
 ( void )SetImageType( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#imagetype">ImageType</a> image_type );
 </pre>
 </div>
-<div class="section" id="id51">
+<div class="section" id="id55">
 <h2>Description</h2>
 <p>(void) SetImageType() sets the type of image.  Choose from these types:</p>
-<p>Bilevel        Grayscale       GrayscaleMatte
-Palette        PaletteMatte    TrueColor
-TrueColorMatte ColorSeparation ColorSeparationMatte
-OptimizeType</p>
+<p>BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType,
+PaletteMatteType, TrueColorType, TrueColorMatteType,
+ColorSeparationType, ColorSeparationMatteType, OptimizeType</p>
 <p>The format of the (void) SetImageType method is:</p>
 <pre class="literal-block">
 ( void )SetImageType( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#imagetype">ImageType</a> image_type );
@@ -808,11 +846,6 @@ OptimizeType</p>
 </dl>
 </div>
 </div>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2010-03-07 19:17 UTC.
-
 </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2009 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -9,7 +9,8 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-lzma foreign
+# Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
+AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-xz foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -87,17 +88,20 @@ XFAIL_TESTS = \
 	$(MAGICKPP_XFAIL_TESTS) \
 	$(UTILITIES_XFAIL_TESTS)
 
+# Be sure to list CHANGELOGS in reverse chronological order in case we
+# should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
-	ChangeLog.2001 \
-	ChangeLog.2002 \
-	ChangeLog.2003 \
-	ChangeLog.2004 \
-	ChangeLog.2005 \
-	ChangeLog.2006 \
-	ChangeLog.2007 \
+	ChangeLog.2010 \
+	ChangeLog.2009 \
 	ChangeLog.2008 \
-	ChangeLog.2009
+	ChangeLog.2007 \
+	ChangeLog.2006 \
+	ChangeLog.2005 \
+	ChangeLog.2004 \
+	ChangeLog.2003 \
+	ChangeLog.2002 \
+	ChangeLog.2001
 
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \
@@ -180,6 +184,7 @@ doc_DATA = \
 if MAINTAINER_MODE
 MAINTAINER_TARGETS = \
 	magick-version \
+	GraphicsMagick.spec \
 	$(PERLMAGICK_MAINTAINER_TARGETS) \
 	$(WWW_MAINTAINER_TARGETS) \
 	$(WWWAPI_MAINTAINER_TARGETS) \
@@ -216,15 +221,28 @@ check-local: $(PERLMAGICK_CHECK_LOCAL_TARGETS)
 
 # drd: valgrind's newer thread error detector
 drd:
-	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=drd --check-stack-var=yes --var-info=yes \
+	  --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # helgrind: valgrind's older thread error detector
 helgrind:
-	$(MAKE) MEMCHECK='valgrind --tool=helgrind --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=helgrind --error-exitcode=2 --quiet \
+	$(VALGRIND_EXTRA_OPTS)' check
 
-# memcheck: valgrind's memory access checker
+# memcheck: valgrind's memory access checker.
+# The suppressions which come with valgrind are usually insufficient
+# to handle certain pthread library aspects and gomp and so errors
+# will be reported which are unrelated to GraphicsMagick.  When first
+# starting with a new system (or after a major system update), it is
+# good to execute the test suite like 'make memcheck
+# VALGRIND_EXTRA_OPTS=--gen-suppressions=all' to create valgrind
+# suppression entries in the test log.  Tell valgrind about the
+# suppressions by creating a .valgrindrc file with content like:
+#   --memcheck:suppressions=mysupp.supp
 memcheck:
-	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes --track-origins=yes --num-callers=12 --quiet $(VALGRIND_EXTRA_OPTS)' check
+	$(MAKE) MEMCHECK='valgrind --tool=memcheck --leak-check=full --read-var-info=yes \
+	--error-exitcode=2 --track-origins=yes --num-callers=12 \
+	--quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # ptrcheck: valgrind's experimental pointer checking tool.
 ptrcheck:
@@ -288,7 +306,7 @@ $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
 	fi
-	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	hg --repository $(top_srcdir) archive --rev $(HG_BRANCH_TAG) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 if HAS_P7ZIP
 	rm -f $(DIST_WINDOWS_SRC_7ZIP)
 	$(P7ZIP) a -t7z -mx=9 $(DIST_WINDOWS_SRC_7ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
@@ -310,8 +328,8 @@ $(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
 	@echo ==============================================================
 
-RPMDIR=redhat
-RPMARCH=i386
+RPMDIR=rpmbuild
+RPMARCH=$(MAGICK_TARGET_CPU)
 
 DIST_ARCHIVE_RPM= \
 	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
@@ -323,11 +341,12 @@ DIST_ARCHIVE_RPM= \
 .PHONY: rpm
 rpm:
 	rm -rf $(RPMDIR)
-	mkdir $(RPMDIR)
-	mkdir $(RPMDIR)/BUILD
-	mkdir $(RPMDIR)/RPMS
-	$(MAKE) distcheck
-	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb GraphicsMagick.spec
+	$(MKDIR_P) $(RPMDIR)
+	$(MKDIR_P) $(RPMDIR)/BUILD
+	$(MKDIR_P) $(RPMDIR)/RPMS
+	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" \
+	  --define="_builddir `pwd`/$(RPMDIR)/BUILD" --define='quant $(QuantumDepth)' \
+	  --nodeps -bb GraphicsMagick.spec
 	rm -rf rpmbuild
 	@echo ==============================================================
 	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.

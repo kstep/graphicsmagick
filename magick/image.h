@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -232,12 +232,17 @@ typedef enum
   NoCompression,
   BZipCompression,
   FaxCompression,
+  Group3Compression = FaxCompression,
   Group4Compression,
   JPEGCompression,
   LosslessJPEGCompression,
   LZWCompression,
   RLECompression,
-  ZipCompression
+  ZipCompression,
+  LZMACompression,              /* Lempel-Ziv-Markov chain algorithm */
+  JPEG2000Compression,          /* ISO/IEC std 15444-1 */
+  JBIG1Compression,             /* ISO/IEC std 11544 / ITU-T rec T.82 */
+  JBIG2Compression              /* ISO/IEC std 14492 / ITU-T rec T.88 */
 } CompressionType;
 
 typedef enum
@@ -717,7 +722,7 @@ typedef struct _Image
     gravity;            /* Image placement gravity */
 
   CompositeOperator
-    compose;            /* Image placement composition */
+    compose;            /* Image placement composition (default OverCompositeOp) */
 
   DisposeType
     dispose;            /* GIF disposal option */
@@ -1003,16 +1008,19 @@ extern MagickExport MagickPassFail
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AnimateImages(const ImageInfo *image_info,Image *image),
-  ClipImage(Image *),
+  ClipImage(Image *image),
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   DisplayImages(const ImageInfo *image_info,Image *image),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
-  SetImage(Image *,const Quantum),
+  SetImage(Image *image,const Quantum),
+  SetImageColor(Image *image,const PixelPacket *pixel),
+  SetImageColorRegion(Image *image,long x,long y,unsigned long width,
+		      unsigned long height,const PixelPacket *pixel),
   SetImageClipMask(Image *image,const Image *clip_mask),
-  SetImageDepth(Image *,const unsigned long),
+  SetImageDepth(Image *image,const unsigned long),
   SetImageInfo(ImageInfo *image_info,const unsigned int flags,ExceptionInfo *exception),
-  SetImageType(Image *,const ImageType),
-  SyncImage(Image *);
+  SetImageType(Image *image,const ImageType),
+  SyncImage(Image *image);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003-2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -59,6 +59,7 @@ extern ModuleExport void
   RegisterICBImage(void),
   RegisterICONImage(void),
   RegisterIDENTITYImage(void),
+  RegisterINFOImage(void),
   RegisterJBGImage(void),
   RegisterJBIGImage(void),
   RegisterJPGImage(void),
@@ -67,6 +68,7 @@ extern ModuleExport void
   RegisterLABELImage(void),
   RegisterLOCALEImage(void),
   RegisterLOGOImage(void),
+  RegisterMACImage(void),
   RegisterMAPImage(void),
   RegisterMATImage(void),
   RegisterMATTEImage(void),
@@ -194,6 +196,7 @@ extern ModuleExport void
   UnregisterICBImage(void),
   UnregisterICONImage(void),
   UnregisterIDENTITYImage(void),
+  UnregisterINFOImage(void),
   UnregisterJBGImage(void),
   UnregisterJBIGImage(void),
   UnregisterJPGImage(void),
@@ -202,6 +205,7 @@ extern ModuleExport void
   UnregisterLABELImage(void),
   UnregisterLOCALEImage(void),
   UnregisterLOGOImage(void),
+  UnregisterMACImage(void),
   UnregisterMAPImage(void),
   UnregisterMATImage(void),
   UnregisterMATTEImage(void),

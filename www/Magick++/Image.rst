@@ -2593,7 +2593,7 @@ example:
    // Set pixel at column 5, and row 10 in the pixel cache to red.
    int column = 5;
    int row = 10;
-   PixelPacket *pixel = pixel_cache+row*columns*sizeof(PixelPacket)+column;
+   PixelPacket *pixel = pixel_cache+row*columns+column;
    *pixel = Color("red");
 
    // Save changes to underlying image .

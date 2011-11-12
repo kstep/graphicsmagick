@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2010 GraphicsMagick Group
+# Copyright (C) 2003-2011 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -40,7 +40,17 @@ AC_SUBST(DISTCHECK_CONFIG_FLAGS)
 . ${srcdir}/version.sh
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
-AC_CANONICAL_TARGET
+dnl Compute the canonical host (run-time) system type variable
+AC_CANONICAL_HOST
+
+MAGICK_TARGET_CPU=$host_cpu
+AC_SUBST(MAGICK_TARGET_CPU)
+
+MAGICK_TARGET_VENDOR=$host_vendor
+AC_SUBST(MAGICK_TARGET_VENDOR)
+
+MAGICK_TARGET_OS=$host_os
+AC_SUBST(MAGICK_TARGET_OS)
 
 # Compute newest and oldest interface numbers.
 MAGICK_LIB_INTERFACE_NEWEST=$MAGICK_LIBRARY_CURRENT
@@ -70,8 +80,8 @@ AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 
-# Substitute CVS branch tag
-AC_SUBST(CVS_BRANCH_TAG)dnl
+# Substitute Mercurial branch tag
+AC_SUBST(HG_BRANCH_TAG)dnl
 
 # Definition used to define MagickLibVersion in version.h
 MAGICK_LIB_VERSION="0x"
@@ -126,8 +136,9 @@ MAGICK_API_LIBS=''
 #AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
 #AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
 #AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
-AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
-AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
+#AC_DEFINE(_GNU_SOURCE,1,[Enable all API extensions (for GNU Linux libc)])
+#AC_DEFINE(_NETBSD_SOURCE,1,[Enable all API extensions (for NetBSD)])
+AC_USE_SYSTEM_EXTENSIONS
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -666,11 +677,29 @@ fi
 
 # Disable LCMS.
 AC_ARG_WITH(lcms,
-	      [  --without-lcms          disable LCMS support],
+	      [  --without-lcms          disable lcms (v1.1X) support],
 	      [with_lcms=$withval],
 	      [with_lcms='yes'])
 if test "$with_lcms" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms=$with_lcms "
+fi
+
+# Disable LCMS2.
+AC_ARG_WITH(lcms2,
+	      [  --without-lcms2         disable lcms (v2.X) support],
+	      [with_lcms2=$withval],
+	      [with_lcms2='yes'])
+if test "$with_lcms2" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lcms2=$with_lcms2 "
+fi
+
+# Disable LZMA (lzma library)
+AC_ARG_WITH(bzlib,
+	      [  --without-lzma          disable LZMA support],
+	      [with_lzma=$withval],
+	      [with_lzma='yes'])
+if test "$with_lzma" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
 
 # # Disable MPEG.
@@ -849,7 +878,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers 
-AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h process.h sys/resource.h sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h process.h sun_prefetch.h sys/resource.h sys/times.h sys/types.h)
 
 ########
 #
@@ -1030,6 +1059,11 @@ then
   INT64_T='signed long long'
   INT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    INT64_F='"I64"'
+    ;;
+esac
 AC_MSG_RESULT($INT64_T)
 AC_SUBST(INT64_T)
 AC_SUBST(INT64_F)
@@ -1046,6 +1080,11 @@ then
   UINT64_T='unsigned long long'
   UINT64_F='"ll"'
 fi
+case "${build_os}" in
+  mingw* )
+    UINT64_F='"I64"'
+    ;;
+esac
 AC_MSG_RESULT($UINT64_T)
 AC_SUBST(UINT64_T)
 AC_SUBST(UINT64_F)
@@ -1089,13 +1128,13 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r directio _exit fcntl ftime getexecname \
+AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
-  posix_fallocate posix_madvise posix_memalign pread pwrite putc_unlocked raise \
-  rand_r readdir_r readlink realpath select seekdir setrlimit sigemptyset \
-  sigaction spawnvp strerror strerror_r strlcat strlcpy strtoll sysconf tempnam \
-  tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
+  posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
+  putc_unlocked raise rand_r readdir_r readlink realpath select seekdir \
+  setrlimit sigemptyset sigaction spawnvp strerror strerror_r strlcat strlcpy \
+  strtoll sysconf tempnam tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #
@@ -1542,6 +1581,41 @@ AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" = 'yes')
 AC_SUBST(LIB_BZLIB)
 
 #
+# Check for LZMA
+#
+have_lzma='no'
+LIB_LZMA=''
+dnl TIFF may require lzma so enable lzma check if TIFF is requested
+if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'
+then
+  AC_MSG_CHECKING(for LZMA support )
+  AC_MSG_RESULT()
+  failed=0
+  passed=0
+  AC_CHECK_HEADER(lzma.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(lzma,lzma_code,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_MSG_CHECKING(if LZMA package is complete)
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      AC_MSG_RESULT(no -- some components failed test)
+      have_lzma='no (failed tests)'
+    else
+      LIB_LZMA='-llzma'
+      LIBS="$LIB_LZMA $LIBS"
+      AC_DEFINE(HasLZMA,1,Define if you have lzma compression library)
+      AC_MSG_RESULT(yes)
+      have_lzma='yes'
+    fi
+  else
+    AC_MSG_RESULT(no)
+  fi
+fi
+AM_CONDITIONAL(HasLZMA, test "$have_lzma" = 'yes')
+AC_SUBST(LIB_LZMA)
+
+#
 # Find the X11 include and library directories.
 #
 LIB_X11=''
@@ -1700,84 +1774,249 @@ AM_CONDITIONAL(HasFPX, test "$have_fpx" = 'yes')
 AC_SUBST(LIB_FPX)
 
 #
-# Check for LCMS
+# Check for LCMS v2
 #
-have_lcms='no'
+have_lcms2='no'
 LIB_LCMS=''
-if test "$with_lcms" != 'no'
+if test "$with_lcms2" != 'no'
 then
-    AC_MSG_CHECKING(for LCMS support )
+    AC_MSG_CHECKING([for lcms v2 support])
     AC_MSG_RESULT()
     failed=0
     passed=0
     have_lcms_header='no'
-    AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
+
+    # Check for <lcms2.h>
+    AC_CHECK_HEADER(lcms2.h,have_lcms_header='yes',,)
     if test "$have_lcms_header" = 'yes'
     then
-      passed=`expr $passed + 1`
-        AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
+       AC_DEFINE(HAVE_LCMS2_H,1,Define if you have the <lcms2.h> header file.)
+       passed=`expr $passed + 1`
+    fi
+
+    # Check for <lcms2/lcms2.h)
+    if test "$have_lcms_header" != 'yes'
+    then
+      AC_CHECK_HEADER(lcms2/lcms2.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" = 'yes'
+      then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS2_LCMS2_H,1,Define if you have the <lcms2/lcms2.h> header file.)
+      fi
+    fi
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'
+    then
+      failed=`expr $failed + 1`
+    fi
+
+    AC_CHECK_LIB(lcms2,cmsSetLogErrorHandler,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if LCMS v2 package is complete)
+    if test $passed -gt 0
+    then
+      if test $failed -gt 0
+      then
+        AC_MSG_RESULT(no -- some components failed test)
+        have_lcms2='no (failed tests)'
+      else
+        LIB_LCMS='-llcms2'
+        LIBS="$LIB_LCMS $LIBS"
+        #AC_DEFINE(HasLCMS2,1,Define if you have LCMS v2 library)
+        AC_MSG_RESULT(yes)
+        have_lcms2='yes'
+      fi
     else
+      AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for LCMS v1 (1.11 or later)
+#
+if test $have_lcms2 = 'yes'
+then
+  with_lcms='no'
+fi
+
+have_lcms='no'
+if test "$with_lcms" != 'no'
+then
+    AC_MSG_CHECKING([for lcms v1.1X support])
+    AC_MSG_RESULT()
+    failed=0
+    passed=0
+    have_lcms_header='no'
+
+    # Check for <lcms.h>
+    if test "$have_lcms_header" != 'yes'
+    then
+      AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
+      if test "$have_lcms_header" = 'yes'
+      then
+        passed=`expr $passed + 1`
+        AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
+      fi
+    fi
+
+    # Check for <lcms/lcms.h>
+    if test "$have_lcms_header" != 'yes'
+    then
       AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
       if test "$have_lcms_header" = 'yes'
       then
         passed=`expr $passed + 1`
         AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
-      else
-        failed=`expr $failed + 1`
       fi
     fi
-    AC_CHECK_LIB(lcms,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+
+    # Failed to find lcms header?
+    if test "$have_lcms_header" != 'yes'
+    then
+      failed=`expr $failed + 1`
+    fi
+
+    AC_CHECK_LIB(lcms,cmsSetErrorHandler,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if LCMS package is complete)
     if test $passed -gt 0
     then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_lcms='no (failed tests)'
+      if test $failed -gt 0
+      then
+        AC_MSG_RESULT(no -- some components failed test)
+        have_lcms='no (failed tests)'
+      else
+        LIB_LCMS='-llcms'
+        LIBS="$LIB_LCMS $LIBS"
+        AC_MSG_RESULT(yes)
+        have_lcms='yes'
+      fi
     else
-	LIB_LCMS='-llcms'
-	LIBS="$LIB_LCMS $LIBS"
-	AC_DEFINE(HasLCMS,1,Define if you have LCMS library)
-	AC_MSG_RESULT(yes)
-	have_lcms='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
+      AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasLCMS, test "$have_lcms" = 'yes')
+
+AM_CONDITIONAL(HasLCMS, test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes')
+if test "$have_lcms2" = 'yes' -o "$have_lcms" = 'yes'
+then
+  AC_DEFINE(HasLCMS,1,[Define if you have LCMS (v1.11 or later) library])
+fi
 AC_SUBST(LIB_LCMS)
 
-#
-# Check for PNG
-#
 have_png='no'
 LIB_PNG=''
-if test "$with_png" != 'no'
+if test "$have_zlib" = 'yes'
 then
+  #
+  # Check for PNG delegate library.
+  #
+  AC_ARG_WITH(png,
+      [AC_HELP_STRING([--without-png],
+                      [disable PNG support])],
+      [with_png=$withval],
+      [with_png='yes'])
+  
+  if test "$with_png" != 'yes'; then
+      DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-png=$with_png "
+  fi
+  
+  
+  if test "$with_png" != 'no' ; then
     AC_MSG_CHECKING(for PNG support )
     AC_MSG_RESULT()
     failed=0
     passed=0
-    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if PNG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_png='no (failed tests)'
-    else
-	LIB_PNG='-lpng'
-	LIBS="$LIB_PNG $LIBS"
-	AC_DEFINE(HasPNG,1,Define if you have PNG library)
-	AC_MSG_RESULT(yes)
-	have_png='yes'
+    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,
+       failed=`expr $failed + 1`,)
+  
+    if test $passed -gt 0; then
+      for var in 5 4 2 '' ; do
+        if test "x${var}" = 'x' ; then
+          pnglib='png'
+        else
+          pnglib="png1${var}"
+        fi
+        if test "$have_png" = 'no'
+	then
+  
+  	  # Test for compatible LIBPNG library
+          failed=0
+          passed=0
+          if test "$with_png" = 'yes' -o "$with_png" = "libpng1${var}" ; then
+            if test "${pnglib}" != 'png' ; then
+              AC_MSG_CHECKING(for LIBPNG1${var} support )
+              AC_TRY_COMPILE(
+#include <stdio.h>
+#include <stdlib.h>
+#include <png.h>
+,
+changequote(<<, >>)dnl
+<<
+#if PNG_LIBPNG_VER_MINOR != ${var}
+#error LIBPNG library must be version 1${var}!
+Kaboom, Kaboom
+#endif
+return 0;
+>>,
+              changequote([, ])dnl
+              ac_cv_libpng_ok='yes',
+              ac_cv_libpng_ok='no')
+              if test "$ac_cv_libpng_ok" = 'yes' ; then
+                passed=`expr $passed + 1`
+                AC_MSG_RESULT(yes)
+              else
+                failed=`expr $failed + 1`
+                AC_MSG_RESULT(no)
+              fi
+            else
+              passed=`expr $passed + 1`
+              AC_MSG_RESULT(yes)
+            fi
+          fi
+  
+          if test $passed -gt 0 -a $failed -le 0
+          then
+            if test "1${var}" = '15' ; then
+              AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+              AC_CHECK_LIB(png15,png_longjmp,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '14' ; then
+              AC_CHECK_LIB(png14,png_get_io_ptr,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+              AC_CHECK_LIB(png14,png_get_io_state,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '12' ; then
+              AC_CHECK_LIB(png12,png_get_io_ptr,passed=`expr $passed + 1`,
+                 failed=`expr $failed + 1`,)
+            fi
+            if test "1${var}" = '1' ; then
+                AC_CHECK_LIB(png,png_get_io_ptr,passed=`expr $passed + 1`,
+                   failed=`expr $failed + 1`,)
+            fi
+            if test $passed -gt 0 -a $failed -le 0 ; then
+              AC_MSG_CHECKING(if ${pnglib} package is complete)
+              if test $passed -gt 0 ; then
+                if test $failed -gt 0 ; then
+  	        AC_MSG_RESULT(no -- some components failed test)
+  	        have_png='no (failed tests)'
+                else
+  	        LIB_PNG="-l${pnglib}"
+  	        LIBS="$LIB_PNG $LIBS"
+  	        AC_DEFINE(HasPNG,1,Define if you have PNG library)
+  	        AC_MSG_RESULT(yes)
+  	        have_png='yes'
+                fi
+              fi
+            fi
+          fi
+        fi
+      done
     fi
-    else
-    AC_MSG_RESULT(no)
-    fi
+  fi
+else
+  AC_MSG_RESULT(PNG requires zlib support)
 fi
 AM_CONDITIONAL(HasPNG, test "$have_png" = 'yes')
 AC_SUBST(LIB_PNG)
@@ -1983,7 +2222,7 @@ then
       freetype_prefix=`${freetype_config} --prefix`
       freetype_exec_prefix=`${freetype_config} --exec-prefix`
       LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS"
+      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
     fi
 
 dnl First see if there is a library
@@ -2129,7 +2368,7 @@ then
     AC_MSG_CHECKING(for XML support )
     AC_MSG_RESULT()
     xml2_config=''
-    AC_CHECK_PROGS(xml2_config,xml2-config,)dnl
+    AC_PATH_PROG(xml2_config,xml2-config,)dnl
     if test -n "$xml2_config"
     then
         # Debian installs libxml headers under /usr/include/libxml2/libxml with
@@ -2144,8 +2383,15 @@ then
      fi
     failed=0
     passed=0
+    # Incantation tested with libxml2 2.7.8 configured with
+    #   --with-minimum --with-http --with-ftp --with-push --with-zlib --with-sax1
+    # Note that SAX1 interfaces don't seem to be directly used but parsers fail to work
+    # as expected without SAX1 support compiled in.
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml2,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml2,xmlSAXVersion,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    # Next two require --with-push to be enabled
+    AC_CHECK_LIB(xml2,xmlParseChunk,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml2,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)
     if test $passed -gt 0
     then
@@ -2488,7 +2734,13 @@ AC_SUBST(windows_font_dir)
 
 # Adobe Postscript fonts on various systems
 case $host_os in
-  solaris*) type_include_files="$type_include_files "'<include file="type-solaris.mgk" />';;
+  solaris*)
+    # Check for OpenWindows Type 1 fonts.  Not available under OpenSolaris
+    if test -f /usr/openwin/lib/X11/fonts/Type1/afm/Helvetica.afm
+    then
+      type_include_files="$type_include_files "'<include file="type-solaris.mgk" />'
+    fi
+    ;;
 esac
 
 # Ghostscript
@@ -2685,6 +2937,7 @@ GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
 GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
+GSCMYKDevice=pam
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
@@ -2756,6 +3009,16 @@ then
   fi
   AC_MSG_RESULT($GSMonoDevice)
 
+  # GSCMYKDevice
+  AC_MSG_CHECKING([for gs CMYK device])
+  if $PSDelegate -q -dBATCH -sDEVICE=pam -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  then
+    GSCMYKDevice=pam
+  else
+    GSCMYKDevice=$GSColorDevice
+  fi
+  AC_MSG_RESULT($GSCMYKDevice)
+
   # GSPDFDevice
   AC_MSG_CHECKING([for gs PDF writing device])
   if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
@@ -2789,6 +3052,7 @@ then
 fi
 
 AC_SUBST(GSMonoDevice)
+AC_SUBST(GSCMYKDevice)
 AC_SUBST(GSGrayDevice)
 AC_SUBST(GSPaletteDevice)
 AC_SUBST(GSColorDevice)
@@ -2883,7 +3147,9 @@ if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then DELEGATES="$DELEGATES jng"; fi
 if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
+if test "$have_lcms2"    = 'yes' ; then DELEGATES="$DELEGATES lcms2"  ; fi
 if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
+if test "$have_lzma"    = 'yes' ; then DELEGATES="$DELEGATES lzma"  ; fi
 # if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
 if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
@@ -2984,9 +3250,9 @@ AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3031,13 +3297,16 @@ AC_SUBST(X_CFLAGS)
 MAGICK_API_CFLAGS=$CFLAGS
 MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
+MAGICK_OMP_LIBS="$LIB_OMP $LIB_THREAD" # Perl's Make::Maker summarily discards OMP CFLAGS option
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL $MAGICK_OMP_LIBS"
+MAGICK_API_LIBS=`echo $MAGICK_API_LIBS | sed -e 's/  */ /g'`
 
 AC_SUBST(MAGICK_API_CFLAGS)
 AC_SUBST(MAGICK_API_CPPFLAGS)
 AC_SUBST(MAGICK_API_PC_CPPFLAGS)
 AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
+AC_SUBST(MAGICK_OMP_LIBS)
 
 AC_CONFIG_FILES(\
         GraphicsMagick.spec \
@@ -3103,11 +3372,18 @@ echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG-2000         --with-jp2=$with_jp2          	$have_jp2"
-echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
+echo "LCMS v1           --with-lcms=$with_lcms        	$have_lcms"
+echo "LCMS v2           --with-lcms2=$with_lcms2        	$have_lcms2"
 # echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
+echo "LZMA              --with-lzma=$with_lzma        	$have_lzma"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl            	$have_perl"
+if test "${LIB_PNG}x" != 'x'
+then
+echo "PNG               --with-png=$with_png          	$have_png ($LIB_PNG)"
+else
 echo "PNG               --with-png=$with_png          	$have_png"
+fi
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
 echo "TRIO              --with-trio=$with_trio        	$have_trio"
 result_windows_font_dir='none'

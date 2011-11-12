@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2010 GraphicsMagick Group
+# Copyright (C) 2004-2011 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -110,6 +110,10 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwblob_EPDF_gray.sh \
 	tests/rwblob_EPDF_pallette.sh \
 	tests/rwblob_EPDF_truecolor.sh \
+	tests/rwblob_EPT_bilevel.sh \
+	tests/rwblob_EPT_gray.sh \
+	tests/rwblob_EPT_pallette.sh \
+	tests/rwblob_EPT_truecolor.sh \
 	tests/rwfile_EPDF_bilevel.sh \
 	tests/rwfile_EPDF_gray.sh \
 	tests/rwfile_EPDF_pallette.sh \
@@ -145,6 +149,41 @@ TESTS_PS_XFAIL_TESTS = \
 	tests/rwfile_EPS_truecolor10.sh \
 	tests/rwfile_EPS_truecolor12.sh \
 	tests/rwfile_EPS_truecolor16.sh \
+	tests/rwfile_EPT_bilevel.sh \
+	tests/rwfile_EPT_gray.sh \
+	tests/rwfile_EPT_pallette.sh \
+	tests/rwfile_EPT_truecolor.sh \
+	tests/rwfile_EPT_truecolor10.sh \
+	tests/rwfile_EPT_truecolor12.sh \
+	tests/rwfile_EPT_truecolor16.sh \
+	tests/rwfile_PDF_bilevel.sh \
+	tests/rwfile_PDF_bilevel_fax.sh \
+	tests/rwfile_PDF_bilevel_jpeg.sh \
+	tests/rwfile_PDF_bilevel_lzw.sh \
+	tests/rwfile_PDF_bilevel_none.sh \
+	tests/rwfile_PDF_bilevel_rle.sh \
+	tests/rwfile_PDF_bilevel_zip.sh \
+	tests/rwfile_PDF_gray.sh \
+	tests/rwfile_PDF_gray_fax.sh \
+	tests/rwfile_PDF_gray_jpeg.sh \
+	tests/rwfile_PDF_gray_lzw.sh \
+	tests/rwfile_PDF_gray_none.sh \
+	tests/rwfile_PDF_gray_rle.sh \
+	tests/rwfile_PDF_gray_zip.sh \
+	tests/rwfile_PDF_pallette.sh \
+	tests/rwfile_PDF_pallette_fax.sh \
+	tests/rwfile_PDF_pallette_jpeg.sh \
+	tests/rwfile_PDF_pallette_lzw.sh \
+	tests/rwfile_PDF_pallette_none.sh \
+	tests/rwfile_PDF_pallette_rle.sh \
+	tests/rwfile_PDF_pallette_zip.sh \
+	tests/rwfile_PDF_truecolor.sh \
+	tests/rwfile_PDF_truecolor_fax.sh \
+	tests/rwfile_PDF_truecolor_jpeg.sh \
+	tests/rwfile_PDF_truecolor_lzw.sh \
+	tests/rwfile_PDF_truecolor_none.sh \
+	tests/rwfile_PDF_truecolor_rle.sh \
+	tests/rwfile_PDF_truecolor_zip.sh \
 	tests/rwfile_PS_bilevel.sh \
 	tests/rwfile_PS_gray.sh \
 	tests/rwfile_PS_pallette.sh \
@@ -465,10 +504,6 @@ TESTS_TESTS = \
 	tests/rwblob_PPM_gray.sh \
 	tests/rwblob_PPM_pallette.sh \
 	tests/rwblob_PPM_truecolor.sh \
-	tests/rwblob_PSD_bilevel.sh \
-	tests/rwblob_PSD_gray.sh \
-	tests/rwblob_PSD_pallette.sh \
-	tests/rwblob_PSD_truecolor.sh \
 	tests/rwblob_RAS_bilevel.sh \
 	tests/rwblob_RAS_gray.sh \
 	tests/rwblob_RAS_pallette.sh \
@@ -897,7 +932,6 @@ CHECK_BLOB_FORMATS = \
 	PICT \
 	PNG \
 	PPM \
-	PSD \
 	RAS \
 	SGI \
 	SUN \

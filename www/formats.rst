@@ -35,6 +35,7 @@ GraphicsMagick Supported Formats
 .. _MPEG : http://www.mpeg.org/
 .. _MTV : http://www.fileformat.info/format/mtv/egff.htm
 .. _MathWorks : http://www.mathworks.com/
+.. _PAM : http://netpbm.sourceforge.net/doc/pam.html
 .. _PBM : http://www.fileformat.info/format/pbm/egff.htm
 .. _PCX : http://www.fileformat.info/format/pcx/egff.htm
 .. _PWP : http://www.photoworks.com/
@@ -273,6 +274,9 @@ image formats.
    +--------------+------+---------------------------+--------------------------------------------------+
    | PALM         | RW   | Palm pixmap               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
+   | PAM_         | RW   | Portable Arbitrary Map    | Superset of PNM (PPM, PGM, PPM) raw type formats.|
+   |              |      | format                    | Supports bilevel, gray, RGB, CMYK, alpha channel.|
+   +--------------+------+---------------------------+--------------------------------------------------+
    | PBM_         | RW   | Portable bitmap format    |                                                  |
    |              |      | (black and white)         |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
@@ -321,8 +325,8 @@ image formats.
    |              |      |                           | the image.                                       |
    |              |      |                           |                                                  |
    |              |      |                           | The default is to write the binary version of    |
-   |              |      |                           | the formats. Use +compress to write the ASCII    |
-   |              |      |                           | version of the formats.                          |
+   |              |      |                           | the formats. Use '-quality 0' to write the       |
+   |              |      |                           | ASCII version of the formats.                    |
    +--------------+------+---------------------------+--------------------------------------------------+
    | PPM          | RW   | Portable pixmap format    |                                                  |
    |              |      | (color)                   |                                                  |
@@ -470,6 +474,10 @@ following table lists these pseudo image formats:
    | IDENTITY     | R    | `Hald CLUT`_ identity     | Generate a Hald CLUT identity image of a specified order.   |
    |              |      | image                     | The order is specified as an argument like "IDENTITY:8".    |
    |              |      |                           | The default order is eight, producing a 512x512 image.      |
+   +--------------+------+---------------------------+-------------------------------------------------------------+
+   | INFO         | W    | Image descriptive         | Writes descriptive information similar to 'identify'        |
+   |              |      | information and           |                                                             |
+   |              |      | statistics                |                                                             |
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | LABEL        | R    | Text image format         | Specify the desired text as the filename (e.g.              |
    |              |      |                           | "label:This is a label").                                   |
@@ -796,4 +804,4 @@ automatically uncompressed while the image is read.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002-2010
+Copyright |copy| GraphicsMagick Group 2002 - 2011

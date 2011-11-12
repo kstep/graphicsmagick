@@ -791,7 +791,7 @@ And here is a list of all the image attributes you can set:
    |                |                                    |comment.           |
    +----------------+------------------------------------+-------------------+
    |compression     |{None, BZip, Fax, Group4, JPEG,     |type of image      |
-   |                |LosslessJPEG, LZW, RLE, Zip}        |compression        |
+   |                |LosslessJPEG, LZW, RLE, Zip, LZMA}  |compression        |
    +----------------+------------------------------------+-------------------+
    |                |{No, Configure, Annotate, Render,   |log copious        |
    |debug           |Transform, Locale, Coder, X11,      |debugging          |
@@ -1268,8 +1268,9 @@ information. Use
   ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
   $image->QueryFontMetrics(parameters);
 
-  Where parameters is any parameter of the Annotate method. The return values
-  are
+  Where parameters is any parameter of the Annotate method.  The
+  'text' parameter must be specified since there can be no default for
+  the text to render. The return values are
 
   * character width
   * character height

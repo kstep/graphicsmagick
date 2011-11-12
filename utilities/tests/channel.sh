@@ -13,4 +13,4 @@ set -e # Exit on any error
 
 OUTFILE=TileChannel_out.miff
 rm -f ${OUTFILE}
-${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace cmyk -channel blue -label Channel ${OUTFILE}
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace cmyk -channel yellow -label Channel ${OUTFILE}

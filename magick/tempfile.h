@@ -63,7 +63,8 @@ MagickExport FILE *
 }
 
 MagickExport void
-  DestroyTemporaryFiles(void);
+  DestroyTemporaryFiles(void),
+  PurgeTemporaryFiles(void);
 
 extern MagickPassFail
   InitializeTemporaryFiles(void);

@@ -527,6 +527,9 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
         MagickBool
           thread_status;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_MinifyImage)
+#endif
         thread_status=status;
         if (thread_status == MagickFail)
           continue;
@@ -856,7 +859,10 @@ HorizontalFilter(const Image *source,Image *destination,
 
       MagickBool
         thread_status;
-    
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_HorizontalFilter)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1072,7 +1078,10 @@ VerticalFilter(const Image *source,Image *destination,
 
       MagickBool
         thread_status;
-    
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_VerticalFilter)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;

@@ -9,17 +9,24 @@
 #endif
 
 ; Compiler-dependent redistributable DLLs
-;Source: "..\bin\msvcr70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-;Source: "..\bin\msvcp70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-;Source: "..\bin\mfc70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: "..\bin\msvcr70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: "..\bin\msvcp70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: "..\bin\mfc70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
-Source: "..\bin\mfc90.dll";   DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; C runtime
 Source: "..\bin\msvcr90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-Source: "..\bin\msvcp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-Source: "..\bin\vcomp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+
+; C++ standard runtime
+; Source: "..\bin\msvcp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 Source: "..\bin\Microsoft.VC90.CRT.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-Source: "..\bin\Microsoft.VC90.MFC.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+
+; OpenMP runtime
+Source: "..\bin\vcomp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 Source: "..\bin\Microsoft.VC90.OpenMP.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+
+; MFC C++ runtime
+; Source: "..\bin\mfc90.dll";   DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: "..\bin\Microsoft.VC90.MFC.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; DLLs
 Source: "..\bin\CORE_RL*.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion

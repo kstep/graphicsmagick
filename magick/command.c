@@ -236,14 +236,19 @@ static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
 				       const char *path,
 				       ExceptionInfo *exception)
 {
+  const char
+    *env;
+
   ARG_NOT_USED(mode);
   ARG_NOT_USED(path);
   ARG_NOT_USED(exception);
 
-#if 0
-  (void) fprintf(stderr,"  %s %s\n",
-		 ConfirmAccessModeToString(mode),path);
-#endif
+  if (((env=getenv("MAGICK_ACCESS_MONITOR")) != (const char *) NULL) &&
+      (LocaleCompare(env,"TRUE") == 0))
+    {
+      (void) fprintf(stderr,"  %s %s\n",
+		     ConfirmAccessModeToString(mode),path);
+    }
   return MagickPass;
 }
 
@@ -282,8 +287,10 @@ static MagickBool CommandAccessMonitor(const ConfirmAccessMode mode,
 static MagickBool CommandProgressMonitor(const char *task,
 					 const magick_int64_t quantum,
 					 const magick_uint64_t span,
-					 ExceptionInfo *ARGUNUSED(exception))
+					 ExceptionInfo *exception)
 {
+  ARG_NOT_USED(exception);
+
   if ((span > 1) && (quantum >= 0) && ((magick_uint64_t) quantum < span))
     {
       const char
@@ -518,11 +525,6 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
     resource_database;
 
   /*
-    Initialize command line arguments.
-  */
-  InitializeMagick(*argv);
-
-  /*
     Set defaults.
   */
   SetNotifyHandlers;
@@ -647,7 +649,11 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,exception);
           if (exception->severity > UndefinedException)
-            CatchException(exception);
+	    {
+	      CatchException(exception);
+	      DestroyExceptionInfo(exception);
+	      GetExceptionInfo(exception);
+	    }
           status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;
@@ -1505,9 +1511,6 @@ BenchmarkImageCommand(ImageInfo *image_info,
   unsigned int
     status=True;
 
-  int
-    i;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -1534,7 +1537,6 @@ BenchmarkImageCommand(ImageInfo *image_info,
   */
   argc--;
   argv++;
-  i=0;
 #if defined(HAVE_OPENMP)
   concurrent=MagickFalse;
 #endif /* HAVE_OPENMP */
@@ -1597,13 +1599,11 @@ BenchmarkImageCommand(ImageInfo *image_info,
     if (concurrent)
       {
 	MagickBool
-	  quit;
+	  quit = MagickFalse;
 
 	long
-	  count;
+	  count = 0;
 
-	count=0;
-	quit=MagickFalse;
 	omp_set_nested(MagickTrue);
 	if (duration > 0)
 	  {
@@ -1614,7 +1614,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		MagickPassFail
 		  thread_status;
 
-		if (quit)
+		MagickBool
+		  thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		thread_quit=quit;
+		
+		if (thread_quit)
 		  continue;
 
 		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
@@ -1624,12 +1630,14 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  if (!thread_status)
 		    {
 		      status=thread_status;
-		      quit=MagickTrue;
+		      thread_quit=MagickTrue;
 		    }
 		  if (GetElapsedTime(&timer) > duration)
-		    quit=MagickTrue;
+		    thread_quit=MagickTrue;
 		  else
 		    (void) ContinueTimer(&timer);
+		  if (thread_quit)
+		    quit=thread_quit;
 		}
 	      }
 	  }
@@ -1641,7 +1649,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		MagickPassFail
 		  thread_status;
 
-		if (quit)
+		MagickBool
+		  thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		thread_quit=quit;
+
+		if (thread_quit)
 		  continue;
 
 		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
@@ -1651,8 +1665,10 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  if (!thread_status)
 		    {
 		      status=thread_status;
-		      quit=MagickTrue;
+		      thread_quit=MagickTrue;
 		    }
+		  if (thread_quit)
+		    quit=thread_quit;
 		}
 	      }
 	  }
@@ -1689,13 +1705,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
       double
         rate_cpu,
         rate_total,
-        resolution,
+        /* resolution, */
         user_time;
 
       double
         elapsed_time;
 
-      resolution=GetTimerResolution();
+      /* resolution=GetTimerResolution(); */
       user_time=GetUserTime(&timer);
       elapsed_time=GetElapsedTime(&timer);
       rate_total=(((double) iteration)/elapsed_time);
@@ -1854,6 +1870,8 @@ CompareImageCommand(ImageInfo *image_info,
         */
         filename=argv[i];
         (void) strlcpy(image_info->filename,filename,MaxTextExtent);
+	DestroyExceptionInfo(exception);
+	GetExceptionInfo(exception);
         if (reference_image == (Image *) NULL)
           {
             reference_image=ReadImage(image_info,exception);
@@ -5955,7 +5973,11 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,exception);
     if (exception->severity > UndefinedException)
-      CatchException(exception);
+      {
+	CatchException(exception);
+	DestroyExceptionInfo(exception);
+	GetExceptionInfo(exception);
+      }
     status&=(image != (Image *) NULL);
     if (image != (Image *) NULL)
       DestroyImageList(image);
@@ -6295,14 +6317,20 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
+	  DestroyExceptionInfo(exception);
+	  GetExceptionInfo(exception);
           image=ReadImage(image_info,exception);
           if (exception->severity > UndefinedException)
-            CatchException(exception);
+	    {
+	      CatchException(exception);
+	      DestroyExceptionInfo(exception);
+	      GetExceptionInfo(exception);
+	    }
           status&=image != (Image *) NULL;
           if (image == (Image *) NULL)
             continue;
           status&=MogrifyImage(image_info,i-j,argv+j,&image);
-          (void) CatchImageException(image);
+	  (void) CatchImageException(image);
           do
           {
             /*
@@ -7696,7 +7724,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           image=PingImage(image_info,exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
-          continue;
+	  {
+	    CatchException(exception);
+	    DestroyExceptionInfo(exception);
+	    GetExceptionInfo(exception);
+	    continue;
+	  }
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           if (p->scene == 0)
@@ -8239,7 +8272,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     *draw_info;
 
   Image
-    *map_image,
     *region_image;
 
   ImageInfo
@@ -8270,6 +8302,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert((*image)->signature == MagickSignature);
   if (argc <= 0)
     return(True);
+
+#if defined(DEBUG_COMMAND_PARSER)
+  fprintf(stderr,"  MogrifyImage (0x%p->%s):", *image, (*image)->filename);
+  for (i=0; i < argc; i++)
+    fprintf(stderr," %s",argv[i]);
+  fprintf(stderr,"\n");
+#endif /* DEBUG_COMMAND_PARSER */
+
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
       MagickFatalError(OptionFatalError,OptionLengthExceedsLimit,argv[i]);
@@ -8279,23 +8319,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
-  map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
-  quantize_info.dither=True;
-  if (clone_info->monochrome)
-    if (!IsMonochromeImage(*image,&(*image)->exception))
-      {
-        quantize_info.number_colors=2;
-        quantize_info.tree_depth=8;
-        quantize_info.colorspace=GRAYColorspace;
-      }
+  quantize_info.dither=MagickTrue;
   SetGeometry(*image,&region_geometry);
   region_image=(Image *) NULL;
   /*
     Transmogrify the image.
   */
-
   for (i=0; i < argc; i++)
   {
     option=argv[i];
@@ -8526,6 +8557,39 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info.number_colors=MagickAtoL(argv[++i]);
+
+	    if ( IsGrayColorspace(quantize_info.colorspace) )
+	      {
+		/*
+		  If color reduction is requested, then quantize to the requested
+		  number of colors in the gray colorspace, otherwise simply
+		  transform the image to the gray colorspace.
+		*/
+		if ( quantize_info.number_colors != 0 )
+		  (void) QuantizeImage(&quantize_info,*image);
+		else
+		  (void) TransformColorspace(*image,quantize_info.colorspace);
+	      }
+	    else
+	      {
+		/*
+		  If color reduction is requested, and the image is DirectClass,
+		  or the image is PseudoClass and the number of colors exceeds
+		  the number requested, then quantize the image colors. Otherwise
+		  compress an existing colormap.
+		*/
+		if ( quantize_info.number_colors != 0 )
+		  {
+		    if (((*image)->storage_class == DirectClass) ||
+			((*image)->colors > quantize_info.number_colors))
+		      (void) QuantizeImage(&quantize_info,*image);
+		    else
+		      CompressImageColormap(*image);
+		  }
+	      }
+
+	    quantize_info.number_colors=0;
+	    
             continue;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
@@ -8558,9 +8622,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("compose",option+1) == 0)
           {
-            option=argv[++i];
-            (*image)->compose=StringToCompositeOperator(option);
-            break;
+	    (*image)->compose=CopyCompositeOp;
+	    if (*option == '-')
+	      (*image)->compose=StringToCompositeOperator(argv[++i]);
+            continue;
           }
         if (LocaleCompare("compress",option+1) == 0)
           {
@@ -8780,6 +8845,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             clone_info->dither=(*option == '-');
             quantize_info.dither=clone_info->dither;
+	    (*image)->dither=quantize_info.dither;
             continue;
           }
         if (LocaleCompare("draw",option+1) == 0)
@@ -9241,7 +9307,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (*option == '+')
               continue;
             (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
-            map_image=ReadImage(clone_info,&(*image)->exception);
+	    {
+	      Image
+		*map_image;
+
+	      if ((map_image=ReadImage(clone_info,&(*image)->exception)) !=
+		  (Image *) NULL)
+		{
+		  (void) MapImage(*image,map_image,quantize_info.dither);
+		  DestroyImage(map_image);
+		}
+	    }
             continue;
           }
         if (LocaleCompare("mask",option+1) == 0)
@@ -9354,10 +9430,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if ((LocaleCompare("mono",option+1) == 0) ||
             (LocaleCompare("monochrome",option+1) == 0))
           {
-            clone_info->monochrome=True;
-            quantize_info.number_colors=2;
-            quantize_info.tree_depth=8;
-            quantize_info.colorspace=GRAYColorspace;
+            clone_info->monochrome=MagickTrue;
+	    (void) SetImageType(*image,BilevelType);
             continue;
           }
         if (LocaleCompare("motion-blur",option+1) == 0)
@@ -10433,7 +10507,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 (void) strlcpy(clone_image->filename,argv[i],sizeof(clone_image->filename));
                 (void) WriteImage(clone_info,clone_image);
                 if (clone_info->verbose)
-                  (void) DescribeImage(clone_image,stdout,False);
+                  (void) DescribeImage(clone_image,stderr,False);
                 DestroyImage(clone_image);
                 clone_image=(Image *) NULL;
               }
@@ -10458,7 +10532,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       *image=region_image;
       (*image)->matte=matte;
     }
-
+#if 0
   if ( IsGrayColorspace(quantize_info.colorspace) )
     {
       /*
@@ -10490,12 +10564,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             CompressImageColormap(*image);
         }
     }
+#endif
 
-  if (map_image != (Image *) NULL)
-    {
-      (void) MapImage(*image,map_image,quantize_info.dither);
-      DestroyImage(map_image);
-    }
   /*
     Free resources.
   */
@@ -10564,6 +10634,21 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert((*images)->signature == MagickSignature);
   if ((argc <= 0) || (*argv == (char *) NULL))
     return(True);
+
+#if defined(DEBUG_COMMAND_PARSER)
+  fprintf(stderr,"MogrifyImages (");
+  for (image=*images; image; image=image->next)
+    {
+      if (image != *images)
+	fprintf(stderr,", ");
+      fprintf(stderr,"0x%p->%s", image, image->filename);
+    }
+  fprintf(stderr,"):");
+  for (i=0; i < argc; i++)
+    fprintf(stderr," %s",argv[i]);
+  fprintf(stderr,"\n");
+#endif /* DEBUG_COMMAND_PARSER */
+
   scene=False;
   for (i=0; i < argc; i++)
   {
@@ -10600,7 +10685,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 	    if (scene)
 	      p->scene += i;
 	    if (image_info->verbose)
-	      (void) DescribeImage(p,stdout,False);
+	      (void) DescribeImage(p,stderr,False);
 	    i++;
 	  }
       }
@@ -13040,6 +13125,7 @@ static void MogrifyUsage(void)
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
+  DestroyMontageInfo(montage_info); \
   ThrowException(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
   return(False); \
@@ -13049,6 +13135,7 @@ static void MogrifyUsage(void)
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
+  DestroyMontageInfo(montage_info); \
   ThrowException3(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
   return(False); \
@@ -15365,7 +15452,7 @@ TimeImageCommand(ImageInfo *image_info,
 {
   double
     elapsed_time,
-    resolution,
+    /* resolution, */
     user_time;
 
   TimerInfo
@@ -15425,7 +15512,7 @@ TimeImageCommand(ImageInfo *image_info,
   status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
   (void) SetClientName(client_name);
 
-  resolution=GetTimerResolution();
+  /* resolution=GetTimerResolution(); */
   user_time=GetUserTime(&timer);
   elapsed_time=GetElapsedTime(&timer);
   (void) fflush(stdout);
@@ -15883,6 +15970,17 @@ MagickExport int GMCommand(int argc,char **argv)
 
   unsigned int
     status=True;
+
+  /*
+    Initialize locale from environment variables (LANG, LC_CTYPE,
+    LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES,
+    LC_ALL), but require that LC_NUMERIC use common conventions.  The
+    LC_NUMERIC variable affects the decimal point character and
+    thousands separator character for the formatted input/output
+    functions and string conversion functions.
+  */
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
 
 #if defined(MSWINDOWS)
   InitializeMagick((char *) NULL);

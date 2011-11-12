@@ -11,6 +11,8 @@ GraphicsMagick Topics
 
 `FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
+`NetBSD/pkgsrc port <http://pkgsrc.se/graphics/GraphicsMagick/>`_ for GraphicsMagick.
+
 `FreshMeat <http://freshmeat.net/projects/graphicsmagick>`_ GraphicsMagick Entry.
 
 `Gmane <http://dir.gmane.org/gmane.comp.video.graphicsmagick.announce>`_ GraphicsMagick Announce List.
@@ -192,6 +194,9 @@ site by Jack James dedicated to the digital intermediate industry.
 `Digital Cinema Initiatives <http://www.dcimovies.com/>`_,
 DCI offers the first complete specification for digital cinema delivery.
 
+`Ingex <http://ingex.sourceforge.net/index.html>`_ Tapeless video &
+audio capture, transcoding and network file serving.  From the BBC.
+
 Video Topics
 =============
 
@@ -237,14 +242,17 @@ a facinating web-based photo album organizer.  Works with GraphicsMagick!.
 playback and image processing software for the film and computer
 animation industries.
 
+`OpenImageIO <https://sites.google.com/site/openimageio/>`_ library
+for reading and writing images, and a bunch of related classes,
+utilities, and applications.
+
 Stock Photos
 =============
 
 `MorgueFile <http://www.morguefile.com/>`_, Free high-resolution stock photo images.
 
------
+--------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-`Copyright <Copyright.html>`_ |copy| GraphicsMagick Group 2002 - 2010
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

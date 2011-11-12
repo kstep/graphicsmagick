@@ -11,12 +11,16 @@ PACKAGE_NAME='GraphicsMagick'
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.3.12").
 PACKAGE_VERSION='1.3.12'
+#
+# Package name plus version string.
+#
+PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
+#PACKAGE_RELEASE_DATE="2008-11-09"
 PACKAGE_RELEASE_DATE="2010-03-08"
-#PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Date of last ChangeLog update
@@ -35,9 +39,9 @@ else
 fi
 
 #
-# CVS branch that this release is on.
+# Mercurial branch that this release is on.
 #
-CVS_BRANCH_TAG=GraphicsMagick-1_3
+HG_BRANCH_TAG=GraphicsMagick-1_3
 
 #
 # Libtool library revision control info

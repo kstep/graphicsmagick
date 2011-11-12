@@ -45,6 +45,7 @@
 #include "magick/alpha_composite.h"
 #include "magick/color.h"
 #include "magick/decorate.h"
+#include "magick/log.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/render.h"
@@ -427,6 +428,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -601,6 +607,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -676,6 +687,11 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
             MagickPassFail
               thread_status;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+#    pragma omp critical (GM_IntegralRotateImage)
+#  endif
+#endif
             thread_status=status;
             if (thread_status == MagickFail)
               continue;
@@ -802,13 +818,13 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
                     if (!MagickMonitorFormatted(tile,total_tiles,exception,
                                                 message,image->filename))
                       thread_status=MagickFail;
+
+		  if (thread_status == MagickFail)
+		    status=MagickFail;
                 }
 
                 if (thread_status == MagickFail)
-                  {
-                    status=MagickFail;
-                    break;
-                  }
+		  break;
               }
           }
         Swap(page.width,page.height);
@@ -912,7 +928,10 @@ XShearImage(Image *image,const double degrees,
 
       MagickPassFail
         thread_status;
-      
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_XShearImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1179,7 +1198,10 @@ YShearImage(Image *image,const double degrees,
 
       MagickPassFail
         thread_status;
-      
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_YShearImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1594,7 +1616,9 @@ ShearImage(const Image *image,const double x_shear,
     goto shear_image_exception;
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
-  if ((shear.x == 0.0) || (shear.y == 0.0))
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+			"Shear angles x,y: %g,%g degrees", shear.x, shear.y);
+  if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
 
   /*

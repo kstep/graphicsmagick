@@ -1,5 +1,6 @@
 /x/aa/c/Tpd C0D32.OBJ+
-cmscam97.obj+
+cmscam02.obj+
+cmscgats.obj+
 cmscnvrt.obj+
 cmserr.obj+
 cmsgamma.obj+
@@ -8,19 +9,21 @@ cmsintrp.obj+
 cmsio0.obj+
 cmsio1.obj+
 cmslut.obj+
-cmsmatsh.obj+
+cmsmd5.obj+
 cmsmtrx.obj+
+cmsnamed.obj+
+cmsopt.obj+
 cmspack.obj+
 cmspcs.obj+
-cmssamp.obj+
-cmswtpnt.obj+
-cmsxform.obj+
+cmsplugin.obj+
 cmsps2.obj+
-cmsnamed.obj+
+cmssamp.obj+
+cmssm.obj+
+cmstypes.obj+
 cmsvirt.obj+
-cmscam02.obj+
-cmscgats.obj
-..\..\bin\lcms.dll
+cmswtpnt.obj+
+cmsxform.obj
+..\..\bin\lcms2.dll
 
 cw32mt.lib import32.lib
-..\..\src\lcms.def
+..\..\src\lcms2.def

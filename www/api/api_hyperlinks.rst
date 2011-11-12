@@ -17,7 +17,7 @@
 .. _ExceptionInfo:        ../api/types.html#exceptioninfo
 .. _ExceptionType:        ../api/types.html#exceptiontype
 .. _FillRule:             ../api/types.html#fillrule
-.. _FilterType:           ../api/types.html#filtertype
+.. _FilterTypes:          ../api/types.html#filtertype
 .. _FrameInfo:            ../api/types.html#frameinfo
 .. _GravityType:          ../api/types.html#gravitytype
 .. _Image:                ../api/types.html#image

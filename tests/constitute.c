@@ -180,6 +180,7 @@ int main ( int argc, char **argv )
   GetExceptionInfo( &exception );
   imageInfo->dither = 0;
   (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
+  (void) strcat( imageInfo->filename,"[0]" );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
@@ -228,7 +229,7 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
 
-  DestroyImage( original );
+  DestroyImageList( original );
   original = (Image*)NULL;
 
   /*

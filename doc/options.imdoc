@@ -424,7 +424,7 @@ If a clipping path is present, it will be applied to subsequent operations.</pp>
 <pp>
 For example, if you type the following command:</pp>
 <pre>
-     convert -clip -negate cockatoo.tif negated.tif
+   gm convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <pp>
 only the pixels within the clipping path are negated.</pp>
@@ -476,8 +476,8 @@ The <s>-colorize</s> option may be used in conjunction with <s>-modulate</s>
 to produce a nice sepia toned image like:</pp>
 
 <pre>
-  gm convert input.ppm -modulate 115,0,100 \
-     -colorize 7,21,50 output.ppm.
+   gm convert input.ppm -modulate 115,0,100 \
+              -colorize 7,21,50 output.ppm.
 </pre>
 
 </utils>
@@ -838,7 +838,7 @@ space, then the change-image pixel intensities are used.
 Choices are: <i>None</i>, <i>BZip</i>, <i>Fax</i>,
 <i>Group4</i>,
 <i>JPEG</i>, <i>Lossless</i>,
-<i>LZW</i>, <i>RLE</i> or <i>Zip</i>.
+<i>LZW</i>, <i>RLE</i>, <i>Zip</i>, or <i>LZMA</i>.
 </pp>
 
 <pp>
@@ -877,7 +877,7 @@ or <s>+contrast</s> to reduce the image contrast.
 <pp>
 For a more pronounced effect you can repeat the option:</pp>
 <pre>
-    convert rose: -contrast -contrast rose_c2.png
+   gm convert rose: -contrast -contrast rose_c2.png
 </pre>
 
 </utils>
@@ -997,7 +997,7 @@ consisting of one or more of the following domains: <tt>Annotate</tt>,
 For example, to log cache and blob events, use</pp>
 
 <pre>
-    convert -debug "Cache,Blob" rose: rose.png
+   gm convert -debug "Cache,Blob" rose: rose.png
 </pre>
 
 <pp>
@@ -1164,6 +1164,16 @@ input file, the quality setting is preserved but the sampling-factors
 are not.
 </dd>
 
+<dt>pcl:fit-to-page</dt>
+<dd>If the pcl:fit-to-page flag is defined, then the printer is
+requested to scale the image to fit the page size (width and/or
+height).</dd>
+
+<dt>pdf:use-cropbox</dt>
+<dd>If the pdf:use-cropbox flag is defined, then Ghostscript is
+requested to apply the PDF crop box.
+</dd>
+
 <dt>ps:imagemask</dt>
 <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
 create Postscript files that render bilevel images with the Postscript
@@ -1194,6 +1204,13 @@ is "msb2lsb", which matches the native bit order of all modern CPUs. The
 only exception to this is when Group3 or Group4 FAX compression is
 requested since FAX machines send data in bit-reversed order and
 therefore RFC 2301 recommends using reverse order.
+</dd>
+
+<dt>tiff:group-three-options=<value></dt>
+<dd>If the tiff:group-three-options key is defined, GraphicsMagick
+will use it to set the group3 options tag when writing
+group3-compressed TIFF.  Please see the TIFF specification for the
+usage of this tag.  The default value is 4.
 </dd>
 
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
@@ -1290,7 +1307,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</pp>
 <pre>
-    convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 </pre>
 
 </utils>
@@ -1839,8 +1856,30 @@ bounds of the new image dimensions is discarded.</pp>
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:</pp>
 <pre>
-    convert infile.jpg -thumbnail 120x80 -background red -gravity center -extent 140x100 outfile.jpg
+   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \
+              -extent 140x100 outfile.jpg
 </pre>
+<pp>
+This command reduces or expands a JPEG image to fit on an 800x600
+display: </pp>
+
+<pp>
+<pre>
+   gm convert -size 800x600 input.jpg \
+              -resize 800x600 -background black \
+              -compose Copy -gravity center \
+              -extent 800x600 \
+              -quality 92 output.jpg
+
+</pre>
+
+<pp>
+If the aspect ratio of the input image isn't exactly 4:3, then the
+image is centered on an 800x600 black canvas. </pp>
+
+<pp>
+</pp>
+
 
 </utils>
 
@@ -1895,9 +1934,9 @@ or the parentheses from being interpreted by your shell.</pp>
 <pp>
 For example,</pp>
 <pre>
-    convert -fill blue ...
-    convert -fill "#ddddff" ...
-    convert -fill "rgb(65000,65000,65535)" ...
+   gm convert -fill blue ...
+   gm convert -fill "#ddddff" ...
+   gm convert -fill "rgb(65000,65000,65535)" ...
 </pre>
 
 <pp>
@@ -1962,13 +2001,48 @@ being enlarged, otherwise the <s>Lanczos</s> filter is used.</pp>
 <abs>flatten a sequence of images</abs>
 
 <pp>
-The sequence of images is replaced by a single image created by composing each
-image after the first over the first image.</pp>
+
+In some file formats (e.g. Photoshop's PSD) complex images may be
+represented by "layers" (independent images) which must be composited
+in order to obtain the final rendition.  The <s>-flatten</s> option
+accomplishes this composition.  The sequence of images is replaced by
+a single image created by compositing each image in turn, while
+respecting composition operators and page offsets.  While
+<s>-flatten</s> is immediately useful for eliminating layers, it is
+also useful as a general-purpose composition tool.</pp>
+
 <pp>
-The sequence of images
-is terminated by the appearance of any option.
-If the <s>-flatten</s>
-option appears after all of the input images, all images are flattened.</pp>
+
+The sequence of images is terminated by the appearance of any option.
+If the <s>-flatten</s> option appears after all of the input images,
+all images are flattened.  Also see <s>-mosaic</s> which is similar to
+<s>-flatten</s> except that it adds a suitably-sized canvas base
+image.</pp>
+
+<pp>
+
+For example, this composites an image on top of a 640x400 transparent
+black canvas image:</pp>
+
+<pre>
+   gm convert -size 640x300 xc:transparent \
+              -compose over -page +0-100 \
+              frame.png -flatten output.png
+</pre>
+
+<pp>
+
+and this flattens a Photoshop PSD file:</pp>
+
+<pre>
+
+   gm convert input.psd -flatten output.png
+
+</pre>
+
+<pp>
+</pp>
+
 
 </utils>
 
@@ -2537,6 +2611,9 @@ used so it is not usually necessary for CLUT images to be very large.
 The PNG file format is ideal for storing Hald CLUT images because it
 compresses them very well.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2561,6 +2638,9 @@ compresses them very well.</pp>
 
 <pp>
 Specifies the color to use when annotating difference pixels.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2597,6 +2677,9 @@ and <s>XOR</s> does an XOR between the pixel and the highlight color.</pp>
 Offsets, if present in the geometry specification, are handled in
 the same manner as the <s>-geometry</s> option, using X11 style to handle
 negative offsets.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2656,6 +2739,9 @@ Choose from these intents:
 <pp>
 The default intent is undefined.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2691,6 +2777,9 @@ is like plane except the different planes are saved to individual files
 <pp>
 Use <s>Line</s> to create an <s>interlaced PNG</s> or <s> GIF</s> or
 <s>progressive JPEG</s> image.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2740,6 +2829,9 @@ When creating a montage, by default the label associated with an image
 is displayed with the corresponding tile in the montage.  Use the
 <s>+label</s> option to suppress this behavior.</pp>
 
+<pp>
+</pp>
+
 </utils>
 
 
@@ -2756,7 +2848,13 @@ is displayed with the corresponding tile in the montage.  Use the
 Perform local adaptive thresholding using the specified width, height,
 and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
-as a percentage.</pp>
+as a percentage.  If the percent option is supplied, then the offset
+is computed as a percentage of the quantum range.  It is strongly
+recommended to use the percent option so that results are not
+sensitive to pixel quantum depth.</pp>
+
+<pp>
+</pp>
 
 </utils>
 
@@ -2905,7 +3003,7 @@ special format characters:</pp>
 <pp>
 For example:</pp>
 <pre>
-    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 </pre>
 
 <pp>
@@ -3245,15 +3343,49 @@ option appears after all of the input images, all images are morphed.</pp>
 <abs>create a mosaic from an image or an image sequence</abs>
 
 <pp>
-The <s>-page</s> option can be used to establish the dimensions of the mosaic
-and to locate the images within the mosaic.</pp>
+
+The <s>-mosaic</s> option provides a flexible way to composite one or
+more images onto a solid-color canvas image. It works similar to
+<s>-flatten</s> except that a base canvas image is automatically
+created with a suitable size given the image size, page dimensions,
+and page offsets of images to be composited.  The color of the base
+canvas image may be set via the <s>-background</s> option.  The
+default canvas color is 'white', but 'black' or 'transparent' may be
+more suitable depending on the composition algorithm requested.</pp>
 
 <pp>
-The sequence of images
-is terminated by the appearance of any option.
-If the <s>-mosaic</s>
-option appears after all of the input images, all images are included
-in the mosaic.</pp>
+
+The <s>-compose</s> option may be used to specify the composition
+algorithm to use when compositing the subsequent image on the base
+canvas.</pp>
+
+<pp>
+
+The <s>-page</s> option can be used to establish the dimensions of the
+mosaic and to position the subsequent image within the mosaic.  If the
+<s>-page</s> argument does not specify width and height, then the
+canvas dimensions are evaluated based on the image sizes and
+offsets.</pp>
+
+<pp>
+
+The sequence of images is terminated by the appearance of any option.
+If the <s>-mosaic</s> option appears after all of the input images,
+all images are included in the mosaic.</pp>
+
+<pp>
+
+The following is an example of composing an image based on red, green,
+and blue layers extracted from a sequence of images and pasted on the
+canvas image at specified offsets:</pp>
+
+<pre>
+   gm convert -background black \
+              -compose CopyRed   -page +0-100 red.png \
+              -compose CopyGreen -page +0+40  green.png \
+              -compose CopyBlue  -page +0+180 blue.png \
+              -mosaic output.png
+</pre>
 
 </utils>
 
@@ -3369,7 +3501,19 @@ desired.</pp>
 <abs>transform image to span the full range of color values</abs>
 
 <pp>
-This is a contrast enhancement technique.</pp>
+This is a contrast enhancement technique based on the image histogram.</pp>
+
+<pp>
+When computing the contrast enhancement values, the histogram edges
+are truncated so that the majority of the image pixels are considered
+in the constrast enhancement, and outliers (e.g. random noise or
+minute details) are ignored.  The default is that 0.1 percent of the
+histogram entries are ignored.  The percentage of the histogram to
+ignore may be specified by using the <s>-set</s> option with the
+<s>histogram-threshold</s> parameter similar to <s>-set
+histogram-threshold 0.01</s> to specify 0.01 percent.  Use 0 percent
+to use the entire histogram, with possibly diminished contrast
+enhancement.</pp>
 
 </utils>
 
@@ -3573,13 +3717,13 @@ As an example, the <s>Assign</s> operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:</pp>
 <pre>
-  gm convert in.bmp -operator red assign "50%" out.bmp
+   gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <pp>
 The following applies 50% thresholding to the image and returns a gray
 image:</pp>
 <pre>
-  gm convert in.bmp -operator gray threshold "50%" out.bmp
+   gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
 
 </utils>
@@ -3612,11 +3756,20 @@ dithered. When <s>channeltype</s> is "opacity" or "matte", only the
 opacity channel is dithered. When a color channel is specified, only that
 channel is dithered.</pp>
 <pp>
-The choices for N are 2, 3, or 4. When N is 2, the image is divided into
-2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
-white depending on their intensity.  When N is 3, there are 3x3 tiles
-and 10 levels of gray can be represented.  When N is 4, there are 4x4
-tiles and 17 levels of gray.</pp>
+The choices for N are 2 through 7. The image is divided into
+NxN pixel tiles.  In each tile, some or all pixels are turned to
+white depending on their intensity.  For each N, (N**2)+1 levels
+of gray can be represented.  For N == 2, 3, or 4, the pixels
+are turned to white in an order that maximizes dispersion (i.e.,
+reduces granularity), while
+for N == 5, 6, and 7, they are turned to white in an order that
+creates a roughly circular black blob in the middle of each tile.
+An attractive "half-tone" looking image can be obtained by first
+rotating the image 45 degrees, performing a 5x5 ordered-dither
+operation, then rotating it back to the original orientation and
+cropping to the original image dimensions.  If the original image
+is gamma-encoded, it is adviseable to convert it to linear intensity
+first, e.g., with the "-gamma 0.45455" option.</pp>
 
 </utils>
 
@@ -3920,7 +4073,7 @@ option appears after all of the input images, all images are processed.</pp>
 
 <pp>
 <tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image
+(newswire information), or a generic (including Exif) profile to the image
 </pp>.
 <pp>
 Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>, or
@@ -3931,6 +4084,12 @@ an exclamation point.  For example, <tt>+profile '!icm,*'</tt> strips
 all profiles except for the ICM profile.  Use <tt>identify
 -verbose</tt> to find out what profiles are in the image file.  Use
 <tt>+profile "*"</tt> to remove all profiles.</pp>
+<pp>Writing the image to a format that does not support profiles will
+of course also cause all profiles to be removed.  The JPEG and PNG
+formats will store any profiles that have been read and not removed.
+In JPEG they are stored in APP1 markers, and in PNG they are stored
+as hex-coded binary in compressed zTXt chunks, except for the iCC
+chunk which is stored in the iCCP chunk.</pp>
 <pp>
 To extract a profile, the <s>-profile</s> option is not used.  Instead,
 simply write the file to an image
@@ -3940,8 +4099,12 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the <i>APP1</i> profile), use
 </pp>
 <pre>
-    convert cockatoo.jpg exifdata.app1
+   gm convert cockatoo.jpg exifdata.app1
 </pre>
+<pp>Note that GraphicsMagick does not attempt to update any profile to
+reflect changes made to the image, e.g., rotation from portrait to landscape
+orientation, so it is possible that the preserved profile may contain
+invalid data.</pp>
 
 </utils>
 
@@ -4917,7 +5080,7 @@ is applied, then the threshold is a percentage of the available range.</pp>
 <pp>
 To efficiently create a black and white image from a color image, use</pp>
 <pre>
-    gm convert -threshold 50% in.png out.png
+   gm convert -threshold 50% in.png out.png
 </pre>
 
 <pp>
@@ -5019,7 +5182,7 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</pp>
 This option applies the transformation matrix from a previous
 <s>-affine</s> option.</pp>
 <pre>
-    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 
 </utils>
@@ -5123,7 +5286,7 @@ image to be written in TrueColor RGB format even though only gray pixels
 are present, use</pp>
 
 <pre>
-    convert bird.pgm -type TrueColor bird.jpg
+   gm convert bird.pgm -type TrueColor bird.jpg
 </pre>
 
 <pp>
@@ -5137,7 +5300,7 @@ type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use</pp>
 
 <pre>
-    convert -size 640x480 -type TrueColor xc:red red.miff
+   gm convert -size 640x480 -type TrueColor xc:red red.miff
 </pre>
 
 <pp>
@@ -5491,8 +5654,8 @@ several sizes of an image may be generated in one command (repeat as
 often as needed):</pp>
 
 <pre>
-    convert input.jpg -resize 50% -write input50.jpg
-      -resize 25% input25.jpg
+   gm convert input.jpg -resize 50% -write input50.jpg \
+              -resize 25% input25.jpg
 </pre>
 
 

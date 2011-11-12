@@ -16,6 +16,6 @@ do
   identity_image=identity:${level}
   rm -f ${OUTFILE}
   ${GM} convert ${CONVERT_FLAGS} ${identity_image} -hald-clut ${identity_image} -label Hald-Clut ${OUTFILE}
-  ${GM} compare -maximum-error 4.0e-12 -metric MAE ${identity_image} ${OUTFILE}
+  ${GM} compare -maximum-error 1.5e-11 -metric MAE ${identity_image} ${OUTFILE}
   echo
 done

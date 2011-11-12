@@ -29,40 +29,13 @@
  *   2. Use IEEE 754 bit-patterns if possible.
  *   3. Use platform-specific techniques.
  *
- * This program has been tested on the following platforms (in
- * alphabetic order)
- *
- *   OS              CPU          Compiler
- * -------------------------------------------------
- *   AIX 4.1.4       PowerPC      gcc
- *   Darwin 1.3.7    PowerPC      gcc
- *   FreeBSD 2.2     x86          gcc
- *   FreeBSD 3.3     x86          gcc
- *   FreeBSD 4.3     x86          gcc
- *   FreeBSD 4.3     Alpha        gcc
- *   HP-UX 10.20     PA-RISC      gcc
- *   HP-UX 10.20     PA-RISC      HP C++
- *   IRIX 6.5        MIPS         MIPSpro C
- *   Linux 2.2       x86          gcc
- *   Linux 2.2       Alpha        gcc
- *   Linux 2.4       IA64         gcc
- *   Linux 2.4       StrongARM    gcc
- *   NetBSD 1.4      x86          gcc
- *   NetBSD 1.4      StrongARM    gcc
- *   NetBSD 1.5      Alpha        gcc
- *   OpenVMS 7.1     Alpha        DEC C 6.0
- *   RISC OS 4       StrongARM    Norcroft C
- *   Solaris 2.5.1   x86          gcc
- *   Solaris 2.5.1   Sparc        gcc
- *   Solaris 2.6     Sparc        WorkShop 4.2
- *   Solaris 8       Sparc        Forte C 6
- *   Tru64 4.0D      Alpha        gcc
- *   Tru64 5.1       Alpha        gcc
- *   WinNT           x86          MSVC 5.0 & 6.0
- *
  ************************************************************************/
 
-static const char rcsid[] = "@(#)$Id$";
+/*
+ * TODO:
+ *  o Put all the magic into trio_fpclassify_and_signbit(), and use this from
+ *    trio_isnan() etc.
+ */
 
 /*************************************************************************
  * Include files
@@ -78,7 +51,11 @@ static const char rcsid[] = "@(#)$Id$";
 # include <signal.h>
 #endif
 #if defined(TRIO_COMPILER_DECC)
-# include <fp_class.h>
+#  if defined(__linux__)
+#   include <cpml.h>
+#  else
+#   include <fp_class.h>
+#  endif
 #endif
 #include <assert.h>
 
@@ -93,13 +70,20 @@ static const char rcsid[] = "@(#)$Id$";
  * Definitions
  */
 
-/* We must enable IEEE floating-point on Alpha */
+#define TRIO_TRUE (1 == 1)
+#define TRIO_FALSE (0 == 1)
+
+/*
+ * We must enable IEEE floating-point on Alpha
+ */
 #if defined(__alpha) && !defined(_IEEE_FP)
 # if defined(TRIO_COMPILER_DECC)
 #  if defined(TRIO_PLATFORM_VMS)
 #   error "Must be compiled with option /IEEE_MODE=UNDERFLOW_TO_ZERO/FLOAT=IEEE"
 #  else
-#   error "Must be compiled with option -ieee"
+#   if !defined(_CFE)
+#    error "Must be compiled with option -ieee"
+#   endif
 #  endif
 # elif defined(TRIO_COMPILER_GCC) && (defined(__osf__) || defined(__linux__))
 #  error "Must be compiled with option -mieee"
@@ -125,8 +109,10 @@ static const char rcsid[] = "@(#)$Id$";
 
 
 /*************************************************************************
- * Data
+ * Constants
  */
+
+static TRIO_CONST char rcsid[] = "@(#)$Id$";
 
 #if defined(USE_IEEE_754)
 
@@ -143,7 +129,11 @@ static const char rcsid[] = "@(#)$Id$";
  */
 #define TRIO_DOUBLE_INDEX(x) (((unsigned char *)&internalEndianMagic)[7-(x)])
 
+#if (defined(__BORLANDC__) && __BORLANDC__ >= 0x0590)
+static TRIO_CONST double internalEndianMagic = 7.949928895127362e-275;
+#else
 static TRIO_CONST double internalEndianMagic = 7.949928895127363e-275;
+#endif
 
 /* Mask for the exponent */
 static TRIO_CONST unsigned char ieee_754_exponent_mask[] = {
@@ -153,6 +143,16 @@ static TRIO_CONST unsigned char ieee_754_exponent_mask[] = {
 /* Mask for the mantissa */
 static TRIO_CONST unsigned char ieee_754_mantissa_mask[] = {
   0x00, 0x0F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+};
+
+/* Mask for the sign bit */
+static TRIO_CONST unsigned char ieee_754_sign_mask[] = {
+  0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+/* Bit-pattern for negative zero */
+static TRIO_CONST unsigned char ieee_754_negzero_array[] = {
+  0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 /* Bit-pattern for infinity */
@@ -174,7 +174,9 @@ static TRIO_CONST unsigned char ieee_754_qnan_array[] = {
  * trio_make_double
  */
 TRIO_PRIVATE double
-trio_make_double(TRIO_CONST unsigned char *values)
+trio_make_double
+TRIO_ARGS1((values),
+	   TRIO_CONST unsigned char *values)
 {
   TRIO_VOLATILE double result;
   int i;
@@ -186,15 +188,17 @@ trio_make_double(TRIO_CONST unsigned char *values)
 }
 
 /*
- * trio_examine_double
+ * trio_is_special_quantity
  */
 TRIO_PRIVATE int
-trio_is_special_quantity(double number,
-			 int *has_mantissa)
+trio_is_special_quantity
+TRIO_ARGS2((number, has_mantissa),
+	   double number,
+	   int *has_mantissa)
 {
   unsigned int i;
   unsigned char current;
-  int is_special_quantity = (1 == 1);
+  int is_special_quantity = TRIO_TRUE;
 
   *has_mantissa = 0;
 
@@ -207,8 +211,43 @@ trio_is_special_quantity(double number,
   return is_special_quantity;
 }
 
+/*
+ * trio_is_negative
+ */
+TRIO_PRIVATE int
+trio_is_negative
+TRIO_ARGS1((number),
+	   double number)
+{
+  unsigned int i;
+  int is_negative = TRIO_FALSE;
+
+  for (i = 0; i < (unsigned int)sizeof(double); i++) {
+    is_negative |= (((unsigned char *)&number)[TRIO_DOUBLE_INDEX(i)]
+		    & ieee_754_sign_mask[i]);
+  }
+  return is_negative;
+}
+
 #endif /* USE_IEEE_754 */
 
+
+/**
+   Generate negative zero.
+
+   @return Floating-point representation of negative zero.
+*/
+TRIO_PUBLIC double
+trio_nzero(TRIO_NOARGS)
+{
+#if defined(USE_IEEE_754)
+  return trio_make_double(ieee_754_negzero_array);
+#else
+  TRIO_VOLATILE double zero = 0.0;
+
+  return -zero;
+#endif
+}
 
 /**
    Generate positive infinity.
@@ -216,7 +255,7 @@ trio_is_special_quantity(double number,
    @return Floating-point representation of positive infinity.
 */
 TRIO_PUBLIC double
-trio_pinf(void)
+trio_pinf(TRIO_NOARGS)
 {
   /* Cache the result */
   static double result = 0.0;
@@ -260,7 +299,7 @@ trio_pinf(void)
    @return Floating-point value of negative infinity.
 */
 TRIO_PUBLIC double
-trio_ninf(void)
+trio_ninf(TRIO_NOARGS)
 {
   static double result = 0.0;
 
@@ -281,7 +320,7 @@ trio_ninf(void)
    @return Floating-point representation of NaN.
 */
 TRIO_PUBLIC double
-trio_nan(void)
+trio_nan(TRIO_NOARGS)
 {
   /* Cache the result */
   static double result = 0.0;
@@ -289,7 +328,7 @@ trio_nan(void)
   if (result == 0.0) {
     
 #if defined(TRIO_COMPILER_SUPPORTS_C99)
-    result = nan(NULL);
+    result = nan("");
 
 #elif defined(NAN) && defined(__STDC_IEC_559__)
     result = (double)NAN;
@@ -329,9 +368,12 @@ trio_nan(void)
    @return Boolean value indicating whether or not the number is a NaN.
 */
 TRIO_PUBLIC int
-trio_isnan(TRIO_VOLATILE double number)
+trio_isnan
+TRIO_ARGS1((number),
+	   double number)
 {
-#if defined(isnan) || defined(TRIO_COMPILER_SUPPORTS_UNIX95)
+#if (defined(TRIO_COMPILER_SUPPORTS_C99) && defined(isnan)) \
+ || defined(TRIO_COMPILER_SUPPORTS_UNIX95)
   /*
    * C99 defines isnan() as a macro. UNIX95 defines isnan() as a
    * function. This function was already present in XPG4, but this
@@ -340,11 +382,12 @@ trio_isnan(TRIO_VOLATILE double number)
    */
   return isnan(number);
   
-#elif defined(TRIO_COMPILER_MSVC)
+#elif defined(TRIO_COMPILER_MSVC) || defined(TRIO_COMPILER_BCB)
   /*
-   * MSC has an _isnan() function
+   * Microsoft Visual C++ and Borland C++ Builder have an _isnan()
+   * function.
    */
-  return _isnan(number);
+  return _isnan(number) ? TRIO_TRUE : TRIO_FALSE;
 
 #elif defined(USE_IEEE_754)
   /*
@@ -372,7 +415,7 @@ trio_isnan(TRIO_VOLATILE double number)
   status = (/*
 	     * NaN is the only number which does not compare to itself
 	     */
-	    (number != number) ||
+	    ((TRIO_VOLATILE double)number != (TRIO_VOLATILE double)number) ||
 	    /*
 	     * Fallback solution if NaN compares to NaN
 	     */
@@ -396,9 +439,11 @@ trio_isnan(TRIO_VOLATILE double number)
    @return 1 if positive infinity, -1 if negative infinity, 0 otherwise.
 */
 TRIO_PUBLIC int
-trio_isinf(TRIO_VOLATILE double number)
+trio_isinf
+TRIO_ARGS1((number),
+	   double number)
 {
-#if defined(TRIO_COMPILER_DECC)
+#if defined(TRIO_COMPILER_DECC) && !defined(__linux__)
   /*
    * DECC has an isinf() macro, but it works differently than that
    * of C99, so we use the fp_class() function instead.
@@ -406,16 +451,19 @@ trio_isinf(TRIO_VOLATILE double number)
   return ((fp_class(number) == FP_POS_INF)
 	  ? 1
 	  : ((fp_class(number) == FP_NEG_INF) ? -1 : 0));
-  
+
 #elif defined(isinf)
   /*
    * C99 defines isinf() as a macro.
    */
-  return isinf(number);
+  return isinf(number)
+    ? ((number > 0.0) ? 1 : -1)
+    : 0;
   
-#elif defined(TRIO_COMPILER_MSVC)
+#elif defined(TRIO_COMPILER_MSVC) || defined(TRIO_COMPILER_BCB)
   /*
-   * MSVC has an _fpclass() function that can be used to detect infinity.
+   * Microsoft Visual C++ and Borland C++ Builder have an _fpclass()
+   * function that can be used to detect infinity.
    */
   return ((_fpclass(number) == _FPCLASS_PINF)
 	  ? 1
@@ -460,6 +508,257 @@ trio_isinf(TRIO_VOLATILE double number)
 #endif
 }
 
+#if 0
+	/* Temporary fix - this routine is not used anywhere */
+/**
+   Check for finity.
+
+   @param number An arbitrary floating-point number.
+   @return Boolean value indicating whether or not the number is a finite.
+*/
+TRIO_PUBLIC int
+trio_isfinite
+TRIO_ARGS1((number),
+	   double number)
+{
+#if defined(TRIO_COMPILER_SUPPORTS_C99) && defined(isfinite)
+  /*
+   * C99 defines isfinite() as a macro.
+   */
+  return isfinite(number);
+  
+#elif defined(TRIO_COMPILER_MSVC) || defined(TRIO_COMPILER_BCB)
+  /*
+   * Microsoft Visual C++ and Borland C++ Builder use _finite().
+   */
+  return _finite(number);
+
+#elif defined(USE_IEEE_754)
+  /*
+   * Examine IEEE 754 bit-pattern. For finity we do not care about the
+   * mantissa.
+   */
+  int dummy;
+
+  return (! trio_is_special_quantity(number, &dummy));
+
+#else
+  /*
+   * Fallback solution.
+   */
+  return ((trio_isinf(number) == 0) && (trio_isnan(number) == 0));
+  
+#endif
+}
+
+#endif
+
+/*
+ * The sign of NaN is always false
+ */
+TRIO_PUBLIC int
+trio_fpclassify_and_signbit
+TRIO_ARGS2((number, is_negative),
+	   double number,
+	   int *is_negative)
+{
+#if defined(fpclassify) && defined(signbit)
+  /*
+   * C99 defines fpclassify() and signbit() as a macros
+   */
+  *is_negative = signbit(number);
+  switch (fpclassify(number)) {
+  case FP_NAN:
+    return TRIO_FP_NAN;
+  case FP_INFINITE:
+    return TRIO_FP_INFINITE;
+  case FP_SUBNORMAL:
+    return TRIO_FP_SUBNORMAL;
+  case FP_ZERO:
+    return TRIO_FP_ZERO;
+  default:
+    return TRIO_FP_NORMAL;
+  }
+
+#else
+# if defined(TRIO_COMPILER_DECC)
+  /*
+   * DECC has an fp_class() function.
+   */
+#  define TRIO_FPCLASSIFY(n) fp_class(n)
+#  define TRIO_QUIET_NAN FP_QNAN
+#  define TRIO_SIGNALLING_NAN FP_SNAN
+#  define TRIO_POSITIVE_INFINITY FP_POS_INF
+#  define TRIO_NEGATIVE_INFINITY FP_NEG_INF
+#  define TRIO_POSITIVE_SUBNORMAL FP_POS_DENORM
+#  define TRIO_NEGATIVE_SUBNORMAL FP_NEG_DENORM
+#  define TRIO_POSITIVE_ZERO FP_POS_ZERO
+#  define TRIO_NEGATIVE_ZERO FP_NEG_ZERO
+#  define TRIO_POSITIVE_NORMAL FP_POS_NORM
+#  define TRIO_NEGATIVE_NORMAL FP_NEG_NORM
+  
+# elif defined(TRIO_COMPILER_MSVC) || defined(TRIO_COMPILER_BCB)
+  /*
+   * Microsoft Visual C++ and Borland C++ Builder have an _fpclass()
+   * function.
+   */
+#  define TRIO_FPCLASSIFY(n) _fpclass(n)
+#  define TRIO_QUIET_NAN _FPCLASS_QNAN
+#  define TRIO_SIGNALLING_NAN _FPCLASS_SNAN
+#  define TRIO_POSITIVE_INFINITY _FPCLASS_PINF
+#  define TRIO_NEGATIVE_INFINITY _FPCLASS_NINF
+#  define TRIO_POSITIVE_SUBNORMAL _FPCLASS_PD
+#  define TRIO_NEGATIVE_SUBNORMAL _FPCLASS_ND
+#  define TRIO_POSITIVE_ZERO _FPCLASS_PZ
+#  define TRIO_NEGATIVE_ZERO _FPCLASS_NZ
+#  define TRIO_POSITIVE_NORMAL _FPCLASS_PN
+#  define TRIO_NEGATIVE_NORMAL _FPCLASS_NN
+  
+# elif defined(FP_PLUS_NORM)
+  /*
+   * HP-UX 9.x and 10.x have an fpclassify() function, that is different
+   * from the C99 fpclassify() macro supported on HP-UX 11.x.
+   *
+   * AIX has class() for C, and _class() for C++, which returns the
+   * same values as the HP-UX fpclassify() function.
+   */
+#  if defined(TRIO_PLATFORM_AIX)
+#   if defined(__cplusplus)
+#    define TRIO_FPCLASSIFY(n) _class(n)
+#   else
+#    define TRIO_FPCLASSIFY(n) class(n)
+#   endif
+#  else
+#   define TRIO_FPCLASSIFY(n) fpclassify(n)
+#  endif
+#  define TRIO_QUIET_NAN FP_QNAN
+#  define TRIO_SIGNALLING_NAN FP_SNAN
+#  define TRIO_POSITIVE_INFINITY FP_PLUS_INF
+#  define TRIO_NEGATIVE_INFINITY FP_MINUS_INF
+#  define TRIO_POSITIVE_SUBNORMAL FP_PLUS_DENORM
+#  define TRIO_NEGATIVE_SUBNORMAL FP_MINUS_DENORM
+#  define TRIO_POSITIVE_ZERO FP_PLUS_ZERO
+#  define TRIO_NEGATIVE_ZERO FP_MINUS_ZERO
+#  define TRIO_POSITIVE_NORMAL FP_PLUS_NORM
+#  define TRIO_NEGATIVE_NORMAL FP_MINUS_NORM
+# endif
+
+# if defined(TRIO_FPCLASSIFY)
+  switch (TRIO_FPCLASSIFY(number)) {
+  case TRIO_QUIET_NAN:
+  case TRIO_SIGNALLING_NAN:
+    *is_negative = TRIO_FALSE; /* NaN has no sign */
+    return TRIO_FP_NAN;
+  case TRIO_POSITIVE_INFINITY:
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_INFINITE;
+  case TRIO_NEGATIVE_INFINITY:
+    *is_negative = TRIO_TRUE;
+    return TRIO_FP_INFINITE;
+  case TRIO_POSITIVE_SUBNORMAL:
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_SUBNORMAL;
+  case TRIO_NEGATIVE_SUBNORMAL:
+    *is_negative = TRIO_TRUE;
+    return TRIO_FP_SUBNORMAL;
+  case TRIO_POSITIVE_ZERO:
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_ZERO;
+  case TRIO_NEGATIVE_ZERO:
+    *is_negative = TRIO_TRUE;
+    return TRIO_FP_ZERO;
+  case TRIO_POSITIVE_NORMAL:
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_NORMAL;
+  case TRIO_NEGATIVE_NORMAL:
+    *is_negative = TRIO_TRUE;
+    return TRIO_FP_NORMAL;
+  default:
+    /* Just in case... */
+    *is_negative = (number < 0.0);
+    return TRIO_FP_NORMAL;
+  }
+  
+# else
+  /*
+   * Fallback solution.
+   */
+  int rc;
+  
+  if (number == 0.0) {
+    /*
+     * In IEEE 754 the sign of zero is ignored in comparisons, so we
+     * have to handle this as a special case by examining the sign bit
+     * directly.
+     */
+#  if defined(USE_IEEE_754)
+    *is_negative = trio_is_negative(number);
+#  else
+    *is_negative = TRIO_FALSE; /* FIXME */
+#  endif
+    return TRIO_FP_ZERO;
+  }
+  if (trio_isnan(number)) {
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_NAN;
+  }
+  if ((rc = trio_isinf(number))) {
+    *is_negative = (rc == -1);
+    return TRIO_FP_INFINITE;
+  }
+  if ((number > 0.0) && (number < DBL_MIN)) {
+    *is_negative = TRIO_FALSE;
+    return TRIO_FP_SUBNORMAL;
+  }
+  if ((number < 0.0) && (number > -DBL_MIN)) {
+    *is_negative = TRIO_TRUE;
+    return TRIO_FP_SUBNORMAL;
+  }
+  *is_negative = (number < 0.0);
+  return TRIO_FP_NORMAL;
+  
+# endif
+#endif
+}
+
+/**
+   Examine the sign of a number.
+
+   @param number An arbitrary floating-point number.
+   @return Boolean value indicating whether or not the number has the
+   sign bit set (i.e. is negative).
+*/
+TRIO_PUBLIC int
+trio_signbit
+TRIO_ARGS1((number),
+	   double number)
+{
+  int is_negative;
+  
+  (void)trio_fpclassify_and_signbit(number, &is_negative);
+  return is_negative;
+}
+
+#if 0
+	/* Temporary fix - this routine is not used in libxml */
+/**
+   Examine the class of a number.
+
+   @param number An arbitrary floating-point number.
+   @return Enumerable value indicating the class of @p number
+*/
+TRIO_PUBLIC int
+trio_fpclassify
+TRIO_ARGS1((number),
+	   double number)
+{
+  int dummy;
+  
+  return trio_fpclassify_and_signbit(number, &dummy);
+}
+
+#endif
+
 /** @} SpecialQuantities */
 
 /*************************************************************************
@@ -473,19 +772,63 @@ trio_isinf(TRIO_VOLATILE double number)
 #if defined(STANDALONE)
 # include <stdio.h>
 
-int main(void)
+static TRIO_CONST char *
+getClassification
+TRIO_ARGS1((type),
+	   int type)
+{
+  switch (type) {
+  case TRIO_FP_INFINITE:
+    return "FP_INFINITE";
+  case TRIO_FP_NAN:
+    return "FP_NAN";
+  case TRIO_FP_NORMAL:
+    return "FP_NORMAL";
+  case TRIO_FP_SUBNORMAL:
+    return "FP_SUBNORMAL";
+  case TRIO_FP_ZERO:
+    return "FP_ZERO";
+  default:
+    return "FP_UNKNOWN";
+  }
+}
+
+static void
+print_class
+TRIO_ARGS2((prefix, number),
+	   TRIO_CONST char *prefix,
+	   double number)
+{
+  printf("%-6s: %s %-15s %g\n",
+	 prefix,
+	 trio_signbit(number) ? "-" : "+",
+	 getClassification(TRIO_FPCLASSIFY(number)),
+	 number);
+}
+
+int main(TRIO_NOARGS)
 {
   double my_nan;
   double my_pinf;
   double my_ninf;
 # if defined(TRIO_PLATFORM_UNIX)
-  void (*signal_handler)(int);
+  void (*signal_handler) TRIO_PROTO((int));
 # endif
 
   my_nan = trio_nan();
   my_pinf = trio_pinf();
   my_ninf = trio_ninf();
 
+  print_class("Nan", my_nan);
+  print_class("PInf", my_pinf);
+  print_class("NInf", my_ninf);
+  print_class("PZero", 0.0);
+  print_class("NZero", -0.0);
+  print_class("PNorm", 1.0);
+  print_class("NNorm", -1.0);
+  print_class("PSub", 1.01e-307 - 1.00e-307);
+  print_class("NSub", 1.00e-307 - 1.01e-307);
+  
   printf("NaN : %4g 0x%02x%02x%02x%02x%02x%02x%02x%02x (%2d, %2d)\n",
 	 my_nan,
 	 ((unsigned char *)&my_nan)[0],
@@ -565,7 +908,7 @@ int main(void)
 	 ((unsigned char *)&my_ninf)[6],
 	 ((unsigned char *)&my_ninf)[7],
 	 trio_isnan(my_ninf), trio_isinf(my_ninf));
-	 
+  
   return 0;
 }
 #endif

@@ -249,6 +249,7 @@ extern WandExport unsigned int
   MagickSeparateImageChannel(MagickWand *,const ChannelType),
   MagickSetCompressionQuality(MagickWand *wand,const unsigned long quality),
   MagickSetFilename(MagickWand *,const char *),
+  MagickSetFormat(MagickWand *,const char *),
   MagickSetImage(MagickWand *,const MagickWand *),
   MagickSetImageAttribute(MagickWand *,const char *, const char *),
   MagickSetImageBackgroundColor(MagickWand *,const PixelWand *),

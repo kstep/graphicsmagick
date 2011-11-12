@@ -1,14 +1,17 @@
 /*
- * entities.h : interface for the XML entities handling
+ * Summary: interface for the XML entities handling
+ * Description: this module provides some of the entity API needed
+ *              for the parser and applications.
  *
- * See Copyright for the status of this software.
+ * Copy: See Copyright for the status of this software.
  *
- * daniel@veillard.com
+ * Author: Daniel Veillard
  */
 
 #ifndef __XML_ENTITIES_H__
 #define __XML_ENTITIES_H__
 
+#include <libxml/xmlversion.h>
 #include <libxml/tree.h>
 
 #ifdef __cplusplus
@@ -52,6 +55,10 @@ struct _xmlEntity {
 
     struct _xmlEntity     *nexte;	/* unused */
     const xmlChar           *URI;	/* the full URI as computed */
+    int                    owner;	/* does the entity own the childrens */
+    int			 checked;	/* was the entity content checked */
+					/* this is also used to count entites
+					 * references done from that entity */
 };
 
 /*
@@ -66,40 +73,74 @@ typedef xmlEntitiesTable *xmlEntitiesTablePtr;
  * External functions:
  */
 
-void		xmlInitializePredefinedEntities	(void);
-xmlEntityPtr		xmlAddDocEntity		(xmlDocPtr doc,
+#ifdef LIBXML_LEGACY_ENABLED
+XMLPUBFUN void XMLCALL
+		xmlInitializePredefinedEntities	(void);
+#endif /* LIBXML_LEGACY_ENABLED */
+
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlNewEntity		(xmlDocPtr doc,
 						 const xmlChar *name,
 						 int type,
 						 const xmlChar *ExternalID,
 						 const xmlChar *SystemID,
 						 const xmlChar *content);
-xmlEntityPtr		xmlAddDtdEntity		(xmlDocPtr doc,
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlAddDocEntity		(xmlDocPtr doc,
 						 const xmlChar *name,
 						 int type,
 						 const xmlChar *ExternalID,
 						 const xmlChar *SystemID,
 						 const xmlChar *content);
-xmlEntityPtr		xmlGetPredefinedEntity	(const xmlChar *name);
-xmlEntityPtr		xmlGetDocEntity		(xmlDocPtr doc,
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlAddDtdEntity		(xmlDocPtr doc,
+						 const xmlChar *name,
+						 int type,
+						 const xmlChar *ExternalID,
+						 const xmlChar *SystemID,
+						 const xmlChar *content);
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlGetPredefinedEntity	(const xmlChar *name);
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlGetDocEntity		(xmlDocPtr doc,
 						 const xmlChar *name);
-xmlEntityPtr		xmlGetDtdEntity		(xmlDocPtr doc,
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlGetDtdEntity		(xmlDocPtr doc,
 						 const xmlChar *name);
-xmlEntityPtr		xmlGetParameterEntity	(xmlDocPtr doc,
+XMLPUBFUN xmlEntityPtr XMLCALL
+			xmlGetParameterEntity	(xmlDocPtr doc,
 						 const xmlChar *name);
-const xmlChar *		xmlEncodeEntities	(xmlDocPtr doc,
+#ifdef LIBXML_LEGACY_ENABLED
+XMLPUBFUN const xmlChar * XMLCALL
+			xmlEncodeEntities	(xmlDocPtr doc,
 						 const xmlChar *input);
-xmlChar *		xmlEncodeEntitiesReentrant(xmlDocPtr doc,
+#endif /* LIBXML_LEGACY_ENABLED */
+XMLPUBFUN xmlChar * XMLCALL
+			xmlEncodeEntitiesReentrant(xmlDocPtr doc,
 						 const xmlChar *input);
-xmlChar *		xmlEncodeSpecialChars	(xmlDocPtr doc,
+XMLPUBFUN xmlChar * XMLCALL
+			xmlEncodeSpecialChars	(xmlDocPtr doc,
 						 const xmlChar *input);
-xmlEntitiesTablePtr	xmlCreateEntitiesTable	(void);
-xmlEntitiesTablePtr	xmlCopyEntitiesTable	(xmlEntitiesTablePtr table);
-void			xmlFreeEntitiesTable	(xmlEntitiesTablePtr table);
-void			xmlDumpEntitiesTable	(xmlBufferPtr buf,
+XMLPUBFUN xmlEntitiesTablePtr XMLCALL
+			xmlCreateEntitiesTable	(void);
+#ifdef LIBXML_TREE_ENABLED
+XMLPUBFUN xmlEntitiesTablePtr XMLCALL
+			xmlCopyEntitiesTable	(xmlEntitiesTablePtr table);
+#endif /* LIBXML_TREE_ENABLED */
+XMLPUBFUN void XMLCALL
+			xmlFreeEntitiesTable	(xmlEntitiesTablePtr table);
+#ifdef LIBXML_OUTPUT_ENABLED
+XMLPUBFUN void XMLCALL
+			xmlDumpEntitiesTable	(xmlBufferPtr buf,
 						 xmlEntitiesTablePtr table);
-void			xmlDumpEntityDecl	(xmlBufferPtr buf,
+XMLPUBFUN void XMLCALL
+			xmlDumpEntityDecl	(xmlBufferPtr buf,
 						 xmlEntityPtr ent);
-void			xmlCleanupPredefinedEntities(void);
+#endif /* LIBXML_OUTPUT_ENABLED */
+#ifdef LIBXML_LEGACY_ENABLED
+XMLPUBFUN void XMLCALL
+			xmlCleanupPredefinedEntities(void);
+#endif /* LIBXML_LEGACY_ENABLED */
 
 
 #ifdef __cplusplus

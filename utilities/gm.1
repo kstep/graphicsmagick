@@ -1,4 +1,4 @@
-.TH gm 1 "2010/03/07" "GraphicsMagick"
+.TH gm 1 "2011/10/29" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -84,190 +84,204 @@ the Magick Scripting Language (MSL).
 The \fBGraphicsMagick\fP utilities recognize the following image formats:
 
 
-\fBName\fP   \fBMode\fP \fBDescription\fP
- o  8BIM      *rw- Photoshop resource format
- o  8BIMTEXT  *rw- Photoshop resource format
- o  8BIMWTEXT *rw- Photoshop resource format
- o  APP1      *rw- Photoshop resource format
- o  ART       *r-- PF1: 1st Publisher
- o  AVI       *r-- Audio/Visual Interleaved
- o  AVS       *rw+ AVS X image
- o  BIE       *rw- Joint Bi-level Image experts Group
-                   interchange format
- o  BMP       *rw+ Microsoft Windows bitmap image
- o  BMP2      *-w- Microsoft Windows bitmap image v2
- o  BMP3      *-w- Microsoft Windows bitmap image v3
- o  CACHE     *--- Magick Persistent Cache image format
- o  CAPTION   *r-- Caption (requires separate size info)
- o  CIN       *rw- Kodak Cineon Format
- o  CMYK      *rw- Raw cyan, magenta, yellow, and black
-                   samples (8 or 16 bits, depending on
-                   the image depth)
- o  CMYKA     *rw- Raw cyan, magenta, yellow, black, and
-                   matte samples (8 or 16 bits, depending
-                   on the image depth)
- o  CUR       *r-- Microsoft Cursor Icon
- o  CUT       *r-- DR Halo
- o  DCM       *r-- Digital Imaging and Communications in
-                    Medicine image
- o  DCX       *rw+ ZSoft IBM PC multi-page Paintbrush
- o  DPS       *r-- Display PostScript
- o  DPX       *rw- Digital Moving Picture Exchange
- o  EPDF      *rw- Encapsulated Portable Document Format
- o  EPI       *rw- Adobe Encapsulated PostScript
-                   Interchange format
- o  EPS       *rw- Adobe Encapsulated PostScript
- o  EPS2      *-w- Adobe Level II Encapsulated PostScript
- o  EPS3      *-w- Adobe Level III Encapsulated PostScript
- o  EPSF      *rw- Adobe Encapsulated PostScript
- o  EPSI      *rw- Adobe Encapsulated PostScript
-                   Interchange format
- o  EPT       *rw- Adobe Encapsulated PostScript with MS-DOS
-                   TIFF preview
- o  EPT2      *rw- Adobe Level II Encapsulated PostScript
-                   with MS-DOS TIFF preview
- o  EPT3      *rw- Adobe Level III Encapsulated PostScript
-                   with MS-DOS TIFF preview
- o  EXIF      *rw- Exif digital camera binary data
- o  FAX       *rw+ Group 3 FAX
- o  FITS      *rw- Flexible Image Transport System
- o  FPX       *rw- FlashPix Format
- o  G3        *rw- Group 3 FAX
- o  GIF       *rw+ CompuServe graphics interchange format
- o  GIF87     *rw- CompuServe graphics interchange format
-                   (version 87a)
- o  GRADIENT  *r-- Gradual passing from one shade to
-                   another
- o  GRAY      *rw+ Raw gray samples (8 or 16 bits,
-                   depending on the image depth)
- o  HISTOGRAM *-w- Histogram of the image
- o  HTM       *-w- Hypertext Markup Language and a
-                   client-side image map
- o  HTML      *-w- Hypertext Markup Language and a
-                   client-side image map
- o  ICB       *rw+ Truevision Targa image
- o  ICC       *rw- ICC Color Profile
- o  ICM       *rw- ICC Color Profile
- o  ICO       *r-- Microsoft icon
- o  ICON      *r-- Microsoft icon
- o  IPTC      *rw- IPTC Newsphoto
- o  IPTCTEXT  *rw- IPTC Newsphoto text format
- o  IPTCWTEXT *rw- IPTC Newsphoto wide text format
- o  JBG       *rw+ Joint Bi-level Image experts Group
-                   interchange format
- o  JBIG      *rw+ Joint Bi-level Image experts Group
-                   interchange format
- o  JNG       *rw- JPEG Network Graphics
- o  JP2       *rw- JPEG-2000 JP2 File Format Syntax
- o  JPC       *rw- JPEG-2000 Code Stream Syntax
- o  JPEG      *rw- Joint Photographic Experts Group
-                   JFIF format
- o  JPG       *rw- Joint Photographic Experts Group
-                   JFIF format
- o  LABEL     *r-- Text image format
- o  LOGO      *rw- GraphicsMagick Logo
- o  M2V       *rw+ MPEG-2 Video Stream
- o  MAP       *rw- Colormap intensities and indices
- o  MAT       *r-- MATLAB image format
- o  MATTE     *-w+ MATTE format
- o  MIFF      *rw+ Magick Image File Format
- o  MNG       *rw+ Multiple-image Network Graphics
- o  MONO      *rw- Bi-level bitmap in least-significant-
-                   -byte-first order
- o  MPC       -rw- Magick Persistent Cache image format
- o  MPEG      *rw+ MPEG-1 Video Stream
- o  MPG       *rw+ MPEG-1 Video Stream
- o  MSL       *r-- Magick Scripting Language
- o  MTV       *rw+ MTV Raytracing image format
- o  MVG       *rw- Magick Vector Graphics
- o  NULL      *r-- Constant image of uniform color
- o  OTB       *rw- On-the-air bitmap
- o  P7        *rw+ Xv thumbnail format
- o  PAL       *rw- 16bit/pixel interleaved YUV
- o  PALM      *rw- Palm Pixmap
- o  PBM       *rw+ Portable bitmap format (black and white)
- o  PCD       *rw- Photo CD
- o  PCDS      *rw- Photo CD
- o  PCL       *-w- Page Control Language
- o  PCT       *rw- Apple Macintosh QuickDraw/PICT
- o  PCX       *rw- ZSoft IBM PC Paintbrush
- o  PDB       *rw+ Pilot Image Format
- o  PDF       *rw+ Portable Document Format
- o  PFA       *r-- TrueType font
- o  PFB       *r-- TrueType font
- o  PGM       *rw+ Portable graymap format (gray scale)
- o  PGX       *r-- JPEG-2000 VM Format
- o  PICON     *rw- Personal Icon
- o  PICT      *rw- Apple Macintosh QuickDraw/PICT
- o  PIX       *r-- Alias/Wavefront RLE image format
- o  PLASMA    *r-- Plasma fractal image
- o  PNG       *rw- Portable Network Graphics
- o  PNG24     *rw- Portable Network Graphics, 24 bit RGB
-                   opaque only
- o  PNG32     *rw- Portable Network Graphics, 32 bit RGBA
-                   semitransparency OK
- o  PNG8      *rw- Portable Network Graphics, 8-bit
-                   indexed, binary transparency only
- o  PNM       *rw+ Portable anymap
- o  PPM       *rw+ Portable pixmap format (color)
- o  PREVIEW   *-w- Show a preview an image enhancement,
-                   effect, or f/x
- o  PS        *rw+ Adobe PostScript
- o  PS2       *-w+ Adobe Level II PostScript
- o  PS3       *-w+ Adobe Level III PostScript
- o  PSD       *rw- Adobe Photoshop bitmap
- o  PTIF      *rw- Pyramid encoded TIFF
- o  PWP       *r-- Seattle Film Works
- o  RAS       *rw+ SUN Rasterfile
- o  RGB       *rw+ Raw red, green, and blue samples (8, 16
-                   or 32 bits, depending on the image depth)
- o  RGBA      *rw+ Raw red, green, blue, and matte samples
-                   (8, 16, or 32 bits, depending on the image
-                   depth)
- o  RLA       *r-- Alias/Wavefront image
- o  RLE       *r-- Utah Run length encoded image
- o  SCT       *r-- Scitex HandShake
- o  SFW       *r-- Seattle Film Works
- o  SGI       *rw+ Irix RGB image
- o  SHTML     *-w- Hypertext Markup Language and a
-                   client-side image map
- o  STEGANO   *r-- Steganographic image
- o  SUN       *rw+ SUN Rasterfile
- o  SVG       *rw+ Scalable Vector Gaphics
- o  TEXT      *rw+ Raw text
- o  TGA       *rw+ Truevision Targa image
- o  TIFF      *rw+ Tagged Image File Format
- o  TILE      *r-- Tile image with a texture
- o  TIM       *r-- PSX TIM
- o  TOPOL     *r-- TOPOL X Image
- o  TTF       *r-- TrueType font
- o  TXT       *rw+ Raw text
- o  UIL       *-w- X-Motif UIL table
- o  UYVY      *rw- 16bit/pixel interleaved YUV
- o  VDA       *rw+ Truevision Targa image
- o  VICAR     *rw- VICAR rasterfile format
- o  VID       *rw+ Visual Image Directory
- o  VIFF      *rw+ Khoros Visualization image
- o  VST       *rw+ Truevision Targa image
- o  WBMP      *rw- Wireless Bitmap (level 0) image
- o  WMF       *r-- Windows Metafile
- o  WPG       *r-- Word Perfect Graphics
- o  X         *rw- X Image
- o  XBM       *rw- X Windows system bitmap (black
-                   and white)
- o  XC        *r-- Constant image uniform color
- o  XCF       *r-- GIMP image
- o  XMP       *rw- Adobe XML metadata
- o  XPM       *rw- X Windows system pixmap (color)
- o  XV        *rw+ Khoros Visualization image
- o  XWD       *rw- X Windows system window dump (color)
- o  YUV       *rw- CCIR 601 4:1:1 or 4:2:2 (8-bit only)
-                   
-    Modes:         
-              *    Native blob support
-              r    Read
-              w    Write
-              +    Multi-image
+\fBName\fP  \fBMode\fP \fBDescription\fP
+ o  3FR       r-- Hasselblad Photo RAW
+ o  8BIM      rw- Photoshop resource format
+ o  8BIMTEXT  rw- Photoshop resource text format
+ o  8BIMWTEXT rw- Photoshop resource wide text format
+ o  APP1      rw- Raw application information
+ o  APP1JPEG  rw- Raw JPEG binary data
+ o  ART       r-- PF1: 1st Publisher
+ o  ARW       r-- Sony Alpha DSLR RAW
+ o  AVI       r-- Audio/Visual Interleaved
+ o  AVS       rw+ AVS X image
+ o  BIE       rw- Joint Bi-level Image experts Group
+                  interchange format
+ o  BMP       rw+ Microsoft Windows bitmap image
+ o  BMP2      -w- Microsoft Windows bitmap image v2
+ o  BMP3      -w- Microsoft Windows bitmap image v3
+ o  CACHE     --- Magick Persistent Cache image format
+ o  CALS      rw- Continuous Acquisition and Life-cycle
+                  Support Type 1 image
+ o  CAPTION   r-- Caption (requires separate size info)
+ o  CIN       rw- Kodak Cineon Format
+ o  CMYK      rw- Raw cyan, magenta, yellow, and black
+                  samples (8 or 16 bits, depending on
+                  the image depth)
+ o  CMYKA     rw- Raw cyan, magenta, yellow, black, and
+                  matte samples (8 or 16 bits, depending
+                  on the image depth)
+ o  CR2       r-- Canon Photo RAW
+ o  CRW       r-- Canon Photo RAW
+ o  CUR       r-- Microsoft Cursor Icon
+ o  CUT       r-- DR Halo
+ o  DCM       r-- Digital Imaging and Communications in
+                  Medicine image
+ o  DCR       r-- Kodak Photo RAW
+ o  DCX       rw+ ZSoft IBM PC multi-page Paintbrush
+ o  DNG       r-- Adobe Digital Negative
+ o  DPS       r-- Display PostScript Interpreter
+ o  DPX       rw- Digital Moving Picture Exchange
+ o  EPDF      rw- Encapsulated Portable Document Format
+ o  EPI       rw- Adobe Encapsulated PostScript
+                  Interchange format
+ o  EPS       rw- Adobe Encapsulated PostScript
+ o  EPS2      -w- Adobe Level II Encapsulated PostScript
+ o  EPS3      -w- Adobe Level III Encapsulated PostScript
+ o  EPSF      rw- Adobe Encapsulated PostScript
+ o  EPSI      rw- Adobe Encapsulated PostScript
+                  Interchange format
+ o  EPT       rw- Adobe Encapsulated PostScript with MS-DOS
+                  TIFF preview
+ o  EPT2      rw- Adobe Level II Encapsulated PostScript
+                  with MS-DOS TIFF preview
+ o  EPT3      rw- Adobe Level III Encapsulated PostScript
+                  with MS-DOS TIFF preview
+ o  EXIF      rw- Exif digital camera binary data
+ o  FAX       rw+ Group 3 FAX (Not TIFF Group3 FAX!)
+ o  FITS      rw- Flexible Image Transport System
+ o  FRACTAL   r-- Plasma fractal image
+ o  FPX       rw- FlashPix Format
+ o  GIF       rw+ CompuServe graphics interchange format
+ o  GIF87     rw- CompuServe graphics interchange format
+                  (version 87a)
+ o  GRADIENT  r-- Gradual passing from one shade to
+                  another
+ o  GRAY      rw+ Raw gray samples (8/16/32 bits,
+                  depending on the image depth)
+ o  HISTOGRAM -w- Histogram of the image
+ o  HRZ       r-- HRZ: Slow scan TV
+ o  HTML      -w- Hypertext Markup Language and a
+                  client-side image map
+ o  ICB       rw+ Truevision Targa image
+ o  ICC       rw- ICC Color Profile
+ o  ICM       rw- ICC Color Profile
+ o  ICO       r-- Microsoft icon
+ o  ICON      r-- Microsoft icon
+ o  IDENTITY  r-- Hald CLUT identity image
+ o  IMAGE     r-- GraphicsMagick Embedded Image
+ o  INFO      -w+ Image descriptive information and
+                   statistics
+ o  IPTC      rw- IPTC Newsphoto
+ o  IPTCTEXT  rw- IPTC Newsphoto text format
+ o  IPTCWTEXT rw- IPTC Newsphoto wide text format
+ o  JBG       rw+ Joint Bi-level Image experts Group
+                  interchange format
+ o  JBIG      rw+ Joint Bi-level Image experts Group
+                  interchange format
+ o  JNG       rw- JPEG Network Graphics
+ o  JP2       rw- JPEG-2000 JP2 File Format Syntax
+ o  JPC       rw- JPEG-2000 Code Stream Syntax
+ o  JPEG      rw- Joint Photographic Experts Group
+                  JFIF format
+ o  JPG       rw- Joint Photographic Experts Group
+                  JFIF format
+ o  K25       r-- Kodak Photo RAW
+ o  KDC       r-- Kodak Photo RAW
+ o  LABEL     r-- Text image format
+ o  M2V       rw+ MPEG-2 Video Stream
+ o  MAP       rw- Colormap intensities and indices
+ o  MAT       r-- MATLAB image format
+ o  MATTE     -w+ MATTE format
+ o  MIFF      rw+ Magick Image File Format
+ o  MNG       rw+ Multiple-image Network Graphics
+ o  MONO      rw- Bi-level bitmap in least-significant-
+                  -byte-first order
+ o  MPC       rw+ Magick Persistent Cache image format
+ o  MPEG      rw+ MPEG-1 Video Stream
+ o  MPG       rw+ MPEG-1 Video Stream
+ o  MRW       r-- Minolta Photo Raw
+ o  MSL       r-- Magick Scripting Language
+ o  MTV       rw+ MTV Raytracing image format
+ o  MVG       rw- Magick Vector Graphics
+ o  NEF       r-- Nikon Electronic Format
+ o  NULL      r-- Constant image of uniform color
+ o  OTB       rw- On-the-air bitmap
+ o  P7        rw+ Xv thumbnail format
+ o  PAL       rw- 16bit/pixel interleaved YUV
+ o  PALM      rw- Palm Pixmap
+ o  PBM       rw+ Portable bitmap format (black and white)
+ o  PCD       rw- Photo CD
+ o  PCDS      rw- Photo CD
+ o  PCL       -w- Page Control Language
+ o  PCT       rw- Apple Macintosh QuickDraw/PICT
+ o  PCX       rw- ZSoft IBM PC Paintbrush
+ o  PDB       rw+ Palm Database ImageViewer Format
+ o  PDF       rw+ Portable Document Format
+ o  PEF       r-- Pentax Electronic File
+ o  PFA       r-- TrueType font
+ o  PFB       r-- TrueType font
+ o  PGM       rw+ Portable graymap format (gray scale)
+ o  PGX       r-- JPEG-2000 VM Format
+ o  PICON     rw- Personal Icon
+ o  PICT      rw- Apple Macintosh QuickDraw/PICT
+ o  PIX       r-- Alias/Wavefront RLE image format
+ o  PLASMA    r-- Plasma fractal image
+ o  PNG       rw- Portable Network Graphics
+ o  PNG24     rw- Portable Network Graphics, 24 bit RGB
+                  opaque only
+ o  PNG32     rw- Portable Network Graphics, 32 bit RGBA
+                  semitransparency OK
+ o  PNG8      rw- Portable Network Graphics, 8-bit
+                  indexed, binary transparency only
+ o  PNM       rw+ Portable anymap
+ o  PPM       rw+ Portable pixmap format (color)
+ o  PREVIEW   -w- Show a preview an image enhancement,
+                  effect, or f/x
+ o  PS        rw+ Adobe PostScript
+ o  PS2       -w+ Adobe Level II PostScript
+ o  PS3       -w+ Adobe Level III PostScript
+ o  PSD       rw- Adobe Photoshop bitmap
+ o  PTIF      rw- Pyramid encoded TIFF
+ o  PWP       r-- Seattle Film Works
+ o  RAF       r-- Fuji Photo RAW
+ o  RAS       rw+ SUN Rasterfile
+ o  RGB       rw+ Raw red, green, and blue samples
+ o  RGBA      rw+ Raw red, green, blue, and matte samples
+ o  RLA       r-- Alias/Wavefront image
+ o  RLE       r-- Utah Run length encoded image
+ o  SCT       r-- Scitex HandShake
+ o  SFW       r-- Seattle Film Works
+ o  SGI       rw+ Irix RGB image
+ o  SHTML     -w- Hypertext Markup Language and a
+                  client-side image map
+ o  STEGANO   r-- Steganographic image
+ o  SUN       rw+ SUN Rasterfile
+ o  SVG       rw+ Scalable Vector Gaphics
+ o  TEXT      rw+ Raw text
+ o  TGA       rw+ Truevision Targa image
+ o  TIFF      rw+ Tagged Image File Format
+ o  TILE      r-- Tile image with a texture
+ o  TIM       r-- PSX TIM
+ o  TOPOL     r-- TOPOL X Image
+ o  TTF       r-- TrueType font
+ o  TXT       rw+ Raw text
+ o  UIL       -w- X-Motif UIL table
+ o  UYVY      rw- 16bit/pixel interleaved YUV
+ o  VDA       rw+ Truevision Targa image
+ o  VICAR     rw- VICAR rasterfile format
+ o  VID       rw+ Visual Image Directory
+ o  VIFF      rw+ Khoros Visualization image
+ o  VST       rw+ Truevision Targa image
+ o  WBMP      rw- Wireless Bitmap (level 0) image
+ o  WMF       r-- Windows Metafile
+ o  WPG       r-- Word Perfect Graphics
+ o  X         rw- X Image
+ o  X3F       r-- Foveon X3 (Sigma/Polaroid) RAW
+ o  XBM       rw- X Windows system bitmap (black
+                  and white)
+ o  XC        r-- Constant image uniform color
+ o  XCF       r-- GIMP image
+ o  XMP       rw- Adobe XML metadata
+ o  XPM       rw- X Windows system pixmap (color)
+ o  XV        rw+ Khoros Visualization image
+ o  XWD       rw- X Windows system window dump (color)
+ o  YUV       rw- CCIR 601 4:1:1 or 4:2:2 (8-bit only)
+                  
+    Modes:        
+              r   Read
+              w   Write
+              +   Multi-image
 
 
 \fISupport for some of these formats require additional programs or libraries.
@@ -549,7 +563,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-     gm convert -clip -negate cockatoo.tif negated.tif
+   gm convert -clip -negate cockatoo.tif negated.tif
 
 only the pixels within the clipping path are negated.
 
@@ -577,8 +591,8 @@ a colorization value list delimited with slashes (e.g. 0/0/50).
 The \fB-colorize\fP option may be used in conjunction with \fB-modulate\fP
 to produce a nice sepia toned image like:
 
-  gm convert input.ppm -modulate 115,0,100 \\
-     -colorize 7,21,50 output.ppm.
+   gm convert input.ppm -modulate 115,0,100 \\
+              -colorize 7,21,50 output.ppm.
 .TP
 .B "-colormap \fI<type>"\fP
 \fRdefine the colormap type
@@ -955,7 +969,7 @@ space, then the change-image pixel intensities are used.
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
 \fIGroup4\fP,
 \fIJPEG\fP, \fILossless\fP,
-\fILZW\fP, \fIRLE\fP or \fIZip\fP.
+\fILZW\fP, \fIRLE\fP, \fIZip\fP, or \fILZMA\fP.
 
 
 Specify \fB+compress\fP to store the binary image in an uncompressed format.
@@ -981,7 +995,7 @@ or \fB+contrast\fP to reduce the image contrast.
 
 For a more pronounced effect you can repeat the option:
 
-    gm convert rose: -contrast -contrast rose_c2.png
+   gm convert rose: -contrast -contrast rose_c2.png
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
@@ -1048,7 +1062,7 @@ Render,Resource, TemporaryFile,
 Transform, Warning, X11, or User.
 For example, to log cache and blob events, use
 
-    gm convert -debug "Cache,Blob" rose: rose.png
+   gm convert -debug "Cache,Blob" rose: rose.png
 
 The "User" domain is normally empty, but developers can log "User" events
 in their private copy of GraphicsMagick.
@@ -1234,6 +1248,24 @@ are not.
 
 .in 15
 .in 15
+.B "pcl:fit-to-page"
+.in 20
+ \fR
+.in 20
+If the pcl:fit-to-page flag is defined, then the printer is
+requested to scale the image to fit the page size (width and/or
+height).
+.in 15
+.in 15
+.B "pdf:use-cropbox"
+.in 20
+ \fR
+.in 20
+If the pdf:use-cropbox flag is defined, then Ghostscript is
+requested to apply the PDF crop box.
+
+.in 15
+.in 15
 .B "ps:imagemask"
 .in 20
  \fR
@@ -1275,6 +1307,17 @@ is "msb2lsb", which matches the native bit order of all modern CPUs. The
 only exception to this is when Group3 or Group4 FAX compression is
 requested since FAX machines send data in bit-reversed order and
 therefore RFC 2301 recommends using reverse order.
+
+.in 15
+.in 15
+.B "tiff:group-three-options=<value>"
+.in 20
+ \fR
+.in 20
+If the tiff:group-three-options key is defined, GraphicsMagick
+will use it to set the group3 options tag when writing
+group3-compressed TIFF.  Please see the TIFF specification for the
+usage of this tag.  The default value is 4.
 
 .in 15
 .in 15
@@ -1415,7 +1458,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:
 
-    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -1749,7 +1792,23 @@ bounds of the new image dimensions is discarded.
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:
 
-    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center -extent 140x100 outfile.jpg
+   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \\
+              -extent 140x100 outfile.jpg
+
+This command reduces or expands a JPEG image to fit on an 800x600
+display: 
+
+
+   gm convert -size 800x600 input.jpg \\
+              -resize 800x600 -background black \\
+              -compose Copy -gravity center \\
+              -extent 800x600 \\
+              -quality 92 output.jpg
+
+If the aspect ratio of the input image isn't exactly 4:3, then the
+image is centered on an 800x600 black canvas. 
+
+
 .TP
 .B "-file \fI<filename>"\fP
 \fRwrite annotated difference image to file
@@ -1784,9 +1843,9 @@ or the parentheses from being interpreted by your shell.
 
 For example,
 
-    gm convert -fill blue ...
-    gm convert -fill "#ddddff" ...
-    gm convert -fill "rgb(65000,65000,65535)" ...
+   gm convert -fill blue ...
+   gm convert -fill "#ddddff" ...
+   gm convert -fill "rgb(65000,65000,65535)" ...
 
 The shorter forms are scaled up, if necessary by replication.  For example, 
 #3af, #33aaff, and #3333aaaaffff are all equivalent.
@@ -1825,13 +1884,33 @@ being enlarged, otherwise the \fBLanczos\fP filter is used.
 .B "-flatten"
 \fRflatten a sequence of images
 
-The sequence of images is replaced by a single image created by composing each
-image after the first over the first image.
+In some file formats (e.g. Photoshop's PSD) complex images may be
+represented by "layers" (independent images) which must be composited
+in order to obtain the final rendition.  The \fB-flatten\fP option
+accomplishes this composition.  The sequence of images is replaced by
+a single image created by compositing each image in turn, while
+respecting composition operators and page offsets.  While
+\fB-flatten\fP is immediately useful for eliminating layers, it is
+also useful as a general-purpose composition tool.
 
-The sequence of images
-is terminated by the appearance of any option.
-If the \fB-flatten\fP
-option appears after all of the input images, all images are flattened.
+The sequence of images is terminated by the appearance of any option.
+If the \fB-flatten\fP option appears after all of the input images,
+all images are flattened.  Also see \fB-mosaic\fP which is similar to
+\fB-flatten\fP except that it adds a suitably-sized canvas base
+image.
+
+For example, this composites an image on top of a 640x400 transparent
+black canvas image:
+
+   gm convert -size 640x300 xc:transparent \\
+              -compose over -page +0-100 \\
+              frame.png -flatten output.png
+
+and this flattens a Photoshop PSD file:
+
+   gm convert input.psd -flatten output.png
+
+
 .TP
 .B "-flip"
 \fRcreate a "mirror image"
@@ -2206,6 +2285,8 @@ order for the \fBIDENTITY\fP CLUT generator is 8.  Interpolation is
 used so it is not usually necessary for CLUT images to be very large.
 The PNG file format is ideal for storing Hald CLUT images because it
 compresses them very well.
+
+
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -2214,6 +2295,8 @@ compresses them very well.
 \fRpixel annotation color
 
 Specifies the color to use when annotating difference pixels.
+
+
 .TP
 .B "-highlight-style \fI<style>"\fP
 \fRpixel annotation style
@@ -2232,6 +2315,8 @@ and \fBXOR\fP does an XOR between the pixel and the highlight color.
 Offsets, if present in the geometry specification, are handled in
 the same manner as the \fB-geometry\fP option, using X11 style to handle
 negative offsets.
+
+
 .TP
 .B "-iconic"
 \fRiconic animation
@@ -2251,6 +2336,8 @@ Choose from these intents:
 \fBAbsolute, Perceptual, Relative, Saturation\fP.
 
 The default intent is undefined.
+
+
 .TP
 .B "-interlace \fI<type>"\fP
 \fRthe type of interlacing scheme
@@ -2274,6 +2361,8 @@ is like plane except the different planes are saved to individual files
 
 Use \fBLine\fP to create an \fBinterlaced PNG\fP or \fB GIF\fP or
 \fBprogressive JPEG\fP image.
+
+
 .TP
 .B "-label \fI<name>"\fP
 \fRassign a label to an image
@@ -2305,6 +2394,8 @@ string to print above the image. Specify the label font with
 When creating a montage, by default the label associated with an image
 is displayed with the corresponding tile in the montage.  Use the
 \fB+label\fP option to suppress this behavior.
+
+
 .TP
 .B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
 \fRperform local adaptive thresholding
@@ -2312,7 +2403,12 @@ is displayed with the corresponding tile in the montage.  Use the
 Perform local adaptive thresholding using the specified width, height,
 and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
-as a percentage.
+as a percentage.  If the percent option is supplied, then the offset
+is computed as a percentage of the quantum range.  It is strongly
+recommended to use the percent option so that results are not
+sensitive to pixel quantum depth.
+
+
 .TP
 .B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
 \fRadjust the level of image contrast
@@ -2403,7 +2499,7 @@ special format characters:
 
 For example:
 
-    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 
 The default behavior is to print all of the components.
 .TP
@@ -2556,14 +2652,38 @@ option appears after all of the input images, all images are morphed.
 .B "-mosaic"
 \fRcreate a mosaic from an image or an image sequence
 
-The \fB-page\fP option can be used to establish the dimensions of the mosaic
-and to locate the images within the mosaic.
+The \fB-mosaic\fP option provides a flexible way to composite one or
+more images onto a solid-color canvas image. It works similar to
+\fB-flatten\fP except that a base canvas image is automatically
+created with a suitable size given the image size, page dimensions,
+and page offsets of images to be composited.  The color of the base
+canvas image may be set via the \fB-background\fP option.  The
+default canvas color is 'white', but 'black' or 'transparent' may be
+more suitable depending on the composition algorithm requested.
 
-The sequence of images
-is terminated by the appearance of any option.
-If the \fB-mosaic\fP
-option appears after all of the input images, all images are included
-in the mosaic.
+The \fB-compose\fP option may be used to specify the composition
+algorithm to use when compositing the subsequent image on the base
+canvas.
+
+The \fB-page\fP option can be used to establish the dimensions of the
+mosaic and to position the subsequent image within the mosaic.  If the
+\fB-page\fP argument does not specify width and height, then the
+canvas dimensions are evaluated based on the image sizes and
+offsets.
+
+The sequence of images is terminated by the appearance of any option.
+If the \fB-mosaic\fP option appears after all of the input images,
+all images are included in the mosaic.
+
+The following is an example of composing an image based on red, green,
+and blue layers extracted from a sequence of images and pasted on the
+canvas image at specified offsets:
+
+   gm convert -background black \\
+              -compose CopyRed   -page +0-100 red.png \\
+              -compose CopyGreen -page +0+40  green.png \\
+              -compose CopyBlue  -page +0+180 blue.png \\
+              -mosaic output.png
 .TP
 .B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
 \fRSimulate motion blur
@@ -2618,7 +2738,18 @@ desired.
 .B "-normalize"
 \fRtransform image to span the full range of color values
 
-This is a contrast enhancement technique.
+This is a contrast enhancement technique based on the image histogram.
+
+When computing the contrast enhancement values, the histogram edges
+are truncated so that the majority of the image pixels are considered
+in the constrast enhancement, and outliers (e.g. random noise or
+minute details) are ignored.  The default is that 0.1 percent of the
+histogram entries are ignored.  The percentage of the histogram to
+ignore may be specified by using the \fB-set\fP option with the
+\fBhistogram-threshold\fP parameter similar to \fB-set
+histogram-threshold 0.01\fP to specify 0.01 percent.  Use 0 percent
+to use the entire histogram, with possibly diminished contrast
+enhancement.
 .TP
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
@@ -2906,12 +3037,12 @@ As an example, the \fBAssign\fP operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:
 
-  gm convert in.bmp -operator red assign "50%" out.bmp
+   gm convert in.bmp -operator red assign "50%" out.bmp
 
 The following applies 50% thresholding to the image and returns a gray
 image:
 
-  gm convert in.bmp -operator gray threshold "50%" out.bmp
+   gm convert in.bmp -operator gray threshold "50%" out.bmp
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -2932,11 +3063,20 @@ dithered. When \fBchanneltype\fP is "opacity" or "matte", only the
 opacity channel is dithered. When a color channel is specified, only that
 channel is dithered.
 
-The choices for N are 2, 3, or 4. When N is 2, the image is divided into
-2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
-white depending on their intensity.  When N is 3, there are 3x3 tiles
-and 10 levels of gray can be represented.  When N is 4, there are 4x4
-tiles and 17 levels of gray.
+The choices for N are 2 through 7. The image is divided into
+NxN pixel tiles.  In each tile, some or all pixels are turned to
+white depending on their intensity.  For each N, (N**2)+1 levels
+of gray can be represented.  For N == 2, 3, or 4, the pixels
+are turned to white in an order that maximizes dispersion (i.e.,
+reduces granularity), while
+for N == 5, 6, and 7, they are turned to white in an order that
+creates a roughly circular black blob in the middle of each tile.
+An attractive "half-tone" looking image can be obtained by first
+rotating the image 45 degrees, performing a 5x5 ordered-dither
+operation, then rotating it back to the original orientation and
+cropping to the original image dimensions.  If the original image
+is gamma-encoded, it is adviseable to convert it to linear intensity
+first, e.g., with the "-gamma 0.45455" option.
 .TP
 .B "-output-directory \fI<directory>"\fP
 \fRoutput files to directory
@@ -3121,7 +3261,7 @@ option appears after all of the input images, all images are processed.
 \fRadd ICM, IPTC, or generic profile  to image
 
 -profile filename adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image
+(newswire information), or a generic (including Exif) profile to the image
 .
 
 Use +profile icm, +profile iptc, or
@@ -3132,6 +3272,12 @@ an exclamation point.  For example, +profile '!icm,*' strips
 all profiles except for the ICM profile.  Use identify
 -verbose to find out what profiles are in the image file.  Use
 +profile "*" to remove all profiles.
+Writing the image to a format that does not support profiles will
+of course also cause all profiles to be removed.  The JPEG and PNG
+formats will store any profiles that have been read and not removed.
+In JPEG they are stored in APP1 markers, and in PNG they are stored
+as hex-coded binary in compressed zTXt chunks, except for the iCC
+chunk which is stored in the iCCP chunk.
 
 To extract a profile, the \fB-profile\fP option is not used.  Instead,
 simply write the file to an image
@@ -3141,7 +3287,11 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the \fIAPP1\fP profile), use
 
 
-    gm convert cockatoo.jpg exifdata.app1
+   gm convert cockatoo.jpg exifdata.app1
+Note that GraphicsMagick does not attempt to update any profile to
+reflect changes made to the image, e.g., rotation from portrait to landscape
+orientation, so it is possible that the preserved profile may contain
+invalid data.
 .TP
 .B "+progress"
 \fRdisable progress monitor and busy cursor
@@ -3667,7 +3817,7 @@ is applied, then the threshold is a percentage of the available range.
 
 To efficiently create a black and white image from a color image, use
 
-    gm convert -threshold 50% in.png out.png
+   gm convert -threshold 50% in.png out.png
 
 The optimum threshold value depends on the nature of the image.
 In order to threshold individual channels, use the \fB-operator\fP
@@ -3714,7 +3864,7 @@ titled bird.miff and whose width is 512 and height is 480.
 This option applies the transformation matrix from a previous
 \fB-affine\fP option.
 
-    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -3773,7 +3923,7 @@ Sometimes a specific subformat is desired. For example, to force a JPEG
 image to be written in TrueColor RGB format even though only gray pixels
 are present, use
 
-    gm convert bird.pgm -type TrueColor bird.jpg
+   gm convert bird.pgm -type TrueColor bird.jpg
 
 Similarly, using -type TrueColorMatte will force the encoder to
 write an alpha channel even though the image is opaque, if the output
@@ -3783,7 +3933,7 @@ Some pseudo-formats (e.g. the XC format) will respect the requested
 type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use
 
-    gm convert -size 640x480 -type TrueColor xc:red red.miff
+   gm convert -size 640x480 -type TrueColor xc:red red.miff
 
 Likewise, specify \fB-type\fP \fBBilevel\fP, \fBGrayscale\fP,
 \fBTrueColor\fP, or \fBTrueColorMatte\fP prior to reading a Postscript
@@ -4005,8 +4155,8 @@ processing continues using that image. The following is an example of how
 several sizes of an image may be generated in one command (repeat as
 often as needed):
 
-    gm convert input.jpg -resize 50% -write input50.jpg
-      -resize 25% input25.jpg
+   gm convert input.jpg -resize 50% -write input50.jpg \\
+              -resize 25% input25.jpg
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]

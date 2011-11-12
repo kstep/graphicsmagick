@@ -38,6 +38,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetImageBoundingBox returns the bounding box of an image canvas.
+%  If the image has an opacity channel then return a bounding box based
+%  only on the opacity channel, otherwise return the bounding box of the
+%  image based on the current image fuzz setting.
 %
 %  The format of the GetImageBoundingBox method is:
 %
@@ -91,7 +94,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   for (y=0; y < (long) image->rows; y++)
     {
       register const PixelPacket
-        *p;
+        * restrict p;
     
       register long
         x;
@@ -118,6 +121,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       if (thread_status != MagickFail)
         {
           if (image->matte)
+	    /*
+	      Consider only the opacity channel.
+	    */
             for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity != corners[0].opacity)
@@ -134,7 +140,32 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
                     thread_bounds.height=y;
                 p++;
               }
-          else
+          else if (image->fuzz <= MagickEpsilon)
+	    {
+	      /*
+		Consider only the RGB channels using absolute comparison
+	      */
+	      for (x=0; x < (long) image->columns; x++)
+		{
+		  if (!ColorMatch(p,&corners[0]))
+		    if (x < thread_bounds.x)
+		      thread_bounds.x=x;
+		  if (!ColorMatch(p,&corners[1]))
+		    if (x > (long) thread_bounds.width)
+		      thread_bounds.width=x;
+		  if (!ColorMatch(p,&corners[0]))
+		    if (y < thread_bounds.y)
+		      thread_bounds.y=y;
+		  if (!ColorMatch(p,&corners[2]))
+		    if (y > (long) thread_bounds.height)
+		      thread_bounds.height=y;
+		  p++;
+		}
+	    }
+	  else
+	    /*
+	      Consider only the RGB channels using fuzzy comparison
+	    */
             for (x=0; x < (long) image->columns; x++)
               {
                 if (!FuzzyColorMatch(p,&corners[0],image->fuzz))

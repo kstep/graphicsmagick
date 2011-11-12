@@ -2082,7 +2082,7 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
   image->y_resolution = orig_y_resolution;
   image->units = orig_resolution_units;
 
-  return 0;
+  return stringwidth;
 }
 
 /* Map font (similar to wmf_ipa_font_map) */

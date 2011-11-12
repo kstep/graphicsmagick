@@ -146,12 +146,12 @@ ClonePixelWand(const PixelWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClonePixelWands() creates a deep-copy an array of PixelWands. 
+%  ClonePixelWands creates a deep-copy an array of PixelWands. 
 %
-%  The format of the ClonePixelWand( method is:
+%  The format of the ClonePixelWands method is:
 %
-%      PixelWand **ClonePixelWand(const PixelWand *wands,
-%                                 const unsigned long number_wands)
+%      PixelWand **ClonePixelWands(const PixelWand **wands,
+%                                  const unsigned long number_wands)
 %
 %  A description of each parameter follows:
 %
@@ -237,6 +237,11 @@ WandExport PixelWand *NewPixelWand(void)
 {
   struct _PixelWand
     *wand;
+
+  /*
+    Initialize GraphicsMagick in case it is not already initialized.
+  */
+  InitializeMagick(NULL);
 
   wand=(struct _PixelWand *) AcquireMagickMemory(sizeof(struct _PixelWand));
   if (wand == (PixelWand *) NULL)

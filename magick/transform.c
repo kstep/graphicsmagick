@@ -160,6 +160,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ChopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -228,6 +231,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_ChopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -317,6 +323,12 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   register const Image
     *next;
 
+  register long
+    i;
+  
+  MagickBool
+    found_transparency=False;
+
   /*
     Coalesce the image sequence.
   */
@@ -352,9 +364,21 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       }
       case BackgroundDispose:
       {
+        /*
+	  Fill image with transparent color, if one exists.
+	*/
         coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
-        if (coalesce_image->next != (Image *) NULL)
-          (void) SetImage(coalesce_image->next,OpaqueOpacity);
+        if (coalesce_image->next != (Image *) NULL) {
+          for (i = 0; i < (long) coalesce_image->colors; i++) {
+            if (coalesce_image->colormap[i].opacity == TransparentOpacity) {
+              found_transparency = True;
+              (void) SetImageColor(coalesce_image->next,&coalesce_image->colormap[i]);
+              break;
+            }
+          }
+          if (!found_transparency)
+            (void) SetImage(coalesce_image->next,OpaqueOpacity);
+        }
         break;
       }
       case PreviousDispose:
@@ -376,6 +400,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   }
+
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
   return(coalesce_image);
@@ -523,6 +548,9 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_CropImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -983,6 +1011,9 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_FlipImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1105,6 +1136,9 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       MagickBool
         thread_status;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  pragma omp critical (GM_FlopImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -1195,19 +1229,22 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     *next;
 
   unsigned int
-    scene,
+    scene;
+
+  MagickBool
+    matte;
+
+  MagickPassFail
     status;
 
-  /*
-    Determine mosaic bounding box.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (image->next == (Image *) NULL)
-    ThrowImageException3(ImageError,ImageSequenceIsRequired,
-      UnableToCreateImageMosaic);
+
+  /*
+    Determine mosaic bounding box.
+  */
   page.width=image->columns;
   page.height=image->rows;
   page.x=0;
@@ -1225,26 +1262,44 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     if (next->page.height > page.height)
       page.height=next->page.height;
   }
+
   /*
-    Allocate mosaic image.
+    Allocate canvas image.
   */
   mosaic_image=AllocateImage((ImageInfo *) NULL);
   if (mosaic_image == (Image *) NULL)
     return((Image *) NULL);
   mosaic_image->columns=page.width;
   mosaic_image->rows=page.height;
-  (void) SetImage(mosaic_image,OpaqueOpacity);
+
   /*
-    Initialize colormap.
+    Canvas image supports transparency if any subordinate image uses
+    transparency.
+  */
+  matte=MagickTrue;
+  for (next=image; next != (Image *) NULL; next=next->next)
+    matte &= next->matte;
+  mosaic_image->matte=matte;
+
+  /*
+    Canvas color is copied from background color of first image in
+    list.  Default canvas color is 'white' but opaque 'black' or
+    'transparent' is often best for composition.
+  */
+  mosaic_image->background_color=image->background_color;
+  (void) SetImage(mosaic_image,OpaqueOpacity);
+
+  /*
+    Composite mosaic.
   */
   scene=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
+    (void) CompositeImage(mosaic_image,next->compose,next,next->page.x,
       next->page.y);
     status=MagickMonitorFormatted(scene++,GetImageListLength(image),
                                   exception,MosaicImageText,image->filename);
-    if (status == False)
+    if (status == MagickFail)
       break;
   }
   return(mosaic_image);

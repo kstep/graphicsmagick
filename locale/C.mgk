@@ -471,6 +471,9 @@
         <Message name="SkipToSyncByte">
           Corrupt PCD image, skipping to sync byte
         </Message>
+        <Message name="LengthAndFilesizeDoNotMatch">
+          Length and filesize do not match
+        </Message>
       </Warning>
     </Image>
   </Corrupt>
@@ -607,6 +610,9 @@
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
+      <Message name="ImageColorspaceMismatch">
+        image colorspace mismatch
+      </Message>
       <Message name="ImageDifferenceExceedsLimit">
         image difference exceeds limit (%s)
       </Message>
@@ -663,6 +669,9 @@
       </Message>
       <Message name="UnableToFlattenImage">
         unable to flatten image
+      </Message>
+      <Message name="UnableToHandleImageChannel">
+        unable to handle image channel
       </Message>
       <Message name="UnableToResizeImage">
         unable to resize image
@@ -775,6 +784,26 @@
       </Message>
     </Warning>
   </Module>
+  <Monitor>
+    <Error>
+      <Message name="Default">
+        default error
+      </Message>
+    </Error>
+    <FatalError>
+      <Message name="UserRequestedTerminationBySignal">
+        User requested termination (via signal)
+      </Message>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
+  </Monitor>
   <Option>
     <Error>
       <Message name="BevelWidthIsNegative">

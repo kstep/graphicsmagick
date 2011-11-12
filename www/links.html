@@ -3,49 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>Related Links</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="index.html">Home</a></li>
-<li><a href="Copyright.html">License</a></li>
-<li><a href="mission.html">Mission</a></li>
+<li><a href="project.html">Project</a></li>
 <li><a href="download.html">Download</a></li>
-<li><a href="README.html">Installation</a></li>
-<li><a href="FAQ.html">FAQ</a></li>
+<li><a href="README.html">Install</a></li>
+<li><a href="Hg.html">Source</a></li>
 <li><a href="NEWS.html">News</a> </li>
-<li><a href="formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="process.html">Process</a></li>
-<li><a href="contribute.html">Contribute</a></li>
-<li><a href="CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Mailing Lists</a></li>
-<li><a href="Changelog.html">ChangeLog</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Report Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="utilities.html">Utilities</a></li>
 <li><a href="programming.html">Programming</a></li>
-<li><a href="links.html">Links</a></li>
+<li><a href="reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="related-links">
@@ -56,6 +41,7 @@
 <h1>GraphicsMagick Topics</h1>
 <p><a class="reference external" href="http://directory.fsf.org/project/GraphicsMagick/">Free Software Foundation</a> GraphicsMagick Entry.</p>
 <p><a class="reference external" href="http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/">FreeBSD port</a> for GraphicsMagick.</p>
+<p><a class="reference external" href="http://pkgsrc.se/graphics/GraphicsMagick/">NetBSD/pkgsrc port</a> for GraphicsMagick.</p>
 <p><a class="reference external" href="http://freshmeat.net/projects/graphicsmagick">FreshMeat</a> GraphicsMagick Entry.</p>
 <p><a class="reference external" href="http://dir.gmane.org/gmane.comp.video.graphicsmagick.announce">Gmane</a> GraphicsMagick Announce List.</p>
 <p><a class="reference external" href="http://bugs.gentoo.org/show_bug.cgi?id=190372">Gentoo Sunrise</a> Bug Tracker Entry.</p>
@@ -110,9 +96,9 @@ such as resize, blur, and composition, will produce more accurate
 results when performed on images encoded in a linear-light scaled
 space.</p>
 <p>For a typical sRGB image encoded in a gamma-corrected space with gamma
-2.2, the option <tt class="docutils literal"><span class="pre">-gamma</span> <span class="pre">0.45</span></tt> (1/2.2 = 0.45) will remove that
+2.2, the option <tt class="docutils literal"><span class="pre">-gamma</span> 0.45</tt> (1/2.2 = 0.45) will remove that
 encoding for subsequent algorithms so that they are done in
-linear-light space.  When processing is completed, then <tt class="docutils literal"><span class="pre">-gamma</span> <span class="pre">2.2</span></tt>
+linear-light space.  When processing is completed, then <tt class="docutils literal"><span class="pre">-gamma</span> 2.2</tt>
 will restore gamma-correction for viewing.  It is recommended to use a
 Q16 or Q32 build of GraphicsMagick when doing this since linear-light
 space encoding is not efficient and will lose accuracy if stored with
@@ -174,6 +160,8 @@ white papers by Steve Shaw regarding HD video cameras, log color spaces, and dig
 site by Jack James dedicated to the digital intermediate industry.</p>
 <p><a class="reference external" href="http://www.dcimovies.com/">Digital Cinema Initiatives</a>,
 DCI offers the first complete specification for digital cinema delivery.</p>
+<p><a class="reference external" href="http://ingex.sourceforge.net/index.html">Ingex</a> Tapeless video &amp;
+audio capture, transcoding and network file serving.  From the BBC.</p>
 </div>
 <div class="section" id="video-topics">
 <h1>Video Topics</h1>
@@ -206,18 +194,16 @@ a facinating web-based photo album organizer.  Works with GraphicsMagick!.</p>
 <p><a class="reference external" href="http://djv.sourceforge.net/">DJV Imaging</a>, professional movie
 playback and image processing software for the film and computer
 animation industries.</p>
+<p><a class="reference external" href="https://sites.google.com/site/openimageio/">OpenImageIO</a> library
+for reading and writing images, and a bunch of related classes,
+utilities, and applications.</p>
 </div>
 <div class="section" id="stock-photos">
 <h1>Stock Photos</h1>
 <p><a class="reference external" href="http://www.morguefile.com/">MorgueFile</a>, Free high-resolution stock photo images.</p>
 <hr class="docutils" />
-<p><a class="reference external" href="Copyright.html">Copyright</a> © GraphicsMagick Group 2002 - 2010</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
 </div>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2010-03-07 19:43 UTC.
-
 </div>
 </body>
 </html>

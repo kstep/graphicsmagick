@@ -1,8 +1,13 @@
 /*
  * xpointer.c : Code to handle XML Pointer
  *
- * World Wide Web Consortium Working Draft 03-March-1998 
+ * Base implementation was made accordingly to
+ * W3C Candidate Recommendation 7 June 2000
  * http://www.w3.org/TR/2000/CR-xptr-20000607
+ *
+ * Added support for the element() scheme described in:
+ * W3C Proposed Recommendation 13 November 2002
+ * http://www.w3.org/TR/2002/PR-xptr-element-20021113/  
  *
  * See Copyright for the status of this software.
  *
@@ -54,11 +59,72 @@
 
 /************************************************************************
  *									*
- *		A few helper functions for child sequences		*
+ * 		Some factorized error routines				*
  *									*
  ************************************************************************/
 
-xmlNodePtr xmlXPtrAdvanceNode(xmlNodePtr cur);
+/**
+ * xmlXPtrErrMemory:
+ * @extra:  extra informations
+ *
+ * Handle a redefinition of attribute error
+ */
+static void
+xmlXPtrErrMemory(const char *extra)
+{
+    __xmlRaiseError(NULL, NULL, NULL, NULL, NULL, XML_FROM_XPOINTER,
+		    XML_ERR_NO_MEMORY, XML_ERR_ERROR, NULL, 0, extra,
+		    NULL, NULL, 0, 0,
+		    "Memory allocation failed : %s\n", extra);
+}
+
+/**
+ * xmlXPtrErr:
+ * @ctxt:  an XPTR evaluation context
+ * @extra:  extra informations
+ *
+ * Handle a redefinition of attribute error
+ */
+static void
+xmlXPtrErr(xmlXPathParserContextPtr ctxt, int error,
+           const char * msg, const xmlChar *extra)
+{
+    if (ctxt != NULL)
+        ctxt->error = error;
+    if ((ctxt == NULL) || (ctxt->context == NULL)) {
+	__xmlRaiseError(NULL, NULL, NULL,
+			NULL, NULL, XML_FROM_XPOINTER, error,
+			XML_ERR_ERROR, NULL, 0,
+			(const char *) extra, NULL, NULL, 0, 0,
+			msg, extra);
+	return;
+    }
+    ctxt->context->lastError.domain = XML_FROM_XPOINTER;
+    ctxt->context->lastError.code = error;
+    ctxt->context->lastError.level = XML_ERR_ERROR;
+    ctxt->context->lastError.str1 = (char *) xmlStrdup(ctxt->base);
+    ctxt->context->lastError.int1 = ctxt->cur - ctxt->base;
+    ctxt->context->lastError.node = ctxt->context->debugNode;
+    if (ctxt->context->error != NULL) {
+	ctxt->context->error(ctxt->context->userData,
+	                     &ctxt->context->lastError);
+    } else {
+	__xmlRaiseError(NULL, NULL, NULL,
+			NULL, ctxt->context->debugNode, XML_FROM_XPOINTER,
+			error, XML_ERR_ERROR, NULL, 0,
+			(const char *) extra, (const char *) ctxt->base, NULL,
+			ctxt->cur - ctxt->base, 0,
+			msg, extra);
+    }
+}
+
+/************************************************************************
+ *									*
+ *		A few helper functions for child sequences		*
+ *									*
+ ************************************************************************/
+/* xmlXPtrAdvanceNode is a private function, but used by xinclude.c */
+xmlNodePtr xmlXPtrAdvanceNode(xmlNodePtr cur, int *level);
 /**
  * xmlXPtrGetArity:
  * @cur:  the node
@@ -185,8 +251,7 @@ xmlXPtrNewPoint(xmlNodePtr node, int indx) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewPoint: out of memory\n");
+        xmlXPtrErrMemory("allocating point");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -281,8 +346,7 @@ xmlXPtrNewRange(xmlNodePtr start, int startindex,
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRange: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -319,8 +383,7 @@ xmlXPtrNewRangePoints(xmlXPathObjectPtr start, xmlXPathObjectPtr end) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRangePoints: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -355,8 +418,7 @@ xmlXPtrNewRangePointNode(xmlXPathObjectPtr start, xmlNodePtr end) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRangePointNode: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -393,8 +455,7 @@ xmlXPtrNewRangeNodePoint(xmlNodePtr start, xmlXPathObjectPtr end) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRangeNodePoint: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -427,8 +488,7 @@ xmlXPtrNewRangeNodes(xmlNodePtr start, xmlNodePtr end) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRangeNodes: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -458,8 +518,7 @@ xmlXPtrNewCollapsedRange(xmlNodePtr start) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewCollapsedRange: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -490,6 +549,7 @@ xmlXPtrNewRangeNodeObject(xmlNodePtr start, xmlXPathObjectPtr end) {
 	return(NULL);
     switch (end->type) {
 	case XPATH_POINT:
+	case XPATH_RANGE:
 	    break;
 	case XPATH_NODESET:
 	    /*
@@ -499,14 +559,13 @@ xmlXPtrNewRangeNodeObject(xmlNodePtr start, xmlXPathObjectPtr end) {
 		return(NULL);
 	    break;
 	default:
-	    TODO
+	    /* TODO */
 	    return(NULL);
     }
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewRangeNodeObject: out of memory\n");
+        xmlXPtrErrMemory("allocating range");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -517,6 +576,11 @@ xmlXPtrNewRangeNodeObject(xmlNodePtr start, xmlXPathObjectPtr end) {
 	case XPATH_POINT:
 	    ret->user2 = end->user;
 	    ret->index2 = end->index;
+	    break;
+	case XPATH_RANGE:
+	    ret->user2 = end->user2;
+	    ret->index2 = end->index2;
+	    break;
 	case XPATH_NODESET: {
 	    ret->user2 = end->nodesetval->nodeTab[end->nodesetval->nodeNr - 1];
 	    ret->index2 = -1;
@@ -546,8 +610,7 @@ xmlXPtrLocationSetCreate(xmlXPathObjectPtr val) {
 
     ret = (xmlLocationSetPtr) xmlMalloc(sizeof(xmlLocationSet));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrLocationSetCreate: out of memory\n");
+        xmlXPtrErrMemory("allocating locationset");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlLocationSet));
@@ -555,8 +618,8 @@ xmlXPtrLocationSetCreate(xmlXPathObjectPtr val) {
         ret->locTab = (xmlXPathObjectPtr *) xmlMalloc(XML_RANGESET_DEFAULT *
 					     sizeof(xmlXPathObjectPtr));
 	if (ret->locTab == NULL) {
-	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlXPtrLocationSetCreate: out of memory\n");
+	    xmlXPtrErrMemory("allocating locationset");
+	    xmlFree(ret);
 	    return(NULL);
 	}
 	memset(ret->locTab, 0 ,
@@ -579,7 +642,7 @@ void
 xmlXPtrLocationSetAdd(xmlLocationSetPtr cur, xmlXPathObjectPtr val) {
     int i;
 
-    if (val == NULL) return;
+    if ((cur == NULL) || (val == NULL)) return;
 
     /*
      * check against doublons
@@ -598,8 +661,7 @@ xmlXPtrLocationSetAdd(xmlLocationSetPtr cur, xmlXPathObjectPtr val) {
         cur->locTab = (xmlXPathObjectPtr *) xmlMalloc(XML_RANGESET_DEFAULT *
 					     sizeof(xmlXPathObjectPtr));
 	if (cur->locTab == NULL) {
-	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlXPtrLocationSetAdd: out of memory\n");
+	    xmlXPtrErrMemory("adding location to set");
 	    return;
 	}
 	memset(cur->locTab, 0 ,
@@ -612,8 +674,7 @@ xmlXPtrLocationSetAdd(xmlLocationSetPtr cur, xmlXPathObjectPtr val) {
 	temp = (xmlXPathObjectPtr *) xmlRealloc(cur->locTab, cur->locMax *
 				      sizeof(xmlXPathObjectPtr));
 	if (temp == NULL) {
-	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlXPtrLocationSetAdd: out of memory\n");
+	    xmlXPtrErrMemory("adding location to set");
 	    return;
 	}
 	cur->locTab = temp;
@@ -734,8 +795,7 @@ xmlXPtrNewLocationSetNodes(xmlNodePtr start, xmlNodePtr end) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewLocationSetNodes: out of memory\n");
+        xmlXPtrErrMemory("allocating locationset");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -762,8 +822,7 @@ xmlXPtrNewLocationSetNodeSet(xmlNodeSetPtr set) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrNewLocationSetNodeSet: out of memory\n");
+        xmlXPtrErrMemory("allocating locationset");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -799,8 +858,7 @@ xmlXPtrWrapLocationSet(xmlLocationSetPtr val) {
 
     ret = (xmlXPathObjectPtr) xmlMalloc(sizeof(xmlXPathObject));
     if (ret == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrWrapLocationSet: out of memory\n");
+        xmlXPtrErrMemory("allocating locationset");
 	return(NULL);
     }
     memset(ret, 0 , (size_t) sizeof(xmlXPathObject));
@@ -814,6 +872,8 @@ xmlXPtrWrapLocationSet(xmlLocationSetPtr val) {
  *			The parser					*
  *									*
  ************************************************************************/
+
+static void xmlXPtrEvalChildSeq(xmlXPathParserContextPtr ctxt, xmlChar *name);
 
 /*
  * Macros for accessing the content. Those should be used only by the parser,
@@ -844,7 +904,7 @@ xmlXPtrWrapLocationSet(xmlLocationSetPtr val) {
 #define CUR_PTR ctxt->cur
 
 #define SKIP_BLANKS 							\
-    while (IS_BLANK(*(ctxt->cur))) NEXT
+    while (IS_BLANK_CH(*(ctxt->cur))) NEXT
 
 #define CURRENT (*ctxt->cur)
 #define NEXT ((*ctxt->cur) ?  ctxt->cur++: ctxt->cur)
@@ -933,10 +993,9 @@ xmlXPtrEvalXPtrPart(xmlXPathParserContextPtr ctxt, xmlChar *name) {
 
     len = xmlStrlen(ctxt->cur);
     len++;
-    buffer = (xmlChar *) xmlMalloc(len * sizeof (xmlChar));
+    buffer = (xmlChar *) xmlMallocAtomic(len * sizeof (xmlChar));
     if (buffer == NULL) {
-        xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrEvalXPtrPart: out of memory\n");
+        xmlXPtrErrMemory("allocating buffer");
 	return;
     }
 
@@ -976,8 +1035,35 @@ xmlXPtrEvalXPtrPart(xmlXPathParserContextPtr ctxt, xmlChar *name) {
 	const xmlChar *left = CUR_PTR;
 
 	CUR_PTR = buffer;
+	/*
+	 * To evaluate an xpointer scheme element (4.3) we need:
+	 *   context initialized to the root
+	 *   context position initalized to 1
+	 *   context size initialized to 1
+	 */
+	ctxt->context->node = (xmlNodePtr)ctxt->context->doc;
+	ctxt->context->proximityPosition = 1;
+	ctxt->context->contextSize = 1;
 	xmlXPathEvalExpr(ctxt);
 	CUR_PTR=left;
+    } else if (xmlStrEqual(name, (xmlChar *) "element")) {
+	const xmlChar *left = CUR_PTR;
+	xmlChar *name2;
+
+	CUR_PTR = buffer;
+	if (buffer[0] == '/') {
+	    xmlXPathRoot(ctxt);
+	    xmlXPtrEvalChildSeq(ctxt, NULL);
+	} else {
+	    name2 = xmlXPathParseName(ctxt);
+	    if (name2 == NULL) {
+		CUR_PTR = left;
+		xmlFree(buffer);
+		XP_ERROR(XPATH_EXPR_ERROR);
+	    }
+	    xmlXPtrEvalChildSeq(ctxt, name2);
+	}
+	CUR_PTR = left;
 #ifdef XPTR_XMLNS_SCHEME
     } else if (xmlStrEqual(name, (xmlChar *) "xmlns")) {
 	const xmlChar *left = CUR_PTR;
@@ -1021,10 +1107,12 @@ xmlXPtrEvalXPtrPart(xmlXPathParserContextPtr ctxt, xmlChar *name) {
 	
 	xmlXPathRegisterNs(ctxt->context, prefix, URI);
 	CUR_PTR = left;
+	xmlFree(URI);
+	xmlFree(prefix);
 #endif /* XPTR_XMLNS_SCHEME */
     } else {
-        xmlGenericError(xmlGenericErrorContext,
-		"unsupported scheme '%s'\n", name);
+        xmlXPtrErr(ctxt, XML_XPTR_UNKNOWN_SCHEME,
+		   "unsupported scheme '%s'\n", name);
     }
     xmlFree(buffer);
     xmlFree(name);
@@ -1064,10 +1152,12 @@ xmlXPtrEvalFullXPtr(xmlXPathParserContextPtr ctxt, xmlChar *name) {
     if (name == NULL)
 	XP_ERROR(XPATH_EXPR_ERROR);
     while (name != NULL) {
+	ctxt->error = XPATH_EXPRESSION_OK;
 	xmlXPtrEvalXPtrPart(ctxt, name);
 
 	/* in case of syntax error, break here */
-	if (ctxt->error != XPATH_EXPRESSION_OK)
+	if ((ctxt->error != XPATH_EXPRESSION_OK) &&
+            (ctxt->error != XML_XPTR_UNKNOWN_SCHEME))
 	    return;
 
 	/*
@@ -1132,8 +1222,8 @@ xmlXPtrEvalChildSeq(xmlXPathParserContextPtr ctxt, xmlChar *name) {
      * this might prove useful in some cases, warn about it.
      */
     if ((name == NULL) && (CUR == '/') && (NXT(1) != '1')) {
-	xmlGenericError(xmlGenericErrorContext,
-		"warning: ChildSeq not starting by /1\n");
+        xmlXPtrErr(ctxt, XML_XPTR_CHILDSEQ_START,
+		   "warning: ChildSeq not starting by /1\n", NULL);
     }
 
     if (name != NULL) {
@@ -1173,9 +1263,7 @@ xmlXPtrEvalXPointer(xmlXPathParserContextPtr ctxt) {
 	ctxt->valueTab = (xmlXPathObjectPtr *) 
 			 xmlMalloc(10 * sizeof(xmlXPathObjectPtr));
 	if (ctxt->valueTab == NULL) {
-	    xmlFree(ctxt);
-	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlXPathEvalXPointer: out of memory\n");
+	    xmlXPtrErrMemory("allocating evaluation context");
 	    return;
 	}
 	ctxt->valueNr = 0;
@@ -1213,12 +1301,19 @@ xmlXPtrEvalXPointer(xmlXPathParserContextPtr ctxt) {
  *									*
  ************************************************************************/
 
+static
 void xmlXPtrStringRangeFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrStartPointFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrEndPointFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrHereFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrOriginFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrRangeInsideFunction(xmlXPathParserContextPtr ctxt, int nargs);
+static
 void xmlXPtrRangeFunction(xmlXPathParserContextPtr ctxt, int nargs);
 
 /**
@@ -1292,8 +1387,9 @@ xmlXPtrEval(const xmlChar *str, xmlXPathContextPtr ctx) {
     if ((ctxt->value != NULL) &&
 	(ctxt->value->type != XPATH_NODESET) &&
 	(ctxt->value->type != XPATH_LOCATIONSET)) {
-	xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrEval: evaluation failed to return a node set\n");
+        xmlXPtrErr(ctxt, XML_XPTR_EVAL_FAILED,
+		"xmlXPtrEval: evaluation failed to return a node set\n",
+		   NULL);
     } else {
 	res = valuePop(ctxt);
     }
@@ -1318,9 +1414,9 @@ xmlXPtrEval(const xmlChar *str, xmlXPathContextPtr ctx) {
         }
     } while (tmp != NULL);
     if (stack != 0) {
-	xmlGenericError(xmlGenericErrorContext,
-		"xmlXPtrEval: %d object left on the stack\n",
-	        stack);
+        xmlXPtrErr(ctxt, XML_XPTR_EXTRA_OBJECTS,
+		   "xmlXPtrEval: object(s) left on the eval stack\n",
+		   NULL);
     }
     if (ctxt->error != XPATH_EXPRESSION_OK) {
 	xmlXPathFreeObject(res);
@@ -1496,7 +1592,7 @@ xmlXPtrBuildRangeNodeList(xmlXPathObjectPtr range) {
 	    STRANGE
 	    return(NULL);
 	}
-	cur = xmlXPtrAdvanceNode(cur);
+	cur = xmlXPtrAdvanceNode(cur, NULL);
     }
     return(list);
 }
@@ -1645,7 +1741,7 @@ xmlXPtrNbLocChildren(xmlNodePtr node) {
  * Function implementing here() operation 
  * as described in 5.4.3
  */
-void
+static void
 xmlXPtrHereFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     CHECK_ARITY(0);
 
@@ -1663,7 +1759,7 @@ xmlXPtrHereFunction(xmlXPathParserContextPtr ctxt, int nargs) {
  * Function implementing origin() operation 
  * as described in 5.4.3
  */
-void
+static void
 xmlXPtrOriginFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     CHECK_ARITY(0);
 
@@ -1696,7 +1792,7 @@ xmlXPtrOriginFunction(xmlXPathParserContextPtr ctxt, int nargs) {
  * ----------------
  *
  */
-void
+static void
 xmlXPtrStartPointFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     xmlXPathObjectPtr tmp, obj, point;
     xmlLocationSetPtr newset = NULL;
@@ -1790,7 +1886,7 @@ xmlXPtrStartPointFunction(xmlXPathParserContextPtr ctxt, int nargs) {
  *   syntax error.
  * ----------------------------
  */
-void
+static void
 xmlXPtrEndPointFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     xmlXPathObjectPtr tmp, obj, point;
     xmlLocationSetPtr newset = NULL;
@@ -1935,7 +2031,7 @@ xmlXPtrCoveringRange(xmlXPathParserContextPtr ctxt, xmlXPathObjectPtr loc) {
  *  location-set, a range location representing the covering range of
  *  x is added to the result location-set.
  */
-void
+static void
 xmlXPtrRangeFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     int i;
     xmlXPathObjectPtr set;
@@ -2081,7 +2177,7 @@ xmlXPtrInsideRange(xmlXPathParserContextPtr ctxt, xmlXPathObjectPtr loc) {
  *  location children of x.
  *
  */
-void
+static void
 xmlXPtrRangeInsideFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     int i;
     xmlXPathObjectPtr set;
@@ -2140,6 +2236,7 @@ xmlXPtrRangeToFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     xmlNodeSetPtr oldset;
     int i;
 
+    if (ctxt == NULL) return;
     CHECK_ARITY(1);
     /*
      * Save the expression pointer since we will have to evaluate
@@ -2203,6 +2300,7 @@ xmlXPtrRangeToFunction(xmlXPathParserContextPtr ctxt, int nargs) {
 /**
  * xmlXPtrAdvanceNode:
  * @cur:  the node
+ * @level: incremented/decremented to show level in tree
  *
  * Advance to the next element or text node in document order
  * TODO: add a stack for entering/exiting entities 
@@ -2210,20 +2308,25 @@ xmlXPtrRangeToFunction(xmlXPathParserContextPtr ctxt, int nargs) {
  * Returns -1 in case of failure, 0 otherwise
  */
 xmlNodePtr
-xmlXPtrAdvanceNode(xmlNodePtr cur) {
+xmlXPtrAdvanceNode(xmlNodePtr cur, int *level) {
 next:
     if (cur == NULL)
 	return(NULL);
     if (cur->children != NULL) {
         cur = cur->children ;
+	if (level != NULL)
+	    (*level)++;
 	goto found;
     }
+skip:		/* This label should only be needed if something is wrong! */
     if (cur->next != NULL) {
 	cur = cur->next;
 	goto found;
     }
     do {
         cur = cur->parent;
+	if (level != NULL)
+	    (*level)--;
         if (cur == NULL) return(NULL);
         if (cur->next != NULL) {
 	    cur = cur->next;
@@ -2236,11 +2339,13 @@ found:
 	(cur->type != XML_TEXT_NODE) &&
 	(cur->type != XML_DOCUMENT_NODE) &&
 	(cur->type != XML_HTML_DOCUMENT_NODE) &&
-	(cur->type != XML_CDATA_SECTION_NODE))
-	goto next;
-    if (cur->type == XML_ENTITY_REF_NODE) {
-	TODO
-    }
+	(cur->type != XML_CDATA_SECTION_NODE)) {
+	    if (cur->type == XML_ENTITY_REF_NODE) {	/* Shouldn't happen */
+		TODO
+		goto skip;
+	    }
+	    goto next;
+	}
     return(cur);
 }
 
@@ -2280,7 +2385,7 @@ xmlXPtrAdvanceChar(xmlNodePtr *node, int *indx, int bytes) {
 		cur = xmlXPtrGetNthChild(cur, pos);
 		pos = 0;
 	    } else {
-		cur = xmlXPtrAdvanceNode(cur);
+		cur = xmlXPtrAdvanceNode(cur, NULL);
 		pos = 0;
 	    }
 	}
@@ -2315,8 +2420,8 @@ xmlXPtrAdvanceChar(xmlNodePtr *node, int *indx, int bytes) {
 	}
 	if (pos + bytes >= len) {
 	    bytes -= (len - pos);
-	    cur = xmlXPtrAdvanceNode(cur);
-	    cur = 0;
+	    cur = xmlXPtrAdvanceNode(cur, NULL);
+	    pos = 0;
 	} else if (pos + bytes < len) {
 	    pos += bytes;
 	    *node = cur;
@@ -2404,7 +2509,7 @@ xmlXPtrMatchString(const xmlChar *string, xmlNodePtr start, int startindex,
 		}
 	    }
 	}
-	cur = xmlXPtrAdvanceNode(cur);
+	cur = xmlXPtrAdvanceNode(cur, NULL);
 	if (cur == NULL)
 	    return(0);
 	pos = 0;
@@ -2497,7 +2602,7 @@ xmlXPtrSearchString(const xmlChar *string, xmlNodePtr *start, int *startindex,
 	}
 	if ((cur == *end) && (pos >= *endindex))
 	    return(0);
-	cur = xmlXPtrAdvanceNode(cur);
+	cur = xmlXPtrAdvanceNode(cur, NULL);
 	if (cur == NULL)
 	    return(0);
 	pos = 1;
@@ -2526,13 +2631,12 @@ xmlXPtrGetLastChar(xmlNodePtr *node, int *indx) {
 
     if (cur == NULL)
 	return(-1);
-    
+
     if ((cur->type == XML_ELEMENT_NODE) ||
 	(cur->type == XML_DOCUMENT_NODE) ||
 	(cur->type == XML_HTML_DOCUMENT_NODE)) {
 	if (pos > 0) {
 	    cur = xmlXPtrGetNthChild(cur, pos);
-	    pos = 0;
 	}
     }
     while (cur != NULL) {
@@ -2661,10 +2765,10 @@ xmlXPtrGetEndPoint(xmlXPathObjectPtr obj, xmlNodePtr *node, int *indx) {
  * all be character points.
  * ------------------------------
  */
-void
+static void
 xmlXPtrStringRangeFunction(xmlXPathParserContextPtr ctxt, int nargs) {
-    int i, startindex, endindex, fendindex;
-    xmlNodePtr start, end, fend;
+    int i, startindex, endindex = 0, fendindex;
+    xmlNodePtr start, end = 0, fend;
     xmlXPathObjectPtr set;
     xmlLocationSetPtr oldset;
     xmlLocationSetPtr newset;
@@ -2699,6 +2803,10 @@ xmlXPtrStringRangeFunction(xmlXPathParserContextPtr ctxt, int nargs) {
         XP_ERROR(XPATH_INVALID_TYPE)
 
     set = valuePop(ctxt);
+    newset = xmlXPtrLocationSetCreate(NULL);
+    if (set->nodesetval == NULL) {
+        goto error;
+    }
     if (set->type == XPATH_NODESET) {
 	xmlXPathObjectPtr tmp;
 
@@ -2715,7 +2823,6 @@ xmlXPtrStringRangeFunction(xmlXPathParserContextPtr ctxt, int nargs) {
      * The loop is to search for each element in the location set
      * the list of location set corresponding to that search
      */
-    newset = xmlXPtrLocationSetCreate(NULL);
     for (i = 0;i < oldset->locNr;i++) {
 #ifdef DEBUG_RANGES
 	xmlXPathDebugDumpObject(stdout, oldset->locTab[i], 0);
@@ -2779,6 +2886,7 @@ xmlXPtrStringRangeFunction(xmlXPathParserContextPtr ctxt, int nargs) {
     /*
      * Save the new value and cleanup
      */
+error:
     valuePush(ctxt, xmlXPtrWrapLocationSet(newset));
     xmlXPathFreeObject(set);
     xmlXPathFreeObject(string);
@@ -2804,6 +2912,8 @@ xmlXPtrEvalRangePredicate(xmlXPathParserContextPtr ctxt) {
     xmlLocationSetPtr newset = NULL;
     xmlLocationSetPtr oldset;
     int i;
+
+    if (ctxt == NULL) return;
 
     SKIP_BLANKS;
     if (CUR != '[') {
@@ -2895,6 +3005,7 @@ xmlXPtrEvalRangePredicate(xmlXPathParserContextPtr ctxt) {
     SKIP_BLANKS;
 }
 
-#else
+#define bottom_xpointer
+#include "elfgcchack.h"
 #endif
 

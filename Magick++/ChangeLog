@@ -1,3 +1,23 @@
+2010-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (Magick): Add LZMACompression
+
+2010-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (InitializeMagick): Don't use atexit().  C++
+	destructures are sufficient.
+
+2010-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (backgroundColor, borderColor, matteColor):
+	Opacity part of user-specified color needs to be preserved.
+	Problem was reported by Alexander Zheltov.
+
+2010-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/CoderInfo.h: Add default constructor, copy
+	constructor, and assignment operator.
+
 2010-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (Magick): Fix potential memory leak.

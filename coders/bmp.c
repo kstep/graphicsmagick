@@ -771,10 +771,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 
-    if ((bmp_info.compression != BI_RGB) &&
-        ((magick_off_t) bmp_info.file_size != GetBlobSize(image)))
+    if ((magick_off_t) bmp_info.file_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,LengthAndFilesizeDoNotMatch,
         image);
+    if (logging && (magick_off_t) bmp_info.file_size < GetBlobSize(image))
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "Discarding all data beyond bmp_info.file_size");
     if (bmp_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
     if (bmp_info.height == 0)
@@ -1428,8 +1430,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     scene,
     type;
 
-  const unsigned char
-    *color_profile=0;
+/*   const unsigned char */
+/*     *color_profile=0; */
 
   size_t
     color_profile_length=0;
@@ -1455,8 +1457,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 
   /*
     Retrieve color profile from Image (if any)
+    FIXME: is color profile support writing not properly implemented?
   */
-  color_profile=GetImageProfile(image,"ICM",&color_profile_length);
+  /* color_profile= */ (void) GetImageProfile(image,"ICM",&color_profile_length);
 
   do
   {

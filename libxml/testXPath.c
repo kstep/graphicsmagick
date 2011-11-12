@@ -71,14 +71,6 @@ static xmlChar buffer[] =
    <title>Chapter 3</title>\n\
    <p>this is chapter 3 ...</p>\n\
   </chapter>\n\
-  <chapter>\n\
-   <title>Chapter 4</title>\n\
-   <p>this is chapter 4 ...</p>\n\
-  </chapter>\n\
-  <chapter>\n\
-   <title>Chapter 5</title>\n\
-   <p>this is chapter 5 ...</p>\n\
-  </chapter>\n\
 </EXAMPLE>\n\
 ";
 
@@ -179,15 +171,16 @@ int main(int argc, char **argv) {
     if (valid != 0) xmlDoValidityCheckingDefaultValue = 1;
     xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
     xmlLoadExtDtdDefaultValue |= XML_COMPLETE_ATTRS;
+    xmlSubstituteEntitiesDefaultValue = 1;
     if (nocdata != 0) {
 	xmlDefaultSAXHandlerInit();
 	xmlDefaultSAXHandler.cdataBlock = NULL;
     }
     if (document == NULL) {
         if (filename == NULL)
-	    document = xmlParseDoc(buffer);
+	    document = xmlReadDoc(buffer,NULL,NULL,XML_PARSE_COMPACT);
 	else
-	    document = xmlParseFile(filename);
+	    document = xmlReadFile(filename,NULL,XML_PARSE_COMPACT);
     }
     for (i = 1; i < argc ; i++) {
 	if ((!strcmp(argv[i], "-i")) || (!strcmp(argv[i], "--input"))) {
@@ -227,7 +220,7 @@ int main(int argc, char **argv) {
 }
 #else
 #include <stdio.h>
-int main(int argc, char **argv) {
+int main(int argc ATTRIBUTE_UNUSED, char **argv ATTRIBUTE_UNUSED) {
     printf("%s : XPath/Debug support not compiled in\n", argv[0]);
     return(0);
 }

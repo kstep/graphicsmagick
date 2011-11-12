@@ -105,6 +105,9 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
       register PixelPacket
         *q;
 
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_IdentityImage)
+#endif
       thread_status=status;
       if (thread_status == MagickFail)
         continue;
@@ -144,7 +147,7 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
         }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_GradientImage)
+#  pragma omp critical (GM_IdentityImage)
 #endif
       {
         row_count++;

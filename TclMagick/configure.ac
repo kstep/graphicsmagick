@@ -18,6 +18,9 @@ AM_INIT_AUTOMAKE
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
+# Enable support for silent build rules
+AM_SILENT_RULES
+
 AC_PROG_CC
 AC_PROG_LIBTOOL
 AC_ISC_POSIX

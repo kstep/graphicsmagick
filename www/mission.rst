@@ -40,11 +40,7 @@ The objectives of the GraphicsMagick project are to:
 * Value, and respect the contributions of developers, and observe and
   respect the copyrights of other projects.
 
---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2010 GraphicsMagick Group
+.. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-This program is covered by multiple licenses, which are described in
-Copyright.txt. You should have received a copy of Copyright.txt with this
-package; otherwise see http://www.graphicsmagick.org/Copyright.html.
-
+Copyright |copy| GraphicsMagick Group 2002 - 2011

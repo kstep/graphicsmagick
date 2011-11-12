@@ -1131,7 +1131,7 @@ AcquireOneCacheViewPixelInlined(const View *view_info,
         offset;
       
       offset=y*(magick_off_t) cache_info->columns+x;
-      if (cache_info->indexes_valid)
+      if ((cache_info->indexes_valid) && (PseudoClass == image->storage_class))
         *pixel=image->colormap[cache_info->indexes[offset]];
       else
         *pixel=cache_info->pixels[offset];
@@ -2775,6 +2775,12 @@ ModifyCache(Image *image, ExceptionInfo *exception)
           /* fprintf(stderr,"ModifyCache: Thread %d enters (cache_info = %p)\n",
              omp_get_thread_num(),image->cache); */
           clone_image=(*image);
+	  /*
+	    Semaphore and reference count need to be initialized for the temporary
+	    Image copy since otherwise there may be deadlock in ClonePixelCache.
+	  */
+	  clone_image.semaphore=AllocateSemaphoreInfo();
+	  clone_image.reference_count=1;
 
           GetCacheInfo(&clone_image.cache);
           status=OpenCache(&clone_image,IOMode,exception);
@@ -2785,6 +2791,8 @@ ModifyCache(Image *image, ExceptionInfo *exception)
               */
               status=ClonePixelCache(image,&clone_image,exception);
             }
+	  DestroySemaphoreInfo(&clone_image.semaphore);
+
           if (status != MagickFail)
             {
 	      destroy_cache=MagickTrue;
@@ -4222,15 +4230,11 @@ SyncCacheViewPixels(const ViewInfo *view,ExceptionInfo *exception)
   View
     *view_info = (View *) view;
 
-  CacheInfo
-    *cache_info;
-
   MagickPassFail
     status;
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  cache_info=(CacheInfo *) view_info->image->cache;
   status=SyncCacheNexus(view_info->image,view_info->nexus_info,exception);
   return status;
 }
