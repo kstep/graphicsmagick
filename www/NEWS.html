@@ -38,32 +38,164 @@
 
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on February 21, 2010</p>
+<p>This file was last updated on November 12, 2011</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#march-8-2010" id="id1">1.3.12 (March 8, 2010)</a></li>
-<li><a class="reference internal" href="#february-21-2010" id="id2">1.3.11 (February 21, 2010)</a></li>
-<li><a class="reference internal" href="#february-10-2010" id="id3">1.3.10 (February 10, 2010)</a></li>
-<li><a class="reference internal" href="#february-4-2010" id="id4">1.3.9 (February 4, 2010)</a></li>
-<li><a class="reference internal" href="#january-21-2010" id="id5">1.3.8 (January 21, 2010)</a></li>
-<li><a class="reference internal" href="#september-17-2009" id="id6">1.3.7 (September 17, 2009)</a></li>
-<li><a class="reference internal" href="#july-25-2009" id="id7">1.3.6 (July 25, 2009)</a></li>
-<li><a class="reference internal" href="#january-26-2009" id="id8">1.3.5 (January 26, 2009)</a></li>
-<li><a class="reference internal" href="#january-13-2009" id="id9">1.3.4 (January 13, 2009)</a></li>
-<li><a class="reference internal" href="#december-9-2008" id="id10">1.3.3 (December 9, 2008)</a></li>
-<li><a class="reference internal" href="#november-29-2008" id="id11">1.3.2 (November 29, 2008)</a></li>
-<li><a class="reference internal" href="#november-17-2008" id="id12">1.3.1 (November 17, 2008)</a></li>
-<li><a class="reference internal" href="#november-9-2008" id="id13">1.3 (November 9, 2008)</a></li>
-<li><a class="reference internal" href="#april-29-2008" id="id14">1.2 (April 29, 2008)</a></li>
-<li><a class="reference internal" href="#released-april-4-2004" id="id15">1.1 (Released April 4, 2004)</a></li>
-<li><a class="reference internal" href="#released-in-may-2003" id="id16">1.0 (Released in May, 2003)</a></li>
+<li><a class="reference internal" href="#tbd" id="id1">1.3.13 (TBD)</a></li>
+<li><a class="reference internal" href="#march-8-2010" id="id2">1.3.12 (March 8, 2010)</a></li>
+<li><a class="reference internal" href="#february-21-2010" id="id3">1.3.11 (February 21, 2010)</a></li>
+<li><a class="reference internal" href="#february-10-2010" id="id4">1.3.10 (February 10, 2010)</a></li>
+<li><a class="reference internal" href="#february-4-2010" id="id5">1.3.9 (February 4, 2010)</a></li>
+<li><a class="reference internal" href="#january-21-2010" id="id6">1.3.8 (January 21, 2010)</a></li>
+<li><a class="reference internal" href="#september-17-2009" id="id7">1.3.7 (September 17, 2009)</a></li>
+<li><a class="reference internal" href="#july-25-2009" id="id8">1.3.6 (July 25, 2009)</a></li>
+<li><a class="reference internal" href="#january-26-2009" id="id9">1.3.5 (January 26, 2009)</a></li>
+<li><a class="reference internal" href="#january-13-2009" id="id10">1.3.4 (January 13, 2009)</a></li>
+<li><a class="reference internal" href="#december-9-2008" id="id11">1.3.3 (December 9, 2008)</a></li>
+<li><a class="reference internal" href="#november-29-2008" id="id12">1.3.2 (November 29, 2008)</a></li>
+<li><a class="reference internal" href="#november-17-2008" id="id13">1.3.1 (November 17, 2008)</a></li>
+<li><a class="reference internal" href="#november-9-2008" id="id14">1.3 (November 9, 2008)</a></li>
+<li><a class="reference internal" href="#april-29-2008" id="id15">1.2 (April 29, 2008)</a></li>
+<li><a class="reference internal" href="#released-april-4-2004" id="id16">1.1 (Released April 4, 2004)</a></li>
+<li><a class="reference internal" href="#released-in-may-2003" id="id17">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
+<div class="section" id="tbd">
+<h1><a class="toc-backref" href="#id1">1.3.13 (TBD)</a></h1>
+<p>Security Fixes:</p>
+<blockquote>
+None</blockquote>
+<p>Bug fixes:</p>
+<blockquote>
+<ul class="simple">
+<li>Fix deadlock in ClonePixelCache() which was caused by using the
+same semaphore pointer in the source and destination images.</li>
+<li>Removed bogus SyncBlob() code which sometimes caused a crash and
+was not useful.</li>
+<li>Fixed crash or hang which occured when the user entered CONTROL-C
+while threaded code was being executed.</li>
+<li>Fix core dump in AcquireOneCacheViewPixelInlined() when the image
+is in CMYK space.</li>
+<li>In MontageImages (montage), fix crash observed with &quot;-geometry
+x+0+0&quot;.</li>
+<li>The TIFF reader was crashing for images which use the
+TIFFTAG_OPIIMAGEID tag.</li>
+<li>AppendImages() (-append) was failing when only one image was
+provided.</li>
+<li>The <cite>animate</cite>, <cite>display</cite>, and <cite>identify</cite> commands now report any
+error only once, and then proceed to the next file name rather
+than quitting.</li>
+<li>Don't change the locale settings in InitializeMagick() since this
+may cause problems for international users.  API users are still
+responsible for assuring that locale settings don't break floating
+point parsing and output (i.e. floating point decimal needs to be
+'.' rather than ',').</li>
+<li>RPM build is fixed (PerlMagick build was broken).</li>
+<li>RPM build installs documentation to expected places on Red Hat
+type systems.</li>
+<li>Fixes for usage with OpenSolaris.</li>
+<li>DESTDIR is supported by PerlMagick build.</li>
+<li>The matte channel was not being properly enabled or respected for
+TXT images.</li>
+<li>InitializeMagick() and DestroyMagick() are now fully thread safe.</li>
+<li>When a shear angle was as zero, the shear request was being
+ignored entirely.</li>
+<li>In DispatchImage(), the <cite>K</cite> channel was always output as black for
+&quot;CMYK&quot; specification unless the image matte flag was True.</li>
+<li>MATLAB fixes.</li>
+<li>PNG fixes.</li>
+<li>PCL fixes for printing bi-level image on Konica-Minolta printers.</li>
+<li>EPT error handling fixes.</li>
+<li>JPEG reader was sometimes truncating large IPTC profiles.</li>
+<li>JPEG writer now handles errors properly rather than allowing
+libjpeg to exit the program (or hanging if driven by Magick++).</li>
+<li>JPEG reader now treats an unhandled EXP marker as a warning rather
+than a hard error.</li>
+<li>File open errors are now reliably reported.</li>
+<li>Improved rendering precision when using the drawing APIs.</li>
+<li>For the Magick++ Image backgroundColor(), borderColor(), and
+matteColor() methods, preserve the opacity part of the
+user-specified color.</li>
+</ul>
+</blockquote>
+<p>New Features:</p>
+<blockquote>
+<ul class="simple">
+<li>Added Add support for invoking &quot;gs-cmyk&quot; and &quot;gs-cmyka&quot; entries in
+delegates.mgk when ColorSeparationType or ColorSeparationMatteType
+is requested.  These cause Ghostscript to always output CMYK PAM
+format (even if the input file was not in CMYK format).</li>
+<li>EXIF profiles are preserved when writing JPEG files.</li>
+<li>The -mosaic command now respects the composition option specified
+by -compose as well as the image background color specified by
+-background.</li>
+<li>The TXT coder now supports multiple image frames.</li>
+<li>For image normalization (-normalize), add support for
+histogram-threshold setting to specify the percentage of the
+histogram to discard when computing image normalization parameters
+(default is 0.1%).  For example <cite>-set histogram-threshold 0.01
+-normalize</cite>.</li>
+<li>Added an <cite>INFO</cite> coder which produces textual image description
+output similar to <cite>identify</cite> but may be used with convert like &quot;gm
+convert myfile info:-&quot;.</li>
+<li>Support application of the PDF crop box via '-define
+pdf:use-cropbox=true'.</li>
+<li>For PCL printer output, define pcl:fit-to-page in order for the
+printer to scale the image to fit the page.</li>
+<li>Added order dither 5x5, 6x6, and 7x7 circular dither patterns to
+create a halftone effect.</li>
+<li>PNM subformats are now reported as the specific subformat rather
+than just &quot;PNM&quot;.</li>
+<li>NetPBM's PAM format is now supported.</li>
+<li>MacPaint image format reader is added.</li>
+<li>Added TIFF LZMA compressor support.</li>
+<li>Added TIFF support for a tiff:group-three-options define to allow
+power-users to set the value of the GROUP3OPTIONS tag.</li>
+<li>New core C API function SetImageColorRegion() to set the constant
+pixel color for a specified region of the image.</li>
+<li>In Wand C API, the functions NewPixelWand(), NewDrawingWand(), and
+NewMagickWand() invoke InitializeMagick() automatically in case
+user forgets to do so.</li>
+<li>New Wand C API function MagickSetFormat() to allow setting the
+file or blob format before it has been read.</li>
+<li>New Wand C API function MagickSetDepth() to set the depth used
+when reading from an image format which requires that the depth be
+specified in advance.</li>
+</ul>
+</blockquote>
+<p>Feature improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>Now compiles properly with libpng 1.4.X and 1.5.X.</li>
+<li>Lcms 2.X is supported.</li>
+</ul>
+</blockquote>
+<p>Performance Improvements:</p>
+<blockquote>
+<ul class="simple">
+<li>PNM read/write performance improved.</li>
+<li>Adaptive threshold image (-lat) is faster.</li>
+<li>Image trimming (-trim) is faster.</li>
+</ul>
+</blockquote>
+<p>Behavior Changes:</p>
+<blockquote>
+<ul class="simple">
+<li>The -colors, -map, and -monochrome options now take effect
+immediately rather than at the end of all other processing.</li>
+<li>Removed non-standard multi-frame extension for SGI format.</li>
+<li>Windows install footprint is more consistent between DLL and
+static builds.</li>
+<li>LZMA compressed tarball is in 'xz' format rather than deprecated
+'lzma' format.</li>
+</ul>
+</blockquote>
+</div>
 <div class="section" id="march-8-2010">
-<h1><a class="toc-backref" href="#id1">1.3.12 (March 8, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id2">1.3.12 (March 8, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -107,7 +239,7 @@ would be written.</li>
 </blockquote>
 </div>
 <div class="section" id="february-21-2010">
-<h1><a class="toc-backref" href="#id2">1.3.11 (February 21, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id3">1.3.11 (February 21, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -159,7 +291,7 @@ opaque.</li>
 </blockquote>
 </div>
 <div class="section" id="february-10-2010">
-<h1><a class="toc-backref" href="#id3">1.3.10 (February 10, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id4">1.3.10 (February 10, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -206,7 +338,7 @@ scene number substition is desired in the output file names.</li>
 </blockquote>
 </div>
 <div class="section" id="february-4-2010">
-<h1><a class="toc-backref" href="#id4">1.3.9 (February 4, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id5">1.3.9 (February 4, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -266,7 +398,7 @@ image in the list if it is not already opaque.</li>
 </blockquote>
 </div>
 <div class="section" id="january-21-2010">
-<h1><a class="toc-backref" href="#id5">1.3.8 (January 21, 2010)</a></h1>
+<h1><a class="toc-backref" href="#id6">1.3.8 (January 21, 2010)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -420,7 +552,7 @@ distributed.</li>
 </blockquote>
 </div>
 <div class="section" id="september-17-2009">
-<h1><a class="toc-backref" href="#id6">1.3.7 (September 17, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id7">1.3.7 (September 17, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -510,7 +642,7 @@ structure is clean prior to invoking a function.</li>
 </blockquote>
 </div>
 <div class="section" id="july-25-2009">
-<h1><a class="toc-backref" href="#id7">1.3.6 (July 25, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id8">1.3.6 (July 25, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -644,7 +776,7 @@ progressive JPEG.</li>
 </blockquote>
 </div>
 <div class="section" id="january-26-2009">
-<h1><a class="toc-backref" href="#id8">1.3.5 (January 26, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id9">1.3.5 (January 26, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -683,7 +815,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="january-13-2009">
-<h1><a class="toc-backref" href="#id9">1.3.4 (January 13, 2009)</a></h1>
+<h1><a class="toc-backref" href="#id10">1.3.4 (January 13, 2009)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -722,7 +854,7 @@ not available.</li>
 </blockquote>
 </div>
 <div class="section" id="december-9-2008">
-<h1><a class="toc-backref" href="#id10">1.3.3 (December 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id11">1.3.3 (December 9, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -754,7 +886,7 @@ used in a directory containing a million files.</li>
 </blockquote>
 </div>
 <div class="section" id="november-29-2008">
-<h1><a class="toc-backref" href="#id11">1.3.2 (November 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id12">1.3.2 (November 29, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -788,7 +920,7 @@ process the opacity channel unless the image has one.</li>
 </blockquote>
 </div>
 <div class="section" id="november-17-2008">
-<h1><a class="toc-backref" href="#id12">1.3.1 (November 17, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id13">1.3.1 (November 17, 2008)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -826,7 +958,7 @@ encoding is used via jpeg:optimize-coding define.</li>
 </blockquote>
 </div>
 <div class="section" id="november-9-2008">
-<h1><a class="toc-backref" href="#id13">1.3 (November 9, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id14">1.3 (November 9, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1034,7 +1166,7 @@ dither any named channel.</li>
 </blockquote>
 </div>
 <div class="section" id="april-29-2008">
-<h1><a class="toc-backref" href="#id14">1.2 (April 29, 2008)</a></h1>
+<h1><a class="toc-backref" href="#id15">1.2 (April 29, 2008)</a></h1>
 <p>Security fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1290,7 +1422,7 @@ distributed).</li>
 </blockquote>
 </div>
 <div class="section" id="released-april-4-2004">
-<h1><a class="toc-backref" href="#id15">1.1 (Released April 4, 2004)</a></h1>
+<h1><a class="toc-backref" href="#id16">1.1 (Released April 4, 2004)</a></h1>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -1530,7 +1662,7 @@ logging system.</li>
 </div>
 <hr class="docutils" />
 <div class="section" id="released-in-may-2003">
-<h1><a class="toc-backref" href="#id16">1.0 (Released in May, 2003)</a></h1>
+<h1><a class="toc-backref" href="#id17">1.0 (Released in May, 2003)</a></h1>
 <p>GraphicsMagick support services:</p>
 <blockquote>
 <ul class="simple">
