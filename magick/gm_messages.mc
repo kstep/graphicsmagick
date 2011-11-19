@@ -1577,6 +1577,12 @@ Reference is not my type
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorRegionAreaExceedsLimit
+Language        = English
+Region area exceeds implementation limit
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorRequestDidNotReturnAnImage
 Language        = English
 Request did not return an image

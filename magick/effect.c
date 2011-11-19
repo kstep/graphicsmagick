@@ -107,6 +107,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   MagickPassFail
     status;
 
+  const MagickBool
+    is_monochrome = image->is_monochrome,
+    is_grayscale = image->is_grayscale;
+
   /*
     Initialize thresholded image attributes.
   */
@@ -117,10 +121,15 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   if ((image->columns < width) || (image->rows < height))
     ThrowImageException3(OptionError,UnableToThresholdImage,
                          ImageSmallerThanRadius);
+  if (width*height > (unsigned long) ULONG_MAX/ScaleQuantumToMap(MaxRGB))
+    {
+      ThrowImageException3(OptionError,UnableToThresholdImage,
+			   RegionAreaExceedsLimit);
+    }
   threshold_image=CloneImage(image,0,0,True,exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
-  if (image->is_monochrome)
+  if (is_monochrome)
     return threshold_image;
   (void) SetImageType(threshold_image,TrueColorType);
   status=MagickPass;
@@ -131,26 +140,17 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     unsigned long
       row_count=0;
 
-#if QuantumDepth > 8
-    const DoublePixelPacket
-      double_zero = { 0.0, 0.0, 0.0, 0.0 };
-#endif /* QuantumDepth > 8 */
-
     const LongPixelPacket
       long_zero = { 0, 0, 0, 0 };
 
     const MagickBool
       matte=((threshold_image->matte) || (threshold_image->colorspace == CMYKColorspace));
 
-#if QuantumDepth == 8
     const long
-      long_offset = RoundDoubleToQuantum(offset);
-#endif /* QuantumDepth == 8 */
+      long_offset = offset + 0.5;
 
-#if QuantumDepth > 8
     const unsigned long
-      overflow_limit = (ULONG_MAX/MaxRGB);
-#endif /* QuantumDepth > 8 */
+      dimensions = width*height;
 
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(dynamic) shared(row_count, status)
@@ -158,10 +158,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     for (y=0; y < (long) image->rows; y++)
       {
         const PixelPacket
-          *p;
+          * restrict p;
 
         PixelPacket
-          *q;
+          * restrict q;
 
         long
           x;
@@ -184,92 +184,85 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
         if (thread_status != MagickFail)
           {
-            for (x=0; x < (long) image->columns; x++)
-              {
-#if QuantumDepth > 8
-                DoublePixelPacket
-                  double_sum;
-#endif /* QuantumDepth > 8 */
-
+	    for (x=0; x < (long) image->columns; x++)
+	      {
 		LongPixelPacket
 		  long_sum;
 
-                const PixelPacket
-                  *r;
-
-#if QuantumDepth > 8
-		unsigned long
-		  overflow;
-#endif /* QuantumDepth > 8 */
+		const PixelPacket
+		  * restrict r;
 
 		unsigned long
 		  u,
 		  v;
 
 		r=p;
-#if QuantumDepth > 8
-		double_sum=double_zero;
-		overflow = overflow_limit;
-#endif /* QuantumDepth > 8 */
 		long_sum=long_zero;
-		for (v=0; v < height; v++)
-                  {
-                    for (u=0; u < width; u++)
-                      {
-			long_sum.red += r[u].red;
-			long_sum.green += r[u].green;
-			long_sum.blue += r[u].blue;
-			if (matte)
-			  long_sum.opacity += r[u].opacity;
 
-#if QuantumDepth > 8
-			overflow--;
-			if (overflow == 0)
-			  {
-			    double_sum.red += long_sum.red;
-			    double_sum.green += long_sum.green;
-			    double_sum.blue += long_sum.blue;
-			    double_sum.opacity += long_sum.opacity;
-			    long_sum=long_zero;
-			    overflow = overflow_limit;
-			  }
-#endif /* QuantumDepth > 8 */
+		if (is_grayscale && !matte)
+		  {
+		    /* G */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  long_sum.red += ScaleQuantumToMap(r[u].red);
+			r+=image->columns+width;
 		      }
-		    r+=image->columns+width;
-                  }
+		  }
+		else if (!matte)
+		  {
+		    /* RGB */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    long_sum.red += ScaleQuantumToMap(r[u].red);
+			    long_sum.green += ScaleQuantumToMap(r[u].green);
+			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
+			  }
+			r+=image->columns+width;
+		      }
+		  }
+		else
+		  {
+		    /* RGBA */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    long_sum.red += ScaleQuantumToMap(r[u].red);
+			    long_sum.green += ScaleQuantumToMap(r[u].green);
+			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
+			    long_sum.opacity += ScaleQuantumToMap(r[u].opacity);
+			  }
+			r+=image->columns+width;
+		      }
+		  }
 
-#if QuantumDepth > 8
-		double_sum.red += long_sum.red;
-		double_sum.green += long_sum.green;
-		double_sum.blue += long_sum.blue;
-		double_sum.opacity += long_sum.opacity;
+		long_sum.red = ScaleMapToQuantum(((long) long_sum.red/dimensions))+long_offset;
+		if (!is_grayscale)
+		  {
+		    long_sum.green = ScaleMapToQuantum(((long) long_sum.green/dimensions))+long_offset;
+		    long_sum.blue = ScaleMapToQuantum(((long) long_sum.blue/dimensions))+long_offset;
+		  }
+		if (matte)
+		  long_sum.opacity = ScaleMapToQuantum(((long) long_sum.opacity/dimensions))+long_offset;
 
-		double_sum.red = double_sum.red/(width*height)+offset;
-		double_sum.green = double_sum.green/(width*height)+offset;
-		double_sum.blue = double_sum.blue/(width*height)+offset;
+		if (is_grayscale)
+		  {
+		    q->red=q->green=q->blue=(q->red <= long_sum.red ? 0 : MaxRGB);
+		  }
+		else
+		  {
+		    q->red=(q->red <= long_sum.red ? 0 : MaxRGB);
+		    q->green=(q->green <= long_sum.green ? 0 : MaxRGB);
+		    q->blue=(q->blue <= long_sum.blue ? 0 : MaxRGB);
+		  }
 		if (matte)
-		  double_sum.opacity = double_sum.opacity/(width*height)+offset;
-
-		long_sum.red = RoundDoubleToQuantum(double_sum.red);
-		long_sum.green = RoundDoubleToQuantum(double_sum.green);
-		long_sum.blue = RoundDoubleToQuantum(double_sum.blue);
-		if (matte)
-		  long_sum.opacity = RoundDoubleToQuantum(double_sum.opacity);
-#else
-		long_sum.red = long_sum.red/(width*height)+long_offset;
-		long_sum.green = long_sum.green/(width*height)+long_offset;
-		long_sum.blue = long_sum.blue/(width*height)+long_offset;
-		if (matte)
-		  long_sum.opacity = long_sum.opacity/(width*height)+long_offset;
-#endif
-                q->red=q->red <= long_sum.red ? 0 : MaxRGB;
-                q->green=q->green <= long_sum.green ? 0 : MaxRGB;
-                q->blue=q->blue <= long_sum.blue ? 0 : MaxRGB;
-                if (matte)
-                  q->opacity=q->opacity <= long_sum.opacity ? 0 : MaxRGB;
-                p++;
-                q++;
-              }
+		  q->opacity=(q->opacity <= long_sum.opacity ? 0 : MaxRGB);
+		p++;
+		q++;
+	      }
             if (!SyncImagePixelsEx(threshold_image,exception))
               thread_status=MagickFail;
           }
@@ -294,10 +287,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       DestroyImage(threshold_image);
       threshold_image=(Image *) NULL;
     }
-  else
+  if (is_grayscale)
     {
-      threshold_image->is_monochrome=True;
-      threshold_image->is_grayscale=True;
+      threshold_image->is_monochrome=MagickTrue;
+      threshold_image->is_grayscale=MagickTrue;
     }
   return(threshold_image);
 }

@@ -857,6 +857,9 @@
       <Message name="MatrixIsNotSquare">
         Matrix is not square (%s elements)
       </Message>
+      <Message name="RegionAreaExceedsLimit">
+        Region area exceeds implementation limit
+      </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>

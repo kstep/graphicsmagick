@@ -2854,6 +2854,17 @@ recommended to use the percent option so that results are not
 sensitive to pixel quantum depth.</pp>
 
 <pp>
+For example,</pp>
+
+<pre>
+     -colorspace gray -lat "10x10-5%"
+</pre>
+
+<p>
+will help clarify a scanned grayscale or color document, producing a
+bi-level equivalent.</pp>
+
+<pp>
 </pp>
 
 </utils>
