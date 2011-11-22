@@ -1,3 +1,10 @@
+2011-11-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tga.c (ReadTGAImage): Fix for poor TGA reading
+	performance due to excessive use of GetBlobByte().  Performance is
+	fixed by adding local buffering.  Fixes SourceForge bug 3439531
+	"Slow TGA reading".
+
 2011-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (AdaptiveThresholdImage): More performance
