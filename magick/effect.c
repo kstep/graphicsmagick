@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2011 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2236,7 +2236,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,
   while (level-- > 0);
 }
 
-static PixelPacket GetMedianList(MedianPixelList *pixel_list)
+static void GetMedianList(MedianPixelList * restrict pixel_list,PixelPacket *median_pixel)
 {
   register MedianSkipList
     *list;
@@ -2252,9 +2252,6 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   unsigned short
     channels[4];
 
-  PixelPacket
-    pixel;
-
   /*
     Find the median value for each of the colors.
   */
@@ -2269,14 +2266,13 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
           color=list->nodes[color].next[0];
           count+=list->nodes[color].count;
         }
-      while (count <= center);
+      while (count <= center); /* IM now uses count <= (center >> 1) */
       channels[channel]=color;
     }
-  pixel.red=ScaleShortToQuantum(channels[0]);
-  pixel.green=ScaleShortToQuantum(channels[1]);
-  pixel.blue=ScaleShortToQuantum(channels[2]);
-  pixel.opacity=ScaleShortToQuantum(channels[3]);
-  return(pixel);
+  median_pixel->red=ScaleShortToQuantum(channels[0]);
+  median_pixel->green=ScaleShortToQuantum(channels[1]);
+  median_pixel->blue=ScaleShortToQuantum(channels[2]);
+  median_pixel->opacity=ScaleShortToQuantum(channels[3]);
 }
 
 static inline void InsertMedianListChannel(MedianPixelList *pixel_list,
@@ -2502,7 +2498,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
                       InsertMedianList(skiplist,&r[u]);
                     r+=image->columns+width;
                   }
-                q[x]=GetMedianList(skiplist);
+                GetMedianList(skiplist,&q[x]);
               }
             if (!SyncImagePixelsEx(median_image,exception))
               thread_status=MagickFail;

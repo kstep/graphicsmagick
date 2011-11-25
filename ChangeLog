@@ -1,5 +1,8 @@
 2011-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (GetMedianList): Return PixelPacket via pointer
+	rather than by value.
+
 	* version.sh: For snapshots packages, PACKAGE_CHANGE_DATE now uses
 	a form like "snapshot-20111121" rather than "unreleased" so it is
 	possible to determine the vintage of an installed snapshot.
