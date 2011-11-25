@@ -6,7 +6,7 @@
 <meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Image Processing System</title>
 <meta content="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD. With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format. " name="description" />
-<meta content="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, image processing, software development, image, software, Magick++" name="keywords" />
+<meta content="GraphicsMagick, ImageMagick, PerlMagick, image processing, OpenMP software development library, image, photo, software, Magick++" name="keywords" />
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
 <body>
@@ -40,15 +40,18 @@
 
 <table border="1" class="docutils">
 <colgroup>
-<col width="36%" />
-<col width="64%" />
+<col width="33%" />
+<col width="67%" />
 </colgroup>
 <tbody valign="top">
-<tr><td>Current Stable Branch:</td>
-<td><a class="reference external" href="http://www.graphicsmagick.org/1.3/">1.3.12</a> (Released March 8, 2010) <a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/files/">download</a></td>
+<tr><td>Current Release</td>
+<td>1.3.12 (Released March 8, 2010) <a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/files/">download release</a></td>
 </tr>
-<tr><td>Old Stable Branch:</td>
-<td><a class="reference external" href="http://www.graphicsmagick.org/1.2/">1.2.10</a> (Released January 6, 2010) <a class="reference external" href="http://sourceforge.net/projects/graphicsmagick/files/">download</a></td>
+<tr><td>Development Snapshots</td>
+<td>(Updated frequently) <a class="reference external" href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/">download development snapshots</a></td>
+</tr>
+<tr><td>Mercurial Repository</td>
+<td>(Updated frequently) <a class="reference external" href="http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/">vist Mercurial repository</a></td>
 </tr>
 </tbody>
 </table>
@@ -60,10 +63,10 @@ libraries) it provides a robust and efficient collection of tools and
 libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
 JPEG-2000, PNG, PDF, PNM, and TIFF.</p>
-<p>Image processing may be <a class="reference external" href="OpenMP.html">multi-threaded</a> using <a class="reference external" href="http://www.openmp.org/">OpenMP</a> so that
-CPU-bound tasks scale linearly as processor cores are added. <a class="reference external" href="http://www.openmp.org/">OpenMP</a>
-support requires compilation with GCC 4.2 (or later), or use of any C
-compiler supporting at least the <a class="reference external" href="http://www.openmp.org/">OpenMP</a> 2.0 specification.</p>
+<p>Image processing is <a class="reference external" href="OpenMP.html">multi-threaded</a> using <a class="reference external" href="http://www.openmp.org/">OpenMP</a> so that CPU-bound
+tasks scale linearly as processor cores are added. <a class="reference external" href="http://www.openmp.org/">OpenMP</a> support
+requires compilation with GCC 4.2 (or later), or use of any C compiler
+supporting at least the <a class="reference external" href="http://www.openmp.org/">OpenMP</a> 2.0 specification.</p>
 <p>GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
 GraphicsMagick is available for virtually any Unix or Unix-like system,
@@ -78,11 +81,11 @@ in the same or differing image format. Image processing operations are
 available from the command line, as well as through C, C++, Perl, PHP,
 Python, Tcl, Ruby, or Windows COM programming interfaces. With some
 modification, language extensions for ImageMagick may be used.</p>
-<p>GraphicsMagick is originally derived from <a class="reference external" href="http://www.imagemagick.org/">ImageMagick</a> 5.5.2 but has
-been completely independent of the ImageMagick project since
-then. Since the fork from ImageMagick in 2002, many improvements have
-been made (see <a class="reference external" href="NEWS.html">NEWS</a>) by many <a class="reference external" href="authors.html">authors</a> using an open development
-model but without breaking the API or utilities operation.</p>
+<p>GraphicsMagick is originally derived from <a class="reference external" href="http://www.imagemagick.org/">ImageMagick</a> 5.5.2 as of
+November 2002 but has been completely independent of the ImageMagick
+project since then. Since the fork from ImageMagick many improvements
+have been made (see <a class="reference external" href="NEWS.html">NEWS</a>) by many <a class="reference external" href="authors.html">authors</a> using an open
+development model but without breaking the API or utilities operation.</p>
 <p>Here are some reasons to prefer GraphicsMagick over ImageMagick:</p>
 <blockquote>
 <ul class="simple">

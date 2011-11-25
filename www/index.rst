@@ -11,27 +11,25 @@ GraphicsMagick Image Processing System
                  sharpen, color reduce, or add special effects to an image and
                  save your completed work in the same or differing image format.
 
-   :keywords: GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick,
-              Perl Magic, image processing, software development, image, software,
-              Magick++
+   :keywords: GraphicsMagick, ImageMagick, PerlMagick, image processing, OpenMP
+              software development library, image, photo, software, Magick++
 
 
-.. _GraphicsMagic-1.3 : http://www.graphicsmagick.org/1.3/
-.. _download GraphicsMagic-1.3 : http://sourceforge.net/projects/graphicsmagick/files/
-.. _GraphicsMagic-1.2 : http://www.graphicsmagick.org/1.2/
-.. _download GraphicsMagic-1.2 : http://sourceforge.net/projects/graphicsmagick/files/
+.. _download GraphicsMagick release : http://sourceforge.net/projects/graphicsmagick/files/
+.. _`download development snapshots` : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/
+.. _`visit Mercurial repository`: http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
 
 .. _programming : programming.html
 
-===========================  =================================================
-Current Stable Branch:       1.3.12__ (Released March 8, 2010) download__
-Old Stable Branch:           1.2.10__ (Released January 6, 2010) download__
-===========================  =================================================
+===========================  ========================================================
+Current Release              1.3.12 (Released March 8, 2010) `download release`__
+Development Snapshots        (Updated frequently) `download development snapshots`__
+Mercurial Repository         (Updated frequently) `vist Mercurial repository`__
+===========================  ========================================================
 
-__ `GraphicsMagic-1.3`_
-__ `download GraphicsMagic-1.3`_
-__ `GraphicsMagic-1.2`_
-__ `download GraphicsMagic-1.2`_
+__ `download GraphicsMagick release`_
+__ `download development snapshots`_
+__ `visit Mercurial repository`_
 
 
 Check http://www.GraphicsMagick.org/ for the latest version of this page.
@@ -63,10 +61,10 @@ libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,
 JPEG-2000, PNG, PDF, PNM, and TIFF.
 
-Image processing may be `multi-threaded`_ using OpenMP_ so that
-CPU-bound tasks scale linearly as processor cores are added. OpenMP_
-support requires compilation with GCC 4.2 (or later), or use of any C
-compiler supporting at least the OpenMP_ 2.0 specification.
+Image processing is `multi-threaded`_ using OpenMP_ so that CPU-bound
+tasks scale linearly as processor cores are added. OpenMP_ support
+requires compilation with GCC 4.2 (or later), or use of any C compiler
+supporting at least the OpenMP_ 2.0 specification.
 
 GraphicsMagick is quite portable, and compiles under almost every general
 purpose operating system that runs on 32-bit or 64-bit CPUs.
@@ -84,11 +82,11 @@ available from the command line, as well as through C, C++, Perl, PHP,
 Python, Tcl, Ruby, or Windows COM programming interfaces. With some
 modification, language extensions for ImageMagick may be used.
 
-GraphicsMagick is originally derived from ImageMagick_ 5.5.2 but has
-been completely independent of the ImageMagick project since
-then. Since the fork from ImageMagick in 2002, many improvements have
-been made (see `NEWS`_) by many `authors`_ using an open development
-model but without breaking the API or utilities operation.
+GraphicsMagick is originally derived from ImageMagick_ 5.5.2 as of
+November 2002 but has been completely independent of the ImageMagick
+project since then. Since the fork from ImageMagick many improvements
+have been made (see `NEWS`_) by many `authors`_ using an open
+development model but without breaking the API or utilities operation.
 
 Here are some reasons to prefer GraphicsMagick over ImageMagick:
 
