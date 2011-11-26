@@ -1410,8 +1410,9 @@ static void BenchmarkUsage(void)
   static const char
     *options[]=
     {
-      "-duration duration  duration to run the benchmark (in seconds)",
-      "-iterations loops   number of iterations to execute",
+      "-duration duration  duration to run each benchmark (in seconds)",
+      "-iterations loops   number of command iterations",
+      "-stepthreads        step benchmark with increasing number of threads",
       (char *) NULL
     };
 
@@ -1500,6 +1501,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 #if defined(HAVE_OPENMP)
   MagickBool
     concurrent;
+
+  MagickBool
+    thread_bench;
+
+  long
+    current_threads,
+    max_threads;
 #endif /* HAVE_OPENMP */
 
   double
@@ -1509,7 +1517,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
     iterations;
 
   unsigned int
-    status=True;
+    status=MagickTrue;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -1539,6 +1547,9 @@ BenchmarkImageCommand(ImageInfo *image_info,
   argv++;
 #if defined(HAVE_OPENMP)
   concurrent=MagickFalse;
+  thread_bench=MagickFalse;
+  max_threads = (long) GetMagickResourceLimit(ThreadsResource);
+  current_threads = 1;
 #endif /* HAVE_OPENMP */
   duration=-1.0;
   iterations=1L;
@@ -1573,6 +1584,14 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	  argv++;
 	}
     }
+#if defined(HAVE_OPENMP)
+  if ((argc) && (LocaleCompare("-stepthreads",argv[0]) == 0))
+    {
+      argc--;
+      argv++;
+      thread_bench=MagickTrue;
+    }
+#endif /* HAVE_OPENMP */
 
   if ((argc < 1) ||
       ((duration <= 0) && (iterations <= 0)))
@@ -1582,152 +1601,157 @@ BenchmarkImageCommand(ImageInfo *image_info,
       return MagickFail;
     }
 
-  {
-    char
-      client_name[MaxTextExtent];
-
-    long
-      iteration=0;
-    
-    TimerInfo
-      timer;
-
-    (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
-    GetTimerInfo(&timer);
-    
-#if defined(HAVE_OPENMP)
-    if (concurrent)
-      {
-	MagickBool
-	  quit = MagickFalse;
-
-	long
-	  count = 0;
-
-	omp_set_nested(MagickTrue);
-	if (duration > 0)
-	  {
-	    count=0;
-# pragma omp parallel for shared(count, status, quit)
-	    for (iteration=0; iteration < 1000000; iteration++)
-	      {
-		MagickPassFail
-		  thread_status;
-
-		MagickBool
-		  thread_quit;
-
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		thread_quit=quit;
-		
-		if (thread_quit)
-		  continue;
-
-		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		{
-		  count++;
-		  if (!thread_status)
-		    {
-		      status=thread_status;
-		      thread_quit=MagickTrue;
-		    }
-		  if (GetElapsedTime(&timer) > duration)
-		    thread_quit=MagickTrue;
-		  else
-		    (void) ContinueTimer(&timer);
-		  if (thread_quit)
-		    quit=thread_quit;
-		}
-	      }
-	  }
-	else if (iterations > 0)
-	  {
-#  pragma omp parallel for shared(count, status, quit)
-	    for (iteration=0; iteration < iterations; iteration++)
-	      {
-		MagickPassFail
-		  thread_status;
-
-		MagickBool
-		  thread_quit;
-
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		thread_quit=quit;
-
-		if (thread_quit)
-		  continue;
-
-		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		{
-		  count++;
-		  if (!thread_status)
-		    {
-		      status=thread_status;
-		      thread_quit=MagickTrue;
-		    }
-		  if (thread_quit)
-		    quit=thread_quit;
-		}
-	      }
-	  }
-	iteration=count;
-      }
-    else
-#endif /* HAVE_OPENMP */
-      {
-	if (duration > 0)
-	  {
-	    for (iteration=0; iteration < (LONG_MAX-1); )
-	      {
-		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-		iteration++;
-		if (!status)
-		  break;
-		if (GetElapsedTime(&timer) > duration)
-		  break;
-		(void) ContinueTimer(&timer);
-	      }
-	  }
-	else if (iterations > 0)
-	  {
-	    for (iteration=0; iteration < iterations; )
-	      {
-		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-		iteration++;
-		if (!status)
-		  break;
-	      }
-	  }
-      }
+  do
     {
-      double
-        rate_cpu,
-        rate_total,
-        /* resolution, */
-        user_time;
-
-      double
-        elapsed_time;
+      char
+	client_name[MaxTextExtent];
 
       long
-	threads_limit;
+	iteration=0;
+    
+      TimerInfo
+	timer;
 
-      /* resolution=GetTimerResolution(); */
-      user_time=GetUserTime(&timer);
-      elapsed_time=GetElapsedTime(&timer);
-      rate_total=(((double) iteration)/elapsed_time);
-      rate_cpu=(((double) iteration)/user_time);
-      threads_limit=(long) GetMagickResourceLimit(ThreadsResource);
-      (void) fflush(stdout);
-      (void) fprintf(stderr,
-		     "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
-		     "(%.3f iter/s cpu)\n",
-		     threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
-      (void) fflush(stderr);
-    }
-  }
+      if (thread_bench)
+	(void) SetMagickResourceLimit(ThreadsResource,current_threads);
+
+      (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
+      GetTimerInfo(&timer);
+    
+#if defined(HAVE_OPENMP)
+      if (concurrent)
+	{
+	  MagickBool
+	    quit = MagickFalse;
+
+	  long
+	    count = 0;
+
+	  omp_set_nested(MagickTrue);
+	  if (duration > 0)
+	    {
+	      count=0;
+# pragma omp parallel for shared(count, status, quit)
+	      for (iteration=0; iteration < 1000000; iteration++)
+		{
+		  MagickPassFail
+		    thread_status;
+
+		  MagickBool
+		    thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		  thread_quit=quit;
+		
+		  if (thread_quit)
+		    continue;
+
+		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		  {
+		    count++;
+		    if (!thread_status)
+		      {
+			status=thread_status;
+			thread_quit=MagickTrue;
+		      }
+		    if (GetElapsedTime(&timer) > duration)
+		      thread_quit=MagickTrue;
+		    else
+		      (void) ContinueTimer(&timer);
+		    if (thread_quit)
+		      quit=thread_quit;
+		  }
+		}
+	    }
+	  else if (iterations > 0)
+	    {
+#  pragma omp parallel for shared(count, status, quit)
+	      for (iteration=0; iteration < iterations; iteration++)
+		{
+		  MagickPassFail
+		    thread_status;
+
+		  MagickBool
+		    thread_quit;
+
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		  thread_quit=quit;
+
+		  if (thread_quit)
+		    continue;
+
+		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#  pragma omp critical (GM_BenchmarkImageCommand)
+		  {
+		    count++;
+		    if (!thread_status)
+		      {
+			status=thread_status;
+			thread_quit=MagickTrue;
+		      }
+		    if (thread_quit)
+		      quit=thread_quit;
+		  }
+		}
+	    }
+	  iteration=count;
+	}
+      else
+#endif /* HAVE_OPENMP */
+	{
+	  if (duration > 0)
+	    {
+	      for (iteration=0; iteration < (LONG_MAX-1); )
+		{
+		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		  iteration++;
+		  if (!status)
+		    break;
+		  if (GetElapsedTime(&timer) > duration)
+		    break;
+		  (void) ContinueTimer(&timer);
+		}
+	    }
+	  else if (iterations > 0)
+	    {
+	      for (iteration=0; iteration < iterations; )
+		{
+		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		  iteration++;
+		  if (!status)
+		    break;
+		}
+	    }
+	}
+      {
+	double
+	  rate_cpu,
+	  rate_total,
+	  /* resolution, */
+	  user_time;
+
+	double
+	  elapsed_time;
+
+	long
+	  threads_limit;
+
+	/* resolution=GetTimerResolution(); */
+	user_time=GetUserTime(&timer);
+	elapsed_time=GetElapsedTime(&timer);
+	rate_total=(((double) iteration)/elapsed_time);
+	rate_cpu=(((double) iteration)/user_time);
+	threads_limit=(long) GetMagickResourceLimit(ThreadsResource);
+	(void) fflush(stdout);
+	(void) fprintf(stderr,
+		       "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
+		       "(%.3f iter/s cpu)\n",
+		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
+	(void) fflush(stderr);
+      }
+      current_threads++;
+    } while((thread_bench) && (current_threads <= max_threads));
 
   return status;
 }

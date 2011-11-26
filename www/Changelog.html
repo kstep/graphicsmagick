@@ -40,7 +40,10 @@
 <blockquote>
 <ul class="simple">
 <li>magick/command.c (BenchmarkImageCommand): Include the number of
-threads used in the benchmark results output.</li>
+threads used in the benchmark results output.
+(BenchmarkImageCommand): New benchmark option -stepthreads to
+execute the specified command with an increasing number of threads
+to measure how an algorithm benefits from threading.</li>
 <li>config/delegates.mgk.in: File names in gnuplot files need to be
 surrounded by double quotes or gnuplot parser will reject them.</li>
 </ul>
