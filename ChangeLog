@@ -5,6 +5,8 @@
 	(BenchmarkImageCommand): New benchmark option -stepthreads to
 	execute the specified command with an increasing number of threads
 	to measure how an algorithm benefits from threading.
+	(BenchmarkImageCommand): Fix benchmark argument parsing so it is
+	not order dependent.
 
 	* config/delegates.mgk.in: File names in gnuplot files need to be
 	surrounded by double quotes or gnuplot parser will reject them.

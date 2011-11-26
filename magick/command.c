@@ -1554,44 +1554,39 @@ BenchmarkImageCommand(ImageInfo *image_info,
   duration=-1.0;
   iterations=1L;
 
-#if defined(HAVE_OPENMP)
-  if ((argc) && (LocaleCompare("-concurrent",argv[0]) == 0))
+  while ((argc) && (*argv[0] == '-'))
     {
-      argc--;
-      argv++;
-      concurrent=MagickTrue;
-    }
-#endif /* HAVE_OPENMP */
-  if ((argc) && (LocaleCompare("-duration",argv[0]) == 0))
-    {
-      argc--;
-      argv++;
-      if (argc)
+      if (LocaleCompare("-duration",argv[0]) == 0)
 	{
-	  duration=MagickAtoF(*argv);
 	  argc--;
 	  argv++;
+	  if (argc)
+	    {
+	      duration=MagickAtoF(argv[0]);
+	    }
 	}
-    }
-  if ((argc) && (LocaleCompare("-iterations",argv[0]) == 0))
-    {
-      argc--;
-      argv++;
-      if (argc)
+      else if (LocaleCompare("-iterations",argv[0]) == 0)
 	{
-	  iterations=MagickAtoL(argv[0]);
 	  argc--;
 	  argv++;
+	  if (argc)
+	    {
+	      iterations=MagickAtoL(argv[0]);
+	    }
 	}
-    }
 #if defined(HAVE_OPENMP)
-  if ((argc) && (LocaleCompare("-stepthreads",argv[0]) == 0))
-    {
+      else if (LocaleCompare("-concurrent",argv[0]) == 0)
+	{
+	  concurrent=MagickTrue;
+	}
+      else if (LocaleCompare("-stepthreads",argv[0]) == 0)
+	{
+	  thread_bench=MagickTrue;
+	}
+#endif /* HAVE_OPENMP */
       argc--;
       argv++;
-      thread_bench=MagickTrue;
     }
-#endif /* HAVE_OPENMP */
 
   if ((argc < 1) ||
       ((duration <= 0) && (iterations <= 0)))
