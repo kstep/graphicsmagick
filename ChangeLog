@@ -1,3 +1,8 @@
+2011-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* config/delegates.mgk.in: File names in gnuplot files need to be
+	surrounded by double quotes or gnuplot parser will reject them.
+
 2011-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (GetMedianList): Return PixelPacket via pointer

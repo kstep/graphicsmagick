@@ -81,7 +81,7 @@
   <delegate decode="eps" encode="pdf" mode="bi" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPDFDevice@ "-sOutputFile=%o" -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ "-sOutputFile=%o" -- "%i" -c quit' />
   <delegate decode="fig" command='"@FIGDecodeDelegate@" -L ps "%i" "%o"' />
-  <delegate decode="gplt" command='"@EchoDelegate@" "set size 1.25,0.62; set terminal postscript portrait color solid; set output "%o"; load "%i"" > "%u"; "@GnuplotDecodeDelegate@" "%u"' />
+  <delegate decode="gplt" command='"@EchoDelegate@" "set size 1.25,0.62; set terminal postscript portrait color solid; set output \"%o\"; load \"%i\"" > "%u"; "@GnuplotDecodeDelegate@" "%u"' />
 
   <!-- Read monochrome Postscript, EPS, and PDF  -->
   <delegate decode="gs-mono" stealth="True" command='"@PSDelegate@" -q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -r%s %s "-sOutputFile=%s" -- "%s" -c quit' />
