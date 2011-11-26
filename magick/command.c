@@ -1508,6 +1508,10 @@ BenchmarkImageCommand(ImageInfo *image_info,
   long
     current_threads,
     max_threads;
+
+  double
+    rate_total_st;
+
 #endif /* HAVE_OPENMP */
 
   double
@@ -1550,6 +1554,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
   thread_bench=MagickFalse;
   max_threads = (long) GetMagickResourceLimit(ThreadsResource);
   current_threads = 1;
+  rate_total_st = 1.0;
 #endif /* HAVE_OPENMP */
   duration=-1.0;
   iterations=1L;
@@ -1740,11 +1745,20 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	rate_total=(((double) iteration)/elapsed_time);
 	rate_cpu=(((double) iteration)/user_time);
 	threads_limit=(long) GetMagickResourceLimit(ThreadsResource);
+#if defined(HAVE_OPENMP)
+	if (1 == threads_limit)
+	  rate_total_st=rate_total;
+#endif
 	(void) fflush(stdout);
 	(void) fprintf(stderr,
 		       "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
-		       "(%.3f iter/s cpu)\n",
+		       "(%.3f iter/s cpu)",
 		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
+#if defined(HAVE_OPENMP)
+	if (thread_bench)
+	  (void) fprintf(stderr," %.2f speedup",(rate_total/rate_total_st));
+#endif
+	(void) fprintf(stderr,"\n");
 	(void) fflush(stderr);
       }
 #if defined(HAVE_OPENMP)
