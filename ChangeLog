@@ -1,5 +1,8 @@
 2011-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (BenchmarkImageCommand): Include the number of
+	threads used in the benchmark results output.
+
 	* config/delegates.mgk.in: File names in gnuplot files need to be
 	surrounded by double quotes or gnuplot parser will reject them.
 
