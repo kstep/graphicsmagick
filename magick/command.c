@@ -1607,8 +1607,10 @@ BenchmarkImageCommand(ImageInfo *image_info,
       TimerInfo
 	timer;
 
+#if defined(HAVE_OPENMP)
       if (thread_bench)
 	(void) SetMagickResourceLimit(ThreadsResource,current_threads);
+#endif /* HAVE_OPENMP */
 
       (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
       GetTimerInfo(&timer);
@@ -1745,8 +1747,17 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
 	(void) fflush(stderr);
       }
+#if defined(HAVE_OPENMP)
       current_threads++;
-    } while((thread_bench) && (current_threads <= max_threads));
+#endif
+    }
+  while (
+#if defined(HAVE_OPENMP)
+	 (thread_bench) && (current_threads <= max_threads)
+#else
+	 (0)
+#endif
+	 );
 
   return status;
 }
