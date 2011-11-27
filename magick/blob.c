@@ -2563,7 +2563,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                 image->blob->file=image_info->file;
                 image->blob->type=FileStream;
                 image->blob->exempt=True;
-                (void) rewind(image->blob->file);
                 if (image->logging)
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                         "  opened image_info->file (%d) as FileStream blob 0x%p",

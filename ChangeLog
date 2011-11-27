@@ -1,5 +1,11 @@
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (OpenBlob): Don't rewind already open file handle
+	passed to OpenBlob() since we don't know the intended state of
+	this file handle, and because it prevents appending to an existing
+	file.  This change is part of the fix for SourceForge issue
+	3046868 "added MagickWriteImagesFile".
+
 	* wand/magick_wand.c (MagickSetImageSavedType): New function to
 	allow specifying the storage type used when saving the file
 	(rather than changing the current image characteristics).
