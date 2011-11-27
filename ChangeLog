@@ -1,3 +1,10 @@
+2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c (AppendImageProfile): Don't leak profile buffer
+	while appending a chunk to an existing profile.  Resolves
+	SourceForge patch 3294496 "Fix a memory leak in
+	profile.c(AppendImageProfile)".
+
 2011-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (BenchmarkImageCommand): Include the number of

@@ -208,6 +208,7 @@ AppendImageProfile(Image *image,
       (void) memcpy(profile,existing_profile,existing_length);
       (void) memcpy(profile+existing_length,profile_chunk,chunk_length);
       status=SetImageProfile(image,name,profile,profile_length);
+      MagickFreeMemory(profile);
     }
 
   return status;
