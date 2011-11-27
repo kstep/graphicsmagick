@@ -92,6 +92,9 @@ extern WandExport double
 extern WandExport ImageType
   MagickGetImageType(MagickWand *);
 
+extern WandExport ImageType
+  MagickGetImageSavedType(MagickWand *);
+
 extern WandExport InterlaceType
   MagickGetImageInterlaceScheme(MagickWand *);
 
@@ -282,6 +285,7 @@ extern WandExport unsigned int
   MagickSetImageResolution(MagickWand *,const double,const double),
   MagickSetImageScene(MagickWand *,const unsigned long),
   MagickSetImageType(MagickWand *,const ImageType),
+  MagickSetImageSavedType(MagickWand *,const ImageType),
   MagickSetImageUnits(MagickWand *,const ResolutionType),
   MagickSetImageVirtualPixelMethod(MagickWand *,const VirtualPixelMethod),
   MagickSetPassphrase(MagickWand *,const char *),

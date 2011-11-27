@@ -4222,6 +4222,37 @@ WandExport ImageType MagickGetImageType(MagickWand *wand)
     }
   return(GetImageType(wand->image,&wand->exception));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e S a v e d T y p e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageSavedType() gets the image type that will be used when the
+%  image is saved. This may be different to the current image type, returned
+%  by MagickGetImageType().
+%
+%  The format of the MagickGetImageSavedType method is:
+%
+%      ImageType MagickGetImageSavedType(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport ImageType MagickGetImageSavedType(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->image_info->type);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8536,6 +8567,44 @@ WandExport unsigned int MagickSetImageType(MagickWand *wand,
   return(SetImageType(wand->image,image_type));
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e S a v e d T y p e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageSavedType() sets the image type that will be used when the
+%  image is saved.
+%
+%  The format of the MagickSetImageSavedType method is:
+%
+%      unsigned int MagickSetImageSavedType(MagickWand *wand,
+%        const ImageType image_type)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o image_type: The image type:   UndefinedType, BilevelType, GrayscaleType,
+%      GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType,
+%      TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType,
+%      or OptimizeType.
+%
+*/
+WandExport unsigned int MagickSetImageSavedType(MagickWand *wand,
+  const ImageType image_type)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->type = image_type;
+  return(True);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

@@ -1,5 +1,13 @@
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.c (MagickSetImageSavedType): New function to
+	allow specifying the storage type used when saving the file
+	(rather than changing the current image characteristics).
+	Resolves SourceForge patch 3110185
+	"MagickGetImageSavedType()/MagickSetImageSavedType() API".
+	(MagickGetImageSavedType): Return the storage type which will be
+	used when the image is saved.
+
 	* magick/annotate.c (RenderFreetype): Add support for drawing text
 	using a bitmap font.  Resolves SourceForge patch 3230719 "add
 	support for drawing text with bitmap font to annotate.c".
