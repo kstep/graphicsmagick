@@ -9986,6 +9986,58 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k W r i t e I m a g e s F i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickWriteImagesFile() writes an image or image sequence to a stdio
+%  FILE handle.  This may be used to append an encoded image to an already
+%  existing appended image sequence if the file seek position is at the end
+%  of an existing file.
+%
+%  The format of the MagickWriteImages method is:
+%
+%      unsigned int MagickWriteImagesFile(MagickWand *wand,
+%        FILE * file,const unsigned int adjoin)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o file: The open (and positioned) file handle.
+%
+%    o adjoin: join images into a single multi-image file.
+%
+*/
+WandExport unsigned int MagickWriteImagesFile(MagickWand *wand,FILE * file,
+					      const unsigned int adjoin)
+{
+  ImageInfo
+    *write_info;
+
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  write_info=CloneImageInfo(wand->image_info);
+  write_info->adjoin=adjoin;
+  write_info->file=file;
+  status=WriteImagesFile(write_info,wand->images,file,&wand->exception);
+  DestroyImageInfo(write_info);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -2354,3 +2354,81 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
     }
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e I m a g e s F i l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteImagesFile() writes an image or image sequence to a stdio
+%  FILE handle.  This may be used to append an encoded image to an already
+%  existing appended image sequence if the file seek position is at the end
+%  of an existing file.
+%
+%  The format of the WriteImagesFile method is:
+%
+%      unsigned int WriteImagesFile(const ImageInfo *image_info,Image *image,
+%                                   FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o images: The image list.
+%
+%    o file: The open (and positioned) file handle.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport MagickPassFail WriteImagesFile(const ImageInfo *image_info,Image *image,
+					    FILE * file ,ExceptionInfo *exception)
+{
+  ImageInfo
+    *clone_info;
+
+  unsigned int
+    status=MagickPass;
+
+  /*
+    Write converted images.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  image->logging=IsEventLogging();
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info)
+    {
+      register Image
+        *p;
+
+      (void) SetImageInfo(clone_info,
+			  (SETMAGICK_WRITE |
+			   (!clone_info->adjoin ? SETMAGICK_RECTIFY : 0U)),
+			  exception);
+      for (p=image; p != (Image *) NULL; p=p->next)
+        {
+          status &= WriteImage(clone_info,p);
+          if(p->exception.severity > exception->severity)
+            CopyException(exception,&p->exception);
+          GetImageException(p,exception);
+          if (clone_info->adjoin)
+            break;
+        }
+      if (clone_info->verbose)
+        (void) DescribeImage(image,stderr,False);
+      DestroyImageInfo(clone_info);
+      clone_info=0;
+    }
+  return(status);
+}

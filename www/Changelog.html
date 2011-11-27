@@ -39,6 +39,11 @@
 <p>2011-11-27  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>wand/magick_wand.c (MagickWriteImagesFile): New function to
+append images to a provided file handle.  Resolves SourceForge
+issue 3046868 &quot;added MagickWriteImagesFile&quot;.</li>
+<li>magick/constitute.c (WriteImagesFile): New function to append
+images to a provided file handle.</li>
 <li>magick/blob.c (OpenBlob): Don't rewind already open file handle
 passed to OpenBlob() since we don't know the intended state of
 this file handle, and because it prevents appending to an existing

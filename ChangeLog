@@ -1,5 +1,12 @@
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.c (MagickWriteImagesFile): New function to
+	append images to a provided file handle.  Resolves SourceForge
+	issue 3046868 "added MagickWriteImagesFile".
+
+	* magick/constitute.c (WriteImagesFile): New function to append
+	images to a provided file handle.
+
 	* magick/blob.c (OpenBlob): Don't rewind already open file handle
 	passed to OpenBlob() since we don't know the intended state of
 	this file handle, and because it prevents appending to an existing

@@ -40,17 +40,18 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#constituteimage" id="id13">ConstituteImage</a></li>
-<li><a class="reference internal" href="#dispatchimage" id="id14">DispatchImage</a></li>
-<li><a class="reference internal" href="#pingimage" id="id15">PingImage</a></li>
-<li><a class="reference internal" href="#readimage" id="id16">ReadImage</a></li>
-<li><a class="reference internal" href="#readinlineimage" id="id17">ReadInlineImage</a></li>
-<li><a class="reference internal" href="#writeimage" id="id18">WriteImage</a></li>
-<li><a class="reference internal" href="#writeimages" id="id19">WriteImages</a></li>
+<li><a class="reference internal" href="#constituteimage" id="id15">ConstituteImage</a></li>
+<li><a class="reference internal" href="#dispatchimage" id="id16">DispatchImage</a></li>
+<li><a class="reference internal" href="#pingimage" id="id17">PingImage</a></li>
+<li><a class="reference internal" href="#readimage" id="id18">ReadImage</a></li>
+<li><a class="reference internal" href="#readinlineimage" id="id19">ReadInlineImage</a></li>
+<li><a class="reference internal" href="#writeimage" id="id20">WriteImage</a></li>
+<li><a class="reference internal" href="#writeimages" id="id21">WriteImages</a></li>
+<li><a class="reference internal" href="#writeimagesfile" id="id22">WriteImagesFile</a></li>
 </ul>
 </div>
 <div class="section" id="constituteimage">
-<h1><a class="toc-backref" href="#id13">ConstituteImage</a></h1>
+<h1><a class="toc-backref" href="#id15">ConstituteImage</a></h1>
 <div class="section" id="synopsis">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -109,7 +110,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section" id="dispatchimage">
-<h1><a class="toc-backref" href="#id14">DispatchImage</a></h1>
+<h1><a class="toc-backref" href="#id16">DispatchImage</a></h1>
 <div class="section" id="id1">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -169,7 +170,7 @@ length varies depending on the values of width, height, map, and type.</dd>
 </div>
 </div>
 <div class="section" id="pingimage">
-<h1><a class="toc-backref" href="#id15">PingImage</a></h1>
+<h1><a class="toc-backref" href="#id17">PingImage</a></h1>
 <div class="section" id="id3">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -197,7 +198,7 @@ this structure.</dd>
 </div>
 </div>
 <div class="section" id="readimage">
-<h1><a class="toc-backref" href="#id16">ReadImage</a></h1>
+<h1><a class="toc-backref" href="#id18">ReadImage</a></h1>
 <div class="section" id="id5">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -225,7 +226,7 @@ this structure.</dd>
 </div>
 </div>
 <div class="section" id="readinlineimage">
-<h1><a class="toc-backref" href="#id17">ReadInlineImage</a></h1>
+<h1><a class="toc-backref" href="#id19">ReadInlineImage</a></h1>
 <div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -255,7 +256,7 @@ describes the reason for the failure.</p>
 </div>
 </div>
 <div class="section" id="writeimage">
-<h1><a class="toc-backref" href="#id18">WriteImage</a></h1>
+<h1><a class="toc-backref" href="#id20">WriteImage</a></h1>
 <div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -283,7 +284,7 @@ unsigned int WriteImage( const <a class="reference external" href="../api/types.
 </div>
 </div>
 <div class="section" id="writeimages">
-<h1><a class="toc-backref" href="#id19">WriteImages</a></h1>
+<h1><a class="toc-backref" href="#id21">WriteImages</a></h1>
 <div class="section" id="id11">
 <h2>Synopsis</h2>
 <pre class="literal-block">
@@ -313,6 +314,38 @@ unsigned int WriteImages( const <a class="reference external" href="../api/types
 <dd>The image list.</dd>
 <dt>filename:</dt>
 <dd>The image filename.</dd>
+<dt>exception:</dt>
+<dd>Return any errors or warnings in this structure.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="writeimagesfile">
+<h1><a class="toc-backref" href="#id22">WriteImagesFile</a></h1>
+<div class="section" id="id13">
+<h2>Synopsis</h2>
+<pre class="literal-block">
+unsigned int WriteImagesFile( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference external" href="../api/types.html#image">Image</a> *image, FILE *file,
+                              <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+</div>
+<div class="section" id="id14">
+<h2>Description</h2>
+<p>WriteImagesFile() writes an image or image sequence to a stdio
+FILE handle.  This may be used to append an encoded image to an already
+existing appended image sequence if the file seek position is at the end
+of an existing file.</p>
+<p>The format of the WriteImagesFile method is:</p>
+<pre class="literal-block">
+unsigned int WriteImagesFile( const <a class="reference external" href="../api/types.html#imageinfo">ImageInfo</a> *image_info, <a class="reference external" href="../api/types.html#image">Image</a> *image, FILE *file,
+                              <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
+</pre>
+<dl class="docutils">
+<dt>image_info:</dt>
+<dd>The image info.</dd>
+<dt>images:</dt>
+<dd>The image list.</dd>
+<dt>file:</dt>
+<dd>The open (and positioned) file handle.</dd>
 <dt>exception:</dt>
 <dd>Return any errors or warnings in this structure.</dd>
 </dl>

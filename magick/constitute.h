@@ -174,6 +174,8 @@ extern MagickExport MagickPassFail
     const ImportPixelAreaOptions *options,ImportPixelAreaInfo *import_info),
   WriteImage(const ImageInfo *image_info,Image *image),
   WriteImages(const ImageInfo *image_info,Image *image,const char *filename,
+    ExceptionInfo *exception),
+  WriteImagesFile(const ImageInfo *image_info,Image *image,FILE * file,
     ExceptionInfo *exception);
 
 extern MagickExport void

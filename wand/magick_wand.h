@@ -318,6 +318,7 @@ extern WandExport unsigned int
   MagickWhiteThresholdImage(MagickWand *,const PixelWand *),
   MagickWriteImage(MagickWand *,const char *),
   MagickWriteImageFile(MagickWand *,FILE *),
+  MagickWriteImagesFile(MagickWand *,FILE *,const unsigned int),
   MagickWriteImages(MagickWand *,const char *,const unsigned int);
 
 extern WandExport unsigned long
