@@ -1258,34 +1258,55 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
             image->storage_class=DirectClass;
-            point.x=offset->x+bitmap->left;
+            if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+              {
+                point.x=offset->x+(origin.x >> 6);
+              }
+            else
+              {
+                point.x=offset->x+bitmap->left;
+              }
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
             /* FIXME: OpenMP */
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
+              int pc = y * bitmap->bitmap.pitch;
+              int pcr = pc;
               if ((ceil(point.y+y-0.5) < 0) ||
                   (ceil(point.y+y-0.5) >= image->rows))
                 {
-                  p+=bitmap->bitmap.width;
                   continue;
                 }
               q=GetImagePixels(image,(long) ceil(point.x-0.5),
                 (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
               active=q != (PixelPacket *) NULL;
-              for (x=0; x < (long) bitmap->bitmap.width; x++)
+              for (x=0; x < (long) bitmap->bitmap.width; x++, pc++)
               {
-                if (((long) ceil(point.x+x-0.5) < 0) || (*p == 0) ||
+                if (((long) ceil(point.x+x-0.5) < 0) ||
                     ((unsigned long) ceil(point.x+x-0.5) >= image->columns))
-                  {
-                    p++;
+                 {
                     q++;
                     continue;
+                 }
+                /* 8-bit gray-level pixmap */
+                if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
+                  {
+                    if (draw_info->text_antialias)
+                      opacity=ScaleCharToQuantum(p[pc]);
+                    else
+                      opacity=(p[pc] < 127 ? OpaqueOpacity : TransparentOpacity);
                   }
-                if (draw_info->text_antialias)
-                  opacity=ScaleCharToQuantum(*p);
+                /* 1-bit monochrome bitmap */
+                else if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+                  {
+                    opacity=((p[(x >> 3) + pcr] & (1 << (~x & 0x07))) ?
+                        TransparentOpacity : OpaqueOpacity);
+                  }
                 else
-                  opacity=((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
+                  {
+                    continue; /* ignore it? */
+                  }
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
                   (void) AcquireOnePixelByReference(pattern,&fill_color,
@@ -1298,7 +1319,6 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                     (long) ceil(point.y+y-0.5),1,1);
                 if (q == (PixelPacket *) NULL)
                   {
-                    p++;
                     q++;
                     continue;
                   }
@@ -1306,7 +1326,6 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                                     image->matte ? q->opacity : OpaqueOpacity);
                 if (!active)
                   (void) SyncImagePixels(image);
-                p++;
                 q++;
               }
               (void) SyncImagePixels(image);

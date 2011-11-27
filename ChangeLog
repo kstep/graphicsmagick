@@ -1,5 +1,9 @@
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/annotate.c (RenderFreetype): Add support for drawing text
+	using a bitmap font.  Resolves SourceForge patch 3230719 "add
+	support for drawing text with bitmap font to annotate.c".
+
 	* magick/profile.c (AppendImageProfile): Don't leak profile buffer
 	while appending a chunk to an existing profile.  Resolves
 	SourceForge patch 3294496 "Fix a memory leak in
