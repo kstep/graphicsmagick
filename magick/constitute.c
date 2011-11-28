@@ -2412,6 +2412,7 @@ MagickExport MagickPassFail WriteImagesFile(const ImageInfo *image_info,Image *i
       register Image
         *p;
 
+      clone_info->file=file;
       (void) SetImageInfo(clone_info,
 			  (SETMAGICK_WRITE |
 			   (!clone_info->adjoin ? SETMAGICK_RECTIFY : 0U)),
@@ -2427,6 +2428,7 @@ MagickExport MagickPassFail WriteImagesFile(const ImageInfo *image_info,Image *i
         }
       if (clone_info->verbose)
         (void) DescribeImage(image,stderr,False);
+      clone_info->file=0;
       DestroyImageInfo(clone_info);
       clone_info=0;
     }

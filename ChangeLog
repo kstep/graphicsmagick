@@ -1,3 +1,9 @@
+2011-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (WriteImagesFile): Should set file in
+	ImageInfo based on provided parameter rather than relying on it
+	already being set.  File argument was not being used.
+
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: For packed 10 bits, datums are now represented in
