@@ -1,5 +1,12 @@
 2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c: For packed 10 bits, datums are now represented in
+	the same (reversed) order for all RGB and YCbCr formats.
+	Previously YCbCr 4:4:4 formats were not swapping the word datums
+	because the only real-world files encountered did not swap the
+	word datums.  Resolves SourceForge bug 2057277 "DPX 10bit CbYCr
+	Image seems to be wrong".
+
 	* wand/magick_wand.c (MagickWriteImagesFile): New function to
 	append images to a provided file handle.  Resolves SourceForge
 	issue 3046868 "added MagickWriteImagesFile".
