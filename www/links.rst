@@ -223,6 +223,8 @@ large images, and which comes with an unusual GUI.
 `FreeImage <http://freeimage.sourceforge.net/index.html>`_,
 a free image processing library.
 
+`ImageJ <http://rsbweb.nih.gov/ij/>`_ Image Processing and Analysis in Java.
+
 `VIGRA <http://hci.iwr.uni-heidelberg.de/vigra/>`_,
 an image processing library in C++ based on generic algorithms.
 
