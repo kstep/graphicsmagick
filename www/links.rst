@@ -213,6 +213,8 @@ Visere is based on GraphicsMagick.
 GIMP-derived software targeted for the motion picture industry, and for other
 applications which require high color resolution.
 
+`eLynx lab <http://elynxlab.free.fr/en/index.html>`_ High resolution image processing tool.
+
 The `GIMP <http://www.gimp.org/>`_, interactive image editing software (like Photoshop).
 
 `ImageMagick <http://www.imagemagick.org/>`_, the ancestor of GraphicsMagick.
