@@ -2698,14 +2698,14 @@ have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" 
 AM_CONDITIONAL(HasPSDelegate, test "$have_gs" = 'yes')
 
 # Test for optional rst2html.py utility and define automake conditional HasRST2HTML if found.
-AC_PATH_PROG(RST2HTML, rst2html.py, rst2html.py)
-have_rst2html='no' ; if test "$RST2HTML" != 'rst2html' ; then have_rst2html='yes' ; fi
-AM_CONDITIONAL(HasRST2HTML, test "$have_rst2html" = 'yes')
+AC_CHECK_PROGS(RST2HTML,[rst2html.py rst2html])
+AC_SUBST(RST2HTML)
+AM_CONDITIONAL(HasRST2HTML, test "x$RST2HTML" != 'x')
 
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
-AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
-have_txt2html='no' ; if test "$TXT2HTML" != 'txt2html' ; then have_txt2html='yes' ; fi
-AM_CONDITIONAL(HasTXT2HTML, test "$have_txt2html" = 'yes')
+AC_PATH_PROGS(TXT2HTML, [txt2html])
+AC_SUBST(TXT2HTML)
+AM_CONDITIONAL(HasTXT2HTML, test "$TXT2HTML" != 'x')
 
 #
 # Test for font directories
