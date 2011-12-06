@@ -1,3 +1,8 @@
+2011-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Eliminate use of deprecated BuildPrereq
+	in RPM spec file.
+
 2011-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (WriteImagesFile): Should set file in
