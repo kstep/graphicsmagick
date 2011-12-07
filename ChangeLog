@@ -1,3 +1,8 @@
+2011-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Added Karp-Flatt
+	metric to benchmark output.
+
 2011-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec.in: Eliminate use of deprecated BuildPrereq

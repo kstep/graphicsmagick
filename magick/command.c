@@ -1756,7 +1756,20 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
 #if defined(HAVE_OPENMP)
 	if (thread_bench)
-	  (void) fprintf(stderr," %.2f speedup",(rate_total/rate_total_st));
+	  {
+	    double
+	      karp_flatt_metric,
+	      speedup;
+
+	    /* Speedup ratio */
+	    speedup=rate_total/rate_total_st;
+
+	    /* Karp-Flatt metric, http://en.wikipedia.org/wiki/Karp%E2%80%93Flatt_metric */
+	    karp_flatt_metric=1.0;
+	    if (threads_limit > 1)
+	      karp_flatt_metric=((1.0/Min(threads_limit,speedup))-(1.0/threads_limit))/(1.0-(1.0/threads_limit));
+	    (void) fprintf(stderr," %.2f speedup %.4f karp-flatt",speedup,karp_flatt_metric);
+	  }
 #endif
 	(void) fprintf(stderr,"\n");
 	(void) fflush(stderr);
