@@ -1,3 +1,8 @@
+2011-12-07  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* coders/png.c: Eliminate use of FARDATA.  It's no longer needed
+	and will no longer be supplied by png.h in libpng-1.6.0.
+
 2011-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (BenchmarkImageCommand): Added Karp-Flatt
