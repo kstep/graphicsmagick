@@ -1,3 +1,10 @@
+2011-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkUsage): -stepthreads now requires an
+	argument which is the increment (starting at zero) to the number
+	of threads for each step.  This hastens benchmarking with a large
+	number of cores.
+
 2011-12-07  Glenn Randers-Pehrson  <glennrp@simple...>
 
 	* coders/png.c: Eliminate use of FARDATA.  It's no longer needed

@@ -1412,7 +1412,7 @@ static void BenchmarkUsage(void)
     {
       "-duration duration  duration to run each benchmark (in seconds)",
       "-iterations loops   number of command iterations",
-      "-stepthreads        step benchmark with increasing number of threads",
+      "-stepthreads step   step benchmark with increasing number of threads",
       (char *) NULL
     };
 
@@ -1498,7 +1498,6 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		      int argc,char **argv,
 		      char **metadata,ExceptionInfo *exception)
 {
-#if defined(HAVE_OPENMP)
   MagickBool
     concurrent;
 
@@ -1512,13 +1511,12 @@ BenchmarkImageCommand(ImageInfo *image_info,
   double
     rate_total_st;
 
-#endif /* HAVE_OPENMP */
-
   double
     duration;
 
   long
-    iterations;
+    max_iterations,
+    thread_step;
 
   unsigned int
     status=MagickTrue;
@@ -1549,15 +1547,14 @@ BenchmarkImageCommand(ImageInfo *image_info,
   */
   argc--;
   argv++;
-#if defined(HAVE_OPENMP)
   concurrent=MagickFalse;
   thread_bench=MagickFalse;
   max_threads = (long) GetMagickResourceLimit(ThreadsResource);
   current_threads = 1;
   rate_total_st = 1.0;
-#endif /* HAVE_OPENMP */
   duration=-1.0;
-  iterations=1L;
+  max_iterations=1L;
+  thread_step=1L;
 
   while ((argc) && (*argv[0] == '-'))
     {
@@ -1576,10 +1573,9 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	  argv++;
 	  if (argc)
 	    {
-	      iterations=MagickAtoL(argv[0]);
+	      max_iterations=MagickAtoL(argv[0]);
 	    }
 	}
-#if defined(HAVE_OPENMP)
       else if (LocaleCompare("-concurrent",argv[0]) == 0)
 	{
 	  concurrent=MagickTrue;
@@ -1587,14 +1583,19 @@ BenchmarkImageCommand(ImageInfo *image_info,
       else if (LocaleCompare("-stepthreads",argv[0]) == 0)
 	{
 	  thread_bench=MagickTrue;
+	  argc--;
+	  argv++;
+	  if (argc)
+	    {
+	      thread_step=MagickAtoL(argv[0]);
+	    }
 	}
-#endif /* HAVE_OPENMP */
       argc--;
       argv++;
     }
 
   if ((argc < 1) ||
-      ((duration <= 0) && (iterations <= 0)))
+      ((duration <= 0) && (max_iterations <= 0)))
     {
       BenchmarkUsage();
       ThrowException(exception,OptionError,UsageError,NULL);
@@ -1612,15 +1613,20 @@ BenchmarkImageCommand(ImageInfo *image_info,
       TimerInfo
 	timer;
 
-#if defined(HAVE_OPENMP)
       if (thread_bench)
 	(void) SetMagickResourceLimit(ThreadsResource,current_threads);
-#endif /* HAVE_OPENMP */
+
 
       (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
+
+      /*
+	If doing a thread run-up, then warm things up first with one iteration.
+      */
+      if (thread_bench)
+	status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+
       GetTimerInfo(&timer);
     
-#if defined(HAVE_OPENMP)
       if (concurrent)
 	{
 	  MagickBool
@@ -1629,11 +1635,15 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	  long
 	    count = 0;
 
+#if defined(HAVE_OPENMP)
 	  omp_set_nested(MagickTrue);
+#endif
 	  if (duration > 0)
 	    {
 	      count=0;
-# pragma omp parallel for shared(count, status, quit)
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for shared(count, status, quit)
+#endif
 	      for (iteration=0; iteration < 1000000; iteration++)
 		{
 		  MagickPassFail
@@ -1642,14 +1652,18 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  MagickBool
 		    thread_quit;
 
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
 		  thread_quit=quit;
 		
 		  if (thread_quit)
 		    continue;
 
 		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
 		  {
 		    count++;
 		    if (!thread_status)
@@ -1666,10 +1680,12 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  }
 		}
 	    }
-	  else if (iterations > 0)
+	  else if (max_iterations > 0)
 	    {
+#if defined(HAVE_OPENMP)
 #  pragma omp parallel for shared(count, status, quit)
-	      for (iteration=0; iteration < iterations; iteration++)
+#endif
+	      for (iteration=0; iteration < max_iterations; iteration++)
 		{
 		  MagickPassFail
 		    thread_status;
@@ -1677,14 +1693,18 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  MagickBool
 		    thread_quit;
 
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
 		  thread_quit=quit;
 
 		  if (thread_quit)
 		    continue;
 
 		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
 		  {
 		    count++;
 		    if (!thread_status)
@@ -1700,10 +1720,12 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	  iteration=count;
 	}
       else
-#endif /* HAVE_OPENMP */
 	{
 	  if (duration > 0)
 	    {
+	      /*
+		Loop until duration or max_iterations has been hit.
+	      */
 	      for (iteration=0; iteration < (LONG_MAX-1); )
 		{
 		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
@@ -1715,9 +1737,12 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		  (void) ContinueTimer(&timer);
 		}
 	    }
-	  else if (iterations > 0)
+	  else if (max_iterations > 0)
 	    {
-	      for (iteration=0; iteration < iterations; )
+	      /*
+		Loop until max_iterations has been hit.
+	      */
+	      for (iteration=0; iteration < max_iterations; )
 		{
 		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
 		  iteration++;
@@ -1745,16 +1770,13 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	rate_total=(((double) iteration)/elapsed_time);
 	rate_cpu=(((double) iteration)/user_time);
 	threads_limit=(long) GetMagickResourceLimit(ThreadsResource);
-#if defined(HAVE_OPENMP)
 	if (1 == threads_limit)
 	  rate_total_st=rate_total;
-#endif
 	(void) fflush(stdout);
 	(void) fprintf(stderr,
 		       "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
 		       "(%.3f iter/s cpu)",
 		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
-#if defined(HAVE_OPENMP)
 	if (thread_bench)
 	  {
 	    double
@@ -1768,23 +1790,20 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	    karp_flatt_metric=1.0;
 	    if (threads_limit > 1)
 	      karp_flatt_metric=((1.0/Min(threads_limit,speedup))-(1.0/threads_limit))/(1.0-(1.0/threads_limit));
-	    (void) fprintf(stderr," %.2f speedup %.4f karp-flatt",speedup,karp_flatt_metric);
+	    (void) fprintf(stderr," %.2f speedup %.3f karp-flatt",speedup,karp_flatt_metric);
 	  }
-#endif
 	(void) fprintf(stderr,"\n");
 	(void) fflush(stderr);
       }
-#if defined(HAVE_OPENMP)
-      current_threads++;
-#endif
+      /*
+	Always measure with one thread, and then step up as if from zero.
+      */
+      if ((current_threads == 1) && (thread_step > 1))
+	current_threads = thread_step;
+      else
+	current_threads += thread_step;
     }
-  while (
-#if defined(HAVE_OPENMP)
-	 (thread_bench) && (current_threads <= max_threads)
-#else
-	 (0)
-#endif
-	 );
+  while ((thread_bench) && (current_threads <= max_threads));
 
   return status;
 }
