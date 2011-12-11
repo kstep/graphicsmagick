@@ -1098,7 +1098,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
   double
-    *normal_kernel;
+    * restrict normal_kernel;
 
   Image
     *convolve_image;
@@ -1109,6 +1109,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
   MagickPassFail
     status;
+
+  const MagickBool
+    is_grayscale = image->is_grayscale;
 
   const MagickBool
     matte=((image->matte) || (image->colorspace == CMYKColorspace));
@@ -1134,6 +1137,15 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   {
     /*
       Build normalized kernel.
+
+      0x0.25 --> 3x3
+      0x0.5  --> 5x5
+      0x1    --> 9x9
+      0x2    --> 17x17
+      0x3    --> 25x25
+      0x4    --> 33x33
+      0x5    --> 41x41
+      0x6    --> 49x49
     */
     double
       normalize;
@@ -1218,10 +1230,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     for (y=0; y < (long) convolve_image->rows; y++)
       {
         const PixelPacket
-          *p;
+          * restrict p;
     
         PixelPacket
-          *q;
+          * restrict q;
 
         long
           x;
@@ -1256,35 +1268,70 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                   pixel;
 
                 const PixelPacket
-                  *r;
+                  * restrict r;
 
                 long
                   u,
                   v;
 
                 const double
-                  *k;
+                  * restrict k;
 
                 r=p;
                 pixel=zero;
                 k=normal_kernel;
-                for (v=width; v > 0; v--)
-                  {
-                    for (u=0; u < width; u++)
-                      {
-                        pixel.red+=(*k)*r[u].red;
-                        pixel.green+=(*k)*r[u].green;
-                        pixel.blue+=(*k)*r[u].blue;
-                        if (matte)
-                          pixel.opacity+=(*k)*r[u].opacity;
-                        k++;
-                      }
-                    r+=image->columns+width;
-                  }
-                q->red=RoundDoubleToQuantum(pixel.red);
-                q->green=RoundDoubleToQuantum(pixel.green);
-                q->blue=RoundDoubleToQuantum(pixel.blue);
-                q->opacity=RoundDoubleToQuantum(pixel.opacity);
+		if (is_grayscale && !matte)
+		  {
+		    /* G */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  pixel.red+=k[u]*r[u].red;
+			k+= width;
+			r+=image->columns+width;
+		      }
+		    q->red=q->green=q->blue=RoundDoubleToQuantum(pixel.red);
+		    q->opacity=OpaqueOpacity;
+		  }
+		else if (!matte)
+		  {
+		    /* RGB */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    pixel.red+=k[u]*r[u].red;
+			    pixel.green+=k[u]*r[u].green;
+			    pixel.blue+=k[u]*r[u].blue;
+			  }
+			k+=width;
+			r+=image->columns+width;
+		      }
+		    q->red=RoundDoubleToQuantum(pixel.red);
+		    q->green=RoundDoubleToQuantum(pixel.green);
+		    q->blue=RoundDoubleToQuantum(pixel.blue);
+		    q->opacity=OpaqueOpacity;
+		  }
+		else
+		  {
+		    /* RGBA */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    pixel.red+=k[u]*r[u].red;
+			    pixel.green+=k[u]*r[u].green;
+			    pixel.blue+=k[u]*r[u].blue;
+			    pixel.opacity+=k[u]*r[u].opacity;
+			  }
+			k+=width;
+			r+=image->columns+width;
+		      }
+		    q->red=RoundDoubleToQuantum(pixel.red);
+		    q->green=RoundDoubleToQuantum(pixel.green);
+		    q->blue=RoundDoubleToQuantum(pixel.blue);
+		    q->opacity=RoundDoubleToQuantum(pixel.opacity);
+		  }
                 p++;
                 q++;
               }
@@ -1316,7 +1363,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     }
   else
     {
-      convolve_image->is_grayscale=image->is_grayscale;
+      convolve_image->is_grayscale=is_grayscale;
     }
   return(convolve_image);
 }
