@@ -1361,7 +1361,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_USER_MEM_SUPPORTED
 static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
-  png_ptr=png_ptr;
+  (void) png_ptr;
   return MagickAllocateMemory(png_voidp,(size_t) size);
 }
 
@@ -1370,7 +1370,7 @@ static png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 */
 static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
-  png_ptr=png_ptr;
+  (void) png_ptr;
   MagickFreeMemory(ptr);
   return((png_free_ptr) NULL);
 }

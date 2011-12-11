@@ -764,9 +764,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             }
             profile_data=ReadBlobLSBLong(image);
-            profile_data=profile_data;
             profile_size=ReadBlobLSBLong(image);
-            profile_size=profile_size;
+	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				  "  Profile: size %lu data %lu",
+				  profile_size,profile_data);
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }

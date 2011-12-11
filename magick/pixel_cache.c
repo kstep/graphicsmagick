@@ -264,7 +264,7 @@ static MagickPassFail
   SyncCacheNexus(Image *image,const NexusInfo *nexus_info,ExceptionInfo *exception);
 
 static NexusInfo
-  *AllocateCacheNexus();
+  *AllocateCacheNexus(void);
 
 static void
   DestroyCacheNexus(NexusInfo *nexus_info);
@@ -540,8 +540,6 @@ IsNexusInCore(const Cache cache,const NexusInfo *nexus_info)
       magick_off_t
         offset;
 
-      assert(cache_info->signature == MagickSignature);
-      assert(nexus_info->signature == MagickSignature);
       if (cache_info->type == PingCache)
         {
           status=MagickPass;
@@ -844,7 +842,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
     Pixel request is outside cache extents.
   */
   indexes=GetNexusIndexes(nexus_info);
-  image_nexus=AllocateCacheNexus(cache_info);
+  image_nexus=AllocateCacheNexus();
   if (image_nexus == (NexusInfo *) NULL)
     {
       ThrowException(exception,CacheError,UnableToGetCacheNexus,
@@ -1318,8 +1316,8 @@ ClipCacheNexus(Image *image,const NexusInfo *nexus_info)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image_nexus=AllocateCacheNexus(image->cache);
-  mask_nexus=AllocateCacheNexus(image->clip_mask->cache);
+  image_nexus=AllocateCacheNexus();
+  mask_nexus=AllocateCacheNexus();
   if ((image_nexus == (NexusInfo *) NULL) || (mask_nexus == (NexusInfo *) NULL))
     {
       DestroyCacheNexus(image_nexus);
@@ -2330,7 +2328,7 @@ GetIndexes(const Image *image)
 %
 %  The format of the AllocateCacheNexus() method is:
 %
-%      NexusInfo *AllocateCacheNexus()
+%      NexusInfo *AllocateCacheNexus(void)
 %
 %  A description of each parameter follows:
 %
@@ -2338,7 +2336,7 @@ GetIndexes(const Image *image)
 %
 */
 static NexusInfo *
-AllocateCacheNexus()
+AllocateCacheNexus(void)
 {
   NexusInfo
     *nexus_info;
