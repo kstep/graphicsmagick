@@ -1097,7 +1097,17 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
-  double
+#if QuantumDepth < 32
+  typedef float float_quantum_t;
+  typedef FloatPixelPacket float_packet_t;
+#  define RoundFloatQuantumToIntQuantum(value) RoundFloatToQuantum(value)
+#else
+  typedef double float_quantum_t;
+  typedef DoublePixelPacket float_packet_t;
+#  define RoundFloatQuantumToIntQuantum(value) RoundDoubleToQuantum(value)
+#endif
+
+  float_quantum_t
     * restrict normal_kernel;
 
   Image
@@ -1153,8 +1163,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     register long
       i;
 
-    normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
-    if (normal_kernel == (double *) NULL)
+    normal_kernel=MagickAllocateMemory(float_quantum_t *,width*width*sizeof(float_quantum_t));
+    if (normal_kernel == (float_quantum_t *) NULL)
       {
         DestroyImage(convolve_image);
         ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
@@ -1220,10 +1230,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     unsigned long
       row_count=0;
 
-    DoublePixelPacket
+    float_packet_t
       zero;
 
-    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+    (void) memset(&zero,0,sizeof(float_packet_t));
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
 #endif
@@ -1264,7 +1274,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
           {
             for (x=0; x < (long) convolve_image->columns; x++)
               {
-                DoublePixelPacket
+                float_packet_t
                   pixel;
 
                 const PixelPacket
@@ -1274,7 +1284,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                   u,
                   v;
 
-                const double
+                const float_quantum_t
                   * restrict k;
 
                 r=p;
@@ -1290,7 +1300,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 			k+= width;
 			r+=image->columns+width;
 		      }
-		    q->red=q->green=q->blue=RoundDoubleToQuantum(pixel.red);
+		    q->red=q->green=q->blue=RoundFloatQuantumToIntQuantum(pixel.red);
 		    q->opacity=OpaqueOpacity;
 		  }
 		else if (!matte)
@@ -1307,9 +1317,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 			k+=width;
 			r+=image->columns+width;
 		      }
-		    q->red=RoundDoubleToQuantum(pixel.red);
-		    q->green=RoundDoubleToQuantum(pixel.green);
-		    q->blue=RoundDoubleToQuantum(pixel.blue);
+		    q->red=RoundFloatQuantumToIntQuantum(pixel.red);
+		    q->green=RoundFloatQuantumToIntQuantum(pixel.green);
+		    q->blue=RoundFloatQuantumToIntQuantum(pixel.blue);
 		    q->opacity=OpaqueOpacity;
 		  }
 		else
@@ -1327,10 +1337,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 			k+=width;
 			r+=image->columns+width;
 		      }
-		    q->red=RoundDoubleToQuantum(pixel.red);
-		    q->green=RoundDoubleToQuantum(pixel.green);
-		    q->blue=RoundDoubleToQuantum(pixel.blue);
-		    q->opacity=RoundDoubleToQuantum(pixel.opacity);
+		    q->red=RoundFloatQuantumToIntQuantum(pixel.red);
+		    q->green=RoundFloatQuantumToIntQuantum(pixel.green);
+		    q->blue=RoundFloatQuantumToIntQuantum(pixel.blue);
+		    q->opacity=RoundFloatQuantumToIntQuantum(pixel.opacity);
 		  }
                 p++;
                 q++;

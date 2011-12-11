@@ -1,3 +1,9 @@
+2011-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ConvolveImage): For Q8 and Q16 builds use
+	'float' rather than 'double' for computations in order to improve
+	performance with some compilers.
+
 2011-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ConvolveImage): Special-case grayscale images
