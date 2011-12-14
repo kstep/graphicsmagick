@@ -1072,16 +1072,23 @@ static int wandObjCmd(
         "undefined", "none",   "bzip",
         "fax",       "group4", "jpeg",
         "jpeg-ls",   "lzw",    "rle",
-        "zip",       "lzma",   "jpeg2000",
-	"jbig1",     "jbig2",
-        (char *) NULL
+        "zip"
+#if MagickLibInterfaceNewest > 9
+	/* These enumerations are introduced by GraphicsMagick 1.3.13 */
+        , "lzma",   "jpeg2000", "jbig1",     "jbig2"
+#endif /* MagickLibInterfaceNewest > 9 */
+        ,(char *) NULL
     };
     static CompressionType compressTypes[] = {
         UndefinedCompression,    NoCompression,     BZipCompression,
         FaxCompression,          Group4Compression, JPEGCompression,
         LosslessJPEGCompression, LZWCompression,    RLECompression,
-        ZipCompression,          LZMACompression,   JPEG2000Compression,
+        ZipCompression
+#if MagickLibInterfaceNewest > 9
+	/* These enumerations are introduced by GraphicsMagick 1.3.13 */
+        ,LZMACompression,         JPEG2000Compression,
 	JBIG1Compression,        JBIG2Compression
+#endif /* MagickLibInterfaceNewest > 9 */
     };
     static CONST char *disposeNames[] = {
         "undefined", "none",    "background",    "previous",
