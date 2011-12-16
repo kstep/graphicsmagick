@@ -329,13 +329,15 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
       size_t
 	requested_io_size;
 
+#if HAVE_PREAD
       off_t
 	io_file_offset;
+#endif
 
       requested_io_size=length-total_count;
       io_buff_address=(char *) buffer+total_count;
-      io_file_offset=offset+total_count;
 #if HAVE_PREAD
+      io_file_offset=offset+total_count;
       count=pread(file,io_buff_address,requested_io_size,io_file_offset);
 #else
       count=read(file,io_buff_address,requested_io_size);
@@ -382,19 +384,15 @@ FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset
       size_t
 	requested_io_size;
 
+#if HAVE_PWRITE
       off_t
 	io_file_offset;
+#endif
 
       io_buff_address=(char *) buffer+total_count;
       requested_io_size=length-total_count;
-      io_file_offset=offset+total_count;
 #if HAVE_PWRITE
-#if 0
-  fprintf(stderr,"pwrite file=%d, io_buff_address=0x%p, requested_io_size=%lu, "
-	  "io_file_offset=%" MAGICK_OFF_F "u\n",
-	  file,io_buff_address,(unsigned long) requested_io_size,
-	  (magick_off_t) io_file_offset);
-#endif
+      io_file_offset=offset+total_count;
       count=pwrite(file,io_buff_address,requested_io_size,io_file_offset);
 #else
       count=write(file,io_buff_address,requested_io_size);

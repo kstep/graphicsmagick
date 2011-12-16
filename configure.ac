@@ -1059,7 +1059,7 @@ then
   INT64_T='signed long long'
   INT64_F='"ll"'
 fi
-case "${build_os}" in
+case "${host_os}" in
   mingw* )
     INT64_F='"I64"'
     ;;

@@ -1,3 +1,8 @@
+2011-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Fix various issues noticed when cross-compiling for the
+	i686-w64-mingw32 target.
+
 2011-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ConvolveImage): For Q8 and Q16 builds use

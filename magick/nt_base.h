@@ -107,10 +107,14 @@ extern "C" {
 */
 #define HAVE_POPEN 1
 #define HAVE__POPEN 1
-#define popen(command,mode)  _popen(command,mode)
+#if !defined(popen)
+#  define popen(command,mode)  _popen(command,mode)
+#endif /* !defined(popen) */
 #define HAVE_PCLOSE 1
 #define HAVE__PCLOSE 1
-#define pclose(stream)  _pclose(stream)
+#if !defined(pclose)
+#  define pclose(stream)  _pclose(stream)
+#endif /* !defined(pclose) */
 
 /*
   Visual C++ 7.0 supports GlobalMemoryStatusEx but MinGW headers and

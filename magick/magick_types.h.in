@@ -37,9 +37,9 @@ extern "C" {
   typedef unsigned short magick_uint16_t;
 
   typedef signed int  magick_int32_t;
-#define MAGICK_INT32_F ""
+#  define MAGICK_INT32_F ""
   typedef unsigned int magick_uint32_t;
-#define MAGICK_UINT32_F ""
+#  define MAGICK_UINT32_F ""
 
 #  if defined(_CH_)
 #  include <stdint.h>
@@ -47,19 +47,19 @@ extern "C" {
   typedef uint64_t magick_uint64_t;
 #  else
   typedef signed __int64  magick_int64_t;
-#define MAGICK_INT64_F "I64"
+#  define MAGICK_INT64_F "I64"
   typedef unsigned __int64 magick_uint64_t;
-#define MAGICK_UINT64_F "I64"
+#  define MAGICK_UINT64_F "I64"
 #  endif
 
   typedef magick_uint64_t magick_uintmax_t;
 
-#if defined(WIN32)
+#  if defined(WIN32)
   typedef unsigned long magick_uintptr_t;
-#elif defined(WIN64)
+#  elif defined(WIN64)
   /* WIN64 uses the LLP64 model */
   typedef unsigned long long magick_uintptr_t;
-#endif
+#  endif
 
 #else
 

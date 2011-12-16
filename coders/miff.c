@@ -647,8 +647,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *image;
 
   int
-    c,
-    code;
+    c;
 
   size_t
     length;
@@ -714,7 +713,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       DestroyImage(image);
       return((Image *) NULL);
     }
-  code=0;
   *id='\0';
   version=0.0;
   do
@@ -1135,9 +1133,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "id=\"%s\" class=%s compression=%s matte=%s "
+                          "id=\"%s\" version=%g class=%s compression=%s matte=%s "
 			  "columns=%lu rows=%lu depth=%u",
-                          id,ClassTypeToString(image->storage_class),
+                          id,version,ClassTypeToString(image->storage_class),
                           CompressionTypeToString(image->compression),
                           MagickBoolToString(image->matte),
                           image->columns, image->rows, image->depth);
@@ -1331,6 +1329,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(HasZLIB)
       case ZipCompression:
         {
+	  int
+	    code=0;
+
           for (y=0; y < (long) image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -1384,6 +1385,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(HasBZLIB)
       case BZipCompression:
         {
+	  int
+	    code=0;
+
           for (y=0; y < (long) image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -1796,9 +1800,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   IndexPacket
     index;
 
-  int
-    code;
-
   long
     y;
 
@@ -1866,7 +1867,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
-  code=0;
   scene=0;
   do
   {
@@ -2248,6 +2248,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(HasZLIB)
         case ZipCompression:
         {
+	  int
+	    code;
+
           if (y == 0)
             {
               zip_info.zalloc=ZLIBAllocFunc;
@@ -2294,6 +2297,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(HasBZLIB)
         case BZipCompression:
         {
+	  int
+	    code;
+
           if (y == 0)
             {
               bzip_info.bzalloc=NULL;
