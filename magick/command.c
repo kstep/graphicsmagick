@@ -1412,6 +1412,7 @@ static void BenchmarkUsage(void)
     {
       "-duration duration  duration to run each benchmark (in seconds)",
       "-iterations loops   number of command iterations",
+      "-rawcsv             CSV output (threads,iterations,user_time,elapsed_time)",
       "-stepthreads step   step benchmark with increasing number of threads",
       (char *) NULL
     };
@@ -1502,6 +1503,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
     concurrent;
 
   MagickBool
+    raw_csv,
     thread_bench;
 
   long
@@ -1548,6 +1550,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
   argc--;
   argv++;
   concurrent=MagickFalse;
+  raw_csv=MagickFalse;
   thread_bench=MagickFalse;
   max_threads = (long) GetMagickResourceLimit(ThreadsResource);
   current_threads = 1;
@@ -1579,6 +1582,10 @@ BenchmarkImageCommand(ImageInfo *image_info,
       else if (LocaleCompare("-concurrent",argv[0]) == 0)
 	{
 	  concurrent=MagickTrue;
+	}
+      else if (LocaleCompare("-rawcsv",argv[0]) == 0)
+	{
+	  raw_csv=MagickTrue;
 	}
       else if (LocaleCompare("-stepthreads",argv[0]) == 0)
 	{
@@ -1773,24 +1780,35 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	if (1 == threads_limit)
 	  rate_total_st=rate_total;
 	(void) fflush(stdout);
-	(void) fprintf(stderr,
-		       "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
-		       "(%.3f iter/s cpu)",
-		       threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
-	if (thread_bench)
+	if (raw_csv)
 	  {
-	    double
-	      karp_flatt_metric,
-	      speedup;
+	    /* RAW CSV value output */
+	    (void) fprintf(stderr,"%ld,%ld,%.2f,%.3f",
+			   threads_limit,iteration,user_time,elapsed_time);
+	  }
+	else
+	  {
+	    /* Formatted and summarized output */
+	    (void) fprintf(stderr,
+			   "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
+			   "(%.3f iter/s cpu)",
+			   threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
+	    if (thread_bench)
+	      {
+		double
+		  karp_flatt_metric,
+		  speedup;
 
-	    /* Speedup ratio */
-	    speedup=rate_total/rate_total_st;
+		/* Speedup ratio */
+		speedup=rate_total/rate_total_st;
 
-	    /* Karp-Flatt metric, http://en.wikipedia.org/wiki/Karp%E2%80%93Flatt_metric */
-	    karp_flatt_metric=1.0;
-	    if (threads_limit > 1)
-	      karp_flatt_metric=((1.0/Min(threads_limit,speedup))-(1.0/threads_limit))/(1.0-(1.0/threads_limit));
-	    (void) fprintf(stderr," %.2f speedup %.3f karp-flatt",speedup,karp_flatt_metric);
+		/* Karp-Flatt metric, http://en.wikipedia.org/wiki/Karp%E2%80%93Flatt_metric */
+		karp_flatt_metric=1.0;
+		if (threads_limit > 1)
+		  karp_flatt_metric=((1.0/Min(threads_limit,speedup))-
+				     (1.0/threads_limit))/(1.0-(1.0/threads_limit));
+		(void) fprintf(stderr," %.2f speedup %.3f karp-flatt",speedup,karp_flatt_metric);
+	      }
 	  }
 	(void) fprintf(stderr,"\n");
 	(void) fflush(stderr);
