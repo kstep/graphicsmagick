@@ -153,7 +153,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       dimensions = width*height;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -675,7 +675,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
         y;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
         {
@@ -1235,7 +1235,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
     (void) memset(&zero,0,sizeof(float_packet_t));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
@@ -1478,7 +1478,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,1) shared(status,progress)
+#  pragma omp parallel for schedule(static,4) shared(status,progress)
 #endif
   for (layer=min_layer; layer < max_layer; layer++)
     {
@@ -1925,7 +1925,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -2504,7 +2504,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     }
   {
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) median_image->rows; y++)
       {
@@ -2756,7 +2756,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3078,7 +3078,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
       y;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3481,7 +3481,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) noise_image->rows; y++)
     {
@@ -3635,7 +3635,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       row_count=0;
     
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3975,7 +3975,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       status=MagickPass;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -4168,7 +4168,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
       row_count=0;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {

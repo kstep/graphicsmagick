@@ -1599,8 +1599,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
                               ClassTypeToString(image->storage_class),
@@ -1698,8 +1699,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
                               ClassTypeToString(image->storage_class),
@@ -2184,10 +2186,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (image->logging)
 	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			      "Invoking \"%.1024s\" encoder (%.1024s): "
+			      "cache=%s "
 			      "adjoin=%s type=%s monochrome=%s grayscale=%s "
 			      "class=%s colorspace=%s",
 			      magick_info->name,
 			      magick_info->description,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
 			      MagickBoolToString(clone_info->adjoin),
 			      ImageTypeToString(clone_info->type),
 			      MagickBoolToString(image->is_monochrome),

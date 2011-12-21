@@ -291,7 +291,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status) private (p, q, width, x)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status) private (p, q, width, x)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {
@@ -491,7 +491,7 @@ RaiseImage(Image *image,const RectangleInfo *raise_info,const int raise_flag)
   (void) SetImageType(image,TrueColorType);
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status) private (q, x)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status) private (q, x)
 #endif
   for ( y=0; y < (long) image->rows; y++)
     {

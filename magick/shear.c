@@ -899,7 +899,7 @@ XShearImage(Image *image,const double degrees,
   is_grayscale=image->is_grayscale;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
   for (y=0; y < (long) height; y++)
     {
@@ -1169,7 +1169,7 @@ YShearImage(Image *image,const double degrees,
   is_grayscale=image->is_grayscale;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
   for (y=0; y < (long) width; y++)
     {

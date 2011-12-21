@@ -1,3 +1,11 @@
+2011-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h: Enable building and running correctly with
+	Open64 Compiler Suite: Version 4.2.5.2 compiler with OpenMP.
+
+	* magick/command.c (BenchmarkImageCommand): Add -rawcsv option to
+	benchmark to output only original data in a CSV format.
+
 2011-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Fix various issues noticed when cross-compiling for the
