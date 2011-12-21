@@ -1,5 +1,8 @@
 2011-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/OpenMP.rst: Updated with new results, including 12-core
+	Intel Xeon E5649 and 16-core AMD Opteron 6220 "Bulldozer" CPUs.
+
 	* magick/studio.h: Enable building and running correctly with
 	Open64 Compiler Suite: Version 4.2.5.2 compiler with OpenMP.
 
