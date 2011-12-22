@@ -1396,7 +1396,8 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetBlobSize() returns the current length of the image file or blob; zero is
-%  returned if the size cannot be determined.
+%  returned if the size cannot be determined.  If BLOB is no longer open, then
+%  return the size when the BLOB was closed.
 %
 %  The format of the GetBlobSize method is:
 %
