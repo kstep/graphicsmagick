@@ -1,4 +1,4 @@
-/* $Id: tiff2pdf.c,v 1.63 2011-04-02 20:54:09 bfriesen Exp $
+/* $Id: tiff2pdf.c,v 1.65 2011-05-31 17:00:03 bfriesen Exp $
  *
  * tiff2pdf - converts a TIFF image to a PDF document
  *
@@ -563,7 +563,6 @@ int main(int argc, char** argv){
 	const char *outfilename = NULL;
 	T2P *t2p = NULL;
 	TIFF *input = NULL, *output = NULL;
-	tsize_t written = 0;
 	int c, ret = EXIT_SUCCESS;
 
 	t2p = t2p_init();
@@ -764,7 +763,7 @@ int main(int argc, char** argv){
 	/*
 	 * Write
 	 */
-	written = t2p_write_pdf(t2p, input, output);
+	t2p_write_pdf(t2p, input, output);
 	if (t2p->t2p_error != 0) {
 		TIFFError(TIFF2PDF_MODULE,
 			  "An error occurred creating output PDF file");
@@ -2376,6 +2375,7 @@ tsize_t t2p_readwrite_pdf_image(T2P* t2p, TIFF* input, TIFF* output){
 		}
 
 		if(t2p->pdf_sample & T2P_SAMPLE_REALIZE_PALETTE){
+			// FIXME: overflow?
 			samplebuffer=(unsigned char*)_TIFFrealloc( 
 				(tdata_t) buffer, 
 				t2p->tiff_datasize * t2p->tiff_samplesperpixel);
