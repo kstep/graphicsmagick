@@ -4222,6 +4222,37 @@ WandExport ImageType MagickGetImageType(MagickWand *wand)
     }
   return(GetImageType(wand->image,&wand->exception));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e S a v e d T y p e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageSavedType() gets the image type that will be used when the
+%  image is saved. This may be different to the current image type, returned
+%  by MagickGetImageType().
+%
+%  The format of the MagickGetImageSavedType method is:
+%
+%      ImageType MagickGetImageSavedType(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport ImageType MagickGetImageSavedType(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->image_info->type);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8541,6 +8572,44 @@ WandExport unsigned int MagickSetImageType(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t I m a g e S a v e d T y p e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageSavedType() sets the image type that will be used when the
+%  image is saved.
+%
+%  The format of the MagickSetImageSavedType method is:
+%
+%      unsigned int MagickSetImageSavedType(MagickWand *wand,
+%        const ImageType image_type)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o image_type: The image type:   UndefinedType, BilevelType, GrayscaleType,
+%      GrayscaleMatteType, PaletteType, PaletteMatteType, TrueColorType,
+%      TrueColorMatteType, ColorSeparationType, ColorSeparationMatteType,
+%      or OptimizeType.
+%
+*/
+WandExport unsigned int MagickSetImageSavedType(MagickWand *wand,
+  const ImageType image_type)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->image_info->type = image_type;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e U n i t s                                     %
 %                                                                             %
 %                                                                             %
@@ -9917,6 +9986,58 @@ WandExport unsigned int MagickWriteImage(MagickWand *wand,const char *filename)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k W r i t e I m a g e s F i l e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickWriteImagesFile() writes an image or image sequence to a stdio
+%  FILE handle.  This may be used to append an encoded image to an already
+%  existing appended image sequence if the file seek position is at the end
+%  of an existing file.
+%
+%  The format of the MagickWriteImages method is:
+%
+%      unsigned int MagickWriteImagesFile(MagickWand *wand,
+%        FILE * file,const unsigned int adjoin)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o file: The open (and positioned) file handle.
+%
+%    o adjoin: join images into a single multi-image file.
+%
+*/
+WandExport unsigned int MagickWriteImagesFile(MagickWand *wand,FILE * file,
+					      const unsigned int adjoin)
+{
+  ImageInfo
+    *write_info;
+
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  write_info=CloneImageInfo(wand->image_info);
+  write_info->adjoin=adjoin;
+  write_info->file=file;
+  status=WriteImagesFile(write_info,wand->images,file,&wand->exception);
+  DestroyImageInfo(write_info);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2011 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -107,6 +107,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   MagickPassFail
     status;
 
+  const MagickBool
+    is_monochrome = image->is_monochrome,
+    is_grayscale = image->is_grayscale;
+
   /*
     Initialize thresholded image attributes.
   */
@@ -117,10 +121,15 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   if ((image->columns < width) || (image->rows < height))
     ThrowImageException3(OptionError,UnableToThresholdImage,
                          ImageSmallerThanRadius);
+  if (width*height > (unsigned long) ULONG_MAX/ScaleQuantumToMap(MaxRGB))
+    {
+      ThrowImageException3(OptionError,UnableToThresholdImage,
+			   RegionAreaExceedsLimit);
+    }
   threshold_image=CloneImage(image,0,0,True,exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
-  if (image->is_monochrome)
+  if (is_monochrome)
     return threshold_image;
   (void) SetImageType(threshold_image,TrueColorType);
   status=MagickPass;
@@ -131,37 +140,28 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     unsigned long
       row_count=0;
 
-#if QuantumDepth > 8
-    const DoublePixelPacket
-      double_zero = { 0.0, 0.0, 0.0, 0.0 };
-#endif /* QuantumDepth > 8 */
-
     const LongPixelPacket
       long_zero = { 0, 0, 0, 0 };
 
     const MagickBool
       matte=((threshold_image->matte) || (threshold_image->colorspace == CMYKColorspace));
 
-#if QuantumDepth == 8
     const long
-      long_offset = RoundDoubleToQuantum(offset);
-#endif /* QuantumDepth == 8 */
+      long_offset = offset + 0.5;
 
-#if QuantumDepth > 8
     const unsigned long
-      overflow_limit = (ULONG_MAX/MaxRGB);
-#endif /* QuantumDepth > 8 */
+      dimensions = width*height;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
         const PixelPacket
-          *p;
+          * restrict p;
 
         PixelPacket
-          *q;
+          * restrict q;
 
         long
           x;
@@ -184,92 +184,85 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 
         if (thread_status != MagickFail)
           {
-            for (x=0; x < (long) image->columns; x++)
-              {
-#if QuantumDepth > 8
-                DoublePixelPacket
-                  double_sum;
-#endif /* QuantumDepth > 8 */
-
+	    for (x=0; x < (long) image->columns; x++)
+	      {
 		LongPixelPacket
 		  long_sum;
 
-                const PixelPacket
-                  *r;
-
-#if QuantumDepth > 8
-		unsigned long
-		  overflow;
-#endif /* QuantumDepth > 8 */
+		const PixelPacket
+		  * restrict r;
 
 		unsigned long
 		  u,
 		  v;
 
 		r=p;
-#if QuantumDepth > 8
-		double_sum=double_zero;
-		overflow = overflow_limit;
-#endif /* QuantumDepth > 8 */
 		long_sum=long_zero;
-		for (v=0; v < height; v++)
-                  {
-                    for (u=0; u < width; u++)
-                      {
-			long_sum.red += r[u].red;
-			long_sum.green += r[u].green;
-			long_sum.blue += r[u].blue;
-			if (matte)
-			  long_sum.opacity += r[u].opacity;
 
-#if QuantumDepth > 8
-			overflow--;
-			if (overflow == 0)
-			  {
-			    double_sum.red += long_sum.red;
-			    double_sum.green += long_sum.green;
-			    double_sum.blue += long_sum.blue;
-			    double_sum.opacity += long_sum.opacity;
-			    long_sum=long_zero;
-			    overflow = overflow_limit;
-			  }
-#endif /* QuantumDepth > 8 */
+		if (is_grayscale && !matte)
+		  {
+		    /* G */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  long_sum.red += ScaleQuantumToMap(r[u].red);
+			r+=image->columns+width;
 		      }
-		    r+=image->columns+width;
-                  }
+		  }
+		else if (!matte)
+		  {
+		    /* RGB */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    long_sum.red += ScaleQuantumToMap(r[u].red);
+			    long_sum.green += ScaleQuantumToMap(r[u].green);
+			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
+			  }
+			r+=image->columns+width;
+		      }
+		  }
+		else
+		  {
+		    /* RGBA */
+		    for (v=0; v < height; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    long_sum.red += ScaleQuantumToMap(r[u].red);
+			    long_sum.green += ScaleQuantumToMap(r[u].green);
+			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
+			    long_sum.opacity += ScaleQuantumToMap(r[u].opacity);
+			  }
+			r+=image->columns+width;
+		      }
+		  }
 
-#if QuantumDepth > 8
-		double_sum.red += long_sum.red;
-		double_sum.green += long_sum.green;
-		double_sum.blue += long_sum.blue;
-		double_sum.opacity += long_sum.opacity;
+		long_sum.red = ScaleMapToQuantum(((long) long_sum.red/dimensions))+long_offset;
+		if (!is_grayscale)
+		  {
+		    long_sum.green = ScaleMapToQuantum(((long) long_sum.green/dimensions))+long_offset;
+		    long_sum.blue = ScaleMapToQuantum(((long) long_sum.blue/dimensions))+long_offset;
+		  }
+		if (matte)
+		  long_sum.opacity = ScaleMapToQuantum(((long) long_sum.opacity/dimensions))+long_offset;
 
-		double_sum.red = double_sum.red/(width*height)+offset;
-		double_sum.green = double_sum.green/(width*height)+offset;
-		double_sum.blue = double_sum.blue/(width*height)+offset;
+		if (is_grayscale)
+		  {
+		    q->red=q->green=q->blue=(q->red <= long_sum.red ? 0 : MaxRGB);
+		  }
+		else
+		  {
+		    q->red=(q->red <= long_sum.red ? 0 : MaxRGB);
+		    q->green=(q->green <= long_sum.green ? 0 : MaxRGB);
+		    q->blue=(q->blue <= long_sum.blue ? 0 : MaxRGB);
+		  }
 		if (matte)
-		  double_sum.opacity = double_sum.opacity/(width*height)+offset;
-
-		long_sum.red = RoundDoubleToQuantum(double_sum.red);
-		long_sum.green = RoundDoubleToQuantum(double_sum.green);
-		long_sum.blue = RoundDoubleToQuantum(double_sum.blue);
-		if (matte)
-		  long_sum.opacity = RoundDoubleToQuantum(double_sum.opacity);
-#else
-		long_sum.red = long_sum.red/(width*height)+long_offset;
-		long_sum.green = long_sum.green/(width*height)+long_offset;
-		long_sum.blue = long_sum.blue/(width*height)+long_offset;
-		if (matte)
-		  long_sum.opacity = long_sum.opacity/(width*height)+long_offset;
-#endif
-                q->red=q->red <= long_sum.red ? 0 : MaxRGB;
-                q->green=q->green <= long_sum.green ? 0 : MaxRGB;
-                q->blue=q->blue <= long_sum.blue ? 0 : MaxRGB;
-                if (matte)
-                  q->opacity=q->opacity <= long_sum.opacity ? 0 : MaxRGB;
-                p++;
-                q++;
-              }
+		  q->opacity=(q->opacity <= long_sum.opacity ? 0 : MaxRGB);
+		p++;
+		q++;
+	      }
             if (!SyncImagePixelsEx(threshold_image,exception))
               thread_status=MagickFail;
           }
@@ -294,10 +287,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       DestroyImage(threshold_image);
       threshold_image=(Image *) NULL;
     }
-  else
+  if (is_grayscale)
     {
-      threshold_image->is_monochrome=True;
-      threshold_image->is_grayscale=True;
+      threshold_image->is_monochrome=MagickTrue;
+      threshold_image->is_grayscale=MagickTrue;
     }
   return(threshold_image);
 }
@@ -682,7 +675,7 @@ static MagickPassFail BlurImageScanlines(Image *image,const double *kernel,
         y;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
       for (y=0; y < (long) image->rows; y++)
         {
@@ -1104,8 +1097,18 @@ MagickExport MagickPassFail ChannelThresholdImage(Image *image,
 MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                                   const double *kernel,ExceptionInfo *exception)
 {
-  double
-    *normal_kernel;
+#if QuantumDepth < 32
+  typedef float float_quantum_t;
+  typedef FloatPixelPacket float_packet_t;
+#  define RoundFloatQuantumToIntQuantum(value) RoundFloatToQuantum(value)
+#else
+  typedef double float_quantum_t;
+  typedef DoublePixelPacket float_packet_t;
+#  define RoundFloatQuantumToIntQuantum(value) RoundDoubleToQuantum(value)
+#endif
+
+  float_quantum_t
+    * restrict normal_kernel;
 
   Image
     *convolve_image;
@@ -1116,6 +1119,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 
   MagickPassFail
     status;
+
+  const MagickBool
+    is_grayscale = image->is_grayscale;
 
   const MagickBool
     matte=((image->matte) || (image->colorspace == CMYKColorspace));
@@ -1141,6 +1147,15 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   {
     /*
       Build normalized kernel.
+
+      0x0.25 --> 3x3
+      0x0.5  --> 5x5
+      0x1    --> 9x9
+      0x2    --> 17x17
+      0x3    --> 25x25
+      0x4    --> 33x33
+      0x5    --> 41x41
+      0x6    --> 49x49
     */
     double
       normalize;
@@ -1148,8 +1163,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     register long
       i;
 
-    normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
-    if (normal_kernel == (double *) NULL)
+    normal_kernel=MagickAllocateMemory(float_quantum_t *,width*width*sizeof(float_quantum_t));
+    if (normal_kernel == (float_quantum_t *) NULL)
       {
         DestroyImage(convolve_image);
         ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
@@ -1215,20 +1230,20 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     unsigned long
       row_count=0;
 
-    DoublePixelPacket
+    float_packet_t
       zero;
 
-    (void) memset(&zero,0,sizeof(DoublePixelPacket));
+    (void) memset(&zero,0,sizeof(float_packet_t));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,4) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
       {
         const PixelPacket
-          *p;
+          * restrict p;
     
         PixelPacket
-          *q;
+          * restrict q;
 
         long
           x;
@@ -1259,39 +1274,74 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
           {
             for (x=0; x < (long) convolve_image->columns; x++)
               {
-                DoublePixelPacket
+                float_packet_t
                   pixel;
 
                 const PixelPacket
-                  *r;
+                  * restrict r;
 
                 long
                   u,
                   v;
 
-                const double
-                  *k;
+                const float_quantum_t
+                  * restrict k;
 
                 r=p;
                 pixel=zero;
                 k=normal_kernel;
-                for (v=width; v > 0; v--)
-                  {
-                    for (u=0; u < width; u++)
-                      {
-                        pixel.red+=(*k)*r[u].red;
-                        pixel.green+=(*k)*r[u].green;
-                        pixel.blue+=(*k)*r[u].blue;
-                        if (matte)
-                          pixel.opacity+=(*k)*r[u].opacity;
-                        k++;
-                      }
-                    r+=image->columns+width;
-                  }
-                q->red=RoundDoubleToQuantum(pixel.red);
-                q->green=RoundDoubleToQuantum(pixel.green);
-                q->blue=RoundDoubleToQuantum(pixel.blue);
-                q->opacity=RoundDoubleToQuantum(pixel.opacity);
+		if (is_grayscale && !matte)
+		  {
+		    /* G */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  pixel.red+=k[u]*r[u].red;
+			k+= width;
+			r+=image->columns+width;
+		      }
+		    q->red=q->green=q->blue=RoundFloatQuantumToIntQuantum(pixel.red);
+		    q->opacity=OpaqueOpacity;
+		  }
+		else if (!matte)
+		  {
+		    /* RGB */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    pixel.red+=k[u]*r[u].red;
+			    pixel.green+=k[u]*r[u].green;
+			    pixel.blue+=k[u]*r[u].blue;
+			  }
+			k+=width;
+			r+=image->columns+width;
+		      }
+		    q->red=RoundFloatQuantumToIntQuantum(pixel.red);
+		    q->green=RoundFloatQuantumToIntQuantum(pixel.green);
+		    q->blue=RoundFloatQuantumToIntQuantum(pixel.blue);
+		    q->opacity=OpaqueOpacity;
+		  }
+		else
+		  {
+		    /* RGBA */
+		    for (v=0; v < width; v++)
+		      {
+			for (u=0; u < width; u++)
+			  {
+			    pixel.red+=k[u]*r[u].red;
+			    pixel.green+=k[u]*r[u].green;
+			    pixel.blue+=k[u]*r[u].blue;
+			    pixel.opacity+=k[u]*r[u].opacity;
+			  }
+			k+=width;
+			r+=image->columns+width;
+		      }
+		    q->red=RoundFloatQuantumToIntQuantum(pixel.red);
+		    q->green=RoundFloatQuantumToIntQuantum(pixel.green);
+		    q->blue=RoundFloatQuantumToIntQuantum(pixel.blue);
+		    q->opacity=RoundFloatQuantumToIntQuantum(pixel.opacity);
+		  }
                 p++;
                 q++;
               }
@@ -1323,7 +1373,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     }
   else
     {
-      convolve_image->is_grayscale=image->is_grayscale;
+      convolve_image->is_grayscale=is_grayscale;
     }
   return(convolve_image);
 }
@@ -1428,7 +1478,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,1) shared(status,progress)
+#  pragma omp parallel for schedule(static,4) shared(status,progress)
 #endif
   for (layer=min_layer; layer < max_layer; layer++)
     {
@@ -1875,7 +1925,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -2243,7 +2293,7 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,
   while (level-- > 0);
 }
 
-static PixelPacket GetMedianList(MedianPixelList *pixel_list)
+static void GetMedianList(MedianPixelList * restrict pixel_list,PixelPacket *median_pixel)
 {
   register MedianSkipList
     *list;
@@ -2259,9 +2309,6 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
   unsigned short
     channels[4];
 
-  PixelPacket
-    pixel;
-
   /*
     Find the median value for each of the colors.
   */
@@ -2276,14 +2323,13 @@ static PixelPacket GetMedianList(MedianPixelList *pixel_list)
           color=list->nodes[color].next[0];
           count+=list->nodes[color].count;
         }
-      while (count <= center);
+      while (count <= center); /* IM now uses count <= (center >> 1) */
       channels[channel]=color;
     }
-  pixel.red=ScaleShortToQuantum(channels[0]);
-  pixel.green=ScaleShortToQuantum(channels[1]);
-  pixel.blue=ScaleShortToQuantum(channels[2]);
-  pixel.opacity=ScaleShortToQuantum(channels[3]);
-  return(pixel);
+  median_pixel->red=ScaleShortToQuantum(channels[0]);
+  median_pixel->green=ScaleShortToQuantum(channels[1]);
+  median_pixel->blue=ScaleShortToQuantum(channels[2]);
+  median_pixel->opacity=ScaleShortToQuantum(channels[3]);
 }
 
 static inline void InsertMedianListChannel(MedianPixelList *pixel_list,
@@ -2458,7 +2504,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     }
   {
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) median_image->rows; y++)
       {
@@ -2509,7 +2555,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
                       InsertMedianList(skiplist,&r[u]);
                     r+=image->columns+width;
                   }
-                q[x]=GetMedianList(skiplist);
+                GetMedianList(skiplist,&q[x]);
               }
             if (!SyncImagePixelsEx(median_image,exception))
               thread_status=MagickFail;
@@ -2710,7 +2756,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3032,7 +3078,7 @@ RandomChannelThresholdImage(Image *image,const char *channel,
       y;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3435,7 +3481,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     }
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
   for (y=0; y < (long) noise_image->rows; y++)
     {
@@ -3589,7 +3635,7 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       row_count=0;
     
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static,4) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -3929,7 +3975,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       status=MagickPass;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {
@@ -4122,7 +4168,7 @@ MagickExport MagickPassFail ThresholdImage(Image *image,const double threshold)
       row_count=0;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status)
 #endif
     for (y=0; y < (long) image->rows; y++)
       {

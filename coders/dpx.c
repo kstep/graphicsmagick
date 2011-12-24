@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2005-2009 GraphicsMagick Group
+% Copyright (C) 2005-2011 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -2162,13 +2162,15 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         10-bit "filled" format.  Note 3 refers to Note 2 so presumably
         the same applies for ABGR.  The majority of YCbCr 4:2:2 files
         received have been swapped (but not YCbCr 4:4:4 for some
-        reason) so swap the samples for YCbCr 4:2:2 as well.
+        reason) so swap the samples for YCbCr as well.
       */
       if ((element_descriptor == ImageElementRGB) ||
           (element_descriptor == ImageElementRGBA) ||
           (element_descriptor == ImageElementABGR) ||
           (element_descriptor == ImageElementCbYCrY422) ||
-          (element_descriptor == ImageElementCbYACrYA4224))
+          (element_descriptor == ImageElementCbYACrYA4224) ||
+	  (element_descriptor == ImageElementCbYCr444) ||
+	  (element_descriptor == ImageElementCbYCrA4444))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;
@@ -4021,19 +4023,19 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       /*
 	Validate that what we are writing matches the header offsets.
       */
-        {
-          magick_off_t
-	    reported_file_offset;
+      {
+	magick_off_t
+	  reported_file_offset;
 	  
-          if (((reported_file_offset = TellBlob(image)) != -1) &&
-	      ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
-	       reported_file_offset))
-            {
-              (void) fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %" MAGICK_OFF_F "d\n",
-                             element+1, dpx_image_info.element_info[element].data_offset,
-                             reported_file_offset);
-            }
-        }
+	if (((reported_file_offset = TellBlob(image)) != -1) &&
+	    ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
+	     reported_file_offset))
+	  {
+	    (void) fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %" MAGICK_OFF_F "d\n",
+			   element+1, dpx_image_info.element_info[element].data_offset,
+			   reported_file_offset);
+	  }
+      }
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
 
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
@@ -4095,13 +4097,15 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         10-bit "filled" format.  Note 3 refers to Note 2 so presumably
         the same applies for ABGR.  The majority of YCbCr 4:2:2 files
         received have been swapped (but not YCbCr 4:4:4 for some
-        reason) so swap the samples for YCbCr 4:2:2 as well.
+        reason) so swap the samples for YCbCr as well.
       */
       if ((element_descriptor == ImageElementRGB) ||
           (element_descriptor == ImageElementRGBA) ||
           (element_descriptor == ImageElementABGR) ||
           (element_descriptor == ImageElementCbYCrY422) ||
-          (element_descriptor == ImageElementCbYACrYA4224))
+          (element_descriptor == ImageElementCbYACrYA4224) ||
+	  (element_descriptor == ImageElementCbYCr444) ||
+	  (element_descriptor == ImageElementCbYCrA4444))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;

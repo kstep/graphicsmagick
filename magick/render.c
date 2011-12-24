@@ -1080,7 +1080,7 @@ MagickExport MagickPassFail DrawAffineImage(Image *image,const Image *composite,
   y_min=(long) ceil(edge.y1-0.5);
   y_max=(long) floor(edge.y2+0.5);
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#  pragma omp parallel for schedule(static) shared(row_count, status)
 #endif
   for (y=y_min; y <= y_max; y++)
     {
@@ -3464,7 +3464,7 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       y_stop=(long) floor(bounds.y2+0.5);
 #if 1
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic) shared(status)
+#  pragma omp parallel for schedule(static) shared(status)
 #endif
 #endif
       for (y=y_start; y <= y_stop; y++)

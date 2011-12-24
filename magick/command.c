@@ -1410,8 +1410,10 @@ static void BenchmarkUsage(void)
   static const char
     *options[]=
     {
-      "-duration duration  duration to run the benchmark (in seconds)",
-      "-iterations loops   number of iterations to execute",
+      "-duration duration  duration to run each benchmark (in seconds)",
+      "-iterations loops   number of command iterations",
+      "-rawcsv             CSV output (threads,iterations,user_time,elapsed_time)",
+      "-stepthreads step   step benchmark with increasing number of threads",
       (char *) NULL
     };
 
@@ -1497,19 +1499,29 @@ BenchmarkImageCommand(ImageInfo *image_info,
 		      int argc,char **argv,
 		      char **metadata,ExceptionInfo *exception)
 {
-#if defined(HAVE_OPENMP)
   MagickBool
     concurrent;
-#endif /* HAVE_OPENMP */
+
+  MagickBool
+    raw_csv,
+    thread_bench;
+
+  long
+    current_threads,
+    max_threads;
+
+  double
+    rate_total_st;
 
   double
     duration;
 
   long
-    iterations;
+    max_iterations,
+    thread_step;
 
   unsigned int
-    status=True;
+    status=MagickTrue;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -1537,193 +1549,279 @@ BenchmarkImageCommand(ImageInfo *image_info,
   */
   argc--;
   argv++;
-#if defined(HAVE_OPENMP)
   concurrent=MagickFalse;
-#endif /* HAVE_OPENMP */
+  raw_csv=MagickFalse;
+  thread_bench=MagickFalse;
+  max_threads = (long) GetMagickResourceLimit(ThreadsResource);
+  current_threads = 1;
+  rate_total_st = 1.0;
   duration=-1.0;
-  iterations=1L;
+  max_iterations=1L;
+  thread_step=1L;
 
-#if defined(HAVE_OPENMP)
-  if ((argc) && (LocaleCompare("-concurrent",argv[0]) == 0))
+  while ((argc) && (*argv[0] == '-'))
     {
-      argc--;
-      argv++;
-      concurrent=MagickTrue;
-    }
-#endif /* HAVE_OPENMP */
-  if ((argc) && (LocaleCompare("-duration",argv[0]) == 0))
-    {
-      argc--;
-      argv++;
-      if (argc)
+      if (LocaleCompare("-duration",argv[0]) == 0)
 	{
-	  duration=MagickAtoF(*argv);
 	  argc--;
 	  argv++;
+	  if (argc)
+	    {
+	      duration=MagickAtoF(argv[0]);
+	    }
 	}
-    }
-  if ((argc) && (LocaleCompare("-iterations",argv[0]) == 0))
-    {
-      argc--;
-      argv++;
-      if (argc)
+      else if (LocaleCompare("-iterations",argv[0]) == 0)
 	{
-	  iterations=MagickAtoL(argv[0]);
 	  argc--;
 	  argv++;
+	  if (argc)
+	    {
+	      max_iterations=MagickAtoL(argv[0]);
+	    }
 	}
+      else if (LocaleCompare("-concurrent",argv[0]) == 0)
+	{
+	  concurrent=MagickTrue;
+	}
+      else if (LocaleCompare("-rawcsv",argv[0]) == 0)
+	{
+	  raw_csv=MagickTrue;
+	}
+      else if (LocaleCompare("-stepthreads",argv[0]) == 0)
+	{
+	  thread_bench=MagickTrue;
+	  argc--;
+	  argv++;
+	  if (argc)
+	    {
+	      thread_step=MagickAtoL(argv[0]);
+	    }
+	}
+      argc--;
+      argv++;
     }
 
   if ((argc < 1) ||
-      ((duration <= 0) && (iterations <= 0)))
+      ((duration <= 0) && (max_iterations <= 0)))
     {
       BenchmarkUsage();
       ThrowException(exception,OptionError,UsageError,NULL);
       return MagickFail;
     }
 
-  {
-    char
-      client_name[MaxTextExtent];
+  do
+    {
+      char
+	client_name[MaxTextExtent];
 
-    long
-      iteration=0;
+      long
+	iteration=0;
     
-    TimerInfo
-      timer;
+      TimerInfo
+	timer;
 
-    (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
-    GetTimerInfo(&timer);
+      if (thread_bench)
+	(void) SetMagickResourceLimit(ThreadsResource,current_threads);
+
+
+      (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
+
+      /*
+	If doing a thread run-up, then warm things up first with one iteration.
+      */
+      if (thread_bench)
+	status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+
+      GetTimerInfo(&timer);
     
+      if (concurrent)
+	{
+	  MagickBool
+	    quit = MagickFalse;
+
+	  long
+	    count = 0;
+
 #if defined(HAVE_OPENMP)
-    if (concurrent)
+	  omp_set_nested(MagickTrue);
+#endif
+	  if (duration > 0)
+	    {
+	      count=0;
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for shared(count, status, quit)
+#endif
+	      for (iteration=0; iteration < 1000000; iteration++)
+		{
+		  MagickPassFail
+		    thread_status;
+
+		  MagickBool
+		    thread_quit;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
+		  thread_quit=quit;
+		
+		  if (thread_quit)
+		    continue;
+
+		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
+		  {
+		    count++;
+		    if (!thread_status)
+		      {
+			status=thread_status;
+			thread_quit=MagickTrue;
+		      }
+		    if (GetElapsedTime(&timer) > duration)
+		      thread_quit=MagickTrue;
+		    else
+		      (void) ContinueTimer(&timer);
+		    if (thread_quit)
+		      quit=thread_quit;
+		  }
+		}
+	    }
+	  else if (max_iterations > 0)
+	    {
+#if defined(HAVE_OPENMP)
+#  pragma omp parallel for shared(count, status, quit)
+#endif
+	      for (iteration=0; iteration < max_iterations; iteration++)
+		{
+		  MagickPassFail
+		    thread_status;
+
+		  MagickBool
+		    thread_quit;
+
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
+		  thread_quit=quit;
+
+		  if (thread_quit)
+		    continue;
+
+		  thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+#if defined(HAVE_OPENMP)
+#  pragma omp critical (GM_BenchmarkImageCommand)
+#endif
+		  {
+		    count++;
+		    if (!thread_status)
+		      {
+			status=thread_status;
+			thread_quit=MagickTrue;
+		      }
+		    if (thread_quit)
+		      quit=thread_quit;
+		  }
+		}
+	    }
+	  iteration=count;
+	}
+      else
+	{
+	  if (duration > 0)
+	    {
+	      /*
+		Loop until duration or max_iterations has been hit.
+	      */
+	      for (iteration=0; iteration < (LONG_MAX-1); )
+		{
+		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		  iteration++;
+		  if (!status)
+		    break;
+		  if (GetElapsedTime(&timer) > duration)
+		    break;
+		  (void) ContinueTimer(&timer);
+		}
+	    }
+	  else if (max_iterations > 0)
+	    {
+	      /*
+		Loop until max_iterations has been hit.
+	      */
+	      for (iteration=0; iteration < max_iterations; )
+		{
+		  status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
+		  iteration++;
+		  if (!status)
+		    break;
+		}
+	    }
+	}
       {
-	MagickBool
-	  quit = MagickFalse;
+	double
+	  rate_cpu,
+	  rate_total,
+	  /* resolution, */
+	  user_time;
+
+	double
+	  elapsed_time;
 
 	long
-	  count = 0;
+	  threads_limit;
 
-	omp_set_nested(MagickTrue);
-	if (duration > 0)
+	/* resolution=GetTimerResolution(); */
+	user_time=GetUserTime(&timer);
+	elapsed_time=GetElapsedTime(&timer);
+	rate_total=(((double) iteration)/elapsed_time);
+	rate_cpu=(((double) iteration)/user_time);
+	threads_limit=(long) GetMagickResourceLimit(ThreadsResource);
+	if (1 == threads_limit)
+	  rate_total_st=rate_total;
+	(void) fflush(stdout);
+	if (raw_csv)
 	  {
-	    count=0;
-# pragma omp parallel for shared(count, status, quit)
-	    for (iteration=0; iteration < 1000000; iteration++)
+	    /* RAW CSV value output */
+	    (void) fprintf(stderr,"%ld,%ld,%.2f,%.3f",
+			   threads_limit,iteration,user_time,elapsed_time);
+	  }
+	else
+	  {
+	    /* Formatted and summarized output */
+	    (void) fprintf(stderr,
+			   "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
+			   "(%.3f iter/s cpu)",
+			   threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
+	    if (thread_bench)
 	      {
-		MagickPassFail
-		  thread_status;
+		double
+		  karp_flatt_metric,
+		  speedup;
 
-		MagickBool
-		  thread_quit;
+		/* Speedup ratio */
+		speedup=rate_total/rate_total_st;
 
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		thread_quit=quit;
-		
-		if (thread_quit)
-		  continue;
-
-		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		{
-		  count++;
-		  if (!thread_status)
-		    {
-		      status=thread_status;
-		      thread_quit=MagickTrue;
-		    }
-		  if (GetElapsedTime(&timer) > duration)
-		    thread_quit=MagickTrue;
-		  else
-		    (void) ContinueTimer(&timer);
-		  if (thread_quit)
-		    quit=thread_quit;
-		}
+		/* Karp-Flatt metric, http://en.wikipedia.org/wiki/Karp%E2%80%93Flatt_metric */
+		karp_flatt_metric=1.0;
+		if (threads_limit > 1)
+		  karp_flatt_metric=((1.0/Min(threads_limit,speedup))-
+				     (1.0/threads_limit))/(1.0-(1.0/threads_limit));
+		(void) fprintf(stderr," %.2f speedup %.3f karp-flatt",speedup,karp_flatt_metric);
 	      }
 	  }
-	else if (iterations > 0)
-	  {
-#  pragma omp parallel for shared(count, status, quit)
-	    for (iteration=0; iteration < iterations; iteration++)
-	      {
-		MagickPassFail
-		  thread_status;
-
-		MagickBool
-		  thread_quit;
-
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		thread_quit=quit;
-
-		if (thread_quit)
-		  continue;
-
-		thread_status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-#  pragma omp critical (GM_BenchmarkImageCommand)
-		{
-		  count++;
-		  if (!thread_status)
-		    {
-		      status=thread_status;
-		      thread_quit=MagickTrue;
-		    }
-		  if (thread_quit)
-		    quit=thread_quit;
-		}
-	      }
-	  }
-	iteration=count;
+	(void) fprintf(stderr,"\n");
+	(void) fflush(stderr);
       }
-    else
-#endif /* HAVE_OPENMP */
-      {
-	if (duration > 0)
-	  {
-	    for (iteration=0; iteration < (LONG_MAX-1); )
-	      {
-		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-		iteration++;
-		if (!status)
-		  break;
-		if (GetElapsedTime(&timer) > duration)
-		  break;
-		(void) ContinueTimer(&timer);
-	      }
-	  }
-	else if (iterations > 0)
-	  {
-	    for (iteration=0; iteration < iterations; )
-	      {
-		status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
-		iteration++;
-		if (!status)
-		  break;
-	      }
-	  }
-      }
-    {
-      double
-        rate_cpu,
-        rate_total,
-        /* resolution, */
-        user_time;
-
-      double
-        elapsed_time;
-
-      /* resolution=GetTimerResolution(); */
-      user_time=GetUserTime(&timer);
-      elapsed_time=GetElapsedTime(&timer);
-      rate_total=(((double) iteration)/elapsed_time);
-      rate_cpu=(((double) iteration)/user_time);
-      (void) fflush(stdout);
-      (void) fprintf(stderr,
-		     "Results: %ld iter %.2fs user %.2fs total %.3f iter/s "
-		     "(%.3f iter/s cpu)\n",
-		     iteration,user_time,elapsed_time,rate_total,rate_cpu);
-      (void) fflush(stderr);
+      /*
+	Always measure with one thread, and then step up as if from zero.
+      */
+      if ((current_threads == 1) && (thread_step > 1))
+	current_threads = thread_step;
+      else
+	current_threads += thread_step;
     }
-  }
+  while ((thread_bench) && (current_threads <= max_threads));
 
   return status;
 }

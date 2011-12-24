@@ -195,7 +195,8 @@ extern "C" {
 
   /*
     Obtain the current size of the file or BLOB.  Zero is returned if
-    the size can not be determined.
+    the size can not be determined.  If BLOB is no longer open, then
+    return the size when the BLOB was closed.
   */
   extern MagickExport magick_off_t GetBlobSize(const Image *image);
 

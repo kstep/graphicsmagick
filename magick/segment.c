@@ -601,7 +601,7 @@ Classify(Image *image,short **extrema,
   */
   row_count=0;
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(dynamic,8) shared(row_count, status) private(count,indexes,p,q,x)
+#  pragma omp parallel for schedule(static,8) shared(row_count, status) private(count,indexes,p,q,x)
 #endif
   for (y=0; y < (long) image->rows; y++)
     {

@@ -108,7 +108,7 @@ int main ( int argc, char **argv )
           else if (LocaleCompare("storagetype",option+1) == 0)
             {
               arg++;
-              if ((arg == argc))
+              if (arg == argc)
                 {
                   (void) printf("-storagetype argument missing\n");
                   exit_status = 1;

@@ -1599,8 +1599,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
                               ClassTypeToString(image->storage_class),
@@ -1698,8 +1699,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
                               ClassTypeToString(image->storage_class),
@@ -2184,10 +2186,12 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (image->logging)
 	(void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			      "Invoking \"%.1024s\" encoder (%.1024s): "
+			      "cache=%s "
 			      "adjoin=%s type=%s monochrome=%s grayscale=%s "
 			      "class=%s colorspace=%s",
 			      magick_info->name,
 			      magick_info->description,
+			      (GetPixelCachePresent(image) ? "present" : "missing"),
 			      MagickBoolToString(clone_info->adjoin),
 			      ImageTypeToString(clone_info->type),
 			      MagickBoolToString(image->is_monochrome),
@@ -2349,6 +2353,86 @@ MagickExport MagickPassFail WriteImages(const ImageInfo *image_info,Image *image
         }
       if (clone_info->verbose)
         (void) DescribeImage(image,stderr,False);
+      DestroyImageInfo(clone_info);
+      clone_info=0;
+    }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e I m a g e s F i l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteImagesFile() writes an image or image sequence to a stdio
+%  FILE handle.  This may be used to append an encoded image to an already
+%  existing appended image sequence if the file seek position is at the end
+%  of an existing file.
+%
+%  The format of the WriteImagesFile method is:
+%
+%      unsigned int WriteImagesFile(const ImageInfo *image_info,Image *image,
+%                                   FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o images: The image list.
+%
+%    o file: The open (and positioned) file handle.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport MagickPassFail WriteImagesFile(const ImageInfo *image_info,Image *image,
+					    FILE * file ,ExceptionInfo *exception)
+{
+  ImageInfo
+    *clone_info;
+
+  unsigned int
+    status=MagickPass;
+
+  /*
+    Write converted images.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  image->logging=IsEventLogging();
+  clone_info=CloneImageInfo(image_info);
+  if (clone_info)
+    {
+      register Image
+        *p;
+
+      clone_info->file=file;
+      (void) SetImageInfo(clone_info,
+			  (SETMAGICK_WRITE |
+			   (!clone_info->adjoin ? SETMAGICK_RECTIFY : 0U)),
+			  exception);
+      for (p=image; p != (Image *) NULL; p=p->next)
+        {
+          status &= WriteImage(clone_info,p);
+          if(p->exception.severity > exception->severity)
+            CopyException(exception,&p->exception);
+          GetImageException(p,exception);
+          if (clone_info->adjoin)
+            break;
+        }
+      if (clone_info->verbose)
+        (void) DescribeImage(image,stderr,False);
+      clone_info->file=0;
       DestroyImageInfo(clone_info);
       clone_info=0;
     }

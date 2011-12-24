@@ -539,6 +539,15 @@ typedef struct _DoublePixelPacket
     opacity;
 } DoublePixelPacket;
 
+typedef struct _FloatPixelPacket
+{
+  float
+    red,
+    green,
+    blue,
+    opacity;
+} FloatPixelPacket;
+
 /*
   ErrorInfo is used to record statistical difference (error)
   information based on computed Euclidean distance in RGB space.

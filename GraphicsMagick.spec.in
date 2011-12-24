@@ -28,9 +28,9 @@ Url: http://www.GraphicsMagick.org/
 # building and installing the new package. You can use this to help
 # test your package before having it installed on your machine.
 Buildroot: %{_tmppath}/%{name}-%{version}-root
-BuildPrereq: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
-BuildPrereq: libtiff-devel, zlib-devel
-BuildPrereq: freetype-devel >= 2.0.1
+BuildRequires: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
+BuildRequires: libtiff-devel, zlib-devel
+BuildRequires: freetype-devel >= 2.0.1
 Requires: bzip2, freetype, libjpeg, libpng, zlib
 
 %description
@@ -70,7 +70,7 @@ however.
 %package perl
 Summary: GraphicsMagick perl bindings
 Group: System Environment/Libraries
-BuildPrereq: perl >= 5.6.0
+BuildRequires: perl >= 5.6.0
 Requires: %{name} = %{version}-%{release}, perl >= 5.6.0
 
 %description perl

@@ -1396,7 +1396,8 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetBlobSize() returns the current length of the image file or blob; zero is
-%  returned if the size cannot be determined.
+%  returned if the size cannot be determined.  If BLOB is no longer open, then
+%  return the size when the BLOB was closed.
 %
 %  The format of the GetBlobSize method is:
 %
@@ -2563,7 +2564,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                 image->blob->file=image_info->file;
                 image->blob->type=FileStream;
                 image->blob->exempt=True;
-                (void) rewind(image->blob->file);
                 if (image->logging)
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                         "  opened image_info->file (%d) as FileStream blob 0x%p",

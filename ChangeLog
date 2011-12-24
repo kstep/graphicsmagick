@@ -1,3 +1,151 @@
+2011-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Release GraphicsMagick 1.3.13.
+
+	* Update libtiff to release 4.0.0
+
+2011-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Update libpng to release 1.5.7
+
+2011-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Update lcms2 to release 2.3
+
+2011-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Update Automake used to 1.11.2.
+
+2011-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/OpenMP.rst: Updated with new results, including 12-core
+	Intel Xeon E5649 and 16-core AMD Opteron 6220 "Bulldozer" CPUs.
+
+	* magick/studio.h: Enable building and running correctly with
+	Open64 Compiler Suite: Version 4.2.5.2 compiler with OpenMP.
+
+	* magick/command.c (BenchmarkImageCommand): Add -rawcsv option to
+	benchmark to output only original data in a CSV format.
+
+2011-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Fix various issues noticed when cross-compiling for the
+	i686-w64-mingw32 target.
+
+2011-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ConvolveImage): For Q8 and Q16 builds use
+	'float' rather than 'double' for computations in order to improve
+	performance with some compilers.
+
+2011-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ConvolveImage): Special-case grayscale images
+	for better convolution performance.
+
+2011-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkUsage): -stepthreads now requires an
+	argument which is the increment (starting at zero) to the number
+	of threads for each step.  This hastens benchmarking with a large
+	number of cores.
+
+2011-12-07  Glenn Randers-Pehrson  <glennrp@simple...>
+
+	* coders/png.c: Eliminate use of FARDATA.  It's no longer needed
+	and will no longer be supplied by png.h in libpng-1.6.0.
+
+2011-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Added Karp-Flatt
+	metric to benchmark output.
+
+2011-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Eliminate use of deprecated BuildPrereq
+	in RPM spec file.
+
+2011-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (WriteImagesFile): Should set file in
+	ImageInfo based on provided parameter rather than relying on it
+	already being set.  File argument was not being used.
+
+2011-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: For packed 10 bits, datums are now represented in
+	the same (reversed) order for all RGB and YCbCr formats.
+	Previously YCbCr 4:4:4 formats were not swapping the word datums
+	because the only real-world files encountered did not swap the
+	word datums.  Resolves SourceForge bug 2057277 "DPX 10bit CbYCr
+	Image seems to be wrong".
+
+	* wand/magick_wand.c (MagickWriteImagesFile): New function to
+	append images to a provided file handle.  Resolves SourceForge
+	issue 3046868 "added MagickWriteImagesFile".
+
+	* magick/constitute.c (WriteImagesFile): New function to append
+	images to a provided file handle.
+
+	* magick/blob.c (OpenBlob): Don't rewind already open file handle
+	passed to OpenBlob() since we don't know the intended state of
+	this file handle, and because it prevents appending to an existing
+	file.  This change is part of the fix for SourceForge issue
+	3046868 "added MagickWriteImagesFile".
+
+	* wand/magick_wand.c (MagickSetImageSavedType): New function to
+	allow specifying the storage type used when saving the file
+	(rather than changing the current image characteristics).
+	Resolves SourceForge patch 3110185
+	"MagickGetImageSavedType()/MagickSetImageSavedType() API".
+	(MagickGetImageSavedType): Return the storage type which will be
+	used when the image is saved.
+
+	* magick/annotate.c (RenderFreetype): Add support for drawing text
+	using a bitmap font.  Resolves SourceForge patch 3230719 "add
+	support for drawing text with bitmap font to annotate.c".
+
+	* magick/profile.c (AppendImageProfile): Don't leak profile buffer
+	while appending a chunk to an existing profile.  Resolves
+	SourceForge patch 3294496 "Fix a memory leak in
+	profile.c(AppendImageProfile)".
+
+2011-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BenchmarkImageCommand): Include the number of
+	threads used in the benchmark results output.
+	(BenchmarkImageCommand): New benchmark option -stepthreads to
+	execute the specified command with an increasing number of threads
+	to measure how an algorithm benefits from threading.
+	(BenchmarkImageCommand): Fix benchmark argument parsing so it is
+	not order dependent.
+	(BenchmarkImageCommand): Add a speedup indication to -stepthreads
+	output.
+
+	* config/delegates.mgk.in: File names in gnuplot files need to be
+	surrounded by double quotes or gnuplot parser will reject them.
+
+2011-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (GetMedianList): Return PixelPacket via pointer
+	rather than by value.
+
+	* version.sh: For snapshots packages, PACKAGE_CHANGE_DATE now uses
+	a form like "snapshot-20111121" rather than "unreleased" so it is
+	possible to determine the vintage of an installed snapshot.
+
+2011-11-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tga.c (ReadTGAImage): Fix for poor TGA reading
+	performance due to excessive use of GetBlobByte().  Performance is
+	fixed by adding local buffering.  Fixes SourceForge bug 3439531
+	"Slow TGA reading".
+
+2011-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (AdaptiveThresholdImage): More performance
+	improvements.
+
 2011-11-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/analyze.c (GetImageBoundingBox): Add a special case to

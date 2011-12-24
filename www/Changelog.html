@@ -36,6 +36,179 @@
 <div class="document">
 
 
+<p>2011-12-24  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Release GraphicsMagick 1.3.13.</li>
+<li>Update libtiff to release 4.0.0</li>
+</ul>
+</blockquote>
+<p>2011-12-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Update libpng to release 1.5.7</li>
+</ul>
+</blockquote>
+<p>2011-12-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Update lcms2 to release 2.3</li>
+</ul>
+</blockquote>
+<p>2011-12-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Update Automake used to 1.11.2.</li>
+</ul>
+</blockquote>
+<p>2011-12-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>www/OpenMP.rst: Updated with new results, including 12-core
+Intel Xeon E5649 and 16-core AMD Opteron 6220 &quot;Bulldozer&quot; CPUs.</li>
+<li>magick/studio.h: Enable building and running correctly with
+Open64 Compiler Suite: Version 4.2.5.2 compiler with OpenMP.</li>
+<li>magick/command.c (BenchmarkImageCommand): Add -rawcsv option to
+benchmark to output only original data in a CSV format.</li>
+</ul>
+</blockquote>
+<p>2011-12-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Fix various issues noticed when cross-compiling for the
+i686-w64-mingw32 target.</li>
+</ul>
+</blockquote>
+<p>2011-12-11  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/effect.c (ConvolveImage): For Q8 and Q16 builds use
+'float' rather than 'double' for computations in order to improve
+performance with some compilers.</li>
+</ul>
+</blockquote>
+<p>2011-12-10  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/effect.c (ConvolveImage): Special-case grayscale images
+for better convolution performance.</li>
+</ul>
+</blockquote>
+<p>2011-12-07  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (BenchmarkUsage): -stepthreads now requires an
+argument which is the increment (starting at zero) to the number
+of threads for each step.  This hastens benchmarking with a large
+number of cores.</li>
+</ul>
+</blockquote>
+<p>2011-12-07  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;&#46;&#46;">glennrp<span>&#64;</span>simple<span>&#46;</span><span>&#46;</span><span>&#46;</span></a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: Eliminate use of FARDATA.  It's no longer needed
+and will no longer be supplied by png.h in libpng-1.6.0.</li>
+</ul>
+</blockquote>
+<p>2011-12-06  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (BenchmarkImageCommand): Added Karp-Flatt
+metric to benchmark output.</li>
+</ul>
+</blockquote>
+<p>2011-12-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>GraphicsMagick.spec.in: Eliminate use of deprecated BuildPrereq
+in RPM spec file.</li>
+</ul>
+</blockquote>
+<p>2011-11-28  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/constitute.c (WriteImagesFile): Should set file in
+ImageInfo based on provided parameter rather than relying on it
+already being set.  File argument was not being used.</li>
+</ul>
+</blockquote>
+<p>2011-11-27  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/dpx.c: For packed 10 bits, datums are now represented in
+the same (reversed) order for all RGB and YCbCr formats.
+Previously YCbCr 4:4:4 formats were not swapping the word datums
+because the only real-world files encountered did not swap the
+word datums.  Resolves SourceForge bug 2057277 &quot;DPX 10bit CbYCr
+Image seems to be wrong&quot;.</li>
+<li>wand/magick_wand.c (MagickWriteImagesFile): New function to
+append images to a provided file handle.  Resolves SourceForge
+issue 3046868 &quot;added MagickWriteImagesFile&quot;.</li>
+<li>magick/constitute.c (WriteImagesFile): New function to append
+images to a provided file handle.</li>
+<li>magick/blob.c (OpenBlob): Don't rewind already open file handle
+passed to OpenBlob() since we don't know the intended state of
+this file handle, and because it prevents appending to an existing
+file.  This change is part of the fix for SourceForge issue
+3046868 &quot;added MagickWriteImagesFile&quot;.</li>
+<li>wand/magick_wand.c (MagickSetImageSavedType): New function to
+allow specifying the storage type used when saving the file
+(rather than changing the current image characteristics).
+Resolves SourceForge patch 3110185
+&quot;MagickGetImageSavedType()/MagickSetImageSavedType() API&quot;.
+(MagickGetImageSavedType): Return the storage type which will be
+used when the image is saved.</li>
+<li>magick/annotate.c (RenderFreetype): Add support for drawing text
+using a bitmap font.  Resolves SourceForge patch 3230719 &quot;add
+support for drawing text with bitmap font to annotate.c&quot;.</li>
+<li>magick/profile.c (AppendImageProfile): Don't leak profile buffer
+while appending a chunk to an existing profile.  Resolves
+SourceForge patch 3294496 &quot;Fix a memory leak in
+profile.c(AppendImageProfile)&quot;.</li>
+</ul>
+</blockquote>
+<p>2011-11-26  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (BenchmarkImageCommand): Include the number of
+threads used in the benchmark results output.
+(BenchmarkImageCommand): New benchmark option -stepthreads to
+execute the specified command with an increasing number of threads
+to measure how an algorithm benefits from threading.
+(BenchmarkImageCommand): Fix benchmark argument parsing so it is
+not order dependent.
+(BenchmarkImageCommand): Add a speedup indication to -stepthreads
+output.</li>
+<li>config/delegates.mgk.in: File names in gnuplot files need to be
+surrounded by double quotes or gnuplot parser will reject them.</li>
+</ul>
+</blockquote>
+<p>2011-11-25  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/effect.c (GetMedianList): Return PixelPacket via pointer
+rather than by value.</li>
+<li>version.sh: For snapshots packages, PACKAGE_CHANGE_DATE now uses
+a form like &quot;snapshot-20111121&quot; rather than &quot;unreleased&quot; so it is
+possible to determine the vintage of an installed snapshot.</li>
+</ul>
+</blockquote>
+<p>2011-11-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/tga.c (ReadTGAImage): Fix for poor TGA reading
+performance due to excessive use of GetBlobByte().  Performance is
+fixed by adding local buffering.  Fixes SourceForge bug 3439531
+&quot;Slow TGA reading&quot;.</li>
+</ul>
+</blockquote>
+<p>2011-11-19  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/effect.c (AdaptiveThresholdImage): More performance
+improvements.</li>
+</ul>
+</blockquote>
 <p>2011-11-06  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

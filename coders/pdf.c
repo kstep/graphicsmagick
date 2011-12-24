@@ -56,9 +56,10 @@
 /*
   Forward declarations.
 */
-static unsigned int
-  WritePDFImage(const ImageInfo *,Image *),
-  ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);
+static unsigned int WritePDFImage(const ImageInfo *,Image *);
+#if defined(HasZLIB)
+static unsigned int ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);
+#endif
 
 
 /*
@@ -1625,15 +1626,5 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       (void) WriteBlobByte(image,compressed_pixels[i]);
   MagickFreeMemory(compressed_pixels);
   return(!status);
-}
-#else
-static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
-  const unsigned long quality,unsigned char *pixels)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,ZipLibraryIsNotAvailable,
-    image->filename);
-  return(False);
 }
 #endif

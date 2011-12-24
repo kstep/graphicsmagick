@@ -220,7 +220,7 @@ extern "C" {
 /*
   OpenMP support requires version 2.0 (March 2002) or later.
 */
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPEN64__))
 #  include <omp.h>
 #  define HAVE_OPENMP 1
 #endif

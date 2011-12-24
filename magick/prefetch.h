@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2010 GraphicsMagick Group
+  Copyright (C) 2010 - 2011 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -31,7 +31,7 @@
 #if defined(sun_prefetch_read_many)
 #  define MAGICK_PREFETCH_READ_MANY(address) sun_prefetch_read_many(address)
 #endif
-#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2))
+#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2)) || (__GNUC__ >= 4)
 #  define MAGICK_PREFETCH_READ_MANY(address) __builtin_prefetch(address,0,3)
 #endif
 
@@ -39,7 +39,7 @@
 #if defined(sun_prefetch_read_once)
 #  define MAGICK_PREFETCH_READ_ONCE(address) sun_prefetch_read_once(address)
 #endif
-#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2))
+#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2)) || (__GNUC__ >= 4)
 #  define MAGICK_PREFETCH_READ_ONCE(address) __builtin_prefetch(address,0,0)
 #endif
 
@@ -47,7 +47,7 @@
 #if defined(sun_prefetch_write_many)
 #  define MAGICK_PREFETCH_WRITE_MANY(address) sun_prefetch_write_many(address)
 #endif
-#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2))
+#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2)) || (__GNUC__ >= 4)
 #  define MAGICK_PREFETCH_WRITE_MANY(address) __builtin_prefetch(address,1,3)
 #endif
 
@@ -55,7 +55,7 @@
 #if defined(sun_prefetch_write_once)
 #  define MAGICK_PREFETCH_WRITE_ONCE(address) sun_prefetch_write_once(address)
 #endif
-#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2))
+#if ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2)) || (__GNUC__ >= 4)
 #  define MAGICK_PREFETCH_WRITE_ONCE(address) __builtin_prefetch(address,1,0)
 #endif
 
