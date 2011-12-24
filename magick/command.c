@@ -15923,6 +15923,22 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
       (void) fprintf(stdout,"  Processor target:        %s\n", processor_target);
   }
 #  endif /* defined(_M_IX86) */
+#  if defined(_M_IX86_FP)
+  {
+    const char
+      *processor_arch = "";
+
+    if (_M_IX86_FP == 0)
+      processor_arch="NONE";
+    else if (_M_IX86_FP == 1)
+      processor_arch="SSE";
+    else if (_M_IX86_FP == 2)
+      processor_arch="SSE2";
+
+    if (strlen(processor_target) > 0)
+      (void) fprintf(stdout,"  Processor arch:          %s\n", processor_arch);
+  }
+#  endif /* defined(_M_IX86_FP) */
 
 #endif /* defined(_VISUALC_) */
 

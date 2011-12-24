@@ -22,7 +22,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.12 (Released March 8, 2010) `download release`__
+Current Release              1.3.13 (Released December 24, 2011) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `vist Mercurial repository`__
 ===========================  ========================================================
