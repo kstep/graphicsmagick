@@ -120,7 +120,17 @@ is important to note that the time to generate the input image is
 included in the benchmark timings so that even if an algorithm
 achieves perfect linear scaling, the measured difference is likely to
 be less than the number of cores used and the impact could be
-substantial if image generation is slow.
+substantial if image generation is slow.  Many modern CPUs increase
+the core frequency substantially ("turbo mode") when only a few cores
+are being used and this unfairly penalizes the calculated per-thread
+speedup results which are based on the time to run with just one
+thread.
+
+A typical benchmark command using the built-in benchmark facility
+(-stepthreads requires GraphicsMagick 1.3.13 or later) looks like::
+
+  gm benchmark -stepthreads 1 -duration 5 convert \
+    -size 4000x3000 tile:model.pnm -median 2 null:
 
 The first test executed is `-noop` since it does no work other than
 to generate the input image.  This represents how fast it is possible
