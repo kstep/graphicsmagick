@@ -15935,7 +15935,7 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
     else if (_M_IX86_FP == 2)
       processor_arch="SSE2";
 
-    if (strlen(processor_target) > 0)
+    if (strlen(processor_arch) > 0)
       (void) fprintf(stdout,"  Processor arch:          %s\n", processor_arch);
   }
 #  endif /* defined(_M_IX86_FP) */
