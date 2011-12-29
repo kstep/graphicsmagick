@@ -10,6 +10,13 @@
 #ifndef __XML_VERSION_H__
 #define __XML_VERSION_H__
 
+/* GraphicsMagick defines _DLL for DLL builds */
+#if !defined(_DLL)
+#  if !defined(LIBXML_STATIC)
+#    define LIBXML_STATIC 1
+#  endif
+#endif
+
 #include <libxml/xmlexports.h>
 
 #ifdef __cplusplus
@@ -90,7 +97,7 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  *
  * Whether the thread support is configured in
  */
-#if 1
+#if defined(_MT) /* Defined by GraphicsMagick for multi-thread builds */
 #if defined(_REENTRANT) || defined(__MT__) || \
     (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE - 0 >= 199506L))
 #define LIBXML_THREAD_ENABLED
