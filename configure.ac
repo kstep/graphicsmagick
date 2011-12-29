@@ -1406,15 +1406,29 @@ if test "${OPENMP_CFLAGS}x" != 'x'
 then
   if test "${GCC}" = "yes"
   then
+    # Open64 (passes for GCC but uses different OpenMP implementation)
+    if test "x$LIB_OMP" = x ; then
+      if $CC --version 2>&1 | grep Open64 > /dev/null ; then
+        AC_CHECK_LIB(openmp,omp_get_num_procs,LIB_OMP="-lopenmp",,)
+      fi
+    fi
     # GCC
-    AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
+    if test "x$LIB_OMP" = x ; then
+      AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
+    fi
   else
     # Sun CC
-    AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    if test "x$LIB_OMP" = x ; then
+      AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    fi
     # AIX xlc
+    if test "x$LIB_OMP" = x ; then
     AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    fi
     # SGI IRIX 6.5 MIPSpro C/C++
+    if test "x$LIB_OMP" = x ; then
     AC_CHECK_LIB(mp,mp_destroy,LIB_OMP="-lmp",,)
+    fi
   fi
   LIBS="$LIB_OMP $LIBS"
 fi

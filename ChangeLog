@@ -1,5 +1,8 @@
 2011-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Improve configuration support for Open64 Compiler
+	Suite: Version 4.2.5.2 compiler with OpenMP.
+
 	* coders/tga.c (ReadTGAImage): Assume that 32-bit TGA files have
 	an alpha channel, even if they are not marked as such.  Fixes
 	SourceForge issue 3466908 "TGA with alpha".
