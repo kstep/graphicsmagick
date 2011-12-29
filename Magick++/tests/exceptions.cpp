@@ -18,7 +18,7 @@ int main( int /*argc*/, char ** argv)
   // Initialize GraphicsMagick
   InitializeMagick(*argv);
       
-  int failures=0;
+  volatile int failures=0;
 
   cout << "Checking for working exceptions (may crash and burn) ..." << endl;
   cout.flush();
