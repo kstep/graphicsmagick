@@ -1,3 +1,9 @@
+2011-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Revert changeset eaa27346d8e9 which tried to avoid
+	the OpenMP library being included multiple times because in some
+	cases it is not included at all.
+
 2011-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (VersionCommand): For MSVC builds, report if
