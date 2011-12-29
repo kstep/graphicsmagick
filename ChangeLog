@@ -1,5 +1,9 @@
 2011-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tga.c (ReadTGAImage): Assume that 32-bit TGA files have
+	an alpha channel, even if they are not marked as such.  Fixes
+	SourceForge issue 3466908 "TGA with alpha".
+
 	* configure.ac: Revert changeset eaa27346d8e9 which tried to avoid
 	the OpenMP library being included multiple times because in some
 	cases it is not included at all.
