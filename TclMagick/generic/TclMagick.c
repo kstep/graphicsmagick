@@ -3707,7 +3707,7 @@ static int wandObjCmd(
     case TM_SET_VIRTUALPIXEL:  /* SetVirtualPixelMethod methodType */
     {
         int methodIdx;
-        ResolutionType method;
+        VirtualPixelMethod method;
 
 	if( ((enum subIndex)index == TM_IMAGE_UNITS) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?methodType?");
@@ -3723,20 +3723,20 @@ static int wandObjCmd(
 	}
 	if (objc == 3) {
 	    /*
-	     * Set image method
+	     * Set image virtual pixel method
 	     */
             if (Tcl_GetIndexFromObj(interp, objv[2], methodNames, "methodType", 0, &methodIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
-	    result = MagickSetImageUnits(wandPtr, methodTypes[methodIdx]);
+	    result = MagickSetImageVirtualPixelMethod(wandPtr, methodTypes[methodIdx]);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
 	} else {
 	    /*
-	     * Get image type
+	     * Get image virtual pixel method
 	     */
-	    method = MagickGetImageUnits(wandPtr);
+	    method = MagickGetImageVirtualPixelMethod(wandPtr);
 	    for (methodIdx = 0; (size_t) methodIdx < sizeof(methodTypes)/sizeof(methodTypes[0]); methodIdx++) {
 		if( methodTypes[methodIdx] == method ) {
 		    Tcl_SetResult(interp, (char *)methodNames[methodIdx], TCL_VOLATILE);

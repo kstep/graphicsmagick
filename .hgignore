@@ -41,6 +41,8 @@ out_.*\.+
 ^doc/sed-script
 ^libtool
 ^ltdl/argz\.h
+^locale/gm_messages\.mc
+^locale/locale_c\.h
 ^magick-version
 ^magick/GraphicsMagick-config
 ^magick/GraphicsMagick\.pc
@@ -64,6 +66,7 @@ out_.*\.+
 ^wand/wandtest
 ^www/ChangeLog-....\.rst
 ^www/Changelog\.rst
+www/Magick\+\+/ChangeLog.rst
 ^GraphicsMagick\.spec
 ^Magick\+\+/bin/GraphicsMagick\+\+-config
 ^Magick\+\+/demo/analyze
@@ -88,6 +91,10 @@ out_.*\.+
 ^Magick\+\+/tests/morphImages
 ^Magick\+\+/tests/readWriteBlob
 ^Magick\+\+/tests/readWriteImages
+^TclMagick/Makefile
+^TclMagick/autom4te.cache
+^TclMagick/generic/Makefile
+^TclMagick/libtool
 ^Makefile
 ^PerlMagick/PerlMagickCheck\.sh
 

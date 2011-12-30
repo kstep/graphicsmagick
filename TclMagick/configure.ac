@@ -3,7 +3,7 @@ dnl	This file is an input file used by the GNU "autoconf" program to
 dnl	generate the file "configure", which is run during Tcl installation
 dnl	to configure the system for the local environment.
 #
-AC_INIT(TclMagick, 0.45)
+AC_INIT(TclMagick, 0.46)
 
 # Specify directory where m4 macros may be found.
 AC_CONFIG_MACRO_DIR([unix/m4])

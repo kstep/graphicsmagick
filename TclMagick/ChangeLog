@@ -1,3 +1,19 @@
+2011-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/test-wand.tcl (SeparateImageChannel): Fix
+	SeparateImageChannel test to handle CMYK properly.
+	(GetSetVirtualPixelMethod): Restore image pixel method to default.
+
+	* pkgIndex.tcl: Tcl package version is 0.46.
+
+	* configure.ac: Next TclMagick release will identify itself as
+	"TclMagick 0.46".
+
+	* generic/TclMagick.c (wandObjCmd): Implementation of
+	virtualpixelmethod was completely wrong.  Implementation was
+	cut-and-pasted from image resolution units implementation but not
+	properly updated to deal with VirtualPixelMethod instead.
+
 2011-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* generic/TclMagick.c (wandObjCmd): Allow compiling with earlier
