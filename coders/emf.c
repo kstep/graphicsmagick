@@ -299,14 +299,14 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       register char
         *p;
 
-      unsigned int
-        flags;
+/*       unsigned int */
+/*         flags; */
 
       geometry=GetPageGeometry(image_info->page);
       p=strchr(geometry,'>');
       if (!p)
         {
-          flags=GetMagickGeometry(geometry,&sans,&sans,&image->columns,
+          /*flags=*/ (void) GetMagickGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)
@@ -318,7 +318,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       else
         {
           *p='\0';
-          flags=GetMagickGeometry(geometry,&sans,&sans,&image->columns,
+          /*flags=*/ (void) GetMagickGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)
