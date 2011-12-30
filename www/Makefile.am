@@ -54,6 +54,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
@@ -137,6 +138,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Documentation.rst \
 	$(WWWDIR)/Magick++/Image.html \
@@ -243,6 +245,9 @@ $(top_srcdir)/www/ChangeLog-2002.rst: $(top_srcdir)/ChangeLog.2002
 	$(CHANGELOG2RST) < $^ > $@
 
 $(top_srcdir)/www/ChangeLog-2001.rst: $(top_srcdir)/ChangeLog.2001
+	$(CHANGELOG2RST) < $^ > $@
+
+$(top_srcdir)/www/Magick++/ChangeLog.rst: $(top_srcdir)/Magick++/ChangeLog
 	$(CHANGELOG2RST) < $^ > $@
 
 # Build color.html

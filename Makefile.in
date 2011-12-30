@@ -3773,7 +3773,6 @@ Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
 Magick___tests_readWriteBlob_LDADD = $(LIBMAGICKPP)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(LIBMAGICKPP)
-@WITH_PERL_TRUE@MAGICKPP_LOCAL_TARGETS = www/Magick++/ChangeLog.html
 TESTS_CHECK_PGRMS = \
 	tests/bitstream \
         tests/constitute \
@@ -4918,6 +4917,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
@@ -5003,6 +5003,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Documentation.rst \
 	$(WWWDIR)/Magick++/Image.html \
@@ -10896,13 +10897,6 @@ magick-install-data-local:
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick_config.h
 
-# Build HTML version of ChangeLog
-@WITH_PERL_TRUE@www/Magick++/ChangeLog.html: Magick++/ChangeLog
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
-@WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
-
-#all-local:
-
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	( \
@@ -11089,6 +11083,9 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2001.rst: $(top_srcdir)/ChangeLog.2001
+@MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Magick++/ChangeLog.rst: $(top_srcdir)/Magick++/ChangeLog
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 # Build color.html
