@@ -1,3 +1,8 @@
+2011-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (AcquireCacheNexus):
+	MirrorVirtualPixelMethod was broken.
+
 2011-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Improve configuration support for Open64 Compiler
