@@ -95,6 +95,7 @@ www/Magick\+\+/ChangeLog.rst
 ^TclMagick/autom4te.cache
 ^TclMagick/generic/Makefile
 ^TclMagick/libtool
+^TclMagick/tmp/
 ^Makefile
 ^PerlMagick/PerlMagickCheck\.sh
 
