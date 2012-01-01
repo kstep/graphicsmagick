@@ -13,6 +13,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
+static char *getMagickObjName(TclMagickObj *mPtr);
+static TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name);
+
 /**********************************************************************/
 /* Workaround for bugs: */
 
@@ -42,38 +45,10 @@ static Tcl_ObjCmdProc    pixelObjCmd;
 static Tcl_ObjCmdProc    drawObjCmd;
 
 /*----------------------------------------------------------------------
- * Return Magick error description as a TCL result
- *----------------------------------------------------------------------
- */
-int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
-{
-    char *description;
-
-    ExceptionType severity;
-    char msg[40];
-
-    description = MagickGetException(wandPtr, &severity);
-    if( (description == NULL) || (strlen(description) == 0) ) {
-        Tcl_AppendResult(interp, MagickGetPackageName(), ": Unknown error", NULL);
-    } else {
-        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity); /* FIXME, not used! */
-        Tcl_AppendResult(interp, description, NULL);
-    }
-    if( description != NULL ) {
-        MagickRelinquishMemory(description);
-    }
-    /*
-     * if(severity < ErrorException) --> warning
-     * return TCL_OK ???
-     */
-    return TCL_ERROR;
-}
-
-/*----------------------------------------------------------------------
  * Return the name of a TclMagickObj
  *----------------------------------------------------------------------
  */
-char *getMagickObjName(TclMagickObj *mPtr)
+static char *getMagickObjName(TclMagickObj *mPtr)
 {
     if( mPtr == NULL ) {
         return (char *)NULL;
@@ -134,7 +109,7 @@ static void magickObjDeleteCmd(ClientData clientData)
  * Create TclMagick objects
  *----------------------------------------------------------------------
  */
-TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name)
+static TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name)
 {
     int isNew;
     char idString[16 + TCL_INTEGER_SPACE];
