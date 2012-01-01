@@ -1,3 +1,9 @@
+2012-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h: Use Magick prefixed macro names for ftruncate,
+	mmap, and munmap in order to assure that introducing our macros
+	does not cause trouble with system headers.
+
 2011-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (AcquireCacheNexus):

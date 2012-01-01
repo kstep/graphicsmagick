@@ -290,11 +290,11 @@ extern MagickExport int
   NTmsync(void *addr, size_t len, int flags),
   NTmunmap(void *addr, size_t len);
 
-#define mmap(address,length,protection,access,file,offset) \
+#define MagickMmap(address,length,protection,access,file,offset) \
   NTmmap(address,length,protection,access,file,offset)
-#define msync(addr,len,flags) NTmsync(addr,len,flags)
-#define munmap(addr,len) NTmunmap(addr,len)
-#define ftruncate(filedes,length) NTftruncate(filedes,length)
+#define MagickMsync(addr,len,flags) NTmsync(addr,len,flags)
+#define MagickMunmap(addr,len) NTmunmap(addr,len)
+#define MagickFtruncate(filedes,length) NTftruncate(filedes,length)
 
 /*
   libltdl-like module loader wrappers

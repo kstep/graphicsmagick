@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -416,6 +416,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickFtell(stream) ftell(stream)
 #  define MagickStatStruct_t struct stat
 #  define MagickStat(path,stat_buff) stat(path,stat_buff)
+#endif
+
+#if !defined(MagickMmap)
+#  define MagickMmap(address,length,protection,access,file,offset) \
+     mmap(address,length,protection,access,file,offset)
+#endif
+#if !defined(MagickMsync)
+#  define MagickMsync(addr,len,flags) msync(addr,len,flags)
+#endif
+#if !defined(MagickMunmap)
+#  define MagickMunmap(addr,len) munmap(addr,len)
+#endif
+#if !defined(MagickFtruncate)
+#  define MagickFtruncate(filedes,length) ftruncate(filedes,length)
 #endif
 
 #if !defined(HAVE_POPEN) && defined(HAVE__POPEN)
