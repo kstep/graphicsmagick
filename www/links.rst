@@ -2,7 +2,7 @@
 Related Links
 =====================
 
-These links may be useful or interesting to **GraphicsMagick** users:
+.. contents::
 
 GraphicsMagick Topics
 =====================
