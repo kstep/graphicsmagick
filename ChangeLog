@@ -1,3 +1,8 @@
+2012-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/import.c (ImportViewPixelArea): Break up implementation
+	into subroutines to ease compilation.
+
 2012-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h: Use Magick prefixed macro names for ftruncate,
