@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2011 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
 
   This program is covered by multiple licenses, which are described in
@@ -3572,6 +3572,11 @@ ImportViewPixelArea(ViewInfo *view,
   indexes=GetCacheViewIndexes(view);
   switch (quantum_type)
     {
+    case UndefinedQuantum:
+      {
+	status=MagickFail;
+	break;
+      }
     case IndexQuantum:
       {
 	status=ImportIndexQuantumType(source,q,indexes,number_pixels,quantum_size,
@@ -3644,7 +3649,6 @@ ImportViewPixelArea(ViewInfo *view,
         break;
       }
     case RGBQuantum:
-    default:
       {
 	status=ImportRGBQuantumType(source,q,number_pixels,quantum_size,sample_type,
 				    unsigned_scale,double_minvalue,double_scale,endian,

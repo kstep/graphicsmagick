@@ -1,3 +1,8 @@
+2012-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/export.c (ExportViewPixelArea): Break up implementation
+	into subroutines to ease compilation.
+
 2012-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/import.c (ImportViewPixelArea): Break up implementation
