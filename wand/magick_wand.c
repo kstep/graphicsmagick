@@ -2089,6 +2089,67 @@ WandExport unsigned int MagickEqualizeImage(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k E x t e n t I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Use MagickExtentImage() to change the image dimensions as specified by
+%  geometry width and height.  The existing image content is composited at
+%  the position specified by geometry x and y using the image compose method.
+%  Existing image content which falls outside the bounds of the new image
+%  dimensions is discarded.
+%
+%  The format of the MagickExtentImage method is:
+%
+%      unsigned int MagickExtentImage(MagickWand *wand,const size_t width,
+%                                     const size_t height, const ssize_t x,
+%                                     const ssize_t y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width: New image width
+%
+%    o height: New image height
+%
+%    o x, y: Top left composition coordinate to place existing image content
+%            on the new image.
+%
+*/
+WandExport unsigned int 
+MagickExtentImage(MagickWand *wand,const size_t width,const size_t height,
+		  const ssize_t x,const ssize_t y)
+{
+  Image
+    *extent_image;
+
+  RectangleInfo
+    geometry;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  geometry.width=width;
+  geometry.height=height;
+  geometry.x=x;
+  geometry.y=y;
+  extent_image=ExtentImage(wand->image,&geometry,&wand->exception);
+  if (extent_image == (Image *) NULL)
+    return(False);
+  ReplaceImageInList(&wand->image,extent_image);
+  wand->images=GetFirstImageInList(wand->image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k F l a t t e n I m a g e s                                     %
 %                                                                             %
 %                                                                             %

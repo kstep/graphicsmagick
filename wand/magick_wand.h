@@ -177,6 +177,7 @@ extern WandExport unsigned int
   MagickEmbossImage(MagickWand *,const double,const double),
   MagickEnhanceImage(MagickWand *),
   MagickEqualizeImage(MagickWand *),
+  MagickExtentImage(MagickWand *,const size_t,const size_t,const ssize_t, const ssize_t),
   MagickFlipImage(MagickWand *),
   MagickFlopImage(MagickWand *),
   MagickFrameImage(MagickWand *,const PixelWand *,const unsigned long,

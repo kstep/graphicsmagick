@@ -803,7 +803,7 @@ MagickExport Image *DeconstructImages(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use ExtentImage() to change the image dimensions as specified by geometry
-%  width and hight.  The existing image content is composited at the position
+%  width and height.  The existing image content is composited at the position
 %  specified by geometry x and y using the image compose method.  Existing
 %  image content which falls outside the bounds of the new image dimensions
 %  is discarded.
