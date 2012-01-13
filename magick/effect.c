@@ -1478,7 +1478,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,4) shared(status,progress)
+#  pragma omp parallel for schedule(static) shared(status,progress)
 #endif
   for (layer=min_layer; layer < max_layer; layer++)
     {
