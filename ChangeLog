@@ -1,3 +1,9 @@
+2012-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/gem.c (Hull): Improve performance.
+
+	* magick/effect.c (DespeckleImage): Improve performance.
+
 2012-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (DespeckleImage): Using schedule(static,4)

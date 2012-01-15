@@ -1410,6 +1410,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   Image
     *despeckle_image;
 
+  Quantum
+    *buffer = (Quantum *) NULL,
+    *pixels  = (Quantum *) NULL;
+
   unsigned long
     progress=0UL,
     progress_span;
@@ -1463,23 +1467,44 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   progress_span=4*(max_layer-min_layer);
 
   /*
+    Compute buffer size
+  */
+  length=(image->columns+2)*(image->rows+2);
+
+  /*
+    Allocate planar working buffers
+  */
+  pixels=MagickAllocateArray(Quantum *,length,sizeof(*pixels));
+  if (pixels == (Quantum *) NULL)
+    {
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+		      UnableToDespeckleImage);
+      return ((Image *) NULL);
+    }
+  buffer=MagickAllocateArray(Quantum *,length,sizeof(*buffer));
+  if (buffer == (Quantum *) NULL)
+    {
+      MagickFreeMemory(pixels);
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+		      UnableToDespeckleImage);
+      return ((Image *) NULL);
+    }
+
+  /*
     Allocate despeckled image.
   */
   despeckle_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (despeckle_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      MagickFreeMemory(pixels);
+      MagickFreeMemory(buffer);
+      return ((Image *) NULL);
+    }
   despeckle_image->storage_class=DirectClass;
-  /*
-    Compute buffer size
-  */
-  length=(image->columns+2)*(image->rows+2)*sizeof(Quantum);
-    
+
   /*
     Reduce speckle in the image.
   */
-#if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static) shared(status,progress)
-#endif
   for (layer=min_layer; layer < max_layer; layer++)
     {
       long
@@ -1496,186 +1521,128 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       register PixelPacket
         *q;
 
-      ViewInfo
-        *view=(ViewInfo *) NULL;
+      MagickPassFail
+	status=MagickPass;
 
-      Quantum
-        *buffer = (Quantum *) NULL,
-        *pixels  = (Quantum *) NULL;
+      /*
+	Export image channel
+      */
+      (void) memset(pixels,0,length*sizeof(Quantum));
+      j=(long) image->columns+2;
+      for (y=0; y < (long) image->rows; y++)
+	{
+	  p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+	  if (p == (const PixelPacket *) NULL)
+	    {
+	      status=MagickFail;
+	      break;
+	    }
+	  j++;
 
-      MagickBool
-        thread_status;
+	  switch (layer)
+	    {
+	    case 0:
+	      for (x=(long) image->columns; x > 0; x--)
+		pixels[j++]=p++->opacity;
+	      break;
+	    case 1:
+	      for (x=(long) image->columns; x > 0; x--)
+		pixels[j++]=p++->red;
+	      break;
+	    case 2:
+	      for (x=(long) image->columns; x > 0; x--)
+		pixels[j++]=p++->green;
+	      break;
+	    case 3:
+	      for (x=(long) image->columns; x > 0; x--)
+		pixels[j++]=p++->blue;
+	      break;
+	    default:
+	      break;
+	    }
 
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_DespeckleImage)
-#endif
-      thread_status=status;
-      if (thread_status == MagickFail)
-        continue;
+	  j++;
+	}
+      if (status == MagickFail)
+	break;
 
-      pixels=MagickAllocateMemory(Quantum *,length);
-      if (pixels == (Quantum *) NULL)
-        {
-          ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
-                          UnableToDespeckleImage);
-          thread_status=MagickFail;
-        }
+      (void) memset(buffer,0,length*sizeof(Quantum));
+      for (i=0; i < 4; i++)
+	{
+	  progress++;
+	  if (!MagickMonitorFormatted(progress,progress_span,exception,
+				      DespeckleImageText,
+				      despeckle_image->filename))
+	    {
+	      status=MagickFail;
+	      break;
+	    }
+	  Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,1);
+	  Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,1);
+	  Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,-1);
+	  Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,-1);
+	}
+      if (status == MagickFail)
+	break;
 
-      if (thread_status != MagickFail)
-        {
-          view=OpenCacheView((Image *) image);
-          if (view == (ViewInfo *) NULL)
-            thread_status=MagickFail;
-        }
+      /*
+	Import image channel
+      */
+      j=(long) image->columns+2;
+      for (y=0; y < (long) image->rows; y++)
+	{
+	  q=SetImagePixelsEx(despeckle_image,0,y,despeckle_image->columns,1,exception);
+	  if (q == (PixelPacket *) NULL)
+	    {
+	      status=MagickFail;
+	      break;
+	    }
+	  j++;
 
-      if (thread_status != MagickFail)
-        {
-          (void) memset(pixels,0,length);
-          j=(long) image->columns+2;
-          for (y=0; y < (long) image->rows; y++)
-            {
-              p=AcquireCacheViewPixels(view,0,y,image->columns,1,exception);
-              if (p == (const PixelPacket *) NULL)
-                {
-                  thread_status=MagickFail;
-                  break;
-                }
-              j++;
+	  switch (layer)
+	    {
+	    case 0:
+	      for (x=(long) image->columns; x > 0; x--)
+		q++->opacity=pixels[j++];
+	      break;
+	    case 1:
+	      if (characteristics.grayscale)
+		{
+		  for (x=(long) image->columns; x > 0; x--)
+		    {
+		      q->red=q->green=q->blue=pixels[j++];
+		      q++;
+		    }
+		}
+	      else
+		{
+		  for (x=(long) image->columns; x > 0; x--)
+		    q++->red=pixels[j++];
+		}
+	      break;
+	    case 2:
+	      for (x=(long) image->columns; x > 0; x--)
+		q++->green=pixels[j++];
+	      break;
+	    case 3:
+	      for (x=(long) image->columns; x > 0; x--)
+		q++->blue=pixels[j++];
+	      break;
+	    default:
+	      break;
+	    }
 
-              switch (layer)
-                {
-                case 0:
-                  for (x=(long) image->columns; x > 0; x--)
-                    pixels[j++]=p++->opacity;
-                  break;
-                case 1:
-                  for (x=(long) image->columns; x > 0; x--)
-                    pixels[j++]=p++->red;
-                  break;
-                case 2:
-                  for (x=(long) image->columns; x > 0; x--)
-                    pixels[j++]=p++->green;
-                  break;
-                case 3:
-                  for (x=(long) image->columns; x > 0; x--)
-                    pixels[j++]=p++->blue;
-                  break;
-                default:
-                  break;
-                }
-
-              j++;
-            }
-        }
-      CloseCacheView(view);
-      view=(ViewInfo *) NULL;
-          
-      if (thread_status != MagickFail)
-        {
-          buffer=MagickAllocateMemory(Quantum *,length);
-          if (buffer == (Quantum *) NULL)
-            {
-              ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
-                              UnableToDespeckleImage);
-              thread_status=MagickFail;
-            }
-        }
-      if (thread_status != MagickFail)
-        {
-          (void) memset(buffer,0,length);
-          for (i=0; i < 4; i++)
-            {
-              if (thread_status == MagickFail)
-                continue;
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_DespeckleImage)
-#endif
-              {
-                progress++;
-                if (!MagickMonitorFormatted(progress,progress_span,exception,
-                                            DespeckleImageText,
-                                            despeckle_image->filename))
-                  thread_status=MagickFail;
-              }
-              Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,1);
-              Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,1);
-              Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,-1);
-              Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,-1);
-            }
-          MagickFreeMemory(buffer);
-        }
-      if (thread_status != MagickFail)
-        {
-          view=OpenCacheView(despeckle_image);
-          if (view == (ViewInfo *) NULL)
-            thread_status=MagickFail;
-        }
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_DespeckleImage)
-#endif
-      if (thread_status != MagickFail)
-        {
-          j=(long) image->columns+2;
-          for (y=0; y < (long) image->rows; y++)
-            {
-              q=SetCacheViewPixels(view,0,y,despeckle_image->columns,1,exception);
-              if (q == (PixelPacket *) NULL)
-                {
-                  thread_status=MagickFail;
-                  break;
-                }
-              j++;
-              
-              switch (layer)
-                {
-                case 0:
-                  for (x=(long) image->columns; x > 0; x--)
-                    q++->opacity=pixels[j++];
-                  break;
-                case 1:
-                  if (characteristics.grayscale)
-                    {
-                      for (x=(long) image->columns; x > 0; x--)
-                        {
-                          q->red=q->green=q->blue=pixels[j++];
-                          q++;
-                        }
-                    }
-                  else
-                    {
-                      for (x=(long) image->columns; x > 0; x--)
-                        q++->red=pixels[j++];
-                    }
-                  break;
-                case 2:
-                  for (x=(long) image->columns; x > 0; x--)
-                    q++->green=pixels[j++];
-                  break;
-                case 3:
-                  for (x=(long) image->columns; x > 0; x--)
-                    q++->blue=pixels[j++];
-                  break;
-                default:
-                  break;
-                }
-              
-              if (!SyncCacheViewPixels(view,exception))
-                thread_status=MagickFail;
-              j++;
-            }
-        }
-      CloseCacheView(view);
-      view=(ViewInfo *) NULL;
-      MagickFreeMemory(pixels);
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_DespeckleImage)
-#endif
-      {
-        if (thread_status == MagickFail)
-          status=MagickFail;
-      }
+	  if (!SyncImagePixelsEx(despeckle_image,exception))
+	    {
+	      status=MagickFail;
+	      break;
+	    }
+	  j++;
+	}
     }
+
+  MagickFreeMemory(pixels);
+  MagickFreeMemory(buffer);
 
   if (status == MagickFail)
     {
