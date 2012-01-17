@@ -914,7 +914,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 #if 1
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(is_grayscale,is_monochrome,row_count,status)
+#  else
+#    pragma omp parallel for schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
+#  endif
 #endif
 #endif
             for (y=0; y < (long) image->rows; y++)

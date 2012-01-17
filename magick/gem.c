@@ -658,7 +658,11 @@ MagickExport void Hull(const long x_offset,const long y_offset,
   q=g+(columns+2);
   r=p+(y_offset*((long) columns+2)+x_offset);
 #if defined(HAVE_OPENMP)
-#pragma omp parallel for schedule(guided)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime)
+#  else
+#    pragma omp parallel for schedule(guided)
+#  endif
 #endif
   for (y=0; y < (long) rows; y++)
     {
@@ -700,7 +704,11 @@ MagickExport void Hull(const long x_offset,const long y_offset,
   r=q+(y_offset*((long) columns+2)+x_offset);
   s=q-(y_offset*((long) columns+2)+x_offset);
 #if defined(HAVE_OPENMP)
-#pragma omp parallel for schedule(guided)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime)
+#  else
+#    pragma omp parallel for schedule(guided)
+#  endif
 #endif
   for (y=0; y < (long) rows; y++)
     {

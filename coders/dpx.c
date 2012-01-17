@@ -2277,7 +2277,11 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read element data.
           */
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,1)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime)
+#  else
+#    pragma omp parallel for schedule(static,1)
+#  endif
 #endif
           for (y=0; y < (long) image->rows; y++)
             {

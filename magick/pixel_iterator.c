@@ -185,7 +185,11 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  endif
 #endif
   for (row=y; row < (long) (y+rows); row++)
     {
@@ -319,7 +323,11 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  endif
 #endif
   for (row=y; row < (long) (y+rows); row++)
     {
@@ -469,7 +477,11 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  endif
 #endif
   for (row=0; row < (long) rows; row++)
     {
@@ -636,7 +648,11 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#  endif
 #endif
   for (row=0; row < (long) rows; row++)
     {
@@ -935,7 +951,11 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,1) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#endif
 #endif
   for (row=0; row < (long) rows; row++)
     {

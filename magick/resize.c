@@ -507,7 +507,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,4) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#  endif
 #endif
     for (y=0; y < (long) minify_image->rows; y++)
       {
@@ -828,7 +832,11 @@ HorizontalFilter(const Image *source,Image *destination,
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for shared(status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(status)
+#  else
+#    pragma omp parallel for schedule(guided) shared(status)
+#  endif
 #endif
   for (x=0; x < (long) destination->columns; x++)
     {
@@ -1047,7 +1055,11 @@ VerticalFilter(const Image *source,Image *destination,
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for shared(status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(status)
+#  else
+#    pragma omp parallel for schedule(guided) shared(status)
+#  endif
 #endif
   for (y=0; y < (long) destination->rows; y++)
     {
