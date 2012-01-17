@@ -651,7 +651,7 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#    pragma omp parallel for schedule(static,1) shared(row_count, status)
 #  endif
 #endif
   for (row=0; row < (long) rows; row++)
