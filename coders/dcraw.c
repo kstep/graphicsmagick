@@ -87,6 +87,7 @@ static Image *ReadDCRAWImage(const ImageInfo *image_info,
   (void) strlcpy(clone_info->magick,"DCRAW",MaxTextExtent);
 
   image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
 
   return(image);
 }
