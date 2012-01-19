@@ -510,7 +510,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(row_count, status)
+#    endif
 #  endif
 #endif
     for (y=0; y < (long) minify_image->rows; y++)
@@ -835,7 +839,11 @@ HorizontalFilter(const Image *source,Image *destination,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(status)
+#    endif
 #  endif
 #endif
   for (x=0; x < (long) destination->columns; x++)
@@ -1058,7 +1066,11 @@ VerticalFilter(const Image *source,Image *destination,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(status)
+#    endif
 #  endif
 #endif
   for (y=0; y < (long) destination->rows; y++)

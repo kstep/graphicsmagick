@@ -914,7 +914,11 @@ XShearImage(Image *image,const double degrees,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#    endif
 #  endif
 #endif
   for (y=0; y < (long) height; y++)
@@ -1188,7 +1192,11 @@ YShearImage(Image *image,const double degrees,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(dynamic) shared(row_count, status)
+#    endif
 #  endif
 #endif
   for (y=0; y < (long) width; y++)

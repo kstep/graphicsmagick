@@ -156,7 +156,11 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(row_count, status)
+#    endif
 #  endif
 #endif
     for (y=0; y < (long) image->rows; y++)
@@ -1246,7 +1250,11 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static,4) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(row_count, status)
+#    endif
 #  endif
 #endif
     for (y=0; y < (long) convolve_image->rows; y++)
@@ -1907,7 +1915,11 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(guided) shared(row_count, status)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static,4) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(row_count, status)
+#    endif
 #  endif
 #endif
     for (y=0; y < (long) image->rows; y++)

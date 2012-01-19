@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -661,7 +661,11 @@ MagickExport void Hull(const long x_offset,const long y_offset,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime)
 #  else
-#    pragma omp parallel for schedule(guided)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static)
+#    else
+#      pragma omp parallel for schedule(guided)
+#    endif
 #  endif
 #endif
   for (y=0; y < (long) rows; y++)
@@ -707,7 +711,11 @@ MagickExport void Hull(const long x_offset,const long y_offset,
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime)
 #  else
-#    pragma omp parallel for schedule(guided)
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static)
+#    else
+#      pragma omp parallel for schedule(guided)
+#    endif
 #  endif
 #endif
   for (y=0; y < (long) rows; y++)
