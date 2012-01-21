@@ -1,3 +1,10 @@
+2012-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): When reading, save input file
+	endianness so that the endianness of the original file is
+	preserved by default.  The user is able to override this default
+	via -endian.  Problem was reported by JongAm Park.
+
 2012-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/OpenMP.rst: Updated OpenMP results based on latest OpenMP

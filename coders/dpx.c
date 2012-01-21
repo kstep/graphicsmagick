@@ -1668,6 +1668,12 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
   endian_type = (swap_endian ? MSBEndian : LSBEndian);
 #endif
+
+  /*
+    Save original endian to image so that image write will preserve
+    original endianness.
+  */
+  image->endian = endian_type;
   
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3367,6 +3373,11 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       endian_type=LSBEndian;
     }
 #endif
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "%s endian DPX format",
+                          (endian_type == MSBEndian ? "Big" : "Little"));
 
   /*
     Adjust image colorspace if necessary.
