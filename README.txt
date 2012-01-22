@@ -32,7 +32,6 @@ site is very limited, so it is recommended to download from SourceForge
 at http://sourceforge.net/projects/graphicsmagick/files/ if
 possible.
 
-
 GraphicsMagick is a continual work in progress. The very latest code
 is available via the Mercurial distributed source control management
 tool (http://mercurial.selenic.com/). GraphicsMagick may be retrieved
@@ -111,12 +110,9 @@ building under Microsoft Windows:
 
     http://www.freetype.org/
 
-  to annotate with TrueType and Postscript Type 1 fonts. Note that
-  enabling TT_CONFIG_OPTION_BYTECODE_INTERPRETER in FreeType's
-  include/freetype/config/ftoption.h will produce better glyph
-  renderings but may violate an Apple patent.
+  to annotate with TrueType and Postscript Type 1 fonts.
 
-* GraphicsMagick requires Ghostscript software (version 8.64
+* GraphicsMagick requires Ghostscript software (version 9.04
   recommended) available from
 
     http://pages.cs.wisc.edu/~ghost/
@@ -125,15 +121,14 @@ building under Microsoft Windows:
 
     http://sourceforge.net/projects/ghostscript/
 
-  to read the Postscript or the Portable Document format. Ghostscript
-  is used to annotate an image when the FreeType library is not used,
-  or an X server is not available. See the FreeType library above for
-  another means to annotate an image. Note, Ghostscript must support
-  the ppmraw device (type `gs -h` to verify). If Ghostscript is
-  unavailable, the Display Postscript X11 extension is used to
-  rasterize a Postscript document (assuming you define HasDPS and DPS
-  is available). The DPS extension is less robust than Ghostscript in
-  that it will only rasterize one page of a multi-page document.
+  to read the Postscript or the Portable Document Format (PDF).
+
+  Ghostscript is available for use under both free (GPL) and
+  commercial licenses.  We are not lawyers so we can not provide
+  advice as to when the commercial license from Artifex is required.
+  Please make sure that you are aware of Ghostscript licencing and
+  usage terms if you plan to use it in some sort of commercial
+  situation.
 
   Ghostscript (release 7.0 and later) may optionally install a library
   (libgs) under Linux. If this library is installed, GraphicsMagick may
@@ -144,16 +139,17 @@ building under Microsoft Windows:
   an external process since then multiple interpreters may execute at
   once on multiple CPU cores.
 
-  Ghostscript provides its own modified version of libjpeg and libJasper
-  while GraphicsMagick will be using these libraries as provided with the
-  system. If Ghostscript is not using the same libraries, then
-  identically named symbols may be used from the wrong code, causing
-  confusion or a program crash. If conflicts cause JPEG to fail (JPEG
-  returns an error regarding expected structure sizes), it may be
-  necessary to use Ghostscript's copy of libjpeg for GraphicsMagick, and
-  all delegate libraries which depend on libjpeg, or convince Ghostscript
-  to build against an unmodified installed JPEG library (and lose
-  compatibility with some Postscript files).
+  If the Ghostscript library is used, then please be aware that
+  Ghostscript provides its own modified version of libjpeg and
+  libJasper while GraphicsMagick will be using these libraries as
+  provided with the system. If Ghostscript is not using the same
+  libraries, then identically named symbols may be used from the wrong
+  code, causing confusion or a program crash. If conflicts cause JPEG
+  to fail (JPEG returns an error regarding expected structure sizes),
+  it may be necessary to use Ghostscript's copy of libjpeg for
+  GraphicsMagick, and all delegate libraries which depend on libjpeg,
+  or convince Ghostscript to build against an unmodified installed
+  JPEG library (and lose compatibility with some Postscript files).
 
 * GraphicsMagick requires hp2xx available from
 
@@ -289,7 +285,7 @@ building under Microsoft Windows:
   facilities. Use of umem may improve performance for multi-threaded
   programs and provides access to debugging features that detect memory
   leaks, buffer overruns, multiple frees, use of uninitialized data, use
-  of freed data, and many other common pro- gramming errors.
+  of freed data, and many other common programming errors.
 
 * GraphicsMagick requires libwmf 0.2.5 (or later) from
 
@@ -336,7 +332,7 @@ building under Microsoft Windows:
 
      http://www.microimages.com/downloads/mix/
 
-* GraphicsMagick requires libxml available from
+* GraphicsMagick requires libxml2 available from
 
      http://xmlsoft.org/
 
@@ -363,4 +359,4 @@ building under Microsoft Windows:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2011
+Copyright |copy| GraphicsMagick Group 2002 - 2012
