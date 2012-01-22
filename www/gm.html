@@ -2049,12 +2049,13 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>composite image on background color canvas image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option composites the image on a background color
-(<strong>-background</strong>) canvas image. The existing image content is
-composited at the position specified by geometry x and y offset and/or
-desired gravity (<strong>-gravity</strong>) using the current image compose
-(<strong>-compose</strong>) method.  Image content which falls outside the
-bounds of the new image dimensions is discarded.</font></td></tr></table>
+This option composites the image on a new background color
+(<strong>-background</strong>) canvas image of size &lt;width&gt;x&lt;height&gt;. The
+existing image content is composited at the position specified by
+geometry x and y offset and/or desired gravity (<strong>-gravity</strong>) using
+the current image compose (<strong>-compose</strong>) method.  Image content
+which falls outside the bounds of the new image dimensions is
+discarded.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:</font></td></tr></table>
@@ -2927,6 +2928,14 @@ as a percentage.  If the percent option is supplied, then the offset
 is computed as a percentage of the quantum range.  It is strongly
 recommended to use the percent option so that results are not
 sensitive to pixel quantum depth.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For example,</font></td></tr></table>
+<pre>
+     -colorspace gray -lat "10x10-5%"
+</pre>
+<p>
+will help clarify a scanned grayscale or color document, producing a
+bi-level equivalent.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
