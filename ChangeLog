@@ -1,3 +1,11 @@
+2012-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteJPEGImage): Convert RGB-compatible
+	colorspaces (e.g. CineonLog) to RGB by default since that was the
+	case prior to release 1.3.13.  User can still override it
+	(avoiding removal of log encoding) by explicitly specifying the
+	desired colorspace.  Problem was reported by Gary Margiotta.
+
 2012-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): When reading, save input file
