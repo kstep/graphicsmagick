@@ -232,7 +232,7 @@ enclosed with braces as illustrated here::
   columns=1280 rows=1024
   scene=1
   signature=d79e1c308aa5bbcdeea8ed63df412da9
-  copyright={Copyright (c) 2000 ImageMagick Studio}
+  copyright={Copyright (c) 2000 Mortimer Snerd}
   <FF>
   :
 
@@ -350,4 +350,4 @@ John Cristy, magick-users@imagemagick.org ImageMagick Studio LLC.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2010
+Copyright |copy| GraphicsMagick Group 2002 - 2012

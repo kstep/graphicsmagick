@@ -259,4 +259,4 @@ Stock Photos
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2011
+Copyright |copy| GraphicsMagick Group 2002 - 2012

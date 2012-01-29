@@ -92,6 +92,7 @@ XFAIL_TESTS = \
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \
 	ChangeLog.2008 \

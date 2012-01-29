@@ -154,5 +154,5 @@ Here are just a few examples of what GraphicsMagick can do:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2011
+Copyright |copy| GraphicsMagick Group 2002 - 2012
 

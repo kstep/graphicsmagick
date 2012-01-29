@@ -46,6 +46,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -74,7 +75,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/mission.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/project.html \
@@ -107,7 +107,6 @@ WWW_RST_FILES = \
 	$(WWWDIR)/mission.rst \
 	$(WWWDIR)/motion-picture.rst \
 	$(WWWDIR)/perl.rst \
-	$(WWWDIR)/platforms.rst \
 	$(WWWDIR)/process.rst \
 	$(WWWDIR)/programming.rst \
 	$(WWWDIR)/project.rst \
@@ -128,6 +127,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -173,7 +173,6 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/montage.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/project.html \
 	$(WWWDIR)/reference.html \
@@ -215,6 +214,9 @@ $(top_srcdir)/%.html: $(top_srcdir)/%.rst
 CHANGELOG2RST=$(top_srcdir)/scripts/changelog2rst.sh
 
 $(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
+	$(CHANGELOG2RST) < $^ > $@
+
+$(top_srcdir)/www/ChangeLog-2011.rst: $(top_srcdir)/ChangeLog.2011
 	$(CHANGELOG2RST) < $^ > $@
 
 $(top_srcdir)/www/ChangeLog-2010.rst: $(top_srcdir)/ChangeLog.2010

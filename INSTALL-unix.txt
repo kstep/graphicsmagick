@@ -8,15 +8,6 @@ UNIX/Cygwin/MinGW Compilation
 .. contents::
   :local:
 
-Platforms Note
---------------
-
-Platform specific notes regarding specific operating systems may be found
-in the `www/platforms.rst <platforms.html>`_ file. The intructions in the
-platforms document provide generic instructions which work in most common
-cases. Additional notes regarding Cygwin & MinGW are provided later in
-this file.
-
 Archive Formats
 ---------------
 

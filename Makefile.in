@@ -2307,6 +2307,7 @@ TEST_EXTENSIONS = .sh
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \
 	ChangeLog.2008 \
@@ -4909,6 +4910,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -4937,7 +4939,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/mission.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/project.html \
@@ -4971,7 +4972,6 @@ WWW_RST_FILES = \
 	$(WWWDIR)/mission.rst \
 	$(WWWDIR)/motion-picture.rst \
 	$(WWWDIR)/perl.rst \
-	$(WWWDIR)/platforms.rst \
 	$(WWWDIR)/process.rst \
 	$(WWWDIR)/programming.rst \
 	$(WWWDIR)/project.rst \
@@ -4993,6 +4993,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -5038,7 +5039,6 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/montage.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/project.html \
 	$(WWWDIR)/reference.html \
@@ -11053,6 +11053,9 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
+@MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2011.rst: $(top_srcdir)/ChangeLog.2011
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2010.rst: $(top_srcdir)/ChangeLog.2010
