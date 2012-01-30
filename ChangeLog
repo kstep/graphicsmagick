@@ -1,3 +1,9 @@
+2012-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dcraw.c (RegisterDCRAWImage): Add support for Mamiya
+	Photo RAW "MEF" format.  Resolves SourceForge issue #3481508
+	"*.MEF file open incorrect".
+
 2012-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (WriteJPEGImage): Convert RGB-compatible
