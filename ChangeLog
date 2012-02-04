@@ -1,3 +1,8 @@
+2012-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Update to Automake 1.11.3.  Add
+	lzip compressed archive to options.
+
 2012-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dcraw.c (RegisterDCRAWImage): Add support for Mamiya
