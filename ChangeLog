@@ -1,3 +1,9 @@
+2012-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{log.h,monitor.h,utility.h}: Use double-underscore syntax
+	in GCC format attribute specifications to defend against
+	accidental macro expansion.
+
 2012-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Fix reading XCF which is comprised
