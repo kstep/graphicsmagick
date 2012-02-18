@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -14,23 +14,23 @@
 extern "C" {
 #endif
 
-typedef void *(*MagickMallocFunc)(size_t size);
+typedef void *(*MagickMallocFunc)(size_t size) MAGICK_FUNC_ALLOC_SIZE_1ARG(1);
 typedef void (*MagickFreeFunc)(void *ptr);
-typedef void *(*MagickReallocFunc)(void *ptr, size_t size);
+typedef void *(*MagickReallocFunc)(void *ptr, size_t size) MAGICK_FUNC_ALLOC_SIZE_1ARG(2);
 
 extern MagickExport void
    MagickAllocFunctions(MagickFreeFunc free_func,MagickMallocFunc malloc_func,
                         MagickReallocFunc realloc_func),
-  *MagickMalloc(const size_t size) MAGICK_FUNC_MALLOC,
-  *MagickMallocCleared(const size_t size) MAGICK_FUNC_MALLOC,
+  *MagickMalloc(const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(1),
+  *MagickMallocCleared(const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(1),
   *MagickCloneMemory(void *destination,const void *source,const size_t size) MAGICK_FUNC_NONNULL,
-  *MagickRealloc(void *memory,const size_t size) MAGICK_FUNC_MALLOC,
+  *MagickRealloc(void *memory,const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(2),
    MagickFree(void *memory);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
 extern MagickExport void
-  *MagickMallocArray(const size_t count,const size_t size) MAGICK_FUNC_MALLOC;
+  *MagickMallocArray(const size_t count,const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_2ARG(1,2);
 
 extern MagickExport size_t
   MagickArraySize(const size_t count,const size_t size);
