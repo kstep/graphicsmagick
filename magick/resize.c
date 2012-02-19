@@ -1336,13 +1336,12 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
   i=(long) DefaultResizeFilter;
-  if (image->filter != UndefinedFilter)
-    i=(long) image->filter;
+  if (filter != UndefinedFilter)
+    i=(long) filter;
   else
     if ((image->storage_class == PseudoClass) || image->matte ||
         ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
-
 
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),

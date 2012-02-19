@@ -1,3 +1,13 @@
+2012-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Downgrade to Automake 1.11.2 so that test suite can run on
+	systems with limited command line length.  This means that lzip
+	support is temporarily removed.
+
+	* magick/resize.c (ResizeImage): Resize filter argument was being
+	ignored.  Filter from image 'filter' member was used instead.
+	Problem was reported by Steven Bakhtiari.
+
 2012-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tiff: Update bundled libtiff to 4.0.1 release.
