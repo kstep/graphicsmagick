@@ -1,3 +1,37 @@
+2012-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* libtiff 4.0.1 released.
+
+	* Update automake used to 1.11.3.
+
+	* libtiff/tiffio.h: Use double-underbar syntax in GCC printf
+	attribute specification to lessen the risk of accidental macro
+	substitution.  Patch from Vincent Torri.
+
+2012-01-31  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* libtiff/tif_dir.c, libtiff/tif_dirread.c: Extra caution around
+	assumption tag fetching is always successful. 
+
+	* libtiff/tif_jpeg.c: Extra caution for case where sp is NULL.
+
+2012-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Add support for using library symbol versioning on
+	ELF systems with the GNU linker.  Support is enabled via
+	--enable-ld-version-script.  Disabled by default for now until
+	there is a decision for how to deploy a libtiff with versioned
+	symbols after libtiff 4.0.0 was already released.
+
+2011-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* libtiff/tif_win32.c: Eliminate some minor 64-bit warnings in
+	tif_win32.c.  Patch by Edward Lam.
+
+	* configure.ac: Add libtiff private dependency on -llzma for
+	pkg-config.  Patch by Mark Brand.
+	Updated Automake to 1.11.2.
+
 2011-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtiff 4.0.0 released.
