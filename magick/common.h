@@ -137,6 +137,12 @@ extern "C" {
 #    if (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3)))  /* 3.3+ */
 #      define MAGICK_FUNC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
 #    endif
+#    if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))  /* 4.3+ */
+#      define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) __attribute__((__alloc_size__(arg_num)))
+#      define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) __attribute__((__alloc_size__(arg_num1,arg_num2)))
+#      define MAGICK_FUNC_HOT __attribute__((__hot__))
+#      define MAGICK_FUNC_COLD __attribute__((__cold__))
+#    endif
 #  endif
 #endif
 #if !defined(MAGICK_FUNC_DEPRECATED)
@@ -159,6 +165,18 @@ extern "C" {
 #endif
 #if !defined(MAGICK_FUNC_WARN_UNUSED_RESULT)
 #  define MAGICK_FUNC_WARN_UNUSED_RESULT /*nothing*/
+#endif
+#if !defined(MAGICK_FUNC_ALLOC_SIZE_1ARG)
+#  define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) /*nothing*/
+#endif
+#if !defined(MAGICK_FUNC_ALLOC_SIZE_2ARG)
+#  define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) /*nothing*/
+#endif
+#if !defined(MAGICK_FUNC_HOT)
+#  define MAGICK_FUNC_HOT  /*nothing*/
+#endif
+#if !defined(MAGICK_FUNC_COLD)
+#  define MAGICK_FUNC_COLD  /*nothing*/
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
