@@ -1,5 +1,7 @@
 2012-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* png: Update bundled libpng to 1.5.9 release.
+
 	* magick/memory.h: Decorate memory allocation functions with GCC
 	attribute 'alloc_size'.
 
