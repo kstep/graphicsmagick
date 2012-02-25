@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 24, 2011
+This file was last updated on February 25, 2011
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,59 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.14 (TBD)
+==========================
+
+Security Fixes:
+
+  * Windows libpng updated to the 1.5.9 release, which fixes the dire
+    CVE-2011-3026 buffer overrun bug.
+
+Bug fixes:
+
+  * EMF format : Fixed wrong module mapping which caused EMF reading
+    to not work under Windows.
+
+  * TGA format: Assume that 32-bit TGA files have an alpha channel,
+    even if they are not marked as such.
+
+  * JPEG & CineonLog: Convert RGB-compatible colorspaces
+    (e.g. CineonLog) to RGB by default since that was the case prior
+    to release 1.3.13.
+
+  * RAW formats: Small memory leak in dcraw module was fixed.
+
+  * Resize: ResizeImage() was ignoring its resize filter argument and
+    was using the filter setting from the Image structure instead.
+
+  * The mirror virtual pixel method was broken.
+
+New Features:
+
+  * Open64 Compiler Suite: Version 5.0 is fully supported.
+
+  * Wand API: Added MagickExtentImage().
+
+  * MEF RAW: Mamiya Photo RAW "MEF" format is now supported.
+
+Feature improvements:
+
+  * DPX format: Original file endianness is preserved by default.
+
+  * PNG library: Updated libpng to 1.5.9 release.
+
+  * TIFF library: Updated libtiff to 4.0.1 release.
+
+  * Zlib library: Updated to zlib 1.2.6 release.
+
+Performance Improvements:
+
+  * Despeckle algorithm (-despeckle) is many times faster.
+
+Behavior Changes:
+
+  * DPX format: Original file endianness is preserved by default.
 
 1.3.13 (December 24, 2011)
 ==========================

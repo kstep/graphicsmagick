@@ -1,3 +1,7 @@
+2012-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS.txt: Updated to describe updates since last release.
+
 2012-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Downgrade to Automake 1.11.2 so that test suite can run on
