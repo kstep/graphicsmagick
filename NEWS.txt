@@ -14,13 +14,13 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.14 (TBD)
+1.3.14 (February 25, 2012)
 ==========================
 
 Security Fixes:
 
-  * Windows libpng updated to the 1.5.9 release, which fixes the dire
-    CVE-2011-3026 buffer overrun bug.
+  * Windows bundled libpng updated to the 1.5.9 release, which fixes
+    the dire CVE-2011-3026 buffer overrun bug.
 
 Bug fixes:
 
@@ -29,6 +29,9 @@ Bug fixes:
 
   * TGA format: Assume that 32-bit TGA files have an alpha channel,
     even if they are not marked as such.
+
+  * XCF format: Fix reading XCF which is comprised of different sized
+    layers.
 
   * JPEG & CineonLog: Convert RGB-compatible colorspaces
     (e.g. CineonLog) to RGB by default since that was the case prior
