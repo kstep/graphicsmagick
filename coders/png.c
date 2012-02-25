@@ -2105,14 +2105,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       if (ping_colortype == PNG_COLOR_TYPE_GRAY)
         {
-#if (Quantum_depth == 8)
-          if (ping_bit_depth < Quantum_depth)
+#if (QuantumDepth == 8)
+          if (ping_bit_depth < QuantumDepth)
 #endif
             transparent_color.opacity=(unsigned short) (
                 ping_trans_color->gray *
                 (65535L/((1UL << ping_bit_depth)-1)));
 
-#if (Quantum_depth == 8)
+#if (QuantumDepth == 8)
           else
             transparent_color.opacity=(unsigned short) (
                 (ping_trans_color->gray * 65535L)/

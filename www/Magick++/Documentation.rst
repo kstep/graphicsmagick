@@ -123,6 +123,6 @@ classes is available via the following table:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| Bob Friesenhahn 1999 - 2010
+Copyright |copy| Bob Friesenhahn 1999 - 2012
 
 

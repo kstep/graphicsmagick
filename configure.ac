@@ -1406,15 +1406,29 @@ if test "${OPENMP_CFLAGS}x" != 'x'
 then
   if test "${GCC}" = "yes"
   then
+    # Open64 (passes for GCC but uses different OpenMP implementation)
+    if test "x$LIB_OMP" = x ; then
+      if $CC --version 2>&1 | grep Open64 > /dev/null ; then
+        AC_CHECK_LIB(openmp,omp_get_num_procs,LIB_OMP="-lopenmp",,)
+      fi
+    fi
     # GCC
-    AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
+    if test "x$LIB_OMP" = x ; then
+      AC_CHECK_LIB(gomp,GOMP_parallel_start,LIB_OMP="-lgomp",,)
+    fi
   else
     # Sun CC
-    AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    if test "x$LIB_OMP" = x ; then
+      AC_CHECK_LIB(mtsk,sunw_mp_register_warn,LIB_OMP="-lmtsk",,)
+    fi
     # AIX xlc
+    if test "x$LIB_OMP" = x ; then
     AC_CHECK_LIB(xlsmp,_xlsmpFlush,LIB_OMP="-lxlsmp",,)
+    fi
     # SGI IRIX 6.5 MIPSpro C/C++
+    if test "x$LIB_OMP" = x ; then
     AC_CHECK_LIB(mp,mp_destroy,LIB_OMP="-lmp",,)
+    fi
   fi
   LIBS="$LIB_OMP $LIBS"
 fi
@@ -3250,9 +3264,9 @@ AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3297,16 +3311,13 @@ AC_SUBST(X_CFLAGS)
 MAGICK_API_CFLAGS=$CFLAGS
 MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_OMP_LIBS="$LIB_OMP $LIB_THREAD" # Perl's Make::Maker summarily discards OMP CFLAGS option
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL $MAGICK_OMP_LIBS"
-MAGICK_API_LIBS=`echo $MAGICK_API_LIBS | sed -e 's/  */ /g'`
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 AC_SUBST(MAGICK_API_CFLAGS)
 AC_SUBST(MAGICK_API_CPPFLAGS)
 AC_SUBST(MAGICK_API_PC_CPPFLAGS)
 AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
-AC_SUBST(MAGICK_OMP_LIBS)
 
 AC_CONFIG_FILES(\
         GraphicsMagick.spec \

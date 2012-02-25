@@ -25,7 +25,7 @@ dnl OF THIS SOFTWARE.
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.64)
-AC_INIT([LibTIFF Software],[4.0.0],[tiff@lists.maptools.org],[tiff])
+AC_INIT([LibTIFF Software],[4.0.1],[tiff@lists.maptools.org],[tiff])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_LANG(C)
@@ -41,7 +41,7 @@ dnl Versioning.
 dnl Don't fill the ALPHA_VERSION field, if not applicable.
 LIBTIFF_MAJOR_VERSION=4
 LIBTIFF_MINOR_VERSION=0
-LIBTIFF_MICRO_VERSION=0
+LIBTIFF_MICRO_VERSION=1
 LIBTIFF_ALPHA_VERSION=
 LIBTIFF_VERSION=$LIBTIFF_MAJOR_VERSION.$LIBTIFF_MINOR_VERSION.$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
 dnl This will be used with the 'make release' target
@@ -77,7 +77,7 @@ dnl     increment age.
 dnl  6. If any interfaces have been removed since the last public release,
 dnl     then set age to 0.                                
 LIBTIFF_CURRENT=5
-LIBTIFF_REVISION=5
+LIBTIFF_REVISION=6
 LIBTIFF_AGE=0
 LIBTIFF_VERSION_INFO=$LIBTIFF_CURRENT:$LIBTIFF_REVISION:$LIBTIFF_AGE
 
@@ -111,6 +111,37 @@ VL_PROG_CC_WARNINGS()
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
+
+
+# Check if LD supports linker scripts, and define automake conditional
+# HAVE_LD_VERSION_SCRIPT if so.  This functionality is currently
+# constrained to compilers using GNU ld on ELF systems or systems
+# which provide an adequate emulation thereof.
+AC_ARG_ENABLE([ld-version-script],
+  AS_HELP_STRING([--enable-ld-version-script],
+    [enable linker version script (default is disabled)]),
+    [have_ld_version_script=$enableval], [have_ld_version_script=no])
+if test "$have_ld_version_script" != no; then
+  AC_MSG_CHECKING([if LD -Wl,--version-script works])
+  save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LDFLAGS -Wl,--version-script=conftest.map"
+  cat > conftest.map <<EOF
+VERS_1 {
+        global: sym;
+};
+
+VERS_2 {
+        global: sym;
+} VERS_1;
+EOF
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+                 [have_ld_version_script=yes], [have_ld_version_script=no])
+  rm -f conftest.map
+  LDFLAGS="$save_LDFLAGS"
+  AC_MSG_RESULT($have_ld_version_script)
+fi
+AM_CONDITIONAL(HAVE_LD_VERSION_SCRIPT, test "$have_ld_version_script" = "yes")
+
 
 dnl Tests for Windows
 AC_EXEEXT
@@ -720,6 +751,7 @@ fi
 if test "$HAVE_LZMA" = "yes" ; then
   AC_DEFINE(LZMA_SUPPORT,1,[Support LZMA2 compression])
   LIBS="-llzma $LIBS"
+  tiff_libs_private="-llzma ${tiff_libs_private}"
 
   if test "$HAVE_RPATH" = "yes" -a "x$with_lzma_lib_dir" != "x" ; then
     LIBDIR="-R $with_lzma_lib_dir $LIBDIR"
@@ -966,6 +998,7 @@ LOC_MSG([  Documentation directory:            ${LIBTIFF_DOCDIR}])
 LOC_MSG([  C compiler:                         ${CC} ${CFLAGS}])
 LOC_MSG([  C++ compiler:                       ${CXX} ${CXXFLAGS}])
 LOC_MSG([  Enable runtime linker paths:        ${HAVE_RPATH}])
+LOC_MSG([  Enable linker symbol versioning:    ${have_ld_version_script}])
 LOC_MSG([  Support Microsoft Document Imaging: ${HAVE_MDI}])
 LOC_MSG([  Use win32 IO:                       ${win32_io_ok}])
 LOC_MSG()

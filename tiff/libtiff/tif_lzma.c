@@ -1,4 +1,4 @@
-/* $Id: tif_lzma.c,v 1.3 2011-02-22 21:55:13 fwarmerdam Exp $ */
+/* $Id: tif_lzma.c,v 1.4 2011-12-22 00:29:29 bfriesen Exp $ */
 
 /*
  * Copyright (c) 2010, Andrey Kiselev <dron@ak4719.spb.edu>

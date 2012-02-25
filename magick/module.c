@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -111,7 +111,6 @@ ModuleAliases[] =
   MODULEALIAS("DCR","DCRAW"),
   MODULEALIAS("DCX","PCX"),
   MODULEALIAS("DNG","DCRAW"),
-  MODULEALIAS("EMF","WMF"),
   MODULEALIAS("EPDF","PDF"),
   MODULEALIAS("EPI","PS"),
   MODULEALIAS("EPS","PS"),
@@ -154,6 +153,7 @@ ModuleAliases[] =
   MODULEALIAS("LOCALEMC","LOCALE"),
   MODULEALIAS("M","GRAY"),
   MODULEALIAS("M2V","MPEG"),
+  MODULEALIAS("MEF","DCRAW"),
   MODULEALIAS("MNG","PNG"),
   MODULEALIAS("MPG","MPEG"),
   MODULEALIAS("MRW","DCRAW"),

@@ -1170,9 +1170,6 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
     {
-      /*
-	Convert MIFF to TXT raster pixels.
-      */
       unsigned int
 	depth;
   	 
@@ -1183,6 +1180,23 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 	depth=16;
       else
 	depth=32;    
+
+      if ((AccessDefinition(image_info,"txt","with-im-header")))
+        {
+          /* Write ImageMagick txt header */
+
+          unsigned char a = image->matte ? 'a' : ' ';
+
+          FormatString(buffer,
+              "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,rgb%c\n",
+              (double) image->columns, (double) image->rows, (double) depth, a);
+
+	  (void) WriteBlobString(image,buffer);
+        }
+
+      /*
+	Convert MIFF to TXT raster pixels.
+      */
       for (y=0; y < (long) image->rows; y++)
 	{
 	  p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -258,19 +258,3 @@ Magick___tests_readWriteBlob_LDADD	= $(LIBMAGICKPP)
 
 Magick___tests_readWriteImages_SOURCES	= Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD	= $(LIBMAGICKPP)
-
-
-if WITH_PERL
-
-MAGICKPP_LOCAL_TARGETS = www/Magick++/ChangeLog.html
-
-# Build HTML version of ChangeLog
-www/Magick++/ChangeLog.html: Magick++/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
-	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
-
-else
-
-#all-local:
-
-endif

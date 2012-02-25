@@ -49,7 +49,7 @@ namespace MagickLib
 // Provide appropriate DLL imports/exports for Visual C++,
 // Borland C++Builder and MinGW builds.
 //
-#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(__CYGWIN__) //&& !defined(__MINGW32__)
 # define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
@@ -66,8 +66,8 @@ namespace MagickLib
 // using code is dynamic, STATIC_MAGICK may be defined in the project to
 // override triggering dynamic library behavior.
 //
-#    define MagickDLLBuild
 #    if defined(_VISUALC_)
+#      define MagickDLLExplicitTemplate     /* Explicit template instantiation in DLLs */
 #      pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
 #      pragma warning( disable: 4251 )
 #    endif
@@ -78,10 +78,12 @@ namespace MagickLib
 #        pragma message( "Magick++ lib DLL import" )
 #      endif
 #    else
-#      if defined(__BORLANDC__)
+#      if defined(__BORLANDC__) || defined(__MINGW32__)
 #        define MagickDLLDecl __declspec(dllexport)
 #        define MagickDLLDeclExtern __declspec(dllexport)
-#        pragma message( "BCBMagick++ lib DLL export" )
+#        if defined(__BORLANDC__)
+#          pragma message( "BCBMagick++ lib DLL export" )
+#        endif
 #      else
 #        define MagickDLLDecl __declspec(dllexport)
 #        define MagickDLLDeclExtern extern __declspec(dllexport)

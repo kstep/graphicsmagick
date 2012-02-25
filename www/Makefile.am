@@ -46,6 +46,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -54,6 +55,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
@@ -73,7 +75,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/mission.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/project.html \
@@ -106,7 +107,6 @@ WWW_RST_FILES = \
 	$(WWWDIR)/mission.rst \
 	$(WWWDIR)/motion-picture.rst \
 	$(WWWDIR)/perl.rst \
-	$(WWWDIR)/platforms.rst \
 	$(WWWDIR)/process.rst \
 	$(WWWDIR)/programming.rst \
 	$(WWWDIR)/project.rst \
@@ -127,6 +127,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -137,6 +138,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Documentation.rst \
 	$(WWWDIR)/Magick++/Image.html \
@@ -171,7 +173,6 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/montage.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/project.html \
 	$(WWWDIR)/reference.html \
@@ -215,6 +216,9 @@ CHANGELOG2RST=$(top_srcdir)/scripts/changelog2rst.sh
 $(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
 	$(CHANGELOG2RST) < $^ > $@
 
+$(top_srcdir)/www/ChangeLog-2011.rst: $(top_srcdir)/ChangeLog.2011
+	$(CHANGELOG2RST) < $^ > $@
+
 $(top_srcdir)/www/ChangeLog-2010.rst: $(top_srcdir)/ChangeLog.2010
 	$(CHANGELOG2RST) < $^ > $@
 
@@ -243,6 +247,9 @@ $(top_srcdir)/www/ChangeLog-2002.rst: $(top_srcdir)/ChangeLog.2002
 	$(CHANGELOG2RST) < $^ > $@
 
 $(top_srcdir)/www/ChangeLog-2001.rst: $(top_srcdir)/ChangeLog.2001
+	$(CHANGELOG2RST) < $^ > $@
+
+$(top_srcdir)/www/Magick++/ChangeLog.rst: $(top_srcdir)/Magick++/ChangeLog
 	$(CHANGELOG2RST) < $^ > $@
 
 # Build color.html

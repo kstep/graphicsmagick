@@ -2682,6 +2682,6 @@ buffer or file.  Used to support image encoders::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| `Bob Friesenhahn`_ 1999 - 2010
+Copyright |copy| `Bob Friesenhahn`_ 1999 - 2012
 
 

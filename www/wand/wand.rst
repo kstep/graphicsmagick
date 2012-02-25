@@ -33,5 +33,5 @@ your program will compile and run.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2009 - 2010
+Copyright |copy| GraphicsMagick Group 2009 - 2012
 

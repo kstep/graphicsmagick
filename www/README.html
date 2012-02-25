@@ -144,12 +144,9 @@ available as</p>
 <blockquote>
 <p><a class="reference external" href="http://www.freetype.org/">http://www.freetype.org/</a></p>
 </blockquote>
-<p>to annotate with TrueType and Postscript Type 1 fonts. Note that
-enabling TT_CONFIG_OPTION_BYTECODE_INTERPRETER in FreeType's
-include/freetype/config/ftoption.h will produce better glyph
-renderings but may violate an Apple patent.</p>
+<p>to annotate with TrueType and Postscript Type 1 fonts.</p>
 </li>
-<li><p class="first">GraphicsMagick requires Ghostscript software (version 8.64
+<li><p class="first">GraphicsMagick requires Ghostscript software (version 9.04
 recommended) available from</p>
 <blockquote>
 <p><a class="reference external" href="http://pages.cs.wisc.edu/~ghost/">http://pages.cs.wisc.edu/~ghost/</a></p>
@@ -158,15 +155,13 @@ recommended) available from</p>
 </blockquote>
 <p><a class="reference external" href="http://sourceforge.net/projects/ghostscript/">http://sourceforge.net/projects/ghostscript/</a></p>
 </blockquote>
-<p>to read the Postscript or the Portable Document format. Ghostscript
-is used to annotate an image when the FreeType library is not used,
-or an X server is not available. See the FreeType library above for
-another means to annotate an image. Note, Ghostscript must support
-the ppmraw device (type <cite>gs -h</cite> to verify). If Ghostscript is
-unavailable, the Display Postscript X11 extension is used to
-rasterize a Postscript document (assuming you define HasDPS and DPS
-is available). The DPS extension is less robust than Ghostscript in
-that it will only rasterize one page of a multi-page document.</p>
+<p>to read the Postscript or the Portable Document Format (PDF).</p>
+<p>Ghostscript is available for use under both free (GPL) and
+commercial licenses.  We are not lawyers so we can not provide
+advice as to when the commercial license from Artifex is required.
+Please make sure that you are aware of Ghostscript licencing and
+usage terms if you plan to use it in some sort of commercial
+situation.</p>
 <p>Ghostscript (release 7.0 and later) may optionally install a library
 (libgs) under Linux. If this library is installed, GraphicsMagick may
 be configured to use it. We do <strong>NOT</strong> recommend using this library
@@ -175,16 +170,17 @@ concurrency since only one instance of the interpreter is available.
 Unix systems will obtain better performance from executing Ghostscript as
 an external process since then multiple interpreters may execute at
 once on multiple CPU cores.</p>
-<p>Ghostscript provides its own modified version of libjpeg and libJasper
-while GraphicsMagick will be using these libraries as provided with the
-system. If Ghostscript is not using the same libraries, then
-identically named symbols may be used from the wrong code, causing
-confusion or a program crash. If conflicts cause JPEG to fail (JPEG
-returns an error regarding expected structure sizes), it may be
-necessary to use Ghostscript's copy of libjpeg for GraphicsMagick, and
-all delegate libraries which depend on libjpeg, or convince Ghostscript
-to build against an unmodified installed JPEG library (and lose
-compatibility with some Postscript files).</p>
+<p>If the Ghostscript library is used, then please be aware that
+Ghostscript provides its own modified version of libjpeg and
+libJasper while GraphicsMagick will be using these libraries as
+provided with the system. If Ghostscript is not using the same
+libraries, then identically named symbols may be used from the wrong
+code, causing confusion or a program crash. If conflicts cause JPEG
+to fail (JPEG returns an error regarding expected structure sizes),
+it may be necessary to use Ghostscript's copy of libjpeg for
+GraphicsMagick, and all delegate libraries which depend on libjpeg,
+or convince Ghostscript to build against an unmodified installed
+JPEG library (and lose compatibility with some Postscript files).</p>
 </li>
 <li><p class="first">GraphicsMagick requires hp2xx available from</p>
 <blockquote>
@@ -319,7 +315,7 @@ which is included in Sun's Solaris operating system or available from</p>
 facilities. Use of umem may improve performance for multi-threaded
 programs and provides access to debugging features that detect memory
 leaks, buffer overruns, multiple frees, use of uninitialized data, use
-of freed data, and many other common pro- gramming errors.</p>
+of freed data, and many other common programming errors.</p>
 </li>
 <li><p class="first">GraphicsMagick requires libwmf 0.2.5 (or later) from</p>
 <blockquote>
@@ -365,7 +361,7 @@ available from</p>
 <p><a class="reference external" href="http://www.microimages.com/downloads/mix/">http://www.microimages.com/downloads/mix/</a></p>
 </blockquote>
 </li>
-<li><p class="first">GraphicsMagick requires libxml available from</p>
+<li><p class="first">GraphicsMagick requires libxml2 available from</p>
 <blockquote>
 <p><a class="reference external" href="http://xmlsoft.org/">http://xmlsoft.org/</a></p>
 </blockquote>
@@ -389,7 +385,7 @@ distributed with &quot;.xz&quot; or &quot;.lzma&quot; extensions.</p>
 </li>
 </ul>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2012</p>
 </div>
 </div>
 </body>

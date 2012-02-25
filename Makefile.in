@@ -2083,7 +2083,6 @@ MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAGICK_LTDLDEPS = @MAGICK_LTDLDEPS@
-MAGICK_OMP_LIBS = @MAGICK_OMP_LIBS@
 MAGICK_PLUS_PLUS_LIBRARY_AGE = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
 MAGICK_PLUS_PLUS_LIBRARY_CURRENT = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
 MAGICK_PLUS_PLUS_LIBRARY_REVISION = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
@@ -2249,7 +2248,7 @@ xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
 # Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
-AUTOMAKE_OPTIONS = 1.11 subdir-objects parallel-tests color-tests dist-bzip2 dist-xz foreign
+AUTOMAKE_OPTIONS = 1.11 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign # dist-lzip
 topincludedir = @includedir@/GraphicsMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
@@ -2308,6 +2307,7 @@ TEST_EXTENSIONS = .sh
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \
 	ChangeLog.2008 \
@@ -3774,7 +3774,6 @@ Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
 Magick___tests_readWriteBlob_LDADD = $(LIBMAGICKPP)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(LIBMAGICKPP)
-@WITH_PERL_TRUE@MAGICKPP_LOCAL_TARGETS = www/Magick++/ChangeLog.html
 TESTS_CHECK_PGRMS = \
 	tests/bitstream \
         tests/constitute \
@@ -4911,6 +4910,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -4919,6 +4919,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Image.html \
 	$(WWWDIR)/Magick++/index.html \
@@ -4938,7 +4939,6 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/mission.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/project.html \
@@ -4972,7 +4972,6 @@ WWW_RST_FILES = \
 	$(WWWDIR)/mission.rst \
 	$(WWWDIR)/motion-picture.rst \
 	$(WWWDIR)/perl.rst \
-	$(WWWDIR)/platforms.rst \
 	$(WWWDIR)/process.rst \
 	$(WWWDIR)/programming.rst \
 	$(WWWDIR)/project.rst \
@@ -4994,6 +4993,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2008.html \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
+	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -5004,6 +5004,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/ChangeLog.html \
 	$(WWWDIR)/Magick++/Documentation.html \
 	$(WWWDIR)/Magick++/Documentation.rst \
 	$(WWWDIR)/Magick++/Image.html \
@@ -5038,7 +5039,6 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/montage.html \
 	$(WWWDIR)/motion-picture.html \
 	$(WWWDIR)/perl.html \
-	$(WWWDIR)/platforms.html \
 	$(WWWDIR)/process.html \
 	$(WWWDIR)/project.html \
 	$(WWWDIR)/reference.html \
@@ -10460,10 +10460,10 @@ check-TESTS:
 	@list='$(RECHECK_LOGS)'; test -z "$$list" || rm -f $$list
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 	@list='$(TEST_LOGS)';						\
-	list=`for f in $$list; do					\
-	  test .log = $$f || echo $$f;					\
-	done | tr '\012\015' '  '`;					\
-	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) TEST_LOGS="$$list"
+	{ echo "TEST_LOGS = \\";					\
+	  for f in $$list; do test .log = $$f || echo "$$f \\"; done;	\
+	} | sed '$$s/\\$$//'						\
+	  | $(MAKE) -f Makefile -f - $(AM_MAKEFLAGS) $(TEST_SUITE_LOG)
 
 .log.html:
 	@list='$(RST2HTML) $$RST2HTML rst2html rst2html.py';		\
@@ -10897,13 +10897,6 @@ magick-install-data-local:
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick_config.h
 
-# Build HTML version of ChangeLog
-@WITH_PERL_TRUE@www/Magick++/ChangeLog.html: Magick++/ChangeLog
-@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(top_srcdir)/Magick++/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
-@WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
-
-#all-local:
-
 generate-tests-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	( \
@@ -11062,6 +11055,9 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2011.rst: $(top_srcdir)/ChangeLog.2011
+@MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
+
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2010.rst: $(top_srcdir)/ChangeLog.2010
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
@@ -11090,6 +11086,9 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2001.rst: $(top_srcdir)/ChangeLog.2001
+@MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Magick++/ChangeLog.rst: $(top_srcdir)/Magick++/ChangeLog
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 # Build color.html

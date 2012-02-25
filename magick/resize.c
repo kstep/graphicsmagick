@@ -507,7 +507,15 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for schedule(static,4) shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(row_count, status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(row_count, status)
+#    endif
+#  endif
 #endif
     for (y=0; y < (long) minify_image->rows; y++)
       {
@@ -828,7 +836,15 @@ HorizontalFilter(const Image *source,Image *destination,
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for shared(status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(status)
+#  else
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(status)
+#    endif
+#  endif
 #endif
   for (x=0; x < (long) destination->columns; x++)
     {
@@ -1047,7 +1063,15 @@ VerticalFilter(const Image *source,Image *destination,
   scale=1.0/scale;
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for shared(status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(status)
+#  else
+#    if defined(USE_STATIC_SCHEDULING_ONLY)
+#      pragma omp parallel for schedule(static) shared(status)
+#    else
+#      pragma omp parallel for schedule(guided) shared(status)
+#    endif
+#  endif
 #endif
   for (y=0; y < (long) destination->rows; y++)
     {
@@ -1312,13 +1336,12 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
   i=(long) DefaultResizeFilter;
-  if (image->filter != UndefinedFilter)
-    i=(long) image->filter;
+  if (filter != UndefinedFilter)
+    i=(long) filter;
   else
     if ((image->storage_class == PseudoClass) || image->matte ||
         ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
-
 
   if (IsEventLogging())
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),

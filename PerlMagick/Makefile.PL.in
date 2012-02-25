@@ -22,7 +22,6 @@ my $magick_CPPFLAGS='-I../ -I@top_srcdir@ @CPPFLAGS@';
 my $magick_LDFLAGS='@LDFLAGS@';
 my $magick_BIN_DIR="$ENV{'DESTDIR'}@BIN_DIR@";
 my $magick_DEP_LIBS='@MAGICK_DEP_LIBS@';
-my $magick_OMP_LIBS='@MAGICK_OMP_LIBS@';
 my $magick_PERLMAINCC='@PERLMAINCC@';
 my $magick_LIB_DIR="$ENV{'DESTDIR'}@MAGICKLIBDIR@";
 
@@ -79,7 +78,7 @@ WriteMakefile
    'INSTALLBIN'	=> $magick_BIN_DIR,
 
    # Library specification
-   'LIBS'	=> ["-L$magick_LIB_DIR -lGraphicsMagick $magick_LDFLAGS $magick_DEP_LIBS $magick_OMP_LIBS"],
+   'LIBS'	=> ["-L$magick_LIB_DIR -lGraphicsMagick $magick_LDFLAGS $magick_DEP_LIBS"],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',

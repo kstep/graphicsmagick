@@ -741,9 +741,9 @@ AccessMutablePixels(Image *image)
 #define EdgeY(y) ((y) < 0 ? 0 : (y) >= (long) cache_info->rows ? \
   (long) cache_info->rows-1 : (y))
 #define MirrorX(x) ((((x) >= 0) && (x) < (long) cache_info->columns) ? \
-  (x) : (long) cache_info->columns-TileX(x))
+  (x) : (long) cache_info->columns-TileX(x)-1L)
 #define MirrorY(y) ((((y) >= 0) && (y) < (long) cache_info->rows) ? \
-  (y) : (long) cache_info->rows-TileY(y))
+  (y) : (long) cache_info->rows-TileY(y)-1L)
 #define TileX(x) (((x) >= 0) ? ((x) % (long) cache_info->columns) : \
   (long) cache_info->columns-(-(x) % (long) cache_info->columns))
 #define TileY(y) (((y) >= 0) ? ((y) % (long) cache_info->rows) : \

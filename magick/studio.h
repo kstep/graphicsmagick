@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -218,9 +218,22 @@ extern "C" {
 #endif
 
 /*
+  Work around OpenMP implementation bugs noticed in the Open64 5.0 compiler
+  These workarounds will be removed once the bugs have been fixed in a release.
+  Open64 5.0 provides these definitions:
+  __OPENCC__ 5        -- OpenCC major version
+  __OPENCC_MINOR__ 0  -- OpenCC minor version
+  __OPEN64__ "5.0"    -- OpenCC stringified version
+*/
+#if defined(__OPENCC__)
+#  undef USE_STATIC_SCHEDULING_ONLY
+#  define USE_STATIC_SCHEDULING_ONLY 1
+#endif
+
+/*
   OpenMP support requires version 2.0 (March 2002) or later.
 */
-#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPEN64__))
+#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPENCC__))
 #  include <omp.h>
 #  define HAVE_OPENMP 1
 #endif
@@ -416,6 +429,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickFtell(stream) ftell(stream)
 #  define MagickStatStruct_t struct stat
 #  define MagickStat(path,stat_buff) stat(path,stat_buff)
+#endif
+
+#if !defined(MagickMmap)
+#  define MagickMmap(address,length,protection,access,file,offset) \
+     mmap(address,length,protection,access,file,offset)
+#endif
+#if !defined(MagickMsync)
+#  define MagickMsync(addr,len,flags) msync(addr,len,flags)
+#endif
+#if !defined(MagickMunmap)
+#  define MagickMunmap(addr,len) munmap(addr,len)
+#endif
+#if !defined(MagickFtruncate)
+#  define MagickFtruncate(filedes,length) ftruncate(filedes,length)
 #endif
 
 #if !defined(HAVE_POPEN) && defined(HAVE__POPEN)

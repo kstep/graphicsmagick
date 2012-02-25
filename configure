@@ -620,7 +620,6 @@ am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-MAGICK_OMP_LIBS
 MAGICK_API_LIBS
 MAGICK_API_LDFLAGS
 MAGICK_API_PC_CPPFLAGS
@@ -7076,7 +7075,7 @@ fi
 # which indicates that we try without any flags at all, and "pthread-config"
 # which is a program returning the flags for the Pth emulation library.
 
-acx_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+acx_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt lpthread pthread-config"
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
@@ -23573,8 +23572,54 @@ if test "${OPENMP_CFLAGS}x" != 'x'
 then
   if test "${GCC}" = "yes"
   then
+    # Open64 (passes for GCC but uses different OpenMP implementation)
+    if test "x$LIB_OMP" = x ; then
+      if $CC --version 2>&1 | grep Open64 > /dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for omp_get_num_procs in -lopenmp" >&5
+$as_echo_n "checking for omp_get_num_procs in -lopenmp... " >&6; }
+if ${ac_cv_lib_openmp_omp_get_num_procs+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lopenmp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char omp_get_num_procs ();
+int
+main ()
+{
+return omp_get_num_procs ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_openmp_omp_get_num_procs=yes
+else
+  ac_cv_lib_openmp_omp_get_num_procs=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_openmp_omp_get_num_procs" >&5
+$as_echo "$ac_cv_lib_openmp_omp_get_num_procs" >&6; }
+if test "x$ac_cv_lib_openmp_omp_get_num_procs" = xyes; then :
+  LIB_OMP="-lopenmp"
+fi
+
+      fi
+    fi
     # GCC
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GOMP_parallel_start in -lgomp" >&5
+    if test "x$LIB_OMP" = x ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GOMP_parallel_start in -lgomp" >&5
 $as_echo_n "checking for GOMP_parallel_start in -lgomp... " >&6; }
 if ${ac_cv_lib_gomp_GOMP_parallel_start+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -23614,9 +23659,11 @@ if test "x$ac_cv_lib_gomp_GOMP_parallel_start" = xyes; then :
   LIB_OMP="-lgomp"
 fi
 
+    fi
   else
     # Sun CC
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sunw_mp_register_warn in -lmtsk" >&5
+    if test "x$LIB_OMP" = x ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sunw_mp_register_warn in -lmtsk" >&5
 $as_echo_n "checking for sunw_mp_register_warn in -lmtsk... " >&6; }
 if ${ac_cv_lib_mtsk_sunw_mp_register_warn+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -23656,7 +23703,9 @@ if test "x$ac_cv_lib_mtsk_sunw_mp_register_warn" = xyes; then :
   LIB_OMP="-lmtsk"
 fi
 
+    fi
     # AIX xlc
+    if test "x$LIB_OMP" = x ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _xlsmpFlush in -lxlsmp" >&5
 $as_echo_n "checking for _xlsmpFlush in -lxlsmp... " >&6; }
 if ${ac_cv_lib_xlsmp__xlsmpFlush+:} false; then :
@@ -23697,7 +23746,9 @@ if test "x$ac_cv_lib_xlsmp__xlsmpFlush" = xyes; then :
   LIB_OMP="-lxlsmp"
 fi
 
+    fi
     # SGI IRIX 6.5 MIPSpro C/C++
+    if test "x$LIB_OMP" = x ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mp_destroy in -lmp" >&5
 $as_echo_n "checking for mp_destroy in -lmp... " >&6; }
 if ${ac_cv_lib_mp_mp_destroy+:} false; then :
@@ -23738,6 +23789,7 @@ if test "x$ac_cv_lib_mp_mp_destroy" = xyes; then :
   LIB_OMP="-lmp"
 fi
 
+    fi
   fi
   LIBS="$LIB_OMP $LIBS"
 fi
@@ -30540,9 +30592,9 @@ fi
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_UMEM"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 
 
@@ -30623,10 +30675,7 @@ LIBS=$LIBS_USER
 MAGICK_API_CFLAGS=$CFLAGS
 MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_OMP_LIBS="$LIB_OMP $LIB_THREAD" # Perl's Make::Maker summarily discards OMP CFLAGS option
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL $MAGICK_OMP_LIBS"
-MAGICK_API_LIBS=`echo $MAGICK_API_LIBS | sed -e 's/  */ /g'`
-
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 
 

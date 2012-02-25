@@ -549,10 +549,10 @@ static MagickPassFail load_tile_rle (Image* image,
     
               count += length;
               size -= length;
-    
+
               if (size < 0)
                 {
-                  goto bogus_rle;
+		  goto bogus_rle;
                 }
     
               if (xcfdata > xcfdatalimit)
@@ -605,6 +605,8 @@ static MagickPassFail load_tile_rle (Image* image,
                 }
             }
         }
+      if (SyncImagePixelsEx(tile_image,&tile_image->exception) == MagickFail)
+	break;
     }
   MagickFreeMemory(xcfodata);
   return MagickPass;
@@ -612,6 +614,9 @@ static MagickPassFail load_tile_rle (Image* image,
  bogus_rle:
   if (xcfodata)
     MagickFreeMemory(xcfodata);
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(), "Failed to RLE-decode tile");
+  ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
   return MagickFail;
 }
 
@@ -686,9 +691,9 @@ static MagickPassFail load_level (Image* image,
   /*
     Initialise the reference for the in-memory tile-compression
   */
-  ntile_rows = (inDocInfo->height + TILE_HEIGHT - 1) / TILE_HEIGHT;
-  ntile_cols = (inDocInfo->width  + TILE_WIDTH  - 1) / TILE_WIDTH;
-  ntiles = ntile_rows * ntile_cols;
+  ntile_rows=(height+TILE_HEIGHT-1)/TILE_HEIGHT;
+  ntile_cols=(width+TILE_WIDTH-1)/TILE_WIDTH;
+  ntiles=ntile_rows*ntile_cols;
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -733,12 +738,12 @@ static MagickPassFail load_level (Image* image,
       /* allocate the image for the tile 
          NOTE: the last tile in a row or column may not be a full tile!
       */
-      tile_image_width = destLeft==(int) ntile_cols-1 ?
-        (int) image->columns % TILE_WIDTH :  TILE_WIDTH;
-      if (tile_image_width == 0)  tile_image_width = TILE_WIDTH;
-      tile_image_height = destTop==(int) ntile_rows-1 ?
-        (int) image->rows % TILE_HEIGHT :  TILE_HEIGHT;
-      if (tile_image_height == 0)  tile_image_height = TILE_HEIGHT;
+      tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
+        (int) width % TILE_WIDTH : TILE_WIDTH);
+      if (tile_image_width == 0) tile_image_width=TILE_WIDTH;
+      tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
+        (int) height % TILE_HEIGHT : TILE_HEIGHT);
+      if (tile_image_height == 0) tile_image_height=TILE_HEIGHT;
       tile_image=CloneImage(inLayerInfo->image, tile_image_width,
                             tile_image_height,True,exception);
 
@@ -775,7 +780,7 @@ static MagickPassFail load_level (Image* image,
           else
             {
               /*
-                Estimate the tize size.  First we estimate the tile
+                Estimate the tile size.  First we estimate the tile
                 size, allowing for a possible expansion factor of 1.5.
                 Then we truncate to the file length, whichever is
                 smallest.

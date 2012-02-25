@@ -13,6 +13,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
+static char *getMagickObjName(TclMagickObj *mPtr);
+static TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name);
+
 /**********************************************************************/
 /* Workaround for bugs: */
 
@@ -42,38 +45,10 @@ static Tcl_ObjCmdProc    pixelObjCmd;
 static Tcl_ObjCmdProc    drawObjCmd;
 
 /*----------------------------------------------------------------------
- * Return Magick error description as a TCL result
- *----------------------------------------------------------------------
- */
-int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr )
-{
-    char *description;
-
-    ExceptionType severity;
-    char msg[40];
-
-    description = MagickGetException(wandPtr, &severity);
-    if( (description == NULL) || (strlen(description) == 0) ) {
-        Tcl_AppendResult(interp, MagickGetPackageName(), ": Unknown error", NULL);
-    } else {
-        sprintf(msg, "%s: #%d:", MagickGetPackageName(), severity); /* FIXME, not used! */
-        Tcl_AppendResult(interp, description, NULL);
-    }
-    if( description != NULL ) {
-        MagickRelinquishMemory(description);
-    }
-    /*
-     * if(severity < ErrorException) --> warning
-     * return TCL_OK ???
-     */
-    return TCL_ERROR;
-}
-
-/*----------------------------------------------------------------------
  * Return the name of a TclMagickObj
  *----------------------------------------------------------------------
  */
-char *getMagickObjName(TclMagickObj *mPtr)
+static char *getMagickObjName(TclMagickObj *mPtr)
 {
     if( mPtr == NULL ) {
         return (char *)NULL;
@@ -134,7 +109,7 @@ static void magickObjDeleteCmd(ClientData clientData)
  * Create TclMagick objects
  *----------------------------------------------------------------------
  */
-TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name)
+static TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type, void *wandPtr, char *name)
 {
     int isNew;
     char idString[16 + TCL_INTEGER_SPACE];
@@ -3707,7 +3682,7 @@ static int wandObjCmd(
     case TM_SET_VIRTUALPIXEL:  /* SetVirtualPixelMethod methodType */
     {
         int methodIdx;
-        ResolutionType method;
+        VirtualPixelMethod method;
 
 	if( ((enum subIndex)index == TM_IMAGE_UNITS) && (objc > 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?methodType?");
@@ -3723,20 +3698,20 @@ static int wandObjCmd(
 	}
 	if (objc == 3) {
 	    /*
-	     * Set image method
+	     * Set image virtual pixel method
 	     */
             if (Tcl_GetIndexFromObj(interp, objv[2], methodNames, "methodType", 0, &methodIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
-	    result = MagickSetImageUnits(wandPtr, methodTypes[methodIdx]);
+	    result = MagickSetImageVirtualPixelMethod(wandPtr, methodTypes[methodIdx]);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
 	} else {
 	    /*
-	     * Get image type
+	     * Get image virtual pixel method
 	     */
-	    method = MagickGetImageUnits(wandPtr);
+	    method = MagickGetImageVirtualPixelMethod(wandPtr);
 	    for (methodIdx = 0; (size_t) methodIdx < sizeof(methodTypes)/sizeof(methodTypes[0]); methodIdx++) {
 		if( methodTypes[methodIdx] == method ) {
 		    Tcl_SetResult(interp, (char *)methodNames[methodIdx], TCL_VOLATILE);

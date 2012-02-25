@@ -95,7 +95,11 @@ static Image *ReadIdentityImage(const ImageInfo *image_info,
   image->columns=image->rows=order*order*order;
 
 #if defined(HAVE_OPENMP)
-#  pragma omp parallel for shared(row_count, status)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#  else
+#    pragma omp parallel for shared(row_count, status)
+#  endif
 #endif
   for (y=0; y < (long) image->rows; y += order)
     {

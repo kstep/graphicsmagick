@@ -1807,7 +1807,19 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Transform image to user-requested colorspace.
   */
   if (UndefinedColorspace != image_info->colorspace)
-    (void) TransformColorspace(image,image_info->colorspace);
+    {
+      (void) TransformColorspace(image,image_info->colorspace);
+    }
+  /*
+    Convert RGB-compatible colorspaces (e.g. CineonLog) to RGB by
+    default.  User can still override it by explicitly specifying the
+    desired colorspace.
+  */
+  else if (IsRGBCompatibleColorspace(image->colorspace) &&
+	   !IsRGBColorspace(image->colorspace))
+    {
+      (void) TransformColorspace(image,RGBColorspace);
+    }
   
   /*
     Analyze image to be written.
@@ -2182,98 +2194,87 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
           "Number of colors: unspecified");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "JPEG data precision: %d",(int) jpeg_info.data_precision);
-      switch (image_info->colorspace)
-      {
-        case CMYKColorspace:
-        {
+      if (IsCMYKColorspace(image_info->colorspace))
+	{
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Storage class: DirectClass");
+				"Storage class: DirectClass");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: CMYK");
-          break;
-        }
-        case YCbCrColorspace:
-        {
+				"Colorspace: CMYK");
+	}
+      else if (IsYCbCrColorspace(image_info->colorspace))
+	{
+	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+				"Colorspace: YCbCr");
+	}
+      if (IsCMYKColorspace(image->colorspace))
+	{
+	  /* A CMYK space */
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: YCbCr");
-          break;
-        }
-          default:
-          break;
-      }
-      switch (image->colorspace)
-      {
-        case CMYKColorspace:
-        {
+				"Colorspace: CMYK");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: CMYK");
+				"Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
+				jpeg_info.comp_info[0].h_samp_factor,
+				jpeg_info.comp_info[0].v_samp_factor,
+				jpeg_info.comp_info[1].h_samp_factor,
+				jpeg_info.comp_info[1].v_samp_factor,
+				jpeg_info.comp_info[2].h_samp_factor,
+				jpeg_info.comp_info[2].v_samp_factor,
+				jpeg_info.comp_info[3].h_samp_factor,
+				jpeg_info.comp_info[3].v_samp_factor);
+	}
+      else if (IsGrayColorspace(image->colorspace))
+	{
+	  /* A gray space */
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
-            jpeg_info.comp_info[0].h_samp_factor,
-            jpeg_info.comp_info[0].v_samp_factor,
-            jpeg_info.comp_info[1].h_samp_factor,
-            jpeg_info.comp_info[1].v_samp_factor,
-            jpeg_info.comp_info[2].h_samp_factor,
-            jpeg_info.comp_info[2].v_samp_factor,
-            jpeg_info.comp_info[3].h_samp_factor,
-            jpeg_info.comp_info[3].v_samp_factor);
-          break;
-        }
-        case Rec601LumaColorspace:
-        case Rec709LumaColorspace:
-        {
+				"Colorspace: GRAY");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: GRAY");
+				"Sampling factors: %dx%d",jpeg_info.comp_info[0].h_samp_factor,
+				jpeg_info.comp_info[0].v_samp_factor);
+	}
+      else if (IsRGBCompatibleColorspace(image->colorspace))
+	{
+	  /* An RGB space */
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d",jpeg_info.comp_info[0].h_samp_factor,
-            jpeg_info.comp_info[0].v_samp_factor);
-          break;
-        }
-        case RGBColorspace:
-        {
+				" Image colorspace is RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            " Image colorspace is RGB");
+				"Sampling factors: %dx%d,%dx%d,%dx%d",
+				jpeg_info.comp_info[0].h_samp_factor,
+				jpeg_info.comp_info[0].v_samp_factor,
+				jpeg_info.comp_info[1].h_samp_factor,
+				jpeg_info.comp_info[1].v_samp_factor,
+				jpeg_info.comp_info[2].h_samp_factor,
+				jpeg_info.comp_info[2].v_samp_factor);
+	}
+      else if (IsYCbCrColorspace(image->colorspace))
+	{
+	  /* A YCbCr space */
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d",
-            jpeg_info.comp_info[0].h_samp_factor,
-            jpeg_info.comp_info[0].v_samp_factor,
-            jpeg_info.comp_info[1].h_samp_factor,
-            jpeg_info.comp_info[1].v_samp_factor,
-            jpeg_info.comp_info[2].h_samp_factor,
-            jpeg_info.comp_info[2].v_samp_factor);
-          break;
-        }
-        case YCbCrColorspace:
-        {
+				"Colorspace: YCbCr");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: YCbCr");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d",
-            jpeg_info.comp_info[0].h_samp_factor,
-            jpeg_info.comp_info[0].v_samp_factor,
-            jpeg_info.comp_info[1].h_samp_factor,
-            jpeg_info.comp_info[1].v_samp_factor,
-            jpeg_info.comp_info[2].h_samp_factor,
-            jpeg_info.comp_info[2].v_samp_factor);
-          break;
-        }
-        default:
-        {
+				"Sampling factors: %dx%d,%dx%d,%dx%d",
+				jpeg_info.comp_info[0].h_samp_factor,
+				jpeg_info.comp_info[0].v_samp_factor,
+				jpeg_info.comp_info[1].h_samp_factor,
+				jpeg_info.comp_info[1].v_samp_factor,
+				jpeg_info.comp_info[2].h_samp_factor,
+				jpeg_info.comp_info[2].v_samp_factor);
+	}
+      else
+	{
+	  /* Some other color space */
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
-            image->colorspace);
+				image->colorspace);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
-            jpeg_info.comp_info[0].h_samp_factor,
-            jpeg_info.comp_info[0].v_samp_factor,
-            jpeg_info.comp_info[1].h_samp_factor,
-            jpeg_info.comp_info[1].v_samp_factor,
-            jpeg_info.comp_info[2].h_samp_factor,
-            jpeg_info.comp_info[2].v_samp_factor,
-            jpeg_info.comp_info[3].h_samp_factor,
-            jpeg_info.comp_info[3].v_samp_factor);
-          break;
-        }
-      }
+				"Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
+				jpeg_info.comp_info[0].h_samp_factor,
+				jpeg_info.comp_info[0].v_samp_factor,
+				jpeg_info.comp_info[1].h_samp_factor,
+				jpeg_info.comp_info[1].v_samp_factor,
+				jpeg_info.comp_info[2].h_samp_factor,
+				jpeg_info.comp_info[2].v_samp_factor,
+				jpeg_info.comp_info[3].h_samp_factor,
+				jpeg_info.comp_info[3].v_samp_factor);
+	}
     }
   /*
     Write JPEG profiles.

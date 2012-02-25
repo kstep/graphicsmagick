@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2005-2011 GraphicsMagick Group
+% Copyright (C) 2005-2012 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1668,6 +1668,12 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
   endian_type = (swap_endian ? MSBEndian : LSBEndian);
 #endif
+
+  /*
+    Save original endian to image so that image write will preserve
+    original endianness.
+  */
+  image->endian = endian_type;
   
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2277,7 +2283,11 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read element data.
           */
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
-#  pragma omp parallel for schedule(static,1)
+#  if defined(TUNE_OPENMP)
+#    pragma omp parallel for schedule(runtime)
+#  else
+#    pragma omp parallel for schedule(static,1)
+#  endif
 #endif
           for (y=0; y < (long) image->rows; y++)
             {
@@ -3363,6 +3373,11 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       endian_type=LSBEndian;
     }
 #endif
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "%s endian DPX format",
+                          (endian_type == MSBEndian ? "Big" : "Little"));
 
   /*
     Adjust image colorspace if necessary.

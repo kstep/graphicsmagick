@@ -526,7 +526,7 @@ Environment Variables
    is GIF and JPEG, then simply drop all the other DLL's into the local
    trash can and get on with your life.
 
-   WARNING: Always keep the "xc" format, since IM uses it for internal
+   WARNING: Always keep the "xc" format, since GM uses it for internal
    purposes.
 
   ALSO. You can elect to changes these things the good old "hard-coded"
@@ -569,8 +569,11 @@ Windows Distribution Build Procedure
      b. Click on '!' icon to run configure program
      c. Select DLL build
      d. Check "Build demo and test programs"
-     e. Click on Edit "magick_config.h" and ensure that UseInstalledGraphicsMagick
-        and ProvideDllMain are defined.
+     e. Click on Edit "magick_config.h" and verify desired settings
+        such as QuantumDepth.  You can also defer this step to later
+        by opening the header file
+        ``CORE_magick\include\magick_config.h`` in the Visual Studio
+        project.
      f. Finish remaining configure wizard screens to complete.
      g. File -> "Close Workspace"
 
@@ -637,4 +640,4 @@ Windows Distribution Build Procedure
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2011
+Copyright |copy| GraphicsMagick Group 2002 - 2012

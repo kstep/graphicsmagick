@@ -4,6 +4,7 @@
 .. _`Amdahl's law` : http://en.wikipedia.org/wiki/Amdahl%27s_law
 .. _`GOMP` : http://gcc.gnu.org/onlinedocs/libgomp/
 .. _`OpenMP` : http://openmp.org/
+.. _`Open64` : http://www.open64.net/home.html
 
 ========================
 OpenMP in GraphicsMagick
@@ -115,12 +116,22 @@ boost with varying numbers of threads.  GraphicsMagick's built-in
 benchmark facility is used.  The selected algorithm is executed
 repeatedly until a specified amount of time has elapsed.  The input
 image is generated on the fly by tiling a small image over a large
-area using a specification like `-size 1920x1080 tile:model.pnm`.  It
+area using a specification like `-size 4000x3000 tile:model.pnm`.  It
 is important to note that the time to generate the input image is
 included in the benchmark timings so that even if an algorithm
 achieves perfect linear scaling, the measured difference is likely to
 be less than the number of cores used and the impact could be
-substantial if image generation is slow.
+substantial if image generation is slow.  Many modern CPUs increase
+the core frequency substantially ("turbo mode") when only a few cores
+are being used and this unfairly penalizes the calculated per-thread
+speedup results which are based on the time to run with just one
+thread.
+
+A typical benchmark command using the built-in benchmark facility
+(-stepthreads requires GraphicsMagick 1.3.13 or later) looks like::
+
+  gm benchmark -stepthreads 1 -duration 5 convert \
+    -size 4000x3000 tile:model.pnm -median 2 null:
 
 The first test executed is `-noop` since it does no work other than
 to generate the input image.  This represents how fast it is possible
@@ -129,124 +140,124 @@ to go based on how fast the input image may be generated.
 Ubuntu Linux 11.10 / Intel Xeon E5649 / Open64 Compiler
 --------------------------------------------------------
 
-.. Last update: Wed Dec 21 15:40:08 CST 2011
+.. Last update: Wed Jan 18 22:04:57 CST 2012
 
 The following results were obtained from an Intel Xeon E5649 CPU at
-2.53GHz.  This CPU has 12 cores and 24 threads.  The AMD Open64
-4.2.5.2 compiler was used to build the software.  The Open64 compiler
-produces very high performance code which exceeds GCC performance in
-most cases, and often quite dramatically so:
+2.53GHz.  This CPU has 12 cores and 24 threads.  The free open source
+`Open64`_ 5.0 compiler was used to build the software.  The `Open64`_
+compiler produces very high performance code which exceeds GCC
+performance in most cases, and often quite dramatically so:
 
 .. table:: Performance Boost On 12 core Intel Xeon E5649 CPU:
 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
-   Operation                                                               1     4     8    12    16    20    24    iter/s 
+   Operation                                                               1     4     8    12     16   20    24    iter/s 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
-   -noop                                                                  1.00  1.31  1.41  1.34  1.45  1.46  1.44  83.200 
-   -affine 1,0,0.785,1,0,0 -transform                                     1.00  2.53  4.85  5.07  5.43  5.52  6.46   3.613 
-   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  1.70  2.00  1.93  2.16  2.16  2.12  41.600 
-   -blur 0x0.5                                                            1.00  3.14  4.34  4.91  4.87  5.05  5.20   5.506 
-   -blur 0x1.0                                                            1.00  3.24  4.91  5.98  5.60  6.16  6.56   4.847 
-   -blur 0x2.0                                                            1.00  3.51  5.84  7.25  6.78  7.64  8.28   3.800 
-   -charcoal 0x1                                                          1.00  2.96  4.24  4.88  4.63  5.02  5.30   2.209 
-   -colorspace CMYK                                                       1.00  2.24  2.64  2.51  2.76  2.70  2.68  40.818 
-   -colorspace GRAY                                                       1.00  3.03  4.67  5.70  5.67  6.15  6.90  33.600 
-   -colorspace HSL                                                        1.00  3.73  6.66  9.16  7.67  9.11 10.53  14.500 
-   -colorspace HWB                                                        1.00  3.47  6.08  8.01  6.64  7.77  8.84  20.100 
-   -colorspace OHTA                                                       1.00  3.07  4.67  5.70  5.69  6.13  6.89  33.533 
-   -colorspace YCbCr                                                      1.00  3.10  4.66  5.70  5.67  6.04  6.94  33.766 
-   -colorspace YIQ                                                        1.00  3.07  4.69  5.70  5.73  6.26  6.97  33.866 
-   -colorspace YUV                                                        1.00  3.17  4.81  5.90  5.90  6.50  7.12  33.400 
-   -contrast -contrast -contrast                                          1.00  3.66  7.10 10.29  9.48 11.57 13.51   4.122 
-   +contrast +contrast +contrast                                          1.00  3.68  7.10 10.20  9.12 11.21 12.99   4.236 
-   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  3.34  5.47  6.70  5.90  6.65  7.38  13.307 
-   -colorize 30%/20%/50%                                                  1.00  3.50  5.97  7.63  6.44  7.56  8.40  22.977 
-   -despeckle                                                             1.00  2.66  2.67  2.68  2.67  2.67  2.68   0.459 
-   -edge 0x1                                                              1.00  3.49  5.84  7.67  7.20  8.06  9.14  12.700 
-   -emboss 0x1                                                            1.00  3.16  4.81  5.95  4.67  5.39  5.90   4.554 
-   -enhance                                                               1.00  3.57  7.08 10.43  8.18 10.09 11.98   1.737 
-   -gaussian 0x0.5                                                        1.00  3.60  6.22  8.32  5.97  7.12  8.25   7.327 
-   -gaussian 0x1.0                                                        1.00  3.67  6.80  9.45  5.91  7.32  8.73   3.137 
-   -gaussian 0x2.0                                                        1.00  3.54  6.79  9.84  5.55  6.91  8.20   1.082 
-   -hald-clut identity:8                                                  1.00  3.70  6.77  9.32  8.49 10.10 11.57  13.759 
-   -hald-clut identity:10                                                 1.00  3.66  6.66  9.29  8.46 10.16 11.52  13.473 
-   -hald-clut identity:14                                                 1.00  3.68  6.68  9.25  8.44 10.16 11.54  12.004 
-   -implode 0.5                                                           1.00  3.79  7.17  6.04  8.85 10.69 11.63   4.895 
-   -implode -1                                                            1.00  3.60  7.03  5.04  8.72  9.78 10.25   6.281 
-   -lat 10x10-5%                                                          1.00  3.55  5.90  7.97  6.98  7.97  9.36   4.024 
-   -median 1                                                              1.00  3.02  4.45  6.46  7.20  6.66  8.25   0.718 
-   -median 2                                                              1.00  3.27  4.27  7.87  9.40  8.17  7.37   0.282 
-   -minify                                                                1.00  3.21  4.79  5.99  5.77  6.42  6.51  22.400 
-   -modulate 110/100/95                                                   1.00  3.77  6.90  9.53  8.47 10.27 11.69  13.273 
-   +noise Uniform                                                         1.00  3.28  5.18  6.36  6.72  7.23  7.79  13.772 
-   +noise Gaussian                                                        1.00  3.54  6.88 10.02  9.43 11.43 13.29   2.246 
-   +noise Multiplicative                                                  1.00  3.57  6.86  9.94 11.07 13.23 15.22   3.363 
-   +noise Impulse                                                         1.00  3.24  4.97  6.18  5.71  6.27  6.74  12.662 
-   +noise Laplacian                                                       1.00  3.55  6.74  9.54  9.86 11.57 13.34   4.577 
-   +noise Poisson                                                         1.00  3.62  6.91  9.69 10.24 12.14 13.71   4.950 
-   -noise 1                                                               1.00  3.14  3.54  6.69  8.46  6.96  8.62   0.733 
-   -noise 2                                                               1.00  3.40  4.57  8.20 10.03  8.73  7.40   0.301 
-   -fill blue -fuzz 35% -opaque red                                       1.00  2.61  3.50  3.90  4.45  4.52  4.68  50.150 
-   -operator all Add 2%                                                   1.00  3.20  4.76  5.74  6.86  7.71  8.01  41.558 
-   -operator all And 233                                                  1.00  1.89  2.16  1.99  1.88  1.85  1.79  42.900 
-   -operator all Assign 50%                                               1.00  1.52  1.57  1.31  1.43  1.41  1.36  41.200 
-   -operator all Depth 6                                                  1.00  2.37  2.82  2.36  2.51  2.47  2.57  40.400 
-   -operator all Divide 2                                                 1.00  3.19  4.89  5.88  7.37  7.37  7.17  35.764 
-   -operator all Gamma 0.7                                                1.00  2.05  2.24  2.08  2.26  2.17  2.15  30.669 
-   -operator all Negate 1.0                                               1.00  1.47  1.37  1.28  1.66  1.53  1.33  44.555 
-   -operator all LShift 2                                                 1.00  2.10  2.49  2.07  2.12  2.09  2.02  43.856 
-   -operator all Multiply 0.5                                             1.00  3.25  4.97  6.13  7.67  8.40  7.62  37.962 
-   -operator all Or 233                                                   1.00  2.02  2.35  2.02  2.02  1.99  2.04  43.357 
-   -operator all RShift 2                                                 1.00  1.88  2.02  1.71  1.87  1.89  2.19  43.600 
-   -operator all Subtract 10%                                             1.00  3.04  4.61  5.46  6.17  5.76  5.78  36.963 
-   -operator red Threshold 50%                                            1.00  1.49  1.58  1.26  1.37  1.36  1.53  43.014 
-   -operator gray Threshold 50%                                           1.00  1.80  2.29  2.23  2.02  1.99  1.92  42.300 
-   -operator all Threshold-White 80%                                      1.00  2.18  2.76  2.98  2.95  2.74  2.71  49.100 
-   -operator all Threshold-Black 10%                                      1.00  2.09  2.70  2.93  2.92  2.71  2.65  47.600 
-   -operator all Xor 233                                                  1.00  1.88  2.14  1.74  1.87  1.85  2.05  42.500 
-   -operator all Noise-Gaussian 30%                                       1.00  3.53  7.04 10.37  9.75 11.90 14.20   2.470 
-   -operator all Noise-Impulse 30%                                        1.00  3.65  6.18  8.46  7.73  9.02 10.20  19.980 
-   -operator all Noise-Laplacian 30%                                      1.00  3.62  7.05 10.33 10.90 13.42 15.40   5.484 
-   -operator all Noise-Multiplicative 30%                                 1.00  3.64  7.19 10.59 11.98 14.78 17.18   3.796 
-   -operator all Noise-Poisson 30%                                        1.00  3.75  7.29 10.63 11.01 13.58 15.73   5.853 
-   -operator all Noise-Uniform 30%                                        1.00  3.59  6.35  8.81  9.47 11.08 12.11  22.455 
-   -ordered-dither all 2x2                                                1.00  3.19  4.64  5.65  6.15  6.65  7.09  36.527 
-   -ordered-dither all 3x3                                                1.00  3.15  4.65  5.54  6.09  6.68  6.47  34.366 
-   -ordered-dither intensity 3x3                                          1.00  3.36  4.91  5.96  6.49  6.28  6.44  32.104 
-   -ordered-dither all 4x4                                                1.00  3.27  4.72  5.77  6.06  6.13  6.26  31.705 
-   -paint 0x1                                                             1.00  3.62  6.73  9.14  8.53  9.86 11.23   8.076 
-   -random-threshold all 20x80                                            1.00  2.88  4.00  4.74  5.24  5.24  5.27  38.124 
-   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  1.51  1.68  1.59  1.51  1.46  1.42  80.300 
-   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  3.26  4.99  6.38  5.87  6.68  6.65  28.743 
-   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  3.45  5.51  6.93  6.47  7.44  8.11  27.800 
-   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  3.39  5.38  6.86  6.40  7.41  7.97  27.745 
-   -density 75x75 -resample 50x50                                         1.00  3.71  6.61  9.23  7.21  7.85  8.28   8.192 
-   -resize 10%                                                            1.00  3.34  5.34  6.69  5.01  5.38  5.94  17.448 
-   -resize 50%                                                            1.00  3.62  6.34  8.78  6.73  6.16  6.93  11.741 
-   -resize 150%                                                           1.00  3.45  5.56  7.26  5.37  5.35  5.23   2.860 
-   -rotate 15                                                             1.00  3.24  5.28  6.89  7.14  7.73  8.39   2.584 
-   -rotate 45                                                             1.00  2.92  4.55  5.64  5.37  5.50  5.78   0.826 
-   -segment 0.5x0.25                                                      1.00  2.06  2.47  2.71  2.59  2.71  2.76   0.047 
-   -shade 30x30                                                           1.00  3.21  5.12  6.39  6.26  6.81  7.63  16.600 
-   -sharpen 0x0.5                                                         1.00  3.62  6.29  8.43  6.03  7.16  8.28   7.389 
-   -sharpen 0x1.0                                                         1.00  3.67  6.81  9.40  5.94  7.40  8.72   3.110 
-   -sharpen 0x2.0                                                         1.00  3.61  6.83  9.90  5.59  6.96  8.30   1.079 
-   -shear 45x45                                                           1.00  2.82  4.11  4.92  4.60  4.53  4.79   1.190 
-   -solarize 50%                                                          1.00  2.07  2.44  2.39  2.64  2.60  2.57  45.200 
-   -swirl 90                                                              1.00  3.74  7.03  4.98  9.23 10.79 10.08   6.938 
-   -fuzz 35% -transparent red                                             1.00  2.50  3.21  3.60  3.90  3.75  3.88  43.713 
-   -trim                                                                  1.00  2.27  2.78  3.14  3.43  3.17  2.96  51.600 
-   -fuzz 5% -trim                                                         1.00  3.52  5.95  7.87  7.39  8.76  9.78  23.330 
-   -unsharp 0x0.5+20+1                                                    1.00  3.24  4.69  5.49  5.35  5.81  6.05   5.095 
-   -unsharp 0x1.0+20+1                                                    1.00  3.42  5.23  6.34  6.09  6.76  7.26   4.514 
-   -wave 25x150                                                           1.00  3.57  6.46  7.74  7.55  8.71  9.99   7.730 
+   -noop                                                                  1.00  1.31  1.41  1.35  1.44  1.46  1.43  82.635 
+   -affine 1,0,0.785,1,0,0 -transform                                     1.00  2.74  5.59  5.35  5.78  5.95  7.56   4.175 
+   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  2.03  2.50  2.58  2.83  2.86  2.89  39.641 
+   -blur 0x0.5                                                            1.00  3.15  4.35  5.05  4.94  5.22  5.30   5.631 
+   -blur 0x1.0                                                            1.00  3.35  5.17  6.14  5.79  6.32  6.63   4.873 
+   -blur 0x2.0                                                            1.00  3.54  5.90  7.48  6.90  7.84  8.56   3.937 
+   -charcoal 0x1                                                          1.00  2.97  4.26  5.04  4.72  5.15  5.51   2.303 
+   -colorspace CMYK                                                       1.00  2.25  2.72  2.60  2.85  2.81  2.76  40.319 
+   -colorspace GRAY                                                       1.00  3.07  4.67  5.69  5.69  6.31  6.90  33.600 
+   -colorspace HSL                                                        1.00  3.71  6.71  9.20  7.66  9.07 10.41  14.343 
+   -colorspace HWB                                                        1.00  3.59  6.13  8.09  6.65  7.80  8.82  19.960 
+   -colorspace OHTA                                                       1.00  3.08  4.66  5.72  5.69  6.22  6.85  33.267 
+   -colorspace YCbCr                                                      1.00  3.07  4.56  5.72  5.70  6.21  6.92  33.665 
+   -colorspace YIQ                                                        1.00  3.08  4.65  5.72  5.72  6.27  6.95  33.800 
+   -colorspace YUV                                                        1.00  3.03  4.68  5.60  5.47  6.29  6.95  33.800 
+   -contrast -contrast -contrast                                          1.00  3.70  7.15 10.51  9.69 11.90 13.65   4.150 
+   +contrast +contrast +contrast                                          1.00  3.69  7.13 10.42  9.41 11.49 13.38   4.348 
+   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  3.21  5.48  7.22  6.10  6.83  7.76  13.861 
+   -colorize 30%/20%/50%                                                  1.00  3.52  6.00  7.68  6.48  7.64  8.46  23.000 
+   -despeckle                                                             1.00  2.67  3.33  4.09  4.14  4.27  4.65   1.359 
+   -edge 0x1                                                              1.00  3.46  5.74  7.97  7.33  8.46  9.36  13.000 
+   -emboss 0x1                                                            1.00  3.26  4.87  6.02  4.75  5.46  5.90   4.615 
+   -enhance                                                               1.00  3.55  7.00 10.30  7.83  9.73 11.39   1.731 
+   -gaussian 0x0.5                                                        1.00  3.58  6.31  8.60  6.20  7.20  8.23   7.570 
+   -gaussian 0x1.0                                                        1.00  3.61  6.79  9.73  5.94  7.48  8.73   3.220 
+   -gaussian 0x2.0                                                        1.00  3.57  6.81  9.79  5.55  6.89  8.22   1.077 
+   -hald-clut identity:8                                                  1.00  3.70  6.81  9.44  8.58 10.32 11.62  13.412 
+   -hald-clut identity:10                                                 1.00  3.73  6.80  9.31  8.42 10.20 11.52  13.439 
+   -hald-clut identity:14                                                 1.00  3.76  6.69  9.42  8.50 10.19 11.66  12.103 
+   -implode 0.5                                                           1.00  3.80  7.28  6.16  9.46 11.91 12.17   5.088 
+   -implode -1                                                            1.00  3.79  7.29  5.21  8.93 11.33 12.82   7.677 
+   -lat 10x10-5%                                                          1.00  3.56  6.24  8.34  7.31  8.72  9.84   4.094 
+   -median 1                                                              1.00  2.99  4.41  6.32  7.54  6.38  5.53   0.641 
+   -median 2                                                              1.00  3.23  4.20  7.70  8.93  8.00  7.10   0.268 
+   -minify                                                                1.00  3.30  4.97  6.36  5.95  6.46  7.12  24.400 
+   -modulate 110/100/95                                                   1.00  3.79  6.86  9.62  8.55 10.16 11.63  13.147 
+   +noise Uniform                                                         1.00  3.29  5.24  6.40  6.73  7.23  7.74  13.690 
+   +noise Gaussian                                                        1.00  3.51  6.91 10.01  9.49 11.56 13.34   2.308 
+   +noise Multiplicative                                                  1.00  3.56  6.92 10.00 11.08 13.47 15.35   3.393 
+   +noise Impulse                                                         1.00  3.24  5.05  6.22  5.73  6.25  6.75  12.525 
+   +noise Laplacian                                                       1.00  3.65  6.90  9.80 10.03 11.93 13.53   4.762 
+   +noise Poisson                                                         1.00  3.67  6.91  9.78 10.24 12.07 13.74   4.960 
+   -noise 1                                                               1.00  3.06  3.40  6.48  7.08  6.79  8.25   0.701 
+   -noise 2                                                               1.00  3.23  5.30  7.80  8.73  8.63 10.03   0.301 
+   -fill blue -fuzz 35% -opaque red                                       1.00  2.60  3.45  3.93  4.43  4.59  4.69  50.000 
+   -operator all Add 2%                                                   1.00  3.21  4.71  5.73  7.13  7.75  7.92  41.118 
+   -operator all And 233                                                  1.00  1.87  2.12  2.07  2.25  2.21  2.17  44.821 
+   -operator all Assign 50%                                               1.00  1.48  1.62  1.53  1.66  1.59  1.31  44.910 
+   -operator all Depth 6                                                  1.00  2.34  2.95  2.98  3.17  3.08  2.54  42.400 
+   -operator all Divide 2                                                 1.00  3.16  4.85  5.98  7.39  8.25  8.46  40.200 
+   -operator all Gamma 0.7                                                1.00  1.95  2.11  2.13  2.29  2.21  2.17  30.279 
+   -operator all Negate 1.0                                               1.00  1.49  1.62  1.42  1.40  1.38  1.33  43.114 
+   -operator all LShift 2                                                 1.00  1.89  2.42  2.34  2.55  2.18  2.01  44.800 
+   -operator all Multiply 0.5                                             1.00  3.24  4.94  6.28  7.72  8.84  8.89  39.400 
+   -operator all Or 233                                                   1.00  1.90  2.03  2.02  2.55  2.52  2.20  44.800 
+   -operator all RShift 2                                                 1.00  1.89  2.03  1.93  2.25  2.51  2.46  44.311 
+   -operator all Subtract 10%                                             1.00  2.98  4.27  5.29  6.08  6.75  6.64  40.519 
+   -operator red Threshold 50%                                            1.00  1.43  1.51  1.43  1.86  1.85  1.52  45.020 
+   -operator gray Threshold 50%                                           1.00  1.95  2.10  1.99  2.43  2.61  2.54  44.511 
+   -operator all Threshold-White 80%                                      1.00  2.13  2.60  2.68  3.28  3.36  3.39  52.695 
+   -operator all Threshold-Black 10%                                      1.00  2.07  2.50  2.74  3.26  3.30  3.31  51.497 
+   -operator all Xor 233                                                  1.00  1.81  1.94  1.83  1.99  2.32  2.34  43.200 
+   -operator all Noise-Gaussian 30%                                       1.00  3.57  7.06 10.48  9.85 12.11 14.18   2.495 
+   -operator all Noise-Impulse 30%                                        1.00  3.63  6.26  8.52  7.59  8.98  9.91  19.323 
+   -operator all Noise-Laplacian 30%                                      1.00  3.73  7.24 10.53 10.67 13.09 15.17   5.400 
+   -operator all Noise-Multiplicative 30%                                 1.00  3.63  7.15 10.59 11.83 14.61 16.87   3.762 
+   -operator all Noise-Poisson 30%                                        1.00  3.75  7.27 10.70 11.10 13.66 15.89   5.894 
+   -operator all Noise-Uniform 30%                                        1.00  3.64  6.39  8.75  9.50 10.98 12.11  22.465 
+   -ordered-dither all 2x2                                                1.00  3.19  4.65  5.63  6.10  6.71  7.06  36.128 
+   -ordered-dither all 3x3                                                1.00  3.19  4.65  5.58  6.08  6.57  6.93  35.458 
+   -ordered-dither intensity 3x3                                          1.00  3.19  4.76  5.62  6.21  6.84  7.20  36.853 
+   -ordered-dither all 4x4                                                1.00  3.19  4.65  5.54  5.93  6.03  6.06  31.076 
+   -paint 0x1                                                             1.00  3.68  6.79  9.19  8.53 10.29 11.53   8.893 
+   -random-threshold all 20x80                                            1.00  2.83  3.96  4.71  5.24  5.18  5.33  38.200 
+   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  1.32  1.35  1.13  1.22  1.23  1.19  76.248 
+   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  3.25  4.93  6.43  5.86  6.65  7.09  30.600 
+   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  3.37  5.41  7.00  6.53  7.53  8.16  27.745 
+   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  3.43  5.43  6.98  6.46  7.35  8.03  27.745 
+   -density 75x75 -resample 50x50                                         1.00  3.68  6.66  9.16  7.26  7.96  8.36   8.023 
+   -resize 10%                                                            1.00  3.31  5.37  6.72  5.78  6.72  6.58  17.460 
+   -resize 50%                                                            1.00  3.65  6.34  8.81  6.86  8.14  9.21  12.375 
+   -resize 150%                                                           1.00  3.46  5.58  7.34  5.40  5.41  5.28   2.890 
+   -rotate 15                                                             1.00  3.26  5.36  7.05  7.34  7.95  8.82   2.724 
+   -rotate 45                                                             1.00  2.94  4.55  5.50  5.17  5.21  5.28   0.786 
+   -segment 0.5x0.25                                                      1.00  2.00  2.47  2.65  2.59  2.71  2.76   0.047 
+   -shade 30x30                                                           1.00  3.30  5.00  6.51  6.62  7.06  8.07  17.659 
+   -sharpen 0x0.5                                                         1.00  3.60  6.37  8.65  6.11  7.22  8.29   7.602 
+   -sharpen 0x1.0                                                         1.00  3.71  6.73  9.75  5.99  7.39  8.82   3.208 
+   -sharpen 0x2.0                                                         1.00  3.61  6.84  9.88  5.61  6.95  8.31   1.077 
+   -shear 45x45                                                           1.00  2.82  4.14  4.99  4.34  4.06  4.16   1.213 
+   -solarize 50%                                                          1.00  2.12  2.46  2.40  2.65  2.61  2.56  45.200 
+   -swirl 90                                                              1.00  3.85  7.22  5.07  9.34 11.86 13.54   8.627 
+   -fuzz 35% -transparent red                                             1.00  2.50  3.19  3.57  3.84  3.77  3.84  43.000 
+   -trim                                                                  1.00  2.29  2.66  3.17  3.41  3.37  3.53  52.600 
+   -fuzz 5% -trim                                                         1.00  3.56  5.92  7.83  7.37  8.71  9.69  23.260 
+   -unsharp 0x0.5+20+1                                                    1.00  3.27  4.71  5.64  5.48  5.81  6.14   5.190 
+   -unsharp 0x1.0+20+1                                                    1.00  3.42  5.33  6.52  6.19  6.94  7.36   4.600 
+   -wave 25x150                                                           1.00  3.79  6.78  8.35  7.67  8.87 10.14   7.859 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
 
 
 Ubuntu Linux 11.10 / Intel Xeon E5649 / GCC Compiler
 -----------------------------------------------------
 
-.. Last update: Wed Dec 21 15:40:08 CST 2011
+.. Last update: Thu Jan 19 09:19:52 CST 2012
 
 The following results were obtained from an Intel Xeon E5649 CPU at
 2.53GHz.  This CPU has 12 cores and 24 threads.  Ubtuntu's GCC 4.6.1
@@ -255,106 +266,106 @@ compiler was used to build the software:
 .. table:: Performance Boost On 12 core Intel Xeon E5649 CPU:
 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
-   Operation                                                               1     4     8     12    16    20    24   iter/s 
+   Operation                                                               1     4     8     12   16    20    24    iter/s 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
-   -noop                                                                  1.00  1.94  2.43  2.49  2.59  2.51  2.23  52.248 
-   -affine 1,0,0.785,1,0,0 -transform                                     1.00  3.49  5.74  6.15  5.60  6.65  8.01   4.536 
-   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  2.49  3.11  3.31  3.51  3.72  2.94  35.365 
-   -blur 0x0.5                                                            1.00  3.34  5.27  6.65  7.43  7.86  7.62   4.970 
-   -blur 0x1.0                                                            1.00  3.51  5.97  7.83  9.27  9.92  9.64   3.900 
-   -blur 0x2.0                                                            1.00  3.47  6.35  8.71 10.68 12.14 12.03   2.805 
-   -charcoal 0x1                                                          1.00  3.08  5.02  5.99  7.00  7.60  7.12   1.907 
-   -colorspace CMYK                                                       1.00  2.13  2.40  2.38  2.56  2.69  2.41  32.136 
-   -colorspace GRAY                                                       1.00  3.16  5.10  4.63  5.44  6.19  5.60  24.775 
-   -colorspace HSL                                                        1.00  3.65  6.33  6.44  7.52  8.77  9.38  12.351 
-   -colorspace HWB                                                        1.00  3.52  6.03  5.67  7.05  8.10  8.02  15.569 
-   -colorspace OHTA                                                       1.00  3.15  4.43  4.50  5.26  6.00  5.78  24.152 
-   -colorspace YCbCr                                                      1.00  3.19  4.88  4.81  5.55  6.23  5.72  25.175 
-   -colorspace YIQ                                                        1.00  3.16  4.46  4.53  5.59  6.05  5.55  23.876 
-   -colorspace YUV                                                        1.00  3.23  4.37  4.81  5.60  6.19  5.62  24.476 
-   -contrast -contrast -contrast                                          1.00  3.63  7.09  7.45  9.23 11.37 11.98   3.582 
-   +contrast +contrast +contrast                                          1.00  3.61  6.88  7.06  9.26 11.32 11.46   3.472 
-   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  3.68  6.75  8.83 10.77 12.23 12.03  10.469 
-   -colorize 30%/20%/50%                                                  1.00  3.55  6.05  7.20  8.71  9.77  9.75  14.500 
-   -despeckle                                                             1.00  2.65  2.69  2.65  2.67  2.69  2.68   0.430 
-   -edge 0x1                                                              1.00  3.64  6.99  8.86 11.01 12.91 11.78   9.930 
-   -emboss 0x1                                                            1.00  3.54  6.25  8.04  9.93 11.18 11.17   3.543 
-   -enhance                                                               1.00  3.59  6.91  7.79  7.86  9.46 10.54   1.613 
-   -gaussian 0x0.5                                                        1.00  3.61  6.94  9.58 12.32 14.62 14.74   5.248 
-   -gaussian 0x1.0                                                        1.00  3.57  6.95 10.25 13.31 16.17 16.81   1.984 
-   -gaussian 0x2.0                                                        1.00  3.88  7.29 10.53 13.74 16.88 18.76   0.638 
-   -hald-clut identity:8                                                  1.00  3.72  7.05  7.73  9.80 11.49 11.49  10.689 
-   -hald-clut identity:10                                                 1.00  3.76  7.11  7.68  9.67 11.55 12.00  11.067 
-   -hald-clut identity:14                                                 1.00  3.65  6.78  7.49  9.45 11.10 11.02   8.856 
-   -implode 0.5                                                           1.00  3.53  6.70  6.87  9.09 10.62 11.23   4.199 
-   -implode -1                                                            1.00  3.36  6.74  7.53  8.72 10.73  6.99   5.677 
-   -lat 10x10-5%                                                          1.00  3.40  5.32  7.28  6.66  7.72  8.63   2.579 
-   -median 1                                                              1.00  2.33  3.06  4.88  5.05  5.41  7.64   0.634 
-   -median 2                                                              1.00  2.86  3.24  5.93  6.69  7.86  9.69   0.281 
-   -minify                                                                1.00  3.61  6.51  8.17  9.80 11.42 12.29  18.046 
-   -modulate 110/100/95                                                   1.00  3.75  7.02  7.35  8.81 10.43 11.82  11.189 
-   +noise Uniform                                                         1.00  2.52  3.40  3.37  3.50  3.76  3.91   6.753 
-   +noise Gaussian                                                        1.00  3.41  6.32  8.12  9.48 11.26 12.71   1.868 
-   +noise Multiplicative                                                  1.00  3.40  6.33  7.12  8.86 10.37 11.65   2.527 
-   +noise Impulse                                                         1.00  2.55  3.49  3.68  3.73  3.92  4.13   6.739 
-   +noise Laplacian                                                       1.00  3.41  5.92  7.77  7.89  9.01  9.90   3.516 
-   +noise Poisson                                                         1.00  3.24  5.87  6.69  8.17  9.44 10.22   3.271 
-   -noise 1                                                               1.00  2.36  3.21  4.35  5.78  5.59  6.64   0.538 
-   -noise 2                                                               1.00  2.86  3.28  4.76  6.66  7.10  8.48   0.246 
-   -fill blue -fuzz 35% -opaque red                                       1.00  2.77  4.00  4.25  4.62  5.01  5.13  40.000 
-   -operator all Add 2%                                                   1.00  3.18  5.27  5.99  6.90  7.42  7.64  33.600 
-   -operator all And 233                                                  1.00  2.21  2.75  2.69  2.84  2.99  3.03  38.124 
-   -operator all Assign 50%                                               1.00  2.07  2.58  2.44  2.52  2.67  2.68  37.962 
-   -operator all Depth 6                                                  1.00  2.30  2.79  2.76  3.10  3.13  3.12  36.327 
-   -operator all Divide 2                                                 1.00  3.33  5.69  6.84  7.84  8.78  9.15  32.236 
-   -operator all Gamma 0.7                                                1.00  1.94  2.46  2.37  2.44  2.52  2.50  27.246 
-   -operator all Negate 1.0                                               1.00  2.21  2.84  2.67  2.82  3.07  3.07  38.262 
-   -operator all LShift 2                                                 1.00  2.21  2.75  2.65  2.92  3.03  3.01  38.062 
-   -operator all Multiply 0.5                                             1.00  3.27  5.35  6.45  7.27  8.18  8.42  33.000 
-   -operator all Or 233                                                   1.00  2.20  2.90  2.78  2.89  3.05  3.01  38.262 
-   -operator all RShift 2                                                 1.00  2.22  2.72  2.81  2.83  3.04  3.05  38.124 
-   -operator all Subtract 10%                                             1.00  3.19  5.18  5.92  6.58  7.55  7.67  33.766 
-   -operator red Threshold 50%                                            1.00  2.07  2.53  2.57  2.59  2.73  2.73  38.124 
-   -operator gray Threshold 50%                                           1.00  2.43  3.04  3.18  3.31  3.41  3.43  37.900 
-   -operator all Threshold-White 80%                                      1.00  2.41  3.13  2.99  3.26  3.55  3.50  40.900 
-   -operator all Threshold-Black 10%                                      1.00  2.43  3.19  3.17  3.37  3.51  3.52  40.200 
-   -operator all Xor 233                                                  1.00  2.22  2.79  2.74  2.81  3.03  3.02  38.100 
-   -operator all Noise-Gaussian 30%                                       1.00  3.52  6.91  8.84 10.74 13.01 14.68   2.216 
-   -operator all Noise-Impulse 30%                                        1.00  3.60  6.18  5.90  7.27  8.47  9.32  17.565 
-   -operator all Noise-Laplacian 30%                                      1.00  3.77  7.29  8.82 10.27 12.34 14.35   5.279 
-   -operator all Noise-Multiplicative 30%                                 1.00  3.64  7.13  9.90 10.85 12.86 14.87   3.287 
-   -operator all Noise-Poisson 30%                                        1.00  3.53  6.87  9.53 10.24 12.46 14.47   4.847 
-   -operator all Noise-Uniform 30%                                        1.00  3.56  4.97  5.58  6.95  8.13  8.97  18.227 
-   -ordered-dither all 2x2                                                1.00  3.07  4.83  5.13  5.34  6.13  6.20  28.000 
-   -ordered-dither all 3x3                                                1.00  3.04  4.64  5.33  5.49  6.09  6.17  27.844 
-   -ordered-dither intensity 3x3                                          1.00  3.08  4.40  4.78  5.47  6.06  6.04  27.246 
-   -ordered-dither all 4x4                                                1.00  3.08  4.89  4.84  5.59  6.09  6.08  27.445 
-   -paint 0x1                                                             1.00  3.64  6.72  8.52  8.67 10.20 11.50   8.765 
-   -random-threshold all 20x80                                            1.00  2.78  3.87  4.11  4.49  4.64  3.54  27.944 
-   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  2.04  2.52  2.63  2.67  2.74  2.75  51.800 
-   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  3.12  3.52  4.40  5.16  5.55  6.04  30.370 
-   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  3.22  5.24  4.63  5.51  6.23  6.50  27.300 
-   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  3.22  5.23  4.67  5.43  6.22  6.52  27.545 
-   -density 75x75 -resample 50x50                                         1.00  3.73  6.76  8.48  8.58  8.61  8.53   4.985 
-   -resize 10%                                                            1.00  3.66  6.50  8.24  9.65 10.91 11.69  12.375 
-   -resize 50%                                                            1.00  3.69  6.58  8.04  9.45 10.25 11.17   7.952 
-   -resize 150%                                                           1.00  3.55  6.50  7.69  8.17  8.00  7.32   2.655 
-   -rotate 15                                                             1.00  3.23  5.61  6.46  7.44  8.14  9.14   2.933 
-   -rotate 45                                                             1.00  3.14  5.04  5.89  6.45  7.05  7.32   1.040 
-   -segment 0.5x0.25                                                      1.00  1.95  2.32  2.47  2.37  2.42  2.47   0.047 
-   -shade 30x30                                                           1.00  3.35  4.49  5.69  6.42  7.30  8.02  15.522 
-   -sharpen 0x0.5                                                         1.00  3.67  7.14  9.71 12.59 15.08 16.64   5.790 
-   -sharpen 0x1.0                                                         1.00  3.59  6.94 10.07 13.23 16.22 18.50   2.183 
-   -sharpen 0x2.0                                                         1.00  3.88  7.32 10.53 13.76 16.76 19.53   0.664 
-   -shear 45x45                                                           1.00  2.95  4.37  4.74  5.34  5.62  5.75   1.444 
-   -solarize 50%                                                          1.00  2.47  3.22  3.25  3.38  3.62  3.63  38.000 
-   -swirl 90                                                              1.00  3.57  5.96  8.55  8.36 11.02 13.50   6.509 
-   -fuzz 35% -transparent red                                             1.00  2.87  3.57  3.97  4.47  4.76  4.92  35.300 
-   -trim                                                                  1.00  2.55  3.48  3.43  3.72  3.92  3.93  40.700 
-   -fuzz 5% -trim                                                         1.00  3.41  5.07  5.51  6.64  7.71  8.16  21.058 
-   -unsharp 0x0.5+20+1                                                    1.00  3.40  5.55  6.77  7.65  8.34  8.12   4.536 
-   -unsharp 0x1.0+20+1                                                    1.00  3.44  6.03  7.74  9.14 10.06  9.84   3.663 
-   -wave 25x150                                                           1.00  3.59  6.31  7.57  8.08  9.02  9.42   5.988 
+   -noop                                                                  1.00  1.98  2.47  2.63  2.64  2.62  2.66  52.200 
+   -affine 1,0,0.785,1,0,0 -transform                                     1.00  3.46  5.87  6.04  5.81  7.04  8.45   4.715 
+   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  2.51  3.31  3.31  3.56  3.65  3.68  34.930 
+   -blur 0x0.5                                                            1.00  3.30  5.40  6.56  7.60  8.03  7.30   5.108 
+   -blur 0x1.0                                                            1.00  3.46  6.02  7.77  9.19 10.19 10.08   4.046 
+   -blur 0x2.0                                                            1.00  3.45  6.44  8.76 10.65 12.20 11.93   2.830 
+   -charcoal 0x1                                                          1.00  3.08  4.97  6.00  6.87  7.48  7.48   1.953 
+   -colorspace CMYK                                                       1.00  2.00  2.55  2.54  2.60  2.70  2.66  32.800 
+   -colorspace GRAY                                                       1.00  3.19  5.17  4.79  5.57  6.11  6.41  25.896 
+   -colorspace HSL                                                        1.00  3.68  5.77  6.10  7.54  8.96  9.96  13.121 
+   -colorspace HWB                                                        1.00  3.56  6.41  7.27  7.04  8.01  8.89  17.097 
+   -colorspace OHTA                                                       1.00  3.17  4.78  5.39  5.20  6.13  6.49  26.243 
+   -colorspace YCbCr                                                      1.00  3.17  4.52  4.82  5.50  6.22  6.49  26.243 
+   -colorspace YIQ                                                        1.00  3.16  5.14  4.53  5.32  6.22  6.57  26.600 
+   -colorspace YUV                                                        1.00  3.21  5.17  4.80  5.51  6.24  6.51  26.243 
+   -contrast -contrast -contrast                                          1.00  3.69  7.25  9.45  9.94 12.02 14.09   3.945 
+   +contrast +contrast +contrast                                          1.00  3.69  7.23  7.10  9.32 11.29 13.06   3.945 
+   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  3.69  6.86  9.48 10.90 12.42 13.77  12.079 
+   -colorize 30%/20%/50%                                                  1.00  3.52  6.18  7.14  8.64  9.90 10.37  15.507 
+   -despeckle                                                             1.00  3.15  5.07  5.80  5.70  5.88  5.76   1.758 
+   -edge 0x1                                                              1.00  3.68  6.86  9.64 11.01 12.70 13.89  11.155 
+   -emboss 0x1                                                            1.00  3.43  6.13  8.29  9.76 11.17 12.18   4.031 
+   -enhance                                                               1.00  3.55  7.02  8.27  8.31  9.89 10.87   1.718 
+   -gaussian 0x0.5                                                        1.00  3.70  7.19 10.40 13.01 15.47 17.47   6.114 
+   -gaussian 0x1.0                                                        1.00  3.60  7.00 10.41 13.47 16.58 19.30   2.277 
+   -gaussian 0x2.0                                                        1.00  3.91  7.21 10.59 13.79 17.09 20.21   0.687 
+   -hald-clut identity:8                                                  1.00  3.77  6.70  8.22  9.56 11.54 12.72  11.905 
+   -hald-clut identity:10                                                 1.00  3.77  6.41  7.49  9.52 11.47 12.79  11.881 
+   -hald-clut identity:14                                                 1.00  3.73  7.00  7.57  9.33 11.25 12.52  10.079 
+   -implode 0.5                                                           1.00  3.42  6.94  7.41  8.61 10.76 11.53   4.406 
+   -implode -1                                                            1.00  3.45  6.30  9.04  8.81  8.40  8.16   4.836 
+   -lat 10x10-5%                                                          1.00  3.48  6.28  7.38  7.64  8.24  8.91   2.637 
+   -median 1                                                              1.00  1.95  3.35  4.28  4.83  6.02  6.96   0.564 
+   -median 2                                                              1.00  3.52  3.59  4.59  7.48  6.97  8.69   0.252 
+   -minify                                                                1.00  3.60  6.62  8.75 10.37 11.94 12.70  18.688 
+   -modulate 110/100/95                                                   1.00  3.77  6.85  7.29  8.69 10.43 11.82  11.220 
+   +noise Uniform                                                         1.00  2.51  3.17  3.41  3.66  3.87  3.95   6.890 
+   +noise Gaussian                                                        1.00  3.43  6.53  9.32  9.55 11.44 13.08   1.923 
+   +noise Multiplicative                                                  1.00  3.44  6.33  7.27  8.84 10.33 11.72   2.554 
+   +noise Impulse                                                         1.00  2.59  3.03  3.55  3.77  4.08  4.19   6.863 
+   +noise Laplacian                                                       1.00  3.42  6.08  6.71  8.08  9.28 10.14   3.600 
+   +noise Poisson                                                         1.00  3.31  5.80  6.78  8.30  9.61 10.59   3.346 
+   -noise 1                                                               1.00  2.72  3.06  4.16  5.26  5.48  7.02   0.576 
+   -noise 2                                                               1.00  3.52  3.76  6.03  7.59  7.28  9.45   0.274 
+   -fill blue -fuzz 35% -opaque red                                       1.00  2.88  4.21  4.28  4.70  4.96  4.98  39.400 
+   -operator all Add 2%                                                   1.00  3.14  5.00  6.02  6.71  7.39  7.55  33.533 
+   -operator all And 233                                                  1.00  2.16  2.78  2.64  2.70  2.95  2.93  38.000 
+   -operator all Assign 50%                                               1.00  2.05  2.30  2.43  2.39  2.61  2.53  38.200 
+   -operator all Depth 6                                                  1.00  2.28  2.47  2.83  2.94  3.08  3.01  36.400 
+   -operator all Divide 2                                                 1.00  3.35  5.51  6.97  7.82  8.68  8.77  31.200 
+   -operator all Gamma 0.7                                                1.00  1.89  2.46  2.34  2.43  2.48  2.39  27.345 
+   -operator all Negate 1.0                                               1.00  2.17  2.71  2.81  2.89  2.97  2.89  38.200 
+   -operator all LShift 2                                                 1.00  2.18  2.74  2.74  2.93  2.96  2.93  38.048 
+   -operator all Multiply 0.5                                             1.00  3.24  5.28  6.47  7.29  8.03  8.11  32.072 
+   -operator all Or 233                                                   1.00  2.16  2.74  2.58  2.77  2.96  2.91  38.048 
+   -operator all RShift 2                                                 1.00  2.19  2.67  2.71  2.89  2.96  2.89  38.200 
+   -operator all Subtract 10%                                             1.00  3.13  5.09  5.98  6.70  7.45  7.51  33.267 
+   -operator red Threshold 50%                                            1.00  1.95  2.49  2.47  2.55  2.64  2.61  37.924 
+   -operator gray Threshold 50%                                           1.00  2.39  3.17  3.09  3.07  3.25  3.28  37.052 
+   -operator all Threshold-White 80%                                      1.00  2.41  2.95  3.22  3.39  3.44  3.41  40.837 
+   -operator all Threshold-Black 10%                                      1.00  2.35  2.99  3.15  3.32  3.46  3.30  40.837 
+   -operator all Xor 233                                                  1.00  2.15  2.56  2.60  2.85  2.94  2.89  38.000 
+   -operator all Noise-Gaussian 30%                                       1.00  3.59  7.03 10.25 10.93 13.23 15.15   2.273 
+   -operator all Noise-Impulse 30%                                        1.00  3.60  6.38  5.90  7.26  8.37  9.03  17.166 
+   -operator all Noise-Laplacian 30%                                      1.00  3.71  7.26  8.01 10.33 12.48 14.39   5.294 
+   -operator all Noise-Multiplicative 30%                                 1.00  3.59  7.10  8.20 10.58 13.00 14.62   3.232 
+   -operator all Noise-Poisson 30%                                        1.00  3.49  6.83  8.01 10.36 12.59 14.36   4.826 
+   -operator all Noise-Uniform 30%                                        1.00  3.53  4.90  7.02  6.81  8.23  8.85  17.893 
+   -ordered-dither all 2x2                                                1.00  3.02  4.74  4.64  5.30  5.67  5.73  27.888 
+   -ordered-dither all 3x3                                                1.00  3.01  4.69  4.59  5.09  5.68  5.79  28.144 
+   -ordered-dither intensity 3x3                                          1.00  2.97  4.00  4.50  5.12  5.69  5.83  28.231 
+   -ordered-dither all 4x4                                                1.00  3.21  4.68  4.34  4.97  5.73  5.87  28.343 
+   -paint 0x1                                                             1.00  3.73  6.96  9.41  8.78 10.55 11.66   8.765 
+   -random-threshold all 20x80                                            1.00  2.79  4.09  3.90  4.50  4.73  4.89  30.279 
+   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  1.98  2.53  2.61  2.65  2.63  2.61  51.896 
+   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  3.04  3.93  4.24  4.70  5.37  5.84  30.200 
+   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  3.22  4.50  4.75  5.57  6.19  6.36  27.000 
+   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  3.18  5.02  4.59  5.51  6.17  6.38  27.200 
+   -density 75x75 -resample 50x50                                         1.00  3.77  6.82  8.71  9.20  9.22  8.89   5.347 
+   -resize 10%                                                            1.00  3.68  6.67  8.71 10.21 11.51 12.49  13.241 
+   -resize 50%                                                            1.00  3.77  6.92  8.33  9.92 11.07 11.32   8.071 
+   -resize 150%                                                           1.00  3.60  6.59  7.36  8.75  7.74  7.40   2.852 
+   -rotate 15                                                             1.00  3.25  5.63  7.05  8.26  9.19  9.71   3.059 
+   -rotate 45                                                             1.00  3.08  4.98  6.08  6.79  7.35  7.73   1.128 
+   -segment 0.5x0.25                                                      1.00  1.89  2.26  2.42  2.32  2.37  2.42   0.046 
+   -shade 30x30                                                           1.00  3.36  5.50  5.35  6.53  7.53  8.02  15.446 
+   -sharpen 0x0.5                                                         1.00  3.70  7.19 10.25 12.81 15.40 17.50   6.126 
+   -sharpen 0x1.0                                                         1.00  3.60  7.03 10.41 13.45 16.58 19.04   2.247 
+   -sharpen 0x2.0                                                         1.00  3.88  7.35 10.62 13.82 17.03 20.29   0.690 
+   -shear 45x45                                                           1.00  2.94  4.44  5.22  5.79  6.14  6.38   1.607 
+   -solarize 50%                                                          1.00  2.41  3.30  3.24  3.37  3.53  3.45  37.849 
+   -swirl 90                                                              1.00  3.37  5.33  9.18  7.68 12.13 11.18   5.859 
+   -fuzz 35% -transparent red                                             1.00  2.83  4.09  3.99  4.50  4.75  4.78  35.000 
+   -trim                                                                  1.00  2.50  3.21  3.18  3.41  3.83  3.79  40.400 
+   -fuzz 5% -trim                                                         1.00  3.41  6.02  5.79  6.75  7.79  8.22  21.116 
+   -unsharp 0x0.5+20+1                                                    1.00  3.41  5.59  6.90  8.07  8.72  8.44   4.734 
+   -unsharp 0x1.0+20+1                                                    1.00  3.46  6.04  7.72  9.16 10.18 10.10   3.704 
+   -wave 25x150                                                           1.00  3.60  6.40  8.24  6.78  9.19 10.79   6.863 
    ===================================================================== ===== ===== ===== ===== ===== ===== ===== ========
 
 
@@ -1307,10 +1318,10 @@ hyperthreading:
 Windows XP / MSVC / Intel Core 2 Quad
 -------------------------------------
 
-.. Last update: Mon Jul 20 19:15:49 CDT 2009
+.. Last update: Sun Jan 29 16:17:01 CST 2012
 
 This system is Windows XP Professional (SP3) using the Visual Studio
-2008 compiler and a Q8 build.  The system CPU is a 2.83 GHz Core 2
+2008 compiler and a Q16 build.  The system CPU is a 2.83 GHz Core 2
 Quad Processor (Q9550).  This processor is a multi-chip module (MCM)
 based on two Core 2 CPUs bonded to a L3 cache in the same chip
 package.
@@ -1319,115 +1330,130 @@ The following shows the performance boost for a Q16 build:
 
 .. table:: Performance Boost on an Intel Core 2 Quad (Q9550) system
 
-   ======================================================= ===== ===== ===== ===== ======= ====
-   Operation                                                 1     2     3     4   iter/s  thds
-   ======================================================= ===== ===== ===== ===== ======= ====
-   -noop                                                    1.00  1.01  1.01  0.98   73.40   3
-   -affine 1,0,0.785,1,0,0 -transform                       1.00  1.60  2.13  2.61    5.24   4
-   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01  1.00  1.37  1.50  1.57   39.80   4
-   -blur 0x0.5                                              1.00  1.65  2.10  2.39    8.60   4
-   -blur 0x1.0                                              1.00  1.68  2.21  2.58    7.66   4
-   -charcoal 0x1                                            1.00  1.75  2.29  2.61    3.13   4
-   -colorspace CMYK                                         1.00  1.13  1.17  1.17   41.80   3
-   -colorspace GRAY                                         1.00  1.71  1.87  1.88   18.94   4
-   -colorspace HSL                                          1.00  1.94  2.76  3.36   16.60   4
-   -colorspace HWB                                          1.00  1.82  2.50  3.07   20.80   4
-   -colorspace OHTA                                         1.00  1.70  1.86  1.85   18.74   3
-   -colorspace YCbCr                                        1.00  1.70  1.89  1.90   19.14   4
-   -colorspace YIQ                                          1.00  1.71  1.91  1.91   19.00   3
-   -colorspace YUV                                          1.00  1.70  1.94  1.90   19.54   3
-   -contrast -contrast -contrast                            1.00  1.97  2.91  3.78    4.04   4
-   +contrast +contrast +contrast                            1.00  1.99  2.94  3.84    4.05   4
-   -convolve 1,1,1,1,4,1,1,1,1                              1.00  1.99  2.77  3.36   14.76   4
-   -colorize 30%/20%/50%                                    1.00  1.69  2.25  2.66   23.26   4
-   -despeckle                                               1.00  1.50  2.84  2.86    0.89   4
-   -edge 0x1                                                1.00  1.83  2.71  3.44    8.97   4
-   -emboss 0x1                                              1.00  1.79  2.45  2.97    7.51   4
-   -enhance                                                 1.00  2.01  2.95  3.90    2.83   4
-   -gaussian 0x0.5                                          1.00  1.88  2.69  3.40    9.45   4
-   -gaussian 0x1.0                                          1.00  2.01  2.93  3.77    4.50   4
-   -hald-clut identity:8                                    1.00  1.88  2.59  3.20   11.92   4
-   -hald-clut identity:10                                   1.00  1.70  2.21  2.61    9.03   4
-   -hald-clut identity:14                                   1.00  1.32  1.47  1.56    2.86   4
-   -implode 0.5                                             1.00  1.97  2.87  3.65    6.85   4
-   -implode -1                                              1.00  1.92  2.80  3.60    6.91   4
-   -lat 10x10-5%                                            1.00  1.89  2.69  3.43    4.47   4
-   -median 1                                                1.00  2.01  2.67  3.68    1.50   4
-   -median 2                                                1.00  1.97  2.79  3.83    0.57   4
-   -minify                                                  1.00  1.67  2.20  2.43   29.60   4
-   -modulate 110/100/95                                     1.00  1.89  2.66  3.35   14.22   4
-   +noise Uniform                                           1.00  1.69  2.19  2.55   13.20   4
-   +noise Gaussian                                          1.00  1.93  2.82  3.55    3.20   4
-   +noise Multiplicative                                    1.00  1.92  2.75  3.52    4.54   4
-   +noise Impulse                                           1.00  1.70  2.21  2.61   12.72   4
-   +noise Laplacian                                         1.00  1.85  2.57  3.17    7.51   4
-   +noise Poisson                                           1.00  1.91  2.73  3.46    4.98   4
-   -noise 1                                                 1.00  1.95  2.51  3.60    1.52   4
-   -noise 2                                                 1.00  1.98  2.77  3.79    0.56   4
-   -fill blue -fuzz 35% -opaque red                         1.00  1.34  1.50  1.58   55.00   4
-   -operator all Add 2%                                     1.00  1.72  2.25  2.64   30.40   4
-   -operator all And 233                                    1.00  1.09  1.11  1.10   48.59   3
-   -operator all Assign 50%                                 1.00  1.09  1.05  1.06   49.80   2
-   -operator all Depth 6                                    1.00  1.11  1.13  1.15   48.40   4
-   -operator all Divide 2                                   1.00  1.72  2.21  2.55   29.60   4
-   -operator all Gamma 0.7                                  1.00  1.09  1.13  1.13   39.40   4
-   -operator all Negate 1.0                                 1.00  1.11  1.09  1.09   49.60   2
-   -operator all LShift 2                                   1.00  1.06  1.09  1.10   49.00   4
-   -operator all Multiply 0.5                               1.00  1.76  2.28  2.68   30.40   4
-   -operator all Or 233                                     1.00  1.05  1.09  1.10   48.00   4
-   -operator all RShift 2                                   1.00  1.05  1.03  1.10   48.20   4
-   -operator all Subtract 10%                               1.00  1.78  2.33  2.63   28.40   4
-   -operator red Threshold 50%                              1.00  1.05  1.09  1.09   48.80   3
-   -operator gray Threshold 50%                             1.00  1.07  1.13  1.13   48.45   3
-   -operator all Threshold-White 80%                        1.00  1.06  1.08  1.05   54.20   3
-   -operator all Threshold-Black 10%                        1.00  1.17  1.09  1.04   56.60   2
-   -operator all Xor 233                                    1.00  1.12  1.13  1.12   48.60   3
-   -operator all Noise-Gaussian 30%                         1.00  1.92  2.91  3.82    3.61   4
-   -operator all Noise-Impulse 30%                          1.00  1.87  2.60  3.21   17.29   4
-   -operator all Noise-Laplacian 30%                        1.00  1.93  2.79  3.56    9.03   4
-   -operator all Noise-Multiplicative 30%                   1.00  1.95  3.04  3.87    4.99   4
-   -operator all Noise-Poisson 30%                          1.00  1.96  2.88  3.74    5.66   4
-   -operator all Noise-Uniform 30%                          1.00  1.86  2.58  3.19   18.34   4
-   -ordered-dither all 2x2                                  1.00  1.07  1.08  1.16   41.00   4
-   -ordered-dither all 3x3                                  1.00  1.21  1.19  1.21   39.60   4
-   -ordered-dither intensity 3x3                            1.00  1.19  1.20  1.17   39.20   3
-   -ordered-dither all 4x4                                  1.00  1.14  1.10  1.13   40.00   2
-   -paint 0x1                                               1.00  1.97  2.86  3.72    4.80   4
-   -random-threshold all 20x80                              1.00  1.56  1.92  2.22   34.70   4
-   -recolor '1,0,0,0,1,0,0,0,1'                             1.00  0.99  0.97  0.99   70.80   1
-   -recolor '0,0,1,0,1,0,1,0,0'                             1.00  1.71  2.25  2.53   29.62   4
-   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                       1.00  1.79  2.42  2.93   24.52   4
-   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'           1.00  1.79  2.43  2.86   23.85   4
-   -density 75x75 -resample 50x50                           1.00  1.70  2.15  2.41    9.68   4
-   -resize 10%                                              1.00  1.73  2.31  2.78   24.00   4
-   -resize 50%                                              1.00  1.71  2.09  2.33   12.52   4
-   -resize 150%                                             1.00  1.88  2.21  2.71    4.43   4
-   -rotate 45                                               1.00  1.57  1.89  2.11    1.94   4
-   -segment 0.5x0.25                                        1.00  1.44  1.62  1.79    0.17   4
-   -shade 30x30                                             1.00  1.73  2.16  2.55   22.00   4
-   -sharpen 0x0.5                                           1.00  1.89  2.68  3.42    9.48   4
-   -sharpen 0x1.0                                           1.00  2.02  2.92  3.79    4.50   4
-   -shear 45x45                                             1.00  1.35  1.57  1.67    2.67   4
-   -solarize 50%                                            1.00  1.10  1.15  1.15   48.80   3
-   -swirl 90                                                1.00  1.93  2.77  3.54    7.50   4
-   -fuzz 35% -transparent red                               1.00  1.35  1.47  1.55   48.20   4
-   -trim                                                    1.00  1.57  1.91  2.14   45.80   4
-   -fuzz 5% -trim                                           1.00  1.75  2.33  2.73   29.71   4
-   -unsharp 0x0.5+20+1                                      1.00  1.72  2.24  2.63    7.51   4
-   -unsharp 0x1.0+20+1                                      1.00  1.77  2.36  2.80    6.78   4
-   -wave 25x150                                             1.00  1.80  2.41  2.71    6.54   4
-   ======================================================= ===== ===== ===== ===== ======= ====
+   ===================================================================== ===== ===== ===== ===== ======== ====
+   Operation                                                               1     2     3     4    iter/s  thds
+   ===================================================================== ===== ===== ===== ===== ======== ====
+   -noop                                                                  1.00  1.00  0.99  0.98  13.036   1
+   -affine 1,0,0.785,1,0,0 -transform                                     1.00  1.62  2.11  2.38   0.808   4
+   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  1.09  1.17  1.18   8.271   4
+   -blur 0x0.5                                                            1.00  1.62  2.12  2.47   1.551   4
+   -blur 0x1.0                                                            1.00  1.71  2.25  2.62   1.378   4
+   -blur 0x2.0                                                            1.00  1.78  2.40  2.78   1.091   4
+   -charcoal 0x1                                                          1.00  1.71  2.23  2.61   0.738   4
+   -colorspace CMYK                                                       1.00  1.06  1.07  1.11   7.309   4
+   -colorspace GRAY                                                       1.00  1.71  2.23  2.56   4.711   4
+   -colorspace HSL                                                        1.00  1.83  2.56  3.15   3.418   4
+   -colorspace HWB                                                        1.00  1.79  2.45  2.97   4.332   4
+   -colorspace OHTA                                                       1.00  1.77  2.23  2.55   4.655   4
+   -colorspace YCbCr                                                      1.00  1.72  2.19  2.52   4.711   4
+   -colorspace YIQ                                                        1.00  1.73  2.21  2.48   4.613   4
+   -colorspace YUV                                                        1.00  1.75  2.23  2.55   4.712   4
+   -contrast -contrast -contrast                                          1.00  1.95  2.87  3.74   0.838   4
+   +contrast +contrast +contrast                                          1.00  1.94  2.87  3.74   0.849   4
+   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  1.77  2.42  2.99   3.012   4
+   -colorize 30%/20%/50%                                                  1.00  1.70  2.31  2.70   4.036   4
+   -despeckle                                                             1.00  1.85  2.54  2.88   0.515   4
+   -edge 0x1                                                              1.00  1.87  2.67  3.37   1.751   4
+   -emboss 0x1                                                            1.00  1.79  2.43  2.97   1.519   4
+   -enhance                                                               1.00  1.95  2.90  3.80   0.600   4
+   -fill none -stroke gold -draw 'circle 800,500 1100,800'                1.00  1.34  1.48  1.59   9.938   4
+   -fill green -stroke gold -draw 'circle 800,500 1100,800'               1.00  1.42  1.63  1.76   9.312   4
+   -fill none -stroke gold -draw 'rectangle 400,200 1100,800'             1.00  1.18  1.32  1.37  11.400   4
+   -fill blue -stroke gold -draw 'rectangle 400,200 1100,800'             1.00  1.29  1.41  1.52  10.731   4
+   -fill none -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'  1.00  1.17  1.24  1.28  11.492   4
+   -fill blue -stroke gold -draw 'roundRectangle 400,200 1100,800 20,20'  1.00  1.23  1.36  1.43  10.831   4
+   -fill none -stroke gold -draw 'polygon 400,200 1100,800 100,300'       1.00  1.23  1.39  1.45  11.028   4
+   -fill blue -stroke gold -draw 'polygon 400,200 1100,800 100,300'       1.00  1.24  1.40  1.49  10.731   4
+   -fill none -stroke gold -draw 'Bezier 400,200 1100,800 100,300'        1.00  1.09  1.13  1.18  11.655   4
+   -fill blue -stroke gold -draw 'Bezier 400,200 1100,800 100,300'        1.00  1.13  1.18  1.22  11.563   4
+   -gaussian 0x0.5                                                        1.00  1.88  2.65  3.36   1.883   4
+   -gaussian 0x1.0                                                        1.00  1.98  2.90  3.76   0.884   4
+   -gaussian 0x2.0                                                        1.00  1.92  2.91  3.82   0.298   4
+   -hald-clut identity:8                                                  1.00  1.87  2.66  3.28   2.286   4
+   -hald-clut identity:10                                                 1.00  1.84  2.57  3.22   2.193   4
+   -hald-clut identity:14                                                 1.00  1.68  2.17  2.53   1.378   4
+   -implode 0.5                                                           1.00  1.93  2.79  3.38   1.150   4
+   -implode -1                                                            1.00  1.92  2.78  3.57   1.214   4
+   -lat 10x10-5%                                                          1.00  1.86  2.60  3.24   1.185   4
+   -median 1                                                              1.00  1.97  2.68  3.47   0.253   4
+   -median 2                                                              1.00  1.96  2.77  3.65   0.095   4
+   -minify                                                                1.00  1.69  2.17  2.55   5.415   4
+   -modulate 110/100/95                                                   1.00  1.83  2.60  3.29   2.954   4
+   +noise Uniform                                                         1.00  1.68  2.15  2.51   2.400   4
+   +noise Gaussian                                                        1.00  1.91  2.75  3.44   0.713   4
+   +noise Multiplicative                                                  1.00  1.89  2.71  3.42   0.899   4
+   +noise Impulse                                                         1.00  1.70  2.20  2.53   2.239   4
+   +noise Laplacian                                                       1.00  1.82  2.49  2.95   1.450   4
+   +noise Poisson                                                         1.00  1.91  2.75  3.29   0.727   4
+   -noise 1                                                               1.00  1.96  2.58  3.81   0.278   4
+   -noise 2                                                               1.00  1.96  2.77  3.65   0.095   4
+   -fill blue -fuzz 35% -opaque red                                       1.00  1.35  1.51  1.60   9.771   4
+   -operator all Add 2%                                                   1.00  1.71  2.27  2.71   5.497   4
+   -operator all And 233                                                  1.00  1.05  1.08  1.09   8.600   4
+   -operator all Assign 50%                                               1.00  1.03  1.05  1.05   8.348   3
+   -operator all Depth 6                                                  1.00  1.09  1.08  1.12   8.520   4
+   -operator all Divide 2                                                 1.00  1.73  2.29  2.70   5.497   4
+   -operator all Gamma 0.7                                                1.00  1.03  1.08  1.10   8.271   4
+   -operator all Negate 1.0                                               1.00  1.02  1.04  1.06   8.398   4
+   -operator all LShift 2                                                 1.00  1.08  1.07  1.09   8.600   4
+   -operator all Multiply 0.5                                             1.00  1.73  2.29  2.71   5.498   4
+   -operator all Or 233                                                   1.00  1.02  1.06  1.09   8.612   4
+   -operator all RShift 2                                                 1.00  1.03  1.09  1.09   8.574   4
+   -operator all Subtract 10%                                             1.00  1.73  2.31  2.73   5.333   4
+   -operator red Threshold 50%                                            1.00  1.04  1.06  1.09   8.746   4
+   -operator gray Threshold 50%                                           1.00  1.03  1.08  1.09   8.638   4
+   -operator all Threshold-White 80%                                      1.00  1.13  1.14  1.15  10.208   4
+   -operator all Threshold-Black 10%                                      1.00  1.16  1.13  1.18  10.000   4
+   -operator all Xor 233                                                  1.00  1.06  1.10  1.10   8.692   3
+   -operator all Noise-Gaussian 30%                                       1.00  1.97  2.90  3.54   0.757   4
+   -operator all Noise-Impulse 30%                                        1.00  1.86  2.61  3.23   3.200   4
+   -operator all Noise-Laplacian 30%                                      1.00  1.91  2.76  3.53   1.866   4
+   -operator all Noise-Multiplicative 30%                                 1.00  1.96  2.90  3.48   0.944   4
+   -operator all Noise-Poisson 30%                                        1.00  1.96  2.88  3.77   0.867   4
+   -operator all Noise-Uniform 30%                                        1.00  1.80  2.57  3.18   3.429   4
+   -ordered-dither all 2x2                                                1.00  1.26  1.28  1.32   7.308   4
+   -ordered-dither all 3x3                                                1.00  1.27  1.30  1.35   7.438   4
+   -ordered-dither intensity 3x3                                          1.00  1.25  1.30  1.35   7.400   4
+   -ordered-dither all 4x4                                                1.00  1.24  1.29  1.33   7.354   4
+   -paint 0x1                                                             1.00  1.93  2.83  3.65   0.836   4
+   -random-threshold all 20x80                                            1.00  1.58  1.96  2.25   6.634   4
+   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  1.00  1.01  1.01  13.000   3
+   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  1.71  2.21  2.65   5.514   4
+   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  1.79  2.44  2.95   4.346   4
+   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  1.78  2.42  2.95   4.372   4
+   -density 75x75 -resample 50x50                                         1.00  1.65  2.25  2.65   1.751   4
+   -resize 10%                                                            1.00  1.71  2.23  2.63   4.834   4
+   -resize 50%                                                            1.00  1.72  2.31  2.69   2.499   4
+   -resize 150%                                                           1.00  1.86  2.36  2.58   0.715   4
+   -rotate 15                                                             1.00  1.50  1.75  2.07   0.723   4
+   -rotate 45                                                             1.00  1.49  1.55  1.76   0.311   4
+   -segment 0.5x0.25                                                      1.00  1.44  1.62  1.69   0.027   4
+   -shade 30x30                                                           1.00  1.67  2.20  2.55   4.085   4
+   -sharpen 0x0.5                                                         1.00  1.89  2.64  3.36   1.877   4
+   -sharpen 0x1.0                                                         1.00  1.99  2.90  3.76   0.879   4
+   -sharpen 0x2.0                                                         1.00  1.94  2.91  3.83   0.299   4
+   -shear 45x45                                                           1.00  1.05  1.30  1.49   0.441   4
+   -solarize 50%                                                          1.00  1.06  1.12  1.12   8.322   4
+   -swirl 90                                                              1.00  1.89  2.74  3.53   1.366   4
+   -fuzz 35% -transparent red                                             1.00  1.32  1.42  1.43   8.322   4
+   -trim                                                                  1.00  1.38  1.60  1.70   9.846   4
+   -fuzz 5% -trim                                                         1.00  1.69  2.30  2.77   5.200   4
+   -unsharp 0x0.5+20+1                                                    1.00  1.69  2.17  2.60   1.333   4
+   -unsharp 0x1.0+20+1                                                    1.00  1.73  2.32  2.63   1.160   4
+   -wave 25x150                                                           1.00  1.83  2.57  3.08   1.378   4
+   ===================================================================== ===== ===== ===== ===== ======== ====
+
 
 Windows XP / MinGW / Intel Core 2 Quad
 --------------------------------------
 
-.. Last update: Wed Dec 21 16:19:21 CST 2011
+.. Last update: Sun Jan 29 14:08:17 CST 2012
 
-TDM's GCC/mingw32 4.5.1 was downloaded from
-http://www.tdragon.net/recentgcc/ and installed on the same Windows XP
-system with the 2.83 GHz Core 2 Quad Processor (Q9550) as described
-above.  This processor is a multi-chip module (MCM) based on two Core
-2 CPUs bonded to a L3 cache in the same chip package.
+4.6.2 20110921 (prerelease) from a build of the MinGW-w64 project was
+installed on the same Windows XP system with the 2.83 GHz Core 2 Quad
+Processor (Q9550) as described above.  The build is a 32-bit build.
+This processor is a multi-chip module (MCM) based on two Core 2 CPUs
+bonded to a L3 cache in the same chip package.
 
 The following shows the performance boost for a Q16 build:
 
@@ -1436,106 +1462,105 @@ The following shows the performance boost for a Q16 build:
    ===================================================================== ===== ===== ===== ===== ======== ====
    Operation                                                               1     2     3     4    iter/s  thds
    ===================================================================== ===== ===== ===== ===== ======== ====
-   -noop                                                                  1.00  1.00  1.00  1.00  12.920   4
-   -affine 1,0,0.785,1,0,0 -transform                                     1.00  1.89  2.15  2.66   0.808   4
-   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  1.18  1.21  1.24   8.174   4
-   -blur 0x0.5                                                            1.00  1.50  1.80  1.96   1.957   4
-   -blur 0x1.0                                                            1.00  1.57  1.93  2.18   1.674   4
-   -blur 0x2.0                                                            1.00  1.72  2.25  2.63   1.333   4
-   -charcoal 0x1                                                          1.00  1.61  2.01  2.28   0.874   4
-   -colorspace CMYK                                                       1.00  1.10  1.10  1.14   7.461   4
-   -colorspace GRAY                                                       1.00  1.48  1.62  1.68   7.089   4
-   -colorspace HSL                                                        1.00  1.85  2.59  3.14   3.131   4
-   -colorspace HWB                                                        1.00  1.79  2.44  2.95   4.400   4
-   -colorspace OHTA                                                       1.00  1.48  1.69  1.69   7.200   3
-   -colorspace YCbCr                                                      1.00  1.47  1.63  1.61   6.892   3
-   -colorspace YIQ                                                        1.00  1.47  1.67  1.69   7.133   4
-   -colorspace YUV                                                        1.00  1.46  1.58  1.67   7.089   4
-   -contrast -contrast -contrast                                          1.00  1.91  2.91  3.81   0.598   4
-   +contrast +contrast +contrast                                          1.00  1.96  2.87  3.76   0.601   4
-   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  1.66  2.23  2.66   3.832   4
-   -colorize 30%/20%/50%                                                  1.00  1.64  2.02  2.30   5.136   4
-   -despeckle                                                             1.00  1.40  2.62  2.63   0.279   4
-   -edge 0x1                                                              1.00  1.73  2.28  2.76   3.600   4
-   -emboss 0x1                                                            1.00  1.73  2.31  2.82   1.813   4
-   -enhance                                                               1.00  1.98  2.93  3.85   0.535   4
-   -gaussian 0x0.5                                                        1.00  1.79  2.48  3.14   2.306   4
-   -gaussian 0x1.0                                                        1.00  1.93  2.80  3.57   0.967   4
-   -gaussian 0x2.0                                                        1.00  1.96  2.92  3.82   0.321   4
-   -hald-clut identity:8                                                  1.00  1.85  2.70  3.39   2.521   4
-   -hald-clut identity:10                                                 1.00  1.90  2.69  3.33   2.483   4
-   -hald-clut identity:14                                                 1.00  1.88  2.62  2.78   1.855   4
-   -implode 0.5                                                           1.00  1.92  2.78  3.63   0.849   4
-   -implode -1                                                            1.00  1.79  2.72  3.66   0.860   4
-   -lat 10x10-5%                                                          1.00  1.84  2.56  3.19   1.265   4
-   -median 1                                                              1.00  2.01  2.58  3.81   0.255   4
-   -median 2                                                              1.00  1.96  2.73  3.85   0.100   4
-   -minify                                                                1.00  1.56  1.93  2.21   6.439   4
-   -modulate 110/100/95                                                   1.00  1.89  2.68  3.40   2.667   4
-   +noise Uniform                                                         1.00  1.55  1.49  1.78   2.089   4
-   +noise Gaussian                                                        1.00  1.96  2.88  3.78   0.276   4
-   +noise Multiplicative                                                  1.00  1.94  2.78  3.61   0.505   4
-   +noise Impulse                                                         1.00  1.61  2.09  2.43   2.560   4
-   +noise Laplacian                                                       1.00  1.90  2.71  3.43   0.823   4
-   +noise Poisson                                                         1.00  1.94  2.81  3.62   0.615   4
-   -noise 1                                                               1.00  1.94  2.63  3.85   0.258   4
-   -noise 2                                                               1.00  2.00  2.80  4.00   0.100   4
-   -fill blue -fuzz 35% -opaque red                                       1.00  1.40  1.60  1.69   9.709   4
-   -operator all Add 2%                                                   1.00  1.42  1.61  1.69   8.493   4
-   -operator all And 233                                                  1.00  1.07  1.07  1.07   8.547   2
-   -operator all Assign 50%                                               1.00  1.13  1.13  1.13   8.774   2
-   -operator all Depth 6                                                  1.00  1.04  1.07  1.08   8.547   4
-   -operator all Divide 2                                                 1.00  1.45  1.69  1.80   8.441   4
-   -operator all Gamma 0.7                                                1.00  1.10  1.11  1.11   8.072   4
-   -operator all Negate 1.0                                               1.00  1.08  1.08  1.08   8.774   3
-   -operator all LShift 2                                                 1.00  1.03  1.07  1.08   8.573   4
-   -operator all Multiply 0.5                                             1.00  1.44  1.70  1.79   8.441   4
-   -operator all Or 233                                                   1.00  1.06  1.06  1.06   8.547   4
-   -operator all RShift 2                                                 1.00  1.09  1.10  1.09   8.772   3
-   -operator all Subtract 10%                                             1.00  1.45  1.73  1.85   8.466   4
-   -operator red Threshold 50%                                            1.00  1.02  1.06  1.07   8.520   4
-   -operator gray Threshold 50%                                           1.00  1.07  1.07  1.08   8.547   4
-   -operator all Threshold-White 80%                                      1.00  1.10  1.15  1.16  10.303   4
-   -operator all Threshold-Black 10%                                      1.00  1.14  1.16  1.17  10.000   4
-   -operator all Xor 233                                                  1.00  1.07  1.07  1.07   8.547   2
-   -operator all Noise-Gaussian 30%                                       1.00  1.97  2.92  3.87   0.290   4
-   -operator all Noise-Impulse 30%                                        1.00  1.77  2.51  3.09   3.753   4
-   -operator all Noise-Laplacian 30%                                      1.00  1.96  2.88  3.75   0.930   4
-   -operator all Noise-Multiplicative 30%                                 1.00  1.97  2.91  3.79   0.542   4
-   -operator all Noise-Poisson 30%                                        1.00  1.97  2.91  3.82   0.672   4
-   -operator all Noise-Uniform 30%                                        1.00  1.85  2.51  3.02   4.024   4
-   -ordered-dither all 2x2                                                1.00  1.18  1.20  1.26   7.376   4
-   -ordered-dither all 3x3                                                1.00  1.22  1.20  1.25   7.376   4
-   -ordered-dither intensity 3x3                                          1.00  1.29  1.27  1.32   7.552   4
-   -ordered-dither all 4x4                                                1.00  1.20  1.20  1.25   7.354   4
-   -paint 0x1                                                             1.00  1.87  2.66  3.28   1.704   4
-   -random-threshold all 20x80                                            1.00  1.47  1.58  1.73   7.134   4
-   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  1.01  1.01  1.00  13.119   3
-   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  1.66  2.20  2.56   4.893   4
-   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  1.65  2.16  2.58   5.463   4
-   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  1.70  2.22  2.62   5.531   4
-   -density 75x75 -resample 50x50                                         1.00  1.81  2.14  2.40   1.888   4
-   -resize 10%                                                            1.00  1.72  2.29  2.74   4.447   4
-   -resize 50%                                                            1.00  1.79  2.23  2.55   2.636   4
-   -resize 150%                                                           1.00  1.65  2.07  2.47   0.938   4
-   -rotate 15                                                             1.00  1.43  1.98  2.31   1.003   4
-   -rotate 45                                                             1.00  1.22  1.29  0.33   0.128   3
+   -noop                                                                  1.00  1.00  1.00  1.01  12.443   4
+   -affine 1,0,0.785,1,0,0 -transform                                     1.00  1.93  2.23  2.54   0.713   4
+   -asc-cdl 0.9,0.01,0.45:0.9,0.01,0.45:0.9,0.01,0.45:0.01                1.00  1.19  1.24  1.34   7.553   4
+   -blur 0x0.5                                                            1.00  1.42  1.66  1.78   1.488   4
+   -blur 0x1.0                                                            1.00  1.50  1.77  2.01   1.325   4
+   -blur 0x2.0                                                            1.00  1.64  2.08  2.38   1.076   4
+   -charcoal 0x1                                                          1.00  1.54  1.85  2.01   0.742   4
+   -colorspace CMYK                                                       1.00  1.10  1.08  1.14   7.000   4
+   -colorspace GRAY                                                       1.00  1.42  1.57  1.63   6.675   4
+   -colorspace HSL                                                        1.00  1.77  2.45  2.96   2.883   4
+   -colorspace HWB                                                        1.00  1.78  2.40  2.91   4.267   4
+   -colorspace OHTA                                                       1.00  1.47  1.65  1.64   6.778   3
+   -colorspace YCbCr                                                      1.00  1.41  1.49  1.61   6.613   4
+   -colorspace YIQ                                                        1.00  1.47  1.63  1.66   6.809   4
+   -colorspace YUV                                                        1.00  1.45  1.58  1.62   6.675   4
+   -contrast -contrast -contrast                                          1.00  1.94  2.92  3.80   0.681   4
+   +contrast +contrast +contrast                                          1.00  1.97  2.91  3.80   0.692   4
+   -convolve 1,1,1,1,4,1,1,1,1                                            1.00  1.63  2.23  2.68   3.789   4
+   -colorize 30%/20%/50%                                                  1.00  1.52  1.93  2.19   4.938   4
+   -despeckle                                                             1.00  1.78  2.23  2.48   0.529   4
+   -edge 0x1                                                              1.00  1.70  2.26  2.74   3.545   4
+   -emboss 0x1                                                            1.00  1.73  2.28  2.76   1.818   4
+   -enhance                                                               1.00  2.01  3.01  3.96   0.487   4
+   -gaussian 0x0.5                                                        1.00  1.78  2.54  3.16   2.341   4
+   -gaussian 0x1.0                                                        1.00  1.89  2.74  3.54   1.003   4
+   -gaussian 0x2.0                                                        1.00  2.00  2.98  3.89   0.338   4
+   -hald-clut identity:8                                                  1.00  1.87  2.63  3.29   2.765   4
+   -hald-clut identity:10                                                 1.00  1.91  2.69  3.26   2.651   4
+   -hald-clut identity:14                                                 1.00  1.87  2.59  2.76   2.000   4
+   -implode 0.5                                                           1.00  1.91  2.85  3.72   0.810   4
+   -implode -1                                                            1.00  1.96  2.85  3.73   0.872   4
+   -lat 10x10-5%                                                          1.00  1.85  2.57  3.16   1.341   4
+   -median 1                                                              1.00  1.99  2.67  3.58   0.258   4
+   -median 2                                                              1.00  1.96  2.89  3.74   0.101   4
+   -minify                                                                1.00  1.62  1.98  2.29   5.908   4
+   -modulate 110/100/95                                                   1.00  1.88  2.65  3.33   2.584   4
+   +noise Uniform                                                         1.00  1.62  2.02  2.33   2.651   4
+   +noise Gaussian                                                        1.00  1.97  2.89  3.77   0.358   4
+   +noise Multiplicative                                                  1.00  1.93  2.77  3.60   0.623   4
+   +noise Impulse                                                         1.00  1.63  2.06  2.38   2.552   4
+   +noise Laplacian                                                       1.00  1.88  2.66  2.91   0.889   4
+   +noise Poisson                                                         1.00  1.93  2.81  3.61   0.596   4
+   -noise 1                                                               1.00  2.01  2.92  3.77   0.268   4
+   -noise 2                                                               1.00  1.96  2.89  3.70   0.100   4
+   -fill blue -fuzz 35% -opaque red                                       1.00  1.37  1.50  1.61   9.172   4
+   -operator all Add 2%                                                   1.00  1.44  1.64  1.72   7.900   4
+   -operator all And 233                                                  1.00  1.08  1.06  1.08   7.775   2
+   -operator all Assign 50%                                               1.00  1.07  1.05  1.10   8.049   4
+   -operator all Depth 6                                                  1.00  1.12  1.09  1.15   8.149   4
+   -operator all Divide 2                                                 1.00  1.46  1.69  1.72   7.483   4
+   -operator all Gamma 0.7                                                1.00  1.10  1.07  1.11   7.220   4
+   -operator all Negate 1.0                                               1.00  1.06  1.06  1.12   8.049   4
+   -operator all LShift 2                                                 1.00  1.11  1.09  1.09   8.023   2
+   -operator all Multiply 0.5                                             1.00  1.46  1.67  1.78   7.877   4
+   -operator all Or 233                                                   1.00  1.08  1.07  1.12   8.050   4
+   -operator all RShift 2                                                 1.00  1.06  1.06  1.09   7.829   4
+   -operator all Subtract 10%                                             1.00  1.48  1.71  1.83   7.900   4
+   -operator red Threshold 50%                                            1.00  1.07  1.06  1.11   8.023   4
+   -operator gray Threshold 50%                                           1.00  1.09  1.07  1.10   7.829   4
+   -operator all Threshold-White 80%                                      1.00  1.10  1.16  1.19   9.200   4
+   -operator all Threshold-Black 10%                                      1.00  1.22  1.19  1.24   9.400   4
+   -operator all Xor 233                                                  1.00  1.08  1.07  1.11   7.998   4
+   -operator all Noise-Gaussian 30%                                       1.00  1.95  2.88  3.80   0.369   4
+   -operator all Noise-Impulse 30%                                        1.00  1.54  2.10  2.66   3.288   4
+   -operator all Noise-Laplacian 30%                                      1.00  1.95  2.86  3.34   1.061   4
+   -operator all Noise-Multiplicative 30%                                 1.00  1.97  2.91  3.81   0.675   4
+   -operator all Noise-Poisson 30%                                        1.00  1.87  2.77  3.64   0.637   4
+   -operator all Noise-Uniform 30%                                        1.00  1.27  1.76  2.12   2.800   4
+   -ordered-dither all 2x2                                                1.00  1.24  1.23  1.29   7.110   4
+   -ordered-dither all 3x3                                                1.00  1.19  1.20  1.26   6.935   4
+   -ordered-dither intensity 3x3                                          1.00  1.21  1.19  1.22   6.738   4
+   -ordered-dither all 4x4                                                1.00  1.19  1.20  1.26   6.957   4
+   -paint 0x1                                                             1.00  1.86  2.63  3.33   1.860   4
+   -random-threshold all 20x80                                            1.00  1.08  0.69  1.01   4.332   2
+   -recolor '1,0,0,0,1,0,0,0,1'                                           1.00  0.99  0.99  1.00  12.285   1
+   -recolor '0,0,1,0,1,0,1,0,0'                                           1.00  1.63  2.09  2.43   6.000   4
+   -recolor '0.9,0,0,0,0.9,0,0,0,1.2'                                     1.00  1.71  2.19  2.67   5.333   4
+   -recolor '.22,.72,.07,.22,.72,.07,.22,.72,.07'                         1.00  1.70  2.24  2.63   5.268   4
+   -density 75x75 -resample 50x50                                         1.00  1.79  2.15  2.33   1.877   4
+   -resize 10%                                                            1.00  1.69  2.32  2.69   4.400   4
+   -resize 50%                                                            1.00  1.79  2.20  2.55   2.707   4
+   -resize 150%                                                           1.00  1.63  2.09  2.28   0.884   4
+   -rotate 15                                                             1.00  1.58  1.64  1.87   0.802   4
+   -rotate 45                                                             1.00  1.21  1.42  1.68   0.354   4
    -segment 0.5x0.25                                                      1.00  1.44  1.69  1.88   0.030   4
-   -shade 30x30                                                           1.00  1.66  2.20  2.56   3.963   4
-   -sharpen 0x0.5                                                         1.00  1.80  2.51  3.17   2.320   4
-   -sharpen 0x1.0                                                         1.00  1.93  2.79  3.62   0.982   4
-   -sharpen 0x2.0                                                         1.00  1.95  2.90  3.83   0.322   4
-   -shear 45x45                                                           1.00  1.25  1.67  0.14   0.536   3
-   -solarize 50%                                                          1.00  1.09  1.10  1.10   8.774   4
-   -swirl 90                                                              1.00  1.94  2.89  3.53   0.844   4
-   -fuzz 35% -transparent red                                             1.00  1.37  1.49  1.54   8.520   4
-   -trim                                                                  1.00  1.29  1.41  1.44   9.846   4
-   -fuzz 5% -trim                                                         1.00  1.75  2.31  2.77   4.893   4
-   -unsharp 0x0.5+20+1                                                    1.00  1.56  1.93  2.14   1.762   4
-   -unsharp 0x1.0+20+1                                                    1.00  1.61  2.12  2.39   1.528   4
-   -wave 25x150                                                           1.00  1.90  2.72  3.38   1.189   4
+   -shade 30x30                                                           1.00  1.77  2.33  2.77   3.501   4
+   -sharpen 0x0.5                                                         1.00  1.90  2.63  3.29   2.327   4
+   -sharpen 0x1.0                                                         1.00  1.91  2.75  3.56   1.005   4
+   -sharpen 0x2.0                                                         1.00  1.98  2.93  3.81   0.335   4
+   -shear 45x45                                                           1.00  1.41  1.23  1.41   0.457   4
+   -solarize 50%                                                          1.00  1.08  1.07  1.13   8.049   4
+   -swirl 90                                                              1.00  1.95  2.76  3.39   0.982   4
+   -fuzz 35% -transparent red                                             1.00  1.32  1.45  1.55   7.900   4
+   -trim                                                                  1.00  1.27  1.30  1.33   9.569   4
+   -fuzz 5% -trim                                                         1.00  1.73  2.28  2.67   4.893   4
+   -unsharp 0x0.5+20+1                                                    1.00  1.51  1.81  1.98   1.330   4
+   -unsharp 0x1.0+20+1                                                    1.00  1.49  1.86  2.10   1.167   4
+   -wave 25x150                                                           1.00  1.81  2.65  3.29   1.204   4
    ===================================================================== ===== ===== ===== ===== ======== ====
-
 
 Windows Vista 64-bit / Phenom X4 9550
 -------------------------------------
@@ -1690,7 +1715,7 @@ are nullified with many threads.
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2008 - 2011 GraphicsMagick Group
+| Copyright (C) 2008 - 2012 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

@@ -570,7 +570,7 @@ as you did the PATH variable. In my case:</p>
 now leave out file formats and lighten you load. If all you ever need
 is GIF and JPEG, then simply drop all the other DLL's into the local
 trash can and get on with your life.</p>
-<p>WARNING: Always keep the &quot;xc&quot; format, since IM uses it for internal
+<p>WARNING: Always keep the &quot;xc&quot; format, since GM uses it for internal
 purposes.</p>
 </blockquote>
 <p>ALSO. You can elect to changes these things the good old &quot;hard-coded&quot;
@@ -612,8 +612,11 @@ from Windows Explorer.<ol class="loweralpha">
 <li>Click on '!' icon to run configure program</li>
 <li>Select DLL build</li>
 <li>Check &quot;Build demo and test programs&quot;</li>
-<li>Click on Edit &quot;magick_config.h&quot; and ensure that UseInstalledGraphicsMagick
-and ProvideDllMain are defined.</li>
+<li>Click on Edit &quot;magick_config.h&quot; and verify desired settings
+such as QuantumDepth.  You can also defer this step to later
+by opening the header file
+<tt class="docutils literal">CORE_magick\include\magick_config.h</tt> in the Visual Studio
+project.</li>
 <li>Finish remaining configure wizard screens to complete.</li>
 <li>File -&gt; &quot;Close Workspace&quot;</li>
 </ol>
@@ -684,7 +687,7 @@ that can be used to do this manually after you open up a command prompt.</p>
 <tt class="docutils literal"><span class="pre">VisualMagick\bin\GraphicsMagick-1.0-Q8-dll.exe</span></tt></li>
 </ol>
 </blockquote>
-<p>Copyright © GraphicsMagick Group 2002 - 2011</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2012</p>
 </div>
 </div>
 </div>

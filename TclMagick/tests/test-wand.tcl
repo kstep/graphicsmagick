@@ -121,7 +121,7 @@ set TestFunctions {
     GetNumberImages             seq     1
     GetSetSamplingFactors       img     1
     GetSetSize                  img     1
-    ImplodeImage                img     1
+    ImplodeImage                img     0
     LabelImage                  img     1
     LevelImage                  img     1
     LevelImageChannel           img     1
@@ -951,6 +951,7 @@ proc GetSetVirtualPixelMethod {seq} {
     $wand GetVirtualPixelMethod
     $wand SetVirtualPixelMethod "mirror"
     $wand GetVirtualPixelMethod
+    $wand SetVirtualPixelMethod "undefined"
 
     magick delete $wand
 }
@@ -1274,8 +1275,18 @@ proc ScaleImage {img} {
     magick delete $wand 
 }
 proc SeparateImageChannel {img} {
-    foreach chan {red green yellow} {
+    # Test RGB space
+    foreach chan {red green blue} {
         set wand [$img clone imgX]
+        debug $wand    
+        $wand SeparateImageChannel $chan
+        $wand WriteImage "$::TMP/x-Separate-$chan.jpg"
+        magick delete $wand
+    }
+    # Test CMYK space
+    foreach chan {cyan magenta yellow black} {
+        set wand [$img clone imgX]
+	$wand SetColorspace "CMYK"
         debug $wand    
         $wand SeparateImageChannel $chan
         $wand WriteImage "$::TMP/x-Separate-$chan.jpg"

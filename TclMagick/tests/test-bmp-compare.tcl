@@ -29,7 +29,7 @@ set base [file join $imgdir tclmagick-small.bmp]
 set basecopy [file join $imgdir tclmagick-small-copy.bmp]
 set bigdiff [file join $imgdir tclmagick-big-diff.bmp]
 set onepixeldiff [file join $imgdir tclmagick-small-diff.bmp]
-set epsilon 1.0e-6
+set epsilon 3.0e-5
 
 proc runTest {} {
 

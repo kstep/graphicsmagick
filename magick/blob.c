@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -287,7 +287,7 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
           quantum<<=1;
           extent=image->blob->extent;
           extent+=length+quantum;
-          if ((ftruncate(filedes,extent) == 0) &&
+          if ((MagickFtruncate(filedes,extent) == 0) &&
               ((data=(unsigned char*) MapBlob(filedes,WriteMode,0,extent)) != 0))
             {
               image->blob->quantum=quantum;
@@ -474,7 +474,7 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
       #include <linux/falloc.h>
       long fallocate(int fd, int mode, loff_t offset, loff_t len);
     */
-    if (ftruncate(fileno(image->blob->file),size) != 0)
+    if (MagickFtruncate(fileno(image->blob->file),size) != 0)
       {
         ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(errno));
         status=MagickFail;
@@ -504,7 +504,7 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
         /*
           Truncate to new size.
         */
-        if (ftruncate(filedes,extent) != 0)
+        if (MagickFtruncate(filedes,extent) != 0)
           {
             ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(errno));
             status=MagickFail;
@@ -978,7 +978,7 @@ MagickExport void CloseBlob(Image *image)
             /*
               Truncate memory-mapped output file to size.
             */
-            (void) ftruncate(fileno(image->blob->file),image->blob->length);
+            (void) MagickFtruncate(fileno(image->blob->file),image->blob->length);
             if (image->blob->fsync)
               (void) fsync(fileno(image->blob->file));
             status=fclose(image->blob->file);
@@ -2192,7 +2192,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     case ReadMode:
     default:
     {
-      map=(void *) mmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,
+      map=(void *) MagickMmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,
         (off_t)offset);
 #if 0
 #if defined(HAVE_MADVISE)
@@ -2214,7 +2214,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     }
     case WriteMode:
     {
-      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,(off_t)offset);
+      map=(void *) MagickMmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,(off_t)offset);
 #if defined(MADV_SEQUENTIAL)
           (void) madvise(map,length,MADV_SEQUENTIAL);
 #endif /* defined(MADV_SEQUENTIAL) */
@@ -2222,7 +2222,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     }
     case IOMode:
     {
-      map=(void *) mmap((char *) NULL,length,(PROT_READ | PROT_WRITE),
+      map=(void *) MagickMmap((char *) NULL,length,(PROT_READ | PROT_WRITE),
         MAP_SHARED,file,(off_t)offset);
       break;
     }
@@ -4263,7 +4263,7 @@ MagickExport MagickPassFail UnmapBlob(void *map,const size_t length)
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Munmap file mapping at address 0x%p and length %lu",
     map,(unsigned long) length);
-  status=munmap(map,length);
+  status=MagickMunmap(map,length);
   return(status == 0);
 #else
   return(MagickFail);

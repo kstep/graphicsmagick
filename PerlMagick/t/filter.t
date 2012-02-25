@@ -145,7 +145,7 @@ testFilterCompare('input.miff', q//, 'reference/filter/Raise.miff', 'Raise',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Resize.miff', 'Resize',
-  q/geometry=>"50%", filter=>"Box"/, 0.003, 0.004);
+  q/geometry=>"50%", filter=>"Box"/, 0.004, 0.004);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Roll.miff', 'Roll',

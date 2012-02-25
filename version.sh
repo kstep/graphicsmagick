@@ -10,7 +10,7 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.2").
-PACKAGE_VERSION='1.3.13'
+PACKAGE_VERSION='1.3.14'
 #
 # Package name plus version string.
 #
@@ -19,7 +19,7 @@ PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2011-12-24"
+PACKAGE_RELEASE_DATE="2012-02-25"
 #PACKAGE_RELEASE_DATE="unreleased"
 
 #
@@ -79,19 +79,19 @@ HG_BRANCH_TAG=GraphicsMagick-1_3
 # Magick library versioning
 #
 MAGICK_LIBRARY_CURRENT=10
-MAGICK_LIBRARY_REVISION=0
+MAGICK_LIBRARY_REVISION=1
 MAGICK_LIBRARY_AGE=7
 
 #
 # Magick++ library versioning
 #
-MAGICK_PLUS_PLUS_LIBRARY_CURRENT=7
+MAGICK_PLUS_PLUS_LIBRARY_CURRENT=8
 MAGICK_PLUS_PLUS_LIBRARY_REVISION=0
-MAGICK_PLUS_PLUS_LIBRARY_AGE=4
+MAGICK_PLUS_PLUS_LIBRARY_AGE=5
 
 #
 # Magick Wand library versioning
 #
-MAGICK_WAND_LIBRARY_CURRENT=5
+MAGICK_WAND_LIBRARY_CURRENT=6
 MAGICK_WAND_LIBRARY_REVISION=0
-MAGICK_WAND_LIBRARY_AGE=3
+MAGICK_WAND_LIBRARY_AGE=4
