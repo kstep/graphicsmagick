@@ -1,4 +1,4 @@
-.TH gm 1 "2012/01/21" "GraphicsMagick"
+.TH gm 1 "2012/03/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3784,6 +3784,13 @@ The left side of the stereo pair is saved as the red channel of the output
 image.  The right side is saved as the green channel.  Red-green stereo
 glasses are required to properly view the stereo image.
 .TP
+.B "-strip"
+\fRremove all profiles and text attributes from the image
+
+All embedded profiles and text attributes are stripped from the image.
+This is useful for images used for the web, or when output files need
+to be as small as possible
+.TP
 .B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive
 
@@ -4955,6 +4962,9 @@ Options, above.
 .B "-stereo"
 \fRcomposite two images to create a stereo anaglyph
 .TP
+.B "-strip"
+\fRremove all profiles and text attributes from the image
+.TP
 .B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image (quickly)
 .TP
@@ -6019,6 +6029,9 @@ Options, above.
 .TP
 .B "-spread \fI<amount>"\fP
 \fRdisplace image pixels by a random amount
+.TP
+.B "-strip"
+\fRremove all profiles and text attributes from the image
 .TP
 .B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive
@@ -8922,6 +8935,9 @@ Options, above.
 .B "-spread \fI<amount>"\fP
 \fRdisplace image pixels by a random amount
 .TP
+.B "-strip"
+\fRremove all profiles and text attributes from the image
+.TP
 .B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive
 .TP
@@ -9265,6 +9281,9 @@ Options, above.
 .TP
 .B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
+.TP
+.B "-strip"
+\fRremove all profiles and text attributes from the image
 .TP
 .B "-stroke \fI<color>"\fP
 \fRcolor to use when stroking a graphic primitive

@@ -1811,6 +1811,13 @@ void Magick::Image::stereo ( const Image &rightImage_ )
   throwException( exceptionInfo );
 }
 
+// Remove all profiles and text attributes from the image.
+void Magick::Image::strip ( void )
+{
+  modifyImage();
+  MagickLib::StripImage(image());
+}
+
 // Swirl image
 void Magick::Image::swirl ( const double degrees_ )
 {

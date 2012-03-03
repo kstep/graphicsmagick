@@ -4997,6 +4997,22 @@ glasses are required to properly view the stereo image.</pp>
 
 
 
+<!-- ------------ -strip ------------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-strip</opt>
+
+<abs>remove all profiles and text attributes from the image</abs>
+
+<pp>
+All embedded profiles and text attributes are stripped from the image.
+This is useful for images used for the web, or when output files need
+to be as small as possible</pp>
+
+</utils>
+
+
+
 <!-- ------------ -stroke ------------------------------------------- -->
 
 <utils apps=convert,mogrify,montage>

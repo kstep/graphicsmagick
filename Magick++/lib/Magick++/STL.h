@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2004, 2009
+// Copyright Bob Friesenhahn, 1999 - 2012
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -1032,6 +1032,17 @@ namespace Magick
 
   private:
     double _degrees;
+  };
+
+  // Remove all profiles and text attributes from the image.
+  class MagickDLLDecl stripImage : public std::unary_function<Image&,void>
+  {
+  public:
+    stripImage( void );
+
+    void operator()( Image &image_ ) const;
+
+  private:
   };
 
   // Channel a texture on image background

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2011 GraphicsMagick Group */
+/* Copyright (C) 2003-2012 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -9421,7 +9421,7 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickStripImage() strips an image of all profiles and comments.
+%  MagickStripImage() removes all profiles and text attributes from the image.
 %
 %  The format of the MagickStripImage method is:
 %
@@ -9441,7 +9441,7 @@ WandExport unsigned int MagickStripImage(MagickWand *wand)
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=ProfileImage(wand->image,"*",0,0,0);
+  status=StripImage(wand->image);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);

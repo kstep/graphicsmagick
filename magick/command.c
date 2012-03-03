@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -3505,6 +3505,10 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             option_info.stereo=(*option == '-');
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
       }
       case 't':
@@ -5415,6 +5419,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             if (*option == '-')
@@ -7506,12 +7514,14 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 if (IsAccessible(resource_info.write_filename))
                   {
                     char
-                      answer[2];
+		      *answer,
+                      answer_buffer[2];
 
+		    answer_buffer[0]='\0';
                     (void) fprintf(stderr,"Overwrite %.1024s? ",
-                      resource_info.write_filename);
-                    (void) fgets(answer,sizeof(answer),stdin);
-                    if (!((*answer == 'y') || (*answer == 'Y')))
+				   resource_info.write_filename);
+                    answer=fgets(answer_buffer,sizeof(answer_buffer),stdin);
+                    if ((NULL == answer) || !((answer[0] == 'y') || (answer[0] == 'Y')))
                       Exit(0);
                   }
               }
@@ -10299,6 +10309,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=spread_image;
             continue;
           }
+	if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    (void) StripImage(*image);
+	    continue;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->stroke,
@@ -12740,6 +12755,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             if (*option == '-')
@@ -14141,6 +14160,10 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             (void) QueryColorDatabase("none",&montage_info->stroke,exception);

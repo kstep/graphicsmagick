@@ -1029,6 +1029,7 @@ extern MagickExport MagickPassFail
   SetImageDepth(Image *image,const unsigned long),
   SetImageInfo(ImageInfo *image_info,const unsigned int flags,ExceptionInfo *exception),
   SetImageType(Image *image,const ImageType),
+  StripImage(Image *image),
   SyncImage(Image *image);
 
 extern MagickExport void

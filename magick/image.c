@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -3065,6 +3065,39 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
       break;
   }
   return (status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     S t r i p I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StripImage removes all profiles and text attributes from the image.
+%
+%  The format of the StripImage method is:
+%
+%      MagickPassFail StripImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+*/
+MagickExport MagickPassFail
+StripImage(Image *image)
+{
+  assert(image != (Image *) NULL);
+  (void) ProfileImage(image,"*",NULL,0,MagickFalse);
+  /* (void) SetImageAttribute(*image,"comment",(char *) NULL); */
+  DestroyImageAttributes(image);
+
+  return MagickPass;
 }
 
 /*

@@ -1,3 +1,11 @@
+2012-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/STL.cpp (stripImage): New unary function to to remove all
+	profiles and text attributes from the image.
+
+	* lib/Image.cpp (strip): New method to remove all profiles and
+	text attributes from the image.
+
 2011-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Explicitly DLL import/export Magick++

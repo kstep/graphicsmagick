@@ -665,6 +665,10 @@
 <lopt>-stereo</opt>
 <abs>composite two images to create a stereo anaglyph</abs>
 </utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-strip</opt>
+<abs>remove all profiles and text attributes from the image</abs>
+</utils>
 <utils apps=convert,mogrify,montage>
 <lopt>-stroke <color></opt>
 <abs>color to use when stroking a graphic primitive</abs>
