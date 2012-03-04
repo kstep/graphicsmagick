@@ -1,3 +1,14 @@
+2012-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Add support for -repage option
+	to composite, convert, mogrify, and montage subcommands.  Resets
+	or adjusts the current image page offsets based on a provided
+	geometry specification.
+
+	* magick/image.c (ResetImagePage): Add a function to adjust the
+	current image page canvas and position based on a relative page
+	specification.
+
 2012-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Add support for -strip option

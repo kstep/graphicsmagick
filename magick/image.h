@@ -1021,6 +1021,7 @@ extern MagickExport MagickPassFail
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   DisplayImages(const ImageInfo *image_info,Image *image),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
+  ResetImagePage(Image *image,const char *page),
   SetImage(Image *image,const Quantum),
   SetImageColor(Image *image,const PixelPacket *pixel),
   SetImageColorRegion(Image *image,long x,long y,unsigned long width,

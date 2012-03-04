@@ -3409,6 +3409,16 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowCompositeException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -3761,12 +3771,15 @@ static void CompositeUsage(void)
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-recolor matrix      apply a color translation matrix to image channels",
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-sampling-factor HxV[,...]",
       "                     horizontal and vertical sampling factors",
@@ -5248,6 +5261,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowConvertException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             if (*option == '-')
@@ -5838,6 +5861,7 @@ static void ConvertUsage(void)
       "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-ping                efficiently determine image attributes",
@@ -5853,6 +5877,8 @@ static void ConvertUsage(void)
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-resample geometry   resample to horizontal and vertical resolution",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
@@ -9967,6 +9993,23 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->render=(*option == '+');
             continue;
           }
+	if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if (*option == '+')
+	      {
+		/* Reset page to defaults */
+                (*image)->page.width=0U;
+                (*image)->page.height=0U;
+                (*image)->page.x=0;
+                (*image)->page.y=0;
+	      }
+	    else
+	      {
+		/* Adjust page offsets */
+		(void) ResetImagePage(*image,argv[++i]);
+	      }
+            continue;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             Image
@@ -12566,6 +12609,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowMogrifyException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             if (*option == '-')
@@ -13127,6 +13180,7 @@ static void MogrifyUsage(void)
       "                     ordered dither the image",
       "-output-directory directory",
       "                     write output files to directory",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-fill color           color for annotating or changing opaque color",
@@ -13140,6 +13194,8 @@ static void MogrifyUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-region geometry     apply options to a portion of the image",
       "-resample geometry   resample to horizontal and vertical resolution",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     perferred size or location of the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
@@ -14073,6 +14129,16 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowMontageException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -14464,10 +14530,13 @@ static void MontageUsage(void)
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-noop                do not apply options to image",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-red-primary point   chomaticity red primary point",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sampling-factor HxV[,...]",

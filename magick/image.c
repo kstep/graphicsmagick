@@ -1842,6 +1842,95 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     R e s e t I m a g e P a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetImagePage adjusts the current page canvas and position based on a
+%  relative page specification.
+%
+%  The format of the ResetImagePage method is:
+%
+%      MagickPassFail ResetImagePage(Image *image,const char *page)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o page: Relative page offset adjustment
+%
+*/
+MagickExport MagickPassFail
+ResetImagePage(Image *image,const char *page)
+{
+  RectangleInfo
+    page_geometry;
+
+  int
+    flags;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  /* Parse page geometry */
+  page_geometry.x=0;
+  page_geometry.y=0;
+  page_geometry.width=0;
+  page_geometry.height=0;
+  flags=GetMagickGeometry(page,&page_geometry.x,&page_geometry.y,
+			  &page_geometry.width,&page_geometry.height);
+
+  /* If no values were parsed, then return failed status */
+  if (NoValue == flags)
+    return MagickFail;
+
+  /* If width was provided */
+  if (flags & WidthValue)
+    {
+      /* If height was not provided, then default it to width */
+      if (!(flags & HeightValue))
+        page_geometry.height=page_geometry.width;
+      image->page.width=page_geometry.width;
+      image->page.height=page_geometry.height;
+    }
+  /* If values are absolute, then only adjust the page offset
+     values */
+  if (flags & AspectValue) /* ! */
+    {
+      if (flags & XValue)
+        image->page.x+=page_geometry.x;
+      if (flags & YValue)
+        image->page.y+=page_geometry.y;
+    }
+  else
+    {
+      /* If values are not absolute, then use offset values, and page
+	 width and height based on image width and height plus page
+	 offsets */
+      if (flags & XValue)
+        {
+          image->page.x=page_geometry.x;
+          if ((image->page.width == 0) && (page_geometry.x > 0))
+            image->page.width=image->columns+page_geometry.x;
+        }
+      if (flags & YValue)
+        {
+          image->page.y=page_geometry.y;
+          if ((image->page.height == 0) && (page_geometry.y > 0))
+            image->page.height=image->rows+page_geometry.y;
+        }
+    }
+
+  return MagickPass;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e                                                           %
 %                                                                             %
 %                                                                             %
