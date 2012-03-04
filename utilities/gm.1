@@ -1,4 +1,4 @@
-.TH gm 1 "2012/03/03" "GraphicsMagick"
+.TH gm 1 "2012/03/04" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3508,6 +3508,18 @@ to disable progress indication for a clean look while loading new images.
 Use \fB+render\fP to turn off rendering vector operations. This is
 useful when saving the result to vector formats such as MVG or SVG.
 .TP
+.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
+\fRAdjust image page offsets
+
+Adjust the current image page canvas and position based on a relative
+page specification.  This option may be used to change the location of
+a subframe (e.g. part of an animation) prior to composition.  If the
+geometry specification is absolute (includes a '!'), then the offset
+adjustment is absolute and there is no adjustment to page width and
+height, otherwise the page width and height values are also adjusted
+based on the current image dimensions.  Use \fB+repage\fP to set the
+image page offsets to default.
+.TP
 .B "-resample \fI<horizontal>x<vertical>"\fP
 \fRResample image to specified horizontal and vertical resolution
 
@@ -4935,6 +4947,9 @@ Options, above.
 .B "-render"
 \fRrender vector operations
 .TP
+.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
+\fRAdjust image page offsets
+.TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
 .TP
@@ -5978,6 +5993,9 @@ Options, above.
 .TP
 .B "-render"
 \fRrender vector operations
+.TP
+.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
+\fRAdjust image page offsets
 .TP
 .B "-resample \fI<horizontal>x<vertical>"\fP
 \fRResample image to specified horizontal and vertical resolution
@@ -8884,6 +8902,9 @@ Options, above.
 .B "-render"
 \fRrender vector operations
 .TP
+.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
+\fRAdjust image page offsets
+.TP
 .B "-resample \fI<horizontal>x<vertical>"\fP
 \fRResample image to specified horizontal and vertical resolution
 .TP
@@ -9260,6 +9281,9 @@ Options, above.
 .TP
 .B "-render"
 \fRrender vector operations
+.TP
+.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
+\fRAdjust image page offsets
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image

@@ -4368,6 +4368,26 @@ useful when saving the result to vector formats such as MVG or SVG.</font></td><
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a name="details-repage"></a>-repage <i> &lt;width&gt;x&lt;height&gt;+xoff+yoff[!]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Adjust image page offsets</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Adjust the current image page canvas and position based on a relative
+page specification.  This option may be used to change the location of
+a subframe (e.g. part of an animation) prior to composition.  If the
+geometry specification is absolute (includes a '!'), then the offset
+adjustment is absolute and there is no adjustment to page width and
+height, otherwise the page width and height values are also adjusted
+based on the current image dimensions.  Use <strong>+repage</strong> to set the
+image page offsets to default.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-resample"></a>-resample <i>&lt;horizontal&gt;x&lt;vertical&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Resample image to specified horizontal and vertical resolution</td></tr></table>

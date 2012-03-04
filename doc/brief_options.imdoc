@@ -557,6 +557,10 @@
 <lopt>-render</opt>
 <abs>render vector operations</abs>
 </utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-repage  <width>x<height>+xoff+yoff[!]</opt>
+<abs>Adjust image page offsets</abs>
+</utils>
 <utils apps=convert,mogrify>
 <lopt>-resample <horizontal>x<vertical></opt>
 <abs>Resample image to specified horizontal and vertical resolution</abs>
