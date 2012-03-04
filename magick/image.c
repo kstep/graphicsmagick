@@ -3092,10 +3092,31 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
 MagickExport MagickPassFail
 StripImage(Image *image)
 {
+  /* Text attributes to strip.  List is NULL terminated. */
+  static const char *strip_attributes[] =
+    {
+      "artist",
+      "comment",
+      "copyright",
+      "hostcomputer",
+      "label",
+      "make",
+      "model",
+      "timestamp",
+      (const char *) NULL
+    };
+
+  unsigned int
+    i;
+
   assert(image != (Image *) NULL);
+
+  /* Strip all profiles */
   (void) ProfileImage(image,"*",NULL,0,MagickFalse);
-  /* (void) SetImageAttribute(*image,"comment",(char *) NULL); */
-  DestroyImageAttributes(image);
+
+  /* Strip common text attributes */
+  for (i=0; strip_attributes[i] != NULL; i++)
+    (void) SetImageAttribute(image,strip_attributes[i],(char *) NULL);
 
   return MagickPass;
 }
