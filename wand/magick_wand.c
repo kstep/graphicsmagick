@@ -395,7 +395,7 @@ WandExport unsigned int MagickAddImage(MagickWand *wand,
 %    o wand: The magick wand.
 %
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
-%      Impulse, Laplacian, or Poisson.
+%      Impulse, Laplacian, Poisson, or Random.
 %
 */
 WandExport unsigned int MagickAddNoiseImage(MagickWand *wand,

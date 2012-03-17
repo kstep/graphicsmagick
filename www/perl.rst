@@ -314,7 +314,7 @@ The following image manipulation methods are available:
    |                 |                                 |across the red,      |
    |                 |noise=>{Uniform, Gaussian,       |green, and blue,     |
    |AddNoise         |Multiplicative, Impulse,         |channels. Set the    |
-   |                 |Laplacian, Poisson}              |image colorspace to  |
+   |                 |Laplacian, Poisson, Random}      |image colorspace to  |
    |                 |                                 |GRAY to obtain       |
    |                 |                                 |intensity noise.     |
    +-----------------+---------------------------------+---------------------+

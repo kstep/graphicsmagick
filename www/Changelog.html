@@ -36,6 +36,30 @@
 <div class="document">
 
 
+<p>2012-03-17  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+Added support for '+noise random' and '-operator noise-random' to
+'convert' and 'mogrify'.</li>
+<li>magick/effect.c (AddNoiseImage): Added support for RandomNoise.
+(AddNoiseImageChannel): Added support for RandomNoise.</li>
+<li>magick/enum_strings.c (StringToNoiseType): New function to
+convert a string to a NoiseType enumeration value.
+(NoiseTypeToString): New function to convert a NoiseType
+enumeration value into a string.</li>
+<li>PerlMagick/Magick.xs: Added support for RandomNoise.</li>
+<li>magick/operator.c (QuantumOperatorRegionImage): Added support for
+RandomNoise.</li>
+<li>magick/effect.c (AddNoiseImageChannel): Added support for
+RandomNoise.</li>
+<li>magick/gem.c (GenerateDifferentialNoise): Added support for
+RandomNoise.</li>
+<li>magick/random.h (MagickRandomRealInlined): The span of
+MagickRandomRealInlined() is now slightly more accurate.</li>
+<li>magick/image.h (enum NoiseType): New enumeration value RandomNoise.</li>
+</ul>
+</blockquote>
 <p>2012-03-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

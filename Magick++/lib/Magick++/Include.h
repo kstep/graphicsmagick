@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2008
+// Copyright Bob Friesenhahn, 1999 - 2012
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -321,6 +321,7 @@ namespace Magick
   using MagickLib::ImpulseNoise;
   using MagickLib::LaplacianNoise;
   using MagickLib::PoissonNoise;
+  using MagickLib::RandomNoise;
 
   // Orientation types
   using MagickLib::OrientationType;

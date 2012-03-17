@@ -3496,8 +3496,9 @@ this pixel is a maximum or minimum within the pixel window.</font></td></tr></ta
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>radius</strong> to specify the width of the neighborhood.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>+noise</strong> followed by a noise type to add noise to an image. Choose
-from these noise types:</font></td></tr></table>
+Use <strong>+noise</strong> followed by a noise type to add noise to an image.
+The noise added modulates the existing image pixels. Choose from these
+noise types:</font></td></tr></table>
 <pre>
      Uniform
      Gaussian
@@ -3505,6 +3506,7 @@ from these noise types:</font></td></tr></table>
      Impulse
      Laplacian
      Poisson
+     Random (uniform distribution)
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3592,12 +3594,13 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>, <strong>LShift</strong>,
-<strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>, <strong>Or</strong>,
-<strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Threshold</strong>,
-<strong>Threshold-White</strong>, <strong>Threshold-Black</strong>, <strong>Xor</strong>,
-<strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
-<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>, and
+<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>,
+<strong>LShift</strong>, <strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>,
+<strong>Or</strong>, <strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>,
+<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
+<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
+<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
+<strong>Noise-Poisson</strong>, <strong>Noise-Random</strong>, and
 <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
@@ -3688,24 +3691,30 @@ interesting property of XOR is that performing the same operation twice
 results in the original value.
 </dd>
 <dt>Noise-Gaussian</dt>
-<dd>Result is the channel value with gaussian noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Impulse</dt>
-<dd>Result is the channel value with impulse noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Laplacian</dt>
-<dd>Result is the channel value with laplacian noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Multiplicative</dt>
-<dd>Result is the channel value with multiplicative noise applied
+<dd>Result is the current channel value modulated with gaussian noise
 according to the intensity specified by rvalue.
 </dd>
+<dt>Noise-Impulse</dt>
+<dd>Result is the current channel value modulated with impulse noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Laplacian</dt>
+<dd>Result is the current channel value modulated with laplacian noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the current channel value modulated with multiplicative
+gaussian noise according to the intensity specified by rvalue.
+</dd>
 <dt>Noise-Poisson</dt>
-<dd>Result is the channel value with poisson noise applied according to
-the intensity specified by rvalue.
+<dd>Result is the current channel value modulated with poisson noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Random</dt>
+<dd>Result is the current channel value modulated with random (uniform
+distribution) noise according to the intensity specified by rvalue.
+The initial noise intensity (rvalue=1.0) is the range of one pixel
+quantum span.
 </dd>
 <dt>Noise-Uniform</dt>
 <dd>Result is the channel value with uniform noise applied according to

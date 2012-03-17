@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -258,7 +258,7 @@ static char
   *NoiseTypes[] =
   {
     "Uniform", "Gaussian", "Multiplicative", "Impulse", "Laplacian",
-    "Poisson", (char *) NULL
+    "Poisson", "Random", (char *) NULL
   },
   *PreviewTypes[] =
   {

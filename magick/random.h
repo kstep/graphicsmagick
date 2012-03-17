@@ -72,7 +72,10 @@ typedef struct _MagickRandomKernel
   */
   static inline double MagickRandomRealInlined(MagickRandomKernel *kernel)
   {
-    return ( MagickRandomIntegerInlined(kernel) * 2.32830643708e-10);
+    double result = MagickRandomIntegerInlined(kernel) * 2.3283064370807974e-10;
+    if (result > 1.0)
+      result=1.0;
+    return result;
   }
 
   /*

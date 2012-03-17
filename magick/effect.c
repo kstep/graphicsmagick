@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2011 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -325,7 +325,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 %    o image: The image.
 %
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
-%      Impulse, Laplacian, or Poisson.
+%      Impulse, Laplacian, Poisson, or Random.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -363,7 +363,7 @@ AddNoiseImage(const Image *image,const NoiseType noise_type,
 %    o channel: The image channel to apply noise to.
 %
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
-%      Impulse, Laplacian, or Poisson.
+%      Impulse, Laplacian, Poisson, or Random.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -400,6 +400,9 @@ AddNoiseImageChannel(const Image *image,const ChannelType channel,
       break;
     case PoissonNoise:
       quantum_operator=NoisePoissonQuantumOp;
+      break;
+    case RandomNoise:
+      quantum_operator=NoiseRandomQuantumOp;
       break;
     case UniformNoise:
       quantum_operator=NoiseUniformQuantumOp;

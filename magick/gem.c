@@ -144,7 +144,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GenerateDifferentialNoise generates a differential floating-point
-%  noise value which will produce in the final result when added to the
+%  noise value which will produce the final result when added to the
 %  original pixel.  The floating point differential value is useful since
 %  it allows scaling without loss of precision and avoids clipping.
 %
@@ -267,7 +267,14 @@ MagickExport double GenerateDifferentialNoise(const Quantum quantum_pixel,
       value=pixel-((double) i/SigmaPoisson);
       break;
     }
+    case RandomNoise:
+    {
+      /* Range is approximately -MaxRGB/2.0 to +MaxRGB/2.0 */
+      value=257.0*(0.5-MagickRandomRealInlined(kernel));
+      break;
+    }
   }
+  /* printf("value = %g\n",value); */
 
 #if QuantumDepth > 8
   value *= (MaxRGBFloat/255.0);

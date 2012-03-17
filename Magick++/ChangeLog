@@ -1,3 +1,7 @@
+2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (Magick): Added support for RandomNoise.
+
 2012-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/STL.cpp (stripImage): New unary function to to remove all

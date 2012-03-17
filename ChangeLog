@@ -1,3 +1,33 @@
+2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+	Added support for '+noise random' and '-operator noise-random' to
+	'convert' and 'mogrify'.
+
+	* magick/effect.c (AddNoiseImage): Added support for RandomNoise.
+	(AddNoiseImageChannel): Added support for RandomNoise.
+
+	* magick/enum_strings.c (StringToNoiseType): New function to
+	convert a string to a NoiseType enumeration value.
+	(NoiseTypeToString): New function to convert a NoiseType
+	enumeration value into a string.
+
+	* PerlMagick/Magick.xs: Added support for RandomNoise.
+
+	* magick/operator.c (QuantumOperatorRegionImage): Added support for
+	RandomNoise.
+
+	* magick/effect.c (AddNoiseImageChannel): Added support for
+	RandomNoise.
+
+	* magick/gem.c (GenerateDifferentialNoise): Added support for
+	RandomNoise.
+
+	* magick/random.h (MagickRandomRealInlined): The span of
+	MagickRandomRealInlined() is now slightly more accurate.
+
+	* magick/image.h (enum NoiseType): New enumeration value RandomNoise.
+
 2012-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): Add support for -repage option

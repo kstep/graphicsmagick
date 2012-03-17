@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2008 - 2009 GraphicsMagick Group
+% Copyright (C) 2008 - 2012 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -989,6 +989,68 @@ MagickExport MetricType StringToMetricType(const char *option)
 }
 
 /*
+  NoiseType
+*/
+MagickExport const char *NoiseTypeToString(NoiseType noise_type)
+{
+  char
+    *noise_string="Undefined";
+
+  switch (noise_type)
+    {
+    case UniformNoise:
+      noise_string="Uniform";
+      break;
+    case GaussianNoise:
+      noise_string="Gaussian";
+      break;
+    case MultiplicativeGaussianNoise:
+      noise_string="Multiplicative";
+      break;
+    case ImpulseNoise:
+      noise_string="Impulse";
+      break;
+    case LaplacianNoise:
+      noise_string="Laplacian";
+      break;
+    case PoissonNoise:
+      noise_string="Poisson";
+      break;
+    case RandomNoise:
+      noise_string="Random";
+      break;
+    case UndefinedNoise:
+      noise_string="Undefined";
+      break;
+    }
+
+  return noise_string;
+}
+MagickExport NoiseType StringToNoiseType(const char *option)
+{
+  NoiseType
+    noise_type=UndefinedNoise;
+
+  if (LocaleCompare("Uniform",option) == 0)
+    noise_type=UniformNoise;
+  else if (LocaleCompare("Gaussian",option) == 0)
+    noise_type=GaussianNoise;
+  else if (LocaleCompare("Multiplicative",option) == 0)
+    noise_type=MultiplicativeGaussianNoise;
+  else if (LocaleCompare("Impulse",option) == 0)
+    noise_type=ImpulseNoise;
+  else if (LocaleCompare("Laplacian",option) == 0)
+    noise_type=LaplacianNoise;
+  else if (LocaleCompare("Poisson",option) == 0)
+    noise_type=PoissonNoise;
+  else if (LocaleCompare("Random",option) == 0)
+    noise_type=RandomNoise;
+  else if (LocaleCompare("Undefined",option) == 0)
+    noise_type=UndefinedNoise;
+  return noise_type;
+}
+
+/*
   OrientationType
 */
 MagickExport const char *OrientationTypeToString(const OrientationType orientation_type)
@@ -1156,6 +1218,9 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
   else if ((LocaleCompare("noise-poisson",option) == 0) ||
            (LocaleCompare("PoissonNoise",option) == 0))
     quantum_operator=NoisePoissonQuantumOp;
+  else if ((LocaleCompare("noise-random",option) == 0) ||
+           (LocaleCompare("RandomNoise",option) == 0))
+    quantum_operator=NoiseRandomQuantumOp;
   else if ((LocaleCompare("noise-uniform",option) == 0) ||
            (LocaleCompare("UniformNoise",option) == 0))
     quantum_operator=NoiseUniformQuantumOp;
@@ -1263,6 +1328,9 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
       break;
     case PowQuantumOp:
       operator_text="pow";
+      break;
+    case NoiseRandomQuantumOp:
+      operator_text="noise-random";
       break;
     }
 

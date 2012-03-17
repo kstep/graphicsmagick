@@ -5022,16 +5022,15 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             if (*option == '+')
               {
+		NoiseType
+		  noise_type;
+
                 i++;
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if ((LocaleCompare("Uniform",option) != 0) &&
-                    (LocaleCompare("Gaussian",option) != 0) &&
-                    (LocaleCompare("Multiplicative",option) != 0) &&
-                    (LocaleCompare("Impulse",option) != 0) &&
-                    (LocaleCompare("Laplacian",option) != 0) &&
-                    (LocaleCompare("Poisson",option) != 0))
+		noise_type=StringToNoiseType(option);
+		if (UndefinedNoise == noise_type)
                   ThrowConvertException(OptionError,UnrecognizedNoiseType,
                     option);
               }
@@ -9620,17 +9619,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   Add noise to image.
                 */
                 option=argv[++i];
-                noise_type=UniformNoise;
-                if (LocaleCompare("Gaussian",option) == 0)
-                  noise_type=GaussianNoise;
-                if (LocaleCompare("multiplicative",option) == 0)
-                  noise_type=MultiplicativeGaussianNoise;
-                if (LocaleCompare("impulse",option) == 0)
-                  noise_type=ImpulseNoise;
-                if (LocaleCompare("laplacian",option) == 0)
-                  noise_type=LaplacianNoise;
-                if (LocaleCompare("Poisson",option) == 0)
-                  noise_type=PoissonNoise;
+                noise_type=StringToNoiseType(option);
                 noisy_image=
                   AddNoiseImage(*image,noise_type,&(*image)->exception);
               }
@@ -12387,16 +12376,15 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             if (*option == '+')
               {
+                NoiseType
+                  noise_type;
+
                 i++;
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if ((LocaleCompare("Uniform",option) != 0) &&
-                    (LocaleCompare("Gaussian",option) != 0) &&
-                    (LocaleCompare("Multiplicative",option) != 0) &&
-                    (LocaleCompare("Impulse",option) != 0) &&
-                    (LocaleCompare("Laplacian",option) != 0) &&
-                    (LocaleCompare("Poisson",option) != 0))
+		noise_type=StringToNoiseType(option);
+		if (UndefinedNoise == noise_type)
                   ThrowMogrifyException(OptionError,UnrecognizedNoiseType,
                     option);
               }
