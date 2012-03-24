@@ -1341,6 +1341,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 #else
   png_longjmp(ping,1);
 #endif
+  SignalHandlerExit(1); /* Avoid GCC warning about non-exit function which does exit */
 }
 
 static void PNGWarningHandler(png_struct *ping,png_const_charp message)
