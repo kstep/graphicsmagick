@@ -1,3 +1,10 @@
+2012-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (ThumbnailImage): Thumbnail default filter is
+	intended to be the box filter, but allow the user to override the
+	filter used.  Resolves SourceForge issue 3513239 "-filter command
+	line argument ignored".
+
 2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ConvertImageCommand, MogrifyImageCommand):
