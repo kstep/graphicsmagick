@@ -1473,14 +1473,18 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      int
-        number_layers = 0,
-        num_layers = 0,
+      unsigned long
+	number_layers = 0,
+        num_layers = 0;
+
+      long
         current_layer = 0,
         first_layer = 0,
         last_layer = 0,
-        T = 0,
-        foundAllLayers = False;
+        T = 0;
+
+	MagickBool
+          foundAllLayers = MagickFalse;
 
       /* BIG HACK
          because XCF doesn't include the layer count, and we
@@ -1495,7 +1499,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             offset = (long) ReadBlobMSBLong(image);
 
           if ( offset == 0 )
-            foundAllLayers = True;
+            foundAllLayers = MagickTrue;
           else
             number_layers++;
         } while ( !foundAllLayers );
@@ -1504,13 +1508,13 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       first_layer = image_info->subimage;
       num_layers = number_layers;
       /* subrange==0 means read all the images */
-      if( image_info->subrange > 0 && image_info->subrange < number_layers )
+      if( image_info->subrange > 0UL && image_info->subrange < number_layers )
         num_layers = image_info->subrange;
       last_layer = first_layer + num_layers-1;
 
       if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			      "XCF number_layers=%i first_layer=%i last_layer=%i",
+			      "XCF number_layers=%lu first_layer=%ld last_layer=%ld",
 			      number_layers, first_layer, last_layer);
 
       /* XCF has layers backwards, so this gets a bit complicated */
@@ -1521,7 +1525,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			      "XCF reading layers %i to %i inclusive", first_layer,
+			      "XCF reading layers %ld to %ld inclusive", first_layer,
 			      last_layer);
 
       /* allocate our array of layer info blocks */
@@ -1596,7 +1600,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if 0
 	  {
 	    /* NOTE: XCF layers are REVERSED from composite order! */
-	    signed int
+	    long
 	      j;
 
 	    for (j=number_layers-1; j>=0; j--) {
@@ -1611,7 +1615,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 	  {
 	    /* NOTE: XCF layers are REVERSED from composite order! */
-	    signed int
+	    long
 	      j;
 
 	    /* first we copy the last layer on top of the main image */
@@ -1625,11 +1629,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    */
 	    image->next=layer_info[number_layers-2].image;
 	    layer_info[number_layers-2].image->previous=image;
-	    for (j=number_layers-2; j>=0; j--)
+	    for (j=(signed int) number_layers-2; j >= 0; j--)
 	      {
 		if (j > 0)
 		  layer_info[j].image->next=layer_info[j-1].image;
-		if (j < (number_layers-1))
+		if (j < ((long) number_layers-1))
 		  layer_info[j].image->previous=layer_info[j+1].image;
 		layer_info[j].image->page.x = layer_info[j].offset_x;
 		layer_info[j].image->page.y = layer_info[j].offset_y;
