@@ -4,6 +4,7 @@
 	strncpy().
 	(CopyMagickString): Depend on strlcpy() because we provide it if
 	it is missing.
+	(ConcatenateMagickString): Depend on strlcat().
 
 	* coders/xcf.c (ReadXCFImage): Now respects image subimage and
 	subrange members so that returned image layers may be selected.

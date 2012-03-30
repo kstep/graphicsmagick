@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -168,44 +168,7 @@ WandExport int FormatMagickString(char *string,const size_t length,
 WandExport size_t ConcatenateMagickString(char *destination,
   const char *source,const size_t length)
 {
-#if defined(HAVE_STRLCAT)
   return(strlcat(destination,source,length));
-#else
-  {
-    register char
-      *q;
-
-    register const char
-      *p;
-
-    register size_t
-      i;
-
-    size_t
-      count;
-
-    p=source;
-    q=destination;
-    i=length;
-    while ((i-- != 0) && (*q != '\0'))
-      q++;
-    count=q-destination;
-    i=length-count;
-    if (i == 0)
-      return(count+strlen(p));
-    while (*p != '\0')
-    {
-      if (i != 1)
-        {
-          *q++=(*p);
-          i--;
-        }
-      p++;
-    }
-    *q='\0';
-    return(count+(p-source));
-  }
-#endif
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
