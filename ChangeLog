@@ -1,5 +1,8 @@
 2012-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* png: Update bundled libpng to 1.5.10 release.  Provides security
+	fix for CVE-2011-3048.
+
 	* wand/magick_compat.c (ParseGeometry): Use strlcpy() rather than
 	strncpy().
 	(CopyMagickString): Depend on strlcpy() because we provide it if
