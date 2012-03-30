@@ -39,6 +39,10 @@
 <p>2012-03-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>wand/magick_compat.c (ParseGeometry): Use strlcpy() rather than
+strncpy().
+(CopyMagickString): Depend on strlcpy() because we provide it if
+it is missing.</li>
 <li>coders/xcf.c (ReadXCFImage): Now respects image subimage and
 subrange members so that returned image layers may be selected.
 Based on patch from SourceForge issue 3513025 &quot;XCF reads all

@@ -1,5 +1,10 @@
 2012-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_compat.c (ParseGeometry): Use strlcpy() rather than
+	strncpy().
+	(CopyMagickString): Depend on strlcpy() because we provide it if
+	it is missing.
+
 	* coders/xcf.c (ReadXCFImage): Now respects image subimage and
 	subrange members so that returned image layers may be selected.
 	Based on patch from SourceForge issue 3513025 "XCF reads all
