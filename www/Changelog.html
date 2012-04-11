@@ -36,6 +36,14 @@
 <div class="document">
 
 
+<p>2012-04-11  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: fixed problem with bit depth when the encoder
+decides to write RGBA instead of indexed PNG, by delaying the
+call to png_set_tRNS() until after calling png_set_IHDR().</li>
+</ul>
+</blockquote>
 <p>2012-03-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -138,7 +146,7 @@ accidental macro expansion.</li>
 <blockquote>
 <ul class="simple">
 <li>coders/xcf.c (ReadXCFImage): Fix reading XCF which is comprised
-of differend sized layers.</li>
+of different sized layers.</li>
 </ul>
 </blockquote>
 <p>2012-02-08  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
