@@ -1,3 +1,8 @@
+2012-04-11  Glenn Randers-Pehrson  <glennrp@simplesystems.org>
+	* coders/png.c: fixed problem with bit depth when the encoder
+	decides to write RGBA instead of indexed PNG, by delaying the
+	call to png_set_tRNS() until after calling png_set_IHDR().
+
 2012-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Update bundled libpng to 1.5.10 release.  Provides security

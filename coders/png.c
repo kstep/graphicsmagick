@@ -6749,8 +6749,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                     (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
                   ping_trans_color.index=(unsigned char)
                     (ScaleQuantumToChar(MaxRGB-p->opacity));
+#if 0
                   (void) png_set_tRNS(ping, ping_info, NULL, 0,
                                       &ping_trans_color);
+#endif
                 }
             }
           if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
@@ -6984,6 +6986,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         if (ping_colortype==PNG_COLOR_TYPE_RGB_ALPHA)
                           {
                             ping_num_trans=0;
+                            if (ping_bit_depth < 8)
+                               ping_bit_depth=8;
                             png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
                             png_set_invalid(ping, ping_info, PNG_INFO_PLTE);
                             mng_info->IsPalette=MagickFalse;
@@ -7017,12 +7021,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         for (i=0; i<256; i++)
                            ping_trans_alpha[i]=(png_byte) trans_alpha[i];
                       }
-
-                    (void) png_set_tRNS(ping, ping_info,
-                                        ping_trans_alpha,
-                                        ping_num_trans,
-                                        &ping_trans_color);
                   }
+
 
                 /*
                   Identify which colormap entry is the background color.
@@ -7314,6 +7314,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                ping_interlace_method,
                ping_compression_method,
                ping_filter_method);
+
+  if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
+     {
+        (void) png_set_tRNS(ping, ping_info,
+                           ping_trans_alpha,
+                           ping_num_trans,
+                           &ping_trans_color);
+     }
 
   png_write_info(ping,ping_info);
 
