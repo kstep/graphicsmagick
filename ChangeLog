@@ -1,5 +1,11 @@
 2012-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pnm.c (ReadPNMImage): Completely disable OpenMP in reader
+	because there is too much contention.
+
+	* magick/pixel_iterator.c: Dereference image to be modified in
+	non-threaded context in order to lessen contention.
+
 	* magick/semaphore.c (AllocateSemaphoreInfo): Make sure that
 	SemaphoreInfo does not share cache lines with another semaphore.
 
