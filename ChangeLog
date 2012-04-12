@@ -1,3 +1,8 @@
+2012-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c (AllocateSemaphoreInfo): Make sure that
+	SemaphoreInfo does not share cache lines with another semaphore.
+
 2012-04-11  Glenn Randers-Pehrson  <glennrp@simplesystems.org>
 
 	* coders/png.c: fixed problem with bit depth when the encoder
