@@ -1,3 +1,8 @@
+2012-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (defineValue): Use AddDefinition() rather than
+	AddDefinitions().
+
 2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h (Magick): Added support for RandomNoise.

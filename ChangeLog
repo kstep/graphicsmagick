@@ -1,3 +1,13 @@
+2012-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/info.c (WriteINFOImage): When driven by the 'convert'
+	utility, -format produces user-controlled formatted output similar
+	to -format in 'identify'.  This is accomplished via a
+	'info:format=value' define.
+
+	* magick/image.c (AddDefinition): New function for adding just one
+	define to definitions list.
+
 2012-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): Completely disable OpenMP in reader

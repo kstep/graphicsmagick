@@ -508,7 +508,7 @@ namespace Magick
   using MagickLib::AcquireCacheViewPixels;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AdaptiveThresholdImage;
-  using MagickLib::AddDefinitions;
+  using MagickLib::AddDefinition;
   using MagickLib::AddNoiseImage;
   using MagickLib::AddNoiseImageChannel;
   using MagickLib::AffineMatrix;

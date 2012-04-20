@@ -4549,6 +4549,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,MissingArgument,
                     option);
                 format=argv[i];
+		/*
+		  Add definition to defines for use by 'info' coder.
+		*/
+		(void) AddDefinition(image_info,"info","format",format,exception);
               }
             break;
           }
@@ -5727,6 +5731,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       char
         *text;
 
+      /*
+	Return formatted string with image characteristics if metadata
+	is requested.
+      */
       text=TranslateText(image_info,image_list,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,MemoryAllocationFailed,

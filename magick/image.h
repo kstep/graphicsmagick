@@ -1017,6 +1017,8 @@ extern MagickExport MagickBool
 
 /* Functions which return unsigned int to indicate operation pass/fail */
 extern MagickExport MagickPassFail
+  AddDefinition(ImageInfo *image_info,const char *magick, const char *key,
+    const char *value, ExceptionInfo *exception),
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AnimateImages(const ImageInfo *image_info,Image *image),

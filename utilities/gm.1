@@ -1,4 +1,4 @@
-.TH gm 1 "2012/03/17" "GraphicsMagick"
+.TH gm 1 "2012/04/19" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1954,8 +1954,9 @@ filename is \fIimage.gif\fP, the output image filename becomes
 .B "-format \fI<string>"\fP
 \fRoutput formatted image characteristics
 
-When used with the \fBidentify\fP utility,
-use this option to print information about the image in a format of your
+When used with the \fBidentify\fP utility, or the \fBconvert\fP
+utility with output written to the 'info:-' file specification, use
+this option to print information about the image in a format of your
 choosing.  You can include the image filename, type, width, height,
 Exif data, or other image attributes by embedding special format
 characters:
@@ -5845,6 +5846,9 @@ Options, above.
 .TP
 .B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
+.TP
+.B "-format \fI<string>"\fP
+\fRoutput formatted image characteristics
 .TP
 .B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border

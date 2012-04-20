@@ -144,6 +144,69 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A d d D e f i n i t i o n                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AddDefinition() adds a key/value definition to the current map of
+%  definitions in ImageInfo. Definitions may be used by coders/decoders
+%  that read and write images.
+%
+%  The format of the AddDefinition method is:
+%
+%      MagickPassFail AddDefinition(ImageInfo *image_info,const char *magick,
+%                                   const char *key, const char *value,
+%                                   ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o magick: format/classification identifier
+%
+%    o key: subidentifier within format/classification
+%
+%    o value: definition value
+%
+%    o exception: Errors result in updates to this structure.
+%
+*/
+MagickExport MagickPassFail
+AddDefinition(ImageInfo *image_info,const char *magick, const char *key,
+	      const char *value, ExceptionInfo *exception)
+{
+  MagickPassFail
+    status;
+
+  char
+    search_key[MaxTextExtent];
+
+  if (image_info->definitions == 0)
+    image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
+      MagickMapDeallocateString);
+  if (image_info->definitions == 0)
+    return MagickFail;
+
+  /*
+    Format string like "magick:key"
+  */
+  FormatString(search_key, "%.60s:%.1024s", magick, key);
+
+  /*
+    Add entry to map
+  */
+  status &= MagickMapAddEntry((MagickMap) image_info->definitions,search_key,value,0,exception);
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A d d D e f i n i t i o n s                                               %
 %                                                                             %
 %                                                                             %
@@ -156,7 +219,7 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 %
 %  The format of the AddDefinitions method is:
 %
-%      void AddDefinitions(ImageInfo *image_info,const char *options)
+%      MagickPassFail AddDefinitions(ImageInfo *image_info,const char *options)
 %
 %  A description of each parameter follows:
 %
@@ -178,7 +241,7 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
     key[MaxTextExtent],
     value[MaxTextExtent];
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned int
@@ -193,6 +256,8 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
   if (image_info->definitions == 0)
     image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
       MagickMapDeallocateString);
+  if (image_info->definitions == 0)
+    return MagickFail;
 
   length=strlen(definitions);
   i=0;

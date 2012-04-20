@@ -2139,16 +2139,17 @@ filename is <i>image.gif</i>, the output image filename becomes
 
 
 
-<!-- ------------ -format [identify]--------------------------------- -->
+<!-- ------------ -format [convert,identify]-------------------------- -->
 
-<utils apps=identify>
+<utils apps=convert,identify>
 <dopt>-format <string></opt>
 
 <abs>output formatted image characteristics</abs>
 
 <pp>
-When used with the <s>identify</s> utility,
-use this option to print information about the image in a format of your
+When used with the <s>identify</s> utility, or the <s>convert</s>
+utility with output written to the 'info:-' file specification, use
+this option to print information about the image in a format of your
 choosing.  You can include the image filename, type, width, height,
 Exif data, or other image attributes by embedding special format
 characters:</pp>

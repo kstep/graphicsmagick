@@ -256,7 +256,7 @@
 <lopt>-format <type></opt>
 <abs>the image format type</abs>
 </utils>
-<utils apps=identify>
+<utils apps=convert,identify>
 <lopt>-format <string></opt>
 <abs>output formatted image characteristics</abs>
 </utils>
