@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1556,8 +1556,26 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.file_size+=extra_size;
           bmp_info.offset_bits+=extra_size;
         }
-    bmp_info.width=(long) image->columns;
-    bmp_info.height=(long) image->rows;
+    /*
+      Verify and enforce that image dimensions do not exceed limit
+      imposed by file format.
+    */
+    if (type == 2)
+      {
+	bmp_info.width=(magick_int16_t) image->columns;
+	bmp_info.height=(magick_int16_t) image->rows;
+      }
+    else
+      {
+	bmp_info.width=(magick_int32_t) image->columns;
+	bmp_info.height=(magick_int32_t) image->rows;
+      }
+    if (((unsigned long) bmp_info.width != image->columns) ||
+	((unsigned long) bmp_info.height != image->rows))
+      {
+	ThrowWriterException(CoderError,ImageColumnOrRowSizeIsNotSupported,image);
+      }
+
     bmp_info.planes=1;
     bmp_info.image_size=bytes_per_line*image->rows;
     bmp_info.file_size+=bmp_info.image_size;
@@ -1759,6 +1777,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             "   Matte=False");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "   BMP bits_per_pixel=%d",bmp_info.bits_per_pixel);
+       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "   BMP file_size=%lu bytes",bmp_info.file_size);
         switch ((int) bmp_info.compression)
         {
            case BI_RGB:

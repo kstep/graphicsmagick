@@ -1,3 +1,10 @@
+2012-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c (WriteBMPImage): Enforce that image width and
+	height do not exceed BMP dimensions.  BMP dimensions are
+	represented by a signed type.  BMPv2 supports maximum dimensions
+	of 32k by 32k.
+
 2012-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/info.c (WriteINFOImage): When driven by the 'convert'
