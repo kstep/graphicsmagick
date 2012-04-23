@@ -4,13 +4,17 @@ By default, the image format is determined by its magic number, i.e., the
 first few bytes of the file. To specify
 a particular image format, precede the filename with an image format name
 and a colon (<i>i.e.</i><s>ps:image</s>) or specify the image type as the
-filename suffix.
+filename suffix (<i>i.e.</i><s>image.ps</s>).
 The magic number takes precedence over the filename suffix
 and the prefix takes precedence over the magic number and the suffix
 in input files.
+When a file is read, its magic number is stored in the "image->magick"
+string.
 In output files, the prefix takes precedence over the filename suffix,
 and the filename suffix takes precedence over the
-magic number.  To read the "built-in" formats (GRANITE, H, LOGO,
+"image->magick" string.
+</p>
+<p>To read the "built-in" formats (GRANITE, H, LOGO,
 NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
 filename or suffix.  To read the XC format, follow the colon with a color
 specification.  To read the CAPTION format, follow the colon with a text
