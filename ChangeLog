@@ -1,3 +1,8 @@
+2012-04-23  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* doc/*.imdoc: some example commandlines in the documentation
+	were missing the leading "gm ".
+
 2012-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (FormMultiPartFilename): No longer add a
