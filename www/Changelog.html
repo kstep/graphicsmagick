@@ -46,7 +46,7 @@ in such cases.  This is a BIG CHANGE for users who may have become
 used to this automatic functionality.  The simple solution to
 update existing scripts depending on this behavior is to change
 any bare filenames to include a format specification like
-&quot;image.jpg.02d&quot; and add +adjoin to the command line.  The reason
+&quot;image.jpg.%d&quot; and add +adjoin to the command line.  The reason
 why this change is made is that the output files produced by any
 given operation were unpredictable, and it was causing temporary
 files to be leaked due to the renaming.</li>
