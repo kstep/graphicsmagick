@@ -58,9 +58,18 @@ or <tt>"-fuzz 2%"</tt>.
 
 <pp>
 By default, all images of an image sequence are stored in the same
-file. However, some formats (e.g. JPEG) do not support more than one image
-and are saved to separate files. Use <s>+adjoin</s> to force this
-behavior.</pp>
+file. However, some formats (e.g. JPEG) do not support storing more
+than one image per file and only the first frame in an image sequence
+will be saved unless the result is saved to separate files. Use
+<s>+adjoin</s> to force saving multiple frames to multiple numbered
+files. If <s>+adjoin</s> is used, then the output filename must
+include a printf style formatting specification for the numeric part
+of the filename.  For example,</pp>
+
+<pre>
+    image%02d.miff
+</pre>
+
 
 </utils>
 

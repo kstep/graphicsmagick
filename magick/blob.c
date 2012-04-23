@@ -2386,19 +2386,13 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 
 static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
 {
-  MagickBool
-    force;
-
   char
     filename[MaxTextExtent];
 
   /*
     Form filename for multi-part images.
   */
-  force = ((!image_info->adjoin) &&
-           ((image->previous != (Image *) NULL) ||
-            (image->next != (Image *) NULL)));
-  if (MagickSceneFileName(filename,image->filename,".%lu",force,
+  if (MagickSceneFileName(filename,image->filename,"",MagickFalse,
                           GetImageIndexInList(image)))
     (void) strlcpy(image->filename,filename,MaxTextExtent);
 

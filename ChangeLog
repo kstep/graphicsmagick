@@ -1,3 +1,17 @@
+2012-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (FormMultiPartFilename): No longer add a
+	printf-style scene formatting specification to filenames which do
+	not have one and no longer automatically operate in 'adjoin' mode
+	in such cases.  This is a BIG CHANGE for users who may have become
+	used to this automatic functionality.  The simple solution to
+	update existing scripts depending on this behavior is to change
+	any bare filenames to include a format specification like
+	"image.jpg.02d" and add +adjoin to the command line.  The reason
+	why this change is made is that the output files produced by any
+	given operation were unpredictable, and it was causing temporary
+	files to be leaked due to the renaming.
+
 2012-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c (WriteBMPImage): Enforce that image width and

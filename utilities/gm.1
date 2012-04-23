@@ -1,4 +1,4 @@
-.TH gm 1 "2012/04/19" "GraphicsMagick"
+.TH gm 1 "2012/04/22" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -341,21 +341,21 @@ with \fB|\fP to pipe to or from a system command (this feature is not
 available on VMS, Win32 and Macintosh platforms). Use a backslash or
 quotation marks to prevent your shell from interpreting the \fB|\fP.
 
-Use an optional index enclosed in brackets after an input file name to specify
-a desired subimage of a multi-resolution image format like Photo CD
-(e.g. "img0001.pcd[4]") or a range for MPEG images
-(e.g. "video.mpg[50-75]"). A subimage
-specification can be disjoint (e.g. "image.tiff[2,7,4]"). For
-raw images, specify a subimage with a geometry
-(e.g. -size 640x512 "image.rgb[320x256+50+50]").
-Surround the image name with quotation marks to prevent your shell
-from interpreting the square brackets.
-Single images are written with the filename you specify. However,
-multi-part images (e.g., a multi-page PostScript document with
-\fB+adjoin\fP specified) are written with the filename followed by a
-period (\fB.\fP) and the scene number. You can change this behavior
-by embedding a %d format specification in the file name. For
-example,
+Use an optional index enclosed in brackets after an input file name to
+specify a desired subimage of a multi-resolution image format like
+Photo CD (e.g. "img0001.pcd[4]") or a range for MPEG images
+(e.g. "video.mpg[50-75]"). A subimage specification can be
+disjoint (e.g. "image.tiff[2,7,4]"). For raw images, specify
+a subimage with a geometry (e.g. -size 640x512
+"image.rgb[320x256+50+50]").  Surround the image name with
+quotation marks to prevent your shell from interpreting the square
+brackets. Single images are written with the filename you
+specify. However, multi-part images (e.g., a multi-page PostScript
+document with \fB+adjoin\fP specified) may be written with the scene
+number included as part of the filename. In order to include the scene
+number in the filename, it is necessary to include a printf-style
+%d format specification in the file name and use the +adjoin
+option. For example,
 
     image%02d.miff
 
@@ -392,9 +392,15 @@ or "-fuzz 2%".
 \fRjoin images into a single multi-image file
 
 By default, all images of an image sequence are stored in the same
-file. However, some formats (e.g. JPEG) do not support more than one image
-and are saved to separate files. Use \fB+adjoin\fP to force this
-behavior.
+file. However, some formats (e.g. JPEG) do not support storing more
+than one image per file and only the first frame in an image sequence
+will be saved unless the result is saved to separate files. Use
+\fB+adjoin\fP to force saving multiple frames to multiple numbered
+files. If \fB+adjoin\fP is used, then the output filename must
+include a printf style formatting specification for the numeric part
+of the filename.  For example,
+
+    image%02d.miff
 .TP
 .B "-affine \fI<matrix>"\fP
 \fRdrawing transform matrix

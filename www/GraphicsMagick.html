@@ -438,21 +438,21 @@ with <strong>|</strong> to pipe to or from a system command (this feature is not
 available on VMS, Win32 and Macintosh platforms). Use a backslash or
 quotation marks to prevent your shell from interpreting the <strong>|</strong>.
 <p>
-Use an optional index enclosed in brackets after an input file name to specify
-a desired subimage of a multi-resolution image format like Photo CD
-(e.g. <tt>"img0001.pcd[4]"</tt>) or a range for MPEG images
-(e.g. <tt>"video.mpg[50-75]"</tt>). A subimage
-specification can be disjoint (e.g. <tt>"image.tiff[2,7,4]"</tt>). For
-raw images, specify a subimage with a geometry
-(e.g. <tt>-size 640x512</tt> <tt>"image.rgb[320x256+50+50]"</tt>).
-Surround the image name with quotation marks to prevent your shell
-from interpreting the square brackets.
-<p>Single images are written with the filename you specify. However,
-multi-part images (e.g., a multi-page PostScript document with
-<strong>+adjoin</strong> specified) are written with the filename followed by a
-period (<strong>.</strong>) and the scene number. You can change this behavior
-by embedding a <tt>%d</tt> format specification in the file name. For
-example,
+Use an optional index enclosed in brackets after an input file name to
+specify a desired subimage of a multi-resolution image format like
+Photo CD (e.g. <tt>"img0001.pcd[4]"</tt>) or a range for MPEG images
+(e.g. <tt>"video.mpg[50-75]"</tt>). A subimage specification can be
+disjoint (e.g. <tt>"image.tiff[2,7,4]"</tt>). For raw images, specify
+a subimage with a geometry (e.g. <tt>-size 640x512</tt>
+<tt>"image.rgb[320x256+50+50]"</tt>).  Surround the image name with
+quotation marks to prevent your shell from interpreting the square
+brackets. <p>Single images are written with the filename you
+specify. However, multi-part images (e.g., a multi-page PostScript
+document with <strong>+adjoin</strong> specified) may be written with the scene
+number included as part of the filename. In order to include the scene
+number in the filename, it is necessary to include a printf-style
+<tt>%d</tt> format specification in the file name and use the +adjoin
+option. For example,
 <pre>
     image%02d.miff
 </pre>
@@ -511,9 +511,16 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>join images into a single multi-image file</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, all images of an image sequence are stored in the same
-file. However, some formats (e.g. JPEG) do not support more than one image
-and are saved to separate files. Use <strong>+adjoin</strong> to force this
-behavior.</font></td></tr></table>
+file. However, some formats (e.g. JPEG) do not support storing more
+than one image per file and only the first frame in an image sequence
+will be saved unless the result is saved to separate files. Use
+<strong>+adjoin</strong> to force saving multiple frames to multiple numbered
+files. If <strong>+adjoin</strong> is used, then the output filename must
+include a printf style formatting specification for the numeric part
+of the filename.  For example,</font></td></tr></table>
+<pre>
+    image%02d.miff
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
