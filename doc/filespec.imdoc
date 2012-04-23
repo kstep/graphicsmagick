@@ -8,8 +8,9 @@ filename suffix.
 The magic number takes precedence over the filename suffix
 and the prefix takes precedence over the magic number and the suffix
 in input files.
-The prefix takes precedence over the filename
-suffix in output files.  To read the "built-in" formats (GRANITE, H, LOGO,
+In output files, the prefix takes precedence over the filename suffix,
+and the filename suffix takes precedence over the
+magic number.  To read the "built-in" formats (GRANITE, H, LOGO,
 NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
 filename or suffix.  To read the XC format, follow the colon with a color
 specification.  To read the CAPTION format, follow the colon with a text
@@ -60,7 +61,9 @@ option. For example,</p>
 <p>
 writes files <i>image00.miff, image01.miff,</i> etc. Only a single
 specification is allowed within an output filename. If more than one
-specification is present, it will be ignored.</p>
+specification is present, it will be ignored. It is best to embed the
+scene number in the base part of the file name, not in the extension,
+because the extension will not be a recognizeable image type.</p>
 <p>
 When running a commandline utility, you can
 prepend an at sign <tt>@</tt> to a filename to read a list of image
