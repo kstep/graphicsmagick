@@ -433,7 +433,7 @@ If a clipping path is present, it will be applied to subsequent operations.</pp>
 <pp>
 For example, if you type the following command:</pp>
 <pre>
-   gm convert -clip -negate cockatoo.tif negated.tif
+    gm convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <pp>
 only the pixels within the clipping path are negated.</pp>
@@ -485,7 +485,7 @@ The <s>-colorize</s> option may be used in conjunction with <s>-modulate</s>
 to produce a nice sepia toned image like:</pp>
 
 <pre>
-   gm convert input.ppm -modulate 115,0,100 \
+    gm convert input.ppm -modulate 115,0,100 \
               -colorize 7,21,50 output.ppm.
 </pre>
 
@@ -886,7 +886,7 @@ or <s>+contrast</s> to reduce the image contrast.
 <pp>
 For a more pronounced effect you can repeat the option:</pp>
 <pre>
-   gm convert rose: -contrast -contrast rose_c2.png
+    gm convert rose: -contrast -contrast rose_c2.png
 </pre>
 
 </utils>
@@ -1006,7 +1006,7 @@ consisting of one or more of the following domains: <tt>Annotate</tt>,
 For example, to log cache and blob events, use</pp>
 
 <pre>
-   gm convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 </pre>
 
 <pp>
@@ -1316,7 +1316,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</pp>
 <pre>
-   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 </pre>
 
 </utils>
@@ -1866,7 +1866,7 @@ discarded.</pp>
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:</pp>
 <pre>
-   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \
+    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \
               -extent 140x100 outfile.jpg
 </pre>
 <pp>
@@ -1875,7 +1875,7 @@ display: </pp>
 
 <pp>
 <pre>
-   gm convert -size 800x600 input.jpg \
+    gm convert -size 800x600 input.jpg \
               -resize 800x600 -background black \
               -compose Copy -gravity center \
               -extent 800x600 \
@@ -1944,9 +1944,9 @@ or the parentheses from being interpreted by your shell.</pp>
 <pp>
 For example,</pp>
 <pre>
-   gm convert -fill blue ...
-   gm convert -fill "#ddddff" ...
-   gm convert -fill "rgb(65000,65000,65535)" ...
+    gm convert -fill blue ...
+    gm convert -fill "#ddddff" ...
+    gm convert -fill "rgb(65000,65000,65535)" ...
 </pre>
 
 <pp>
@@ -2035,7 +2035,7 @@ For example, this composites an image on top of a 640x400 transparent
 black canvas image:</pp>
 
 <pre>
-   gm convert -size 640x300 xc:transparent \
+    gm convert -size 640x300 xc:transparent \
               -compose over -page +0-100 \
               frame.png -flatten output.png
 </pre>
@@ -2046,7 +2046,7 @@ and this flattens a Photoshop PSD file:</pp>
 
 <pre>
 
-   gm convert input.psd -flatten output.png
+    gm convert input.psd -flatten output.png
 
 </pre>
 
@@ -3025,7 +3025,7 @@ special format characters:</pp>
 <pp>
 For example:</pp>
 <pre>
-   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 </pre>
 
 <pp>
@@ -3402,7 +3402,7 @@ and blue layers extracted from a sequence of images and pasted on the
 canvas image at specified offsets:</pp>
 
 <pre>
-   gm convert -background black \
+    gm convert -background black \
               -compose CopyRed   -page +0-100 red.png \
               -compose CopyGreen -page +0+40  green.png \
               -compose CopyBlue  -page +0+180 blue.png \
@@ -3749,13 +3749,13 @@ As an example, the <s>Assign</s> operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:</pp>
 <pre>
-   gm convert in.bmp -operator red assign "50%" out.bmp
+    gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <pp>
 The following applies 50% thresholding to the image and returns a gray
 image:</pp>
 <pre>
-   gm convert in.bmp -operator gray threshold "50%" out.bmp
+    gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
 
 </utils>
@@ -4131,7 +4131,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the <i>APP1</i> profile), use
 </pp>
 <pre>
-   gm convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 </pre>
 <pp>Note that GraphicsMagick does not attempt to update any profile to
 reflect changes made to the image, e.g., rotation from portrait to landscape
@@ -4715,12 +4715,12 @@ number.  You
 can change this behavior by embedding a <s>%d, %0Nd, %o, %0No, %x, or %0Nx
 printf</s> format specification in the file name. For example,</pp>
 <pre>
-   gm montage -scenes 5-7 image.miff montage.miff
+    gm montage -scenes 5-7 image.miff montage.miff
 </pre>
 <pp>
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</pp>
 <pre>
-   gm animate -scenes 0-12 image%02d.miff
+    gm animate -scenes 0-12 image%02d.miff
 </pre>
 <pp>
 animates files image00.miff, image01.miff, through image12.miff.</pp>
@@ -5148,7 +5148,7 @@ is applied, then the threshold is a percentage of the available range.</pp>
 <pp>
 To efficiently create a black and white image from a color image, use</pp>
 <pre>
-   gm convert -threshold 50% in.png out.png
+    gm convert -threshold 50% in.png out.png
 </pre>
 
 <pp>
@@ -5250,7 +5250,7 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</pp>
 This option applies the transformation matrix from a previous
 <s>-affine</s> option.</pp>
 <pre>
-   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 
 </utils>
@@ -5354,7 +5354,7 @@ image to be written in TrueColor RGB format even though only gray pixels
 are present, use</pp>
 
 <pre>
-   gm convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 </pre>
 
 <pp>
@@ -5368,7 +5368,7 @@ type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use</pp>
 
 <pre>
-   gm convert -size 640x480 -type TrueColor xc:red red.miff
+    gm convert -size 640x480 -type TrueColor xc:red red.miff
 </pre>
 
 <pp>
@@ -5722,7 +5722,7 @@ several sizes of an image may be generated in one command (repeat as
 often as needed):</pp>
 
 <pre>
-   gm convert input.jpg -resize 50% -write input50.jpg \
+    gm convert input.jpg -resize 50% -write input50.jpg \
               -resize 25% input25.jpg
 </pre>
 

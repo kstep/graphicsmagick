@@ -64,7 +64,7 @@ script:</p>
 <p>
 invoked with</p>
 <pre>
-   gm conjure -dimensions 400x400 incantation.msl
+    gm conjure -dimensions 400x400 incantation.msl
 </pre>
 <p>
 All operations will closely follow the key/value pairs defined in

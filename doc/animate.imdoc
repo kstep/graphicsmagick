@@ -116,7 +116,7 @@ To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 </p>
 <pre>
-   gm animate +borderwidth -backdrop cockatoo.*
+    gm animate +borderwidth -backdrop cockatoo.*
 </pre>
 </sect>
 <back>

@@ -335,11 +335,11 @@ and the third with only 16 colors, use:</p>
 
 <pre>
 <format type=man,tex>
-      gm display -colors 32 cockatoo.miff -noop duck.miff
+    gm display -colors 32 cockatoo.miff -noop duck.miff
                  -colors 16 macaw.miff
 </format>
 <format type=html>
-      gm display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
+    gm display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
 </format>
 </pre>
 

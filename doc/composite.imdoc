@@ -81,7 +81,7 @@ information.</p>
 To composite an image of a cockatoo with a perch, use:</p>
 
 <pre>
-   gm composite cockatoo.miff perch.ras composite.miff
+    gm composite cockatoo.miff perch.ras composite.miff
 </pre>
 
 <p>
@@ -89,13 +89,13 @@ To compute the difference between images in a series, use:</p>
 
 <format type=man,tex>
 <pre>
-   gm composite -compose difference series.2 series.1
+    gm composite -compose difference series.2 series.1
               difference.miff
 </pre>
 </format>
 <format type=html>
 <pre>
-   gm composite -compose difference series.2 series.1 difference.miff
+    gm composite -compose difference series.2 series.1 difference.miff
 </pre>
 </format>
 
@@ -105,13 +105,13 @@ use:</p>
 
 <format type=man,tex>
 <pre>
-   gm composite -geometry +100+150 cockatoo.miff
+    gm composite -geometry +100+150 cockatoo.miff
               perch.ras composite.miff
 </pre>
 </format>
 <format type=html>
 <pre>
-   gm composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
+    gm composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
 </pre>
 </format>
 
@@ -120,8 +120,8 @@ use:</p>
 To tile a logo across your image of a cockatoo, use</p>
 
 <pre>
-   gm convert +shade 30x60 cockatoo.miff mask.miff
-   gm composite -compose bumpmap -tile logo.png
+    gm convert +shade 30x60 cockatoo.miff mask.miff
+    gm composite -compose bumpmap -tile logo.png
               cockatoo.miff mask.miff composite.miff
 </pre>
 
@@ -131,16 +131,16 @@ try</p>
 
 <format type=man,tex>
 <pre>
-   gm composite -compose CopyGreen green.png red.png
+    gm composite -compose CopyGreen green.png red.png
               red-green.png
-   gm composite -compose CopyBlue blue.png red-green.png 
+    gm composite -compose CopyBlue blue.png red-green.png 
               composite.png
 </pre>
 </format>
 <format type=html>
 <pre>
-   gm composite -compose CopyGreen green.png red.png red-green.png
-   gm composite -compose CopyBlue blue.png red-green.png composite.png
+    gm composite -compose CopyGreen green.png red.png red-green.png
+    gm composite -compose CopyBlue blue.png red-green.png composite.png
 </pre>
 </format>
 
