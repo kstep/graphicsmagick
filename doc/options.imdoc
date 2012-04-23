@@ -4715,7 +4715,7 @@ number.  You
 can change this behavior by embedding a <s>%d, %0Nd, %o, %0No, %x, or %0Nx
 printf</s> format specification in the file name. For example,</pp>
 <pre>
-    montage -scenes 5-7 image.miff
+    montage -scenes 5-7 image.miff montage.miff
 </pre>
 <pp>
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</pp>
