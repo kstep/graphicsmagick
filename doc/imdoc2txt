@@ -11,7 +11,7 @@ cat <<!
 Command-line Options
 !
 
-/bin/sed "
+${SED} "
      s/<imdoc>//
      s/<\/imdoc>//
      s/<sect [^>]*>//
