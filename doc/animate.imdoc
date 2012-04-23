@@ -102,21 +102,21 @@ it eliminates the need to compute a global colormap.</p>
 <p>
 To animate a set of images of a cockatoo, use:</p>
 <pre>
-    animate cockatoo.*
+    gm animate cockatoo.*
 </pre>
 <p>
 To animate a cockatoo image sequence while using the Standard Colormap
 <i>best</i>, use:</p>
 <pre>
     xstdcmap -best
-    animate -map best cockatoo.*
+    gm animate -map best cockatoo.*
 </pre>
 <p>
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 </p>
 <pre>
-    animate +borderwidth -backdrop cockatoo.*
+   gm animate +borderwidth -backdrop cockatoo.*
 </pre>
 </sect>
 <back>
@@ -161,11 +161,11 @@ third with only 16 colors, use:
 </p>
 <pre>
 <format type=man,tex>
-     animate -colors 32 cockatoo.1 -noop cockatoo.2
+    gm animate -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3
 </format>
 <format type=html>
-     animate -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+    gm animate -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
 </format>
 </pre>
 <p>
