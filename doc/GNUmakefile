@@ -28,6 +28,7 @@ DOCINCLUDE       = ./imdocinclude
 
 # You might need to change this to /usr/bin/sed
 SED = /bin/sed
+export SED
 
 HTML_TARGETS = \
 	GraphicsMagick.html animate.html compare.html composite.html \
