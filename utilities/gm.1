@@ -1,4 +1,4 @@
-.TH gm 1 "2012/04/22" "GraphicsMagick"
+.TH gm 1 "2012/04/23" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -310,12 +310,17 @@ By default, the image format is determined by its magic number, i.e., the
 first few bytes of the file. To specify
 a particular image format, precede the filename with an image format name
 and a colon (\fIi.e.\fP\fBps:image\fP) or specify the image type as the
-filename suffix.
+filename suffix (\fIi.e.\fP\fBimage.ps\fP).
 The magic number takes precedence over the filename suffix
 and the prefix takes precedence over the magic number and the suffix
 in input files.
-The prefix takes precedence over the filename
-suffix in output files.  To read the "built-in" formats (GRANITE, H, LOGO,
+When a file is read, its magic number is stored in the "image->magick"
+string.
+In output files, the prefix takes precedence over the filename suffix,
+and the filename suffix takes precedence over the
+"image->magick" string.
+
+To read the "built-in" formats (GRANITE, H, LOGO,
 NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
 filename or suffix.  To read the XC format, follow the colon with a color
 specification.  To read the CAPTION format, follow the colon with a text
@@ -361,7 +366,9 @@ option. For example,
 
 writes files \fIimage00.miff, image01.miff,\fP etc. Only a single
 specification is allowed within an output filename. If more than one
-specification is present, it will be ignored.
+specification is present, it will be ignored. It is best to embed the
+scene number in the base part of the file name, not in the extension,
+because the extension will not be a recognizeable image type.
 
 When running a commandline utility, you can
 prepend an at sign @ to a filename to read a list of image
@@ -569,7 +576,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-   gm convert -clip -negate cockatoo.tif negated.tif
+    gm convert -clip -negate cockatoo.tif negated.tif
 
 only the pixels within the clipping path are negated.
 
@@ -597,7 +604,7 @@ a colorization value list delimited with slashes (e.g. 0/0/50).
 The \fB-colorize\fP option may be used in conjunction with \fB-modulate\fP
 to produce a nice sepia toned image like:
 
-   gm convert input.ppm -modulate 115,0,100 \\
+    gm convert input.ppm -modulate 115,0,100 \\
               -colorize 7,21,50 output.ppm.
 .TP
 .B "-colormap \fI<type>"\fP
@@ -1001,7 +1008,7 @@ or \fB+contrast\fP to reduce the image contrast.
 
 For a more pronounced effect you can repeat the option:
 
-   gm convert rose: -contrast -contrast rose_c2.png
+    gm convert rose: -contrast -contrast rose_c2.png
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
@@ -1068,7 +1075,7 @@ Render,Resource, TemporaryFile,
 Transform, Warning, X11, or User.
 For example, to log cache and blob events, use
 
-   gm convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 
 The "User" domain is normally empty, but developers can log "User" events
 in their private copy of GraphicsMagick.
@@ -1464,7 +1471,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:
 
-   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -1799,14 +1806,14 @@ discarded.
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:
 
-   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \\
+    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \\
               -extent 140x100 outfile.jpg
 
 This command reduces or expands a JPEG image to fit on an 800x600
 display: 
 
 
-   gm convert -size 800x600 input.jpg \\
+    gm convert -size 800x600 input.jpg \\
               -resize 800x600 -background black \\
               -compose Copy -gravity center \\
               -extent 800x600 \\
@@ -1850,9 +1857,9 @@ or the parentheses from being interpreted by your shell.
 
 For example,
 
-   gm convert -fill blue ...
-   gm convert -fill "#ddddff" ...
-   gm convert -fill "rgb(65000,65000,65535)" ...
+    gm convert -fill blue ...
+    gm convert -fill "#ddddff" ...
+    gm convert -fill "rgb(65000,65000,65535)" ...
 
 The shorter forms are scaled up, if necessary by replication.  For example, 
 #3af, #33aaff, and #3333aaaaffff are all equivalent.
@@ -1909,13 +1916,13 @@ image.
 For example, this composites an image on top of a 640x400 transparent
 black canvas image:
 
-   gm convert -size 640x300 xc:transparent \\
+    gm convert -size 640x300 xc:transparent \\
               -compose over -page +0-100 \\
               frame.png -flatten output.png
 
 and this flattens a Photoshop PSD file:
 
-   gm convert input.psd -flatten output.png
+    gm convert input.psd -flatten output.png
 
 
 .TP
@@ -2514,7 +2521,7 @@ special format characters:
 
 For example:
 
-   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 
 The default behavior is to print all of the components.
 .TP
@@ -2694,7 +2701,7 @@ The following is an example of composing an image based on red, green,
 and blue layers extracted from a sequence of images and pasted on the
 canvas image at specified offsets:
 
-   gm convert -background black \\
+    gm convert -background black \\
               -compose CopyRed   -page +0-100 red.png \\
               -compose CopyGreen -page +0+40  green.png \\
               -compose CopyBlue  -page +0+180 blue.png \\
@@ -3066,12 +3073,12 @@ As an example, the \fBAssign\fP operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:
 
-   gm convert in.bmp -operator red assign "50%" out.bmp
+    gm convert in.bmp -operator red assign "50%" out.bmp
 
 The following applies 50% thresholding to the image and returns a gray
 image:
 
-   gm convert in.bmp -operator gray threshold "50%" out.bmp
+    gm convert in.bmp -operator gray threshold "50%" out.bmp
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -3316,7 +3323,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the \fIAPP1\fP profile), use
 
 
-   gm convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 Note that GraphicsMagick does not attempt to update any profile to
 reflect changes made to the image, e.g., rotation from portrait to landscape
 orientation, so it is possible that the preserved profile may contain
@@ -3666,7 +3673,7 @@ number.  You
 can change this behavior by embedding a \fB%d, %0Nd, %o, %0No, %x, or %0Nx
 printf\fP format specification in the file name. For example,
 
-    gm montage -scenes 5-7 image.miff
+    gm montage -scenes 5-7 image.miff montage.miff
 
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and
 
@@ -3865,7 +3872,7 @@ is applied, then the threshold is a percentage of the available range.
 
 To efficiently create a black and white image from a color image, use
 
-   gm convert -threshold 50% in.png out.png
+    gm convert -threshold 50% in.png out.png
 
 The optimum threshold value depends on the nature of the image.
 In order to threshold individual channels, use the \fB-operator\fP
@@ -3912,7 +3919,7 @@ titled bird.miff and whose width is 512 and height is 480.
 This option applies the transformation matrix from a previous
 \fB-affine\fP option.
 
-   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -3971,7 +3978,7 @@ Sometimes a specific subformat is desired. For example, to force a JPEG
 image to be written in TrueColor RGB format even though only gray pixels
 are present, use
 
-   gm convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 
 Similarly, using -type TrueColorMatte will force the encoder to
 write an alpha channel even though the image is opaque, if the output
@@ -3981,7 +3988,7 @@ Some pseudo-formats (e.g. the XC format) will respect the requested
 type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use
 
-   gm convert -size 640x480 -type TrueColor xc:red red.miff
+    gm convert -size 640x480 -type TrueColor xc:red red.miff
 
 Likewise, specify \fB-type\fP \fBBilevel\fP, \fBGrayscale\fP,
 \fBTrueColor\fP, or \fBTrueColorMatte\fP prior to reading a Postscript
@@ -4203,7 +4210,7 @@ processing continues using that image. The following is an example of how
 several sizes of an image may be generated in one command (repeat as
 often as needed):
 
-   gm convert input.jpg -resize 50% -write input50.jpg \\
+    gm convert input.jpg -resize 50% -write input50.jpg \\
               -resize 25% input25.jpg
 .TP
 .B "-write \fI<filename>"\fP
@@ -4282,159 +4289,6 @@ use:
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-backdrop"
-\fRdisplay the image centered on a backdrop.
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-borderwidth \fI<geometry>"\fP
-\fRthe border width
-.TP
-.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRremove pixels from the interior of an image
-.TP
-.B "-colormap \fI<type>"\fP
-\fRdefine the colormap type
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-delay \fI<1/100ths of a second>"\fP
-\fRdisplay the next image after pausing
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-foreground \fI<color>"\fP
-\fRdefine the foreground color
-.TP
-.B "-gamma \fI<value>"\fP
-\fRlevel of gamma correction
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-iconGeometry \fI<geometry>"\fP
-\fRspecify the icon geometry
-.TP
-.B "-iconic"
-\fRiconic animation
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-map \fI<type>"\fP
-\fRdisplay image using this type.
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-mattecolor \fI<color>"\fP
-\fRspecify the color to be used with the \fB-frame\fP option
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-name"
-\fRname an image
-.TP
-.B "-noop"
-\fRNOOP (no option)
-.TP
-.B "-pause \fI<seconds>"\fP
-\fRpause between animation loops [animate]
-.TP
-.B "-remote"
-\fRperform a X11 remote operation
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scenes \fI<value-value>"\fP
-\fRrange of image scene numbers to read
-.TP
-.B "-shared-memory"
-\fRuse shared memory
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-text-font \fI<name>"\fP
-\fRfont for writing fixed-width text
-.TP
-.B "-title \fI<string>"\fP
-\fRassign title to displayed image [\fIanimate, display, montage\fP]
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-visual \fI<type>"\fP
-\fRanimate images using this X visual type
-.TP
-.B "-window \fI<id>"\fP
-\fRmake image the background of a window
 
 For a more detailed description of each option, see
 Options, above.
@@ -4447,7 +4301,7 @@ with 32 colors, the second with an unlimited number of colors, and the
 third with only 16 colors, use:
 
 
-     gm animate -colors 32 cockatoo.1 -noop cockatoo.2
+    gm animate -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3
 
 \fBAnimate\fP options can appear on the command line or in your X resources
@@ -4724,75 +4578,6 @@ options are reset to their default values after each image is read.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-file \fI<filename>"\fP
-\fRwrite annotated difference image to file
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-highlight-color \fI<color>"\fP
-\fRpixel annotation color
-.TP
-.B "-highlight-style \fI<style>"\fP
-\fRpixel annotation style
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-maximum-error \fI<limit>"\fP
-\fRspecifies the maximum amount of total image error
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
 
 For a more detailed description of each option, see
 Options, above.
@@ -4850,189 +4635,6 @@ options are reset to their default values after each image is read.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-blue-primary \fI<x>,<y>"\fP
-\fRblue chromaticity primary point
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-compose \fI<operator>"\fP
-\fRthe type of image composition
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-displace \fI<horizontal scale>x<vertical scale>"\fP
-\fRshift image pixels as defined by a displacement map
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dissolve \fI<percent>"\fP
-\fRdissolve an image into another by the given percent
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-encoding \fI<type>"\fP
-\fRspecify the text encoding
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-gravity \fI<type>"\fP
-\fRdirection primitive  gravitates to when annotating the image.
-.TP
-.B "-green-primary \fI<x>,<y>"\fP
-\fRgreen chromaticity primary point
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "-profile \fI<filename>"\fP
-\fRadd ICM, IPTC, or generic profile  to image
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-recolor \fI<matrix>"\fP
-\fRapply a color translation matrix to image channels
-.TP
-.B "-red-primary \fI<x>,<y>"\fP
-\fRred chromaticity primary point
-.TP
-.B "-render"
-\fRrender vector operations
-.TP
-.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
-\fRAdjust image page offsets
-.TP
-.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
-.TP
-.B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
-.TP
-.B "-sharpen \fI<radius>{x<sigma>}"\fP
-\fRsharpen the image
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-stegano \fI<offset>"\fP
-\fRhide watermark within an image
-.TP
-.B "-stereo"
-\fRcomposite two images to create a stereo anaglyph
-.TP
-.B "-strip"
-\fRremove all profiles and text attributes from the image
-.TP
-.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image (quickly)
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-units \fI<type>"\fP
-\fRthe units of image resolution
-.TP
-.B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
-\fRsharpen the image with an unsharp mask operator
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-watermark \fI<brightness>x<saturation>"\fP
-\fRpercent brightness and saturation of a watermark
-.TP
-.B "-white-point \fI<x>,<y>"\fP
-\fRchromaticity white point
-.TP
-.B "-write \fI<filename>"\fP
-\fRwrite an intermediate image [\fIconvert, composite\fP]
 
 For a more detailed description of each option, see
 Options, above.
@@ -5100,24 +4702,6 @@ be three different keywords.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
 .SH MAGICK SCRIPTING LANGUAGE
 
 The Magick Scripting Language (MSL) presently defines the following
@@ -5693,456 +5277,6 @@ The latter can appear after the final group of input images.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-adjoin"
-\fRjoin images into a single multi-image file
-.TP
-.B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
-.TP
-.B "-antialias"
-\fRremove pixel aliasing
-.TP
-.B "-append"
-\fRappend a set of images
-.TP
-.B " \fI-asc-cdl <spec>"\fP
-\fRapply ASC CDL color transform
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-average"
-\fRaverage a set of images
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
-\fRpixels below the threshold become black
-.TP
-.B "-blue-primary \fI<x>,<y>"\fP
-\fRblue chromaticity primary point
-.TP
-.B "-blur \fI<radius>{x<sigma>}"\fP
-\fRblur the image with a Gaussian operator
-.TP
-.B "-border \fI<width>x<height>"\fP
-\fRsurround the image with a border of color
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-box \fI<color>"\fP
-\fRset the color of the annotation bounding box
-.TP
-.B "-channel \fI<type>"\fP
-\fRthe type of channel
-.TP
-.B "-charcoal \fI<factor>"\fP
-\fRsimulate a charcoal drawing
-.TP
-.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRremove pixels from the interior of an image
-.TP
-.B "-clip"
-\fRapply the clipping path, if one is present
-.TP
-.B "-coalesce"
-\fRmerge a sequence of images
-.TP
-.B "-colorize \fI<value>"\fP
-\fRcolorize the image with the pen color
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-compose \fI<operator>"\fP
-\fRthe type of image composition
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-.TP
-.B "-contrast"
-\fRenhance or reduce the image contrast
-.TP
-.B "-convolve \fI<kernel>"\fP
-\fRconvolve image with the specified convolution kernel
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-cycle \fI<amount>"\fP
-\fRdisplace image colormap by amount
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-deconstruct"
-\fRbreak down an image sequence into constituent parts
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-delay \fI<1/100ths of a second>"\fP
-\fRdisplay the next image after pausing
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-despeckle"
-\fRreduce the speckles within an image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-draw \fI<string>"\fP
-\fRannotate an image with one or more graphic primitives
-.TP
-.B "-edge \fI<radius>"\fP
-\fRdetect edges within an image
-.TP
-.B "-emboss \fI<radius>"\fP
-\fRemboss an image
-.TP
-.B "-encoding \fI<type>"\fP
-\fRspecify the text encoding
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-enhance"
-\fRapply a digital filter to enhance a noisy image
-.TP
-.B "-equalize"
-\fRperform histogram equalization to the image
-.TP
-.B "-extent \fI<width>x<height>{+-}<x>{+-}<y>"\fP
-\fRcomposite image on background color canvas image
-.TP
-.B "-fill \fI<color>"\fP
-\fRcolor to use when filling a graphic primitive
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-.TP
-.B "-flatten"
-\fRflatten a sequence of images
-.TP
-.B "-flip"
-\fRcreate a "mirror image"
-.TP
-.B "-flop"
-\fRcreate a "mirror image"
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-format \fI<string>"\fP
-\fRoutput formatted image characteristics
-.TP
-.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
-\fRsurround the image with an ornamental border
-.TP
-.B "-fuzz \fI<distance>{%}"\fP
-\fRcolors within this Euclidean distance are considered equal
-.TP
-.B "-gamma \fI<value>"\fP
-\fRlevel of gamma correction
-.TP
-.B "-gaussian \fI<radius>{x<sigma>}"\fP
-\fRblur the image with a Gaussian operator
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-gravity \fI<type>"\fP
-\fRdirection primitive  gravitates to when annotating the image.
-.TP
-.B "-green-primary \fI<x>,<y>"\fP
-\fRgreen chromaticity primary point
-.TP
-.B "-hald-clut \fI<clut>"\fP
-\fRapply a Hald CLUT to the image
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-implode \fI<factor>"\fP
-\fRimplode image pixels about the center
-.TP
-.B "-intent \fI<type>"\fP
-\fRuse this type of rendering intent when managing the image color
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
-\fRperform local adaptive thresholding
-.TP
-.B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
-\fRadjust the level of image contrast
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-list \fI<type>"\fP
-\fRthe type of list
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-loop \fI<iterations>"\fP
-\fRadd Netscape loop extension to your GIF animation
-.TP
-.B "-magnify"
-\fRmagnify the image
-.TP
-.B "-map \fI<filename>"\fP
-\fRchoose a particular set of colors from this image
-.TP
-.B "-mask \fI<filename>"\fP
-\fRSpecify a clipping mask
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-mattecolor \fI<color>"\fP
-\fRspecify the color to be used with the \fB-frame\fP option
-.TP
-.B "-median \fI<radius>"\fP
-\fRapply a median filter to the image
-.TP
-.B "-minify \fI<factor>"\fP
-\fRminify the image
-.TP
-.B "-modulate \fIbrightness[,saturation[,hue]]"\fP
-\fRvary the brightness, saturation, and hue of an image
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-morph \fI<frames>"\fP
-\fRmorphs an image sequence
-.TP
-.B "-mosaic"
-\fRcreate a mosaic from an image or an image sequence
-.TP
-.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
-\fRSimulate motion blur
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-.TP
-.B "-noise \fI<radius|type>"\fP
-\fRadd or reduce noise in an image
-.TP
-.B "-noop"
-\fRNOOP (no option)
-.TP
-.B "-normalize"
-\fRtransform image to span the full range of color values
-.TP
-.B "-opaque \fI<color>"\fP
-\fRchange this color to the pen color within the image
-.TP
-.B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical, bitwise, or value operator to an image channel
-.TP
-.B "-ordered-dither \fI<channeltype> <NxN>"\fP
-\fRordered dither the image
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "-paint \fI<radius>"\fP
-\fRsimulate an oil painting
-.TP
-.B "-pen \fI<color>"\fP
-\fR(This option has been replaced by the -fill option)
-.TP
-.B "-ping"
-\fRefficiently determine image characteristics
-.TP
-.B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, X11, or TrueType font
-.TP
-.B "-preview \fI<type>"\fP
-\fRimage preview type
-.TP
-.B "-process \fI<command>"\fP
-\fRprocess a sequence of images using a process module
-.TP
-.B "-profile \fI<filename>"\fP
-\fRadd ICM, IPTC, or generic profile  to image
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-raise \fI<width>x<height>"\fP
-\fRlighten or darken image edges
-.TP
-.B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
-\fRrandom threshold the image
-.TP
-.B "-recolor \fI<matrix>"\fP
-\fRapply a color translation matrix to image channels
-.TP
-.B "-red-primary \fI<x>,<y>"\fP
-\fRred chromaticity primary point
-.TP
-.B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
-\fRapply options to a portion of the image
-.TP
-.B "-render"
-\fRrender vector operations
-.TP
-.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
-\fRAdjust image page offsets
-.TP
-.B "-resample \fI<horizontal>x<vertical>"\fP
-\fRResample image to specified horizontal and vertical resolution
-.TP
-.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image
-.TP
-.B "-roll \fI{+-}<x>{+-}<y>"\fP
-\fRroll an image vertically or horizontally
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sample \fI<geometry>"\fP
-\fRscale image using pixel sampling
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scale \fI<geometry>"\fP
-\fRscale the image.
-.TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
-.TP
-.B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
-.TP
-.B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
-\fRsegment an image
-.TP
-.B "-shade \fI<azimuth>x<elevation>"\fP
-\fRshade the image using a distant light source
-.TP
-.B "-sharpen \fI<radius>{x<sigma>}"\fP
-\fRsharpen the image
-.TP
-.B "-shave \fI<width>x<height>{%}"\fP
-\fRshave pixels from the image edges
-.TP
-.B "-shear \fI<x degrees>x<y degrees>"\fP
-\fRshear the image along the X or Y axis
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-solarize \fI<factor>"\fP
-\fRnegate all pixels above the threshold level
-.TP
-.B "-spread \fI<amount>"\fP
-\fRdisplace image pixels by a random amount
-.TP
-.B "-strip"
-\fRremove all profiles and text attributes from the image
-.TP
-.B "-stroke \fI<color>"\fP
-\fRcolor to use when stroking a graphic primitive
-.TP
-.B "-strokewidth \fI<value>"\fP
-\fRset the stroke width
-.TP
-.B "-swirl \fI<degrees>"\fP
-\fRswirl image pixels about the center
-.TP
-.B "-texture \fI<filename>"\fP
-\fRname of texture to tile onto the image background
-.TP
-.B "-threshold \fI<value>{%}"\fP
-\fRthreshold the image
-.TP
-.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image (quickly)
-.TP
-.B "-tile \fI<filename>"\fP
-\fRtile image when filling a graphic primitive
-.TP
-.B "-transform"
-\fRtransform the image
-.TP
-.B "-transparent \fI<color>"\fP
-\fRmake this color transparent within the image
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-units \fI<type>"\fP
-\fRthe units of image resolution
-.TP
-.B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
-\fRsharpen the image with an unsharp mask operator
-.TP
-.B "-use-pixmap"
-\fRuse the pixmap
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-view \fI<string>"\fP
-\fRFlashPix viewing parameters
-.TP
-.B "-virtual-pixel \fI<method>"\fP
-\fRspecify contents of "virtual pixels"
-.TP
-.B "-wave \fI<amplitude>x<wavelength>"\fP
-\fRalter an image along a sine wave
-.TP
-.B "-white-point \fI<x>,<y>"\fP
-\fRchromaticity white point
-.TP
-.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
-\fRpixels above the threshold become white
-.TP
-.B "-write \fI<filename>"\fP
-\fRwrite an intermediate image [\fIconvert, composite\fP]
 
 For a more detailed description of each option, see
 Options, above.
@@ -6266,7 +5400,7 @@ the option again with a different effect. For example to display three images,
 the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 
-      gm display -colors 32 cockatoo.miff -noop duck.miff
+    gm display -colors 32 cockatoo.miff -noop duck.miff
                  -colors 16 macaw.miff
 
 \fBDisplay\fP options can appear on the command line or in your X resources
@@ -6276,244 +5410,6 @@ in your X resources file.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-backdrop"
-\fRdisplay the image centered on a backdrop.
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-border \fI<width>x<height>"\fP
-\fRsurround the image with a border of color
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-borderwidth \fI<geometry>"\fP
-\fRthe border width
-.TP
-.B "-colormap \fI<type>"\fP
-\fRdefine the colormap type
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-.TP
-.B "-contrast"
-\fRenhance or reduce the image contrast
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-delay \fI<1/100ths of a second>"\fP
-\fRdisplay the next image after pausing
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-despeckle"
-\fRreduce the speckles within an image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-edge \fI<radius>"\fP
-\fRdetect edges within an image
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-enhance"
-\fRapply a digital filter to enhance a noisy image
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-.TP
-.B "-flip"
-\fRcreate a "mirror image"
-.TP
-.B "-flop"
-\fRcreate a "mirror image"
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-foreground \fI<color>"\fP
-\fRdefine the foreground color
-.TP
-.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
-\fRsurround the image with an ornamental border
-.TP
-.B "-gamma \fI<value>"\fP
-\fRlevel of gamma correction
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-iconGeometry \fI<geometry>"\fP
-\fRspecify the icon geometry
-.TP
-.B "-iconic"
-\fRiconic animation
-.TP
-.B "-immutable"
-\fRmake image immutable
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-magnify \fI<factor>"\fP
-\fRmagnify the image
-.TP
-.B "-map \fI<type>"\fP
-\fRdisplay image using this type.
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-mattecolor \fI<color>"\fP
-\fRspecify the color to be used with the \fB-frame\fP option
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-name"
-\fRname an image
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-.TP
-.B "-noop"
-\fRNOOP (no option)
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "+progress"
-\fRdisable progress monitor and busy cursor
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-raise \fI<width>x<height>"\fP
-\fRlighten or darken image edges
-.TP
-.B "-remote"
-\fRperform a X11 remote operation
-.TP
-.B "-roll \fI{+-}<x>{+-}<y>"\fP
-\fRroll an image vertically or horizontally
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sample \fI<geometry>"\fP
-\fRscale image using pixel sampling
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scenes \fI<value-value>"\fP
-\fRrange of image scene numbers to read
-.TP
-.B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
-.TP
-.B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
-\fRsegment an image
-.TP
-.B "-shared-memory"
-\fRuse shared memory
-.TP
-.B "-sharpen \fI<radius>{x<sigma>}"\fP
-\fRsharpen the image
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-text-font \fI<name>"\fP
-\fRfont for writing fixed-width text
-.TP
-.B "-texture \fI<filename>"\fP
-\fRname of texture to tile onto the image background
-.TP
-.B "-title \fI<string>"\fP
-\fRassign title to displayed image [\fIanimate, display, montage\fP]
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-update \fI<seconds>"\fP
-\fR
-detect when image file is modified and redisplay.
-.TP
-.B "-use-pixmap"
-\fRuse the pixmap
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-visual \fI<type>"\fP
-\fRanimate images using this X visual type
-.TP
-.B "-window \fI<id>"\fP
-\fRmake image the background of a window
-.TP
-.B "-window-group"
-\fRspecify the window group
-.TP
-.B "-write \fI<filename>"\fP
-\fRwrite the image to a file [\fIdisplay\fP]
 
 For a more detailed description of each option, see
 Options, above.
@@ -8358,51 +7254,6 @@ or \fB-noop\fP.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-format \fI<string>"\fP
-\fRoutput formatted image characteristics
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-ping"
-\fRefficiently determine image characteristics
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
 
 For a more detailed description of each option, see
 Options, above.
@@ -8458,138 +7309,6 @@ values specified in your X resources file.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-delay \fI<1/100ths of a second>"\fP
-\fRdisplay the next image after pausing
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-descend"
-\fRobtain image by descending window hierarchy
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-encoding \fI<type>"\fP
-\fRspecify the text encoding
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-frame"
-\fRinclude the X window frame in the imported image
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "-pause \fI<seconds>"\fP
-\fRpause between snapshots [import]
-.TP
-.B "-ping"
-\fRefficiently determine image characteristics
-.TP
-.B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, X11, or TrueType font
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
-.TP
-.B "-screen"
-\fRspecify the screen to capture
-.TP
-.B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
-.TP
-.B "-silent"
-\fRoperate silently
-.TP
-.B "-snaps \fI<value>"\fP
-\fRnumber of screen snapshots
-.TP
-.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image (quickly)
-.TP
-.B "-transparent \fI<color>"\fP
-\fRmake this color transparent within the image
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
 
 For a more detailed description of each option, see
 Options, above.
@@ -8637,414 +7356,6 @@ until the set is terminated by the appearance of any option or \fB-noop\fP.
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
-.TP
-.B "-antialias"
-\fRremove pixel aliasing
-.TP
-.B " \fI-asc-cdl <spec>"\fP
-\fRapply ASC CDL color transform
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-black-threshold \fIred[,green][,blue][,opacity]"\fP
-\fRpixels below the threshold become black
-.TP
-.B "-blue-primary \fI<x>,<y>"\fP
-\fRblue chromaticity primary point
-.TP
-.B "-blur \fI<radius>{x<sigma>}"\fP
-\fRblur the image with a Gaussian operator
-.TP
-.B "-border \fI<width>x<height>"\fP
-\fRsurround the image with a border of color
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-channel \fI<type>"\fP
-\fRthe type of channel
-.TP
-.B "-charcoal \fI<factor>"\fP
-\fRsimulate a charcoal drawing
-.TP
-.B "-colorize \fI<value>"\fP
-\fRcolorize the image with the pen color
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-compose \fI<operator>"\fP
-\fRthe type of image composition
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-.TP
-.B "-contrast"
-\fRenhance or reduce the image contrast
-.TP
-.B "-convolve \fI<kernel>"\fP
-\fRconvolve image with the specified convolution kernel
-.TP
-.B "-create-directories"
-\fRcreate output directory if required
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-cycle \fI<amount>"\fP
-\fRdisplace image colormap by amount
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-delay \fI<1/100ths of a second>"\fP
-\fRdisplay the next image after pausing
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-despeckle"
-\fRreduce the speckles within an image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-draw \fI<string>"\fP
-\fRannotate an image with one or more graphic primitives
-.TP
-.B "-edge \fI<radius>"\fP
-\fRdetect edges within an image
-.TP
-.B "-emboss \fI<radius>"\fP
-\fRemboss an image
-.TP
-.B "-encoding \fI<type>"\fP
-\fRspecify the text encoding
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-enhance"
-\fRapply a digital filter to enhance a noisy image
-.TP
-.B "-equalize"
-\fRperform histogram equalization to the image
-.TP
-.B "-extent \fI<width>x<height>{+-}<x>{+-}<y>"\fP
-\fRcomposite image on background color canvas image
-.TP
-.B "-fill \fI<color>"\fP
-\fRcolor to use when filling a graphic primitive
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-.TP
-.B "-flip"
-\fRcreate a "mirror image"
-.TP
-.B "-flop"
-\fRcreate a "mirror image"
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-format \fI<type>"\fP
-\fRthe image format type
-.TP
-.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
-\fRsurround the image with an ornamental border
-.TP
-.B "-fuzz \fI<distance>{%}"\fP
-\fRcolors within this Euclidean distance are considered equal
-.TP
-.B "-gamma \fI<value>"\fP
-\fRlevel of gamma correction
-.TP
-.B "-gaussian \fI<radius>{x<sigma>}"\fP
-\fRblur the image with a Gaussian operator
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-gravity \fI<type>"\fP
-\fRdirection primitive  gravitates to when annotating the image.
-.TP
-.B "-green-primary \fI<x>,<y>"\fP
-\fRgreen chromaticity primary point
-.TP
-.B "-hald-clut \fI<clut>"\fP
-\fRapply a Hald CLUT to the image
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-implode \fI<factor>"\fP
-\fRimplode image pixels about the center
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
-\fRperform local adaptive thresholding
-.TP
-.B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
-\fRadjust the level of image contrast
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-linewidth"
-\fRthe line width for subsequent draw operations
-.TP
-.B "-list \fI<type>"\fP
-\fRthe type of list
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-loop \fI<iterations>"\fP
-\fRadd Netscape loop extension to your GIF animation
-.TP
-.B "-magnify"
-\fRmagnify the image
-.TP
-.B "-map \fI<filename>"\fP
-\fRchoose a particular set of colors from this image
-.TP
-.B "-mask \fI<filename>"\fP
-\fRSpecify a clipping mask
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-mattecolor \fI<color>"\fP
-\fRspecify the color to be used with the \fB-frame\fP option
-.TP
-.B "-median \fI<radius>"\fP
-\fRapply a median filter to the image
-.TP
-.B "-minify \fI<factor>"\fP
-\fRminify the image
-.TP
-.B "-modulate \fIbrightness[,saturation[,hue]]"\fP
-\fRvary the brightness, saturation, and hue of an image
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
-\fRSimulate motion blur
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-.TP
-.B "-noise \fI<radius|type>"\fP
-\fRadd or reduce noise in an image
-.TP
-.B "-noop"
-\fRNOOP (no option)
-.TP
-.B "-normalize"
-\fRtransform image to span the full range of color values
-.TP
-.B "-opaque \fI<color>"\fP
-\fRchange this color to the pen color within the image
-.TP
-.B "-operator \fIchannel operator rvalue[%]"\fP
-\fRapply a mathematical, bitwise, or value operator to an image channel
-.TP
-.B "-ordered-dither \fI<channeltype> <NxN>"\fP
-\fRordered dither the image
-.TP
-.B "-output-directory \fI<directory>"\fP
-\fRoutput files to directory
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "-paint \fI<radius>"\fP
-\fRsimulate an oil painting
-.TP
-.B "-pen \fI<color>"\fP
-\fR(This option has been replaced by the -fill option)
-.TP
-.B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, X11, or TrueType font
-.TP
-.B "-profile \fI<filename>"\fP
-\fRadd ICM, IPTC, or generic profile  to image
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-raise \fI<width>x<height>"\fP
-\fRlighten or darken image edges
-.TP
-.B "-random-threshold \fI<channeltype> <LOWxHIGH>"\fP
-\fRrandom threshold the image
-.TP
-.B "-recolor \fI<matrix>"\fP
-\fRapply a color translation matrix to image channels
-.TP
-.B "-red-primary \fI<x>,<y>"\fP
-\fRred chromaticity primary point
-.TP
-.B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
-\fRapply options to a portion of the image
-.TP
-.B "-render"
-\fRrender vector operations
-.TP
-.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
-\fRAdjust image page offsets
-.TP
-.B "-resample \fI<horizontal>x<vertical>"\fP
-\fRResample image to specified horizontal and vertical resolution
-.TP
-.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image
-.TP
-.B "-roll \fI{+-}<x>{+-}<y>"\fP
-\fRroll an image vertically or horizontally
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sample \fI<geometry>"\fP
-\fRscale image using pixel sampling
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scale \fI<geometry>"\fP
-\fRscale the image.
-.TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
-.TP
-.B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
-.TP
-.B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
-\fRsegment an image
-.TP
-.B "-shade \fI<azimuth>x<elevation>"\fP
-\fRshade the image using a distant light source
-.TP
-.B "-sharpen \fI<radius>{x<sigma>}"\fP
-\fRsharpen the image
-.TP
-.B "-shave \fI<width>x<height>{%}"\fP
-\fRshave pixels from the image edges
-.TP
-.B "-shear \fI<x degrees>x<y degrees>"\fP
-\fRshear the image along the X or Y axis
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-solarize \fI<factor>"\fP
-\fRnegate all pixels above the threshold level
-.TP
-.B "-spread \fI<amount>"\fP
-\fRdisplace image pixels by a random amount
-.TP
-.B "-strip"
-\fRremove all profiles and text attributes from the image
-.TP
-.B "-stroke \fI<color>"\fP
-\fRcolor to use when stroking a graphic primitive
-.TP
-.B "-strokewidth \fI<value>"\fP
-\fRset the stroke width
-.TP
-.B "-swirl \fI<degrees>"\fP
-\fRswirl image pixels about the center
-.TP
-.B "-texture \fI<filename>"\fP
-\fRname of texture to tile onto the image background
-.TP
-.B "-threshold \fI<value>{%}"\fP
-\fRthreshold the image
-.TP
-.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image (quickly)
-.TP
-.B "-tile \fI<filename>"\fP
-\fRtile image when filling a graphic primitive
-.TP
-.B "-transform"
-\fRtransform the image
-.TP
-.B "-transparent \fI<color>"\fP
-\fRmake this color transparent within the image
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-units \fI<type>"\fP
-\fRthe units of image resolution
-.TP
-.B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
-\fRsharpen the image with an unsharp mask operator
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-view \fI<string>"\fP
-\fRFlashPix viewing parameters
-.TP
-.B "-virtual-pixel \fI<method>"\fP
-\fRspecify contents of "virtual pixels"
-.TP
-.B "-wave \fI<amplitude>x<wavelength>"\fP
-\fRalter an image along a sine wave
-.TP
-.B "-white-point \fI<x>,<y>"\fP
-\fRchromaticity white point
-.TP
-.B "-white-threshold \fIred[,green][,blue][,opacity]"\fP
-\fRpixels above the threshold become white
 
 For a more detailed description of each option, see
 Options, above.
@@ -9149,231 +7460,12 @@ the first with 32 colors, the second with an unlimited number of colors, and
 the third with only 16 colors, use:
 
 
-     gm montage -colors 32 cockatoo.1 -noop cockatoo.2
+    gm montage -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3 cockatoos.miff
 
 For a more detailed description of each option, see
 Options, above.
 
-.TP
-.B "-adjoin"
-\fRjoin images into a single multi-image file
-.TP
-.B "-affine \fI<matrix>"\fP
-\fRdrawing transform matrix
-.TP
-.B "-authenticate \fI<string>"\fP
-\fRdecrypt image with this password
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-.TP
-.B "-blue-primary \fI<x>,<y>"\fP
-\fRblue chromaticity primary point
-.TP
-.B "-blur \fI<radius>{x<sigma>}"\fP
-\fRblur the image with a Gaussian operator
-.TP
-.B "-bordercolor \fI<color>"\fP
-\fRthe border color
-.TP
-.B "-borderwidth \fI<geometry>"\fP
-\fRthe border width
-.TP
-.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRremove pixels from the interior of an image
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-.TP
-.B "-compose \fI<operator>"\fP
-\fRthe type of image composition
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-.TP
-.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
-\fRpreferred size and location of the cropped image
-.TP
-.B "-debug \fI<events>"\fP
-\fRenable debug printout
-.TP
-.B "-define \fI<key>{=<value>},..."\fP
-\fRadd coder/decoder specific options
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRhorizontal and vertical resolution in pixels of the image
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-draw \fI<string>"\fP
-\fRannotate an image with one or more graphic primitives
-.TP
-.B "-encoding \fI<type>"\fP
-\fRspecify the text encoding
-.TP
-.B "-endian \fI<type>"\fP
-\fRspecify endianness (MSB, LSB, or Native) of image
-.TP
-.B "-fill \fI<color>"\fP
-\fRcolor to use when filling a graphic primitive
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-.TP
-.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
-\fRsurround the image with an ornamental border
-.TP
-.B "-gamma \fI<value>"\fP
-\fRlevel of gamma correction
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-.TP
-.B "-gravity \fI<type>"\fP
-\fRdirection primitive  gravitates to when annotating the image.
-.TP
-.B "-green-primary \fI<x>,<y>"\fP
-\fRgreen chromaticity primary point
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-.TP
-.B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
-.TP
-.B "-log \fI<string>"\fP
-\fRSpecify format for debug log
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-.TP
-.B "-mattecolor \fI<color>"\fP
-\fRspecify the color to be used with the \fB-frame\fP option
-.TP
-.B "-mode \fI<value>"\fP
-\fRmode of operation
-.TP
-.B "-monitor"
-\fRshow progress indication
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-noop"
-\fRNOOP (no option)
-.TP
-.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-.TP
-.B "-pen \fI<color>"\fP
-\fR(This option has been replaced by the -fill option)
-.TP
-.B "-pointsize \fI<value>"\fP
-\fRpointsize of the PostScript, X11, or TrueType font
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG/TIFF compression level
-.TP
-.B "-red-primary \fI<x>,<y>"\fP
-\fRred chromaticity primary point
-.TP
-.B "-render"
-\fRrender vector operations
-.TP
-.B "-repage \fI <width>x<height>+xoff+yoff[!]"\fP
-\fRAdjust image page offsets
-.TP
-.B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image
-.TP
-.B "-rotate \fI<degrees>{<}{>}"\fP
-\fRrotate the image
-.TP
-.B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRchroma subsampling factors
-.TP
-.B "-scenes \fI<value-value>"\fP
-\fRrange of image scene numbers to read
-.TP
-.B "-shadow \fI<radius>{x<sigma>}"\fP
-\fRshadow the montage
-.TP
-.B "-sharpen \fI<radius>{x<sigma>}"\fP
-\fRsharpen the image
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-.TP
-.B "-strip"
-\fRremove all profiles and text attributes from the image
-.TP
-.B "-stroke \fI<color>"\fP
-\fRcolor to use when stroking a graphic primitive
-.TP
-.B "-strokewidth \fI<value>"\fP
-\fRset the stroke width
-.TP
-.B "-texture \fI<filename>"\fP
-\fRname of texture to tile onto the image background
-.TP
-.B "-thumbnail \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
-\fRresize an image (quickly)
-.TP
-.B "-tile \fI<geometry>"\fP
-\fRlayout of images [\fImontage\fP]
-.TP
-.B "-title \fI<string>"\fP
-\fRassign title to displayed image [\fIanimate, display, montage\fP]
-.TP
-.B "-transform"
-\fRtransform the image
-.TP
-.B "-transparent \fI<color>"\fP
-\fRmake this color transparent within the image
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-.TP
-.B "-trim"
-\fRtrim an image
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-version"
-\fRprint GraphicsMagick version string
-.TP
-.B "-white-point \fI<x>,<y>"\fP
-\fRchromaticity white point
 
 For a more detailed description of each option, see
 Options, above.
