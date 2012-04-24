@@ -178,26 +178,26 @@ AddDefinition(ImageInfo *image_info,const char *magick, const char *key,
 	      const char *value, ExceptionInfo *exception)
 {
   MagickPassFail
-    status;
+    status = MagickFail;
 
   char
     search_key[MaxTextExtent];
 
   if (image_info->definitions == 0)
     image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
-      MagickMapDeallocateString);
-  if (image_info->definitions == 0)
-    return MagickFail;
-
-  /*
-    Format string like "magick:key"
-  */
-  FormatString(search_key, "%.60s:%.1024s", magick, key);
-
-  /*
-    Add entry to map
-  */
-  status &= MagickMapAddEntry((MagickMap) image_info->definitions,search_key,value,0,exception);
+						 MagickMapDeallocateString);
+  if (image_info->definitions != 0)
+    {
+      /*
+	Format string like "magick:key"
+      */
+      FormatString(search_key, "%.60s:%.1024s", magick, key);
+      
+      /*
+	Add entry to map
+      */
+      status = MagickMapAddEntry((MagickMap) image_info->definitions,search_key,value,0,exception);
+    }
 
   return status;
 }
@@ -1615,7 +1615,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   (void) memset(image_info,0,sizeof(ImageInfo));
-  image_info->adjoin=True;
+  image_info->adjoin=MagickTrue;
   image_info->depth=QuantumDepth;
   image_info->interlace=UndefinedInterlace;
   image_info->quality=DefaultCompressionQuality;
@@ -2347,16 +2347,6 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %  be automatically deleted later.  The `magick' field is updated if
 %  file header matches a known type.
 %
-%  If rectify mode is requested, then the file specification is
-%  inspected to see if it has a scene specifier (e.g. "foo-%02d.bar")
-%  and if it does, then the 'adjoin' flag in ImageInfo is set to
-%  MagickFalse.
-%
-%  If the file is to be written, and `adjoin' is currently true, then
-%  the responsible coder is queried to see if it supports adjoin
-%  (multiple frames per file) mode.  If it does not, then the 'adjoin'
-%  flag is cleared.
-%
 %  MagickFail is returned if an error is encountered.
 %
 %  The format of the SetImageInfo method is:
@@ -2749,27 +2739,6 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
         }
     }
 
-  if (lflags & SETMAGICK_RECTIFY)
-    {
-      /*
-        Test for multiple image support in file filename template. In
-        this case, the filename contains a printf style string
-        containing some variation of %d (e.g. "image%02d.miff");
-      */
-      if ((!image_info->adjoin) &&
-	  (MagickSceneFileName(filename,image_info->filename,".%lu",
-			       MagickFalse,0)))
-        image_info->adjoin=MagickFalse;
-    }
-  if (lflags & SETMAGICK_WRITE)
-    {
-      if (image_info->adjoin)
-	{
-	  magick_info=GetMagickInfo(magic,exception);
-	  if (magick_info != (const MagickInfo *) NULL)
-	    image_info->adjoin&=magick_info->adjoin;
-	}
-    }
   if (image_info->affirm)
     return(MagickPass);
   if (lflags & SETMAGICK_READ)
