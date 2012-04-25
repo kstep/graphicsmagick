@@ -6749,10 +6749,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                     (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
                   ping_trans_color.index=(unsigned char)
                     (ScaleQuantumToChar(MaxRGB-p->opacity));
-#if 0
-                  (void) png_set_tRNS(ping, ping_info, NULL, 0,
-                                      &ping_trans_color);
-#endif
                 }
             }
           if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
