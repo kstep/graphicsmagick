@@ -1058,7 +1058,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
     {
       png_size_t
         check;
-      
+    
       if (length > 0x7fffffff)
         png_warning(png_ptr, "chunk length > 2G");
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
@@ -1066,7 +1066,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
         {
           char
             msg[MaxTextExtent];
-          
+        
           (void) sprintf(msg,"Expected %lu bytes; found %lu bytes",
                          (unsigned long) length,(unsigned long) check);
           png_warning(png_ptr,msg);
@@ -1089,16 +1089,16 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   MngInfo
     *mng_info;
-  
+
   Image
     *image;
-  
+
   png_size_t
     check;
-  
+
   register long
     i;
-  
+
   i=0;
   mng_info=(MngInfo *) png_get_io_ptr(png_ptr);
   image=(Image *) mng_info->image;
@@ -1163,13 +1163,13 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   Image
     *image;
-  
+
   image=(Image *) png_get_io_ptr(png_ptr);
   if (length)
     {
       png_size_t
         check;
-      
+    
       check=(png_size_t) WriteBlob(image,(unsigned long) length,(char *) data);
       if (check != length)
         png_error(png_ptr,"WriteBlob Failed");
@@ -1179,12 +1179,12 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 static void png_flush_data(png_structp png_ptr)
 {
   ARG_NOT_USED(png_ptr);
-  
+
   /* There is currently no safe API to "flush" a blob. */
 #if 0
   Image
     *image;
-  
+
   image=(Image *) png_get_io_ptr(png_ptr);
   (void) SyncBlob(image);
 #endif
@@ -1195,7 +1195,7 @@ static int PalettesAreEqual(Image *a,Image *b)
 {
   long
     i;
-  
+
   if ((a == (Image *) NULL) || (b == (Image *) NULL))
     return(MagickFail);
   if (a->storage_class!=PseudoClass || b->storage_class!=PseudoClass)
@@ -1251,7 +1251,7 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
     {
       register long
         i;
-      
+    
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       if (mng_info->global_plte != (png_colorp) NULL)
@@ -1265,7 +1265,7 @@ static MngBox mng_minimum_box(MngBox box1,MngBox box2)
 {
   MngBox
     box;
-  
+
   box=box1;
   if (box.left < box2.left)
     box.left=box2.left;
@@ -1283,7 +1283,7 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,
 {
   MngBox
     box;
-  
+
   /*
     Read clipping boundaries from DEFI, CLIP, FRAM, or PAST chunk.
   */
@@ -1330,7 +1330,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image
     *image;
-  
+
   image=(Image *) png_get_error_ptr(ping);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "  libpng-%.1024s error: %.1024s",
@@ -1348,7 +1348,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 {
   Image
     *image;
-  
+
   if (LocaleCompare(message, "Missing PLTE before tRNS") == 0)
     png_error(ping, message);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -5867,13 +5867,13 @@ ModuleExport void RegisterPNGImage(void)
     {
       "See http://www.libpng.org/ for information on PNG.."
     };
-  
+
   static const char
     *JNGNote=
     {
       "See http://www.libpng.org/pub/mng/ for information on JNG."
     };
-  
+
   static const char
     *MNGNote=
     {
@@ -6265,7 +6265,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     Make sure that image is in an RGB type space.
   */
   (void) TransformColorspace(image,RGBColorspace);
-  
+
   /*
     Analyze image to be written.
   */
