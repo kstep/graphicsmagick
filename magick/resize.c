@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1949,14 +1949,26 @@ MagickExport Image *ThumbnailImage(const Image *image,
     *sample_image,
     *thumbnail_image;
 
+  FilterTypes
+    resize_filter;
+
+  /*
+    Thumbnailing defaults to a fast box filter, but allow user to
+    overide the filter used.
+  */
+  if (UndefinedFilter != image->filter)
+    resize_filter=image->filter;
+  else
+    resize_filter=DefaultThumbnailFilter;
+
   x_factor=(double) columns/image->columns;
   y_factor=(double) rows/image->rows;
   if ((x_factor*y_factor) > 0.1)
-    return(ResizeImage(image,columns,rows,BoxFilter,image->blur,exception));
+    return(ResizeImage(image,columns,rows,resize_filter,image->blur,exception));
   sample_image=SampleImage(image,5*columns,5*rows,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
-  thumbnail_image=ResizeImage(sample_image,columns,rows,BoxFilter,
+  thumbnail_image=ResizeImage(sample_image,columns,rows,resize_filter,
     sample_image->blur,exception);
   DestroyImage(sample_image);
   return(thumbnail_image);

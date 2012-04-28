@@ -150,11 +150,11 @@ it to a file called birds, use:</p>
 
 <pre>
 <format type=man,tex>
-    montage cockatoo.miff parrot.miff hummingbird.miff
+    gm montage cockatoo.miff parrot.miff hummingbird.miff
             birds.miff
 </format>
 <format type=html>
-    montage cockatoo.miff parrot.miff hummingbird.miff birds.miff
+    gm montage cockatoo.miff parrot.miff hummingbird.miff birds.miff
 </format>
 </pre>
 
@@ -165,11 +165,11 @@ and 192 pixels in height, surrounded by a red border, and separated by
 
 <pre>
 <format type=man,tex>
-    montage -geometry 256x192+10+10 -bordercolor red
+    gm montage -geometry 256x192+10+10 -bordercolor red
             birds.* montage.miff
 </format>
 <format type=html>
-    montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff
+    gm montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff
 </format>
 </pre>
 
@@ -179,11 +179,11 @@ by a border of black, use:</p>
 
 <pre>
 <format type=man,tex>
-    montage -geometry 640x480 -bordercolor black
+    gm montage -geometry 640x480 -bordercolor black
             -label "" parrot.miff bird.miff
 </format>
 <format type=html>
-    montage -geometry 640x480 -bordercolor black -label "" parrot.miff
+    gm montage -geometry 640x480 -bordercolor black -label "" parrot.miff
 bird.miff
 </format>
 </pre>
@@ -192,7 +192,7 @@ bird.miff
 To create an image of an eagle with a textured background, use:</p>
 
 <pre>
-    montage -texture bumps.jpg eagle.jpg eagle.png
+    gm montage -texture bumps.jpg eagle.jpg eagle.png
 </pre>
 
 <p>
@@ -201,11 +201,11 @@ no label, no shadowing, no surrounding tile frame), use:</p>
 
 <pre>
 <format type=man,tex>
-    montage +frame +shadow +label -tile 5x1
+    gm montage +frame +shadow +label -tile 5x1
             -geometry 50x50+0+0 *.png joined.png
 </format>
 <format type=html>
-    montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.png joined.png
+    gm montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.png joined.png
 </format>
 </pre>
 
@@ -222,11 +222,11 @@ the third with only 16 colors, use:
 </p>
 <pre>
 <format type=man,tex>
-     montage -colors 32 cockatoo.1 -noop cockatoo.2
+    gm montage -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3 cockatoos.miff
 </format>
 <format type=html>
-     montage -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+    gm montage -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
 cockatoos.miff
 </format>
 </pre>

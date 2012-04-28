@@ -4,7 +4,7 @@
 
 echo ".TH $1 1 \"`date '+%Y/%m/%d'`\" \"GraphicsMagick\""
 
-/usr/bin/sed  "
+${SED}  "
    : begin
      /<imdoc>/d
      /<\/imdoc>/d

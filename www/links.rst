@@ -19,7 +19,9 @@ GraphicsMagick Topics
 
 `Gentoo Sunrise <http://bugs.gentoo.org/show_bug.cgi?id=190372>`_ Bug Tracker Entry.
 
-`Red Hat Linux <http://bugzilla.redhat.com/buglist.cgi?quicksearch=GraphicsMagick>`_ GraphicsMagick related bugs.
+`Red Hat Linux <https://bugzilla.redhat.com/buglist.cgi?component=GraphicsMagick&product=Fedora>`_ GraphicsMagick related bugs.
+
+Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=GraphicsMagick&amp;searchon=names&amp;suite=all&amp;section=main>`_.
 
 `WikiPedia <http://en.wikipedia.org/wiki/GraphicsMagick>`_ GraphicsMagick Entry.
 
@@ -52,8 +54,6 @@ Seach SecurityFocus Bugtraq for `GraphicsMagick`__ vulnerabilities.
 __ Bugtraq_GraphicsMagick_
 
 .. _Bugtraq_GraphicsMagick : http://search.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
-
-Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=GraphicsMagick&amp;searchon=names&amp;suite=all&amp;section=main>`_.
 
 
 Image Processing Topics

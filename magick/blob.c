@@ -2016,10 +2016,13 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       DestroyImageInfo(clone_info);
       return((void *) NULL);
     }
+  if (image->logging)
+    (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+			  "Allocated temporary file \"%s\"",unique);
   FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
   status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);
-  if (status == MagickFalse)
+  if (status == MagickFail)
     {
       (void) LiberateTemporaryFile(unique);
       ThrowException(exception,BlobError,UnableToWriteBlob,image->filename);
@@ -2032,6 +2035,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Read image from disk as blob.
   */
   blob=(unsigned char *) FileToBlob(image->filename,length,exception);
+  if (image->logging)
+    (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+			  "Liberating temporary file \"%s\"",image->filename);
   (void) LiberateTemporaryFile(image->filename);
   (void) strlcpy(image->filename,filename,MaxTextExtent);
   if (blob == (unsigned char *) NULL)
@@ -2380,19 +2386,13 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 
 static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
 {
-  MagickBool
-    force;
-
   char
     filename[MaxTextExtent];
 
   /*
     Form filename for multi-part images.
   */
-  force = ((!image_info->adjoin) &&
-           ((image->previous != (Image *) NULL) ||
-            (image->next != (Image *) NULL)));
-  if (MagickSceneFileName(filename,image->filename,".%lu",force,
+  if (MagickSceneFileName(filename,image->filename,"",MagickFalse,
                           GetImageIndexInList(image)))
     (void) strlcpy(image->filename,filename,MaxTextExtent);
 

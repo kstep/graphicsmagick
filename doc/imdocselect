@@ -7,7 +7,7 @@
 
 # To select all utilities, use imdocselect . options.xml > all.xml
 
-sed "
+${SED} "
        /<gm>/d
        /<\/gm>/d
        s/    composite/    gm composite/
@@ -22,7 +22,7 @@ sed "
        " $3 | \
               \
               \
-sed "
+${SED} "
      : begin
 
        /<imdoc>/d
@@ -96,4 +96,4 @@ sed "
        d
      " |         \
                     \
-sed "/!DELETE!/d"
+${SED} "/!DELETE!/d"

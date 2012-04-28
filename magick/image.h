@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2010 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -372,7 +372,10 @@ typedef enum
   MultiplicativeGaussianNoise,
   ImpulseNoise,
   LaplacianNoise,
-  PoissonNoise
+  PoissonNoise,
+  /* Below added on 2012-03-17 */
+  RandomNoise,
+  UndefinedNoise
 } NoiseType;
 
 /*
@@ -1014,6 +1017,8 @@ extern MagickExport MagickBool
 
 /* Functions which return unsigned int to indicate operation pass/fail */
 extern MagickExport MagickPassFail
+  AddDefinition(ImageInfo *image_info,const char *magick, const char *key,
+    const char *value, ExceptionInfo *exception),
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AnimateImages(const ImageInfo *image_info,Image *image),
@@ -1021,6 +1026,7 @@ extern MagickExport MagickPassFail
   ClipPathImage(Image *image,const char *pathname,const MagickBool inside),
   DisplayImages(const ImageInfo *image_info,Image *image),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
+  ResetImagePage(Image *image,const char *page),
   SetImage(Image *image,const Quantum),
   SetImageColor(Image *image,const PixelPacket *pixel),
   SetImageColorRegion(Image *image,long x,long y,unsigned long width,
@@ -1029,6 +1035,7 @@ extern MagickExport MagickPassFail
   SetImageDepth(Image *image,const unsigned long),
   SetImageInfo(ImageInfo *image_info,const unsigned int flags,ExceptionInfo *exception),
   SetImageType(Image *image,const ImageType),
+  StripImage(Image *image),
   SyncImage(Image *image);
 
 extern MagickExport void

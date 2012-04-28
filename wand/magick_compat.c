@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -73,37 +73,7 @@
 WandExport size_t CopyMagickString(char *destination,const char *source,
   const size_t length)
 {
-#if defined(HAVE_STRLCPY)
   return(strlcpy(destination,source,length));
-#else
-  {
-    register char
-      *q;
-
-    register const char
-      *p;
-
-    register size_t
-      i;
-
-    p=source;
-    q=destination;
-    i=length;
-    if ((i != 0) && (--i != 0))
-      do
-      {
-        if ((*q++=(*p++)) == '\0')
-          break;
-      } while (--i != 0);
-    if (i == 0)
-      {
-        if (length != 0)
-          *q='\0';
-        while (*p++ != '\0');
-      }
-    return(p-source-1);
-  }
-#endif
 }
 
 /*
@@ -198,44 +168,7 @@ WandExport int FormatMagickString(char *string,const size_t length,
 WandExport size_t ConcatenateMagickString(char *destination,
   const char *source,const size_t length)
 {
-#if defined(HAVE_STRLCAT)
   return(strlcat(destination,source,length));
-#else
-  {
-    register char
-      *q;
-
-    register const char
-      *p;
-
-    register size_t
-      i;
-
-    size_t
-      count;
-
-    p=source;
-    q=destination;
-    i=length;
-    while ((i-- != 0) && (*q != '\0'))
-      q++;
-    count=q-destination;
-    i=length-count;
-    if (i == 0)
-      return(count+strlen(p));
-    while (*p != '\0')
-    {
-      if (i != 1)
-        {
-          *q++=(*p);
-          i--;
-        }
-      p++;
-    }
-    *q='\0';
-    return(count+(p-source));
-  }
-#endif
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -398,9 +331,9 @@ WandExport unsigned int ParseGeometry(const char *geometry,
   flags=NoValue;
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(flags);
-  if (strlen(geometry) >= MaxTextExtent)
+  if (strlcpy(pedantic_geometry,geometry,sizeof(pedantic_geometry))
+      >= sizeof(pedantic_geometry))
     return(flags);
-  (void) strncpy(pedantic_geometry,geometry,MaxTextExtent-1);
   for (p=pedantic_geometry; *p != '\0'; )
   {
     if (isspace((int) (*p)))
@@ -477,7 +410,7 @@ WandExport unsigned int ParseGeometry(const char *geometry,
         */
         GetExceptionInfo(&exception);
         image_info=CloneImageInfo((ImageInfo *) NULL);
-        (void) strncpy(image_info->filename,geometry,MaxTextExtent-1);
+	(void) strlcpy(image_info->filename,geometry,sizeof(image_info->filename));
         image=PingImage(image_info,&exception);
         if (image != (Image *) NULL)
           {

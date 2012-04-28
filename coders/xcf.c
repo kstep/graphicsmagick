@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1281,7 +1281,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     SetImage can be very expensive and it is not clear that this one is
     actually needed so comment it out for now.
-   */
+  */
   /* (void) SetImage(image,OpaqueOpacity); */  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
@@ -1473,10 +1473,18 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XCFLayerInfo
         *layer_info;
 
-      int
-        number_layers = 0,
+      unsigned long
+	number_layers = 0,
+        num_layers = 0;
+
+      long
         current_layer = 0,
-        foundAllLayers = False;
+        first_layer = 0,
+        last_layer = 0,
+        T = 0;
+
+	MagickBool
+          foundAllLayers = MagickFalse;
 
       /* BIG HACK
          because XCF doesn't include the layer count, and we
@@ -1491,12 +1499,34 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             offset = (long) ReadBlobMSBLong(image);
 
           if ( offset == 0 )
-            foundAllLayers = True;
+            foundAllLayers = MagickTrue;
           else
             number_layers++;
         } while ( !foundAllLayers );
       (void) SeekBlob(image, oldPos, SEEK_SET); /* restore the position! */
 
+      first_layer = image_info->subimage;
+      num_layers = number_layers;
+      /* subrange==0 means read all the images */
+      if( image_info->subrange > 0UL && image_info->subrange < number_layers )
+        num_layers = image_info->subrange;
+      last_layer = first_layer + num_layers-1;
+
+      if (image->logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "XCF number_layers=%lu first_layer=%ld last_layer=%ld",
+			      number_layers, first_layer, last_layer);
+
+      /* XCF has layers backwards, so this gets a bit complicated */
+      T = last_layer;
+      last_layer = number_layers - first_layer - 1;
+      first_layer = number_layers - T - 1;
+      number_layers = num_layers;
+
+      if (image->logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			      "XCF reading layers %ld to %ld inclusive", first_layer,
+			      last_layer);
 
       /* allocate our array of layer info blocks */
       layer_info=MagickAllocateArray(XCFLayerInfo *,
@@ -1529,83 +1559,90 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
            */
           saved_pos = TellBlob(image);
 
-          /* seek to the layer offset */
-          (void) SeekBlob(image, offset, SEEK_SET);
+          if( first_layer <= current_layer && current_layer <= last_layer )
+	    {
+	      /* seek to the layer offset */
+	      (void) SeekBlob(image, offset, SEEK_SET);
 
-          /* read in the layer */
-          layer_ok = ReadOneLayer( image, &doc_info, &layer_info[current_layer] );
-          if (!layer_ok) {
-            int
-              j;
+	      /* read in the layer */
+	      layer_ok = ReadOneLayer( image, &doc_info, &layer_info[current_layer-first_layer] );
+	      if (!layer_ok)
+		{
+		  int
+		    j;
 
-            for (j=0; j < current_layer; j++)
-              DestroyImage(layer_info[j].image);
-            MagickFreeMemory(layer_info);
-            CopyException(exception,&image->exception);
-            CloseBlob(image);
-            DestroyImageList(image);
-            return (Image *) NULL;
-          }
-
-          /* restore the saved position so we'll be ready to
-           *  read the next offset.
-           */
-          (void) SeekBlob(image, saved_pos, SEEK_SET);
+		  for (j=0; j < (current_layer-first_layer); j++)
+		    DestroyImage(layer_info[j].image);
+		  MagickFreeMemory(layer_info);
+		  CopyException(exception,&image->exception);
+		  CloseBlob(image);
+		  DestroyImageList(image);
+		  return (Image *) NULL;
+		}
+	      /* restore the saved position so we'll be ready to
+	       *  read the next offset.
+	       */
+	      (void) SeekBlob(image, saved_pos, SEEK_SET);
+	    }
 
           current_layer++;
         }
 
-      if ( number_layers == 1 ) {
-        /* composite the layer data onto the main image & then dispose the layer */
-        (void) CompositeImage(image, OverCompositeOp, layer_info[0].image, 
-                              layer_info[0].offset_x, layer_info[0].offset_y );
-        DestroyImage( layer_info[0].image );
-
-      } else {
+      if ( number_layers == 1 )
+	{
+	  /* composite the layer data onto the main image & then dispose the layer */
+	  (void) CompositeImage(image, OverCompositeOp, layer_info[0].image,
+				layer_info[0].offset_x, layer_info[0].offset_y );
+	  DestroyImage( layer_info[0].image );
+	}
+      else
+	{
 #if 0
-        {
-          /* NOTE: XCF layers are REVERSED from composite order! */
-          signed int  j;
-          for (j=number_layers-1; j>=0; j--) {
-            /* BOGUS: need to consider layer blending modes!! */
-          
-            if ( layer_info[j].visible ) { /* only visible ones, please! */
-              CompositeImage(image, OverCompositeOp, layer_info[j].image, 
-                             layer_info[j].offset_x, layer_info[j].offset_y );
-              DestroyImage( layer_info[j].image );
-            }
-          }
-        }
+	  {
+	    /* NOTE: XCF layers are REVERSED from composite order! */
+	    long
+	      j;
+
+	    for (j=number_layers-1; j>=0; j--) {
+	      /* BOGUS: need to consider layer blending modes!! */
+	      if ( layer_info[j].visible ) { /* only visible ones, please! */
+		CompositeImage(image, OverCompositeOp, layer_info[j].image,
+			       layer_info[j].offset_x, layer_info[j].offset_y );
+		DestroyImage( layer_info[j].image );
+	      }
+	    }
+	  }
 #else
-        {
-          /* NOTE: XCF layers are REVERSED from composite order! */
-          signed int  j;
+	  {
+	    /* NOTE: XCF layers are REVERSED from composite order! */
+	    long
+	      j;
 
-          /* first we copy the last layer on top of the main image */
-          (void) CompositeImage(image, CopyCompositeOp, layer_info[number_layers-1].image, 
-                                layer_info[number_layers-1].offset_x, 
-                                layer_info[number_layers-1].offset_y );
-          DestroyImage( layer_info[number_layers-1].image );
+	    /* first we copy the last layer on top of the main image */
+	    (void) CompositeImage(image, CopyCompositeOp, layer_info[number_layers-1].image,
+				  layer_info[number_layers-1].offset_x,
+				  layer_info[number_layers-1].offset_y );
+	    DestroyImage( layer_info[number_layers-1].image );
 
-          /* now reverse the order of the layers as they are put
-             into subimages
-          */
-          image->next=layer_info[number_layers-2].image;
-          layer_info[number_layers-2].image->previous=image;
-          for (j=number_layers-2; j>=0; j--)
-            {
-              if (j > 0)
-                layer_info[j].image->next=layer_info[j-1].image;
-              if (j < (number_layers-1))
-                layer_info[j].image->previous=layer_info[j+1].image;
-              layer_info[j].image->page.x = layer_info[j].offset_x;
-              layer_info[j].image->page.y = layer_info[j].offset_y;
-              layer_info[j].image->page.width = layer_info[j].width;
-              layer_info[j].image->page.height = layer_info[j].height;
-            }
-        }
+	    /* now reverse the order of the layers as they are put
+	       into subimages
+	    */
+	    image->next=layer_info[number_layers-2].image;
+	    layer_info[number_layers-2].image->previous=image;
+	    for (j=(long) number_layers-2; j >= 0; j--)
+	      {
+		if (j > 0)
+		  layer_info[j].image->next=layer_info[j-1].image;
+		if (j < ((long) number_layers-1))
+		  layer_info[j].image->previous=layer_info[j+1].image;
+		layer_info[j].image->page.x = layer_info[j].offset_x;
+		layer_info[j].image->page.y = layer_info[j].offset_y;
+		layer_info[j].image->page.width = layer_info[j].width;
+		layer_info[j].image->page.height = layer_info[j].height;
+	      }
+	  }
 #endif
-      }
+	}
 
       MagickFreeMemory(layer_info);
 

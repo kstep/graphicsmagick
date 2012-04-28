@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -144,6 +144,69 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   A d d D e f i n i t i o n                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AddDefinition() adds a key/value definition to the current map of
+%  definitions in ImageInfo. Definitions may be used by coders/decoders
+%  that read and write images.
+%
+%  The format of the AddDefinition method is:
+%
+%      MagickPassFail AddDefinition(ImageInfo *image_info,const char *magick,
+%                                   const char *key, const char *value,
+%                                   ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o magick: format/classification identifier
+%
+%    o key: subidentifier within format/classification
+%
+%    o value: definition value
+%
+%    o exception: Errors result in updates to this structure.
+%
+*/
+MagickExport MagickPassFail
+AddDefinition(ImageInfo *image_info,const char *magick, const char *key,
+	      const char *value, ExceptionInfo *exception)
+{
+  MagickPassFail
+    status = MagickFail;
+
+  char
+    search_key[MaxTextExtent];
+
+  if (image_info->definitions == 0)
+    image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
+						 MagickMapDeallocateString);
+  if (image_info->definitions != 0)
+    {
+      /*
+	Format string like "magick:key"
+      */
+      FormatString(search_key, "%.60s:%.1024s", magick, key);
+      
+      /*
+	Add entry to map
+      */
+      status = MagickMapAddEntry((MagickMap) image_info->definitions,search_key,value,0,exception);
+    }
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A d d D e f i n i t i o n s                                               %
 %                                                                             %
 %                                                                             %
@@ -156,7 +219,7 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
 %
 %  The format of the AddDefinitions method is:
 %
-%      void AddDefinitions(ImageInfo *image_info,const char *options)
+%      MagickPassFail AddDefinitions(ImageInfo *image_info,const char *options)
 %
 %  A description of each parameter follows:
 %
@@ -178,7 +241,7 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
     key[MaxTextExtent],
     value[MaxTextExtent];
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned int
@@ -193,6 +256,8 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
   if (image_info->definitions == 0)
     image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
       MagickMapDeallocateString);
+  if (image_info->definitions == 0)
+    return MagickFail;
 
   length=strlen(definitions);
   i=0;
@@ -1550,7 +1615,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   (void) memset(image_info,0,sizeof(ImageInfo));
-  image_info->adjoin=True;
+  image_info->adjoin=MagickTrue;
   image_info->depth=QuantumDepth;
   image_info->interlace=UndefinedInterlace;
   image_info->quality=DefaultCompressionQuality;
@@ -1835,6 +1900,95 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
       }
   }
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     R e s e t I m a g e P a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResetImagePage adjusts the current page canvas and position based on a
+%  relative page specification.
+%
+%  The format of the ResetImagePage method is:
+%
+%      MagickPassFail ResetImagePage(Image *image,const char *page)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o page: Relative page offset adjustment
+%
+*/
+MagickExport MagickPassFail
+ResetImagePage(Image *image,const char *page)
+{
+  RectangleInfo
+    page_geometry;
+
+  int
+    flags;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  /* Parse page geometry */
+  page_geometry.x=0;
+  page_geometry.y=0;
+  page_geometry.width=0;
+  page_geometry.height=0;
+  flags=GetMagickGeometry(page,&page_geometry.x,&page_geometry.y,
+			  &page_geometry.width,&page_geometry.height);
+
+  /* If no values were parsed, then return failed status */
+  if (NoValue == flags)
+    return MagickFail;
+
+  /* If width was provided */
+  if (flags & WidthValue)
+    {
+      /* If height was not provided, then default it to width */
+      if (!(flags & HeightValue))
+        page_geometry.height=page_geometry.width;
+      image->page.width=page_geometry.width;
+      image->page.height=page_geometry.height;
+    }
+  /* If values are absolute, then only adjust the page offset
+     values */
+  if (flags & AspectValue) /* ! */
+    {
+      if (flags & XValue)
+        image->page.x+=page_geometry.x;
+      if (flags & YValue)
+        image->page.y+=page_geometry.y;
+    }
+  else
+    {
+      /* If values are not absolute, then use offset values, and page
+	 width and height based on image width and height plus page
+	 offsets */
+      if (flags & XValue)
+        {
+          image->page.x=page_geometry.x;
+          if ((image->page.width == 0) && (page_geometry.x > 0))
+            image->page.width=image->columns+page_geometry.x;
+        }
+      if (flags & YValue)
+        {
+          image->page.y=page_geometry.y;
+          if ((image->page.height == 0) && (page_geometry.y > 0))
+            image->page.height=image->rows+page_geometry.y;
+        }
+    }
+
+  return MagickPass;
 }
 
 /*
@@ -2192,16 +2346,6 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %  file, and `temporary' is set to true so that the temporary file may
 %  be automatically deleted later.  The `magick' field is updated if
 %  file header matches a known type.
-%
-%  If rectify mode is requested, then the file specification is
-%  inspected to see if it has a scene specifier (e.g. "foo-%02d.bar")
-%  and if it does, then the 'adjoin' flag in ImageInfo is set to
-%  MagickFalse.
-%
-%  If the file is to be written, and `adjoin' is currently true, then
-%  the responsible coder is queried to see if it supports adjoin
-%  (multiple frames per file) mode.  If it does not, then the 'adjoin'
-%  flag is cleared.
 %
 %  MagickFail is returned if an error is encountered.
 %
@@ -2595,27 +2739,6 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
         }
     }
 
-  if (lflags & SETMAGICK_RECTIFY)
-    {
-      /*
-        Test for multiple image support in file filename template. In
-        this case, the filename contains a printf style string
-        containing some variation of %d (e.g. "image%02d.miff");
-      */
-      if ((!image_info->adjoin) &&
-	  (MagickSceneFileName(filename,image_info->filename,".%lu",
-			       MagickFalse,0)))
-        image_info->adjoin=MagickFalse;
-    }
-  if (lflags & SETMAGICK_WRITE)
-    {
-      if (image_info->adjoin)
-	{
-	  magick_info=GetMagickInfo(magic,exception);
-	  if (magick_info != (const MagickInfo *) NULL)
-	    image_info->adjoin&=magick_info->adjoin;
-	}
-    }
   if (image_info->affirm)
     return(MagickPass);
   if (lflags & SETMAGICK_READ)
@@ -3065,6 +3188,60 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
       break;
   }
   return (status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     S t r i p I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StripImage removes all profiles and text attributes from the image.
+%
+%  The format of the StripImage method is:
+%
+%      MagickPassFail StripImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+*/
+MagickExport MagickPassFail
+StripImage(Image *image)
+{
+  /* Text attributes to strip.  List is NULL terminated. */
+  static const char *strip_attributes[] =
+    {
+      "artist",
+      "comment",
+      "copyright",
+      "hostcomputer",
+      "label",
+      "make",
+      "model",
+      "timestamp",
+      (const char *) NULL
+    };
+
+  unsigned int
+    i;
+
+  assert(image != (Image *) NULL);
+
+  /* Strip all profiles */
+  (void) ProfileImage(image,"*",NULL,0,MagickFalse);
+
+  /* Strip common text attributes */
+  for (i=0; strip_attributes[i] != NULL; i++)
+    (void) SetImageAttribute(image,strip_attributes[i],(char *) NULL);
+
+  return MagickPass;
 }
 
 /*

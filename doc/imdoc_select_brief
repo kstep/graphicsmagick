@@ -1,4 +1,4 @@
-sed "/<opt>/p
+${SED} "/<opt>/p
      /<opt>/d
      s/<dopt>/<lopt>/
      /<lopt>/p

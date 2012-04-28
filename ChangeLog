@@ -1,3 +1,137 @@
+2012-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Release GraphicsMagick 1.3.15
+
+2012-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Remove automatic adjoin mode
+	support logic.
+	(AddDefinition): Fix use of uninitialized variable.
+
+2012-04-23  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* doc/*.imdoc: some example commandlines in the documentation
+	were missing the leading "gm ".
+
+2012-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (FormMultiPartFilename): No longer add a
+	printf-style scene formatting specification to filenames which do
+	not have one and no longer automatically operate in 'adjoin' mode
+	in such cases.  This is a BIG CHANGE for users who may have become
+	used to this automatic functionality.  The simple solution to
+	update existing scripts depending on this behavior is to change
+	any bare filenames to include a format specification similar to
+	"image-%d.jpg" and add +adjoin to the command line.  The reason
+	why this change is made is that the output files produced by any
+	given operation were unpredictable, and it was causing temporary
+	files to be leaked due to the renaming.
+
+2012-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c (WriteBMPImage): Enforce that image width and
+	height do not exceed BMP dimensions.  BMP dimensions are
+	represented by a signed type.  BMPv2 supports maximum dimensions
+	of 32k by 32k.
+
+2012-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/info.c (WriteINFOImage): When driven by the 'convert'
+	utility, -format produces user-controlled formatted output similar
+	to -format in 'identify'.  This is accomplished via a
+	'info:format=value' define.
+
+	* magick/image.c (AddDefinition): New function for adding just one
+	define to definitions list.
+
+2012-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (ReadPNMImage): Completely disable OpenMP in reader
+	because there is too much contention.
+
+	* magick/pixel_iterator.c: Dereference image to be modified in
+	non-threaded context in order to lessen contention.
+
+	* magick/semaphore.c (AllocateSemaphoreInfo): Make sure that
+	SemaphoreInfo does not share cache lines with another semaphore.
+
+2012-04-11  Glenn Randers-Pehrson  <glennrp@simplesystems.org>
+
+	* coders/png.c: fixed problem with bit depth when the encoder
+	decides to write RGBA instead of indexed PNG, by delaying the
+	call to png_set_tRNS() until after calling png_set_IHDR().
+
+2012-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Update bundled libpng to 1.5.10 release.  Provides security
+	fix for CVE-2011-3048.
+
+	* wand/magick_compat.c (ParseGeometry): Use strlcpy() rather than
+	strncpy().
+	(CopyMagickString): Depend on strlcpy() because we provide it if
+	it is missing.
+	(ConcatenateMagickString): Depend on strlcat().
+
+	* coders/xcf.c (ReadXCFImage): Now respects image subimage and
+	subrange members so that returned image layers may be selected.
+	Based on patch from SourceForge issue 3513025 "XCF reads all
+	layers all the time".
+
+	* magick/resize.c (ThumbnailImage): Thumbnail default filter is
+	intended to be the box filter, but allow the user to override the
+	filter used.  Resolves SourceForge issue 3513239 "-filter command
+	line argument ignored".
+
+2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+	Added support for '+noise random' and '-operator noise-random' to
+	'convert' and 'mogrify'.
+
+	* magick/effect.c (AddNoiseImage): Added support for RandomNoise.
+	(AddNoiseImageChannel): Added support for RandomNoise.
+
+	* magick/enum_strings.c (StringToNoiseType): New function to
+	convert a string to a NoiseType enumeration value.
+	(NoiseTypeToString): New function to convert a NoiseType
+	enumeration value into a string.
+
+	* PerlMagick/Magick.xs: Added support for RandomNoise.
+
+	* magick/operator.c (QuantumOperatorRegionImage): Added support for
+	RandomNoise.
+
+	* magick/effect.c (AddNoiseImageChannel): Added support for
+	RandomNoise.
+
+	* magick/gem.c (GenerateDifferentialNoise): Added support for
+	RandomNoise.
+
+	* magick/random.h (MagickRandomRealInlined): The span of
+	MagickRandomRealInlined() is now slightly more accurate.
+
+	* magick/image.h (enum NoiseType): New enumeration value RandomNoise.
+
+2012-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Add support for -repage option
+	to composite, convert, mogrify, and montage subcommands.  Resets
+	or adjusts the current image page offsets based on a provided
+	geometry specification.
+
+	* magick/image.c (ResetImagePage): Add a function to adjust the
+	current image page canvas and position based on a relative page
+	specification.
+
+2012-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Add support for -strip option
+	to composite, convert, mogrify, and montage subcommands.  Removes
+	all profiles and text attributes from the image.
+
+	* magick/image.c (StripImage): New function to remove all profiles
+	and text attributes from the image.
+
 2012-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Release GraphicsMagick 1.3.14.
@@ -33,7 +167,7 @@
 2012-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Fix reading XCF which is comprised
-	of differend sized layers.
+	of different sized layers.
 
 2012-02-08  Glenn Randers-Pehrson  <glennrp@simplesystems.org>
 

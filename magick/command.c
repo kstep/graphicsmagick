@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -3409,6 +3409,16 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowCompositeException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -3505,6 +3515,10 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             option_info.stereo=(*option == '-');
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
       }
       case 't':
@@ -3757,12 +3771,15 @@ static void CompositeUsage(void)
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-profile filename    add ICM or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-recolor matrix      apply a color translation matrix to image channels",
       "-red-primary point   chomaticity red primary point",
       "-rotate degrees      apply Paeth rotation to the image",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-sampling-factor HxV[,...]",
       "                     horizontal and vertical sampling factors",
@@ -3772,6 +3789,7 @@ static void CompositeUsage(void)
       "-size geometry       width and height of image",
       "-stegano offset      hide watermark within an image",
       "-stereo              combine two image to create a stereo anaglyph",
+      "-strip               strip all profiles and text attributes from image",
       "-thumbnail geometry  resize the image (optimized for thumbnails)",
       "-tile                repeat composite operation across image",
       "-transform           affine transform image",
@@ -4531,6 +4549,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,MissingArgument,
                     option);
                 format=argv[i];
+		/*
+		  Add definition to defines for use by 'info' coder.
+		*/
+		(void) AddDefinition(image_info,"info","format",format,exception);
               }
             break;
           }
@@ -5004,16 +5026,15 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             if (*option == '+')
               {
+		NoiseType
+		  noise_type;
+
                 i++;
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if ((LocaleCompare("Uniform",option) != 0) &&
-                    (LocaleCompare("Gaussian",option) != 0) &&
-                    (LocaleCompare("Multiplicative",option) != 0) &&
-                    (LocaleCompare("Impulse",option) != 0) &&
-                    (LocaleCompare("Laplacian",option) != 0) &&
-                    (LocaleCompare("Poisson",option) != 0))
+		noise_type=StringToNoiseType(option);
+		if (UndefinedNoise == noise_type)
                   ThrowConvertException(OptionError,UnrecognizedNoiseType,
                     option);
               }
@@ -5243,6 +5264,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowConvertException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             if (*option == '-')
@@ -5415,6 +5446,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             if (*option == '-')
@@ -5696,6 +5731,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       char
         *text;
 
+      /*
+	Return formatted string with image characteristics if metadata
+	is requested.
+      */
       text=TranslateText(image_info,image_list,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,MemoryAllocationFailed,
@@ -5829,6 +5868,7 @@ static void ConvertUsage(void)
       "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-ping                efficiently determine image attributes",
@@ -5844,6 +5884,8 @@ static void ConvertUsage(void)
       "-region geometry     apply options to a portion of the image",
       "-render              render vector graphics",
       "-resample geometry   resample to horizontal and vertical resolution",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
@@ -5864,6 +5906,7 @@ static void ConvertUsage(void)
       "-spread amount       displace image pixels by a random amount",
       "-stroke color        graphic primitive stroke color",
       "-strokewidth value   graphic primitive stroke width",
+      "-strip               strip all profiles and text attributes from image",
       "-swirl degrees       swirl image pixels about the center",
       "-texture filename    name of texture to tile onto the image background",
       "-threshold value     threshold the image",
@@ -7506,12 +7549,14 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 if (IsAccessible(resource_info.write_filename))
                   {
                     char
-                      answer[2];
+		      *answer,
+                      answer_buffer[2];
 
+		    answer_buffer[0]='\0';
                     (void) fprintf(stderr,"Overwrite %.1024s? ",
-                      resource_info.write_filename);
-                    (void) fgets(answer,sizeof(answer),stdin);
-                    if (!((*answer == 'y') || (*answer == 'Y')))
+				   resource_info.write_filename);
+                    answer=fgets(answer_buffer,sizeof(answer_buffer),stdin);
+                    if ((NULL == answer) || !((answer[0] == 'y') || (answer[0] == 'Y')))
                       Exit(0);
                   }
               }
@@ -9582,17 +9627,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   Add noise to image.
                 */
                 option=argv[++i];
-                noise_type=UniformNoise;
-                if (LocaleCompare("Gaussian",option) == 0)
-                  noise_type=GaussianNoise;
-                if (LocaleCompare("multiplicative",option) == 0)
-                  noise_type=MultiplicativeGaussianNoise;
-                if (LocaleCompare("impulse",option) == 0)
-                  noise_type=ImpulseNoise;
-                if (LocaleCompare("laplacian",option) == 0)
-                  noise_type=LaplacianNoise;
-                if (LocaleCompare("Poisson",option) == 0)
-                  noise_type=PoissonNoise;
+                noise_type=StringToNoiseType(option);
                 noisy_image=
                   AddNoiseImage(*image,noise_type,&(*image)->exception);
               }
@@ -9955,6 +9990,23 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->render=(*option == '+');
             continue;
           }
+	if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if (*option == '+')
+	      {
+		/* Reset page to defaults */
+                (*image)->page.width=0U;
+                (*image)->page.height=0U;
+                (*image)->page.x=0;
+                (*image)->page.y=0;
+	      }
+	    else
+	      {
+		/* Adjust page offsets */
+		(void) ResetImagePage(*image,argv[++i]);
+	      }
+            continue;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             Image
@@ -10299,6 +10351,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=spread_image;
             continue;
           }
+	if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    (void) StripImage(*image);
+	    continue;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             (void) QueryColorDatabase(argv[++i],&draw_info->stroke,
@@ -12327,16 +12384,15 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             if (*option == '+')
               {
+                NoiseType
+                  noise_type;
+
                 i++;
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
-                if ((LocaleCompare("Uniform",option) != 0) &&
-                    (LocaleCompare("Gaussian",option) != 0) &&
-                    (LocaleCompare("Multiplicative",option) != 0) &&
-                    (LocaleCompare("Impulse",option) != 0) &&
-                    (LocaleCompare("Laplacian",option) != 0) &&
-                    (LocaleCompare("Poisson",option) != 0))
+		noise_type=StringToNoiseType(option);
+		if (UndefinedNoise == noise_type)
                   ThrowMogrifyException(OptionError,UnrecognizedNoiseType,
                     option);
               }
@@ -12549,6 +12605,16 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowMogrifyException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resample",option+1) == 0)
           {
             if (*option == '-')
@@ -12740,6 +12806,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             if (*option == '-')
@@ -13106,6 +13176,7 @@ static void MogrifyUsage(void)
       "                     ordered dither the image",
       "-output-directory directory",
       "                     write output files to directory",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-fill color           color for annotating or changing opaque color",
@@ -13119,6 +13190,8 @@ static void MogrifyUsage(void)
       "-red-primary point   chomaticity red primary point",
       "-region geometry     apply options to a portion of the image",
       "-resample geometry   resample to horizontal and vertical resolution",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     perferred size or location of the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
@@ -13136,6 +13209,7 @@ static void MogrifyUsage(void)
       "-size geometry       width and height of image",
       "-solarize threshold  negate all pixels above the threshold level",
       "-spread amount       displace image pixels by a random amount",
+      "-strip               strip all profiles and text attributes from image",
       "-stroke color        graphic primitive stroke color",
       "-strokewidth value   graphic primitive stroke width",
       "-swirl degrees       swirl image pixels about the center",
@@ -14051,6 +14125,16 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("repage",option+1) == 0)
+          {
+	    if ((*option == '-') || (*option == '+'))
+	      {
+		i++;
+		if ((i == argc) || !IsGeometry(argv[i]))
+		  ThrowMontageException(OptionError,MissingArgument,option);
+	      }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -14141,6 +14225,10 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("strip",option+1) == 0)
+	  {
+	    break;
+	  }
         if (LocaleCompare("stroke",option+1) == 0)
           {
             (void) QueryColorDatabase("none",&montage_info->stroke,exception);
@@ -14438,10 +14526,13 @@ static void MontageUsage(void)
       "-monitor             show progress indication",
       "-monochrome          transform image to black and white",
       "-noop                do not apply options to image",
+      "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-red-primary point   chomaticity red primary point",
+      "+repage              reset current page offsets to default",
+      "-repage geometry     adjust current page offsets by geometry",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sampling-factor HxV[,...]",
@@ -14451,6 +14542,7 @@ static void MontageUsage(void)
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
+      "-strip               strip all profiles and text attributes from image",
       "-stroke color        color to use when stroking a graphic primitive",
       "-strokewidth value   stroke (line) width",
       "-texture filename    name of texture to tile onto the image background",

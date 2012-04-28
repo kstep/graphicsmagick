@@ -23,15 +23,19 @@ DOC2MAN	         = ./imdoc2man
 DOC2HTML         = ./gmdoc2html
 DOC2TEX          = ./imdoc2tex
 DOCSELECTCOMBINED = ./gmdocselect
-DOCSELECTSEPERATE = ./imdocselect
+DOCSELECTSEPARATE = ./imdocselect
 DOCINCLUDE       = ./imdocinclude
+
+# You might need to change this to /usr/bin/sed
+SED = /bin/sed
+export SED
 
 HTML_TARGETS = \
 	GraphicsMagick.html animate.html compare.html composite.html \
 	conjure.html convert.html display.html gm.html identify.html \
 	import.html mogrify.html montage.html
 
-MAN_TARGES       = gm.1
+MAN_TARGETS       = gm.1
 
 all:	gm.1 targets-html # gm.html # gm.tex
 
@@ -139,8 +143,8 @@ $(UTILSUBDIR)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc config_files.
 $(UTILSUBDIR)/man.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTCOMBINED)
 	$(DOCSELECTCOMBINED) $(UTILITY) man $< > $@
 
-$(UTILSUBDIR)/html.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTSEPERATE)
-	$(DOCSELECTSEPERATE) $(UTILITY) html $< > $@
+$(UTILSUBDIR)/html.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTSEPARATE)
+	$(DOCSELECTSEPARATE) $(UTILITY) html $< > $@
 
 $(UTILSUBDIR)/tex.imdoc: $(UTILSUBDIR)/Expanded.imdoc $(DOCSELECTCOMBINED)
 	$(DOCSELECTCOMBINED) $(UTILITY) tex $< > $@

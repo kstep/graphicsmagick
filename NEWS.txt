@@ -5,7 +5,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 25, 2011
+This file was last updated on April 28, 2012
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -13,6 +13,78 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.15 (April 28, 2012)
+==========================
+
+Security Fixes:
+
+  * Libpng in Windows build is updated to 1.5.10 release.  Provides a
+    fix for CVE-2011-3048.
+
+Bug fixes:
+
+  * PNG - fixed problem with bit depth when the encoder decides to
+    write RGBA instead of indexed PNG.
+
+  * Fixed some temporary file leaks which were caused by the temporary
+    file name being automatically extended to include a scene number,
+    and therefore fail to be deleted.
+
+New Features:
+
+  * Added '+noise random' and '-operator noise-random' to 'convert'
+    and 'mogrify'.  This modulates the existing image data with
+    uniformely random noise.
+
+  * Added -strip option in composite, convert, mogrify, and montage to
+    remove all profiles and text attributes from the image.
+
+  * Added -repage option to composite, convert, mogrify, and montage
+    subcommands to reset or adjust the current image page offsets
+    based on a provided geometry specification.
+
+  * New C function StripImage() to remove all profiles and text
+    attributes from the image.
+
+  * New C function ResetImagePage() to adjust the current image page
+    canvas and position based on a relative page specification.
+
+  * C functions GenerateDifferentialNoise(), AddNoiseImageChannel(),
+    QuantumOperatorRegionImage(), AddNoiseImage() updated to support
+    RandomNoise enumeration.
+
+  * New C++ Image method strip(), and unary function stripImage() to
+    remove all profiles and text attributes from the image.
+
+  * XCF format now respects image subimage and subrange members so
+    that returned image layers may be selected.
+
+  * The INFO coder (e.g. output file "info:-") now respects the
+    -format option so that its output may be adjusted identically to
+    how -format works for 'identify'.
+
+  * TclMagick now supports Random noise.
+
+Feature improvements:
+
+  * C function ThumbnailImage() now allows the user to override the
+    filter used, but still defaults to using the box filter.
+
+Performance Improvements:
+
+  * None
+
+Behavior Changes:
+
+  * No longer add a printf-style scene formatting specification to
+    filenames which do not have one and no longer automatically
+    operate in 'adjoin' mode in such cases.  If multiple numbered
+    files are intended to be output, then add +adjoin to the command
+    line and use an output filename specification similar to
+    "image-%d.jpg".  Output files are now completely specified and
+    predictable but this may break some existing usages which
+    anticipate the automatic file numbering.
 
 1.3.14 (February 25, 2012)
 ==========================

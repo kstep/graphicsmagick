@@ -1,3 +1,7 @@
+2012-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* generic/TclMagick.c (wandObjCmd): Added support for RandomNoise.
+
 2011-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/test-wand.tcl (SeparateImageChannel): Fix

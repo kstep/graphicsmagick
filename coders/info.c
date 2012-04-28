@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2010 GraphicsMagick Group
+% Copyright (C) 2010 - 2012 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -13,6 +13,7 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/describe.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -28,7 +29,7 @@ static unsigned int
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r I N F O I m a g e                                     %
+%   R e g i s t e r I N F O I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -123,15 +124,32 @@ WriteINFOImage(const ImageInfo *image_info,Image *image)
   char
     temporary_filename[MaxTextExtent];
 
+  const char
+    *format;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
+  /*
+    Obtain optional 'identify' style output specification.
+  */
+  format=AccessDefinition(image_info,"info","format");
+  if (format != (char *) NULL)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "info:format=\"%s\"",format);
+
+  /*
+    Open blob.
+  */
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
+  /*
+    Allocate and open a temporary file to write output to.
+  */
   temporary_filename[0]='\0';
   if ((file=GetBlobFileHandle(image)) == (FILE *) NULL)
     {
@@ -157,9 +175,25 @@ WriteINFOImage(const ImageInfo *image_info,Image *image)
       /*
 	Describe image.
       */
-      if ((status=DescribeImage(list_entry,file,image_info->verbose))
-	  == MagickFail)
-	break;
+      if (format != (char *) NULL)
+	{
+	  char
+	    *text;
+
+	  text=TranslateText(image_info,list_entry,format);
+	  if (text != (char *) NULL)
+	    {
+	      (void) fputs(text,file);
+	      (void) fputs("\n",file);
+	      MagickFreeMemory(text);
+	    }
+	}
+      else
+	{
+	  if ((status=DescribeImage(list_entry,file,image_info->verbose))
+	      == MagickFail)
+	    break;
+	}
       
       list_entry=GetNextImageInList(list_entry);
     }

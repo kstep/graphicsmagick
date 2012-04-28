@@ -1324,6 +1324,13 @@ glasses (Red image on left, blue on right)::
 
     void            stereo ( const Image &rightImage_ )
 
+strip
++++++
+
+Remove all profiles and text attributes from the image.
+
+    void            strip ( void );
+
 swirl
 +++++
     

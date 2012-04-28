@@ -384,7 +384,7 @@ unsigned int MagickAddNoiseImage( MagickWand *wand, const <a class="reference ex
 <dd>The magick wand.</dd>
 <dt>noise_type:</dt>
 <dd>The type of noise: Uniform, Gaussian, Multiplicative,
-Impulse, Laplacian, or Poisson.</dd>
+Impulse, Laplacian, Poisson, or Random.</dd>
 </dl>
 </div>
 </div>
@@ -5848,7 +5848,7 @@ unsigned int MagickStripImage( MagickWand *wand );
 </div>
 <div class="section" id="id410">
 <h2>Description</h2>
-<p>MagickStripImage() strips an image of all profiles and comments.</p>
+<p>MagickStripImage() removes all profiles and text attributes from the image.</p>
 <p>The format of the MagickStripImage method is:</p>
 <pre class="literal-block">
 unsigned int MagickStripImage( MagickWand *wand );

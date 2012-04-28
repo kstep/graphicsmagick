@@ -1,7 +1,7 @@
 #!/bin/sh
 # imdocinclude
 
-sed "
+${SED} "
     /<!--/d
     /<include file=/{
     s/\//\\\\\//g
@@ -17,5 +17,5 @@ sed "
     }
     d" $1 > sed-script
 
-sed -f sed-script $1
+${SED} -f sed-script $1
 # rm sed-script

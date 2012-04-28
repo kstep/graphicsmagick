@@ -1215,11 +1215,11 @@ static int wandObjCmd(
     case TM_ADD_NOISE_IMAGE:   /* AddNoiseImage ?noiseType? */
     {
 	static CONST char *noiseNames[] = {
-	    "uniform", "gaussian", "multiplicativegaussian", "impulse", "laplacian", "poisson",
+	    "uniform", "gaussian", "multiplicativegaussian", "impulse", "laplacian", "poisson", "random",
 	    (char *) NULL
 	};
 	static NoiseType noiseTypes[] = {
-	    UniformNoise, GaussianNoise, MultiplicativeGaussianNoise, ImpulseNoise, LaplacianNoise, PoissonNoise
+	    UniformNoise, GaussianNoise, MultiplicativeGaussianNoise, ImpulseNoise, LaplacianNoise, PoissonNoise, RandomNoise
 	};
 	int noiseIdx=0;
 

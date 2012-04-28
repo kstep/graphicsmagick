@@ -80,12 +80,12 @@ The graphics formats supported by <s>mogrify</s> are listed in
 To convert all the TIFF files in a particular directory to JPEG, use:</p>
 
 <pre>
-    mogrify -format jpeg *.tiff
+    gm mogrify -format jpeg *.tiff
 </pre>
 <p>
 To convert a directory full of JPEG images to thumbnails, use:</p>
 <pre>
-    mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
+    gm mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
 </pre>
 <pp>
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
@@ -101,7 +101,7 @@ To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: </p>
 
 <pre>
-    mogrify -resize 640x480! cockatoo.miff
+    gm mogrify -resize 640x480! cockatoo.miff
 </pre>
 
 </sect>

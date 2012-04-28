@@ -1811,6 +1811,13 @@ void Magick::Image::stereo ( const Image &rightImage_ )
   throwException( exceptionInfo );
 }
 
+// Remove all profiles and text attributes from the image.
+void Magick::Image::strip ( void )
+{
+  modifyImage();
+  MagickLib::StripImage(image());
+}
+
 // Swirl image
 void Magick::Image::swirl ( const double degrees_ )
 {
@@ -2519,8 +2526,7 @@ void Magick::Image::defineValue ( const std::string &magick_,
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  std::string definition = magick_ + ":" + key_ + "=" + value_;
-  AddDefinitions ( imageInfo(), definition.c_str(), &exceptionInfo );
+  AddDefinition ( imageInfo(), magick_.c_str(), key_.c_str(), value_.c_str(), &exceptionInfo );
   throwException( exceptionInfo );
 }
 std::string Magick::Image::defineValue ( const std::string &magick_,

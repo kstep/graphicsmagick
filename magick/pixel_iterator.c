@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004-2010 GraphicsMagick Group
+% Copyright (C) 2004-2012 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -318,6 +318,9 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
 
   int
     max_threads;
+
+  if (ModifyCache(image,exception) == MagickFail)
+    return MagickFail;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
@@ -644,6 +647,9 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
   int
     max_threads;
 
+  if (ModifyCache(update_image,exception) == MagickFail)
+    return MagickFail;
+
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);
 
@@ -946,6 +952,9 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
 
   int
     max_threads;
+
+  if (ModifyCache(update_image,exception) == MagickFail)
+    return MagickFail;
 
   max_threads=omp_get_max_threads();
   (void) SetRegionThreads(max_threads,options,columns,rows);

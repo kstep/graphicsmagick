@@ -36,6 +36,148 @@
 <div class="document">
 
 
+<p>2012-04-28  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Release GraphicsMagick 1.3.15</li>
+</ul>
+</blockquote>
+<p>2012-04-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/image.c (SetImageInfo): Remove automatic adjoin mode
+support logic.
+(AddDefinition): Fix use of uninitialized variable.</li>
+</ul>
+</blockquote>
+<p>2012-04-23  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>doc/*.imdoc: some example commandlines in the documentation
+were missing the leading &quot;gm &quot;.</li>
+</ul>
+</blockquote>
+<p>2012-04-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/blob.c (FormMultiPartFilename): No longer add a
+printf-style scene formatting specification to filenames which do
+not have one and no longer automatically operate in 'adjoin' mode
+in such cases.  This is a BIG CHANGE for users who may have become
+used to this automatic functionality.  The simple solution to
+update existing scripts depending on this behavior is to change
+any bare filenames to include a format specification similar to
+&quot;image-%d.jpg&quot; and add +adjoin to the command line.  The reason
+why this change is made is that the output files produced by any
+given operation were unpredictable, and it was causing temporary
+files to be leaked due to the renaming.</li>
+</ul>
+</blockquote>
+<p>2012-04-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/bmp.c (WriteBMPImage): Enforce that image width and
+height do not exceed BMP dimensions.  BMP dimensions are
+represented by a signed type.  BMPv2 supports maximum dimensions
+of 32k by 32k.</li>
+</ul>
+</blockquote>
+<p>2012-04-19  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/info.c (WriteINFOImage): When driven by the 'convert'
+utility, -format produces user-controlled formatted output similar
+to -format in 'identify'.  This is accomplished via a
+'<a class="reference external" href="info:format=value">info:format=value</a>' define.</li>
+<li>magick/image.c (AddDefinition): New function for adding just one
+define to definitions list.</li>
+</ul>
+</blockquote>
+<p>2012-04-11  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/pnm.c (ReadPNMImage): Completely disable OpenMP in reader
+because there is too much contention.</li>
+<li>magick/pixel_iterator.c: Dereference image to be modified in
+non-threaded context in order to lessen contention.</li>
+<li>magick/semaphore.c (AllocateSemaphoreInfo): Make sure that
+SemaphoreInfo does not share cache lines with another semaphore.</li>
+</ul>
+</blockquote>
+<p>2012-04-11  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: fixed problem with bit depth when the encoder
+decides to write RGBA instead of indexed PNG, by delaying the
+call to png_set_tRNS() until after calling png_set_IHDR().</li>
+</ul>
+</blockquote>
+<p>2012-03-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>png: Update bundled libpng to 1.5.10 release.  Provides security
+fix for CVE-2011-3048.</li>
+<li>wand/magick_compat.c (ParseGeometry): Use strlcpy() rather than
+strncpy().
+(CopyMagickString): Depend on strlcpy() because we provide it if
+it is missing.
+(ConcatenateMagickString): Depend on strlcat().</li>
+<li>coders/xcf.c (ReadXCFImage): Now respects image subimage and
+subrange members so that returned image layers may be selected.
+Based on patch from SourceForge issue 3513025 &quot;XCF reads all
+layers all the time&quot;.</li>
+<li>magick/resize.c (ThumbnailImage): Thumbnail default filter is
+intended to be the box filter, but allow the user to override the
+filter used.  Resolves SourceForge issue 3513239 &quot;-filter command
+line argument ignored&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-03-17  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (ConvertImageCommand, MogrifyImageCommand):
+Added support for '+noise random' and '-operator noise-random' to
+'convert' and 'mogrify'.</li>
+<li>magick/effect.c (AddNoiseImage): Added support for RandomNoise.
+(AddNoiseImageChannel): Added support for RandomNoise.</li>
+<li>magick/enum_strings.c (StringToNoiseType): New function to
+convert a string to a NoiseType enumeration value.
+(NoiseTypeToString): New function to convert a NoiseType
+enumeration value into a string.</li>
+<li>PerlMagick/Magick.xs: Added support for RandomNoise.</li>
+<li>magick/operator.c (QuantumOperatorRegionImage): Added support for
+RandomNoise.</li>
+<li>magick/effect.c (AddNoiseImageChannel): Added support for
+RandomNoise.</li>
+<li>magick/gem.c (GenerateDifferentialNoise): Added support for
+RandomNoise.</li>
+<li>magick/random.h (MagickRandomRealInlined): The span of
+MagickRandomRealInlined() is now slightly more accurate.</li>
+<li>magick/image.h (enum NoiseType): New enumeration value RandomNoise.</li>
+</ul>
+</blockquote>
+<p>2012-03-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (MogrifyImage): Add support for -repage option
+to composite, convert, mogrify, and montage subcommands.  Resets
+or adjusts the current image page offsets based on a provided
+geometry specification.</li>
+<li>magick/image.c (ResetImagePage): Add a function to adjust the
+current image page canvas and position based on a relative page
+specification.</li>
+</ul>
+</blockquote>
+<p>2012-03-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (MogrifyImage): Add support for -strip option
+to composite, convert, mogrify, and montage subcommands.  Removes
+all profiles and text attributes from the image.</li>
+<li>magick/image.c (StripImage): New function to remove all profiles
+and text attributes from the image.</li>
+</ul>
+</blockquote>
 <p>2012-02-25  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -72,7 +214,7 @@ accidental macro expansion.</li>
 <blockquote>
 <ul class="simple">
 <li>coders/xcf.c (ReadXCFImage): Fix reading XCF which is comprised
-of differend sized layers.</li>
+of different sized layers.</li>
 </ul>
 </blockquote>
 <p>2012-02-08  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>

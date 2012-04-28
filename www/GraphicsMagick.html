@@ -407,12 +407,17 @@ By default, the image format is determined by its magic number, i.e., the
 first few bytes of the file. To specify
 a particular image format, precede the filename with an image format name
 and a colon (<em>i.e.</em><strong>ps:image</strong>) or specify the image type as the
-filename suffix.
+filename suffix (<em>i.e.</em><strong>image.ps</strong>).
 The magic number takes precedence over the filename suffix
 and the prefix takes precedence over the magic number and the suffix
 in input files.
-The prefix takes precedence over the filename
-suffix in output files.  To read the "built-in" formats (GRANITE, H, LOGO,
+When a file is read, its magic number is stored in the "image-&gt;magick"
+string.
+In output files, the prefix takes precedence over the filename suffix,
+and the filename suffix takes precedence over the
+"image-&gt;magick" string.
+<br>&nbsp;<br>
+<p>To read the "built-in" formats (GRANITE, H, LOGO,
 NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
 filename or suffix.  To read the XC format, follow the colon with a color
 specification.  To read the CAPTION format, follow the colon with a text
@@ -438,28 +443,30 @@ with <strong>|</strong> to pipe to or from a system command (this feature is not
 available on VMS, Win32 and Macintosh platforms). Use a backslash or
 quotation marks to prevent your shell from interpreting the <strong>|</strong>.
 <p>
-Use an optional index enclosed in brackets after an input file name to specify
-a desired subimage of a multi-resolution image format like Photo CD
-(e.g. <tt>"img0001.pcd[4]"</tt>) or a range for MPEG images
-(e.g. <tt>"video.mpg[50-75]"</tt>). A subimage
-specification can be disjoint (e.g. <tt>"image.tiff[2,7,4]"</tt>). For
-raw images, specify a subimage with a geometry
-(e.g. <tt>-size 640x512</tt> <tt>"image.rgb[320x256+50+50]"</tt>).
-Surround the image name with quotation marks to prevent your shell
-from interpreting the square brackets.
-<p>Single images are written with the filename you specify. However,
-multi-part images (e.g., a multi-page PostScript document with
-<strong>+adjoin</strong> specified) are written with the filename followed by a
-period (<strong>.</strong>) and the scene number. You can change this behavior
-by embedding a <tt>%d</tt> format specification in the file name. For
-example,
+Use an optional index enclosed in brackets after an input file name to
+specify a desired subimage of a multi-resolution image format like
+Photo CD (e.g. <tt>"img0001.pcd[4]"</tt>) or a range for MPEG images
+(e.g. <tt>"video.mpg[50-75]"</tt>). A subimage specification can be
+disjoint (e.g. <tt>"image.tiff[2,7,4]"</tt>). For raw images, specify
+a subimage with a geometry (e.g. <tt>-size 640x512</tt>
+<tt>"image.rgb[320x256+50+50]"</tt>).  Surround the image name with
+quotation marks to prevent your shell from interpreting the square
+brackets. <p>Single images are written with the filename you
+specify. However, multi-part images (e.g., a multi-page PostScript
+document with <strong>+adjoin</strong> specified) may be written with the scene
+number included as part of the filename. In order to include the scene
+number in the filename, it is necessary to include a printf-style
+<tt>%d</tt> format specification in the file name and use the +adjoin
+option. For example,
 <pre>
     image%02d.miff
 </pre>
 <p>
 writes files <em>image00.miff, image01.miff,</em> etc. Only a single
 specification is allowed within an output filename. If more than one
-specification is present, it will be ignored.
+specification is present, it will be ignored. It is best to embed the
+scene number in the base part of the file name, not in the extension,
+because the extension will not be a recognizeable image type.
 <p>
 When running a commandline utility, you can
 prepend an at sign <tt>@</tt> to a filename to read a list of image
@@ -511,9 +518,16 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>join images into a single multi-image file</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, all images of an image sequence are stored in the same
-file. However, some formats (e.g. JPEG) do not support more than one image
-and are saved to separate files. Use <strong>+adjoin</strong> to force this
-behavior.</font></td></tr></table>
+file. However, some formats (e.g. JPEG) do not support storing more
+than one image per file and only the first frame in an image sequence
+will be saved unless the result is saved to separate files. Use
+<strong>+adjoin</strong> to force saving multiple frames to multiple numbered
+files. If <strong>+adjoin</strong> is used, then the output filename must
+include a printf style formatting specification for the numeric part
+of the filename.  For example,</font></td></tr></table>
+<pre>
+    image%02d.miff
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -835,7 +849,7 @@ If a clipping path is present, it will be applied to subsequent operations.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, if you type the following command:</font></td></tr></table>
 <pre>
-   gm convert -clip -negate cockatoo.tif negated.tif
+    gm convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 only the pixels within the clipping path are negated.</font></td></tr></table>
@@ -880,7 +894,7 @@ a colorization value list delimited with slashes (e.g. 0/0/50).</font></td></tr>
 The <strong>-colorize</strong> option may be used in conjunction with <strong>-modulate</strong>
 to produce a nice sepia toned image like:</font></td></tr></table>
 <pre>
-   gm convert input.ppm -modulate 115,0,100 \
+    gm convert input.ppm -modulate 115,0,100 \
               -colorize 7,21,50 output.ppm.
 </pre>
 <table BORDER=0 WIDTH="94%">
@@ -1232,7 +1246,7 @@ or <strong>+contrast</strong> to reduce the image contrast.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For a more pronounced effect you can repeat the option:</font></td></tr></table>
 <pre>
-   gm convert rose: -contrast -contrast rose_c2.png
+    gm convert rose: -contrast -contrast rose_c2.png
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1340,7 +1354,7 @@ consisting of one or more of the following domains: <tt>Annotate</tt>,
 <tt>Transform</tt>, <tt>Warning</tt>, <tt>X11</tt>, or <tt>User</tt>.
 For example, to log cache and blob events, use</font></td></tr></table>
 <pre>
-   gm convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The "User" domain is normally empty, but developers can log "User" events
@@ -1607,7 +1621,7 @@ Enables tiled TIFF if it has not already been enabled.
 For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</font></td></tr></table>
 <pre>
-   gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2097,7 +2111,7 @@ discarded.</font></td></tr></table>
 For example, this command creates a thumbnail of an image, and centers
 it on a red color backdrop image:</font></td></tr></table>
 <pre>
-   gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \
+    gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \
               -extent 140x100 outfile.jpg
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2105,7 +2119,7 @@ This command reduces or expands a JPEG image to fit on an 800x600
 display: </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <pre>
-   gm convert -size 800x600 input.jpg \
+    gm convert -size 800x600 input.jpg \
               -resize 800x600 -background black \
               -compose Copy -gravity center \
               -extent 800x600 \
@@ -2167,9 +2181,9 @@ or the parentheses from being interpreted by your shell.</font></td></tr></table
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,</font></td></tr></table>
 <pre>
-   gm convert -fill blue ...
-   gm convert -fill "#ddddff" ...
-   gm convert -fill "rgb(65000,65000,65535)" ...
+    gm convert -fill blue ...
+    gm convert -fill "#ddddff" ...
+    gm convert -fill "rgb(65000,65000,65535)" ...
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The shorter forms are scaled up, if necessary by replication.  For example, 
@@ -2244,14 +2258,14 @@ image.</font></td></tr></table>
 For example, this composites an image on top of a 640x400 transparent
 black canvas image:</font></td></tr></table>
 <pre>
-   gm convert -size 640x300 xc:transparent \
+    gm convert -size 640x300 xc:transparent \
               -compose over -page +0-100 \
               frame.png -flatten output.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 and this flattens a Photoshop PSD file:</font></td></tr></table>
 <pre>
-   gm convert input.psd -flatten output.png
+    gm convert input.psd -flatten output.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 </font></td></tr></table>
@@ -2345,8 +2359,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output formatted image characteristics</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When used with the <strong>identify</strong> utility,
-use this option to print information about the image in a format of your
+When used with the <strong>identify</strong> utility, or the <strong>convert</strong>
+utility with output written to the 'info:-' file specification, use
+this option to print information about the image in a format of your
 choosing.  You can include the image filename, type, width, height,
 Exif data, or other image attributes by embedding special format
 characters:</font></td></tr></table>
@@ -3106,7 +3121,7 @@ special format characters:</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example:</font></td></tr></table>
 <pre>
-   gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default behavior is to print all of the components.</font></td></tr></table>
@@ -3424,7 +3439,7 @@ The following is an example of composing an image based on red, green,
 and blue layers extracted from a sequence of images and pasted on the
 canvas image at specified offsets:</font></td></tr></table>
 <pre>
-   gm convert -background black \
+    gm convert -background black \
               -compose CopyRed   -page +0-100 red.png \
               -compose CopyGreen -page +0+40  green.png \
               -compose CopyBlue  -page +0+180 blue.png \
@@ -3496,8 +3511,9 @@ this pixel is a maximum or minimum within the pixel window.</font></td></tr></ta
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>radius</strong> to specify the width of the neighborhood.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>+noise</strong> followed by a noise type to add noise to an image. Choose
-from these noise types:</font></td></tr></table>
+Use <strong>+noise</strong> followed by a noise type to add noise to an image.
+The noise added modulates the existing image pixels. Choose from these
+noise types:</font></td></tr></table>
 <pre>
      Uniform
      Gaussian
@@ -3505,6 +3521,7 @@ from these noise types:</font></td></tr></table>
      Impulse
      Laplacian
      Poisson
+     Random (uniform distribution)
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3592,12 +3609,13 @@ performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
-<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>, <strong>LShift</strong>,
-<strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>, <strong>Or</strong>,
-<strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Threshold</strong>,
-<strong>Threshold-White</strong>, <strong>Threshold-Black</strong>, <strong>Xor</strong>,
-<strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
-<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>, and
+<strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>,
+<strong>LShift</strong>, <strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>,
+<strong>Or</strong>, <strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>,
+<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
+<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
+<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
+<strong>Noise-Poisson</strong>, <strong>Noise-Random</strong>, and
 <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
@@ -3688,24 +3706,30 @@ interesting property of XOR is that performing the same operation twice
 results in the original value.
 </dd>
 <dt>Noise-Gaussian</dt>
-<dd>Result is the channel value with gaussian noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Impulse</dt>
-<dd>Result is the channel value with impulse noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Laplacian</dt>
-<dd>Result is the channel value with laplacian noise applied according to
-the intensity specified by rvalue.
-</dd>
-<dt>Noise-Multiplicative</dt>
-<dd>Result is the channel value with multiplicative noise applied
+<dd>Result is the current channel value modulated with gaussian noise
 according to the intensity specified by rvalue.
 </dd>
+<dt>Noise-Impulse</dt>
+<dd>Result is the current channel value modulated with impulse noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Laplacian</dt>
+<dd>Result is the current channel value modulated with laplacian noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Multiplicative</dt>
+<dd>Result is the current channel value modulated with multiplicative
+gaussian noise according to the intensity specified by rvalue.
+</dd>
 <dt>Noise-Poisson</dt>
-<dd>Result is the channel value with poisson noise applied according to
-the intensity specified by rvalue.
+<dd>Result is the current channel value modulated with poisson noise
+according to the intensity specified by rvalue.
+</dd>
+<dt>Noise-Random</dt>
+<dd>Result is the current channel value modulated with random (uniform
+distribution) noise according to the intensity specified by rvalue.
+The initial noise intensity (rvalue=1.0) is the range of one pixel
+quantum span.
 </dd>
 <dt>Noise-Uniform</dt>
 <dd>Result is the channel value with uniform noise applied according to
@@ -3717,13 +3741,13 @@ As an example, the <strong>Assign</strong> operator assigns a fixed value to a
 channel. For example, this command sets the red channel to the mid-range
 value:</font></td></tr></table>
 <pre>
-   gm convert in.bmp -operator red assign "50%" out.bmp
+    gm convert in.bmp -operator red assign "50%" out.bmp
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The following applies 50% thresholding to the image and returns a gray
 image:</font></td></tr></table>
 <pre>
-   gm convert in.bmp -operator gray threshold "50%" out.bmp
+    gm convert in.bmp -operator gray threshold "50%" out.bmp
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -4067,7 +4091,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the <em>APP1</em> profile), use
 </font></td></tr></table>
 <pre>
-   gm convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Note that GraphicsMagick does not attempt to update any profile to
 reflect changes made to the image, e.g., rotation from portrait to landscape
@@ -4368,6 +4392,26 @@ useful when saving the result to vector formats such as MVG or SVG.</font></td><
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a name="details-repage"></a>-repage <i> &lt;width&gt;x&lt;height&gt;+xoff+yoff[!]</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Adjust image page offsets</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Adjust the current image page canvas and position based on a relative
+page specification.  This option may be used to change the location of
+a subframe (e.g. part of an animation) prior to composition.  If the
+geometry specification is absolute (includes a '!'), then the offset
+adjustment is absolute and there is no adjustment to page width and
+height, otherwise the page width and height values are also adjusted
+based on the current image dimensions.  Use <strong>+repage</strong> to set the
+image page offsets to default.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-resample"></a>-resample <i>&lt;horizontal&gt;x&lt;vertical&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Resample image to specified horizontal and vertical resolution</td></tr></table>
@@ -4558,7 +4602,7 @@ number.  You
 can change this behavior by embedding a <strong>%d, %0Nd, %o, %0No, %x, or %0Nx
 printf</strong> format specification in the file name. For example,</font></td></tr></table>
 <pre>
-    gm montage -scenes 5-7 image.miff
+    gm montage -scenes 5-7 image.miff montage.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table>
@@ -4847,6 +4891,21 @@ glasses are required to properly view the stereo image.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    <a name="details-strip"></a>-strip
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove all profiles and text attributes from the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+All embedded profiles and text attributes are stripped from the image.
+This is useful for images used for the web, or when output files need
+to be as small as possible</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     <a name="details-stroke"></a>-stroke <i>&lt;color&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when stroking a graphic primitive</td></tr></table>
@@ -4929,7 +4988,7 @@ is applied, then the threshold is a percentage of the available range.</font></t
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To efficiently create a black and white image from a color image, use</font></td></tr></table>
 <pre>
-   gm convert -threshold 50% in.png out.png
+    gm convert -threshold 50% in.png out.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The optimum threshold value depends on the nature of the image.</font></td></tr></table>
@@ -5018,7 +5077,7 @@ width=15><b><font face="Helvetica, Arial"
 This option applies the transformation matrix from a previous
 <strong>-affine</strong> option.</font></td></tr></table>
 <pre>
-   gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -5110,7 +5169,7 @@ Sometimes a specific subformat is desired. For example, to force a JPEG
 image to be written in TrueColor RGB format even though only gray pixels
 are present, use</font></td></tr></table>
 <pre>
-   gm convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder to
@@ -5121,7 +5180,7 @@ Some pseudo-formats (e.g. the XC format) will respect the requested
 type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use</font></td></tr></table>
 <pre>
-   gm convert -size 640x480 -type TrueColor xc:red red.miff
+    gm convert -size 640x480 -type TrueColor xc:red red.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Likewise, specify <strong>-type</strong> <strong>Bilevel</strong>, <strong>Grayscale</strong>,
@@ -5431,7 +5490,7 @@ processing continues using that image. The following is an example of how
 several sizes of an image may be generated in one command (repeat as
 often as needed):</font></td></tr></table>
 <pre>
-   gm convert input.jpg -resize 50% -write input50.jpg \
+    gm convert input.jpg -resize 50% -write input50.jpg \
               -resize 25% input25.jpg
 </pre>
 <table BORDER=0 WIDTH="94%">
