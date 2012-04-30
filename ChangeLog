@@ -1,3 +1,8 @@
+2012-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c: Limit the number of threads to use in
+	the loop rather than the total number of threads available.
+
 2012-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Release GraphicsMagick 1.3.15
