@@ -1,3 +1,7 @@
+2010-12-30 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Animated movies inside 4D matrices are loaded now.
+
 2012-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_iterator.c: Limit the number of threads to use in
