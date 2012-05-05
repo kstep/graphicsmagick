@@ -209,6 +209,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *header,
     *data;
 
+  char
+    original_filename[MaxTextExtent],
+    original_magick[MaxTextExtent];
+
   size_t
     count;
 
@@ -322,6 +326,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(FileOpenError,UnableToWriteFile,image)
     }
   CloseBlob(image);
+  strlcpy(original_filename,image->filename,sizeof(original_filename));
+  strlcpy(original_magick,image->magick,sizeof(original_magick));
   DestroyImage(image);
   /*
     Read JPEG image.
@@ -331,6 +337,11 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);
+  /*
+    Restore the input filename and magick
+  */
+  (void) strlcpy(image->filename,original_filename,sizeof(image->filename));
+  (void) strlcpy(image->magick,original_magick,sizeof(image->magick));
   /*
     Correct image orientation.
   */
