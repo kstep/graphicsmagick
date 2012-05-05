@@ -1,5 +1,10 @@
 2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/analyze.c (GetImageBoundingBox): Only apply opacity-based
+	bounding box detection if all three test points are non-opaque and
+	the same value.  Resolves SourceForge bug ID 3522804 "convert
+	-trim fails on 8-bit PNG that ImageMagick can trim".
+
 	* coders/sfw.c (ReadSFWImage): Fix variety of bugs related to
 	closing Image and blob at wrong points.  SFW reader is working
 	again.  Resolves SourceForge bug ID 523430 "sfw file open failed".

@@ -39,6 +39,10 @@
 <p>2012-05-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/analyze.c (GetImageBoundingBox): Only apply opacity-based
+bounding box detection if all three test points are non-opaque and
+the same value.  Resolves SourceForge bug ID 3522804 &quot;convert
+-trim fails on 8-bit PNG that ImageMagick can trim&quot;.</li>
 <li>coders/sfw.c (ReadSFWImage): Fix variety of bugs related to
 closing Image and blob at wrong points.  SFW reader is working
 again.  Resolves SourceForge bug ID 523430 &quot;sfw file open failed&quot;.</li>

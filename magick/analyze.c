@@ -120,9 +120,13 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
         thread_status=MagickFail;
       if (thread_status != MagickFail)
         {
-          if (image->matte)
+          if ((image->matte) &&
+	      (corners[0].opacity != OpaqueOpacity) &&
+	      (corners[0].opacity == corners[1].opacity) &&
+	      (corners[1].opacity == corners[2].opacity))
 	    /*
-	      Consider only the opacity channel.
+	      Consider only the opacity channel. Not currently fuzzy
+	      so only applied for simple transparency.
 	    */
             for (x=0; x < (long) image->columns; x++)
               {
