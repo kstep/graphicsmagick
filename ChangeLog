@@ -1,4 +1,10 @@
-2010-12-30 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sfw.c (ReadSFWImage): Fix variety of bugs related to
+	closing Image and blob at wrong points.  SFW reader is working
+	again.  Resolves SourceForge bug ID 523430 "sfw file open failed".
+
+2012-05-01 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c Animated movies inside 4D matrices are loaded now.
 

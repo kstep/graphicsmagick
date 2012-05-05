@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -216,6 +216,9 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *buffer,
     *offset;
 
+  size_t
+    buffer_size;
+
   unsigned int
     status;
 
@@ -233,19 +236,33 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
-  buffer=MagickAllocateMemory(unsigned char *,(size_t) GetBlobSize(image));
+  {
+    magick_off_t
+      blob_size;
+
+    blob_size=GetBlobSize(image);
+    buffer_size=(size_t)blob_size;
+    if ((magick_off_t) buffer_size != blob_size)
+      buffer_size=0;
+  }
+  if (buffer_size < 7)
+    {
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
+  buffer=MagickAllocateMemory(unsigned char *,buffer_size);
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  count=ReadBlob(image,(size_t) GetBlobSize(image),(char *) buffer);
-  if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-  CloseBlob(image);
-  DestroyImage(image);
+  count=ReadBlob(image,buffer_size,(char *) buffer);
+  if ((count != buffer_size) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
+    {
+      MagickFreeMemory(buffer);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
   /*
     Find the start of the JFIF data
   */
-  header=SFWScan(buffer,buffer+GetBlobSize(image)-1,(unsigned char *)
-    "\377\310\377\320",4);
+  header=SFWScan(buffer,buffer+buffer_size-1,
+		 (unsigned char *)"\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
       MagickFreeMemory(buffer);
@@ -267,7 +284,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(offset[2] << 8)+offset[3]+2;
   }
   offset--;
-  data=SFWScan(offset,buffer+GetBlobSize(image)-1,
+  data=SFWScan(offset,buffer+buffer_size-1,
     (unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
@@ -304,6 +321,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenError,UnableToWriteFile,image)
     }
+  CloseBlob(image);
+  DestroyImage(image);
   /*
     Read JPEG image.
   */
