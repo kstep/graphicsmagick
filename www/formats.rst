@@ -43,7 +43,7 @@ GraphicsMagick Supported Formats
 .. _Radiance : http://radsite.lbl.gov/radiance/HOME.html
 .. _SANE : http://www.mostang.com/sane/
 .. _SCT : http://oreilly.com/www/centers/gff/formats/scitex/
-.. _SFW : http://www.photoworks.com/
+.. _SFW : http://www.algonet.se/~cyren/sfw/
 .. _SMPTE : http://www.smpte.org/
 .. _SVG : http://www.w3.org/Graphics/SVG/
 .. _TIFF : http://www.remotesensing.org/libtiff/
