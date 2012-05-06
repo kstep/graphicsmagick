@@ -33,6 +33,8 @@ Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=Grap
 
 `GraphicsMagick on MinGW <http://ascendwiki.cheme.cmu.edu/Building_GraphicsMagick_on_MinGW>`_.
 
+`GraphicsMagick questions on StackOverflow <http://stackoverflow.com/questions/tagged/graphicsmagick?>`_.
+
 
 GraphicsMagick Vulnerabilities
 ==============================
