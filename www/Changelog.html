@@ -39,6 +39,9 @@
 <p>2012-05-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/pdf.c (WritePDFImage): Add file basename as the PDF
+document title.  Resolves SourceForge bug ID 2835140
+&quot;GraphicsMagick fails to add title attribute to PDF output&quot;.</li>
 <li>coders/sfw.c (ReadSFWImage): Restore original filename and
 format.</li>
 <li>PerlMagick/t/jpeg/read.t: Add a test for reading Seattle

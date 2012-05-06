@@ -1,5 +1,9 @@
 2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pdf.c (WritePDFImage): Add file basename as the PDF
+	document title.  Resolves SourceForge bug ID 2835140
+	"GraphicsMagick fails to add title attribute to PDF output".
+
 	* coders/sfw.c (ReadSFWImage): Restore original filename and
 	format.
 

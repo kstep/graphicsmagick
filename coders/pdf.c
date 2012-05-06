@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -532,6 +532,7 @@ static char *EscapeParenthesis(const char *text)
   register long
     i;
 
+  /* FIXME: use of a static buffer here makes this function not thread safe! */
   static char
     buffer[MaxTextExtent];
 
@@ -559,6 +560,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 #define ObjectsPerImage  9
 
   char
+    basename[MaxTextExtent],
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
@@ -651,7 +653,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
   /*
-    Write Info object.
+    Write Documentation Information Dictionary
   */
   object=0;
   (void) WriteBlobString(image,"%PDF-1.2 \n");
@@ -665,6 +667,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   FormatString(date,"D:%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+1900,
                time_meridian->tm_mon+1,time_meridian->tm_mday,time_meridian->tm_hour,
                time_meridian->tm_min,time_meridian->tm_sec);
+  GetPathComponent(image->filename,BasePath,basename);
+  
+  FormatString(buffer,"/Title (%.1024s)\n",EscapeParenthesis(basename));
+  (void) WriteBlobString(image,buffer);
   FormatString(buffer,"/CreationDate (%.1024s)\n",date);
   (void) WriteBlobString(image,buffer);
   FormatString(buffer,"/ModDate (%.1024s)\n",date);
