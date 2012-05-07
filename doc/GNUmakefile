@@ -121,7 +121,7 @@ targets-clean:
 	do \
 	  $(MAKE) UTILITY=$$utility utility-clean; \
 	done
-	rm brief_options.imdoc
+	rm -f brief_options.imdoc
 
 #
 # Per utility targets
