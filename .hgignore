@@ -26,6 +26,7 @@ out_.*\.+
 ^doc/Gm/man\.imdoc
 ^doc/GraphicsMagick\.html
 ^doc/animate\.html
+^doc/brief_options\.imdoc
 ^doc/compare\.html
 ^doc/composite\.html
 ^doc/conjure\.html
