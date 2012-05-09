@@ -2130,9 +2130,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
   num_passes=png_set_interlace_handling(ping);
 
+#if (QuantumDepth == 8)
+  if (ping_bit_depth > 8)
+     png_set_strip_16(ping);
+#endif
+
   png_read_update_info(ping,ping_info);
 
   ping_rowbytes=png_get_rowbytes(ping,ping_info);
+
 
   /*
     Initialize image structure.
@@ -2275,7 +2281,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         int
           depth;
 
-        depth=(long) ping_bit_depth;
+        depth=(long) image->depth;
 #endif
         image->matte=((ping_colortype == PNG_COLOR_TYPE_RGB_ALPHA) ||
                       (ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA) ||
