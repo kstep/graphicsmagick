@@ -1,8 +1,8 @@
 2012-05-09  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c (ReadOnePNGImage): make transparent_color elements
-	long instead of unsigned short, so 65537 is actually out of range
-	as expected.
+	unsigned long instead of unsigned short, so 65537 is actually out of
+	range as expected.
 
 2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
