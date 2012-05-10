@@ -1,3 +1,10 @@
+2012-05-09  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c (ReadOnePNGImage): make transparent_color elements
+	unsigned long instead of unsigned short, so 65537 is actually out of
+	range as expected, and won't match any pixel if no tRNS chunk is
+	present.
+
 2012-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/sfw.c (ReadSFWImage): Reader needs to be more robust
