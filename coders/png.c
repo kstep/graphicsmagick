@@ -1597,10 +1597,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
                          "  enter ReadOnePNGImage()");
 
-  transparent_color.red=0;
-  transparent_color.green=0;
-  transparent_color.blue=0;
-  transparent_color.opacity=0;
+  /* Set to an out-of-range color unless tRNS chunk is present */
+  transparent_color.red=65537;
+  transparent_color.green=65537;
+  transparent_color.blue=65537;
+  transparent_color.opacity=65537;
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
@@ -1747,6 +1748,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           image->depth=8;
         }
     }
+
   if (logging)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2135,6 +2137,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      png_set_strip_16(ping);
 #endif
 
+#if 0 /* doesn't work */
+  if (ping_bit_depth < 8)
+    {
+      png_set_expand(ping);
+    }
+#endif
+
+#if 1 /* works */
+  if (ping_bit_depth < 8)
+    {
+      ping_bit_depth = 8;
+    }
+#endif
+
   png_read_update_info(ping,ping_info);
 
   ping_rowbytes=png_get_rowbytes(ping,ping_info);
@@ -2174,6 +2190,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (image->colors > 65536L)
         image->colors=65536L;
 #endif
+
       if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
         {
           int
@@ -2257,6 +2274,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Reading PNG IDAT chunk(s)");
+
   if (num_passes > 1)
     png_pixels=MagickAllocateMemory(unsigned char *,
                                     ping_rowbytes*image->rows);
@@ -2471,8 +2489,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             indexes=AccessMutableIndexes(image);
             p=png_pixels+row_offset;
             r=quantum_scanline;
+
+
             switch (ping_bit_depth)
               {
+/* Dead code? */
               case 1:
                 {
                   register long
@@ -2519,6 +2540,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     *r++=(*p++ >> 4) & 0x0f;
                   break;
                 }
+/* End of dead code? */
+
               case 8:
                 {
                   if (ping_colortype == 4)
