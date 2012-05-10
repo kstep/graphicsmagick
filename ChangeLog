@@ -4,17 +4,6 @@
 	against corrupt or maligned headers.  Resolves SourceForge issue
 	"sfw file crash".
 
-2012-05-09  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
-
-	* coders/png.c (ReadOnePNGImage): make transparent_color elements
-	unsigned long instead of unsigned short, so 65537 is actually out of
-	range as expected.  Resolves SourceForge bug ID 3485509 "gm-1.3.13
-	mishandles this particular png".
-
-	Also fixed handling of 16-bit grayscale images in the PNG decoder.
-	Resolves SourceForge bug ID 3420695 "PNG: Q8 build fails to read
-	64-bit RGB+alpha interlaced PNG".
-
 2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (WritePDFImage): Add file basename as the PDF
