@@ -1,3 +1,8 @@
+2012-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c (GetRegionThreads): Don't thread region
+	if it is not memory-based.
+
 2012-05-09  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c (ReadOnePNGImage): make transparent_color elements

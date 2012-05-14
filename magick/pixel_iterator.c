@@ -19,14 +19,15 @@
 #include "magick/utility.h"
 
 /*
-  Obtain the maximum numer of threads to use based on user options and
-  region size.  The max_threads parameter should be initialized with
-  the value returned by omp_get_max_threads().  The number of threads
-  to be used is returned.
+  Obtain the maximum numer of threads to use based on image storage
+  type, region size, and user options.  The maximum number of threads
+  which may be used is that reported by omp_get_max_threads().  The
+  number of threads to be used is returned.
 */
 #if defined(HAVE_OPENMP)
 static int
 GetRegionThreads(const PixelIteratorOptions *options,
+		 const MagickBool in_core,
                  const unsigned long columns,
                  const unsigned long rows)
 {
@@ -39,21 +40,23 @@ GetRegionThreads(const PixelIteratorOptions *options,
 
   max_threads=omp_get_max_threads();
   region_threads=max_threads;
-  if ((options) && (options->max_threads > 0))
+
+  if (((columns <= tiny_region_metric && rows <= tiny_region_metric)) ||
+      ((magick_uint64_t) columns*rows <= tiny_region_metric*tiny_region_metric) ||
+      (MagickFalse == in_core))
+    {
+      /*
+        Run tiny or non-memory-based regions single threaded.
+      */
+      region_threads=1;
+    }
+  else if ((options) && (options->max_threads > 0))
     {
       /*
         Allow the user to specify the number of threads, up to the
         current limit.
       */
       region_threads=Min(max_threads,options->max_threads);
-    }
-  else if (((columns <= tiny_region_metric && rows <= tiny_region_metric)) ||
-           ((magick_uint64_t) columns*rows <= tiny_region_metric*tiny_region_metric))
-    {
-      /*
-        Run tiny regions single threaded.
-      */
-      region_threads=1;
     }
 
   return region_threads;
@@ -179,7 +182,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
     row_count=0;
 
 #if defined(HAVE_OPENMP)
-  int num_threads=GetRegionThreads(options,columns,rows);
+  int num_threads=GetRegionThreads(options,GetPixelCacheInCore(image),columns,rows);
 #else
   (void) options;
 #endif /* defined(HAVE_OPENMP) */
@@ -315,7 +318,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
     row_count=0;
 
 #if defined(HAVE_OPENMP)
-  int num_threads=GetRegionThreads(options,columns,rows);
+  int num_threads=GetRegionThreads(options,GetPixelCacheInCore(image),columns,rows);
 #else
   (void) options;
 #endif /* defined(HAVE_OPENMP) */
@@ -470,7 +473,10 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
     row_count=0;
 
 #if defined(HAVE_OPENMP)
-  int num_threads=GetRegionThreads(options,columns,rows);
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(first_image) &&
+				    GetPixelCacheInCore(second_image)),
+				   columns,rows);
 #else
   (void) options;
 #endif /* defined(HAVE_OPENMP) */
@@ -639,7 +645,10 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
     row_count=0;
 
 #if defined(HAVE_OPENMP)
-  int num_threads=GetRegionThreads(options,columns,rows);
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(source_image) &&
+				    GetPixelCacheInCore(update_image)),
+				   columns,rows);
 #else
   (void) options;
 #endif /* defined(HAVE_OPENMP) */
@@ -943,7 +952,11 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
     row_count=0;
 
 #if defined(HAVE_OPENMP)
-  int num_threads=GetRegionThreads(options,columns,rows);
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(source1_image) &&
+				    GetPixelCacheInCore(source2_image) &&
+				    GetPixelCacheInCore(update_image)),
+				   columns,rows);
 #else
   (void) options;
 #endif /* defined(HAVE_OPENMP) */
