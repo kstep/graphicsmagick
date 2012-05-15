@@ -1,3 +1,10 @@
+2012-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick_config_api.h.in: Need to provide definitions for
+	'size_t' and 'ssize_t' in case the system headers lack these types
+	because the definition of MagickExtentImage() requires them.  This
+	should resolve PHP bug #62034 "gmagick does not compile".
+
 2012-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_iterator.c (GetRegionThreads): Don't thread region
