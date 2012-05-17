@@ -1,3 +1,8 @@
+2012-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Include <sys/types.h> on POSIX systems in order to
+	help assure that 'size_t' and 'ssize_t' are declared.
+
 2012-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick_config_api.h.in: Need to provide definitions for
