@@ -26,6 +26,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <sys/types.h> /* POSIX 1990 header and declares size_t and ssize_t */
 
 /*
   Note that the WIN32 and WIN64 definitions are provided by the build
@@ -35,11 +36,6 @@ extern "C" {
 #if defined(WIN32) || defined(WIN64)
 #  define MSWINDOWS
 #endif /* defined(WIN32) || defined(WIN64) */
-
-#if !defined(MSWINDOWS)
-  /* <sys/types.h> is a POSIX 1990 header and declares size_t and ssize_t */
-#  include <sys/types.h>
-#endif
 
 #if defined(MAGICK_IMPLEMENTATION)
 #  if defined(MSWINDOWS)
