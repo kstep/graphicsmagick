@@ -2584,7 +2584,8 @@ GetPixelCacheInCore(const Image *image)
       cache_info=(CacheInfo *) image->cache;
       assert(cache_info->signature == MagickSignature);
 
-      if (image->cache->type == MemoryCache)
+      if ((image->cache->type == MemoryCache) ||
+	  ((image->cache->type == MapCache) && (image->cache->read_only)))
 	status=MagickTrue;
     }
 
