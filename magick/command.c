@@ -1791,7 +1791,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	    /* Formatted and summarized output */
 	    (void) fprintf(stderr,
 			   "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
-			   "(%.3f iter/s cpu)",
+			   "%.3f iter/cpu",
 			   threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
 	    if (thread_bench)
 	      {
