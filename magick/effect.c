@@ -2757,7 +2757,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     status=MagickPass;
     (void) memset(&zero,0,sizeof(DoublePixelPacket));
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
 #  else
@@ -2778,7 +2778,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         MagickBool
           thread_status;
 
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_MotionBlurImage)
 #endif
         thread_status=status;
@@ -2831,7 +2831,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             if (!SyncImagePixelsEx(blur_image,exception))
               thread_status=MagickFail;
           }
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if defined(HAVE_OPENMP)
 #  pragma omp critical (GM_MotionBlurImage)
 #endif
         {

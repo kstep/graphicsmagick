@@ -1,3 +1,18 @@
+2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure: Update to Autoconf 2.69.
+
+	* magick/effect.c (MotionBlurImage): Motion blur does scale so
+	remove DisableSlowOpenMP for it.
+
+	* magick/command.c (BenchmarkImageCommand): Remove parenthesis
+	from output, and change "iter/sec cpu" to "iter/cpu" to ease
+	parsing.
+
+	* magick/pixel_cache.c (GetPixelCacheInCore): Consider read-only
+	memory-mapped cache as being "in-core".  Otherwise MPC input files
+	are penalized.
+
 2012-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/api.h: Include <sys/types.h> on POSIX systems in order to

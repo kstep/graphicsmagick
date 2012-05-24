@@ -5,12 +5,20 @@
 # observe Bourne shell syntax.
 #
 
-# Package base name
-PACKAGE_NAME='GraphicsMagick'
 #
+# Package base name
+#
+PACKAGE_NAME='GraphicsMagick'
+
+#
+# Package bugs/support mailing list
+#
+PACKAGE_BUGREPORT='graphicsmagick-bugs@lists.sourceforge.net'
+
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.2").
 PACKAGE_VERSION='1.4'
+
 #
 # Package name plus version string.
 #

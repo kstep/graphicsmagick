@@ -36,6 +36,20 @@
 <div class="document">
 
 
+<p>2012-05-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>configure: Update to Autoconf 2.69.</li>
+<li>magick/effect.c (MotionBlurImage): Motion blur does scale so
+remove DisableSlowOpenMP for it.</li>
+<li>magick/command.c (BenchmarkImageCommand): Remove parenthesis
+from output, and change &quot;iter/sec cpu&quot; to &quot;iter/cpu&quot; to ease
+parsing.</li>
+<li>magick/pixel_cache.c (GetPixelCacheInCore): Consider read-only
+memory-mapped cache as being &quot;in-core&quot;.  Otherwise MPC input files
+are penalized.</li>
+</ul>
+</blockquote>
 <p>2012-05-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
