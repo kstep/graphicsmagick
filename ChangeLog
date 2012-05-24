@@ -1,5 +1,9 @@
 2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (ConvertImageCommand): +repage does not require
+	an argument.  Resolves SourceForge issue 3529158 "+repage option
+	not respected with convert command".
+
 	* configure: Update to Autoconf 2.69.
 
 	* magick/effect.c (MotionBlurImage): Motion blur does scale so

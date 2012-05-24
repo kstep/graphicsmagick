@@ -3411,7 +3411,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -5266,7 +5266,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -12607,7 +12607,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -14127,7 +14127,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))

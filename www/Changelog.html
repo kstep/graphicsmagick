@@ -39,6 +39,9 @@
 <p>2012-05-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/command.c (ConvertImageCommand): +repage does not require
+an argument.  Resolves SourceForge issue 3529158 &quot;+repage option
+not respected with convert command&quot;.</li>
 <li>configure: Update to Autoconf 2.69.</li>
 <li>magick/effect.c (MotionBlurImage): Motion blur does scale so
 remove DisableSlowOpenMP for it.</li>
