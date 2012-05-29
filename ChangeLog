@@ -1,3 +1,8 @@
+2012-05-29  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: Ignore APNG chunks even if we are using a libpng
+	that was built with the "APNG patch".
+
 2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ConvertImageCommand): +repage does not require

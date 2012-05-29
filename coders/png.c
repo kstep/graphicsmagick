@@ -1601,6 +1601,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       115,  67,  65,  76, '\0',   /* sCAL */
       115,  80,  76,  84, '\0',   /* sPLT */
       116,  73,  77,  69, '\0',   /* tIME */
+#ifdef PNG_APNG_SUPPORTED /* libpng was built with APNG patch; */
+                          /* ignore the APNG chunks */
+       97,  99,  84,  76, '\0',   /* acTL */
+      102,  99,  84,  76, '\0',   /* fcTL */
+      102, 100,  65,  84, '\0',   /* fdAT */
+#endif
     };
 #endif
 
