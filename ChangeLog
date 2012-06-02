@@ -1,3 +1,9 @@
+2012-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/typemap: Add typemap file needed by Perl 5.16.
+	Resolves SourceForge issue 3531512 "PerlMagick does not build with
+	perl 5.16".
+
 2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ConvertImageCommand): +repage does not require

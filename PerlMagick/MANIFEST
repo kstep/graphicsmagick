@@ -70,6 +70,7 @@ t/input.ico
 t/input.im1
 t/input.im24
 t/input.im8
+t/input.mac
 t/input.miff
 t/input.mtv
 t/input.p7
@@ -166,6 +167,7 @@ t/jp2/input.jpc
 t/jp2/input.pgx
 t/jp2/read.t
 t/jpeg/input.jpg
+t/jpeg/input.sfw
 t/jpeg/input_plane.jpg
 t/jpeg/read.t
 t/jpeg/write.t
@@ -290,6 +292,7 @@ t/reference/jp2/read_jpc.miff
 t/reference/jp2/read_pgx.miff
 t/reference/jpeg/read_non_interlaced.miff
 t/reference/jpeg/read_plane_interlaced.miff
+t/reference/jpeg/read_sfw.miff
 t/reference/jpeg/write_non_interlaced.miff
 t/reference/jpeg/write_plane_interlaced.miff
 t/reference/read/gradient.miff
@@ -331,6 +334,7 @@ t/reference/read/input_im1.miff
 t/reference/read/input_im24.miff
 t/reference/read/input_im8.miff
 t/reference/read/input_logical_lsb_08bit_mat.miff
+t/reference/read/input_mac.bmp
 t/reference/read/input_miff.miff
 t/reference/read/input_mtv.miff
 t/reference/read/input_null_DarkOrange.miff
@@ -440,3 +444,4 @@ t/zlib/input.miff.gz
 t/zlib/input_gray_lsb_08bit_zip.mat
 t/zlib/read.t
 t/zlib/write.t
+typemap
