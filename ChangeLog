@@ -1,3 +1,15 @@
+2012-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (SetImageAttribute): Don't translate
+	'comment' and 'label' attributes if the request is made while a
+	file is being read.  This is a temporary workaround until there is
+	opportunity to modify the architecture so that there is a clear
+	split between user-provided settings and values obtained from the
+	input image.
+
+	* magick/blob.c (GetBlobIsOpen): New function to return if blob is
+	currently open.
+
 2012-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/typemap: Add typemap file needed by Perl 5.16.

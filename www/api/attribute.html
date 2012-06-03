@@ -166,6 +166,9 @@ the value is concatenated to the attribute.  SetImageAttribute returns
 True if the attribute is successfully concatenated or added to the list,
 otherwise False.  If the value is NULL, the matching key is deleted
 from the list.</p>
+<p>The 'comment' and 'label' attributes are treated specially in that
+embedded format specifications are translated according to the formatting
+rules of TranslateText().</p>
 <p>The format of the SetImageAttribute method is:</p>
 <pre class="literal-block">
 unsigned int SetImageAttribute( <a class="reference external" href="../api/types.html#image">Image</a> *image, const char *key, const char *value );

@@ -1389,6 +1389,39 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  G e t B l o b I s O p e n                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobIsOpen() returns MagickTrue if the blob is currently open or
+%  MagickFalse if it is currently closed.
+%
+%  The format of the GetBlobSize method is:
+%
+%      MagickBool GetBlobIsOpen(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport MagickBool GetBlobIsOpen(const Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+
+  return (image->blob->type != UndefinedStream ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  G e t B l o b S i z e                                                      %
 %                                                                             %
 %                                                                             %
