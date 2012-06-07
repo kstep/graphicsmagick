@@ -1,7 +1,7 @@
-2012-06-06  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+2012-06-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c: Disable new libpng-1.5.10 test for invalid palette
-	index.
+	index when reading a PNG or MNG, or when writing a MNG.
 
 2012-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
