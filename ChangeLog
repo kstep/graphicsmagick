@@ -1,3 +1,8 @@
+2012-06-06  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: Disable new libpng-1.5.10 test for invalid palette
+	index.
+
 2012-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (SetImageAttribute): Don't translate
@@ -15,6 +20,11 @@
 	* PerlMagick/typemap: Add typemap file needed by Perl 5.16.
 	Resolves SourceForge issue 3531512 "PerlMagick does not build with
 	perl 5.16".
+
+2012-05-29  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: Ignore APNG chunks even if we are using a libpng
+	that was built with the "APNG patch".
 
 2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
