@@ -1,7 +1,8 @@
 2012-06-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c: Disable new libpng-1.5.10 test for invalid palette
-	index when reading a PNG or MNG, or when writing a MNG.
+	index when reading a PNG or MNG (for speed), or when writing a MNG
+	(because a zero-length PLTE is valid in a MNG).
 
 2012-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
