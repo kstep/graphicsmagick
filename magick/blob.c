@@ -46,6 +46,7 @@
 #include "magick/delegate.h"
 #include "magick/enum_strings.h"
 #include "magick/log.h"
+#include "magick/list.h"
 #include "magick/map.h"
 #include "magick/magick.h"
 #include "magick/magick_endian.h"
@@ -728,6 +729,10 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) blob;
   clone_info->length=length;
+  /*
+    Set file magick based on file name or file header if magick was
+    not provided.
+  */
   if (clone_info->magick[0] == '\0')
     (void) SetImageInfo(clone_info,SETMAGICK_READ,exception);
   magick_info=GetMagickInfo(clone_info->magick,exception);
@@ -785,6 +790,23 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 	      }
 	    (void) strlcat(clone_info->filename,temporary_file,sizeof(clone_info->filename));
 	    image=ReadImage(clone_info,exception);
+	    /*
+	      Restore original user-provided file name field to images
+	      in list so that user does not see a temporary file name.
+	    */
+	    if (image != (Image *) NULL)
+	      {
+		Image
+		  *list_image;
+
+		list_image = GetFirstImageInList(image);
+		while (list_image != (Image *) NULL)
+		  {
+		    (void) strlcpy(list_image->magick_filename,image_info->filename,sizeof(list_image->magick_filename));
+		    (void) strlcpy(list_image->filename,image_info->filename,sizeof(list_image->filename));
+		    list_image = GetNextImageInList(list_image);
+		  }
+	      }
 	  }
 	(void) LiberateTemporaryFile(temporary_file);
       }
@@ -2872,20 +2894,9 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  /* SetExceptionInfo(exception,UndefinedException); */
-  if (((blob == (const void *) NULL)) || (length == 0))
-    {
-      ThrowException(exception,OptionError,NullBlobArgument,
-        image_info->magick);
-      return((Image *) NULL);
-    }
   clone_info=CloneImageInfo(image_info);
-  clone_info->blob=(void *) blob;
-  clone_info->length=length;
   clone_info->ping=MagickTrue;
-  if (clone_info->size == (char *) NULL)
-    clone_info->size=AllocateString(DefaultTileGeometry);
-  image=ReadImage(clone_info,exception);
+  image=BlobToImage(clone_info,blob,length,exception);
   DestroyImageInfo(clone_info);
   return(image);
 }
