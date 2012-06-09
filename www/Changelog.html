@@ -36,6 +36,23 @@
 <div class="document">
 
 
+<p>2012-06-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>tests/rwfile.c (main): Verify that we can 'ping' the file using
+PingImage().  Tests for some formats may take longer to complete.</li>
+<li>tests/rwblob.c (main): Verify that we can 'ping' the blob using
+PingBlob().  Tests for some formats may take longer to complete.</li>
+<li>coders/xbm.c (ReadXBMImage): Fix memory leak of temporary X
+bitmap image allocation encountered when reading in 'ping' mode.</li>
+<li>magick/blob.c (PingBlob): Re-write to be based on BlobToImage()
+so that it works reliably.
+(BlobToImage): Restore original input file name to image if
+temporary file was used so that image 'filename' and
+'magick_filename' do not contain unexpected content due to using a
+temporary file.</li>
+</ul>
+</blockquote>
 <p>2012-06-07  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
 <blockquote>
 <ul class="simple">

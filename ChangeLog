@@ -1,3 +1,21 @@
+2012-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c (main): Verify that we can 'ping' the file using
+	PingImage().  Tests for some formats may take longer to complete.
+
+	* tests/rwblob.c (main): Verify that we can 'ping' the blob using
+	PingBlob().  Tests for some formats may take longer to complete.
+
+	* coders/xbm.c (ReadXBMImage): Fix memory leak of temporary X
+	bitmap image allocation encountered when reading in 'ping' mode.
+
+	* magick/blob.c (PingBlob): Re-write to be based on BlobToImage()
+	so that it works reliably.
+	(BlobToImage): Restore original input file name to image if
+	temporary file was used so that image 'filename' and
+	'magick_filename' do not contain unexpected content due to using a
+	temporary file.
+
 2012-06-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c: Disable new libpng-1.5.10 test for invalid palette
