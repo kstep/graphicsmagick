@@ -1,5 +1,7 @@
 2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tiff: Updated libtiff to 4.0.2 release.
+
 	* png: Updated libpng to 1.5.11 release.
 
 2012-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
