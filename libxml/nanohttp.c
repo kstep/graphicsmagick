@@ -64,9 +64,6 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-#ifdef SUPPORT_IP6
-#include <resolv.h>
-#endif
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
 #endif
@@ -574,14 +571,17 @@ xmlNanoHTTPRecv(xmlNanoHTTPCtxtPtr ctxt)
         }
         if (ctxt->last == -1) {
             switch (socket_errno()) {
+#if defined(EINPROGRESS)
                 case EINPROGRESS:
+#endif
                 case EWOULDBLOCK:
 #if defined(EAGAIN) && EAGAIN != EWOULDBLOCK
                 case EAGAIN:
 #endif
                     break;
-
+#if defined(ECONNRESET)
                 case ECONNRESET:
+#endif
                 case ESHUTDOWN:
                     return (0);
 
@@ -922,7 +922,9 @@ xmlNanoHTTPConnectAttempt(struct sockaddr *addr)
 
     if (connect(s, addr, addrlen) == -1) {
         switch (socket_errno()) {
+#if defined(EINPROGRESS)
             case EINPROGRESS:
+#endif
             case EWOULDBLOCK:
                 break;
             default:
@@ -1140,10 +1142,12 @@ xmlNanoHTTPConnectHost(const char *host, int port)
 			"Non-recoverable errors:  FORMERR, REFUSED, or NOTIMP.";
 		    break;
 
+#ifdef NO_ADDRESS
 		case NO_ADDRESS:
 		    h_err_txt =
 			"Valid name, no data record of requested type.";
 		    break;
+#endif
 
 		default:
 		    h_err_txt = "No error text defined.";
@@ -1166,7 +1170,7 @@ xmlNanoHTTPConnectHost(const char *host, int port)
 		memcpy (&ia, h->h_addr_list[i], h->h_length);
 		sockin.sin_family = h->h_addrtype;
 		sockin.sin_addr = ia;
-		sockin.sin_port = (u_short)htons ((unsigned short)port);
+		sockin.sin_port = (unsigned short)htons ((unsigned short)port);
 		addr = (struct sockaddr *) &sockin;
 #ifdef SUPPORT_IP6
 	    } else if (have_ipv6 () && (h->h_addrtype == AF_INET6)) {
@@ -1615,7 +1619,8 @@ xmlNanoHTTPFetch(const char *URL, const char *filename, char **contentType) {
     char *buf = NULL;
     int fd;
     int len;
-    
+    int ret = 0;
+
     if (filename == NULL) return(-1);
     ctxt = xmlNanoHTTPOpen(URL, contentType);
     if (ctxt == NULL) return(-1);
@@ -1636,12 +1641,14 @@ xmlNanoHTTPFetch(const char *URL, const char *filename, char **contentType) {
 
     xmlNanoHTTPFetchContent( ctxt, &buf, &len );
     if ( len > 0 ) {
-	write(fd, buf, len);
+	if (write(fd, buf, len) == -1) {
+	    ret = -1;
+	}
     }
 
     xmlNanoHTTPClose(ctxt);
     close(fd);
-    return(0);
+    return(ret);
 }
 
 #ifdef LIBXML_OUTPUT_ENABLED
@@ -1660,7 +1667,8 @@ xmlNanoHTTPSave(void *ctxt, const char *filename) {
     char *buf = NULL;
     int fd;
     int len;
-    
+    int ret = 0;
+
     if ((ctxt == NULL) || (filename == NULL)) return(-1);
 
     if (!strcmp(filename, "-")) 
@@ -1675,12 +1683,14 @@ xmlNanoHTTPSave(void *ctxt, const char *filename) {
 
     xmlNanoHTTPFetchContent( ctxt, &buf, &len );
     if ( len > 0 ) {
-	write(fd, buf, len);
+	if (write(fd, buf, len) == -1) {
+	    ret = -1;
+	}
     }
 
     xmlNanoHTTPClose(ctxt);
     close(fd);
-    return(0);
+    return(ret);
 }
 #endif /* LIBXML_OUTPUT_ENABLED */
 
