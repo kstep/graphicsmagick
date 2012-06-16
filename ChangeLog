@@ -1,3 +1,7 @@
+2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Updated libpng to 1.5.11 release.
+
 2012-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Fix typo which caused the --without-lzma option to
