@@ -102,6 +102,7 @@ www/Magick\+\+/ChangeLog.rst
 
 # Microsoft Visual Studio
 ^wmf/wmfconfig\.h
+^VisualMagick/All/All.vcproj
 ^VisualMagick/.*/BuildLog.htm
 ^VisualMagick/.*CORE_DB_.+_\.dll
 ^VisualMagick/.*CORE_DB_.+_\.exp
