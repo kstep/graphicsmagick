@@ -2548,7 +2548,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
         }
 #if defined(MSWINDOWS)
       if (strchr(type,'b') != (char *) NULL)
-        setmode(_fileno(image->blob->file),_O_BINARY);
+        setmode(_fileno(image->blob->handle.std),_O_BINARY);
 #endif
       image->blob->type=StandardStream;
       image->blob->exempt=True;
