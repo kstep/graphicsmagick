@@ -1,5 +1,7 @@
 2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* zlib: Updated zlib to 1.2.7 release.
+
 	* magick/blob.c (MagickFileHandle): Refer to stdio, bzip2, and
 	gzip file handles using their own type.  Eliminates warnings
 	observed when compiling with zlib 1.2.7.
