@@ -61,7 +61,8 @@ build_triplet = @build@
 host_triplet = @host@
 XFAIL_TESTS =
 check_PROGRAMS = ascii_tag$(EXEEXT) long_tag$(EXEEXT) \
-	short_tag$(EXEEXT) strip_rw$(EXEEXT) rewrite$(EXEEXT)
+	short_tag$(EXEEXT) strip_rw$(EXEEXT) rewrite$(EXEEXT) \
+	raw_decode$(EXEEXT) custom_dir$(EXEEXT)
 subdir = test
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -83,9 +84,15 @@ ascii_tag_DEPENDENCIES = $(LIBTIFF)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
+am_custom_dir_OBJECTS = custom_dir.$(OBJEXT)
+custom_dir_OBJECTS = $(am_custom_dir_OBJECTS)
+custom_dir_DEPENDENCIES = $(LIBTIFF)
 am_long_tag_OBJECTS = long_tag.$(OBJEXT) check_tag.$(OBJEXT)
 long_tag_OBJECTS = $(am_long_tag_OBJECTS)
 long_tag_DEPENDENCIES = $(LIBTIFF)
+am_raw_decode_OBJECTS = raw_decode.$(OBJEXT)
+raw_decode_OBJECTS = $(am_raw_decode_OBJECTS)
+raw_decode_DEPENDENCIES = $(LIBTIFF)
 am_rewrite_OBJECTS = rewrite_tag.$(OBJEXT)
 rewrite_OBJECTS = $(am_rewrite_OBJECTS)
 rewrite_DEPENDENCIES = $(LIBTIFF)
@@ -122,10 +129,12 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(ascii_tag_SOURCES) $(long_tag_SOURCES) $(rewrite_SOURCES) \
+SOURCES = $(ascii_tag_SOURCES) $(custom_dir_SOURCES) \
+	$(long_tag_SOURCES) $(raw_decode_SOURCES) $(rewrite_SOURCES) \
 	$(short_tag_SOURCES) $(strip_rw_SOURCES)
-DIST_SOURCES = $(ascii_tag_SOURCES) $(long_tag_SOURCES) \
-	$(rewrite_SOURCES) $(short_tag_SOURCES) $(strip_rw_SOURCES)
+DIST_SOURCES = $(ascii_tag_SOURCES) $(custom_dir_SOURCES) \
+	$(long_tag_SOURCES) $(raw_decode_SOURCES) $(rewrite_SOURCES) \
+	$(short_tag_SOURCES) $(strip_rw_SOURCES)
 HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -498,7 +507,8 @@ TESTSCRIPTS = \
 	tiff2rgba-palette-1c-4b.sh \
 	tiff2rgba-palette-1c-8b.sh \
 	tiff2rgba-rgb-3c-16b.sh \
-	tiff2rgba-rgb-3c-8b.sh
+	tiff2rgba-rgb-3c-8b.sh \
+	tiff2rgba-quad-tile.jpg.sh
 
 
 # This list should contain all of the TIFF files in the 'images'
@@ -514,7 +524,8 @@ TIFFIMAGES = \
 	images/palette-1c-4b.tiff \
 	images/palette-1c-8b.tiff \
 	images/rgb-3c-16b.tiff \
-	images/rgb-3c-8b.tiff
+	images/rgb-3c-8b.tiff \
+	images/quad-tile.jpg.tiff
 
 BMPIMAGES = \
 	images/palette-1c-8b.bmp \
@@ -550,6 +561,10 @@ strip_rw_SOURCES = strip_rw.c strip.c test_arrays.c test_arrays.h
 strip_rw_LDADD = $(LIBTIFF)
 rewrite_SOURCES = rewrite_tag.c
 rewrite_LDADD = $(LIBTIFF)
+raw_decode_SOURCES = raw_decode.c
+raw_decode_LDADD = $(LIBTIFF)
+custom_dir_SOURCES = custom_dir.c
+custom_dir_LDADD = $(LIBTIFF)
 INCLUDES = -I$(top_srcdir)/libtiff
 all: all-am
 
@@ -597,9 +612,15 @@ clean-checkPROGRAMS:
 ascii_tag$(EXEEXT): $(ascii_tag_OBJECTS) $(ascii_tag_DEPENDENCIES) $(EXTRA_ascii_tag_DEPENDENCIES) 
 	@rm -f ascii_tag$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(ascii_tag_OBJECTS) $(ascii_tag_LDADD) $(LIBS)
+custom_dir$(EXEEXT): $(custom_dir_OBJECTS) $(custom_dir_DEPENDENCIES) $(EXTRA_custom_dir_DEPENDENCIES) 
+	@rm -f custom_dir$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(custom_dir_OBJECTS) $(custom_dir_LDADD) $(LIBS)
 long_tag$(EXEEXT): $(long_tag_OBJECTS) $(long_tag_DEPENDENCIES) $(EXTRA_long_tag_DEPENDENCIES) 
 	@rm -f long_tag$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(long_tag_OBJECTS) $(long_tag_LDADD) $(LIBS)
+raw_decode$(EXEEXT): $(raw_decode_OBJECTS) $(raw_decode_DEPENDENCIES) $(EXTRA_raw_decode_DEPENDENCIES) 
+	@rm -f raw_decode$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(raw_decode_OBJECTS) $(raw_decode_LDADD) $(LIBS)
 rewrite$(EXEEXT): $(rewrite_OBJECTS) $(rewrite_DEPENDENCIES) $(EXTRA_rewrite_DEPENDENCIES) 
 	@rm -f rewrite$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rewrite_OBJECTS) $(rewrite_LDADD) $(LIBS)
@@ -618,7 +639,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ascii_tag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_tag.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/custom_dir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long_tag.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/raw_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rewrite_tag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/short_tag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strip.Po@am__quote@
@@ -841,6 +864,10 @@ strip_rw.log: strip_rw$(EXEEXT)
 	@p='strip_rw$(EXEEXT)'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
 rewrite.log: rewrite$(EXEEXT)
 	@p='rewrite$(EXEEXT)'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
+raw_decode.log: raw_decode$(EXEEXT)
+	@p='raw_decode$(EXEEXT)'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
+custom_dir.log: custom_dir$(EXEEXT)
+	@p='custom_dir$(EXEEXT)'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
 bmp2tiff_palette.sh.log: bmp2tiff_palette.sh
 	@p='bmp2tiff_palette.sh'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
 bmp2tiff_rgb.sh.log: bmp2tiff_rgb.sh
@@ -987,6 +1014,8 @@ tiff2rgba-rgb-3c-16b.sh.log: tiff2rgba-rgb-3c-16b.sh
 	@p='tiff2rgba-rgb-3c-16b.sh'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
 tiff2rgba-rgb-3c-8b.sh.log: tiff2rgba-rgb-3c-8b.sh
 	@p='tiff2rgba-rgb-3c-8b.sh'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
+tiff2rgba-quad-tile.jpg.sh.log: tiff2rgba-quad-tile.jpg.sh
+	@p='tiff2rgba-quad-tile.jpg.sh'; $(am__check_pre) $(LOG_COMPILE) "$$tst" $(am__check_post)
 .test.log:
 	@p='$<'; $(am__check_pre) $(TEST_LOG_COMPILE) "$$tst" $(am__check_post)
 @am__EXEEXT_TRUE@.test$(EXEEXT).log:
