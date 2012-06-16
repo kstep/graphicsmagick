@@ -1,5 +1,9 @@
 2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (MagickFileHandle): Refer to stdio, bzip2, and
+	gzip file handles using their own type.  Eliminates warnings
+	observed when compiling with zlib 1.2.7.
+
 	* tiff: Updated libtiff to 4.0.2 release.
 
 	* png: Updated libpng to 1.5.11 release.
