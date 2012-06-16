@@ -1,5 +1,7 @@
 2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* jpeg: Updated to IJG 8d release.
+
 	* libxml: Updated libxml to 2.8.0 release.
 
 	* zlib: Updated zlib to 1.2.7 release.
