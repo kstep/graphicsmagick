@@ -87,7 +87,7 @@ building under Microsoft Windows:
     http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
   to read the Computer Graphics Metafile (CGM) image format. You also
-  need Ghostscript (see below).
+  need Ghostscript and Ghostscript Fonts (see below).
 
 * GraphicsMagick requires 'dcraw' from
 
@@ -102,8 +102,8 @@ building under Microsoft Windows:
 
     http://www.xfig.org/
 
-  to read the Fig image format. Ghostscript (see below) is also
-  required.
+  to read the Fig image format. Ghostscript and Ghostscript Fonts (see
+  below) are also required.
 
 * GraphicsMagick requires the FreeType software, version 2.0 or above,
   available as
@@ -122,6 +122,10 @@ building under Microsoft Windows:
     http://sourceforge.net/projects/ghostscript/
 
   to read the Postscript or the Portable Document Format (PDF).
+
+  Ghostscript Fonts are available from
+
+    https://sourceforge.net/projects/gs-fonts/
 
   Ghostscript is available for use under both free (GPL) and
   commercial licenses.  We are not lawyers so we can not provide
