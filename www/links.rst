@@ -9,7 +9,7 @@ GraphicsMagick Topics
 
 `Free Software Foundation <http://directory.fsf.org/project/GraphicsMagick/>`_ GraphicsMagick Entry.
 
-`FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
+`FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick13/>`_ for GraphicsMagick.
 
 `NetBSD/pkgsrc port <http://pkgsrc.se/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
