@@ -1,3 +1,8 @@
+2012-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): -units was adjusting existing
+	resolution the wrong way around.
+
 2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* jpeg: Updated to IJG 8d release.

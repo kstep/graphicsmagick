@@ -10529,14 +10529,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 if ( (resolution_type == PixelsPerInchResolution) &&
                      ((*image)->units == PixelsPerCentimeterResolution) )
                   {
-                    (*image)->x_resolution /= 2.54;
-                    (*image)->y_resolution /= 2.54;
+                    (*image)->x_resolution *= 2.54;
+                    (*image)->y_resolution *= 2.54;
                   }
                 else if ( (resolution_type == PixelsPerCentimeterResolution) &&
                           ((*image)->units == PixelsPerInchResolution) )
                   {
-                    (*image)->x_resolution *= 2.54;
-                    (*image)->y_resolution *= 2.54;
+                    (*image)->x_resolution /= 2.54;
+                    (*image)->y_resolution /= 2.54;
                   }
               }
             
