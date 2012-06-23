@@ -1,3 +1,162 @@
+2012-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Release GraphicsMagick 1.3.16
+
+2012-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): -units was adjusting existing
+	resolution the wrong way around.
+
+2012-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* jpeg: Updated to IJG 8d release.
+
+	* libxml: Updated libxml to 2.8.0 release.
+
+	* zlib: Updated zlib to 1.2.7 release.
+
+	* magick/blob.c (MagickFileHandle): Refer to stdio, bzip2, and
+	gzip file handles using their own type.  Eliminates warnings
+	observed when compiling with zlib 1.2.7.
+
+	* tiff: Updated libtiff to 4.0.2 release.
+
+	* png: Updated libpng to 1.5.11 release.
+
+2012-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Fix typo which caused the --without-lzma option to
+	be handled incorrectly.  Resolves SourceForge issue 3535309
+	"graphicsmagick from 1.3.13 to 1.3.15 has broken lzma support".
+
+2012-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c (main): Verify that we can 'ping' the file using
+	PingImage().  Tests for some formats may take longer to complete.
+
+	* tests/rwblob.c (main): Verify that we can 'ping' the blob using
+	PingBlob().  Tests for some formats may take longer to complete.
+
+	* coders/xbm.c (ReadXBMImage): Fix memory leak of temporary X
+	bitmap image allocation encountered when reading in 'ping' mode.
+
+	* magick/blob.c (PingBlob): Re-write to be based on BlobToImage()
+	so that it works reliably.
+	(BlobToImage): Restore original input file name to image if
+	temporary file was used so that image 'filename' and
+	'magick_filename' do not contain unexpected content due to using a
+	temporary file.
+
+2012-06-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: Disable new libpng-1.5.10 test for invalid palette
+	index when reading a PNG or MNG (for speed), or when writing a MNG
+	(because a zero-length PLTE is valid in a MNG).
+
+2012-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (SetImageAttribute): Don't translate
+	'comment' and 'label' attributes if the request is made while a
+	file is being read.  This is a temporary workaround until there is
+	opportunity to modify the architecture so that there is a clear
+	split between user-provided settings and values obtained from the
+	input image.
+
+	* magick/blob.c (GetBlobIsOpen): New function to return if blob is
+	currently open.
+
+2012-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/typemap: Add typemap file needed by Perl 5.16.
+	Resolves SourceForge issue 3531512 "PerlMagick does not build with
+	perl 5.16".
+
+2012-05-29  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: Ignore APNG chunks even if we are using a libpng
+	that was built with the "APNG patch".
+
+2012-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand): +repage does not require
+	an argument.  Resolves SourceForge issue 3529158 "+repage option
+	not respected with convert command".
+
+	* configure: Update to Autoconf 2.69.
+
+	* magick/effect.c (MotionBlurImage): Motion blur does scale so
+	remove DisableSlowOpenMP for it.
+
+	* magick/command.c (BenchmarkImageCommand): Remove parenthesis
+	from output, and change "iter/sec cpu" to "iter/cpu" to ease
+	parsing.
+
+	* magick/pixel_cache.c (GetPixelCacheInCore): Consider read-only
+	memory-mapped cache as being "in-core".  Otherwise MPC input files
+	are penalized.
+
+2012-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Include <sys/types.h> on POSIX systems in order to
+	help assure that 'size_t' and 'ssize_t' are declared.
+
+2012-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick_config_api.h.in: Need to provide definitions for
+	'size_t' and 'ssize_t' in case the system headers lack these types
+	because the definition of MagickExtentImage() requires them.  This
+	should resolve PHP bug #62034 "gmagick does not compile".
+
+2012-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c (GetRegionThreads): Don't thread region
+	if it is not memory-based.
+
+2012-05-09  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c (ReadOnePNGImage): make transparent_color elements
+	unsigned long instead of unsigned short, so 65537 is actually out of
+	range as expected, and won't match any pixel if no tRNS chunk is
+	present.
+
+2012-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sfw.c (ReadSFWImage): Reader needs to be more robust
+	against corrupt or maligned headers.  Resolves SourceForge issue
+	"sfw file crash".
+
+2012-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Add file basename as the PDF
+	document title.  Resolves SourceForge bug ID 2835140
+	"GraphicsMagick fails to add title attribute to PDF output".
+
+	* coders/sfw.c (ReadSFWImage): Restore original filename and
+	format.
+
+	* PerlMagick/t/jpeg/read.t: Add a test for reading Seattle
+	FilmWorks format based on the sample image from
+	http://www.algonet.se/~cyren/sfw/.  Image was approved for
+	distribution in GraphicsMagick by Bengt Cyrén.
+
+	* magick/analyze.c (GetImageBoundingBox): Only apply opacity-based
+	bounding box detection if all three test points are non-opaque and
+	the same value.  Resolves SourceForge bug ID 3522804 "convert
+	-trim fails on 8-bit PNG that ImageMagick can trim".
+
+	* coders/sfw.c (ReadSFWImage): Fix variety of bugs related to
+	closing Image and blob at wrong points.  SFW reader is working
+	again.  Resolves SourceForge bug ID 523430 "sfw file open failed".
+
+2012-05-01 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Animated movies inside 4D matrices are loaded now.
+
+2012-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_iterator.c: Limit the number of threads to use in
+	the loop rather than the total number of threads available.
+
 2012-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Release GraphicsMagick 1.3.15

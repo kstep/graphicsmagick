@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2011 GraphicsMagick Group
+# Copyright (C) 2003-2012 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -694,7 +694,7 @@ if test "$with_lcms2" != 'yes' ; then
 fi
 
 # Disable LZMA (lzma library)
-AC_ARG_WITH(bzlib,
+AC_ARG_WITH(lzma,
 	      [  --without-lzma          disable LZMA support],
 	      [with_lzma=$withval],
 	      [with_lzma='yes'])

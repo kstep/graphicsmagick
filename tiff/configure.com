@@ -1,4 +1,4 @@
-$! $Id: configure.com,v 1.2 2007/11/23 10:01:34 dron Exp $
+$! $Id: configure.com,v 1.2 2007-11-23 10:01:34 dron Exp $
 $!
 $! OpenVMS configure procedure for libtiff
 $! (c) Alexey Chupahin  22-NOV-2007

@@ -9,7 +9,7 @@ GraphicsMagick Topics
 
 `Free Software Foundation <http://directory.fsf.org/project/GraphicsMagick/>`_ GraphicsMagick Entry.
 
-`FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick/>`_ for GraphicsMagick.
+`FreeBSD port <http://www.freebsd.org/cgi/cvsweb.cgi/ports/graphics/GraphicsMagick13/>`_ for GraphicsMagick.
 
 `NetBSD/pkgsrc port <http://pkgsrc.se/graphics/GraphicsMagick/>`_ for GraphicsMagick.
 
@@ -32,6 +32,8 @@ Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=Grap
 `SourceForge <http://sourceforge.net/projects/graphicsmagick/>`_ GraphicsMagick Entry.
 
 `GraphicsMagick on MinGW <http://ascendwiki.cheme.cmu.edu/Building_GraphicsMagick_on_MinGW>`_.
+
+`GraphicsMagick questions on StackOverflow <http://stackoverflow.com/questions/tagged/graphicsmagick?>`_.
 
 
 GraphicsMagick Vulnerabilities

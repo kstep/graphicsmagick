@@ -6,8 +6,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
-LIBXML_MINOR_VERSION=7
-LIBXML_MICRO_VERSION=8
+LIBXML_MINOR_VERSION=8
+LIBXML_MICRO_VERSION=0
 LIBXML_MICRO_VERSION_SUFFIX=
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION$LIBXML_MICRO_VERSION_SUFFIX
 LIBXML_VERSION_INFO=`expr $LIBXML_MAJOR_VERSION + $LIBXML_MINOR_VERSION`:$LIBXML_MICRO_VERSION:$LIBXML_MINOR_VERSION
@@ -29,7 +29,7 @@ else if test -d .svn ; then
       LIBXML_VERSION_EXTRA="-SVN$extra"
   fi
 else if test -d .git ; then
-  extra=`git describe | sed 's+LIBXML[[0-9.]]*-++'`
+  extra=`git describe 2>/dev/null | sed 's+LIBXML[[0-9.]]*-++'`
   echo extra=$extra
   if test "$extra" != ""
   then
@@ -50,6 +50,11 @@ VERSION=${LIBXML_VERSION}
 
 AM_INIT_AUTOMAKE(libxml2, $VERSION)
 
+# Support silent build rules, requires at least automake-1.11. Disable
+# by either passing --disable-silent-rules to configure or passing V=1
+# to make
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -62,10 +67,6 @@ AC_PATH_PROG(PERL, perl, /usr/bin/perl)
 AC_PATH_PROG(WGET, wget, /usr/bin/wget)
 AC_PATH_PROG(XMLLINT, xmllint, /usr/bin/xmllint)
 AC_PATH_PROG(XSLTPROC, xsltproc, /usr/bin/xsltproc)
-
-dnl Make sure we have an ANSI compiler
-AM_C_PROTOTYPES
-test "x$U" != "x" && AC_MSG_ERROR(Compiler not ANSI compliant)
 
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
@@ -84,7 +85,7 @@ else
   esac
 fi
 AC_SUBST(VERSION_SCRIPT_FLAGS)
-AM_CONDITIONAL([USE_VERSION_SCRIPT], [test -z "$VERSION_SCRIPT_FLAGS"])
+AM_CONDITIONAL([USE_VERSION_SCRIPT], [test -n "$VERSION_SCRIPT_FLAGS"])
 
 dnl
 dnl We process the AC_ARG_WITH first so that later we can modify
@@ -188,6 +189,14 @@ AC_ARG_WITH(zlib,
 [  --with-zlib[[=DIR]]       use libz in DIR],[
   if test "$withval" != "no" -a "$withval" != "yes"; then
     Z_DIR=$withval
+    CPPFLAGS="${CPPFLAGS} -I$withval/include"
+    LDFLAGS="${LDFLAGS} -L$withval/lib"
+  fi
+])
+AC_ARG_WITH(lzma,
+[  --with-lzma[[=DIR]]       use liblzma in DIR],[
+  if test "$withval" != "no" -a "$withval" != "yes"; then
+    LZMA_DIR=$withval
     CPPFLAGS="${CPPFLAGS} -I$withval/include"
     LDFLAGS="${LDFLAGS} -L$withval/lib"
   fi
@@ -394,6 +403,30 @@ AC_SUBST(Z_CFLAGS)
 AC_SUBST(Z_LIBS)
 AC_SUBST(WITH_ZLIB)
 
+echo Checking lzma
+
+dnl Checks for lzma library.
+
+WITH_LZMA=0
+if test "$with_lzma" = "no"; then
+    echo "Disabling compression support"
+else
+    AC_CHECK_HEADERS(lzma.h,
+	AC_CHECK_LIB(lzma, lzma_code,[
+	    AC_DEFINE([HAVE_LIBLZMA], [1], [Have compression library])
+	    WITH_LZMA=1
+	    if test "x${LZMA_DIR}" != "x"; then
+		LZMA_CFLAGS="-I${LZMA_DIR}/include"
+		LZMA_LIBS="-L${LZMA_DIR}/lib -llzma"
+	    else
+		LZMA_LIBS="-llzma"
+	    fi]))
+fi
+
+AC_SUBST(LZMA_CFLAGS)
+AC_SUBST(LZMA_LIBS)
+AC_SUBST(WITH_LZMA)
+
 CPPFLAGS=${_cppflags}
 LDFLAGS=${_ldflags}
 
@@ -412,7 +445,7 @@ AC_CHECK_HEADERS([stdarg.h])
 AC_CHECK_HEADERS([sys/stat.h])
 AC_CHECK_HEADERS([sys/types.h])
 AC_CHECK_HEADERS([stdint.h])
-AC_CHECK_HEADERS([inttypes.h.h])
+AC_CHECK_HEADERS([inttypes.h])
 AC_CHECK_HEADERS([time.h])
 AC_CHECK_HEADERS([ansidecl.h])
 AC_CHECK_HEADERS([ieeefp.h])
@@ -475,10 +508,7 @@ AC_CHECK_FUNCS(strdup strndup strerror)
 AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
 AC_CHECK_FUNCS(strftime localtime gettimeofday ftime)
 AC_CHECK_FUNCS(stat _stat signal)
-
-dnl Checking the standard string functions availability
-AC_CHECK_FUNCS(printf sprintf fprintf snprintf vfprintf vsprintf vsnprintf sscanf,,
-               NEED_TRIO=1)
+AC_CHECK_FUNCS(rand rand_r srand time)
 
 dnl Checking for va_copy availability
 AC_MSG_CHECKING([for va_copy])
@@ -659,8 +689,11 @@ else
 	#
 	CFLAGS="${CFLAGS} -fexceptions"
     fi
-       
-    CFLAGS="${CFLAGS} -pedantic -W -Wformat -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls" 
+
+    # warnings we'd like to see
+    CFLAGS="${CFLAGS} -pedantic -W -Wformat -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls"
+    # warnings we'd like to supress
+    CFLAGS="${CFLAGS} -Wno-long-long"
     case "${host}" in
           alpha*-*-linux* )
 	       CFLAGS="${CFLAGS} -mieee"
@@ -911,22 +944,30 @@ if test "$with_threads" = "no" ; then
     echo Disabling multithreaded support
 else
     echo Enabling multithreaded support
-    dnl Use pthread by default
-    if test "$with_threads" = "pthread" || test "$with_threads" = "" || test "$with_threads" = "yes" ; then
-        AC_CHECK_HEADER(pthread.h,
-	    AC_CHECK_LIB(pthread, pthread_join,[
-	       THREAD_LIBS="-lpthread"
-	       AC_DEFINE([HAVE_LIBPTHREAD], [], [Define if pthread library is there (-lpthread)])
-	       AC_DEFINE([HAVE_PTHREAD_H], [], [Define if <pthread.h> is there])
-	       WITH_THREADS="1"]))
-    fi
+
+    dnl Default to native threads on Win32
     case $host_os in
-       *mingw32*) if test "$THREAD_LIBS" != "-lpthread"; then
+       *mingw32*) if test "$with_threads" != "pthread" && test "$with_threads" != "no"; then
                WITH_THREADS="1"
                THREADS_W32="Win32"
-	       THREAD_CFLAGS="$THREAD_CFLAGS -DHAVE_WIN32_THREADS"
+               THREAD_CFLAGS="$THREAD_CFLAGS -DHAVE_WIN32_THREADS"
            fi
        ;;
+    esac
+
+    dnl Use pthread by default in other cases
+    if test -z "$THREADS_W32"; then
+        if test "$with_threads" = "pthread" || test "$with_threads" = "" || test "$with_threads" = "yes" ; then
+            AC_CHECK_HEADER(pthread.h,
+                AC_CHECK_LIB(pthread, pthread_join,[
+                THREAD_LIBS="-lpthread"
+                AC_DEFINE([HAVE_LIBPTHREAD], [], [Define if pthread library is there (-lpthread)])
+                AC_DEFINE([HAVE_PTHREAD_H], [], [Define if <pthread.h> is there])
+                WITH_THREADS="1"]))
+        fi
+    fi
+
+    case $host_os in
        *cygwin*) THREAD_LIBS=""
        ;;
        *beos*) WITH_THREADS="1"
@@ -1436,11 +1477,9 @@ case "$host" in
  WIN32_EXTRA_LIBADD="-lws2_32"
  WIN32_EXTRA_LDFLAGS="-no-undefined"
  AC_DEFINE([_WINSOCKAPI_],1,[Using the Win32 Socket implementation])
- AC_DEFINE([snprintf],[_snprintf],[Win32 Std C name mangling work-around])
- AC_DEFINE([vsnprintf],[_vsnprintf],[Win32 Std C name mangling work-around])
  if test "${PYTHON}" != ""
  then
-   WIN32_EXTRA_PYTHON_LIBADD="-L${pythondir}/../../libs -lpython${PYTHON_VERSION//./}"
+   WIN32_EXTRA_PYTHON_LIBADD="-L${pythondir}/../../libs -lpython$(echo ${PYTHON_VERSION} | tr -d .)"
  fi
  ;;
  *-*-cygwin*)
@@ -1456,6 +1495,24 @@ AC_SUBST(WIN32_EXTRA_LDFLAGS)
 AC_SUBST(WIN32_EXTRA_PYTHON_LIBADD)
 AC_SUBST(CYGWIN_EXTRA_LDFLAGS)
 AC_SUBST(CYGWIN_EXTRA_PYTHON_LIBADD)
+
+dnl Checking the standard string functions availability
+dnl
+dnl Note mingw* has C99 implementation that produce expected xml numbers
+dnl if code use {v}snprintf functions.
+dnl If you like to activate at run-time C99 compatible number output
+dnl see release note for mingw runtime 3.15:
+dnl  http://sourceforge.net/project/shownotes.php?release_id=24832
+dnl
+dnl Also *win32*config.h files redefine them for various MSC compilers.
+dnl
+dnl So do not redefine {v}snprintf to _{v}snprintf like follwing:
+dnl  AC_DEFINE([snprintf],[_snprintf],[Win32 Std C name mangling work-around])
+dnl  AC_DEFINE([vsnprintf],[_vsnprintf],[Win32 Std C name mangling work-around])
+dnl and do not redefine those functions is C-source files.
+dnl
+AC_CHECK_FUNCS(printf sprintf fprintf snprintf vfprintf vsprintf vsnprintf sscanf,,
+	NEED_TRIO=1)
 
 if test "$with_coverage" = "yes" -a "${GCC}" = "yes"
 then

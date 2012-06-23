@@ -682,7 +682,8 @@ try_complex:
 void
 xmlSetBufferAllocationScheme(xmlBufferAllocationScheme scheme) {
     if ((scheme == XML_BUFFER_ALLOC_EXACT) ||
-        (scheme == XML_BUFFER_ALLOC_DOUBLEIT))
+        (scheme == XML_BUFFER_ALLOC_DOUBLEIT) ||
+        (scheme == XML_BUFFER_ALLOC_HYBRID))
 	xmlBufferAllocScheme = scheme;
 }
 
@@ -693,6 +694,9 @@ xmlSetBufferAllocationScheme(xmlBufferAllocationScheme scheme) {
  * XML_BUFFER_ALLOC_EXACT - use exact sizes, keeps memory usage down
  * XML_BUFFER_ALLOC_DOUBLEIT - double buffer when extra needed,
  *                             improves performance
+ * XML_BUFFER_ALLOC_HYBRID - use exact sizes on small strings to keep memory usage tight
+ *                            in normal usage, and doubleit on large strings to avoid
+ *                            pathological performance.
  *
  * Returns the current allocation scheme
  */
@@ -1261,8 +1265,13 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
     const xmlChar *cur = value, *end = cur + len;
     const xmlChar *q;
     xmlEntityPtr ent;
+    xmlBufferPtr buffer;
 
     if (value == NULL) return(NULL);
+
+    buffer = xmlBufferCreateSize(0);
+    if (buffer == NULL) return(NULL);
+    xmlBufferSetAllocationScheme(buffer, XML_BUFFER_ALLOC_HYBRID);
 
     q = cur;
     while ((cur < end) && (*cur != 0)) {
@@ -1274,19 +1283,8 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
 	     * Save the current text.
 	     */
             if (cur != q) {
-		if ((last != NULL) && (last->type == XML_TEXT_NODE)) {
-		    xmlNodeAddContentLen(last, q, cur - q);
-		} else {
-		    node = xmlNewDocTextLen(doc, q, cur - q);
-		    if (node == NULL) return(ret);
-		    if (last == NULL)
-			last = ret = node;
-		    else {
-			last->next = node;
-			node->prev = last;
-			last = node;
-		    }
-		}
+		if (xmlBufferAdd(buffer, q, cur - q))
+		    goto out;
 	    }
 	    q = cur;
 	    if ((cur + 2 < end) && (cur[1] == '#') && (cur[2] == 'x')) {
@@ -1351,7 +1349,7 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
 		if ((cur >= end) || (*cur == 0)) {
 		    xmlTreeErr(XML_TREE_UNTERMINATED_ENTITY, (xmlNodePtr) doc,
 		               (const char *) q);
-		    return(ret);
+		    goto out;
 		}
 		if (cur != q) {
 		    /*
@@ -1361,23 +1359,36 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
 		    ent = xmlGetDocEntity(doc, val);
 		    if ((ent != NULL) &&
 			(ent->etype == XML_INTERNAL_PREDEFINED_ENTITY)) {
-			if (last == NULL) {
-			    node = xmlNewDocText(doc, ent->content);
-			    last = ret = node;
-			} else if (last->type != XML_TEXT_NODE) {
-			    node = xmlNewDocText(doc, ent->content);
-			    last = xmlAddNextSibling(last, node);
-			} else
-			    xmlNodeAddContent(last, ent->content);
+
+			if (xmlBufferCat(buffer, ent->content))
+			    goto out;
 
 		    } else {
+			/*
+			 * Flush buffer so far
+			 */
+			if (buffer->use) {
+			    node = xmlNewDocText(doc, NULL);
+			    if (node == NULL) {
+				if (val != NULL) xmlFree(val);
+				goto out;
+			    }
+			    node->content = xmlBufferDetach(buffer);
+
+			    if (last == NULL) {
+				last = ret = node;
+			    } else {
+				last = xmlAddNextSibling(last, node);
+			    }
+			}
+
 			/*
 			 * Create a new REFERENCE_REF node
 			 */
 			node = xmlNewReference(doc, val);
 			if (node == NULL) {
 			    if (val != NULL) xmlFree(val);
-			    return(ret);
+			    goto out;
 			}
 			else if ((ent != NULL) && (ent->children == NULL)) {
 			    xmlNodePtr temp;
@@ -1409,35 +1420,39 @@ xmlStringLenGetNodeList(xmlDocPtr doc, const xmlChar *value, int len) {
 
 		l = xmlCopyCharMultiByte(buf, charval);
 		buf[l] = 0;
-		node = xmlNewDocText(doc, buf);
-		if (node != NULL) {
-		    if (last == NULL) {
-			last = ret = node;
-		    } else {
-			last = xmlAddNextSibling(last, node);
-		    }
-		}
+
+		if (xmlBufferCat(buffer, buf))
+		    goto out;
 		charval = 0;
 	    }
 	} else
 	    cur++;
     }
-    if ((cur != q) || (ret == NULL)) {
+
+    if (cur != q) {
         /*
 	 * Handle the last piece of text.
 	 */
-	if ((last != NULL) && (last->type == XML_TEXT_NODE)) {
-	    xmlNodeAddContentLen(last, q, cur - q);
-	} else {
-	    node = xmlNewDocTextLen(doc, q, cur - q);
-	    if (node == NULL) return(ret);
-	    if (last == NULL) {
-		ret = node;
-	    } else {
-		xmlAddNextSibling(last, node);
-	    }
-	}
+	if (xmlBufferAdd(buffer, q, cur - q))
+	    goto out;
     }
+
+    if (buffer->use) {
+	node = xmlNewDocText(doc, NULL);
+	if (node == NULL) goto out;
+	node->content = xmlBufferDetach(buffer);
+
+	if (last == NULL) {
+	    last = ret = node;
+	} else {
+	    last = xmlAddNextSibling(last, node);
+	}
+    } else if (ret == NULL) {
+        ret = xmlNewDocText(doc, BAD_CAST "");
+    }
+
+out:
+    xmlBufferFree(buffer);
     return(ret);
 }
 
@@ -1458,8 +1473,13 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
     const xmlChar *cur = value;
     const xmlChar *q;
     xmlEntityPtr ent;
+    xmlBufferPtr buffer;
 
     if (value == NULL) return(NULL);
+
+    buffer = xmlBufferCreateSize(0);
+    if (buffer == NULL) return(NULL);
+    xmlBufferSetAllocationScheme(buffer, XML_BUFFER_ALLOC_HYBRID);
 
     q = cur;
     while (*cur != 0) {
@@ -1471,19 +1491,8 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 	     * Save the current text.
 	     */
             if (cur != q) {
-		if ((last != NULL) && (last->type == XML_TEXT_NODE)) {
-		    xmlNodeAddContentLen(last, q, cur - q);
-		} else {
-		    node = xmlNewDocTextLen(doc, q, cur - q);
-		    if (node == NULL) return(ret);
-		    if (last == NULL)
-			last = ret = node;
-		    else {
-			last->next = node;
-			node->prev = last;
-			last = node;
-		    }
-		}
+		if (xmlBufferAdd(buffer, q, cur - q))
+		    goto out;
 	    }
 	    q = cur;
 	    if ((cur[1] == '#') && (cur[2] == 'x')) {
@@ -1536,7 +1545,7 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 		if (*cur == 0) {
 		    xmlTreeErr(XML_TREE_UNTERMINATED_ENTITY,
 		               (xmlNodePtr) doc, (const char *) q);
-		    return(ret);
+		    goto out;
 		}
 		if (cur != q) {
 		    /*
@@ -1546,23 +1555,32 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 		    ent = xmlGetDocEntity(doc, val);
 		    if ((ent != NULL) &&
 			(ent->etype == XML_INTERNAL_PREDEFINED_ENTITY)) {
-			if (last == NULL) {
-			    node = xmlNewDocText(doc, ent->content);
-			    last = ret = node;
-			} else if (last->type != XML_TEXT_NODE) {
-			    node = xmlNewDocText(doc, ent->content);
-			    last = xmlAddNextSibling(last, node);
-			} else
-			    xmlNodeAddContent(last, ent->content);
+
+			if (xmlBufferCat(buffer, ent->content))
+			    goto out;
 
 		    } else {
+			/*
+			 * Flush buffer so far
+			 */
+			if (buffer->use) {
+			    node = xmlNewDocText(doc, NULL);
+			    node->content = xmlBufferDetach(buffer);
+
+			    if (last == NULL) {
+				last = ret = node;
+			    } else {
+				last = xmlAddNextSibling(last, node);
+			    }
+			}
+
 			/*
 			 * Create a new REFERENCE_REF node
 			 */
 			node = xmlNewReference(doc, val);
 			if (node == NULL) {
 			    if (val != NULL) xmlFree(val);
-			    return(ret);
+			    goto out;
 			}
 			else if ((ent != NULL) && (ent->children == NULL)) {
 			    xmlNodePtr temp;
@@ -1593,14 +1611,10 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
 
 		len = xmlCopyCharMultiByte(buf, charval);
 		buf[len] = 0;
-		node = xmlNewDocText(doc, buf);
-		if (node != NULL) {
-		    if (last == NULL) {
-			last = ret = node;
-		    } else {
-			last = xmlAddNextSibling(last, node);
-		    }
-		}
+
+		if (xmlBufferCat(buffer, buf))
+		    goto out;
+		charval = 0;
 	    }
 	} else
 	    cur++;
@@ -1609,18 +1623,22 @@ xmlStringGetNodeList(xmlDocPtr doc, const xmlChar *value) {
         /*
 	 * Handle the last piece of text.
 	 */
-	if ((last != NULL) && (last->type == XML_TEXT_NODE)) {
-	    xmlNodeAddContentLen(last, q, cur - q);
+	xmlBufferAdd(buffer, q, cur - q);
+    }
+
+    if (buffer->use) {
+	node = xmlNewDocText(doc, NULL);
+	node->content = xmlBufferDetach(buffer);
+
+	if (last == NULL) {
+	    last = ret = node;
 	} else {
-	    node = xmlNewDocTextLen(doc, q, cur - q);
-	    if (node == NULL) return(ret);
-	    if (last == NULL) {
-		last = ret = node;
-	    } else {
-		last = xmlAddNextSibling(last, node);
-	    }
+	    last = xmlAddNextSibling(last, node);
 	}
     }
+
+out:
+    xmlBufferFree(buffer);
     return(ret);
 }
 
@@ -3732,6 +3750,8 @@ xmlFreeNode(xmlNodePtr cur) {
  * @cur:  the node
  *
  * Unlink a node from it's current context, the node is not freed
+ * If one need to free the node, use xmlFreeNode() routine after the
+ * unlink to discard it.
  */
 void
 xmlUnlinkNode(xmlNodePtr cur) {
@@ -6914,6 +6934,34 @@ xmlBufferCreateSize(size_t size) {
 }
 
 /**
+ * xmlBufferDetach:
+ * @buf:  the buffer
+ *
+ * Remove the string contained in a buffer and gie it back to the
+ * caller. The buffer is reset to an empty content.
+ * This doesn't work with immutable buffers as they can't be reset.
+ *
+ * Returns the previous string contained by the buffer.
+ */
+xmlChar *
+xmlBufferDetach(xmlBufferPtr buf) {
+    xmlChar *ret;
+
+    if (buf == NULL)
+        return(NULL);
+    if (buf->alloc == XML_BUFFER_ALLOC_IMMUTABLE)
+        return(NULL);
+
+    ret = buf->content;
+    buf->content = NULL;
+    buf->size = 0;
+    buf->use = 0;
+
+    return ret;
+}
+
+
+/**
  * xmlBufferCreateStatic:
  * @mem: the memory area
  * @size:  the size in byte
@@ -6964,6 +7012,7 @@ xmlBufferSetAllocationScheme(xmlBufferPtr buf,
         (buf->alloc == XML_BUFFER_ALLOC_IO)) return;
     if ((scheme == XML_BUFFER_ALLOC_DOUBLEIT) ||
         (scheme == XML_BUFFER_ALLOC_EXACT) ||
+        (scheme == XML_BUFFER_ALLOC_HYBRID) ||
         (scheme == XML_BUFFER_ALLOC_IMMUTABLE))
 	buf->alloc = scheme;
 }
@@ -7231,6 +7280,21 @@ xmlBufferResize(xmlBufferPtr buf, unsigned int size)
 	case XML_BUFFER_ALLOC_EXACT:
 	    newSize = size+10;
 	    break;
+        case XML_BUFFER_ALLOC_HYBRID:
+            if (buf->use < BASE_BUFFER_SIZE)
+                newSize = size;
+            else {
+                newSize = buf->size * 2;
+                while (size > newSize) {
+                    if (newSize > UINT_MAX / 2) {
+                        xmlTreeErrMemory("growing buffer");
+                        return 0;
+                    }
+                    newSize *= 2;
+                }
+            }
+            break;
+
 	default:
 	    newSize = size+10;
 	    break;

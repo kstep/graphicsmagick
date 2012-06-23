@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 - 2011 GraphicsMagick Group
+ * Copyright (C) 2003 - 2012 GraphicsMagick Group
  * Copyright (C) 2003 ImageMagick Studio
  * Copyright 1991-1999 E. I. du Pont de Nemours and Company
  *
@@ -264,6 +264,48 @@ int main ( int argc, char **argv )
   imageInfo->depth=original->depth;
   DestroyImageList( original );
   original = (Image*)NULL;
+
+  /*
+   * Verify that we can 'ping' the BLOB.
+   */
+  {
+    Image
+      *ping_image;
+
+    MagickBool
+      ping_error = MagickFalse;
+
+    (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+    (void) strcpy( imageInfo->filename, "" );
+    if ( size[0] != '\0' )
+      (void) CloneString( &imageInfo->size, size );
+    ping_image = PingBlob(imageInfo, blob, blob_length, &exception );
+    if (exception.severity != UndefinedException)
+      {
+	CatchException(&exception);
+	(void) fflush(stderr);
+	ping_error = MagickTrue;
+      }
+    if ( ping_image == (Image *)NULL )
+      {
+	(void) printf ( "Failed to ping image from BLOB in format %s\n",
+			imageInfo->magick );
+	(void) fflush(stdout);
+	ping_error = MagickTrue;
+      }
+    else
+      {
+	/* Print a short description of the image to stdout */
+	DescribeImage( ping_image, stdout, MagickFalse );
+	(void) fflush(stdout);
+	DestroyImageList( ping_image );
+      }
+    if (ping_error)
+      {
+	exit_status = 1;
+	goto program_exit;
+      }
+  }
 
   /*
    * Read image back from BLOB

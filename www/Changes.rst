@@ -35,7 +35,7 @@ GraphicsMagick Change Logs
 
 The following are the ``GraphicsMagick`` change logs since 2001:
 
-  * `This Year`_
+  * `This Year`_ (1.3.14 - 1.3.15 released)
 
   * 2011_ (1.3.13 released)
 

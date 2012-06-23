@@ -36,6 +36,184 @@
 <div class="document">
 
 
+<p>2012-06-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Release GraphicsMagick 1.3.16</li>
+</ul>
+</blockquote>
+<p>2012-06-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (MogrifyImage): -units was adjusting existing
+resolution the wrong way around.</li>
+</ul>
+</blockquote>
+<p>2012-06-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>jpeg: Updated to IJG 8d release.</li>
+<li>libxml: Updated libxml to 2.8.0 release.</li>
+<li>zlib: Updated zlib to 1.2.7 release.</li>
+<li>magick/blob.c (MagickFileHandle): Refer to stdio, bzip2, and
+gzip file handles using their own type.  Eliminates warnings
+observed when compiling with zlib 1.2.7.</li>
+<li>tiff: Updated libtiff to 4.0.2 release.</li>
+<li>png: Updated libpng to 1.5.11 release.</li>
+</ul>
+</blockquote>
+<p>2012-06-14  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>configure.ac: Fix typo which caused the --without-lzma option to
+be handled incorrectly.  Resolves SourceForge issue 3535309
+&quot;graphicsmagick from 1.3.13 to 1.3.15 has broken lzma support&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-06-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>tests/rwfile.c (main): Verify that we can 'ping' the file using
+PingImage().  Tests for some formats may take longer to complete.</li>
+<li>tests/rwblob.c (main): Verify that we can 'ping' the blob using
+PingBlob().  Tests for some formats may take longer to complete.</li>
+<li>coders/xbm.c (ReadXBMImage): Fix memory leak of temporary X
+bitmap image allocation encountered when reading in 'ping' mode.</li>
+<li>magick/blob.c (PingBlob): Re-write to be based on BlobToImage()
+so that it works reliably.
+(BlobToImage): Restore original input file name to image if
+temporary file was used so that image 'filename' and
+'magick_filename' do not contain unexpected content due to using a
+temporary file.</li>
+</ul>
+</blockquote>
+<p>2012-06-07  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: Disable new libpng-1.5.10 test for invalid palette
+index when reading a PNG or MNG (for speed), or when writing a MNG
+(because a zero-length PLTE is valid in a MNG).</li>
+</ul>
+</blockquote>
+<p>2012-06-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/attribute.c (SetImageAttribute): Don't translate
+'comment' and 'label' attributes if the request is made while a
+file is being read.  This is a temporary workaround until there is
+opportunity to modify the architecture so that there is a clear
+split between user-provided settings and values obtained from the
+input image.</li>
+<li>magick/blob.c (GetBlobIsOpen): New function to return if blob is
+currently open.</li>
+</ul>
+</blockquote>
+<p>2012-06-02  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>PerlMagick/typemap: Add typemap file needed by Perl 5.16.
+Resolves SourceForge issue 3531512 &quot;PerlMagick does not build with
+perl 5.16&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-05-29  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: Ignore APNG chunks even if we are using a libpng
+that was built with the &quot;APNG patch&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-05-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (ConvertImageCommand): +repage does not require
+an argument.  Resolves SourceForge issue 3529158 &quot;+repage option
+not respected with convert command&quot;.</li>
+<li>configure: Update to Autoconf 2.69.</li>
+<li>magick/effect.c (MotionBlurImage): Motion blur does scale so
+remove DisableSlowOpenMP for it.</li>
+<li>magick/command.c (BenchmarkImageCommand): Remove parenthesis
+from output, and change &quot;iter/sec cpu&quot; to &quot;iter/cpu&quot; to ease
+parsing.</li>
+<li>magick/pixel_cache.c (GetPixelCacheInCore): Consider read-only
+memory-mapped cache as being &quot;in-core&quot;.  Otherwise MPC input files
+are penalized.</li>
+</ul>
+</blockquote>
+<p>2012-05-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/api.h: Include &lt;sys/types.h&gt; on POSIX systems in order to
+help assure that 'size_t' and 'ssize_t' are declared.</li>
+</ul>
+</blockquote>
+<p>2012-05-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/magick_config_api.h.in: Need to provide definitions for
+'size_t' and 'ssize_t' in case the system headers lack these types
+because the definition of MagickExtentImage() requires them.  This
+should resolve PHP bug #62034 &quot;gmagick does not compile&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-05-14  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/pixel_iterator.c (GetRegionThreads): Don't thread region
+if it is not memory-based.</li>
+</ul>
+</blockquote>
+<p>2012-05-09  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (ReadOnePNGImage): make transparent_color elements
+unsigned long instead of unsigned short, so 65537 is actually out of
+range as expected, and won't match any pixel if no tRNS chunk is
+present.</li>
+</ul>
+</blockquote>
+<p>2012-05-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/sfw.c (ReadSFWImage): Reader needs to be more robust
+against corrupt or maligned headers.  Resolves SourceForge issue
+&quot;sfw file crash&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-05-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/pdf.c (WritePDFImage): Add file basename as the PDF
+document title.  Resolves SourceForge bug ID 2835140
+&quot;GraphicsMagick fails to add title attribute to PDF output&quot;.</li>
+<li>coders/sfw.c (ReadSFWImage): Restore original filename and
+format.</li>
+<li>PerlMagick/t/jpeg/read.t: Add a test for reading Seattle
+FilmWorks format based on the sample image from
+<a class="reference external" href="http://www.algonet.se/~cyren/sfw/">http://www.algonet.se/~cyren/sfw/</a>.  Image was approved for
+distribution in GraphicsMagick by Bengt Cyrén.</li>
+<li>magick/analyze.c (GetImageBoundingBox): Only apply opacity-based
+bounding box detection if all three test points are non-opaque and
+the same value.  Resolves SourceForge bug ID 3522804 &quot;convert
+-trim fails on 8-bit PNG that ImageMagick can trim&quot;.</li>
+<li>coders/sfw.c (ReadSFWImage): Fix variety of bugs related to
+closing Image and blob at wrong points.  SFW reader is working
+again.  Resolves SourceForge bug ID 523430 &quot;sfw file open failed&quot;.</li>
+</ul>
+</blockquote>
+<p>2012-05-01 Fojtik Jaroslav  &lt;<a class="reference external" href="mailto:JaFojtik&#37;&#52;&#48;seznam&#46;cz">JaFojtik<span>&#64;</span>seznam<span>&#46;</span>cz</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/mat.c Animated movies inside 4D matrices are loaded now.</li>
+</ul>
+</blockquote>
+<p>2012-04-29  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/pixel_iterator.c: Limit the number of threads to use in
+the loop rather than the total number of threads available.</li>
+</ul>
+</blockquote>
 <p>2012-04-28  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

@@ -194,6 +194,11 @@ extern "C" {
   extern MagickExport int GetBlobStatus(const Image *image);
 
   /*
+    Test to see if blob is currently open.
+  */
+  extern MagickExport MagickBool GetBlobIsOpen(const Image *image);
+
+  /*
     Obtain the current size of the file or BLOB.  Zero is returned if
     the size can not be determined.  If BLOB is no longer open, then
     return the size when the BLOB was closed.

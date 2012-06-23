@@ -17,15 +17,17 @@
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 #include "magick/utility.h"
+
 /*
-  Temporarily set the maximum numer of threads to use based on
-  user options and region size.  The max_threads parameter should
-  be initialized with the value returned by omp_get_max_threads().
-  The number of threads actually used is returned.
+  Obtain the maximum numer of threads to use based on image storage
+  type, region size, and user options.  The maximum number of threads
+  which may be used is that reported by omp_get_max_threads().  The
+  number of threads to be used is returned.
 */
+#if defined(HAVE_OPENMP)
 static int
-SetRegionThreads(const int max_threads,
-                 const PixelIteratorOptions *options,
+GetRegionThreads(const PixelIteratorOptions *options,
+		 const MagickBool in_core,
                  const unsigned long columns,
                  const unsigned long rows)
 {
@@ -33,10 +35,22 @@ SetRegionThreads(const int max_threads,
     tiny_region_metric = 64;
 
   int
+    max_threads,
     region_threads;
 
+  max_threads=omp_get_max_threads();
   region_threads=max_threads;
-  if ((options) && (options->max_threads > 0))
+
+  if (((columns <= tiny_region_metric && rows <= tiny_region_metric)) ||
+      ((magick_uint64_t) columns*rows <= tiny_region_metric*tiny_region_metric) ||
+      (MagickFalse == in_core))
+    {
+      /*
+        Run tiny or non-memory-based regions single threaded.
+      */
+      region_threads=1;
+    }
+  else if ((options) && (options->max_threads > 0))
     {
       /*
         Allow the user to specify the number of threads, up to the
@@ -44,22 +58,11 @@ SetRegionThreads(const int max_threads,
       */
       region_threads=Min(max_threads,options->max_threads);
     }
-  else if (((columns <= tiny_region_metric && rows <= tiny_region_metric)) ||
-           ((magick_uint64_t) columns*rows <= tiny_region_metric*tiny_region_metric))
-    {
-      /*
-        Run tiny regions single threaded.
-      */
-      region_threads=1;
-    }
-  if (region_threads < max_threads)
-    {
-      omp_set_num_threads(region_threads);
-    }
 
   return region_threads;
 }
-                               
+#endif
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,17 +181,17 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   unsigned long
     row_count=0;
 
-  int
-    max_threads=1;
-
-  max_threads=omp_get_max_threads();
-  (void) SetRegionThreads(max_threads,options,columns,rows);
+#if defined(HAVE_OPENMP)
+  int num_threads=GetRegionThreads(options,GetPixelCacheInCore(image),columns,rows);
+#else
+  (void) options;
+#endif /* defined(HAVE_OPENMP) */
 
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(static,1) shared(row_count, status)
 #  endif
 #endif
   for (row=y; row < (long) (y+rows); row++)
@@ -207,7 +210,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
 #endif
       thread_status=status;
       if (thread_status == MagickFail)
-        continue;
+	continue;
 
       pixels=AcquireImagePixels(image,x, row, columns, 1, exception);
       if (!pixels)
@@ -231,8 +234,6 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
           status=MagickFail;
       }
     }
-
-  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -316,20 +317,20 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  int
-    max_threads;
+#if defined(HAVE_OPENMP)
+  int num_threads=GetRegionThreads(options,GetPixelCacheInCore(image),columns,rows);
+#else
+  (void) options;
+#endif /* defined(HAVE_OPENMP) */
 
   if (ModifyCache(image,exception) == MagickFail)
     return MagickFail;
 
-  max_threads=omp_get_max_threads();
-  (void) SetRegionThreads(max_threads,options,columns,rows);
-
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(static,1) shared(row_count, status)
 #  endif
 #endif
   for (row=y; row < (long) (y+rows); row++)
@@ -376,8 +377,6 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -473,17 +472,20 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
   unsigned long
     row_count=0;
 
-  int
-    max_threads;
-
-  max_threads=omp_get_max_threads();
-  (void) SetRegionThreads(max_threads,options,columns,rows);
+#if defined(HAVE_OPENMP)
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(first_image) &&
+				    GetPixelCacheInCore(second_image)),
+				   columns,rows);
+#else
+  (void) options;
+#endif /* defined(HAVE_OPENMP) */
 
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(static,1) shared(row_count, status)
 #  endif
 #endif
   for (row=0; row < (long) rows; row++)
@@ -546,8 +548,6 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
           status=MagickFail;
       }
     }
-
-  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -644,20 +644,23 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  int
-    max_threads;
+#if defined(HAVE_OPENMP)
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(source_image) &&
+				    GetPixelCacheInCore(update_image)),
+				   columns,rows);
+#else
+  (void) options;
+#endif /* defined(HAVE_OPENMP) */
 
   if (ModifyCache(update_image,exception) == MagickFail)
     return MagickFail;
 
-  max_threads=omp_get_max_threads();
-  (void) SetRegionThreads(max_threads,options,columns,rows);
-
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(static,1) shared(row_count, status)
 #  endif
 #endif
   for (row=0; row < (long) rows; row++)
@@ -732,8 +735,6 @@ PixelIterateDualImplementation(PixelIteratorDualModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  omp_set_num_threads(max_threads);
 
   return (status);
 }
@@ -950,20 +951,24 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
   unsigned long
     row_count=0;
 
-  int
-    max_threads;
+#if defined(HAVE_OPENMP)
+  int num_threads=GetRegionThreads(options,
+				   (GetPixelCacheInCore(source1_image) &&
+				    GetPixelCacheInCore(source2_image) &&
+				    GetPixelCacheInCore(update_image)),
+				   columns,rows);
+#else
+  (void) options;
+#endif /* defined(HAVE_OPENMP) */
 
   if (ModifyCache(update_image,exception) == MagickFail)
     return MagickFail;
 
-  max_threads=omp_get_max_threads();
-  (void) SetRegionThreads(max_threads,options,columns,rows);
-
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(runtime) shared(row_count, status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(row_count, status)
+#    pragma omp parallel for if(num_threads > 1) num_threads(num_threads) schedule(static,1) shared(row_count, status)
 #endif
 #endif
   for (row=0; row < (long) rows; row++)
@@ -1060,8 +1065,6 @@ PixelIterateTripleImplementation(PixelIteratorTripleModifyCallback call_back,
           status=MagickFail;
       }
     }
-
-  omp_set_num_threads(max_threads);
 
   return (status);
 }

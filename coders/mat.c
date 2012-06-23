@@ -441,7 +441,8 @@ static Image *ReadMATImage(const ImageInfo *image_info, ExceptionInfo *exception
   long ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
-  unsigned z;
+  unsigned z, z2;
+  unsigned Frames;
   int logging;
   int sample_size;
   magick_off_t filepos=0x80;
@@ -506,6 +507,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   filepos = TellBlob(image);
   while(!EOFBlob(image)) /* object parser loop */
   {
+    Frames = 1;
     (void) SeekBlob(image,filepos,SEEK_SET);
     /* printf("pos=%X\n",TellBlob(image)); */
 
@@ -552,11 +554,16 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
     switch(MATLAB_HDR.DimFlag)
     {     
-      case  8: z=1; break;			/* 2D matrix*/
-      case 12: z = ReadBlobXXXLong(image2);	/* 3D matrix RGB*/
+      case  8: z2=z=1; break;			/* 2D matrix*/
+      case 12: z2=z = ReadBlobXXXLong(image2);	/* 3D matrix RGB*/
 	       (void) ReadBlobXXXLong(image2);  /* Unknown6 */
 	       if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
+	       break;
+      case 16: z2=z = ReadBlobXXXLong(image2);	/* 4D matrix animation */
+	       if(z!=3 && z!=1)
+		 ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported, image);
+               Frames = ReadBlobXXXLong(image2);
 	       break;
       default: ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
@@ -603,6 +610,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   
     (void) ReadBlob(image2, 4, &size);     /* data size */
 
+NEXT_FRAME:
       /* Image is gray when no complex flag is set and 2D Matrix */
     image->is_grayscale = (MATLAB_HDR.DimFlag==8) && 
            ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0);
@@ -682,7 +690,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
       if (!AllocateImageColormap(image, image->colors))
       {
- NoMemory:ThrowReaderException(ResourceLimitError, MemoryAllocationFailed,
+NoMemory: ThrowReaderException(ResourceLimitError, MemoryAllocationFailed,
                            image)}
     }
 
@@ -834,6 +842,26 @@ ExitLoop:
 
 done_reading:
 
+    if(image2==image) image2 = NULL;
+
+      /* Allocate next image structure. */    
+    AllocateNextImage(image_info,image);
+    if (image->next == (Image *) NULL) break;                
+    image=SyncNextImageInList(image);
+    image->columns=image->rows=0;
+    image->colors=0;
+
+      /* row scan buffer is no longer needed */
+    MagickFreeMemory(BImgBuff);
+    BImgBuff = NULL;
+
+    if(--Frames>0)
+    {
+      z = z2;
+      if(image2==NULL) image2 = image;
+      goto NEXT_FRAME;
+    }
+
     if(image2!=NULL)
       if(image2!=image)		/* Does shadow temporary decompressed image exist? */
       {
@@ -850,16 +878,6 @@ done_reading:
         }    
       }
 
-      /* Allocate next image structure. */    
-    AllocateNextImage(image_info,image);
-    if (image->next == (Image *) NULL) break;                
-    image=SyncNextImageInList(image);
-    image->columns=image->rows=0;
-    image->colors=0;    
-
-      /* row scan buffer is no longer needed */
-    MagickFreeMemory(BImgBuff);
-    BImgBuff = NULL;
   }
 
 

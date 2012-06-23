@@ -1791,7 +1791,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	    /* Formatted and summarized output */
 	    (void) fprintf(stderr,
 			   "Results: %ld threads %ld iter %.2fs user %.2fs total %.3f iter/s "
-			   "(%.3f iter/s cpu)",
+			   "%.3f iter/cpu",
 			   threads_limit,iteration,user_time,elapsed_time,rate_total,rate_cpu);
 	    if (thread_bench)
 	      {
@@ -3411,7 +3411,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -5266,7 +5266,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -10529,14 +10529,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 if ( (resolution_type == PixelsPerInchResolution) &&
                      ((*image)->units == PixelsPerCentimeterResolution) )
                   {
-                    (*image)->x_resolution /= 2.54;
-                    (*image)->y_resolution /= 2.54;
+                    (*image)->x_resolution *= 2.54;
+                    (*image)->y_resolution *= 2.54;
                   }
                 else if ( (resolution_type == PixelsPerCentimeterResolution) &&
                           ((*image)->units == PixelsPerInchResolution) )
                   {
-                    (*image)->x_resolution *= 2.54;
-                    (*image)->y_resolution *= 2.54;
+                    (*image)->x_resolution /= 2.54;
+                    (*image)->y_resolution /= 2.54;
                   }
               }
             
@@ -12607,7 +12607,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))
@@ -14127,7 +14127,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("repage",option+1) == 0)
           {
-	    if ((*option == '-') || (*option == '+'))
+	    if (*option == '-')
 	      {
 		i++;
 		if ((i == argc) || !IsGeometry(argv[i]))

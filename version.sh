@@ -5,12 +5,20 @@
 # observe Bourne shell syntax.
 #
 
-# Package base name
-PACKAGE_NAME='GraphicsMagick'
 #
+# Package base name
+#
+PACKAGE_NAME='GraphicsMagick'
+
+#
+# Package bugs/support mailing list
+#
+PACKAGE_BUGREPORT='graphicsmagick-bugs@lists.sourceforge.net'
+
 # Package base version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.2").
-PACKAGE_VERSION='1.3.15'
+PACKAGE_VERSION='1.3.16'
+
 #
 # Package name plus version string.
 #
@@ -19,7 +27,7 @@ PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="2012-04-28"
+PACKAGE_RELEASE_DATE="2012-06-23"
 #PACKAGE_RELEASE_DATE="unreleased"
 
 #
@@ -78,9 +86,9 @@ HG_BRANCH_TAG=GraphicsMagick-1_3
 #
 # Magick library versioning
 #
-MAGICK_LIBRARY_CURRENT=11
+MAGICK_LIBRARY_CURRENT=12
 MAGICK_LIBRARY_REVISION=0
-MAGICK_LIBRARY_AGE=8
+MAGICK_LIBRARY_AGE=9
 
 #
 # Magick++ library versioning

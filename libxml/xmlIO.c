@@ -35,6 +35,9 @@
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
 #endif
+#ifdef HAVE_LZMA_H
+#include <lzma.h>
+#endif
 
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
@@ -1306,6 +1309,125 @@ xmlGzfileClose (void * context) {
 }
 #endif /* HAVE_ZLIB_H */
 
+#ifdef HAVE_LZMA_H
+/************************************************************************
+ *									*
+ *		I/O for compressed file accesses			*
+ *									*
+ ************************************************************************/
+#include "xzlib.h"
+/**
+ * xmlXzfileMatch:
+ * @filename:  the URI for matching
+ *
+ * input from compressed file test
+ *
+ * Returns 1 if matches, 0 otherwise
+ */
+static int
+xmlXzfileMatch (const char *filename ATTRIBUTE_UNUSED) {
+    return(1);
+}
+
+/**
+ * xmlXzFileOpen_real:
+ * @filename:  the URI for matching
+ *
+ * input from compressed file open
+ * if @filename is " " then the standard input is used
+ *
+ * Returns an I/O context or NULL in case of error
+ */
+static void *
+xmlXzfileOpen_real (const char *filename) {
+    const char *path = NULL;
+    xzFile fd;
+
+    if (!strcmp(filename, "-")) {
+        fd = __libxml2_xzdopen(dup(0), "rb");
+	return((void *) fd);
+    }
+
+    if (!xmlStrncasecmp(BAD_CAST filename, BAD_CAST "file://localhost/", 17)) {
+	path = &filename[16];
+    } else if (!xmlStrncasecmp(BAD_CAST filename, BAD_CAST "file:///", 8)) {
+	path = &filename[7];
+    } else if (!xmlStrncasecmp(BAD_CAST filename, BAD_CAST "file:/", 6)) {
+        /* lots of generators seems to lazy to read RFC 1738 */
+	path = &filename[5];
+    } else
+	path = filename;
+
+    if (path == NULL)
+	return(NULL);
+    if (!xmlCheckFilename(path))
+        return(NULL);
+
+    fd = __libxml2_xzopen(path, "rb");
+    return((void *) fd);
+}
+
+/**
+ * xmlXzfileOpen:
+ * @filename:  the URI for matching
+ *
+ * Wrapper around xmlXzfileOpen_real that try it with an unescaped
+ * version of @filename, if this fails fallback to @filename
+ *
+ * Returns a handler or NULL in case or failure
+ */
+static void *
+xmlXzfileOpen (const char *filename) {
+    char *unescaped;
+    void *retval;
+
+    retval = xmlXzfileOpen_real(filename);
+    if (retval == NULL) {
+	unescaped = xmlURIUnescapeString(filename, 0, NULL);
+	if (unescaped != NULL) {
+	    retval = xmlXzfileOpen_real(unescaped);
+	}
+	xmlFree(unescaped);
+    }
+
+    return retval;
+}
+
+/**
+ * xmlXzfileRead:
+ * @context:  the I/O context
+ * @buffer:  where to drop data
+ * @len:  number of bytes to write
+ *
+ * Read @len bytes to @buffer from the compressed I/O channel.
+ *
+ * Returns the number of bytes written
+ */
+static int
+xmlXzfileRead (void * context, char * buffer, int len) {
+    int ret;
+
+    ret = __libxml2_xzread((xzFile) context, &buffer[0], len);
+    if (ret < 0) xmlIOErr(0, "xzread()");
+    return(ret);
+}
+
+/**
+ * xmlXzfileClose:
+ * @context:  the I/O context
+ *
+ * Close a compressed I/O channel
+ */
+static int
+xmlXzfileClose (void * context) {
+    int ret;
+
+    ret =  (__libxml2_xzclose((xzFile) context) == LZMA_OK ) ? 0 : -1;
+    if (ret < 0) xmlIOErr(0, "xzclose()");
+    return(ret);
+}
+#endif /* HAVE_LZMA_H */
+
 #ifdef LIBXML_HTTP_ENABLED
 /************************************************************************
  *									*
@@ -2180,6 +2302,10 @@ xmlRegisterDefaultInputCallbacks(void) {
 #ifdef HAVE_ZLIB_H
     xmlRegisterInputCallbacks(xmlGzfileMatch, xmlGzfileOpen,
 	                      xmlGzfileRead, xmlGzfileClose);
+#endif /* HAVE_ZLIB_H */
+#ifdef HAVE_LZMA_H
+    xmlRegisterInputCallbacks(xmlXzfileMatch, xmlXzfileOpen,
+	                      xmlXzfileRead, xmlXzfileClose);
 #endif /* HAVE_ZLIB_H */
 
 #ifdef LIBXML_HTTP_ENABLED

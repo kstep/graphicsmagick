@@ -79,6 +79,9 @@
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
 #endif
+#ifdef HAVE_LZMA_H
+#include <lzma.h>
+#endif
 
 static void
 xmlFatalErr(xmlParserCtxtPtr ctxt, xmlParserErrors error, const char *info);
@@ -197,6 +200,7 @@ unsigned int xmlParserMaxDepth = 256;
 
 static const char *xmlW3CPIs[] = {
     "xml-stylesheet",
+    "xml-model",
     NULL
 };
 
@@ -731,7 +735,7 @@ xmlNsErr(xmlParserCtxtPtr ctxt, xmlParserErrors error,
  * @info1:  extra information string
  * @info2:  extra information string
  *
- * Handle a fatal parser error, i.e. violating Well-Formedness constraints
+ * Handle a namespace warning error
  */
 static void
 xmlNsWarn(xmlParserCtxtPtr ctxt, xmlParserErrors error,
@@ -950,6 +954,12 @@ xmlHasFeature(xmlFeature feature)
 #endif
         case XML_WITH_ZLIB:
 #ifdef LIBXML_ZLIB_ENABLED
+            return(1);
+#else
+            return(0);
+#endif
+        case XML_WITH_LZMA:
+#ifdef LIBXML_LZMA_ENABLED
             return(1);
 #else
             return(0);
@@ -1819,15 +1829,14 @@ namePush(xmlParserCtxtPtr ctxt, const xmlChar * value)
 
     if (ctxt->nameNr >= ctxt->nameMax) {
         const xmlChar * *tmp;
-        ctxt->nameMax *= 2;
         tmp = (const xmlChar * *) xmlRealloc((xmlChar * *)ctxt->nameTab,
-                                    ctxt->nameMax *
+                                    ctxt->nameMax * 2 *
                                     sizeof(ctxt->nameTab[0]));
         if (tmp == NULL) {
-	    ctxt->nameMax /= 2;
 	    goto mem_error;
         }
 	ctxt->nameTab = tmp;
+        ctxt->nameMax *= 2;
     }
     ctxt->nameTab[ctxt->nameNr] = value;
     ctxt->name = value;
@@ -2709,7 +2718,7 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
 
 		buffer[nbchars++] = '&';
 		if (nbchars > buffer_size - i - XML_PARSER_BUFFER_SIZE) {
-		    growBuffer(buffer, XML_PARSER_BUFFER_SIZE);
+		    growBuffer(buffer, i + XML_PARSER_BUFFER_SIZE);
 		}
 		for (;i > 0;i--)
 		    buffer[nbchars++] = *cur++;
@@ -4769,13 +4778,14 @@ get_more:
 		    ctxt->instate = state;
 		    return;
 		}
-		if (buf != NULL)
-		    xmlFatalErrMsgStr(ctxt, XML_ERR_COMMENT_NOT_FINISHED,
-		                      "Comment not terminated \n<!--%.50s\n",
+		if (buf != NULL) {
+		    xmlFatalErrMsgStr(ctxt, XML_ERR_HYPHEN_IN_COMMENT,
+		                      "Double hyphen within comment: "
+                                      "<!--%.50s\n",
 				      buf);
-		else
-		    xmlFatalErrMsgStr(ctxt, XML_ERR_COMMENT_NOT_FINISHED,
-		                      "Comment not terminated \n", NULL);
+		} else
+		    xmlFatalErrMsgStr(ctxt, XML_ERR_HYPHEN_IN_COMMENT,
+		                      "Double hyphen within comment\n", NULL);
 		in++;
 		ctxt->input->col++;
 	    }
@@ -4949,7 +4959,8 @@ xmlParsePI(xmlParserCtxtPtr ctxt) {
 		    (ctxt->sax->processingInstruction != NULL))
 		    ctxt->sax->processingInstruction(ctxt->userData,
 		                                     target, NULL);
-		ctxt->instate = state;
+		if (ctxt->instate != XML_PARSER_EOF)
+		    ctxt->instate = state;
 		return;
 	    }
 	    buf = (xmlChar *) xmlMallocAtomic(size * sizeof(xmlChar));
@@ -5029,7 +5040,8 @@ xmlParsePI(xmlParserCtxtPtr ctxt) {
 	} else {
 	    xmlFatalErr(ctxt, XML_ERR_PI_NOT_STARTED, NULL);
 	}
-	ctxt->instate = state;
+	if (ctxt->instate != XML_PARSER_EOF)
+	    ctxt->instate = state;
     }
 }
 
@@ -6992,6 +7004,7 @@ xmlParseReference(xmlParserCtxtPtr ctxt) {
 		    ent->owner = 1;
 		    while (list != NULL) {
 			list->parent = (xmlNodePtr) ent;
+			xmlSetTreeDoc(list, ent->doc);
 			if (list->next == NULL)
 			    ent->last = list;
 			list = list->next;
@@ -9552,7 +9565,7 @@ xmlParseElement(xmlParserCtxtPtr ctxt) {
     const xmlChar *prefix = NULL;
     const xmlChar *URI = NULL;
     xmlParserNodeInfo node_info;
-    int line, tlen;
+    int line, tlen = 0;
     xmlNodePtr ret;
     int nsNr = ctxt->nsNr;
 
@@ -9588,6 +9601,8 @@ xmlParseElement(xmlParserCtxtPtr ctxt) {
     else
 	name = xmlParseStartTag(ctxt);
 #endif /* LIBXML_SAX1_ENABLED */
+    if (ctxt->instate == XML_PARSER_EOF)
+	return;
     if (name == NULL) {
 	spacePop(ctxt);
         return;
@@ -9921,6 +9936,13 @@ xmlParseEncodingDecl(xmlParserCtxtPtr ctxt) {
 	} else {
 	    xmlFatalErr(ctxt, XML_ERR_STRING_NOT_STARTED, NULL);
 	}
+
+        /*
+         * Non standard parsing, allowing the user to ignore encoding
+         */
+        if (ctxt->options & XML_PARSE_IGNORE_ENC)
+            return(encoding);
+
 	/*
 	 * UTF-16 encoding stwich has already taken place at this stage,
 	 * more over the little-endian/big-endian selection is already done
@@ -10967,6 +10989,8 @@ xmlParseTryOrFinish(xmlParserCtxtPtr ctxt, int terminate) {
 		else
 		    name = xmlParseStartTag(ctxt);
 #endif /* LIBXML_SAX1_ENABLED */
+		if (ctxt->instate == XML_PARSER_EOF)
+		    goto done;
 		if (name == NULL) {
 		    spacePop(ctxt);
 		    ctxt->instate = XML_PARSER_EOF;
@@ -11153,7 +11177,9 @@ xmlParseTryOrFinish(xmlParserCtxtPtr ctxt, int terminate) {
 		  else
 		    xmlParseEndTag1(ctxt, 0);
 #endif /* LIBXML_SAX1_ENABLED */
-		if (ctxt->nameNr == 0) {
+		if (ctxt->instate == XML_PARSER_EOF) {
+		    /* Nothing */
+		} else if (ctxt->nameNr == 0) {
 		    ctxt->instate = XML_PARSER_EPILOG;
 		} else {
 		    ctxt->instate = XML_PARSER_CONTENT;
@@ -11958,11 +11984,15 @@ xmlCreateIOParserCtxt(xmlSAXHandlerPtr sax, void *user_data,
     xmlParserCtxtPtr ctxt;
     xmlParserInputPtr inputStream;
     xmlParserInputBufferPtr buf;
-    
+
     if (ioread == NULL) return(NULL);
 
     buf = xmlParserInputBufferCreateIO(ioread, ioclose, ioctx, enc);
-    if (buf == NULL) return(NULL);
+    if (buf == NULL) {
+        if (ioclose != NULL)
+            ioclose(ioctx);
+        return (NULL);
+    }
 
     ctxt = xmlNewParserCtxt();
     if (ctxt == NULL) {
@@ -11987,7 +12017,7 @@ xmlCreateIOParserCtxt(xmlSAXHandlerPtr sax, void *user_data,
 	    memcpy(ctxt->sax, sax, sizeof(xmlSAXHandlerV1));
 	if (user_data != NULL)
 	    ctxt->userData = user_data;
-    }	
+    }
 
     inputStream = xmlNewIOInputStream(ctxt, buf, enc);
     if (inputStream == NULL) {
@@ -12402,6 +12432,16 @@ xmlParseCtxtExternalEntity(xmlParserCtxtPtr ctx, const xmlChar *URL,
 	                   "Version mismatch between document and entity\n");
 	}
     }
+
+    /*
+     * If the user provided its own SAX callbacks then reuse the
+     * useData callback field, otherwise the expected setup in a
+     * DOM builder is to have userData == ctxt
+     */
+    if (ctx->userData == ctx)
+        ctxt->userData = ctxt;
+    else
+        ctxt->userData = ctx->userData;
 
     /*
      * Doing validity checking on chunk doesn't make sense
@@ -14138,6 +14178,7 @@ xmlInitParser(void) {
 	    (xmlGenericError == NULL))
 	    initGenericErrorDefaultFunc(NULL);
 	xmlInitMemory();
+        xmlInitializeDict();
 	xmlInitCharEncodingHandlers();
 	xmlDefaultSAXHandlerInit();
 	xmlRegisterDefaultInputCallbacks();
@@ -14560,6 +14601,10 @@ xmlCtxtUseOptionsInternal(xmlParserCtxtPtr ctxt, int options, const char *encodi
 	ctxt->options |= XML_PARSE_OLDSAX;
         options -= XML_PARSE_OLDSAX;
     }
+    if (options & XML_PARSE_IGNORE_ENC) {
+	ctxt->options |= XML_PARSE_IGNORE_ENC;
+        options -= XML_PARSE_IGNORE_ENC;
+    }
     ctxt->linenumbers = 1;
     return (options);
 }
@@ -14747,7 +14792,7 @@ xmlReadFd(int fd, const char *URL, const char *encoding, int options)
  * @options:  a combination of xmlParserOption
  *
  * parse an XML document from I/O functions and source and build a tree.
- * 
+ *
  * Returns the resulting document tree
  */
 xmlDocPtr
@@ -14763,8 +14808,11 @@ xmlReadIO(xmlInputReadCallback ioread, xmlInputCloseCallback ioclose,
 
     input = xmlParserInputBufferCreateIO(ioread, ioclose, ioctx,
                                          XML_CHAR_ENCODING_NONE);
-    if (input == NULL)
+    if (input == NULL) {
+        if (ioclose != NULL)
+            ioclose(ioctx);
         return (NULL);
+    }
     ctxt = xmlNewParserCtxt();
     if (ctxt == NULL) {
         xmlFreeParserInputBuffer(input);
@@ -14790,7 +14838,7 @@ xmlReadIO(xmlInputReadCallback ioread, xmlInputCloseCallback ioclose,
  *
  * parse an XML in-memory document and build a tree.
  * This reuses the existing @ctxt parser context
- * 
+ *
  * Returns the resulting document tree
  */
 xmlDocPtr
@@ -14945,7 +14993,7 @@ xmlCtxtReadFd(xmlParserCtxtPtr ctxt, int fd,
  *
  * parse an XML document from I/O functions and source and build a tree.
  * This reuses the existing @ctxt parser context
- * 
+ *
  * Returns the resulting document tree
  */
 xmlDocPtr
@@ -14966,8 +15014,11 @@ xmlCtxtReadIO(xmlParserCtxtPtr ctxt, xmlInputReadCallback ioread,
 
     input = xmlParserInputBufferCreateIO(ioread, ioclose, ioctx,
                                          XML_CHAR_ENCODING_NONE);
-    if (input == NULL)
+    if (input == NULL) {
+        if (ioclose != NULL)
+            ioclose(ioctx);
         return (NULL);
+    }
     stream = xmlNewIOInputStream(ctxt, input, XML_CHAR_ENCODING_NONE);
     if (stream == NULL) {
         xmlFreeParserInputBuffer(input);

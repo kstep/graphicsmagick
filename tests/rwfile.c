@@ -288,6 +288,48 @@ int main ( int argc, char **argv )
   original = (Image*)NULL;
 
   /*
+   * Verify that we can 'ping' the file
+   */
+  {
+    Image
+      *ping_image;
+
+    MagickBool
+      ping_error = MagickFalse;
+
+    (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+    strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+    if ( size[0] != '\0' )
+      (void) CloneString( &imageInfo->size, size );
+    (void) fflush(stdout);
+    ping_image = PingImage(imageInfo, &exception );
+    if (exception.severity != UndefinedException)
+      {
+	CatchException(&exception);
+	(void) fflush(stderr);
+	ping_error = MagickTrue;
+      }
+    if ( ping_image == (Image *)NULL )
+      {
+	(void) printf ( "Failed to ping image from file \"%s\" in format %s\n",
+			filename, imageInfo->magick );
+	(void) fflush(stdout);
+	ping_error = MagickTrue;
+      }
+    else
+      {
+	/* Print a short description of the image to stdout */
+	DescribeImage( ping_image, stdout, MagickFalse );
+	DestroyImageList( ping_image );
+      }
+    if (ping_error)
+      {
+	exit_status = 1;
+	goto program_exit;
+      }
+  }
+
+  /*
    * Read image back from file
    */
   (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
