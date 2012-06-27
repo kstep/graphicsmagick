@@ -15458,7 +15458,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   MagickXDestroyResourceInfo(&resource_info);
   MagickXDestroyX11Resources();
   (void) XCloseDisplay(display);
-  return(!status);
+  return(status);
 #else
   ARG_NOT_USED(image_info);
   ARG_NOT_USED(argc);
