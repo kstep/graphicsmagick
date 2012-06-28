@@ -19,6 +19,7 @@ GraphicsMagick Programming Interfaces
 .. _`C Core` : api/api.html
 .. _`C Wand` : wand/wand.html
 .. _C++ : Magick++/index.html
+.. _`node.js` : http://aheckmann.github.com/gm/
 .. _PHP : http://pecl.php.net/package/gmagick
 .. _Perl : perl.html
 .. _Python: https://bitbucket.org/hhatto/pgmagick/
@@ -37,6 +38,8 @@ Language        Description
 `C Core`_       C language API for the lowest-level core programming interface.
 `C Wand`_       C language API for the mid-level Wand API programming interface.
 `C++`_          Magick++ provides an abstract object-oriented C++ interface.
+`node.js`_	Graphicsmagick for node.js provides server-side support for
+                Javascript programming with node.js.
 PHP_		Gmagick provides a small and fast extension for PHP.
 Perl_           PerlMagick provides an object-oriented Perl interface.
 Python_         PgMagick provides the power and ease of the C++ API, but in Python.
