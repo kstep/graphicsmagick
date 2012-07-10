@@ -1,3 +1,9 @@
+2012-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gif.c (ReadGIFImage): Try to be better about reporting
+	failure when ReadBlob() fails to return the requested number of
+	bytes.
+
 2012-06-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/benchmarks.rst: Strip the outdated benchmark results from
