@@ -1,3 +1,8 @@
+2012-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/common.h (MAGICK_ASSUME_ALIGNED): Add some GCC attribute
+	wrappers for useful features added by GCC 4.7.
+
 2012-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c (ReadGIFImage): Try to be better about reporting

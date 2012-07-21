@@ -142,6 +142,11 @@ extern "C" {
 #      define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) __attribute__((__alloc_size__(arg_num1,arg_num2)))
 #      define MAGICK_FUNC_HOT __attribute__((__hot__))
 #      define MAGICK_FUNC_COLD __attribute__((__cold__))
+#      define MAGICK_OPTIMIZE_FUNC(opt) __attribute__((__optimize__ (opt)))
+#    endif
+#    if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))  /* 4.7+ */
+#      define MAGICK_ASSUME_ALIGNED(exp,align) __builtin_assume_aligned(exp,align)
+#      define MAGICK_ASSUME_ALIGNED_OFFSET(exp,align,offset) __builtin_assume_aligned(exp,align,offset)
 #    endif
 #  endif
 #endif
@@ -177,6 +182,15 @@ extern "C" {
 #endif
 #if !defined(MAGICK_FUNC_COLD)
 #  define MAGICK_FUNC_COLD  /*nothing*/
+#endif
+#if !defined(MAGICK_ASSUME_ALIGNED)
+#  define MAGICK_ASSUME_ALIGNED(exp,align) (exp)
+#endif
+#if !defined(MAGICK_ASSUME_ALIGNED_OFFSET)
+#  define MAGICK_ASSUME_ALIGNED_OFFSET(exp,align,offset) (exp)
+#endif
+#if !defined(MAGICK_OPTIMIZE_FUNC)
+#  define MAGICK_OPTIMIZE_FUNC(opt) /*nothing*/
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
