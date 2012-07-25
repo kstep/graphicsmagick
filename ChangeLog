@@ -1,3 +1,13 @@
+2012-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.h (MagickAllocateAlignedMemory): New macro to
+	allocate aligned memory.
+	(MagickFreeAlignedMemory): New macro to free aligned memory.
+
+	* magick/memory.c (MagickMallocAligned): New internal function to
+	allocate aligned memory.
+	(MagickFreeAligned): New internal function to free aligned memory.
+
 2012-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/common.h (MAGICK_ASSUME_ALIGNED): Add some GCC attribute

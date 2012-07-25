@@ -1128,7 +1128,7 @@ AC_SUBST(UINTPTR_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
+AC_CHECK_FUNCS([_aligned_malloc atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \

@@ -436,6 +436,9 @@
 /* This value is set to 1 to indicate that the system argz facility works */
 #undef HAVE_WORKING_ARGZ
 
+/* Define to 1 if you have the `_aligned_malloc' function. */
+#undef HAVE__ALIGNED_MALLOC
+
 /* Define to 1 if you have the `_exit' function. */
 #undef HAVE__EXIT
 
