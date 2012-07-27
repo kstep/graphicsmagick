@@ -1,3 +1,9 @@
+2012-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c, magick/random.c, magick/semaphore.c: Use
+	aligned memory allocator to align allocations which should be
+	aligned to cache line boundary.
+
 2012-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.h (MagickAllocateAlignedMemory): New macro to

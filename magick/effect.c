@@ -2394,9 +2394,9 @@ static void DestroyMedianList(void *pixel_list)
         i;
       
       for (i=0; i < 4U; i++)
-        MagickFreeMemory(skiplist->lists[i].nodes);
+        MagickFreeAlignedMemory(skiplist->lists[i].nodes);
     }
-  MagickFreeMemory(skiplist);
+  MagickFreeAlignedMemory(skiplist);
 }
 
 static MedianPixelList *AllocateMedianList(const long width)
@@ -2404,12 +2404,16 @@ static MedianPixelList *AllocateMedianList(const long width)
   MedianPixelList
     *skiplist;
 
-  skiplist=MagickAllocateMemory(MedianPixelList *,Max(sizeof(MedianPixelList),
-						      MAGICK_CACHE_LINE_SIZE));
+  skiplist=MagickAllocateAlignedMemory(MedianPixelList *,
+				       MAGICK_CACHE_LINE_SIZE,
+				       sizeof(MedianPixelList));
   if (skiplist != (MedianPixelList *) NULL)
     {
       unsigned int
         i;
+
+      const size_t
+	node_list_size = 65537U*sizeof(MedianListNode);
 
       (void) memset(skiplist,0,sizeof(MedianPixelList));
       skiplist->center=width*width/2;
@@ -2417,14 +2421,15 @@ static MedianPixelList *AllocateMedianList(const long width)
       for (i=0; i < 4U; i++)
         {
           skiplist->lists[i].nodes =
-            MagickAllocateArray(MedianListNode *,65537U,sizeof(MedianListNode));
+	    MagickAllocateAlignedMemory(MedianListNode *,MAGICK_CACHE_LINE_SIZE,
+					node_list_size);
           if (skiplist->lists[i].nodes == (MedianListNode *) NULL)
             {
               DestroyMedianList(skiplist);
               skiplist=(MedianPixelList *) NULL;
               break;
             }
-          (void) memset(skiplist->lists[i].nodes,0,65537U*sizeof(MedianListNode));
+          (void) memset(skiplist->lists[i].nodes,0,node_list_size);
         }
     }
   return skiplist;
