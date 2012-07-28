@@ -552,6 +552,15 @@
 /* Command which returns total physical memory in bytes */
 #undef MAGICK_PHYSICAL_MEMORY_COMMAND
 
+/* Target Host CPU */
+#undef MAGICK_TARGET_CPU
+
+/* Target Host OS */
+#undef MAGICK_TARGET_OS
+
+/* Target Host Vendor */
+#undef MAGICK_TARGET_VENDOR
+
 /* define if the compiler lacks ios::binary */
 #undef MISSING_STD_IOS_BINARY
 

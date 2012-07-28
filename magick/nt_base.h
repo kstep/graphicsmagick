@@ -128,8 +128,12 @@ extern "C" {
     1400 Visual C++ 2005
     1500 Visual C++ 2008
 */
-#if defined(_VISUALC_) && (_MSC_VER >= 1300)
+#if defined(_VISUALC_) && (_MSC_VER >= 1310)
 #  define HAVE_GLOBALMEMORYSTATUSEX 1
+#endif
+
+#if defined(_VISUALC_) && (_MSC_VER >= 1300)
+#  define HAVE__ALIGNED_MALLOC 1
 #endif
 
 /*

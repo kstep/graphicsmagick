@@ -3215,10 +3215,25 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 MAGICK_TARGET_CPU=$host_cpu
 
 
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
+_ACEOF
+
+
 MAGICK_TARGET_VENDOR=$host_vendor
 
 
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
+_ACEOF
+
+
 MAGICK_TARGET_OS=$host_os
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
+_ACEOF
 
 
 # Compute newest and oldest interface numbers.

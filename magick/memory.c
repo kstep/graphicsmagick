@@ -169,13 +169,15 @@ MagickExport void * MagickMalloc(const size_t size)
 %  MagickMallocAligned() allocates memory and returns a pointer to a
 %  block of memory capable of storing at least size bytes with the
 %  allocation's base address being an even multiple of alignment.
+%  The size of the buffer allocation is rounded up as required in
+%  order to consume a block of memory starting at least at the requested
+%  alignment and ending at at least the requested alignment.
 %
 %  The requested alignment should be a power of 2 at least as large as
-%  sizeof(void *).  The requested alignment is increased to sizeof(void *)
-%  if it is less than sizeof(void *).
+%  sizeof(void *).
 % 
-%  NULL is returned if insufficient memory is available or the requested
-%  size is zero.
+%  NULL is returned if insufficient memory is available, the requested
+%  size is zero, or integer overflow was detected.
 %
 %  This function is intended for allocating special-purpose buffers
 %  which benefit from specific alignment.
@@ -193,32 +195,39 @@ MagickExport void * MagickMalloc(const size_t size)
 MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size)
 {
   size_t
-    alloc_size;
+    alligned_size;
 
   void
     *alligned_p = 0;
 
-  alloc_size=(size+alignment-1)+sizeof(void *);
+  alligned_size=RoundUpToAlignment(size,alignment);
 
-  if ((size == 0) || (alignment < sizeof(void *)) || (alloc_size <= size))
+  if ((size == 0) || (alignment < sizeof(void *)) || (alligned_size < size))
     return ((void *) NULL);
 
 #if defined(HAVE_POSIX_MEMALIGN)
-  if (posix_memalign(&alligned_p, alignment, size) != 0)
+  if (posix_memalign(&alligned_p, alignment, alligned_size) != 0)
     alligned_p=0;
 #elif defined(HAVE__ALIGNED_MALLOC)
-  alligned_p=_aligned_malloc(size,alignment);
+  alligned_p=_aligned_malloc(alligned_size,alignment);
 #else
   {
     void
       *alloc_p;
 
-  if ((alloc_p = (MallocFunc)(alloc_size)) != NULL)
-    {
-      alligned_p=(void*)( ((magick_uintptr_t)alloc_p+sizeof(void *)
-			   +alignment-1)&~(alignment-1));
-      *((void **)alligned_p-1)=alloc_p;
-    }
+    size_t
+      alloc_size;
+
+    alloc_size=(size+alignment-1)+sizeof(void *);
+    if (alloc_size > size)
+      {
+	if ((alloc_p = (MallocFunc)(alloc_size)) != NULL)
+	  {
+	    alligned_p=(void*)( ((magick_uintptr_t)alloc_p+sizeof(void *)
+				 +alignment-1)&~(alignment-1));
+	    *((void **)alligned_p-1)=alloc_p;
+	  }
+      }
   }
 #endif
 

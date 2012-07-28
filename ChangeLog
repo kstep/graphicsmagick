@@ -1,3 +1,15 @@
+2012-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Assume a cache line
+	size of 64 bytes except for on PowerPC which uses 128.
+
+	* magick/pixel_cache.c: Use aligned memory allocator to allocate
+	structures and buffers which might suffer from false cache line
+	sharing
+
+	* magick/memory.c (MagickMallocAligned): Also round up allocation
+	size to alignment.
+
 2012-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c, magick/random.c, magick/semaphore.c: Use
