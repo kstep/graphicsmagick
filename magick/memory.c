@@ -223,8 +223,8 @@ MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size
       {
 	if ((alloc_p = (MallocFunc)(alloc_size)) != NULL)
 	  {
-	    alligned_p=(void*)( ((magick_uintptr_t)alloc_p+sizeof(void *)
-				 +alignment-1)&~(alignment-1));
+	    alligned_p=(void*) RoundUpToAlignment((magick_uintptr_t)alloc_p+
+						  sizeof(void *),alignment);
 	    *((void **)alligned_p-1)=alloc_p;
 	  }
       }

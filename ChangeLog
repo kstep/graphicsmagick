@@ -1,5 +1,8 @@
 2012-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/memory.c (MagickMallocAligned): Use RoundUpToAlignment()
+	macro to compute aligned pointer.
+
 	* magick/effect.c (EnhanceImage): Eliminate use of ugly Enhance
 	macro.  Only filter based on color channels (ignore opacity).
 
