@@ -1,3 +1,8 @@
+2012-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (EnhanceImage): Eliminate use of ugly Enhance
+	macro.  Only filter based on color channels (ignore opacity).
+
 2012-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Assume a cache line

@@ -1836,8 +1836,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  EnhanceImage() applies a digital filter that improves the quality of a
-%  noisy image.
+%  EnhanceImage() applies a digital filter to the image color channels that
+%  improves the quality of a noisy image.  The opacity channel is preserved
+%  but is otherwise ignored.
 %
 %  The format of the EnhanceImage method is:
 %
@@ -1851,36 +1852,20 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %
 */
-#define Enhance(weight)                                                 \
-  mean=((double) r->red+pixel.red)/2.0;                                 \
-  distance=r->red-(double) pixel.red;                                   \
-  distance_squared=(2.0*((double) MaxRGBDouble+1.0)+mean)*distance*     \
-    distance/MaxRGBDouble;                                              \
-  mean=((double) r->green+pixel.green)/2.0;                             \
-  distance=r->green-(double) pixel.green;                               \
-  distance_squared+=4.0*distance*distance;                              \
-  mean=((double) r->blue+pixel.blue)/2.0;                               \
-  distance=r->blue-(double) pixel.blue;                                 \
-  distance_squared+=                                                    \
-  (3.0*(MaxRGBDouble+1.0)-1.0-mean)*distance*distance/MaxRGBDouble;     \
-  mean=((double) r->opacity+pixel.opacity)/2.0;                         \
-  distance=r->opacity-(double) pixel.opacity;                           \
-  distance_squared+=                                                    \
-  (3.0*((double) MaxRGBDouble+1.0)-1.0-mean)*distance*                  \
-    distance/MaxRGBDouble;                                              \
-  if (distance_squared < ((double) MaxRGBDouble*MaxRGBDouble/25.0))     \
-    {                                                                   \
-      aggregate.red+=(weight)*r->red;                                   \
-      aggregate.green+=(weight)*r->green;                               \
-      aggregate.blue+=(weight)*r->blue;                                 \
-      aggregate.opacity+=(weight)*r->opacity;                           \
-      total_weight+=(weight);                                           \
-    }                                                                   \
-  r++;
 #define EnhanceImageText "[%s] Enhance...  "
 
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
+  static const double
+    Weights[5][5] =
+    {
+      {  5.0,  8.0, 10.0,  8.0,  5.0 },
+      {  8.0, 20.0, 40.0, 20.0,  8.0 },
+      { 10.0, 40.0, 80.0, 40.0, 10.0 },
+      {  8.0, 20.0, 40.0, 20.0,  8.0 },
+      {  5.0,  8.0, 10.0,  8.0,  5.0 }
+    };
+
   Image
     *enhance_image;
 
@@ -1955,6 +1940,27 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
           {
+	    DoublePixelPacket
+	      aggregate;
+
+	    double
+	      pixel_red,
+	      pixel_green,
+	      pixel_blue,
+	      total_weight;
+
+	    register const PixelPacket
+	      *r;
+
+	    double
+	      distance,
+	      distance_squared,
+	      mean;
+
+	    unsigned long
+	      i,
+	      j;
+
             /*
               Transfer first 2 pixels of the scanline.
             */
@@ -1962,43 +1968,50 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             *q++=(*(p+2*image->columns+1));
             for (x=2; x < (long) (image->columns-2); x++)
               {
-                DoublePixelPacket
-                  aggregate;
-
-                double
-                  distance,
-                  distance_squared,
-                  mean,
-                  total_weight;
-
-                PixelPacket
-                  pixel;
-
-                register const PixelPacket
-                  *r;
-
                 /*
                   Compute weighted average of target pixel color components.
                 */
                 aggregate=zero;
                 total_weight=0.0;
                 r=p+2*image->columns+2;
-                pixel=(*r);
-                r=p;
-                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
-                r=p+image->columns;
-                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-                r=p+2*image->columns;
-                Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
-                r=p+3*image->columns;
-                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-                r=p+4*image->columns;
-                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
+		pixel_red=r->red;
+		pixel_green=r->green;
+		pixel_blue=r->blue;
+
+		for (i=0 ; i < 5; i++)
+		  {
+		    r=p+i*image->columns;
+		    for (j = 0; j < 5; j++)
+		      {
+			const double red = (double) r->red;
+			const double green = (double) r->green;
+			const double blue = (double) r->blue;
+			mean=(red+pixel_red)/2.0;
+			distance=red-pixel_red;
+			distance_squared=(2.0*(MaxRGBDouble+1.0)+mean)*distance*
+			  distance/MaxRGBDouble;
+			mean=(green+pixel_green)/2.0;
+			distance=green-pixel_green;
+			distance_squared+=4.0*distance*distance;
+			mean=(blue+pixel_blue)/2.0;
+			distance=blue-pixel_blue;
+			distance_squared+=
+			  (3.0*(MaxRGBDouble+1.0)-1.0-mean)*distance*distance/MaxRGBDouble;
+			if (distance_squared < ((MaxRGBDouble*MaxRGBDouble/25.0)))
+			  {
+			    const double weight = Weights[i][j];
+			    aggregate.red+=weight*red;
+			    aggregate.green+=weight*green;
+			    aggregate.blue+=weight*blue;
+			    total_weight+=weight;
+			  }
+			r++;
+		      }
+		  }
                 q->red=(Quantum) ((aggregate.red+(total_weight/2.0)-1.0)/total_weight);
                 q->green=(Quantum) ((aggregate.green+(total_weight/2.0)-1.0)/total_weight);
                 q->blue=(Quantum) ((aggregate.blue+(total_weight/2.0)-1.0)/total_weight);
-                q->opacity=(Quantum)
-                  ((aggregate.opacity+(total_weight/2.0)-1.0)/total_weight);
+		q->opacity=p->opacity;
                 p++;
                 q++;
               }

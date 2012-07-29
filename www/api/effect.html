@@ -413,8 +413,9 @@ radius for you.</p>
 </div>
 <div class="section" id="id22">
 <h2>Description</h2>
-<p>EnhanceImage() applies a digital filter that improves the quality of a
-noisy image.</p>
+<p>EnhanceImage() applies a digital filter to the image color channels that
+improves the quality of a noisy image.  The opacity channel is preserved
+but is otherwise ignored.</p>
 <p>The format of the EnhanceImage method is:</p>
 <pre class="literal-block">
 <a class="reference external" href="../api/types.html#image">Image</a> *EnhanceImage( const <a class="reference external" href="../api/types.html#image">Image</a> *image, <a class="reference external" href="../api/types.html#exceptioninfo">ExceptionInfo</a> *exception );
