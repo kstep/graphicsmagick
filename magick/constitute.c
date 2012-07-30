@@ -2168,7 +2168,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 		      DestroyImageInfo(clone_info);
 		      return(False);
 		    }
-		  (void) strlcpy(image->filename,tempfile,sizeof(tempfile));
+		  (void) strlcpy(image->filename,tempfile,sizeof(image->filename));
 		}
 	      else
 		{

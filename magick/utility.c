@@ -1107,16 +1107,16 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 		formatted_buffer[MaxTextExtent];
 
 	      *formatted_buffer='\0';
-	      if (strlcat(formatted_buffer,magick,sizeof(filename_buffer))
-		  >= sizeof(filename_buffer))
+	      if (strlcat(formatted_buffer,magick,sizeof(formatted_buffer))
+		  >= sizeof(formatted_buffer))
 		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
 				  formatted_buffer);
-	      if (strlcat(formatted_buffer,filename_buffer,sizeof(filename_buffer))
-		  >= sizeof(filename_buffer))
+	      if (strlcat(formatted_buffer,filename_buffer,sizeof(formatted_buffer))
+		  >= sizeof(formatted_buffer))
 		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
 				  formatted_buffer);
-	      if (strlcat(formatted_buffer,subimage,sizeof(filename_buffer))
-		  >= sizeof(filename_buffer))
+	      if (strlcat(formatted_buffer,subimage,sizeof(formatted_buffer))
+		  >= sizeof(formatted_buffer))
 		MagickFatalError2(ResourceLimitFatalError,"Path buffer overflow",
 				  formatted_buffer);
 	      if (first)

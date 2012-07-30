@@ -3752,7 +3752,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
   short
     loop_level,
-    loops_active;
+    loops_active = 0;
 
   volatile short
     skipping_loop;
