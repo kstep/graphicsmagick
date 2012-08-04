@@ -2846,16 +2846,16 @@ ModulateImageOpacityCallBack(void *mutable_data,         /* User provided mutabl
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
 
-if (image->colorspace == CMYKColorspace)
-  {
-    for (i=0; i < npixels; i++)
-      indexes[i]=(IndexPacket) BlendQuantumOpacity(indexes[i],opacity);
-  }
- else
-   {
-     for (i=0; i < npixels; i++)
-       pixels[i].opacity=(Quantum) BlendQuantumOpacity(pixels[i].opacity,opacity);
-   }
+  if (image->colorspace == CMYKColorspace)
+    {
+      for (i=0; i < npixels; i++)
+        indexes[i]=(IndexPacket) BlendQuantumOpacity(indexes[i],opacity);
+    }
+  else
+    {
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity=(Quantum) BlendQuantumOpacity(pixels[i].opacity,opacity);
+    }
   return MagickPass;
 }
 static MagickPassFail
@@ -2877,16 +2877,16 @@ SetImageOpacityCallBack(void *mutable_data,         /* User provided mutable dat
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
 
-if (image->colorspace == CMYKColorspace)
-  {
-    for (i=0; i < npixels; i++)
-      indexes[i]=opacity;
-  }
- else
-   {
-     for (i=0; i < npixels; i++)
-       pixels[i].opacity=opacity;
-   }
+  if (image->colorspace == CMYKColorspace)
+    {
+      for (i=0; i < npixels; i++)
+        indexes[i]=opacity;
+    }
+  else
+    {
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity=opacity;
+    }
   return MagickPass;
 }
 MagickExport void SetImageOpacity(Image *image,const unsigned int opacity_val)
