@@ -176,6 +176,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterJBIGImage();
 #endif
 #if defined(HasJPEG)
+  RegisterJNXImage();
+#endif
+#if defined(HasJPEG)
   RegisterJPEGImage();
 #endif
 #if defined(HasJP2)
@@ -326,6 +329,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterINFOImage();
 #if defined(HasJBIG)
   UnregisterJBIGImage();
+#endif
+#if defined(HasJPEG)
+  UnregisterJNXImage();
 #endif
 #if defined(HasJPEG)
   UnregisterJPEGImage();

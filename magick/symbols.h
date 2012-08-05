@@ -576,6 +576,7 @@
 #define RegisterHTMLImage GmRegisterHTMLImage
 #define RegisterICONImage GmRegisterICONImage
 #define RegisterJBIGImage GmRegisterJBIGImage
+#define RegisterJNXImage GmRegisterJNXImage
 #define RegisterJP2Image GmRegisterJP2Image
 #define RegisterJPEGImage GmRegisterJPEGImage
 #define RegisterLABELImage GmRegisterLABELImage
@@ -764,6 +765,7 @@
 #define UnregisterHTMLImage GmUnregisterHTMLImage
 #define UnregisterICONImage GmUnregisterICONImage
 #define UnregisterJBIGImage GmUnregisterJBIGImage
+#define UnregisterJNXImage GmUnregisterJNXImage
 #define UnregisterJP2Image GmUnregisterJP2Image
 #define UnregisterJPEGImage GmUnregisterJPEGImage
 #define UnregisterLABELImage GmUnregisterLABELImage
