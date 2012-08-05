@@ -1,3 +1,8 @@
+2012-08-05  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: Fixed.
+
+
 2012-08-05  Bob Friesenhahn  <bfriesen@freddy.simplesystems.org>
 
 	* coders/jnx.c: Add JNX coder for "Garmin proprietary Image
