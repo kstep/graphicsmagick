@@ -293,30 +293,6 @@ else
   CFLAGS="${CFLAGS} -Wall"
 fi
 
-# Reduce utility startup overhead by lazy-loading dependency libraries
-# if possible.
-#
-#   http://developers.sun.com/solaris/articles/reducing_app.html
-#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
-AC_CACHE_CHECK([for linker lazyload option],[gm_cv_ld_lazyload],
-[
-gm_cv_ld_lazyload='none'
-case "${host}" in
-  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
-    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
-       gm_cv_ld_lazyload='-Wl,-zlazyload'
-    fi
-    ;;
-esac
-])
-if test "${gm_cv_ld_lazyload}" != 'none' ; then
-  if test -z "${LDFLAGS}" ; then
-    LDFLAGS="${gm_cv_ld_lazyload}"
-  else
-    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
-  fi
-fi
-
 #
 # Determine Posix threads settings
 #
@@ -1602,8 +1578,7 @@ AC_SUBST(LIB_BZLIB)
 #
 have_lzma='no'
 LIB_LZMA=''
-dnl TIFF may require lzma so enable lzma check if TIFF is requested
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'
+if test "$with_lzma" != 'no'
 then
   AC_MSG_CHECKING(for LZMA support )
   AC_MSG_RESULT()

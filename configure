@@ -6995,37 +6995,6 @@ else
   CFLAGS="${CFLAGS} -Wall"
 fi
 
-# Reduce utility startup overhead by lazy-loading dependency libraries
-# if possible.
-#
-#   http://developers.sun.com/solaris/articles/reducing_app.html
-#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for linker lazyload option" >&5
-$as_echo_n "checking for linker lazyload option... " >&6; }
-if ${gm_cv_ld_lazyload+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-gm_cv_ld_lazyload='none'
-case "${host}" in
-  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
-    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
-       gm_cv_ld_lazyload='-Wl,-zlazyload'
-    fi
-    ;;
-esac
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $gm_cv_ld_lazyload" >&5
-$as_echo "$gm_cv_ld_lazyload" >&6; }
-if test "${gm_cv_ld_lazyload}" != 'none' ; then
-  if test -z "${LDFLAGS}" ; then
-    LDFLAGS="${gm_cv_ld_lazyload}"
-  else
-    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
-  fi
-fi
-
 #
 # Determine Posix threads settings
 #
@@ -9884,7 +9853,7 @@ $as_echo "$lt_cv_cc_needs_belf" >&6; }
       case $lt_cv_prog_gnu_ld in
       yes*)
         case $host in
-        i?86-*-solaris*)
+        i?86-*-solaris*|x86_64-*-solaris*)
           LD="${LD-ld} -m elf_x86_64"
           ;;
         sparc*-*-solaris*)
@@ -24537,7 +24506,7 @@ fi
 #
 have_lzma='no'
 LIB_LZMA=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'
+if test "$with_lzma" != 'no'
 then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA support " >&5
 $as_echo_n "checking for LZMA support ... " >&6; }

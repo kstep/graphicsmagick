@@ -1,3 +1,17 @@
+2012-08-05  Bob Friesenhahn  <bfriesen@freddy.simplesystems.org>
+
+	* coders/jnx.c: Add JNX coder for "Garmin proprietary Image
+	Format" (implementation by Jaroslav Fojtik) to the build.  Code is
+	not yet working properly at this time.
+
+2012-08-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Remove use of -Wl,-zlazyload under Solaris since
+	it seems to decrease the stability of C++ exceptions in x86-64
+	build and does not measurably improve runtimes.  Don't force use
+	of liblzma because libtiff is used.  User should always have
+	control.
+
 2012-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.c (MagickMallocAligned): Use RoundUpToAlignment()
