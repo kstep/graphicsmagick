@@ -133,8 +133,7 @@ static Image *ExtractTileJPG(Image *image, const ImageInfo *image_info, Extended
                            MaxTextExtent,exception) == MagickFail)
     goto FINISH_UNL;
   
-     /* Read nested image */
-  /*FormatString(clone_info->filename,"%s:%.1024s",magic_info->name,postscript_file);*/
+     /* Read nested image */ 
   FormatString(clone_info->filename,"%.1024s", JPG_file);
   image2 = ReadImage(clone_info,exception);
 
@@ -203,7 +202,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TJNXHeader JNXHeader;
   TJNXLevelInfo JNXLevelInfo[20];  
   unsigned int status;
-  TJNXTileInfo *PositionList;
+  TJNXTileInfo *PositionList = NULL;
   int logging;
 
 	/* Open image file. */
@@ -241,6 +240,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(JNXHeader.Version>=4)
     JNXHeader.ZOrder = ReadBlobLSBLong(image);
 
+    
 	/* Read JNX image level info. */
   for(i=0; i<JNXHeader.Levels; i++)
   {
@@ -267,7 +267,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if(PositionList==NULL) continue;
 
     (void)SeekBlob(image,JNXLevelInfo[i].TilesOffset,SEEK_SET);
-    for(j=0; j<JNXLevelInfo[i].TileCount; j++);
+    for(j=0; j<JNXLevelInfo[i].TileCount; j++)
     {
       PositionList[j].TileBounds.NorthEast.lat = ReadBlobLSBLong(image);
       PositionList[j].TileBounds.NorthEast.lon = ReadBlobLSBLong(image);
@@ -280,10 +280,11 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
 
-    for(j=0; j<JNXLevelInfo[i].TileCount; j++);
+    for(j=0; j<JNXLevelInfo[i].TileCount; j++)
     {
       image = ExtractTileJPG(image,image_info,PositionList[j].PicOffset,PositionList[j].PicSize,exception);
     }
+
 
     free(PositionList);
     PositionList = NULL;
