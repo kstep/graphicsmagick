@@ -43,6 +43,7 @@
 #include "magick/utility.h"
 #include "magick/tempfile.h"
 #include "magick/magic.h"
+#include "magick/resource.h"
 
 
 
@@ -204,6 +205,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int status;
   TJNXTileInfo *PositionList = NULL;
   int logging;
+  magick_int64_t SaveLimit;
+
 
 	/* Open image file. */
   assert(image_info != (const ImageInfo *) NULL);
@@ -260,6 +263,12 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JNXLevelInfo[i].Copyright = NULL;
   }
 
+        /* Get the current limit */
+   SaveLimit = GetMagickResourceLimit(MapResource);
+
+        /* Temporarily set the limit to zero */
+   SetMagickResourceLimit(MapResource,0);
+
 	/* Read JNX image data. */
   for(i=0; i<JNXHeader.Levels; i++)
   {
@@ -291,6 +300,9 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
 
   CloseBlob(image);
+
+       /* Restore the previous limit */
+  (void)SetMagickResourceLimit(MapResource,SaveLimit);
 
   {
     Image *p;    
