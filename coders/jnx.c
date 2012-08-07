@@ -15,7 +15,7 @@
 %                             JJ    N   NN  X    X                            %
 %                                                                             %
 %                                                                             %
-%                JNX: Garmin proprietary Image Format.                        %
+%                   JNX: Garmin proprietary Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -45,19 +45,15 @@
 #include "magick/magic.h"
 #include "magick/resource.h"
 
-
-
 typedef struct
 {
   int lat, lon;
 } TJNXPoint;
 
-  
 typedef struct
 {
   TJNXPoint NorthEast, SouthWest;
 } TJNXRect;
-
 
 typedef struct
 {
@@ -73,7 +69,6 @@ typedef struct
   unsigned ZOrder;
 } TJNXHeader;
 
-
 typedef struct
 {
   unsigned TileCount;
@@ -83,7 +78,6 @@ typedef struct
   unsigned Dummy;
 } TJNXLevelInfo;
 
-
 typedef struct
 {
   TJNXRect TileBounds;
@@ -92,51 +86,65 @@ typedef struct
   unsigned PicOffset;
 } TJNXTileInfo;
 
-
-static Image *ExtractTileJPG(Image *image, const ImageInfo *image_info, ExtendedSignedIntegralType JPG_Offset, long JPG_Size, ExceptionInfo *exception)
+static Image *ExtractTileJPG(Image * image, const ImageInfo * image_info,
+			     ExtendedSignedIntegralType JPG_Offset, long JPG_Size,
+			     ExceptionInfo * exception)
 {
-  char JPG_file[MaxTextExtent];
-  FILE *jpg_file;
-  ImageInfo *clone_info;
-  Image *image2;    
-  unsigned char magick[2*MaxTextExtent];
-  size_t magick_size;
-    
-  if((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
-  clone_info->blob = (void *)NULL;
-  clone_info->length=0;
+  char
+    JPG_file[MaxTextExtent];
 
-     /* Obtain temporary file */
-  jpg_file = AcquireTemporaryFileStream(JPG_file,BinaryFileIOMode);
-  if(!jpg_file)
-  {
-    (void)LogMagickEvent(CoderEvent,GetMagickModule(), "Gannot create file stream for JPG tile image");
-    goto FINISH;
-  }
+  FILE
+    *jpg_file;
 
-     /* Copy JPG to temporary file */  
-  (void) SeekBlob(image,JPG_Offset,SEEK_SET);
-  magick_size = ReadBlob(image, sizeof(magick)-2, magick+2) + 2;
+  ImageInfo
+    *clone_info;
+
+  Image
+    *image2;
+
+  unsigned char
+    magick[2 * MaxTextExtent];
+
+  size_t
+    magick_size;
+
+  if ((clone_info = CloneImageInfo(image_info)) == NULL)
+    return (image);
+  clone_info->blob = (void *) NULL;
+  clone_info->length = 0;
+
+  /* Obtain temporary file */
+  jpg_file = AcquireTemporaryFileStream(JPG_file, BinaryFileIOMode);
+  if (!jpg_file)
+    {
+      (void) LogMagickEvent(CoderEvent, GetMagickModule(),
+                            "Cannot create file stream for JPG tile image");
+      goto FINISH;
+    }
+
+  /* Copy JPG to temporary file */
+  (void) SeekBlob(image, JPG_Offset, SEEK_SET);
+  magick_size = ReadBlob(image, sizeof(magick) - 2, magick + 2) + 2;
   magick[0] = 0xFF;
   magick[1] = 0xD8;
-    
-  (void)SeekBlob(image,JPG_Offset,SEEK_SET);
-  fputc(0xFF,jpg_file);
-  fputc(0xD8,jpg_file);
-  while(JPG_Size-- > 0)
-  {
-    (void)fputc(ReadBlobByte(image),jpg_file);
-  }
-  (void)fclose(jpg_file);
-  
-     /* Detect file format - Check magic.mgk configuration file. */
-  if (GetMagickFileFormat(magick,magick_size,clone_info->magick,
-                           MaxTextExtent,exception) == MagickFail)
+
+  (void) SeekBlob(image, JPG_Offset, SEEK_SET);
+  fputc(0xFF, jpg_file);
+  fputc(0xD8, jpg_file);
+  while (JPG_Size-- > 0)
+    {
+      (void) fputc(ReadBlobByte(image), jpg_file);
+    }
+  (void) fclose(jpg_file);
+
+  /* Detect file format - Check magic.mgk configuration file. */
+  if (GetMagickFileFormat(magick, magick_size, clone_info->magick,
+			  MaxTextExtent, exception) == MagickFail)
     goto FINISH_UNL;
-  
-     /* Read nested image */ 
-  FormatString(clone_info->filename,"%.1024s", JPG_file);
-  image2 = ReadImage(clone_info,exception);
+
+  /* Read nested image */
+  FormatString(clone_info->filename, "%.1024s", JPG_file);
+  image2 = ReadImage(clone_info, exception);
 
   if (!image2)
     goto FINISH_UNL;
@@ -145,27 +153,25 @@ static Image *ExtractTileJPG(Image *image, const ImageInfo *image_info, Extended
     Replace current image with new image while copying base image
     attributes.
   */
-  (void) strlcpy(image2->filename,image->filename,MaxTextExtent);
-  (void) strlcpy(image2->magick_filename,image->magick_filename,MaxTextExtent);
-  (void) strlcpy(image2->magick,image->magick,MaxTextExtent);
-  image2->depth=image->depth;
+  (void) strlcpy(image2->filename, image->filename, MaxTextExtent);
+  (void) strlcpy(image2->magick_filename, image->magick_filename, MaxTextExtent);
+  (void) strlcpy(image2->magick, image->magick, MaxTextExtent);
+  image2->depth = image->depth;
   DestroyBlob(image2);
-  image2->blob=ReferenceBlob(image->blob);
+  image2->blob = ReferenceBlob(image->blob);
 
-  if((image->rows == 0) || (image->columns == 0))
+  if ((image->rows == 0) || (image->columns == 0))
     DeleteImageFromList(&image);
 
-  AppendImageToList(&image,image2);
+  AppendImageToList(&image, image2);
 
- FINISH_UNL:    
-  (void)LiberateTemporaryFile(JPG_file);
+ FINISH_UNL:
+  (void) LiberateTemporaryFile(JPG_file);
  FINISH:
   DestroyImageInfo(clone_info);
-  return(image);
+  return (image);
 }
-
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -196,152 +202,173 @@ static Image *ExtractTileJPG(Image *image, const ImageInfo *image_info, Extended
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
-  Image *image;
-  int i, j;
-  TJNXHeader JNXHeader;
-  TJNXLevelInfo JNXLevelInfo[20];  
-  unsigned int status;
-  TJNXTileInfo *PositionList = NULL;
-  int logging;
-  magick_int64_t SaveLimit;
+  Image
+    *image;
 
+  unsigned int
+    i,
+    j;
 
-	/* Open image file. */
+  TJNXHeader
+    JNXHeader;
+
+  TJNXLevelInfo
+    JNXLevelInfo[20];
+
+  unsigned int
+    status;
+
+  TJNXTileInfo
+    *PositionList = NULL;
+
+  int
+    logging;
+
+  magick_int64_t
+    SaveLimit;
+
+  /* Open image file. */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter"); 
+  logging = LogMagickEvent(CoderEvent, GetMagickModule(), "enter");
 
-  image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  image = AllocateImage(image_info);
+  status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowReaderException(FileOpenError, UnableToOpenFile, image);
 
+  memset(JNXLevelInfo, 0, sizeof(JNXLevelInfo));
 
-  memset(JNXLevelInfo,0,sizeof(JNXLevelInfo));
-
-	/* Read JNX image header. */
+  /* Read JNX image header. */
   JNXHeader.Version = ReadBlobLSBLong(image);
-  if(JNXHeader.Version>4)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (JNXHeader.Version > 4)
+    ThrowReaderException(CorruptImageError, ImproperImageHeader, image);
   JNXHeader.DeviceSN = ReadBlobLSBLong(image);
   JNXHeader.MapBounds.NorthEast.lat = ReadBlobLSBLong(image);
   JNXHeader.MapBounds.NorthEast.lon = ReadBlobLSBLong(image);
   JNXHeader.MapBounds.SouthWest.lat = ReadBlobLSBLong(image);
   JNXHeader.MapBounds.SouthWest.lon = ReadBlobLSBLong(image);
   JNXHeader.Levels = ReadBlobLSBLong(image);
-  if(JNXHeader.Levels>20)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (JNXHeader.Levels > 20)
+    ThrowReaderException(CorruptImageError, ImproperImageHeader, image);
   JNXHeader.Expiration = ReadBlobLSBLong(image);
   JNXHeader.ProductID = ReadBlobLSBLong(image);
   JNXHeader.CRC = ReadBlobLSBLong(image);
   JNXHeader.SigVersion = ReadBlobLSBLong(image);
   JNXHeader.SigOffset = ReadBlobLSBLong(image);
-  if(JNXHeader.Version>=4)
+  if (JNXHeader.Version >= 4)
     JNXHeader.ZOrder = ReadBlobLSBLong(image);
 
-    
-	/* Read JNX image level info. */
-  for(i=0; i<JNXHeader.Levels; i++)
-  {
-    JNXLevelInfo[i].TileCount = ReadBlobLSBLong(image);
-    JNXLevelInfo[i].TilesOffset = ReadBlobLSBLong(image);
-    JNXLevelInfo[i].Scale = ReadBlobLSBLong(image);
-        
-    if(JNXHeader.Version>=4)
+  /* Read JNX image level info. */
+  for (i = 0; i < JNXHeader.Levels; i++)
     {
-      JNXLevelInfo[i].Dummy = ReadBlobLSBLong(image);
-      JNXLevelInfo[i].Copyright = NULL;
-      while(ReadBlobLSBShort(image)!=0)
-      {		//char *Copyright;
-      }
-    }
-    else
-      JNXLevelInfo[i].Copyright = NULL;
-  }
+      JNXLevelInfo[i].TileCount = ReadBlobLSBLong(image);
+      JNXLevelInfo[i].TilesOffset = ReadBlobLSBLong(image);
+      JNXLevelInfo[i].Scale = ReadBlobLSBLong(image);
 
-        /* Get the current limit */
-   SaveLimit = GetMagickResourceLimit(MapResource);
-
-        /* Temporarily set the limit to zero */
-   SetMagickResourceLimit(MapResource,0);
-
-	/* Read JNX image data. */
-  for(i=0; i<JNXHeader.Levels; i++)
-  {
-    PositionList = (TJNXTileInfo*)malloc(JNXLevelInfo[i].TileCount * sizeof(TJNXTileInfo));
-    if(PositionList==NULL) continue;
-
-    (void)SeekBlob(image,JNXLevelInfo[i].TilesOffset,SEEK_SET);
-    for(j=0; j<JNXLevelInfo[i].TileCount; j++)
-    {
-      PositionList[j].TileBounds.NorthEast.lat = ReadBlobLSBLong(image);
-      PositionList[j].TileBounds.NorthEast.lon = ReadBlobLSBLong(image);
-      PositionList[j].TileBounds.SouthWest.lat = ReadBlobLSBLong(image);
-      PositionList[j].TileBounds.SouthWest.lon = ReadBlobLSBLong(image);
-      PositionList[j].PicWidth = ReadBlobLSBShort(image);  
-      PositionList[j].PicHeight = ReadBlobLSBShort(image);
-      PositionList[j].PicSize = ReadBlobLSBLong(image);
-      PositionList[j].PicOffset = ReadBlobLSBLong(image);
+      if (JNXHeader.Version >= 4)
+        {
+          JNXLevelInfo[i].Dummy = ReadBlobLSBLong(image);
+          JNXLevelInfo[i].Copyright = NULL;
+          while (ReadBlobLSBShort(image) != 0)
+            {
+              /* char *Copyright; */
+            }
+        }
+      else
+        {
+          JNXLevelInfo[i].Copyright = NULL;
+        }
     }
 
+  /* Get the current limit */
+  SaveLimit = GetMagickResourceLimit(MapResource);
 
-    for(j=0; j<JNXLevelInfo[i].TileCount; j++)
+  /* Temporarily set the limit to zero */
+  SetMagickResourceLimit(MapResource, 0);
+
+  /* Read JNX image data. */
+  for (i = 0; i < JNXHeader.Levels; i++)
     {
-      image = ExtractTileJPG(image,image_info,PositionList[j].PicOffset,PositionList[j].PicSize,exception);
+      PositionList = (TJNXTileInfo *) malloc(JNXLevelInfo[i].TileCount *
+                                             sizeof(TJNXTileInfo));
+      if (PositionList == NULL)
+        continue;
+
+      (void) SeekBlob(image, JNXLevelInfo[i].TilesOffset, SEEK_SET);
+      for (j = 0; j < JNXLevelInfo[i].TileCount; j++)
+        {
+          PositionList[j].TileBounds.NorthEast.lat = ReadBlobLSBLong(image);
+          PositionList[j].TileBounds.NorthEast.lon = ReadBlobLSBLong(image);
+          PositionList[j].TileBounds.SouthWest.lat = ReadBlobLSBLong(image);
+          PositionList[j].TileBounds.SouthWest.lon = ReadBlobLSBLong(image);
+          PositionList[j].PicWidth = ReadBlobLSBShort(image);
+          PositionList[j].PicHeight = ReadBlobLSBShort(image);
+          PositionList[j].PicSize = ReadBlobLSBLong(image);
+          PositionList[j].PicOffset = ReadBlobLSBLong(image);
+        }
+
+      for (j = 0; j < JNXLevelInfo[i].TileCount; j++)
+        {
+          image = ExtractTileJPG(image, image_info, PositionList[j].PicOffset,
+                                 PositionList[j].PicSize, exception);
+        }
+
+      free(PositionList);
+      PositionList = NULL;
     }
-
-
-    free(PositionList);
-    PositionList = NULL;
-  }
 
   CloseBlob(image);
 
-       /* Restore the previous limit */
-  (void)SetMagickResourceLimit(MapResource,SaveLimit);
+  /* Restore the previous limit */
+  (void) SetMagickResourceLimit(MapResource, SaveLimit);
 
   {
-    Image *p;    
-    long scene=0;
-    
-        /* Rewind list, removing any empty images while rewinding. */
+    Image *p;
+    long scene = 0;
+
+    /* Rewind list, removing any empty images while rewinding. */
     p = image;
     image = NULL;
-    while(p!=(Image *)NULL)
+    while (p != (Image *) NULL)
       {
-        Image *tmp=p;
-        if ((p->rows == 0) || (p->columns == 0)) {
-          p=p->previous;
-          DeleteImageFromList(&tmp);
-        } else {
-          image=p;
-          p=p->previous;
-        }
+        Image *tmp = p;
+        if ((p->rows == 0) || (p->columns == 0))
+          {
+            p = p->previous;
+            DeleteImageFromList(&tmp);
+          }
+        else
+          {
+            image = p;
+            p = p->previous;
+          }
       }
-    
-       /* Fix scene numbers */
-    for (p=image; p != (Image *) NULL; p=p->next)
-      p->scene=scene++;
+
+    /* Fix scene numbers */
+    for (p = image; p != (Image *) NULL; p = p->next)
+      p->scene = scene++;
   }
 
-  if(logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-  if(image==NULL)
-    ThrowReaderException(CorruptImageError,ImageFileDoesNotContainAnyImageData,image);
+  if (logging)
+    (void) LogMagickEvent(CoderEvent, GetMagickModule(), "return");
+  if (image == NULL)
+    ThrowReaderException(CorruptImageError, ImageFileDoesNotContainAnyImageData,
+			 image);
 
-  return(image);
+  return (image);
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e J N X I m a g e                                           %
+%   W r i t e J N X I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -370,7 +397,6 @@ static MagickPassFail WriteJNXImage(const ImageInfo *image_info,Image *image)
   return(0);
 }
 */
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -397,13 +423,14 @@ static MagickPassFail WriteJNXImage(const ImageInfo *image_info,Image *image)
 */
 ModuleExport void RegisterJNXImage(void)
 {
-  MagickInfo *entry;
+  MagickInfo
+    *entry;
 
   entry = SetMagickInfo("JNX");
-  entry->decoder = (DecoderHandler)ReadJNXImage;
+  entry->decoder = (DecoderHandler) ReadJNXImage;
   /* entry->encoder = (EncoderHandler)WriteJNXImage; */
-  entry->description="JNX: Garmin tile strorage format";
-  entry->module="JNX";
+  entry->description = "JNX: Garmin tile strorage format";
+  entry->module = "JNX";
   (void) RegisterMagickInfo(entry);
 }
 
