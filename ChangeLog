@@ -1,3 +1,8 @@
+2012-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c (ReadJNXImage): Add progress monitor support for
+	JNX.
+
 2012-08-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/jnx.c: Image cache is turned off to work-around memory

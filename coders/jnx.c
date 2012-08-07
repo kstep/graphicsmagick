@@ -229,6 +229,10 @@ static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * excepti
   magick_int64_t
     SaveLimit;
 
+  unsigned int
+    total_tiles,
+    current_tile;
+
   /* Open image file. */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -264,11 +268,14 @@ static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * excepti
     JNXHeader.ZOrder = ReadBlobLSBLong(image);
 
   /* Read JNX image level info. */
+  total_tiles = 0;
+  current_tile = 0;
   for (i = 0; i < JNXHeader.Levels; i++)
     {
       JNXLevelInfo[i].TileCount = ReadBlobLSBLong(image);
       JNXLevelInfo[i].TilesOffset = ReadBlobLSBLong(image);
       JNXLevelInfo[i].Scale = ReadBlobLSBLong(image);
+      total_tiles += JNXLevelInfo[i].TileCount;
 
       if (JNXHeader.Version >= 4)
         {
@@ -314,8 +321,21 @@ static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
       for (j = 0; j < JNXLevelInfo[i].TileCount; j++)
         {
+          MonitorHandler
+            previous_handler;
+
+          /* Disable progress monitor while loading individual tiles */
+          previous_handler = SetMonitorHandler(0);
           image = ExtractTileJPG(image, image_info, PositionList[j].PicOffset,
                                  PositionList[j].PicSize, exception);
+          (void) SetMonitorHandler(previous_handler);
+
+          current_tile++;
+          if (QuantumTick(current_tile,total_tiles))
+            if (!MagickMonitorFormatted(current_tile,total_tiles,exception,
+                                        LoadImageText,image->filename,
+                                        image->columns,image->rows))
+              break;
         }
 
       free(PositionList);
