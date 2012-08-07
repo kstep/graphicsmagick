@@ -1,14 +1,13 @@
 2012-08-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* coders/jnx.c: Image cache is turned off to workaround memory overflow.
-
+	* coders/jnx.c: Image cache is turned off to work-around memory
+	overflow.
 
 2012-08-05  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/jnx.c: Fixed.
 
-
-2012-08-05  Bob Friesenhahn  <bfriesen@freddy.simplesystems.org>
+2012-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jnx.c: Add JNX coder for "Garmin proprietary Image
 	Format" (implementation by Jaroslav Fojtik) to the build.  Code is
