@@ -301,7 +301,7 @@ static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* Read JNX image data. */
   for (i = 0; i < JNXHeader.Levels; i++)
     {
-      PositionList = (TJNXTileInfo *) malloc(JNXLevelInfo[i].TileCount *
+      PositionList = (TJNXTileInfo *)MagickMalloc(JNXLevelInfo[i].TileCount *
                                              sizeof(TJNXTileInfo));
       if (PositionList == NULL)
         continue;
@@ -338,7 +338,7 @@ static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * excepti
               break;
         }
 
-      free(PositionList);
+      MagickFree(PositionList);
       PositionList = NULL;
     }
 

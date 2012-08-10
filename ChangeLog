@@ -1,3 +1,7 @@
+2012-08-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: changed malloc/free to MagickMalloc/MagickFree.
+
 2012-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jnx.c (ReadJNXImage): Add progress monitor support for
