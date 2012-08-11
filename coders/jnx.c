@@ -86,6 +86,7 @@ typedef struct
   unsigned PicOffset;
 } TJNXTileInfo;
 
+
 static Image *ExtractTileJPG(Image * image, const ImageInfo * image_info,
 			     ExtendedSignedIntegralType JPG_Offset, long JPG_Size,
 			     ExceptionInfo * exception)
@@ -126,21 +127,27 @@ static Image *ExtractTileJPG(Image * image, const ImageInfo * image_info,
   (void) SeekBlob(image, JPG_Offset, SEEK_SET);
   magick_size = ReadBlob(image, sizeof(magick) - 2, magick + 2) + 2;
   magick[0] = 0xFF;
-  magick[1] = 0xD8;
+  magick[1] = 0xD8;  
 
-  (void) SeekBlob(image, JPG_Offset, SEEK_SET);
-  fputc(0xFF, jpg_file);
-  fputc(0xD8, jpg_file);
-  while (JPG_Size-- > 0)
-    {
-      (void) fputc(ReadBlobByte(image), jpg_file);
-    }
-  (void) fclose(jpg_file);
-
-  /* Detect file format - Check magic.mgk configuration file. */
+    /* Detect file format - Check magic.mgk configuration file. */
   if (GetMagickFileFormat(magick, magick_size, clone_info->magick,
 			  MaxTextExtent, exception) == MagickFail)
-    goto FINISH_UNL;
+  {
+	fclose(jpg_file);
+	goto FINISH_UNL;
+  }  
+
+  fwrite(magick, magick_size, 1, jpg_file);
+  JPG_Size -= magick_size-2;
+
+  while (JPG_Size > 0)
+    {      
+	  magick_size = ReadBlob(image, (JPG_Size>=sizeof(magick))?sizeof(magick):JPG_Size, magick);
+	  if(magick_size<=0) break;
+      fwrite(magick, magick_size, 1, jpg_file);
+	  JPG_Size -= magick_size;
+    }
+  (void) fclose(jpg_file);
 
   /* Read nested image */
   FormatString(clone_info->filename, "%.1024s", JPG_file);
