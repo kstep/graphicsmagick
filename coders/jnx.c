@@ -143,15 +143,16 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
 
   while (JPG_Size > 0)
     {
-      magick_size = ReadBlob(image, (JPG_Size>=sizeof(magick))?sizeof(magick):JPG_Size, magick);
-      if(magick_size<=0) break;
+      magick_size = ReadBlob(image,Min((size_t) JPG_Size,sizeof(magick)), magick);
+      if (magick_size == 0)
+        break;
       fwrite(magick, magick_size, 1, jpg_file);
       JPG_Size -= magick_size;
     }
   (void) fclose(jpg_file);
 
   /* Read nested image */
-  FormatString(clone_info->filename, "%.1024s", JPG_file);
+  (void) strlcpy(clone_info->filename, JPG_file, sizeof(clone_info->filename));
   image2 = ReadImage(clone_info, exception);
 
   if (!image2)
