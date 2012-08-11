@@ -1,3 +1,8 @@
+2012-08-12  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+        * PerlMagick/t/input_jnx.jnx: Small JNX test file.
+
+
 2012-08-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/jnx.c: speedup.
