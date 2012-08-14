@@ -36,8 +36,9 @@ Glenn Randers-Pehrson
 		Maintains the SourceForge mailing lists.
 
 Jaroslav Fojtik
-		Authored the ART, CUT, MAC, MATLAB, TOPOL, and WPG
-                coder modules.
+		Authored the ART, CUT, JNX, MAC, MATLAB, TOPOL, and
+                WPG coder modules. Improved the FITS and TXT coder
+                modules.
 
 Rolf Schroedter
 		Principal author of TclMagick.

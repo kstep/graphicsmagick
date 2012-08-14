@@ -1,3 +1,8 @@
+2012-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c (ExtractTileJPG): Use a memory buffer for the JPEG
+	tile rather than a temporary file.
+
 2012-08-12  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
         * PerlMagick/t/input_jnx.jnx: Small JNX test file.

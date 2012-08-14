@@ -89,95 +89,77 @@ typedef struct
 
 static Image *
 ExtractTileJPG(Image * image, const ImageInfo * image_info,
-               ExtendedSignedIntegralType JPG_Offset, long JPG_Size,
+               magick_off_t JPG_Offset, size_t JPG_Size,
                ExceptionInfo * exception)
 {
-  char
-    JPG_file[MaxTextExtent];
-
-  FILE
-    *jpg_file;
-
-  ImageInfo
-    *clone_info;
-
-  Image
-    *image2;
+  size_t
+    alloc_size;
 
   unsigned char
-    magick[2 * MaxTextExtent];
+    *blob;
 
-  size_t
-    magick_size;
+  alloc_size = JPG_Size + 2;
 
-  if ((clone_info = CloneImageInfo(image_info)) == NULL)
-    return (image);
-  clone_info->blob = (void *) NULL;
-  clone_info->length = 0;
-
-  /* Obtain temporary file */
-  jpg_file = AcquireTemporaryFileStream(JPG_file, BinaryFileIOMode);
-  if (!jpg_file)
+  if ((alloc_size > JPG_Size) &&
+      (blob = MagickAllocateMemory(unsigned char *,alloc_size)) != NULL)
     {
-      (void) LogMagickEvent(CoderEvent, GetMagickModule(),
-                            "Cannot create file stream for JPG tile image");
-      goto FINISH;
+      /* Add missing JPEG header bytes */
+      blob[0] = 0xFF;
+      blob[1] = 0xD8;
+
+      /* Copy JPG to memory blob */
+      if (SeekBlob(image, JPG_Offset, SEEK_SET) == JPG_Offset)
+        {
+          if (ReadBlob(image,JPG_Size,blob+2) == JPG_Size)
+            {
+              Image
+                *image2;
+
+              if ((image2 = BlobToImage(image_info,blob,alloc_size,exception))
+                  != NULL)
+                {
+                  /*
+                    Replace current image with new image while copying
+                    base image attributes.
+                  */
+                  (void) strlcpy(image2->filename, image->filename,
+                                 sizeof(image2->filename));
+                  (void) strlcpy(image2->magick_filename, image->magick_filename,
+                                 sizeof(image2->magick_filename));
+                  (void) strlcpy(image2->magick, image->magick,
+                                 sizeof(image2->magick));
+                  image2->depth = image->depth;
+                  DestroyBlob(image2);
+                  image2->blob = ReferenceBlob(image->blob);
+
+                  if ((image->rows == 0) || (image->columns == 0))
+                    DeleteImageFromList(&image);
+
+                  AppendImageToList(&image, image2);
+                }
+            }
+          else
+            {
+              /* Failed to read enough data from input */
+              ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                             image->filename);
+            }
+        }
+      else
+        {
+          /* Failed to seek in input */
+          ThrowException(exception,BlobError,UnableToSeekToOffset,
+                         image->filename);
+        }
+      MagickFreeMemory(blob);
+    }
+  else
+    {
+      /* Failed to allocate memory */
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+                     image->filename);
     }
 
-  /* Copy JPG to temporary file */
-  (void) SeekBlob(image, JPG_Offset, SEEK_SET);
-  magick_size = ReadBlob(image, sizeof(magick) - 2, magick + 2) + 2;
-  magick[0] = 0xFF;
-  magick[1] = 0xD8;
-
-  /* Detect file format - Check magic.mgk configuration file. */
-  if (GetMagickFileFormat(magick, magick_size, clone_info->magick,
-			  MaxTextExtent, exception) == MagickFail)
-    {
-      fclose(jpg_file);
-      goto FINISH_UNL;
-    }
-
-  fwrite(magick, magick_size, 1, jpg_file);
-  JPG_Size -= magick_size-2;
-
-  while (JPG_Size > 0)
-    {
-      magick_size = ReadBlob(image,Min((size_t) JPG_Size,sizeof(magick)), magick);
-      if (magick_size == 0)
-        break;
-      fwrite(magick, magick_size, 1, jpg_file);
-      JPG_Size -= magick_size;
-    }
-  (void) fclose(jpg_file);
-
-  /* Read nested image */
-  (void) strlcpy(clone_info->filename, JPG_file, sizeof(clone_info->filename));
-  image2 = ReadImage(clone_info, exception);
-
-  if (!image2)
-    goto FINISH_UNL;
-
-  /*
-    Replace current image with new image while copying base image
-    attributes.
-  */
-  (void) strlcpy(image2->filename, image->filename, MaxTextExtent);
-  (void) strlcpy(image2->magick_filename, image->magick_filename, MaxTextExtent);
-  (void) strlcpy(image2->magick, image->magick, MaxTextExtent);
-  image2->depth = image->depth;
-  DestroyBlob(image2);
-  image2->blob = ReferenceBlob(image->blob);
-
-  if ((image->rows == 0) || (image->columns == 0))
-    DeleteImageFromList(&image);
-
-  AppendImageToList(&image, image2);
-
- FINISH_UNL:
-  (void) LiberateTemporaryFile(JPG_file);
- FINISH:
-  DestroyImageInfo(clone_info);
   return (image);
 }
 
@@ -211,7 +193,8 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
+static Image *
+ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
   Image
     *image;
