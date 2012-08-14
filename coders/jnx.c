@@ -100,6 +100,11 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
 
   alloc_size = JPG_Size + 2;
 
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent, GetMagickModule(),
+                          "JNX tile offset %" MAGICK_OFF_F "u, size %lu bytes",
+                          JPG_Offset, (unsigned long) JPG_Size);
+
   if ((alloc_size > JPG_Size) &&
       (blob = MagickAllocateMemory(unsigned char *,alloc_size)) != NULL)
     {
