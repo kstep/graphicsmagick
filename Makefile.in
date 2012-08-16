@@ -201,7 +201,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	ChangeLog ltdl/config/compile ltdl/config/config.guess \
 	ltdl/config/config.sub ltdl/config/depcomp \
 	ltdl/config/install-sh ltdl/config/ltmain.sh \
-	ltdl/config/missing mkinstalldirs
+	ltdl/config/missing ltdl/config/tap-driver.sh mkinstalldirs
 @INSTALL_LTDL_TRUE@am__append_1 = ltdl/ltdl.h
 @INSTALL_LTDL_TRUE@am__append_2 = ltdl/libltdl.la
 @CONVENIENCE_LTDL_TRUE@am__append_3 = ltdl/libltdlc.la
@@ -1912,8 +1912,11 @@ TEST_SUITE_LOG = test-suite.log
 TEST_SUITE_HTML = $(TEST_SUITE_LOG:.log=.html)
 am__test_logs1 = $(TESTS:=.log)
 am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
-TEST_LOGS = $(am__test_logs2:.sh.log=.log)
+am__test_logs3 = $(am__test_logs2:.sh.log=.log)
 SH_LOG_COMPILE = $(SH_LOG_COMPILER) $(AM_SH_LOG_FLAGS) $(SH_LOG_FLAGS)
+TEST_LOGS = $(am__test_logs3:.tap.log=.log)
+TAP_LOG_COMPILE = $(TAP_LOG_COMPILER) $(AM_TAP_LOG_FLAGS) \
+	$(TAP_LOG_FLAGS)
 TEST_LOGS_TMP = $(TEST_LOGS:.log=.log-t)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -2297,6 +2300,11 @@ noinst_HEADERS = \
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = "$(srcdir)/"
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 
+# Tests with .tap extensions use the TAP protocol and TAP driver
+TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+	$(top_srcdir)/ltdl/config/tap-driver.sh
+
+
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
 	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
@@ -2312,7 +2320,7 @@ TESTS_ENVIRONMENT = \
 
 
 # Test extensions
-TEST_EXTENSIONS = .sh
+TEST_EXTENSIONS = .sh .tap
 
 # Be sure to list CHANGELOGS in reverse chronological order in case we
 # should want to concatenate them.
@@ -5478,7 +5486,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .html .lo .log .o .obj .sh .sh$(EXEEXT)
+.SUFFIXES: .c .cpp .html .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT)
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am $(srcdir)/www/wand/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
@@ -10547,6 +10555,10 @@ recheck recheck-html:
 	@p='$<'; $(am__check_pre) $(SH_LOG_COMPILE) "$$tst" $(am__check_post)
 @am__EXEEXT_TRUE@.sh$(EXEEXT).log:
 @am__EXEEXT_TRUE@	@p='$<'; $(am__check_pre) $(SH_LOG_COMPILE) "$$tst" $(am__check_post)
+.tap.log:
+	@p='$<'; $(am__check_pre) $(TAP_LOG_COMPILE) "$$tst" $(am__check_post)
+@am__EXEEXT_TRUE@.tap$(EXEEXT).log:
+@am__EXEEXT_TRUE@	@p='$<'; $(am__check_pre) $(TAP_LOG_COMPILE) "$$tst" $(am__check_post)
 
 distdir: $(DISTFILES)
 	@list='$(MANS)'; if test -n "$$list"; then \

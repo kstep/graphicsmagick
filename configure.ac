@@ -23,6 +23,9 @@ AC_CONFIG_LIBOBJ_DIR([ltdl])
 # Directory where autotools helper scripts lives.
 AC_CONFIG_AUX_DIR([ltdl/config])
 
+# Include the TAP driver
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
+
 #
 # Save initial user-tunable values
 #
@@ -231,6 +234,7 @@ AM_PROG_CC_C_O  # Necessary if objects are placed in subdirectories.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+AC_PROG_AWK
 
 #
 # Tests for Windows
