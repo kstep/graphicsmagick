@@ -1080,15 +1080,17 @@ CHECK_PDF_FILE_COMPRESS = \
 	rle \
 	zip
 
-generate-tests-scripts:
+generate-drawtest-scripts:
 	sh_file="$(srcdir)/tests/drawtest.sh" ; \
 	( \
 	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	  echo ". \$${srcdir}/tests/common.shi" ; \
 	  echo "\$${MEMCHECK} ./drawtest drawtest_out.miff" ; \
 	) > "$${sh_file}" ; \
 	chmod +x "$$sh_file"
+
+generate-constitute-scripts:
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
@@ -1096,13 +1098,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/constitute_$${storage_type}_$${map}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./constitute -storagetype $${storage_type} \$${SRCDIR}/input_truecolor.miff $${map}" ; \
 	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-blob-scripts:
 	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
 	  for type in $(CHECK_TYPES) ; \
@@ -1110,13 +1114,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwblob \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-file-scripts:
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
 	  for type in  $(CHECK_TYPES) ; \
@@ -1124,13 +1130,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-sized-blob-scripts:
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
 	do \
 	  for type in truecolor_70x46 ; \
@@ -1138,13 +1146,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwblob_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwblob -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-sized-file-scripts:
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
 	do \
 	  for type in truecolor_70x46 ; \
@@ -1152,13 +1162,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' -size 70x46 \$${SRCDIR}/input_$${type}.miff $$format" ; \
 	    ) > "$$sh_file" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-miff-compressed-scripts:
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
 	do \
 	  for type in $(CHECK_TYPES) ; \
@@ -1166,13 +1178,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_MIFF_$${type}_$${compress}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff MIFF" ; \
 	    )  > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-pdf-compressed-scripts:
 	for compress in $(CHECK_PDF_FILE_COMPRESS) ; \
 	do \
 	  for type in $(CHECK_TYPES) ; \
@@ -1180,13 +1194,15 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_PDF_$${type}_$${compress}.sh" ; \
 	    ( \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile  -filespec 'out_$${type}_$${compress}_%d' -compress $$compress \$${SRCDIR}/input_$${type}.miff PDF" ; \
 	    )  > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+generate-check-deep-scripts:
 	for format in $(CHECK_DEEP_FILE_FORMATS) ; \
 	do \
 	  for type in  $(CHECK_DEEP_TYPES) ; \
@@ -1194,10 +1210,23 @@ generate-tests-scripts:
 	    sh_file="$(srcdir)/tests/rwfile_$${format}_$${type}.sh" ; \
 	    (  \
 	      echo "#!/bin/sh" ; \
-	      echo "# Copyright (C) 2004-2010 GraphicsMagick Group" ; \
+	      echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
 	      echo ". \$${srcdir}/tests/common.shi" ; \
 	      echo "\$${MEMCHECK} ./rwfile -filespec 'out_$${type}_%d' \$${SRCDIR}/input_$${type}.dpx $$format" ; \
 	    ) > "$${sh_file}" ; \
             chmod +x "$$sh_file" ; \
 	  done ; \
 	done
+
+GENERATE_TESTS_SCRIPTS_DEPS = \
+	generate-drawtest-scripts \
+	generate-constitute-scripts \
+	generate-check-blob-scripts \
+	generate-check-file-scripts \
+	generate-check-sized-blob-scripts \
+	generate-check-sized-file-scripts \
+	generate-check-miff-compressed-scripts \
+	generate-check-pdf-compressed-scripts \
+	generate-check-deep-scripts
+
+generate-tests-scripts: $(GENERATE_TESTS_SCRIPTS_DEPS)
