@@ -10,7 +10,7 @@
 
 # Don't require all the GNU mandated files
 # Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
-AUTOMAKE_OPTIONS = 1.11 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign # dist-lzip
+AUTOMAKE_OPTIONS = 1.12 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign # dist-lzip
 
 topincludedir = @includedir@/GraphicsMagick
 

@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Copyright (C) 2012 GraphicsMagick Group
+#
+# TAP-test implementation functions specific to GraphicsMagick.
+#
+test_count=0
+
+# Report the number of TAP tests we will subsequently run
+test_plan_fn ()
+{
+    tests_planned=$1
+    echo "1..${tests_planned}"
+}
+
+# Report TAP test result and increment current test count
+test_result_fn ()
+{
+    set +x
+    test_result=$1
+    shift
+    test_count=$(($test_count + 1))
+    test_output="${test_result} ${test_count}"
+    if test x"$*" != x
+    then
+        test_output="${test_output} - $*"
+    fi
+    printf '%s\n' "${test_output}"
+    set -x
+}
+
+# Test a simple command where pass/fail depends on command exit status
+test_command_fn ()
+{
+    test_description=$1
+    shift
+    "$@" && test_result="ok" || test_result="not ok"
+    test_result_fn "${test_result}" "${test_description}"
+}

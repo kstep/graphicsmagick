@@ -1,0 +1,284 @@
+#!/bin/sh
+# Copyright (C) 2004-2012 GraphicsMagick Group
+. ${srcdir}/tests/common.shi
+
+# Test program
+rwblob=./rwblob
+
+# Types we will test
+check_types='bilevel gray pallette truecolor'
+
+# Number of tests we plan to run
+test_plan_fn 180
+
+# AVS format
+for type in ${check_types}
+do
+  test_command_fn "AVS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" AVS
+done
+
+# BMP format
+for type in ${check_types}
+do
+  test_command_fn "BMP ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" BMP
+done
+
+# CALS format
+for type in ${check_types}
+do
+  test_command_fn "CALS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" CALS
+done
+
+# CIN format
+for type in ${check_types}
+do
+  test_command_fn "CIN ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" CIN
+done
+
+# DIB format
+for type in ${check_types}
+do
+  test_command_fn "DIB ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" DIB
+done
+
+# DPX format
+for type in ${check_types}
+do
+  test_command_fn "DPX ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" DPX
+done
+
+# EPDF format
+for type in ${check_types}
+do
+  test_command_fn "EPDF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
+done
+
+# EPT format
+for type in ${check_types}
+do
+  test_command_fn "EPT ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPT
+done
+
+# FAX format
+for type in ${check_types}
+do
+  test_command_fn "FAX ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" FAX
+done
+
+# FPX format
+for type in ${check_types}
+do
+  test_command_fn "FPX ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" FPX
+done
+
+# G3 format
+for type in ${check_types}
+do
+  test_command_fn "G3 ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" G3
+done
+
+# FITS format
+for type in ${check_types}
+do
+  test_command_fn "FITS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" FITS
+done
+
+# GIF format
+for type in ${check_types}
+do
+  test_command_fn "GIF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" GIF
+done
+
+# GIF87 format
+for type in ${check_types}
+do
+  test_command_fn "GIF87 ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" GIF87
+done
+
+# JBIG format
+for type in ${check_types}
+do
+  test_command_fn "JBIG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JBIG
+done
+
+# JPEG format
+for type in ${check_types}
+do
+  test_command_fn "JPEG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JPEG
+done
+
+# JP2 format
+for type in ${check_types}
+do
+  test_command_fn "JP2 ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JP2
+done
+
+# MAT format
+for type in ${check_types}
+do
+  test_command_fn "MAT ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MAT
+done
+
+# MIFF format
+for type in ${check_types}
+do
+  test_command_fn "MIFF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MIFF
+done
+
+# MNG format
+for type in ${check_types}
+do
+  test_command_fn "MNG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MNG
+done
+
+# MTV format
+for type in ${check_types}
+do
+  test_command_fn "MTV ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MTV
+done
+
+# P7 format
+for type in ${check_types}
+do
+  test_command_fn "P7 ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" P7
+done
+
+# PBM format
+for type in ${check_types}
+do
+  test_command_fn "PBM ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PBM
+done
+
+# PCD format
+for type in ${check_types}
+do
+  test_command_fn "PCD ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PCD
+done
+
+# PCDS format
+for type in ${check_types}
+do
+  test_command_fn "PCDS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PCDS
+done
+
+# PCX format
+for type in ${check_types}
+do
+  test_command_fn "PCX ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PCX
+done
+
+# PGM format
+for type in ${check_types}
+do
+  test_command_fn "PGM ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PGM
+done
+
+# PICON format
+for type in ${check_types}
+do
+  test_command_fn "PICON ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PICON
+done
+
+# PICT format
+for type in ${check_types}
+do
+  test_command_fn "PICT ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PICT
+done
+
+# PNG format
+for type in ${check_types}
+do
+  test_command_fn "PNG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PNG
+done
+
+# PPM format
+for type in ${check_types}
+do
+  test_command_fn "PPM ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PPM
+done
+
+# RAS format
+for type in ${check_types}
+do
+  test_command_fn "RAS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" RAS
+done
+
+# SGI format
+for type in ${check_types}
+do
+  test_command_fn "SGI ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" SGI
+done
+
+# SUN format
+for type in ${check_types}
+do
+  test_command_fn "SUN ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" SUN
+done
+
+# TGA format
+for type in ${check_types}
+do
+  test_command_fn "TGA ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" TGA
+done
+
+# TIFF format
+for type in ${check_types}
+do
+  test_command_fn "TIFF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" TIFF
+done
+
+# TXT format
+for type in ${check_types}
+do
+  test_command_fn "TXT ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" TXT
+done
+
+# VDA format
+for type in ${check_types}
+do
+  test_command_fn "VDA ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" VDA
+done
+
+# VICAR format
+for type in ${check_types}
+do
+  test_command_fn "VICAR ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" VICAR
+done
+
+# VIFF format
+for type in ${check_types}
+do
+  test_command_fn "VIFF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" VIFF
+done
+
+# VST format
+for type in ${check_types}
+do
+  test_command_fn "VST ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" VST
+done
+
+# WBMP format
+for type in ${check_types}
+do
+  test_command_fn "WBMP ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" WBMP
+done
+
+# XBM format
+for type in ${check_types}
+do
+  test_command_fn "XBM ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" XBM
+done
+
+# XPM format
+for type in ${check_types}
+do
+  test_command_fn "XPM ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" XPM
+done
+
+# XWD format
+for type in ${check_types}
+do
+  test_command_fn "XWD ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" XWD
+done
+
+:

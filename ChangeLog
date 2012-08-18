@@ -1,3 +1,9 @@
+2012-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Update to Automake 1.12.3.
+	Update test suite to use Automake TAP driver rather than legacy
+	tests.
+
 2012-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jnx.c (ExtractTileJPG): Add a trace of tile offset and size.

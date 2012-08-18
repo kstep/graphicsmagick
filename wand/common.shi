@@ -1,5 +1,8 @@
+# Common code fragment for wand tests
+#
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`
 TOPSRCDIR=`cd $srcdir && pwd`
+export SRCDIR TOPSRCDIR
 . $TOPSRCDIR/scripts/tap-functions.shi
-cd tests || exit 1
+cd wand || exit 1

@@ -1,0 +1,98 @@
+#!/bin/sh
+# Copyright (C) 2004-2012 GraphicsMagick Group
+. ${srcdir}/tests/common.shi
+
+# Test program
+rwfile=./rwfile
+
+# Types we will test
+check_types='truecolor10 truecolor12 truecolor16'
+
+# Number of tests we plan to run
+test_plan_fn 42
+
+# CIN format
+for type in ${check_types}
+do
+  test_command_fn "CIN ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" CIN
+done
+
+# DPX format
+for type in ${check_types}
+do
+  test_command_fn "DPX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" DPX
+done
+
+# FITS format
+for type in ${check_types}
+do
+  test_command_fn "FITS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" FITS
+done
+
+# JP2 format
+for type in ${check_types}
+do
+  test_command_fn "JP2 ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" JP2
+done
+
+# MAT format
+for type in ${check_types}
+do
+  test_command_fn "MAT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" MAT
+done
+
+# MIFF format
+for type in ${check_types}
+do
+  test_command_fn "MIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" MIFF
+done
+
+# MNG format
+for type in ${check_types}
+do
+  test_command_fn "MNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" MNG
+done
+
+# PNG format
+for type in ${check_types}
+do
+  test_command_fn "PNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PNG
+done
+
+# PPM format
+for type in ${check_types}
+do
+  test_command_fn "PPM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PPM
+done
+
+# PTIF format
+for type in ${check_types}
+do
+  test_command_fn "PTIF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PTIF
+done
+
+# SGI format
+for type in ${check_types}
+do
+  test_command_fn "SGI ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" SGI
+done
+
+# TIFF format
+for type in ${check_types}
+do
+  test_command_fn "TIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" TIFF
+done
+
+# TGA format
+for type in ${check_types}
+do
+  test_command_fn "TGA ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" TGA
+done
+
+# TXT format
+for type in ${check_types}
+do
+  test_command_fn "TXT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" TXT
+done
+
+:

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Copyright 2004-2012 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+#
+# This file is part of Magick++, the C++ API for GraphicsMagick and
+# ImageMagick.  Please see the file "COPYING" included with Magick++
+# for usage and copying restrictions.
+#
+SRCDIR=`dirname $0`
+SRCDIR=`cd $SRCDIR && pwd`/
+TOPSRCDIR=`cd $srcdir && pwd`
+export SRCDIR
+. ${TOPSRCDIR}/scripts/tap-functions.shi
+progs='appendImages attributes averageImages coalesceImages coderInfo color
+  colorHistogram exceptions montageImages morphImages readWriteBlob readWriteImages'
+
+# Number of tests we plan to run
+test_plan_fn 12
+
+cd Magick++/tests || exit 1
+
+for prog in $progs
+do
+    test_command_fn "$prog" ${MEMCHECK} "./$prog"
+done
+:
