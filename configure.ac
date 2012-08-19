@@ -3134,35 +3134,106 @@ AC_SUBST(MAGICKLIB)
 AC_SUBST(MAGICKLIBDIR)
 
 # Create a simple string containing format names for all delegate libraries
+# DELEGATES is used to select sub-directories in the PerlMagick test suite
+# MAGICK_FEATURES is used to declare required features in the test suite
 DELEGATES=''
-if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
-if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
-if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
-if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
-if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
-if test "$have_png$have_jpeg" = 'yesyes' ; then DELEGATES="$DELEGATES jng"; fi
-if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
-if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
-if test "$have_lcms2"    = 'yes' ; then DELEGATES="$DELEGATES lcms2"  ; fi
-if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
-if test "$have_lzma"    = 'yes' ; then DELEGATES="$DELEGATES lzma"  ; fi
-# if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
-if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
-if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
+MAGICK_FEATURES=''
+if test "$have_bzlib"  = 'yes' ; then
+   DELEGATES="$DELEGATES bzlib"
+   MAGICK_FEATURES="$MAGICK_FEATURES BZLIB"
+fi
+if test "$have_ralcgm" = 'yes' ; then
+   DELEGATES="$DELEGATES cgm"
+   MAGICK_FEATURES="$MAGICK_FEATURES CGM"
+fi
+if test "$have_fpx"    = 'yes' ; then
+   DELEGATES="$DELEGATES fpx"
+   MAGICK_FEATURES="$MAGICK_FEATURES FPX"
+fi
+if test "$have_hp2xx"  = 'yes' ; then
+   DELEGATES="$DELEGATES hpgl"
+   MAGICK_FEATURES="$MAGICK_FEATURES HPGL"
+fi
+if test "$have_jbig"   = 'yes' ; then
+   DELEGATES="$DELEGATES jbig"
+   MAGICK_FEATURES="$MAGICK_FEATURES JBIG"
+fi
+if test "$have_png$have_jpeg" = 'yesyes' ; then
+   DELEGATES="$DELEGATES jng"
+   MAGICK_FEATURES="$MAGICK_FEATURES JNG"
+fi
+if test "$have_jp2"   = 'yes' ; then
+   DELEGATES="$DELEGATES jp2"
+   MAGICK_FEATURES="$MAGICK_FEATURES JP2"
+fi
+if test "$have_jpeg"   = 'yes' ; then
+   DELEGATES="$DELEGATES jpeg"
+   MAGICK_FEATURES="$MAGICK_FEATURES JPEG"
+fi
+if test "$have_lcms" = 'yes' || test "$have_lcms2" = 'yes' ; then
+   DELEGATES="$DELEGATES lcms"
+   MAGICK_FEATURES="$MAGICK_FEATURES LCMS"
+fi
+if test "$have_lzma"    = 'yes' ; then
+   DELEGATES="$DELEGATES lzma"
+   MAGICK_FEATURES="$MAGICK_FEATURES LZMA"
+fi
+if test "$have_mpeg2"   = 'yes' ; then
+   DELEGATES="$DELEGATES mpeg2"
+   MAGICK_FEATURES="$MAGICK_FEATURES MPEG2"
+fi
+if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then
+   DELEGATES="$DELEGATES mpeg"
+   MAGICK_FEATURES="$MAGICK_FEATURES MPEG"
+fi
+if test "$have_png"    = 'yes' ; then
+   DELEGATES="$DELEGATES png"
+   MAGICK_FEATURES="$MAGICK_FEATURES PNG"
+fi
 
 have_ps='no'
 if test "$have_dps"    = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
-if test "$have_ps"     = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
+if test "$have_ps"     = 'yes' ; then
+   DELEGATES="$DELEGATES ps"
+   MAGICK_FEATURES="$MAGICK_FEATURES PS"
+fi
 
-if test "$have_ra_ppm" = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
-if test "$have_tiff"   = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
-if test "$have_ttf"    = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
-if test "$have_wmf"    = 'yes' ; then DELEGATES="$DELEGATES wmf"  ; fi
-if test "$have_x"      = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
-if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
-if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
-
+if test "$have_ra_ppm" = 'yes' ; then
+   DELEGATES="$DELEGATES rad"
+   MAGICK_FEATURES="$MAGICK_FEATURES RAD"
+fi
+if test "$have_tiff"   = 'yes' ; then
+   DELEGATES="$DELEGATES tiff"
+   MAGICK_FEATURES="$MAGICK_FEATURES TIFF"
+fi
+if test "$have_ttf"    = 'yes' ; then
+   DELEGATES="$DELEGATES ttf"
+   MAGICK_FEATURES="$MAGICK_FEATURES TTF"
+fi
+if test "$have_wmf"    = 'yes' ; then
+   DELEGATES="$DELEGATES wmf"
+   MAGICK_FEATURES="$MAGICK_FEATURES WMF"
+fi
+if test "$have_x"      = 'yes' ; then
+   DELEGATES="$DELEGATES x"
+   MAGICK_FEATURES="$MAGICK_FEATURES X"
+fi
+if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
+   DELEGATES="$DELEGATES xfig"
+   MAGICK_FEATURES="$MAGICK_FEATURES XFIG"
+fi
+if test "$have_zlib"   = 'yes' ; then
+   DELEGATES="$DELEGATES zlib"
+   MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
+fi
+if test "$with_modules" != 'no' ; then
+   MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
+fi
+# Remove extraneous spaces from output variables (asthetic)
+DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
+MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
 AC_SUBST(DELEGATES)
+AC_SUBST(MAGICK_FEATURES)
 
 #
 # Handle special compiler flags
@@ -3318,6 +3389,7 @@ AC_CONFIG_FILES(\
         magick/GraphicsMagick.pc \
         magick/magick_types.h \
         magick/version.h \
+        common.shi \
         rungm.sh \
         wand/GraphicsMagickWand-config \
         wand/GraphicsMagickWand.pc )

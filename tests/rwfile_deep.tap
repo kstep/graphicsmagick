@@ -51,13 +51,13 @@ done
 # MNG format
 for type in ${check_types}
 do
-  test_command_fn "MNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" MNG
+  test_command_fn "MNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" MNG
 done
 
 # PNG format
 for type in ${check_types}
 do
-  test_command_fn "PNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PNG
+  test_command_fn "PNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PNG
 done
 
 # PPM format

@@ -190,12 +190,13 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(noinst_HEADERS) $(srcdir)/GraphicsMagick.spec.in \
 	$(srcdir)/Magick++/Makefile.am $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
-	$(srcdir)/coders/Makefile.am $(srcdir)/config/Makefile.am \
-	$(srcdir)/filters/Makefile.am $(srcdir)/ltdl/Makefile.inc \
-	$(srcdir)/magick/Makefile.am $(srcdir)/rungm.sh.in \
-	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
-	$(srcdir)/wand/Makefile.am $(srcdir)/www/Makefile.am \
-	$(srcdir)/www/api/Makefile.am $(srcdir)/www/wand/Makefile.am \
+	$(srcdir)/coders/Makefile.am $(srcdir)/common.shi.in \
+	$(srcdir)/config/Makefile.am $(srcdir)/filters/Makefile.am \
+	$(srcdir)/ltdl/Makefile.inc $(srcdir)/magick/Makefile.am \
+	$(srcdir)/rungm.sh.in $(srcdir)/tests/Makefile.am \
+	$(srcdir)/utilities/Makefile.am $(srcdir)/wand/Makefile.am \
+	$(srcdir)/www/Makefile.am $(srcdir)/www/api/Makefile.am \
+	$(srcdir)/www/wand/Makefile.am \
 	$(top_srcdir)/Magick++/bin/GraphicsMagick++-config.in \
 	$(top_srcdir)/Magick++/lib/GraphicsMagick++.pc.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
@@ -255,8 +256,8 @@ CONFIG_CLEAN_FILES = GraphicsMagick.spec \
 	config/type-solaris.mgk config/type-windows.mgk \
 	config/type.mgk magick/GraphicsMagick-config \
 	magick/GraphicsMagick.pc magick/magick_types.h \
-	magick/version.h rungm.sh wand/GraphicsMagickWand-config \
-	wand/GraphicsMagickWand.pc
+	magick/version.h common.shi rungm.sh \
+	wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -2208,6 +2209,7 @@ MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
 MAGICK_CONFIGURE_SRC_PATH = @MAGICK_CONFIGURE_SRC_PATH@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_FEATURES = @MAGICK_FEATURES@
 MAGICK_FILTER_MODULE_PATH = @MAGICK_FILTER_MODULE_PATH@
 MAGICK_LIBLTDL = @MAGICK_LIBLTDL@
 MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
@@ -4987,6 +4989,8 @@ magick/GraphicsMagick.pc: $(top_builddir)/config.status $(top_srcdir)/magick/Gra
 magick/magick_types.h: $(top_builddir)/config.status $(top_srcdir)/magick/magick_types.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 magick/version.h: $(top_builddir)/config.status $(top_srcdir)/magick/version.h.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+common.shi: $(top_builddir)/config.status $(srcdir)/common.shi.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 rungm.sh: $(top_builddir)/config.status $(srcdir)/rungm.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

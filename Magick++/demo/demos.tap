@@ -11,6 +11,7 @@ SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`/
 TOPSRCDIR=`cd $srcdir && pwd`
 export SRCDIR
+. ./common.shi
 . ${TOPSRCDIR}/scripts/tap-functions.shi
 
 # Number of tests we plan to run

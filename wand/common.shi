@@ -4,5 +4,6 @@ SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`
 TOPSRCDIR=`cd $srcdir && pwd`
 export SRCDIR TOPSRCDIR
+. ./common.shi
 . $TOPSRCDIR/scripts/tap-functions.shi
 cd wand || exit 1

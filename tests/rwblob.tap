@@ -68,7 +68,7 @@ done
 # FPX format
 for type in ${check_types}
 do
-  test_command_fn "FPX ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" FPX
+  test_command_fn "FPX ${type}" -F FPX ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" FPX
 done
 
 # G3 format
@@ -98,7 +98,7 @@ done
 # JBIG format
 for type in ${check_types}
 do
-  test_command_fn "JBIG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JBIG
+  test_command_fn "JBIG ${type}" -F JBIG ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JBIG
 done
 
 # JPEG format
@@ -128,7 +128,7 @@ done
 # MNG format
 for type in ${check_types}
 do
-  test_command_fn "MNG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MNG
+  test_command_fn "MNG ${type}" -F PNG ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" MNG
 done
 
 # MTV format
@@ -188,7 +188,7 @@ done
 # PNG format
 for type in ${check_types}
 do
-  test_command_fn "PNG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PNG
+  test_command_fn "PNG ${type}" -F PNG ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" PNG
 done
 
 # PPM format
@@ -278,7 +278,7 @@ done
 # XWD format
 for type in ${check_types}
 do
-  test_command_fn "XWD ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" XWD
+  test_command_fn "XWD ${type}" -F X ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" XWD
 done
 
 :

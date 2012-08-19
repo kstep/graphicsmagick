@@ -7,7 +7,7 @@
 # Number of tests we plan to execute
 test_plan_fn 32
 
-nox_commands='benchmark compare composite conjure convert help identify import mogrify montage time version'
+nox_commands='benchmark compare composite conjure convert help identify mogrify montage time version'
 
 test_command_fn "gm help" ${GM} help
 
@@ -23,6 +23,6 @@ x_commands='animate display import'
 for command in ${x_commands}
 do
     test_command_fn "gm help ${command}" ${GM} help ${command}
-    test_command_fn "gm ${command} -help" ${GM} ${command} -help
+    test_command_fn "gm ${command} -help" -F X ${GM} ${command} -help
 done
 :

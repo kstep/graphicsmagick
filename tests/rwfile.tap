@@ -105,7 +105,7 @@ done
 # FPX format
 for type in ${check_types}
 do
-  test_command_fn "FPX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FPX
+  test_command_fn "FPX ${type}" -F FPX ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FPX
 done
 
 # GIF format
@@ -129,7 +129,7 @@ done
 # JBIG format
 for type in ${check_types}
 do
-  test_command_fn "JBIG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JBIG
+  test_command_fn "JBIG ${type}" -F JBIG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JBIG
 done
 
 # JPEG format
@@ -159,7 +159,7 @@ done
 # MNG format
 for type in ${check_types}
 do
-  test_command_fn "MNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MNG
+  test_command_fn "MNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MNG
 done
 
 # MPR format
@@ -231,7 +231,7 @@ done
 # PNG format
 for type in ${check_types}
 do
-  test_command_fn "PNG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PNG
+  test_command_fn "PNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PNG
 done
 
 # PNM format
@@ -345,7 +345,7 @@ done
 # XWD format
 for type in ${check_types}
 do
-  test_command_fn "XWD ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" XWD
+  test_command_fn "XWD ${type}" -F X ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" XWD
 done
 
 :

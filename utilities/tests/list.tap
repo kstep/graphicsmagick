@@ -7,11 +7,14 @@
 # Number of tests we plan to execute
 test_plan_fn 16
 
-list_opts='color delegate format magic module modulemap resource type'
+list_opts='color delegate format magic modulemap resource type'
 
 for list_opt in ${list_opts}
 do
     test_command_fn "gm convert -list ${list_opt}" ${GM} convert -list ${list_opt}
     test_command_fn "gm mogrify -list ${list_opt}" ${GM} mogrify -list ${list_opt}
 done
+
+test_command_fn 'gm convert -list module' -F MODULES ${GM} convert -list module
+test_command_fn 'gm mogrify -list module' -F MODULES ${GM} mogrify -list module
 :

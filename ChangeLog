@@ -1,5 +1,12 @@
 2012-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* scripts/tap-functions.shi: If a test declares that it needs
+	certain features, skip the test if required features are not
+	available.
+
+	* configure.ac: Build a supported features list and save to
+	common.shi script for use by test scripts.
+
 	* Makefile.am (LOG_COMPILER): Run Bourne-shell based TAP scripts
 	with the same shell $(SHELL) that configure selected for the
 	Makefile to use.

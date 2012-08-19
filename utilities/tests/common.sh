@@ -4,6 +4,7 @@
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`
 TOPSRCDIR=`cd $srcdir && pwd`
+. ./common.shi
 . $TOPSRCDIR/scripts/tap-functions.shi
 mkdir -p utilities/tests
 cd utilities/tests || exit 1
