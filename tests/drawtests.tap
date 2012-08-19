@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- shell-script -*-
 # Copyright (C) 2004-2010 GraphicsMagick Group
 # Test vector drawing.
 . ${srcdir}/tests/common.shi

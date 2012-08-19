@@ -1,4 +1,4 @@
-#!/bin/sh
+# -*- shell-script -*-
 #
 # Copyright (C) 2012 GraphicsMagick Group
 #
@@ -19,7 +19,8 @@ test_result_fn ()
     set +x
     test_result=$1
     shift
-    test_count=$(($test_count + 1))
+    #test_count=$(($test_count + 1))
+    test_count=`expr $test_count + 1`
     test_output="${test_result} ${test_count}"
     if test x"$*" != x
     then

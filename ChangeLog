@@ -1,3 +1,9 @@
+2012-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (LOG_COMPILER): Run Bourne-shell based TAP scripts
+	with the same shell $(SHELL) that configure selected for the
+	Makefile to use.
+
 2012-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Update to Automake 1.12.3.

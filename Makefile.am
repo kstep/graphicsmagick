@@ -58,6 +58,15 @@ else
 SRCDIR="$(srcdir)/"
 endif
 
+# Run the tests with a proper shell detected at configure time.
+LOG_COMPILER = $(SHELL)
+
+SH_LOG_COMPILER = $(LOG_COMPILER)
+TAP_LOG_COMPILER = $(LOG_COMPILER)
+
+# Test extensions
+TEST_EXTENSIONS = .sh .tap
+
 # Tests with .tap extensions use the TAP protocol and TAP driver
 TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 	$(top_srcdir)/ltdl/config/tap-driver.sh
@@ -74,9 +83,6 @@ TESTS_ENVIRONMENT = \
 	MEMCHECK="$(MEMCHECK)" \
 	PATH="$(abs_top_builddir)/utilities:${PATH}" \
 	SRCDIR=$(SRCDIR)
-
-# Test extensions
-TEST_EXTENSIONS = .sh .tap
 
 # Tests to run
 TESTS = \

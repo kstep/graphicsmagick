@@ -1,3 +1,4 @@
+# -*- shell-script -*-
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`
 TOPSRCDIR=`cd $srcdir && pwd`

@@ -1,3 +1,4 @@
+# -*- shell-script -*-
 # Common code fragment for utilities tests
 #
 SRCDIR=`dirname $0`

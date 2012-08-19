@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- shell-script -*-
 #
 # Copyright 2004-2012 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #

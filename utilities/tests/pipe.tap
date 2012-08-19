@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- shell-script -*-
 # Copyright (C) 2004-2012 GraphicsMagick Group
 # Test I/O using pipes
 # Note that running a test command containing a pipe blows up
