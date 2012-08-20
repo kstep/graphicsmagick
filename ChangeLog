@@ -1,3 +1,8 @@
+2012-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Remove support for legacy LZWDecodeDelegate and
+	LZWEncodeDelegate since these are not used any more.
+
 2012-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* scripts/tap-functions.shi: If a test declares that it needs
