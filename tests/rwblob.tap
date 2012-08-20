@@ -104,7 +104,7 @@ done
 # JPEG format
 for type in ${check_types}
 do
-  test_command_fn "JPEG ${type}" -F JPET ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JPEG
+  test_command_fn "JPEG ${type}" -F JPEG ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JPEG
 done
 
 # JP2 format
