@@ -27,7 +27,7 @@ done
 # CALS format
 for type in ${check_types}
 do
-  test_command_fn "CALS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" CALS
+  test_command_fn "CALS ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" CALS
 done
 
 # CIN format
@@ -57,37 +57,37 @@ done
 # EPDF format
 for type in ${check_types}
 do
-  test_command_fn "EPDF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPDF
+  test_command_fn "EPDF ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPDF
 done
 
 # EPSF format
 for type in ${check_types}
 do
-  test_command_fn "EPSF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSF
+  test_command_fn "EPSF ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSF
 done
 
 # EPSI format
 for type in ${check_types}
 do
-  test_command_fn "EPSI ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSI
+  test_command_fn "EPSI ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSI
 done
 
 # EPI format
 for type in ${check_types}
 do
-  test_command_fn "EPI ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPI
+  test_command_fn "EPI ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPI
 done
 
 # EPS format
 for type in ${check_types}
 do
-  test_command_fn "EPS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPS
+  test_command_fn "EPS ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPS
 done
 
 # EPT format
 for type in ${check_types}
 do
-  test_command_fn "EPT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPT
+  test_command_fn "EPT ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPT
 done
 
 # FAX format
@@ -135,13 +135,13 @@ done
 # JPEG format
 for type in ${check_types}
 do
-  test_command_fn "JPEG ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JPEG
+  test_command_fn "JPEG ${type}" -F JPEG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JPEG
 done
 
 # JP2 format
 for type in ${check_types}
 do
-  test_command_fn "JP2 ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JP2
+  test_command_fn "JP2 ${type}" -F JP2 ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JP2
 done
 
 # MAT format
@@ -207,7 +207,7 @@ done
 # PDF format
 for type in ${check_types}
 do
-  test_command_fn "PDF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PDF
+  test_command_fn "PDF ${type}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PDF
 done
 
 # PGM format
@@ -249,7 +249,7 @@ done
 # PS format
 for type in ${check_types}
 do
-  test_command_fn "PS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PS
+  test_command_fn "PS ${type}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PS
 done
 
 # PSD format
@@ -261,7 +261,7 @@ done
 # PTIF format
 for type in ${check_types}
 do
-  test_command_fn "PTIF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PTIF
+  test_command_fn "PTIF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PTIF
 done
 
 # RAS format
@@ -297,7 +297,7 @@ done
 # TIFF format
 for type in ${check_types}
 do
-  test_command_fn "TIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TIFF
+  test_command_fn "TIFF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TIFF
 done
 
 # VDA format

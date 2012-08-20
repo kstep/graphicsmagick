@@ -19,7 +19,7 @@ for compress in ${compress_types}
 do
   for type in ${check_types}
   do
-    test_command_fn "PDF ${type} ${compress}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_${compress}_%d" -compress $compress "${SRCDIR}/input_${type}.miff" PDF
+    test_command_fn "PDF ${type} ${compress}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_${compress}_%d" -compress $compress "${SRCDIR}/input_${type}.miff" PDF
   done
 done
 

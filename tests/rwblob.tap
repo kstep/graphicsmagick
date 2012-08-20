@@ -26,7 +26,7 @@ done
 # CALS format
 for type in ${check_types}
 do
-  test_command_fn "CALS ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" CALS
+  test_command_fn "CALS ${type}" -F TIFF ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" CALS
 done
 
 # CIN format
@@ -50,13 +50,13 @@ done
 # EPDF format
 for type in ${check_types}
 do
-  test_command_fn "EPDF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
+  test_command_fn "EPDF ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
 done
 
 # EPT format
 for type in ${check_types}
 do
-  test_command_fn "EPT ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPT
+  test_command_fn "EPT ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPT
 done
 
 # FAX format
@@ -104,13 +104,13 @@ done
 # JPEG format
 for type in ${check_types}
 do
-  test_command_fn "JPEG ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JPEG
+  test_command_fn "JPEG ${type}" -F JPET ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JPEG
 done
 
 # JP2 format
 for type in ${check_types}
 do
-  test_command_fn "JP2 ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JP2
+  test_command_fn "JP2 ${type}" -F JP2 ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" JP2
 done
 
 # MAT format
@@ -224,7 +224,7 @@ done
 # TIFF format
 for type in ${check_types}
 do
-  test_command_fn "TIFF ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" TIFF
+  test_command_fn "TIFF ${type}" -F TIFF ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" TIFF
 done
 
 # TXT format

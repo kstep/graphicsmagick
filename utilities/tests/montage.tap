@@ -7,11 +7,11 @@
 # Number of tests we plan to execute
 test_plan_fn 3
 
-test_command_fn 'Montage' ${GM} montage ${MONTAGE_FLAGS} -geometry '130x194+10+5>' -gravity 'Center' \
+test_command_fn 'Montage' -F TTF ${GM} montage ${MONTAGE_FLAGS} -geometry '130x194+10+5>' -gravity 'Center' \
   -bordercolor 'green' -borderwidth 1x1 -tile '7x4' -compose 'over' \
   -background '#ffffff' -font ${GENERIC_TTF} -pointsize 18 -fill '#600' \
   -stroke 'none' null: null: null: null: null: null: null: 'Tile*_out.miff' \
   -compress rle montage_out.miff
-test_command_fn 'Prepare logo' ${GM} convert ${CONVERT_FLAGS} logo: -resize 40% logo_out.miff
-test_command_fn 'Composite logo' ${GM} composite ${COMPOSITE_FLAGS} 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' -depth 8 demo-%d.miff
+test_command_fn 'Prepare logo' -F TTF ${GM} convert ${CONVERT_FLAGS} logo: -resize 40% logo_out.miff
+test_command_fn 'Composite logo' -F TTF ${GM} composite ${COMPOSITE_FLAGS} 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' -depth 8 demo-%d.miff
 :

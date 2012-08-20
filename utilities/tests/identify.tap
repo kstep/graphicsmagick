@@ -7,4 +7,4 @@
 # Number of tests we plan to execute
 test_plan_fn 1
 
-test_command_fn 'identify -verbose' ${GM} identify -verbose "${SUNRISE_JPEG}"
+test_command_fn 'identify -verbose' -F JPEG ${GM} identify -verbose "${SUNRISE_JPEG}"

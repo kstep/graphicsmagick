@@ -20,13 +20,13 @@ test_plan_fn 24
 cd Magick++/demo || exit 1
 
 test_command_fn "analyze" ${MEMCHECK} ./analyze "$SRCDIR/model.miff"
-test_command_fn "button" ${MEMCHECK} ./button
-test_command_fn "demo" ${MEMCHECK} ./demo
+test_command_fn "button" -F TTF ${MEMCHECK} ./button
+test_command_fn "demo" -F TTF ${MEMCHECK} ./demo
 #test_command_fn "detrans" ${MEMCHECK} ./detrans background_color file
 test_command_fn "flip" ${MEMCHECK} ./flip
-test_command_fn "gravity" ${MEMCHECK} ./gravity
-test_command_fn "piddle" ${MEMCHECK} ./piddle
-test_command_fn "shapes" ${MEMCHECK} ./shapes
+test_command_fn "gravity" -F TTF ${MEMCHECK} ./gravity
+test_command_fn "piddle" -F TTF ${MEMCHECK} ./piddle
+test_command_fn "shapes" -F TTF ${MEMCHECK} ./shapes
 for filter in bessel blackman box catrom cubic gaussian hamming hanning hermite lanczos mitchell point quadratic sample scale sinc triangle
 do
     test_command_fn "zoom ${filter}" ${MEMCHECK} ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff

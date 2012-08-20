@@ -33,7 +33,7 @@ done
 # JP2 format
 for type in ${check_types}
 do
-  test_command_fn "JP2 ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" JP2
+  test_command_fn "JP2 ${type}" -F JP2 ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" JP2
 done
 
 # MAT format
@@ -69,7 +69,7 @@ done
 # PTIF format
 for type in ${check_types}
 do
-  test_command_fn "PTIF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PTIF
+  test_command_fn "PTIF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" PTIF
 done
 
 # SGI format
@@ -81,7 +81,7 @@ done
 # TIFF format
 for type in ${check_types}
 do
-  test_command_fn "TIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" TIFF
+  test_command_fn "TIFF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.dpx" TIFF
 done
 
 # TGA format
