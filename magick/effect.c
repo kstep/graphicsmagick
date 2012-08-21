@@ -1178,7 +1178,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     register long
       i;
 
-    normal_kernel=MagickAllocateMemory(float_quantum_t *,width*width*sizeof(float_quantum_t));
+    normal_kernel=MagickAllocateAlignedMemory(float_quantum_t *,
+                                              MAGICK_CACHE_LINE_SIZE,
+                                              width*width*sizeof(float_quantum_t));
     if (normal_kernel == (float_quantum_t *) NULL)
       {
         DestroyImage(convolve_image);
@@ -1388,7 +1390,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         }
       }
   }
-  MagickFreeMemory(normal_kernel);
+  MagickFreeAlignedMemory(normal_kernel);
   if (MagickFail == status)
     {
       DestroyImage(convolve_image);

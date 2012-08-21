@@ -1,5 +1,8 @@
 2012-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (ConvolveImage): Allocate normalized convolution
+	kernel using cache-line aligned memory allocator.
+
 	* configure.ac: Remove support for legacy LZWDecodeDelegate and
 	LZWEncodeDelegate since these are not used any more.
 
