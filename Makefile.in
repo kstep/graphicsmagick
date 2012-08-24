@@ -69,10 +69,10 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright (C) 1999 - 2010 Bob Friesenhahn
+# Copyright (C) 1999 - 2012 Bob Friesenhahn
 #
 
-# Copyright (C) 2004-2011 GraphicsMagick Group
+# Copyright (C) 2004-2012 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -117,7 +117,7 @@
 # Makefile for building Wand API HTML files
 #
 
-# Copyright (C) 2004-2010 GraphicsMagick Group
+# Copyright (C) 2004-2012 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -180,8 +180,7 @@ host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(PERLMAGICK_TESTS) $(TESTS_TESTS) $(am__EXEEXT_6) \
 	$(WAND_TESTS) $(UTILITIES_TESTS)
-XFAIL_TESTS = $(TESTS_XFAIL_TESTS) $(am__EXEEXT_7) \
-	$(UTILITIES_XFAIL_TESTS)
+XFAIL_TESTS = $(am__EXEEXT_7) $(am__EXEEXT_7) $(am__EXEEXT_7)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
 DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) \
@@ -2016,8 +2015,7 @@ am__set_TESTS_bases = \
 RECHECK_LOGS = $(TEST_LOGS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_7 =  \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TTF_XFAIL_TESTS_OPT)
+am__EXEEXT_7 =
 TEST_SUITE_LOG = test-suite.log
 am__test_logs1 = $(TESTS:=.log)
 am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
@@ -2437,16 +2435,9 @@ TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
-	LD_LIBRARY_PATH="$(abs_top_builddir)/magick/.libs:${LD_LIBRARY_PATH}" \
-	MAGICK_CODER_MODULE_PATH='$(abs_top_builddir)/coders' \
-	MAGICK_CONFIGURE_PATH='$(abs_top_builddir)/config:$(abs_top_srcdir)/config' \
-	MAGICK_FILTER_MODULE_PATH='$(abs_top_builddir)/filters' \
 	MAKE="$(MAKE)" \
 	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)" \
-	PATH="$(abs_top_builddir)/utilities:${PATH}" \
-	SRCDIR=$(SRCDIR)
+	MEMCHECK="$(MEMCHECK)"
 
 
 # Be sure to list CHANGELOGS in reverse chronological order in case we
@@ -3703,13 +3694,6 @@ MAGICK_FILTER_SRCS = \
 filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(LIBMAGICK)
-@HasTTF_FALSE@MAGICKPP_TTF_XFAIL_TESTS_OPT = \
-@HasTTF_FALSE@	Magick++/demo/button.sh \
-@HasTTF_FALSE@	Magick++/demo/demo.sh \
-@HasTTF_FALSE@	Magick++/demo/gravity.sh \
-@HasTTF_FALSE@	Magick++/demo/piddle.sh \
-@HasTTF_FALSE@	Magick++/demo/shapes.sh
-
 @WITH_MAGICK_PLUS_PLUS_FALSE@LIBMAGICKPP = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
@@ -3727,7 +3711,7 @@ filters_analyze_la_LIBADD = $(LIBMAGICK)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_XFAIL_TESTS = 
-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_XFAIL_TESTS = $(MAGICKPP_TTF_XFAIL_TESTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_XFAIL_TESTS = 
 MAGICKPP_SCRIPTS_OPT = \
 	Magick++/bin/GraphicsMagick++-config
 
@@ -3918,257 +3902,7 @@ tests_rwfile_LDADD = $(LIBMAGICK)
 tests_drawtest_SOURCES = tests/drawtest.c
 tests_drawtest_CPPFLAGS = $(AM_CPPFLAGS)
 tests_drawtest_LDADD = $(LIBMAGICK)
-@HasFPX_FALSE@TESTS_FPX_XFAIL_TESTS = \
-@HasFPX_FALSE@	tests/rwblob_FPX_bilevel.sh \
-@HasFPX_FALSE@	tests/rwblob_FPX_gray.sh \
-@HasFPX_FALSE@	tests/rwblob_FPX_pallette.sh \
-@HasFPX_FALSE@	tests/rwblob_FPX_truecolor.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_bilevel.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_gray.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_pallette.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_truecolor.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_truecolor10.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_truecolor12.sh \
-@HasFPX_FALSE@	tests/rwfile_FPX_truecolor16.sh
-
-@HasJBIG_FALSE@TESTS_JBIG_XFAIL_TESTS = \
-@HasJBIG_FALSE@	tests/rwblob_JBIG_bilevel.sh \
-@HasJBIG_FALSE@	tests/rwblob_JBIG_gray.sh \
-@HasJBIG_FALSE@	tests/rwblob_JBIG_pallette.sh \
-@HasJBIG_FALSE@	tests/rwblob_JBIG_truecolor.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_bilevel.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_gray.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_pallette.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_truecolor.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_truecolor10.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_truecolor12.sh \
-@HasJBIG_FALSE@	tests/rwfile_JBIG_truecolor16.sh
-
-@HasJPEG_FALSE@TESTS_JPEG_XFAIL_TESTS = \
-@HasJPEG_FALSE@	tests/rwblob_JPEG_bilevel.sh \
-@HasJPEG_FALSE@	tests/rwblob_JPEG_gray.sh \
-@HasJPEG_FALSE@	tests/rwblob_JPEG_pallette.sh \
-@HasJPEG_FALSE@	tests/rwblob_JPEG_truecolor.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_bilevel.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_gray.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_pallette.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_truecolor.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_truecolor10.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_truecolor12.sh \
-@HasJPEG_FALSE@	tests/rwfile_JPEG_truecolor16.sh
-
-@HasJP2_FALSE@TESTS_JP2_XFAIL_TESTS = \
-@HasJP2_FALSE@	tests/rwblob_JP2_bilevel.sh \
-@HasJP2_FALSE@	tests/rwblob_JP2_gray.sh \
-@HasJP2_FALSE@	tests/rwblob_JP2_pallette.sh \
-@HasJP2_FALSE@	tests/rwblob_JP2_truecolor.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_bilevel.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_gray.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_pallette.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_truecolor.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_truecolor10.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_truecolor12.sh \
-@HasJP2_FALSE@	tests/rwfile_JP2_truecolor16.sh
-
-
-# For a native WWIN32 build, we assume that the Ghostcript library is
-# dynamically loaded.  We don't have a good way to know if the
-# Ghostscript library is available so we will assume that Postscript
-# is supported, and allow obvious test errors to occur if it is not.
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@TESTS_PS_XFAIL_TESTS = \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPDF_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwblob_EPT_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPDF_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPI_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSF_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPSI_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPS_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_EPT_truecolor16.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_fax.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_jpeg.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_lzw.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_none.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_rle.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_bilevel_zip.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_fax.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_jpeg.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_lzw.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_none.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_rle.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_gray_zip.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_fax.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_jpeg.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_lzw.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_none.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_rle.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_pallette_zip.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_fax.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_jpeg.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_lzw.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_none.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_rle.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PDF_truecolor_zip.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_bilevel.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_gray.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_pallette.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_truecolor.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_truecolor10.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_truecolor12.sh \
-@HasPSDelegate_FALSE@@WIN32_NATIVE_BUILD_FALSE@	tests/rwfile_PS_truecolor16.sh
-
-@HasPNG_FALSE@TESTS_PNG_XFAIL_TESTS = \
-@HasPNG_FALSE@	tests/rwblob_MNG_bilevel.sh \
-@HasPNG_FALSE@	tests/rwblob_MNG_gray.sh \
-@HasPNG_FALSE@	tests/rwblob_MNG_pallette.sh \
-@HasPNG_FALSE@	tests/rwblob_MNG_truecolor.sh \
-@HasPNG_FALSE@	tests/rwblob_PNG_bilevel.sh \
-@HasPNG_FALSE@	tests/rwblob_PNG_gray.sh \
-@HasPNG_FALSE@	tests/rwblob_PNG_pallette.sh \
-@HasPNG_FALSE@	tests/rwblob_PNG_truecolor.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_bilevel.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_gray.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_pallette.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_truecolor.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_truecolor10.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_truecolor12.sh \
-@HasPNG_FALSE@	tests/rwfile_MNG_truecolor16.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_bilevel.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_gray.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_pallette.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_truecolor.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_truecolor10.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_truecolor12.sh \
-@HasPNG_FALSE@	tests/rwfile_PNG_truecolor16.sh
-
-@HasTIFF_FALSE@TESTS_TIFF_XFAIL_TESTS = \
-@HasTIFF_FALSE@	tests/rwblob_CALS_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwblob_CALS_gray.sh \
-@HasTIFF_FALSE@	tests/rwblob_CALS_pallette.sh \
-@HasTIFF_FALSE@	tests/rwblob_CALS_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwblob_EPT_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwblob_EPT_gray.sh \
-@HasTIFF_FALSE@	tests/rwblob_EPT_pallette.sh \
-@HasTIFF_FALSE@	tests/rwblob_EPT_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwblob_TIFF_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwblob_TIFF_gray.sh \
-@HasTIFF_FALSE@	tests/rwblob_TIFF_pallette.sh \
-@HasTIFF_FALSE@	tests/rwblob_TIFF_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_gray.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_pallette.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor10.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor12.sh \
-@HasTIFF_FALSE@	tests/rwfile_CALS_truecolor16.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_gray.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_pallette.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_truecolor10.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_truecolor12.sh \
-@HasTIFF_FALSE@	tests/rwfile_EPT_truecolor16.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_gray.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_pallette.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_truecolor10.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_truecolor12.sh \
-@HasTIFF_FALSE@	tests/rwfile_PTIF_truecolor16.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_bilevel.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_gray.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_pallette.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_truecolor.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_truecolor10.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_truecolor12.sh \
-@HasTIFF_FALSE@	tests/rwfile_TIFF_truecolor16.sh
-
-@HasX11_FALSE@TESTS_X11_XFAIL_TESTS = \
-@HasX11_FALSE@	tests/rwblob_XWD_bilevel.sh \
-@HasX11_FALSE@	tests/rwblob_XWD_gray.sh \
-@HasX11_FALSE@	tests/rwblob_XWD_pallette.sh \
-@HasX11_FALSE@	tests/rwblob_XWD_truecolor.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_bilevel.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_gray.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_pallette.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_truecolor.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_truecolor10.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_truecolor12.sh \
-@HasX11_FALSE@	tests/rwfile_XWD_truecolor16.sh
-
-
-# These tests do not currently actually fail so they are not included
-# in TESTS_XFAIL_TESTS
-@HasBZLIB_FALSE@TESTS_BZIP_XFAIL_TESTS = \
-@HasBZLIB_FALSE@	tests/rwfile_MIFF_bilevel_bzip.sh \
-@HasBZLIB_FALSE@	tests/rwfile_MIFF_gray_bzip.sh \
-@HasBZLIB_FALSE@	tests/rwfile_MIFF_pallette_bzip.sh \
-@HasBZLIB_FALSE@	tests/rwfile_MIFF_truecolor_bzip.sh
-
-
-# These tests do not currently actually fail so they are not included
-# in TESTS_XFAIL_TESTS
-@HasZLIB_FALSE@TESTS_ZIP_XFAIL_TESTS = \
-@HasZLIB_FALSE@	tests/rwfile_MIFF_bilevel_zip.sh \
-@HasZLIB_FALSE@	tests/rwfile_MIFF_gray_zip.sh \
-@HasZLIB_FALSE@	tests/rwfile_MIFF_pallette_zip.sh \
-@HasZLIB_FALSE@	tests/rwfile_MIFF_truecolor_zip.sh
-
-TESTS_XFAIL_TESTS = \
-	$(TESTS_FPX_XFAIL_TESTS) \
-	$(TESTS_JBIG_XFAIL_TESTS) \
-	$(TESTS_JP2_XFAIL_TESTS) \
-	$(TESTS_JPEG_XFAIL_TESTS) \
-	$(TESTS_PNG_XFAIL_TESTS) \
-	$(TESTS_PS_XFAIL_TESTS) \
-	$(TESTS_TIFF_XFAIL_TESTS) \
-	$(TESTS_X11_XFAIL_TESTS)
-
+TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
 	tests/constitute.tap \
 	tests/drawtests.tap \
@@ -4194,182 +3928,6 @@ TESTS_EXTRA_DIST = \
 
 TESTS_CLEANFILES = \
         tests/*out*.*
-
-CHECK_TYPES = bilevel gray pallette truecolor
-CHECK_DEEP_TYPES = truecolor10 truecolor12 truecolor16
-
-# Blob formats to test which don't require that size be specified
-CHECK_BLOB_FORMATS = \
-	AVS \
-	BMP \
-	CALS \
-	CIN \
-	DIB \
-	DPX \
-	EPDF \
-	EPT \
-	FAX \
-	FPX \
-	G3 \
-	FITS \
-	GIF \
-	GIF87 \
-	JBIG \
-	JPEG \
-	JP2 \
-	MAT \
-	MIFF \
-	MNG \
-	MTV \
-	P7 \
-	PBM \
-	PCD \
-	PCDS \
-	PCX \
-	PGM \
-	PICON \
-	PICT \
-	PNG \
-	PPM \
-	RAS \
-	SGI \
-	SUN \
-	TGA \
-	TIFF \
-	TXT \
-	VDA \
-	VICAR \
-	VIFF \
-	VST \
-	WBMP \
-	XBM \
-	XPM \
-	XWD
-
-
-# File formats to test which don't require that size be specified
-CHECK_FILE_FORMATS = \
-	AVS \
-	BMP \
-	CALS \
-	CIN \
-	DCX \
-	DIB \
-	DPX \
-	EPDF \
-	EPSF \
-	EPSI \
-	EPI \
-	EPS \
-	EPT \
-	FAX \
-	FITS \
-	FPX \
-	GIF \
-	GRAY \
-	ICB \
-	JBIG \
-	JPEG \
-	JP2 \
-	MAT \
-	MIFF \
-	MNG \
-	MPR \
-	MTV \
-	P7 \
-	PBM \
-	PCD \
-	PCDS \
-	PCX \
-	PDF \
-	PGM \
-	PICON \
-	PICT \
-	PNG \
-	PNM \
-	PPM \
-	PS \
-	PSD \
-	PTIF \
-	RAS \
-	SGI \
-	SUN \
-	TGA \
-	TXT \
-	TIFF \
-	VDA \
-	VICAR \
-	VIFF \
-	VST \
-	WBMP \
-	XBM \
-	XPM \
-	XWD
-
-
-# Blob formats to test where size must be specified
-CHECK_SIZED_BLOB_FORMATS = \
-	CMYK \
-	GRAY \
-	MONO \
-	PAL \
-	RGB \
-	RGBA \
-	UYVY \
-	YUV
-
-
-# File formats to test where size must be specified
-CHECK_SIZED_FILE_FORMATS = \
-	CMYK \
-	GRAY \
-	MONO \
-	PAL \
-	RGB \
-	RGBA \
-	UYVY \
-	YUV
-
-
-# File formats which support more than 8 bits per sample
-CHECK_DEEP_FILE_FORMATS = \
-	CIN \
-	DPX \
-	FITS \
-	JP2 \
-	MAT \
-	MIFF \
-	MNG \
-	PNG \
-	PPM \
-	PTIF \
-	SGI \
-	TIFF \
-	TGA \
-	TXT
-
-CHECK_MIFF_FILE_COMPRESS = \
-	none \
-	bzip \
-	zip \
-	rle
-
-CHECK_PDF_FILE_COMPRESS = \
-	none \
-	fax \
-	jpeg \
-	lzw \
-	rle \
-	zip
-
-GENERATE_TESTS_SCRIPTS_DEPS = \
-	generate-check-blob-scripts \
-	generate-check-file-scripts \
-	generate-check-sized-blob-scripts \
-	generate-check-sized-file-scripts \
-	generate-check-miff-compressed-scripts \
-	generate-check-pdf-compressed-scripts \
-	generate-check-deep-scripts
 
 wandincdir = $(topincludedir)/wand
 WAND_SOURCES = \
@@ -4744,35 +4302,7 @@ UTILITIES_PGMS = \
 utilities_gm_LDADD = $(LIBMAGICK)
 utilities_gm_LDFLAGS = $(LDFLAGS)
 utilities_gm_SOURCES = utilities/gm.c
-@HasJPEG_FALSE@UTILITIES_JPEG_XFAIL_TESTS = \
-@HasJPEG_FALSE@	utilities/tests/identify.sh
-
-@HasLCMS_FALSE@UTILITIES_LCMS_XFAIL_TESTS = \
-@HasLCMS_FALSE@	utilities/tests/icc-transform.sh
-
-@HasTTF_FALSE@UTILITIES_TTF_XFAIL_TESTS = \
-@HasTTF_FALSE@	utilities/tests/annotate.sh \
-@HasTTF_FALSE@	utilities/tests/montage.sh \
-@HasTTF_FALSE@	utilities/tests/msl_composite.sh
-
-@HasXML_FALSE@UTILITIES_XML_XFAIL_TESTS = \
-@HasXML_FALSE@	utilities/tests/msl_composite.sh
-
-@HasX11_FALSE@UTILITIES_X11_XFAIL_TESTS = \
-@HasX11_FALSE@	utilities/tests/help-animate.sh \
-@HasX11_FALSE@	utilities/tests/help-import.sh
-
-@WITH_SHARED_LIBS_FALSE@UTILITIES_MODULES_XFAIL_TESTS = \
-@WITH_SHARED_LIBS_FALSE@	utilities/tests/list-module.sh
-
-UTILITIES_XFAIL_TESTS = \
-	$(UTILITIES_JPEG_XFAIL_TESTS) \
-	$(UTILITIES_LCMS_XFAIL_TESTS) \
-	$(UTILITIES_MODULES_XFAIL_TESTS) \
-	$(UTILITIES_TTF_XFAIL_TESTS) \
-	$(UTILITIES_XML_XFAIL_TESTS) \
-	$(UTILITIES_X11_XFAIL_TESTS)
-
+UTILITIES_XFAIL_TESTS = 
 
 # Tests to run
 UTILITIES_TESTS = \
@@ -9839,273 +9369,6 @@ magick-install-data-local:
 	$(INSTALL_HEADER) magick/magick_config_api.h $(DESTDIR)$(magickincdir)/magick_config.h
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick_config.h
-
-generate-check-blob-scripts:
-	sh_file="$(srcdir)/tests/rwblob.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for format in $(CHECK_BLOB_FORMATS) ; \
-	  do \
-	    for type in  $(CHECK_TYPES) ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwblob=./rwblob" ; \
-	  echo ; \
-	  echo "# Types we will test" ; \
-	  echo "check_types='$(CHECK_TYPES)'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  for format in $(CHECK_BLOB_FORMATS) ; \
-	    do \
-	    echo ; \
-	    echo "# $$format format" ; \
-	    echo 'for type in $${check_types}' ; \
-	    echo 'do' ; \
-	    echo "  test_command_fn \"$$format \$${type}\" \$${MEMCHECK} \$${rwblob} \"\$${SRCDIR}/input_\$${type}.miff\" $$format" ; \
-	    echo 'done' ; \
-	  done ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-file-scripts:
-	sh_file="$(srcdir)/tests/rwfile.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for format in $(CHECK_FILE_FORMATS) ; \
-	  do \
-	    for type in  $(CHECK_TYPES) ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwfile=./rwfile" ; \
-	  echo ; \
-	  echo "# Types we will test" ; \
-	  echo "check_types='$(CHECK_TYPES)'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  for format in $(CHECK_FILE_FORMATS) ; \
-	    do \
-	    echo ; \
-	    echo "# $$format format" ; \
-	    echo 'for type in $${check_types}' ; \
-	    echo 'do' ; \
-	    echo "  test_command_fn \"$$format \$${type}\" \$${MEMCHECK} \$${rwfile} -filespec \"out_\$${type}_%d\" \"\$${SRCDIR}/input_\$${type}.miff\" $$format" ; \
-	    echo 'done' ; \
-	  done ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-sized-blob-scripts:
-	sh_file="$(srcdir)/tests/rwblob_sized.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
-	  do \
-	    for type in truecolor_70x46 ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwblob=./rwblob" ; \
-	  echo ; \
-	  echo "# Types we will test" ; \
-	  echo "check_types='truecolor_70x46'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
-	    do \
-	    echo ; \
-	    echo "# $$format format" ; \
-	    echo 'for type in $${check_types}' ; \
-	    echo 'do' ; \
-	    echo "  test_command_fn \"$$format \$${type}\" \$${MEMCHECK} \$${rwblob} -size 70x46 \"\$${SRCDIR}/input_\$${type}.miff\" $$format" ; \
-	    echo 'done' ; \
-	  done ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-sized-file-scripts:
-	sh_file="$(srcdir)/tests/rwfile_sized.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for format in $(CHECK_SIZED_FILE_FORMATS) ; \
-	  do \
-	    for type in truecolor_70x46 ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwfile=./rwfile" ; \
-	  echo ; \
-	  echo "# Types we will test" ; \
-	  echo "check_types='truecolor_70x46'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  for format in $(CHECK_SIZED_FILE_FORMATS) ; \
-	    do \
-	    echo ; \
-	    echo "# $$format format" ; \
-	    echo 'for type in $${check_types}' ; \
-	    echo 'do' ; \
-	    echo "  test_command_fn \"$$format \$${type}\" \$${MEMCHECK} \$${rwfile} -filespec \"out_\$${type}_%d\" -size 70x46 \"\$${SRCDIR}/input_\$${type}.miff\" $$format" ; \
-	    echo 'done' ; \
-	  done ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-miff-compressed-scripts:
-	sh_file="$(srcdir)/tests/rwfile_miff.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
-	  do \
-	    for type in  $(CHECK_TYPES) ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo "# Test MIFF format with various storage and compression types" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwfile=./rwfile" ; \
-	  echo ; \
-	  echo "# Storage types we will test" ; \
-	  echo "check_types='$(CHECK_TYPES)'" ; \
-	  echo ; \
-	  echo "# Comression types we will test" ; \
-	  echo "compress_types='$(CHECK_MIFF_FILE_COMPRESS)'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  echo ; \
-	  echo "for compress in \$${compress_types}" ; \
-	  echo "do" ; \
-	  echo '  for type in $${check_types}' ; \
-	  echo '  do' ; \
-	  echo "    test_command_fn \"MIFF \$${compress} \$${type}\" \$${MEMCHECK} \$${rwfile} -filespec \"out_\$${type}_\$${compress}_%d\" -compress \$$compress \"\$${SRCDIR}/input_\$${type}.miff\" MIFF" ; \
-	  echo '  done' ; \
-	  echo 'done' ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-pdf-compressed-scripts:
-	sh_file="$(srcdir)/tests/rwfile_pdf.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for compress in $(CHECK_PDF_FILE_COMPRESS) ; \
-	  do \
-	    for type in  $(CHECK_TYPES) ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo "# Test PDF format with various storage and compression types" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwfile=./rwfile" ; \
-	  echo ; \
-	  echo "# Storage types we will test" ; \
-	  echo "check_types='$(CHECK_TYPES)'" ; \
-	  echo ; \
-	  echo "# Comression types we will test" ; \
-	  echo "compress_types='$(CHECK_PDF_FILE_COMPRESS)'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  echo ; \
-	  echo "for compress in \$${compress_types}" ; \
-	  echo "do" ; \
-	  echo '  for type in $${check_types}' ; \
-	  echo '  do' ; \
-	  echo "    test_command_fn \"PDF \$${type} \$${compress}\" \$${MEMCHECK} \$${rwfile} -filespec \"out_\$${type}_\$${compress}_%d\" -compress \$$compress \"\$${SRCDIR}/input_\$${type}.miff\" PDF" ; \
-	  echo '  done' ; \
-	  echo 'done' ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-check-deep-scripts:
-	sh_file="$(srcdir)/tests/rwfile_deep.tap" ; \
-	( \
-	  total_tests=0 ; \
-	  for format in $(CHECK_DEEP_FILE_FORMATS) ; \
-	  do \
-	    for type in  $(CHECK_DEEP_TYPES) ; \
-	    do \
-	     total_tests=$$(($$total_tests + 1)) ; \
-	    done ; \
-	  done ; \
-	  echo "#!/bin/sh" ; \
-	  echo "# Copyright (C) 2004-2012 GraphicsMagick Group" ; \
-	  echo ". \$${srcdir}/tests/common.shi" ; \
-	  echo ; \
-	  echo "# Test program" ; \
-	  echo "rwfile=./rwfile" ; \
-	  echo ; \
-	  echo "# Types we will test" ; \
-	  echo "check_types='$(CHECK_DEEP_TYPES)'" ; \
-	  echo ; \
-	  echo "# Number of tests we plan to run" ; \
-	  echo "test_plan_fn $$total_tests" ; \
-	  for format in $(CHECK_DEEP_FILE_FORMATS) ; \
-	    do \
-	    echo ; \
-	    echo "# $$format format" ; \
-	    echo 'for type in $${check_types}' ; \
-	    echo 'do' ; \
-	    echo "  test_command_fn \"$$format \$${type}\" \$${MEMCHECK} \$${rwfile} -filespec \"out_\$${type}_%d\" \"\$${SRCDIR}/input_\$${type}.dpx\" $$format" ; \
-	    echo 'done' ; \
-	  done ; \
-	  echo ; \
-	  echo ':' ; \
-	) > "$$sh_file" ; \
-	chmod +x "$$sh_file"
-
-generate-tests-scripts: $(GENERATE_TESTS_SCRIPTS_DEPS)
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
 	@for dir in $(DOCDIRS) ; do \

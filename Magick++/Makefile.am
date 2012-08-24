@@ -1,19 +1,10 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright (C) 1999 - 2010 Bob Friesenhahn
+# Copyright (C) 1999 - 2012 Bob Friesenhahn
 #
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
-
-if !HasTTF
-MAGICKPP_TTF_XFAIL_TESTS_OPT = \
-	Magick++/demo/button.sh \
-	Magick++/demo/demo.sh \
-	Magick++/demo/gravity.sh \
-	Magick++/demo/piddle.sh \
-	Magick++/demo/shapes.sh
-endif
 
 if WITH_MAGICK_PLUS_PLUS
 LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
@@ -24,7 +15,7 @@ MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
 MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
 MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
 MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
-MAGICKPP_XFAIL_TESTS = $(MAGICKPP_TTF_XFAIL_TESTS_OPT)
+MAGICKPP_XFAIL_TESTS =
 else
 LIBMAGICKPP = 
 MAGICKPP_CHECK_PGRMS = 

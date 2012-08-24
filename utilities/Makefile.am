@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2010 GraphicsMagick Group
+# Copyright (C) 2004-2012 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -15,46 +15,8 @@ utilities_gm_LDADD	= $(LIBMAGICK)
 utilities_gm_LDFLAGS	= $(LDFLAGS)
 utilities_gm_SOURCES	= utilities/gm.c
 
-if !HasJPEG
-UTILITIES_JPEG_XFAIL_TESTS = \
-	utilities/tests/identify.sh
-endif
 
-if !HasLCMS
-UTILITIES_LCMS_XFAIL_TESTS = \
-	utilities/tests/icc-transform.sh
-endif
-
-if !HasTTF
-UTILITIES_TTF_XFAIL_TESTS = \
-	utilities/tests/annotate.sh \
-	utilities/tests/montage.sh \
-	utilities/tests/msl_composite.sh
-endif
-
-if !HasXML
-UTILITIES_XML_XFAIL_TESTS = \
-	utilities/tests/msl_composite.sh
-endif
-
-if !HasX11
-UTILITIES_X11_XFAIL_TESTS = \
-	utilities/tests/help-animate.sh \
-	utilities/tests/help-import.sh
-endif
-
-if !WITH_SHARED_LIBS
-UTILITIES_MODULES_XFAIL_TESTS = \
-	utilities/tests/list-module.sh
-endif
-
-UTILITIES_XFAIL_TESTS = \
-	$(UTILITIES_JPEG_XFAIL_TESTS) \
-	$(UTILITIES_LCMS_XFAIL_TESTS) \
-	$(UTILITIES_MODULES_XFAIL_TESTS) \
-	$(UTILITIES_TTF_XFAIL_TESTS) \
-	$(UTILITIES_XML_XFAIL_TESTS) \
-	$(UTILITIES_X11_XFAIL_TESTS)
+UTILITIES_XFAIL_TESTS = 
 
 # Tests to run
 UTILITIES_TESTS = \

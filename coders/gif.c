@@ -40,6 +40,7 @@
 #include "magick/blob.h"
 #include "magick/color.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -84,7 +85,7 @@ static unsigned int
 %
 %
 */
-#define MaxStackSize  4096
+#define MaxStackSize  4096L
 #define NullCode  (-1)
 static MagickPassFail DecodeImage(Image *image,const long opacity)
 {
@@ -278,6 +279,9 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
           */
           if (available >= MaxStackSize)
             {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Excessive LZW string data "
+                                    "(string table overflow)");
               status=MagickFail;
               break;
             }

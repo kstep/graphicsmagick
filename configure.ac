@@ -3184,7 +3184,11 @@ if test "$have_png"    = 'yes' ; then
 fi
 
 have_ps='no'
-if test "$have_dps"    = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
+if test "$have_dps"    = 'yes' || \
+   test "$have_gs" = 'yes' || \
+   test "${native_win32_build}" = 'yes' ; then
+   have_ps='yes'
+fi
 if test "$have_ps"     = 'yes' ; then
    DELEGATES="$DELEGATES ps"
    MAGICK_FEATURES="$MAGICK_FEATURES PS"
@@ -3218,7 +3222,8 @@ if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$with_modules" != 'no' ; then
+if test "$with_modules" != 'no' || \
+   test "${native_win32_build}" = 'yes' ; then
    MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
 fi
 # Remove extraneous spaces from output variables (asthetic)

@@ -73,16 +73,9 @@ TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
-	LD_LIBRARY_PATH="$(abs_top_builddir)/magick/.libs:${LD_LIBRARY_PATH}" \
-	MAGICK_CODER_MODULE_PATH='$(abs_top_builddir)/coders' \
-	MAGICK_CONFIGURE_PATH='$(abs_top_builddir)/config:$(abs_top_srcdir)/config' \
-	MAGICK_FILTER_MODULE_PATH='$(abs_top_builddir)/filters' \
 	MAKE="$(MAKE)" \
 	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)" \
-	PATH="$(abs_top_builddir)/utilities:${PATH}" \
-	SRCDIR=$(SRCDIR)
+	MEMCHECK="$(MEMCHECK)"
 
 # Tests to run
 TESTS = \

@@ -19,8 +19,10 @@ done
 #   test_plan_fn integer
 test_plan_fn ()
 {
+    set +x
     tests_planned=$1
     echo "1..${tests_planned}"
+    set -x
 }
 
 # Report TAP test result and increment current test count
@@ -49,6 +51,7 @@ test_result_fn ()
 #   test_command_fn description [ -F feat1,feat2,...] command
 test_command_fn ()
 {
+    set +x
     test_description=$1
     shift
 
@@ -83,11 +86,24 @@ test_command_fn ()
         fi
     done
 
+    # Determine if we expect this test to fail due to missing
+    # dependencies.
+    diagnosis=
     if test "${missing}x" != 'x'
     then
-        test_result_fn "ok" "${test_description} # SKIP requires ${missing} support"
+        xfail='yes'
+        diagnosis=" # SKIP requires ${missing} support"
     else
-        ("$@") && test_result="ok" || test_result="not ok"
-        test_result_fn "${test_result}" "${test_description}"
+        xfail='no'
+        diagnosis=
     fi
+
+    # Execute the test and determine execution status
+    ("$@") && fail='no' || fail='yes'
+
+    test "${xfail}" = "${fail}" && test_result='ok' || test_result='not ok'
+
+    # Report results
+    test_result_fn "${test_result}" "${test_description}${diagnosis}"
+    set -x
 }

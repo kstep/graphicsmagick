@@ -1,3 +1,15 @@
+2012-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: For testing on MinGW, assume that Postscript is
+	available since we don't have a good way to check for that.
+
+	* scripts/tap-functions.shi (test_count): Always execute the test
+	program rather than skipping execution since we want to make sure
+	the test program fails correctly as well.
+
+	* coders/gif.c (DecodeImage): Add a log message for attempted LZW
+	string data table overflow.
+
 2012-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (ConvolveImage): Allocate normalized convolution
