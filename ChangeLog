@@ -1,3 +1,9 @@
+2012-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: BrowseDelegate now defaults to 'xdg-open', but if
+	it is not found, then configure will search for firefox,
+	google-chrome, mozilla (in that order).
+
 2012-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: For testing on MinGW, assume that Postscript is

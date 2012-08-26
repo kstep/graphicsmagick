@@ -2588,7 +2588,7 @@ configure_transform_name=`echo ${program_transform_name} | sed 's,\\$\\$,$,'`
 # Default delegate definitions
 AutotraceDecodeDelegateDefault='autotrace'
 BZIPDelegateDefault='bzip2'
-BrowseDelegateDefault='mozilla'
+BrowseDelegateDefault='xdg-open'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
 DCRAWDecodeDelegateDefault='dcraw'
@@ -2629,7 +2629,7 @@ ZipDelegateDefault='gzip'
 # Search for delegates
 AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
 AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
-AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault" firefox netscape, "$BrowseDelegateDefault")
+AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault" firefox google-chrome mozilla, "$BrowseDelegateDefault")
 AC_PATH_PROG(CGMDecodeDelegate, "$CGMDecodeDelegateDefault", "$CGMDecodeDelegateDefault")
 AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
 AC_PATH_PROG(DCRAWDecodeDelegate, "$DCRAWDecodeDelegateDefault", "$DCRAWDecodeDelegateDefault")
