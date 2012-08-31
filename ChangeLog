@@ -1,3 +1,8 @@
+2012-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Include lzip as a distribution
+	format again.
+
 2012-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: BrowseDelegate now defaults to 'xdg-open', but if
