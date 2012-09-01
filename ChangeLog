@@ -1,3 +1,10 @@
+2012-08-31  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: ReadOnePNGImage: sub-8-bit palette images were
+	getting unpacked twice; once by libpng via png_set_packing()
+	and again by coders/png.c in a switch() statement around line 2500,
+	resulting in horizontally stretched pixels.
+
 2012-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Include lzip as a distribution

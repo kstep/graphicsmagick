@@ -1765,14 +1765,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     image->depth=8;
 #endif
 
-  if (ping_bit_depth < 8)
-    {
-      if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
-        {
-          png_set_packing(ping);
-          image->depth=8;
-        }
-    }
   if (logging)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1789,6 +1781,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                             "    PNG interlace_method: %d, filter_method: %d",
                             ping_interlace_method,
                             ping_filter_method);
+    }
+
+  if (ping_bit_depth < 8)
+    {
+      if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
+        {
+          png_set_packing(ping);
+          ping_bit_depth=8;
+          image->depth=8;
+        }
     }
 
 #if defined(PNG_READ_iCCP_SUPPORTED)
