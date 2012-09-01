@@ -1,3 +1,9 @@
+2012-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (lite_font_stringwidth): Simply return zero.
+	Returning a computed string width was causing text placement
+	problems when testing with libwmf's fulltest.wmf.
+
 2012-08-31  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c: ReadOnePNGImage: sub-8-bit palette images were
