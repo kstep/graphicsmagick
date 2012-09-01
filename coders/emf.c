@@ -41,7 +41,7 @@
 #  if defined(__CYGWIN__)
 #    include <windows.h>
 #  else
-     // All MinGW needs ...
+     /* All MinGW needs ... */
 #    include <wingdi.h>
 #  endif
 #endif
