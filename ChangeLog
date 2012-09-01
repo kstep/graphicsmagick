@@ -71,9 +71,6 @@
 2012-08-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/jnx.c: speedup.
-          gm benchmark convert Demo.jnx Demo.gif
-        before: Results: 1 threads 1 iter 20.36s user 20.66s total 0.048 iter/s 0.049 iter/cpu
-        after:  Results: 1 threads 1 iter 10.36s user 10.55s total 0.095 iter/s 0.097 iter/cpu
 
 2012-08-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
