@@ -1,5 +1,8 @@
 2012-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/svg.c: Fix improper injection of XML headers as rendered
+	text.
+
 	* magick/render.c (DrawImage): Fix SourceForge issue 3499164
 	"Drawing of text fails if text starts with "," character".  Fix
 	SourceForge issue 3411492 "Certain SVGs hang GraphicsMagick".  Fix

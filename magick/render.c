@@ -2638,6 +2638,7 @@ DrawImage(Image *image,const DrawInfo *draw_info)
     j=0;
     primitive_info[0].point.x=0.0;
     primitive_info[0].point.y=0.0;
+    primitive_info[0].method=FloodfillMethod;
     for (x=0; *q != '\0'; x++)
     {
       /*
@@ -2765,9 +2766,6 @@ DrawImage(Image *image,const DrawInfo *draw_info)
       default:
         break;
     }
-
-
-
 
     if ((size_t) (i+length) >= number_points)
       {

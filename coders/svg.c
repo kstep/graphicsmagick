@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -847,6 +847,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
     }
+  if (strchr((char *) name,':') != (char *) NULL)
+    {
+      /*
+        Skip over namespace.
+      */
+      for ( ; *name != ':'; name++) ;
+      name++;
+    }
   switch (*name)
   {
     case 'C':
@@ -1172,6 +1180,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
+                if (keyword == (char *) NULL)
+                  continue;
                 value=(char *) tokens[j+1];
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    %.1024s: %.1024s",keyword,value);
@@ -2088,6 +2098,14 @@ static void SVGEndElement(void *context,const xmlChar *name)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.endElement(%.1024s)",name);
   svg_info=(SVGInfo *) context;
+  if (strchr((char *) name,':') != (char *) NULL)
+    {
+      /*
+        Skip over namespace.
+      */
+      for ( ; *name != ':'; name++) ;
+      name++;
+    }
   switch (*name)
   {
     case 'C':
@@ -2338,6 +2356,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       break;
   }
   (void) memset(&svg_info->segment,0,sizeof(svg_info->segment));
+  (void) memset(&svg_info->element,0,sizeof(svg_info->element));
+  *svg_info->text='\0';
   svg_info->n--;
 }
 
