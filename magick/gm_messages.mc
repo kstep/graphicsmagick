@@ -995,6 +995,12 @@ Non-conforming drawing primitive definition
 .
 
 MessageId       = +1
+SymbolicName    = DrawErrorTooManyCoordinates
+Language        = English
+too many coordinates
+.
+
+MessageId       = +1
 SymbolicName    = DrawErrorUnableToPrint
 Language        = English
 Unable to print

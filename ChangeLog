@@ -1,3 +1,11 @@
+2012-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawImage): Fix SourceForge issue 3499164
+	"Drawing of text fails if text starts with "," character".  Fix
+	SourceForge issue 3411492 "Certain SVGs hang GraphicsMagick".  Fix
+	SourceForge issue 1961000 "Could not print ',' via convert draw
+	text".
+
 2012-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wmf.c (lite_font_stringwidth): Simply return zero.

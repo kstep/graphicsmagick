@@ -553,6 +553,9 @@
       <Message name="UnbalancedGraphicContextPushPop">
         unbalanced graphic context push-pop
       </Message>
+      <Message name="TooManyCoordinates">
+        too many coordinates
+      </Message>
     </Error>
     <FatalError>
       <Message name="Default">

@@ -1553,13 +1553,17 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       image=AllocateImage(clone_info);
       if (image == (Image *) NULL)
-        return(False);
+        {
+          DestroyImageInfo(clone_info);
+          return((Image *) NULL);
+        }
       (void) strlcpy(image->filename,clone_info->filename,MaxTextExtent);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
         {
+          DestroyImageInfo(clone_info);
           DestroyImage(image);
-          return(False);
+          return((Image *) NULL);
         }
       if (!BlobIsSeekable(image))
         {
