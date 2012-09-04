@@ -64,6 +64,12 @@ John Sergeant
 		support for CALS type 1 format.  Re-wrote the DICOM
 		reader.
 
+Roberto de Deus Barbosa Murta
+
+                Contributed the adaptive threshold implementation
+                (-lat), which executes in linear rather than quadratic
+                time.
+
 Former GraphicsMagick Contributors
 ==================================
 

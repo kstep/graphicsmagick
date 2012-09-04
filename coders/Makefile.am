@@ -57,6 +57,7 @@ MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 endif
 
 MAGICK_CODER_SRCS = \
+	$(MAGICK_PNG_SRCS) \
 	coders/art.c \
 	coders/avi.c \
 	coders/avs.c \
@@ -150,7 +151,6 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JBIG_SRCS) \
 	$(MAGICK_JPEG_SRCS) \
 	$(MAGICK_JP2_SRCS) \
-	$(MAGICK_PNG_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
 	$(MAGICK_X11_CODER_SRCS)
 

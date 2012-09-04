@@ -158,6 +158,9 @@ extern "C" {
 #  if defined(HAVE_SYS_RESOURCE_H)
 #    include <sys/resource.h>
 #  endif /* defined(HAVE_SYS_RESOURCE_H)  */
+#  if defined(HAVE_SYS_MMAN_H)
+#    include <sys/mman.h>
+#  endif /*  defined(HAVE_SYS_MMAN_H) */
 #  include <pwd.h>
 #endif
 

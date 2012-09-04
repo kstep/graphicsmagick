@@ -36,9 +36,19 @@
 <div class="document">
 
 
+<p>2012-09-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/effect.c (AdaptiveThresholdImage): New implementation
+contributed by Roberto de Deus Barbosa Murta.  Executes in linear
+time as threhold area is increased rather than being quadratic.</li>
+</ul>
+</blockquote>
 <p>2012-09-02  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/svg.c: Fix improper injection of XML headers as rendered
+text.</li>
 <li>magick/render.c (DrawImage): Fix SourceForge issue 3499164
 &quot;Drawing of text fails if text starts with &quot;,&quot; character&quot;.  Fix
 SourceForge issue 3411492 &quot;Certain SVGs hang GraphicsMagick&quot;.  Fix

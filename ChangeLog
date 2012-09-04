@@ -1,3 +1,9 @@
+2012-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (AdaptiveThresholdImage): New implementation
+	contributed by Roberto de Deus Barbosa Murta.  Executes in linear
+	time as threhold area is increased rather than being quadratic.
+
 2012-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/svg.c: Fix improper injection of XML headers as rendered
