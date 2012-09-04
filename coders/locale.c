@@ -238,7 +238,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
               (void) strlcat(locale,"/",sizeof(locale));
             }
         }
-        for (p=q; (*q != '<') && (*q != '\0'); q++);
+        for (p=q; (*q != '<') && (*q != '\0'); q++)
+          { /* nada */ };
         {
           (void) strncpy(message,p,(size_t)(q-p));
           message[q-p]='\0';
