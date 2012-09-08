@@ -1,5 +1,7 @@
 2012-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS.txt: Update with news since last release.
+
 	* configure.ac: Added the configure option
 	--enable-quantum-library-names to enable that shared library name
 	includes quantum depth to allow shared libraries with different
