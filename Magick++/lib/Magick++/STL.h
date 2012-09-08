@@ -2356,6 +2356,7 @@ namespace Magick
     throwException( exceptionInfo );
   }
   // Write images to BLOB
+  // FIXME: need a way to specify options like size, depth, density, and magick.
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,

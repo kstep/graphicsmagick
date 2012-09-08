@@ -36,6 +36,7 @@
 <div class="document" id="unix-cygwin-mingw-compilation">
 <h1 class="title">UNIX/Cygwin/MinGW Compilation</h1>
 
+<!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <div class="contents local topic" id="contents">
@@ -58,32 +59,33 @@
 <h1><a class="toc-backref" href="#id1">Archive Formats</a></h1>
 <p>GraphicsMagick is distributed in a number of different archive formats.
 The source code must be extracted prior to compilation as follows:</p>
-<dl class="docutils">
-<dt>7z</dt>
-<dd><p class="first">7-Zip archive format. The Z-Zip format may be extracted under Unix
+<p>7z</p>
+<blockquote>
+<p>7-Zip archive format. The Z-Zip format may be extracted under Unix
 using '7za' from the P7ZIP package (<a class="reference external" href="http://p7zip.sourceforge.net/">http://p7zip.sourceforge.net/</a>).
 Extract similar to:</p>
-<pre class="last literal-block">
+<pre class="literal-block">
 7za x GraphicsMagick-1.3.7z
 </pre>
-</dd>
-<dt>.tar.bz2</dt>
-<dd><p class="first">BZip2 compressed tar archive format. Requires that both the bzip2
+</blockquote>
+<p>.tar.bz2</p>
+<blockquote>
+<p>BZip2 compressed tar archive format. Requires that both the bzip2
 (<a class="reference external" href="http://www.bzip.org/">http://www.bzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
-<pre class="last literal-block">
+<pre class="literal-block">
 bzip2 -d GraphicsMagick-1.3.tar.bz | tar -xvf -
 </pre>
-</dd>
-<dt>.tar.gz</dt>
-<dd><p class="first">Gzip compressed tar archive format. Requires that both the gzip
+</blockquote>
+<p>.tar.gz</p>
+<blockquote>
+<p>Gzip compressed tar archive format. Requires that both the gzip
 (<a class="reference external" href="http://www.gzip.org/">http://www.gzip.org/</a>) and tar programs to be available. Extract
 similar to:</p>
-<pre class="last literal-block">
+<pre class="literal-block">
 gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
 </pre>
-</dd>
-</dl>
+</blockquote>
 <p>.tar.lz</p>
 <blockquote>
 <p>Lzip compressed tar archive format.  Requires that both the lzip
@@ -93,26 +95,27 @@ available. Extract similar to:</p>
 lzip -d -c GraphicsMagick-1.3.tar.gz | tar -xvf -
 </pre>
 </blockquote>
-<dl class="docutils">
-<dt>.tar.xz</dt>
-<dd><p class="first">LZMA compressed tar archive format. Requires that LZMA utils
+<p>.tar.xz</p>
+<blockquote>
+<p>LZMA compressed tar archive format. Requires that LZMA utils
 (<a class="reference external" href="http://tukaani.org/lzma/">http://tukaani.org/lzma/</a>) and tar programs to be available. Extract
 similar to:</p>
-<pre class="last literal-block">
+<pre class="literal-block">
 xz -d GraphicsMagick-1.3.tar.xz | tar -xvf -
 </pre>
-</dd>
-<dt>zip</dt>
-<dd><p class="first">PK-ZIP archive format. Requires that the unzip program from Info-Zip
+</blockquote>
+<p>zip</p>
+<blockquote>
+<p>PK-ZIP archive format. Requires that the unzip program from Info-Zip
 (<a class="reference external" href="http://www.info-zip.org/UnZip.html">http://www.info-zip.org/UnZip.html</a>) be available. Extract similar to:</p>
-<pre class="last literal-block">
+<pre class="literal-block">
 unzip GraphicsMagick-1.3.zip
 </pre>
-</dd>
-</dl>
-<p>The GraphicsMagick source code is extracted into the subdirectory
-'GraphicsMagick-1.3'. After the source code extracted, change to the new
-directory using the command:</p>
+</blockquote>
+<p>The GraphicsMagick source code is extracted into a subdirectory
+similar to 'GraphicsMagick-1.3'. After the source code extracted,
+change to the new directory (using the actual directory name) using
+a command similar to:</p>
 <pre class="literal-block">
 cd GraphicsMagick-1.3
 </pre>
@@ -169,28 +172,33 @@ options, configure will issue a message similar to:</p>
 configure: loading site script /usr/local/share/config.site
 </pre>
 <p>The configure variables you should be aware of are:</p>
-<dl class="docutils">
-<dt>CC</dt>
-<dd>Name of C compiler (e.g. 'cc -Xa') to use</dd>
-<dt>CXX</dt>
-<dd>Name of C++ compiler to use (e.g. 'CC')</dd>
-<dt>CFLAGS</dt>
-<dd>Compiler flags (e.g. '-g -O2') to compile C code</dd>
-<dt>CXXFLAGS</dt>
-<dd>Compiler flags (e.g. '-g -O2') to compile C++ code</dd>
-<dt>CPPFLAGS</dt>
-<dd>Include paths (-I/somedir) to look for header files</dd>
-<dt>LDFLAGS</dt>
-<dd>Library paths (-L/somedir) to look for libraries Systems that support
-the notion of a library run-path may require an additional argument
-in order to find shared libraries at run time. For example, the
-Solaris linker requires an argument of the form '-R/somedir', some
-Linux systems will work with '-rpath /somedir', while some other
-Linux systems who's gcc does not pass -rpath to the linker require an
-argument of the form '-Wl,-rpath,/somedir'.</dd>
-<dt>LIBS</dt>
-<dd>Extra libraries (-lsomelib) required to link</dd>
-</dl>
+<p>CC</p>
+<blockquote>
+Name of C compiler (e.g. 'cc -Xa') to use</blockquote>
+<p>CXX</p>
+<blockquote>
+Name of C++ compiler to use (e.g. 'CC')</blockquote>
+<p>CFLAGS</p>
+<blockquote>
+Compiler flags (e.g. '-g -O2') to compile C code</blockquote>
+<p>CXXFLAGS</p>
+<blockquote>
+Compiler flags (e.g. '-g -O2') to compile C++ code</blockquote>
+<p>CPPFLAGS</p>
+<blockquote>
+Include paths (-I/somedir) to look for header files</blockquote>
+<p>LDFLAGS</p>
+<blockquote>
+Library paths (-L/somedir) to look for libraries Systems that
+support the notion of a library run-path may require an additional
+argument in order to find shared libraries at run time. For
+example, the Solaris linker requires an argument of the form
+'-R/somedir', some Linux systems will work with '-rpath /somedir',
+while some other Linux systems who's gcc does not pass -rpath to
+the linker require an argument of the form '-Wl,-rpath,/somedir'.</blockquote>
+<p>LIBS</p>
+<blockquote>
+Extra libraries (-lsomelib) required to link</blockquote>
 <p>Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
 path must specify an absolute path rather than a relative path.</p>
 <p>The build now supports a Linux-style &quot;silent&quot; build (default
@@ -202,9 +210,9 @@ verbose build, then invoke make like 'make V=1'.</p>
 automatically, but if it doesn't, you can use the 'configure' options
 '--x-includes=DIR' and '--x-libraries=DIR' to specify their locations.</p>
 <p>The configure script provides a number of GraphicsMagick specific
-options.  When disabling an option --disable-something is equivalent to
-specifying --enable-something=no and --without-something is equivalent
-to --with-something=no.  The configure options are as
+options.  When disabling an option --disable-something is equivalent
+to specifying --enable-something=no and --without-something is
+equivalent to --with-something=no.  The configure options are as
 follows (execute 'configure --help' to see all options).</p>
 <div class="section" id="optional-features">
 <h2><a class="toc-backref" href="#id3">Optional Features</a></h2>
@@ -212,10 +220,6 @@ follows (execute 'configure --help' to see all options).</p>
 <col class="option" />
 <col class="description" />
 <tbody valign="top">
-<tr><td class="option-group" colspan="2">
-<kbd><span class="option">--enable-ccmalloc</span></kbd></td>
-</tr>
-<tr><td>&nbsp;</td><td>enable 'ccmalloc' memory debug support (default disabled)</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--enable-prof</span></kbd></td>
 <td>enable 'prof' profiling support (default disabled)</td></tr>
@@ -249,6 +253,18 @@ follows (execute 'configure --help' to see all options).</p>
 <kbd><span class="option">--enable-magick-compat</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td>install ImageMagick utility shortcuts (default disabled)</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--enable-maintainer-mode</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>enable additional Makefile rules which update generated files
+included in the distribution. Requires GNU make as well as a
+number of utilities and tools.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--enable-quantum-library-names</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>shared library name includes quantum depth to allow shared
+libraries with different quantum depths to co-exist in same
+directory (only one can be used for development)</td></tr>
 </tbody>
 </table>
 </div>
@@ -261,7 +277,8 @@ follows (execute 'configure --help' to see all options).</p>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--with-quantum-depth</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>number of bits in a pixel quantum (default 8)</td></tr>
+<tr><td>&nbsp;</td><td>number of bits in a pixel quantum (default 8).  Also see
+'--enable-quantum-library-names.'</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--enable-ltdl-install</span></kbd></td>
 </tr>
@@ -353,7 +370,7 @@ follows (execute 'configure --help' to see all options).</p>
 <td>disable TrueType support</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--with-umem</span></kbd></td>
-<td>enable umem memory allocation library support</td></tr>
+<td>enable libumem memory allocation library support</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--without-wmf</span></kbd></td>
 <td>disable WMF support</td></tr>
@@ -520,10 +537,13 @@ replaced when GraphicsMagick is installed.</td></tr>
 </tr>
 <tr><td>&nbsp;</td><td><p class="first">This option allows the user to specify the number of bits to use per
 pixel quantum (the size of the red, green, blue, and alpha pixel
-components. For example, &quot;--with-quantum-depth=8&quot; builds
-GraphicsMagick using 8-bit quantums. Most computer display adaptors
-use 8-bit quantums. Currently supported arguments are 8, 16, or 32.
-The default is 8. This option is the most important option in
+components. When an image file with less depth is read, smaller
+values are scaled up to this size for processing, and are scaled
+down from this size when a file with lower depth is written.  For
+example, &quot;--with-quantum-depth=8&quot; builds GraphicsMagick using 8-bit
+quantums. Most computer display adaptors use 8-bit
+quantums. Currently supported arguments are 8, 16, or 32.  The
+default is 8. This option is the most important option in
 determining the overall run-time performance of GraphicsMagick.</p>
 <p>The number of bits in a quantum determines how many values it may
 contain. Each quantum level supports 256 times as many values as
@@ -595,11 +615,15 @@ values for a 1024x768 image:</p>
 </tbody>
 </table>
 </blockquote>
-<p class="last">GraphicsMagick performs all image processing computations using
+<p>GraphicsMagick performs all image processing computations using
 floating point or non-lossy integer arithmetic, so results are very
 accurate.  Increasing the quantum storage size decreases the amount
 of quantization noise (usually not visible at 8 bits) and helps
 prevent countouring and posterization in the image.</p>
+<p class="last">Consider also using the --enable-quantum-library-names configure
+option so that installed shared libraries include the quantum depth
+as part of their names so that shared libraries using different
+quantum depth options may co-exist in the same directory.</p>
 </td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--without-magick-plus-plus</span></kbd></td>
@@ -623,41 +647,45 @@ the person who builds GraphicsMagick.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--without-threads</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>By default, the GraphicsMagick library is compiled with multi-thread
-support. If this is undesireable, then specify --without-threads.</td></tr>
-<tr><td class="option-group">
-<kbd><span class="option">--with-cache</span></kbd></td>
-<td>Specify a different image pixel cache threshold using the
---with-cache option. This sets the maximum amount of heap memory that
-GraphicsMagick is allowed to consume before switching to using
-memory-mapped temporary files to store raw pixel data.</td></tr>
+<tr><td>&nbsp;</td><td>By default, the GraphicsMagick library is compiled to be fully
+thread safe by using thread APIs to implement required locking. If
+the locking or dependence on thread APIs is undesireable, then
+specify --without-threads.  Specifying this option also disables
+OpenMP support.  Testing shows that the overhead from thread safety
+is virtually unmeasurable so usually there is no reason to disable
+multi-thread support.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--disable-largefile</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td>By default, GraphicsMagick is compiled with support for large (&gt; 2GB
 on a 32-bit CPU) files if the operating system supports large files.
-All applications which use the GraphicsMagick library must then also
-include support for large files. By disabling support for large files
-via --disable-largefile, dependent applications do not require
-special compilation options for large files in order to use the
-library.</td></tr>
+Applications which use the GraphicsMagick library might then also
+need to be compiled to support for large files (operating system
+dependent).  Normally support for large files is a good thing.  Only
+disable this option if there is a need to do so.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--disable-openmp</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td><p class="first">By default, GraphicsMagick is compiled with support for OpenMP
 (<a class="reference external" href="http://www.openmp.org/">http://www.openmp.org/</a>) if the compilation environment supports it.
 OpenMP automatically parallizes loops across concurrent threads
-based on instructions in pragmas. OpenMP is relatively new to GCC
-and was introduced in GCC 4.2. OpenMP is a standard and was
-implemented in some other compilers long before its appearance in
+based on instructions in pragmas. OpenMP was introduced in GCC
+4.2. OpenMP is a well-established standard and was implemented in
+some other compilers in the late '90s, long before its appearance in
 GCC. OpenMP adds additional build and linkage requirements.</p>
-<p class="last">The OpenMP support provided by GCC (&quot;GOMP&quot;) automatically enables use
-of OpenMP with the number of threads equal to the number of CPU cores
-in the system. Other implementations of OpenMP do not enable
-parallelization by default. According to the OpenMP standard, the
-OMP_NUM_THREADS environment variable specifies how many threads should
-be used. In order to obtain the best single-user performance, set
-OMP_NUM_THREADS equal to the number of available CPU cores.</p>
+<p class="last">By default, GraphicsMagick enables as many threads as there are CPU
+cores (or CPU threads).  According to the OpenMP standard, the
+OMP_NUM_THREADS environment variable specifies how many threads
+should be used and GraphicsMagick also honors this request. In order
+to obtain the best single-user performance, set OMP_NUM_THREADS
+equal to the number of available CPU cores.  On a server with many
+cores and many programs running at once, there may be benefit to
+setting OMP_NUM_THREADS to a much smaller value than the number of
+cores, and sometimes values as low as two (or even one, to disable
+threading) will offer the best overall system performance.  Tuning a
+large system with OpenMP programs running in parallel (competing for
+resources) is a complex topic and some research and experimentation
+may be required in order to find the best parameters.</p>
 </td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--enable-openmp-slow</span></kbd></td>
@@ -669,8 +697,8 @@ implementation.  Since it is not known how a system will behave
 without testing and pre-built binaries need to work well on all
 systems, these algorithms are now disabled for OpenMP by default.
 If you are using a well-threaded OS on a CPU with a good
-high-performance memory architecture, you should probably enable
-this option.</td></tr>
+high-performance memory architecture, you might consider enabling
+this option based on experimentation.</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--with-perl</span></kbd></td>
 <td><p class="first">Use this option to include PerlMagick in the GraphicsMagick build
@@ -739,11 +767,11 @@ not necessary when GraphicsMagick is running under MS-Windows.</td></tr>
 Unix-emulation environment available for free from</p>
 <blockquote>
 <a class="reference external" href="http://www.cygwin.com/">http://www.cygwin.com/</a></blockquote>
-<p>It is strongly recommended that the X11R6 package be installed since
-this enables GraphicsMagick's X11 support (animate, display, and
-import sub-commands will work) and it includes the Freetype v2 DLL
-required to support TrueType and Postscript Type 1 fonts. Make sure
-that /usr/X11R6/bin is in your PATH prior to running configure.</p>
+<p>It is suggested that the X11R6 package be installed since this enables
+GraphicsMagick's X11 support (animate, display, and import
+sub-commands will work) and it includes the Freetype v2 DLL required
+to support TrueType and Postscript Type 1 fonts. Make sure that
+/usr/X11R6/bin is in your PATH prior to running configure.</p>
 <p>If you are using Cygwin version 1.3.9 or later, you may specify the
 configure option '--enable-shared' to build Cygwin DLLs. Specifying
 '--enable-shared' is required if you want to build PerlMagick under
@@ -859,26 +887,30 @@ why) so the failure you are observing can be identified and resolved.</p>
 <p>Once GraphicsMagick is configured, these standard build targets are
 available from the generated Makefiles:</p>
 <blockquote>
-<dl class="docutils">
-<dt>'make'</dt>
-<dd>Build the package</dd>
-<dt>'make install'</dt>
-<dd>Install the package</dd>
-<dt>'make check'</dt>
-<dd>Run tests using the uninstalled software. On some systems, 'make
+<p>'make'</p>
+<blockquote>
+Build the package</blockquote>
+<p>'make install'</p>
+<blockquote>
+Install the package</blockquote>
+<p>'make check'</p>
+<blockquote>
+Run tests using the uninstalled software. On some systems, 'make
 install' must be done before the test suite will work but usually
-the software can be tested prior to installation.</dd>
-<dt>'make clean'</dt>
-<dd>Remove everything in the build directory created by 'make'</dd>
-<dt>'make distclean'</dt>
-<dd>Remove everything in the build directory created by 'configure'
-and 'make'. This is useful if you want to start over from scratch.</dd>
-<dt>'make uninstall'</dt>
-<dd>Remove all files from the system which are (or would be) installed
+the software can be tested prior to installation.</blockquote>
+<p>'make clean'</p>
+<blockquote>
+Remove everything in the build directory created by 'make'</blockquote>
+<p>'make distclean'</p>
+<blockquote>
+Remove everything in the build directory created by 'configure'
+and 'make'. This is useful if you want to start over from scratch.</blockquote>
+<p>'make uninstall'</p>
+<blockquote>
+Remove all files from the system which are (or would be) installed
 by 'make install' using the current configuration. Note that this
 target does not work for PerlMagick since Perl no longer supports
-an 'uninstall' target.</dd>
-</dl>
+an 'uninstall' target.</blockquote>
 </blockquote>
 </div>
 <div class="section" id="build-install">
@@ -942,11 +974,12 @@ make check
 </pre>
 <p>Note that due to differences between the developer's environment and
 your own, it is possible that some tests may be indicated as failed
-even though the results are ok.  Such failures should be rare.
-Differences between the developer's environment environment and your
-own may include the compiler, the CPU type, and the library versions
-used. The GraphicsMagick developers use the current release of all
-dependent libraries.</p>
+even though the results are ok.  Such failures should be rare, and if
+they do occur, they should be reported as a bug.  Differences between
+the developer's environment environment and your own may include the
+compiler, the CPU type, and the library versions used. The
+GraphicsMagick developers use the current release of all dependent
+libraries.</p>
 <p>Copyright © GraphicsMagick Group 2002 - 2012</p>
 </div>
 </div>

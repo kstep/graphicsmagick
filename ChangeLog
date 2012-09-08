@@ -1,3 +1,11 @@
+2012-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Added the configure option
+	--enable-quantum-library-names to enable that shared library name
+	includes quantum depth to allow shared libraries with different
+	quantum depths to co-exist in same directory (only one can be used
+	for development).
+
 2012-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (AdaptiveThresholdImage): New implementation

@@ -797,7 +797,6 @@ HasZLIB_FALSE
 HasZLIB_TRUE
 LIB_TRIO
 LIB_MATH
-CCMALLOCDelegate
 LIB_OMP
 LIB_UMEM
 HasUMEM_FALSE
@@ -826,6 +825,7 @@ LIBRARY_EXTRA_CPPFLAGS
 MODULE_EXTRA_CPPFLAGS
 LIBSTDCLDFLAGS
 PERL_MAKE_OPTIONS
+MAGICK_LT_RELEASE_OPTS
 QuantumDepth
 MAGICK_COMPAT_FALSE
 MAGICK_COMPAT_TRUE
@@ -1060,14 +1060,13 @@ enable_ltdl_install
 with_modules
 enable_installed
 enable_maintainer_mode
-enable_ccmalloc
-enable_efence
 enable_prof
 enable_gprof
 enable_gcov
 enable_symbol_prefix
 enable_magick_compat
 with_quantum_depth
+enable_quantum_library_names
 with_frozenpaths
 with_magick_plus_plus
 with_perl
@@ -1737,7 +1736,8 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --disable-openmp        do not use OpenMP
-  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower
+  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run
+                          slower
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -1745,24 +1745,26 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-ltdl-install   install libltdl
-  --disable-installed      disable building an installed GraphicsMagick
-                          (default enabled)
+  --disable-installed     disable building an installed GraphicsMagick
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
                           sometimes confusing) to the casual installer
-  --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
-  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)
-  --enable-prof           enable 'prof' profiling support (default disabled)
-  --enable-gprof          enable 'gprof' profiling support (default disabled)
-  --enable-gcov           enable 'gcov' profiling support (default disabled)
+  --enable-prof           enable 'prof' profiling support
+  --enable-gprof          enable 'gprof' profiling support
+  --enable-gcov           enable 'gcov' profiling support
   --enable-symbol-prefix  enable prefixing library symbols with "Gm"
-  --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
+  --enable-magick-compat  install ImageMagick utility shortcuts
+  --enable-quantum-library-names
+                          shared library name includes quantum depth to allow
+                          shared libraries with different quantum depths to
+                          co-exist in same directory (only one can be used for
+                          development)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-  --without-threads       disable threads support
+  --without-threads       disable threads support (also disables OpenMP)
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-sysroot=DIR Search for dependent libraries within DIR
@@ -1773,12 +1775,13 @@ Optional Packages:
   --with-modules          enable building dynamically loadable modules
   --with-quantum-depth    number of bits in a pixel quantum (default 8)
   --with-frozenpaths      enable frozen delegate paths
-  --without-magick-plus-plus disable build/install of Magick++
-  --with-perl             enable build/install of PerlMagick
-       or
-  --with-perl=PERL        use specified Perl binary to configure PerlMagick
-  --with-perl-options=OPTIONS  options to pass on command-line when
-                          generating PerlMagick's Makefile from Makefile.PL
+  --without-magick-plus-plus
+                          disable build/install of Magick++
+  --with-perl[=PERL]      enable build/install of PerlMagick and optionally
+                          specify perl to use
+  --with-perl-options=OPTIONS
+                          options to pass on command-line when generating
+                          PerlMagick's Makefile from Makefile.PL
   --without-bzlib         disable BZLIB support
   --without-dps           disable Display Postscript support
   --with-fpx              enable FlashPIX support
@@ -19831,25 +19834,6 @@ fi
 
 
 
-
-# Enable ccmalloc memory debugging support
-# Check whether --enable-ccmalloc was given.
-if test "${enable_ccmalloc+set}" = set; then :
-  enableval=$enable_ccmalloc; with_ccmalloc=$enableval
-else
-  with_ccmalloc='no'
-fi
-
-
-# Enable Electric Fence memory debugging support
-# Check whether --enable-efence was given.
-if test "${enable_efence+set}" = set; then :
-  enableval=$enable_efence; with_efence=$enableval
-else
-  with_efence='no'
-fi
-
-
 # Enable prof-based profiling support
 # Check whether --enable-prof was given.
 if test "${enable_prof+set}" = set; then :
@@ -19945,6 +19929,21 @@ QuantumDepth="$with_quantum_depth"
 cat >>confdefs.h <<_ACEOF
 #define QuantumDepth $QuantumDepth
 _ACEOF
+
+
+# Enable QuantumDepth in shared library names
+# Check whether --enable-quantum-library-names was given.
+if test "${enable_quantum_library_names+set}" = set; then :
+  enableval=$enable_quantum_library_names; with_quantum_library_names=$enableval
+else
+  with_quantum_library_names='no'
+fi
+
+MAGICK_LT_RELEASE_OPTS=
+if test "$with_quantum_library_names" != 'no'
+then
+    MAGICK_LT_RELEASE_OPTS="-release Q${QuantumDepth}"
+fi
 
 
 # Disable/Enable support for full delegate paths in delegates.mgk
@@ -20119,7 +20118,8 @@ fi
 
 # # Disable MPEG.
 # AC_ARG_WITH(mpeg2,
-# 	      [  --without-mpeg2         disable MPEG support],
+# 	      AS_HELP_STRING([--without-mpeg2],
+#                            [disable MPEG support]),
 # 	      [with_mpeg2=$withval],
 # 	      [with_mpeg2='yes'])
 
@@ -23897,120 +23897,6 @@ fi
   LIBS="$LIB_OMP $LIBS"
 fi
 
-
-
-#
-# Add support for ccmalloc memory debugging library if requested
-#
-have_ccmalloc='no'
-LIB_CCMALLOC=''
-if test "$with_ccmalloc" = 'yes'
-then
-  # Extract the first word of "ccmalloc", so it can be a program name with args.
-set dummy ccmalloc; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_CCMALLOCDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $CCMALLOCDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_CCMALLOCDelegate="$CCMALLOCDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_CCMALLOCDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-CCMALLOCDelegate=$ac_cv_path_CCMALLOCDelegate
-if test -n "$CCMALLOCDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CCMALLOCDelegate" >&5
-$as_echo "$CCMALLOCDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  if test -n "$CCMALLOCDelegate"
-  then
-    eval `grep PREFIX= $CCMALLOCDelegate | sed -e 's/PREFIX/CCMALLOC_PREFIX/'`
-    OLIBS="$LIBS"
-    # Assume that gcc is used with ccmalloc.
-    LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ccmalloc_malloc in -lccmalloc" >&5
-$as_echo_n "checking for ccmalloc_malloc in -lccmalloc... " >&6; }
-if ${ac_cv_lib_ccmalloc_ccmalloc_malloc+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lccmalloc -ldl $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ccmalloc_malloc ();
-int
-main ()
-{
-return ccmalloc_malloc ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ccmalloc_ccmalloc_malloc=yes
-else
-  ac_cv_lib_ccmalloc_ccmalloc_malloc=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ccmalloc_ccmalloc_malloc" >&5
-$as_echo "$ac_cv_lib_ccmalloc_ccmalloc_malloc" >&6; }
-if test "x$ac_cv_lib_ccmalloc_ccmalloc_malloc" = xyes; then :
-  LIB_CCMALLOC="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl"
-fi
-
-    if test -n "$LIB_CCMALLOC"
-    then
-      LIBS="$OLIBS"
-      LIBS="$LIBS $LIB_CCMALLOC"
-      have_ccmalloc='yes'
-     else
-      LIBS="$OLIBS"
-    fi
-  fi
-fi
-
-#
-# Add support for Electric Fence debugging library if requested
-#
-if test "$with_efence" = 'yes'
-then
-  LIB_EFENCE='-lefence'
-  LIBS="$LIB_EFENCE $LIBS"
-fi
 
 #
 # Find math library
@@ -30688,9 +30574,9 @@ fi
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 
 
@@ -33719,4 +33605,3 @@ echo "  LDFLAGS  = $LDFLAGS"
 #echo "  LIBS     = $TESTED_LIBS"
 echo "  LIBS     = $MAGICK_DEP_LIBS"
 echo ""
-

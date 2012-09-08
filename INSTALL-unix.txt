@@ -1,3 +1,4 @@
+.. -*- mode: rst -*-
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
@@ -15,6 +16,7 @@ GraphicsMagick is distributed in a number of different archive formats.
 The source code must be extracted prior to compilation as follows:
 
 7z
+
     7-Zip archive format. The Z-Zip format may be extracted under Unix
     using '7za' from the P7ZIP package (http://p7zip.sourceforge.net/).
     Extract similar to::
@@ -22,6 +24,7 @@ The source code must be extracted prior to compilation as follows:
       7za x GraphicsMagick-1.3.7z
 
 .tar.bz2
+
     BZip2 compressed tar archive format. Requires that both the bzip2
     (http://www.bzip.org/) and tar programs to be available. Extract
     similar to::
@@ -29,11 +32,12 @@ The source code must be extracted prior to compilation as follows:
       bzip2 -d GraphicsMagick-1.3.tar.bz | tar -xvf -
 
 .tar.gz
+
     Gzip compressed tar archive format. Requires that both the gzip
     (http://www.gzip.org/) and tar programs to be available. Extract
     similar to::
 
-     gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
+      gzip -d GraphicsMagick-1.3.tar.gz | tar -xvf -
 
 .tar.lz
 
@@ -41,9 +45,10 @@ The source code must be extracted prior to compilation as follows:
     (http://lzip.nongnu.org/lzip.html) and tar programs to be
     available. Extract similar to::
 
-     lzip -d -c GraphicsMagick-1.3.tar.gz | tar -xvf -
+      lzip -d -c GraphicsMagick-1.3.tar.gz | tar -xvf -
 
 .tar.xz
+
     LZMA compressed tar archive format. Requires that LZMA utils
     (http://tukaani.org/lzma/) and tar programs to be available. Extract
     similar to::
@@ -51,20 +56,23 @@ The source code must be extracted prior to compilation as follows:
       xz -d GraphicsMagick-1.3.tar.xz | tar -xvf -
 
 zip
+
     PK-ZIP archive format. Requires that the unzip program from Info-Zip
     (http://www.info-zip.org/UnZip.html) be available. Extract similar to::
 
       unzip GraphicsMagick-1.3.zip
 
-The GraphicsMagick source code is extracted into the subdirectory
-'GraphicsMagick-1.3'. After the source code extracted, change to the new
-directory using the command::
+The GraphicsMagick source code is extracted into a subdirectory
+similar to 'GraphicsMagick-1.3'. After the source code extracted,
+change to the new directory (using the actual directory name) using
+a command similar to::
 
   cd GraphicsMagick-1.3
 
 
 Build Configuration
 -------------------
+
 Use 'configure' to automatically configure, build, and install
 GraphicsMagick. The configure script may be executed from the
 GraphicsMagick source directory (e.g ./configure) or from a separate
@@ -120,30 +128,37 @@ options, configure will issue a message similar to::
 The configure variables you should be aware of are:
 
 CC
+
     Name of C compiler (e.g. 'cc -Xa') to use
 
 CXX
+
     Name of C++ compiler to use (e.g. 'CC')
 
 CFLAGS
+
     Compiler flags (e.g. '-g -O2') to compile C code
 
 CXXFLAGS
+
     Compiler flags (e.g. '-g -O2') to compile C++ code
 
 CPPFLAGS
+
     Include paths (-I/somedir) to look for header files
 
 LDFLAGS
-    Library paths (-L/somedir) to look for libraries Systems that support
-    the notion of a library run-path may require an additional argument
-    in order to find shared libraries at run time. For example, the
-    Solaris linker requires an argument of the form '-R/somedir', some
-    Linux systems will work with '-rpath /somedir', while some other
-    Linux systems who's gcc does not pass -rpath to the linker require an
-    argument of the form '-Wl,-rpath,/somedir'.
+
+    Library paths (-L/somedir) to look for libraries Systems that
+    support the notion of a library run-path may require an additional
+    argument in order to find shared libraries at run time. For
+    example, the Solaris linker requires an argument of the form
+    '-R/somedir', some Linux systems will work with '-rpath /somedir',
+    while some other Linux systems who's gcc does not pass -rpath to
+    the linker require an argument of the form '-Wl,-rpath,/somedir'.
 
 LIBS
+
     Extra libraries (-lsomelib) required to link
 
 Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
@@ -160,148 +175,214 @@ automatically, but if it doesn't, you can use the 'configure' options
 '--x-includes=DIR' and '--x-libraries=DIR' to specify their locations.
 
 The configure script provides a number of GraphicsMagick specific
-options.  When disabling an option --disable-something is equivalent to
-specifying --enable-something=no and --without-something is equivalent
-to --with-something=no.  The configure options are as
+options.  When disabling an option --disable-something is equivalent
+to specifying --enable-something=no and --without-something is
+equivalent to --with-something=no.  The configure options are as
 follows (execute 'configure --help' to see all options).
 
 
 Optional Features
 ~~~~~~~~~~~~~~~~~
 
---enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
+--enable-prof
 
---enable-prof           enable 'prof' profiling support (default disabled)
+    enable 'prof' profiling support (default disabled)
 
---enable-gprof          enable 'gprof' profiling support (default disabled)
+--enable-gprof
 
---enable-gcov           enable 'gcov' profiling support (default disabled)
+    enable 'gprof' profiling support (default disabled)
 
---disable-installed     disable building an installed GraphicsMagick (default enabled)
+--enable-gcov
 
---disable-largefile     disable support for large (64 bit) file offsets
+    enable 'gcov' profiling support (default disabled)
 
---disable-openmp        disable use of OpenMP (automatic multi-threaded loops) at all
+--disable-installed
 
---enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower
+    disable building an installed GraphicsMagick (default enabled)
 
---enable-symbol-prefix  enable prefixing library symbols with "Gm"
+--disable-largefile
 
---enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
+    disable support for large (64 bit) file offsets
+
+--disable-openmp
+
+    disable use of OpenMP (automatic multi-threaded loops) at all
+
+--enable-openmp-slow
+
+    enable OpenMP for algorithms which sometimes run slower
+
+--enable-symbol-prefix
+
+    enable prefixing library symbols with "Gm"
+
+--enable-magick-compat
+
+    install ImageMagick utility shortcuts (default disabled)
+
+--enable-maintainer-mode
+
+    enable additional Makefile rules which update generated files
+    included in the distribution. Requires GNU make as well as a
+    number of utilities and tools.
+
+--enable-quantum-library-names
+
+    shared library name includes quantum depth to allow shared
+    libraries with different quantum depths to co-exist in same
+    directory (only one can be used for development)
 
 
 Optional Packages/Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 --with-quantum-depth
-    number of bits in a pixel quantum (default 8)
+
+    number of bits in a pixel quantum (default 8).  Also see
+    '--enable-quantum-library-names.'
 
 --enable-ltdl-install
+
     install libltdl
 
 --with-included-ltdl
+
     use the GNU ltdl sources included here
 
 --with-ltdl-include=DIR
+
     use the ltdl headers installed in DIR
 
 --with-ltdl-lib=DIR
+
     use the libltdl.la installed in DIR
 
 --with-modules
+
     enable building dynamically loadable modules
 
 --with-cache
+
     set pixel cache threshhold (defaults to available memory)
 
 --without-threads
+
     disable threads support.
 
 --with-frozenpaths
+
     enable frozen delegate paths
 
 --without-magick-plus-plus
+
     disable build/install of Magick++
 
 --with-perl
+
     enable build/install of PerlMagick
 
 --with-perl=PERL
+
     use specified Perl binary to configure PerlMagick
 
 --with-perl-options=OPTIONS
+
     options to pass on command-line when generating PerlMagick's Makefile from Makefile.PL
 
 --without-bzlib
+
     disable BZLIB support
 
 --without-dps
+
     disable Display Postscript support
 
 --with-fpx
+
     enable FlashPIX support
 
 --with-gslib
+
     enable Ghostscript library support (not recommended)
 
 --without-jbig
+
     disable JBIG support
 
 --without-jpeg
+
     disable JPEG support
 
 --without-jp2
+
     disable JPEG v2 support
 
 --without-lcms
+
     disable lcms (v1.1X) support
 
 --without-lcms2
+
     disable lcms (v2.X) support
 
 --without-lzma
+
     disable LZMA support
 
 --without-png
+
     disable PNG support
 
 --without-tiff
+
     disable TIFF support
 
 --without-trio
+
     disable TRIO library support
 
 --without-ttf
+
     disable TrueType support
 
 --with-umem
-    enable umem memory allocation library support
+
+    enable libumem memory allocation library support
 
 --without-wmf
+
     disable WMF support
 
 --with-fontpath
+
     prepend to default font search path
 
 --with-gs-font-dir
+
     directory containing Ghostscript fonts
 
 --with-windows-font-dir
+
     directory containing MS-Windows fonts
 
 --without-xml
+
     disable XML support
 
 --without-zlib
+
     disable ZLIB support
 
 --with-x
+
     use the X Window System
 
 --with-share-path=DIR
+
     Alternate path to share directory (default share/GraphicsMagick)
 
 --with-libstdc=DIR
+
     use libstdc++ in DIR (for GNU C++)
 
 GraphicsMagick options represent either features to be enabled, disabled,
@@ -319,6 +400,7 @@ compilation flags).
 Several configure options require special note:
 
 --with-included-ltdl, --enable-ltdl-install
+
   GraphicsMagick supports loadable coder and filter modules if
   --enable-shared (see below) is specified in order to enable building
   shared libraries. This is true even if --with-modules (see below) has
@@ -333,6 +415,7 @@ Several configure options require special note:
   management system then you probably don't want to use this option.
 
 --enable-shared
+
   The shared libraries are built and support for loading coder and
   process modules is enabled. Shared libraries are preferred because
   they allow programs to share common code, making the individual
@@ -379,6 +462,7 @@ Several configure options require special note:
   be shared libraries!).
 
 --disable-static
+
   static archive libraries (with extension .a) are not built. If you
   are building shared libraries, there is little value to building
   static libraries. Reasons to build static libraries include: 1) they
@@ -388,6 +472,7 @@ Several configure options require special note:
   are unable to build shared libraries.
 
 --disable-installed
+
   By default the GraphicsMagick build is configured to formally install
   into a directory tree. This is the most secure and reliable way to
   install GraphicsMagick. Specifying --disable-installed configures
@@ -398,6 +483,7 @@ Several configure options require special note:
   are expected to extract and run in any location.
 
 --with-modules
+
   Image coders and process modules are built as loadable modules which
   are installed under the directory
   [prefix]/lib/GraphicsMagick-X.X.X/modules-QN (where 'N' equals 8, 16,
@@ -411,12 +497,14 @@ Several configure options require special note:
   using modules.
 
 --enable-symbol-prefix
+
   The GraphicsMagick libraries may contain symbols which conflict with
   other libraries. Specifify this option to prefix "Gm" to all library
   symbols, and use the C pre-processor to allow dependent code to still
   compile as before.
 
 --enable-magick-compat
+
   Normally GraphicsMagick installs only the 'gm' utility from which all
   commands may be accessed. Existing packages may be designed to invoke
   ImageMagick utilities (e.g. "convert"). Specify this option to
@@ -427,12 +515,16 @@ Several configure options require special note:
   replaced when GraphicsMagick is installed.
 
 --with-quantum-depth
+
   This option allows the user to specify the number of bits to use per
   pixel quantum (the size of the red, green, blue, and alpha pixel
-  components. For example, "--with-quantum-depth=8" builds
-  GraphicsMagick using 8-bit quantums. Most computer display adaptors
-  use 8-bit quantums. Currently supported arguments are 8, 16, or 32.
-  The default is 8. This option is the most important option in
+  components. When an image file with less depth is read, smaller
+  values are scaled up to this size for processing, and are scaled
+  down from this size when a file with lower depth is written.  For
+  example, "--with-quantum-depth=8" builds GraphicsMagick using 8-bit
+  quantums. Most computer display adaptors use 8-bit
+  quantums. Currently supported arguments are 8, 16, or 32.  The
+  default is 8. This option is the most important option in
   determining the overall run-time performance of GraphicsMagick.
 
   The number of bits in a quantum determines how many values it may
@@ -477,7 +569,13 @@ Several configure options require special note:
   of quantization noise (usually not visible at 8 bits) and helps
   prevent countouring and posterization in the image.
 
+  Consider also using the --enable-quantum-library-names configure
+  option so that installed shared libraries include the quantum depth
+  as part of their names so that shared libraries using different
+  quantum depth options may co-exist in the same directory.
+
 --without-magick-plus-plus
+
   Disable building Magick++, the C++ application programming interface
   to GraphicsMagick. A suitable C++ compiler is required in order to
   build Magick++. Specify the CXX configure variable to select the C++
@@ -487,6 +585,7 @@ Several configure options require special note:
   this option should only be necessary if Magick++ fails to compile.
 
 --with-frozenpaths
+
   Normally external program names are substituted into the
   delegates.mgk file without full paths. Specify this option to enable
   saving full paths to programs using locations determined by
@@ -495,42 +594,50 @@ Several configure options require special note:
   the person who builds GraphicsMagick.
 
 --without-threads
-  By default, the GraphicsMagick library is compiled with multi-thread
-  support. If this is undesireable, then specify --without-threads.
 
---with-cache
-  Specify a different image pixel cache threshold using the
-  --with-cache option. This sets the maximum amount of heap memory that
-  GraphicsMagick is allowed to consume before switching to using
-  memory-mapped temporary files to store raw pixel data.
+  By default, the GraphicsMagick library is compiled to be fully
+  thread safe by using thread APIs to implement required locking. If
+  the locking or dependence on thread APIs is undesireable, then
+  specify --without-threads.  Specifying this option also disables
+  OpenMP support.  Testing shows that the overhead from thread safety
+  is virtually unmeasurable so usually there is no reason to disable
+  multi-thread support.
 
 --disable-largefile
+
   By default, GraphicsMagick is compiled with support for large (> 2GB
   on a 32-bit CPU) files if the operating system supports large files.
-  All applications which use the GraphicsMagick library must then also
-  include support for large files. By disabling support for large files
-  via --disable-largefile, dependent applications do not require
-  special compilation options for large files in order to use the
-  library.
+  Applications which use the GraphicsMagick library might then also
+  need to be compiled to support for large files (operating system
+  dependent).  Normally support for large files is a good thing.  Only
+  disable this option if there is a need to do so.
 
 --disable-openmp
+
   By default, GraphicsMagick is compiled with support for OpenMP
   (http://www.openmp.org/) if the compilation environment supports it.
   OpenMP automatically parallizes loops across concurrent threads
-  based on instructions in pragmas. OpenMP is relatively new to GCC
-  and was introduced in GCC 4.2. OpenMP is a standard and was
-  implemented in some other compilers long before its appearance in
+  based on instructions in pragmas. OpenMP was introduced in GCC
+  4.2. OpenMP is a well-established standard and was implemented in
+  some other compilers in the late '90s, long before its appearance in
   GCC. OpenMP adds additional build and linkage requirements.
 
-  The OpenMP support provided by GCC ("GOMP") automatically enables use
-  of OpenMP with the number of threads equal to the number of CPU cores
-  in the system. Other implementations of OpenMP do not enable
-  parallelization by default. According to the OpenMP standard, the
-  OMP_NUM_THREADS environment variable specifies how many threads should
-  be used. In order to obtain the best single-user performance, set
-  OMP_NUM_THREADS equal to the number of available CPU cores.
+  By default, GraphicsMagick enables as many threads as there are CPU
+  cores (or CPU threads).  According to the OpenMP standard, the
+  OMP_NUM_THREADS environment variable specifies how many threads
+  should be used and GraphicsMagick also honors this request. In order
+  to obtain the best single-user performance, set OMP_NUM_THREADS
+  equal to the number of available CPU cores.  On a server with many
+  cores and many programs running at once, there may be benefit to
+  setting OMP_NUM_THREADS to a much smaller value than the number of
+  cores, and sometimes values as low as two (or even one, to disable
+  threading) will offer the best overall system performance.  Tuning a
+  large system with OpenMP programs running in parallel (competing for
+  resources) is a complex topic and some research and experimentation
+  may be required in order to find the best parameters.
 
 --enable-openmp-slow
+
   On some systems, memory-bound algorithms run slower (rather than
   faster) as threads are added via OpenMP.  This may be due to CPU
   cache and memory architecture implementation, or OS thread API
@@ -538,8 +645,8 @@ Several configure options require special note:
   without testing and pre-built binaries need to work well on all
   systems, these algorithms are now disabled for OpenMP by default.
   If you are using a well-threaded OS on a CPU with a good
-  high-performance memory architecture, you should probably enable
-  this option.
+  high-performance memory architecture, you might consider enabling
+  this option based on experimentation.
 
 --with-perl
 
@@ -562,6 +669,7 @@ Several configure options require special note:
   newer than 5.8.8.
 
 --with-perl-options
+
   The PerlMagick module is normally installed using the Perl
   interpreter's installation PREFIX, rather than GraphicsMagick's. If
   GraphicsMagick's installation prefix is not the same as PERL's
@@ -577,6 +685,7 @@ Several configure options require special note:
   configuring PERL extensions.
 
 --without-x
+
   By default, GraphicsMagick will use X11 libraries if they are
   available. When --without-x is specified, use of X11 is disabled. The
   display, animate, and import sub-commands are not included. The
@@ -584,6 +693,7 @@ Several configure options require special note:
   to X11 fonts (consider using Postscript or TrueType fonts instead).
 
 --with-gs-font-dir
+
   Specify the directory containing the Ghostscript Postscript Type 1
   font files (e.g. "n022003l.pfb") so that they can be rendered using
   the FreeType library. If the font files are installed using the
@@ -594,6 +704,7 @@ Several configure options require special note:
   located automatically, or the location needs to be overridden.
 
 --with-windows-font-dir
+
   Specify the directory containing MS-Windows-compatible fonts. This is
   not necessary when GraphicsMagick is running under MS-Windows.
 
@@ -605,11 +716,11 @@ Unix-emulation environment available for free from
 
     http://www.cygwin.com/
 
-It is strongly recommended that the X11R6 package be installed since
-this enables GraphicsMagick's X11 support (animate, display, and
-import sub-commands will work) and it includes the Freetype v2 DLL
-required to support TrueType and Postscript Type 1 fonts. Make sure
-that /usr/X11R6/bin is in your PATH prior to running configure.
+It is suggested that the X11R6 package be installed since this enables
+GraphicsMagick's X11 support (animate, display, and import
+sub-commands will work) and it includes the Freetype v2 DLL required
+to support TrueType and Postscript Type 1 fonts. Make sure that
+/usr/X11R6/bin is in your PATH prior to running configure.
 
 If you are using Cygwin version 1.3.9 or later, you may specify the
 configure option '--enable-shared' to build Cygwin DLLs. Specifying
@@ -718,9 +829,12 @@ Common causes of configure failures are:
 
 1) A delegate header is not in the header include path (CPPFLAGS -I
    option).
+
 2) A delegate library is not in the linker search/run path (LDFLAGS
    -L/-R option).
+
 3) A delegate library is missing a function (old version?).OB
+
 4) The compilation environment is faulty.
 
 If all reasonable corrective actions have been tried and the problem
@@ -741,24 +855,30 @@ Once GraphicsMagick is configured, these standard build targets are
 available from the generated Makefiles:
 
   'make'
+
      Build the package
 
   'make install'
+
      Install the package
 
   'make check'
+
      Run tests using the uninstalled software. On some systems, 'make
      install' must be done before the test suite will work but usually
      the software can be tested prior to installation.
 
   'make clean'
+
      Remove everything in the build directory created by 'make'
 
   'make distclean'
+
      Remove everything in the build directory created by 'configure'
      and 'make'. This is useful if you want to start over from scratch.
 
   'make uninstall'
+
      Remove all files from the system which are (or would be) installed
      by 'make install' using the current configuration. Note that this
      target does not work for PerlMagick since Perl no longer supports
@@ -828,11 +948,12 @@ typing ::
 
 Note that due to differences between the developer's environment and
 your own, it is possible that some tests may be indicated as failed
-even though the results are ok.  Such failures should be rare.
-Differences between the developer's environment environment and your
-own may include the compiler, the CPU type, and the library versions
-used. The GraphicsMagick developers use the current release of all
-dependent libraries.
+even though the results are ok.  Such failures should be rare, and if
+they do occur, they should be reported as a bug.  Differences between
+the developer's environment environment and your own may include the
+compiler, the CPU type, and the library versions used. The
+GraphicsMagick developers use the current release of all dependent
+libraries.
 
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN

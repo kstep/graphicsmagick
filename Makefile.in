@@ -2070,7 +2070,6 @@ BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CCMALLOCDelegate = @CCMALLOCDelegate@
 CFLAGS = @CFLAGS@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
@@ -2219,6 +2218,7 @@ MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAGICK_LTDLDEPS = @MAGICK_LTDLDEPS@
+MAGICK_LT_RELEASE_OPTS = @MAGICK_LT_RELEASE_OPTS@
 MAGICK_PLUS_PLUS_LIBRARY_AGE = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
 MAGICK_PLUS_PLUS_LIBRARY_CURRENT = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
 MAGICK_PLUS_PLUS_LIBRARY_REVISION = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
@@ -3399,7 +3399,9 @@ LIBMAGICK = magick/libGraphicsMagick.la
 @WITH_MODULES_FALSE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
 @WITH_MODULES_TRUE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
 magick_libGraphicsMagick_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+magick_libGraphicsMagick_la_LDFLAGS = \
+	-no-undefined -export-symbols-regex ".*" \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 magick_libGraphicsMagick_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
@@ -3810,6 +3812,7 @@ MAGICKPP_INCHEADERS_OPT = \
 
 # -no-undefined -export-symbols-regex ".*"
 Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
@@ -3966,6 +3969,7 @@ WAND_MANS = \
 LIBWAND = wand/libGraphicsMagickWand.la
 wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
 wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
 
 wand_libGraphicsMagickWand_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)

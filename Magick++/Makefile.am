@@ -127,6 +127,7 @@ MAGICKPP_INCHEADERS_OPT = \
 
 # -no-undefined -export-symbols-regex ".*"
 Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
 

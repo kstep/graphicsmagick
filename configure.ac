@@ -302,7 +302,9 @@ fi
 #
 # Enable support for threads
 AC_ARG_WITH(threads,
-	      [  --without-threads       disable threads support],
+	      AS_HELP_STRING([--without-threads],
+                             [disable threads support (also disables
+                             OpenMP)]),
 	      [with_threads=$withval],
 	      [with_threads='yes'])
 
@@ -350,7 +352,9 @@ AC_SUBST(OPENMP_CFLAGS)
 
 # Allow the user to disable use of OpenMP where algorithms sometimes run slower.
 AC_ARG_ENABLE(openmp-slow,
-	      [  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower],
+	      AS_HELP_STRING([--enable-openmp-slow],
+                             [enable OpenMP for algorithms which
+                             sometimes run slower]),
 	      [with_openmp_slow=$enableval],
 	      [with_openmp_slow='no'])
 if test "$with_openmp_slow" = 'no'
@@ -435,7 +439,9 @@ AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 # Enable support for building loadable modules
 #
 AC_ARG_WITH(modules,
-	      [  --with-modules          enable building dynamically loadable modules],
+	      AS_HELP_STRING([--with-modules],
+                             [enable building dynamically loadable
+                             modules]),
 	      [with_modules=$withval],
 	      [with_modules='no'])
 
@@ -472,8 +478,8 @@ fi
 # Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
 AC_ARG_ENABLE(installed,
-	      [  --disable-installed      disable building an installed GraphicsMagick
-                          (default enabled)],
+	      AS_HELP_STRING([--disable-installed],
+                             [disable building an installed GraphicsMagick]),
 	      [with_installed=$enableval],
 	      [with_installed='yes'])
 if test "$with_installed" = 'yes'
@@ -488,34 +494,24 @@ fi
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
-
-# Enable ccmalloc memory debugging support
-AC_ARG_ENABLE(ccmalloc,
-	      [  --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)],
-	      [with_ccmalloc=$enableval],
-	      [with_ccmalloc='no'])
-
-# Enable Electric Fence memory debugging support
-AC_ARG_ENABLE(efence,
-	      [  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)],
-	      [with_efence=$enableval],
-	      [with_efence='no'])
-
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
-	      [  --enable-prof           enable 'prof' profiling support (default disabled)],
+	      AS_HELP_STRING([--enable-prof],
+                             [enable 'prof' profiling support]),
 	      [with_prof=$enableval],
 	      [with_prof='no'])
 
 # Enable gprof-based profiling support
 AC_ARG_ENABLE(gprof,
-	      [  --enable-gprof          enable 'gprof' profiling support (default disabled)],
+	      AS_HELP_STRING([--enable-gprof],
+                             [enable 'gprof' profiling support]),
 	      [with_gprof=$enableval],
 	      [with_gprof='no'])
 
 # Enable gcov-based profiling support
 AC_ARG_ENABLE(gcov,
-	      [  --enable-gcov           enable 'gcov' profiling support (default disabled)],
+	      AS_HELP_STRING([--enable-gcov],
+                             [enable 'gcov' profiling support]),
 	      [with_gcov=$enableval],
 	      [with_gcov='no'])
 
@@ -532,7 +528,8 @@ fi
 
 # Enable prefixing library symbols with a common string
 AC_ARG_ENABLE(symbol-prefix,
-	      [  --enable-symbol-prefix  enable prefixing library symbols with "Gm"],
+	      AS_HELP_STRING([--enable-symbol-prefix],
+                             [enable prefixing library symbols with "Gm"]),
 	      [with_symbol_prefix=$enableval],
 	      [with_symbol_prefix='no'])
 if test "$with_symbol_prefix" != 'no'
@@ -543,14 +540,16 @@ fi
 
 # Enable ImageMagick utilities compatibility shortcuts (default no)
 AC_ARG_ENABLE(magick-compat,
-              [  --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)],
+              AS_HELP_STRING([--enable-magick-compat],
+                             [install ImageMagick utility shortcuts]),
               [with_magick_compat=$enableval],
               [with_magick_compat='no'])
 AM_CONDITIONAL(MAGICK_COMPAT, test "$with_magick_compat" != 'no')
 
 # Number of bits in a Quantum
 AC_ARG_WITH(quantum-depth,
-	      [  --with-quantum-depth    number of bits in a pixel quantum (default 8)],
+	      AS_HELP_STRING([--with-quantum-depth],
+                             [number of bits in a pixel quantum (default 8)]),
 	      [with_quantum_depth=$withval],
 	      [with_quantum_depth=8])
 if test "$with_quantum_depth" != '8' ; then
@@ -567,37 +566,57 @@ QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
 AC_SUBST(QuantumDepth)dnl
 
+# Enable QuantumDepth in shared library names
+AC_ARG_ENABLE(quantum-library-names,
+              AS_HELP_STRING([--enable-quantum-library-names],
+                             [shared library name includes quantum
+                             depth to allow shared libraries with
+                             different quantum depths to co-exist in
+                             same directory (only one can be used for
+                             development)]),
+              [with_quantum_library_names=$enableval],
+              [with_quantum_library_names='no'])
+MAGICK_LT_RELEASE_OPTS=
+if test "$with_quantum_library_names" != 'no'
+then
+    MAGICK_LT_RELEASE_OPTS="-release Q${QuantumDepth}"
+fi
+AC_SUBST(MAGICK_LT_RELEASE_OPTS)
+
 # Disable/Enable support for full delegate paths in delegates.mgk
 AC_ARG_WITH(frozenpaths,
-              [  --with-frozenpaths      enable frozen delegate paths],
+              AS_HELP_STRING([--with-frozenpaths],
+                             [enable frozen delegate paths]),
               [with_frozenpaths=$withval],
               [with_frozenpaths='no'])
 
 # Enable build/install of Magick++
 AC_ARG_WITH(magick-plus-plus,
-	      [  --without-magick-plus-plus disable build/install of Magick++],
+	      AS_HELP_STRING([--without-magick-plus-plus],
+                             [disable build/install of Magick++]),
 	      [with_magick_plus_plus=$withval],
 	      [with_magick_plus_plus='yes'])
 
 # Enable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --with-perl             enable build/install of PerlMagick
-       or
-  --with-perl=PERL        use specified Perl binary to configure PerlMagick],
+	      AS_HELP_STRING([--with-perl@<:@=PERL@:>@],
+                             [enable build/install of PerlMagick and optionally specify perl to use]),
 	      [with_perl=$withval],
 	      [with_perl='no'])
 
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH(perl-options,
-[  --with-perl-options=[OPTIONS]  options to pass on command-line when
-                          generating PerlMagick's Makefile from Makefile.PL],
-[PERL_MAKE_OPTIONS=$withval])
+              AS_HELP_STRING([--with-perl-options=OPTIONS],
+                             [options to pass on command-line when
+                              generating PerlMagick's Makefile from Makefile.PL]),
+              [PERL_MAKE_OPTIONS=$withval])
 AC_SUBST(PERL_MAKE_OPTIONS)
 
 
 # Disable BZLIB (bzip2 library)
 AC_ARG_WITH(bzlib,
-	      [  --without-bzlib         disable BZLIB support],
+	      AS_HELP_STRING([--without-bzlib],
+                             [disable BZLIB support]),
 	      [with_bzlib=$withval],
 	      [with_bzlib='yes'])
 if test "$with_bzlib" != 'yes' ; then
@@ -606,7 +625,8 @@ fi
 
 # Disable Display Postscript.
 AC_ARG_WITH(dps,
-	      [  --without-dps           disable Display Postscript support],
+	      AS_HELP_STRING([--without-dps],
+                             [disable Display Postscript support]),
 	      [with_dps=$withval],
 	      [with_dps='yes'])
 if test "$with_dps" != 'yes' ; then
@@ -615,7 +635,8 @@ fi
 
 # Enable FlashPIX.
 AC_ARG_WITH(fpx,
-	      [  --with-fpx              enable FlashPIX support],
+	      AS_HELP_STRING([--with-fpx],
+                             [enable FlashPIX support]),
 	      [with_fpx=$withval],
 	      [with_fpx='no'])
 if test "$with_fpx" != 'yes' ; then
@@ -624,7 +645,8 @@ fi
 
 # Enable Ghostscript library support.
 AC_ARG_WITH(gslib,
-	      [  --with-gslib            enable Ghostscript library support (not recommended)],
+	      AS_HELP_STRING([--with-gslib],
+                             [enable Ghostscript library support (not recommended)]),
 	      [with_gslib=$withval],
 	      [with_gslib='no'])
 if test "$with_gslib" != 'yes' ; then
@@ -633,7 +655,8 @@ fi
 
 # Disable JBIG.
 AC_ARG_WITH(jbig,
-	      [  --without-jbig          disable JBIG support],
+	      AS_HELP_STRING([--without-jbig],
+                             [disable JBIG support]),
 	      [with_jbig=$withval],
 	      [with_jbig='yes'])
 if test "$with_jbig" != 'yes' ; then
@@ -642,7 +665,8 @@ fi
 
 # Disable JPEG.
 AC_ARG_WITH(jpeg,
-	      [  --without-jpeg          disable JPEG support],
+	      AS_HELP_STRING([--without-jpeg],
+                             [disable JPEG support]),
 	      [with_jpeg=$withval],
 	      [with_jpeg='yes'])
 if test "$with_jpeg" != 'yes' ; then
@@ -651,7 +675,8 @@ fi
 
 # Disable JPEG Version 2.
 AC_ARG_WITH(jp2,
-	      [  --without-jp2           disable JPEG v2 support],
+	      AS_HELP_STRING([--without-jp2],
+                             [disable JPEG v2 support]),
 	      [with_jp2=$withval],
 	      [with_jp2='yes'])
 if test "$with_jp2" != 'yes' ; then
@@ -660,7 +685,8 @@ fi
 
 # Disable LCMS.
 AC_ARG_WITH(lcms,
-	      [  --without-lcms          disable lcms (v1.1X) support],
+	      AS_HELP_STRING([--without-lcms],
+                             [disable lcms (v1.1X) support]),
 	      [with_lcms=$withval],
 	      [with_lcms='yes'])
 if test "$with_lcms" != 'yes' ; then
@@ -669,7 +695,8 @@ fi
 
 # Disable LCMS2.
 AC_ARG_WITH(lcms2,
-	      [  --without-lcms2         disable lcms (v2.X) support],
+	      AS_HELP_STRING([--without-lcms2],
+                             [disable lcms (v2.X) support]),
 	      [with_lcms2=$withval],
 	      [with_lcms2='yes'])
 if test "$with_lcms2" != 'yes' ; then
@@ -678,7 +705,8 @@ fi
 
 # Disable LZMA (lzma library)
 AC_ARG_WITH(lzma,
-	      [  --without-lzma          disable LZMA support],
+	      AS_HELP_STRING([--without-lzma],
+                             [disable LZMA support]),
 	      [with_lzma=$withval],
 	      [with_lzma='yes'])
 if test "$with_lzma" != 'yes' ; then
@@ -687,13 +715,15 @@ fi
 
 # # Disable MPEG.
 # AC_ARG_WITH(mpeg2,
-# 	      [  --without-mpeg2         disable MPEG support],
+# 	      AS_HELP_STRING([--without-mpeg2],
+#                            [disable MPEG support]),
 # 	      [with_mpeg2=$withval],
 # 	      [with_mpeg2='yes'])
 
 # Disable PNG.
 AC_ARG_WITH(png,
-	      [  --without-png           disable PNG support],
+	      AS_HELP_STRING([--without-png],
+                             [disable PNG support]),
 	      [with_png=$withval],
 	      [with_png='yes'])
 if test "$with_png" != 'yes' ; then
@@ -702,7 +732,8 @@ fi
 
 # Disable TIFF.
 AC_ARG_WITH(tiff,
-	      [  --without-tiff          disable TIFF support],
+	      AS_HELP_STRING([--without-tiff],
+                             [disable TIFF support]),
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
 if test "$with_tiff" != 'yes' ; then
@@ -711,7 +742,8 @@ fi
 
 # Disable TRIO.
 AC_ARG_WITH(trio,
-	      [  --without-trio          disable TRIO support],
+	      AS_HELP_STRING([--without-trio],
+                             [disable TRIO support]),
 	      [with_trio=$withval],
 	      [with_trio='yes'])
 if test "$with_trio" != 'yes' ; then
@@ -720,7 +752,8 @@ fi
 
 # Disable TTF.
 AC_ARG_WITH(ttf,
-	      [  --without-ttf           disable TrueType support],
+	      AS_HELP_STRING([--without-ttf],
+                             [disable TrueType support]),
 	      [with_ttf=$withval],
 	      [with_ttf='yes'])
 if test "$with_ttf" != 'yes' ; then
@@ -731,7 +764,8 @@ fi
 # Available as a SourceForge project http://sourceforge.net/projects/umem/ or
 # https://labs.omniti.com/trac/portableumem/.
 AC_ARG_WITH(umem,
-	      [  --with-umem             enable umem memory allocation library support],
+	      AS_HELP_STRING([--with-umem],
+                             [enable umem memory allocation library support]),
 	      [with_umem=$withval],
 	      [with_umem='no'])
 if test "$with_umem" != 'yes' ; then
@@ -740,7 +774,8 @@ fi
 
 # Disable WMF.
 AC_ARG_WITH(wmf,
-	      [  --without-wmf           disable WMF support],
+	      AS_HELP_STRING([--without-wmf],
+                             [disable WMF support]),
 	      [with_wmf=$withval],
 	      [with_wmf='yes'])
 if test "$with_wmf" != 'yes' ; then
@@ -749,7 +784,8 @@ fi
 
 # Set default font search path
 AC_ARG_WITH(fontpath,
-              [  --with-fontpath=DIR     prepend to default font search path],
+              AS_HELP_STRING([--with-fontpath=DIR],
+                             [prepend to default font search path]),
               [with_fontpath=$withval],
               [with_fontpath=''])
 if test "$with_fontpath" != "yes" && test -z "$with_fontpath"
@@ -764,7 +800,8 @@ fi
 
 # Set Ghostscript font directory
 AC_ARG_WITH(gs-font-dir,
-	      [  --with-gs-font-dir=DIR  directory containing Ghostscript fonts],
+	      AS_HELP_STRING([--with-gs-font-dir=DIR],
+                             [directory containing Ghostscript fonts]),
 	      [with_gs_font_dir=$withval],
 	      [with_gs_font_dir='default'])
 if test "$with_gs_font_dir" != 'default' ; then
@@ -773,8 +810,8 @@ fi
 
 # Set Windows font directory
 AC_ARG_WITH(windows-font-dir,
-	      [  --with-windows-font-dir=DIR
-                          directory containing MS-Windows fonts],
+	      AS_HELP_STRING([--with-windows-font-dir=DIR],
+                             [directory containing MS-Windows fonts]),
 	      [with_windows_font_dir=$withval],
 	      [with_windows_font_dir=''])
 if test "$with_windows_font_dir" != '' ; then
@@ -783,7 +820,8 @@ fi
 
 # Disable XML.
 AC_ARG_WITH(xml,
-	      [  --without-xml           disable XML support],
+	      AS_HELP_STRING([--without-xml],
+                             [disable XML support]),
 	      [with_xml=$withval],
 	      [with_xml='yes'])
 if test "$with_xml" != 'yes' ; then
@@ -791,7 +829,8 @@ if test "$with_xml" != 'yes' ; then
 fi
 
 AC_ARG_WITH(zlib,
-	      [  --without-zlib          disable ZLIB support],
+              AS_HELP_STRING([--without-zlib],
+                             [disable ZLIB support]),
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 if test "$with_zlib" != 'yes' ; then
@@ -802,7 +841,8 @@ fi
 # Specify path to shared libstdc++ if not in normal location
 #
 AC_ARG_WITH(libstdc,
-  [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
+             AS_HELP_STRING([--with-libstdc=DIR],
+                            [use libstdc++ in DIR (for GNU C++)]),
   [if test "$withval" != no && test "$withval" != yes; then
     if test -d "$withval"; then
       LIBSTDCLDFLAGS="-L$withval"
@@ -1416,42 +1456,6 @@ then
   LIBS="$LIB_OMP $LIBS"
 fi
 AC_SUBST(LIB_OMP)
-
-
-#
-# Add support for ccmalloc memory debugging library if requested
-#
-have_ccmalloc='no'
-LIB_CCMALLOC=''
-if test "$with_ccmalloc" = 'yes'
-then
-  AC_PATH_PROG(CCMALLOCDelegate,ccmalloc,)
-  if test -n "$CCMALLOCDelegate"
-  then
-    eval `grep PREFIX= $CCMALLOCDelegate | sed -e 's/PREFIX/CCMALLOC_PREFIX/'`
-    OLIBS="$LIBS"
-    # Assume that gcc is used with ccmalloc.
-    LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-    AC_CHECK_LIB(ccmalloc,ccmalloc_malloc,LIB_CCMALLOC="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl",,-ldl)
-    if test -n "$LIB_CCMALLOC"
-    then
-      LIBS="$OLIBS"
-      LIBS="$LIBS $LIB_CCMALLOC"
-      have_ccmalloc='yes'
-     else
-      LIBS="$OLIBS"
-    fi
-  fi
-fi
-
-#
-# Add support for Electric Fence debugging library if requested
-#
-if test "$with_efence" = 'yes'
-then
-  LIB_EFENCE='-lefence'
-  LIBS="$LIB_EFENCE $LIBS"
-fi
 
 #
 # Find math library
@@ -3314,9 +3318,9 @@ AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3482,4 +3486,3 @@ echo "  LDFLAGS  = $LDFLAGS"
 #echo "  LIBS     = $TESTED_LIBS"
 echo "  LIBS     = $MAGICK_DEP_LIBS"
 echo ""
-
