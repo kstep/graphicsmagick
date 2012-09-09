@@ -123,14 +123,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   if ((image->columns < width) || (image->rows < height))
     ThrowImageException3(OptionError, UnableToThresholdImage,
 			 ImageSmallerThanRadius);
-  if (local_area >= (ULONG_MAX / MaxMap))
-    {
-      ThrowImageException3(OptionError, UnableToThresholdImage,
-                           RegionAreaExceedsLimit);
-    }
 
   threshold_image = CloneImage(image, 0, 0, MagickTrue, exception);
   if (threshold_image == (Image *) NULL)
@@ -177,19 +173,12 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
       row_count = 0UL;
 
     unsigned long
-      x;
-
-    long
+      x,
       y;
 
     const MagickBool
       matte = ((threshold_image->matte)
 	       || (threshold_image->colorspace == CMYKColorspace));
-
-    MagickBool
-      thread_status = MagickPass;
-
-    /* printf("long_offset=%ld\n",long_offset); */
 
     dyn_process = MagickAllocateArray(LongPixelPacket *,dyn_process_size, sizeof(LongPixelPacket));
     if (dyn_process == (LongPixelPacket *) NULL)
@@ -199,12 +188,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                              UnableToThresholdImage);
       }
 
-    for (y = 0; y < (long) (image->rows + height/2 + height + 1); y++)
+    for (y = 0; y < (image->rows + height/2 + height + 1); y++)
       {
-        thread_status = status;
-
-        if (thread_status == MagickFail)
-          continue;
+        PixelPacket
+          *restrict q = ((PixelPacket *) NULL);
 
         /*
          * for each window height + 2 rows, redefine reading area for
@@ -214,6 +201,12 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
           {
             p = AcquireImagePixels(image, -(long) width, (long) y - (long) height,
                                    image->columns + (width << 1), height + 2, exception);
+
+            if (p == (const PixelPacket *) NULL)
+              {
+                status = MagickFail;
+                break;
+              }
 
             /*
              * this is the code for sum overflow avoidance in
@@ -226,6 +219,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                 LongPixelPacket
                   min_sum;
 
+                fprintf(stderr,"LAT: overflow handling activated!\n");
                 min_sum.red = dyn_process[0].red;
                 min_sum.green = dyn_process[0].green;
                 min_sum.blue = dyn_process[0].blue;
@@ -241,199 +235,188 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
               }
           }
 
-        if (p == (const PixelPacket *) NULL)
-          thread_status = MagickFail;
-
-        if (thread_status != MagickFail)
+        /* load line for writing */
+        if (y > (height/2 + height))
           {
+            q = SetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
+                                 threshold_image->columns, 1, exception);
 
-            /* load line for writing */
-            PixelPacket *restrict q = ((PixelPacket *) NULL);
-
-            if (y > (long) (height/2 + height))
+            if (q == (PixelPacket *) NULL)
               {
-                q = SetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
-                                     threshold_image->columns, 1, exception);
-
-                if (q == (PixelPacket *) NULL)
-                  {
-                    thread_status = MagickFail;
-                    break;
-                  }
+                status = MagickFail;
+                break;
               }
+          }
 
-            for (x = 2; x < (image->columns + (width << 1)); x++)
+        for (x = 2; x < (image->columns + (width << 1)); x++)
+          {
+            LongPixelPacket *current_pre;
+
+            /* preprocess (x,y) */
+            current_pre = &dyn_process[PRE(x, y)];
+
+            current_pre->red = ScaleQuantumToMap(p[PRE(x, y)].red);
+            current_pre->red += dyn_process[PRE(x, y - 1)].red;
+
+            current_pre->red += dyn_process[PRE(x - 1, y)].red;
+            current_pre->red -= dyn_process[PRE(x - 1, y - 1)].red;
+
+            if (!is_grayscale)
               {
-                LongPixelPacket *current_pre;
+                /* green */
+                current_pre->green = ScaleQuantumToMap(p[PRE(x, y)].green);
+                current_pre->green += dyn_process[PRE(x, y - 1)].green;
 
-                /* preprocess (x,y) */
-                current_pre = &dyn_process[PRE(x, y)];
+                current_pre->green += dyn_process[PRE(x - 1, y)].green;
+                current_pre->green -= dyn_process[PRE(x - 1, y - 1)].green;
 
-                current_pre->red = ScaleQuantumToMap(p[PRE(x, y)].red);
-                current_pre->red += dyn_process[PRE(x, y - 1)].red;
+                /* blue */
+                current_pre->blue = ScaleQuantumToMap(p[PRE(x, y)].blue);
+                current_pre->blue += dyn_process[PRE(x, y - 1)].blue;
 
-                current_pre->red += dyn_process[PRE(x - 1, y)].red;
-                current_pre->red -= dyn_process[PRE(x - 1, y - 1)].red;
+                current_pre->blue += dyn_process[PRE(x - 1, y)].blue;
+                current_pre->blue -= dyn_process[PRE(x - 1, y - 1)].blue;
+              }
+            if (matte)
+              {
+                /* opacity */
+                current_pre->opacity = ScaleQuantumToMap(p[PRE(x, y)].opacity);
+                current_pre->opacity += dyn_process[PRE(x, y - 1)].opacity;
 
+                current_pre->opacity += dyn_process[PRE(x - 1, y)].opacity;
+                current_pre->opacity -= dyn_process[PRE(x - 1, y - 1)].opacity;
+              }
+            /* END preprocess for (x,y) */
+
+            /*
+             * start computing threshold mean, with the
+             * pre-computed data and only for pixels inside valid
+             * domain
+             */
+            if ((y > (height/2 + height)) && (x >= width) && (x < (image->columns + width)))
+              {
+                /* Left, Right, Upper, Bottom coord. to calculate the window's sum */
+                long
+                  L,
+                  R,
+                  U,
+                  B;
+
+                LongPixelPacket
+                  long_sum;
+
+                L = x - width/2 - (width & 1);	/* if is odd, subtract 1... */
+                R = x + width/2;
+                U = y - height - 1;
+                B = y - 1;
+
+                long_sum = long_zero;
+
+                if (L >= 0)
+                  {
+                    long_sum.red += dyn_process[PRE(L, U)].red;
+                    long_sum.red -= dyn_process[PRE(L, B)].red;
+                  }
+
+                long_sum.red += dyn_process[PRE(R, B)].red;
+                long_sum.red -= dyn_process[PRE(R, U)].red;
                 if (!is_grayscale)
                   {
-                    /* green */
-                    current_pre->green = ScaleQuantumToMap(p[PRE(x, y)].green);
-                    current_pre->green += dyn_process[PRE(x, y - 1)].green;
+                    if (L >= 0)
+                      {
+                        long_sum.green += dyn_process[PRE(L, U)].green;
+                        long_sum.green -= dyn_process[PRE(L, B)].green;
+                        long_sum.blue += dyn_process[PRE(L, U)].blue;
+                        long_sum.blue -= dyn_process[PRE(L, B)].blue;
+                      }
 
-                    current_pre->green += dyn_process[PRE(x - 1, y)].green;
-                    current_pre->green -= dyn_process[PRE(x - 1, y - 1)].green;
-
-                    /* blue */
-                    current_pre->blue = ScaleQuantumToMap(p[PRE(x, y)].blue);
-                    current_pre->blue += dyn_process[PRE(x, y - 1)].blue;
-
-                    current_pre->blue += dyn_process[PRE(x - 1, y)].blue;
-                    current_pre->blue -= dyn_process[PRE(x - 1, y - 1)].blue;
+                    long_sum.green += dyn_process[PRE(R, B)].green;
+                    long_sum.green -= dyn_process[PRE(R, U)].green;
+                    long_sum.blue += dyn_process[PRE(R, B)].blue;
+                    long_sum.blue -= dyn_process[PRE(R, U)].blue;
                   }
                 if (matte)
                   {
-                    /* opacity */
-                    current_pre->opacity = ScaleQuantumToMap(p[PRE(x, y)].opacity);
-                    current_pre->opacity += dyn_process[PRE(x, y - 1)].opacity;
-
-                    current_pre->opacity += dyn_process[PRE(x - 1, y)].opacity;
-                    current_pre->opacity -= dyn_process[PRE(x - 1, y - 1)].opacity;
-                  }
-                /* END preprocess for (x,y) */
-
-                /*
-                 * start computing threshold mean, with the
-                 * pre-computed data and only for pixels inside valid
-                 * domain
-                 */
-                if ((y > (long) (height/2 + height)) && (x >= width) && (x < (image->columns + width)))
-                  {
-                    /* Left, Right, Upper, Bottom coord. to calculate the window's sum */
-                    long
-                      L,
-                      R,
-                      U,
-                      B;
-
-                    LongPixelPacket
-                      long_sum;
-
-                    L = x - width/2 - (width & 1);	/* if is odd, subtract 1... */
-                    R = x + width/2;
-                    U = y - height - 1;
-                    B = y - 1;
-
-                    long_sum = long_zero;
-
                     if (L >= 0)
                       {
-                        long_sum.red += dyn_process[PRE(L, U)].red;
-                        long_sum.red -= dyn_process[PRE(L, B)].red;
+                        long_sum.opacity += dyn_process[PRE(L, U)].opacity;
+                        long_sum.opacity -= dyn_process[PRE(L, B)].opacity;
                       }
 
-                    long_sum.red += dyn_process[PRE(R, B)].red;
-                    long_sum.red -= dyn_process[PRE(R, U)].red;
-                    if (!is_grayscale)
-                      {
-                        if (L >= 0)
-                          {
-                            long_sum.green += dyn_process[PRE(L, U)].green;
-                            long_sum.green -= dyn_process[PRE(L, B)].green;
-                            long_sum.blue += dyn_process[PRE(L, U)].blue;
-                            long_sum.blue -= dyn_process[PRE(L, B)].blue;
-                          }
-
-                        long_sum.green += dyn_process[PRE(R, B)].green;
-                        long_sum.green -= dyn_process[PRE(R, U)].green;
-                        long_sum.blue += dyn_process[PRE(R, B)].blue;
-                        long_sum.blue -= dyn_process[PRE(R, U)].blue;
-                      }
-                    if (matte)
-                      {
-                        if (L >= 0)
-                          {
-                            long_sum.opacity += dyn_process[PRE(L, U)].opacity;
-                            long_sum.opacity -= dyn_process[PRE(L, B)].opacity;
-                          }
-
-                        long_sum.opacity += dyn_process[PRE(R, B)].opacity;
-                        long_sum.opacity -= dyn_process[PRE(R, U)].opacity;
-                      }
-
-                    /*
-                     * Avoid overflow at mean.  We were able to do
-                     * this by using some bitwise operations but there
-                     * was no speedup and the code get pretty hard to
-                     * read...
-                     *
-                     *   local_area   - unsigned long
-                     *   long_sum.*   - unsigned long
-                     *   long_offset  - long
-                     *   q.*          - Quantum
-                     */
-                    if ((long) (long_sum.red / local_area) + long_offset > (long) MaxMap)
-                      long_sum.red = MaxMap;
-                    else if ((long) (long_sum.red / local_area) + long_offset < (long) 0L)
-                      long_sum.red = 0UL;
-                    else
-                      long_sum.red = ((long) (long_sum.red / local_area)) + long_offset;
-
-                    /* grayscale and red */
-                    q[x - width].red = (ScaleQuantumToMap(q[x - width].red) <= long_sum.red ? 0U : MaxRGB);
-
-                    if (!is_grayscale)
-                      {
-                        if ((long) (long_sum.green / local_area) + long_offset > (long) MaxMap)
-                          long_sum.green = MaxMap;
-                        else if ((long) (long_sum.green / local_area) + long_offset < (long) 0L)
-                          long_sum.green = 0UL;
-                        else
-                          long_sum.green = ((long) (long_sum.green / local_area)) + long_offset;
-
-                        if ((long) (long_sum.blue / local_area) + long_offset > (long) MaxMap)
-                          long_sum.blue = MaxMap;
-                        else if ((long) (long_sum.blue / local_area) + long_offset < (long) 0L)
-                          long_sum.blue = 0UL;
-                        else
-                          long_sum.blue = ((long) (long_sum.blue / local_area)) + long_offset;
-
-                        q[x - width].green = (ScaleQuantumToMap(q[x - width].green) <= long_sum.green ? 0U : MaxRGB);
-                        q[x - width].blue = (ScaleQuantumToMap(q[x - width].blue) <= long_sum.blue ? 0U : MaxRGB);
-
-                      }
-                    if (matte)
-                      {
-                        if ((long) (long_sum.opacity / local_area) + long_offset > (long) MaxMap)
-                          long_sum.opacity = MaxMap;
-                        else if ((long) (long_sum.opacity / local_area) + long_offset < (long) 0)
-                          long_sum.opacity = 0UL;
-                        else
-                          long_sum.opacity = (long_sum.opacity / local_area) + long_offset;
-
-                        q[x - width].opacity =
-                          (ScaleQuantumToMap(q[x - width].opacity) <= long_sum.opacity ? 0U : MaxRGB);
-                      }
-
-                    if (is_grayscale)
-                      q[x - width].green = q[x - width].blue = q[x - width].red;
+                    long_sum.opacity += dyn_process[PRE(R, B)].opacity;
+                    long_sum.opacity -= dyn_process[PRE(R, U)].opacity;
                   }
-              }
-          }
-        {
-          row_count++;
-          if (QuantumTick(row_count, image->rows))
-            if (!MagickMonitorFormatted(row_count, image->rows, exception,
-                                        AdaptiveThresholdImageText, image->filename))
-              thread_status = MagickFail;
 
-          if (thread_status == MagickFail)
-            status = MagickFail;
-        }
-      }
+                /*
+                 * Avoid overflow at mean.  We were able to do
+                 * this by using some bitwise operations but there
+                 * was no speedup and the code get pretty hard to
+                 * read...
+                 *
+                 *   local_area   - unsigned long
+                 *   long_sum.*   - unsigned long
+                 *   long_offset  - long
+                 *   q.*          - Quantum
+                 */
+                if ((long) (long_sum.red / local_area) + long_offset > (long) MaxMap)
+                  long_sum.red = MaxMap;
+                else if ((long) (long_sum.red / local_area) + long_offset < (long) 0L)
+                  long_sum.red = 0UL;
+                else
+                  long_sum.red = ((long) (long_sum.red / local_area)) + long_offset;
+
+                /* grayscale and red */
+                q[x - width].red = (ScaleQuantumToMap(q[x - width].red) <= long_sum.red ? 0U : MaxRGB);
+
+                if (!is_grayscale)
+                  {
+                    if ((long) (long_sum.green / local_area) + long_offset > (long) MaxMap)
+                      long_sum.green = MaxMap;
+                    else if ((long) (long_sum.green / local_area) + long_offset < (long) 0L)
+                      long_sum.green = 0UL;
+                    else
+                      long_sum.green = ((long) (long_sum.green / local_area)) + long_offset;
+
+                    if ((long) (long_sum.blue / local_area) + long_offset > (long) MaxMap)
+                      long_sum.blue = MaxMap;
+                    else if ((long) (long_sum.blue / local_area) + long_offset < (long) 0L)
+                      long_sum.blue = 0UL;
+                    else
+                      long_sum.blue = ((long) (long_sum.blue / local_area)) + long_offset;
+
+                    q[x - width].green = (ScaleQuantumToMap(q[x - width].green) <= long_sum.green ? 0U : MaxRGB);
+                    q[x - width].blue = (ScaleQuantumToMap(q[x - width].blue) <= long_sum.blue ? 0U : MaxRGB);
+
+                  }
+                if (matte)
+                  {
+                    if ((long) (long_sum.opacity / local_area) + long_offset > (long) MaxMap)
+                      long_sum.opacity = MaxMap;
+                    else if ((long) (long_sum.opacity / local_area) + long_offset < (long) 0)
+                      long_sum.opacity = 0UL;
+                    else
+                      long_sum.opacity = (long_sum.opacity / local_area) + long_offset;
+
+                    q[x - width].opacity =
+                      (ScaleQuantumToMap(q[x - width].opacity) <= long_sum.opacity ? 0U : MaxRGB);
+                  }
+
+                if (is_grayscale)
+                  q[x - width].green = q[x - width].blue = q[x - width].red;
+              } /* if (y ... */
+          } /* for (x ... */
+        row_count++;
+        if (QuantumTick(row_count, image->rows))
+          if (!MagickMonitorFormatted(row_count, image->rows, exception,
+                                      AdaptiveThresholdImageText, image->filename))
+            {
+              status = MagickFail;
+              break;
+            }
+      } /* for (y ... */
 
     if (!SyncImagePixelsEx(threshold_image, exception))
-      thread_status = MagickFail;
+      status = MagickFail;
 
     MagickFreeMemory(dyn_process);
   }
@@ -442,7 +425,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
       DestroyImage(threshold_image);
       threshold_image = (Image *) NULL;
     }
-  if (is_grayscale)
+  else if (is_grayscale)
     {
       threshold_image->is_monochrome = MagickTrue;
       threshold_image->is_grayscale = MagickTrue;
