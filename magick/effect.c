@@ -126,7 +126,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
   if ((image->columns < width) || (image->rows < height))
     ThrowImageException3(OptionError, UnableToThresholdImage,
 			 ImageSmallerThanRadius);
-  if (local_area > (unsigned long) ULONG_MAX / ScaleQuantumToMap(MaxRGB))
+  if (local_area >= (ULONG_MAX / MaxMap))
     {
       ThrowImageException3(OptionError, UnableToThresholdImage,
                            RegionAreaExceedsLimit);
@@ -161,8 +161,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
      * happen in pre-processing so we can avoid overflow only after
      * processing that row...
      */
-    const long
-      overflow_row = (long) ((~0UL >> 8) / (image->columns + (width << 1)) - height);
+    const unsigned long
+      overflow_row = ((~0UL >> (MaxMapDepth + 1)) /
+                      (image->columns + (width << 1)) - height);
 
     /*
      *  allocates pre processing buffer,
@@ -220,7 +221,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
              * and it can be highly optimized.  I couldn't properly
              * test it this code...
              */
-            if (y > overflow_row)
+            if ((unsigned long) y > overflow_row)
               {
                 LongPixelPacket
                   min_sum;
