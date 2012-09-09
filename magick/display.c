@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -5393,7 +5393,13 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       /*
         Select image.
       */
-      (void) chdir(resource_info->home_directory);
+      if (chdir(resource_info->home_directory) != 0)
+        {
+          MagickXNoticeWidget(display,windows,"Unable to restore directory:",
+                              resource_info->home_directory);
+          MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
+                           resource_info->home_directory);
+        }
       nexus=MagickXOpenImage(display,resource_info,windows,True);
       break;
     }
@@ -10293,7 +10299,9 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
 
       GetPathComponent(image->filename,HeadPath,path);
       GetPathComponent(image->filename,TailPath,filename);
-      (void) chdir(path);
+      if (chdir(path) != 0)
+        MagickXNoticeWidget(display,windows,"Unable to change to directory:",
+                            path);
     }
   MagickXFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
@@ -12256,7 +12264,13 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
       /*
         Change to the working directory.
       */
-      (void) chdir(working_directory);
+      if (('\0' != working_directory[0]) && (chdir(working_directory) != 0))
+        {
+          MagickXNoticeWidget(display,windows,"Unable to restore directory:",
+                              working_directory);
+          MagickFatalError(ConfigureFatalError,UnableToChangeToWorkingDirectory,
+                           NULL);
+        }
       /*
         Set the progress monitor if progress monitoring is requested.
       */
@@ -13849,8 +13863,14 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
   /*
     Change to home directory.
   */
-  (void) getcwd(working_directory,MaxTextExtent-1);
-  (void) chdir(resource_info->home_directory);
+  if (getcwd(working_directory,MaxTextExtent-1) == NULL)
+    MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                     NULL);
+  if (chdir(resource_info->home_directory) != 0)
+    {
+      MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
+                       resource_info->home_directory);
+    }
   *image=display_image;
   return(nexus);
 }

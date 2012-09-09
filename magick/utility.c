@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -1039,7 +1039,9 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       ExpandFilename(path);
 
       if ('\0' == current_directory[0])
-	(void) getcwd(current_directory,MaxTextExtent-1);
+	if (getcwd(current_directory,MaxTextExtent-1) == NULL)
+          MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                           NULL);
 
       /* Get the list of matching file names. */
       filelist=ListFiles(*path=='\0' ? current_directory : path,
@@ -1051,7 +1053,14 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 	    break;
 
       /* ListFiles() changes current directory without restoring. */
-      (void) chdir(current_directory);
+      if (chdir(current_directory) != 0)
+        {
+          for (j=0; j < number_files; j++)
+	    MagickFreeMemory(filelist[j]);
+          MagickFreeMemory(filelist);
+          MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
+                           NULL);
+        }
 
       if (filelist == 0)
 	continue;
@@ -1287,7 +1296,9 @@ MagickExport MagickPassFail GetExecutionPath(char *path)
       {
         if (*execution_path != *DirectorySeparator)
           {
-            (void) getcwd(path,MaxTextExtent-1);
+            if (getcwd(path,MaxTextExtent-1) == NULL)
+              MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                               NULL);
             (void) strlcat(path,"/",MaxTextExtent);
           }
         (void) strlcat(path,execution_path,MaxTextExtent);
@@ -1406,9 +1417,8 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
     Save original working directory so it can be restored later.
   */
   if (getcwd(original_cwd,sizeof(original_cwd)-1) == NULL)
-    {
-      return(MagickFail);
-    }
+              MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                               NULL);
 
   /*
     Check to see if path is a valid relative path from current
@@ -1423,7 +1433,9 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
       */
       if (chdir(path) == 0)
         {
-          (void) getcwd(execution_path,sizeof(execution_path)-2);
+          if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
+            MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                             NULL);
         }
       else
         {
@@ -1433,7 +1445,9 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
             *p='\0';
           if (chdir(temporary_path) == 0)
             {
-              (void) getcwd(execution_path,sizeof(execution_path)-2);
+              if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
+                MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                                 NULL);
             }
         }
     }
@@ -1477,7 +1491,9 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
                 (void) strlcat(temporary_path,path,sizeof(temporary_path));
                 if (IsAccessibleNoLogging(temporary_path))
                   {
-                    (void) getcwd(execution_path,sizeof(execution_path)-2);
+                    if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
+                      MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                                       NULL);
                     break;
                   }
               }
@@ -1489,7 +1505,8 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
   /*
     Restore original working directory.
   */
-  (void) chdir(original_cwd);
+  if (chdir(original_cwd) != 0)
+    return(MagickFail);
 
   if (execution_path[0] != '\0')
     {
@@ -2260,7 +2277,11 @@ static inline unsigned int IsFrame(const char *point)
   char
     *p;
 
-  (void) strtol(point,&p,10);
+  long
+    long_val;
+
+  long_val = strtol(point,&p,10);
+  (void) long_val;
   return(p != point);
 }
 
@@ -2468,6 +2489,9 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   register long
     i;
 
+  double
+    double_val;
+
   assert(start != (const char *) NULL);
   assert(token != (char *) NULL);
 
@@ -2509,7 +2533,8 @@ MagickExport void GetToken(const char *start,char **end,char *token)
         char
           *q;
 
-        (void) strtod(p,&q);
+        double_val=strtod(p,&q);
+        (void) double_val;
         if (p != q)
           {
             for ( ; p < q; p++)
@@ -3188,11 +3213,17 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   status=chdir(directory);
   if (status != 0)
     return((char **) NULL);
-  (void) getcwd(filename,MaxTextExtent-1);
+  if (getcwd(filename,MaxTextExtent-1) == NULL)
+    MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                     NULL);
   current_directory=opendir(filename);
   if (current_directory == (DIR *) NULL)
     return((char **) NULL);
-  (void) chdir(filename);
+  if (chdir(filename) != 0)
+    {
+      (void) closedir(current_directory);
+      return((char **) NULL);
+    }
   /*
     Allocate filelist.
   */

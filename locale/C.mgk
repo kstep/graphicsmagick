@@ -313,6 +313,15 @@
       </Message>
     </Error>
     <FatalError>
+      <Message name="UnableToGetCurrentDirectory">
+        Unable to get current working directory
+      </Message>
+      <Message name="UnableToChangeToWorkingDirectory">
+        Unable to change to working directory
+      </Message>
+      <Message name="UnableToRestoreCurrentDirectory">
+        Unable to restore current working directory
+      </Message>
       <Message name="Default">
         default error
       </Message>

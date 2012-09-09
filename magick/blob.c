@@ -1018,16 +1018,16 @@ MagickExport void CloseBlob(Image *image)
             /*
               Truncate memory-mapped output file to size.
             */
-            (void) MagickFtruncate(fileno(image->blob->handle.std),image->blob->length);
+            status |= (MagickFtruncate(fileno(image->blob->handle.std),image->blob->length) != 0);
             if (image->blob->fsync)
-              (void) fsync(fileno(image->blob->handle.std));
-            status=fclose(image->blob->handle.std);
+              status |= (fsync(fileno(image->blob->handle.std)) != 0);
+            status |= (fclose(image->blob->handle.std) != 0);
           }
         break;
       }
   }
   DetachBlob(image->blob);
-  image->blob->status=status < 0;
+  image->blob->status=(status != 0);
 }
 
 /*
