@@ -1,3 +1,9 @@
+2012-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Fix Debian bug 687738 "graphicsmagick:
+	repeated words suitable for suitable for in gm manpage" reported
+	by Jonas Smedegaard.
+
 2012-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Update with news since last release.
