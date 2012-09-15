@@ -1,351 +1,171 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta name="generator" content=
-"HTML Tidy for Solaris (vers 12 April 2005), see www.w3.org">
-<meta http-equiv="CONTENT-TYPE" content=
-"text/html; charset=us-ascii">
-<title>Magick::Pixels Class</title>
-<meta name="GENERATOR" content="StarOffice 8 (Solaris x86)">
-<meta name="AUTHOR" content="Bob Friesenhahn">
-<meta name="CREATED" content="20020805;15302080">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<meta name="CHANGED" content="20090328;20210800">
-<meta name="DESCRIPTION" content=
-"Class to access raw image pixels.">
-<meta name="KEYWORDS" content="GraphicsMagick,Pixel,Magick++">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<style type="text/css">
-        <!--
-                TD P { color: #000000 }
-                H1 { color: #000000 }
-                P { color: #000000 }
-                A:link { color: #0000ff }
-                A:visited { color: #ff0000 }
-        -->
-</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>Magick::Pixels</title>
+<link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
-<body lang="en-US" text="#000000" link="#0000FF" vlink="#FF0000"
-bgcolor="#FFFFFF" dir="ltr">
-<h1 align="center">Magick::Pixels</h1>
-<p>The <i>Pixels</i> class provides efficient access to raw image
-pixels. Image pixels (of type <a href=
-"PixelPacket.html"><i>PixelPacket</i></a>) may be accessed directly
-via the <i>Image Pixel Cache</i>. The image pixel cache is a
-rectangular window (a view) into the actual image pixels (which may
-be in memory, memory-mapped from a disk file, or entirely on disk).
-Obtain existing image pixels via <i>get()</i>. Create a new pixel
-region using <i>set().</i></p>
+<body>
+
+<div class="banner">
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
+</form>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="../index.html">Home</a></li>
+<li><a href="../project.html">Project</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../reference.html">Reference</a></li>
+</ul>
+</div>
+<div class="document" id="magick-pixels">
+<h1 class="title">Magick::Pixels</h1>
+
+<!-- -*- mode: rst -*- -->
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>The Pixels class provides efficient access to raw image pixels. Image
+pixels (of type <a class="reference external" href="PixelPacket.html">PixelPacket</a>) may be accessed
+directly via the Image Pixel Cache. The image pixel cache is a
+rectangular window (a view) into the actual image pixels (which may be
+in memory, memory-mapped from a disk file, or entirely on
+disk). Obtain existing image pixels via get(). Create a new pixel
+region using set().</p>
 <p>Depending on the capabilities of the operating system, and the
-relationship of the window to the image, the pixel cache may be a
-copy of the pixels in the selected window, or it may be the actual
-image pixels. In any case calling <i>sync()</i> insures that the
-base image is updated with the contents of the modified pixel
-cache. The method <i>decode()</i>supports copying foreign pixel
-data formats into the pixel cache according to the
-<i>QuantumTypes</i>. The method <i>encode()</i> supports copying
-the pixels in the cache to a foreign pixel representation according
-to the format specified by <i>QuantumTypes</i>.</p>
-<p>Setting a view using the Pixels class does not cause the number
-of references to the underlying image to be reduced to one.
-Therefore, in order to ensure that only the current generation of
-the image is modified, the Image's <a href=
-"Image.html#modifyimage">modifyImage()</a> method should be invoked
-to reduce the reference count on the underlying image to one. If
-this is not done, then it is possible for a previous generation of
-the image to be modified due to the use of reference counting when
-copying or constructing an Image.</p>
-<p>The <i>PixelPacket</i>* returned by the <i>set</i> and
-<i>get</i> methods, and the <i>IndexPacket</i>* returned by the
-<i>indexes</i> method point to pixel data managed by the
-<i>Pixels</i> class. The <i>Pixels</i> class is responsible for
+relationship of the window to the image, the pixel cache may be a copy
+of the pixels in the selected window, or it may be the actual image
+pixels. In any case calling sync() insures that the base image is
+updated with the contents of the modified pixel cache. The method
+decode()supports copying foreign pixel data formats into the pixel
+cache according to the QuantumTypes. The method encode() supports
+copying the pixels in the cache to a foreign pixel representation
+according to the format specified by QuantumTypes.</p>
+<p>Setting a view using the Pixels class does not cause the number of
+references to the underlying image to be reduced to one. Therefore, in
+order to ensure that only the current generation of the image is
+modified, the Image's modifyImage() method should be invoked to reduce
+the reference count on the underlying image to one. If this is not
+done, then it is possible for a previous generation of the image to be
+modified due to the use of reference counting when copying or
+constructing an Image.</p>
+<p>The PixelPacket* returned by the set and get methods, and the
+IndexPacket* returned by the indexes method point to pixel data
+managed by the Pixels class. The Pixels class is responsible for
 releasing resources associated with the pixel view. This means that
 the pointer should never be passed to delete() or free().</p>
-<p style="margin-bottom: 0in">The pixel view is a small image in
-which the pixels may be accessed, addressed, and updated, as shown
-in the following example, which produces an image similar to the
-one on the right (minus lines and text):</p>
-<table width="100%" border="0" cellpadding="2" cellspacing="2">
-<tr>
-<td>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Create base
-image</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">Image image(Geometry(254,218),
-"white");</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Set the image type to
-TrueColor DirectClass representation.</font></font></font><br>
-<font color="#000099"><font face=
-"courier new, courier, monospace"><font size=
-"2">image.type(TrueColorType);</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Ensure that there is only
-one reference to underlying image</font></font></font><br>
-<font color="#FF0000"><font face="Courier New, Courier"><font size=
-"2">// If this is not done, then image pixels will not be
-modified.</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">image.modifyImage();</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Allocate pixel
-view</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">Pixels view(image);</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Set all pixels in region
-anchored at 38x36, with size 160x230 to
-green.</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">unsigned int columns = 196; unsigned int rows =
-162;</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">Color green("green");</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">PixelPacket *pixels =
-view.get(38,36,columns,rows);</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">for ( int row = 0; row &lt; rows ; ++row
-)</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">for ( int column = 0; column &lt; columns ; ++column
-)</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">*pixels++=green;</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Save changes to
-image.<br></font></font></font> <font color="#000099"><font face=
-"Courier New, Courier"><font size=
-"2">view.sync();</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Set all pixels in region
-anchored at 86x72, with size 108x67 to
-yellow.</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">columns = 108; rows = 67;</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">Color yellow("yellow");</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">pixels = view.get(86,72,columns,rows);</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">for ( int row = 0; row &lt; rows ; ++row
-)</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">for ( int column = 0; column &lt; columns ; ++column
-)</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">*pixels++=yellow;</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">view.sync();</font></font></font></p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Set pixel at position
-108,94 to red</font></font></font><br>
-<font color="#000099"><font face="Courier New, Courier"><font size=
-"2">*(view.get(108,94,1,1)) = Color("red");</font></font></font>
-&nbsp;</p>
-<p><font color="#FF0000"><font face=
-"Courier New, Courier"><font size="2">// Save changes to
-image.<br></font></font></font> <font color="#000099"><font face=
-"Courier New, Courier"><font size=
-"2">view.sync();</font></font></font></p>
-</td>
-<td>
-<p><a name="Graphic1" id="Graphic1"></a><img src="Cache.png" name=
-"Graphic1" align="bottom" width="254" height="218" border="0" id=
-"Graphic1"></p>
-</td>
-</tr>
-</table>
-<p style="margin-bottom: 0in"><i>Pixels</i> supports the following
-methods:</p>
-<p align="center" style="margin-bottom: 0in"><b>Pixel Cache
-Methods</b></p>
-<table width="100%" border="1" cellpadding="2" cellspacing="2">
-<tr>
-<td>
-<p align="center"><b>Method</b></p>
-</td>
-<td>
-<p align="center"><b>Returns</b></p>
-</td>
-<td>
-<p align="center"><b>Signature</b></p>
-</td>
-<td>
-<p align="center"><b>Description</b></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="get" id="get"></a><font size=
-"2">get</font></p>
-</td>
-<td>
-<p><font size="2"><a href=
-"PixelPacket.html">PixelPacket</a>*</font></p>
-</td>
-<td>
-<p><font size="2">const int x_, const int y_, const unsigned const
-int columns_, const unsigned int rows_</font></p>
-</td>
-<td>
-<p><font size="2">Transfers read-write pixels from the image to the
-pixel cache as defined by the specified rectangular region.
-Modified pixels may be subsequently transferred back to the image
-via <i>sync</i>. The value returned is intended for pixel access
-only. It should never be deallocated.</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="getConst" id="getConst"></a><font size=
-"2">getConst</font></p>
-</td>
-<td>
-<p><font size="2">const <a href=
-"PixelPacket.html">PixelPacket</a>*</font></p>
-</td>
-<td>
-<p><font size="2">const int x_, const int y_, const unsigned int
-columns_, const unsigned int rows_</font></p>
-</td>
-<td>
-<p><font size="2">Transfers read-only pixels from the image to the
-pixel cache as defined by the specified rectangular
-region.</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="set" id="set"></a><font size=
-"2">set</font></p>
-</td>
-<td>
-<p><font size="2"><a href=
-"PixelPacket.html">PixelPacket</a>*</font></p>
-</td>
-<td>
-<p><font size="2">const int x_, const int y_, const unsigned int
-columns_, const unsigned int rows_</font></p>
-</td>
-<td>
-<p><font size="2">Allocates a pixel cache region to store image
-pixels as defined by the region rectangle. &nbsp; This area is
-subsequently transferred from the pixel cache to the image via
-<i>sync</i>. The value returned is intended for pixel access only.
-It should never be deallocated.</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="sync" id="sync"></a><font size=
-"2">sync</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Transfers the image cache pixels to the
-image.</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="indexes" id="indexes"></a><font size=
-"2">indexes</font></p>
-</td>
-<td>
-<p><font size="2">IndexPacket*</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Returns the PsuedoColor pixel indexes
-corresponding to the pixel region defined by the last <a href=
-"#get">get</a> , <a href="#getConst">getConst</a>, or <a href=
-"#set">set</a> call. Only valid for PseudoColor and CMYKA images.
-The pixel indexes (an array of type</font> <font size=
-"2"><i>IndexPacket</i></font><font size="2">, which is
-typedef</font> <font size="2"><i>Quantum</i></font><font size="2">,
-which is itself typedef</font> <font size="2"><i>unsigned
-char</i></font><font size="2">, or</font> <font size=
-"2"><i>unsigned short</i></font><font size="2">, depending on the
-value of the</font> <font size="2"><i>QuantumDepth</i></font>
-<font size="2">define) provide the</font> <font size=
-"2"><span lang="en-US">colormap</span></font> <font size="2">index
-(see <a href="Image.html#colormap">colorMap</a>) for each pixel in
-the image. For CMYKA images, the indexes represent the matte
-(alpha) channel. The value returned is intended for pixel access
-only. It should never be deallocated.</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="x" id="x"></a><font size=
-"2">x</font></p>
-</td>
-<td>
-<p><font size="2">int</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Left ordinate of view</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="y" id="y"></a><font size=
-"2">y</font></p>
-</td>
-<td>
-<p><font size="2">int</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Top ordinate of view</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="columns" id="columns"></a><font size=
-"2">columns</font></p>
-</td>
-<td>
-<p><font size="2">unsigned int</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Width of view</font></p>
-</td>
-</tr>
-<tr>
-<td>
-<p align="center"><a name="rows" id="rows"></a><font size=
-"2">rows</font></p>
-</td>
-<td>
-<p><font size="2">unsigned int</font></p>
-</td>
-<td>
-<p><font size="2">void</font></p>
-</td>
-<td>
-<p><font size="2">Height of view</font></p>
-</td>
-</tr>
-</table>
-<p><br>
-<br></p>
+<img alt="Figure showing pixel cache access" class="align-center" src="Cache.png" style="width: 254.0px; height: 218.0px;" />
+<!-- Probably want bottom alignment for above (but not accepted by -->
+<!-- currently installed rst2html.py parser) -->
+<p>The pixel view is a small image in which the pixels may be accessed,
+addressed, and updated, as shown in the following example, which
+produces an image similar to the one on the right (minus lines and
+text):</p>
+<pre class="literal-block">
+// Create base image
+Image image(Geometry(254,218), &quot;white&quot;);
+
+// Set the image type to TrueColor DirectClass representation.
+image.type(TrueColorType);
+
+// Ensure that there is only one reference to underlying image
+// If this is not done, then image pixels will not be modified.
+image.modifyImage();
+
+// Allocate pixel view
+Pixels view(image);
+
+// Set all pixels in region anchored at 38x36, with size 160x230 to green.
+unsigned int columns = 196; unsigned int rows = 162;
+Color green(&quot;green&quot;);
+PixelPacket *pixels = view.get(38,36,columns,rows);
+for ( int row = 0; row &lt; rows ; ++row )
+for ( int column = 0; column &lt; columns ; ++column )
+*pixels++=green;
+
+// Save changes to image.
+view.sync();
+
+// Set all pixels in region anchored at 86x72, with size 108x67 to yellow.
+columns = 108; rows = 67;
+Color yellow(&quot;yellow&quot;);
+pixels = view.get(86,72,columns,rows);
+for ( int row = 0; row &lt; rows ; ++row )
+for ( int column = 0; column &lt; columns ; ++column )
+*pixels++=yellow;
+view.sync();
+
+// Set pixel at position 108,94 to red
+*(view.get(108,94,1,1)) = Color(&quot;red&quot;);
+
+// Save changes to image.
+view.sync();
+</pre>
+<p>The following is the definition of the Magick::Pixels class:</p>
+<pre class="literal-block">
+class Pixels
+{
+public:
+
+  // Construct pixel view using specified image.
+  Pixels( Magick::Image &amp;image_ );
+
+  // Destroy pixel view
+  ~Pixels( void );
+
+  // Transfer pixels from the image to the pixel view as defined by
+  // the specified region. Modified pixels may be subsequently
+  // transferred back to the image via sync.
+  PixelPacket* get ( const int x_, const int y_,
+                     const unsigned int columns_,const  unsigned int rows_ );
+
+  // Transfer read-only pixels from the image to the pixel view as
+  // defined by the specified region.
+  const PixelPacket* getConst ( const int x_, const int y_,
+                                const unsigned int columns_,
+                                const unsigned int rows_ );
+
+  // Transfers the image view pixels to the image.
+  void sync ( void );
+
+  // Allocate a pixel view region to store image pixels as defined
+  // by the region rectangle.  This area is subsequently transferred
+  // from the pixel view to the image via sync.
+  PixelPacket* set ( const int x_, const int y_,
+                     const unsigned int columns_, const unsigned int rows_ );
+
+  // Return pixel colormap index array
+  IndexPacket* indexes ( void );
+
+  // Left ordinate of view
+  int x ( void ) const;
+
+  // Top ordinate of view
+  int y ( void ) const;
+
+  // Width of view
+  unsigned int columns ( void ) const;
+
+  // Height of view
+  unsigned int rows ( void ) const;
+
+};
+</pre>
+<p>Copyright © Bob Friesenhahn 1999 - 2012</p>
+</div>
 </body>
 </html>

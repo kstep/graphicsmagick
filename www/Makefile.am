@@ -1,4 +1,4 @@
-# Copyright (C) 2008 - 2011 GraphicsMagick Group
+# Copyright (C) 2008 - 2012 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -55,9 +55,20 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/INSTALL-unix.html \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
+	$(WWWDIR)/Magick++/Blob.html \
 	$(WWWDIR)/Magick++/ChangeLog.html \
+	$(WWWDIR)/Magick++/CoderInfo.html \
+	$(WWWDIR)/Magick++/Color.html \
 	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/Magick++/Exception.html \
+	$(WWWDIR)/Magick++/FormatCharacters.html \
+	$(WWWDIR)/Magick++/Geometry.html \
 	$(WWWDIR)/Magick++/Image.html \
+	$(WWWDIR)/Magick++/ImageDesign.html \
+	$(WWWDIR)/Magick++/Montage.html \
+	$(WWWDIR)/Magick++/PixelPacket.html \
+	$(WWWDIR)/Magick++/Pixels.html \
+	$(WWWDIR)/Magick++/TypeMetric.html \
 	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/NEWS.html \
 	$(WWWDIR)/OpenMP.html \
@@ -90,8 +101,19 @@ WWW_RST_FILES = \
 	$(WWWDIR)/FAQ.rst \
 	$(WWWDIR)/Hg.rst \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/Blob.rst \
+	$(WWWDIR)/Magick++/CoderInfo.rst \
+	$(WWWDIR)/Magick++/Color.rst \
 	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/Magick++/Exception.rst \
+	$(WWWDIR)/Magick++/FormatCharacters.rst \
+	$(WWWDIR)/Magick++/Geometry.rst \
 	$(WWWDIR)/Magick++/Image.rst \
+	$(WWWDIR)/Magick++/ImageDesign.rst \
+	$(WWWDIR)/Magick++/Montage.rst \
+	$(WWWDIR)/Magick++/PixelPacket.rst \
+	$(WWWDIR)/Magick++/Pixels.rst \
+	$(WWWDIR)/Magick++/TypeMetic.rst \
 	$(WWWDIR)/Magick++/index.rst \
 	$(WWWDIR)/OpenMP.rst \
 	$(WWWDIR)/api/api.rst \
@@ -138,10 +160,20 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/INSTALL-windows.html \
 	$(WWWDIR)/ImageMagickObject.html \
 	$(WWWDIR)/ImageMagickObject.rst \
+	$(WWWDIR)/Magick++/Blob.html \
 	$(WWWDIR)/Magick++/ChangeLog.html \
+	$(WWWDIR)/Magick++/CoderInfo.html \
+	$(WWWDIR)/Magick++/Color.html \
 	$(WWWDIR)/Magick++/Documentation.html \
-	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/Magick++/Exception.html \
+	$(WWWDIR)/Magick++/FormatCharacters.html \
+	$(WWWDIR)/Magick++/Geometry.html \
 	$(WWWDIR)/Magick++/Image.html \
+	$(WWWDIR)/Magick++/ImageDesign.html \
+	$(WWWDIR)/Magick++/Montage.html \
+	$(WWWDIR)/Magick++/PixelPacket.html \
+	$(WWWDIR)/Magick++/Pixels.html \
+	$(WWWDIR)/Magick++/TypeMetric.html \
 	$(WWWDIR)/Magick++/index.html \
 	$(WWWDIR)/NEWS.html \
 	$(WWWDIR)/OpenMP.html \

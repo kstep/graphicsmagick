@@ -1,179 +1,122 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
-	<TITLE>Magick::Blob</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
-	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
-	<META NAME="CREATED" CONTENT="20020805;13502672">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;13521508">
-	<META NAME="DESCRIPTION" CONTENT="Documentation for Blob class.">
-	<META NAME="KEYWORDS" CONTENT="Magick++, GraphicsMagick, Blob">
-	<STYLE>
-	<!--
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		A:link { color: #0000ff }
-		A:visited { color: #ff0000 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#ff0000" BGCOLOR="#ffffff">
-<H1 ALIGN=CENTER>Magick::Blob</H1>
-<P>Blob provides the means to contain any opaque data. It is named
-after the term &quot;Binary Large OBject&quot; commonly used to
-describe unstructured data (such as encoded images) which is stored
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<title>Magick::Blob</title>
+<link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
+</form>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="../index.html">Home</a></li>
+<li><a href="../project.html">Project</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../reference.html">Reference</a></li>
+</ul>
+</div>
+<div class="document" id="magick-blob">
+<h1 class="title">Magick::Blob</h1>
+
+<!-- -*- mode: rst -*- -->
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>Blob provides the means to contain any opaque data. It is named after
+the term <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_large_object">Binary Large OBject</a> commonly used to
+describe unstructured data (such as encoded images) which are stored
 in a database. While the function of Blob is very simple (store a
 pointer and and size associated with allocated data), the Blob class
 provides some very useful capabilities. In particular, it is fully
-reference counted just like the Image class. 
-</P>
-<P>The Blob class supports value assignment while preserving any
+reference counted just like the Image class.</p>
+<p>The Blob class supports value assignment while preserving any
 outstanding earlier versions of the object. Since assignment is via a
 pointer internally, Blob is efficient enough to be stored directly in
 an STL container or any other data structure which requires
-assignment. In particular, by storing a Blob in an <A HREF="http://www.sgi.com/tech/stl/AssociativeContainer.html">associative
-container</A> (such as STL's '<A HREF="http://www.sgi.com/tech/stl/Map.html"><I>map</I></A>')
-it is possible to create simple indexed in-memory &quot;database&quot;
-of Blobs. 
-</P>
-<P>Magick++ currently uses Blob to contain encoded images (e.g. JPEG)
-as well as ICC and IPTC profiles. Since Blob is a general-purpose
-class, it may be used for other purposes as well. 
-</P>
-<P STYLE="margin-bottom: 0cm">The methods Blob provides are shown in
-the following table: <BR><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Blob Methods</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Method</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Return Type</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Signature(s)</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=3>
-			<P><A NAME="Blob"></A><FONT SIZE=2>Blob</FONT></P>
-		</TD>
-		<TD ROWSPAN=3 BGCOLOR="#666666">
-			<P><FONT SIZE=2>&nbsp;</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Default constructor</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>const void* data_, size_t length_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Construct object with data, making a copy of the
-			supplied data</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>const Blob&amp; blob_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Copy constructor (reference counted)</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A NAME="operator="></A><FONT SIZE=2>operator=</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Blob</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Blob&amp; blob_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Assignment operator (reference counted)</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A NAME="update"></A><FONT SIZE=2>update</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const void* data_, size_t length_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Update object contents, making a copy of the
-			supplied data. Any existing data in the object is deallocated.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A NAME="data"></A><FONT SIZE=2>data</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const void*</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Obtain pointer to data</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A NAME="length"></A><FONT SIZE=2>length</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>size_t</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Obtain data length</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A NAME="updateNoCopy"></A><FONT SIZE=2>updateNoCopy</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void* data_, size_t length_, Blob::Allocator
-			allocator_ = Blob::NewAllocator</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Update object contents, using supplied pointer
-			directly (no copy) Any existing data in the object is
-			deallocated.&nbsp; The user must ensure that the pointer supplied
-			is not deleted or otherwise modified after it has been supplied to
-			this method. The optional allocator_ parameter allows the user to
-			specify if the C (MallocAllocator) or C++ (NewAllocator) memory
-			allocation system was used to allocate the memory. The default is
-			to use the C++ memory allocator.</FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><BR><BR>
-</P>
-</BODY>
-</HTML>
+assignment. In particular, by storing a Blob in an <a class="reference external" href="http://www.sgi.com/tech/stl/AssociativeContainer.html">associative
+container</a>
+(such as STL's <a class="reference external" href="http://www.sgi.com/tech/stl/Map.html">map</a>) it is
+possible to create simple indexed in-memory &quot;database&quot; of Blobs.</p>
+<p>Magick++ currently uses Blob to contain encoded images (e.g. JPEG) as
+well as ICC and IPTC profiles. Since Blob is a general-purpose class,
+it may be used for other purposes as well.</p>
+<p>The following is the definition of the Magick::Blob class:</p>
+<pre class="literal-block">
+class Blob
+{
+
+public:
+
+  enum Allocator
+  {
+    MallocAllocator,
+    NewAllocator
+  };
+
+  // Default constructor
+  Blob ( void );
+
+  // Construct object with data, making a copy of the supplied data.
+  Blob ( const void* data_, size_t length_ );
+
+  // Copy constructor (reference counted)
+  Blob ( const Blob&amp; blob_ );
+
+  // Destructor (reference counted)
+  virtual       ~Blob ();
+
+  // Assignment operator (reference counted)
+  Blob&amp;         operator= ( const Blob&amp; blob_ );
+
+  // Update object contents from Base64-encoded string representation.
+  void          base64 ( const std::string base64_ );
+  // Return Base64-encoded string representation.
+  std::string   base64 ( void );
+
+  // Update object contents, making a copy of the supplied data.
+  // Any existing data in the object is deallocated.
+  void          update ( const void* data_, size_t length_ );
+
+  // Update object contents, using supplied pointer directly (no
+  // copy). Any existing data in the object is deallocated.  The user
+  // must ensure that the pointer supplied is not deleted or
+  // otherwise modified after it has been supplied to this method.
+  // Specify allocator_ as &quot;MallocAllocator&quot; if memory is allocated
+  // via the C language malloc() function, or &quot;NewAllocator&quot; if
+  // memory is allocated via C++ 'new'.
+  void          updateNoCopy ( void* data_, size_t length_,
+                               Allocator allocator_ = NewAllocator );
+
+  // Obtain pointer to data. The user should never try to modify or
+  // free this data since the Blob class manages its own data. The
+  // user must be finished with the data before allowing the Blob to
+  // be destroyed since the pointer is invalid once the Blob is
+  // destroyed.
+  const void*   data ( void ) const;
+
+  // Obtain data length
+  size_t length ( void ) const;
+
+};
+</pre>
+<p>Copyright © Bob Friesenhahn 1999 - 2012</p>
+</div>
+</body>
+</html>
