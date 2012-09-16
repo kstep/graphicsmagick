@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title>Magick::Pixels</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
@@ -68,7 +68,19 @@ IndexPacket* returned by the indexes method point to pixel data
 managed by the Pixels class. The Pixels class is responsible for
 releasing resources associated with the pixel view. This means that
 the pointer should never be passed to delete() or free().</p>
-<img alt="Figure showing pixel cache access" class="align-center" src="Cache.png" style="width: 254.0px; height: 218.0px;" />
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">/home/bfriesen/src/graphics/GM/www/Magick++/Pixels.rst</tt>, line 42)</p>
+<p>Error in &quot;image&quot; directive: &quot;bottom&quot; is not a valid value for the &quot;align&quot; option.  Valid values for &quot;align&quot; are: &quot;left&quot;, &quot;center&quot;, &quot;right&quot;.</p>
+<pre class="literal-block">
+.. image:: Cache.png
+   :width: 254px
+   :height: 218px
+   :scale: 100%
+   :align: bottom
+   :alt: Figure showing pixel cache access
+
+</pre>
+</div>
 <!-- Probably want bottom alignment for above (but not accepted by -->
 <!-- currently installed rst2html.py parser) -->
 <p>The pixel view is a small image in which the pixels may be accessed,

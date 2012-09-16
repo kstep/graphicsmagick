@@ -61,6 +61,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/Magick++/Color.html \
 	$(WWWDIR)/Magick++/Drawable.html \
 	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/Magick++/Enumerations.html \
 	$(WWWDIR)/Magick++/Exception.html \
 	$(WWWDIR)/Magick++/FormatCharacters.html \
 	$(WWWDIR)/Magick++/Geometry.html \
@@ -107,6 +108,7 @@ WWW_RST_FILES = \
 	$(WWWDIR)/Magick++/Color.rst \
 	$(WWWDIR)/Magick++/Drawable.rst \
 	$(WWWDIR)/Magick++/Documentation.rst \
+	$(WWWDIR)/Magick++/Enumerations.rst \
 	$(WWWDIR)/Magick++/Exception.rst \
 	$(WWWDIR)/Magick++/FormatCharacters.rst \
 	$(WWWDIR)/Magick++/Geometry.rst \
@@ -168,6 +170,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/Magick++/Color.html \
 	$(WWWDIR)/Magick++/Drawable.html \
 	$(WWWDIR)/Magick++/Documentation.html \
+	$(WWWDIR)/Magick++/Enumerations.html \
 	$(WWWDIR)/Magick++/Exception.html \
 	$(WWWDIR)/Magick++/FormatCharacters.html \
 	$(WWWDIR)/Magick++/Geometry.html \

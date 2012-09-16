@@ -6,6 +6,9 @@
 Magick::Drawable
 ================
 
+.. contents::
+   :depth: 1
+
 Drawable provides a convenient interface for preparing vector, image,
 or text arguments for the Image::draw() method. Each instance of a
 Drawable sub-class represents a single drawable object. Drawable
@@ -148,6 +151,10 @@ Drawable classes
 ----------------
 
 Drawable classes represent objects to be drawn on the image.
+
+.. contents:: Drawable classes
+   :local:
+   :depth: 1
 
 DrawableAffine
 ++++++++++++++
@@ -681,6 +688,10 @@ coordinate transforms may be used to `translate the origin
 <#DrawableTranslation>`_ in order to position the object, rotate it,
 skew it, or scale it.
 
+.. contents:: Vector path commands
+   :local:
+   :depth: 1
+
 The "moveto" commands
 +++++++++++++++++++++
 
@@ -814,8 +825,8 @@ supplied.  At the end of the command, the new current point becomes
 
   PathLinetoVerticalRel ( double y_ )
 
-The curve commands
-++++++++++++++++++
+Curve commands
+++++++++++++++
 
 These three groups of commands draw curves:
 
@@ -833,8 +844,17 @@ These three groups of commands draw curves:
 
   An elliptical arc segment draws a segment of an ellipse.
 
-The cubic Bézier curve commands
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. contents:: Curve Commands
+   :local:
+   :depth: 1
+
+
+Cubic Bézier curve commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. contents:: Cubic Bézier curve commands
+   :local:
+   :depth: 1
 
 PathCurvetoArgs
 ```````````````
@@ -917,8 +937,12 @@ Draw multiple curves::
 
   PathSmoothCurvetoRel ( const CoordinateList &coordinates_ );
 
-The quadratic Bézier curve commands
+Quadratic Bézier curve commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. contents:: Quadratic Bézier curve commands
+   :local:
+   :depth: 1
 
 PathQuadraticCurvetoArgs
 ````````````````````````
@@ -975,8 +999,12 @@ Draw multiple curves::
 
   PathSmoothQuadraticCurvetoRel ( const CoordinateList &coordinates_ );
 
-The elliptical arc curve commands
+Elliptical arc curve commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. contents:: Elliptical arc curve commands
+   :local:
+   :depth: 1
 
 PathArcArgs
 ```````````
