@@ -18,8 +18,8 @@ reference and data are deleted. This strategy represents a simple (but
 effective) form of garbage collection.
 
 .. image:: Image.png
-   :height: 490
    :width: 910
+   :height: 490
    :alt: Figure showing Image class design
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
