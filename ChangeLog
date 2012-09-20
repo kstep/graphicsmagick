@@ -1,3 +1,7 @@
+2012-09-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Update to Automake 1.12.4.
+
 2012-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Fix Debian bug 687738 "graphicsmagick:
