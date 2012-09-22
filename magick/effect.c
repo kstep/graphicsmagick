@@ -214,7 +214,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
              * and it can be highly optimized.  I couldn't properly
              * test it this code...
              */
-#if 1
+#if 0
             if ((unsigned long) y > overflow_row)
               {
                 LongPixelPacket
@@ -236,20 +236,12 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                   }
               }
 #endif
-          }
+          } /* if (PRE(0, y) == 0) */
 
         /* load line for writing */
         if (y > (height/2 + height))
           {
-            if (q != (const PixelPacket *) NULL)
-              {
-                if (!SyncImagePixelsEx(threshold_image, exception))
-                  {
-                    status = MagickFail;
-                    break;
-                  }
-              }
-            q = SetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
+            q = GetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
                                  threshold_image->columns, 1, exception);
 
             if (q == (PixelPacket *) NULL)
@@ -416,6 +408,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                   q[x - width].green = q[x - width].blue = q[x - width].red;
               } /* if (y ... */
           } /* for (x ... */
+        if (q != (const PixelPacket *) NULL)
+          {
+            if (!SyncImagePixelsEx(threshold_image, exception))
+              {
+                status = MagickFail;
+                break;
+              }
+          }
         row_count++;
         if (QuantumTick(row_count, image->rows))
           if (!MagickMonitorFormatted(row_count, image->rows, exception,
