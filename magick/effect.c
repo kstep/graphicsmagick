@@ -214,12 +214,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
              * and it can be highly optimized.  I couldn't properly
              * test it this code...
              */
+#if 1
             if ((unsigned long) y > overflow_row)
               {
                 LongPixelPacket
                   min_sum;
 
-                fprintf(stderr,"LAT: overflow handling activated!\n");
+                fprintf(stderr,"LAT: overflow handling activated (y=%lu overflow_row=%lu)!\n",
+                        y, overflow_row);
                 min_sum.red = dyn_process[0].red;
                 min_sum.green = dyn_process[0].green;
                 min_sum.blue = dyn_process[0].blue;
@@ -233,11 +235,20 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                     dyn_process[i].opacity -= min_sum.opacity;
                   }
               }
+#endif
           }
 
         /* load line for writing */
         if (y > (height/2 + height))
           {
+            if (q != (const PixelPacket *) NULL)
+              {
+                if (!SyncImagePixelsEx(threshold_image, exception))
+                  {
+                    status = MagickFail;
+                    break;
+                  }
+              }
             q = SetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
                                  threshold_image->columns, 1, exception);
 
