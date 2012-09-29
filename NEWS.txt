@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 8, 2012
+This file was last updated on September 29, 2012
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -79,7 +79,11 @@ Performance Improvements:
 
 Windows Delegate Updates:
 
-  * None
+  * Libtiff is updated to the 4.0.3 release.
+
+  * Lcms2 is updated to the 2.4 release.
+
+  * Libpng is updated to the 1.5.13 release.
 
 Behavior Changes:
 
