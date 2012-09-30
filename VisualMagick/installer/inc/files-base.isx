@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003 - 2010 GraphicsMagick Group
+; Copyright (C) 2003 - 2012 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -13,6 +13,10 @@ Source: "..\bin\gm.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
 #ifdef MSVCProprietary
   Source: "..\bin\imdisplay.exe"; DestDir: {#MagickAppDirectory}; DestName: "gmdisplay.exe"; Flags: ignoreversion
 #endif
+
+; dcraw
+Source: "..\bin\dcraw.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
+
 ; Third party executables not included in the Visual Studio build are no longer bundled with GraphicsMagick.
 ; Source: "..\bin\hp2xx.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
 ; Source: "..\bin\mpeg2dec.exe"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion

@@ -1,5 +1,7 @@
 2012-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* dcraw: Add dcraw to VisualMagick build.
+
 	* libxml: Update libxml2 to 2.9.0 release.
 
 2012-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
