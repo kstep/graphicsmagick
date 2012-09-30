@@ -28,9 +28,7 @@
 #include "libxml_wrap.h"
 #include "libxml2-py.h"
 
-#if defined(_MSC_VER) && !defined(vsnprintf)
-#define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
-#elif defined(WITH_TRIO) && !defined(vsnprintf)
+#if defined(WITH_TRIO)
 #include "trio.h"
 #define vsnprintf trio_vsnprintf
 #endif
@@ -1367,6 +1365,7 @@ libxml_htmlCreatePushParser(ATTRIBUTE_UNUSED PyObject * self,
 PyObject *
 libxml_xmlSAXParseFile(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
 {
+#ifdef LIBXML_SAX1_ENABLED
     int recover;
     const char *URI;
     PyObject *pyobj_SAX = NULL;
@@ -1388,6 +1387,7 @@ libxml_xmlSAXParseFile(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
     Py_INCREF(pyobj_SAX);
     /* The reference is released in pythonEndDocument() */
     xmlSAXUserParseFile(SAX, pyobj_SAX, URI);
+#endif /* LIBXML_SAX1_ENABLED */
     Py_INCREF(Py_None);
     return (Py_None);
 }

@@ -55,8 +55,11 @@ XMLS=		\
     invalid.xml	\
     test.dtd
 
+CLEANFILES = core tmp.xml *.pyc
+
 if WITH_PYTHON
 tests: $(PYTESTS)
+	@for f in $(XMLS) ; do test -f $$f || $(LN_S) $(srcdir)/$$f . ; done
 	@echo "## running Python regression tests"
 	-@(PYTHONPATH="..:../.libs:$(srcdir)/..:$$PYTHONPATH" ; \
 	   export PYTHONPATH; \
@@ -69,6 +72,3 @@ tests: $(PYTESTS)
 else
 tests:
 endif
-
-clean:
-	rm -f *.pyc core

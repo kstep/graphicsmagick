@@ -1,3 +1,7 @@
+2012-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* libxml: Update libxml2 to 2.9.0 release.
+
 2012-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tiff: Update libtiff to 4.0.3 release.

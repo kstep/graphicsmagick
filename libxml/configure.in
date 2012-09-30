@@ -1,12 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.59)
-AC_INIT(entities.c)
-AM_CONFIG_HEADER(config.h)
+AC_PREREQ([2.68])
+AC_INIT
+AC_CONFIG_SRCDIR([entities.c])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 
 LIBXML_MAJOR_VERSION=2
-LIBXML_MINOR_VERSION=8
+LIBXML_MINOR_VERSION=9
 LIBXML_MICRO_VERSION=0
 LIBXML_MICRO_VERSION_SUFFIX=
 LIBXML_VERSION=$LIBXML_MAJOR_VERSION.$LIBXML_MINOR_VERSION.$LIBXML_MICRO_VERSION$LIBXML_MICRO_VERSION_SUFFIX
@@ -58,6 +59,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_PROG_CPP
 AC_PATH_PROG(RM, rm, /bin/rm)
@@ -68,8 +70,7 @@ AC_PATH_PROG(WGET, wget, /usr/bin/wget)
 AC_PATH_PROG(XMLLINT, xmllint, /usr/bin/xmllint)
 AC_PATH_PROG(XSLTPROC, xsltproc, /usr/bin/xsltproc)
 
-AC_LIBTOOL_WIN32_DLL
-AM_PROG_LIBTOOL
+LT_INIT
 
 dnl
 dnl if the system support linker version scripts for symbol versioning
@@ -97,7 +98,7 @@ dnl
 dnl zlib option might change flags, so we save them initially
 dnl
 _cppflags="${CPPFLAGS}"
-_ldflags="${LDFLAGS}"
+_libs="${LIBS}"
 
 AC_ARG_WITH(c14n,
 [  --with-c14n             add the Canonicalization support (on)])
@@ -116,11 +117,11 @@ AC_ARG_WITH(history,
 AC_ARG_WITH(html,
 [  --with-html             add the HTML support (on)])
 dnl Specific dir for HTML output ?
-AC_ARG_WITH(html-dir, AC_HELP_STRING([--with-html-dir=path],
+AC_ARG_WITH(html-dir, AS_HELP_STRING([--with-html-dir=path],
             [path to base html directory, default $datadir/doc/html]),
             [HTML_DIR=$withval], [HTML_DIR='$(datadir)/doc'])
 
-AC_ARG_WITH(html-subdir, AC_HELP_STRING([--with-html-subdir=path],
+AC_ARG_WITH(html-subdir, AS_HELP_STRING([--with-html-subdir=path],
             [directory used under html-dir, default $PACKAGE-$VERSION/html]),
             [test "x$withval" != "x" && HTML_DIR="$HTML_DIR/$withval"],
             [HTML_DIR="$HTML_DIR/\$(PACKAGE)-\$(VERSION)/html"])
@@ -154,7 +155,7 @@ AC_ARG_WITH(readline,
   if test "$withval" != "no" -a "$withval" != "yes"; then
     RDL_DIR=$withval
     CPPFLAGS="${CPPFLAGS} -I$withval/include"
-    LDFLAGS="${LDFLAGS} -L$withval/lib"
+    LIBS="${LIBS} -L$withval/lib"
   fi
 ])
 AC_ARG_WITH(regexps,
@@ -190,7 +191,7 @@ AC_ARG_WITH(zlib,
   if test "$withval" != "no" -a "$withval" != "yes"; then
     Z_DIR=$withval
     CPPFLAGS="${CPPFLAGS} -I$withval/include"
-    LDFLAGS="${LDFLAGS} -L$withval/lib"
+    LIBS="${LIBS} -L$withval/lib"
   fi
 ])
 AC_ARG_WITH(lzma,
@@ -198,15 +199,18 @@ AC_ARG_WITH(lzma,
   if test "$withval" != "no" -a "$withval" != "yes"; then
     LZMA_DIR=$withval
     CPPFLAGS="${CPPFLAGS} -I$withval/include"
-    LDFLAGS="${LDFLAGS} -L$withval/lib"
+    LIBS="${LIBS} -L$withval/lib"
   fi
 ])
 AC_ARG_WITH(coverage,
 [  --with-coverage         build for code coverage with GCC (off)])
 
 AC_ARG_ENABLE(rebuild-docs,
-[  --enable-rebuild-docs[[=yes/no]]  rebuild some generated docs [[default=yes]]])
-AM_CONDITIONAL([REBUILD_DOCS], [test "$enable_rebuild_docs" = "no"])
+[  --enable-rebuild-docs[[=yes/no]]  rebuild some generated docs [[default=no]]])
+if test "$enable_rebuild_docs" = "yes" -a "$srcdir" != "."; then
+  AC_MSG_ERROR([cannot rebuild docs when builddir != srcdir])
+fi
+AM_CONDITIONAL([REBUILD_DOCS], [test "$enable_rebuild_docs" = "yes" -o "$USER" = "veillard"])
 
 dnl
 dnl hard dependancies on options
@@ -428,7 +432,7 @@ AC_SUBST(LZMA_LIBS)
 AC_SUBST(WITH_LZMA)
 
 CPPFLAGS=${_cppflags}
-LDFLAGS=${_ldflags}
+LIBS=${_libs}
 
 echo Checking headers
 
@@ -500,6 +504,11 @@ AC_CHECK_HEADERS([dl.h])
 AC_CHECK_HEADERS([dlfcn.h])
 
 
+echo Checking types
+
+AC_TYPE_UINT32_T
+
+
 echo Checking libraries
 
 dnl Checks for library functions.
@@ -509,11 +518,17 @@ AC_CHECK_FUNCS(finite isnand fp_class class fpclass)
 AC_CHECK_FUNCS(strftime localtime gettimeofday ftime)
 AC_CHECK_FUNCS(stat _stat signal)
 AC_CHECK_FUNCS(rand rand_r srand time)
+AC_CHECK_FUNCS(isascii mmap munmap putenv)
+
+AH_VERBATIM([HAVE_MUNMAP_AFTER],[/* mmap() is no good without munmap() */
+#if defined(HAVE_MMAP) && !defined(HAVE_MUNMAP)
+#  undef /**/ HAVE_MMAP
+#endif])
 
 dnl Checking for va_copy availability
 AC_MSG_CHECKING([for va_copy])
-AC_TRY_LINK([#include <stdarg.h>
-va_list ap1,ap2;], [va_copy(ap1,ap2);],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>
+va_list ap1,ap2;]], [[va_copy(ap1,ap2);]])],
 have_va_copy=yes,
 have_va_copy=no)
 AC_MSG_RESULT($have_va_copy)
@@ -521,8 +536,8 @@ if test x"$have_va_copy" = x"yes"; then
     AC_DEFINE(HAVE_VA_COPY,1,[Whether va_copy() is available])
 else
     AC_MSG_CHECKING([for __va_copy])
-    AC_TRY_LINK([#include <stdarg.h>
-    va_list ap1,ap2;], [__va_copy(ap1,ap2);],
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>
+    va_list ap1,ap2;]], [[__va_copy(ap1,ap2);]])],
     have___va_copy=yes,
     have___va_copy=no)
     AC_MSG_RESULT($have___va_copy)
@@ -573,13 +588,13 @@ then
 fi
 if test $enable_ipv6 = yes; then
   have_ipv6=no
-  AC_TRY_COMPILE([
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    ], [
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#   include <sys/types.h>
+#   include <sys/socket.h>
+    ]], [[
     struct sockaddr_storage ss;
     socket(AF_INET6, SOCK_STREAM, 0)
-    ],
+    ]])],
     have_ipv6=yes,
     have_ipv6=no
   )
@@ -597,26 +612,26 @@ if test $enable_ipv6 = yes; then
     dnl present.
     dnl ********************************************************************
     AC_MSG_CHECKING([struct sockaddr::ss_family])
-    AC_TRY_COMPILE([
-      #include <sys/types.h>
-      #include <sys/socket.h>
-      ], [
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#     include <sys/types.h>
+#     include <sys/socket.h>
+      ]], [[
       struct sockaddr_storage ss ;
       ss.ss_family = 0 ;
-      ],
+      ]])],
       have_ss_family=yes,
       have_ss_family=no
     )
     AC_MSG_RESULT($have_ss_family)
     if test x$have_ss_family = xno ; then
       AC_MSG_CHECKING([broken struct sockaddr::ss_family])
-      AC_TRY_COMPILE([
-        #include <sys/types.h>
-        #include <sys/socket.h>
-        ], [
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#       include <sys/types.h>
+#       include <sys/socket.h>
+        ]], [[
         struct sockaddr_storage ss ;
         ss.__ss_family = 0 ;
-        ],
+        ]])],
         have_broken_ss_family=yes,
         have_broken_ss_family=no
       )
@@ -949,7 +964,7 @@ else
     case $host_os in
        *mingw32*) if test "$with_threads" != "pthread" && test "$with_threads" != "no"; then
                WITH_THREADS="1"
-               THREADS_W32="Win32"
+               THREADS_W32="1"
                THREAD_CFLAGS="$THREAD_CFLAGS -DHAVE_WIN32_THREADS"
            fi
        ;;
@@ -1010,7 +1025,7 @@ AC_SUBST(BASE_THREAD_LIBS)
 AC_SUBST(WITH_THREADS)
 AC_SUBST(THREAD_CFLAGS)
 AC_SUBST(TEST_THREADS)
-AC_SUBST(THREADS_W32)
+AM_CONDITIONAL([THREADS_W32],[test -n "$THREADS_W32"])
 
 dnl
 dnl xmllint shell history
@@ -1134,6 +1149,7 @@ else
     TEST_SAX=SAXtests
 fi
 AC_SUBST(WITH_SAX1)
+AM_CONDITIONAL(WITH_SAX1_SOURCES, test "${WITH_TRIO}" = "1")
 AC_SUBST(TEST_SAX)
 
 if test "$with_push" = "no" ; then
@@ -1300,10 +1316,10 @@ else
 
     AC_CHECK_HEADER(iconv.h,
 	AC_MSG_CHECKING(for iconv)
-	AC_TRY_LINK([#include <stdlib.h>
-#include <iconv.h>],[
+	AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>
+#include <iconv.h>]],[[
 iconv_t cd = iconv_open ("","");
-iconv (cd, NULL, NULL, NULL, NULL);],[
+iconv (cd, NULL, NULL, NULL, NULL);]])],[
 	    AC_MSG_RESULT(yes)
 	    WITH_ICONV=1],[
 	    AC_MSG_RESULT(no)
@@ -1314,10 +1330,10 @@ iconv (cd, NULL, NULL, NULL, NULL);],[
 	    LDFLAGS="${LDFLAGS} ${ICONV_LIBS}"
 	    LIBS="${LIBS} -liconv"
 
-	    AC_TRY_LINK([#include <stdlib.h>
-#include <iconv.h>],[
+	    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>
+#include <iconv.h>]],[[
 iconv_t cd = iconv_open ("","");
-iconv (cd, NULL, NULL, NULL, NULL);],[
+iconv (cd, NULL, NULL, NULL, NULL);]])],[
 		AC_MSG_RESULT(yes)
 		WITH_ICONV=1
 		ICONV_LIBS="${ICONV_LIBS} -liconv"
@@ -1330,7 +1346,7 @@ iconv (cd, NULL, NULL, NULL, NULL);],[
 	if test "$WITH_ICONV" = "1" ; then
 		AC_MSG_CHECKING([for iconv declaration])
 		AC_CACHE_VAL(xml_cv_iconv_arg2, [
-			AC_TRY_COMPILE([#include <stdlib.h>
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>
 #include <iconv.h>
 extern
 #ifdef __cplusplus
@@ -1341,7 +1357,7 @@ size_t iconv (iconv_t cd, char * *inbuf, size_t *inbytesleft, char * *outbuf, si
 #else
 size_t iconv();
 #endif
-], [], xml_cv_iconv_arg2="", xml_cv_iconv_arg2="const")])
+]], [])], xml_cv_iconv_arg2="", xml_cv_iconv_arg2="const")])
 
 		xml_cv_iconv_decl="extern size_t iconv (iconv_t cd, $xml_cv_iconv_arg2 char * *inbuf, size_t *inbytesleft, char * *outbuf, size_t *outbytesleft);"
 		AC_MSG_RESULT([${xml_xxx:-
@@ -1365,14 +1381,14 @@ XML_LIBTOOLLIBS="libxml2.la"
 AC_SUBST(WITH_ICONV)
 
 WITH_ICU=0
+ICU_LIBS=""
 if test "$with_icu" != "yes" ; then
     echo Disabling ICU support
 else
     ICU_CONFIG=icu-config
     if ${ICU_CONFIG} --cflags >/dev/null 2>&1
     then
-        ICU_LIBS=`icu-config --ldflags`
-        LDFLAGS="$LDFLAGS $ICU_LIBS"
+        ICU_LIBS=`${ICU_CONFIG} --ldflags`
         WITH_ICU=1
         echo Enabling ICU support
     else
@@ -1380,6 +1396,7 @@ else
     fi
 fi
 AC_SUBST(WITH_ICU)
+AC_SUBST(ICU_LIBS)
 
 WITH_ISO8859X=1
 if test "$WITH_ICONV" != "1" ; then
@@ -1550,10 +1567,11 @@ AC_SUBST(RELDATE)
 AC_SUBST(PYTHON_TESTS)
 
 rm -f COPYING.LIB COPYING
-ln -s Copyright COPYING
+ln -s $srcdir/Copyright COPYING
 
 # keep on one line for cygwin c.f. #130896
-AC_OUTPUT(libxml2.spec:libxml.spec.in Makefile include/Makefile include/libxml/Makefile doc/Makefile doc/examples/Makefile doc/devhelp/Makefile example/Makefile python/Makefile python/tests/Makefile xstc/Makefile include/libxml/xmlversion.h xml2-config libxml-2.0.pc libxml-2.0-uninstalled.pc python/setup.py)
+AC_CONFIG_FILES([libxml2.spec:libxml.spec.in Makefile include/Makefile include/libxml/Makefile doc/Makefile doc/examples/Makefile doc/devhelp/Makefile example/Makefile python/Makefile python/tests/Makefile xstc/Makefile include/libxml/xmlversion.h xml2-config libxml-2.0.pc libxml-2.0-uninstalled.pc python/setup.py])
+AC_OUTPUT
 
 chmod +x xml2-config python/setup.py
 echo Done configuring
