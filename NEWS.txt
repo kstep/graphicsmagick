@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 29, 2012
+This file was last updated on September 30, 2012
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -78,6 +78,8 @@ Performance Improvements:
   * -lat: Adaptive threshold is much faster with large area sizes.
 
 Windows Delegate Updates:
+
+  * Libxml2 is updated to the 2.9.0 release.
 
   * Libtiff is updated to the 4.0.3 release.
 
