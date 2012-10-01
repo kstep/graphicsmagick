@@ -79,6 +79,8 @@ Performance Improvements:
 
 Windows Delegate Updates:
 
+  * Dcraw 9.16 is now included in the build.
+
   * Libxml2 is updated to the 2.9.0 release.
 
   * Libtiff is updated to the 4.0.3 release.
