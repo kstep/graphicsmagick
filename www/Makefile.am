@@ -117,7 +117,7 @@ WWW_RST_FILES = \
 	$(WWWDIR)/Magick++/Montage.rst \
 	$(WWWDIR)/Magick++/PixelPacket.rst \
 	$(WWWDIR)/Magick++/Pixels.rst \
-	$(WWWDIR)/Magick++/TypeMetic.rst \
+	$(WWWDIR)/Magick++/TypeMetric.rst \
 	$(WWWDIR)/Magick++/index.rst \
 	$(WWWDIR)/OpenMP.rst \
 	$(WWWDIR)/api/api.rst \
