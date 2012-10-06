@@ -1,3 +1,5 @@
+[ The text in this file is antique but is still useful ]
+
 FAQ for Visualmagick:
 
 - What is Visualmagick?
