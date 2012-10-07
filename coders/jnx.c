@@ -44,6 +44,7 @@
 #include "magick/tempfile.h"
 #include "magick/magic.h"
 #include "magick/resource.h"
+#include "magick/attribute.h"
 
 typedef struct
 {
@@ -89,8 +90,7 @@ typedef struct
 
 static Image *
 ExtractTileJPG(Image * image, const ImageInfo * image_info,
-               magick_off_t JPG_Offset, size_t JPG_Size,
-               ExceptionInfo * exception)
+               TJNXTileInfo *TileInfo, ExceptionInfo * exception)
 {
   size_t
     alloc_size;
@@ -98,14 +98,16 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
   unsigned char
     *blob;
 
-  alloc_size = JPG_Size + 2;
+  char img_label_str[MaxTextExtent];
+
+  alloc_size = TileInfo->PicSize + 2;
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent, GetMagickModule(),
                           "JNX tile offset %" MAGICK_OFF_F "u, size %lu bytes",
-                          JPG_Offset, (unsigned long) JPG_Size);
+						  TileInfo->PicOffset, TileInfo->PicSize);
 
-  if ((alloc_size > JPG_Size) &&
+  if ((alloc_size > TileInfo->PicSize) &&
       (blob = MagickAllocateMemory(unsigned char *,alloc_size)) != NULL)
     {
       /* Add missing JPEG header bytes */
@@ -113,9 +115,9 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
       blob[1] = 0xD8;
 
       /* Copy JPG to memory blob */
-      if (SeekBlob(image, JPG_Offset, SEEK_SET) == JPG_Offset)
+	  if (SeekBlob(image, TileInfo->PicOffset, SEEK_SET) == TileInfo->PicOffset)
         {
-          if (ReadBlob(image,JPG_Size,blob+2) == JPG_Size)
+          if (ReadBlob(image,TileInfo->PicSize,blob+2) == TileInfo->PicSize)
             {
               Image
                 *image2;
@@ -164,8 +166,18 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
                      image->filename);
     }
+  
+  FormatString(img_label_str,"%.20g,%.20g", 
+	  TileInfo->TileBounds.NorthEast.lat*180.0/0x7FFFFFFF, 
+	  TileInfo->TileBounds.NorthEast.lon*180/0x7FFFFFFF);
+  SetImageAttribute(image,"jnx:northeast",img_label_str);
 
-  return (image);
+  FormatString(img_label_str,"%.20g,%.20g",
+	  TileInfo->TileBounds.SouthWest.lat*180.0/0x7FFFFFFF, 
+	  TileInfo->TileBounds.SouthWest.lon*180/0x7FFFFFFF);
+  SetImageAttribute(image,"jnx:southwest",img_label_str);
+
+  return(image);
 }
 
 /*
@@ -324,8 +336,7 @@ ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
 
           /* Disable progress monitor while loading individual tiles */
           previous_handler = SetMonitorHandler(0);
-          image = ExtractTileJPG(image, image_info, PositionList[j].PicOffset,
-                                 PositionList[j].PicSize, exception);
+          image = ExtractTileJPG(image, image_info, PositionList+j, exception);
           (void) SetMonitorHandler(previous_handler);
 
           current_tile++;
