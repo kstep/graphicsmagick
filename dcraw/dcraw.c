@@ -107,6 +107,10 @@ typedef unsigned long long UINT64;
 #define ushort unsigned short
 #endif
 
+#ifndef M_PI
+ #define M_PI       3.14159265358979323846
+#endif
+
 /*
    All global variables are defined here, and all functions that
    access them are prefixed with "CLASS".  Note that a thread-safe
