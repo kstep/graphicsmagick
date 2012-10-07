@@ -1,5 +1,9 @@
 2012-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
+	* dcraw/dcraw.c: Fixed situation when M_PI is not defined.
+
+2012-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
 	* coders/jnx.c: Add image attribute with geolocation.
 
 2012-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
