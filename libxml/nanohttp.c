@@ -1027,7 +1027,7 @@ xmlNanoHTTPConnectAttempt(struct sockaddr *addr)
 static SOCKET
 xmlNanoHTTPConnectHost(const char *host, int port)
 {
-#ifdef HAVE_NETDB_H
+#if !defined(HAVE_GETADDRINFO)
     struct hostent *h;
     struct in_addr ia;
     int i;
