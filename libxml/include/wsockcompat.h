@@ -21,7 +21,7 @@
 #include <ws2tcpip.h>
 
 /* Check if ws2tcpip.h is a recent version which provides getaddrinfo() */
-#if defined(GetAddrInfo)
+#if defined(EAI_AGAIN)
 #include <wspiapi.h>
 #define HAVE_GETADDRINFO
 #endif
