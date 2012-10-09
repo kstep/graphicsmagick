@@ -1,3 +1,9 @@
+2012-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c: Support alpha channel in uncompressed 32-bit BMP.
+	Resolves SourceForge issue 3566239 "Can't open BMP with alpha
+	created by photoshop".
+
 2012-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* dcraw/dcraw.c: Fixed situation when M_PI is not defined.
