@@ -355,7 +355,7 @@ ExportIndexQuantumType(unsigned char * restrict destination,
     x;
 
   register unsigned char
-    * restrict q;
+    *q;
 
   q=destination;
 
@@ -499,10 +499,10 @@ ExportIndexAlphaQuantumType(unsigned char * restrict destination,
 {
 
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -612,10 +612,10 @@ ExportGrayQuantumType(unsigned char * restrict destination,
 {
 
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -1005,10 +1005,10 @@ ExportGrayAlphaQuantumType(unsigned char * restrict destination,
 {
 
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -1342,10 +1342,10 @@ ExportRedQuantumType(unsigned char * restrict destination,
 {
 
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -1504,10 +1504,10 @@ ExportGreenQuantumType(unsigned char * restrict destination,
 		       unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -1666,10 +1666,10 @@ ExportBlueQuantumType(unsigned char * restrict destination,
 		      unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -1830,10 +1830,10 @@ ExportAlphaQuantumType(unsigned char * restrict destination,
 		       unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -2124,10 +2124,10 @@ ExportBlackQuantumType(unsigned char * restrict destination,
 		       unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -2283,10 +2283,10 @@ ExportRGBQuantumType(unsigned char * restrict destination,
 		     unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -2461,10 +2461,10 @@ ExportRGBAQuantumType(unsigned char * restrict destination,
 		      unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -2653,10 +2653,10 @@ ExportCMYKQuantumType(unsigned char * restrict destination,
 		      unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
@@ -2843,10 +2843,10 @@ ExportCMYKAQuantumType(unsigned char * restrict destination,
 		       unsigned long *bytes_exported)
 {
   register unsigned char
-    * restrict q = destination;
+    *q = destination;
 
   register const PixelPacket
-    * restrict p = pixels;
+    *p = pixels;
 
   register unsigned long
     x;
