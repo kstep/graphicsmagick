@@ -1,3 +1,8 @@
+2012-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac (LTDL_INIT): Request installable libltdl rather
+	than convenience.
+
 2012-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c: Support alpha channel in uncompressed 32-bit BMP.

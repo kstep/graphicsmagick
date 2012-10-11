@@ -413,7 +413,7 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Configure libltdl
 LT_CONFIG_LTDL_DIR([ltdl])
-LTDL_INIT([convenience nonrecursive])
+LTDL_INIT([nonrecursive installable])
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 #AC_SUBST(INCLTDL)
 #AC_SUBST(LIBLTDL)
