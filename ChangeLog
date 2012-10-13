@@ -1,5 +1,8 @@
 2012-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jnx.c: Fix format string compilation warnings.  Remove
+	MS-DOS line terminations.
+
 	* configure.ac: Module loading is now only supported by the
 	modules build and not just because shared libraries are enabled.
 	This means that libltdl is only depended upon by the modules

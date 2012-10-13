@@ -104,8 +104,8 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent, GetMagickModule(),
-                          "JNX tile offset %" MAGICK_OFF_F "u, size %lu bytes",
-						  TileInfo->PicOffset, TileInfo->PicSize);
+                          "JNX tile offset %u, size %u bytes",
+                          TileInfo->PicOffset, TileInfo->PicSize);
 
   if ((alloc_size > TileInfo->PicSize) &&
       (blob = MagickAllocateMemory(unsigned char *,alloc_size)) != NULL)
@@ -115,7 +115,7 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
       blob[1] = 0xD8;
 
       /* Copy JPG to memory blob */
-	  if (SeekBlob(image, TileInfo->PicOffset, SEEK_SET) == TileInfo->PicOffset)
+      if (SeekBlob(image, TileInfo->PicOffset, SEEK_SET) == TileInfo->PicOffset)
         {
           if (ReadBlob(image,TileInfo->PicSize,blob+2) == TileInfo->PicSize)
             {
@@ -168,13 +168,13 @@ ExtractTileJPG(Image * image, const ImageInfo * image_info,
     }
   
   FormatString(img_label_str,"%.20g,%.20g", 
-	  TileInfo->TileBounds.NorthEast.lat*180.0/0x7FFFFFFF, 
-	  TileInfo->TileBounds.NorthEast.lon*180/0x7FFFFFFF);
+               (double) TileInfo->TileBounds.NorthEast.lat*180.0/0x7FFFFFFF, 
+               (double) TileInfo->TileBounds.NorthEast.lon*180.0/0x7FFFFFFF);
   SetImageAttribute(image,"jnx:northeast",img_label_str);
 
   FormatString(img_label_str,"%.20g,%.20g",
-	  TileInfo->TileBounds.SouthWest.lat*180.0/0x7FFFFFFF, 
-	  TileInfo->TileBounds.SouthWest.lon*180/0x7FFFFFFF);
+               (double) TileInfo->TileBounds.SouthWest.lat*180.0/0x7FFFFFFF, 
+               (double) TileInfo->TileBounds.SouthWest.lon*180.0/0x7FFFFFFF);
   SetImageAttribute(image,"jnx:southwest",img_label_str);
 
   return(image);
