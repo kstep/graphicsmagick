@@ -1,3 +1,11 @@
+2012-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Module loading is now only supported by the
+	modules build and not just because shared libraries are enabled.
+	This means that libltdl is only depended upon by the modules
+	build.  Sometime in the future, libltdl will no longer be bundled
+	in the GraphicsMagick source tree.
+
 2012-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac (LTDL_INIT): Request installable libltdl rather

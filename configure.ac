@@ -438,6 +438,7 @@ AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 #
 # Enable support for building loadable modules
 #
+build_modules='no'
 AC_ARG_WITH(modules,
 	      AS_HELP_STRING([--with-modules],
                              [enable building dynamically loadable
@@ -449,30 +450,28 @@ AC_ARG_WITH(modules,
 if test "$with_modules" != 'no' ; then
   if test "$libtool_build_shared_libs" = 'no' ; then
     AC_MSG_WARN([Modules may only be built if building shared libraries is enabled.])
-    with_modules='no'
+    build_modules='no'
+  else
+    build_modules='yes'
   fi
 fi
-if test "$with_modules" != 'no' ; then
+if test "$build_modules" != 'no' ; then
   AC_DEFINE(BuildMagickModules,1,Define if coders and filters are to be built as modules.)
 fi
-AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
+AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
-# Enable building/use of libltdl if we are building shared libraries regardless
-# of whether modules are built or not.
+# Only use/depend on libtdl if we are building modules.  This is a
+# change from previous releases (prior to 1.3.17) which supported
+# loaded modules via libtdl if shared libraries were built.  of
+# whether modules are built or not.
 with_ltdl='no'
-if test "$libtool_build_shared_libs" != 'no' ; then
+if test "$build_modules" != 'no' ; then
   with_ltdl='yes'
 fi
 
 AM_CONDITIONAL(WITH_LTDL, test "$with_ltdl" != 'no')
 if test "$with_ltdl" != 'no' ; then
   AC_DEFINE(HasLTDL,1,Define if using libltdl to support dynamically loadable modules)
-
-  # Set DLLDFLAGS
-  if test X"$enable_shared" = Xyes; then
-    DLLDFLAGS=-export-dynamic
-    AC_SUBST(DLLDFLAGS)
-  fi
 fi
 
 # Build a version of GraphicsMagick which operates uninstalled.
@@ -873,7 +872,7 @@ then
     MAGICK_API_PC_CPPFLAGS="$MAGICK_API_PC_CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
 
-    if test "$with_modules" = 'yes'
+    if test "$build_modules" = 'yes'
     then
       LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"
     else
@@ -3226,7 +3225,7 @@ if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$with_modules" != 'no' || \
+if test "$build_modules" != 'no' || \
    test "${native_win32_build}" = 'yes' ; then
    MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
 fi
@@ -3269,54 +3268,40 @@ fi
 # Build library dependency list for libMagick
 #
 
-# The with_ltdl variable is set to 'yes' if we are building shared
-# libraries, regardless of whether modules are built or not.
-#
-# The with_modules variable is set to 'yes' if coders and filters are
-# to be built as modules.  Even if coders and filters are not built,
-# module loading is supported by shared library builds.
+# The with_ltdl variable is set to 'yes' if we will be linking against
+# libltdl.  We only link against libltdl if we are building coders and
+# filters as modules.
 
-# This is kind of tricky since if ${LIBLTDL} references a .la file,
-# that .la file may represent a convenience library, or it may
-# reference a shared library which will be formally installed.  It may
-# also reference an already formally installed libltdl using -lltdl
-# syntax.
+# The build_modules variable is set to 'yes' if coders and filters are
+# to be built as modules.
 
-# --with-included-ltdl (with_included_ltdl)
-#   Use our libltdl
-# Set to empty by default.
-# Set to 'no' if --with-ltdl-include and --with-ltdl-lib are used.
-# Set to 'no' if --with-included-ltdl=no or --without-included-ltdl are used.
+# This is kind of tricky since ${LIBLTDL} may reference a .la file
+# which represents a shared library which will be formally installed
+# (due to --enable-ltdl-install) or it may also reference an already
+# formally installed libltdl using -lltdl syntax.  We don't want to
+# care if the installed libltdl is built from the bundled libltdl, of
+# if it is already formally installed.
 
-# --enable-ltdl-install (enable_ltdl_install)
-#   Our libltdl will be formally installed
-# Set to 'yes' if enable_ltdl_install or enable_ltdl_convenience is 'yes'.
-
-# --enable-ltdl-convenience (enable_ltdl_convenience = 'yes')
-#   Our libltdl is built as a convenience library
-#
-# Make conditionals INSTALL_LTDL and CONVENIENCE_LTDL
+# Libltdl ltdl/Makefile.inc supports automake conditionals
+# INSTALL_LTDL and CONVENIENCE_LTDL
 
 #echo "with_included_ltdl      = $with_included_ltdl"
 #echo "enable_ltdl_install     = $enable_ltdl_install"
 #echo "enable_ltdl_convenience = $enable_ltdl_convenience"
 
-MAGICK_LIBLTDL='' # Libltdl for GraphicsMagick build
+MAGICK_LIBLTDL=''       # Libltdl for GraphicsMagick build
 MAGICK_API_LIBLTDL=''   # Libltdl for dependent application (API) build
 MAGICK_LTDLDEPS=''      # Extra libltdl dependencies
 if test "$with_ltdl" != 'no'
 then
-  if test \( "$with_included_ltdl" = 'no' -o "$enable_ltdl_convenience" = 'no' \) -o "$enable_ltdl_install" = 'yes'
-  then
-    MAGICK_API_LIBLTDL='-lltdl'
-  fi
+  MAGICK_API_LIBLTDL='-lltdl'
   MAGICK_LIBLTDL=${LIBLTDL}
   MAGICK_LTDLDEPS=${LTDLDEPS}
 fi
 AC_SUBST(MAGICK_LIBLTDL)
 AC_SUBST(MAGICK_LTDLDEPS)
 
-if test "$with_modules" != 'no'
+if test "$build_modules" != 'no'
 then
   MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
@@ -3341,6 +3326,15 @@ TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 
+MAGICK_API_CFLAGS=$CFLAGS
+MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
+MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
+MAGICK_API_DEP_LIBS="$MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_API_DEP_LIBS"
+
+MAGICK_API_DEP_LIBS=`echo $MAGICK_API_DEP_LIBS | sed -e 's/  */ /g'`
+MAGICK_API_LIBS=`echo $MAGICK_API_LIBS | sed -e 's/  */ /g'`
+
 # Save configure/build parameters for later reference
 AC_DEFINE_UNQUOTED(GM_BUILD_CONFIGURE_ARGS,"$0 ${ac_configure_args}",[arguments passed to configure])
 AC_DEFINE_UNQUOTED(GM_BUILD_HOST,"${host}",[Host identification triplet])
@@ -3350,7 +3344,7 @@ AC_DEFINE_UNQUOTED(GM_BUILD_CFLAGS,"${CFLAGS}",[CFLAGS used for C compilation])
 AC_DEFINE_UNQUOTED(GM_BUILD_CPPFLAGS,"${CPPFLAGS}",[CPPFLAGS used for preprocessing])
 AC_DEFINE_UNQUOTED(GM_BUILD_CXXFLAGS,"${CXXFLAGS}",[CXXFLAGS used for C++ compilation])
 AC_DEFINE_UNQUOTED(GM_BUILD_LDFLAGS,"${LDFLAGS}",[LDFLAGS used for linking])
-AC_DEFINE_UNQUOTED(GM_BUILD_LIBS,"${MAGICK_DEP_LIBS}",[LIBS used for linking])
+AC_DEFINE_UNQUOTED(GM_BUILD_LIBS,"${MAGICK_API_DEP_LIBS}",[LIBS used for linking])
 
 # Pass only user-provided LIBS as "global" libraries
 LIBS=$LIBS_USER
@@ -3362,10 +3356,6 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-MAGICK_API_CFLAGS=$CFLAGS
-MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
-MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 AC_SUBST(MAGICK_API_CFLAGS)
 AC_SUBST(MAGICK_API_CPPFLAGS)
@@ -3421,6 +3411,7 @@ echo "Shared libraries  --enable-shared=$enable_shared    	$libtool_build_shared
 echo "Static libraries  --enable-static=$enable_static    	$libtool_build_static_libs"
 echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
 echo "Quantum depth     --with-quantum-depth=$with_quantum_depth 	$with_quantum_depth"
+echo "Modules           --with-modules=$with_modules        	$build_modules"
 echo ""
 echo "Delegate Configuration:"
 echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
@@ -3483,6 +3474,5 @@ echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
 echo "  DEFS     = $DEFS"
 echo "  LDFLAGS  = $LDFLAGS"
-#echo "  LIBS     = $TESTED_LIBS"
-echo "  LIBS     = $MAGICK_DEP_LIBS"
+echo "  LIBS     = $MAGICK_API_DEP_LIBS"
 echo ""

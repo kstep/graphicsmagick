@@ -224,6 +224,17 @@ building under Microsoft Windows:
   solve this problem, edit the file src/libjasper/base/jas_init.c and
   comment out the line which invokes atexit().
 
+* On Unix-type systems, Windows/MinGW, and Windows/Cygwin,
+  GraphicsMagick requires libltdl from libtool in order to support
+  building GraphicsMagick with dynamically loadable modules.  A copy
+  of libltdl is bundled with GraphicsMagick and may be optionally
+  configured to be installed with GraphicsMagick (via
+  --enable-ltdl-install option), but it is recommended to install it
+  separately via a binary package or by building and installing the
+  libtool source package.  Libtool is available via anonymous FTP from
+
+     ftp://ftp.gnu.org/pub/gnu/libtool/
+
 * GraphicsMagick requires the MPEG utilities from the MPEG Software
   Simulation Group, which are available via anonymous FTP as
 
