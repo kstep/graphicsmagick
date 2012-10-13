@@ -11,7 +11,7 @@ GM="${MEMCHECK} @abs_top_builddir@/utilities/gm"
 LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}"
 
 MAGICK_CODER_MODULE_PATH='@abs_top_builddir@/coders'
-MAGICK_CONFIGURE_PATH='@abs_top_builddir@/config:$(abs_top_srcdir)/config'
+MAGICK_CONFIGURE_PATH='@abs_top_builddir@/config:@abs_top_srcdir@/config'
 MAGICK_FILTER_MODULE_PATH='@abs_top_builddir@/filters'
 
 PATH="@abs_top_builddir@/utilities:${PATH}"
