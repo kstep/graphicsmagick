@@ -39,13 +39,13 @@
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on September 30, 2012</p>
+<p>This file was last updated on October 13, 2012</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#tbd" id="id1">1.3.17 (TBD)</a></li>
+<li><a class="reference internal" href="#october-13-2012" id="id1">1.3.17 (October 13, 2012)</a></li>
 <li><a class="reference internal" href="#june-24-2012" id="id2">1.3.16 (June 24, 2012)</a></li>
 <li><a class="reference internal" href="#april-28-2012" id="id3">1.3.15 (April 28, 2012)</a></li>
 <li><a class="reference internal" href="#february-25-2012" id="id4">1.3.14 (February 25, 2012)</a></li>
@@ -68,8 +68,8 @@ ChangeLog file for full details.</p>
 <li><a class="reference internal" href="#released-in-may-2003" id="id21">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
-<div class="section" id="tbd">
-<h1><a class="toc-backref" href="#id1">1.3.17 (TBD)</a></h1>
+<div class="section" id="october-13-2012">
+<h1><a class="toc-backref" href="#id1">1.3.17 (October 13, 2012)</a></h1>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
@@ -110,6 +110,7 @@ to allow shared libraries with different quantum depths to
 co-exist in same directory (only one can be used for development).</li>
 <li>JNX: Support is added for reading the Garmin proprietary Image
 Format.</li>
+<li>BMP: Support an alpha channel in uncompressed 32-bit BMP.</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -138,7 +139,8 @@ failures.</p>
 <p>Windows Delegate Updates:</p>
 <blockquote>
 <ul class="simple">
-<li>Dcraw 9.16 is now included in the build.</li>
+<li>Dcraw 9.16 is now included in the build (with JPEG and JPEG2000
+support).</li>
 <li>Libxml2 is updated to the 2.9.0 release.</li>
 <li>Libtiff is updated to the 4.0.3 release.</li>
 <li>Lcms2 is updated to the 2.4 release.</li>
@@ -148,6 +150,10 @@ failures.</p>
 <p>Behavior Changes:</p>
 <blockquote>
 <ul class="simple">
+<li>Loading modules is only supported for the modules build.
+Previously any build using shared libraries could load modules.</li>
+<li>Bundled libltdl is now configured as 'installable' rather than
+'convenience'.</li>
 <li>-enhance: Only filter based on color channels (ignore opacity).</li>
 <li>BrowseDelegate: Web browser (for viewing help information) now
 defaults to 'xdg-open', but if it is not found, then configure

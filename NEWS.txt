@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on September 30, 2012
+This file was last updated on October 13, 2012
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.17 (TBD)
+1.3.17 (October 13, 2012)
 ==========================
 
 Security Fixes:
@@ -62,6 +62,8 @@ New Features:
   * JNX: Support is added for reading the Garmin proprietary Image
     Format.
 
+  * BMP: Support an alpha channel in uncompressed 32-bit BMP.
+
 Feature improvements:
 
   * -lat: The adaptive threshold algorithm is replaced with a new
@@ -79,7 +81,8 @@ Performance Improvements:
 
 Windows Delegate Updates:
 
-  * Dcraw 9.16 is now included in the build.
+  * Dcraw 9.16 is now included in the build (with JPEG and JPEG2000
+    support).
 
   * Libxml2 is updated to the 2.9.0 release.
 
@@ -90,6 +93,12 @@ Windows Delegate Updates:
   * Libpng is updated to the 1.5.13 release.
 
 Behavior Changes:
+
+  * Loading modules is only supported for the modules build.
+    Previously any build using shared libraries could load modules.
+
+  * Bundled libltdl is now configured as 'installable' rather than
+    'convenience'.
 
   * -enhance: Only filter based on color channels (ignore opacity).
 

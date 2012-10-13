@@ -1,5 +1,11 @@
 2012-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/index.rst: Update top index page for 1.3.17 release.
+
+	* NEWS.txt: Update NEWS for 1.3.17 release.
+
+	* version.sh: Update shared library versioning for 1.3.17 release.
+
 	* coders/jnx.c: Fix format string compilation warnings.  Remove
 	MS-DOS line terminations.
 

@@ -26,7 +26,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.16 (Released June 23, 2012) `download release`__
+Current Release              1.3.17 (Released October 13, 2012) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `visit Mercurial repository`__
 ===========================  ========================================================
@@ -95,8 +95,8 @@ development model but without breaking the API or utilities operation.
 
 Here are some reasons to prefer GraphicsMagick over ImageMagick:
 
-  * GM is more efficient (see the `benchmarks`_) so it gets the job
-    done faster using fewer resources.
+  * GM is more efficient so it gets the job done faster using fewer
+    resources.
 
   * GM is much smaller and tighter (3-5X smaller installation footprint).
 
