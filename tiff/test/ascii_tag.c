@@ -1,4 +1,4 @@
-/* $Id: ascii_tag.c,v 1.7 2008-04-15 13:32:12 dron Exp $ */
+/* $Id: ascii_tag.c,v 1.7 2008/04/15 13:32:12 dron Exp $ */
 
 /*
  * Copyright (c) 2004, Andrey Kiselev  <dron@ak4719.spb.edu>

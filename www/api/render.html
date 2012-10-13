@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title>render</title>
 <link rel="stylesheet" href="../docutils-api.css" type="text/css" />
 </head>
@@ -59,7 +59,7 @@
 <div class="section" id="description">
 <h2>Description</h2>
 <p>CloneDrawInfo() makes a copy of the given draw info structure.  If NULL
-is specified, a new image info structure is created initialized to
+is specified, a new DrawInfo structure is created initialized to
 default values.</p>
 <p>The format of the CloneDrawInfo method is:</p>
 <pre class="literal-block">
@@ -129,8 +129,8 @@ unsigned int DrawAffineImage( <a class="reference external" href="../api/types.h
 <div class="section" id="id5">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                           const char *name );
+MagickPassFail DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                             const char *name );
 </pre>
 </div>
 <div class="section" id="id6">
@@ -138,8 +138,8 @@ unsigned int DrawClipPath( <a class="reference external" href="../api/types.html
 <p>DrawClipPath() draws the clip path on the image mask.</p>
 <p>The format of the DrawClipPath method is:</p>
 <pre class="literal-block">
-unsigned int DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                           const char *name );
+MagickPassFail DrawClipPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                             const char *name );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>
@@ -156,7 +156,7 @@ unsigned int DrawClipPath( <a class="reference external" href="../api/types.html
 <div class="section" id="id7">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+MagickPassFail DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 </div>
 <div class="section" id="id8">
@@ -171,7 +171,7 @@ using the Draw* methods defined by magick/draw.h since they are better
 documented and less error prone.</p>
 <p>The format of the DrawImage method is:</p>
 <pre class="literal-block">
-unsigned int DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
+MagickPassFail DrawImage( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
@@ -187,8 +187,8 @@ unsigned int DrawImage( <a class="reference external" href="../api/types.html#im
 <div class="section" id="id9">
 <h2>Synopsis</h2>
 <pre class="literal-block">
-unsigned int DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                              const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
+MagickPassFail DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                                const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
 </pre>
 </div>
 <div class="section" id="id10">
@@ -196,8 +196,8 @@ unsigned int DrawPatternPath( <a class="reference external" href="../api/types.h
 <p>DrawPatternPath() draws a pattern.</p>
 <p>The format of the DrawPatternPath method is:</p>
 <pre class="literal-block">
-unsigned int DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
-                              const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
+MagickPassFail DrawPatternPath( <a class="reference external" href="../api/types.html#image">Image</a> *image, const <a class="reference external" href="../api/types.html#drawinfo">DrawInfo</a> *draw_info,
+                                const char *name, <a class="reference external" href="../api/types.html#image">Image</a> ** pattern );
 </pre>
 <dl class="docutils">
 <dt>image:</dt>

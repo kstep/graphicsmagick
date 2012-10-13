@@ -1,19 +1,10 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright (C) 1999 - 2010 Bob Friesenhahn
+# Copyright (C) 1999 - 2012 Bob Friesenhahn
 #
 
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
-
-if !HasTTF
-MAGICKPP_TTF_XFAIL_TESTS_OPT = \
-	Magick++/demo/button.sh \
-	Magick++/demo/demo.sh \
-	Magick++/demo/gravity.sh \
-	Magick++/demo/piddle.sh \
-	Magick++/demo/shapes.sh
-endif
 
 if WITH_MAGICK_PLUS_PLUS
 LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
@@ -24,7 +15,7 @@ MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
 MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
 MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
 MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
-MAGICKPP_XFAIL_TESTS = $(MAGICKPP_TTF_XFAIL_TESTS_OPT)
+MAGICKPP_XFAIL_TESTS =
 else
 LIBMAGICKPP = 
 MAGICKPP_CHECK_PGRMS = 
@@ -47,42 +38,8 @@ MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/GraphicsMagick++.pc
 
 MAGICKPP_TEST_SCRIPTS_OPT = \
-	Magick++/tests/exceptions.sh \
-	Magick++/tests/appendImages.sh \
-	Magick++/tests/attributes.sh \
-	Magick++/tests/averageImages.sh \
-	Magick++/tests/coalesceImages.sh \
-	Magick++/tests/coderInfo.sh \
-	Magick++/tests/colorHistogram.sh \
-	Magick++/tests/color.sh \
-	Magick++/tests/montageImages.sh \
-	Magick++/tests/morphImages.sh \
-	Magick++/tests/readWriteBlob.sh \
-	Magick++/tests/readWriteImages.sh \
-        Magick++/demo/analyze.sh \
-        Magick++/demo/button.sh \
-        Magick++/demo/demo.sh \
-        Magick++/demo/flip.sh \
-        Magick++/demo/gravity.sh \
-        Magick++/demo/piddle.sh \
-        Magick++/demo/shapes.sh \
-        Magick++/demo/zoom_bessel.sh \
-        Magick++/demo/zoom_blackman.sh \
-        Magick++/demo/zoom_box.sh \
-        Magick++/demo/zoom_catrom.sh \
-        Magick++/demo/zoom_cubic.sh \
-        Magick++/demo/zoom_gaussian.sh \
-        Magick++/demo/zoom_hamming.sh \
-        Magick++/demo/zoom_hanning.sh \
-        Magick++/demo/zoom_hermite.sh \
-        Magick++/demo/zoom_lanczos.sh \
-        Magick++/demo/zoom_mitchell.sh \
-        Magick++/demo/zoom_point.sh \
-        Magick++/demo/zoom_quadratic.sh \
-        Magick++/demo/zoom_sample.sh \
-        Magick++/demo/zoom_scale.sh \
-        Magick++/demo/zoom_sinc.sh \
-        Magick++/demo/zoom_triangle.sh
+	Magick++/tests/tests.tap \
+	Magick++/demo/demos.tap
 
 MAGICKPP_EXTRA_DIST = \
 	Magick++/AUTHORS \
@@ -170,6 +127,7 @@ MAGICKPP_INCHEADERS_OPT = \
 
 # -no-undefined -export-symbols-regex ".*"
 Magick___lib_libGraphicsMagick___la_LDFLAGS = -no-undefined \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_PLUS_PLUS_LIBRARY_CURRENT):$(MAGICK_PLUS_PLUS_LIBRARY_REVISION):$(MAGICK_PLUS_PLUS_LIBRARY_AGE)
 Magick___lib_libGraphicsMagick___la_LIBADD = $(LIBMAGICK)
 

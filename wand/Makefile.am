@@ -43,6 +43,7 @@ LIBWAND=wand/libGraphicsMagickWand.la
 
 wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
 wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
 wand_libGraphicsMagickWand_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
@@ -53,7 +54,7 @@ WAND_EXTRA_DIST = \
 	wand/input_gray.miff \
 	wand/input_truecolor.miff \
 	wand/sequence.miff \
-	wand/common.sh \
+	wand/common.shi \
 	$(WAND_TESTS)
 
 wand_drawtest_LDADD        = $(LIBWAND)
@@ -69,8 +70,7 @@ WAND_CHECK_PGRMS = \
 	wand/wandtest
 
 WAND_TESTS = \
-	wand/drawtest.sh \
-	wand/wandtest.sh
+	wand/wandtests.tap
 
 WAND_CLEANFILES = \
         wand/*_out.*

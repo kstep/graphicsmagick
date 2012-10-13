@@ -1,0 +1,8 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2010 GraphicsMagick Group
+# Test vector drawing.
+. ${srcdir}/tests/common.shi
+test_plan_fn 1
+test_command_fn 'vector drawing' ${MEMCHECK} ./drawtest drawtest_out.miff
+:

@@ -21,7 +21,7 @@
 #include <ws2tcpip.h>
 
 /* Check if ws2tcpip.h is a recent version which provides getaddrinfo() */
-#if defined(GetAddrInfo)
+#if defined(EAI_AGAIN)
 #include <wspiapi.h>
 #define HAVE_GETADDRINFO
 #endif
@@ -41,7 +41,7 @@
 #define EWOULDBLOCK             WSAEWOULDBLOCK
 #define ESHUTDOWN               WSAESHUTDOWN
 
-#ifndef _MSC_VER
+#if (!defined(_MSC_VER) || (_MSC_VER < 1600))
 #define EINPROGRESS             WSAEINPROGRESS
 #define EALREADY                WSAEALREADY
 #define ENOTSOCK                WSAENOTSOCK

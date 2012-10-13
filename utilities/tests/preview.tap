@@ -1,0 +1,21 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test preview generation
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 28
+
+previews='AddNoise Blur Brightness CharcoalDrawing Despeckle Dull EdgeDetect
+  Gamma Grayscale Hue Implode OilPaint Quantize Raise ReduceNoise Roll
+  Rotate Saturation Segment Shade Sharpen Shear Solarize Spiff Spread
+  Swirl Threshold Wave'
+
+for preview in ${previews}
+do
+    OUTFILE="Preview${preview}_out.miff"
+    rm -f ${OUTFILE}
+    test_command_fn "${preview}" ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -preview ${preview} "preview:${OUTFILE}"
+done
+:

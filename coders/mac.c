@@ -100,7 +100,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if((ldblk & 0xFF)!=0)
 	ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
-  if(ldblk==0)		//???? don't know why
+  if(ldblk==0)		/* ???? don't know why */
 	SeekBlob(image,0x200,SEEK_SET);
   else
 	SeekBlob(image,0x280,SEEK_SET);

@@ -155,7 +155,7 @@ static unsigned int
 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
-//extern "C" {
+/* extern "C" { */
 #endif
 
 static int
@@ -4489,7 +4489,7 @@ MSLExternalSubset(void *context,const xmlChar *name,
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
-//}
+/* } */
 #endif
 
 static unsigned int

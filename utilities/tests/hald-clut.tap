@@ -1,0 +1,32 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test hald CLUT operations
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 12
+
+OUTFILE=HaldClutIdentity_out.miff
+levels='2 7 8 10 12'
+for level in $levels
+do
+  echo "Testing Hald CLUT identity level ${level} ..."
+  identity_image=identity:${level}
+  rm -f ${OUTFILE}
+  test_command_fn 'Hald CLUT identity' ${GM} convert ${CONVERT_FLAGS} ${identity_image} -hald-clut ${identity_image} -label Hald-Clut ${OUTFILE}
+  test_command_fn 'Hald CLUT verify' ${GM} compare -maximum-error 1.5e-11 -metric MAE ${identity_image} ${OUTFILE}
+  echo
+done
+
+XFORM='-negate'
+IDENTITY_CLUT='identity:8'
+CLUT_OUTPUT=HaldClutTransform_out.miff
+REFERENCE_OUTPUT=HaldClutTransformRef_out.miff
+XFORM_CLUT=HaldClutTransformCLUT_out.miff
+
+eval ${GM} convert ${IDENTITY_CLUT} ${XFORM} ${XFORM_CLUT}
+eval ${GM} convert ${MODEL_MIFF} ${XFORM} ${REFERENCE_OUTPUT}
+test_command_fn 'Hald CLUT emulate negate' ${GM} convert ${MODEL_MIFF} -hald-clut ${XFORM_CLUT} ${CLUT_OUTPUT}
+test_command_fn 'Hald CLUT verify' ${GM} compare -maximum-error 4.0e-12 -metric MAE ${REFERENCE_OUTPUT} ${CLUT_OUTPUT}
+:

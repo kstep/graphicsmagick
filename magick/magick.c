@@ -974,8 +974,8 @@ InitializeMagick(const char *path)
     debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     debug|=_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_DELAY_FREE_MEM_DF |
       _CRTDBG_LEAK_CHECK_DF;
-    // debug=_CrtSetDbgFlag(debug);
-    // _ASSERTE(_CrtCheckMemory());
+    /* debug=_CrtSetDbgFlag(debug); */
+    /* _ASSERTE(_CrtCheckMemory()); */
   }
 # endif /* defined(_DEBUG) */
 #endif /* defined(MSWINDOWS) */

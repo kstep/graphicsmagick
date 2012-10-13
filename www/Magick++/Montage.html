@@ -1,597 +1,209 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
-	<TITLE>Magick++ Montage Class</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
-	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
-	<META NAME="CREATED" CONTENT="20020805;15244548">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;15294647">
-	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick++'s montage options class.">
-	<META NAME="KEYWORDS" CONTENT="Magick++,montage,GraphicsMagick">
-	<STYLE>
-	<!--
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		H3 { color: #000000 }
-		A:link { color: #0000ff }
-		A:visited { color: #ff0000 }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#ff0000" BGCOLOR="#ffffff">
-<H1 ALIGN=CENTER>Magick::Montage Class</H1>
-<P>A montage is a single image which is composed of thumbnail images
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
+<title>Magick::Montage Class</title>
+<link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
+</head>
+<body>
+
+<div class="banner">
+<img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
+<span class="title">GraphicsMagick</span>
+<form action="http://www.google.com/search">
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
+</form>
+</div>
+
+<div class="navmenu">
+<ul>
+<li><a href="../index.html">Home</a></li>
+<li><a href="../project.html">Project</a></li>
+<li><a href="../download.html">Download</a></li>
+<li><a href="../README.html">Install</a></li>
+<li><a href="../Hg.html">Source</a></li>
+<li><a href="../NEWS.html">News</a> </li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
+<li><a href="../utilities.html">Utilities</a></li>
+<li><a href="../programming.html">Programming</a></li>
+<li><a href="../reference.html">Reference</a></li>
+</ul>
+</div>
+<div class="document" id="magick-montage-class">
+<h1 class="title">Magick::Montage Class</h1>
+
+<!-- -*- mode: rst -*- -->
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
+<p>A montage is a single image which is composed of thumbnail images
 composed in a uniform grid. The size of the montage image is
 determined by the size of the individual thumbnails and the number of
-rows and columns in the grid. 
-</P>
-<P>The following illustration shows a montage consisting of three
-columns and two rows of thumbnails rendered on a gray background: 
-</P>
-<P ALIGN=CENTER><IMG SRC="montage-sample-framed.jpg" NAME="Graphic1" ALIGN=BOTTOM WIDTH=378 HEIGHT=238 BORDER=0></P>
-<P>Montages may be either &quot;plain&quot; (undecorated thumbnails)
-or &quot;framed&quot; (decorated thumbnails). In order to more easily
-understand the options supplied to <A HREF="STL.html#montageImages"><I>MontageImages()</I></A>,
-montage options are supplied by two different classes:
-<A HREF="#Magick::Montage"><I>Magick::Montage</I></A> and
-<A HREF="#Magick::MontageFramed"><I>Magick::MontageFramed</I></A>. 
-</P>
-<H3 ALIGN=CENTER><A NAME="PlainMontages"></A>Plain Montages</H3>
-<P><A NAME="Magick::Montage"></A><I>Magick::Montage</I> is the base
-class to provide montage options and provides methods to set all
-options required to render simple (unframed) montages. See
-<A HREF="#Magick::MontageFramed"><I>Magick::MontageFramed</I></A>if
-you would like to create a framed montage. 
-</P>
-<P>Unframed thumbnails consist of four components: the thumbnail
-image, the thumbnail border, an optional thumbnail shadow, and an
-optional thumbnail label area. 
-</P>
-<P ALIGN=CENTER><IMG SRC="thumbnail-anatomy-plain.jpg" NAME="Graphic2" ALIGN=MIDDLE WIDTH=309 HEIGHT=327 BORDER=0></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Montage Methods</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Method</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Return Type</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Signature(s)</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><FONT SIZE=2>Montage</FONT></P>
-		</TD>
-		<TD BGCOLOR="#666666">
-			<P><FONT SIZE=2>&nbsp;</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Default constructor</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="backgroundColor"></A><FONT SIZE=2>backgroundColor</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A>
-			&amp;backgroundColor_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the background color that thumbnails are
-			imaged upon.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="compose"></A><FONT SIZE=2>compose</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
-			compose_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the image composition algorithm for
-			thumbnails. This controls the algorithm by which the thumbnail
-			image is placed on the background. Use of OverCompositeOp is
-			recommended for use with images that have transparency. This
-			option may have negative side-effects for images without
-			transparency.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Enumerations.html#CompositeOperator"><FONT SIZE=2>CompositeOperator</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="fileName"></A><FONT SIZE=2>fileName</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>std::string fileName_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the image filename to be used for the
-			generated montage images. To handle the case were multiple montage
-			images are generated, a <SPAN LANG="en-US">printf</SPAN>-style
-			format may be embedded within the filename. For example, a
-			filename specification of image%02d.miff names the montage images
-			as image00.miff, image01.miff, etc.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>std::string</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="fill"></A>fill</P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;pen_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the fill color to use for the label
-			text.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="font"></A><FONT SIZE=2>font</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>std::string font_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the thumbnail label font.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>std::string</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="geometry"></A><FONT SIZE=2>geometry</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Geometry.html">Geometry</A>
-			&amp;geometry_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the size of the generated thumbnail.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Geometry.html"><FONT SIZE=2>Geometry</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="gravity"></A><FONT SIZE=2>gravity</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#GravityType">GravityType</A>
-			gravity_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the thumbnail positioning within the
-			specified geometry area. If the thumbnail is smaller in any
-			dimension than the geometry, then it is placed according to this
-			specification.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Enumerations.html"><FONT SIZE=2>GravityType</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="label"></A><FONT SIZE=2>label</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>std::string label_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the format used for the image label.
-			Special <A HREF="FormatCharacters.html">format characters</A> may
-			be embedded in the format string to include information about the
-			image.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>std::string</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="penColor"></A><FONT SIZE=2>penColor</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;pen_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the pen color to use for the label text
-			(same as <I>fill</I>).</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="pointSize"></A><FONT SIZE=2>pointSize</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>unsigned int pointSize_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the thumbnail label font size.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>unsigned int</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="shadow"></A><FONT SIZE=2>shadow</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>bool shadow_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Enable/disable drop-shadow on thumbnails.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>bool</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="stroke"></A><FONT SIZE=2>stroke</FONT></P>
-		</TD>
-		<TD>
-			<P>void</P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;pen_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the stroke color to use for the label
-			text .</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="texture"></A><FONT SIZE=2>texture</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>std::string texture_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies a texture image to use as montage
-			background. The built-in textures &quot;<TT>granite:</TT>&quot;
-			and &quot;<TT>plasma:</TT>&quot; are available. A texture is the
-			same as a background image.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>std::string</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="tile"></A><FONT SIZE=2>tile</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Geometry.html">Geometry</A> &amp;tile_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the maximum number of montage columns
-			and rows in the montage. The montage is built by filling out all
-			cells in a row before advancing to the next row. Once the montage
-			has reached the maximum number of columns and rows, a new montage
-			image is started.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Geometry.html"><FONT SIZE=2>Geometry</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="transparentColor"></A><FONT SIZE=2>transparentColor</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A>
-			&amp;transparentColor_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies a montage color to set transparent. This
-			option can be set the same as the background color in order for
-			the thumbnails to appear without a background when rendered on an
-			HTML page. For best effect, ensure that the transparent color
-			selected does not occur in the rendered thumbnail colors.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<H3 ALIGN=CENTER><A NAME="FramedMontages"></A>Framed Montages</H3>
-<P><A NAME="Magick::MontageFramed"></A><I>Magick::MontageFramed</I>
-provides the means to specify montage options when it is desired to
-have decorative frames around the image thumbnails. <I>MontageFramed</I>
-inherits from <I>Montage</I> and therefore provides all the methods
-of <I>Montage</I> as well as those shown in the table &quot;MontageFramed
-Methods&quot;. 
-</P>
-<P>Framed thumbnails consist of four components: the thumbnail image,
-the thumbnail frame, the thumbnail border, an optional thumbnail
-shadow, and an optional thumbnail label area.</P>
-<P ALIGN=CENTER><IMG SRC="thumbnail-anatomy-framed.jpg" NAME="Graphic3" ALIGN=MIDDLE WIDTH=350 HEIGHT=345 BORDER=0></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>MontageFramed Methods</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Method</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Return Type</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Signature(s)</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P ALIGN=CENTER><FONT SIZE=2>MontageFramed</FONT></P>
-		</TD>
-		<TD BGCOLOR="#666666">
-			<P><FONT SIZE=2>&nbsp;</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Default constructor (enable frame via
-			<I>frameGeometry</I>).</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="borderColor"></A><FONT SIZE=2>borderColor</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;borderColor_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the background color within the
-			thumbnail frame.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="borderWidth"></A><FONT SIZE=2>borderWidth</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>unsigned int borderWidth_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the border (in pixels) to place between
-			a thumbnail and its surrounding frame. This option only takes
-			effect if thumbnail frames are enabled (via <I>frameGeometry</I>)
-			and the thumbnail geometry specification doesn't also specify the
-			thumbnail border width.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>unsigned int</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="frameGeometry"></A><FONT SIZE=2>frameGeometry</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Geometry.html">Geometry</A> &amp;frame_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the geometry specification for frame to
-			place around thumbnail. If this parameter is not specified, then
-			the montage is unframed.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Geometry.html"><FONT SIZE=2>Geometry</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="matteColor"></A><FONT SIZE=2>matteColor</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;matteColor_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Specifies the thumbnail frame color.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><A HREF="Color.html"><FONT SIZE=2>Color</FONT></A></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><BR><BR>
-</P>
-</BODY>
-</HTML>
+rows and columns in the grid.</p>
+<p>The following illustration shows a montage consisting of three columns
+and two rows of thumbnails rendered on a gray background:</p>
+<img alt="Figure showing framed montage" class="align-center" src="montage-sample-framed.jpg" style="width: 378.0px; height: 238.0px;" />
+<p>Montages may be either &quot;plain&quot; (undecorated thumbnails) or &quot;framed&quot;
+(decorated thumbnails). In order to more easily understand the options
+supplied to MontageImages(), montage options are supplied by two
+different classes: Magick::Montage and Magick::MontageFramed.</p>
+<div class="section" id="plain-montages">
+<h1>Plain Montages</h1>
+<p>Magick::Montage is the base class to provide montage options and
+provides methods to set all options required to render simple
+(unframed) montages. See Magick::MontageFramedif you would like to
+create a framed montage.</p>
+<p>Unframed thumbnails consist of four components: the thumbnail image,
+the thumbnail border, an optional thumbnail shadow, and an optional
+thumbnail label area.</p>
+<img alt="Figure showing plain montage" class="align-center" src="thumbnail-anatomy-plain.jpg" style="width: 309.0px; height: 327.0px;" />
+<p>The following is the definition of the Magick::Montage class:</p>
+<pre class="literal-block">
+class Montage
+{
+public:
+  Montage( void );
+  virtual ~Montage( void );
+
+  // Specifies the background color that thumbnails are imaged upon.
+  void              backgroundColor ( const Color &amp;backgroundColor_ );
+  Color             backgroundColor ( void ) const;
+
+  // Specifies the image composition algorithm for thumbnails. This
+  // controls the algorithm by which the thumbnail image is placed
+  // on the background. Use of OverCompositeOp is recommended for
+  // use with images that have transparency. This option may have
+  // negative side-effects for images without transparency.
+  void              compose ( CompositeOperator compose_ );
+  CompositeOperator compose ( void ) const;
+
+  // Specifies the image filename to be used for the generated
+  // montage images. To handle the case were multiple montage images
+  // are generated, a printf-style format may be embedded within the
+  // filename. For example, a filename specification of
+  // image%02d.miff names the montage images as image00.miff,
+  // image01.miff, etc.
+  void              fileName( const std::string &amp;fileName_ );
+  std::string       fileName( void ) const;
+
+  // Specifies the fill color to use for the label text.
+  void              fillColor ( const Color &amp;fill_ );
+  Color             fillColor ( void ) const;
+
+  // Specifies the thumbnail label font.
+  void              font ( const std::string &amp;font_ );
+  std::string       font ( void ) const;
+
+  // Specifies the size of the generated thumbnail.
+  void              geometry ( const Geometry &amp;geometry_ );
+  Geometry          geometry ( void ) const;
+
+  // Specifies the thumbnail positioning within the specified
+  // geometry area. If the thumbnail is smaller in any dimension
+  // than the geometry, then it is placed according to this
+  // specification
+  void              gravity ( GravityType gravity_ );
+  GravityType       gravity ( void ) const;
+
+  // Specifies the format used for the image label. Special format
+  // characters may be embedded in the format string to include
+  // information about the image.
+  void              label( const std::string &amp;label_ );
+  std::string       label( void ) const;
+
+  // Specifies the pen color to use for the label text (same as fill).
+  void              penColor ( const Color &amp;pen_ );
+  Color             penColor ( void ) const;
+
+  // Specifies the thumbnail label font size.
+  void              pointSize ( unsigned int pointSize_ );
+  unsigned int      pointSize ( void ) const;
+
+  // Enable/disable drop-shadow on thumbnails.
+  void              shadow ( bool shadow_ );
+  bool              shadow ( void ) const;
+
+  // Specifies the stroke color to use for the label text .
+  void              strokeColor ( const Color &amp;stroke_ );
+  Color             strokeColor ( void ) const;
+
+  // Specifies a texture image to use as montage background. The
+  // built-in textures &quot;granite:&quot; and &quot;plasma:&quot; are available. A
+  // texture is the same as a background image.
+  void              texture ( const std::string &amp;texture_ );
+  std::string       texture ( void ) const;
+
+  // Specifies the maximum number of montage columns and rows in the
+  // montage. The montage is built by filling out all cells in a row
+  // before advancing to the next row. Once the montage has reached
+  // the maximum number of columns and rows, a new montage image is
+  // started.
+  void              tile ( const Geometry &amp;tile_ );
+  Geometry          tile ( void ) const;
+
+  // Specifies the montage title
+  void              title ( const std::string &amp;title_ );
+  std::string       title ( void ) const;
+
+  // Specifies a montage color to set transparent. This option can
+  // be set the same as the background color in order for the
+  // thumbnails to appear without a background when rendered on an
+  // HTML page. For best effect, ensure that the transparent color
+  // selected does not occur in the rendered thumbnail colors.
+  void              transparentColor ( const Color &amp;transparentColor_ );
+  Color             transparentColor ( void ) const;
+
+};
+</pre>
+</div>
+<div class="section" id="framed-montages">
+<h1>Framed Montages</h1>
+<p>Magick::MontageFramed provides the means to specify montage options
+when it is desired to have decorative frames around the image
+thumbnails. MontageFramed inherits from Montage and therefore provides
+all the methods of Montage as well as those shown in the table
+&quot;MontageFramed Methods&quot;.</p>
+<p>Framed thumbnails consist of four components: the thumbnail image, the
+thumbnail frame, the thumbnail border, an optional thumbnail shadow,
+and an optional thumbnail label area.</p>
+<img alt="Figure showing anatomy of a framed montage" class="align-center" src="thumbnail-anatomy-framed.jpg" style="width: 350.0px; height: 345.0px;" />
+<p>The following is the definition of the Magick::MontageFramed class:</p>
+<pre class="literal-block">
+class MontageFramed : public Montage
+{
+public:
+  MontageFramed ( void );
+  /* virtual */ ~MontageFramed ( void );
+
+  // Specifies the background color within the thumbnail frame.
+  void           borderColor ( const Color &amp;borderColor_ );
+  Color          borderColor ( void ) const;
+
+  // Specifies the border (in pixels) to place between a thumbnail
+  // and its surrounding frame. This option only takes effect if
+  // thumbnail frames are enabled (via frameGeometry) and the
+  // thumbnail geometry specification doesn't also specify the
+  // thumbnail border width.
+  void           borderWidth ( unsigned int borderWidth_ );
+  unsigned int   borderWidth ( void ) const;
+
+  // Specifies the geometry specification for frame to place around
+  // thumbnail. If this parameter is not specified, then the montage
+  // is unframed.
+  void           frameGeometry ( const Geometry &amp;frame_ );
+  Geometry       frameGeometry ( void ) const;
+
+  // Specifies the thumbnail frame color.
+  void           matteColor ( const Color &amp;matteColor_ );
+  Color          matteColor ( void ) const;
+
+};
+</pre>
+<p>Copyright © Bob Friesenhahn 1999 - 2012</p>
+</div>
+</div>
+</body>
+</html>

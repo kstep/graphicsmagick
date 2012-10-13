@@ -1,0 +1,269 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test image processing
+# This script should be executed prior to Montage
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 59
+
+OUTFILE=TileAddNoise_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'AddNoise' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} +noise Laplacian -label AddNoise ${OUTFILE}
+
+OUTFILE=TileAffine_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Affine' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -affine 1,0,0.785,1,0,0 -transform -label Affine ${OUTFILE}
+
+OUTFILE=TileAnnotate_out.miff
+ANNOTATE_CMD_FILE=annotate_cmds_out.txt
+echo 'gravity North text 0,20 "Magick"' > ${ANNOTATE_CMD_FILE}
+rm -f ${OUTFILE}
+test_command_fn 'Annotate' -F TTF ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill gold -pointsize 14 \
+	-font ${GENERIC_TTF} \
+	-draw @${ANNOTATE_CMD_FILE} \
+	-label Annotate ${OUTFILE}
+
+OUTFILE=TileThresholdBlack_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Black-Threshold' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -black-threshold "20%" \
+                   -label 'Black-Threshold' ${OUTFILE}
+
+OUTFILE=TileBlur_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Blur' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -blur 0x1 -label Blur ${OUTFILE}
+
+OUTFILE=TileBorder_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Border' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -bordercolor gold -border 6x6 -label Border ${OUTFILE}
+
+OUTFILE=TileChannel_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Channel' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace cmyk -channel yellow -label Channel ${OUTFILE}
+
+OUTFILE=TileCharcoal_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Charcoal' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -charcoal 0x1 -label Charcoal ${OUTFILE}
+
+OUTFILE=TileComposite_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Composite' ${GM} composite ${COMPOSITE_FLAGS} ${SMILE_MIFF} -geometry +35+65 ${MODEL_MIFF} -label Composite ${OUTFILE}
+
+OUTFILE=TileContrast_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Contrast' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -contrast -label Contrast ${OUTFILE}
+
+OUTFILE=TileConvolve_out.miff
+rm -f ${OUTFILE}
+# 1,1,1,
+# 1,4,1,
+# 1,1,1
+test_command_fn 'Convolve' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -convolve 1,1,1,1,4,1,1,1,1 -label Convolve ${OUTFILE}
+
+OUTFILE=TileCrop_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Crop' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -crop '80x80+25+50' -label Crop ${OUTFILE}
+
+OUTFILE=TileDespeckle_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Despeckle' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -despeckle -label Despeckle ${OUTFILE}
+
+OUTFILE=TileDraw_out.miff
+DRAWFILE=draw_circle_out.txt
+rm -f ${OUTFILE}
+echo 'circle 60,90 60,120' > ${DRAWFILE}
+test_command_fn 'Draw' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill none -stroke gold \
+         -draw @${DRAWFILE} -label Draw ${OUTFILE}
+rm -f ${DRAWFILE}
+
+OUTFILE=TileEdge_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Edge' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -edge 0x1 -label Edge ${OUTFILE}
+
+OUTFILE=TileEmboss_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Emboss' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -emboss 0x1 -label Emboss ${OUTFILE}
+
+OUTFILE=TileEqualize_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Equalize' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -label Equalize ${OUTFILE}
+
+OUTFILE=TileExplode_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Explode' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -implode -1 -label Explode ${OUTFILE}
+
+OUTFILE=TileFlip_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Flip' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -flip -label Flip ${OUTFILE}
+
+OUTFILE=TileFlop_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Flop' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -flop -label Flop ${OUTFILE}
+
+OUTFILE=TileFrame_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Frame' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -frame 15x15+3+3 -label Frame ${OUTFILE}
+
+OUTFILE=TileGamma_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Gamma' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -gamma 1.6 -label Gamma ${OUTFILE}
+
+OUTFILE=TileGaussianBlur_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'GaussianBlur' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -gaussian 0x1.5 -label GaussianBlur ${OUTFILE}
+
+OUTFILE=TileGradient_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Gradient' ${GM} convert ${CONVERT_FLAGS} -size 130x194 gradient:'#20a0ff-#ffff00' -label Gradient ${OUTFILE}
+
+OUTFILE=TileGrayscale_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Grayscale' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace gray -label Grayscale ${OUTFILE}
+
+OUTFILE=TileImplode_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Implode' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -implode 0.5 -label Implode ${OUTFILE}
+
+OUTFILE=TileLevel_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Level' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -level 10%,1.2,90% -label Level ${OUTFILE}
+
+rm -f mask_out.miff TileMask_out.miff
+${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -threshold "30%" mask_out.miff
+test_command_fn 'Mask' ${GM} convert ${CONVERT_FLAGS} -mask mask_out.miff ${MODEL_MIFF} -negate -label Mask TileMask_out.miff
+
+OUTFILE=TileMedian_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'MedianFilter' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -median 3 -label MedianFilter ${OUTFILE}
+
+OUTFILE=TileModulate_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Modulate' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -modulate 110/110/110 -label Modulate ${OUTFILE}
+
+OUTFILE=TileMonochrome_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Monochrome' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colorspace gray -colors 2 \
+                   +dither -label Monochrome ${OUTFILE}
+
+OUTFILE=TileNegate_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Negate' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -negate -label Negate ${OUTFILE}
+
+OUTFILE=TileNormalize_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Normalize' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -normalize -label Normalize ${OUTFILE}
+
+OUTFILE=TileOilPaint_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Oilpaint' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -paint 0x1 -label Oilpaint ${OUTFILE}
+
+OUTFILE=TileOrderedDither2_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Ordered2x2' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -ordered-dither intensity 2x2 -label Ordered2x2 ${OUTFILE}
+
+OUTFILE=TileOrderedDither3_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Ordered3x3' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -ordered-dither intensity 3x3 -label Ordered3x3 ${OUTFILE}
+
+OUTFILE=TileOrderedDither4_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Ordered4x4' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -ordered-dither intensity 4x4 -label Ordered4x4 ${OUTFILE}
+
+OUTFILE=TilePlasma_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Plasma' ${GM} convert ${CONVERT_FLAGS} -size 130x194 plasma:fractal -label Plasma ${OUTFILE}
+
+OUTFILE=TileQuantize_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Quantize' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -colors 16 -label Quantize ${OUTFILE}
+
+OUTFILE=TileRaise_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Raise' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -raise 10x10 -label Raise ${OUTFILE}
+
+OUTFILE=TileRandomThreshold_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Random 10%' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -equalize -random-threshold intensity '10%' -label 'Random10%%' ${OUTFILE}
+
+OUTFILE=TileRecolor_out.miff
+MATRIXFILE=recolor_matrix_out.txt
+echo '0.9 0 0, 0 0.9 0, 0 0 1.2' > ${MATRIXFILE}
+rm -f ${OUTFILE}
+test_command_fn 'Recolor' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -recolor @${MATRIXFILE} -label Recolor ${OUTFILE}
+rm -f ${MATRIXFILE}
+
+OUTFILE=TileReduceNoise_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'ReduceNoise' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -noise 0x1 -label ReduceNoise ${OUTFILE}
+
+OUTFILE=TileResize_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Resize' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -resize 50% -label Resize ${OUTFILE}
+
+OUTFILE=TileRoll_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Roll' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -roll +20+10 -label Roll ${OUTFILE}
+
+OUTFILE=TileRotate_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Rotate 45' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -rotate 45 \
+        -transparent black -label Rotate ${OUTFILE}
+
+OUTFILE=TileScale_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Scale' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -scale 60% -label Scale ${OUTFILE}
+
+OUTFILE=TileSegment_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Segment' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -segment 0.5x0.25 -label Segment ${OUTFILE}
+
+OUTFILE=TileShade_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Shade' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -shade 30x30 -label Shade ${OUTFILE}
+
+OUTFILE=TileSharpen_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Sharpen' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -sharpen 0x1 -label Sharpen ${OUTFILE}
+
+OUTFILE=TileShave_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Shave' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -shave 10x10 -label Shave ${OUTFILE}
+
+OUTFILE=TileShear_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Shear' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -fill black -shear 45x45 \
+        -transparent black -label Shear ${OUTFILE}
+
+OUTFILE=TileSolar_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Solarize' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -solarize 50% -label Solarize ${OUTFILE}
+
+OUTFILE=TileSpread_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Spread' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -spread 3 -label Spread ${OUTFILE}
+
+OUTFILE=TileSwirl_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Swirl' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -background '#000000FF' \
+        -swirl 90 -label Swirl ${OUTFILE}
+
+OUTFILE=TileThreshold_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Threshold' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -threshold "35%" \
+                   -label Threshold ${OUTFILE}
+
+OUTFILE=TileUnsharpMask_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'UnsharpMask' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -unsharp 0x1+10+10 -label UnsharpMask ${OUTFILE}
+
+OUTFILE=TileWave_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'Wave' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -background '#000000FF' \
+        -wave 25x150 -label Wave ${OUTFILE}
+
+OUTFILE=TileThresholdWhite_out.miff
+rm -f ${OUTFILE}
+test_command_fn 'White-Threshold' ${GM} convert ${CONVERT_FLAGS} ${MODEL_MIFF} -white-threshold "80%" \
+                   -label 'White-Threshold' ${OUTFILE}
+:

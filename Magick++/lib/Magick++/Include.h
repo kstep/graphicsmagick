@@ -509,6 +509,7 @@ namespace Magick
   using MagickLib::AcquireImagePixels;
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddDefinition;
+  using MagickLib::AddDefinitions;
   using MagickLib::AddNoiseImage;
   using MagickLib::AddNoiseImageChannel;
   using MagickLib::AffineMatrix;

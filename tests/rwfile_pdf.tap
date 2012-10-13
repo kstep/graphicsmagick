@@ -1,0 +1,26 @@
+#!/bin/sh
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test PDF format with various storage and compression types
+. ${srcdir}/tests/common.shi
+
+# Test program
+rwfile=./rwfile
+
+# Storage types we will test
+check_types='bilevel gray pallette truecolor'
+
+# Comression types we will test
+compress_types='none fax jpeg lzw rle zip'
+
+# Number of tests we plan to run
+test_plan_fn 24
+
+for compress in ${compress_types}
+do
+  for type in ${check_types}
+  do
+    test_command_fn "PDF ${type} ${compress}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_${compress}_%d" -compress $compress "${SRCDIR}/input_${type}.miff" PDF
+  done
+done
+
+:

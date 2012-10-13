@@ -39,6 +39,7 @@ extern "C" {
 #if (QuantumDepth == 8)
 #  define MaxColormapSize  256U
 #  define MaxMap  255U
+#  define MaxMapDepth 8
 #  define MaxMapFloat 255.0f
 #  define MaxMapDouble 255.0
 #  define MaxRGB  255U
@@ -61,6 +62,7 @@ extern "C" {
 #elif (QuantumDepth == 16)
 #  define MaxColormapSize  65536U
 #  define MaxMap 65535U
+#  define MaxMapDepth 16
 #  define MaxMapFloat 65535.0f
 #  define MaxMapDouble 65535.0
 #  define MaxRGB  65535U
@@ -106,6 +108,7 @@ extern "C" {
   may take more time to compute the table than to process the image.
 */
 #define MaxMap 65535U
+#define MaxMapDepth 16
 #define MaxMapFloat 65535.0f
 #define MaxMapDouble 65535.0
 #if MaxMap == 65535U

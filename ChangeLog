@@ -1,3 +1,262 @@
+2012-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/index.rst: Update top index page for 1.3.17 release.
+
+	* NEWS.txt: Update NEWS for 1.3.17 release.
+
+	* version.sh: Update shared library versioning for 1.3.17 release.
+
+	* coders/jnx.c: Fix format string compilation warnings.  Remove
+	MS-DOS line terminations.
+
+	* configure.ac: Module loading is now only supported by the
+	modules build and not just because shared libraries are enabled.
+	This means that libltdl is only depended upon by the modules
+	build.  Sometime in the future, libltdl will no longer be bundled
+	in the GraphicsMagick source tree.
+
+2012-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac (LTDL_INIT): Request installable libltdl rather
+	than convenience.
+
+2012-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/bmp.c: Support alpha channel in uncompressed 32-bit BMP.
+	Resolves SourceForge issue 3566239 "Can't open BMP with alpha
+	created by photoshop".
+
+2012-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* dcraw/dcraw.c: Fixed situation when M_PI is not defined.
+
+2012-10-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: Add image attribute with geolocation.
+
+2012-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* dcraw: VisualMagick configure fixes to support linking with JPEG
+	and JPEG2000.
+
+2012-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* dcraw: Add dcraw to VisualMagick build.
+
+	* libxml: Update libxml2 to 2.9.0 release.
+
+2012-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tiff: Update libtiff to 4.0.3 release.
+
+	* lcms: Update liblcms2 to 2.4 release.
+
+	* png: Update libpng to 1.5.13 release.
+
+2012-09-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Update to Automake 1.12.4.
+
+2012-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Fix Debian bug 687738 "graphicsmagick:
+	repeated words suitable for suitable for in gm manpage" reported
+	by Jonas Smedegaard.
+
+2012-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS.txt: Update with news since last release.
+
+	* configure.ac: Added the configure option
+	--enable-quantum-library-names to enable that shared library name
+	includes quantum depth to allow shared libraries with different
+	quantum depths to co-exist in same directory (only one can be used
+	for development).
+
+2012-09-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (AdaptiveThresholdImage): New implementation
+	contributed by Roberto de Deus Barbosa Murta.  Executes in linear
+	time as threhold area is increased rather than being quadratic.
+
+2012-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c: Fix improper injection of XML headers as rendered
+	text.
+
+	* magick/render.c (DrawImage): Fix SourceForge issue 3499164
+	"Drawing of text fails if text starts with "," character".  Fix
+	SourceForge issue 3411492 "Certain SVGs hang GraphicsMagick".  Fix
+	SourceForge issue 1961000 "Could not print ',' via convert draw
+	text".
+
+2012-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (lite_font_stringwidth): Simply return zero.
+	Returning a computed string width was causing text placement
+	problems when testing with libwmf's fulltest.wmf.
+
+2012-08-31  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c: ReadOnePNGImage: sub-8-bit palette images were
+	getting unpacked twice; once by libpng via png_set_packing()
+	and again by coders/png.c in a switch() statement around line 2500,
+	resulting in horizontally stretched pixels.
+
+2012-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Include lzip as a distribution
+	format again.
+
+2012-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: BrowseDelegate now defaults to 'xdg-open', but if
+	it is not found, then configure will search for firefox,
+	google-chrome, mozilla (in that order).
+
+2012-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: For testing on MinGW, assume that Postscript is
+	available since we don't have a good way to check for that.
+
+	* scripts/tap-functions.shi (test_count): Always execute the test
+	program rather than skipping execution since we want to make sure
+	the test program fails correctly as well.
+
+	* coders/gif.c (DecodeImage): Add a log message for attempted LZW
+	string data table overflow.
+
+2012-08-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ConvolveImage): Allocate normalized convolution
+	kernel using cache-line aligned memory allocator.
+
+	* configure.ac: Remove support for legacy LZWDecodeDelegate and
+	LZWEncodeDelegate since these are not used any more.
+
+2012-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* scripts/tap-functions.shi: If a test declares that it needs
+	certain features, skip the test if required features are not
+	available.
+
+	* configure.ac: Build a supported features list and save to
+	common.shi script for use by test scripts.
+
+	* Makefile.am (LOG_COMPILER): Run Bourne-shell based TAP scripts
+	with the same shell $(SHELL) that configure selected for the
+	Makefile to use.
+
+2012-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Update to Automake 1.12.3.
+	Update test suite to use Automake TAP driver rather than legacy
+	tests.
+
+2012-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c (ExtractTileJPG): Add a trace of tile offset and size.
+
+2012-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c (ExtractTileJPG): Use a memory buffer for the JPEG
+	tile rather than a temporary file.
+
+2012-08-12  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+        * PerlMagick/t/input_jnx.jnx: Small JNX test file.
+
+2012-08-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: speedup.
+
+2012-08-10  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: changed malloc/free to MagickMalloc/MagickFree.
+
+2012-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c (ReadJNXImage): Add progress monitor support for
+	JNX.
+
+2012-08-06  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: Image cache is turned off to work-around memory
+	overflow.
+
+2012-08-05  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/jnx.c: Fixed.
+
+2012-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jnx.c: Add JNX coder for "Garmin proprietary Image
+	Format" (implementation by Jaroslav Fojtik) to the build.  Code is
+	not yet working properly at this time.
+
+2012-08-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Remove use of -Wl,-zlazyload under Solaris since
+	it seems to decrease the stability of C++ exceptions in x86-64
+	build and does not measurably improve runtimes.  Don't force use
+	of liblzma because libtiff is used.  User should always have
+	control.
+
+2012-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.c (MagickMallocAligned): Use RoundUpToAlignment()
+	macro to compute aligned pointer.
+
+	* magick/effect.c (EnhanceImage): Eliminate use of ugly Enhance
+	macro.  Only filter based on color channels (ignore opacity).
+
+2012-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h (MAGICK_CACHE_LINE_SIZE): Assume a cache line
+	size of 64 bytes except for on PowerPC which uses 128.
+
+	* magick/pixel_cache.c: Use aligned memory allocator to allocate
+	structures and buffers which might suffer from false cache line
+	sharing
+
+	* magick/memory.c (MagickMallocAligned): Also round up allocation
+	size to alignment.
+
+2012-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c, magick/random.c, magick/semaphore.c: Use
+	aligned memory allocator to align allocations which should be
+	aligned to cache line boundary.
+
+2012-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.h (MagickAllocateAlignedMemory): New macro to
+	allocate aligned memory.
+	(MagickFreeAlignedMemory): New macro to free aligned memory.
+
+	* magick/memory.c (MagickMallocAligned): New internal function to
+	allocate aligned memory.
+	(MagickFreeAligned): New internal function to free aligned memory.
+
+2012-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/common.h (MAGICK_ASSUME_ALIGNED): Add some GCC attribute
+	wrappers for useful features added by GCC 4.7.
+
+2012-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gif.c (ReadGIFImage): Try to be better about reporting
+	failure when ReadBlob() fails to return the requested number of
+	bytes.
+
+2012-06-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/benchmarks.rst: Strip the outdated benchmark results from
+	the benchmarks page.
+
+	* magick/command.c (ImportImageCommand): Status returned from the
+	command was inverted.
+
 2012-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Release GraphicsMagick 1.3.16

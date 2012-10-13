@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -436,8 +436,8 @@ DestroyThreadViewSet(ThreadViewSet *view_set)
             }
         }
       view_set->nviews=0;
-      MagickFreeMemory(view_set->views);
-      MagickFreeMemory(view_set);
+      MagickFreeAlignedMemory(view_set->views);
+      MagickFreeAlignedMemory(view_set);
     }
 }
 MagickExport ThreadViewSet *
@@ -452,12 +452,14 @@ AllocateThreadViewSet(Image *image,ExceptionInfo *exception)
   MagickPassFail
     status=MagickPass;
   
-  view_set=MagickAllocateMemory(ThreadViewSet *,sizeof(ThreadViewSet));
+  view_set=MagickAllocateAlignedMemory(ThreadViewSet *,MAGICK_CACHE_LINE_SIZE,
+				       sizeof(ThreadViewSet));
   if (view_set == (ThreadViewSet *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
   view_set->nviews=omp_get_max_threads();
-  view_set->views=MagickAllocateArray(ViewInfo *,view_set->nviews,sizeof(ViewInfo *));
+  view_set->views=MagickAllocateAlignedMemory(ViewInfo *,MAGICK_CACHE_LINE_SIZE,
+					      view_set->nviews*sizeof(ViewInfo *));
   if (view_set->views == (ViewInfo *) NULL)
     {
       ThrowException(exception,CacheError,UnableToAllocateCacheView,
@@ -1657,7 +1659,7 @@ CloseCacheView(ViewInfo *view)
       assert(view_info->nexus_info->signature == MagickSignature);
       DestroyCacheNexus(view_info->nexus_info);
       view_info->nexus_info=(NexusInfo *) NULL;
-      MagickFreeMemory(view_info);
+      MagickFreeAlignedMemory(view_info);
     }
 }
 
@@ -1740,7 +1742,7 @@ DestroyCacheInfo(Cache cache_info)
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy cache %.1024s",
                         cache_info->filename);
   cache_info->signature=0;
-  MagickFreeMemory(cache_info);
+  MagickFreeAlignedMemory(cache_info);
 }
 
 /*
@@ -1772,8 +1774,8 @@ DestroyCacheNexus(NexusInfo *nexus_info)
 {
   if (nexus_info != (NexusInfo *) NULL)
     {
-      MagickFreeMemory(nexus_info->staging);
-      MagickFreeMemory(nexus_info);
+      MagickFreeAlignedMemory(nexus_info->staging);
+      MagickFreeAlignedMemory(nexus_info);
     }
 }
 
@@ -1840,7 +1842,9 @@ GetCacheInfo(Cache *cache)
     *cache_info;
 
   assert(cache != (Cache*) NULL);
-  cache_info=MagickAllocateMemory(CacheInfo *,sizeof(CacheInfo));
+  cache_info=MagickAllocateAlignedMemory(CacheInfo *,
+					 MAGICK_CACHE_LINE_SIZE,
+					 sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheInfo);
@@ -2350,8 +2354,8 @@ AllocateCacheNexus(void)
   NexusInfo
     *nexus_info;
 
-  nexus_info=MagickAllocateMemory(NexusInfo *,Max(sizeof(NexusInfo),
-						  MAGICK_CACHE_LINE_SIZE));
+  nexus_info=MagickAllocateAlignedMemory(NexusInfo *,MAGICK_CACHE_LINE_SIZE,
+					 sizeof(NexusInfo));
   if (nexus_info != ((NexusInfo *) NULL))
     {
       (void) memset(nexus_info,0,sizeof(NexusInfo));
@@ -3208,7 +3212,8 @@ OpenCacheView(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  view=MagickAllocateMemory(View *,sizeof(View));
+  view=MagickAllocateAlignedMemory(View *,MAGICK_CACHE_LINE_SIZE,
+				   sizeof(View));
   if (view == (View *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheView);
@@ -4096,7 +4101,10 @@ SetNexus(const Image *image,const RectangleInfo *region,
        (nexus_info->staging_length < length)))
     {
       nexus_info->staging_length=0;
-      MagickReallocMemory(PixelPacket *,nexus_info->staging,length);
+      MagickFreeAlignedMemory(nexus_info->staging);
+      nexus_info->staging=MagickAllocateAlignedMemory(PixelPacket *,
+						      MAGICK_CACHE_LINE_SIZE,
+						      length);
       if (nexus_info->staging != (PixelPacket *) NULL)
 	{
 	  nexus_info->staging_length=length;

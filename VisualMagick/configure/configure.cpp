@@ -1,5 +1,14 @@
+//
+// Copyright (C) 2002-2012 GraphicsMagick Group
+//
+// This program is covered by multiple licenses, which are described in
+// Copyright.txt. You should have received a copy of Copyright.txt with this
+// package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+//
 // Configure.cpp : Defines the class behaviors for the application.
 //
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_NONSTDC_NO_WARNINGS
 
 #include "stdafx.h"
 #include "configure.h"
@@ -201,7 +210,7 @@ void LocalMakeLower(string &s)
   return;
 };
 
-int LocalFindNoCase( string &a, char *b, int startpos )
+int LocalFindNoCase( string &a, const char *b, int startpos )
 {
   string sa = a;
   LocalMakeLower(sa);
@@ -623,6 +632,7 @@ int CConfigureApp::load_environment_file(const char *inputfile, int runtime)
   return true;
 }
 
+// Process a utility
 void CConfigureApp::process_utility(
   const char *root, const char *filename, int runtime, int project_type)
 {
@@ -715,6 +725,14 @@ void CConfigureApp::process_utility(
       extra = "..\\tiff";
       add_includes(includes_list, extra, levels-2);
     }
+  // Includes for when building dcraw program
+  if (LocalFindNoCase(name,"dcraw",0) >= 0)
+    {
+      extra = "..\\jp2\\src\\libjasper\\include";
+      add_includes(includes_list, extra, levels-2);
+      extra = "..\\jpeg";
+      add_includes(includes_list, extra, levels-2);
+    }
 
 #ifdef _DEBUG
   debuglog  << "process_utility "
@@ -727,8 +745,7 @@ void CConfigureApp::process_utility(
             << "extn:" << extn.c_str() << endl;
 #endif
 
-  ConfigureProject *project = write_project_exe(
-                                                runtime,
+  ConfigureProject *project = write_project_exe(runtime,
                                                 project_type,
                                                 staging,
                                                 search,
@@ -746,8 +763,7 @@ void CConfigureApp::process_utility(
   string projectname;
   string pname;
   pname = prefix + name;
-  projectname = get_project_name(
-                                 EXEPROJECT,runtime,staging.substr(1),prefix,name);
+  projectname = get_project_name(EXEPROJECT,runtime,staging.substr(1),prefix,name);
   switch (runtime)
     {
     case MULTITHREADEDSTATIC:
@@ -763,9 +779,36 @@ void CConfigureApp::process_utility(
       workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
       if (!standaloneMode)
         {
-          workspace->write_project_dependency(project,"CORE_magick");
-          if (useX11Stubs)
-            workspace->write_project_dependency(project,"CORE_xlib");
+          // Utilities with no Magick library dependencies
+          static const char *non_magick_utils[] =
+            {
+              "dcraw",
+              "iptcutil",
+              "jasper",
+              "tiff",
+              (const char *) NULL
+            };
+
+          bool magick_deps = true;
+
+          int i;
+          for (i=0; non_magick_utils[i] != NULL; i++)
+            {
+              if (LocalFindNoCase(name,non_magick_utils[i],0) >= 0)
+                {
+                  magick_deps = false;
+                  break;
+                }
+            }
+
+          // Only add Magick dependencies for programs which should
+          // depend on it.
+          if (magick_deps)
+            {
+              workspace->write_project_dependency(project,"CORE_magick");
+              if (useX11Stubs)
+                workspace->write_project_dependency(project,"CORE_xlib");
+            }
           if (extn.compare("cpp") == 0)
             {
               workspace->write_project_dependency(project,"CORE_Magick++");
@@ -779,13 +822,21 @@ void CConfigureApp::process_utility(
             {
               workspace->write_project_dependency(project,"CORE_jp2");
             }
+          // Any utility built in 'jpeg' subdirectory depends on libjpeg
           if (LocalFindNoCase(name,"jpeg",0) >= 0)
             {
               workspace->write_project_dependency(project,"CORE_jpeg");
             }
+          // Any utility built in 'tiff' subdirectory depends on libtiff
           if (LocalFindNoCase(name,"tiff",0) >= 0)
             {
               workspace->write_project_dependency(project,"CORE_tiff");
+            }
+          // dcraw depends on jp2 and jpeg.  Eventually depends on lcms.
+          if (LocalFindNoCase(name,"dcraw",0) >= 0)
+            {
+              workspace->write_project_dependency(project,"CORE_jp2");
+              workspace->write_project_dependency(project,"CORE_jpeg");
             }
         }
       workspace->write_end_project(project);
@@ -876,6 +927,7 @@ void AddExtraLibs( string &name,string root,
     }
 }
 
+// Process a library
 void CConfigureApp::process_library( const char *root,
                                      const char *filename,
                                      int runtime,
@@ -991,19 +1043,23 @@ void CConfigureApp::process_library( const char *root,
                                  dll?DLLPROJECT:LIBPROJECT,runtime,staging.substr(1),prefix,name);
   if (dll && (runtime==MULTITHREADEDDLL))
     {
+      // Start the project library dependencies
       workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
+      // Core magick library optionally depends on xlib, and depends
+      // on zlib, bzlib, lcms, ttf, and libxml
       if (name.compare("magick") == 0)
         {
           if (useX11Stubs)
             workspace->write_project_dependency(project,"CORE_xlib");
           //workspace->write_project_dependency(project,"CORE_tiff");
-          workspace->write_project_dependency(project,"CORE_jpeg");
+          //workspace->write_project_dependency(project,"CORE_jpeg");
           workspace->write_project_dependency(project,"CORE_zlib");
           workspace->write_project_dependency(project,"CORE_bzlib");
           workspace->write_project_dependency(project,"CORE_lcms");
           workspace->write_project_dependency(project,"CORE_ttf");
           workspace->write_project_dependency(project,"CORE_libxml");
         }
+      // Coder modules (in general)
       if (name.compare("coders") == 0)
         {
           workspace->write_project_dependency(project,"CORE_zlib");
@@ -1020,59 +1076,72 @@ void CConfigureApp::process_library( const char *root,
             workspace->write_project_dependency(project,"CORE_xlib");
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // Filter modules
       if (name.compare("filters") == 0)
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // Magick++ library depends on core magick library
       if (name.compare("Magick++") == 0)
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // SDL
       if (name.compare("SDL") == 0)
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // CALS module depends on tiff
       if (name.compare("cals") == 0)
         {
           workspace->write_project_dependency(project,"CORE_tiff");
         }
+      // HDF module depends on zlib
       if (name.compare("hdf") == 0)
         {
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // PDF module depends on tiff and zlib
       if (name.compare("pdf") == 0)
         {
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // PS2 module depends on tiff and zlib
       if (name.compare("ps2") == 0)
         {
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // PS3 module depends on tiff and zlib
       if (name.compare("ps3") == 0)
         {
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // PNG module depends on zlib
       if (name.compare("png") == 0)
         {
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // TIFF module depends on jbig, jpeg, and zlib
       if (name.compare("tiff") == 0)
         {
 	  workspace->write_project_dependency(project,"CORE_jbig");
           workspace->write_project_dependency(project,"CORE_jpeg");
           workspace->write_project_dependency(project,"CORE_zlib");
         }
+      // Wand library depends on core magick library
       if (name.compare("wand") == 0)
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // Finish the project library dependencies
       workspace->write_end_project(project);
     }
   else
     {
+      // Empty library dependencies
       workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
       workspace->write_end_project(project);
     }
@@ -2940,7 +3009,15 @@ BOOL CConfigureApp::InitInstance()
       debuglog  << "dependency:" << dummy_project->name.c_str() << endl;
 #endif
       if (visualStudio7)
-        workspace->write_begin_project(dummy_project, "All", ".\\All\\All.vcproj");
+        {
+          // Copy All.vcproj.in to All.vcproj and force overwrite
+#ifdef _DEBUG
+          debuglog  << "copy:" << "..\\All\\All.vcproj.in" << " to " <<
+            "..\\All\\All.vcproj" << endl;
+#endif
+          CopyFile("..\\All\\All.vcproj.in","..\\All\\All.vcproj",FALSE);
+          workspace->write_begin_project(dummy_project, "All", ".\\All\\All.vcproj");
+        }
 
       waitdlg.Pumpit();
       process_project_replacements("..","*","*.in",NULL,OP_REPLACEFILES);
@@ -3328,7 +3405,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
                                    runtime, project_type, EXEPROJECT, 0);
 
    /* Nasty fix - MSVC cannot process correctly absolute paths - help it a little bit. */
-   int LibCount = lib_shared_list.size();
+   unsigned int LibCount = lib_shared_list.size();
    if(lib_loc.length()>=3)
    {
 	 if(isalpha(lib_loc[0]) && lib_loc[1]==':' && lib_loc[2]=='\\')

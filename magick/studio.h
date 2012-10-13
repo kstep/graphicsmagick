@@ -22,12 +22,6 @@ extern "C" {
 #undef HAVE_CONFIG_H
 
 /*
-  Allow configuration of cache line size.  If smaller than actual
-  cache line size, then performance may suffer.
-*/
-#define MAGICK_CACHE_LINE_SIZE 128
-
-/*
   Note that the WIN32 and WIN64 definitions are provided by the build
   configuration rather than the compiler.  Definitions available from
   the Windows compiler are _WIN32 and _WIN64.
@@ -50,6 +44,18 @@ extern "C" {
 #if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
+
+/*
+  Allow configuration of cache line size.  If smaller than actual cache line
+  size, then performance may suffer due to false cache line sharing between
+  threads.  Most CPUs have cache lines of 32 or 64 bytes.  IBM Power CPUs have
+  cache lines of 128 bytes.
+*/
+#if defined(MAGICK_TARGET_CPU) && (MAGICK_TARGET_CPU == powerpc)
+#  define MAGICK_CACHE_LINE_SIZE 128
+#else
+#  define MAGICK_CACHE_LINE_SIZE 64
+#endif
 
 /*
   Support library symbol prefixing
@@ -152,6 +158,9 @@ extern "C" {
 #  if defined(HAVE_SYS_RESOURCE_H)
 #    include <sys/resource.h>
 #  endif /* defined(HAVE_SYS_RESOURCE_H)  */
+#  if defined(HAVE_SYS_MMAN_H)
+#    include <sys/mman.h>
+#  endif /*  defined(HAVE_SYS_MMAN_H) */
 #  include <pwd.h>
 #endif
 

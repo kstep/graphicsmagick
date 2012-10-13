@@ -25,7 +25,7 @@ dnl OF THIS SOFTWARE.
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.64)
-AC_INIT([LibTIFF Software],[4.0.2],[tiff@lists.maptools.org],[tiff])
+AC_INIT([LibTIFF Software],[4.0.3],[tiff@lists.maptools.org],[tiff])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_LANG(C)
@@ -41,7 +41,7 @@ dnl Versioning.
 dnl Don't fill the ALPHA_VERSION field, if not applicable.
 LIBTIFF_MAJOR_VERSION=4
 LIBTIFF_MINOR_VERSION=0
-LIBTIFF_MICRO_VERSION=2
+LIBTIFF_MICRO_VERSION=3
 LIBTIFF_ALPHA_VERSION=
 LIBTIFF_VERSION=$LIBTIFF_MAJOR_VERSION.$LIBTIFF_MINOR_VERSION.$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
 dnl This will be used with the 'make release' target
@@ -76,9 +76,9 @@ dnl  5. If any interfaces have been added since the last public release, then
 dnl     increment age.
 dnl  6. If any interfaces have been removed since the last public release,
 dnl     then set age to 0.                                
-LIBTIFF_CURRENT=6
+LIBTIFF_CURRENT=7
 LIBTIFF_REVISION=0
-LIBTIFF_AGE=1
+LIBTIFF_AGE=2
 LIBTIFF_VERSION_INFO=$LIBTIFF_CURRENT:$LIBTIFF_REVISION:$LIBTIFF_AGE
 
 # This is a special hack for OpenBSD and MirOS systems. The dynamic linker
@@ -153,9 +153,6 @@ LT_LANG([C++])
 
 # Enable support for silent build rules
 AM_SILENT_RULES
-
-dnl Checks for libraries.
-AC_CHECK_LIB([c], [main])
 
 dnl We don't need to add math library to all targets
 case "${host_os}" in
@@ -813,10 +810,17 @@ dnl ---------------------------------------------------------------------------
 
 HAVE_OPENGL=no
 
+
 AC_PATH_XTRA
 
+dnl AX_CHECK_GL sets GL_CFLAGS & GL_LIBS.  Also PTHREAD_LIBS,
+dnl PTHREAD_CFLAGS, & PTHREAD_CC as a side-effect
 AX_CHECK_GL
+
+dnl AX_CHECK_GLU sets GLU_CFLAGS & GLU_LIBS
 AX_CHECK_GLU
+
+dnl AX_CHECK_GLUT sets GLUT_CFLAGS & GLUT_LIBS
 AX_CHECK_GLUT
 
 if test "$no_x" != "yes" -a "$no_gl" != "yes" \

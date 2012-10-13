@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -292,9 +292,9 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Allocate semaphore.
   */
-  semaphore_info=MagickAllocateMemory(SemaphoreInfo *,
-				      Max(sizeof(SemaphoreInfo),
-					  MAGICK_CACHE_LINE_SIZE));
+  semaphore_info=MagickAllocateAlignedMemory(SemaphoreInfo *,
+					     MAGICK_CACHE_LINE_SIZE,
+					     sizeof(SemaphoreInfo));
   if (semaphore_info == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateSemaphoreInfo);
@@ -418,7 +418,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   (void) memset((void *) *semaphore_info,0xbf,sizeof(SemaphoreInfo));
-  MagickFreeMemory((*semaphore_info));
+  MagickFreeAlignedMemory((*semaphore_info));
 #if defined(USE_POSIX_THREADS)
   PTHREAD_MUTEX_UNLOCK(&semaphore_mutex);
 #endif

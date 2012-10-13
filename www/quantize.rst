@@ -1,3 +1,7 @@
+.. -*- mode: rst -*-
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
 =================================
 GraphicsMagick Color Quantization
 =================================

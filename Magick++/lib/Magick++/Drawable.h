@@ -46,17 +46,24 @@ namespace Magick
   class MagickDLLDecl Coordinate
   {
   public:
+
+    // Default Constructor
     Coordinate ( void )
       : _x(0),
         _y(0)
       { }
+
+    // Constructor, setting first & second
     Coordinate ( double x_, double y_ )
       : _x(x_),
         _y(y_)
       { }
+
+    // Destructor
     virtual ~Coordinate ()
       { }
 
+    // x coordinate member
     void   x ( double x_ )
       {
         _x = x_;
@@ -66,6 +73,7 @@ namespace Magick
         return _x;
       }
 
+    // y coordinate member
     void   y ( double y_ )
       {
         _y = y_;
@@ -2120,8 +2128,10 @@ private:
 class MagickDLLDecl PathArcArgs
 {
 public:
+  // Default constructor
   PathArcArgs( void );
 
+  // Path arc argument
   PathArcArgs( double radiusX_, double radiusY_,
                double xAxisRotation_, bool largeArcFlag_,
                bool sweepFlag_, double x_, double y_ );
@@ -2506,11 +2516,14 @@ private:
 class MagickDLLDecl PathQuadraticCurvetoArgs
 {
 public:
+  // Default constructor
   PathQuadraticCurvetoArgs( void );
 
+  // Parameterized constructor
   PathQuadraticCurvetoArgs( double x1_, double y1_,
                             double x_, double y_ );
 
+  // Copy constructor
   PathQuadraticCurvetoArgs( const PathQuadraticCurvetoArgs &original_ );
 
   ~PathQuadraticCurvetoArgs ( void );

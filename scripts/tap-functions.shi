@@ -1,0 +1,109 @@
+# -*- shell-script -*-
+#
+# Copyright (C) 2012 GraphicsMagick Group
+#
+# TAP-test implementation functions specific to GraphicsMagick.
+#
+test_count=0
+
+# Populate a set of shell variables with a variable per feature
+# This is used to implement a poor-man's hash map.
+for feature in ${MAGICK_FEATURES}
+do
+    eval MAGICK_FEATURE_${feature}=yes
+done
+
+# Report the number of TAP tests we will subsequently run
+#
+# Usage:
+#   test_plan_fn integer
+test_plan_fn ()
+{
+    set +x
+    tests_planned=$1
+    echo "1..${tests_planned}"
+    set -x
+}
+
+# Report TAP test result and increment current test count
+#
+# Usage:
+#   test_result_fn result description
+test_result_fn ()
+{
+    set +x
+    test_result=$1
+    shift
+    #test_count=$(($test_count + 1))
+    test_count=`expr $test_count + 1`
+    test_output="${test_result} ${test_count}"
+    if test x"$*" != x
+    then
+        test_output="${test_output} - $*"
+    fi
+    printf '%s\n' "${test_output}"
+    set -x
+}
+
+# Test a simple command where pass/fail depends on command exit status
+#
+# Usage:
+#   test_command_fn description [ -F feat1,feat2,...] command
+test_command_fn ()
+{
+    set +x
+    test_description=$1
+    shift
+
+    # Parse any feature dependency specification (-F 'feat1 feat2 ...'
+    test_feature_spec=''
+    while test $# -gt 0
+    do
+        case $1 in
+            -F)
+                test_feature_spec=$2
+                shift
+                ;;
+            *)
+                break
+                ;;
+        esac
+        shift
+    done
+
+    missing=''
+    for feature in ${test_feature_spec}
+    do
+        # Check if required feature is supported
+        if eval test \""\$MAGICK_FEATURE_${feature}"\" != yes
+        then
+            if test "${missing}x" = 'x'
+            then
+                missing=${feature}
+            else
+                missing="${missing} ${feature}"
+            fi
+        fi
+    done
+
+    # Determine if we expect this test to fail due to missing
+    # dependencies.
+    diagnosis=
+    if test "${missing}x" != 'x'
+    then
+        xfail='yes'
+        diagnosis=" # SKIP requires ${missing} support"
+    else
+        xfail='no'
+        diagnosis=
+    fi
+
+    # Execute the test and determine execution status
+    ("$@") && fail='no' || fail='yes'
+
+    test "${xfail}" = "${fail}" && test_result='ok' || test_result='not ok'
+
+    # Report results
+    test_result_fn "${test_result}" "${test_description}${diagnosis}"
+    set -x
+}

@@ -1,3 +1,4 @@
+.. -*- mode: rst -*-
  
 Items large and small which remain to be worked on.
 See website for "wish list".

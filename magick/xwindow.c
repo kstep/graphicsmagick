@@ -3598,7 +3598,9 @@ MagickXGetResourceInfo(XrmDatabase database,const char *client_name,
       MagickError(OptionError,UnrecognizedGravityType,resource_value);
       resource_info->gravity=CenterGravity;
     }
-  (void) getcwd(resource_info->home_directory,MaxTextExtent-1);
+  if (getcwd(resource_info->home_directory,MaxTextExtent-1) == NULL)
+    MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
+                     NULL);
   resource_info->icon_geometry=MagickXGetResourceClass(database,client_name,
     (char *) "iconGeometry",(char *) NULL);
   resource_value=MagickXGetResourceClass(database,client_name,(char *) "iconic",

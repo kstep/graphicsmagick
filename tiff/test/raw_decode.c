@@ -1,4 +1,4 @@
-/* $Id: raw_decode.c,v 1.1 2012-06-01 21:04:22 fwarmerdam Exp $ */
+/* $Id: raw_decode.c,v 1.4 2012-07-06 17:05:16 bfriesen Exp $ */
 
 /*
  * Copyright (c) 2012, Frank Warmerdam <warmerdam@pobox.com>
@@ -42,6 +42,8 @@
 
 #include "tiffio.h"
 
+#include "jpeglib.h" /* Needed for JPEG_LIB_VERSION */
+
 static unsigned char cluster_0[] = { 0, 0, 2, 0, 138, 139 };
 static unsigned char cluster_64[] = { 0, 0, 9, 6, 134, 119 };
 static unsigned char cluster_128[] = { 44, 40, 63, 59, 230, 95 };
@@ -82,18 +84,20 @@ static int check_rgb_pixel( int pixel, int red, int green, int blue, unsigned ch
 	return 1;
 }
 
-static int check_rgba_pixel( int pixel, int red, int green, int blue, int alpha, unsigned char *buffer ) {
+static int check_rgba_pixel( int pixel, int red, int green, int blue, int alpha, uint32 *buffer ) {
 	/* RGBA images are upside down - adjust for normal ordering */
 	int adjusted_pixel = pixel % 128 + (127 - (pixel/128)) * 128;
-	unsigned char *rgba = buffer + 4 * adjusted_pixel;
-	
-	if( rgba[0] == red && rgba[1] == green && rgba[2] == blue && rgba[3] == alpha ) {
+	uint32 rgba = buffer[adjusted_pixel];
+
+	if( TIFFGetR(rgba) == (uint32) red && TIFFGetG(rgba) == (uint32) green &&
+	    TIFFGetB(rgba) == (uint32) blue && TIFFGetA(rgba) == (uint32) alpha ) {
 		return 0;
 	}
 
 	fprintf( stderr, "Pixel %d did not match expected results.\n", pixel );
 	fprintf( stderr, "Expect: %3d %3d %3d %3d\n", red, green, blue, alpha );
-	fprintf( stderr, "   Got: %3d %3d %3d %3d\n", rgba[0], rgba[1], rgba[2], rgba[3] );
+	fprintf( stderr, "   Got: %3d %3d %3d %3d\n",
+		 TIFFGetR(rgba), TIFFGetG(rgba), TIFFGetB(rgba), TIFFGetA(rgba) );
 	return 1;
 }
 
@@ -101,14 +105,29 @@ int
 main(int argc, char **argv)
 {
 	TIFF		*tif;
-	static const char *srcfile = "images/quad-tile.jpg.tiff";
+	static const char *srcfilerel = "images/quad-tile.jpg.tiff";
+	char *srcdir = NULL;
+	char srcfile[1024];
 	unsigned short h, v;
 	int status;
 	unsigned char *buffer;
+	uint32 *rgba_buffer;
 	tsize_t sz, szout;
+	unsigned int pixel_status = 0;
 
         (void) argc;
         (void) argv;
+
+	if ((srcdir = getenv("srcdir")) == NULL) {
+		srcdir = ".";
+	}
+	if ((strlen(srcdir) + 1 + strlen(srcfilerel)) >= sizeof(srcfile)) {
+		fprintf( stderr, "srcdir too long %s\n", srcdir);
+		exit( 1 );
+	}
+	strcpy(srcfile,srcdir);
+	strcat(srcfile,"/");
+	strcat(srcfile,srcfilerel);
 
 	tif = TIFFOpen(srcfile,"r");
 	if ( tif == NULL ) {
@@ -172,11 +191,15 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	if (check_rgb_pixel( 0, 15, 0, 18, buffer )
-	    || check_rgb_pixel( 64, 0, 0, 2, buffer )
-	    || check_rgb_pixel( 512, 6, 36, 182, buffer ) ) {
-		exit(1);
-	}	
+#if JPEG_LIB_VERSION >= 70
+	pixel_status |= check_rgb_pixel( 0, 18, 0, 41, buffer );
+	pixel_status |= check_rgb_pixel( 64, 0, 0, 0, buffer );
+	pixel_status |= check_rgb_pixel( 512, 5, 34, 196, buffer );
+#else
+	pixel_status |= check_rgb_pixel( 0, 15, 0, 18, buffer );
+	pixel_status |= check_rgb_pixel( 64, 0, 0, 2, buffer );
+	pixel_status |= check_rgb_pixel( 512, 6, 36, 182, buffer );
+#endif
 
 	free( buffer );
 
@@ -187,10 +210,10 @@ main(int argc, char **argv)
 	 */
 	tif = TIFFOpen(srcfile,"r");
 	
-	sz = 128 * 128 * 4;
-	buffer = (unsigned char *) malloc(sz);
+	sz = 128 * 128 * sizeof(uint32);
+	rgba_buffer = (uint32 *) malloc(sz);
 	
-	if (!TIFFReadRGBATile( tif, 1*128, 2*128, (uint32 *) buffer )) {
+	if (!TIFFReadRGBATile( tif, 1*128, 2*128, rgba_buffer )) {
 		fprintf( stderr, "TIFFReadRGBATile() returned failure code.\n" );
 		return 1;
 	}
@@ -201,16 +224,31 @@ main(int argc, char **argv)
 	 * accomplish it from the YCbCr subsampled buffer ourselves in which
 	 * case the results may be subtly different but similar.
 	 */
-	if (check_rgba_pixel( 0, 15, 0, 18, 255, buffer )
-	    || check_rgba_pixel( 64, 0, 0, 2, 255, buffer )
-	    || check_rgba_pixel( 512, 6, 36, 182, 255, buffer ) ) {
-		exit(1);
-	}	
+#if JPEG_LIB_VERSION >= 70
+	pixel_status |= check_rgba_pixel( 0, 18, 0, 41, 255, rgba_buffer );
+	pixel_status |= check_rgba_pixel( 64, 0, 0, 0, 255, rgba_buffer );
+	pixel_status |= check_rgba_pixel( 512, 5, 34, 196, 255, rgba_buffer );
+#else
+	pixel_status |= check_rgba_pixel( 0, 15, 0, 18, 255, rgba_buffer );
+	pixel_status |= check_rgba_pixel( 64, 0, 0, 2, 255, rgba_buffer );
+	pixel_status |= check_rgba_pixel( 512, 6, 36, 182, 255, rgba_buffer );
+#endif
 
-	free( buffer );
+	free( rgba_buffer );
 	TIFFClose(tif);
+
+	if (pixel_status) {
+		exit(1);
+	}
 	
 	exit( 0 );
 }
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

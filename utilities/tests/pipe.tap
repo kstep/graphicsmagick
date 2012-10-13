@@ -1,0 +1,36 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test I/O using pipes
+# Note that running a test command containing a pipe blows up
+# test_command_fn so we will only check final status.
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 8
+
+${GM} convert ${CONVERT_FLAGS} - -  < ${SUNRISE_MIFF} | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert piped to identify (implicit MIFF)' test $?
+
+${GM} convert ${CONVERT_FLAGS} MIFF:- -  < ${SUNRISE_MIFF} | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert piped to identify (explicit MIFF)' test $?
+
+${GM} convert ${CONVERT_FLAGS} MIFF:- PNM:-  < ${SUNRISE_MIFF} | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert piped to identify (explicit MIFF to explicit PNM)' test $?
+
+${GM} convert ${CONVERT_FLAGS} - PNM:-  < ${SUNRISE_MIFF} | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert piped to identify (explicit PNM)' test $?
+
+${GM} convert ${CONVERT_FLAGS} - 'null:' < ${SUNRISE_MIFF}
+test_command_fn 'Convert implicit MIFF stdin to null:' test $?
+
+${GM} convert ${CONVERT_FLAGS} MIFF:- 'null:' < ${SUNRISE_MIFF}#!/bin/sh
+test_command_fn 'Convert explicit MIFF stdin to null:' test $?
+
+${GM} convert ${CONVERT_FLAGS} ${SUNRISE_MIFF} - | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert MIFF piped to identify -format' test $?
+
+${GM} convert ${CONVERT_FLAGS} ${SUNRISE_MIFF} PPM:- | ${GM} identify -format '%m %wx%h %r %q-bit' -
+test_command_fn 'Convert PNM piped to identify -format' test $?
+
+:

@@ -91,25 +91,67 @@
 %
 */
 #define AdaptiveThresholdImageText "[%s] Adaptive threshold..."
-MagickExport Image *AdaptiveThresholdImage(const Image *image,
-                                           const unsigned long width,
-                                           const unsigned long height,
-                                           const double offset,
-                                           ExceptionInfo *exception)
+/* Macros for accessing dynamic preprocess buffer */
+#define PRE(X,Y) ((Y + height + 2) % (height + 2)) * (image->columns + (width << 1)) + X
+
+MagickExport Image *AdaptiveThresholdImage(const Image * image,
+					   const unsigned long width,
+					   const unsigned long height,
+					   const double offset,
+					   ExceptionInfo * exception)
 {
+  const PixelPacket * restrict
+    p = (const PixelPacket *) NULL;
 
   Image
-    *threshold_image;
+    * restrict threshold_image;
 
-  long
+  LongPixelPacket
+    * restrict dyn_process;
+
+  const unsigned long
+    local_area = width * height;
+
+  unsigned long
+    int i;
+
+  /*
+   *  allocates pre processing buffer,
+   *
+   *   (window height + 2) * (image width + 2 * width), filled with zero
+   */
+  const unsigned long
+    dyn_process_size = (height + 2) * (image->columns + (width << 1));
+
+  unsigned long
+    row_count = 0UL;
+
+  unsigned long
+    x,
     y;
+
+  const LongPixelPacket
+    long_zero = { 0UL, 0UL, 0UL, 0UL };
+
+  const long
+    long_offset = (long) (offset*MaxMap/MaxRGB + 0.5);
+
+  const MagickBool
+    is_monochrome = image->is_monochrome,
+    is_grayscale = image->is_grayscale;
 
   MagickPassFail
     status;
 
   const MagickBool
-    is_monochrome = image->is_monochrome,
-    is_grayscale = image->is_grayscale;
+    matte = ((image->matte)
+             || (image->colorspace == CMYKColorspace));
+
+  unsigned long
+    overflow_mask = 0x1UL << (sizeof(dyn_process[0].red)*8-1);
+
+  MagickBool
+    overflow_eminent;
 
   /*
     Initialize thresholded image attributes.
@@ -118,189 +160,293 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   if ((image->columns < width) || (image->rows < height))
-    ThrowImageException3(OptionError,UnableToThresholdImage,
-                         ImageSmallerThanRadius);
-  if (width*height > (unsigned long) ULONG_MAX/ScaleQuantumToMap(MaxRGB))
-    {
-      ThrowImageException3(OptionError,UnableToThresholdImage,
-			   RegionAreaExceedsLimit);
-    }
-  threshold_image=CloneImage(image,0,0,True,exception);
+    ThrowImageException3(OptionError, UnableToThresholdImage,
+			 ImageSmallerThanRadius);
+
+  threshold_image = CloneImage(image, 0, 0, MagickTrue, exception);
   if (threshold_image == (Image *) NULL)
-    return((Image *) NULL);
+    return ((Image *) NULL);
   if (is_monochrome)
     return threshold_image;
-  (void) SetImageType(threshold_image,TrueColorType);
-  status=MagickPass;
+  (void) SetImageType(threshold_image, TrueColorType);
+  status = MagickPass;
+
+#if 0
+  fprintf(stderr,"overflow_mask=%lx\n",overflow_mask);
+  fprintf(stderr,"overflow pixels=%lu\n",(((~0UL) >> 1)/MaxMap));
+#endif
   /*
     Adaptive threshold image.
   */
-  {
-    unsigned long
-      row_count=0;
+  dyn_process = MagickAllocateArray(LongPixelPacket *,dyn_process_size,
+                                    sizeof(LongPixelPacket));
+  if (dyn_process == (LongPixelPacket *) NULL)
+    {
+      DestroyImage(threshold_image);
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                           UnableToThresholdImage);
+    }
+  (void) memset(dyn_process,0,dyn_process_size*sizeof(LongPixelPacket));
 
-    const LongPixelPacket
-      long_zero = { 0, 0, 0, 0 };
+  overflow_eminent = MagickFalse;
 
-    const MagickBool
-      matte=((threshold_image->matte) || (threshold_image->colorspace == CMYKColorspace));
+  for (y = 0; y < (image->rows + height/2 + height + 1); y++)
+    {
+      PixelPacket
+        *restrict q = ((PixelPacket *) NULL);
 
-    const long
-      long_offset = offset + 0.5;
-
-    const unsigned long
-      dimensions = width*height;
-
-#if defined(HAVE_OPENMP)
-#  if defined(TUNE_OPENMP)
-#    pragma omp parallel for schedule(runtime) shared(row_count, status)
-#  else
-#    if defined(USE_STATIC_SCHEDULING_ONLY)
-#      pragma omp parallel for schedule(static) shared(row_count, status)
-#    else
-#      pragma omp parallel for schedule(guided) shared(row_count, status)
-#    endif
-#  endif
-#endif
-    for (y=0; y < (long) image->rows; y++)
-      {
-        const PixelPacket
-          * restrict p;
-
-        PixelPacket
-          * restrict q;
-
-        long
-          x;
-
-        MagickBool
-          thread_status;
-
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_AdaptiveThresholdImage)
-#endif
-        thread_status=status;
-        if (thread_status == MagickFail)
-          continue;
-
-        p=AcquireImagePixels(image,-(long) width/2,y-height/2,
-                             image->columns+width,height,exception);
-        q=SetImagePixelsEx(threshold_image,0,y,threshold_image->columns,1,exception);
-        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          thread_status=MagickFail;
-
-        if (thread_status != MagickFail)
-          {
-	    for (x=0; x < (long) image->columns; x++)
-	      {
-		LongPixelPacket
-		  long_sum;
-
-		const PixelPacket
-		  * restrict r;
-
-		unsigned long
-		  u,
-		  v;
-
-		r=p;
-		long_sum=long_zero;
-
-		if (is_grayscale && !matte)
-		  {
-		    /* G */
-		    for (v=0; v < height; v++)
-		      {
-			for (u=0; u < width; u++)
-			  long_sum.red += ScaleQuantumToMap(r[u].red);
-			r+=image->columns+width;
-		      }
-		  }
-		else if (!matte)
-		  {
-		    /* RGB */
-		    for (v=0; v < height; v++)
-		      {
-			for (u=0; u < width; u++)
-			  {
-			    long_sum.red += ScaleQuantumToMap(r[u].red);
-			    long_sum.green += ScaleQuantumToMap(r[u].green);
-			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
-			  }
-			r+=image->columns+width;
-		      }
-		  }
-		else
-		  {
-		    /* RGBA */
-		    for (v=0; v < height; v++)
-		      {
-			for (u=0; u < width; u++)
-			  {
-			    long_sum.red += ScaleQuantumToMap(r[u].red);
-			    long_sum.green += ScaleQuantumToMap(r[u].green);
-			    long_sum.blue += ScaleQuantumToMap(r[u].blue);
-			    long_sum.opacity += ScaleQuantumToMap(r[u].opacity);
-			  }
-			r+=image->columns+width;
-		      }
-		  }
-
-		long_sum.red = ScaleMapToQuantum(((long) long_sum.red/dimensions))+long_offset;
-		if (!is_grayscale)
-		  {
-		    long_sum.green = ScaleMapToQuantum(((long) long_sum.green/dimensions))+long_offset;
-		    long_sum.blue = ScaleMapToQuantum(((long) long_sum.blue/dimensions))+long_offset;
-		  }
-		if (matte)
-		  long_sum.opacity = ScaleMapToQuantum(((long) long_sum.opacity/dimensions))+long_offset;
-
-		if (is_grayscale)
-		  {
-		    q->red=q->green=q->blue=(q->red <= long_sum.red ? 0 : MaxRGB);
-		  }
-		else
-		  {
-		    q->red=(q->red <= long_sum.red ? 0 : MaxRGB);
-		    q->green=(q->green <= long_sum.green ? 0 : MaxRGB);
-		    q->blue=(q->blue <= long_sum.blue ? 0 : MaxRGB);
-		  }
-		if (matte)
-		  q->opacity=(q->opacity <= long_sum.opacity ? 0 : MaxRGB);
-		p++;
-		q++;
-	      }
-            if (!SyncImagePixelsEx(threshold_image,exception))
-              thread_status=MagickFail;
-          }
-#if defined(HAVE_OPENMP)
-#  pragma omp critical (GM_AdaptiveThresholdImage)
-#endif
+      /*
+       * for each window height + 2 rows, redefine reading area for
+       * preprocess and avoid sum overflow
+       */
+      if (PRE(0, y) == 0)
         {
-          row_count++;
-          if (QuantumTick(row_count,image->rows))
-            if (!MagickMonitorFormatted(row_count,image->rows,exception,
-                                        AdaptiveThresholdImageText,
-                                        image->filename))
-              thread_status=MagickFail;
-          
-          if (thread_status == MagickFail)
-            status=MagickFail;
+          p = AcquireImagePixels(image, -(long) width, (long) y - (long) height,
+                                 image->columns + (width << 1), height + 2,
+                                 exception);
+
+          if (p == (const PixelPacket *) NULL)
+            {
+              status = MagickFail;
+              break;
+            }
+
+          /*
+           * this is the code for sum overflow avoidance in
+           * preprocessing it's only used for really large images.
+           * and it can be highly optimized.  I couldn't properly
+           * test it this code...
+           */
+          if (overflow_eminent)
+            {
+              LongPixelPacket
+                min_sum;
+
+              if (image->logging)
+                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                      "LAT: overflow handling activated "
+                                      "(y=%lu)!",y);
+              min_sum.red = dyn_process[0].red;
+              min_sum.green = dyn_process[0].green;
+              min_sum.blue = dyn_process[0].blue;
+              min_sum.opacity = dyn_process[0].opacity;
+
+              for (i = 0; i < dyn_process_size; i++)
+                {
+                  dyn_process[i].red -= min_sum.red;
+                  dyn_process[i].green -= min_sum.green;
+                  dyn_process[i].blue -= min_sum.blue;
+                  dyn_process[i].opacity -= min_sum.opacity;
+                }
+              overflow_eminent = MagickFalse;
+            }
+        } /* if (PRE(0, y) == 0) */
+
+      /* load line for writing */
+      if (y > (height/2 + height))
+        {
+          q = GetImagePixelsEx(threshold_image, 0, y - height/2 - height - 1,
+                               threshold_image->columns, 1, exception);
+
+          if (q == (PixelPacket *) NULL)
+            {
+              status = MagickFail;
+              break;
+            }
         }
-      }
-  }
+
+      for (x = 2; x < (image->columns + (width << 1)); x++)
+        {
+          LongPixelPacket * restrict current_pre;
+
+          /* preprocess (x,y) */
+          current_pre = &dyn_process[PRE(x, y)];
+
+          /* red / gray */
+          current_pre->red =
+            ScaleQuantumToMap(p[PRE(x, y)].red) +
+            dyn_process[PRE(x, y - 1)].red +
+            dyn_process[PRE(x - 1, y)].red -
+            dyn_process[PRE(x - 1, y - 1)].red;
+          overflow_eminent |= (current_pre->red & overflow_mask);
+
+          if (!is_grayscale)
+            {
+              /* green */
+              current_pre->green =
+                ScaleQuantumToMap(p[PRE(x, y)].green) +
+                dyn_process[PRE(x, y - 1)].green +
+                dyn_process[PRE(x - 1, y)].green -
+                dyn_process[PRE(x - 1, y - 1)].green;
+              overflow_eminent |= (current_pre->green & overflow_mask);
+
+              /* blue */
+              current_pre->blue =
+                ScaleQuantumToMap(p[PRE(x, y)].blue) +
+                dyn_process[PRE(x, y - 1)].blue +
+                dyn_process[PRE(x - 1, y)].blue -
+                dyn_process[PRE(x - 1, y - 1)].blue;
+              overflow_eminent |= (current_pre->blue & overflow_mask);
+            }
+          if (matte)
+            {
+              /* opacity */
+              current_pre->opacity =
+                ScaleQuantumToMap(p[PRE(x, y)].opacity) +
+                dyn_process[PRE(x, y - 1)].opacity +
+                dyn_process[PRE(x - 1, y)].opacity -
+                dyn_process[PRE(x - 1, y - 1)].opacity;
+              overflow_eminent |= (current_pre->opacity & overflow_mask);
+            }
+          /* END preprocess for (x,y) */
+
+          /*
+           * start computing threshold mean, with the
+           * pre-computed data and only for pixels inside valid
+           * domain
+           */
+          if ((y > (height/2 + height)) && (x >= width) &&
+              (x < (image->columns + width)))
+            {
+              /* Left, Right, Upper, Bottom coord. to calculate the
+                 window's sum */
+              long
+                L,
+                R,
+                U,
+                B;
+
+              LongPixelPacket
+                long_sum;
+
+              L = x - width/2 - (width & 1);	/* if is odd, subtract 1... */
+              R = x + width/2;
+              U = y - height - 1;
+              B = y - 1;
+
+              long_sum = long_zero;
+
+              if (L >= 0)
+                {
+                  long_sum.red += dyn_process[PRE(L, U)].red;
+                  long_sum.red -= dyn_process[PRE(L, B)].red;
+                }
+
+              long_sum.red += dyn_process[PRE(R, B)].red;
+              long_sum.red -= dyn_process[PRE(R, U)].red;
+              if (!is_grayscale)
+                {
+                  if (L >= 0)
+                    {
+                      long_sum.green += dyn_process[PRE(L, U)].green;
+                      long_sum.green -= dyn_process[PRE(L, B)].green;
+                      long_sum.blue += dyn_process[PRE(L, U)].blue;
+                      long_sum.blue -= dyn_process[PRE(L, B)].blue;
+                    }
+
+                  long_sum.green += dyn_process[PRE(R, B)].green;
+                  long_sum.green -= dyn_process[PRE(R, U)].green;
+                  long_sum.blue += dyn_process[PRE(R, B)].blue;
+                  long_sum.blue -= dyn_process[PRE(R, U)].blue;
+                }
+              if (matte)
+                {
+                  if (L >= 0)
+                    {
+                      long_sum.opacity += dyn_process[PRE(L, U)].opacity;
+                      long_sum.opacity -= dyn_process[PRE(L, B)].opacity;
+                    }
+
+                  long_sum.opacity += dyn_process[PRE(R, B)].opacity;
+                  long_sum.opacity -= dyn_process[PRE(R, U)].opacity;
+                }
+
+              /*
+               * Avoid overflow at mean.  We were able to do
+               * this by using some bitwise operations but there
+               * was no speedup and the code get pretty hard to
+               * read...
+               */
+              if ((long) (long_sum.red / local_area) + long_offset > (long) MaxMap)
+                long_sum.red = MaxMap;
+              else if ((long) (long_sum.red / local_area) + long_offset < (long) 0L)
+                long_sum.red = 0UL;
+              else
+                long_sum.red = ((long) (long_sum.red / local_area)) + long_offset;
+
+              /* grayscale and red */
+              q[x - width].red = (ScaleQuantumToMap(q[x - width].red) <= long_sum.red ? 0U : MaxRGB);
+
+              if (!is_grayscale)
+                {
+                  if ((long) (long_sum.green / local_area) + long_offset > (long) MaxMap)
+                    long_sum.green = MaxMap;
+                  else if ((long) (long_sum.green / local_area) + long_offset < (long) 0L)
+                    long_sum.green = 0UL;
+                  else
+                    long_sum.green = ((long) (long_sum.green / local_area)) + long_offset;
+
+                  if ((long) (long_sum.blue / local_area) + long_offset > (long) MaxMap)
+                    long_sum.blue = MaxMap;
+                  else if ((long) (long_sum.blue / local_area) + long_offset < (long) 0L)
+                    long_sum.blue = 0UL;
+                  else
+                    long_sum.blue = ((long) (long_sum.blue / local_area)) + long_offset;
+
+                  q[x - width].green = (ScaleQuantumToMap(q[x - width].green) <= long_sum.green ? 0U : MaxRGB);
+                  q[x - width].blue = (ScaleQuantumToMap(q[x - width].blue) <= long_sum.blue ? 0U : MaxRGB);
+
+                }
+              if (matte)
+                {
+                  if ((long) (long_sum.opacity / local_area) + long_offset > (long) MaxMap)
+                    long_sum.opacity = MaxMap;
+                  else if ((long) (long_sum.opacity / local_area) + long_offset < (long) 0)
+                    long_sum.opacity = 0UL;
+                  else
+                    long_sum.opacity = (long_sum.opacity / local_area) + long_offset;
+
+                  q[x - width].opacity =
+                    (ScaleQuantumToMap(q[x - width].opacity) <= long_sum.opacity ? 0U : MaxRGB);
+                }
+
+              if (is_grayscale)
+                q[x - width].green = q[x - width].blue = q[x - width].red;
+            } /* if (y ... */
+        } /* for (x ... */
+      if (q != (const PixelPacket *) NULL)
+        {
+          if (!SyncImagePixelsEx(threshold_image, exception))
+            {
+              status = MagickFail;
+              break;
+            }
+        }
+      row_count++;
+      if (QuantumTick(row_count, image->rows))
+        if (!MagickMonitorFormatted(row_count, image->rows, exception,
+                                    AdaptiveThresholdImageText, image->filename))
+          {
+            status = MagickFail;
+            break;
+          }
+    } /* for (y ... */
+
+  MagickFreeMemory(dyn_process);
+
   if (MagickFail == status)
     {
       DestroyImage(threshold_image);
-      threshold_image=(Image *) NULL;
+      threshold_image = (Image *) NULL;
     }
-  if (is_grayscale)
+  else if (is_grayscale)
     {
-      threshold_image->is_monochrome=MagickTrue;
-      threshold_image->is_grayscale=MagickTrue;
+      threshold_image->is_monochrome = MagickTrue;
+      threshold_image->is_grayscale = MagickTrue;
     }
-  return(threshold_image);
+  return (threshold_image);
 }
 
 /*
@@ -1178,7 +1324,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     register long
       i;
 
-    normal_kernel=MagickAllocateMemory(float_quantum_t *,width*width*sizeof(float_quantum_t));
+    normal_kernel=MagickAllocateAlignedMemory(float_quantum_t *,
+                                              MAGICK_CACHE_LINE_SIZE,
+                                              width*width*sizeof(float_quantum_t));
     if (normal_kernel == (float_quantum_t *) NULL)
       {
         DestroyImage(convolve_image);
@@ -1388,7 +1536,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         }
       }
   }
-  MagickFreeMemory(normal_kernel);
+  MagickFreeAlignedMemory(normal_kernel);
   if (MagickFail == status)
     {
       DestroyImage(convolve_image);
@@ -1836,8 +1984,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  EnhanceImage() applies a digital filter that improves the quality of a
-%  noisy image.
+%  EnhanceImage() applies a digital filter to the image color channels that
+%  improves the quality of a noisy image.  The opacity channel is preserved
+%  but is otherwise ignored.
 %
 %  The format of the EnhanceImage method is:
 %
@@ -1851,36 +2000,20 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %
 */
-#define Enhance(weight)                                                 \
-  mean=((double) r->red+pixel.red)/2.0;                                 \
-  distance=r->red-(double) pixel.red;                                   \
-  distance_squared=(2.0*((double) MaxRGBDouble+1.0)+mean)*distance*     \
-    distance/MaxRGBDouble;                                              \
-  mean=((double) r->green+pixel.green)/2.0;                             \
-  distance=r->green-(double) pixel.green;                               \
-  distance_squared+=4.0*distance*distance;                              \
-  mean=((double) r->blue+pixel.blue)/2.0;                               \
-  distance=r->blue-(double) pixel.blue;                                 \
-  distance_squared+=                                                    \
-  (3.0*(MaxRGBDouble+1.0)-1.0-mean)*distance*distance/MaxRGBDouble;     \
-  mean=((double) r->opacity+pixel.opacity)/2.0;                         \
-  distance=r->opacity-(double) pixel.opacity;                           \
-  distance_squared+=                                                    \
-  (3.0*((double) MaxRGBDouble+1.0)-1.0-mean)*distance*                  \
-    distance/MaxRGBDouble;                                              \
-  if (distance_squared < ((double) MaxRGBDouble*MaxRGBDouble/25.0))     \
-    {                                                                   \
-      aggregate.red+=(weight)*r->red;                                   \
-      aggregate.green+=(weight)*r->green;                               \
-      aggregate.blue+=(weight)*r->blue;                                 \
-      aggregate.opacity+=(weight)*r->opacity;                           \
-      total_weight+=(weight);                                           \
-    }                                                                   \
-  r++;
 #define EnhanceImageText "[%s] Enhance...  "
 
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
+  static const double
+    Weights[5][5] =
+    {
+      {  5.0,  8.0, 10.0,  8.0,  5.0 },
+      {  8.0, 20.0, 40.0, 20.0,  8.0 },
+      { 10.0, 40.0, 80.0, 40.0, 10.0 },
+      {  8.0, 20.0, 40.0, 20.0,  8.0 },
+      {  5.0,  8.0, 10.0,  8.0,  5.0 }
+    };
+
   Image
     *enhance_image;
 
@@ -1955,6 +2088,27 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
           thread_status=MagickFail;
         if (thread_status != MagickFail)
           {
+	    DoublePixelPacket
+	      aggregate;
+
+	    double
+	      pixel_red,
+	      pixel_green,
+	      pixel_blue,
+	      total_weight;
+
+	    register const PixelPacket
+	      *r;
+
+	    double
+	      distance,
+	      distance_squared,
+	      mean;
+
+	    unsigned long
+	      i,
+	      j;
+
             /*
               Transfer first 2 pixels of the scanline.
             */
@@ -1962,43 +2116,50 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
             *q++=(*(p+2*image->columns+1));
             for (x=2; x < (long) (image->columns-2); x++)
               {
-                DoublePixelPacket
-                  aggregate;
-
-                double
-                  distance,
-                  distance_squared,
-                  mean,
-                  total_weight;
-
-                PixelPacket
-                  pixel;
-
-                register const PixelPacket
-                  *r;
-
                 /*
                   Compute weighted average of target pixel color components.
                 */
                 aggregate=zero;
                 total_weight=0.0;
                 r=p+2*image->columns+2;
-                pixel=(*r);
-                r=p;
-                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
-                r=p+image->columns;
-                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-                r=p+2*image->columns;
-                Enhance(10.0); Enhance(40.0); Enhance(80.0); Enhance(40.0); Enhance(10.0);
-                r=p+3*image->columns;
-                Enhance(8.0);  Enhance(20.0); Enhance(40.0); Enhance(20.0); Enhance(8.0);
-                r=p+4*image->columns;
-                Enhance(5.0);  Enhance(8.0);  Enhance(10.0); Enhance(8.0);  Enhance(5.0);
+		pixel_red=r->red;
+		pixel_green=r->green;
+		pixel_blue=r->blue;
+
+		for (i=0 ; i < 5; i++)
+		  {
+		    r=p+i*image->columns;
+		    for (j = 0; j < 5; j++)
+		      {
+			const double red = (double) r->red;
+			const double green = (double) r->green;
+			const double blue = (double) r->blue;
+			mean=(red+pixel_red)/2.0;
+			distance=red-pixel_red;
+			distance_squared=(2.0*(MaxRGBDouble+1.0)+mean)*distance*
+			  distance/MaxRGBDouble;
+			mean=(green+pixel_green)/2.0;
+			distance=green-pixel_green;
+			distance_squared+=4.0*distance*distance;
+			mean=(blue+pixel_blue)/2.0;
+			distance=blue-pixel_blue;
+			distance_squared+=
+			  (3.0*(MaxRGBDouble+1.0)-1.0-mean)*distance*distance/MaxRGBDouble;
+			if (distance_squared < ((MaxRGBDouble*MaxRGBDouble/25.0)))
+			  {
+			    const double weight = Weights[i][j];
+			    aggregate.red+=weight*red;
+			    aggregate.green+=weight*green;
+			    aggregate.blue+=weight*blue;
+			    total_weight+=weight;
+			  }
+			r++;
+		      }
+		  }
                 q->red=(Quantum) ((aggregate.red+(total_weight/2.0)-1.0)/total_weight);
                 q->green=(Quantum) ((aggregate.green+(total_weight/2.0)-1.0)/total_weight);
                 q->blue=(Quantum) ((aggregate.blue+(total_weight/2.0)-1.0)/total_weight);
-                q->opacity=(Quantum)
-                  ((aggregate.opacity+(total_weight/2.0)-1.0)/total_weight);
+		q->opacity=p->opacity;
                 p++;
                 q++;
               }
@@ -2394,9 +2555,9 @@ static void DestroyMedianList(void *pixel_list)
         i;
       
       for (i=0; i < 4U; i++)
-        MagickFreeMemory(skiplist->lists[i].nodes);
+        MagickFreeAlignedMemory(skiplist->lists[i].nodes);
     }
-  MagickFreeMemory(skiplist);
+  MagickFreeAlignedMemory(skiplist);
 }
 
 static MedianPixelList *AllocateMedianList(const long width)
@@ -2404,12 +2565,16 @@ static MedianPixelList *AllocateMedianList(const long width)
   MedianPixelList
     *skiplist;
 
-  skiplist=MagickAllocateMemory(MedianPixelList *,Max(sizeof(MedianPixelList),
-						      MAGICK_CACHE_LINE_SIZE));
+  skiplist=MagickAllocateAlignedMemory(MedianPixelList *,
+				       MAGICK_CACHE_LINE_SIZE,
+				       sizeof(MedianPixelList));
   if (skiplist != (MedianPixelList *) NULL)
     {
       unsigned int
         i;
+
+      const size_t
+	node_list_size = 65537U*sizeof(MedianListNode);
 
       (void) memset(skiplist,0,sizeof(MedianPixelList));
       skiplist->center=width*width/2;
@@ -2417,14 +2582,15 @@ static MedianPixelList *AllocateMedianList(const long width)
       for (i=0; i < 4U; i++)
         {
           skiplist->lists[i].nodes =
-            MagickAllocateArray(MedianListNode *,65537U,sizeof(MedianListNode));
+	    MagickAllocateAlignedMemory(MedianListNode *,MAGICK_CACHE_LINE_SIZE,
+					node_list_size);
           if (skiplist->lists[i].nodes == (MedianListNode *) NULL)
             {
               DestroyMedianList(skiplist);
               skiplist=(MedianPixelList *) NULL;
               break;
             }
-          (void) memset(skiplist->lists[i].nodes,0,65537U*sizeof(MedianListNode));
+          (void) memset(skiplist->lists[i].nodes,0,node_list_size);
         }
     }
   return skiplist;

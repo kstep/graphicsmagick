@@ -324,6 +324,9 @@ WandExport unsigned int ParseGeometry(const char *geometry,
   unsigned int
     flags;
 
+  double
+    double_val;
+
   /*
     Remove whitespaces meta characters from geometry specification.
   */
@@ -432,7 +435,8 @@ WandExport unsigned int ParseGeometry(const char *geometry,
   if (*p == '\0')
     return(flags);
   q=p;
-  (void) strtod(p,&q);
+  double_val=strtod(p,&q);
+  (void) double_val;
   if ((*q == 'x') || (*q == 'X') || (*q == '/') || (*q == ',') || (*q =='\0'))
     {
       /*

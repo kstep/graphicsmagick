@@ -581,6 +581,24 @@ default error
 .
 
 MessageId       = +1
+SymbolicName    = ConfigureFatalErrorUnableToChangeToWorkingDirectory
+Language        = English
+Unable to change to working directory
+.
+
+MessageId       = +1
+SymbolicName    = ConfigureFatalErrorUnableToGetCurrentDirectory
+Language        = English
+Unable to get current working directory
+.
+
+MessageId       = +1
+SymbolicName    = ConfigureFatalErrorUnableToRestoreCurrentDirectory
+Language        = English
+Unable to restore current working directory
+.
+
+MessageId       = +1
 SymbolicName    = ConfigureWarningDefault
 Language        = English
 default warning
@@ -992,6 +1010,12 @@ MessageId       = +1
 SymbolicName    = DrawErrorNonconformingDrawingPrimitiveDefinition
 Language        = English
 Non-conforming drawing primitive definition
+.
+
+MessageId       = +1
+SymbolicName    = DrawErrorTooManyCoordinates
+Language        = English
+too many coordinates
 .
 
 MessageId       = +1

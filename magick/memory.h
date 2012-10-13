@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003-2012 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -22,10 +22,12 @@ extern MagickExport void
    MagickAllocFunctions(MagickFreeFunc free_func,MagickMallocFunc malloc_func,
                         MagickReallocFunc realloc_func),
   *MagickMalloc(const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(1),
+  *MagickMallocAligned(const size_t alignment, const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(2),
   *MagickMallocCleared(const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(1),
   *MagickCloneMemory(void *destination,const void *source,const size_t size) MAGICK_FUNC_NONNULL,
   *MagickRealloc(void *memory,const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_1ARG(2),
-   MagickFree(void *memory);
+   MagickFree(void *memory),
+   MagickFreeAligned(void *memory);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
@@ -39,7 +41,6 @@ extern MagickExport size_t
   Allocate memory
 */
 
-/* #define MagickAllocateMemory(type,size) ((type) MagickMalloc((size_t) (size))) */
 #define MagickAllocateMemory(type,size) \
   ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) : \
    ((type) MagickMalloc((size_t) (size))))
@@ -69,6 +70,24 @@ extern MagickExport size_t
     size_t _new_size = (size_t) (size); \
     void *_magick_mp = MagickRealloc(memory,_new_size); \
     memory=(type) _magick_mp; \
+}
+
+/*
+  Allocate memory aligned to a specified alignment boundary
+*/
+#define MagickAllocateAlignedMemory(type,alignment,size)		\
+  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) :	\
+   ((type) MAGICK_ASSUME_ALIGNED(MagickMallocAligned((size_t) alignment, (size_t) (size)),alignment)))
+
+/*
+  Free aligned memory (from MagickAllocateAlignedMemory()) and set pointer to
+  NULL
+*/
+#define MagickFreeAlignedMemory(memory)		\
+{						\
+  void *_magick_mp=memory;			\
+  MagickFreeAligned(_magick_mp);		\
+  memory=0;					\
 }
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */

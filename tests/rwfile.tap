@@ -1,0 +1,351 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+. ${srcdir}/tests/common.shi
+
+# Test program
+rwfile=./rwfile
+
+# Types we will test
+check_types='bilevel gray pallette truecolor'
+
+# Number of tests we plan to run
+test_plan_fn 224
+
+# AVS format
+for type in ${check_types}
+do
+  test_command_fn "AVS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" AVS
+done
+
+# BMP format
+for type in ${check_types}
+do
+  test_command_fn "BMP ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" BMP
+done
+
+# CALS format
+for type in ${check_types}
+do
+  test_command_fn "CALS ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" CALS
+done
+
+# CIN format
+for type in ${check_types}
+do
+  test_command_fn "CIN ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" CIN
+done
+
+# DCX format
+for type in ${check_types}
+do
+  test_command_fn "DCX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" DCX
+done
+
+# DIB format
+for type in ${check_types}
+do
+  test_command_fn "DIB ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" DIB
+done
+
+# DPX format
+for type in ${check_types}
+do
+  test_command_fn "DPX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" DPX
+done
+
+# EPDF format
+for type in ${check_types}
+do
+  test_command_fn "EPDF ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPDF
+done
+
+# EPSF format
+for type in ${check_types}
+do
+  test_command_fn "EPSF ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSF
+done
+
+# EPSI format
+for type in ${check_types}
+do
+  test_command_fn "EPSI ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPSI
+done
+
+# EPI format
+for type in ${check_types}
+do
+  test_command_fn "EPI ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPI
+done
+
+# EPS format
+for type in ${check_types}
+do
+  test_command_fn "EPS ${type}" -F 'PS' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPS
+done
+
+# EPT format
+for type in ${check_types}
+do
+  test_command_fn "EPT ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" EPT
+done
+
+# FAX format
+for type in ${check_types}
+do
+  test_command_fn "FAX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FAX
+done
+
+# FITS format
+for type in ${check_types}
+do
+  test_command_fn "FITS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FITS
+done
+
+# FPX format
+for type in ${check_types}
+do
+  test_command_fn "FPX ${type}" -F FPX ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FPX
+done
+
+# GIF format
+for type in ${check_types}
+do
+  test_command_fn "GIF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" GIF
+done
+
+# GRAY format
+for type in ${check_types}
+do
+  test_command_fn "GRAY ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" GRAY
+done
+
+# ICB format
+for type in ${check_types}
+do
+  test_command_fn "ICB ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" ICB
+done
+
+# JBIG format
+for type in ${check_types}
+do
+  test_command_fn "JBIG ${type}" -F JBIG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JBIG
+done
+
+# JPEG format
+for type in ${check_types}
+do
+  test_command_fn "JPEG ${type}" -F JPEG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JPEG
+done
+
+# JP2 format
+for type in ${check_types}
+do
+  test_command_fn "JP2 ${type}" -F JP2 ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JP2
+done
+
+# MAT format
+for type in ${check_types}
+do
+  test_command_fn "MAT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MAT
+done
+
+# MIFF format
+for type in ${check_types}
+do
+  test_command_fn "MIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MIFF
+done
+
+# MNG format
+for type in ${check_types}
+do
+  test_command_fn "MNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MNG
+done
+
+# MPR format
+for type in ${check_types}
+do
+  test_command_fn "MPR ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MPR
+done
+
+# MTV format
+for type in ${check_types}
+do
+  test_command_fn "MTV ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MTV
+done
+
+# P7 format
+for type in ${check_types}
+do
+  test_command_fn "P7 ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" P7
+done
+
+# PBM format
+for type in ${check_types}
+do
+  test_command_fn "PBM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PBM
+done
+
+# PCD format
+for type in ${check_types}
+do
+  test_command_fn "PCD ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PCD
+done
+
+# PCDS format
+for type in ${check_types}
+do
+  test_command_fn "PCDS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PCDS
+done
+
+# PCX format
+for type in ${check_types}
+do
+  test_command_fn "PCX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PCX
+done
+
+# PDF format
+for type in ${check_types}
+do
+  test_command_fn "PDF ${type}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PDF
+done
+
+# PGM format
+for type in ${check_types}
+do
+  test_command_fn "PGM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
+done
+
+# PICON format
+for type in ${check_types}
+do
+  test_command_fn "PICON ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PICON
+done
+
+# PICT format
+for type in ${check_types}
+do
+  test_command_fn "PICT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PICT
+done
+
+# PNG format
+for type in ${check_types}
+do
+  test_command_fn "PNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PNG
+done
+
+# PNM format
+for type in ${check_types}
+do
+  test_command_fn "PNM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PNM
+done
+
+# PPM format
+for type in ${check_types}
+do
+  test_command_fn "PPM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
+done
+
+# PS format
+for type in ${check_types}
+do
+  test_command_fn "PS ${type}" -F PS ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PS
+done
+
+# PSD format
+for type in ${check_types}
+do
+  test_command_fn "PSD ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PSD
+done
+
+# PTIF format
+for type in ${check_types}
+do
+  test_command_fn "PTIF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PTIF
+done
+
+# RAS format
+for type in ${check_types}
+do
+  test_command_fn "RAS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" RAS
+done
+
+# SGI format
+for type in ${check_types}
+do
+  test_command_fn "SGI ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" SGI
+done
+
+# SUN format
+for type in ${check_types}
+do
+  test_command_fn "SUN ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" SUN
+done
+
+# TGA format
+for type in ${check_types}
+do
+  test_command_fn "TGA ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TGA
+done
+
+# TXT format
+for type in ${check_types}
+do
+  test_command_fn "TXT ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TXT
+done
+
+# TIFF format
+for type in ${check_types}
+do
+  test_command_fn "TIFF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TIFF
+done
+
+# VDA format
+for type in ${check_types}
+do
+  test_command_fn "VDA ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" VDA
+done
+
+# VICAR format
+for type in ${check_types}
+do
+  test_command_fn "VICAR ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" VICAR
+done
+
+# VIFF format
+for type in ${check_types}
+do
+  test_command_fn "VIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" VIFF
+done
+
+# VST format
+for type in ${check_types}
+do
+  test_command_fn "VST ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" VST
+done
+
+# WBMP format
+for type in ${check_types}
+do
+  test_command_fn "WBMP ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" WBMP
+done
+
+# XBM format
+for type in ${check_types}
+do
+  test_command_fn "XBM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" XBM
+done
+
+# XPM format
+for type in ${check_types}
+do
+  test_command_fn "XPM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" XPM
+done
+
+# XWD format
+for type in ${check_types}
+do
+  test_command_fn "XWD ${type}" -F X ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" XWD
+done
+
+:

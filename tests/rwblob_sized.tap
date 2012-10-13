@@ -1,0 +1,63 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+. ${srcdir}/tests/common.shi
+
+# Test program
+rwblob=./rwblob
+
+# Types we will test
+check_types='truecolor_70x46'
+
+# Number of tests we plan to run
+test_plan_fn 8
+
+# CMYK format
+for type in ${check_types}
+do
+  test_command_fn "CMYK ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" CMYK
+done
+
+# GRAY format
+for type in ${check_types}
+do
+  test_command_fn "GRAY ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" GRAY
+done
+
+# MONO format
+for type in ${check_types}
+do
+  test_command_fn "MONO ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" MONO
+done
+
+# PAL format
+for type in ${check_types}
+do
+  test_command_fn "PAL ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" PAL
+done
+
+# RGB format
+for type in ${check_types}
+do
+  test_command_fn "RGB ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" RGB
+done
+
+# RGBA format
+for type in ${check_types}
+do
+  test_command_fn "RGBA ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" RGBA
+done
+
+# UYVY format
+for type in ${check_types}
+do
+  test_command_fn "UYVY ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" UYVY
+done
+
+# YUV format
+for type in ${check_types}
+do
+  test_command_fn "YUV ${type}" ${MEMCHECK} ${rwblob} -size 70x46 "${SRCDIR}/input_${type}.miff" YUV
+done
+
+:

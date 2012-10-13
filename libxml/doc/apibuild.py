@@ -52,7 +52,11 @@ ignored_files = {
   "test.c": "not part of the library",
   "testdso.c": "test for dynamid shared libraries",
   "testrecurse.c": "test for entities recursions",
-  "xzlib.h": "Internal API only",
+  "xzlib.h": "Internal API only 2.8.0",
+  "buf.h": "Internal API only 2.9.0",
+  "enc.h": "Internal API only 2.9.0",
+  "/save.h": "Internal API only 2.9.0",
+  "timsort.h": "Internal header only for xpath.c 2.9.0",
 }
 
 ignored_words = {
@@ -1678,7 +1682,8 @@ class docBuilder:
 	        skip = 0
 		for excl in self.excludes:
 		    if string.find(file, excl) != -1:
-		        skip = 1;
+		        print "Skipping %s" % file
+		        skip = 1
 			break
 		if skip == 0:
 		    self.modules[file] = None;
@@ -1687,7 +1692,8 @@ class docBuilder:
 	        skip = 0
 		for excl in self.excludes:
 		    if string.find(file, excl) != -1:
-		        skip = 1;
+		        print "Skipping %s" % file
+		        skip = 1
 			break
 		if skip == 0:
 		    self.headers[file] = None;

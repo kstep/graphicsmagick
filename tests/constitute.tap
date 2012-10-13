@@ -1,0 +1,25 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test raw image encode/decode in memory.
+. ${srcdir}/tests/common.shi
+num_tests=0
+storage_types='char short integer long float double'
+constitute_maps='bgr bgro bgrp rgb rgba rgbt rgbo prgb cmy cmyk i'
+for storage_type in ${storage_types}
+do
+  for map in ${constitute_maps}
+  do
+    num_tests=$((${num_tests} + 1))
+  done
+done
+infile=${SRCDIR}/input_truecolor.miff
+test_plan_fn ${num_tests}
+for storage_type in ${storage_types}
+do
+  for map in ${constitute_maps}
+  do
+    test_command_fn "${storage_type} ${map}" ${MEMCHECK} ./constitute -storagetype ${storage_type} ${infile} ${map}
+  done
+done
+:

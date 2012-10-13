@@ -10,7 +10,7 @@
 
 # Don't require all the GNU mandated files
 # Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
-AUTOMAKE_OPTIONS = 1.11 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign # dist-lzip
+AUTOMAKE_OPTIONS = 1.12 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign dist-lzip
 
 topincludedir = @includedir@/GraphicsMagick
 
@@ -58,21 +58,24 @@ else
 SRCDIR="$(srcdir)/"
 endif
 
-# Environment parameters to be used during tests
-TESTS_ENVIRONMENT = \
-	GM="$(MEMCHECK) $(abs_top_builddir)/utilities/gm" \
-	LD_LIBRARY_PATH="$(abs_top_builddir)/magick/.libs:${LD_LIBRARY_PATH}" \
-	MAGICK_CODER_MODULE_PATH='$(abs_top_builddir)/coders' \
-	MAGICK_CONFIGURE_PATH='$(abs_top_builddir)/config:$(abs_top_srcdir)/config' \
-	MAGICK_FILTER_MODULE_PATH='$(abs_top_builddir)/filters' \
-	MAKE="$(MAKE)" \
-	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)" \
-	PATH="$(abs_top_builddir)/utilities:${PATH}" \
-	SRCDIR=$(SRCDIR)
+# Run the tests with a proper shell detected at configure time.
+LOG_COMPILER = $(SHELL)
+
+SH_LOG_COMPILER = $(LOG_COMPILER)
+TAP_LOG_COMPILER = $(LOG_COMPILER)
 
 # Test extensions
-TEST_EXTENSIONS = .sh
+TEST_EXTENSIONS = .sh .tap
+
+# Tests with .tap extensions use the TAP protocol and TAP driver
+TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+	$(top_srcdir)/ltdl/config/tap-driver.sh
+
+# Environment parameters to be used during tests
+TESTS_ENVIRONMENT = \
+	MAKE="$(MAKE)" \
+	MAKEFLAGS="$(MAKEFLAGS)" \
+	MEMCHECK="$(MEMCHECK)"
 
 # Tests to run
 TESTS = \

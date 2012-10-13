@@ -349,14 +349,14 @@ ModuleExport void UnregisterXTRNImage(void)
 
 int SafeArrayFifo(const Image *image,const void *data,const size_t length)
 {
-  SAFEARRAYBOUND NewArrayBounds[1];  // 1 Dimension
+  SAFEARRAYBOUND NewArrayBounds[1];  /* 1 Dimension */
   size_t tlen=length;
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
     {
       long lBoundl, lBoundu, lCount;
       HRESULT hr = S_OK;
-      // First see how big the buffer currently is
+      /* First see how big the buffer currently is */
       hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
       if (FAILED(hr))
 	return MagickFalse;
@@ -368,8 +368,8 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
       if (length>0)
 	{
 	  unsigned char       *pReturnBuffer = NULL;
-	  NewArrayBounds[0].lLbound = 0;   // Start-Index 0
-	  NewArrayBounds[0].cElements = (unsigned long) length+lCount;  // # Elemente
+	  NewArrayBounds[0].lLbound = 0;   /* Start-Index 0 */
+	  NewArrayBounds[0].cElements = (unsigned long) length+lCount;  /* # Elemente */
 	  hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
 	  if (FAILED(hr))
 	    return 0;

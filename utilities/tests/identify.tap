@@ -1,0 +1,10 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test ICC Transforms
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 1
+
+test_command_fn 'identify -verbose' -F JPEG ${GM} identify -verbose "${SUNRISE_JPEG}"

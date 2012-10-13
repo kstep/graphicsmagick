@@ -2329,6 +2329,12 @@ namespace Magick
   }
 
   // Write Images
+  //
+  // If an attribute is not supported as an explicit argument
+  // (e.g. 'magick'), then the attribute must be set on the involved
+  // images in the container prior to invoking writeImages() since
+  // attributes from the individual images are the ones which are
+  // used.
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,
@@ -2356,6 +2362,12 @@ namespace Magick
     throwException( exceptionInfo );
   }
   // Write images to BLOB
+  // 
+  // If an attribute is not supported as an explicit argument
+  // (e.g. 'magick'), then the attribute must be set on the involved
+  // images in the container prior to invoking writeImages() since
+  // attributes from the individual images are the ones which are
+  // used.
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,

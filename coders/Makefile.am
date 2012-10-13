@@ -32,8 +32,8 @@ MAGICK_JBIG_SRCS = coders/jbig.c
 endif
 
 if HasJPEG
-MAGICK_JPEG_MODULES = coders/jpeg.la
-MAGICK_JPEG_SRCS = coders/jpeg.c
+MAGICK_JPEG_MODULES = coders/jnx.la coders/jpeg.la
+MAGICK_JPEG_SRCS = coders/jnx.c coders/jpeg.c
 endif
 
 if HasJP2
@@ -57,6 +57,7 @@ MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 endif
 
 MAGICK_CODER_SRCS = \
+	$(MAGICK_PNG_SRCS) \
 	coders/art.c \
 	coders/avi.c \
 	coders/avs.c \
@@ -150,7 +151,6 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JBIG_SRCS) \
 	$(MAGICK_JPEG_SRCS) \
 	$(MAGICK_JP2_SRCS) \
-	$(MAGICK_PNG_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
 	$(MAGICK_X11_CODER_SRCS)
 
@@ -429,6 +429,12 @@ coders_jbig_la_SOURCES     = coders/jbig.c
 coders_jbig_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_jbig_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_jbig_la_LIBADD      = $(LIBMAGICK) $(LIB_JBIG)
+
+# JNX coder module
+coders_jnx_la_SOURCES      = coders/jnx.c
+coders_jnx_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
+coders_jnx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_jnx_la_LIBADD       = $(LIBMAGICK) $(LIB_JPEG)
 
 # JPEG coder module
 coders_jpeg_la_SOURCES     = coders/jpeg.c

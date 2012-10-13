@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title>Installing GraphicsMagick</title>
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
 </head>
@@ -36,6 +36,7 @@
 <div class="document" id="installing-graphicsmagick">
 <h1 class="title">Installing GraphicsMagick</h1>
 
+<!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <div class="contents local topic" id="contents">
@@ -252,6 +253,18 @@ to read lossless jpeg-encoded DICOM images, please disregard the patch.</p>
 may have a problem when used with GraphicsMagick's modules build. To
 solve this problem, edit the file src/libjasper/base/jas_init.c and
 comment out the line which invokes atexit().</p>
+</li>
+<li><p class="first">On Unix-type systems, Windows/MinGW, and Windows/Cygwin,
+GraphicsMagick requires libltdl from libtool in order to support
+building GraphicsMagick with dynamically loadable modules.  A copy
+of libltdl is bundled with GraphicsMagick and may be optionally
+configured to be installed with GraphicsMagick (via
+--enable-ltdl-install option), but it is recommended to install it
+separately via a binary package or by building and installing the
+libtool source package.  Libtool is available via anonymous FTP from</p>
+<blockquote>
+<p><a class="reference external" href="ftp://ftp.gnu.org/pub/gnu/libtool/">ftp://ftp.gnu.org/pub/gnu/libtool/</a></p>
+</blockquote>
 </li>
 <li><p class="first">GraphicsMagick requires the MPEG utilities from the MPEG Software
 Simulation Group, which are available via anonymous FTP as</p>

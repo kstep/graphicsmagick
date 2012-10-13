@@ -648,6 +648,7 @@ MAGICK_API_CFLAGS
 MAGICK_DEP_LIBS
 MAGICK_LTDLDEPS
 MAGICK_LIBLTDL
+MAGICK_FEATURES
 DELEGATES
 MAGICKLIBDIR
 MAGICKLIB
@@ -709,8 +710,6 @@ MPEGEncodeDelegate
 MPEGDecodeDelegate
 MANDelegate
 LaunchDelegate
-LZWEncodeDelegate
-LZWDecodeDelegate
 LPRDelegate
 LPDelegate
 ILBMEncodeDelegate
@@ -798,7 +797,6 @@ HasZLIB_FALSE
 HasZLIB_TRUE
 LIB_TRIO
 LIB_MATH
-CCMALLOCDelegate
 LIB_OMP
 LIB_UMEM
 HasUMEM_FALSE
@@ -827,13 +825,13 @@ LIBRARY_EXTRA_CPPFLAGS
 MODULE_EXTRA_CPPFLAGS
 LIBSTDCLDFLAGS
 PERL_MAKE_OPTIONS
+MAGICK_LT_RELEASE_OPTS
 QuantumDepth
 MAGICK_COMPAT_FALSE
 MAGICK_COMPAT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
-DLLDFLAGS
 WITH_LTDL_FALSE
 WITH_LTDL_TRUE
 WITH_MODULES_FALSE
@@ -945,6 +943,8 @@ CC
 CONFIG_STATUS_DEPENDENCIES
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
+AM_DEFAULT_V
+AM_V
 am__untar
 am__tar
 AMTAR
@@ -1059,14 +1059,13 @@ enable_ltdl_install
 with_modules
 enable_installed
 enable_maintainer_mode
-enable_ccmalloc
-enable_efence
 enable_prof
 enable_gprof
 enable_gcov
 enable_symbol_prefix
 enable_magick_compat
 with_quantum_depth
+enable_quantum_library_names
 with_frozenpaths
 with_magick_plus_plus
 with_perl
@@ -1729,12 +1728,15 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-silent-rules          less verbose build output (undo: `make V=1')
-  --disable-silent-rules         verbose build output (undo: `make V=0')
-  --disable-dependency-tracking  speeds up one-time build
-  --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-silent-rules   less verbose build output (undo: "make V=1")
+  --disable-silent-rules  verbose build output (undo: "make V=0")
+  --enable-dependency-tracking
+                          do not reject slow dependency extractors
+  --disable-dependency-tracking
+                          speeds up one-time build
   --disable-openmp        do not use OpenMP
-  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run slower
+  --enable-openmp-slow    enable OpenMP for algorithms which sometimes run
+                          slower
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -1742,23 +1744,26 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-ltdl-install   install libltdl
-  --disable-installed      disable building an installed GraphicsMagick
-                          (default enabled)
-  --enable-maintainer-mode  enable make rules and dependencies not useful
-			  (and sometimes confusing) to the casual installer
-  --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
-  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)
-  --enable-prof           enable 'prof' profiling support (default disabled)
-  --enable-gprof          enable 'gprof' profiling support (default disabled)
-  --enable-gcov           enable 'gcov' profiling support (default disabled)
+  --disable-installed     disable building an installed GraphicsMagick
+  --enable-maintainer-mode
+                          enable make rules and dependencies not useful (and
+                          sometimes confusing) to the casual installer
+  --enable-prof           enable 'prof' profiling support
+  --enable-gprof          enable 'gprof' profiling support
+  --enable-gcov           enable 'gcov' profiling support
   --enable-symbol-prefix  enable prefixing library symbols with "Gm"
-  --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
+  --enable-magick-compat  install ImageMagick utility shortcuts
+  --enable-quantum-library-names
+                          shared library name includes quantum depth to allow
+                          shared libraries with different quantum depths to
+                          co-exist in same directory (only one can be used for
+                          development)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-  --without-threads       disable threads support
+  --without-threads       disable threads support (also disables OpenMP)
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-sysroot=DIR Search for dependent libraries within DIR
@@ -1769,12 +1774,13 @@ Optional Packages:
   --with-modules          enable building dynamically loadable modules
   --with-quantum-depth    number of bits in a pixel quantum (default 8)
   --with-frozenpaths      enable frozen delegate paths
-  --without-magick-plus-plus disable build/install of Magick++
-  --with-perl             enable build/install of PerlMagick
-       or
-  --with-perl=PERL        use specified Perl binary to configure PerlMagick
-  --with-perl-options=OPTIONS  options to pass on command-line when
-                          generating PerlMagick's Makefile from Makefile.PL
+  --without-magick-plus-plus
+                          disable build/install of Magick++
+  --with-perl[=PERL]      enable build/install of PerlMagick and optionally
+                          specify perl to use
+  --with-perl-options=OPTIONS
+                          options to pass on command-line when generating
+                          PerlMagick's Makefile from Makefile.PL
   --without-bzlib         disable BZLIB support
   --without-dps           disable Display Postscript support
   --with-fpx              enable FlashPIX support
@@ -3123,6 +3129,9 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 
 
+# Include the TAP driver
+
+
 #
 # Save initial user-tunable values
 #
@@ -3215,10 +3224,25 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 MAGICK_TARGET_CPU=$host_cpu
 
 
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_CPU $MAGICK_TARGET_CPU
+_ACEOF
+
+
 MAGICK_TARGET_VENDOR=$host_vendor
 
 
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_VENDOR $MAGICK_TARGET_VENDOR
+_ACEOF
+
+
 MAGICK_TARGET_OS=$host_os
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAGICK_TARGET_OS $MAGICK_TARGET_OS
+_ACEOF
 
 
 # Compute newest and oldest interface numbers.
@@ -3270,9 +3294,6 @@ MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAG
 # Ensure that make can run correctly
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
 $as_echo_n "checking whether build environment is sane... " >&6; }
-# Just in case
-sleep 1
-echo timestamp > conftest.file
 # Reject unsafe characters in $srcdir or the absolute working directory
 # name.  Accept space and tab only in the latter.
 am_lf='
@@ -3283,32 +3304,40 @@ case `pwd` in
 esac
 case $srcdir in
   *[\\\"\#\$\&\'\`$am_lf\ \	]*)
-    as_fn_error $? "unsafe srcdir value: \`$srcdir'" "$LINENO" 5;;
+    as_fn_error $? "unsafe srcdir value: '$srcdir'" "$LINENO" 5;;
 esac
 
-# Do `set' in a subshell so we don't clobber the current shell's
+# Do 'set' in a subshell so we don't clobber the current shell's
 # arguments.  Must try -L first in case configure is actually a
 # symlink; some systems play weird games with the mod time of symlinks
 # (eg FreeBSD returns the mod time of the symlink's containing
 # directory).
 if (
-   set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-   if test "$*" = "X"; then
-      # -L didn't work.
-      set X `ls -t "$srcdir/configure" conftest.file`
-   fi
-   rm -f conftest.file
-   if test "$*" != "X $srcdir/configure conftest.file" \
-      && test "$*" != "X conftest.file $srcdir/configure"; then
+   am_has_slept=no
+   for am_try in 1 2; do
+     echo "timestamp, slept: $am_has_slept" > conftest.file
+     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+     if test "$*" = "X"; then
+	# -L didn't work.
+	set X `ls -t "$srcdir/configure" conftest.file`
+     fi
+     if test "$*" != "X $srcdir/configure conftest.file" \
+	&& test "$*" != "X conftest.file $srcdir/configure"; then
 
-      # If neither matched, then we have a broken ls.  This can happen
-      # if, for instance, CONFIG_SHELL is bash and it inherits a
-      # broken ls alias from the environment.  This has actually
-      # happened.  Such a system could not be considered "sane".
-      as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-alias in your environment" "$LINENO" 5
-   fi
-
+	# If neither matched, then we have a broken ls.  This can happen
+	# if, for instance, CONFIG_SHELL is bash and it inherits a
+	# broken ls alias from the environment.  This has actually
+	# happened.  Such a system could not be considered "sane".
+	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
+  alias in your environment" "$LINENO" 5
+     fi
+     if test "$2" = conftest.file || test $am_try -eq 2; then
+       break
+     fi
+     # Just in case.
+     sleep 1
+     am_has_slept=yes
+   done
    test "$2" = conftest.file
    )
 then
@@ -3320,12 +3349,22 @@ Check your system clock" "$LINENO" 5
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+# If we didn't sleep, we still need to ensure time stamps of config.status and
+# generated files are strictly newer.
+am_sleep_pid=
+if grep 'slept: no' conftest.file >/dev/null 2>&1; then
+  ( sleep 1 ) &
+  am_sleep_pid=$!
+fi
+
+rm -f conftest.file
+
 
 # Generate configure header.
 ac_config_headers="$ac_config_headers magick/magick_config.h magick/magick_config_api.h"
 
 
-am__api_version='1.11'
+am__api_version='1.12'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -3446,8 +3485,8 @@ if eval "$MISSING --run true"; then
   am_missing_run="$MISSING --run "
 else
   am_missing_run=
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \`missing' script is too old or missing" >&5
-$as_echo "$as_me: WARNING: \`missing' script is too old or missing" >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: 'missing' script is too old or missing" >&5
+$as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
 if test x"${install_sh}" != xset; then
@@ -3459,10 +3498,10 @@ if test x"${install_sh}" != xset; then
   esac
 fi
 
-# Installed binaries are usually stripped using `strip' when the user
-# run `make install-strip'.  However `strip' might not be the right
+# Installed binaries are usually stripped using 'strip' when the user
+# run "make install-strip".  However 'strip' might not be the right
 # tool to use in cross-compilation environments, therefore Automake
-# will honor the `STRIP' environment variable to overrule this program.
+# will honor the 'STRIP' environment variable to overrule this program.
 if test "$cross_compiling" != no; then
   if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}strip", so it can be a program name with args.
@@ -3601,12 +3640,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MKDIR_P" >&5
 $as_echo "$MKDIR_P" >&6; }
 
-mkdir_p="$MKDIR_P"
-case $mkdir_p in
-  [\\/$]* | ?:[\\/]*) ;;
-  */*) mkdir_p="\$(top_builddir)/$mkdir_p" ;;
-esac
-
 for ac_prog in gawk mawk nawk awk
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -3710,6 +3743,7 @@ fi
 
 
 # Define the identity of the package.
+
  PACKAGE=$PACKAGE_NAME
  VERSION="${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 
@@ -3730,13 +3764,19 @@ AUTOHEADER=${AUTOHEADER-"${am_missing_run}autoheader"}
 
 MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
+# For better backward compatibility.  To be removed once Automake 1.9.x
+# dies out for good.  For more background, see:
+# <http://lists.gnu.org/archive/html/automake/2012-07/msg00001.html>
+# <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
+mkdir_p='$(MKDIR_P)'
+
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
-AMTAR=${AMTAR-"${am_missing_run}tar"}
-
-am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
+am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
@@ -3749,11 +3789,38 @@ if test "${enable_silent_rules+set}" = set; then :
   enableval=$enable_silent_rules;
 fi
 
-case $enable_silent_rules in
-yes) AM_DEFAULT_VERBOSITY=0;;
-no)  AM_DEFAULT_VERBOSITY=1;;
-*)   AM_DEFAULT_VERBOSITY=1;;
+case $enable_silent_rules in # (((
+  yes) AM_DEFAULT_VERBOSITY=0;;
+   no) AM_DEFAULT_VERBOSITY=1;;
+    *) AM_DEFAULT_VERBOSITY=1;;
 esac
+am_make=${MAKE-make}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
+$as_echo_n "checking whether $am_make supports nested variables... " >&6; }
+if ${am_cv_make_support_nested_variables+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if $as_echo 'TRUE=$(BAR$(V))
+BAR0=false
+BAR1=true
+V=1
+am__doit:
+	@$(TRUE)
+.PHONY: am__doit' | $am_make -f - >/dev/null 2>&1; then
+  am_cv_make_support_nested_variables=yes
+else
+  am_cv_make_support_nested_variables=no
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
+$as_echo "$am_cv_make_support_nested_variables" >&6; }
+if test $am_cv_make_support_nested_variables = yes; then
+    AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
 AM_BACKSLASH='\'
 
 
@@ -3797,7 +3864,7 @@ am__quote=
 _am_result=none
 # First try GNU make style include.
 echo "include confinc" > confmf
-# Ignore all kinds of additional output from `make'.
+# Ignore all kinds of additional output from 'make'.
 case `$am_make -s -f confmf 2> /dev/null` in #(
 *the\ am__doit\ target*)
   am__include=include
@@ -4641,8 +4708,8 @@ else
   # We make a subdir and do the tests there.  Otherwise we can end up
   # making bogus files that we don't know about and never remove.  For
   # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
+  # making a dummy file named 'D' -- because '-MD' means "put the output
+  # in D".
   rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
@@ -4677,16 +4744,16 @@ else
     : > sub/conftest.c
     for i in 1 2 3 4 5 6; do
       echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
+      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
+      # Solaris 10 /bin/sh.
+      echo '/* dummy */' > sub/conftst$i.h
     done
     echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
 
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # We check with '-c' and '-o' for the sake of the "dashmstdout"
     # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.  Also, some Intel
-    # versions had trouble with output in subdirs
+    # handle '-M -o', and we need to detect this.  Also, some Intel
+    # versions had trouble with output in subdirs.
     am__obj=sub/conftest.${OBJEXT-o}
     am__minus_obj="-o $am__obj"
     case $depmode in
@@ -4695,8 +4762,8 @@ else
       test "$am__universal" = false || continue
       ;;
     nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
+      # After this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested.
       if test "x$enable_dependency_tracking" = xyes; then
 	continue
       else
@@ -4704,7 +4771,7 @@ else
       fi
       ;;
     msvc7 | msvc7msys | msvisualcpp | msvcmsys)
-      # This compiler won't grok `-c -o', but also, the minuso test has
+      # This compiler won't grok '-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
       am__obj=conftest.${OBJEXT-o}
@@ -5847,8 +5914,8 @@ else
   # We make a subdir and do the tests there.  Otherwise we can end up
   # making bogus files that we don't know about and never remove.  For
   # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
+  # making a dummy file named 'D' -- because '-MD' means "put the output
+  # in D".
   rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
@@ -5883,16 +5950,16 @@ else
     : > sub/conftest.c
     for i in 1 2 3 4 5 6; do
       echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
+      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
+      # Solaris 10 /bin/sh.
+      echo '/* dummy */' > sub/conftst$i.h
     done
     echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
 
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # We check with '-c' and '-o' for the sake of the "dashmstdout"
     # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.  Also, some Intel
-    # versions had trouble with output in subdirs
+    # handle '-M -o', and we need to detect this.  Also, some Intel
+    # versions had trouble with output in subdirs.
     am__obj=sub/conftest.${OBJEXT-o}
     am__minus_obj="-o $am__obj"
     case $depmode in
@@ -5901,8 +5968,8 @@ else
       test "$am__universal" = false || continue
       ;;
     nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
+      # After this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested.
       if test "x$enable_dependency_tracking" = xyes; then
 	continue
       else
@@ -5910,7 +5977,7 @@ else
       fi
       ;;
     msvc7 | msvc7msys | msvisualcpp | msvcmsys)
-      # This compiler won't grok `-c -o', but also, the minuso test has
+      # This compiler won't grok '-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
       am__obj=conftest.${OBJEXT-o}
@@ -6895,6 +6962,48 @@ else
 $as_echo "no, using $LN_S" >&6; }
 fi
 
+for ac_prog in gawk mawk nawk awk
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_AWK+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$AWK"; then
+  ac_cv_prog_AWK="$AWK" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_AWK="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+AWK=$ac_cv_prog_AWK
+if test -n "$AWK"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $AWK" >&5
+$as_echo "$AWK" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$AWK" && break
+done
+
 
 #
 # Tests for Windows
@@ -6978,37 +7087,6 @@ then
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
-fi
-
-# Reduce utility startup overhead by lazy-loading dependency libraries
-# if possible.
-#
-#   http://developers.sun.com/solaris/articles/reducing_app.html
-#   http://wikis.sun.com/display/AppPerfTuning/ImageMagick
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for linker lazyload option" >&5
-$as_echo_n "checking for linker lazyload option... " >&6; }
-if ${gm_cv_ld_lazyload+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-gm_cv_ld_lazyload='none'
-case "${host}" in
-  *-*-solaris2.8 | *-*-solaris2.9 | *-*-solaris2.1? )
-    if test "$lt_cv_prog_gnu_ld" != 'yes' ; then
-       gm_cv_ld_lazyload='-Wl,-zlazyload'
-    fi
-    ;;
-esac
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $gm_cv_ld_lazyload" >&5
-$as_echo "$gm_cv_ld_lazyload" >&6; }
-if test "${gm_cv_ld_lazyload}" != 'none' ; then
-  if test -z "${LDFLAGS}" ; then
-    LDFLAGS="${gm_cv_ld_lazyload}"
-  else
-    LDFLAGS="${gm_cv_ld_lazyload} ${LDFLAGS}"
-  fi
 fi
 
 #
@@ -9869,7 +9947,7 @@ $as_echo "$lt_cv_cc_needs_belf" >&6; }
       case $lt_cv_prog_gnu_ld in
       yes*)
         case $host in
-        i?86-*-solaris*)
+        i?86-*-solaris*|x86_64-*-solaris*)
           LD="${LD-ld} -m elf_x86_64"
           ;;
         sparc*-*-solaris*)
@@ -15224,8 +15302,8 @@ else
   # We make a subdir and do the tests there.  Otherwise we can end up
   # making bogus files that we don't know about and never remove.  For
   # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
+  # making a dummy file named 'D' -- because '-MD' means "put the output
+  # in D".
   rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
@@ -15260,16 +15338,16 @@ else
     : > sub/conftest.c
     for i in 1 2 3 4 5 6; do
       echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
+      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
+      # Solaris 10 /bin/sh.
+      echo '/* dummy */' > sub/conftst$i.h
     done
     echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
 
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # We check with '-c' and '-o' for the sake of the "dashmstdout"
     # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.  Also, some Intel
-    # versions had trouble with output in subdirs
+    # handle '-M -o', and we need to detect this.  Also, some Intel
+    # versions had trouble with output in subdirs.
     am__obj=sub/conftest.${OBJEXT-o}
     am__minus_obj="-o $am__obj"
     case $depmode in
@@ -15278,8 +15356,8 @@ else
       test "$am__universal" = false || continue
       ;;
     nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
+      # After this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested.
       if test "x$enable_dependency_tracking" = xyes; then
 	continue
       else
@@ -15287,7 +15365,7 @@ else
       fi
       ;;
     msvc7 | msvc7msys | msvisualcpp | msvcmsys)
-      # This compiler won't grok `-c -o', but also, the minuso test has
+      # This compiler won't grok '-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
       am__obj=conftest.${OBJEXT-o}
@@ -19453,14 +19531,78 @@ fi
 
 case ,$with_included_ltdl,$with_ltdl_include,$with_ltdl_lib, in
   ,yes,no,no,)
-	case $enable_ltdl_convenience in
-  no) as_fn_error $? "this package needs a convenience libltdl" "$LINENO" 5 ;;
-  "") enable_ltdl_convenience=yes
-      ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
+	if test -f $prefix/lib/libltdl.la; then
+  lt_save_LDFLAGS="$LDFLAGS"
+  LDFLAGS="-L$prefix/lib $LDFLAGS"
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lt_dlinit in -lltdl" >&5
+$as_echo_n "checking for lt_dlinit in -lltdl... " >&6; }
+if ${ac_cv_lib_ltdl_lt_dlinit+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lltdl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char lt_dlinit ();
+int
+main ()
+{
+return lt_dlinit ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ltdl_lt_dlinit=yes
+else
+  ac_cv_lib_ltdl_lt_dlinit=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ltdl_lt_dlinit" >&5
+$as_echo "$ac_cv_lib_ltdl_lt_dlinit" >&6; }
+if test "x$ac_cv_lib_ltdl_lt_dlinit" = xyes; then :
+  lt_lib_ltdl=yes
+fi
+
+  LDFLAGS="$lt_save_LDFLAGS"
+  if test x"${lt_lib_ltdl-no}" = xyes; then
+    if test x"$enable_ltdl_install" != xyes; then
+      # Don't overwrite $prefix/lib/libltdl.la without --enable-ltdl-install
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: not overwriting libltdl at $prefix, force with \`--enable-ltdl-install'" >&5
+$as_echo "$as_me: WARNING: not overwriting libltdl at $prefix, force with \`--enable-ltdl-install'" >&2;}
+      enable_ltdl_install=no
+    fi
+  elif test x"$enable_ltdl_install" = xno; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libltdl not installed, but installation disabled" >&5
+$as_echo "$as_me: WARNING: libltdl not installed, but installation disabled" >&2;}
+  fi
+fi
+
+# If configure.ac declared an installable ltdl, and the user didn't override
+# with --disable-ltdl-install, we will install the shipped libltdl.
+case $enable_ltdl_install in
+  no) ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
+      LIBLTDL="-lltdl"
+      LTDLDEPS=
+      LTDLINCL=
+      ;;
+  *)  enable_ltdl_install=yes
+      ac_configure_args="$ac_configure_args --enable-ltdl-install"
+      LIBLTDL='${top_build_prefix}'"${lt_ltdl_dir+$lt_ltdl_dir/}libltdl.la"
+      LTDLDEPS=$LIBLTDL
+      LTDLINCL='-I${top_srcdir}'"${lt_ltdl_dir+/$lt_ltdl_dir}"
+      ;;
 esac
-LIBLTDL='${top_build_prefix}'"${lt_ltdl_dir+$lt_ltdl_dir/}libltdlc.la"
-LTDLDEPS=$LIBLTDL
-LTDLINCL='-I${top_srcdir}'"${lt_ltdl_dir+/$lt_ltdl_dir}"
 
 
 
@@ -19652,6 +19794,7 @@ fi
 #
 # Enable support for building loadable modules
 #
+build_modules='no'
 
 # Check whether --with-modules was given.
 if test "${with_modules+set}" = set; then :
@@ -19666,15 +19809,17 @@ if test "$with_modules" != 'no' ; then
   if test "$libtool_build_shared_libs" = 'no' ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Modules may only be built if building shared libraries is enabled." >&5
 $as_echo "$as_me: WARNING: Modules may only be built if building shared libraries is enabled." >&2;}
-    with_modules='no'
+    build_modules='no'
+  else
+    build_modules='yes'
   fi
 fi
-if test "$with_modules" != 'no' ; then
+if test "$build_modules" != 'no' ; then
 
 $as_echo "#define BuildMagickModules 1" >>confdefs.h
 
 fi
- if test "$with_modules" != 'no'; then
+ if test "$build_modules" != 'no'; then
   WITH_MODULES_TRUE=
   WITH_MODULES_FALSE='#'
 else
@@ -19683,10 +19828,12 @@ else
 fi
 
 
-# Enable building/use of libltdl if we are building shared libraries regardless
-# of whether modules are built or not.
+# Only use/depend on libtdl if we are building modules.  This is a
+# change from previous releases (prior to 1.3.17) which supported
+# loaded modules via libtdl if shared libraries were built.  of
+# whether modules are built or not.
 with_ltdl='no'
-if test "$libtool_build_shared_libs" != 'no' ; then
+if test "$build_modules" != 'no' ; then
   with_ltdl='yes'
 fi
 
@@ -19702,12 +19849,6 @@ if test "$with_ltdl" != 'no' ; then
 
 $as_echo "#define HasLTDL 1" >>confdefs.h
 
-
-  # Set DLLDFLAGS
-  if test X"$enable_shared" = Xyes; then
-    DLLDFLAGS=-export-dynamic
-
-  fi
 fi
 
 # Build a version of GraphicsMagick which operates uninstalled.
@@ -19753,25 +19894,6 @@ fi
 
   MAINT=$MAINTAINER_MODE_TRUE
 
-
-
-
-# Enable ccmalloc memory debugging support
-# Check whether --enable-ccmalloc was given.
-if test "${enable_ccmalloc+set}" = set; then :
-  enableval=$enable_ccmalloc; with_ccmalloc=$enableval
-else
-  with_ccmalloc='no'
-fi
-
-
-# Enable Electric Fence memory debugging support
-# Check whether --enable-efence was given.
-if test "${enable_efence+set}" = set; then :
-  enableval=$enable_efence; with_efence=$enableval
-else
-  with_efence='no'
-fi
 
 
 # Enable prof-based profiling support
@@ -19869,6 +19991,21 @@ QuantumDepth="$with_quantum_depth"
 cat >>confdefs.h <<_ACEOF
 #define QuantumDepth $QuantumDepth
 _ACEOF
+
+
+# Enable QuantumDepth in shared library names
+# Check whether --enable-quantum-library-names was given.
+if test "${enable_quantum_library_names+set}" = set; then :
+  enableval=$enable_quantum_library_names; with_quantum_library_names=$enableval
+else
+  with_quantum_library_names='no'
+fi
+
+MAGICK_LT_RELEASE_OPTS=
+if test "$with_quantum_library_names" != 'no'
+then
+    MAGICK_LT_RELEASE_OPTS="-release Q${QuantumDepth}"
+fi
 
 
 # Disable/Enable support for full delegate paths in delegates.mgk
@@ -20043,7 +20180,8 @@ fi
 
 # # Disable MPEG.
 # AC_ARG_WITH(mpeg2,
-# 	      [  --without-mpeg2         disable MPEG support],
+# 	      AS_HELP_STRING([--without-mpeg2],
+#                            [disable MPEG support]),
 # 	      [with_mpeg2=$withval],
 # 	      [with_mpeg2='yes'])
 
@@ -20280,7 +20418,7 @@ then
     MAGICK_API_PC_CPPFLAGS="$MAGICK_API_PC_CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
 
-    if test "$with_modules" = 'yes'
+    if test "$build_modules" = 'yes'
     then
       LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"
     else
@@ -20576,7 +20714,7 @@ fi
 
 
 # Check additional headers
-for ac_header in machine/param.h mach-o/dyld.h process.h sun_prefetch.h sys/resource.h sys/times.h sys/types.h
+for ac_header in machine/param.h mach-o/dyld.h process.h sun_prefetch.h sys/mman.h sys/resource.h sys/times.h sys/types.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -21944,7 +22082,7 @@ $as_echo "#define HAVE_MMAP_FILEIO 1" >>confdefs.h
 fi
 rm -f conftest.mmap
 
-for ac_func in atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
+for ac_func in _aligned_malloc atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
@@ -22408,8 +22546,8 @@ else
   # We make a subdir and do the tests there.  Otherwise we can end up
   # making bogus files that we don't know about and never remove.  For
   # instance it was reported that on HP-UX the gcc test will end up
-  # making a dummy file named `D' -- because `-MD' means `put the output
-  # in D'.
+  # making a dummy file named 'D' -- because '-MD' means "put the output
+  # in D".
   rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
@@ -22444,16 +22582,16 @@ else
     : > sub/conftest.c
     for i in 1 2 3 4 5 6; do
       echo '#include "conftst'$i'.h"' >> sub/conftest.c
-      # Using `: > sub/conftst$i.h' creates only sub/conftst1.h with
-      # Solaris 8's {/usr,}/bin/sh.
-      touch sub/conftst$i.h
+      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
+      # Solaris 10 /bin/sh.
+      echo '/* dummy */' > sub/conftst$i.h
     done
     echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
 
-    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # We check with '-c' and '-o' for the sake of the "dashmstdout"
     # mode.  It turns out that the SunPro C++ compiler does not properly
-    # handle `-M -o', and we need to detect this.  Also, some Intel
-    # versions had trouble with output in subdirs
+    # handle '-M -o', and we need to detect this.  Also, some Intel
+    # versions had trouble with output in subdirs.
     am__obj=sub/conftest.${OBJEXT-o}
     am__minus_obj="-o $am__obj"
     case $depmode in
@@ -22462,8 +22600,8 @@ else
       test "$am__universal" = false || continue
       ;;
     nosideeffect)
-      # after this tag, mechanisms are not by side-effect, so they'll
-      # only be used when explicitly requested
+      # After this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested.
       if test "x$enable_dependency_tracking" = xyes; then
 	continue
       else
@@ -22471,7 +22609,7 @@ else
       fi
       ;;
     msvc7 | msvc7msys | msvisualcpp | msvcmsys)
-      # This compiler won't grok `-c -o', but also, the minuso test has
+      # This compiler won't grok '-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
       am__obj=conftest.${OBJEXT-o}
@@ -23822,120 +23960,6 @@ fi
 fi
 
 
-
-#
-# Add support for ccmalloc memory debugging library if requested
-#
-have_ccmalloc='no'
-LIB_CCMALLOC=''
-if test "$with_ccmalloc" = 'yes'
-then
-  # Extract the first word of "ccmalloc", so it can be a program name with args.
-set dummy ccmalloc; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_CCMALLOCDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $CCMALLOCDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_CCMALLOCDelegate="$CCMALLOCDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_CCMALLOCDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-CCMALLOCDelegate=$ac_cv_path_CCMALLOCDelegate
-if test -n "$CCMALLOCDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CCMALLOCDelegate" >&5
-$as_echo "$CCMALLOCDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  if test -n "$CCMALLOCDelegate"
-  then
-    eval `grep PREFIX= $CCMALLOCDelegate | sed -e 's/PREFIX/CCMALLOC_PREFIX/'`
-    OLIBS="$LIBS"
-    # Assume that gcc is used with ccmalloc.
-    LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ccmalloc_malloc in -lccmalloc" >&5
-$as_echo_n "checking for ccmalloc_malloc in -lccmalloc... " >&6; }
-if ${ac_cv_lib_ccmalloc_ccmalloc_malloc+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lccmalloc -ldl $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ccmalloc_malloc ();
-int
-main ()
-{
-return ccmalloc_malloc ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ccmalloc_ccmalloc_malloc=yes
-else
-  ac_cv_lib_ccmalloc_ccmalloc_malloc=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ccmalloc_ccmalloc_malloc" >&5
-$as_echo "$ac_cv_lib_ccmalloc_ccmalloc_malloc" >&6; }
-if test "x$ac_cv_lib_ccmalloc_ccmalloc_malloc" = xyes; then :
-  LIB_CCMALLOC="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl"
-fi
-
-    if test -n "$LIB_CCMALLOC"
-    then
-      LIBS="$OLIBS"
-      LIBS="$LIBS $LIB_CCMALLOC"
-      have_ccmalloc='yes'
-     else
-      LIBS="$OLIBS"
-    fi
-  fi
-fi
-
-#
-# Add support for Electric Fence debugging library if requested
-#
-if test "$with_efence" = 'yes'
-then
-  LIB_EFENCE='-lefence'
-  LIBS="$LIB_EFENCE $LIBS"
-fi
-
 #
 # Find math library
 #
@@ -24522,7 +24546,7 @@ fi
 #
 have_lzma='no'
 LIB_LZMA=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'
+if test "$with_lzma" != 'no'
 then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA support " >&5
 $as_echo_n "checking for LZMA support ... " >&6; }
@@ -28074,7 +28098,7 @@ configure_transform_name=`echo ${program_transform_name} | sed 's,\\$\\$,$,'`
 # Default delegate definitions
 AutotraceDecodeDelegateDefault='autotrace'
 BZIPDelegateDefault='bzip2'
-BrowseDelegateDefault='mozilla'
+BrowseDelegateDefault='xdg-open'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
 DCRAWDecodeDelegateDefault='dcraw'
@@ -28091,8 +28115,6 @@ ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
-LZWDecodeDelegateDefault='uncompress'
-LZWEncodeDelegateDefault='compress'
 LaunchDelegateDefault='gimp'
 MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='mpeg2decode'
@@ -28197,8 +28219,10 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BrowseDelegateDefault" firefox netscape", so it can be a program name with args.
-set dummy "$BrowseDelegateDefault" firefox netscape; ac_word=$2
+for ac_prog in "$BrowseDelegateDefault" firefox konqueror google-chrome mozilla lynx
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_BrowseDelegate+:} false; then :
@@ -28224,7 +28248,6 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BrowseDelegate" && ac_cv_path_BrowseDelegate=""$BrowseDelegateDefault""
   ;;
 esac
 fi
@@ -28237,6 +28260,10 @@ else
 $as_echo "no" >&6; }
 fi
 
+
+  test -n "$BrowseDelegate" && break
+done
+test -n "$BrowseDelegate" || BrowseDelegate=""$BrowseDelegateDefault""
 
 # Extract the first word of ""$CGMDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$CGMDecodeDelegateDefault"; ac_word=$2
@@ -28888,88 +28915,6 @@ LPRDelegate=$ac_cv_path_LPRDelegate
 if test -n "$LPRDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LPRDelegate" >&5
 $as_echo "$LPRDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$LZWDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$LZWDecodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_LZWDecodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $LZWDecodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_LZWDecodeDelegate="$LZWDecodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_LZWDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_LZWDecodeDelegate" && ac_cv_path_LZWDecodeDelegate=""$LZWDecodeDelegateDefault""
-  ;;
-esac
-fi
-LZWDecodeDelegate=$ac_cv_path_LZWDecodeDelegate
-if test -n "$LZWDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LZWDecodeDelegate" >&5
-$as_echo "$LZWDecodeDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$LZWEncodeDelegateDefault"", so it can be a program name with args.
-set dummy "$LZWEncodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_LZWEncodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $LZWEncodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_LZWEncodeDelegate="$LZWEncodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_LZWEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_LZWEncodeDelegate" && ac_cv_path_LZWEncodeDelegate=""$LZWEncodeDelegateDefault""
-  ;;
-esac
-fi
-LZWEncodeDelegate=$ac_cv_path_LZWEncodeDelegate
-if test -n "$LZWEncodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LZWEncodeDelegate" >&5
-$as_echo "$LZWEncodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -29915,8 +29860,6 @@ then
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
-  LZWDecodeDelegate="$LZWDecodeDelegateDefault"
-  LZWEncodeDelegate="$LZWEncodeDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
   MANDelegate="$MANDelegateDefault"
   MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
@@ -29938,8 +29881,6 @@ then
 fi
 
 # Delegate substitutions
-
-
 
 
 
@@ -30507,33 +30448,109 @@ fi
 
 
 # Create a simple string containing format names for all delegate libraries
+# DELEGATES is used to select sub-directories in the PerlMagick test suite
+# MAGICK_FEATURES is used to declare required features in the test suite
 DELEGATES=''
-if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
-if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
-if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
-if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
-if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
-if test "$have_png$have_jpeg" = 'yesyes' ; then DELEGATES="$DELEGATES jng"; fi
-if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
-if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
-if test "$have_lcms2"    = 'yes' ; then DELEGATES="$DELEGATES lcms2"  ; fi
-if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
-if test "$have_lzma"    = 'yes' ; then DELEGATES="$DELEGATES lzma"  ; fi
-# if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
-if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
-if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
+MAGICK_FEATURES=''
+if test "$have_bzlib"  = 'yes' ; then
+   DELEGATES="$DELEGATES bzlib"
+   MAGICK_FEATURES="$MAGICK_FEATURES BZLIB"
+fi
+if test "$have_ralcgm" = 'yes' ; then
+   DELEGATES="$DELEGATES cgm"
+   MAGICK_FEATURES="$MAGICK_FEATURES CGM"
+fi
+if test "$have_fpx"    = 'yes' ; then
+   DELEGATES="$DELEGATES fpx"
+   MAGICK_FEATURES="$MAGICK_FEATURES FPX"
+fi
+if test "$have_hp2xx"  = 'yes' ; then
+   DELEGATES="$DELEGATES hpgl"
+   MAGICK_FEATURES="$MAGICK_FEATURES HPGL"
+fi
+if test "$have_jbig"   = 'yes' ; then
+   DELEGATES="$DELEGATES jbig"
+   MAGICK_FEATURES="$MAGICK_FEATURES JBIG"
+fi
+if test "$have_png$have_jpeg" = 'yesyes' ; then
+   DELEGATES="$DELEGATES jng"
+   MAGICK_FEATURES="$MAGICK_FEATURES JNG"
+fi
+if test "$have_jp2"   = 'yes' ; then
+   DELEGATES="$DELEGATES jp2"
+   MAGICK_FEATURES="$MAGICK_FEATURES JP2"
+fi
+if test "$have_jpeg"   = 'yes' ; then
+   DELEGATES="$DELEGATES jpeg"
+   MAGICK_FEATURES="$MAGICK_FEATURES JPEG"
+fi
+if test "$have_lcms" = 'yes' || test "$have_lcms2" = 'yes' ; then
+   DELEGATES="$DELEGATES lcms"
+   MAGICK_FEATURES="$MAGICK_FEATURES LCMS"
+fi
+if test "$have_lzma"    = 'yes' ; then
+   DELEGATES="$DELEGATES lzma"
+   MAGICK_FEATURES="$MAGICK_FEATURES LZMA"
+fi
+if test "$have_mpeg2"   = 'yes' ; then
+   DELEGATES="$DELEGATES mpeg2"
+   MAGICK_FEATURES="$MAGICK_FEATURES MPEG2"
+fi
+if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then
+   DELEGATES="$DELEGATES mpeg"
+   MAGICK_FEATURES="$MAGICK_FEATURES MPEG"
+fi
+if test "$have_png"    = 'yes' ; then
+   DELEGATES="$DELEGATES png"
+   MAGICK_FEATURES="$MAGICK_FEATURES PNG"
+fi
 
 have_ps='no'
-if test "$have_dps"    = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
-if test "$have_ps"     = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
+if test "$have_dps"    = 'yes' || \
+   test "$have_gs" = 'yes' || \
+   test "${native_win32_build}" = 'yes' ; then
+   have_ps='yes'
+fi
+if test "$have_ps"     = 'yes' ; then
+   DELEGATES="$DELEGATES ps"
+   MAGICK_FEATURES="$MAGICK_FEATURES PS"
+fi
 
-if test "$have_ra_ppm" = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
-if test "$have_tiff"   = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
-if test "$have_ttf"    = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
-if test "$have_wmf"    = 'yes' ; then DELEGATES="$DELEGATES wmf"  ; fi
-if test "$have_x"      = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
-if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
-if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
+if test "$have_ra_ppm" = 'yes' ; then
+   DELEGATES="$DELEGATES rad"
+   MAGICK_FEATURES="$MAGICK_FEATURES RAD"
+fi
+if test "$have_tiff"   = 'yes' ; then
+   DELEGATES="$DELEGATES tiff"
+   MAGICK_FEATURES="$MAGICK_FEATURES TIFF"
+fi
+if test "$have_ttf"    = 'yes' ; then
+   DELEGATES="$DELEGATES ttf"
+   MAGICK_FEATURES="$MAGICK_FEATURES TTF"
+fi
+if test "$have_wmf"    = 'yes' ; then
+   DELEGATES="$DELEGATES wmf"
+   MAGICK_FEATURES="$MAGICK_FEATURES WMF"
+fi
+if test "$have_x"      = 'yes' ; then
+   DELEGATES="$DELEGATES x"
+   MAGICK_FEATURES="$MAGICK_FEATURES X"
+fi
+if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
+   DELEGATES="$DELEGATES xfig"
+   MAGICK_FEATURES="$MAGICK_FEATURES XFIG"
+fi
+if test "$have_zlib"   = 'yes' ; then
+   DELEGATES="$DELEGATES zlib"
+   MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
+fi
+if test "$build_modules" != 'no' || \
+   test "${native_win32_build}" = 'yes' ; then
+   MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
+fi
+# Remove extraneous spaces from output variables (asthetic)
+DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
+MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
 
 
 
@@ -30570,58 +30587,44 @@ fi
 # Build library dependency list for libMagick
 #
 
-# The with_ltdl variable is set to 'yes' if we are building shared
-# libraries, regardless of whether modules are built or not.
-#
-# The with_modules variable is set to 'yes' if coders and filters are
-# to be built as modules.  Even if coders and filters are not built,
-# module loading is supported by shared library builds.
+# The with_ltdl variable is set to 'yes' if we will be linking against
+# libltdl.  We only link against libltdl if we are building coders and
+# filters as modules.
 
-# This is kind of tricky since if ${LIBLTDL} references a .la file,
-# that .la file may represent a convenience library, or it may
-# reference a shared library which will be formally installed.  It may
-# also reference an already formally installed libltdl using -lltdl
-# syntax.
+# The build_modules variable is set to 'yes' if coders and filters are
+# to be built as modules.
 
-# --with-included-ltdl (with_included_ltdl)
-#   Use our libltdl
-# Set to empty by default.
-# Set to 'no' if --with-ltdl-include and --with-ltdl-lib are used.
-# Set to 'no' if --with-included-ltdl=no or --without-included-ltdl are used.
+# This is kind of tricky since ${LIBLTDL} may reference a .la file
+# which represents a shared library which will be formally installed
+# (due to --enable-ltdl-install) or it may also reference an already
+# formally installed libltdl using -lltdl syntax.  We don't want to
+# care if the installed libltdl is built from the bundled libltdl, of
+# if it is already formally installed.
 
-# --enable-ltdl-install (enable_ltdl_install)
-#   Our libltdl will be formally installed
-# Set to 'yes' if enable_ltdl_install or enable_ltdl_convenience is 'yes'.
-
-# --enable-ltdl-convenience (enable_ltdl_convenience = 'yes')
-#   Our libltdl is built as a convenience library
-#
-# Make conditionals INSTALL_LTDL and CONVENIENCE_LTDL
+# Libltdl ltdl/Makefile.inc supports automake conditionals
+# INSTALL_LTDL and CONVENIENCE_LTDL
 
 #echo "with_included_ltdl      = $with_included_ltdl"
 #echo "enable_ltdl_install     = $enable_ltdl_install"
 #echo "enable_ltdl_convenience = $enable_ltdl_convenience"
 
-MAGICK_LIBLTDL='' # Libltdl for GraphicsMagick build
+MAGICK_LIBLTDL=''       # Libltdl for GraphicsMagick build
 MAGICK_API_LIBLTDL=''   # Libltdl for dependent application (API) build
 MAGICK_LTDLDEPS=''      # Extra libltdl dependencies
 if test "$with_ltdl" != 'no'
 then
-  if test \( "$with_included_ltdl" = 'no' -o "$enable_ltdl_convenience" = 'no' \) -o "$enable_ltdl_install" = 'yes'
-  then
-    MAGICK_API_LIBLTDL='-lltdl'
-  fi
+  MAGICK_API_LIBLTDL='-lltdl'
   MAGICK_LIBLTDL=${LIBLTDL}
   MAGICK_LTDLDEPS=${LTDLDEPS}
 fi
 
 
 
-if test "$with_modules" != 'no'
+if test "$build_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 
 
@@ -30641,6 +30644,15 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+
+MAGICK_API_CFLAGS=$CFLAGS
+MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
+MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
+MAGICK_API_DEP_LIBS="$MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_API_DEP_LIBS"
+
+MAGICK_API_DEP_LIBS=`echo $MAGICK_API_DEP_LIBS | sed -e 's/  */ /g'`
+MAGICK_API_LIBS=`echo $MAGICK_API_LIBS | sed -e 's/  */ /g'`
 
 # Save configure/build parameters for later reference
 
@@ -30685,7 +30697,7 @@ _ACEOF
 
 
 cat >>confdefs.h <<_ACEOF
-#define GM_BUILD_LIBS "${MAGICK_DEP_LIBS}"
+#define GM_BUILD_LIBS "${MAGICK_API_DEP_LIBS}"
 _ACEOF
 
 
@@ -30699,10 +30711,6 @@ LIBS=$LIBS_USER
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-MAGICK_API_CFLAGS=$CFLAGS
-MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
-MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 
 
@@ -30710,7 +30718,7 @@ MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 
 
 
-ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
+ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/bin/GraphicsMagick++-config Magick++/lib/GraphicsMagick++.pc Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/PerlMagickCheck.sh config/delegates.mgk config/type-ghostscript.mgk config/type-solaris.mgk config/type-windows.mgk config/type.mgk magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/magick_types.h magick/version.h common.shi rungm.sh wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc"
 
 
 # Set configured scripts to executable.
@@ -30836,6 +30844,14 @@ LIBOBJS=$ac_libobjs
 LTLIBOBJS=$ac_ltlibobjs
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking that generated files are newer than configure" >&5
+$as_echo_n "checking that generated files are newer than configure... " >&6; }
+   if test -n "$am_sleep_pid"; then
+     # Hide warnings about reused PIDs.
+     wait $am_sleep_pid 2>/dev/null
+   fi
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: done" >&5
+$as_echo "done" >&6; }
  if test -n "$EXEEXT"; then
   am__EXEEXT_TRUE=
   am__EXEEXT_FALSE='#'
@@ -32019,6 +32035,7 @@ do
     "magick/GraphicsMagick.pc") CONFIG_FILES="$CONFIG_FILES magick/GraphicsMagick.pc" ;;
     "magick/magick_types.h") CONFIG_FILES="$CONFIG_FILES magick/magick_types.h" ;;
     "magick/version.h") CONFIG_FILES="$CONFIG_FILES magick/version.h" ;;
+    "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
     "rungm.sh") CONFIG_FILES="$CONFIG_FILES rungm.sh" ;;
     "wand/GraphicsMagickWand-config") CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand-config" ;;
     "wand/GraphicsMagickWand.pc") CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand.pc" ;;
@@ -32637,7 +32654,7 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
     # Strip MF so we end up with the name of the file.
     mf=`echo "$mf" | sed -e 's/:.*$//'`
     # Check whether this is an Automake generated Makefile or not.
-    # We used to match only the files named `Makefile.in', but
+    # We used to match only the files named 'Makefile.in', but
     # some people rename them; so instead we look at the file content.
     # Grep'ing the first line is not enough: some people post-process
     # each Makefile.in and add a new line on top of each file to say so.
@@ -32671,21 +32688,19 @@ $as_echo X"$mf" |
       continue
     fi
     # Extract the definition of DEPDIR, am__include, and am__quote
-    # from the Makefile without running `make'.
+    # from the Makefile without running 'make'.
     DEPDIR=`sed -n 's/^DEPDIR = //p' < "$mf"`
     test -z "$DEPDIR" && continue
     am__include=`sed -n 's/^am__include = //p' < "$mf"`
     test -z "am__include" && continue
     am__quote=`sed -n 's/^am__quote = //p' < "$mf"`
-    # When using ansi2knr, U may be empty or an underscore; expand it
-    U=`sed -n 's/^U = //p' < "$mf"`
     # Find all dependency output files, they are included files with
     # $(DEPDIR) in their names.  We invoke sed twice because it is the
     # simplest approach to changing $(DEPDIR) to its actual value in the
     # expansion.
     for file in `sed -n "
       s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
-	 sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
+	 sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g'`; do
       # Make sure the directory exists.
       test -f "$dirpart/$file" && continue
       fdir=`$as_dirname -- "$file" ||
@@ -33578,6 +33593,7 @@ echo "Shared libraries  --enable-shared=$enable_shared    	$libtool_build_shared
 echo "Static libraries  --enable-static=$enable_static    	$libtool_build_static_libs"
 echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
 echo "Quantum depth     --with-quantum-depth=$with_quantum_depth 	$with_quantum_depth"
+echo "Modules           --with-modules=$with_modules        	$build_modules"
 echo ""
 echo "Delegate Configuration:"
 echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
@@ -33640,7 +33656,5 @@ echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
 echo "  DEFS     = $DEFS"
 echo "  LDFLAGS  = $LDFLAGS"
-#echo "  LIBS     = $TESTED_LIBS"
-echo "  LIBS     = $MAGICK_DEP_LIBS"
+echo "  LIBS     = $MAGICK_API_DEP_LIBS"
 echo ""
-

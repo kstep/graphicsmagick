@@ -597,6 +597,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Geometry: %ldx%ld",bmp_info.width,bmp_info.height);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Planes: %d",bmp_info.planes);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Bits per pixel: %d",bmp_info.bits_per_pixel);
           }
       }
@@ -632,27 +634,32 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Format: MS Windows bitmap");
+              "  Format: MS Windows bitmap 3.X");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Geometry: %ldx%ld",bmp_info.width,bmp_info.height);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Planes: %d",bmp_info.planes);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Bits per pixel: %d",bmp_info.bits_per_pixel);
             switch ((int) bmp_info.compression)
             {
               case BI_RGB:
               {
+                /* uncompressed */
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Compression: BI_RGB");
                 break;
               }
               case BI_RLE4:
               {
+                /* 4 bit RLE */
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Compression: BI_RLE4");
                 break;
               }
               case BI_RLE8:
               {
+                /* 8 bit RLE */
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Compression: BI_RLE8");
                 break;
@@ -836,7 +843,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
     image->depth=8;
-    image->matte=bmp_info.alpha_mask != 0;
+    /*
+      Image has alpha channel if alpha mask is specified, or is
+      uncompressed and 32-bits per pixel
+    */
+    image->matte=((bmp_info.alpha_mask != 0)
+                  || ((bmp_info.compression == BI_RGB)
+                      && (bmp_info.bits_per_pixel == 32)));
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
         image->storage_class=PseudoClass;
@@ -928,7 +941,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
-        bmp_info.alpha_mask=0;
+        bmp_info.alpha_mask=(image->matte ? 0xff000000L : 0);
         bmp_info.red_mask=0x00ff0000L;
         bmp_info.green_mask=0x0000ff00L;
         bmp_info.blue_mask=0x000000ffL;

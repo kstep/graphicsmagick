@@ -1,0 +1,20 @@
+#!/bin/sh
+# -*- shell-script -*-
+# Copyright (C) 2004-2012 GraphicsMagick Group
+# Test ICC Transforms
+. ${srcdir}/utilities/tests/common.sh
+
+# Number of tests we plan to execute
+test_plan_fn 3
+
+ORIGINAL_PROFILE=sunrise.icc
+IMAGE_OUTPUT=ICCTransform_out.miff
+
+rm -f ${ORIGINAL_PROFILE}
+rm -f ${IMAGE_OUTPUT}
+test_command_fn 'Extract ICC profile' ${GM} convert ${SUNRISE_MIFF} ${ORIGINAL_PROFILE}
+test_command_fn 'Apply ICC profile and then reverse it' -F LCMS ${GM} convert ${SUNRISE_MIFF} -profile ${BETARGB_PROFILE} -profile ${ORIGINAL_PROFILE} ${IMAGE_OUTPUT}
+test_command_fn 'Verify results' -F LCMS ${GM} compare -maximum-error 0.004 -metric MAE ${SUNRISE_MIFF} ${IMAGE_OUTPUT}
+rm -f ${ORIGINAL_PROFILE}
+rm -f ${IMAGE_OUTPUT}
+:

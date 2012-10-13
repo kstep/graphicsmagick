@@ -369,6 +369,9 @@
 /* Define to 1 if you have the <sys/dl.h> header file. */
 #undef HAVE_SYS_DL_H
 
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
+
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_NDIR_H
@@ -435,6 +438,9 @@
 
 /* This value is set to 1 to indicate that the system argz facility works */
 #undef HAVE_WORKING_ARGZ
+
+/* Define to 1 if you have the `_aligned_malloc' function. */
+#undef HAVE__ALIGNED_MALLOC
 
 /* Define to 1 if you have the `_exit' function. */
 #undef HAVE__EXIT
@@ -548,6 +554,15 @@
 
 /* Command which returns total physical memory in bytes */
 #undef MAGICK_PHYSICAL_MEMORY_COMMAND
+
+/* Target Host CPU */
+#undef MAGICK_TARGET_CPU
+
+/* Target Host OS */
+#undef MAGICK_TARGET_OS
+
+/* Target Host Vendor */
+#undef MAGICK_TARGET_VENDOR
 
 /* define if the compiler lacks ios::binary */
 #undef MISSING_STD_IOS_BINARY
