@@ -6,7 +6,7 @@
 
 libtoolize --verbose --copy --force
 # echo 'm4_include([ltdl/m4/lt~obsolete.m4])' >> aclocal.m4
-aclocal -I ltdl/m4 -I m4
+aclocal -I -I m4
 autoheader
 autoconf
 automake --verbose --add-missing --copy --force-missing

@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2011 GraphicsMagick Group
+# Copyright (C) 2004-2012 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -16,7 +16,7 @@ topincludedir = @includedir@/GraphicsMagick
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
-ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
+ACLOCAL_AMFLAGS = -I m4
 
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 
@@ -29,7 +29,6 @@ DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 ## Make sure these will be cleaned even when they're not built by
 ## default.
 CLEANFILES = \
-	$(LTDL_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES) \
@@ -45,11 +44,9 @@ bin_SCRIPTS = \
 	$(WAND_BIN_SCRPTS)
 
 include_HEADERS =
-	$(LTDL_INSTALLHEADERS)
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(LIBLTDL_NOINST_HDRS) \
 	$(MAGICK_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
@@ -69,7 +66,7 @@ TEST_EXTENSIONS = .sh .tap
 
 # Tests with .tap extensions use the TAP protocol and TAP driver
 TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-	$(top_srcdir)/ltdl/config/tap-driver.sh
+	$(top_srcdir)/scripts/tap-driver.sh
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
@@ -150,7 +147,6 @@ BUILT_SOURCES =
 MOSTLYCLEANFILES =
 
 include config/Makefile.am
-include ltdl/Makefile.inc
 include coders/Makefile.am
 include magick/Makefile.am
 include filters/Makefile.am
