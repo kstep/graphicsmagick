@@ -1,3 +1,8 @@
+2012-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Report fatal error if doing modules build and
+	libltdl is not found.
+
 2012-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ltdl: Libltdl is no longer bundled.  Libltdl must be previously

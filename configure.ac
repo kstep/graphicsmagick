@@ -1470,28 +1470,32 @@ have_ltdl='no'
 LIB_LTDL=''
 if test "$build_modules" != 'no'
 then
-  AC_MSG_CHECKING(for libltdl )
+  AC_MSG_CHECKING([for libltdl ])
   AC_MSG_RESULT()
   failed=0
   passed=0
-  AC_CHECK_HEADER(ltdl.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB([ltdl],[lt_dlinit],passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_MSG_CHECKING(if libltdl package is complete)
+  AC_CHECK_HEADER([ltdl.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_LIB([ltdl],[lt_dlinit],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],)
+  AC_MSG_CHECKING([if libltdl package is complete])
   if test $passed -gt 0
   then
     if test $failed -gt 0
     then
-      AC_MSG_RESULT(no -- some components failed test)
+      AC_MSG_RESULT([no -- some components failed test])
       have_ltdl='no (failed tests)'
     else
       LIB_LTDL='-lltdl'
       LIBS="$LIB_LTDL $LIBS"
-      AC_DEFINE(HasLTDL,1,Define if using libltdl to support dynamically loadable modules)
-      AC_MSG_RESULT(yes)
+      AC_DEFINE(HasLTDL,1,[Define if using libltdl to support dynamically loadable modules])
+      AC_MSG_RESULT([yes])
       have_ltdl='yes'
     fi
   else
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
+  fi
+  if test "$have_ltdl" != 'yes'
+  then
+    AC_MSG_FAILURE([libltdl is required by modules build],[1])
   fi
 fi
 AM_CONDITIONAL(WITH_LTDL, test "$have_ltdl" != 'no')
