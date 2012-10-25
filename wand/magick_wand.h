@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2012 GraphicsMagick Group */
 
 /*
   ImageMagick MagickWand interface.
@@ -196,6 +196,8 @@ extern WandExport unsigned int
   MagickGetImageExtrema(MagickWand *,unsigned long *,unsigned long *),
   MagickGetImageGreenPrimary(MagickWand *,double *,double *),
   MagickGetImageMatteColor(MagickWand *,PixelWand *),
+  MagickGetImagePage(MagickWand *wand,
+    unsigned long *width,unsigned long *height,long *x,long *y),
   MagickGetImagePixels(MagickWand *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,unsigned char *),
   MagickGetImageRedPrimary(MagickWand *,double *,double *),
@@ -279,6 +281,9 @@ extern WandExport unsigned int
   MagickSetImageIterations(MagickWand *,const unsigned long),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),
   MagickSetImageOption(MagickWand *,const char *,const char *,const char *),
+  MagickSetImagePage(MagickWand *wand,
+    const unsigned long width,const unsigned long height,const long x,
+    const long y),
   MagickSetImagePixels(MagickWand *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,unsigned char *),
   MagickSetImageRedPrimary(MagickWand *,const double,const double),

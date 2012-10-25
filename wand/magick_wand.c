@@ -3909,6 +3909,55 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e P a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImagePage() retrieves the image page size and offset used when
+%  placing (e.g. compositing) the image.
+%
+%  The format of the MagickGetImagePage method is:
+%
+%      MagickGetImagePage(MagickWand *wand,
+%                         unsigned long *width,
+%                         unsigned long *height,
+%                         long *x,
+%                         long *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width, height: The region size.
+%
+%    o x, y: Offset (from top left) on base canvas image on
+%      which to composite image data.
+%
+*/
+WandExport unsigned int MagickGetImagePage(MagickWand *wand,
+                                           unsigned long *width,
+                                           unsigned long *height,
+                                           long *x,
+                                           long *y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  *width=wand->images->page.width;
+  *height=wand->images->page.height;
+  *x=wand->images->page.x;
+  *y=wand->images->page.y;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e P i x e l s                                   %
 %                                                                             %
 %                                                                             %
@@ -8312,6 +8361,56 @@ WandExport unsigned int MagickSetImageOption(MagickWand *wand,
   (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s=%.1024s",
     format,key,value);
   (void) AddDefinitions(wand->image_info,option,&wand->exception);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e P a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImagePage() sets the image page size and offset used when
+%  placing (e.g. compositing) the image.  Pass all zeros for the
+%  default placement.
+%
+%  The format of the MagickSetImagePage method is:
+%
+%       unsigned int MagickSetImagePage(MagickWand *wand,
+%                                       const unsigned long width,
+%                                       const unsigned long height,
+%                                       const long x,
+%                                       const long y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width, height: The region size.
+%
+%    o x, y: Offset (from top left) on base canvas image on
+%      which to composite image data.
+%
+*/
+WandExport unsigned int MagickSetImagePage(MagickWand *wand,
+                                           const unsigned long width,
+                                           const unsigned long height,
+                                           const long x,
+                                           const long y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->images->page.width=width;
+  wand->images->page.height=height;
+  wand->images->page.x=x;
+  wand->images->page.y=y;
   return(True);
 }
 
