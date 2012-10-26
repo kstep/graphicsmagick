@@ -1,3 +1,12 @@
+2012-10-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (TranslateTextEx): Fix bug with input string
+	read overrun if the input string ends with a single '%'.  This
+	sometimes caused random heap data to be added to the output string
+	until another null character is reached.  A simple work-around
+	without this fix is to use "%%" rather than "%".  Fixes
+	SourceForge bug 3580219 "strange results with '%' in Annotate()".
+
 2012-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickSetImagePage): New method to support

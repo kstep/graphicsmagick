@@ -5433,6 +5433,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %    o formatted_text: The address of a character string containing the embedded
 %      formatting characters.
 %
+%    o translate: text translation callback function
+%
 */
 MagickExport char *TranslateTextEx(const ImageInfo *image_info,
                                    Image *image,
@@ -5807,6 +5809,8 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
         break;
       }
     }
+    if (*p == '\0')
+      break;
   }
   *q='\0';
   DestroyImageInfo(clone_info);
