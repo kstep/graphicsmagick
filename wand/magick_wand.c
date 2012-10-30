@@ -120,8 +120,8 @@ struct _MagickWand
     *quantize_info;
 
   Image
-    *image,
-    *images;
+    *image,             /* Current working image */
+    *images;            /* Whole image list */
 
   unsigned int
     iterator;
@@ -3946,10 +3946,10 @@ WandExport unsigned int MagickGetImagePage(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  *width=wand->images->page.width;
-  *height=wand->images->page.height;
-  *x=wand->images->page.x;
-  *y=wand->images->page.y;
+  *width=wand->image->page.width;
+  *height=wand->image->page.height;
+  *x=wand->image->page.x;
+  *y=wand->image->page.y;
   return(True);
 }
 
@@ -8407,10 +8407,10 @@ WandExport unsigned int MagickSetImagePage(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  wand->images->page.width=width;
-  wand->images->page.height=height;
-  wand->images->page.x=x;
-  wand->images->page.y=y;
+  wand->image->page.width=width;
+  wand->image->page.height=height;
+  wand->image->page.x=x;
+  wand->image->page.y=y;
   return(True);
 }
 

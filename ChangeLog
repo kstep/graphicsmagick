@@ -1,3 +1,10 @@
+2012-10-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickGetImagePage): Need to use 'image'
+	rather than 'images' in order to work with iterator.
+	(MagickSetImagePage): Need to use 'image'
+	rather than 'images' in order to work with iterator.
+
 2012-10-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (TranslateTextEx): Fix bug with input string
