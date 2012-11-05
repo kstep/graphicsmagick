@@ -36,6 +36,17 @@
 <div class="document">
 
 
+<p>2012-11-04  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simplesystems&#46;org">glennrp<span>&#64;</span>simplesystems<span>&#46;</span>org</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (ReadOnePNGImage): Let libpng unpack all sub-8-bit
+pixels (see change of 2012-08-31 which lets libpng unpack sub-8-bit
+palette images; this also lets libpng unpack the grayscale images).</li>
+<li>coders/png.c (ReadOnePNGImage): Corrected the reading of interlaced
+images (see SourceForge bug 3420695, in which all passes are
+displayed in a garbled manner instead of only the completed image).</li>
+</ul>
+</blockquote>
 <p>2012-10-29  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
