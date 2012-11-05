@@ -1546,6 +1546,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     pass,
     ping_bit_depth,
     ping_colortype,
+    ping_file_depth,
     ping_interlace_method,
     ping_compression_method,
     ping_filter_method,
@@ -1751,6 +1752,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       &ping_compression_method,
                       &ping_filter_method);
 
+  ping_file_depth = ping_bit_depth;
+
   (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
                       &ping_trans_color);
 
@@ -1785,12 +1788,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (ping_bit_depth < 8)
     {
-      if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
-        {
-          png_set_packing(ping);
-          ping_bit_depth=8;
-          image->depth=8;
-        }
+       png_set_packing(ping);
+       ping_bit_depth=8;
+       image->depth=8;
     }
 
 #if defined(PNG_READ_iCCP_SUPPORTED)
@@ -2059,13 +2059,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               ping_background->green,ping_background->blue);
 
           bkgd_scale = 1;
-          if (ping_bit_depth == 1)
+          if (ping_file_depth == 1)
              bkgd_scale = 255;
-          else if (ping_bit_depth == 2)
+          else if (ping_file_depth == 2)
              bkgd_scale = 85;
-          else if (ping_bit_depth == 4)
+          else if (ping_file_depth == 4)
              bkgd_scale = 17;
-          if (ping_bit_depth <= 8)
+          if (ping_file_depth <= 8)
              bkgd_scale *= 257;
 
           ping_background->red *= bkgd_scale;
@@ -2107,7 +2107,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading PNG tRNS chunk.");
 
-      bit_mask = (1 << ping_bit_depth) - 1;
+      bit_mask = (1 << ping_file_depth) - 1;
 
       /*
         Image has a transparent background.
@@ -2125,17 +2125,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (ping_colortype == PNG_COLOR_TYPE_GRAY)
         {
 #if (QuantumDepth == 8)
-          if (ping_bit_depth < QuantumDepth)
+          if (ping_file_depth < QuantumDepth)
 #endif
             transparent_color.opacity=(unsigned long) (
                 ping_trans_color->gray *
-                (65535L/((1UL << ping_bit_depth)-1)));
+                (65535L/((1UL << ping_file_depth)-1)));
 
 #if (QuantumDepth == 8)
           else
             transparent_color.opacity=(unsigned long) (
                 (ping_trans_color->gray * 65535L)/
-                ((1UL << ping_bit_depth)-1));
+                ((1UL << ping_file_depth)-1));
 #endif
           if (logging != MagickFalse)
             {
@@ -2240,7 +2240,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           unsigned long
             scale;
 
-          scale=(MaxRGB/((1 << ping_bit_depth)-1));
+          scale=(MaxRGB/((1 << ping_file_depth)-1));
           if (scale < 1)
             scale=1;
           for (i=0; i < (long) image->colors; i++)
@@ -2396,8 +2396,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               (void) ImportImagePixelArea(image,(QuantumType) GrayQuantum,
                                           image->depth,png_pixels+
                                           row_offset,0,0);
-            if (ping_colortype == PNG_COLOR_TYPE_GRAY ||
-                ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA)
+            else if (ping_colortype == PNG_COLOR_TYPE_GRAY)
+              {
+                image->depth=8;
+                (void) ImportImagePixelArea(image,
+                                           (QuantumType) GrayQuantum,
+                                            image->depth,png_pixels+
+                                            row_offset,0,0);
+                image->depth=depth;
+              }
+            else if (ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA)
               {
                 image->depth=8;
                 (void) ImportImagePixelArea(image,
@@ -2410,8 +2418,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
                                           image->depth,png_pixels+
                                           row_offset,0,0);
-            else if (ping_colortype == PNG_COLOR_TYPE_RGB ||
-                     ping_colortype == PNG_COLOR_TYPE_RGB_ALPHA)
+            else if (ping_colortype == PNG_COLOR_TYPE_RGB)
+              {
+                image->depth=8;
+                (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
+                                            image->depth,png_pixels+
+                                            row_offset,0,0);
+                image->depth=depth;
+              }
+            else if (ping_colortype == PNG_COLOR_TYPE_RGB_ALPHA)
               {
                 image->depth=8;
                 (void) ImportImagePixelArea(image,(QuantumType) RGBAQuantum,
@@ -2457,6 +2472,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 				      image->columns,image->rows))
             break;
       }
+
   else /* image->storage_class != DirectClass */
     for (pass=0; pass < num_passes; pass++)
       {
@@ -2494,52 +2510,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             r=quantum_scanline;
             switch (ping_bit_depth)
               {
-              case 1:
-                {
-                  register long
-                    bit;
-
-                  for (x=(long) image->columns-7; x > 0; x-=8)
-                    {
-                      for (bit=7; bit >= 0; bit--)
-                        *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
-                      p++;
-                    }
-                  if ((image->columns % 8) != 0)
-                    {
-                      for (bit=7; bit >= (long) (8-(image->columns % 8));
-                           bit--)
-                        *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
-                    }
-                  break;
-                }
-              case 2:
-                {
-                  for (x=(long) image->columns-3; x > 0; x-=4)
-                    {
-                      *r++=(*p >> 6) & 0x03;
-                      *r++=(*p >> 4) & 0x03;
-                      *r++=(*p >> 2) & 0x03;
-                      *r++=(*p++) & 0x03;
-                    }
-                  if ((image->columns % 4) != 0)
-                    {
-                      for (i=3; i >= (long) (4-(image->columns % 4)); i--)
-                        *r++=(*p >> (i*2)) & 0x03;
-                    }
-                  break;
-                }
-              case 4:
-                {
-                  for (x=(long) image->columns-1; x > 0; x-=2)
-                    {
-                      *r++=(*p >> 4) & 0x0f;
-                      *r++=(*p++) & 0x0f;
-                    }
-                  if ((image->columns % 2) != 0)
-                    *r++=(*p++ >> 4) & 0x0f;
-                  break;
-                }
               case 8:
                 {
                   if (ping_colortype == 4)
