@@ -2187,7 +2187,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (ping_colortype == PNG_COLOR_TYPE_GRAY))
     {
       image->storage_class=PseudoClass;
-      image->colors=1 << ping_bit_depth;
+      image->colors=1 << ping_file_depth;
 #if (QuantumDepth == 8)
       if (image->colors > 256)
         image->colors=256;
