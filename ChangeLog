@@ -4,6 +4,10 @@
 	pixels (see change of 2012-08-31 which lets libpng unpack sub-8-bit
 	palette images; this also lets libpng unpack the grayscale images).
 
+	* coders/png.c (ReadOnePNGImage): Corrected the reading of interlaced
+	images (see SourceForge bug 3420695, in which all passes are
+	displayed in a garbled manner instead of only the completed image).
+
 2012-10-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickGetImagePage): Need to use 'image'

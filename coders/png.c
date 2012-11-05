@@ -2312,11 +2312,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           {
             if (num_passes > 1)
               row_offset=ping_rowbytes*y;
+
             else
               row_offset=0;
+
             png_read_row(ping,png_pixels+row_offset,NULL);
+
 	    if (!SetImagePixels(image,0,y,image->columns,1))
               break;
+
+            if (pass == num_passes-1)
+            {
 #if (QuantumDepth == 8)
             if (depth == 16)
               {
@@ -2465,7 +2471,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
             if (!SyncImagePixels(image))
               break;
+            }
           }
+
         if (image->previous == (Image *) NULL)
           if (!MagickMonitorFormatted(pass,num_passes,exception,
                                       LoadImageTag,image->filename,
@@ -2499,12 +2507,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
             if (num_passes > 1)
               row_offset=ping_rowbytes*y;
+
             else
               row_offset=0;
+
             png_read_row(ping,png_pixels+row_offset,NULL);
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
+
+            if (pass == num_passes-1)
+            {
             indexes=AccessMutableIndexes(image);
             p=png_pixels+row_offset;
             r=quantum_scanline;
@@ -2584,11 +2597,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               Transfer image scanline.
             */
             r=quantum_scanline;
+
             for (x=0; x < (long) image->columns; x++)
               indexes[x]=(*r++);
+
             if (!SyncImagePixels(image))
               break;
+            }
           }
+
         if (image->previous == (Image *) NULL)
           if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
                                       image->filename,
