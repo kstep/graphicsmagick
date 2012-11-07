@@ -7463,6 +7463,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                                   quantum_size,
                                                  png_pixels,0,0);
                   }
+                else if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
+                  {
+                    (void) ExportImagePixelArea(image,(QuantumType)
+                                                IndexQuantum,
+                                                quantum_size,
+                                                png_pixels,0,0);
+                  }
                 else /* PNG_COLOR_TYPE_GRAY_ALPHA */
                   {
                     (void) ExportImagePixelArea(image,(QuantumType)

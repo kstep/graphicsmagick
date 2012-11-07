@@ -1,4 +1,7 @@
-2012-11-04  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+2012-11-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/png.c (WriteOnePNGImage): The wrong QuantumType was
+	sometimes passed to ExportImagePixelArea() by the PNG encoder.
 
 	* coders/png.c (ReadOnePNGImage): Let libpng unpack all sub-8-bit
 	pixels (see change of 2012-08-31 which lets libpng unpack sub-8-bit
