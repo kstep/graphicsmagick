@@ -2321,8 +2321,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 	    if (!SetImagePixels(image,0,y,image->columns,1))
               break;
 
-            if (pass == num_passes-1)
-            {
+            if (pass < num_passes-1)
+              continue;
+
 #if (QuantumDepth == 8)
             if (depth == 16)
               {
@@ -2471,7 +2472,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
             if (!SyncImagePixels(image))
               break;
-            }
           }
 
         if (image->previous == (Image *) NULL)
@@ -2516,8 +2516,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (q == (PixelPacket *) NULL)
               break;
 
-            if (pass == num_passes-1)
-            {
+            if (pass < num_passes-1)
+              continue;
+
             indexes=AccessMutableIndexes(image);
             p=png_pixels+row_offset;
             r=quantum_scanline;
@@ -2604,7 +2605,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (!SyncImagePixels(image))
               break;
             }
-          }
 
         if (image->previous == (Image *) NULL)
           if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
