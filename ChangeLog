@@ -1,3 +1,8 @@
+2012-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/floats.c: Use compile-time selection of endian-specific
+	code rather than run-time.  Fix cast warning with 64-bit builds.
+
 2012-11-07  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/png.c (WriteOnePNGImage): The wrong QuantumType was

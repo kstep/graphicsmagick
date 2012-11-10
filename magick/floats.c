@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2008 - 2011 GraphicsMagick Group
+  Copyright (C) 2008 - 2012 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -30,7 +30,6 @@ int _Gm_convert_fp16_to_fp32 (const fp_16bits *fp16, float *fp32)
   unsigned char  m2, m1;  /* MSB to LSB of mantissa */
   unsigned char  new_expt;
   unsigned char  new_m3, new_m2, new_m1; 
-  unsigned int   little_endian = 1;
   unsigned char *src;
   unsigned char *dst;
 
@@ -57,23 +56,23 @@ int _Gm_convert_fp16_to_fp32 (const fp_16bits *fp16, float *fp32)
   new_expt = expt = 0;
   new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
 
-  little_endian = *((unsigned char *)&little_endian) & '1';
-  if ((int)*fp16 != 0)
+  if (*fp16 != 0)
     {
-      if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
 	{
 	  sbit =  *(src + 1) & 0x80;
 	  expt = (*(src + 1) & 0x7F) >> 2;
 	  m2 =    *(src + 1) & 0x03;
 	  m1 = *src;
 	}
-      else
+#else
 	{
 	  sbit =  *src & 0x80;
 	  expt = (*src & 0x7F) >> 2;
 	  m2 =    *src & 0x03;
 	  m1 =  *(src + 1);
 	}
+#endif /* !defined(WORDS_BIGENDIAN) */
 
       if (expt != 0)
 	new_expt = expt - 15 + 127;
@@ -81,20 +80,21 @@ int _Gm_convert_fp16_to_fp32 (const fp_16bits *fp16, float *fp32)
       new_m2  =  (m1 & 7) << 5;
       new_m1  = 0;
     }
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       *dst = new_m1;
       *(dst + 1) = new_m2;
       *(dst + 2) = ((new_expt & 1) << 7) | new_m3;
       *(dst + 3) = sbit | (new_expt >> 1);
     }
-  else
+#else
     {
       *dst = sbit | (new_expt >> 1);
       *(dst + 1) = ((new_expt & 1) << 7) | new_m3;
       *(dst + 2) = new_m2;
       *(dst + 3) = new_m1;
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
 
   /* Underflow and overflow will not be a problem 
    * since target has more significant bits that
@@ -148,7 +148,6 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
   signed   short new_expt;
   unsigned short new_mant;
   unsigned short mant;
-  unsigned int   little_endian = 1;
   unsigned char *src;
   unsigned char *dst;
   unsigned char *mp;
@@ -169,7 +168,6 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
       fprintf (stderr, "Invalid src or destination pointers\n");
       return (1);
     }
-  little_endian = *((unsigned char *)&little_endian) & '1';
 
   src = (unsigned char *)fp32;
   dst = (unsigned char *)fp16;
@@ -185,7 +183,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
     *dst = 0;
   else
     {
-      if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
 	{
 	  sbit =   *(src + 3) & 0x80;
 	  expt = ((*(src + 3) & 0x7F) << 1) | 
@@ -197,7 +195,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	    ((*src & 0x80) >> 7);
 	  m1  =  (*src & 0x7F) << 1;
 	}
-      else
+#else
 	{
 	  sbit =   *src & 0x80;
 	  expt = ((*src & 0x7F) << 1) | 
@@ -209,6 +207,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	    ((*(src + 3) & 0x80) >> 7);
 	  m1  =  (*(src + 3) & 0x7F) << 1;
 	}
+#endif /* !defined(WORDS_BIGENDIAN) */
 
       /* Extract the 16 MSB from the mantissa */  
       mant = (m3 << 8) | m2;
@@ -338,7 +337,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	}
  
       /* Extract bits into contiguous positions in bytes */
-      if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
 	{
 	  m2 =  (*(mp + 1) & 0xC0) >> 6;
 	  m1 = ((*(mp + 1) & 0x3F) << 2) |
@@ -346,7 +345,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	  *dst = m1;
 	  *(dst + 1) = sbit | ((new_expt & 0x1F) << 2) | m2;
 	}
-      else
+#else
 	{
 	  m2 = (*mp & 0xC0) >> 6;
 	  m1 = ((*mp & 0x3F) << 2) |
@@ -354,6 +353,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	  *dst = sbit | ((new_expt & 0x1F) << 2) | m2;
 	  *(dst + 1) = m1;
 	}
+#endif /* !defined(WORDS_BIGENDIAN) */
     }
 
 #ifdef DEBUG16
@@ -393,7 +393,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	}
     }
   printf (" Sbit + Exp ");
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       for (i = 1; i >= 0; i--)
 	{
@@ -406,7 +406,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	    }
 	}
     }
-  else  
+#else
     {
       for (i = 0; i < 2; i++)
 	{
@@ -419,6 +419,7 @@ int _Gm_convert_fp32_to_fp16 (const float *fp32, fp_16bits *fp16, const int mode
 	    }
 	}
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
   printf ("\n");
 
   mant = ((unsigned short)m2 << 8) | (unsigned short)m1; 
@@ -474,7 +475,6 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
   unsigned char  new_m3, new_m2, new_m1;
   /* unsigned short mant; */
   /* unsigned int   new_mant; */
-  unsigned int   little_endian = 1;
   /* unsigned char *mp; */
   unsigned char *src;
   unsigned char *dst;
@@ -494,7 +494,6 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
       fprintf (stderr, "Invalid src or destination pointers\n");
       return (1);
     }
-  little_endian = *((unsigned char *)&little_endian) & '1';
 
   src = (unsigned char *)fp24;
   dst = (unsigned char *)fp32;
@@ -504,7 +503,7 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
   /* new_mant = mant = 0; */
   new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
 
-  if ((int)*fp24 == 0)
+  if (*fp24 == 0)
     {
       *dst = 0;
       *(dst + 1) = 0;
@@ -513,20 +512,21 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
     }
   else
     {
-      if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
 	{
 	  sbit = *(src + 2) & 0x80;
 	  expt = *(src + 2) & 0x7F;
 	  m2  =  *(src + 1);
 	  m1  =  *src;
 	}
-      else
+#else
 	{
 	  sbit = *src & 0x80;
 	  expt = *src & 0x7F;
 	  m2  =  *(src + 1);
 	  m1  =  *(src + 2);
 	}
+#endif /* !defined(WORDS_BIGENDIAN) */
 
       if (expt != 0)
 	new_expt = expt - 63 + 127;
@@ -539,20 +539,21 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
    * since the target has more significant bits in the
    * exponent and the significand.
    */
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       *dst = new_m1;
       *(dst + 1) = new_m2;
       *(dst + 2) = ((new_expt & 1) << 7) | new_m3;
       *(dst + 3) = sbit | (new_expt >> 1);
     }
-  else
+#else
     {
       *dst = sbit | (new_expt >> 1);
       *(dst + 1) = ((new_expt & 1) << 7) | new_m3;
       *(dst + 2) = new_m2;
       *(dst + 3) = new_m1;
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
 
 #ifdef DEBUG32
   /* Debugging code for display only */
@@ -576,7 +577,7 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
     }
 
   printf (" Sbit + Exp ");
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       for (i = 3; i >= 0; i--)
 	{
@@ -589,7 +590,7 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
 	    }
 	}
     }
-  else  
+#else
     {
       for (i = 0; i < 4; i++)
 	{
@@ -602,6 +603,7 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
 	    }
 	}
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
   printf ("\n");
 
   new_mant = ((unsigned int)new_m3 << 16) | ((unsigned int)new_m2 << 8) | new_m1;
@@ -654,7 +656,6 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
   unsigned char  new_m2, new_m1;
   signed   short new_expt;
   unsigned int   mant, new_mant;
-  unsigned int   little_endian = 1;
   unsigned char *mp;
   unsigned char *src;
   unsigned char *dst;
@@ -674,7 +675,6 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
       fprintf (stderr, "Invalid src or destination pointers\n");
       return (1);
     }
-  little_endian = *((unsigned char *)&little_endian) & '1';
 
   src = (unsigned char *)fp32;
   dst = (unsigned char *)fp24;
@@ -687,7 +687,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 
   if (*fp32 != 0)
     {
-      if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
 	{
 	  sbit =   *(src + 3) & 0x80;
 	  expt = ((*(src + 3) & 0x7F) << 1) | 
@@ -698,7 +698,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	    ((*src & 0x80) >> 7);
 	  m1  =  (*src & 0x7F) << 1;
 	}
-      else
+#else
 	{
 	  sbit =   *src & 0x80;
 	  expt = ((*src & 0x7F) << 1) | 
@@ -709,7 +709,8 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	    ((*(src + 3) & 0x80) >> 7);
 	  m1  =  (*(src + 3) & 0x7F) << 1;
 	}
-  
+#endif /* !defined(WORDS_BIGENDIAN) */
+
       mant = (m3 << 24) | (m2 << 16) |( m1 << 8); 
       if (expt != 0)
 	new_expt = expt - 127 + 63;
@@ -837,7 +838,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	    }
 	}
     }
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       new_m2 = *(mp + 3);
       new_m1 = *(mp + 2);
@@ -845,7 +846,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
       *(dst + 1) = new_m2;
       *(dst + 2) = sbit | (new_expt & 0x7F);
     }
-  else
+#else
     {
       new_m2 = *mp;
       new_m1 = *(mp + 1);
@@ -853,6 +854,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
       *(dst + 1) = new_m2;
       *(dst + 2) = new_m1;
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
 
 #ifdef DEBUG24
   /* Debugging code for display only */
@@ -894,7 +896,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	}
     }
   printf (" Sbit + Exp ");
-  if (little_endian)
+#if !defined(WORDS_BIGENDIAN)
     {
       for (i = 2; i >= 0; i--)
 	{
@@ -907,7 +909,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	    }
 	}
     }
-  else  
+#else
     {
       for (i = 0; i < 3; i++)
 	{
@@ -920,6 +922,7 @@ int _Gm_convert_fp32_to_fp24 (const float *fp32, fp_24bits *fp24, const int mode
 	    }
 	}
     }
+#endif /* !defined(WORDS_BIGENDIAN) */
   printf ("\n");
 
   mant = ((unsigned int)new_m2 << 8) | (unsigned int)new_m1; 
