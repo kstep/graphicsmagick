@@ -1,5 +1,7 @@
 2012-11-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (IsGlob): IsGlob can be more efficient.
+
 	* magick/floats.c: Use compile-time selection of endian-specific
 	code rather than run-time.  Fix cast warning with 64-bit builds.
 

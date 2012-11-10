@@ -3059,15 +3059,15 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsGlob() returns MagickTrue if the path specification contains a globbing
-%  patten.as determined by GetGlob.
+%  patten as determined by GetGlob.
 %
 %  The format of the IsGlob method is:
 %
-%      MagickBool IsGlob(const char *geometry)
+%      MagickBool IsGlob(const char *path)
 %
 %  A description of each parameter follows:
 %
-%    o status: IsGlob() returns True if the path specification contains
+%    o status: Returns MagickTrue if the path specification contains
 %      a globbing patten.
 %
 %    o path: The path.
@@ -3076,16 +3076,30 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 */
 MagickExport MagickBool IsGlob(const char *path)
 {
-  MagickBool
-    status;
+  register const char
+    *p;
 
-  status=(strchr(path,'*') != (char *) NULL) ||
-    (strchr(path,'?') != (char *) NULL) ||
-    (strchr(path,'{') != (char *) NULL) ||
-    (strchr(path,'}') != (char *) NULL) ||
-    (strchr(path,'[') != (char *) NULL) ||
-    (strchr(path,']') != (char *) NULL);
-  return(status);
+  MagickBool
+    status = MagickFalse;
+
+  for (p = path; *p != '\0'; p++)
+    {
+      switch (*p)
+        {
+        case '*':
+        case '?':
+        case '{':
+        case '}':
+        case '[':
+        case ']':
+          {
+            status = MagickTrue;
+            break;
+          }
+        }
+    }
+
+  return status ;
 }
 
 /*
