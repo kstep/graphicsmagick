@@ -4371,7 +4371,7 @@ for the purpose of parsing, but is otherwise not used.</pp>
 
 <pp>
 As an example, an image wrongly in BGR channel order may be converted
-to RGB using this matrix (green->red, red->green):</pp>
+to RGB using this matrix (blue->red, red->blue):</pp>
 <pre>
   0 0 1
   0 1 0
