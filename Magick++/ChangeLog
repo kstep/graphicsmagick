@@ -1,3 +1,9 @@
+2012-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* COPYING: Change Magick++ usage license to be exactly the MIT
+	license without the additional sentence about retention of
+	copyright (which was already legally implicit).
+
 2012-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (defineValue): Use AddDefinition() rather than
