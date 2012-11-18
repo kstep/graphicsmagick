@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#include "wand/wand_symbols.h"
 #include "wand/pixel_wand.h"
 
 #undef CloneDrawingWand

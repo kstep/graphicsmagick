@@ -36,6 +36,30 @@
 <div class="document">
 
 
+<p>2012-11-18  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>wand/wand_symbols.h, magick/symbol.h: MagickWand API is now
+prefixed with 'Gm' when the --enable-symbol-prefix configure
+option is supplied.  These changes are contributed by Ben Wu.
+Details of changes are as follows:<ol class="arabic">
+<li>A new header file wand/wand_symbols.h which prefixes all
+MagickWand API symbols with Gm.</li>
+<li>Modification to all the header files in wand/ to include
+wand_symbols.h.</li>
+<li>Modification to magick/symbols.h to include additional
+symbols which were colliding with names in ImageMagick.</li>
+<li>Modification to magick/error.c to exclude function
+definitions for MagickError, MagickFatalError,
+MagickWarning, and ThrowException when building with
+--enable-symbol-prefix option. There four names were also
+defined as macros so it appears that putting them in a
+symbol-remapping file wont work.</li>
+</ol>
+</li>
+<li>Makefile.am: Update Automake to 1.12.5.</li>
+</ul>
+</blockquote>
 <p>2012-11-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

@@ -15,6 +15,8 @@
 extern "C" {
 #endif
 
+#include "wand/wand_symbols.h"
+
 typedef struct _PixelWand PixelWand;
 
 extern WandExport char

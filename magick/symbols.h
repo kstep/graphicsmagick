@@ -73,6 +73,7 @@
 #define AssignThreadViewData GmAssignThreadViewData
 #define AttachBlob GmAttachBlob
 #define AverageImages GmAverageImages
+#define BackgroundColor GmBackgroundColor
 #define Base64Decode GmBase64Decode
 #define Base64Encode GmBase64Encode
 #define BenchmarkImageCommand GmBenchmarkImageCommand
@@ -85,6 +86,7 @@
 #define BlobWriteByteHook GmBlobWriteByteHook
 #define BlurImage GmBlurImage
 #define BlurImageChannel GmBlurImageChannel
+#define BorderColor GmBorderColor
 #define BorderImage GmBorderImage
 #define CatchException GmCatchException
 #define CatchImageException GmCatchImageException
@@ -137,6 +139,9 @@
 #define DCM_SetRescaling GmDCM_SetRescaling
 #define DeallocateImageProfileIterator GmDeallocateImageProfileIterator
 #define DeconstructImages GmDeconstructImages
+#define DefaultTileFrame GmDefaultTileFrame
+#define DefaultTileGeometry GmDefaultTileGeometry
+#define DefaultTileLabel GmDefaultTileLabel
 #define DefineClientName GmDefineClientName
 #define DefineClientPathAndName GmDefineClientPathAndName
 #define DeleteImageFromList GmDeleteImageFromList
@@ -313,6 +318,7 @@
 #define FlattenImages GmFlattenImages
 #define FlipImage GmFlipImage
 #define FlopImage GmFlopImage
+#define ForegroundColor GmForegroundColor
 #define FormatSize GmFormatSize
 #define FormatString GmFormatString
 #define FormatStringList GmFormatStringList
@@ -510,6 +516,9 @@
 #define LocaleNCompare GmLocaleNCompare
 #define LocaleUpper GmLocaleUpper
 #define LockSemaphoreInfo GmLockSemaphoreInfo
+#define LogMagickEvent GmLogMagickEvent
+#define LogMagickEventList GmLogMagickEventList
+#define MatteColor GmMatteColor
 #define MSBOrderLong GmMSBOrderLong
 #define MSBOrderShort GmMSBOrderShort
 #define MagickAllocFunctions GmMagickAllocFunctions
@@ -711,6 +720,8 @@
 #define PopImagePixels GmPopImagePixels
 #define PrependImageToList GmPrependImageToList
 #define ProfileImage GmProfileImage
+#define PSDensityGeometry GmPSDensityGeometry
+#define PSPageGeometry GsPSPageGeometry
 #define PurgeTemporaryFiles GmPurgeTemporaryFiles
 #define PushImagePixels GmPushImagePixels
 #define QuantizeImage GmQuantizeImage
@@ -867,6 +878,7 @@
 #define SampleImage GmSampleImage
 #define ScaleImage GmScaleImage
 #define SeekBlob GmSeekBlob
+#define SegmentImage GmSegmentImage
 #define SetBlobClosable GmSetBlobClosable
 #define SetBlobTemporary GmSetBlobTemporary
 #define SetCacheView GmSetCacheView

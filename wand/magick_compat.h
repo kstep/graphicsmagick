@@ -19,6 +19,8 @@ extern "C" {
 
 #if defined(MAGICK_IMPLEMENTATION)
 
+#include "wand/wand_symbols.h"
+
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"

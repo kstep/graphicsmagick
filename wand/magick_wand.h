@@ -30,6 +30,7 @@ extern "C" {
 #  define WandExport
 #endif
 
+#include "wand/wand_symbols.h"
 #include "magick/api.h"
 #include "wand/drawing_wand.h"
 #include "wand/pixel_wand.h"
