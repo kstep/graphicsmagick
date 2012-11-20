@@ -1,5 +1,9 @@
 2012-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.h ("C"): Need to include wand/wand_symbols.h
+	after magick/api.h in order for options from magick_config.h to
+	take effect.
+
 	* magick/symbols.h (PSPageGeometry): Fix typo. Should map to
 	GmPSPageGeometry.
 

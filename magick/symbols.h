@@ -721,7 +721,7 @@
 #define PrependImageToList GmPrependImageToList
 #define ProfileImage GmProfileImage
 #define PSDensityGeometry GmPSDensityGeometry
-#define PSPageGeometry GsPSPageGeometry
+#define PSPageGeometry GmPSPageGeometry
 #define PurgeTemporaryFiles GmPurgeTemporaryFiles
 #define PushImagePixels GmPushImagePixels
 #define QuantizeImage GmQuantizeImage

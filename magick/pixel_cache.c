@@ -505,7 +505,9 @@ static inline ViewInfo
 {
   return image->default_views->views[omp_get_thread_num()];
 }
-#define AccessDefaultCacheView(image) AccessDefaultCacheViewInlined(image)
+#if !defined(AccessDefaultCacheView)
+#  define AccessDefaultCacheView(image) AccessDefaultCacheViewInlined(image)
+#endif
 
 
 /*
