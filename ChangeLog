@@ -1,3 +1,8 @@
+2012-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/symbols.h (PSPageGeometry): Fix typo. Should map to
+	GmPSPageGeometry.
+
 2012-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/wand_symbols.h, magick/symbol.h: MagickWand API is now
