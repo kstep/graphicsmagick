@@ -727,18 +727,28 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReadBlobLSBLong(image)/0x3ffffff;
             bmp_info.blue_primary.z=(double)
               ReadBlobLSBLong(image)/0x3ffffff;
+
             sum=bmp_info.red_primary.x+bmp_info.red_primary.x+
               bmp_info.red_primary.z;
-            image->chromaticity.red_primary.x/=sum;
-            image->chromaticity.red_primary.y/=sum;
+            bmp_info.red_primary.x/=sum;
+            bmp_info.red_primary.y/=sum;
+            image->chromaticity.red_primary.x=bmp_info.red_primary.x;
+            image->chromaticity.red_primary.y=bmp_info.red_primary.y;
+
             sum=bmp_info.green_primary.x+bmp_info.green_primary.x+
               bmp_info.green_primary.z;
-            image->chromaticity.green_primary.x/=sum;
-            image->chromaticity.green_primary.y/=sum;
+            bmp_info.green_primary.x/=sum;
+            bmp_info.green_primary.y/=sum;
+            image->chromaticity.green_primary.x=bmp_info.green_primary.x;
+            image->chromaticity.green_primary.y=bmp_info.green_primary.y;
+
             sum=bmp_info.blue_primary.x+bmp_info.blue_primary.x+
               bmp_info.blue_primary.z;
-            image->chromaticity.blue_primary.x/=sum;
-            image->chromaticity.blue_primary.y/=sum;
+            bmp_info.blue_primary.x/=sum;
+            bmp_info.blue_primary.y/=sum;
+            image->chromaticity.blue_primary.x=bmp_info.blue_primary.x;
+            image->chromaticity.blue_primary.y=bmp_info.blue_primary.y;
+
             /*
               Decode 16^16 fixed point formatted gamma_scales.
             */

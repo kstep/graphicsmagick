@@ -1,3 +1,8 @@
+2012-11-21  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
+
+	* coders/bmp.c (ReadBMPImage): Fixed an old bug with decoding
+	chromaticity primaries.
+
 2012-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.h ("C"): Need to include wand/wand_symbols.h
