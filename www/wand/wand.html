@@ -3,60 +3,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title>GraphicsMagick Wand C API</title>
 <link rel="stylesheet" href="../docutils-articles.css" type="text/css" />
 </head>
 <body>
 
 <div class="banner">
-<span>
 <img src="../images/gm-107x76.png" alt="GraphicMagick logo" width="107" height="76" />
 <span class="title">GraphicsMagick</span>
 <form action="http://www.google.com/search">
-    Search&nbsp;site
-	<input type=hidden name="domains" value="www.graphicsmagick.org" />
-	<input type=hidden name="sitesearch" value="www.graphicsmagick.org" />
-    <input type=text name="q" size="25" maxlength="255" />
-    <input type=submit name="sa" value="Search" />
+	<input type="hidden" name="domains" value="www.graphicsmagick.org" />
+	<input type="hidden" name="sitesearch" value="www.graphicsmagick.org" />
+    <span class="nowrap"><input type="text" name="q" size="25" maxlength="255" />&nbsp;<input type="submit" name="sa" value="Search" /></span>
 </form>
-</span>
 </div>
 
 <div class="navmenu">
 <ul>
 <li><a href="../index.html">Home</a></li>
-<li><a href="../Copyright.html">License</a></li>
-<li><a href="../mission.html">Mission</a></li>
+<li><a href="../project.html">Project</a></li>
 <li><a href="../download.html">Download</a></li>
 <li><a href="../README.html">Install</a></li>
-<li><a href="../FAQ.html">FAQ</a></li>
+<li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="../formats.html">Formats</a></li>
-</ul>
-</div>
-<div class="navmenu">
-<ul>
-<li><a href="../process.html">Process</a></li>
-<li><a href="../contribute.html">Contribute</a></li>
-<li><a href="../CVS.html">CVS</a></li>
-<li><a href="http://sourceforge.net/mail/?group_id=73485" target="top_">Lists</a></li>
-<li><a href="../Changes.html">Changes</a></li>
-<li><a href="http://sourceforge.net/projects/graphicsmagick/" target="top_">Bugs</a></li>
+<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
-<li><a href="../links.html">Links</a></li>
+<li><a href="../reference.html">Reference</a></li>
 </ul>
 </div>
 <div class="document" id="graphicsmagick-wand-c-api">
 <h1 class="title">GraphicsMagick Wand C API</h1>
 
+<!-- -*- mode: rst -*- -->
+<!-- This text is in reStucturedText format, so it may look a bit odd. -->
+<!-- See http://docutils.sourceforge.net/rst.html for details. -->
 <p>The GraphicsMagick Wand C library provides a mid-level abstract C
-language programming interface for GraphicsMagick.  It is based on the
-Wand API provided in ImageMagick as of August 2003.  After August
-2003, ImageMagick changed its license to one unusable by
-GraphicsMagick so this version of the Wand library is not in sync with
-the current ImageMagick version.</p>
+language programming interface for GraphicsMagick.  It is originally
+based on the Wand API provided in ImageMagick as of August 2003.
+After August 2003, ImageMagick changed its license to one unusable by
+GraphicsMagick so this version of the Wand library is not completely
+in sync with the current ImageMagick version.</p>
 <p>The API is divided into a number of categories. While reading this
 documentation, please reference the <a class="reference external" href="../api/types.html">types</a> documentation as required:</p>
 <blockquote>
@@ -66,6 +54,79 @@ documentation, please reference the <a class="reference external" href="../api/t
 <li><a class="reference external" href="pixel_wand.html">Pixel</a>: Wand pixel access/update interfaces</li>
 </ul>
 </blockquote>
+<p>The following is a simple example program which (assuming the program
+name is <cite>rotate</cite>) is executed similar to <cite>rotate infile outfile</cite>.  It
+reads from file <cite>infile</cite>, rotates the image 30 degrees using a black
+background, and writes the result to file <cite>outfile</cite>:</p>
+<pre class="literal-block">
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;wand/magick_wand.h&gt;
+
+int main(int argc,char **argv)
+{
+  MagickWand *magick_wand;
+  MagickPassFail status = MagickPass;
+  const char *infile, *outfile;
+
+  if (argc != 3)
+    {
+      fprintf(stderr,&quot;Usage: %s: infile outfile\n&quot;,argv[0]);
+      return 1;
+    }
+
+  infile=argv[1];
+  outfile=argv[2];
+
+  // Initialize GraphicsMagick API
+  InitializeMagick(*argv);
+
+  // Allocate Wand handle
+  magick_wand=NewMagickWand();
+
+  // Read input image file
+  if (status == MagickPass)
+    {
+      status = MagickReadImage(magick_wand,infile);
+    }
+
+  // Rotate image clockwise 30 degrees with black background
+  if (status == MagickPass)
+    {
+      PixelWand *background;
+      background=NewPixelWand();
+      PixelSetColor(background,&quot;#000000&quot;);
+      status = MagickRotateImage(magick_wand,background,30);
+      DestroyPixelWand(background);
+    }
+
+  // Write output file
+  if (status == MagickPass)
+    {
+      status = MagickWriteImage(magick_wand,outfile);
+    }
+
+  // Diagnose any error
+  if (status != MagickPass)
+    {
+      char *description;
+      ExceptionType severity;
+
+      description=MagickGetException(magick_wand,&amp;severity);
+      (void) fprintf(stderr,&quot;%.1024s (severity %d)\n&quot;,
+                     description,severity);
+    }
+
+  // Release Wand handle
+  DestroyMagickWand(magick_wand);
+
+  // Destroy GraphicsMagick API
+  DestroyMagick();
+
+  return (status == MagickPass ? 0 : 1);
+}
+</pre>
 <p>To compile on Unix, the command looks something like this:</p>
 <pre class="literal-block">
 gcc -o demo demo.c -O `GraphicsMagickWand-config --cppflags --ldflags --libs`
@@ -74,12 +135,7 @@ gcc -o demo demo.c -O `GraphicsMagickWand-config --cppflags --ldflags --libs`
 compile the GraphicsMagick wand library. Using compatible options ensures that
 your program will compile and run.</p>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2009 - 2010</p>
-</div>
-<div class="footer">
-<hr class="footer" />
-Generated on: 2011-01-25 02:14 UTC.
-
+<p>Copyright © GraphicsMagick Group 2009 - 2012</p>
 </div>
 </body>
 </html>

@@ -106,7 +106,7 @@
 # Makefile for building API HTML files
 #
 
-# Copyright (C) 2009 GraphicsMagick Group
+# Copyright (C) 2009 - 2012 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -4039,7 +4039,8 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/quantize.html \
 	$(WWWDIR)/tools.html \
-	$(WWWDIR)/utilities.html
+	$(WWWDIR)/utilities.html\
+	$(WWWDIR)/wand/wand.html
 
 WWWW_EXTRA_DIST = $(WWW_HTML_FILES) $(WWW_RST_FILES)
 WWW_MAINTAINER_TARGETS = $(WWW_HTML_FILES) $(WWWDIR)/color.html

@@ -1,3 +1,7 @@
+2012-11-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/wand/wand.rst: Add a simple example of using the Wand API.
+
 2012-11-21  Glenn Randers-Pehrson  <glennrp@simplesystems.org> 
 
 	* coders/bmp.c (ReadBMPImage): Fixed an old bug with decoding

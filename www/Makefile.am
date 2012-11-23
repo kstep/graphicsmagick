@@ -214,7 +214,8 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/programming.html \
 	$(WWWDIR)/quantize.html \
 	$(WWWDIR)/tools.html \
-	$(WWWDIR)/utilities.html
+	$(WWWDIR)/utilities.html\
+	$(WWWDIR)/wand/wand.html
 
 WWWW_EXTRA_DIST=$(WWW_HTML_FILES) $(WWW_RST_FILES)
 
