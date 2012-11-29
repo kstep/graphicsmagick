@@ -1,3 +1,9 @@
+2012-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* rungm.sh.in: Remove extraneous space in first line which
+	prevents execution with T-shell (tsch).  Reported by William
+	Langdon.
+
 2012-11-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/wand/wand.rst: Add a simple example of using the Wand API.
