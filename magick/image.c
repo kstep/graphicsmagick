@@ -602,7 +602,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     x,
     y;
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned long
@@ -638,10 +638,11 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   /*
     Initialize append next attributes.
   */
-  append_image=CloneImage(image,width,height,True,exception);
+  append_image=CloneImage(image,width,height,MagickTrue,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
+  append_image->storage_class=DirectClass;
   if (stack)
     {
       /*
@@ -650,8 +651,6 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       y=0;
       for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if (next->storage_class == DirectClass)
-          (void) SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
 	if (append_image->columns > next->columns)
 	  SetImageColorRegion(append_image,next->columns,y,
@@ -661,7 +660,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         status=MagickMonitorFormatted(scene,GetImageListLength(image),
                                       exception,AppendImageText,
                                       image->filename);
-        if (status == False)
+        if (status == MagickFail)
           break;
         scene++;
       }
@@ -673,8 +672,6 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   x=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    if (next->storage_class == DirectClass)
-      (void) SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     if (append_image->rows > next->rows)
       SetImageColorRegion(append_image,x,next->rows,
@@ -685,7 +682,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     status=MagickMonitorFormatted(scene++,GetImageListLength(image),
                                   exception,AppendImageText,
                                   image->filename);
-    if (status == False)
+    if (status == MagickFail)
       break;
   }
   return(append_image);
@@ -2137,7 +2134,8 @@ MagickExport MagickPassFail SetImageColor(Image *image,
 %
 %  SetImageColorRegion() sets the red, green, blue and opacity components
 %  of each pixel in the specified region to those from a specified pixel
-%  value.
+%  value.  Please note that it is assumed that the pixel value is in
+%  the same colorspace as the image.
 %
 %  The format of the SetImageColorRegion method is:
 %
@@ -2183,7 +2181,6 @@ SetImageColorRegion(Image *image,
 
   if (pixel->opacity != OpaqueOpacity)
     image->matte=MagickTrue;
-  image->colorspace=RGBColorspace;
   image->storage_class=DirectClass;
 
   status=PixelIterateMonoModify(SetImageColorCallBack,NULL,

@@ -1,3 +1,18 @@
+2012-12-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageColorRegion): The provided color should
+	be in the same colorspace as the image.  The image is no longer
+	converted to RGB with the expectation that the provided color is
+	always some particular RGB.
+	(AppendImages): No longer transform the canvas image to RGB.  Now
+	append uses the first listed image to determine the colorspace
+	which should be used when appending the additional images and of
+	the output image.  The additional images are converted to the
+	canvas image colorspace.  Likewise, the background color is
+	assumed to be in the same colorspace as the first listed image so
+	that it is compatible and can be used to fill the background color
+	without translation.
+
 2012-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* rungm.sh.in: Remove extraneous space in first line which
