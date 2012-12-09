@@ -324,7 +324,7 @@ MagickExport unsigned int Ascii85WriteByteHook(Image *image,
 MagickExport unsigned int BlobWriteByteHook(Image *image,
   const magick_uint8_t code, void *ARGUNUSED(info))
 {
-  return(WriteBlobByte(image,code));
+  return((unsigned int) WriteBlobByte(image,code));
 }
 
 /*

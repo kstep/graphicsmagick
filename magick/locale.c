@@ -210,7 +210,7 @@ GetLocaleMessageFromTag(const char *tag)
                 {
                   for (i=severity_map[j].offset; i < severity_map[j+1].offset; i++)
                     {
-                      int
+                      size_t
                         prefix,
                         taglen;
 

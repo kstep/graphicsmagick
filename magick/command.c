@@ -16117,7 +16117,7 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
                    GetClientPath(),DirectorySeparator,GetClientName());
       RegSetValueEx(hKey, "EventMessageFile", 0, REG_SZ,
                     (const BYTE *) szPathName,
-                    (strlen(szPathName) + 1)*sizeof(char));
+                    ((DWORD) strlen(szPathName) + 1)*sizeof(char));
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                             "Registered path to messages as: %s",szPathName);
 

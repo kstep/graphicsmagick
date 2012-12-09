@@ -1595,7 +1595,7 @@ GenerateEXIFAttribute(Image *image,const char *specification)
 	char
 	  c;
 
-	unsigned long
+	size_t
 	  n;
 
 	tag=0;

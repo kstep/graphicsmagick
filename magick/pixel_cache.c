@@ -866,7 +866,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
   q=pixels;
   for (v=0; v < (long) rows; v++)
     {
-      for (u=0; u < (long) columns; u+=length)
+      for (u=0; u < (long) columns; u+=(long) length)
         {
           length=Min(cache_info->columns-(x+u),columns-u);
           if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
@@ -920,7 +920,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
           /*
             Transfer a run of pixels.
           */
-          p=AcquireCacheNexus(image,x+u,y+v,length,1,image_nexus,exception);
+          p=AcquireCacheNexus(image,x+u,y+v,(const unsigned long) length,1,image_nexus,exception);
           if (p == (const PixelPacket *) NULL)
             break;
           (void) memcpy(q,p,length*sizeof(PixelPacket));

@@ -93,11 +93,13 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   Image
     *p;
 
-  long
+  unsigned long
     y;
 
-  register long
-    i,
+  register size_t
+    i;
+
+  register unsigned long
     x;
 
   unsigned long
@@ -323,7 +325,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
       */
     }
     else if ((IsGrayColorspace(image->colorspace)) ||
-             (image->is_grayscale == True))
+             (image->is_grayscale == MagickTrue))
       {
       (void) fprintf(file,"    Gray:\n");
       (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
@@ -425,21 +427,21 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         *p;
 
       p=(PixelPacket *) NULL;
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=0; x < image->columns; x++)
         {
           if (p->opacity == TransparentOpacity)
             break;
           p++;
         }
-        if (x < (long) image->columns)
+        if (x < image->columns)
           break;
       }
-      if ((x < (long) image->columns) || (y < (long) image->rows))
+      if ((x < image->columns) || (y < image->rows))
         {
           GetColorTuple(p,image->depth,image->matte,False,tuple);
           (void) fprintf(file,"  Opacity: %.1024s\t",tuple);
@@ -712,7 +714,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
             char
               **textlist;
 
-            register long
+            register unsigned long
               j;
 
             (void) strncpy(text,(char *) profile+i,length);

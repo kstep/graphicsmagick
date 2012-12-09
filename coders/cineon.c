@@ -1042,7 +1042,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   cin_file_info.user_defined_length = 0;
   user_data=GetImageProfile(image,"CINEONUSERDATA",&user_data_length);
   if (user_data && user_data_length)
-    cin_file_info.user_defined_length = user_data_length;
+    cin_file_info.user_defined_length = (U32) user_data_length;
   /* Offset to image data in bytes */
   cin_file_info.image_data_offset =
     cin_file_info.generic_section_length +

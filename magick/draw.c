@@ -429,10 +429,10 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       output has been truncated.
     */
     {
-      long
+      ssize_t
 	space_available;
       
-      space_available=context->mvg_alloc - context->mvg_length - 1;
+      space_available=(ssize_t) context->mvg_alloc - (ssize_t) context->mvg_length - 1;
       formatted_length = -1;
       if (space_available > 0)
 	{

@@ -1052,11 +1052,13 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     if (commands == (char **) NULL)
       continue;
     {
+	  size_t
+        command_length,
+         length=0;
+
       int
         command_start_column,
-        command_length,
         formatted_chars=0,
-        length=0,
         screen_width=79,
         strip_length;
       

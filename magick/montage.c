@@ -310,9 +310,6 @@ MagickExport Image *MontageImages(const Image *images,
     geometry,
     tile_info;
 
-  size_t
-    number_images;
-
   TypeMetric
     metrics;
 
@@ -327,6 +324,7 @@ MagickExport Image *MontageImages(const Image *images,
     images_per_page,
     max_height,
     number_lines,
+    number_images,
     tile,
     tiles,
     tiles_per_column,
@@ -555,7 +553,7 @@ MagickExport Image *MontageImages(const Image *images,
     montage->montage=AllocateString((char *) NULL);
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
-      count+=strlen(image_list[tile]->filename)+1;
+      count+=(unsigned long) strlen(image_list[tile]->filename)+1;
     montage->directory=MagickAllocateMemory(char *,count);
     if ((montage->montage == (char *) NULL) ||
         (montage->directory == (char *) NULL))

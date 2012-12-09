@@ -4880,7 +4880,7 @@ SubstituteString(char **buffer,const char *search,const char *replace)
   register char
     *p=*buffer;
 
-  register unsigned int
+  register size_t
     i;
 
   size_t

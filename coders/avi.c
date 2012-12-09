@@ -405,13 +405,15 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *pixels;
 
+  size_t
+    count;
+
   unsigned int
     status;
 
   unsigned long
     bytes_per_line,
     chunk_size,
-    count,
     number_colors;
 
   MagickBool

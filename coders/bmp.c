@@ -1770,7 +1770,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 image)
             }
           bmp_info.file_size-=bmp_info.image_size;
-          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,
+          bmp_info.image_size=(unsigned long) EncodeImage(image,bytes_per_line,pixels,
               bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
           MagickFreeMemory(pixels);
