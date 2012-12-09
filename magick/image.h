@@ -124,9 +124,7 @@ extern "C" {
 #endif
 typedef unsigned int Quantum;
 #else
-#  ifndef _CH_
-#    error "Specified value of QuantumDepth is not supported"
-#  endif
+#  error "Specified value of QuantumDepth is not supported"
 #endif
 
 #define OpaqueOpacity  0UL

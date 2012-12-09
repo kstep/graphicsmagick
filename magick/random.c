@@ -144,7 +144,7 @@ InitializeMagickRandomKernel(MagickRandomKernel *kernel)
   /*
     Let's hash with the address of kernel as well.
   */
-  kernel->z ^= (magick_uint32_t) ((unsigned long) kernel & 4294967295UL);
+  kernel->z ^= (magick_uint32_t) ((magick_uintptr_t) kernel & 4294967295UL);
 
  /*
     Process ID

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2005 GraphicsMagick Group
+  Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -161,12 +161,20 @@ typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
 #if !defined(XS_VERSION) /* Not in Perl extension */
 
 /*
-  ssize_t is the type returned by _read and _write.
+  For POSIX, ssize_t is the type returned by _read and _write.
   Recent MinGW compilers include this typedef by default.
+
+  Note that under WIN64 read/write appear to still return 'int' and use
+  'unsigned int' rather than 'size_t' to specify the I/O size.  This really
+  sucks!
  */
-#if !defined(ssize_t) && !defined(__MINGW32__)
-typedef long ssize_t;
-#endif /* !defined(ssize_t) && !defined(__MINGW32__) */
+#if !defined(ssize_t) && !defined(__MINGW32__) && !defined(__MINGW64__)
+#  if defined(WIN64)
+  typedef __int64 ssize_t;
+#  else
+  typedef int ssize_t;
+#  endif
+#endif /* !defined(ssize_t) && !defined(__MINGW32__) && !defined(__MINGW64__)*/
 
 #endif /* !defined(XS_VERSION) */
 
@@ -206,7 +214,7 @@ extern MagickExport const GhostscriptVectors
 /*
   Directory access functions
 */
-#if !defined(HAVE_DIRENT_H) || defined(__MINGW32__)
+#if !defined(HAVE_DIRENT_H) || defined(__MINGW32__) || defined(__MINGW64__)
 struct dirent
 {
   char

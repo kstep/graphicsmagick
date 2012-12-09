@@ -1151,9 +1151,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "META CODER APP1JPEG embed: 0x%08lx (%ld)",
-                                (unsigned long) pinfo->info,
-                                (long) pinfo->length);
+                                "META CODER APP1JPEG embed: %p (%ld)",
+                                pinfo->info, /* unsigned char * */
+                                (long) pinfo->length); /* size_t */
           result=jpeg_embed(image,buff,iptc);
           DetachBlob(iptc->blob);
           DestroyImage(iptc);

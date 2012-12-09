@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2010 GraphicsMagick Group */
+/* Copyright (C) 2003-2012 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2241,7 +2241,8 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
       char
         buffer[MaxTextExtent];
 
-      (void) FormatMagickString(buffer,MaxTextExtent,"%ld bytes",
+      (void) FormatMagickString(buffer,MaxTextExtent,"%"
+                                MAGICK_SIZE_T_F "d bytes",
         (4L*blob_length/3L+4L));
       ThrowException(&drawing_wand->exception,ResourceLimitWarning,
         MemoryAllocationFailed,buffer);

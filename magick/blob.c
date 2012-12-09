@@ -2323,7 +2323,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     }
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
 			"Mmapped fd %d using %s mode at offset %" MAGICK_OFF_F
-			"u and length %" MAGICK_OFF_F "u to address 0x%p",
+			"u and length %" MAGICK_OFF_F "u to address %p",
 			file,MapModeToString(mode),offset,(magick_off_t) length,
 			map);
   return((void *) map);
@@ -2499,7 +2499,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image->logging)
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                          "Opening Blob for image 0x%p using %s mode ...",image,
+                          "Opening Blob for image %p using %s mode ...",image,
                           BlobModeToString(mode));
 
   if (image_info->blob != (void *) NULL)
@@ -2507,7 +2507,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
       AttachBlob(image->blob,image_info->blob,image_info->length);
       if (image->logging)
         (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                              "  attached image_info->blob to blob 0x%p",&image->blob);
+                              "  attached image_info->blob to blob %p",&image->blob);
       return(MagickPass);
     }
   DetachBlob(image->blob);
@@ -2535,7 +2535,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
           image->blob->handle.std=stdin;
           if (image->logging)
             (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                  "  using stdin as StandardStream blob 0x%p",
+                                  "  using stdin as StandardStream blob %p",
                                   &image->blob);
         }
       else
@@ -2543,7 +2543,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
           image->blob->handle.std=stdout;
           if (image->logging)
             (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                  "  using stdout as StandardStream blob 0x%p",
+                                  "  using stdout as StandardStream blob %p",
                                   &image->blob);
         }
 #if defined(MSWINDOWS)
@@ -2578,7 +2578,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
             image->blob->type=PipeStream;
             if (image->logging)
               (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                    "  popened \"%s\" as PipeStream blob 0x%p",
+                                    "  popened \"%s\" as PipeStream blob %p",
                                     filename+1,&image->blob);
           }
       }
@@ -2612,7 +2612,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                 image->blob->type=ZipStream;
                 if (image->logging)
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                        "  opened file %s as ZipStream blob 0x%p",
+                                        "  opened file %s as ZipStream blob %p",
                                         filename,&image->blob);
               }
           }
@@ -2632,7 +2632,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                   image->blob->type=BZipStream;
                   if (image->logging)
                     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                          "  opened file %s as BZipStream blob 0x%p",
+                                          "  opened file %s as BZipStream blob %p",
                                           filename,&image->blob);
                 }
             }
@@ -2645,7 +2645,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                 image->blob->exempt=True;
                 if (image->logging)
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                        "  opened image_info->file (%d) as FileStream blob 0x%p",
+                                        "  opened image_info->file (%d) as FileStream blob %p",
                                         fileno(image_info->file),&image->blob);
               }
             else
@@ -2674,15 +2674,17 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                       {
                         if (image->logging)
                           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                                "  setvbuf of %lu bytes returns failure!",
-                                                (unsigned long) vbuf_size);
+                                                "  setvbuf of %" MAGICK_SIZE_T_F
+                                                "u bytes returns failure!",
+                                                (MAGICK_SIZE_T) vbuf_size);
                       }
                     else
                       {
                         if (image->logging)
                           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                                "  I/O buffer set to %lu bytes",
-                                                (unsigned long) vbuf_size);
+                                                "  I/O buffer set to %"
+                                                MAGICK_SIZE_T_F "u bytes",
+                                                (MAGICK_SIZE_T) vbuf_size);
                       }
                     /*
                       Enable fsync-on-close mode if requested.
@@ -2701,7 +2703,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                     image->blob->type=FileStream;
                     if (image->logging)
                       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                            "  opened file \"%s\" as FileStream blob 0x%p",
+                                            "  opened file \"%s\" as FileStream blob %p",
                                             filename,&image->blob);
 
 		    if ((ReadBlobMode == mode) || (ReadBinaryBlobMode == mode))
@@ -2714,8 +2716,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 			(void) rewind(image->blob->handle.std);
 			if (image->logging)
 			  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-						"  read %ld magic header bytes",
-						(long) count*MaxTextExtent);
+						"  read %" MAGICK_SIZE_T_F
+                                                "u magic header bytes",
+						(MAGICK_SIZE_T) count*MaxTextExtent);
 #if defined(HasZLIB)
 			if ((magick[0] == 0x1FU) && (magick[1] == 0x8BU) &&
 			    (magick[2] == 0x08U))
@@ -2727,7 +2730,8 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 				image->blob->type=ZipStream;
 				if (image->logging)
 				  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-							"  reopened file \"%s\" as ZipStream blob 0x%p",
+							"  reopened file \"%s\""
+                                                        "as ZipStream blob %p",
 							filename,&image->blob);
 			      }
 			  }
@@ -2742,7 +2746,8 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 				image->blob->type=BZipStream;
 				if (image->logging)
 				  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-							"  reopened file %s as BZipStream blob %p",
+							"  reopened file %s as"
+                                                        " BZipStream blob %p",
 							filename,&image->blob);
 			      }
 			  }
@@ -4329,8 +4334,9 @@ MagickExport MagickPassFail UnmapBlob(void *map,const size_t length)
     status;
 
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Munmap file mapping at address 0x%p and length %lu",
-    map,(unsigned long) length);
+    "Munmap file mapping at address %p and length %"
+                        MAGICK_SIZE_T_F "u",
+    map,(MAGICK_SIZE_T) length);
   status=MagickMunmap(map,length);
   return(status == 0);
 #else

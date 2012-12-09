@@ -1115,6 +1115,42 @@ AC_MSG_RESULT($UINTPTR_T)
 AC_SUBST(UINTPTR_T)
 AC_SUBST(UINTPTR_F)
 
+MAGICK_SIZE_T='none'
+MAGICK_SIZE_T_F='none'
+MAGICK_SSIZE_T='none'
+MAGICK_SSIZE_T_F='none'
+AC_MSG_CHECKING(for size_t format specification)
+if test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long
+then
+  # Normal case for LP32 and LP64
+  MAGICK_SIZE_T='unsigned long'
+  MAGICK_SIZE_T_F='"l"'
+  MAGICK_SSIZE_T='unsigned long'
+  MAGICK_SSIZE_T_F='"l"'
+elif test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long_long
+then
+  # Maybe a LLP64 architecture like WIN64
+  case "${build_os}" in
+    mingw* )
+      MAGICK_SIZE_T='unsigned long long'
+      MAGICK_SIZE_T_F='"I64"'
+      MAGICK_SSIZE_T='signed long long'
+      MAGICK_SSIZE_T_F='"I64"'
+    ;;
+    *)
+      MAGICK_SIZE_T='unsigned long long'
+      MAGICK_SIZE_T_F='"ll"'
+      MAGICK_SSIZE_T='signed long long'
+      MAGICK_SSIZE_T_F='"ll"'
+    ;;
+  esac
+fi
+AC_MSG_RESULT($MAGICK_SIZE_T_F)
+AC_SUBST(MAGICK_SIZE_T)
+AC_SUBST(MAGICK_SIZE_T_F)
+AC_SUBST(MAGICK_SSIZE_T)
+AC_SUBST(MAGICK_SSIZE_T_F)
+
 
 ########
 #

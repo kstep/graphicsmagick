@@ -4121,10 +4121,10 @@ SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->pixels == (PixelPacket *) NULL)
     {
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-			    "Failed to allocate %lu bytes for nexus staging "
+			    "Failed to allocate %" MAGICK_SIZE_T_F "u bytes for nexus staging "
 			    "(number pixels=%" MAGICK_OFF_F "u, region width=%lu, "
 			    "region height=%lu, cache columns=%lu)!",
-			    (unsigned long) length,
+			    (MAGICK_SIZE_T) length,
 			    number_pixels,
 			    nexus_info->region.width,
 			    nexus_info->region.height,
@@ -4471,11 +4471,12 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
 				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
-				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      "d.  Wrote %" MAGICK_SSIZE_T_F "d rather than %"
+                                      MAGICK_SIZE_T_F "u bytes (%s).",
 				      y,
 				      row_offset,
-				      (long) bytes_written,
-				      (unsigned long) length,
+				      (MAGICK_SSIZE_T) bytes_written,
+				      (MAGICK_SIZE_T) length,
 				      strerror(errno));
 		break;
 	      }
@@ -4632,12 +4633,14 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
 		< (ssize_t) length)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
-				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
-				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      "Failed to write row %ld at file offset %"
+                                      MAGICK_OFF_F "d.  Wrote %"
+                                      MAGICK_SSIZE_T_F "d rather than %"
+                                      MAGICK_SIZE_T_F "u bytes (%s).",
 				      y,
 				      row_offset,
-				      (long) bytes_written,
-				      (unsigned long) length,
+				      (MAGICK_SSIZE_T) bytes_written,
+				      (MAGICK_SIZE_T) length,
 				      strerror(errno));
 		break;
 	      }
