@@ -1175,7 +1175,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
-        dib_info.image_size=(unsigned char) EncodeImage(image,bytes_per_line,pixels,dib_data);
+        dib_info.image_size=(unsigned long)
+          EncodeImage(image,bytes_per_line,pixels,dib_data);
         MagickFreeMemory(pixels);
         pixels=dib_data;
         dib_info.compression=1;
