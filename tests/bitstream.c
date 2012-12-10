@@ -29,7 +29,6 @@ int main ( int argc, char *argv[])
   register unsigned char
     *bytes;
 
-
   unsigned int
     result=0;
 
@@ -62,7 +61,7 @@ int main ( int argc, char *argv[])
       unsigned int
         bits;
 
-      size_t
+      unsigned int
         reps;
 
       if (argc != 4)
@@ -103,7 +102,7 @@ int main ( int argc, char *argv[])
       unsigned int
         bits;
 
-      size_t
+      unsigned int
         reps;
 
       if (argc != 4)

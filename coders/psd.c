@@ -692,7 +692,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read PSD raster colormap.
           */
-          if (!AllocateImageColormap(image,length/3))
+          if (!AllocateImageColormap(image,(const unsigned long) (length/3UL)))
             {
               if(logging)
                 {
@@ -1811,7 +1811,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     
     if ( iptc_profile != 0 )
       {
-        (void) WriteBlobMSBLong( image, iptc_profile_length );
+        (void) WriteBlobMSBLong( image, (const magick_uint32_t) iptc_profile_length );
         (void) WriteBlob( image, iptc_profile_length, iptc_profile );
       }
     else

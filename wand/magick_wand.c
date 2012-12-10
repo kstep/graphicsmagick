@@ -2133,8 +2133,8 @@ MagickExtentImage(MagickWand *wand,const size_t width,const size_t height,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  geometry.width=width;
-  geometry.height=height;
+  geometry.width=(unsigned long) width;
+  geometry.height=(unsigned long) height;
   geometry.x=x;
   geometry.y=y;
   extent_image=ExtentImage(wand->image,&geometry,&wand->exception);
@@ -4074,7 +4074,7 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
       if (result)
         (void) memcpy(result,profile,profile_length);
     }
-  *length=profile_length;
+  *length=(unsigned long) profile_length;
   return (result);
 }
 
@@ -6857,7 +6857,7 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
   /*
     Clone profile
   */
-  *length=profile_length;
+  *length=(unsigned long) profile_length;
   cloned_profile=MagickAllocateMemory(unsigned char *,profile_length);
   if (!cloned_profile)
     return 0;
@@ -7401,7 +7401,7 @@ WandExport unsigned int MagickSetDepth(MagickWand *wand,const size_t depth)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  wand->image_info->depth = depth;
+  wand->image_info->depth = (unsigned long) depth;
   return(True);
 }
 

@@ -986,7 +986,7 @@ static MagickPassFail load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLa
 static MagickPassFail ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
                                     outLayer )
 {
-  int
+  unsigned int
     i;
 
   unsigned int
@@ -1025,7 +1025,7 @@ static MagickPassFail ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLaye
   while ( !foundPropEnd && !EOFBlob(image) )
     {
       PropType    prop_type = (PropType) ReadBlobMSBLong(image);
-      unsigned long  prop_size = ReadBlobMSBLong(image);
+      size_t      prop_size = ReadBlobMSBLong(image);
 
       switch (prop_type)
         {
@@ -1071,7 +1071,7 @@ static MagickPassFail ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLaye
           break;
         case PROP_PARASITES:
           {
-            for (i=0; i < (long) prop_size; i++ )
+            for (i=0; i < prop_size; i++ )
               if (ReadBlobByte(image) == EOF)
                 break;
 
@@ -1101,7 +1101,7 @@ static MagickPassFail ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLaye
             while (prop_size > 0 && !EOFBlob(image))
               {
                 amount = Min (16, prop_size);
-                for (i=0; i < (long) amount; i++)
+                for (i=0; i < amount; i++)
                   if (ReadBlob(image, amount, &buf) != amount)
                     break;
                 prop_size -= Min (16, amount);

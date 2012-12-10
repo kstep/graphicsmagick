@@ -97,8 +97,10 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   int
     status;
 
+  size_t
+    length;
+
   unsigned long
-    length,
     y;
 
   register PixelPacket
@@ -397,8 +399,10 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
+  size_t
+    number_packets;
+
   unsigned long
-    number_packets,
     scene;
 
   /*

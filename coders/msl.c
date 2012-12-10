@@ -3248,7 +3248,7 @@ MSLStartElement(void *context,const xmlChar *name,
                       if (LocaleCompare(keyword, "opacity") == 0)
                         {
                           int  opac = OpaqueOpacity,
-                            len = strlen( value );
+                            len = (int) strlen( value );
 
                           if (value[len-1] == '%') {
                             char  tmp[100];

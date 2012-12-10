@@ -1599,7 +1599,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
   destination=(DestinationManager *) cinfo->dest;
   if ((MaxBufferExtent-(int) destination->manager.free_in_buffer) > 0)
     {
-      unsigned long
+      size_t
         number_bytes;
 
       number_bytes=WriteBlob(destination->image,MaxBufferExtent-
@@ -1646,7 +1646,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
       break;
     (void) strcpy((char *) profile,"ICC_PROFILE");
     profile[12]=(unsigned char) ((i/65519)+1);
-    profile[13]=(profile_length/65519)+1;
+    profile[13]=(unsigned char) ((profile_length/65519)+1);
     for (j=0; j < (long) length; j++)
       profile[j+14]=color_profile[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);

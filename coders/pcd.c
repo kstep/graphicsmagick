@@ -284,7 +284,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r->mask=(~((((unsigned int) 1) << (32-r->length))-1));
       r++;
     }
-    pcd_length[i]=length;
+    pcd_length[i]=(unsigned int) length;
   }
   /*
     Search for Sync byte.

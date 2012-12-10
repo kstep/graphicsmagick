@@ -375,7 +375,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
               quoted;
 
             next=0;
-            len = strlen(token);
+            len = (unsigned long) strlen(token);
             while (Tokenizer(&token_info,0, newstr, inputlen, token, (char *) "",
               (char *) "&", (char *) "", 0, &brkused, &next, &quoted)==0)
             {
@@ -384,7 +384,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  len -= convertHTMLcodes(s, strlen(s));
+                  len -= convertHTMLcodes(s, (int) strlen(s));
                 }
             }
 
@@ -414,7 +414,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 (void) WriteBlobMSBShort(ofile,recnum);
                 outputlen += 6;
                 if (name)
-                  nlen = strlen(name);
+                  nlen = (unsigned char) strlen(name);
                 (void) WriteBlobByte(ofile,nlen);
                 outputlen++;
                 for (i=0; i<nlen; i++)
@@ -427,7 +427,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile, len);
+                    (void) WriteBlobMSBLong(ofile, (const magick_uint32_t) len);
                     outputlen += 4;
 
                     next=0;
@@ -457,7 +457,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                     (void) WriteBlobByte(ofile,0x1c);
                     (void) WriteBlobByte(ofile,dataset);
                     (void) WriteBlobByte(ofile,recnum & 255);
-                    (void) WriteBlobMSBShort(ofile,len);
+                    (void) WriteBlobMSBShort(ofile,(const magick_uint16_t) len);
                     outputlen += 5;
                     next=0;
                     outputlen += len;
@@ -640,7 +640,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
               quoted;
 
             next=0;
-            len = strlen(token);
+            len = (unsigned long) strlen(token);
             while (Tokenizer(&token_info,0, newstr, inputlen, token, (char *) "",
               (char *) "&", (char *) "", 0, &brkused, &next, &quoted)==0)
             {
@@ -649,7 +649,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   char
                     *s = &token[next-1];
 
-                  len -= convertHTMLcodes(s, strlen(s));
+                  len -= convertHTMLcodes(s, (int) strlen(s));
                 }
             }
 
@@ -679,7 +679,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 (void) WriteBlobMSBShort(ofile,recnum);
                 outputlen += 6;
                 if (name)
-                  nlen = strlen(name);
+                  nlen = (unsigned char) strlen(name);
                 (void) WriteBlobByte(ofile,nlen);
                 outputlen++;
                 for (i=0; i<nlen; i++)
@@ -692,7 +692,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   }
                 if (recnum != IPTC_ID)
                   {
-                    (void) WriteBlobMSBLong(ofile, len);
+                    (void) WriteBlobMSBLong(ofile, (const magick_uint32_t) len);
                     outputlen += 4;
 
                     next=0;
@@ -722,10 +722,10 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                     (void) WriteBlobByte(ofile,0x1c);
                     (void) WriteBlobByte(ofile,dataset);
                     (void) WriteBlobByte(ofile,recnum & 255);
-                    (void) WriteBlobMSBShort(ofile,len);
+                    (void) WriteBlobMSBShort(ofile,(const magick_uint16_t) len);
                     outputlen += 5;
                     next=0;
-                    outputlen += len;
+                    outputlen += (long) len;
                     while (len--)
                       (void) WriteBlobByte(ofile,token[next++]);
                   }
@@ -1287,8 +1287,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 
       /* subtract off the length of the 8BIM stuff */
       length=GetBlobSize(buff)-12;
-      blob[10]=length >> 8;
-      blob[11]=length & 0xff;
+      blob[10]=(unsigned char) ((length >> 8) & 0xff);
+      blob[11]=(unsigned char) (length & 0xff);
       blob=GetBlobStreamData(buff);
       length=GetBlobSize(buff);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1522,9 +1522,9 @@ ModuleExport void UnregisterMETAImage(void)
 %
 */
 
-static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t *offset)
+static size_t GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t *offset)
 {
-  long
+  size_t
     info_length;
 
   register long
@@ -1539,7 +1539,7 @@ static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t 
   unsigned int
     marker;
 
-  unsigned long
+  size_t
     tag_length,
     blob_remaining;
     

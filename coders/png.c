@@ -2159,7 +2159,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   png_read_update_info(ping,ping_info);
 
-  ping_rowbytes=png_get_rowbytes(ping,ping_info);
+  ping_rowbytes=(png_uint_32) png_get_rowbytes(ping,ping_info);
 
   /*
     Initialize image structure.
@@ -2720,7 +2720,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             char
               *value;
 
-            length=text[i].text_length;
+            length=(unsigned long) text[i].text_length;
             value=MagickAllocateMemory(char *,length+1);
             if (value == (char *) NULL)
               {
@@ -3093,7 +3093,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       type[0]='\0';
       (void) strcat(type,"errr");
       length=ReadBlobMSBLong(image);
-      count=ReadBlob(image,4,type);
+      count=(unsigned int) ReadBlob(image,4,type);
 
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6167,7 +6167,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #else
   text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
 #endif
-  description_length=strlen((const char *) profile_description);
+  description_length=(png_uint_32) strlen((const char *) profile_description);
   allocated_length=(png_uint_32) (length*2 + (length >> 5) + 20
                                   + description_length);
 #if PNG_LIBPNG_VER >= 14000
@@ -8234,12 +8234,12 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
                                   (unsigned long) length);
           (void) WriteBlobMSBULong(image,(unsigned long) length);
           PNGType(chunk,mng_JDAA);
-          LogPNGChunk(logging,mng_JDAA,length);
+          LogPNGChunk(logging,mng_JDAA,(unsigned long) length);
           /* Write JDAT chunk(s) data */
           (void) WriteBlob(image,4,(char *) chunk);
           (void) WriteBlob(image,length,(char *) blob);
           (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),
-                                               (unsigned char *) blob,length));
+                                               (unsigned char *) blob,(uInt) length));
         }
       MagickFreeMemory(blob);
     }
@@ -8299,11 +8299,11 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
   /* Write JDAT chunk(s) */
   (void) WriteBlobMSBULong(image,(unsigned long) length);
   PNGType(chunk,mng_JDAT);
-  LogPNGChunk(logging,mng_JDAT,length);
+  LogPNGChunk(logging,mng_JDAT,(unsigned long) length);
   (void) WriteBlob(image,4,(char *) chunk);
   (void) WriteBlob(image,length,(char *) blob);
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),(unsigned char *)
-                                       blob,length));
+                                       blob,(uInt)length));
 
   (void) LiberateUniqueFileResource(jpeg_image_info->filename);
   DestroyImage(jpeg_image);
@@ -8869,11 +8869,11 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
           */
           PNGType(chunk,mng_nEED);
           chunk_length = (strlcpy((char *) chunk+4, "CACHEOFF",20));
-          (void) WriteBlobMSBULong(image,chunk_length);
-          LogPNGChunk(logging,mng_nEED,chunk_length);
+          (void) WriteBlobMSBULong(image,(const unsigned long) chunk_length);
+          LogPNGChunk(logging,mng_nEED,(unsigned long) chunk_length);
           chunk_length += 4;
           (void) WriteBlob(image,chunk_length,(char *) chunk);
-          (void) WriteBlobMSBULong(image,crc32(0,chunk,chunk_length));
+          (void) WriteBlobMSBULong(image,crc32(0,chunk,(uInt) chunk_length));
         }
 #endif
       if ((image->previous == (Image *) NULL) &&

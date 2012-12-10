@@ -222,7 +222,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
       drawing_wand->mvg_alloc=realloc_size;
     }
   {
-    int
+    ssize_t
       formatted_length;
 
     va_list
@@ -246,8 +246,8 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
       output has been truncated.
     */
     {
-      long
-	space_available;
+      size_t
+		space_available;
       
       space_available=drawing_wand->mvg_alloc-drawing_wand->mvg_length-1;
       formatted_length = -1;
@@ -264,7 +264,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
 #endif
 	  va_end(argp);
 	}
-      if ((formatted_length < 0) || (formatted_length > space_available))
+      if ((formatted_length < 0) || ((size_t) formatted_length > space_available))
 	{
 	  ThrowException(&drawing_wand->exception,DrawError,
 			 UnableToPrint,format);

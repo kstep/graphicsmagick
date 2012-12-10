@@ -1044,7 +1044,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   if (bpp < 24)
                     if ( (image->colors < (1UL<<bpp)) && (bpp != 24) )
                       MagickReallocMemory(PixelPacket *,image->colormap,
-                                          (1<<bpp)*sizeof(PixelPacket));
+                                          (size_t) (1U<<bpp)*sizeof(PixelPacket));
                 }
           
               if (bpp == 1)
@@ -1211,7 +1211,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   if(bpp < 24)
                     if( image->colors<(1UL<<bpp) && bpp!=24 )
                       MagickReallocMemory(PixelPacket *,image->colormap,
-                                          (1<<bpp)*sizeof(PixelPacket));
+                                          (size_t) (1U<<bpp)*sizeof(PixelPacket));
                 }
 
 

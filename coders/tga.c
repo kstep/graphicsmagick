@@ -892,7 +892,10 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       targa_info.id_length=0;
       attribute=GetImageAttribute(image,"comment");
       if (attribute != (const ImageAttribute *) NULL)
-        targa_info.id_length=Min(strlen(attribute->value),255);
+	    {
+		  unsigned char id_length =(unsigned char) strlen(attribute->value);
+          targa_info.id_length=Min(id_length,255);
+	    }
       targa_info.colormap_type=0;
       targa_info.colormap_index=0;
       targa_info.colormap_length=0;

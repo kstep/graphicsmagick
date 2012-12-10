@@ -1127,7 +1127,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 	    {
 	      for (z=0; z < (int) iris_info.zsize; z++)
 		{
-		  length=
+		  length=(unsigned long)
 		    SGIEncode(q+z,(int) iris_info.xsize,packets+number_packets);
 		  number_packets+=length;
 		  offsets[y+z*iris_info.ysize]=offset;
