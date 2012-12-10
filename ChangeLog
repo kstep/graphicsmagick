@@ -1,3 +1,7 @@
+2012-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (FileToBlob): Rewrite to be based on stdio.
+
 2012-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick_types.h.in: Changes to try to work better with the

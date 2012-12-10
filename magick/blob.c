@@ -1296,71 +1296,107 @@ MagickExport int EOFBlob(const Image *image)
 %
 */
 MagickExport void *FileToBlob(const char *filename,size_t *length,
-  ExceptionInfo *exception)
+                              ExceptionInfo *exception)
 {
-  magick_off_t
-    offset;
-
-  int
-    file;
+  FILE
+    *file;
 
   unsigned char
     *blob;
 
-  ssize_t
-    count;
-
-  register size_t
-    i;
-
   assert(filename != (const char *) NULL);
+  assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  /* SetExceptionInfo(exception,UndefinedException); */
-  if (MagickConfirmAccess(FileReadConfirmAccessMode,filename,exception)
-      == MagickFail)
-    return MagickFail;
-  file=open(filename,O_RDONLY | O_BINARY,0777);
-  if (file == -1)
+
+  blob=(unsigned char *) NULL;
+  /* Open file */
+  if ((file=fopen(filename,"rb")) != (FILE *) NULL)
     {
+      /* Set buffering size (best effort) */
+      size_t
+        vbuf_size;
+
+      vbuf_size=MagickGetFileSystemBlockSize();
+      (void) setvbuf(file,NULL,_IOFBF,vbuf_size);
+
+      /* Get file length */
+      if (MagickFseek(file,0L,SEEK_END) != -1)
+        {
+          magick_off_t
+            offset;
+
+          if ((offset=MagickFtell(file)) != -1)
+            {
+              *length=(size_t) offset;
+              if ((magick_off_t) *length == offset)
+                {
+                  /* Restore position to beginning of file */
+                  if (MagickFseek(file,0L,SEEK_SET) != -1)
+                    {
+                      /* Allocate memory */
+                      if ((blob=MagickAllocateMemory(unsigned char *,*length+1))
+                          != (unsigned char *) NULL)
+                        {
+                          /* Read data from file */
+                          if (fread(blob,1,*length,file) == *length)
+                            {
+                              /* Add terminating null byte */
+                              blob[*length]='\0';
+                            }
+                          else
+                            {
+                              /* Failed to read all the data */
+                              MagickFreeMemory(blob);
+                              ThrowException3(exception,BlobError,
+                                              UnableToReadToOffset,
+                                              UnableToCreateBlob);
+                            }
+                        }
+                      else
+                        {
+                          /* Failed to allocate the memory */
+                          ThrowException(exception,ResourceLimitError,
+                                         MemoryAllocationFailed,
+                                         MagickMsg(BlobError,
+                                                   UnableToCreateBlob));
+                        }
+                    }
+                  else
+                    {
+                      /* Failed to seek back to beginning of file */
+                      ThrowException3(exception,BlobError,UnableToSeekToOffset,
+                                      UnableToCreateBlob);
+                    }
+                }
+              else
+                {
+                  /* File is too large for size_t */
+                  ThrowException(exception,ResourceLimitError,
+                                 MemoryAllocationFailed,
+                                 MagickMsg(BlobError,UnableToCreateBlob));
+                }
+            }
+          else
+            {
+              /* Failed to get EOF offset */
+              ThrowException3(exception,BlobError,UnableToSeekToOffset,
+                              UnableToCreateBlob);
+            }
+        }
+      else
+        {
+          /* Failed to seek to end of file */
+          ThrowException3(exception,BlobError,UnableToSeekToOffset,
+                          UnableToCreateBlob);
+        }
+      (void) fclose(file);
+      file=(FILE *) NULL;
+    }
+  else
+    {
+      /* Failed to open the file */
       ThrowException(exception,BlobError,UnableToOpenFile,filename);
-      return((void *) NULL);
     }
-  offset=MagickSeek(file,0,SEEK_END);
-  if ((offset < 0) || (offset != (magick_off_t) ((size_t) offset)))
-    {
-      (void) close(file);
-      ThrowException3(exception,BlobError,UnableToSeekToOffset,
-        UnableToCreateBlob);
-      return((void *) NULL);
-    }
-  *length=(size_t) offset;
-  blob=MagickAllocateMemory(unsigned char *,*length+1);
-  if (blob == (unsigned char *) NULL)
-    {
-      (void) close(file);
-      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
-        MagickMsg(BlobError,UnableToCreateBlob));
-      return((void *) NULL);
-    }
-
-  (void) MagickSeek(file,0,SEEK_SET);
-  for (i=0; i < *length; i+=count)
-    {
-      count=read(file,blob+i,*length-i);
-      if (count <= 0)
-        break;
-    }
-  if (i < *length)
-    {
-      (void) close(file);
-      MagickFreeMemory(blob);
-      ThrowException3(exception,BlobError,UnableToReadToOffset,
-                      UnableToCreateBlob);
-      return((void *) NULL);
-    }
-
-  blob[*length]='\0';
-  (void) close(file);
   return(blob);
 }
 
