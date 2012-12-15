@@ -281,42 +281,11 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
 {
   if ((image->blob->offset+length) >= image->blob->extent)
     {
-      if ((image->blob->mapped) && (image->blob->handle.std != (FILE *) NULL))
-        {
-          /* Memory mapped file */
-          int
-            filedes;
-
-          size_t
-            extent,
-            quantum;
-
-          unsigned char
-            *data;
-
-          image->blob->data=0;
-          filedes=fileno(image->blob->handle.std);
-          quantum=image->blob->quantum;
-          quantum<<=1;
-          extent=image->blob->extent;
-          extent+=length+quantum;
-          if ((MagickFtruncate(filedes,extent) == 0) &&
-              ((data=(unsigned char*) MapBlob(filedes,WriteMode,0,extent)) != 0))
-            {
-              image->blob->quantum=quantum;
-              image->blob->extent=extent;
-              image->blob->data=data;
-              (void) SyncBlob(image);
-            }
-        }
-      else
-        {
-          /* In-memory Blob */
-          image->blob->quantum<<=1;
-          image->blob->extent+=length+image->blob->quantum;
-          MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
-          (void) SyncBlob(image);
-        }
+      /* In-memory Blob */
+      image->blob->quantum<<=1;
+      image->blob->extent+=length+image->blob->quantum;
+      MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
+      (void) SyncBlob(image);
       if (image->blob->data == (unsigned char *) NULL)
         {
           DetachBlob(image->blob);
@@ -502,72 +471,20 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
 #endif
   if (BlobStream == image->blob->type)
   {
-    if ((image->blob->mapped) && (image->blob->handle.std != (FILE *) NULL))
+    /*
+      In-memory blob
+    */
+    image->blob->extent=size;
+    MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
+    (void) SyncBlob(image);
+        
+    if (image->blob->data == (unsigned char *) NULL)
       {
-        /*
-          Memory mapped file I/O
-        */
-        int
-          filedes;
-        
-        size_t
-          extent;
-        
-        unsigned char
-          *data;
-        
-        image->blob->data=0;
-        filedes=fileno(image->blob->handle.std);
-        extent=size;
+        ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,
+                       NULL);
 
-        /*
-          Truncate to new size.
-        */
-        if (MagickFtruncate(filedes,extent) != 0)
-          {
-            ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(errno));
-            status=MagickFail;
-          }
-
-        if (status != MagickFail)
-          {
-            /*
-              Extend memory mapping.
-            */
-            if ((data=(unsigned char*) MapBlob(filedes,WriteMode,0,extent)) != 0)
-              {
-                image->blob->extent=extent;
-                image->blob->data=data;
-                (void) SyncBlob(image);
-              }
-            else
-              {
-                ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(errno));
-              }
-          }
-
-        if (status == MagickFail)
-          {
-            DetachBlob(image->blob);
-          }
-      }
-    else
-      {
-        /*
-          In-memory blob
-        */
-        image->blob->extent=size;
-        MagickReallocMemory(unsigned char *,image->blob->data,image->blob->extent+1);
-        (void) SyncBlob(image);
-        
-        if (image->blob->data == (unsigned char *) NULL)
-          {
-            ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,
-                            NULL);
-
-            DetachBlob(image->blob);
-            status=MagickFail;
-          }
+        DetachBlob(image->blob);
+        status=MagickFail;
       }
   }
   if (image->logging)
@@ -1013,16 +930,6 @@ MagickExport void CloseBlob(Image *image)
     }
     case BlobStream:
       {
-        if (image->blob->handle.std != (FILE *) NULL)
-          {
-            /*
-              Truncate memory-mapped output file to size.
-            */
-            status |= (MagickFtruncate(fileno(image->blob->handle.std),image->blob->length) != 0);
-            if (image->blob->fsync)
-              status |= (fsync(fileno(image->blob->handle.std)) != 0);
-            status |= (fclose(image->blob->handle.std) != 0);
-          }
         break;
       }
   }
@@ -2856,38 +2763,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                                   }
                               }
                           }
-                      }
-                  }
-              }
-            else if (*type == 'w')
-              {
-                /*
-                  Support writing to a file using memory mapping.
-                  
-                  This is an experimental feature which only partially
-                  works so it is disabled by default.
-
-                  FIXME: Does not work at all in conjunction with MAGICK_MMAP_READ
-                  and causes crashes in the test suite so I guess it is not ready yet.
-                */
-                if (((env_val = getenv("MAGICK_MMAP_WRITE")) != NULL) &&
-                    (LocaleCompare(env_val,"TRUE") == 0))
-                  {
-                    size_t
-                      length;
-
-                    void
-                      *blob;
-
-                    length=8192;
-                    blob=MapBlob(fileno(image->blob->handle.std),WriteMode,0,length);
-                    if (blob != (void *) NULL)
-                      {
-                        image->blob->type=BlobStream;
-                        image->blob->quantum=DefaultBlobQuantum;
-                        image->blob->data=blob;
-                        image->blob->mapped=True;
-                        (void) SyncBlob(image);
                       }
                   }
               }

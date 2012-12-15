@@ -1,4 +1,4 @@
-.TH gm 1 "2012/11/14" "GraphicsMagick"
+.TH gm 1 "2012/12/15" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -9510,13 +9510,6 @@ substantially improves read performance if the file has recently been
 read. However, testing shows that performance may be reduced for files
 accessed for the first time via a network since some operating systems
 failed to do read-ahead over network mounts for memory mapped files.
-.TP
-.B "MAGICK_MMAP_WRITE"
-\fRIf \fBMAGICK_MMAP_WRITE\fP is set to \fBTRUE\fP, GraphicsMagick
-will attempt to memory-map the output file for writing. This is an
-experimental feature (which is currently broken). Write performance is
-usually somewhat worse when using this approach rather than the default
-one.
 .TP
 .B "MAGICK_IO_FSYNC"
 \fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick

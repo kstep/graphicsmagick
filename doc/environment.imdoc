@@ -109,14 +109,6 @@ read. However, testing shows that performance may be reduced for files
 accessed for the first time via a network since some operating systems
 failed to do read-ahead over network mounts for memory mapped files.</abs>
 
-<opt>MAGICK_MMAP_WRITE</opt>
-
-<abs>If <s>MAGICK_MMAP_WRITE</s> is set to <s>TRUE</s>, GraphicsMagick
-will attempt to memory-map the output file for writing. This is an
-experimental feature (which is currently broken). Write performance is
-usually somewhat worse when using this approach rather than the default
-one.</abs>
-
 <opt>MAGICK_IO_FSYNC</opt>
 
 <abs>If <s>MAGICK_IO_FSYNC</s> is set to <s>TRUE</s>, then GraphicsMagick
