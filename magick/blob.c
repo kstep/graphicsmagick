@@ -445,30 +445,6 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
 #endif /* HAVE_POSIX_FALLOCATE */
     }
 
-#if 0
-  if (FileStream == image->blob->type)
-  {
-    /*
-      File I/O
-      Should use posix_fallocate()
-
-      #include <fcntl.h>
-      int posix_fallocate(int fd, off_t offset, off_t len);
-
-      or
-
-      Linux fallocate()
-
-      #include <linux/falloc.h>
-      long fallocate(int fd, int mode, loff_t offset, loff_t len);
-    */
-    if (MagickFtruncate(fileno(image->blob->file),size) != 0)
-      {
-        ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(errno));
-        status=MagickFail;
-      }
-  }
-#endif
   if (BlobStream == image->blob->type)
   {
     /*
