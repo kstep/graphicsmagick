@@ -133,7 +133,7 @@ cat <<EOF >$TEMPFILE
     <write filename="$CONJURE_RESULT"/>
 </group>
 EOF
-test_command_fn 'Conjure' -F TTF $CONJURE_CMD $TEMPFILE
+test_command_fn 'Conjure' -F 'TTF XML' $CONJURE_CMD $TEMPFILE
 
 ################### COMPARE TEST OBJECT TO TESTBASE #########################
 

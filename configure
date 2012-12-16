@@ -864,7 +864,6 @@ PTHREAD_LIBS
 PTHREAD_CXX
 PTHREAD_CC
 acx_pthread_config
-WinPathScript
 CYGWIN_BUILD_FALSE
 CYGWIN_BUILD_TRUE
 WIN32_NATIVE_BUILD_FALSE
@@ -881,6 +880,7 @@ MAGICK_FILTER_MODULE_PATH
 MAGICK_CONFIGURE_BUILD_PATH
 MAGICK_CONFIGURE_SRC_PATH
 MAGICK_CODER_MODULE_PATH
+WinPathScript
 MAN_DIR
 INFO_DIR
 OLDINCLUDE_DIR
@@ -5301,6 +5301,9 @@ eval "eval MAN_DIR=$mandir"
 # Get full paths to source and build directories
 srcdirfull="`cd $srcdir && pwd`"
 builddir="`pwd`"
+
+WinPathScript="${srcdirfull}/winpath.sh"
+
 
 #
 # Compute variables useful for running uninstalled software
@@ -29482,6 +29485,10 @@ fi
 if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
    DELEGATES="$DELEGATES xfig"
    MAGICK_FEATURES="$MAGICK_FEATURES XFIG"
+fi
+if test "$have_xml"      = 'yes' ; then
+   DELEGATES="$DELEGATES xml"
+   MAGICK_FEATURES="$MAGICK_FEATURES XML"
 fi
 if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"

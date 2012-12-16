@@ -194,6 +194,9 @@ AC_SUBST(MAN_DIR)
 srcdirfull="`cd $srcdir && pwd`"
 builddir="`pwd`"
 
+WinPathScript="${srcdirfull}/winpath.sh"
+AC_SUBST([WinPathScript])
+
 #
 # Compute variables useful for running uninstalled software
 #
@@ -3270,6 +3273,10 @@ fi
 if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
    DELEGATES="$DELEGATES xfig"
    MAGICK_FEATURES="$MAGICK_FEATURES XFIG"
+fi
+if test "$have_xml"      = 'yes' ; then
+   DELEGATES="$DELEGATES xml"
+   MAGICK_FEATURES="$MAGICK_FEATURES XML"
 fi
 if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"

@@ -48,7 +48,12 @@ test_result_fn ()
 # Test a simple command where pass/fail depends on command exit status
 #
 # Usage:
-#   test_command_fn description [ -F feat1,feat2,...] command
+#   test_command_fn description [ -F 'feat1 feat2 ...'] command
+#
+# Where:
+#    description -- test description
+#    -F          -- optional space-delimited required features
+#    command     -- command to execute
 test_command_fn ()
 {
     set +x
