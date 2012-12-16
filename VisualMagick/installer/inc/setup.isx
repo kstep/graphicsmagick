@@ -8,6 +8,10 @@
 ;
 #endif
 
+#ifdef WIN64
+#ArchitecturesInstallIn64BitMode=x64
+#endif
+
 AppName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section

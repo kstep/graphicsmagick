@@ -41,7 +41,9 @@
 ;  #include "tasks-install-devel.isx"
 ;
 ; Checkbox item to install PerlMagick
-  #include "tasks-install-perlmagick.isx"
+  #if InstallPerlMagick
+    #include "tasks-install-perlmagick.isx"
+  #endif
 #endif
 #ifdef MSVCProprietary
   #include "tasks-install-com.isx"
@@ -64,7 +66,9 @@
   #include "files-dlls.isx"
 ;
 ; Install PerlMagick
-  #include "files-perlmagick.isx"
+  #if InstallPerlMagick
+    #include "files-perlmagick.isx"
+  #endif
 ;
 ; Install development headers and libraries
 ;  #include "files-development.isx"
