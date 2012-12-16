@@ -67,8 +67,9 @@
    options which will open a Command Tool with the correct path
    settings for that version of Visual Studio.
 
-6. Open VisualMagick\installer\gm-dll-8.iss (or gm-dll-8.iss if you
-   set QuantumDepth=16) by double-clicking from Windows Explorer.
+6. Open VisualMagick\installer\gm-win32-Q8-dll-full.iss (or
+   gm-win32-Q16-dll-full.iss if you set QuantumDepth=16) by
+   double-clicking from Windows Explorer.
 
    a. File -> Compile
    b. Test install by clicking on green triangle

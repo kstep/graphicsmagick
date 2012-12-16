@@ -662,8 +662,9 @@ Windows Distribution Build Procedure
   Visual Studio provides a batch script in VC98\Bin called VCVARS32.BAT
   that can be used to do this manually after you open up a command prompt.
 
-  5. Open `GM\VisualMagick\installer\gm-dll-8.iss` (or `gm-dll-16.iss`
-     if QuantumDepth=16) by double-clicking from Windows Explorer.
+  5. Open `GM\VisualMagick\installer\gm-win32-Q8-dll-full.iss` (or
+     `gm-win32-Q16-dll-full.iss` if QuantumDepth=16) by
+     double-clicking from Windows Explorer.
 
      a. `File` -> `Compile`
 
