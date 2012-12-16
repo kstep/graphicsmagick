@@ -61,7 +61,7 @@
 <li><a class="reference internal" href="#installing-from-source-code" id="id16">Installing From Source Code</a><ul>
 <li><a class="reference internal" href="#applicability" id="id17">Applicability</a></li>
 <li><a class="reference internal" href="#important-notes" id="id18">Important Notes</a></li>
-<li><a class="reference internal" href="#windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation" id="id19">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></li>
+<li><a class="reference internal" href="#windows-xp-vista-7-visual-c-6-0-7-x-and-8-0-compilation" id="id19">Windows XP, Vista, 7 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></li>
 <li><a class="reference internal" href="#environment-variables" id="id20">Environment Variables</a></li>
 <li><a class="reference internal" href="#windows-distribution-build-procedure" id="id21">Windows Distribution Build Procedure</a></li>
 </ul>
@@ -341,14 +341,14 @@ If this happens to you, then make sure that your compiler is updated
 with the latest fixes from the Microsoft web site and the problem
 should go away.</blockquote>
 </div>
-<div class="section" id="windows-win2k-98-visual-c-6-0-7-x-and-8-0-compilation">
-<h2><a class="toc-backref" href="#id19">Windows WIN2K/98 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></h2>
+<div class="section" id="windows-xp-vista-7-visual-c-6-0-7-x-and-8-0-compilation">
+<h2><a class="toc-backref" href="#id19">Windows XP, Vista, 7 Visual C++ 6.0, 7.X, and 8.0 Compilation</a></h2>
 <blockquote>
-<p>The Visual C++ distribution targeted at Windows XP, Win2K, or Windows
-98 does not provide any stock workspace (DSW) or project files (DSP)
-except for those included with third party libraries. Instead, there is
-a &quot;configure&quot; program that must run to create build environments to
-satisfy various requirements.</p>
+<p>The Visual C++ distribution targeted at Windows 2000 through Windows
+7 (and maybe Windows 8) does not provide any stock workspace (DSW)
+or project files (DSP) except for those included with third party
+libraries. Instead, there is a &quot;configure&quot; program that must run to
+create build environments to satisfy various requirements.</p>
 <p>The Visual C++ system provides three different types of &quot;runtimes&quot;
 that must match across all application, library, and DLL code that is
 built. The &quot;configure&quot; program creates a set of build files that are
@@ -385,13 +385,14 @@ specific reason to do so.</p>
 <p>The configure program provides a button entitled</p>
 <blockquote>
 Edit &quot;magick_config.h&quot;</blockquote>
-<p>Clicking this button brings up magick_config.h in Windows notepad for
-optionally changing any preprocessor defines in GraphicsMagick's
-magick_config.h file. This file is copied to <tt class="docutils literal">magick\magick_config.h</tt>. You
-may safely open <tt class="docutils literal">magick\magick_config.h</tt>, modify it, and recompile without
-re-running the configure program. In fact, using notepad to edit the
-copied file may be preferable since it preserves the original
-magick_config.h file.</p>
+<p>Clicking this button brings up magick_config.h in Windows notepad
+for optionally changing any preprocessor defines in GraphicsMagick's
+magick_config.h file. This file is copied to
+<tt class="docutils literal">magick\magick_config.h</tt>. You may safely open
+<tt class="docutils literal">magick\magick_config.h</tt>, modify it, and recompile without
+re-running the configure program. In fact, using Visual Studio to
+edit the copied file may be preferable since it preserves the
+original magick_config.h file.</p>
 <p>Key user tunables in magick_config.h include:</p>
 <blockquote>
 <p>QuantumDepth (default 8)</p>
@@ -581,7 +582,7 @@ way. Two #defines are applicable.</p>
 <tt class="docutils literal">#define MagickConfigurePath&nbsp; <span class="pre">&quot;c:\\GraphicsMagick\\&quot;</span></tt></blockquote>
 <p>To view any image in a Microsoft window, type</p>
 <blockquote>
-<tt class="docutils literal">convert image.ext win:</tt></blockquote>
+<tt class="docutils literal">gm convert image.ext win:</tt></blockquote>
 <p>Make sure Ghostscript is installed, otherwise, you will be unable to
 convert or view a Postscript document, and Postscript standard fonts will
 not be available.</p>
@@ -593,13 +594,16 @@ the GraphicsMagick documentation.</p>
 <div class="section" id="windows-distribution-build-procedure">
 <h2><a class="toc-backref" href="#id21">Windows Distribution Build Procedure</a></h2>
 <blockquote>
-<p>The following are the instructions for how to build a Q:8 DLL-based
-distribution installer package using Visual Studio 2008 Professional:</p>
+<p>The following are the instructions for how to build a Q:8 (or Q:16)
+DLL-based distribution installer package using Visual Studio 2008
+Professional.  This is the same procedure used to produce the
+release packages:</p>
 <ol class="arabic simple">
 <li>Install prerequisite software:</li>
 </ol>
 <blockquote>
 <ol class="loweralpha simple">
+<li>Install Microsoft Visual Studio.</li>
 <li>Download and install Inno Setup 5
 &lt;&quot;<a class="reference external" href="http://www.jrsoftware.org/isinfo.php">http://www.jrsoftware.org/isinfo.php</a>&quot;&gt;.</li>
 <li>Download and install ActiveState ActivePerl
@@ -607,41 +611,65 @@ distribution installer package using Visual Studio 2008 Professional:</p>
 </ol>
 </blockquote>
 <ol class="arabic simple" start="2">
-<li>Open workspace VisualMagickconfigureconfigure.sln by double-clicking
-from Windows Explorer.<ol class="loweralpha">
+<li>Build <cite>GMVisualMagickconfigureconfigure.exe</cite> (if
+missing/outdated)<ol class="loweralpha">
+<li>Open workspace <cite>GMVisualMagickconfigureconfigure.dsp</cite> by
+double-clicking from Windows Explorer.</li>
+<li>Upgrade Visual Studio project (as required)</li>
+<li>Select <cite>Rebuild All</cite> to build configure.exe</li>
+<li>Close the project.</li>
+</ol>
+</li>
+<li>Configure Initial GraphicsMagick Visual Studio Workspace<ol class="loweralpha">
+<li>Use Windows Explorer to navigate to <cite>GMVisualMagickconfigure</cite>.</li>
+<li>Double-click on <cite>configure.exe</cite> to run configure program.</li>
+<li>Select DLL build.</li>
+<li>Check <cite>Build demo and test programs</cite>.</li>
+<li>Click on Edit <cite>magick_config.h</cite> and ensure that
+UseInstalledGraphicsMagick and ProvideDllMain are defined.</li>
+<li>Finish remaining configure wizard screens to complete.</li>
+<li><cite>File</cite> -&gt; <cite>Close Workspace</cite>.</li>
+</ol>
+</li>
+</ol>
+<ol class="arabic simple" start="2">
+<li>Open Workspace, set build configuration, build GraphicsMagick software.<ol class="loweralpha">
+<li>Open workspace <cite>GMVisualMagickconfigureconfigure.sln</cite> by
+double-clicking from Windows Explorer.</li>
+<li>Build -&gt; &quot;Set Active Configuration&quot; -&gt; &quot;All - Win32 Release&quot; -&gt; OK</li>
+<li>Optionally enable 64-bit (WIN64) compilation.  &quot;<cite>Build</cite> /
+<cite>Configuration Manager...</cite> / <cite>Active Solution Platform</cite> /
+<cite>New</cite> / <cite>x64</cite>&quot;.</li>
+<li>Open <cite>CORE_magickmagickmagick_config.h</cite> and edit any
+configuration settings you would like to change.  For example,
+you might change QuantumDepth to 16 for a&quot;Q:16&quot; build.</li>
+<li>If using Visual Studio Professional Edition, and OpenMP
+support is desired, then select <cite>CORE_magick</cite> in the Solution
+Explorer pane and use the right mouse button menu to select
+<cite>Properties</cite>.  In <cite>Configuration Properties</cite> / <cite>C/C++</cite> /
+<cite>Language</cite> set OpenMP support to 'yes'.</li>
 <li>Select &quot;Rebuild All&quot;</li>
 <li>Click on '!' icon to run configure program</li>
 <li>Select DLL build</li>
-<li>Check &quot;Build demo and test programs&quot;</li>
-<li>Click on Edit &quot;magick_config.h&quot; and verify desired settings
+<li>Check <cite>Build demo and test programs</cite>.</li>
+<li>Click on Edit <cite>magick_config.h</cite> and verify desired settings
 such as QuantumDepth.  You can also defer this step to later
 by opening the header file
 <tt class="docutils literal">CORE_magick\include\magick_config.h</tt> in the Visual Studio
 project.</li>
 <li>Finish remaining configure wizard screens to complete.</li>
-<li>File -&gt; &quot;Close Workspace&quot;</li>
-</ol>
-</li>
-<li>Open workspace VisualMagickVisualDynamicMT.sln by double-clicking from
-Windows Explorer or opening workpace via Visual C++ dialog.<ol class="loweralpha">
-<li>Build -&gt; &quot;Set Active Configuration&quot; -&gt; &quot;All - Win32 Release&quot; -&gt; OK</li>
-<li>If using Visual Studio Professional Edition, and OpenMP
-support is desired, then select 'CORE_magick' in the Solution
-Explorer pane and use the right mouse button menu to select
-&quot;Properties&quot;.  In &quot;Configuration Properties / C/C++ / Language&quot;
-set OpenMP support to 'yes'.</li>
-<li>Build -&gt; &quot;Rebuild All&quot;</li>
+<li>File -&gt; <cite>Close Workspace</cite></li>
 </ol>
 </li>
 <li>Build ImageMagickObject<ol class="loweralpha">
-<li><tt class="docutils literal">cd contrib\win32\ATL7\ImageMagickObject</tt></li>
+<li><tt class="docutils literal">cd GM\contrib\win32\ATL7\ImageMagickObject</tt></li>
 <li><tt class="docutils literal">BuildImageMagickObject clean</tt></li>
 <li><tt class="docutils literal">BuildImageMagickObject release</tt></li>
 <li><tt class="docutils literal">cd <span class="pre">..\..\..\..</span></tt></li>
 </ol>
 </li>
 <li>Open Windows Command Shell Window<ol class="loweralpha">
-<li><tt class="docutils literal">cd PerlMagick</tt></li>
+<li><tt class="docutils literal">cd GM\PerlMagick</tt></li>
 <li><tt class="docutils literal">nmake clean</tt> (only if this is a rebuild)</li>
 <li><tt class="docutils literal">perl Makefile.nt</tt></li>
 <li><tt class="docutils literal">nmake release</tt></li>
@@ -652,9 +680,10 @@ set OpenMP support to 'yes'.</li>
 how the install of Visual Studio was done, this may not be the case.
 Visual Studio provides a batch script in VC98Bin called VCVARS32.BAT
 that can be used to do this manually after you open up a command prompt.</p>
-<ol class="arabic simple" start="6">
-<li>Open <tt class="docutils literal"><span class="pre">VisualMagick\installer\gm-dll-8.iss</span></tt> by double-clicking from Windows Explorer.<ol class="loweralpha">
-<li>File -&gt; Compile</li>
+<ol class="arabic simple" start="5">
+<li>Open <cite>GMVisualMagickinstallergm-dll-8.iss</cite> (or <cite>gm-dll-16.iss</cite>
+if QuantumDepth=16) by double-clicking from Windows Explorer.<ol class="loweralpha">
+<li><cite>File</cite> -&gt; <cite>Compile</cite></li>
 <li>Test install by clicking on green triangle</li>
 </ol>
 </li>
@@ -674,18 +703,14 @@ that can be used to do this manually after you open up a command prompt.</p>
 <li><tt class="docutils literal">run_tests.bat</tt> (All tests must pass!)</li>
 </ol>
 </li>
-<li>Run Magick++ demo programs.</li>
-</ol>
-<blockquote>
-<ol class="loweralpha simple">
+<li>Run Magick++ demo programs.<ol class="loweralpha">
 <li><tt class="docutils literal">cd <span class="pre">Magick++/demo</span></tt></li>
 <li><tt class="docutils literal">run_demos.bat</tt></li>
 <li>Use <em>gmdisplay</em> to visually inspect all output files.</li>
 </ol>
-</blockquote>
-<ol class="arabic simple" start="11">
-<li>Distribution package is available as
-<tt class="docutils literal"><span class="pre">VisualMagick\bin\GraphicsMagick-1.0-Q8-dll.exe</span></tt></li>
+</li>
+<li>Distribution package is available named similar to
+<tt class="docutils literal"><span class="pre">GM\VisualMagick\bin\GraphicsMagick-1.3-Q8-dll.exe</span></tt></li>
 </ol>
 </blockquote>
 <p>Copyright © GraphicsMagick Group 2002 - 2012</p>

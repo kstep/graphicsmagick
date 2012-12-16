@@ -1,80 +1,103 @@
-[ The files in this directory are to support the GraphicsMagick setup.exe-style
-  installer package. The following are the instructions for how to build
-  a Q:8 DLL-based distribution installer package using Visual C++ 7.0. ]
+[ The files in this directory are to support the GraphicsMagick
+  setup.exe-style installer package. The following are the
+  instructions for how to build a Q:8 (or Q:16) DLL-based distribution
+  installer package using Visual C++ 7.0 through at least Visual
+  Studio Professional 2008. ]
 
 	   Steps for building VisualMagick Distribution Package
 
-0) Install prerequisite software
+0. Install prerequisite software
 
-  0a) Download and install Inno Setup 4 from
+  a. Download and install Inno Setup 5 from
       "http://www.jrsoftware.org/isinfo.php".
-  0b) Download and install ActiveState ActivePerl from
-     "http://www.activestate.com/Products/ActivePerl/Download.html".
+  b. Download and install ActiveState ActivePerl from
+     "http://www.activestate.com/activeperl/downloads/".
 
-1) Open workspace VisualMagick\configure\configure.sln by double-clicking
-   from Windows Explorer.
+1. Build VisualMagick\configure\configure.exe (if missing/outdated)
 
-   1a) Select "Rebuild All"
-   1b) Click on '!' icon to run configure program
-   1c) Select DLL build
-   1d) Uncheck "Use X11 Stubs" and check "Build demo and test programs"
-   1e) Click on Edit "magick_config.h" and ensure that UseInstalledGraphicsMagick
+   Open workspace VisualMagick\configure\configure.dsp by double-clicking
+   from Windows Explorer.  Visual Studio should come up and offer to upgrade
+   the project.
+
+   a. Upgrade Visual Studio project (as required)
+   b. Select "Rebuild All" to build configure.exe
+   c. Close the project.
+
+2. Configure GraphicsMagick Visual Studio Workspace
+   a. Use Windows Explorer to navigate to VisualMagick\configure.
+   b. Double-click on configure.exe to run configure program
+   c. Select DLL build
+   d. Check "Build demo and test programs"
+   e. Click on Edit "magick_config.h" and ensure that UseInstalledGraphicsMagick
        and ProvideDllMain are defined.
-   1f) Finish remaining configure wizard screens to complete.
-   1g) File -> "Close Workspace"
+   f. Finish remaining configure wizard screens to complete.
+   g. File -> "Close Workspace"
 
-2) Open workspace VisualMagick\VisualDynamicMT.sln by double-clicking from
+3. Open Workspace, set build configuration, build GraphicsMagick software.
+
+   Open workspace VisualMagick\VisualDynamicMT.sln by double-clicking from
    Windows Explorer or opening workpace via Visual C++ dialog.
 
-   2a) Build -> "Set Active Configuration" -> "All - Win32 Release" -> OK
-   2b) Build -> "Rebuild All"
+   a. Build -> "Set Active Configuration" -> "All - Win32 Release" -> OK
+   b. Open CORE_magick\magick\magick_config.h and edit any configuration
+      settings you would like to change.
+   c. Optionally enable OpenMP by selecting CORE_magick and adjusting
+      its language settings to include OpenMP.  OpenMP requires Visual
+      Studio Professional 2005 or later (i.e. not free version).
+   d. Build -> "Rebuild All"
+   e. Close workspace
 
-3) Build ImageMagickObject
+4. Build ImageMagickObject
 
-   3a) cd contrib\win32\ATL7\ImageMagickObject
-   3b) BuildImageMagickObject release
-   3c) cd ..\..\..\..
+   a. cd PROJECT\contrib\win32\ATL7\ImageMagickObject
+   b. BuildImageMagickObject clean
+   c. BuildImageMagickObject release
+   d. cd ..\..\..\..
 
-4) Open Windows Command Shell Window
+5. Build PerlMagick
 
-   4a) cd PerlMagick
-   4b) nmake clean (only if this is a rebuild)
-   4c) perl Makefile.nt
-   4d) nmake release
+   a. Open Windows Command Shell Window
+   b. cd PROJECT\PerlMagick
+   c. nmake clean (only if this is a rebuild)
+   d. perl Makefile.nt
+   e. nmake release
 
-NOTE: access to nmake requires that there be a path to it. Depending n how the install
-of Visual Studio was done, this may not be the case. Visual Studio provides a batch
-script in VC98\Bin called VCVARS32.BAT that can be used to do this manually after you
-open up a command prompt.
+   NOTE: access to nmake requires that there be a path to it.  Visual
+   Studio provides one or more "Visual Studio XXXX Command Prompt"
+   options which will open a Command Tool with the correct path
+   settings for that version of Visual Studio.
 
-5) Open VisualMagick\installer\gm-dll-8.iss by double-clicking from Windows Explorer.
+6. Open VisualMagick\installer\gm-dll-8.iss (or gm-dll-8.iss if you
+   set QuantumDepth=16) by double-clicking from Windows Explorer.
 
-   5a) File -> Compile
-   5b) Test install by clicking on green triangle
+   a. File -> Compile
+   b. Test install by clicking on green triangle
+   c. Quit Inno Setup.
 
-6)
-   6a) cd PerlMagick
-   6b) nmake test
+7.
+   
+   a. cd PROJECT\PerlMagick
+   b. nmake test
       All tests must pass!
 
-7) 
-   7a) cd VisualMagick\tests
-   7b) run_rwfile.bat
+8. 
+   a. cd PROJECT\VisualMagick\tests
+   b. run_rwfile.bat
       All tests must pass!
-   7c) run_rwblob.bat
-      All tests must pass!
-
-8)
-   8a) cd Magick++/tests
-   8b) run_tests.bat
+   c. run_rwblob.bat
       All tests must pass!
 
-9)
-   9a) cd Magick++/demo
-   9b) run_demos.bat
-   9c) Use 'gmdisplay' to visually inspect all output files.
+9.
+   a. cd Magick++/tests
+   b. run_tests.bat
+      All tests must pass!
 
-10)
-   Distribution package is available as
-     VisualMagick\bin\GraphicsMagick-1.0-Q8-dll.exe
+10.
+   a. cd Magick++/demo
+   b. run_demos.bat
+   c. Use 'gmdisplay' to visually inspect all output files.
+
+11.
+   Distribution package is available named similarly to
+     VisualMagick\bin\GraphicsMagick-3.0-Q8-dll.exe
 
