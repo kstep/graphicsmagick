@@ -84,7 +84,9 @@
 #include "run-pathtool.isx"
 
 #ifdef MagickDynamicPackage
-  #include "run-ppm.isx"
+  #if InstallPerlMagick
+    #include "run-ppm.isx"
+  #endif
 #endif
 #ifdef MSVCProprietary
   #include "run-register-com.isx"
@@ -93,7 +95,9 @@
 [UninstallRun]
 #include "uninstallrun-pathtool.isx"
 #ifdef MagickDynamicPackage
-  #include "uninstallrun-ppm.isx"
+  #if InstallPerlMagick
+    #include "uninstallrun-ppm.isx"
+  #endif
 #endif
 #ifdef MSVCProprietary
   #include "uninstallrun-unregister-com.isx"

@@ -1,5 +1,5 @@
 ;
-; Copyright (C) 2003 GraphicsMagick Group
+; Copyright (C) 2003-2012 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -12,10 +12,10 @@
 
 #define  public MagickDynamicPackage 1
 #define  public QuantumDepth "8"
-#define  public WIN64
-#define  public InstallPerlMagick 1
+#define  public WIN64 1
+#define  public InstallPerlMagick 0
 #include "inc\body.isx"
 
 #ifdef Debug
-  #expr SaveToFile(AddBackslash(SourcePath) + "gm-dynamic-8.isp")
+  #expr SaveToFile(AddBackslash(SourcePath) + "gm-win64-Q8-dll.isp")
 #endif
