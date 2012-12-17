@@ -1,3 +1,7 @@
+2012-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick: WIN64 (64-bit Windows) is supported now.
+
 2012-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: Eliminate support for experimental
