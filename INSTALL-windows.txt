@@ -29,8 +29,8 @@ Prerequisites
   version.
 
   While it is not a requirement, it is strongly recommended that the
-  `Ghostscript <http://pages.cs.wisc.edu/~ghost/>`_ package (GraphicsMagick
-  is tested with version 8.70) be installed. GraphicsMagick uses
+  `Ghostscript <http://www.ghostscript.com/download/>`_ package (GraphicsMagick
+  is tested with version 9.06) be installed. GraphicsMagick uses
   Ghostscript to render Postscript and PDF files, as well as formats
   where a translator to Postscript is available. GraphicsMagick will also
   use the fonts delivered with Ghostscript to support the standard set of
@@ -55,8 +55,10 @@ Retrieve Install Package
 
     ::
 
-      GraphicsMagick-1.3-Q8-windows-dll.exe
-      GraphicsMagick-1.3-Q16-windows-dll.exe
+      GraphicsMagick-1.3-Q8-win32-dll.exe
+      GraphicsMagick-1.3-Q16-win32-dll.exe
+      GraphicsMagick-1.3-Q8-win64-dll.exe
+      GraphicsMagick-1.3-Q16-win64-dll.exe
 
   Note that the QuantumDepth=8 version (Q8) which provides industry
   standard 24/32 bit pixels consumes half the memory and about 30% less
@@ -66,6 +68,12 @@ Retrieve Install Package
   dealing with film, scientific, or medical images, use ICC color
   profiles, or deal with images that have limited contrast, then the Q16
   version is recommended.
+
+  The `win32' packages are for 32-bit or 64-bit Windows, whereas the
+  `win64` packages are only for 64-bit Windows.  The 64-bit version
+  allows processing larger images in memory (rather than disk files),
+  provided that the system has more than 2GB of RAM installed.  Memory
+  access is 1000 times faster than disk access.
 
 Start Installation Wizard
 -------------------------
@@ -112,7 +120,7 @@ Select Additional Tasks
 
   * Associate supported file extensions with GraphicsMagick
 
-  * Install PerlMagick for ActiveState Perl v5.12.4 build 1205
+  * Install PerlMagick for ActiveState Perl v5.14.2 build 1402
 
   * Install ImageMagickObject OLE Control for VBscript, Visual Basic,
     and WSH.
@@ -171,12 +179,6 @@ Finishing Up
   "*Finish*" is selected. If you do not want to view the web pages, then
   de-select "*View GraphicsMagick.html*". Select "*Finish*" to exit the
   installation program.
-
-  Under Windows '95 and Windows '98 it will be necessary to reboot the
-  system in order for some settings to take effect (such as executable
-  search path) since these are set in autoexec.bat. Please verify that
-  autoexec.bat is updated correctly. We have received some reports that
-  the path in autoexec.bat is not always updated correctly.
 
 Testing The Installation
 ------------------------
@@ -266,8 +268,8 @@ Important Notes
   with the latest fixes from the Microsoft web site and the problem
   should go away.
 
-Windows XP, Vista, 7 Visual C++ 6.0, 7.X, and 8.0 Compilation
--------------------------------------------------------------
+Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
+-----------------------------------------------------------
 
   The Visual C++ distribution targeted at Windows 2000 through Windows
   7 (and maybe Windows 8) does not provide any stock workspace (DSW)
