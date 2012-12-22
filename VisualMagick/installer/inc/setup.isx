@@ -11,14 +11,16 @@
 #ifdef WIN64
 ArchitecturesInstallIn64BitMode=x64
   #define public MagickARCH "win64"
+  #define public MagickARCHDescription "(64-bit)"
 #else
   #define public MagickARCH "win32"
+  #define public MagickARCHDescription "(32-bit)"
 #endif
 
-AppName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
+AppName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth} {#MagickARCHDescription}
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName={#MagickPackageName} {#MagickPackageVersion}{#MagickPackageVersionAddendum} Q{#QuantumDepth} ({#MagickPackageReleaseDate})
+AppVerName={#MagickPackageName} {#MagickPackageVersion}{#MagickPackageVersionAddendum} Q{#QuantumDepth} {#MagickARCHDescription} ({#MagickPackageReleaseDate})
 AppVersion={#MagickPackageVersion}
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
@@ -27,7 +29,7 @@ AppSupportURL=http://www.{#MagickPackageName}.org/
 AppUpdatesURL=http://www.{#MagickPackageName}.org/www/download.html
 ; Default install is similar to "C:\Program Files\GraphicsMagick-1.1-Q16":
 DefaultDirName={pf}\{#MagickPackageName}-{#MagickPackageVersion}-Q{#QuantumDepth}
-DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
+DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth} {#MagickARCHDescription} 
 Compression=lzma/max
 ChangesAssociations=1
 AllowRootDirectory=no

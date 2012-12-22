@@ -13,7 +13,7 @@
 #define  public MagickDynamicPackage 1
 #define  public QuantumDepth "16"
 #define  public WIN64 1
-#define  public InstallPerlMagick 0
+#define  public InstallPerlMagick 1
 #include "inc\body.isx"
 
 #ifdef Debug
