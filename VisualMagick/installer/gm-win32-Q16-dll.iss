@@ -1,5 +1,5 @@
 ;
-; Copyright (C) 2003 GraphicsMagick Group
+; Copyright (C) 2003-2012 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -16,5 +16,5 @@
 #include "inc\body.isx"
 
 #ifdef Debug
-  #expr SaveToFile(AddBackslash(SourcePath) + "gm-dynamic-16.isp")
+  #expr SaveToFile(AddBackslash(SourcePath) + "gm-win32-Q16-dll.isp")
 #endif
