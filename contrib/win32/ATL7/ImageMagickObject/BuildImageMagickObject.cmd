@@ -1,13 +1,16 @@
-::@echo off
+@echo off
 if {%1} == {} (
   (@echo -)
   (@echo BuildImageMagickObject debug ^| release ^| clean PATH_TO_ROOT NAME_OF_VISUALMAGICK)
   (@echo -)
-  (@echo  Example: BuildIt release ..\..\..\.. VisualMagick)
+  (@echo  Example: BuildImageMagickObject release ..\..\..\.. VisualMagick)
+  (@echo -)
+  (@echo Make sure to start a command shell suitably initialized for Visual Studio development)
+  (@echo In modern Visual Studio, vcvarsall.bat in the VC directory is used for that purpose ...)
+  (@echo    vcvarsall.bat x86 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64)
   (@echo -)
   goto :EOF
 )
-if not defined DevEnvDir (call vsvars32)
 set PATH_TO_ROOT=..\..\..\..
 if not {%2} == {} (
   set PATH_TO_ROOT=%2
@@ -49,6 +52,7 @@ if {%1}=={clean} (
   del /Q ImageMagickObject_p.c >nul 2>&1
   del /Q ImageMagickObject_i.c >nul 2>&1
   del /Q dlldata.c >nul 2>&1
+  del /Q ImageMagickObject.dll.manifest >nul 2>&1
   goto :EOF
 )
 copy %MAGICK_HOME%\*.mgk .\ >nul 2>&1
