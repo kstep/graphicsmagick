@@ -101,7 +101,7 @@ __interface IMagickImage : IDispatch
 // MagickImage
 [
   coclass,
-  threading("both"),
+  threading(both),
   support_error_info("IMagickImage"),
   vi_progid("ImageMagickObject.MagickImage"),
   progid("ImageMagickObject.MagickImage.1"),
