@@ -1,5 +1,7 @@
 2012-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/api/api.rst: Add another example Core C API example program.
+
 	* magick/blob.c (OpenBlob): Restore file position, rather than
 	rewind, after reading header bytes.
 

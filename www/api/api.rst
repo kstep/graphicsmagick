@@ -115,15 +115,86 @@ documentation, please reference the types_ documentation as required:
   * Transform_: Chop, coalesce, deconstruct, flatten, flip, flop, mosiac, roll,
     or shave image
 
-Here is a sample program to get you started. To find out about all the
-functions that are available, read the source code. Each function is delineated
-with a full rows of percent signs with comments describing the parameters
-required for the function and what it does. For ease in finding a function,
-they are sorted in alphabetical order.
+Here are a few sample programs to get you started.
 
-Here is a full example of a program, demo.c, which reads multiple input files
-(possibly animation files) specified on the command line, resizes the image
-frames to 106x80, and writes the resulting animation to disk::
+This example program (convert.c) simply converts from one file name to
+another (and will automatically change formats based on file
+extension)::
+
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  #include <time.h>
+  #include <sys/types.h>
+  #include <magick/api.h>
+
+  int main ( int argc, char **argv )
+  {
+    Image
+      *image = (Image *) NULL;
+
+    char
+      infile[MaxTextExtent],
+      outfile[MaxTextExtent];
+
+    int
+      arg = 1,
+      exit_status = 0;
+
+    ImageInfo
+      *imageInfo;
+
+    ExceptionInfo
+      exception;
+
+    InitializeMagick(NULL);
+    imageInfo=CloneImageInfo(0);
+    GetExceptionInfo(&exception);
+
+    if (argc != 3)
+      {
+        (void) fprintf ( stderr, "Usage: %s infile outfile\n", argv[0] );
+        (void) fflush(stderr);
+        exit_status = 1;
+        goto program_exit;
+      }
+
+    (void) strncpy(infile, argv[arg], MaxTextExtent-1 );
+    arg++;
+    (void) strncpy(outfile, argv[arg], MaxTextExtent-1 );
+
+    (void) strcpy(imageInfo->filename, infile);
+    image = ReadImage(imageInfo, &exception);
+    if (image == (Image *) NULL)
+      {
+        CatchException(&exception);
+        exit_status = 1;
+        goto program_exit;
+      }
+
+    (void) strcpy(image->filename, outfile);
+    if (!WriteImage (imageInfo,image))
+      {
+        CatchException(&image->exception);
+        exit_status = 1;
+        goto program_exit;
+      }
+
+   program_exit:
+
+    if (image != (Image *) NULL)
+      DestroyImage(image);
+
+    if (imageInfo != (ImageInfo *) NULL)
+      DestroyImageInfo(imageInfo);
+    DestroyMagick();
+
+    return exit_status;
+  }
+
+This example program (demo.c) which reads multiple input files
+(possibly animation files) specified on the command line, resizes the
+image frames to 106x80, and writes the resulting animation to disk::
 
   #include <stdio.h>
   #include <string.h>
@@ -194,6 +265,7 @@ frames to 106x80, and writes the resulting animation to disk::
     if (thumbnails)
       {
         (void) strcpy(thumbnails->filename,argv[argc-1]);
+        image_info->adjoin=MagickTrue;
         printf("Writing %s ... %lu frames\n", thumbnails->filename,
                GetImageListLength(thumbnails));
         WriteImage(image_info,thumbnails);
@@ -209,7 +281,7 @@ frames to 106x80, and writes the resulting animation to disk::
     return(0);
   }
 
-Now we need to compile. On Unix, the command would look something like this::
+To compile on Unix, the command would look something like this::
 
   gcc -o demo demo.c -O `GraphicsMagick-config --cppflags --ldflags --libs`
 
@@ -224,9 +296,6 @@ out.miff'.
 The GraphicsMagick-config script reproduces the options which were used to
 compile the GraphicsMagick utilities. Using compatible options ensures that
 your program will compile and run.
-
-Another example is smile.c. Compile and execute it to display a smiley face on
-your X server.
 
 -------------------------------------------------------------------------------
 
