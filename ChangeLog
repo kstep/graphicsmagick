@@ -1,3 +1,12 @@
+2012-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (OpenBlob): Restore file position, rather than
+	rewind, after reading header bytes.
+
+	* magick/image.c (SetImageInfo): Restore file position after
+	reading header bytes.  Resolves SourceForge issue 3597486
+	"ReadImage not working with file descriptors".
+
 2012-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick: WIN64 (64-bit Windows) installer improvements to

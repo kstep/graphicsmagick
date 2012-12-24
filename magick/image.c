@@ -2779,6 +2779,7 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
 	}
       magick[0]='\0';
       magick_length = ReadBlob(image,2*MaxTextExtent,magick);
+      (void) SeekBlob(image,-(magick_off_t) magick_length,SEEK_CUR);
       CloseBlob(image);
       DestroyImage(image);
       /*

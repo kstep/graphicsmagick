@@ -2561,7 +2561,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
               {
                 image->blob->handle.std=image_info->file;
                 image->blob->type=FileStream;
-                image->blob->exempt=True;
+                image->blob->exempt=MagickTrue;
                 if (image->logging)
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                         "  opened image_info->file (%d) as FileStream blob %p",
@@ -2631,8 +2631,10 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 			  Read file header and check magick bytes.
 			*/
 			(void) memset((void *) magick,0,MaxTextExtent);
-			count=fread(magick,MaxTextExtent,1,image->blob->handle.std);
-			(void) rewind(image->blob->handle.std);
+                        count=fread(magick,1,MaxTextExtent,image->blob->handle.std);
+                        (void) MagickFseek(image->blob->handle.std,
+                                           -(magick_off_t) count,SEEK_CUR);
+                        (void) fflush(image->blob->handle.std);
 			if (image->logging)
 			  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
 						"  read %" MAGICK_SIZE_T_F
