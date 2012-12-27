@@ -10,7 +10,7 @@ rwfile=./rwfile
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 408
+test_plan_fn 404
 
 # AVS format
 for type in ${check_types}
@@ -187,11 +187,10 @@ do
   test_command_fn "MNG ${type} (stdio)" -F PNG ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MNG
 done
 
-# MPR format
+# MPR (Magick Persistent Registry).  There is no such format but file names are required.
 for type in ${check_types}
 do
   test_command_fn "MPR ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MPR
-  test_command_fn "MPR ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MPR
 done
 
 # MTV format
