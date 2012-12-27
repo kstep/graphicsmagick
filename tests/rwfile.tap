@@ -10,7 +10,7 @@ rwfile=./rwfile
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 396
+test_plan_fn 408
 
 # AVS format
 for type in ${check_types}
@@ -121,7 +121,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "FPX ${type}" -F FPX ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FPX
-  #test_command_fn "FPX ${type} (stdio)" -F FPX ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" FPX
+  test_command_fn "FPX ${type} (stdio)" -F FPX ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" FPX
 done
 
 # GIF format
@@ -303,7 +303,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "PTIF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PTIF
-  #test_command_fn "PTIF ${type} (stdio)" -F TIFF ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PTIF
+  test_command_fn "PTIF ${type} (stdio)" -F TIFF ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PTIF
 done
 
 # RAS format
@@ -345,7 +345,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "TIFF ${type}" -F TIFF ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" TIFF
-  #test_command_fn "TIFF ${type} (stdio)" -F TIFF ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" TIFF
+  test_command_fn "TIFF ${type} (stdio)" -F TIFF ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" TIFF
 done
 
 # VDA format
