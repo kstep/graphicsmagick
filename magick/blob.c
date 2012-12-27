@@ -113,10 +113,12 @@ struct _BlobInfo
     offset,             /* Current offset (I/O point) as would be returned by TellBlob() */
     size;               /* Size of the underlying file, or the BLOB */
 
-  unsigned int
+  MagickBool
     exempt,             /* True if file descriptor should not be closed.*/
-    status,             /* Error status. 0 == good */
     temporary;          /* Associated file is a temporary file */
+
+  unsigned int
+    status;             /* Error status. 0 == good */
 
   StreamType
     type;               /* Classification for how BLOB I/O is implemented. */
@@ -796,6 +798,9 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 %
 %  CloseBlob() closes a stream associated with the image.
 %
+%  If the blob 'exempt' member is MagickTrue, then any passed file descriptor
+%  is left open, otherwise it is closed.
+%
 %  The format of the CloseBlob method is:
 %
 %      void CloseBlob(Image *image)
@@ -816,9 +821,8 @@ MagickExport void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-
   /*
-    If blob was not allocated, or blob type is UndefinedStream then it
+    If blob was not allocated, is UndefinedStream (closed) then it
     doesn't need to be closed.
   */
   if ((image->blob == (BlobInfo *) NULL) ||
@@ -833,83 +837,96 @@ MagickExport void CloseBlob(Image *image)
 
   status=0;
   switch (image->blob->type)
-  {
+    {
     case UndefinedStream:
       break;
     case FileStream:
     case StandardStream:
     case PipeStream:
-    {
-      status=ferror(image->blob->handle.std);
-      break;
-    }
+      {
+        if (image->blob->fsync)
+          {
+            (void) fflush(image->blob->handle.std);
+            (void) fsync(fileno(image->blob->handle.std));
+          }
+        status=ferror(image->blob->handle.std);
+        break;
+      }
     case ZipStream:
-    {
+      {
 #if defined(HasZLIB)
-      (void) gzerror(image->blob->handle.gz,&status);
+        (void) gzerror(image->blob->handle.gz,&status);
 #endif
-      break;
-    }
+        break;
+      }
     case BZipStream:
-    {
+      {
 #if defined(HasBZLIB)
-      (void) BZ2_bzerror(image->blob->handle.bz,&status);
+        (void) BZ2_bzerror(image->blob->handle.bz,&status);
 #endif
-      break;
-    }
+        break;
+      }
     case BlobStream:
       break;
-  }
+    }
   errno=0;
   image->taint=MagickFalse;
   image->blob->size=GetBlobSize(image);
   image->blob->eof=MagickFalse;
   image->blob->status=status < 0;
   image->blob->mode=UndefinedBlobMode;
-  if (image->blob->exempt)
-    return;
-  switch (image->blob->type)
-  {
-    case UndefinedStream:
-      break;
-    case FileStream:
-    case StandardStream:
+
+  /*
+    If we are allowed to close the stream and detatch (destroy)
+    the blob.
+  */
+  if (! image->blob->exempt )
     {
-      if (image->blob->fsync)
+      /*
+        Close the underlying stream.
+      */
+      switch (image->blob->type)
         {
-          (void) fflush(image->blob->handle.std);
-          (void) fsync(fileno(image->blob->handle.std));
-        }
-      status=fclose(image->blob->handle.std);
-      break;
-    }
-    case PipeStream:
-    {
+        case UndefinedStream:
+          break;
+        case FileStream:
+        case StandardStream:
+          {
+            status=fclose(image->blob->handle.std);
+            break;
+          }
+        case PipeStream:
+          {
 #if defined(HAVE_PCLOSE)
-      status=pclose(image->blob->handle.std);
+            status=pclose(image->blob->handle.std);
 #endif /* defined(HAVE_PCLOSE) */
-      break;
-    }
-    case ZipStream:
-    {
+            break;
+          }
+        case ZipStream:
+          {
 #if defined(HasZLIB)
-      status=gzclose(image->blob->handle.gz);
+            status=gzclose(image->blob->handle.gz);
 #endif
-      break;
-    }
-    case BZipStream:
-    {
+            break;
+          }
+        case BZipStream:
+          {
 #if defined(HasBZLIB)
-      BZ2_bzclose(image->blob->handle.bz);
+            BZ2_bzclose(image->blob->handle.bz);
 #endif
-      break;
+            break;
+          }
+        case BlobStream:
+          {
+            break;
+          }
+        }
+      /*
+        Detatch (destroy) the blob.
+      */
+      DetachBlob(image->blob);
     }
-    case BlobStream:
-      {
-        break;
-      }
-  }
-  DetachBlob(image->blob);
+  image->blob->type=UndefinedStream;
   image->blob->status=(status != 0);
 }
 
@@ -2760,7 +2777,6 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 	ThrowException(exception,FileOpenError,UnableToOpenFile,filename);
       return MagickFail;
     }
-
   return MagickPass;
 }
 
