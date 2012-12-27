@@ -298,7 +298,7 @@ int main ( int argc, char **argv )
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			    "Writing stdio image %s", filename);
-      imageInfo->file=fopen(filename,"wb");
+      imageInfo->file=fopen(filename,"wb+");
     }
   else
     {
@@ -427,7 +427,7 @@ int main ( int argc, char **argv )
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 			    "Writing stdio image %s", filename);
-      imageInfo->file=fopen(filename,"wb");
+      imageInfo->file=fopen(filename,"wb+");
     }
   else
     {
