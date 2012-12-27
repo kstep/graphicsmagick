@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 - 2011 GraphicsMagick Group
+ * Copyright (C) 2003 - 2012 GraphicsMagick Group
  * Copyright (C) 2003 ImageMagick Studio
  * Copyright 1991-1999 E. I. du Pont de Nemours and Company
  *
@@ -51,7 +51,8 @@ int main ( int argc, char **argv )
 
   MagickBool
     check = MagickTrue,
-    check_for_added_frames = MagickTrue;
+    check_for_added_frames = MagickTrue,
+    use_stdio = MagickFalse;
 
   ImageInfo
     *imageInfo;
@@ -74,7 +75,7 @@ int main ( int argc, char **argv )
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
 
-  (void) strcpy(basefilespec,"out_%d.%s");
+  (void) strcpy(basefilespec,"out_%d");
 
   for (arg=1; arg < argc; arg++)
     {
@@ -160,6 +161,10 @@ int main ( int argc, char **argv )
                 }
               (void) CloneString(&imageInfo->size,argv[arg]);
             }
+	  else if (LocaleCompare("stdio",option+1) == 0)
+            {
+              use_stdio=MagickTrue;
+            }
           else if (LocaleCompare("verbose",option+1) == 0)
             {
               imageInfo->verbose+=1;
@@ -175,7 +180,7 @@ int main ( int argc, char **argv )
       (void) printf("arg=%d, argc=%d\n", arg, argc);
       (void) printf ( "Usage: %s [-compress algorithm -debug events -depth "
 		      "integer -filespec spec -log format -nocheck "
-		      "-size geometry -verbose] infile format\n", argv[0] );
+		      "-size geometry -stdio -verbose] infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -209,13 +214,27 @@ int main ( int argc, char **argv )
 
   imageInfo->dither = 0;
 
-  (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
-  if (!magick_info->adjoin || !check_for_added_frames)
-    (void) strcat( imageInfo->filename, "[0]" );
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			"Reading image %s", imageInfo->filename);
+  strcpy(imageInfo->filename,"");
+  if (use_stdio)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Reading stdio image %s", infile);
+      imageInfo->file=fopen(infile,"rb");
+    }
+  else
+    {
+      (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
+      if (!magick_info->adjoin || !check_for_added_frames)
+	(void) strcat( imageInfo->filename, "[0]" );
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Reading image %s", imageInfo->filename);
+    }
   original = ReadImage ( imageInfo, &exception );
-
+  if (use_stdio)
+    {
+      (void) fclose(imageInfo->file);
+      imageInfo->file = (FILE *) NULL;
+    }
   if (exception.severity != UndefinedException)
     {
       CatchException(&exception);
@@ -272,16 +291,32 @@ int main ( int argc, char **argv )
    */
   (void) sprintf( filename, filespec, 1, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
-  (void) strncpy( original->filename, filename, MaxTextExtent-1 );
-  original->delay = 10;
   (void) fflush(stdout);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Writing image %s", original->filename);
+
+  strcpy(imageInfo->filename,"");
+  if (use_stdio)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Writing stdio image %s", filename);
+      imageInfo->file=fopen(filename,"wb");
+    }
+  else
+    {
+      (void) strncpy( original->filename, filename, MaxTextExtent-1 );
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Writing image %s", original->filename);
+    }
+  original->delay = 10;
   if (!WriteImage ( imageInfo, original ))
     {
       CatchException(&original->exception);
       exit_status = 1;
       goto program_exit;
+    }
+  if (use_stdio)
+    {
+      (void) fclose(imageInfo->file);
+      imageInfo->file = (FILE *) NULL;
     }
   imageInfo->depth=original->depth;
   DestroyImageList( original );
@@ -297,12 +332,25 @@ int main ( int argc, char **argv )
     MagickBool
       ping_error = MagickFalse;
 
+    strcpy(imageInfo->filename,"");
     (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
-    strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+    if (use_stdio)
+      {
+	imageInfo->file=fopen(filename,"rb");
+      }
+    else
+      {
+	strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+      }
     if ( size[0] != '\0' )
       (void) CloneString( &imageInfo->size, size );
     (void) fflush(stdout);
     ping_image = PingImage(imageInfo, &exception );
+    if (use_stdio)
+      {
+	(void) fclose(imageInfo->file);
+	imageInfo->file = (FILE *) NULL;
+      }
     if (exception.severity != UndefinedException)
       {
 	CatchException(&exception);
@@ -333,11 +381,24 @@ int main ( int argc, char **argv )
    * Read image back from file
    */
   (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
-  strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+  strcpy(imageInfo->filename,"");
+  if (use_stdio)
+    {
+      imageInfo->file=fopen(filename,"rb");
+    }
+  else
+    {
+      strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+    }
   if ( size[0] != '\0' )
     (void) CloneString( &imageInfo->size, size );
   (void) fflush(stdout);
   original = ReadImage ( imageInfo, &exception );
+  if (use_stdio)
+    {
+      (void) fclose(imageInfo->file);
+      imageInfo->file = (FILE *) NULL;
+    }
   if (exception.severity != UndefinedException)
     {
       CatchException(&exception);
@@ -361,7 +422,19 @@ int main ( int argc, char **argv )
 
   (void) sprintf( filename, filespec, 2, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
-  (void) strncpy( original->filename, filename, MaxTextExtent-1 );
+  strcpy(imageInfo->filename,"");
+  if (use_stdio)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Writing stdio image %s", filename);
+      imageInfo->file=fopen(filename,"wb");
+    }
+  else
+    {
+      (void) strncpy( original->filename, filename, MaxTextExtent-1 );
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			    "Writing stdio image %s", original->filename);
+    }
   original->delay = 10;
   (void) fflush(stdout);
   if(!WriteImage (imageInfo,original))
@@ -370,12 +443,25 @@ int main ( int argc, char **argv )
       exit_status = 1;
       goto program_exit;
     }
+  if (use_stdio)
+    {
+      (void) fclose(imageInfo->file);
+      imageInfo->file = (FILE *) NULL;
+    }
 
   /*
    * Read image back from file
    */
   (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
-  (void) strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+  strcpy(imageInfo->filename,"");
+  if (use_stdio)
+    {
+      imageInfo->file=fopen(filename,"rb");
+    }
+  else
+    {
+      (void) strncpy( imageInfo->filename, filename, MaxTextExtent-1 );
+    }
   if ( size[0] != '\0' )
     (void) CloneString( &imageInfo->size, size );
   (void) fflush(stdout);
@@ -504,6 +590,11 @@ int main ( int argc, char **argv )
   if (final)
     DestroyImageList( final );
   final = (Image*)NULL;
+  if (imageInfo->file != (FILE *) NULL)
+    {
+      (void) fclose(imageInfo->file);
+      imageInfo->file = (FILE *) NULL;
+    }
 
   DestroyExceptionInfo(&exception);
   DestroyImageInfo( imageInfo );
