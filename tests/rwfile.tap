@@ -10,7 +10,7 @@ rwfile=./rwfile
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 360
+test_plan_fn 396
 
 # AVS format
 for type in ${check_types}
@@ -107,7 +107,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "FAX ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" FAX
-  #test_command_fn "FAX ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" FAX
+  test_command_fn "FAX ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" FAX
 done
 
 # FITS format
@@ -163,7 +163,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "JP2 ${type}" -F JP2 ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" JP2
-  #test_command_fn "JP2 ${type} (stdio)" -F JP2 ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" JP2
+  test_command_fn "JP2 ${type} (stdio)" -F JP2 ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" JP2
 done
 
 # MAT format
@@ -177,21 +177,21 @@ done
 for type in ${check_types}
 do
   test_command_fn "MIFF ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MIFF
-  #test_command_fn "MIFF ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MIFF
+  test_command_fn "MIFF ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MIFF
 done
 
 # MNG format
 for type in ${check_types}
 do
   test_command_fn "MNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MNG
-  #test_command_fn "MNG ${type} (stdio)" -F PNG ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MNG
+  test_command_fn "MNG ${type} (stdio)" -F PNG ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MNG
 done
 
 # MPR format
 for type in ${check_types}
 do
   test_command_fn "MPR ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" MPR
-  #test_command_fn "MPR ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MPR
+  test_command_fn "MPR ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" MPR
 done
 
 # MTV format
@@ -219,14 +219,14 @@ done
 for type in ${check_types}
 do
   test_command_fn "PCD ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PCD
-  #test_command_fn "PCD ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PCD
+  test_command_fn "PCD ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PCD
 done
 
 # PCDS format
 for type in ${check_types}
 do
   test_command_fn "PCDS ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PCDS
-  #test_command_fn "PCDS ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PCDS
+  test_command_fn "PCDS ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PCDS
 done
 
 # PCX format
@@ -254,7 +254,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "PICON ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PICON
-  #test_command_fn "PICON ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PICON
+  test_command_fn "PICON ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PICON
 done
 
 # PICT format
@@ -268,7 +268,7 @@ done
 for type in ${check_types}
 do
   test_command_fn "PNG ${type}" -F PNG ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PNG
-  #test_command_fn "PNG ${type} (stdio)" -F PNG ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PNG
+  test_command_fn "PNG ${type} (stdio)" -F PNG ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PNG
 done
 
 # PNM format
