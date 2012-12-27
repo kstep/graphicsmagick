@@ -1,3 +1,12 @@
+2012-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c (main): Added a '-stdio' option to test
+	reading/writing files using file handles opened by the API user.
+
+	* magick/blob.c (CloseBlob): It should be possible to invoke
+	CloseBlob() multiple times, including blobs set to "exempt".
+	There were some issues when passing in file descriptors.
+
 2012-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/api/api.rst: Add another example Core C API example program.
