@@ -1,3 +1,8 @@
+2012-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.c (main): Test file name generation was not
+	correct.
+
 2012-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/rwfile.tap: Added -stdio tests for most file formats.

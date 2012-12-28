@@ -260,7 +260,6 @@ int main ( int argc, char **argv )
   */
   size[0] = '\0';
   magick_info=GetMagickInfo(format,&exception);
-  strcpy(filespec,basefilespec);
 
   if (magick_info->raw)
     {
@@ -280,16 +279,16 @@ int main ( int argc, char **argv )
     }
   else
     {
-      (void) strcat(filespec,".%s");
+      strcpy(filespec,basefilespec);
     }
 
-  (void) sprintf( filename, basefilespec, 1, format );
+  (void) strcat(filespec,".%s");
+  (void) sprintf( filename, filespec, 1, format );
   (void) remove(filename);
 
   /*
    * Save image to file
    */
-  (void) sprintf( filename, filespec, 1, format );
   (void) strncpy( original->magick, format, MaxTextExtent-1 );
   (void) fflush(stdout);
 
