@@ -1,5 +1,5 @@
 #! /bin/sh
-# test-driver - basic driver script for the 'parallel-tests' mode.
+# test-driver - basic testsuite driver script.
 
 scriptversion=2012-06-27.10; # UTC
 
