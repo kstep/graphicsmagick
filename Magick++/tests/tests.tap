@@ -7,19 +7,20 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-SRCDIR=`dirname $0`
-SRCDIR=`cd $SRCDIR && pwd`/
-TOPSRCDIR=`cd $srcdir && pwd`
-export SRCDIR
+subdir=Magick++/tests
 . ./common.shi
-. ${TOPSRCDIR}/scripts/tap-functions.shi
+. ${top_srcdir}/scripts/tap-functions.shi
+
+SRCDIR=${top_srcdir}/${subdir}/
+export SRCDIR
+
 progs='appendImages attributes averageImages coalesceImages coderInfo color
   colorHistogram exceptions montageImages morphImages readWriteBlob readWriteImages'
 
 # Number of tests we plan to run
 test_plan_fn 12
 
-cd Magick++/tests || exit 1
+cd ${subdir} || exit 1
 
 for prog in $progs
 do

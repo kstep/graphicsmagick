@@ -1,7 +1,8 @@
 #!/bin/sh
 # Copyright (C) 2004-2012 GraphicsMagick Group
 # Test MIFF format with various storage and compression types
-. ${srcdir}/tests/common.shi
+. ./common.shi
+. ${top_srcdir}/tests/common.shi
 
 # Test program
 rwfile=./rwfile

@@ -2,7 +2,8 @@
 # -*- shell-script -*-
 # Copyright (C) 2004-2012 GraphicsMagick Group
 # Test raw image encode/decode in memory.
-. ${srcdir}/tests/common.shi
+. ./common.shi
+. ${top_srcdir}/tests/common.shi
 num_tests=0
 storage_types='char short integer long float double'
 constitute_maps='bgr bgro bgrp rgb rgba rgbt rgbo prgb cmy cmyk i'
@@ -10,7 +11,7 @@ for storage_type in ${storage_types}
 do
   for map in ${constitute_maps}
   do
-    num_tests=$((${num_tests} + 1))
+    num_tests=`expr ${num_tests} + 1`
   done
 done
 infile=${SRCDIR}/input_truecolor.miff

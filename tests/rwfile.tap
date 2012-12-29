@@ -1,7 +1,8 @@
 #!/bin/sh
 # -*- shell-script -*-
 # Copyright (C) 2004-2012 GraphicsMagick Group
-. ${srcdir}/tests/common.shi
+. ./common.shi
+. ${top_srcdir}/tests/common.shi
 
 # Test program
 rwfile=./rwfile

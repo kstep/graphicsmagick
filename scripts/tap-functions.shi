@@ -19,10 +19,10 @@ done
 #   test_plan_fn integer
 test_plan_fn ()
 {
-    set +x
+    #set +x
     tests_planned=$1
     echo "1..${tests_planned}"
-    set -x
+    #set -x
 }
 
 # Report TAP test result and increment current test count
@@ -31,7 +31,7 @@ test_plan_fn ()
 #   test_result_fn result description
 test_result_fn ()
 {
-    set +x
+    #set +x
     test_result=$1
     shift
     #test_count=$(($test_count + 1))
@@ -42,7 +42,7 @@ test_result_fn ()
         test_output="${test_output} - $*"
     fi
     printf '%s\n' "${test_output}"
-    set -x
+    #set -x
 }
 
 # Test a simple command where pass/fail depends on command exit status
@@ -56,7 +56,7 @@ test_result_fn ()
 #    command     -- command to execute
 test_command_fn ()
 {
-    set +x
+    #set +x
     test_description=$1
     shift
 
@@ -104,11 +104,12 @@ test_command_fn ()
     fi
 
     # Execute the test and determine execution status
+    echo "EXEC: $@"
     ("$@") && fail='no' || fail='yes'
 
     test "${xfail}" = "${fail}" && test_result='ok' || test_result='not ok'
 
     # Report results
     test_result_fn "${test_result}" "${test_description}${diagnosis}"
-    set -x
+    #set -x
 }

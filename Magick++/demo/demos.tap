@@ -7,17 +7,17 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-SRCDIR=`dirname $0`
-SRCDIR=`cd $SRCDIR && pwd`/
-TOPSRCDIR=`cd $srcdir && pwd`
-export SRCDIR
+subdir=Magick++/demo
 . ./common.shi
-. ${TOPSRCDIR}/scripts/tap-functions.shi
+. ${top_srcdir}/scripts/tap-functions.shi
+
+SRCDIR=${top_srcdir}/${subdir}/
+export SRCDIR
 
 # Number of tests we plan to run
 test_plan_fn 24
 
-cd Magick++/demo || exit 1
+cd ${subdir} || exit 1
 
 test_command_fn "analyze" ${MEMCHECK} ./analyze "$SRCDIR/model.miff"
 test_command_fn "button" -F TTF ${MEMCHECK} ./button
