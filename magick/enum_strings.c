@@ -1092,6 +1092,42 @@ MagickExport const char *OrientationTypeToString(const OrientationType orientati
   return orientation;
 }
 
+MagickExport OrientationType StringToOrientationType(const char *option)
+{
+  OrientationType
+    orientation_type = UndefinedOrientation;
+
+  if ((LocaleCompare("Unknown",option) == 0) ||
+      (LocaleCompare("undefined",option) == 0))
+    orientation_type=UndefinedOrientation;
+  else if ((LocaleCompare("TopLeft",option) == 0) ||
+           (LocaleCompare("top-left",option) == 0))
+    orientation_type=TopLeftOrientation;
+  else if ((LocaleCompare("TopRight",option) == 0) ||
+           (LocaleCompare("top-right",option) == 0))
+    orientation_type=TopRightOrientation;
+  else if ((LocaleCompare("BottomRight",option) == 0) ||
+           (LocaleCompare("bottom-right",option) == 0))
+    orientation_type=BottomRightOrientation;
+  else if ((LocaleCompare("BottomLeft",option) == 0) ||
+           (LocaleCompare("bottom-left",option) == 0))
+    orientation_type=BottomLeftOrientation;
+  else if ((LocaleCompare("LeftTop",option) == 0) ||
+           (LocaleCompare("left-top",option) == 0))
+    orientation_type=LeftTopOrientation;
+  else if ((LocaleCompare("RightTop",option) == 0) ||
+           (LocaleCompare("right-top",option) == 0))
+    orientation_type=RightTopOrientation;
+  else if ((LocaleCompare("RightBottom",option) == 0) ||
+           (LocaleCompare("right-bottom",option) == 0))
+    orientation_type=RightBottomOrientation;
+  else if ((LocaleCompare("LeftBottom",option) == 0) ||
+           (LocaleCompare("left-bottom",option) == 0))
+    orientation_type=LeftBottomOrientation;
+
+  return orientation_type;
+}
+
 /*
   PreviewType
 */

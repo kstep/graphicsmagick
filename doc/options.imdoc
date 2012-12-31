@@ -176,6 +176,19 @@ image sequence, if it is being read from a format such as PDF that supports
 encryption.  Encrypting images being written is not supported.</pp>
 </utils>
 
+<!-- ------------ -auto-orient ------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-auto-orient</opt>
+
+<abs>orient (rotate) image so it is upright</abs>
+
+<pp>
+Adjusts the image orienation so that it is suitable for viewing.  Uses
+the orientation tag obtained from the image file or as supplied by the
+<s>-orient</s> option.</pp>
+</utils>
+
 <!-- ------------ -average ------------------------------------------ -->
 
 <utils apps=convert>
@@ -3825,6 +3838,31 @@ input path (including any directory part) is appended to the output path.
 The user is responsible for creating the output directory.</pp>
 
 </utils>
+
+
+<!-- ------------ -orient --------------------------------- -->
+
+<utils apps=convert,mogrify>
+
+<dopt>-orient <orientation></opt>
+
+<abs>Set the image orientation attribute</abs>
+
+<pp>
+Sets the image orientation attribute.  The image orientation attribute
+is compatible with the TIFF orientation tag (and the EXIF orientation
+tag).  Accepted values are <s>undefined</s>, <s>TopLeft</s>,
+<s>TopRight</s>, <s>BottomRight</s>, <s>BottomLeft</s>,
+<s>LeftTop</s>, <s>RightTop</s>, <s>RightBottom</s>,
+<s>LeftBottom</s>, and hyphenated versions thereof
+(e.g. <s>left-bottom</s>).  Please note that GraphicsMagick does not
+include an EXIF editor so if an EXIF profile is written to the output
+image, the value in the EXIF profile might not match the image.  It is
+possible for an image file to indicate its orientation in several
+different ways simultaneously.</pp>
+
+</utils>
+
 
 
 

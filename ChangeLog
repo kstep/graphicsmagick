@@ -1,3 +1,13 @@
+2012-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Added -auto-orient to 'convert' and 'mogrify'
+	to automatically rotate the image upright for viewing based on its
+	current orientation setting.
+	Added -orient to support setting the image orientation.
+
+	* magick/shear.c (AutoOrientImage): New function to automatically
+	orient the image so that it is upright for normal viewing.
+
 2012-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* scripts/tap-functions.shi: Tidy TAP tests so that they may be

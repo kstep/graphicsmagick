@@ -380,7 +380,7 @@ typedef enum
 } NoiseType;
 
 /*
-  Image orientation.  Based on TIFF standard values.
+  Image orientation.  Based on TIFF standard values (also EXIF).
 */
 typedef enum               /* Line direction / Frame Direction */
 {                          /* -------------- / --------------- */

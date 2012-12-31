@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -156,6 +156,131 @@ AffineTransformImage(const Image *image,const AffineMatrix *affine,
   transform.ty=(-min.y);
   (void) DrawAffineImage(affine_image,image,&transform);
   return(affine_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A u t o O r i e n t I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AutoOrientImage() returns an image adjusted so that its orientation is
+%  suitable for viewing (i.e. top-left orientation).  
+%
+%  The format of the AutoOrientImage method is:
+%
+%      Image *AutoOrientImage(const Image *image,
+%        const OrientationType current_orientation,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o current_orientation: Current image orientation (normally same as
+%                   image->orientation).
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *
+AutoOrientImage(const Image *image,
+                const OrientationType current_orientation,
+                ExceptionInfo *exception)
+{
+  Image
+    *orient_image;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
+  orient_image=(Image *) NULL;
+
+  /*
+       1        2       3      4         5            6           7          8
+
+    888888  888888      88  88      8888888888  88                  88  8888888888
+    88          88      88  88      88  88      88  88          88  88      88  88
+    8888      8888    8888  8888    88          8888888888  8888888888          88
+    88          88      88  88
+    88          88  888888  888888
+   */
+
+  switch(current_orientation)
+    {
+    case UndefinedOrientation:
+    case TopLeftOrientation: /* 1 */
+    default:
+      {
+        orient_image=CloneImage(image,0,0,MagickTrue,exception);
+        break;
+      }
+    case TopRightOrientation: /* 2 */
+      {
+        orient_image=FlopImage(image,exception);
+        break;
+      }
+    case BottomRightOrientation: /* 3 */
+      {
+        orient_image=RotateImage(image,180.0,exception);
+        break;
+      }
+    case BottomLeftOrientation: /* 4 */
+      {
+        orient_image=FlipImage(image,exception);
+        break;
+      }
+    case LeftTopOrientation: /* 5 */
+      {
+        Image
+          *rotate_image;
+
+        rotate_image=RotateImage(image,90,exception);
+        if (rotate_image != (Image *) NULL)
+          {
+            orient_image=FlopImage(rotate_image,exception);
+            DestroyImage(rotate_image);
+          }
+
+        break;
+      }
+    case RightTopOrientation: /* 6 */
+      {
+        orient_image=RotateImage(image,90.0,exception);
+        break;
+      }
+    case RightBottomOrientation: /* 7 */
+      {
+        Image
+          *rotate_image;
+
+        rotate_image=RotateImage(image,270,exception);
+        if (rotate_image != (Image *) NULL)
+          {
+            orient_image=FlopImage(rotate_image,exception);
+            DestroyImage(rotate_image);
+          }
+        break;
+      }
+    case LeftBottomOrientation: /* 8 */
+      {
+        orient_image=RotateImage(image,270.0,exception);
+        break;
+      }
+    };
+
+  if (orient_image != (Image *) NULL)
+    orient_image->orientation=TopLeftOrientation;
+
+  return orient_image;
 }
 
 /*

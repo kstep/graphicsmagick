@@ -1,4 +1,4 @@
-.TH gm 1 "2012/12/15" "GraphicsMagick"
+.TH gm 1 "2012/12/31" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -463,6 +463,13 @@ with the unity (no change) specification being:
 Use this option to supply a password for decrypting an image or an
 image sequence, if it is being read from a format such as PDF that supports
 encryption.  Encrypting images being written is not supported.
+.TP
+.B "-auto-orient"
+\fRorient (rotate) image so it is upright
+
+Adjusts the image orienation so that it is suitable for viewing.  Uses
+the orientation tag obtained from the image file or as supplied by the
+\fB-orient\fP option.
 .TP
 .B "-average"
 \fRaverage a set of images
@@ -3125,6 +3132,21 @@ input path specification in the output path so that the user-specified
 input path (including any directory part) is appended to the output path.
 The user is responsible for creating the output directory.
 .TP
+.B "-orient \fI<orientation>"\fP
+\fRSet the image orientation attribute
+
+Sets the image orientation attribute.  The image orientation attribute
+is compatible with the TIFF orientation tag (and the EXIF orientation
+tag).  Accepted values are \fBundefined\fP, \fBTopLeft\fP,
+\fBTopRight\fP, \fBBottomRight\fP, \fBBottomLeft\fP,
+\fBLeftTop\fP, \fBRightTop\fP, \fBRightBottom\fP,
+\fBLeftBottom\fP, and hyphenated versions thereof
+(e.g. \fBleft-bottom\fP).  Please note that GraphicsMagick does not
+include an EXIF editor so if an EXIF profile is written to the output
+image, the value in the EXIF profile might not match the image.  It is
+possible for an image file to indicate its orientation in several
+different ways simultaneously.
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
@@ -5719,6 +5741,9 @@ Options, above.
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
+.B "-auto-orient"
+\fRorient (rotate) image so it is upright
+.TP
 .B "-average"
 \fRaverage a set of images
 .TP
@@ -5979,6 +6004,9 @@ Options, above.
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
+.TP
+.B "-orient \fI<orientation>"\fP
+\fRSet the image orientation attribute
 .TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
@@ -8657,6 +8685,9 @@ Options, above.
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
+.B "-auto-orient"
+\fRorient (rotate) image so it is upright
+.TP
 .B "-background \fI<color>"\fP
 \fRthe background color
 .TP
@@ -8896,6 +8927,9 @@ Options, above.
 .TP
 .B "-output-directory \fI<directory>"\fP
 \fRoutput files to directory
+.TP
+.B "-orient \fI<orientation>"\fP
+\fRSet the image orientation attribute
 .TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas

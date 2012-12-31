@@ -4066,6 +4066,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("auto-orient",option+1) == 0)
+          break;
         if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowConvertException(OptionError,UnrecognizedOption,option)
@@ -5113,6 +5115,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("orient",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowConvertException(OptionError,MissingArgument,option);
+            break;
+          }
         ThrowConvertException(OptionError,UnrecognizedOption,option)
       }
       case 'p':
@@ -5780,6 +5789,7 @@ static void ConvertUsage(void)
       "-append              append an image sequence",
       "-asc-cdl spec        apply ASC CDL transform",
       "-authenticate value  decrypt image with this password",
+      "-auto-orient         orient (rotate) image so it is upright",
       "-average             average an image sequence",
       "-background color    background color",
       "-black-threshold value",
@@ -5868,6 +5878,7 @@ static void ConvertUsage(void)
       "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
+      "-orient orientation  set image orientation attribute",
       "+page                reset current page offsets to default",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
@@ -8524,7 +8535,22 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 	    (void) CdlImage(*image,argv[i]);
 	    continue;
 	  }
-        break;
+        if (LocaleCompare("auto-orient",option+1) == 0)
+          {
+            Image
+              *orient_image;
+
+            /*
+              Auto orient (upright) image scanlines.
+            */
+            orient_image=AutoOrientImage(*image,(*image)->orientation,
+                                         &(*image)->exception);
+            if (orient_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=orient_image;
+            continue;
+          }        break;
       }
       case 'b':
       {
@@ -9689,6 +9715,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) RandomChannelThresholdImage(*image,argv[i+1],argv[i+2],
                 &(*image)->exception);
             i+=2;
+            continue;
+          }
+        if (LocaleCompare("orient",option+1) == 0)
+          {
+	    (*image)->orientation=UndefinedOrientation;
+	    if (*option == '-')
+	      (*image)->orientation=StringToOrientationType(argv[++i]);
             continue;
           }
         break;
@@ -11449,6 +11482,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("auto-orient",option+1) == 0)
+          break;
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
       }
       case 'b':
@@ -12471,6 +12506,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("orient",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowMogrifyException(OptionError,MissingArgument,option);
+            break;
+          }
         if (LocaleCompare("output-directory",option+1) == 0)
           {
 	    output_directory[0]='\0';
@@ -13094,6 +13136,7 @@ static void MogrifyUsage(void)
       "-antialias           remove pixel-aliasing",
       "-asc-cdl spec        apply ASC CDL transform",
       "-authenticate value  decrypt image with this password",
+      "-auto-orient         orient (rotate) image so it is upright",
       "-background color    background color",
       "-black-threshold value",
       "                     pixels below the threshold become black",
@@ -13174,6 +13217,7 @@ static void MogrifyUsage(void)
       "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
+      "-orient orientation  set image orientation attribute",
       "-output-directory directory",
       "                     write output files to directory",
       "+page                reset current page offsets to default",

@@ -41,6 +41,7 @@ extern "C" {
   extern MagickExport InterlaceType StringToInterlaceType(const char *option);
   extern MagickExport MetricType StringToMetricType(const char *option);
   extern MagickExport NoiseType StringToNoiseType(const char *option);
+  extern MagickExport OrientationType StringToOrientationType(const char *option);
   extern MagickExport PreviewType StringToPreviewType(const char *option);
   extern MagickExport QuantumOperator StringToQuantumOperator(const char *option);
   extern MagickExport ResourceType StringToResourceType(const char *option);
