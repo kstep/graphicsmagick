@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -92,6 +92,7 @@ XFAIL_TESTS = \
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2012 \
 	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \

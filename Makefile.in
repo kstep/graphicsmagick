@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -88,7 +88,7 @@
 # Makefile for building Wand library
 #
 
-# Copyright (C) 2008 - 2012 GraphicsMagick Group
+# Copyright (C) 2008 - 2013 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -2359,6 +2359,7 @@ TESTS_ENVIRONMENT = \
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2012 \
 	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \
@@ -3892,6 +3893,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2011.html \
+	$(WWWDIR)/ChangeLog-2012.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -3999,6 +4001,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2009.html \
 	$(WWWDIR)/ChangeLog-2010.html \
 	$(WWWDIR)/ChangeLog-2011.html \
+	$(WWWDIR)/ChangeLog-2012.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -9085,6 +9088,9 @@ uninstall-data-html:
 @MAINTAINER_MODE_TRUE@	--url-prefix=`$(RELPATH) $(top_srcdir)/www $@` $< | $(OMP_DECIMAL_ALIGN) > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
+@MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
+
+@MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2012.rst: $(top_srcdir)/ChangeLog.2012
 @MAINTAINER_MODE_TRUE@	$(CHANGELOG2RST) < $^ > $@
 
 @MAINTAINER_MODE_TRUE@$(top_srcdir)/www/ChangeLog-2011.rst: $(top_srcdir)/ChangeLog.2011

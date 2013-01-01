@@ -233,7 +233,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "IMDisplay Version 1.0",IDC_STATIC,40,10,119,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2002 ImageMagick Studio",IDC_STATIC,40,25,
+    LTEXT           "Copyright GraphicsMagick Group 2003-2013",IDC_STATIC,40,25,
                     119,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
