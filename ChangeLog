@@ -1,4 +1,16 @@
 2013-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c (OrientationTypeToDPXOrientation): Return U16 type
+	as stored in DPX format.
+
+	* coders/cineon.c: Add support for reading/writing 'orientation'
+	setting.
+
+	* coders/mpc.c: Add support for reading/writing 'orientation'
+	setting.
+
+	* coders/miff.c: Add support for reading/writing 'orientation'
+	setting.
+
 	* Rotate ChangeLog for 2012 and update web page copyright years.
 
