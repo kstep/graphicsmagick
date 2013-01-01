@@ -4312,7 +4312,7 @@ doc_DATA = \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
+DISTDIRS = locale scripts www PerlMagick TclMagick
 @HAS_ZIP_FALSE@DIST_WINDOWS_SRC_ZIP = 
 
 #
@@ -9330,7 +9330,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/\.hg)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
