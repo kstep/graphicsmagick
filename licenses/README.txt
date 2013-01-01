@@ -1,31 +1,35 @@
+.. -*- mode: rst -*-
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
 
-		   ImageMagick Delegate Library Licenses
-		   =====================================
+================================
+GraphicsMagick Delegate Licences
+================================
 
-ImageMagick may be built using a number of optional 3rd party libraries
-that we call "delegate" libraries. Binary distributions built by, or
-distributed by, ImageMagick Studio may include programs, libraries, or
-modules, based on one or more of these 3rd party libraries.  Whenever
-possible, dependence on a 3rd party library is isolated to a module so
-that when ImageMagick is built using modules, this dependence may be
-removed by simply deleting the module.
+GraphicsMagick may be built using a number of optional 3rd party
+libraries (or programs) that we call "delegates". Binary distributions
+built by, or distributed by, GraphicsMagick Group may include
+programs, libraries, or modules, based on one or more of these 3rd
+party libraries.  Whenever possible, dependence on a 3rd party library
+is isolated to a module so that when GraphicsMagick is built using
+modules, this dependence may be removed by simply deleting the module.
 
-While ImageMagick Studio makes every effort to comply with the
+While GraphicsMagick makes every effort to comply with the
 requirements imposed by 3rd party libraries, the license requirements
 for these libraries may not be compatible with the end-user's
-requirements. In some cases the binary distribution of ImageMagick may
-be brought into compliance with user requirements by simply removing a
-loadable module, while in other cases, the user may need to build a
-custom ImageMagick from scratch. ImageMagick Studio bears no
-responsiblity for ensuring that the user properly complies with license
-requirements.
+requirements. In some cases the binary distribution of GraphicsMagick
+may be brought into compliance with user requirements by simply
+removing a loadable module, while in other cases, the user may need to
+build a custom GraphicsMagick from scratch. GraphicsMagick bears no
+responsiblity for ensuring that the user properly complies with
+license requirements or adheres to applicable patents.
 
 In order to comply with some of the distribution licenses, and to assist
 the user with evaluating compatibility the licenses for each 3rd party
-library are included in this directory as seperate files.
+library are included in this directory as separate files.
 
 Magick++
-  Magick++ is the C++ library interface to the ImageMagick API.  Its
+  Magick++ is the C++ library interface to the GraphicsMagick API.  Its
   license may be found in the file "Magick++.txt".
 
 Bzlib
@@ -34,9 +38,13 @@ Bzlib
   format. Its license may be found in the file "bzlib.txt".
 
 Cygwin API library
-  This library is used to support building ImageMagick under the Cygwin
+  This library is used to support building GraphicsMagick under the Cygwin
   Unix emulation environment for Microsoft Windows.  The license for this
   library may be found in the file "cygwin.txt".
+
+dcraw
+  This utility is used to read RAW camera formats.  The license for this
+  utility may be found in the file "dcraw.txt".
 
 Digital Imaging Group Flashpix OpenSource Toolkit
   This toolkit is used to support the FlashPIX file format.  The license for
@@ -46,15 +54,6 @@ FreeType
   This library is used to support rendering TrueType and Postscript
   Type 1 fonts.  The license for this library may be found in the file
   "ttf.txt".
-
-Ghostscript Library
-  This library ("libgs") is used in some environments to support reading
-  the Postscript, Encapsulated Postscript, and Portable Document Format (PDF).
-  Its license may be found in the file "libgs.txt".
-
-HDF5
-  This library is used to support the HDF5 file format. Its license may
-  be found in the file "hdf5.txt".
 
 JBIG
   This library is used to support the JBIG file format. Its license may
