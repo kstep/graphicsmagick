@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/color_lookup.h"
 #include "magick/colormap.h"
+#include "magick/enum_strings.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -499,6 +500,24 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *values == '{' ? values+1 : values);
                 break;
               }
+              case 'o':
+              case 'O':
+              {
+                if (LocaleCompare(keyword,"opaque") == 0)
+                  {
+                    image->matte=(LocaleCompare(values,"True") == 0) ||
+                      (LocaleCompare(values,"true") == 0);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"orientation") == 0)
+                  {
+                    image->orientation=StringToOrientationType(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
+                break;
+              }
               case 'p':
               case 'P':
               {
@@ -525,19 +544,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     number_of_profiles++;
                     break;
                   }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'o':
-              case 'O':
-              {
-                if (LocaleCompare(keyword,"opaque") == 0)
-                  {
-                    image->matte=(LocaleCompare(values,"True") == 0) ||
-                      (LocaleCompare(values,"true") == 0);
-                    break;
-                   }
                 (void) SetImageAttribute(image,keyword,
                   *values == '{' ? values+1 : values);
                 break;
@@ -1147,6 +1153,12 @@ static MagickPassFail WriteMPCImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,"white-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->orientation != UndefinedOrientation)
+      {
+        FormatString(buffer,"orientation=%s\n",
+                     OrientationTypeToString(image->orientation));
         (void) WriteBlobString(image,buffer);
       }
     /*

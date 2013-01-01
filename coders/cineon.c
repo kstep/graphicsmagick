@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2007 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -351,6 +351,79 @@ static void SwabCineonFilmInfo(CineonFilmInfo *mp_info)
   MagickSwabFloat(&mp_info->frame_rate.f);
 }
 
+static OrientationType
+CineonOrientationToOrientationType(const unsigned int orientation)
+{
+  OrientationType
+    orientation_type = UndefinedOrientation;
+
+  switch (orientation)
+    {
+    case 0:
+      orientation_type=TopLeftOrientation;
+      break;
+    case 1:
+      orientation_type=TopRightOrientation;
+      break;
+    case 2:
+      orientation_type=BottomLeftOrientation;
+      break;
+    case 3:
+      orientation_type=BottomRightOrientation;
+      break;
+    case 4:
+      orientation_type=LeftTopOrientation;
+      break;
+    case 5:
+      orientation_type=RightTopOrientation;
+      break;
+    case 6:
+      orientation_type=LeftBottomOrientation;
+      break;
+    case 7:
+      orientation_type=RightBottomOrientation;
+      break;
+    }
+
+  return orientation_type;
+}
+
+static U8 OrientationTypeToCineonOrientation(const OrientationType orientation_type)
+{
+  U8
+    orientation = 0U;
+
+  switch (orientation_type)
+    {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+      orientation=0U;
+      break;
+    case TopRightOrientation:
+      orientation=1U;
+      break;
+    case BottomLeftOrientation:
+      orientation=2U;
+      break;
+    case BottomRightOrientation:
+      orientation=3U;
+      break;
+    case LeftTopOrientation:
+      orientation=4U;
+      break;
+    case RightTopOrientation:
+      orientation=5U;
+      break;
+    case LeftBottomOrientation:
+      orientation=6U;
+      break;
+    case RightBottomOrientation:
+      orientation=7U;
+      break;
+    }
+  return orientation;
+}
+
 static Image *ReadCINEONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -493,6 +566,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     SwabCineonImageInfo(&cin_image_info);
   number_of_channels=cin_image_info.channels;
   U8ToAttribute(image,"DPX:image.orientation",cin_image_info.orientation);
+  image->orientation=CineonOrientationToOrientationType(cin_image_info.orientation);
   max_bits_per_sample=0;
   max_pixels_per_line=0;
   max_lines_per_image=0;
@@ -1067,7 +1141,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   */
   (void) memset(&cin_image_info,0,sizeof(cin_image_info));
   /* Image orientation */
-  cin_image_info.orientation = 0; /* left to right, top to bottom */
+  cin_image_info.orientation = OrientationTypeToCineonOrientation(image->orientation);
   /* Number of image channels (1-8) */
   cin_image_info.channels = 3; /* RGB */
 

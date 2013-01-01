@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -984,6 +984,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   {
                     image->matte=(LocaleCompare(values,"True") == 0) ||
                       (LocaleCompare(values,"true") == 0);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"orientation") == 0)
+                  {
+                    image->orientation=StringToOrientationType(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -2048,6 +2053,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         FormatString(buffer,"white-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->orientation != UndefinedOrientation)
+      {
+        FormatString(buffer,"orientation=%s\n",
+                     OrientationTypeToString(image->orientation));
         (void) WriteBlobString(image,buffer);
       }
     /*
