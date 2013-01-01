@@ -1154,28 +1154,28 @@ DPXOrientationToOrientationType(const unsigned int orientation)
 
   switch (orientation)
     {
-    case 0:
+    case 0U:
       orientation_type=TopLeftOrientation;
       break;
-    case 1:
+    case 1U:
       orientation_type=TopRightOrientation;
       break;
-    case 2:
+    case 2U:
       orientation_type=BottomLeftOrientation;
       break;
-    case 3:
+    case 3U:
       orientation_type=BottomRightOrientation;
       break;
-    case 4:
+    case 4U:
       orientation_type=LeftTopOrientation;
       break;
-    case 5:
+    case 5U:
       orientation_type=RightTopOrientation;
       break;
-    case 6:
+    case 6U:
       orientation_type=LeftBottomOrientation;
       break;
-    case 7:
+    case 7U:
       orientation_type=RightBottomOrientation;
       break;
     }
@@ -2782,37 +2782,37 @@ STATIC void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
       *p='0';
 }
 
-STATIC unsigned int OrientationTypeToDPXOrientation(const OrientationType orientation_type)
+STATIC U16 OrientationTypeToDPXOrientation(const OrientationType orientation_type)
 {
-  unsigned int
-    orientation = 0;
+  U16
+    orientation = 0U;
 
   switch (orientation_type)
     {
     case UndefinedOrientation:
     case TopLeftOrientation:
-      orientation=0;
+      orientation=0U;
       break;
     case TopRightOrientation:
-      orientation=1;
+      orientation=1U;
       break;
     case BottomLeftOrientation:
-      orientation=2;
+      orientation=2U;
       break;
     case BottomRightOrientation:
-      orientation=3;
+      orientation=3U;
       break;
     case LeftTopOrientation:
-      orientation=4;
+      orientation=4U;
       break;
     case RightTopOrientation:
-      orientation=5;
+      orientation=5U;
       break;
     case LeftBottomOrientation:
-      orientation=6;
+      orientation=6U;
       break;
     case RightBottomOrientation:
-      orientation=7;
+      orientation=7U;
       break;
     }
   return orientation;
