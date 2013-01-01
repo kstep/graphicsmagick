@@ -1,5 +1,9 @@
 2013-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac (MAGICK_FEATURES): MinGW static build does not
+	build modules so MODULES feature should not be listed as
+	supported.  Resolves MinGW test failures.
+
 	* coders/dpx.c (OrientationTypeToDPXOrientation): Return U16 type
 	as stored in DPX format.
 

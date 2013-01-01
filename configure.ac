@@ -3282,8 +3282,7 @@ if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$build_modules" != 'no' || \
-   test "${native_win32_build}" = 'yes' ; then
+if test "$build_modules" != 'no' ; then
    MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
 fi
 # Remove extraneous spaces from output variables (asthetic)
