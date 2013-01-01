@@ -577,9 +577,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   fprintf(file,"  Interlace: %s\n",
 	  InterlaceTypeToString(image->interlace == UndefinedInterlace ?
 				NoInterlace : image->interlace));
-  (void) fprintf(file,"  Orientation: %s (%d)\n",
-                 OrientationTypeToString(image->orientation),
-                 (int) image->orientation);
+  (void) fprintf(file,"  Orientation: %s\n",
+                 OrientationTypeToString(image->orientation));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
                         &image->exception);
   (void) fprintf(file,"  Background Color: %.1024s\n",color);
