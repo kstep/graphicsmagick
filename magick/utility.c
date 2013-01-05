@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -1052,8 +1052,8 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 	  if (IsDirectory(filelist[j]) <= 0)
 	    break;
 
-      /* ListFiles() changes current directory without restoring. */
-      if (chdir(current_directory) != 0)
+      /* ListFiles() may change current directory without restoring. */
+      if ((strlen(current_directory) > 0) && (chdir(current_directory) != 0))
         {
           for (j=0; j < number_files; j++)
 	    MagickFreeMemory(filelist[j]);
@@ -1431,7 +1431,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
         path to it.  Otherwise, remove any trailing path component
         (typically the program name) and try again.
       */
-      if (chdir(path) == 0)
+      if ((strlen(path) >0 ) && (chdir(path) == 0))
         {
           if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
             MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
@@ -1443,7 +1443,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
           p=strrchr(temporary_path,DirectorySeparator[0]);
           if (p)
             *p='\0';
-          if (chdir(temporary_path) == 0)
+          if ((strlen(temporary_path) > 0) && (chdir(temporary_path) == 0))
             {
               if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
                 MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
@@ -1484,7 +1484,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
             if (length > MaxTextExtent-1)
               length = MaxTextExtent-1;
             (void) strlcpy(temporary_path,start,length+1);
-            if (chdir(temporary_path) == 0)
+            if ((strlen(temporary_path) > 0) && (chdir(temporary_path) == 0))
               {
                 if (temporary_path[length-1] != DirectorySeparator[0])
                   (void) strlcat(temporary_path,DirectorySeparator,sizeof(temporary_path));
@@ -1505,7 +1505,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
   /*
     Restore original working directory.
   */
-  if (chdir(original_cwd) != 0)
+  if ((strlen(original_cwd) > 0) && (chdir(original_cwd) != 0))
     return(MagickFail);
 
   if (execution_path[0] != '\0')

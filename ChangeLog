@@ -1,3 +1,17 @@
+2013-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{animate.c,display.c,utility.c}: Only invoke chdir() if
+	path is not an empty string.  Previously sometimes chdir() was
+	passed an empty string (because chdir() was not needed) and this
+	was ok because we ignored the error status.  Now that we check the
+	chdir() error status, some X11 GUI functions (e.g. save file to
+	current directory) encounter annoying issues.
+
+	* magick/shear.c (IntegralRotateImage): Limit integral rotate to
+	two threads.
+
+	* coders/pnm.c (ReadPNMImage): Limit PNM reader to two threads.
+
 2013-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac (MAGICK_FEATURES): MinGW static build does not

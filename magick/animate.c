@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2004 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1130,7 +1130,8 @@ MagickXAnimateImages(Display *display,
   windows=MagickXSetWindows((MagickXWindows *) ~0);
   if (windows != (MagickXWindows *) NULL)
     {
-      if (chdir(working_directory) != 0)
+      if ((strlen(working_directory) > 0) &&
+          (chdir(working_directory) != 0))
         MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
                          NULL);
       monitor_handler=SetMonitorHandler(MagickXMagickMonitor);
@@ -2563,7 +2564,8 @@ MagickXAnimateImages(Display *display,
   if (getcwd(working_directory,MaxTextExtent-1) == NULL)
     MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
                      NULL);
-  if (chdir(resource_info->home_directory) != 0)
+  if ((strlen(resource_info->home_directory) > 0) &&
+      (chdir(resource_info->home_directory) != 0))
     MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
                      resource_info->home_directory);
   return(nexus);
