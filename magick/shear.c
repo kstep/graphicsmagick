@@ -415,6 +415,7 @@ CropToFitImage(Image **image,
 #if 1
 #if !defined(DisableSlowOpenMP)
 #  define IntegralRotateImageUseOpenMP
+#  define RotateThreads (Min(2,omp_get_max_threads()))
 #endif
 #endif
 static Image *
@@ -545,7 +546,7 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(status, tile)
 #    else
-#      pragma omp parallel for schedule(static,1) shared(status, tile)
+#      pragma omp parallel for num_threads(RotateThreads) schedule(static,1) shared(status, tile)
 #    endif
 #  endif
 #endif
@@ -716,7 +717,7 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(row_count, status)
 #    else
-#      pragma omp parallel for schedule(static,8) shared(row_count, status)
+#      pragma omp parallel for num_threads(RotateThreads) schedule(static,8) shared(row_count, status)
 #    endif
 #  endif
 #endif
@@ -812,7 +813,7 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(status, tile)
 #    else
-#      pragma omp parallel for schedule(static,1) shared(status, tile)
+#      pragma omp parallel for num_threads(RotateThreads) schedule(static,1) shared(status, tile)
 #    endif
 #  endif
 #endif
