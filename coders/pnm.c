@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2011 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -237,6 +237,11 @@ typedef enum
     PAM_Format, /* P7 */
     XV_332_Format /* P7 332 */
   } PNMSubformat;
+
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#  define PNMReadUseOpenMP 1
+#  define PNMReadThreads (Min(2,omp_get_max_threads()))
+#endif
 
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -912,14 +917,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             scanline_set=AllocateThreadViewDataArray(image,exception,bytes_per_row,1);
             if (scanline_set == (ThreadViewDataSet *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-#if 0
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if PNMReadUseOpenMP
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(is_grayscale,is_monochrome,row_count,status)
 #  else
-#    pragma omp parallel for schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
+#    pragma omp parallel for num_threads(PNMReadThreads) schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
 #  endif
-#endif
 #endif
             for (y=0; y < (long) image->rows; y++)
               {
@@ -945,7 +948,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		ImportPixelAreaInfo
 		  import_info;
 
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if PNMReadUseOpenMP
 #  pragma omp critical (GM_ReadPNMImage)
 #endif
                 thread_status=status;
@@ -954,7 +957,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             
                 pixels=AccessThreadViewData(scanline_set);
             
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if PNMReadUseOpenMP
 #  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
@@ -1009,7 +1012,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!SyncImagePixels(image))
                     thread_status=MagickFail;
 
-#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+#if PNMReadUseOpenMP
 #  pragma omp critical (GM_ReadPNMImage)
 #endif
                 {
