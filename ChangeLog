@@ -1,3 +1,13 @@
+2013-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/memory.h (MagickAllocateAlignedArray): New macro to wrap
+	use of MagickMallocAlignedArray().
+
+	* magick/memory.c (MagickMallocAlignedArray): New private function
+	to support safe allocation of an array in memory with a specified
+	alignment.  Allocation may only be freed using MagickFreeAligned()
+	and the allocation may not be reallocated.
+
 2013-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{animate.c,display.c,utility.c}: Only invoke chdir() if

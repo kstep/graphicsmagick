@@ -128,12 +128,17 @@ Inline emphasis start-string without end-string.</div>
 size is zero, or integer overflow was detected.</p>
 <p>This function is intended for allocating special-purpose buffers
 which benefit from specific alignment.</p>
+<p>The allocated memory should only be freed using MagickFreeAligned()
+and may not be reallocated.</p>
 <p>The format of the  MagickMallocAligned method is:</p>
 <pre class="literal-block">
 void *MagickMallocAligned( size_t alignment, const size_t size );
 </pre>
 <p>A description of each parameter follows:</p>
 <dl class="docutils">
+<dt>alignment:</dt>
+<dd>The alignment of the base and size of the allocated
+memory.</dd>
 <dt>size:</dt>
 <dd>The size of the memory in bytes to allocate.</dd>
 </dl>
