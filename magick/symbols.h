@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2013 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -72,6 +72,7 @@
 #define Ascii85WriteByteHook GmAscii85WriteByteHook
 #define AssignThreadViewData GmAssignThreadViewData
 #define AttachBlob GmAttachBlob
+#define AutoOrientImage GmAutoOrientImage
 #define AverageImages GmAverageImages
 #define BackgroundColor GmBackgroundColor
 #define Base64Decode GmBase64Decode
@@ -545,6 +546,7 @@
 #define MagickIsTrue GmMagickIsTrue
 #define MagickMalloc GmMagickMalloc
 #define MagickMallocAligned GmMagickMallocAligned
+#define MagickMallocAlignedArray GmMagickMallocAlignedArray
 #define MagickMallocArray GmMagickMallocArray
 #define MagickMallocCleared GmMagickMallocCleared
 #define MagickMapAccessEntry GmMagickMapAccessEntry
