@@ -1,3 +1,10 @@
+2013-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/tiff/LIBRARY.txt: Fix pre-processor definitions for
+	libtiff so that they use multiple statements rather than one long
+	statement.  Resolves SourceForge issue 3601001 "libtiff won't
+	compile with ICL".
+
 2013-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.h (MagickAllocateAlignedArray): New macro to wrap
