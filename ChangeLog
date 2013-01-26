@@ -1,5 +1,10 @@
 2013-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/png.c (WriteOnePNGImage): PNG8 support was using
+	image->colors to decide if the input image is PseudoClass.  This
+	is totally bogus.  Use image->storage_class to determine if image
+	is PseudoClass and quantize image colors if it is not.
+
 	* magick/delegate.c (InvokePostscriptDelegate): Only invoke
 	MagickSpawnVP() if Ghostscript filename argument is non-empty.
 	This argument may be empty if Ghostscript is not found on a

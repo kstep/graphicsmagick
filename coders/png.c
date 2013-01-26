@@ -6526,13 +6526,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           save_number_colors;
 
         number_colors=image_colors;
-        if (number_colors == 0 || number_colors > 256)
+        if ((image->storage_class != PseudoClass) || (number_colors == 0) ||
+            (number_colors > 256))
           {
             GetQuantizeInfo(&quantize_info);
             quantize_info.dither=image_info->dither;
             quantize_info.number_colors=256;
             (void) QuantizeImage(&quantize_info,image);
-            number_colors=image_colors;
+            number_colors=image->colors;
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "    Colors quantized to %ld",
