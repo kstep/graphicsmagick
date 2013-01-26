@@ -917,6 +917,12 @@ Failed to compute output size
 .
 
 MessageId       = +1
+SymbolicName    = DelegateErrorFailedToFindGhostscript
+Language        = English
+Failed to find Ghostscript (not installed?).
+.
+
+MessageId       = +1
 SymbolicName    = DelegateErrorFailedToRenderFile
 Language        = English
 Failed to render file

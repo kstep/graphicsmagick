@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -967,6 +967,9 @@ InvokePostscriptDelegate(const unsigned int verbose,
 
   status=MagickFail;
   {
+    /*
+      Build Ghostscript command argument list
+    */
     argv = StringToArgv(command,&argc);
     if (argv == (char **) NULL)
       {
@@ -976,8 +979,22 @@ InvokePostscriptDelegate(const unsigned int verbose,
       }
     else
       {
-	if (MagickSpawnVP(verbose,argv[1],argv+1) == 0)
-	  status=MagickPass;
+        if (strlen(argv[1]) == 0)
+          {
+            /*
+              argv[1] can be empty under Windows due to empty
+              command substitution text.
+            */
+            ThrowException(exception,DelegateError,
+                           FailedToFindGhostscript,
+                           command);
+            status=MagickFail;
+          }
+        else
+          {
+            if (MagickSpawnVP(verbose,argv[1],argv+1) == 0)
+              status=MagickPass;
+          }
 	for (i=0; i < argc; i++)
 	  MagickFreeMemory(argv[i]);
 	MagickFreeMemory(argv);

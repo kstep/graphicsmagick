@@ -503,6 +503,9 @@
       <Message name="FailedToAllocateGhostscriptInterpreter">
         Failed to allocate Ghostscript interpreter.
       </Message>
+      <Message name="FailedToFindGhostscript">
+        Failed to find Ghostscript (not installed?).
+      </Message>
       <Message name="FailedToScanFile">
         Failed to scan file
       </Message>

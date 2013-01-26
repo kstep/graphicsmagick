@@ -3711,6 +3711,11 @@ MagickSpawnVP(const unsigned int verbose,const char *file, char *const argv[])
   message[0]='\0';
   errno=0;
 
+  assert(file != (const char *) NULL);
+
+  if (strlen(file) == 0)
+    return -1;
+
   {
     /*
       Verify that we are allowed to run this program.

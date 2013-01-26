@@ -1,3 +1,16 @@
+2013-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/delegate.c (InvokePostscriptDelegate): Only invoke
+	MagickSpawnVP() if Ghostscript filename argument is non-empty.
+	This argument may be empty if Ghostscript is not found on a
+	Windows system.  Report a "Failed to find Ghostscript" error if
+	the Ghostscript command name is empty. Resolves SourceForge issue
+	#3601816 "Win64 build crashes trying to convert PDF to any other
+	format".
+
+	* magick/utility.c (MagickSpawnVP): Verify that file argument is
+	non-NULL and not empty.
+
 2013-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/tiff/LIBRARY.txt: Fix pre-processor definitions for
