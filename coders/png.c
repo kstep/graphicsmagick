@@ -6210,7 +6210,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 }
 
 static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
-                                     const ImageInfo *image_info,Image *image)
+                                       const ImageInfo *image_info,Image *image)
 {
   /* Write one PNG image */
   const ImageAttribute
@@ -6308,7 +6308,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   ping_trans_color.blue=0;
   ping_trans_color.gray=0;
 
-  image_colors=image->colors;
+  if (image->storage_class == PseudoClass)
+    image_colors=image->colors;
+  else
+    image_colors=0;
   image_depth=image->depth;
   image_matte=image->matte;
 
@@ -6522,12 +6525,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           quantize_info;
 
         unsigned long
-          number_colors,
-          save_number_colors;
+          number_colors;
 
         number_colors=image_colors;
-        if ((image->storage_class != PseudoClass) || (number_colors == 0) ||
-            (number_colors > 256))
+        if ((number_colors == 0) || (number_colors > 256))
           {
             GetQuantizeInfo(&quantize_info);
             quantize_info.dither=image_info->dither;
@@ -6538,6 +6539,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "    Colors quantized to %ld",
                                     number_colors);
+            image_colors=image->colors;
           }
 
         /*
@@ -6547,12 +6549,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         ping_colortype=PNG_COLOR_TYPE_PALETTE;
 
 #if defined(PNG_SORT_PALETTE)
-        save_number_colors=image_colors;
         if (CompressColormapTransFirst(image) == MagickFail)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                                image);
         number_colors=image->colors;
-        image_colors=save_number_colors;
 #endif
         palette=MagickAllocateMemory(png_color *,
                                      number_colors*sizeof(png_color));
@@ -6921,18 +6921,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                 else
                   {
 #if defined(PNG_SORT_PALETTE)
-                    unsigned long
-                      save_number_colors;
-
                     if (mng_info->optimize)
                       {
-                        save_number_colors=image_colors;
                         if (CompressColormapTransFirst(image) == MagickFail)
                           ThrowWriterException(ResourceLimitError,
                                                MemoryAllocationFailed,
                                                image);
                         number_colors=image->colors;
-                        image_colors=save_number_colors;
                       }
 #endif
                     palette=MagickAllocateArray(png_color *,
