@@ -403,7 +403,9 @@ typedef struct _MngInfo
     write_mng,
     write_png8,
     write_png24,
-    write_png32;
+    write_png32,
+    write_png48,
+    write_png64;
 
 #ifdef MNG_BASI_SUPPORTED
   unsigned long
@@ -5991,6 +5993,61 @@ ModuleExport void RegisterPNGImage(void)
       entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
+      entry=SetMagickInfo("PNG48");
+
+#if defined(HasPNG)
+      entry->decoder=(DecoderHandler) ReadPNGImage;
+      entry->encoder=(EncoderHandler) WritePNGImage;
+#endif
+
+      entry->magick=(MagickHandler) IsPNG;
+      entry->adjoin=MagickFalse;
+      entry->thread_support=MagickTrue;
+      entry->description="opaque or binary transparent 48-bit RGB";
+      if (*version != '\0')
+         entry->version=version;
+      entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
+      (void) RegisterMagickInfo(entry);
+
+      entry=SetMagickInfo("PNG64");
+
+#if defined(HasPNG)
+      entry->decoder=(DecoderHandler) ReadPNGImage;
+      entry->encoder=(EncoderHandler) WritePNGImage;
+#endif
+
+      entry->magick=(MagickHandler) IsPNG;
+      entry->adjoin=MagickFalse;
+      entry->thread_support=MagickTrue;
+      entry->description="opaque or transparent 64-bit RGBA";
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
+      (void) RegisterMagickInfo(entry);
+
+      entry=SetMagickInfo("PNG00");
+
+#if defined(HasPNG)
+      entry->decoder=(DecoderHandler) ReadPNGImage;
+      entry->encoder=(EncoderHandler) WritePNGImage;
+#endif
+
+      entry->magick=(MagickHandler) IsPNG;
+      entry->adjoin=MagickFalse;
+      entry->thread_support=MagickTrue;
+#if 0
+      entry->description="PNG inheriting subformat from original";
+#else
+      entry->description="(not implemented yet)";
+#endif
+      if (*version != '\0')
+        entry->version=version;
+      entry->module="PNG";
+      entry->coder_class=PrimaryCoderClass;
+      (void) RegisterMagickInfo(entry);
+
       entry=SetMagickInfo("JNG");
 #if defined(JNG_SUPPORTED)
 #if defined(HasPNG)
@@ -6040,6 +6097,9 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG8");
   (void) UnregisterMagickInfo("PNG24");
   (void) UnregisterMagickInfo("PNG32");
+  (void) UnregisterMagickInfo("PNG48");
+  (void) UnregisterMagickInfo("PNG64");
+  (void) UnregisterMagickInfo("PNG00");
   (void) UnregisterMagickInfo("JNG");
 
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
@@ -6324,11 +6384,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
     image_depth=8;
+
+  else if (mng_info->write_png48 || mng_info->write_png64)
+      image_depth=16;
+
   else if (image_depth < 8)
     image_depth=8;
-  else if (image_depth > 8 && image_depth < 16)
-    image_depth=16;
-  else if (image_depth > 16)
+
+  else if (image_depth > 8)
     image_depth=16;
 
   /*
@@ -6639,12 +6702,12 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           /* TO DO: reduce to binary transparency */
         }
     }
-  else if (mng_info->write_png24)
+  else if (mng_info->write_png24 || mng_info->write_png48)
     {
       image_matte=MagickFalse;
       ping_colortype=PNG_COLOR_TYPE_RGB;
     }
-  else if (mng_info->write_png32)
+  else if (mng_info->write_png32 || mng_info->write_png64)
     {
       image_matte=MagickTrue;
       ping_colortype=PNG_COLOR_TYPE_RGB_ALPHA;
@@ -7373,9 +7436,16 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     }
   else
     {
-      if ((mng_info->optimize || mng_info->IsPalette) &&
+      if (mng_info->write_png48)
+        rowbytes*=6;
+
+      else if (mng_info->write_png64)
+        rowbytes*=8;
+
+      else if ((mng_info->optimize || mng_info->IsPalette) &&
           IsGrayImage(image,&image->exception))
         rowbytes*=(image_matte ? 4 : 2);
+
       else
         rowbytes*=(image_matte ? 8 : 6);
     }
@@ -7391,7 +7461,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   */
   num_passes=png_set_interlace_handling(ping);
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
-       !mng_info->write_png32) && (mng_info->optimize ||
+       !mng_info->write_png32 && !mng_info->write_png48 &&
+       !mng_info->write_png64) && (mng_info->optimize ||
        mng_info->IsPalette ||
        image_info->type == BilevelType) &&
        !image_matte &&
@@ -7434,7 +7505,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     for (pass=0; pass < num_passes; pass++)
       {
         if ((!mng_info->write_png8 && !mng_info->write_png24 &&
-             !mng_info->write_png32) &&
+             !mng_info->write_png32 && !mng_info->write_png48 &&
+             !mng_info->write_png64) &&
             (!image_matte || (ping_bit_depth >= QuantumDepth)) &&
             (mng_info->optimize || mng_info->IsPalette) &&
             IsGrayImage(image,&image->exception))
@@ -7488,8 +7560,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           for (pass=0; pass < num_passes; pass++)
             {
               if ((image_depth > 8) ||
-                  (mng_info->write_png24 ||
-                   mng_info->write_png32 ||
+                  (mng_info->write_png24 || mng_info->write_png32 ||
+                   mng_info->write_png48 || mng_info->write_png64 ||
                    (!mng_info->write_png8 && !mng_info->IsPalette)))
                 {
                   if (logging)
@@ -7762,15 +7834,34 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 %             Note: grayscale images will be written as indexed PNG files
 %             even though the PNG grayscale type might be slightly more
 %             efficient.
+%
 %    o PNG24: An 8-bit per sample RGB PNG datastream is written.  The tRNS
 %             chunk can be present to convey binary transparency by naming
 %             one of the colors as transparent.
+%
 %    o PNG32: An 8-bit per sample RGBA PNG is written.  Partial
 %             transparency is permitted, i.e., the alpha sample for
 %             each pixel can have any value from 0 to 255. The alpha
 %             channel is present even if the image is fully opaque. 
 %
-%  If the image cannot be written in the requested PNG8, PNG24, or PNG32
+%    o PNG48:   A 16-bit per sample RGB PNG datastream is written.  The tRNS
+%               chunk can be present to convey binary transparency by naming
+%               one of the colors as transparent.  If the image has more
+%               than one transparent color, has semitransparent pixels, or
+%               has an opaque pixel with the same RGB components as the
+%               transparent color, an image is not written.
+%
+%    o PNG64:   A 16-bit per sample RGBA PNG is written.  Partial
+%               transparency is permitted, i.e., the alpha sample for
+%               each pixel can have any value from 0 to 65535. The alpha
+%               channel is present even if the image is fully opaque.
+%
+%    o PNG00:   A PNG that inherits its colortype and bit-depth from the input
+%               image, if the input was a PNG, is written.  If these values
+%               cannot be found, then "PNG00" falls back to the regular "PNG"
+%               format.
+%
+%  If the image cannot be written in the requested PNG8|24|32|48|64
 %  format without loss, a PNG file will not be written, and MagickFail
 %  will be returned.  Since image encoders should not be responsible for
 %  the "heavy lifting", the user should make sure that GraphicsMagick has
@@ -7826,6 +7917,8 @@ static MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
+  mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
+  mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   status=WriteOnePNGImage(mng_info,image_info,image);
 
@@ -8483,6 +8576,8 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
+  mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
+  mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   write_jng=MagickFalse;
   if (image_info->compression==JPEGCompression)
@@ -8502,7 +8597,8 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->adjoin=image_info->adjoin && (image->next != (Image *) NULL) &&
     write_mng;
 
-  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
+  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
+      mng_info->write_png48 || mng_info->write_png64)
     optimize=MagickFalse;
   else
     optimize=(image_info->type == OptimizeType || image_info->type ==
