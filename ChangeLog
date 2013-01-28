@@ -1,8 +1,7 @@
 2013-01-27  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 	* coders/png.c (WriteOnePNGImage): Added PNG48 and PNG64 support.
-	Checked in work-in-progress on PNG00 (png encoder that inherits
-	its color-type and bit-depth from the input, if the input was a
-	PNG datastream).
+	Added PNG00 support (png encoder that inherits its color-type and
+	bit-depth from the input, if the input was a PNG datastream).
 
 2013-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

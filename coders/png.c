@@ -401,6 +401,8 @@ typedef struct _MngInfo
     show_warning,
     mng_type,
     write_mng,
+    write_png_colortype,
+    write_png_depth,
     write_png8,
     write_png24,
     write_png32,
@@ -1755,6 +1757,19 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       &ping_filter_method);
 
   ping_file_depth = ping_bit_depth;
+
+  /* Save bit-depth and color-type in case we later want to write a PNG00 */
+  {
+      char
+        msg[MaxTextExtent];
+
+      (void) FormatString(msg,"%d",(int) ping_colortype);
+      (void) SetImageAttribute(image,"png:IHDR.color-type-orig",msg);
+
+      (void) FormatString(msg,"%d",(int) ping_bit_depth);
+      (void) SetImageAttribute(image,"png:IHDR.bit-depth-orig",msg);
+  }
+
 
   (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
                       &ping_trans_color);
@@ -6037,11 +6052,7 @@ ModuleExport void RegisterPNGImage(void)
       entry->magick=(MagickHandler) IsPNG;
       entry->adjoin=MagickFalse;
       entry->thread_support=MagickTrue;
-#if 0
-      entry->description="PNG inheriting subformat from original";
-#else
-      entry->description="(not implemented yet)";
-#endif
+      entry->description="PNG that inherits type and depth from original";
       if (*version != '\0')
         entry->version=version;
       entry->module="PNG";
@@ -7697,7 +7708,10 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         text;
 
       if (*attribute->key == '[')
-        continue;
+        continue; 
+      if (LocaleCompare(attribute->key,"png:IHDR.color-type-orig") == 0 ||
+          LocaleCompare(attribute->key,"png:IHDR.bit-depth-orig") == 0)
+        continue; 
 #if PNG_LIBPNG_VER >= 14000
             text=(png_textp) png_malloc(ping,
                  (png_alloc_size_t) sizeof(png_text));
@@ -7919,6 +7933,63 @@ static MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
   mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
   mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
+
+        if (LocaleCompare(image_info->magick,"png00") == 0)
+          {
+          const ImageAttribute
+            *attribute;
+
+          /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  Format=%s",image_info->magick);
+
+          attribute=GetImageAttribute(image,"png:IHDR.bit-depth-orig");
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  png00 inherited bit depth=%s",attribute->value);
+
+          if (attribute != (ImageAttribute *) NULL)
+            {
+
+              if (LocaleCompare(attribute->value,"1") == 0)
+                mng_info->write_png_depth = 1;
+
+              else if (LocaleCompare(attribute->value,"1") == 0)
+                mng_info->write_png_depth = 2;
+
+              else if (LocaleCompare(attribute->value,"2") == 0)
+                mng_info->write_png_depth = 4;
+
+              else if (LocaleCompare(attribute->value,"8") == 0)
+                mng_info->write_png_depth = 8;
+
+              else if (LocaleCompare(attribute->value,"16") == 0)
+                mng_info->write_png_depth = 16;
+            }
+
+          attribute=GetImageAttribute(image,"png:IHDR.color-type-orig");
+
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  png00 inherited color type=%s",attribute->value);
+
+          if (attribute != (ImageAttribute *) NULL)
+            {
+              if (LocaleCompare(attribute->value,"0") == 0)
+                mng_info->write_png_colortype = 1;
+
+              else if (LocaleCompare(attribute->value,"2") == 0)
+                mng_info->write_png_colortype = 3;
+
+              else if (LocaleCompare(attribute->value,"3") == 0)
+                mng_info->write_png_colortype = 4;
+
+              else if (LocaleCompare(attribute->value,"4") == 0)
+                mng_info->write_png_colortype = 5;
+
+              else if (LocaleCompare(attribute->value,"6") == 0)
+                mng_info->write_png_colortype = 7;
+            }
+        }
 
   status=WriteOnePNGImage(mng_info,image_info,image);
 
