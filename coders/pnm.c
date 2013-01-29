@@ -835,6 +835,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThreadViewDataSet
               *scanline_set;
 
+#if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
+            int
+              pnm_read_threads = PNMReadThreads;
+#endif
+
 	    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Reading PAM");
 
 	    ImportPixelAreaOptionsInit(&import_options);
@@ -921,7 +926,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(is_grayscale,is_monochrome,row_count,status)
 #  else
-#    pragma omp parallel for num_threads(PNMReadThreads) schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
+#    pragma omp parallel for num_threads(pnm_read_threads) schedule(static,1) shared(is_grayscale,is_monochrome,row_count,status)
 #  endif
 #endif
             for (y=0; y < (long) image->rows; y++)

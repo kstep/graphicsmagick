@@ -536,6 +536,13 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
         long
           tile_y;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+        int
+          rotate_threads = RotateThreads;
+#  endif
+#endif
+
         (void) strlcpy(message,"[%s] Rotate: 90 degrees...",sizeof(message));
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));        
@@ -546,7 +553,7 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(status, tile)
 #    else
-#      pragma omp parallel for num_threads(RotateThreads) schedule(static,1) shared(status, tile)
+#      pragma omp parallel for num_threads(rotate_threads) schedule(static,1) shared(status, tile)
 #    endif
 #  endif
 #endif
@@ -711,13 +718,20 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
         unsigned long
           row_count=0;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+        int
+          rotate_threads = RotateThreads;
+#  endif
+#endif
+
         (void) strlcpy(message,"[%s] Rotate: 180 degrees...",sizeof(message));
 #if defined(IntegralRotateImageUseOpenMP)
 #  if defined(HAVE_OPENMP)
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(row_count, status)
 #    else
-#      pragma omp parallel for num_threads(RotateThreads) schedule(static,8) shared(row_count, status)
+#      pragma omp parallel for num_threads(rotate_threads) schedule(static,8) shared(row_count, status)
 #    endif
 #  endif
 #endif
@@ -804,6 +818,13 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
         long
           tile_y;
 
+#if defined(IntegralRotateImageUseOpenMP)
+#  if defined(HAVE_OPENMP)
+        int
+          rotate_threads = RotateThreads;
+#  endif
+#endif
+
         (void) strlcpy(message,"[%s] Rotate: 270 degrees...",sizeof(message));
         total_tiles=(((image->rows/tile_height_max)+1)*
                      ((image->columns/tile_width_max)+1));
@@ -813,7 +834,7 @@ IntegralRotateImage(const Image *image,unsigned int rotations,
 #    if defined(TUNE_OPENMP)
 #      pragma omp parallel for schedule(runtime) shared(status, tile)
 #    else
-#      pragma omp parallel for num_threads(RotateThreads) schedule(static,1) shared(status, tile)
+#      pragma omp parallel for num_threads(rotate_threads) schedule(static,1) shared(status, tile)
 #    endif
 #  endif
 #endif
