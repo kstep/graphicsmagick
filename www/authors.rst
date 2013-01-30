@@ -71,6 +71,12 @@ Roberto de Deus Barbosa Murta
                 (-lat), which executes in linear rather than quadratic
                 time.
 
+Kenneth Xu
+
+                Contributed the implementation of 'gm batch', a simple
+                batch mode for GraphicsMagick.
+
+
 Former GraphicsMagick Contributors
 ==================================
 

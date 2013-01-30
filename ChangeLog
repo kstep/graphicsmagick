@@ -1,3 +1,11 @@
+2013-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (BatchCommand): New 'gm batch' command to
+	accept one or more GraphicsMagick commands from a specified text
+	file, standard input, or CLI.  Feature is implemented by Kenneth
+	Xu.  Submitted via SourceForge Patch #3602331 "Add interactive or
+	batch mode support to 1.3.17".
+
 2013-01-27  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 	* coders/png.c (WriteOnePNGImage): Added PNG48 and PNG64 support.
 	Added PNG00 support (png encoder that inherits its color-type and

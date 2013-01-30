@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2013 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -152,6 +152,14 @@ extern "C" {
   Windows provides _commit() as a substitute for fsync()
 */
 #define fsync(fd) _commit(fd)
+
+#if !defined(isatty)
+#  define isatty(x) _isatty(x)
+#endif
+
+#if !defined(fileno)
+#  define fileno(x) _fileno(x)
+#endif
 
 /*
   Typedef declarations.

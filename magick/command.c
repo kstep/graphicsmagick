@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -86,6 +86,21 @@
 /*
   Typedef declarations.
 */
+typedef enum
+{
+  SingleMode = 0x01,
+  BatchMode = 0x02
+} RunMode;
+
+typedef enum
+{
+  OptionSuccess = 0,
+  OptionHelp = -1,
+  OptionUnknown = -2,
+  OptionMissingValue = -3,
+  OptionInvalidValue = -4
+} OptionStatus;
+
 typedef struct _CompositeOptions
 {
   char
@@ -111,6 +126,19 @@ typedef struct _CompositeOptions
     tile;
 } CompositeOptions;
 
+typedef int (*CommandLineParser)(FILE *in, int acmax, char **av);
+
+#define SIZE_OPTION_VALUE 256
+typedef struct _BatchOptions {
+  MagickBool        stop_on_error,
+                    is_feedback_enabled,
+                    is_safe_mode;
+  char              prompt[SIZE_OPTION_VALUE],
+                    pass[SIZE_OPTION_VALUE],
+                    fail[SIZE_OPTION_VALUE];
+  CommandLineParser command_line_parser;
+} BatchOptions;
+
 typedef unsigned int (*CommandVectorHandler)(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception);
 
@@ -123,12 +151,20 @@ typedef struct _CommandInfo
   CommandVectorHandler  command_vector;
   UsageVectorHandler    usage_vector;
   int                   pass_metadata;
+  RunMode               support_mode;
 } CommandInfo;
+
+static void InitializeBatchOptions(void);
+static MagickBool GMCommandSingle(int argc, char **argv);
+static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options);
+static int ParseUnixCommandLine(FILE *in, int acmax, char **av);
+static int ParseWindowsCommandLine(FILE *in, int acmax, char **av);
 
 static void
 #if defined(HasX11)
   AnimateUsage(void),
 #endif /* HasX11 */
+  BatchUsage(void),
   BenchmarkUsage(void),
   CompositeUsage(void),
   CompareUsage(void),
@@ -145,6 +181,7 @@ static void
   LiberateArgumentList(const int argc,char **argv),
   MogrifyUsage(void),
   MontageUsage(void),
+  SetUsage(void),
   TimeUsage(void);
 
 static unsigned int
@@ -154,6 +191,8 @@ static unsigned int
   RegisterCommand(ImageInfo *image_info,int argc,char **argv,
                  char **metadata,ExceptionInfo *exception),
 #endif
+  SetCommand(ImageInfo *image_info,int argc,char **argv,
+                 char **metadata,ExceptionInfo *exception),
   VersionCommand(ImageInfo *image_info,int argc,char **argv,
                  char **metadata,ExceptionInfo *exception);
 
@@ -161,47 +200,74 @@ static const CommandInfo commands[] =
   {
 #if defined(HasX11)
     { "animate", "animate a sequence of images",
-      AnimateImageCommand, AnimateUsage, 0 },
+      AnimateImageCommand, AnimateUsage, 0, SingleMode | BatchMode },
 #endif
+    { "batch", "issue multiple commands in interactive or batch mode",
+      0, BatchUsage, 1, SingleMode },
     { "benchmark", "benchmark one of the other commands",
-      BenchmarkImageCommand, BenchmarkUsage, 1 },
+      BenchmarkImageCommand, BenchmarkUsage, 1, SingleMode | BatchMode },
     { "compare", "compare two images",
-      CompareImageCommand, CompareUsage, 0 },
+      CompareImageCommand, CompareUsage, 0, SingleMode | BatchMode },
     { "composite", "composite images together",
-      CompositeImageCommand, CompositeUsage, 0 },
+      CompositeImageCommand, CompositeUsage, 0, SingleMode | BatchMode },
     { "conjure", "execute a Magick Scripting Language (MSL) XML script",
-      ConjureImageCommand, ConjureUsage, 0 },
+      ConjureImageCommand, ConjureUsage, 0, SingleMode | BatchMode },
     { "convert", "convert an image or sequence of images",
-      ConvertImageCommand, ConvertUsage, 0 },
+      ConvertImageCommand, ConvertUsage, 0, SingleMode | BatchMode },
 #if defined(HasX11)
     { "display", "display an image on a workstation running X",
-      DisplayImageCommand, DisplayUsage, 0 },
+      DisplayImageCommand, DisplayUsage, 0, SingleMode | BatchMode },
 #endif
     { "help", "obtain usage message for named command",
-      HelpCommand, GMUsage, 0 },
+      HelpCommand, GMUsage, 0, SingleMode | BatchMode },
     { "identify", "describe an image or image sequence",
-      IdentifyImageCommand, IdentifyUsage, 1 },
+      IdentifyImageCommand, IdentifyUsage, 1, SingleMode | BatchMode },
 #if defined(HasX11)
     { "import", "capture an application or X server screen",
-      ImportImageCommand, ImportUsage, 0 },
+      ImportImageCommand, ImportUsage, 0, SingleMode | BatchMode },
 #endif
     { "mogrify", "transform an image or sequence of images",
-      MogrifyImageCommand, MogrifyUsage, 0 },
+      MogrifyImageCommand, MogrifyUsage, 0, SingleMode | BatchMode },
     { "montage", "create a composite image (in a grid) from separate images",
-      MontageImageCommand, MontageUsage, 0 },
+      MontageImageCommand, MontageUsage, 0, SingleMode | BatchMode },
+    { "set", "change batch mode option",
+      SetCommand, SetUsage, 1, BatchMode },
     { "time", "time one of the other commands",
-      TimeImageCommand, TimeUsage, 1 },
+      TimeImageCommand, TimeUsage, 1, SingleMode | BatchMode },
     { "version", "obtain release version",
-      VersionCommand, 0, 0 },
+      VersionCommand, 0, 0, SingleMode | BatchMode },
 #if defined(MSWINDOWS)
     { "register", "register this application as the source of messages",
-      RegisterCommand, 0, 0 },
+      RegisterCommand, 0, 0, SingleMode | BatchMode },
 #endif
-    { 0, 0, 0, 0, 0}
+    { 0, 0, 0, 0, 0, 0}
   };
 
 static SemaphoreInfo
   *command_semaphore = (SemaphoreInfo *) NULL;
+
+static RunMode run_mode = SingleMode;
+
+static BatchOptions batch_options;
+
+static const char *on_off_option_values[3] = { "off", "on", (char *) NULL };
+
+static const char *escape_option_values[3] = { "unix", "windows", (char *)NULL };
+
+#define MAX_PARAM_CHAR 4096
+#define MAX_PARAM 256
+static char commandline[MAX_PARAM_CHAR+2];
+
+#define PrintVersionAndCopyright() { \
+  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL)); \
+  (void) printf("%.1024s\n\n",GetMagickCopyright()); \
+}
+
+#define PrintUsageHeader() { \
+  if (run_mode != BatchMode) \
+    PrintVersionAndCopyright(); \
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -449,8 +515,7 @@ static void AnimateUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nWhere options include: \n");
@@ -1383,6 +1448,215 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   return(False);
 #endif
 }
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B a t c h C o m m a n d                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BatchCommand runs multiple commands in interactive or batch mode.
+%
+%  The format of the BatchCommand method is:
+%
+%      unsigned int BatchCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+static MagickBool BatchCommand(int argc, char **argv)
+{
+  int status;
+  int ac;
+  char *av[MAX_PARAM+1];
+
+  {
+    char client_name[MaxTextExtent];
+    FormatString(client_name,"%.1024s %s", argv[0], argv[1]);
+    (void) SetClientName(client_name);
+  }
+
+  {
+    BatchOptions dummy;
+    status = ProcessBatchOptions(argc-1, argv+1, &dummy);
+    if (status < 0 )
+      {
+        BatchUsage();
+        return status == OptionHelp;
+      }
+  }
+  if (status < argc-2)
+    {
+      fprintf(stderr, "Error: unexpected parameter: %s\n", argv[status+2]);
+      BatchUsage();
+      return MagickFalse;
+    }
+
+  if (status == argc-2)
+    if (freopen(argv[status+1], "r", stdin) == (FILE *)NULL)
+      {
+        perror(argv[status+1]);
+        exit(1);
+      }
+      
+  InitializeBatchOptions();
+  status = ProcessBatchOptions(argc-1, argv+1, &batch_options);
+
+  run_mode = BatchMode;
+  if (!batch_options.is_safe_mode) {
+#if defined(MSWINDOWS)
+    InitializeMagick((char *) NULL);
+#else
+    InitializeMagick(argv[0]);
+#endif
+  }
+
+  av[0] = argv[0];
+  av[MAX_PARAM] = (char *)NULL;
+  if (batch_options.prompt[0])
+    PrintVersionAndCopyright();
+  for (;;)
+    {
+      if (batch_options.prompt[0])
+        (void) fputs(batch_options.prompt, stdout);
+
+      ac = (batch_options.command_line_parser)(stdin, MAX_PARAM, av);
+      if (ac < 0)
+        {
+          status = MagickTrue;
+          break;
+        };
+      if (ac == 1)
+        continue;
+      if (ac > 0 && ac <= MAX_PARAM)
+        status = GMCommandSingle(ac, av);
+      else
+        {
+          if (ac == 0)
+            fprintf(stderr, "Error: command line exceeded %d characters.\n", MAX_PARAM_CHAR);
+          else
+            fprintf(stderr, "Error: command line exceeded %d parameters.\n", MAX_PARAM);
+          status = MagickFalse;
+        }
+      if (batch_options.is_feedback_enabled)
+        {
+          (void) fputs(status ? batch_options.pass : batch_options.fail, stdout);
+          (void) fputc('\n', stdout);
+        }
+      fflush(stderr);
+      fflush(stdout);
+      if (batch_options.stop_on_error && !status)
+        break;
+    }
+
+  if (batch_options.prompt[0])
+    fputs("\n", stdout);
+  if (!batch_options.is_safe_mode)
+    DestroyMagick();
+  return(status);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B a t c h O p t i o n U s a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BatchOptionUsage() displays the option detail for "batch" and "set" command.
+%
+%  The format of the BatchOptionUsage method is:
+%
+%      void BatchOptionUsage()
+%
+*/
+static void BatchOptionUsage(void)
+{
+  static const char
+    *options[]=
+    {
+      "-escape unix|windows force use Unix or Windows escape format for command line",
+      "                     argument parsing, default is platform dependent",
+      "-fail text           when feedback is on, output the designated text if the",
+      "                     command returns error, default is 'FAIL'",
+      "-feedback on|off     print text (see -pass and -fail options) feedback after",
+      "                     each command to indicate the result, default is off",
+      "-help                print program options",
+      "-pass text           when feedback is on, output the designated text if the",
+      "                     command executed successfully, default is 'PASS'",
+      "-prompt text         use the given text as command prompt. use text 'off' or",
+      "                     empty string to turn off prompt. default is 'GM> ' when",
+      "                     standard input is a TTY, otherwise prompt is off",
+      "-stop-on-error on|off",
+      "                     when turned on, batch execution quits prematurely when",
+      "                     any command returns error",
+      (char *) NULL
+    };
+
+  const char
+    **p;
+
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  (void) puts("\nUnix escape allows the use backslash(\\), single quote(') and double quote(\") in");
+  (void) puts("the command line. Windows escape only uses double quote(\").  For example,");
+
+  (void) puts("\n    Orignal             Unix escape              Windows escape");
+  (void) puts("    [a\\b\\c\\d]           [a\\\\b\\\\c\\\\d]             [a\\b\\c\\d]");
+  (void) puts("    [Text with space]   [Text\\ with\\ space]      [\"Text with space\"]");
+  (void) puts("    [Text with (\")]     ['Text with (\")']        [\"Text with (\"\")\"]");
+  (void) puts("    [Mix: \"It's a (\\)\"] [\"Mix: \\\"It's a (\\\\)\\\"\"] [\"Mix: \"\"It's a (\\)\"\"\"]");
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B a t c h U s a g e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BatchUsage displays the program command syntax.
+%
+%  The format of the BatchUsage method is:
+%
+%      void BatchUsage()
+%
+*/
+static void BatchUsage(void)
+{
+  PrintUsageHeader();
+  (void) printf("Usage: %.1024s [options ...] [file]\n", GetClientName());
+  BatchOptionUsage();
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1420,8 +1694,7 @@ static void BenchmarkUsage(void)
   const char
     **p;
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s options command ... ",GetClientName());
   (void) printf("\nWhere options include one of:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -1825,6 +2098,43 @@ BenchmarkImageCommand(ImageInfo *image_info,
 
   return status;
 }
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C h e c k O p t i o n V a l u e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CheckOptionValue prints error message to stderr if value agrument is null
+%  and returns OPtionMissingValue. Otherwise return OptionSuccess.
+%
+%  The format of the CheckOptionValue method is:
+%
+%      OptionStatus CheckOptionValue(const char *option, const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o option: The option to check the value.
+%
+%    o value: The value to check for non-null.
+%
+*/
+static OptionStatus CheckOptionValue(const char *option, const char *value)
+{
+  if (value == (char *) NULL)
+    {
+      fprintf(stderr, "Error: Missing value for %s option\n", option);
+      return OptionMissingValue;
+    }
+  return OptionSuccess;
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2501,8 +2811,7 @@ static void CompareUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] reference [options ...] compare"
     " [options ...]\n",GetClientName());
   (void) printf("\nWhere options include:\n");
@@ -3807,8 +4116,7 @@ static void CompositeUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
     "  [ [options ...] mask ] [options ...] composite\n",GetClientName());
   (void) printf("\nWhere options include:\n");
@@ -5947,8 +6255,7 @@ static void ConvertUsage(void)
   const char
     **p;
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
     "file ...] [options ...] file\n",GetClientName());
   (void) printf("\nWhere options include:\n");
@@ -5999,8 +6306,7 @@ static void ConjureUsage(void)
   const char
     **p;
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nWhere options include:\n");
@@ -6098,10 +6404,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("version",option+1) == 0)
           {
-            (void) fprintf(stdout,"%.1024s\n",
-              GetMagickVersion((unsigned long *) NULL));
-            (void) fprintf(stdout,"%.1024s\n\n",
-              GetMagickCopyright());
+            PrintVersionAndCopyright();
             Exit(0);
             continue;
           }
@@ -6247,8 +6550,7 @@ static void DisplayUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nWhere options include: \n");
@@ -7621,6 +7923,139 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   return(False);
 #endif
 }
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t O p t i o n V a l u e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOptionValue sets the option value to variable pointed by result pointer
+%  and return OptionSuccess when the value is not null. Otherwise, print error
+%  and returns OPtionMissingValue.
+%
+%  The format of the GetOptionValue method is:
+%
+%      OptionStatus GetOptionValue(const char *option, const char *value,
+%        char **result)
+%
+%  A description of each parameter follows:
+%
+%    o option: The option to get the value.
+%
+%    o value: The value to be check.
+%
+%    o result: Points to the variable to be set to value.
+%
+*/
+static OptionStatus GetOptionValue(const char *option, char *value,
+  char **result)
+{
+  OptionStatus status = CheckOptionValue(option, value);
+  if (status == OptionSuccess)
+    *result = value;
+  return status;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t O p t i o n V a l u e R e s t r i c t e d                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOptionValueRestricted searchs the value in the a list of predefined
+%  values. If a match is found, it sets variable pointed by the result pointer
+%  and return OptionSuccess when the value is one. Otherwise, print error
+%  and returns OPtionInvalidValue.
+%
+%  The format of the GetOptionValueRestricted method is:
+%
+%      OptionStatus GetOptionValueRestricted(const char *option, char **values,
+%        const char *value, int *result)
+%
+%  A description of each parameter follows:
+%
+%    o option: The option to get the value.
+%
+%    o value: The option value to be checked.
+%
+%    o values: The predefined set of acceptable values.
+%
+%    o result: Points to the variable to be set to value.
+%
+*/
+static OptionStatus GetOptionValueRestricted(const char *option,
+  const char **values, const char *value, int *result)
+{
+  OptionStatus status = CheckOptionValue(option, value);
+  if (status != OptionSuccess)
+    return status;
+  for (int i = 0; values[i] != (char *) NULL; i++)
+    {
+      if (LocaleCompare(values[i], value) == 0)
+        {
+          *result = i;
+          return OptionSuccess;
+        }
+    }
+  fprintf(stderr, "Error: Invalid value for %s option: %s\n", option, value);
+  return OptionInvalidValue;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t O n O f f O p t i o n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOnOffOptionValue expectes the value to be either "on" or "off". It then
+%  sets the corresponding value to the boolean variable pointed by the result
+%  pointer and return OptionSuccess. Otherwise, print error and returns
+%  OPtionInvalidValue.
+%
+%  The format of the GetOnOffOptionValue method is:
+%
+%      OptionStatus GetOnOffOptionValue(const char *option,
+%        const char *value, int *result)
+%
+%  A description of each parameter follows:
+%
+%    o option: The option to get the value.
+%
+%    o value: The value to be checked.
+%
+%    o result: Points to the variable to accept the result.
+%
+*/
+static OptionStatus GetOnOffOptionValue(const char *option, const char *value,
+  MagickBool *result)
+{
+  int i;
+  OptionStatus status = GetOptionValueRestricted(option, on_off_option_values, value, &i);
+  if (status != OptionSuccess)
+    return status;
+  *result = i;
+  return OptionSuccess;
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7646,15 +8081,15 @@ static void GMUsage(void)
   int
     i;
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s command [options ...]\n",GetClientName());
   (void) printf("\nWhere commands include: \n");
       
   for (i=0; commands[i].command != 0; i++)
     {
-      (void) printf("%11s - %s\n",commands[i].command,
-                    commands[i].description);
+      if (commands[i].support_mode & run_mode)
+        (void) printf("%11s - %s\n",commands[i].command,
+                      commands[i].description);
     }
 
   return;
@@ -7703,6 +8138,8 @@ static unsigned int HelpCommand(ImageInfo *ARGUNUSED(image_info),
       
       for (i=0; commands[i].command != 0; i++)
         {
+          if (!(commands[i].support_mode & run_mode))
+            continue;
           if (LocaleCompare(commands[i].command,argv[1]) == 0)
             {
               (void) SetClientName(commands[i].command);
@@ -8199,14 +8636,49 @@ static void IdentifyUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
     "file ... ]\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
 }
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e B a t c h O p t i o n s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeBatchOptions initializes the default batch options.
+%
+%  The format of the InitializeBatchOptions method is:
+%
+%      void InitializeBatchOptions()
+%
+*/
+static void InitializeBatchOptions(void)
+{
+  strcpy(batch_options.pass, "PASS");
+  strcpy(batch_options.fail, "FAIL");
+#if defined(MSWINDOWS)
+  batch_options.command_line_parser = ParseWindowsCommandLine;
+#else
+  batch_options.command_line_parser = ParseUnixCommandLine;
+#endif
+  /*
+    FIXME: This does not work for WIN32
+  */
+  if (isatty(fileno(stdin)))
+    strcpy(batch_options.prompt, "GM> ");
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8294,6 +8766,8 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
 
   for (i=0; commands[i].command != 0; i++)
     {
+      if (!(commands[i].support_mode & run_mode))
+        continue;
       if (LocaleCompare(commands[i].command,option) == 0)
         {
           char
@@ -8306,21 +8780,26 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
             Append subcommand name to existing client name if end of
             existing client name is not identical to subcommand name.
           */
-	  LockSemaphoreInfo(command_semaphore);
-          GetPathComponent(GetClientName(),BasePath,command_name);
-	  pos=strrchr(command_name,' ');
-          if ((pos == (const char *) NULL) ||
-	      (LocaleCompare(commands[i].command,pos+1) != 0))
+          LockSemaphoreInfo(command_semaphore);
+          if (run_mode == BatchMode)
+            (void) SetClientName(commands[i].command);
+          else
             {
-	      char
-		client_name[MaxTextExtent];
-		
-              FormatString(client_name,"%.1024s %s",GetClientName(),
-                           commands[i].command);
-              
-              (void) SetClientName(client_name);
+              GetPathComponent(GetClientName(),BasePath,command_name);
+              pos=strrchr(command_name,' ');
+              if ((pos == (const char *) NULL) ||
+                  (LocaleCompare(commands[i].command,pos+1) != 0))
+                {
+                  char
+                    client_name[MaxTextExtent];
+                    
+                  FormatString(client_name,"%.1024s %s",GetClientName(),
+                               commands[i].command);
+                  
+                  (void) SetClientName(client_name);
+                }
             }
-	  UnlockSemaphoreInfo(command_semaphore);
+          UnlockSemaphoreInfo(command_semaphore);
 
           return(commands[i].command_vector)(image_info,argc,argv,
             commands[i].pass_metadata ? metadata : (char **) NULL,exception);
@@ -13284,8 +13763,7 @@ static void MogrifyUsage(void)
   const char
     **p;
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nWhere options include: \n");
@@ -14606,8 +15084,7 @@ static void MontageUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
   (void) printf("\nWhere options include: \n");
@@ -15598,8 +16075,7 @@ static void ImportUsage(void)
       (char *) NULL
     };
 
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s [options ...] [ file ]\n",GetClientName());
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -15615,6 +16091,442 @@ static void ImportUsage(void)
   (void) printf("standard input or output.\n");
 }
 #endif /* HasX11 */
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a r s e U n i x C o m m a n d L i n e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ParseUnixCommandLine reads the command line from input file handler,
+%  parses the arguments following the Unix escape rule, and stores it in a
+%  given text array.
+%
+%  The format of the ParseUnixCommandLine method is:
+%
+%      void ParseUnixCommandLine(FILE *in, int acmax, char **av)
+%
+%  A description of each parameter follows:
+%
+%    o in: An input file handler to read the command line from.
+%
+%    o acmax: The max capacity of the 'av' text array.
+%
+%    o av: A text array to store the parsed command line arguments.
+%
+*/
+static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
+{
+    register int c;
+    register char *p = commandline;
+    register int n = 1;
+
+    char *limit = p + MAX_PARAM_CHAR;
+    limit[1] = 0;
+    av[1] = p;
+    *p = 0;
+    do c = fgetc(in); while(isblank(c));
+
+    while (c != EOF)
+      {
+        switch (c)
+          {
+          case '\'':
+            while((c = fgetc(in)) != '\'')
+              {
+                if (p >= limit )
+                  {
+                    while ((c = fgetc(in)) != '\n');
+                    return 0;
+                  }
+                *p++ = c;
+              }
+            break;
+
+          case '"':
+            while((c = fgetc(in)) != '"')
+              {
+                if (c == '\\')
+                  {
+                    int next = fgetc(in);
+                    if (next != '\\' && next != '"')
+                      *p++ = c;
+                    c = next;
+                  }
+                if (p >= limit )
+                  {
+                    while ((c = fgetc(in)) != '\n');
+                    return 0;
+                  }
+                *p++ = c;
+              }
+            break;
+
+          case ' ':
+          case '\t':
+            *p++ = '\0';
+            if (++n > acmax)
+              {
+                while ((c = fgetc(in)) != '\n');
+                return acmax+1;
+              }
+            av[n] = p;
+            *p = 0;
+            do { c = fgetc(in); }
+            while(isblank(c));
+            continue;
+
+          case '\r':
+            break;
+
+          case '#':
+            while ((c = fgetc(in)) != '\n');
+
+          case '\n':
+            *p = 0;
+            n = av[n][0] ? n+1 : n;
+            av[n] = (char *)NULL;
+            return n;
+
+          case '\\':
+            c = fgetc(in);
+
+          default:
+            if (p >= limit )
+              {
+                while ((c = fgetc(in)) != '\n');
+                return 0;
+              }
+            *p++ = c;
+            break;
+          }
+        c = fgetc(in);
+      }
+    return EOF;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a r s e W i n d o w s C o m m a n d L i n e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ParseWindowsCommandLine reads the command line from input file handler,
+%  parses the arguments following the Windows escape rule, and stores it in a
+%  given text array.
+%
+%  The format of the ParseWindowsCommandLine method is:
+%
+%      void ParseWindowsCommandLine(FILE *in, int acmax, char **av)
+%
+%  A description of each parameter follows:
+%
+%    o in: An input file handler to read the command line from.
+%
+%    o acmax: The max capacity of the 'av' text array.
+%
+%    o av: A text array to store the parsed command line arguments.
+%
+*/
+static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
+{
+    register int c;
+    register char *p = commandline;
+    register int n = 1;
+
+    char *limit = p + MAX_PARAM_CHAR;
+    limit[1] = 0;
+    av[1] = p;
+    *p = 0;
+    do c = fgetc(in); while(isblank(c));
+
+    while (c != EOF)
+      {
+        switch (c)
+          {
+          case '"':
+            for(;;)
+              {
+                c = fgetc(in);
+                if (c == '"')
+                  {
+                    int next = fgetc(in);
+                    if (next != '"')
+                      {
+                        ungetc(next, in);
+                        break;
+                      }
+                  }
+                if (p >= limit )
+                  {
+                    while ((c = fgetc(in)) != '\n');
+                    return 0;
+                  }
+                *p++ = c;
+              }
+            break;
+
+          case ' ':
+          case '\t':
+            *p++ = '\0';
+            if (++n > acmax)
+              {
+                while ((c = fgetc(in)) != '\n');
+                return acmax+1;
+              }
+            av[n] = p;
+            *p = 0;
+            do { c = fgetc(in); }
+            while(isblank(c));
+            continue;
+
+          case '\r':
+            break;
+
+          case '#':
+            while ((c = fgetc(in)) != '\n');
+
+          case '\n':
+            *p = 0;
+            n = av[n][0] ? n+1 : n;
+            av[n] = (char *)NULL;
+            return n;
+
+          default:
+            if (p >= limit )
+                {
+                  while ((c = fgetc(in)) != '\n');
+                  return 0;
+                }
+            *p++ = c;
+            break;
+          }
+        c = fgetc(in);
+      }
+    return EOF;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P r o c e s s B a t c h O p t i o n s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ProcessBatchOptions processes arguments of batch and set command and stores
+%  option values in given pointer. The return value is either OptionStatus if
+%  negative or the first none option argument position.
+%
+%  The format of the ProcessBatchOptions method is:
+%
+%      int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
+%
+%  A description of each parameter follows:
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o options: Points to the variable to accept the the option value.
+%
+*/
+static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
+{
+  for (int i = 1; i < argc; i++ )
+    {
+      char *option;
+      char *p = argv[i];
+      OptionStatus status = OptionUnknown;
+
+      if (p[0] != '-')
+        return i;
+
+      switch (p[1])
+        {
+        case '-':
+          if (p[2] == '\0')
+            return i+1;
+
+        case 'e':
+        case 'E':
+          if (LocaleCompare(option = "-escape", p) == 0)
+            {
+              int index;
+              status = GetOptionValueRestricted(option, escape_option_values, argv[++i], &index);
+              if (status == OptionSuccess)
+                options->command_line_parser = index ? ParseWindowsCommandLine : ParseUnixCommandLine;
+            }
+          break;
+
+        case 'f':
+        case 'F':
+          if (LocaleCompare(option = "-feedback", p) == 0)
+            status = GetOnOffOptionValue(option, argv[++i], &options->is_feedback_enabled);
+          else if (LocaleCompare(option = "-fail", p) == 0)
+            {
+              char *value = NULL;
+              status = GetOptionValue(option, argv[++i], &value);
+              if (OptionSuccess == status)
+                strncpy(options->fail, value, SIZE_OPTION_VALUE);
+            }
+          break;
+
+        case '?':
+          if (p[2] == '\0')
+            status = OptionHelp;
+          break;
+
+        case 'h':
+        case 'H':
+          if (LocaleCompare("-help", p) == 0)
+            status = OptionHelp;
+          break;
+
+        case 'p':
+        case 'P':
+          if (LocaleCompare(option = "-pass", p) == 0)
+            {
+              char *value = NULL;
+              status = GetOptionValue(option, argv[++i], &value);
+              if (OptionSuccess == status)
+                strncpy(options->pass, value, SIZE_OPTION_VALUE);
+            }
+          else if (LocaleCompare(option = "-prompt", p) == 0) {
+              char *value = NULL;
+              status = GetOptionValue(option, argv[++i], &value);
+              if (OptionSuccess == status)
+                strncpy(options->prompt, LocaleCompare("off", value) == 0 ? "" : value, SIZE_OPTION_VALUE);
+            }
+          break;
+
+        case 's':
+        case 'S':
+          if (LocaleCompare(option = "-stop-on-error", p) == 0)
+            status = GetOnOffOptionValue(option, argv[++i], &options->stop_on_error);
+          else if (LocaleCompare(option = "-safe-mode", p) == 0)
+            status = GetOnOffOptionValue(option, argv[++i], &options->is_safe_mode);
+          break;
+        }
+      if (status == OptionSuccess)
+        continue;
+      if (status == OptionUnknown)
+        fprintf(stderr, "Error: Unknown option: %s\n", p);
+      return status;
+    }
+  return argc;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C o m m a n d                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetCommand reads the arguments and sets the batch options.
+%
+%  The format of the SetCommand method is:
+%
+%      unsigned int SetCommand(ImageInfo *image_info,const int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o metadata: any metadata is returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+static unsigned int SetCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
+
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
+
+  if (argc > 1)
+    {
+      /* use a dummy first so we don't change the real one when error. */
+      BatchOptions dummy;
+      int i = ProcessBatchOptions(argc, argv, &dummy);
+      if (i < 0)
+        {
+          SetUsage();
+          return i == OptionHelp;
+        }
+      if (i != argc)
+        {
+          fprintf(stderr, "Error: unexpected parameter: %s\n", argv[i]);
+          SetUsage();
+          return MagickFalse;
+        }
+      ProcessBatchOptions(argc, argv, &batch_options);
+      return MagickTrue;
+    }
+
+  printf("escape        : %s\n", escape_option_values[batch_options.command_line_parser == ParseWindowsCommandLine]);
+  printf("fail          : %s\n", batch_options.fail);
+  printf("feedback      : %s\n", on_off_option_values[batch_options.is_feedback_enabled]);
+  printf("stop-on-error : %s\n", on_off_option_values[batch_options.stop_on_error]);
+  printf("pass          : %s\n", batch_options.pass);
+  printf("prompt        : %s\n", batch_options.prompt);
+  return MagickTrue;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t U s a g e                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetUsage displays the program command syntax.
+%
+%  The format of the SetUsage method is:
+%
+%      void SetUsage()
+%
+*/
+static void SetUsage(void)
+{
+  (void) puts("Usage: set [options ...]");
+  BatchOptionUsage();
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15639,8 +16551,7 @@ static void ImportUsage(void)
 */
 static void TimeUsage(void)
 {
-  (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("%.1024s\n\n",GetMagickCopyright());
+  PrintUsageHeader();
   (void) printf("Usage: %.1024s command ... \n",GetClientName());
   (void) printf("where 'command' is some other GraphicsMagick command\n");
 }
@@ -15835,8 +16746,7 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   char
     text[MaxTextExtent];
 
-  (void) fprintf(stdout,"%.1024s\n",GetMagickVersion(0));
-  (void) fprintf(stdout,"%.1024s\n",GetMagickCopyright());
+  PrintVersionAndCopyright();
 
   (void) fprintf(stdout,"\nFeature Support:\n");
 
@@ -16176,7 +17086,7 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
       return TRUE;
     }
 
-  return FALSE;
+  return False;
 }
 #endif
 
@@ -16186,17 +17096,18 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G M C o m m a n d                                                         %
+%   G M C o m m a n d S i n g l e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GMCommand() implements the 'gm' utility.
+%  GMCommandSingle() is used by GMCommand() and BatchCommand to run one single
+%  command of the 'gm' utility.
 %
-%  The format of the GMCommand method is:
+%  The format of the GMCommandSingle method is:
 %
-%      int GMCommand(int argc,char **argv)
+%      int GMCommandSingle(int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -16206,7 +17117,7 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport int GMCommand(int argc,char **argv)
+static MagickBool GMCommandSingle(int argc,char **argv)
 {
   char
     command[MaxTextExtent],
@@ -16218,8 +17129,8 @@ MagickExport int GMCommand(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  unsigned int
-    status=True;
+  MagickBool
+    status=MagickTrue;
 
   /*
     Initialize locale from environment variables (LANG, LC_CTYPE,
@@ -16232,11 +17143,14 @@ MagickExport int GMCommand(int argc,char **argv)
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
 
+  if (run_mode == SingleMode || batch_options.is_safe_mode)
+    {
 #if defined(MSWINDOWS)
   InitializeMagick((char *) NULL);
 #else
-  InitializeMagick(argv[0]);
+      InitializeMagick(argv[0]);
 #endif
+    }
 
   ReadCommandlLine(argc,&argv);
 
@@ -16279,7 +17193,7 @@ MagickExport int GMCommand(int argc,char **argv)
         if (argc < 2)
           {
             GMUsage();
-            Exit(1);
+            return(MagickFalse);
           }
 
         /*
@@ -16288,6 +17202,8 @@ MagickExport int GMCommand(int argc,char **argv)
         argc--;
         argv++;
       }
+    if (!strcmp(argv[0], "ping"))
+      return MagickTrue;
   }
 
   GetExceptionInfo(&exception);
@@ -16308,7 +17224,49 @@ MagickExport int GMCommand(int argc,char **argv)
     CatchException(&exception);
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
-  DestroyMagick();
+  if (run_mode == SingleMode || batch_options.is_safe_mode)
+    DestroyMagick();
 
-  return (!status);
+  return (status);
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G M C o m m a n d                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GMCommand() implements the 'gm' utility.
+%
+%  The format of the GMCommand method is:
+%
+%      int GMCommand(int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%
+*/
+
+MagickExport int GMCommand(int argc,char **argv)
+{
+  int status;
+  if ((argc <= 1) || LocaleCompare("batch", argv[1]) != 0)
+    {
+      status = GMCommandSingle(argc, argv);
+    }
+  else
+    {
+      status = BatchCommand(argc, argv);
+    }
+  return(!status);
 }

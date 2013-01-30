@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2013 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -96,6 +96,7 @@ extern "C" {
 #  include <unistd.h>
 #else
 #  include <direct.h>
+#  include <io.h>
 #  if !defined(HAVE_STRERROR)
 #    define HAVE_STRERROR
 #  endif
