@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2009-2012 GraphicsMagick Group
+% Copyright (C) 2009-2013 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -74,7 +74,7 @@ void InitializeMagickRandomGenerator()
 
   if (!initialized)
     {
-      MagickTsdKeyCreate(&kernel_key);
+      MagickTsdKeyCreate2(&kernel_key,MagickFreeAligned);
       initialized=MagickTrue;
     }
 }
@@ -89,7 +89,7 @@ void DestroyMagickRandomGenerator()
       MagickRandomKernel
 	*kernel;
 
-      /* This only frees memory associated with one thread */
+      /* FIXME: This only frees memory associated with one thread */
       kernel=(MagickRandomKernel *) MagickTsdGetSpecific(kernel_key);
       MagickFreeAlignedMemory(kernel);
       (void) MagickTsdSetSpecific(kernel_key,kernel);

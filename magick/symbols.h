@@ -594,6 +594,7 @@
 #define MagickToMime GmMagickToMime
 #define MagickTsdGetSpecific GmMagickTsdGetSpecific
 #define MagickTsdKeyCreate GmMagickTsdKeyCreate
+#define MagickTsdKeyCreate2 GmMagickTsdKeyCreate2
 #define MagickTsdKeyDelete GmMagickTsdKeyDelete
 #define MagickTsdSetSpecific GmMagickTsdSetSpecific
 #define MagickWordStreamInitializeRead GmMagickWordStreamInitializeRead

@@ -1,3 +1,14 @@
+2013-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/random.c (InitializeMagickRandomGenerator): Use
+	MagickTsdKeyCreate2() in order to avoid a small memory leak.
+
+	* magick/tsd.c (MagickTsdKeyCreate2): New private function to
+	support allocating a thread-specific data key with a specified
+	destructor function.  For single-threaded build, MagickTsdKey_t is
+	now type void* and there is provision to support the destructor
+	function.
+
 2013-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (BatchCommand): New 'gm batch' command to
@@ -7,6 +18,7 @@
 	batch mode support to 1.3.17".
 
 2013-01-27  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
 	* coders/png.c (WriteOnePNGImage): Added PNG48 and PNG64 support.
 	Added PNG00 support (png encoder that inherits its color-type and
 	bit-depth from the input, if the input was a PNG datastream).

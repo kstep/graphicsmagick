@@ -36,6 +36,18 @@
 <div class="document">
 
 
+<p>2013-01-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/random.c (InitializeMagickRandomGenerator): Use
+MagickTsdKeyCreate2() in order to avoid a small memory leak.</li>
+<li>magick/tsd.c (MagickTsdKeyCreate2): New private function to
+support allocating a thread-specific data key with a specified
+destructor function.  For single-threaded build, MagickTsdKey_t is
+now type void* and there is provision to support the destructor
+function.</li>
+</ul>
+</blockquote>
 <p>2013-01-29  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -46,15 +58,14 @@ Xu.  Submitted via SourceForge Patch #3602331 &quot;Add interactive or
 batch mode support to 1.3.17&quot;.</li>
 </ul>
 </blockquote>
-<dl class="docutils">
-<dt>2013-01-27  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</dt>
-<dd><ul class="first last simple">
+<p>2013-01-27  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
 <li>coders/png.c (WriteOnePNGImage): Added PNG48 and PNG64 support.
 Added PNG00 support (png encoder that inherits its color-type and
 bit-depth from the input, if the input was a PNG datastream).</li>
 </ul>
-</dd>
-</dl>
+</blockquote>
 <p>2013-01-26  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
