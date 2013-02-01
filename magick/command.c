@@ -132,6 +132,7 @@ typedef int (*CommandLineParser)(FILE *in, int acmax, char **av);
 typedef struct _BatchOptions {
   MagickBool        stop_on_error,
                     is_feedback_enabled,
+                    is_echo_enabled,
                     is_safe_mode;
   char              prompt[SIZE_OPTION_VALUE],
                     pass[SIZE_OPTION_VALUE],
@@ -154,7 +155,7 @@ typedef struct _CommandInfo
   RunMode               support_mode;
 } CommandInfo;
 
-static void InitializeBatchOptions(void);
+static void InitializeBatchOptions(MagickBool);
 static MagickBool GMCommandSingle(int argc, char **argv);
 static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options);
 static int ParseUnixCommandLine(FILE *in, int acmax, char **av);
@@ -260,7 +261,7 @@ static char commandline[MAX_PARAM_CHAR+2];
 
 #define PrintVersionAndCopyright() { \
   (void) printf("%.1024s\n",GetMagickVersion((unsigned long *) NULL)); \
-  (void) printf("%.1024s\n\n",GetMagickCopyright()); \
+  (void) printf("%.1024s\n",GetMagickCopyright()); \
 }
 
 #define PrintUsageHeader() { \
@@ -1483,7 +1484,8 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
 */
 static MagickBool BatchCommand(int argc, char **argv)
 {
-  int status;
+  int result;
+  MagickBool hasInputFile;
   int ac;
   char *av[MAX_PARAM+1];
 
@@ -1495,29 +1497,31 @@ static MagickBool BatchCommand(int argc, char **argv)
 
   {
     BatchOptions dummy;
-    status = ProcessBatchOptions(argc-1, argv+1, &dummy);
-    if (status < 0 )
+    result = ProcessBatchOptions(argc-1, argv+1, &dummy);
+    if (result < 0 )
       {
         BatchUsage();
-        return status == OptionHelp;
+        return result == OptionHelp;
       }
   }
-  if (status < argc-2)
+
+  hasInputFile = (++result <= argc-1);
+  if (result < argc-1)
     {
-      fprintf(stderr, "Error: unexpected parameter: %s\n", argv[status+2]);
+      (void) fprintf(stderr, "Error: unexpected parameter: %s\n", argv[result+1]);
       BatchUsage();
       return MagickFalse;
     }
 
-  if (status == argc-2)
-    if (freopen(argv[status+1], "r", stdin) == (FILE *)NULL)
+  if (hasInputFile && (argv[result][0] != '-' || argv[result][1] != '\0'))
+    if (freopen(argv[result], "r", stdin) == (FILE *)NULL)
       {
-        perror(argv[status+1]);
+        perror(argv[result]);
         exit(1);
       }
       
-  InitializeBatchOptions();
-  status = ProcessBatchOptions(argc-1, argv+1, &batch_options);
+  InitializeBatchOptions(!hasInputFile);
+  result = ProcessBatchOptions(argc-1, argv+1, &batch_options);
 
   run_mode = BatchMode;
   if (!batch_options.is_safe_mode) {
@@ -1531,46 +1535,72 @@ static MagickBool BatchCommand(int argc, char **argv)
   av[0] = argv[0];
   av[MAX_PARAM] = (char *)NULL;
   if (batch_options.prompt[0])
-    PrintVersionAndCopyright();
+    {
+      PrintVersionAndCopyright();
+      (void) fflush(stdout);
+    }
+
   for (;;)
     {
       if (batch_options.prompt[0])
-        (void) fputs(batch_options.prompt, stdout);
+        {
+          (void) fputs(batch_options.prompt, stdout);
+          (void) fflush(stdout);
+        }
 
       ac = (batch_options.command_line_parser)(stdin, MAX_PARAM, av);
       if (ac < 0)
         {
-          status = MagickTrue;
+          result = MagickTrue;
           break;
         };
+      if (batch_options.is_echo_enabled)
+        {
+          for (int i = 1; i < ac; i++)
+            {
+              (void) fputs(av[i], stdout);
+              (void) putchar(' ');
+            }
+          (void) putchar('\n');
+          (void) fflush(stdout);
+        }
       if (ac == 1)
         continue;
       if (ac > 0 && ac <= MAX_PARAM)
-        status = GMCommandSingle(ac, av);
+        result = GMCommandSingle(ac, av);
       else
         {
           if (ac == 0)
-            fprintf(stderr, "Error: command line exceeded %d characters.\n", MAX_PARAM_CHAR);
+            (void) fprintf(stderr,
+                           "Error: command line exceeded %d characters.\n",
+                           MAX_PARAM_CHAR);
           else
-            fprintf(stderr, "Error: command line exceeded %d parameters.\n", MAX_PARAM);
-          status = MagickFalse;
+            (void) fprintf(stderr,
+                           "Error: command line exceeded %d parameters.\n",
+                           MAX_PARAM);
+          result = MagickFalse;
         }
+
       if (batch_options.is_feedback_enabled)
         {
-          (void) fputs(status ? batch_options.pass : batch_options.fail, stdout);
+          (void) fputs(result ? batch_options.pass : batch_options.fail, stdout);
           (void) fputc('\n', stdout);
         }
-      fflush(stderr);
-      fflush(stdout);
-      if (batch_options.stop_on_error && !status)
+      (void) fflush(stderr);
+      (void) fflush(stdout);
+
+      if (batch_options.stop_on_error && !result)
         break;
     }
 
   if (batch_options.prompt[0])
-    fputs("\n", stdout);
+    {
+      (void) fputs("\n", stdout);
+      (void) fflush(stdout);
+    }
   if (!batch_options.is_safe_mode)
     DestroyMagick();
-  return(status);
+  return(result);
 }
 
 
@@ -1597,6 +1627,7 @@ static void BatchOptionUsage(void)
   static const char
     *options[]=
     {
+      "-echo on|off         echo command back to standard out, default is off",
       "-escape unix|windows force use Unix or Windows escape format for command line",
       "                     argument parsing, default is platform dependent",
       "-fail text           when feedback is on, output the designated text if the",
@@ -1607,8 +1638,8 @@ static void BatchOptionUsage(void)
       "-pass text           when feedback is on, output the designated text if the",
       "                     command executed successfully, default is 'PASS'",
       "-prompt text         use the given text as command prompt. use text 'off' or",
-      "                     empty string to turn off prompt. default is 'GM> ' when",
-      "                     standard input is a TTY, otherwise prompt is off",
+      "                     empty string to turn off prompt. default to 'GM> ' if and",
+      "                     only if batch mode was entered with no file argument",
       "-stop-on-error on|off",
       "                     when turned on, batch execution quits prematurely when",
       "                     any command returns error",
@@ -1653,8 +1684,9 @@ static void BatchOptionUsage(void)
 static void BatchUsage(void)
 {
   PrintUsageHeader();
-  (void) printf("Usage: %.1024s [options ...] [file]\n", GetClientName());
+  (void) printf("Usage: %.1024s [options ...] [file|-]\n", GetClientName());
   BatchOptionUsage();
+  (void) puts("\nUse '-' to read command from standard input without default prompt.");
 }
 
 
@@ -8660,10 +8692,14 @@ static void IdentifyUsage(void)
 %
 %  The format of the InitializeBatchOptions method is:
 %
-%      void InitializeBatchOptions()
+%      void InitializeBatchOptions(MagickBool prompt)
+%
+%  A description of each parameter follows:
+%
+%    o prompt: whether enable prompt or not
 %
 */
-static void InitializeBatchOptions(void)
+static void InitializeBatchOptions(MagickBool prompt)
 {
   strcpy(batch_options.pass, "PASS");
   strcpy(batch_options.fail, "FAIL");
@@ -8672,10 +8708,7 @@ static void InitializeBatchOptions(void)
 #else
   batch_options.command_line_parser = ParseUnixCommandLine;
 #endif
-  /*
-    FIXME: This does not work for WIN32
-  */
-  if (isatty(fileno(stdin)))
+  if (prompt)
     strcpy(batch_options.prompt, "GM> ");
 }
 
@@ -16360,6 +16393,8 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
 
       switch (p[1])
         {
+        case '\0':
+          return i;
         case '-':
           if (p[2] == '\0')
             return i+1;
@@ -16373,6 +16408,8 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
               if (status == OptionSuccess)
                 options->command_line_parser = index ? ParseWindowsCommandLine : ParseUnixCommandLine;
             }
+          else if (LocaleCompare(option = "-echo", p) == 0)
+            status = GetOnOffOptionValue(option, argv[++i], &options->is_echo_enabled);
           break;
 
         case 'f':
