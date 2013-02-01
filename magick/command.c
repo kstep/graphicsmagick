@@ -1556,7 +1556,8 @@ static MagickBool BatchCommand(int argc, char **argv)
         };
       if (batch_options.is_echo_enabled)
         {
-          for (int i = 1; i < ac; i++)
+          int i;
+          for (i = 1; i < ac; i++)
             {
               (void) fputs(av[i], stdout);
               (void) putchar(' ');
@@ -8031,10 +8032,11 @@ static OptionStatus GetOptionValue(const char *option, char *value,
 static OptionStatus GetOptionValueRestricted(const char *option,
   const char **values, const char *value, int *result)
 {
+  int i;
   OptionStatus status = CheckOptionValue(option, value);
   if (status != OptionSuccess)
     return status;
-  for (int i = 0; values[i] != (char *) NULL; i++)
+  for (i = 0; values[i] != (char *) NULL; i++)
     {
       if (LocaleCompare(values[i], value) == 0)
         {
@@ -16164,7 +16166,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
     limit[1] = 0;
     av[1] = p;
     *p = 0;
-    do c = fgetc(in); while(isblank(c));
+    do c = fgetc(in); while(isspace(c));
 
     while (c != EOF)
       {
@@ -16212,7 +16214,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
             av[n] = p;
             *p = 0;
             do { c = fgetc(in); }
-            while(isblank(c));
+            while(isspace(c));
             continue;
 
           case '\r':
@@ -16283,7 +16285,7 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
     limit[1] = 0;
     av[1] = p;
     *p = 0;
-    do c = fgetc(in); while(isblank(c));
+    do c = fgetc(in); while(isspace(c));
 
     while (c != EOF)
       {
@@ -16322,7 +16324,7 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
             av[n] = p;
             *p = 0;
             do { c = fgetc(in); }
-            while(isblank(c));
+            while(isspace(c));
             continue;
 
           case '\r':
@@ -16382,7 +16384,8 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
 */
 static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
 {
-  for (int i = 1; i < argc; i++ )
+  int i;
+  for (i = 1; i < argc; i++ )
     {
       char *option;
       char *p = argv[i];
