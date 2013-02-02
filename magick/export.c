@@ -1980,7 +1980,7 @@ ExportAlphaQuantumType(unsigned char * restrict destination,
 	      {
 		for (x = number_pixels; x != 0; --x)
 		  {
-		    ExportUInt16Quantum(endian,q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
+		    ExportUInt8Quantum(q,ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)));
 		    p++;
 		  }
 		break;

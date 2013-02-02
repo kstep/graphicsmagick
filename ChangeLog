@@ -1,3 +1,11 @@
+2013-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/export.c (ExportAlphaQuantumType): Fix export of alpha
+	for RGBA image and depth 8.  Due to typo, was exporting 16-bits
+	rather than 8, causing output corruption or crashes.  Resolves
+	issue reported in SourceForge GraphicsMagick forum under title
+	"CMYK per-channel byte order TIFF crashes gm".
+
 2013-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h (MagickIsBlank): Add macro to substitute for ISO
