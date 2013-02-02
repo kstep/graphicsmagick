@@ -1,5 +1,7 @@
 2013-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS.txt: Update with latest news.
+
 	* magick/export.c (ExportAlphaQuantumType): Fix export of alpha
 	for RGBA image and depth 8.  Due to typo, was exporting 16-bits
 	rather than 8, causing output corruption or crashes.  Resolves

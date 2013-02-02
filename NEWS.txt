@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 13, 2012
+This file was last updated on February 2, 2013
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,6 +14,104 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.18 (TBD)
+==========================
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * Fixed bug with format substitutions if input string ends with a
+    single '%'.
+
+  * BMP: Fixed an old bug with decoding chromaticity primaries.
+
+  * PNG: Fixed reading of interlaced images.  Fix reading of sub-8-bit
+    palette and grayscale images.  Some PNG sub-formats were written
+    incorrectly.  Fix crash in PNG8 writer if image colors happened to
+    be non-zero but image was not actually colormapped.
+
+  * TIFF: Fix a crash which was noticed when writing RGBA separated
+    (planar) format.
+
+  * --enable-symbol-prefix was not prefixing all of the C symbols.
+      Some core C library functions were not prefixed.  This option
+      applies to the Wand library API as well now.
+
+  * C API: When input is from a user-provided file descriptor, the
+    file position is restored after reading the file header bytes.
+    Previously the file position was rewound to the beginning of the
+    file.  This allows reading embedded image data from the current
+    offset in a file, and allows continuing to use the stream after
+    GraphicsMagick has returned the image.
+
+  * C API: It is now possible to invoke CloseBlob() multiple times.
+
+  * Windows/VisualMagick: Fix building GraphicsMagick with Intel ICC
+    compiler driven by Visual Studio Professional 2012.
+
+  * Windows: Avoid a crash and produce a useful diagnostic if
+    Ghostscript is needed but not yet installed.
+
+
+New Features:
+
+  * GM utility: New 'batch' command was contributed by Kenneth Xu
+    which supports executing any number of other GM utility
+    sub-commands in a single invokation in a sort of "batch" script.
+    Input may be piped from standard input, from a specified file, or
+    from a 'GM >' command prompt.  This utilities front-end allows any
+    other program/script to drive 'gm' using a co-process model and
+    speeds up execution by eliminating utility start-up/shut-down
+    time.
+
+  * WIN64 (64-bit Windows): Windows 64-bit is now officially supported.
+
+  * convert/mogrify: Now support -auto-orient to automatically rotate
+    the image upright for viewing based on its current orientation
+    setting.  Also support -orient to support setting the current
+    image orientation.  Please note that the orientation property of
+    EXIF profiles is not yet updated so the EXIF profile will be wrong
+    after using -auto-orient.
+
+  * C API: AutoOrientImage(), new New function to automatically orient
+    the image so that it is upright for normal viewing.
+
+  * Wand API: MagickGetImagePage()/MagickSetImagePage(), new functions
+    to support getting and setting the image page size and offsets.
+
+  * PNG: Added PNG48 and PNG64 support. Added PNG00 support (png
+    encoder that inherits its color-type and bit-depth from the input,
+    if the input was a PNG datastream).
+
+Feature improvements:
+
+  * GraphicsMagick TAP tests may now be run stand-alone using Perl's
+    'prove' TAP test driver.
+
+Performance Improvements:
+
+  * Detection of glob specifications in file names is more efficient.
+
+Windows Delegate Updates:
+
+Behavior Changes:
+
+  * ltdl: Libltdl is no longer bundled.  Libltdl must be previously
+    installed on the system in order to build the modules
+    configuration.
+
+  * AppendImages() now converts subsequent images to the colorspace of
+    the first image, and no longer converts the first image to RGB.
+    Instead, it is assumed the user knows what she is doing.
+
+  * SetImageColorRegion() no longer automatically converts the image
+    to RGB.  The user is responsible for assuring that the provided
+    color is in the same colorspace as the image.
+
 
 1.3.17 (October 13, 2012)
 ==========================
