@@ -441,6 +441,11 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MagickStat(path,stat_buff) stat(path,stat_buff)
 #endif
 
+/*
+  C99 isblank() is not portable enough yet.
+*/
+#define MagickIsBlank(c) (c== ' ' || c == '\t')
+
 #if !defined(MagickMmap)
 #  define MagickMmap(address,length,protection,access,file,offset) \
      mmap(address,length,protection,access,file,offset)

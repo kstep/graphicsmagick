@@ -16166,7 +16166,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
     limit[1] = 0;
     av[1] = p;
     *p = 0;
-    do c = fgetc(in); while(isspace(c));
+    do c = fgetc(in); while(MagickIsBlank(c));
 
     while (c != EOF)
       {
@@ -16214,7 +16214,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
             av[n] = p;
             *p = 0;
             do { c = fgetc(in); }
-            while(isspace(c));
+            while(MagickIsBlank(c));
             continue;
 
           case '\r':
@@ -16285,7 +16285,7 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
     limit[1] = 0;
     av[1] = p;
     *p = 0;
-    do c = fgetc(in); while(isspace(c));
+    do c = fgetc(in); while(MagickIsBlank(c));
 
     while (c != EOF)
       {
@@ -16324,7 +16324,7 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
             av[n] = p;
             *p = 0;
             do { c = fgetc(in); }
-            while(isspace(c));
+            while(MagickIsBlank(c));
             continue;
 
           case '\r':
