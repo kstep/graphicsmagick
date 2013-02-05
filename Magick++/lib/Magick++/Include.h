@@ -22,10 +22,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <time.h>
-
-#if defined(HAVE_SYS_TYPES_H)
-# include <sys/types.h>
-#endif
+#include <sys/types.h> /* POSIX 1990 header and declares size_t and ssize_t */
 
 #if defined(__BORLANDC__)
 # include <vcl.h> /* Borland C++ Builder 4.0 requirement */
