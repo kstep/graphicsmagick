@@ -1,3 +1,11 @@
+2013-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (GetCacheNexus): Re-write function so it
+	has a single point of return.
+	(AcquireCacheNexus): Reduce the number of return points.
+	(SetCacheNexus): Re-write function so it has a single point of
+	return.
+
 2013-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Update with latest news.
