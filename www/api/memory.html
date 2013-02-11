@@ -63,7 +63,8 @@ void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_fun
 <h2>Description</h2>
 <p>MagickAllocFunctions() provides a way for the user to supply a preferred
 free(), malloc(), and realloc() functions.  Otherwise the default system
-versions are used.</p>
+versions are used.  If an alternative allocator is to be used, this
+function should be invoked prior to invoking InitializeMagick().</p>
 <p>The format of the  MagickAllocFunctions method is:</p>
 <pre class="literal-block">
 void MagickAllocFunctions( MagickFreeFunc free_func, MagickMallocFunc malloc_func,
@@ -122,7 +123,7 @@ alignment and ending at at least the requested alignment.</p>
 <p>The requested alignment should be a power of 2 at least as large as
 sizeof(void <a href="#id5"><span class="problematic" id="id6">*</span></a>).</p>
 <div class="system-message" id="id5">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/www/api/memory.apirst</tt>, line 94); <em><a href="#id6">backlink</a></em></p>
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/www/api/memory.apirst</tt>, line 95); <em><a href="#id6">backlink</a></em></p>
 Inline emphasis start-string without end-string.</div>
 <p>NULL is returned if insufficient memory is available, the requested
 size is zero, or integer overflow was detected.</p>

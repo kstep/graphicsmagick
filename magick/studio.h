@@ -353,6 +353,8 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define RoundUpToAlignment(offset,alignment)				\
   (((offset)+((alignment)-1)) & ~((alignment)-1))
+#define AssertAlignment(offset,alignment) \
+  (assert((((size_t) offset) % (size_t) alignment) == (size_t) 0))
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))

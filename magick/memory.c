@@ -59,7 +59,8 @@ MagickReallocFunc ReallocFunc = realloc;
 %
 %  MagickAllocFunctions() provides a way for the user to supply a preferred
 %  free(), malloc(), and realloc() functions.  Otherwise the default system
-%  versions are used.
+%  versions are used.  If an alternative allocator is to be used, this
+%  function should be invoked prior to invoking InitializeMagick().
 %
 %  The format of the  MagickAllocFunctions method is:
 %
