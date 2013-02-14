@@ -1,3 +1,8 @@
+2013-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/programming.rst: Add mention of Clement Farabet's Lua
+	scripting language wrapper for GraphicsMagick.
+
 2013-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (GetCacheNexus): Re-write function so it
