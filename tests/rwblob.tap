@@ -51,7 +51,7 @@ done
 # EPDF format
 for type in ${check_types}
 do
-  test_command_fn "EPDF ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
+  test_command_fn "EPDF ${type}" -F 'PS' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
 done
 
 # EPT format
