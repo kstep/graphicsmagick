@@ -1981,7 +1981,7 @@ then
        failed=`expr $failed + 1`,)
   
     if test $passed -gt 0; then
-      for var in 5 4 2 '' ; do
+      for var in 7 6 5 4 2 '' ; do
         if test "x${var}" = 'x' ; then
           pnglib='png'
         else

@@ -1,3 +1,7 @@
+2013-02-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* configure.ac and configure: Check for libpng17 and libpng16.
+
 2013-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/programming.rst: Add mention of Clement Farabet's Lua
