@@ -1,3 +1,9 @@
+2013-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Enable the
+	dynamic adjustment of OpenMP threads if there is more than one
+	thread available.
+
 2013-02-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* configure.ac and configure: Check for libpng17 and libpng16.
