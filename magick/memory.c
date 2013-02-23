@@ -175,7 +175,7 @@ MagickExport void * MagickMalloc(const size_t size)
 %  alignment and ending at at least the requested alignment.
 %
 %  The requested alignment should be a power of 2 at least as large as
-%  sizeof(void *).
+%  sizeof a void pointer.
 % 
 %  NULL is returned if insufficient memory is available, the requested
 %  size is zero, or integer overflow was detected.
@@ -229,7 +229,7 @@ MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size
     alloc_size=(size+alignment-1)+sizeof(void *);
     if (alloc_size > size)
       {
-	if ((alloc_p = (MallocFunc)(alloc_size)) != NULL)
+	if ((alloc_p = ((MallocFunc)(alloc_size))) != NULL)
 	  {
 	    alligned_p=(void*) RoundUpToAlignment((magick_uintptr_t)alloc_p+
 						  sizeof(void *),alignment);

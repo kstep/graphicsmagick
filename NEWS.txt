@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 2, 2013
+This file was last updated on February 23, 2013
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -17,6 +17,19 @@ ChangeLog file for full details.
 
 1.3.18 (TBD)
 ==========================
+
+.. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
+
+Special Issues:
+
+  * Due to `GCC bug 53967`_, several key agorithms (e.g. convolution)
+    may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
+    enabled for floating point math (-mfpmath=sse) if the GCC option
+    -frename-registers is used. Default 32-builds to not experience
+    the problem since they use '387 math.  It is not clear in what
+    version of GCC this problem started but it was not noticed by the
+    developers until the GCC 4.6 timeframe.  Other compilers do not
+    suffer from this bug.
 
 Security Fixes:
 
@@ -33,6 +46,9 @@ Bug fixes:
     palette and grayscale images.  Some PNG sub-formats were written
     incorrectly.  Fix crash in PNG8 writer if image colors happened to
     be non-zero but image was not actually colormapped.
+
+  * PNG: Configure script now also searches for libpng versions 16 and
+    17.
 
   * TIFF: Fix a crash which was noticed when writing RGBA separated
     (planar) format.
@@ -97,6 +113,8 @@ Performance Improvements:
   * Detection of glob specifications in file names is more efficient.
 
 Windows Delegate Updates:
+
+  * None.
 
 Behavior Changes:
 
