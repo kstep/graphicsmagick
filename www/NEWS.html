@@ -76,8 +76,8 @@ ChangeLog file for full details.</p>
 <ul class="simple">
 <li>Due to <a class="reference external" href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967">GCC bug 53967</a>, several key agorithms (e.g. convolution)
 may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
-enabled for floating point math (-mfpmath=sse) if the GCC option
--frename-registers is used. Default 32-builds to not experience
+enabled for floating point math (<cite>-mfpmath=sse</cite>) if the GCC option
+<cite>-frename-registers</cite> is used. Default 32-builds do not experience
 the problem since they use '387 math.  It is not clear in what
 version of GCC this problem started but it was not noticed by the
 developers until the GCC 4.6 timeframe.  Other compilers do not
@@ -92,45 +92,32 @@ suffer from this bug.</li>
 </blockquote>
 <p>Bug fixes:</p>
 <blockquote>
-<ul>
-<li><p class="first">Fixed bug with format substitutions if input string ends with a
-single '%'.</p>
-</li>
-<li><p class="first">BMP: Fixed an old bug with decoding chromaticity primaries.</p>
-</li>
-<li><p class="first">PNG: Fixed reading of interlaced images.  Fix reading of sub-8-bit
+<ul class="simple">
+<li>Fixed bug with format substitutions if input string ends with a
+single '%'.</li>
+<li>BMP: Fixed an old bug with decoding chromaticity primaries.</li>
+<li>PNG: Fixed reading of interlaced images.  Fix reading of sub-8-bit
 palette and grayscale images.  Some PNG sub-formats were written
 incorrectly.  Fix crash in PNG8 writer if image colors happened to
-be non-zero but image was not actually colormapped.</p>
-</li>
-<li><p class="first">PNG: Configure script now also searches for libpng versions 16 and
-17.</p>
-</li>
-<li><p class="first">TIFF: Fix a crash which was noticed when writing RGBA separated
-(planar) format.</p>
-</li>
-<li><dl class="first docutils">
-<dt>--enable-symbol-prefix was not prefixing all of the C symbols.</dt>
-<dd><p class="first last">Some core C library functions were not prefixed.  This option
-applies to the Wand library API as well now.</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">C API: When input is from a user-provided file descriptor, the
+be non-zero but image was not actually colormapped.</li>
+<li>PNG: Configure script now also searches for libpng versions 16 and
+17.</li>
+<li>TIFF: Fix a crash which was noticed when writing RGBA separated
+(planar) format.</li>
+<li><cite>--enable-symbol-prefix</cite> was not prefixing all of the C
+symbols. Some core C library functions were not prefixed.  This
+option applies to the Wand library API as well now.</li>
+<li>C API: When input is from a user-provided file descriptor, the
 file position is restored after reading the file header bytes.
 Previously the file position was rewound to the beginning of the
 file.  This allows reading embedded image data from the current
 offset in a file, and allows continuing to use the stream after
-GraphicsMagick has returned the image.</p>
-</li>
-<li><p class="first">C API: It is now possible to invoke CloseBlob() multiple times.</p>
-</li>
-<li><p class="first">Windows/VisualMagick: Fix building GraphicsMagick with Intel ICC
-compiler driven by Visual Studio Professional 2012.</p>
-</li>
-<li><p class="first">Windows: Avoid a crash and produce a useful diagnostic if
-Ghostscript is needed but not yet installed.</p>
-</li>
+GraphicsMagick has returned the image.</li>
+<li>C API: It is now possible to invoke CloseBlob() multiple times.</li>
+<li>Windows/VisualMagick: Fix building GraphicsMagick with Intel ICC
+compiler driven by Visual Studio Professional 2012.</li>
+<li>Windows: Avoid a crash and produce a useful diagnostic if
+Ghostscript is needed but not yet installed.</li>
 </ul>
 </blockquote>
 <p>New Features:</p>
@@ -241,19 +228,13 @@ Format.</li>
 </blockquote>
 <p>Feature improvements:</p>
 <blockquote>
-<ul>
-<li><dl class="first docutils">
-<dt>-lat: The adaptive threshold algorithm is replaced with a new</dt>
-<dd><p class="first last">algorithm which scales linearly (rather than quadratically) with
-area size.</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">Tests: Test suite is re-written to use TAP-based tests.</p>
-</li>
-<li><p class="first">GIF: Reader tries to be better at detecting and reporting
-failures.</p>
-</li>
+<ul class="simple">
+<li><cite>-lat</cite>: The adaptive threshold algorithm is replaced with a new
+algorithm which scales linearly (rather than quadratically) with
+area size.</li>
+<li>Tests: Test suite is re-written to use TAP-based tests.</li>
+<li>GIF: Reader tries to be better at detecting and reporting
+failures.</li>
 </ul>
 </blockquote>
 <p>Performance Improvements:</p>
@@ -299,37 +280,23 @@ if they come from the command line or API user.</li>
 </blockquote>
 <p>Bug fixes:</p>
 <blockquote>
-<ul>
-<li><dl class="first docutils">
-<dt>SWT: SWT reader suffered from a number of implementation errors</dt>
-<dd><p class="first last">which caused it not to work any more.  Works again.</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">XBM: Fix memory leak observed when reading file in 'ping' mode.</p>
-</li>
-<li><p class="first">Support -trim on images which use a consistent (single color)
+<ul class="simple">
+<li>SWT: SWT reader suffered from a number of implementation errors
+which caused it not to work any more.  Works again.</li>
+<li>XBM: Fix memory leak observed when reading file in 'ping' mode.</li>
+<li>Support -trim on images which use a consistent (single color)
 transparent background.  In this case, trim is done based on
-opacity rather than foreground color.</p>
-</li>
-<li><p class="first">Include &lt;sys/types.h&gt; in order to assure that 'size_t' and
+opacity rather than foreground color.</li>
+<li>Include &lt;sys/types.h&gt; in order to assure that 'size_t' and
 'ssize_t' are declared.  This is necessary since
-MagickExtentImage() uses these types as part of its definition.</p>
-</li>
-<li><p class="first">+repage was not working because parser was insisting that it
-should include an argument.</p>
-</li>
-<li><dl class="first docutils">
-<dt>-units was scaling existing resolution the wrong way around</dt>
-<dd><p class="first last">(i.e. multiplying rather than dividing).</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">PerlMagick: Fix compilation with Perl 5.16.</p>
-</li>
-<li><p class="first">PingBlob(): PingBlob was not working for all cases.  Is now based
-on BlobToImage() for assured reliability.</p>
-</li>
+MagickExtentImage() uses these types as part of its definition.</li>
+<li><cite>+repage</cite> was not working because parser was insisting that it
+should include an argument.</li>
+<li>-units was scaling existing resolution the wrong way around
+(i.e. multiplying rather than dividing).</li>
+<li>PerlMagick: Fix compilation with Perl 5.16.</li>
+<li>PingBlob(): PingBlob was not working for all cases.  Is now based
+on BlobToImage() for assured reliability.</li>
 </ul>
 </blockquote>
 <p>New Features:</p>

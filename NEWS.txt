@@ -24,8 +24,8 @@ Special Issues:
 
   * Due to `GCC bug 53967`_, several key agorithms (e.g. convolution)
     may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
-    enabled for floating point math (-mfpmath=sse) if the GCC option
-    -frename-registers is used. Default 32-builds to not experience
+    enabled for floating point math (`-mfpmath=sse`) if the GCC option
+    `-frename-registers` is used. Default 32-builds do not experience
     the problem since they use '387 math.  It is not clear in what
     version of GCC this problem started but it was not noticed by the
     developers until the GCC 4.6 timeframe.  Other compilers do not
@@ -53,9 +53,9 @@ Bug fixes:
   * TIFF: Fix a crash which was noticed when writing RGBA separated
     (planar) format.
 
-  * --enable-symbol-prefix was not prefixing all of the C symbols.
-      Some core C library functions were not prefixed.  This option
-      applies to the Wand library API as well now.
+  * `--enable-symbol-prefix` was not prefixing all of the C
+    symbols. Some core C library functions were not prefixed.  This
+    option applies to the Wand library API as well now.
 
   * C API: When input is from a user-provided file descriptor, the
     file position is restored after reading the file header bytes.
@@ -182,9 +182,9 @@ New Features:
 
 Feature improvements:
 
-  * -lat: The adaptive threshold algorithm is replaced with a new
-     algorithm which scales linearly (rather than quadratically) with
-     area size.
+  * `-lat`: The adaptive threshold algorithm is replaced with a new
+    algorithm which scales linearly (rather than quadratically) with
+    area size.
 
   * Tests: Test suite is re-written to use TAP-based tests.
 
@@ -234,7 +234,7 @@ Security Fixes:
 Bug fixes:
 
   * SWT: SWT reader suffered from a number of implementation errors
-         which caused it not to work any more.  Works again.
+    which caused it not to work any more.  Works again.
 
   * XBM: Fix memory leak observed when reading file in 'ping' mode.
 
@@ -246,11 +246,11 @@ Bug fixes:
     'ssize_t' are declared.  This is necessary since
     MagickExtentImage() uses these types as part of its definition.
 
-  * +repage was not working because parser was insisting that it
+  * `+repage` was not working because parser was insisting that it
     should include an argument.
 
   * -units was scaling existing resolution the wrong way around
-     (i.e. multiplying rather than dividing).
+    (i.e. multiplying rather than dividing).
 
   * PerlMagick: Fix compilation with Perl 5.16.
 
