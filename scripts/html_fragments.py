@@ -45,7 +45,6 @@ nav_template = """
 <li><a href="%(url_prefix)sREADME.html">Install</a></li>
 <li><a href="%(url_prefix)sHg.html">Source</a></li>
 <li><a href="%(url_prefix)sNEWS.html">News</a> </li>
-<li><a href="%(url_sourceforge)s" target="top_">Bugs</a></li>
 <li><a href="%(url_prefix)sutilities.html">Utilities</a></li>
 <li><a href="%(url_prefix)sprogramming.html">Programming</a></li>
 <li><a href="%(url_prefix)sreference.html">Reference</a></li>
