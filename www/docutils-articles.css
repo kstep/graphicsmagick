@@ -664,3 +664,10 @@ img.align-left {
 img.align-right {
 }
 
+/* Try to hide the page banner on portable devices */
+@media handheld
+{
+    div.banner {
+        display:none;
+    }
+}

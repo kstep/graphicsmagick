@@ -2,9 +2,9 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-=======================================
+======================================
 GraphicsMagick Image Processing System
-=======================================
+======================================
 
 .. meta::
    :description: GraphicsMagick is a robust collection of tools and libraries to read,
