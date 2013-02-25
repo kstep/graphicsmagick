@@ -1,3 +1,9 @@
+2013-02-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (WriteOnePNGImage): Call png_set_bKGD(), etc.,
+	after png_set_IHDR() because they depend on members of info_ptr
+	which are set by png_set_IHDR().
+	
 2013-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources): Enable the

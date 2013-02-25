@@ -6494,95 +6494,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                             "    ping_bit_depth=%u",
                             ping_bit_depth);
     }
-#if defined(PNG_pHYs_SUPPORTED)
-  if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
-      (!mng_info->write_mng || !mng_info->equal_physs))
-    {
-      int
-        unit_type;
-
-      png_uint_32
-        x_resolution,
-        y_resolution;
-
-      if (image->units == PixelsPerInchResolution)
-        {
-          unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) ((100.0*image->x_resolution+0.5)/2.54);
-          y_resolution=(png_uint_32) ((100.0*image->y_resolution+0.5)/2.54);
-        }
-      else if (image->units == PixelsPerCentimeterResolution)
-        {
-          unit_type=PNG_RESOLUTION_METER;
-          x_resolution=(png_uint_32) (100.0*image->x_resolution+0.5);
-          y_resolution=(png_uint_32) (100.0*image->y_resolution+0.5);
-        }
-      else
-        {
-          unit_type=PNG_RESOLUTION_UNKNOWN;
-          x_resolution=(png_uint_32) image->x_resolution;
-          y_resolution=(png_uint_32) image->y_resolution;
-        }
-
-      png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
-
-      if (logging)
-      {
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "    Setting up pHYs chunk");
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "      x_resolution=%lu",(unsigned long) x_resolution);
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "      y_resolution=%lu",(unsigned long) y_resolution);
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "      unit_type=%lu",(unsigned long) unit_type);
-      }
-    }
-#endif
-#if defined(PNG_oFFs_SUPPORTED)
-  if (mng_info->write_mng == 0 && (image->page.x || image->page.y))
-    {
-      png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
-                   (png_int_32) image->page.y, 0);
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Setting up oFFs chunk");
-    }
-#endif
-  if (image_matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
-    {
-      png_color_16
-        background;
-
-      if (image_depth < QuantumDepth)
-        {
-          int
-            maxval;
-
-          maxval=(1 << image_depth)-1;
-          background.red=(png_uint_16)
-            (maxval*image->background_color.red/MaxRGB);
-          background.green=(png_uint_16)
-            (maxval*image->background_color.green/MaxRGB);
-          background.blue=(png_uint_16)
-            (maxval*image->background_color.blue/MaxRGB);
-          background.gray=(png_uint_16)
-            (maxval*PixelIntensity(&image->background_color)/MaxRGB);
-        }
-      else
-        {
-          background.red=image->background_color.red;
-          background.green=image->background_color.green;
-          background.blue=image->background_color.blue;
-          background.gray=
-            (png_uint_16) PixelIntensity(&image->background_color);
-        }
-      background.index=(png_byte) background.gray;
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Setting up bKGD chunk");
-      png_set_bKGD(ping,ping_info,&background);
-    }
   /*
     Select the color type.
   */
@@ -7113,8 +7024,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         for (i=0; i<256; i++)
                            ping_trans_alpha[i]=(png_byte) trans_alpha[i];
                       }
+                  
                   }
-
 
                 /*
                   Identify which colormap entry is the background color.
@@ -7149,25 +7060,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
           png_uint_16
             maxval;
 
-          png_color_16
-            background;
-
           maxval=(1 << ping_bit_depth)-1;
-
-
-          background.gray=(png_uint_16)
-            (maxval*(PixelIntensity(&image->background_color))/MaxRGB);
-
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "  Setting up bKGD chunk");
-          png_set_bKGD(ping,ping_info,&background);
 
           ping_trans_color.gray=(png_uint_16)(maxval*
                                 ping_trans_color.gray/
                                 MaxRGB);
         }
     }
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    PNG color type: %s (%d)",
@@ -7250,6 +7150,145 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       }
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,base_filter);
   }
+
+  ping_interlace_method=(image_info->interlace == LineInterlace);
+
+  if (mng_info->write_mng)
+    png_set_sig_bytes(ping,8);
+
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "  Writing PNG header chunks");
+
+  png_set_IHDR(ping,ping_info,
+               ping_width,
+               ping_height,
+               ping_bit_depth,
+               ping_colortype,
+               ping_interlace_method,
+               ping_compression_method,
+               ping_filter_method);
+
+  if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
+     {
+        (void) png_set_tRNS(ping, ping_info,
+                           ping_trans_alpha,
+                           ping_num_trans,
+                           &ping_trans_color);
+     }
+
+  if (image_matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
+    {
+      if (logging)
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "  Setting up bKGD chunk");
+      if (ping_bit_depth < 8 && ping_colortype == PNG_COLOR_TYPE_GRAY)
+        {
+          png_uint_16
+            maxval;
+
+          png_color_16
+            background;
+
+          maxval=(1 << ping_bit_depth)-1;
+
+
+          background.gray=(png_uint_16)
+            (maxval*(PixelIntensity(&image->background_color))/MaxRGB);
+
+          png_set_bKGD(ping,ping_info,&background);
+        }
+
+      else
+        {
+          png_color_16
+            background;
+
+          if (image_depth < QuantumDepth)
+            {
+              int
+                maxval;
+
+              maxval=(1 << image_depth)-1;
+              background.red=(png_uint_16)
+                (maxval*image->background_color.red/MaxRGB);
+              background.green=(png_uint_16)
+                (maxval*image->background_color.green/MaxRGB);
+              background.blue=(png_uint_16)
+                (maxval*image->background_color.blue/MaxRGB);
+              background.gray=(png_uint_16)
+                (maxval*PixelIntensity(&image->background_color)/MaxRGB);
+            }
+          else
+            {
+              background.red=image->background_color.red;
+              background.green=image->background_color.green;
+              background.blue=image->background_color.blue;
+              background.gray=
+                (png_uint_16) PixelIntensity(&image->background_color);
+            }
+          background.index=(png_byte) background.gray;
+          png_set_bKGD(ping,ping_info,&background);
+        }
+    }
+
+#if defined(PNG_pHYs_SUPPORTED)
+  if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
+      (!mng_info->write_mng || !mng_info->equal_physs))
+    {
+      int
+        unit_type;
+
+      png_uint_32
+        x_resolution,
+        y_resolution;
+
+      if (image->units == PixelsPerInchResolution)
+        {
+          unit_type=PNG_RESOLUTION_METER;
+          x_resolution=(png_uint_32) ((100.0*image->x_resolution+0.5)/2.54);
+          y_resolution=(png_uint_32) ((100.0*image->y_resolution+0.5)/2.54);
+        }
+      else if (image->units == PixelsPerCentimeterResolution)
+        {
+          unit_type=PNG_RESOLUTION_METER;
+          x_resolution=(png_uint_32) (100.0*image->x_resolution+0.5);
+          y_resolution=(png_uint_32) (100.0*image->y_resolution+0.5);
+        }
+      else
+        {
+          unit_type=PNG_RESOLUTION_UNKNOWN;
+          x_resolution=(png_uint_32) image->x_resolution;
+          y_resolution=(png_uint_32) image->y_resolution;
+        }
+
+      png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
+
+      if (logging)
+      {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "    Setting up pHYs chunk");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      x_resolution=%lu",(unsigned long) x_resolution);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      y_resolution=%lu",(unsigned long) y_resolution);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "      unit_type=%lu",(unsigned long) unit_type);
+      }
+    }
+#endif
+
+#if defined(PNG_oFFs_SUPPORTED)
+  if (mng_info->write_mng == 0 && (image->page.x || image->page.y))
+    {
+      png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
+                   (png_int_32) image->page.y, 0);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Setting up oFFs chunk");
+    }
+#endif
+
   {
     ImageProfileIterator
       *profile_iterator;
@@ -7389,31 +7428,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                        bp.x,bp.y);
         }
     }
-  ping_interlace_method=(image_info->interlace == LineInterlace);
-
-  if (mng_info->write_mng)
-    png_set_sig_bytes(ping,8);
-
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "  Writing PNG header chunks");
-
-  png_set_IHDR(ping,ping_info,
-               ping_width,
-               ping_height,
-               ping_bit_depth,
-               ping_colortype,
-               ping_interlace_method,
-               ping_compression_method,
-               ping_filter_method);
-
-  if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
-     {
-        (void) png_set_tRNS(ping, ping_info,
-                           ping_trans_alpha,
-                           ping_num_trans,
-                           &ping_trans_color);
-     }
 
   png_write_info(ping,ping_info);
 
