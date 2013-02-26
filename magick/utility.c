@@ -4009,7 +4009,7 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
 %    o filename: Buffer to update with generated filename.  Buffer must
 %                be at least MaxTextExtent bytes long.
 %
-%    o template: Filename generation template (e.g. "image%02d.miff").
+%    o filename_template: Filename generation template (e.g. "image%02d.miff").
 %
 %    o scene_template: Template for scene part which is appended to
 %                template if template does not contain a scene format
