@@ -1,3 +1,10 @@
+2013-03-03  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* doc/GraphicsMagick.imdoc: Relocated some <im> .. </im> tags,
+	to include several paragraphs that were omitted from the
+	GraphicsMagick man page (Environment, Configuration Files, and
+	Copyright).
+
 2013-03-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Avoid a libpng16 warning about
