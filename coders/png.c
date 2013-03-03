@@ -1717,7 +1717,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
   /* Ignore unknown chunks */
+#if PNG_LIBPNG_VER < 10700 /* Avoid a libpng16 warning */
+  png_set_keep_unknown_chunks(ping, 2, NULL, 0);
+#else
   png_set_keep_unknown_chunks(ping, 1, NULL, 0);
+#endif
   /* Ignore unused chunks */
   png_set_keep_unknown_chunks(ping, 1, unused_chunks,
                               (int)sizeof(unused_chunks)/5);
