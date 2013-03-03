@@ -1,3 +1,8 @@
+2013-03-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Avoid a libpng16 warning about
+	storing unknown chunks.
+
 2013-02-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (WriteOnePNGImage): Call png_set_bKGD(), etc.,
