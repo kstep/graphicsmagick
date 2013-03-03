@@ -1,3 +1,15 @@
+2013-03-03  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* doc/GraphicsMagick.imdoc: Relocated some <im> .. </im> tags, to
+	include several paragraphs that were omitted from the
+	GraphicsMagick man page (Environment, Configuration Files, and
+	Copyright).
+
+	* doc/imdoc2man: the </pre> tag was being deleted instead of
+	replaced with nothing, which caused the first line of the
+	subsequent material to be joined to the last line of the <pre>
+	block.
+
 2013-03-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Avoid a libpng16 warning about
@@ -8,7 +20,7 @@
 	* coders/png.c (WriteOnePNGImage): Call png_set_bKGD(), etc.,
 	after png_set_IHDR() because they depend on members of info_ptr
 	which are set by png_set_IHDR().
-	
+
 2013-02-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources): Enable the
