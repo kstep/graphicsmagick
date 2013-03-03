@@ -4,6 +4,8 @@
 	to include several paragraphs that were omitted from the
 	GraphicsMagick man page (Environment, Configuration Files, and
 	Copyright).
+	* doc/imdoc2man: the </pre> tag was being deleted instead of
+	replaced with nothing, which caused the first line of the subsequent		material to be joined to the last line of the <pre> block.
 
 2013-03-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 

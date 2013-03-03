@@ -64,7 +64,7 @@ ${SED}  "
      /<\/utils>/d
      /<!--/d
      s/<pre>//
-     /<\/pre>/d
+     s/<\/pre>//
      /<tab>/d
      /<\/tab>/d
 
