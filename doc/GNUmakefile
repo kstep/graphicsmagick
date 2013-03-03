@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2012 GraphicsMagick Group
+# Copyright (C) 2003-2013 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -9,8 +9,21 @@
 #
 
 UTILITIES = \
-	animate compare composite conjure convert display identify import \
-	mogrify montage GraphicsMagick
+	animate \
+	batch \
+	benchmark \
+	compare \
+	composite \
+	conjure \
+	convert \
+	display \
+	identify \
+	import \
+	mogrify \
+	montage \
+	time \
+	version \
+	GraphicsMagick
 
 UTILSUBDIR       = expanded/$(UTILITY)
 UTILBASE         = $(UTILITY)
@@ -31,9 +44,22 @@ SED = /bin/sed
 export SED
 
 HTML_TARGETS = \
-	GraphicsMagick.html animate.html compare.html composite.html \
-	conjure.html convert.html display.html gm.html identify.html \
-	import.html mogrify.html montage.html
+	GraphicsMagick.html \
+	animate.html \
+	batch.html \
+	benchmark.html \
+	compare.html \
+	composite.html \
+	conjure.html \
+	convert.html \
+	display.html \
+	gm.html \
+	identify.html \
+	import.html \
+	mogrify.html \
+	montage.html \
+	time.html \
+	version.html
 
 MAN_TARGETS       = gm.1
 

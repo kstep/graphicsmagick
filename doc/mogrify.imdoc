@@ -28,25 +28,6 @@ mogrify - mogrify an image
 <a href="#mog-opti">Options</a>
 </dt>
 
-<dt>
-<a href="#mog-segm">Image Segmentation</a>
-</dt>
-
-<dt>
-<a href="#mog-envi">Environment</a>
-</dt>
-
-<dt>
-<a href="#mog-file">Configuration File</a>
-</dt>
-
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </format>
 </sect>
@@ -147,64 +128,6 @@ Options, above.
 </sect>
 <back>
 <im>
-<sect NAME="mog-segm">Image Segmentation
-<p>
-Use <s>-segment</s> to segment an image by analyzing the histograms of
-the color components and identifying units that are homogeneous with the
-fuzzy c-means technique. The scale-space filter analyzes the histograms
-of the three color components of the image and identifies a set of classes.
-The extents of each class is used to coarsely segment the image with thresholding.
-The color associated with each class is determined by the mean color of
-all pixels within the extents of a particular class. Finally, any unclassified
-pixels are assigned to the closest class with the fuzzy c-means technique.</p>
-
-<p>
-The fuzzy c-Means algorithm can be summarized as follows:</p>
-<ul>
-<li>
-Build a histogram, one for each color component of the image.</li>
-
-<li>
-For each histogram, successively apply the scale-space filter and build
-an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space "fingerprint" to determine which peaks or valleys
-in the histogram are most predominant.</li>
-
-<li>
-The fingerprint defines intervals on the axis of the histogram. Each interval
-contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered "classified"
-and is assigned an unique class number.</li>
-
-<li>
-Any pixel that fails to be classified in the above thresholding pass is
-classified using the fuzzy c-Means technique. It is assigned to one of
-the classes discovered in the histogram analysis phase.</li>
-</ul>
-
-<p>
-The fuzzy c-Means technique attempts to cluster a pixel by finding the
-local minima of the generalized within group sum of squared error objective
-function. A pixel is assigned to the closest class of which the fuzzy membership
-has a maximum value.</p>
-
-<p>
-For additional information see:
-<bq><i>Young Won Lim, Sang Uk Lee</i>, ``<s>On The Color Image Segmentation
-Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</s>'',
-Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq></p>
-
-</sect>
-<back>
-<sect NAME="mog-envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="mog-file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
 
 <format type=man>
 <sect NAME="mog-also">SEE ALSO
@@ -222,7 +145,6 @@ montage(1)
 </p>
 </sect>
 </format>
-<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

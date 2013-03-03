@@ -11,6 +11,7 @@
 ${SED} "
        /<gm>/d
        /<\/gm>/d
+       s/    batch/    gm batch/
        s/    compare/    gm compare/
        s/    composite/    gm composite/
        s/    convert/    gm convert/

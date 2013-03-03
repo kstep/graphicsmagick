@@ -26,6 +26,8 @@ out_.*\.+
 ^doc/Gm/man\.imdoc
 ^doc/GraphicsMagick\.html
 ^doc/animate\.html
+^doc/batch\.html
+^doc/benchmark\.html
 ^doc/brief_options\.imdoc
 ^doc/compare\.html
 ^doc/composite\.html
@@ -40,6 +42,8 @@ out_.*\.+
 ^doc/mogrify\.html
 ^doc/montage\.html
 ^doc/sed-script
+^doc/time\.html
+^doc/version\.html
 ^libtool
 ^ltdl/argz\.h
 ^locale/gm_messages\.mc

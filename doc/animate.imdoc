@@ -40,25 +40,6 @@
 <a href="#xres">X Resources</a>
 </dt>
 
-<dt>
-<a href="#envi">Environment</a>
-</dt>
-
-<dt>
-<a href="#file">Configuration Files</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
-
-<dt>
-<a href="#ackn">Acknowledgement</a>
-</dt>
-
-<dt>
-<a href="#auth">Authors</a>
-</dt>
 </dl>
 </sect>
 </format>
@@ -321,34 +302,8 @@ of header identifying the window. The default is the image file name.</dd>
 </dl>
 </sect>
 <back>
+
 <im>
-<sect NAME="envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
-
-<sect NAME="ackn">Acknowledgements
-<dl>
-<dt></dt><dd>
-The <s>MIT X Consortium</s> for making network transparent graphics a
-reality.</dd>
-<dt></dt><dd>
-<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
-implementation of Alan Paeth's image rotation algorithm.</dd>
-<dt></dt><dd>
-<i>David Pensak</i>, <s>duPont</s>, for providing a computing
-environment that made this program possible.</dd>
-<dt></dt><dd><i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>.
-The spatial subdivision color reduction algorithm is based on his Img
-software.</dd>
-</dl>
-</sect>
-<back>
 
 <format type=man>
 <sect NAME="also">SEE ALSO
@@ -366,7 +321,6 @@ montage(1)
 </p>
 </sect>
 </format>
-<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

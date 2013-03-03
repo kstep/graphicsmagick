@@ -30,7 +30,7 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-gm - GraphicsMagick command-line utilities to create, edit, or convert images
+gm - command-line utility to create, edit, compare, convert, or display images
 <br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
@@ -84,7 +84,11 @@ color="#00B04F"><font size="+1">
 <strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
 <p>
-<strong>compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
+<strong>gm batch</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <strong>[</strong> <em>script</em> <strong>]</strong>
+<p>
+<strong>gm benchmark</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> subcommand
+<p>
+<strong>gm compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
 <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>compare-image</em>
 <strong>[</strong> <em>options</em> <strong>... ]</strong>
 <p>
@@ -108,6 +112,10 @@ color="#00B04F"><font size="+1">
 <p>
 <strong>gm montage</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong> <em>output-file</em>
+<p>
+<strong>gm time</strong> subcommand
+<p>
+<strong>gm version</strong>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -119,49 +127,82 @@ color="#00B04F"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
-<p> GraphicsMagick's <strong>gm</strong> provides a suite of command-line
-utilities for creating, converting, editing, and displaying
-images:
+<p> GraphicsMagick's <strong>gm</strong> provides a suite of utilities for
+creating, comparing, converting, editing, and displaying images.  All
+of the utilities are provided as sub-commands of a single <strong>gm</strong>
+executable:
 <p>
-<a href="display.html"><strong>Gm display</strong></a>
-is a machine architecture independent
-image processing and display facility. It can display an image on any workstation
-display running an <em>X</em> server.
+<a href="animate.html"><strong>animate</strong></a>
+displays an animation (e.g. a GIF file) on any workstation display
+running an <em>X</em> server.
 <p>
-<a href="import.html"><strong>Gm import</strong></a>
-reads an image from any visible window
-on an <em>X</em> server and outputs it as an image file. You can capture
-a single window, the entire screen, or any rectangular portion of the screen.
+<a href="batch.html"><strong>batch</strong></a>
+executes an arbitary number of the utility commands
+(e.g. <strong>convert</strong>) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.
 <p>
-<a href="montage.html"><strong>Gm montage</strong></a>
-creates a composite by combining several
-separate images. The images are tiled on the composite image with the name
-of the image optionally appearing just below the individual tile.
+<a href="benchmark.html"><strong>benchmark</strong></a>
+executes one of the other utility commands (e.g. <strong>convert</strong>) for a
+specified number of iterations, or execution time, and reports
+execution time and other profiling information such as CPU
+utilization. <strong>Benchmark</strong> provides various operating modes
+including executing the command with a varying number of threads, and
+alternate reporting formats such as comma-separated value (CSV).
 <p>
-<a href="convert.html"><strong>Gm convert</strong></a>
-converts an input file using one image
-format to an output file with the same or differing image format while applying
-an arbitrary number of image transformations.
+<a href="compare.html"><strong>compare</strong></a>
+compares two images and reports difference statistics according to
+specified metrics and/or outputs an image with a visual representation
+of the differences.  It may also be used to test if images are similar
+within a particular range and specified metric, returning a truth
+value to the executing environment.
 <p>
-<a href="mogrify.html"><strong>Gm mogrify</strong></a>
-transforms an image or a sequence of
-images. These transforms include <strong>image scaling</strong>, <strong>image rotation</strong>,
-<strong>color
-reduction</strong>, and others. The transmogrified image
-<strong>overwrites</strong> the
-original image.
-<p>
-<a href="identify.html"><strong>Gm identify</strong></a>
-describes the format and characteristics
-of one or more image files. It will also report if an image is incomplete
-or corrupt.
-<p>
-<a href="composite.html"><strong>Gm composite</strong></a>
+<a href="composite.html"><strong>composite</strong></a>
 composites images (blends or merges images together) to create new images.
 <p>
-<a href="conjure.html"><strong>Gm conjure</strong></a>
+<a href="conjure.html"><strong>conjure</strong></a>
 interprets and executes scripts in
 the Magick Scripting Language (MSL).
+<p>
+<a href="convert.html"><strong>convert</strong></a>
+converts an input file using one image format to an output file with
+the same or differing image format while applying an arbitrary number
+of image transformations.
+<p>
+<a href="display.html"><strong>display</strong></a>
+is a machine architecture independent image processing and display
+facility. It can display an image on any workstation display running
+an <em>X</em> server.
+<p>
+<a href="identify.html"><strong>identify</strong></a>
+describes the format and characteristics of one or more image
+files. It will also report if an image is incomplete or corrupt.
+<p>
+<a href="import.html"><strong>import</strong></a>
+reads an image from any visible window on an <em>X</em> server and
+outputs it as an image file. You can capture a single window, the
+entire screen, or any rectangular portion of the screen.
+<p>
+<a href="mogrify.html"><strong>mogrify</strong></a>
+transforms an image or a sequence of images. These transforms include
+<strong>image scaling</strong>, <strong>image rotation</strong>, <strong>color reduction</strong>,
+and others. The transmogrified image <strong>overwrites</strong> the original
+image.
+<p>
+<a href="montage.html"><strong>montage</strong></a>
+creates a composite by combining several separate images. The images
+are tiled on the composite image with the name of the image optionally
+appearing just below the individual tile.
+<p>
+<a href="time.html"><strong>time</strong></a>
+executes a subcommand and reports the user, system, and total
+execution time consumed.
+<p>
+<a href="version.html"><strong>version</strong></a>
+reports the GraphicsMagick release version, maximum sample-depth,
+copyright notice, supported features, and the options used while
+building the software.
 <p>
 The <strong>GraphicsMagick</strong> utilities recognize the following image formats:
 <br>&nbsp;<br>
@@ -369,25 +410,25 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 </table>
 <p>
 <em>Support for some of these formats require additional programs or libraries.
-<a href="README.html">README</a>
-tells where to find this software</em>.
+See <a href="README.html">README</a>
+in the source package for where to find optional additional software</em>.
 <p>
 Note, a format delineated with <tt>+</tt> means that if more than one
-image is specified, it is composited into a single multi-image file. Use
-<strong>+adjoin</strong>
-if you want a single image produced for each frame.
+image is specified, frames are combined into a single multi-image
+file. Use <strong>+adjoin</strong> if you want a single image produced for each
+frame.
 <p>
-Your installation might not support all of the formats in the list.  To get
-an up-to-date listing of the formats supported by your particular
-configuration, run <tt>"convert -list format"</tt>.
+Your installation might not support all of the formats in the list.
+To get an accurate listing of the formats supported by your particular
+configuration, run <tt>"gm convert -list format"</tt>.
 <p>
-Raw images are expected to have one byte per pixel unless <strong>gm</strong>
-is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
-is expected to be stored two or four
-bytes per pixel, respectively, in most-significant-byte-first order.
-You can tell if <strong>gm</strong> was compiled in 16-bit mode by typing
-"gm version" without any options, and looking for "Q:16" in the first line of
-output.
+Raw images are expected to have one byte per pixel unless <strong>gm</strong> is
+compiled in 16-bit quantum mode or in 32-bit quantum mode. Here, the
+raw data is expected to be stored two or four bytes per pixel,
+respectively, in most-significant-byte-first order.  For example, you
+can tell if <strong>gm</strong> was compiled in 16-bit mode by typing "gm
+version" without any options, and looking for "Q:16" in the first line
+of output.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -493,7 +534,7 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the
+This is a combined list of the command-line options used by the
 GraphicsMagick utilities (<em>animate</em>, <em>compare</em>,
 <em>composite</em>, <em>convert</em>, <em>display</em>, <em>identify</em>,
 <em>import</em>, <em>mogrify</em> and <em>montage</em>).
@@ -3324,6 +3365,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    -metric <i>&lt;metric&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>comparison metric (MAE, MSE, PAE, PSNR, RMSE)</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     -minify <i>&lt;factor&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>minify the image</td></tr></table>
@@ -5995,7 +6047,10 @@ John Cristy,<br>
 Bob Friesenhahn,<br>
 Glenn Randers-Pehrson,<br>
 William Radcliff,<br>
-Leonard Rosenthol.
+Leonard Rosenthol,<br>
+Lars Ruben Skyum,<br>
+Jaroslav Fojtik,<br>
+and many more.
 </em>
 <br>&nbsp;<br>
 </td></tr></table>
@@ -6013,37 +6068,10 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 - 2010 GraphicsMagick Group, an organization
-dedicated to making software imaging solutions freely available.</strong>
+<strong>Copyright (C) 2002 - 2013 GraphicsMagick Group.</strong> Additional
+copyrights apply. Please see see
+http://www.GraphicsMagick.org/Copyright.html for details.
 <p>
-<strong>Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files
-("GraphicsMagick"), to deal in GraphicsMagick without restriction,
-including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
-and to permit persons to whom GraphicsMagick is furnished to do so,
-subject to the following conditions:</strong>
-<p>
-<strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of GraphicsMagick.</strong>
-<p>
-<strong>The software is provided "as is", without warranty of any kind,
-express or implied, including but not limited to the warranties of
-merchantability, fitness for a particular purpose and noninfringement.
-In no event shall GraphicsMagick Group be liable for any claim, damages
-or other liability, whether in an action of contract, tort or otherwise,
-arising from, out of or in connection with GraphicsMagick or the use or
-other dealings in GraphicsMagick.</strong>
-<p>
-<strong>Except as contained in this notice, the name of the GraphicsMagick
-Group shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in GraphicsMagick without prior written
-authorization from the GraphicsMagick Group.</strong>
-<p>
-<strong>Additional copyrights and licenses apply to this software. You should
-have received a copy of Copyright.txt with this package, which describes
-additional copyrights and licenses which apply to this software;
-otherwise see http://www.graphicsmagick.org/Copyright.html.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -6052,6 +6080,6 @@ otherwise see http://www.graphicsmagick.org/Copyright.html.</strong>
 
 [<a href="index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2011</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2013</a></p></td>
 </tr></table>
 </body></html>

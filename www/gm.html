@@ -30,7 +30,7 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-gm - GraphicsMagick command-line utilities to create, edit, or convert images
+gm - command-line utility to create, edit, compare, convert, or display images
 <br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
@@ -47,7 +47,11 @@ color="#00B04F"><font size="+1">
 <strong>gm animate</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
 <p>
-<strong>compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
+<strong>gm batch</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <strong>[</strong> <em>script</em> <strong>]</strong>
+<p>
+<strong>gm benchmark</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> subcommand
+<p>
+<strong>gm compare</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>reference-image</em>
 <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>compare-image</em>
 <strong>[</strong> <em>options</em> <strong>... ]</strong>
 <p>
@@ -71,6 +75,10 @@ color="#00B04F"><font size="+1">
 <p>
 <strong>gm montage</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong> <em>output-file</em>
+<p>
+<strong>gm time</strong> subcommand
+<p>
+<strong>gm version</strong>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -82,49 +90,82 @@ color="#00B04F"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
-<p> GraphicsMagick's <strong>gm</strong> provides a suite of command-line
-utilities for creating, converting, editing, and displaying
-images:
+<p> GraphicsMagick's <strong>gm</strong> provides a suite of utilities for
+creating, comparing, converting, editing, and displaying images.  All
+of the utilities are provided as sub-commands of a single <strong>gm</strong>
+executable:
 <p>
-<strong>Gm display</strong>
-is a machine architecture independent
-image processing and display facility. It can display an image on any workstation
-display running an <em>X</em> server.
+<strong>animate</strong>
+displays an animation (e.g. a GIF file) on any workstation display
+running an <em>X</em> server.
 <p>
-<strong>Gm import</strong>
-reads an image from any visible window
-on an <em>X</em> server and outputs it as an image file. You can capture
-a single window, the entire screen, or any rectangular portion of the screen.
+<strong>batch</strong>
+executes an arbitary number of the utility commands
+(e.g. <strong>convert</strong>) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.
 <p>
-<strong>Gm montage</strong>
-creates a composite by combining several
-separate images. The images are tiled on the composite image with the name
-of the image optionally appearing just below the individual tile.
+<strong>benchmark</strong>
+executes one of the other utility commands (e.g. <strong>convert</strong>) for a
+specified number of iterations, or execution time, and reports
+execution time and other profiling information such as CPU
+utilization. <strong>Benchmark</strong> provides various operating modes
+including executing the command with a varying number of threads, and
+alternate reporting formats such as comma-separated value (CSV).
 <p>
-<strong>Gm convert</strong>
-converts an input file using one image
-format to an output file with the same or differing image format while applying
-an arbitrary number of image transformations.
+<strong>compare</strong>
+compares two images and reports difference statistics according to
+specified metrics and/or outputs an image with a visual representation
+of the differences.  It may also be used to test if images are similar
+within a particular range and specified metric, returning a truth
+value to the executing environment.
 <p>
-<strong>Gm mogrify</strong>
-transforms an image or a sequence of
-images. These transforms include <strong>image scaling</strong>, <strong>image rotation</strong>,
-<strong>color
-reduction</strong>, and others. The transmogrified image
-<strong>overwrites</strong> the
-original image.
-<p>
-<strong>Gm identify</strong>
-describes the format and characteristics
-of one or more image files. It will also report if an image is incomplete
-or corrupt.
-<p>
-<strong>Gm composite</strong>
+<strong>composite</strong>
 composites images (blends or merges images together) to create new images.
 <p>
-<strong>Gm conjure</strong>
+<strong>conjure</strong>
 interprets and executes scripts in
 the Magick Scripting Language (MSL).
+<p>
+<strong>convert</strong>
+converts an input file using one image format to an output file with
+the same or differing image format while applying an arbitrary number
+of image transformations.
+<p>
+<strong>display</strong>
+is a machine architecture independent image processing and display
+facility. It can display an image on any workstation display running
+an <em>X</em> server.
+<p>
+<strong>identify</strong>
+describes the format and characteristics of one or more image
+files. It will also report if an image is incomplete or corrupt.
+<p>
+<strong>import</strong>
+reads an image from any visible window on an <em>X</em> server and
+outputs it as an image file. You can capture a single window, the
+entire screen, or any rectangular portion of the screen.
+<p>
+<strong>mogrify</strong>
+transforms an image or a sequence of images. These transforms include
+<strong>image scaling</strong>, <strong>image rotation</strong>, <strong>color reduction</strong>,
+and others. The transmogrified image <strong>overwrites</strong> the original
+image.
+<p>
+<strong>montage</strong>
+creates a composite by combining several separate images. The images
+are tiled on the composite image with the name of the image optionally
+appearing just below the individual tile.
+<p>
+<strong>time</strong>
+executes a subcommand and reports the user, system, and total
+execution time consumed.
+<p>
+<strong>version</strong>
+reports the GraphicsMagick release version, maximum sample-depth,
+copyright notice, supported features, and the options used while
+building the software.
 <p>
 The <strong>GraphicsMagick</strong> utilities recognize the following image formats:
 <br>&nbsp;<br>
@@ -332,25 +373,25 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 </table>
 <p>
 <em>Support for some of these formats require additional programs or libraries.
-<a href="README.html">README</a>
-tells where to find this software</em>.
+See <a href="README.html">README</a>
+in the source package for where to find optional additional software</em>.
 <p>
 Note, a format delineated with <tt>+</tt> means that if more than one
-image is specified, it is composited into a single multi-image file. Use
-<strong>+adjoin</strong>
-if you want a single image produced for each frame.
+image is specified, frames are combined into a single multi-image
+file. Use <strong>+adjoin</strong> if you want a single image produced for each
+frame.
 <p>
-Your installation might not support all of the formats in the list.  To get
-an up-to-date listing of the formats supported by your particular
-configuration, run <tt>"convert -list format"</tt>.
+Your installation might not support all of the formats in the list.
+To get an accurate listing of the formats supported by your particular
+configuration, run <tt>"gm convert -list format"</tt>.
 <p>
-Raw images are expected to have one byte per pixel unless <strong>gm</strong>
-is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
-is expected to be stored two or four
-bytes per pixel, respectively, in most-significant-byte-first order.
-You can tell if <strong>gm</strong> was compiled in 16-bit mode by typing
-"gm version" without any options, and looking for "Q:16" in the first line of
-output.
+Raw images are expected to have one byte per pixel unless <strong>gm</strong> is
+compiled in 16-bit quantum mode or in 32-bit quantum mode. Here, the
+raw data is expected to be stored two or four bytes per pixel,
+respectively, in most-significant-byte-first order.  For example, you
+can tell if <strong>gm</strong> was compiled in 16-bit mode by typing "gm
+version" without any options, and looking for "Q:16" in the first line
+of output.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -456,7 +497,7 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the
+This is a combined list of the command-line options used by the
 GraphicsMagick utilities (<em>animate</em>, <em>compare</em>,
 <em>composite</em>, <em>convert</em>, <em>display</em>, <em>identify</em>,
 <em>import</em>, <em>mogrify</em> and <em>montage</em>).
@@ -3279,6 +3320,17 @@ width=15><b><font face="Helvetica, Arial"
     -median <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -metric <i>&lt;metric&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>comparison metric (MAE, MSE, PAE, PSNR, RMSE)</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6422,6 +6474,386 @@ of header identifying the window. The default is the image file name.</dd>
 SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#00B04F"><font size="+1">
+<a NAME="batch"></a>gm batch
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="batch-desc"></a>Description
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+<strong>batch</strong> executes an arbitary number of the utility commands
+(e.g. <strong>convert</strong>) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.
+</td></tr></table>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="batch-exam"></a>Examples
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p> To drive <strong>'gm batch'</strong> using a shell script (or a program
+written in any language), have the script/program send commands to 'gm
+batch' via its standard input.  Specify that standard input should be
+used by using <strong>'-'</strong> as the file name.  The following example
+converts all files matching '*.jpg' to TIFF format while rotating each
+file by 90 degrees and stripping all embedded profiles.  The shell
+script syntax is standard Unix shell:
+<pre>
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \
+    +profile "'*'" "'$outfile'"
+  done | gm batch -echo on -feedback on -
+</pre>
+<p>
+We can accomplish the same as the previous example by putting all the
+commands in a text file and then specifying the name of the text file
+as the script to execute:
+<pre>
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \
+    +profile "'*'" "'$outfile'"
+  done &gt; script.txt
+  gm batch -echo on -feedback on script.txt
+</pre>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="batch-opti"></a>Options
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+Options are processed from left to right and must appear before any filename argument.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -echo <i>on|off</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>command echo on or off</td></tr></table>
+<p>
+Specify <strong>on</strong> to enable echoing commands to standard output as
+they are read or <strong>off</strong> to disable.  The default is
+<strong>off</strong>.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -escape <i>unix|windows</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Parse using unix or windows syntax</td></tr></table>
+<p>
+Commands must be parsed from the input stream and escaping needs to be
+used to protect spaces or quoting characters in the input. Specify
+<strong>unix</strong> to use unix-style command line parsing or <strong>windows</strong>
+for Microsoft Windows command shell style parsing. The default depends
+on if the software is compiled for Microsoft Windows or for a
+Unix-type system (including Cygwin on Microsoft Windows).  It is
+recommended to use unix syntax because it is more powerful and more
+portable.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -fail <i>text</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>text to print if a command fails</td></tr></table>
+<p>
+When feedback is enabled, this specifies the text to print when the
+command fails.  The default text is <strong>FAIL</strong>.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -feedback <i>on|off</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable error feedback</td></tr></table>
+<p>
+Print text (see -pass and -fail options) feedback after each
+command to indicate the result, the default is <strong>off</strong>.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -help
+</font></font></font></b></td></tr></table>
+<p>
+Prints batch command help.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -pass <i>text</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>text to print if a command passes</td></tr></table>
+<p>
+When feedback is enabled, this specifies the text to print when the
+command passes.  The default text is <strong>PASS</strong>.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -prompt <i>text</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Prompt text to use for command line</td></tr></table>
+<p>
+If no filename argument was specified, a simple command prompt appears
+where you may enter GraphicsMagick commands.  The default prompt is
+<strong>GM&gt;</strong>.  Use this option to change the prompt to something else.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -stop-on-error <i>on|off</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify if command processing stops on error</td></tr></table>
+<p>
+Normally command processing continues if a command encounters an
+error.  Specify <strong>-stop-on-error on</strong> to cause processing to quit
+immediately on error.
+</td></tr></table>
+</td></tr></table>
+<br>&nbsp;<br>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="benchmark"></a>gm benchmark
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="bench-desc"></a>Description
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+<strong>benchmark</strong> executes an arbitrary <strong>gm</strong> utility command
+(e.g. <strong>convert</strong>) for one or more loops, and/or a specified
+execution time, and reports many execution metrics.  For builds using
+OpenMP, a mode is provided to execute the benchmark with an increasing
+number of threads and provide a report of speedup and multi-thread
+execution efficiency.  If <strong>benchmark</strong> is used to execute a
+command without any additional benchmark options, then the command is
+run once.
+</td></tr></table>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="bench-exam"></a>Examples
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>To obtain benchmark information for a single execution of a
+command:
+<pre>
+    gm benchmark convert input.ppm -gaussian 0x1 output.ppm
+</pre>
+<p>To obtain benchmark information from 100 iterations of the
+command:
+<pre>
+    gm benchmark -iterations 100 convert input.ppm \
+    -gaussian 0x1 output.ppm
+</pre>
+<p>To obtain benchmark information by iterating the command until a
+specified amount of time (in seconds) has been consumed:
+<pre>
+    gm benchmark -duration 30 convert input.ppm \
+    -gaussian 0x1 output.ppm
+</pre>
+<p>To obtain a full performance report with an increasing number of
+threads (1-32 threads, stepping the number of threads by four each
+time):
+<pre>
+    gm benchmark -duration 3 -stepthreads 4 convert \
+    input.ppm -gaussian 0x2 output.ppm
+</pre>
+<p>Here is the interpretation of the output:
+<ul>
+<li><strong>threads</strong> - the number of threads used.
+<li><strong>iter</strong> - the number of command iterations executed.
+<li><strong>user</strong> - the total user time consumed.
+<li><strong>total</strong> - the total elapsed time consumed.
+<li><strong>iter/s</strong> - the number of command iterations per second.
+<li><strong>iter/cpu</strong> - the amount of CPU time consumed per iteration.
+<li><strong>speedup</strong> - the speedup compared with one thread.
+<li><strong>karp-flatt</strong> - the Karp-Flatt measure of speedup efficiency.
+</ul>
+<p><em>Please note that the reported "speedup" is based on the
+execution time of just one thread.  A preliminary warm-up pass is used
+before timing the first loop in order to ensure that the CPU is
+brought out of power-saving modes and that system caches are warmed
+up.  Most modern CPUs provide a "turbo" mode where the CPU clock speed
+is increased (e.g. by a factor of two) when only one or two cores are
+active.  If the CPU grows excessively hot (due to insufficient
+cooling), then it may dial back its clock rates as a form of thermal
+management.  These factors result in an under-reporting of speedup
+compared to if "turbo" mode was disabled and the CPU does not need to
+worry about thermal management.  The <strong>powertop</strong> utility available
+under Linux and Solaris provides a way to observe CPU core clock rates
+while a benchmark is running.</em>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="bench-opti"></a>Options
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p> Options are processed from left to right and must appear before
+any argument.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -duration <i>duration</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>duration to run benchmark</td></tr></table>
+<p>Specify the number of seconds to run the benchmark. The command is
+executed repeatedly until the specified amount of time has
+elapsed.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -help
+</font></font></font></b></td></tr></table>
+<p>
+Prints benchmark command help.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -iterations <i>loops</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>number of command iterations</td></tr></table>
+<p>Specify the number of iterations to run the benchmark. The command
+is executed repeatedly until the specified number of iterations has
+been reached.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -rawcsv
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Print results in CSV format</td></tr></table>
+<p>Print results in a comma-separated value (CSV) format which is easy
+to parse for plotting or importing into a spreadsheet or database.
+The values reported are <strong>threads</strong>, <strong>iterations</strong>,
+<strong>user_time</strong>, and <strong>elapsed_time</strong>.
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -stepthreads <i>step</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>execute a per-thread benchmark ramp</td></tr></table>
+<p> Execute a per-thread benchmark ramp, incrementing the number of
+threads at each step by the specified value.  The maximum number of
+threads is taken from the standard <tt>OMP_NUM_THREADS</tt>
+environment variable.
+</td></tr></table>
+</td></tr></table>
+<br>&nbsp;<br>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
 <a NAME="compare"></a>gm compare
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
@@ -6666,6 +7098,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-maximum-error">-maximum-error</a> <i>&lt;limit&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the maximum amount of total image error</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    -metric <i>&lt;metric&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>comparison metric (MAE, MSE, PAE, PSNR, RMSE)</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -16704,456 +17147,32 @@ This resource specifies the title to be placed at the top of the composite
 image. The default is not to place a title at the top of the composite
 image.
 </td></tr></table>
-     <p>
-<i><a href="#top">Back to Contents</a></i> 
-&nbsp;</p>
-<table BORDER=0 WIDTH="100%"> 
-<tr> 
-<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
-SRC="images/right_triangle.png"  ALT=">" BORDER=0 
-height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#00B04F"><font size="+1">
-<a NAME="mont-envi"></a>Environment
-</font></font></font></b></td></tr></table>
-<table width="94%" border="0" cellspacing="0" cellpadding="8">
-<tr><td width="3%"><br></td><td>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    COLUMNS
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Output screen width. Used when formatting text for the screen. Many
-Unix systems keep this shell variable up to date, but it may need to be
-explicitly exported in order for GraphicsMagick to see it.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    DISPLAY
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>X11 display ID (host, display number, and screen in the form
-hostname:display.screen).</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    HOME
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Location of user's home directory. GraphicsMagick searches for
-configuration files in $HOME/.magick if the directory exists. See
-<strong>MAGICK_CODER_MODULE_PATH</strong>, <strong>MAGICK_CONFIGURE_PATH</strong>, and
-<strong>MAGICK_FILTER_MODULE_PATH</strong> if more flexibility is needed.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_CODER_STABILITY
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
-available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, and <strong>UNSTABLE</strong>.
-The default minimum level is <strong>UNSTABLE</strong>, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the <strong>PRIMARY</strong> level are commonly used
-formats with very well maintained implementations. Coders at the
-<strong>STABLE</strong> level are reasonably well maintained but represent less used
-formats. Coders at the <strong>UNSTABLE</strong> level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_CODER_MODULE_PATH
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for image format coder modules.
-This path allows the user to arbitrarily extend the image formats
-supported by GraphicsMagick by adding loadable modules to an arbitrary
-location rather than copying them into the GraphicsMagick installation
-directory. The formatting of the search path is similar to operating
-system search paths (i.e. colon delimited for Unix, and semi-colon
-delimited for Microsoft Windows). This user specified search path is used
-before trying the default search path.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_CONFIGURE_PATH
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for configuration (.mgk) files.
-The formatting of the search path is similar to operating system search
-paths (i.e. colon delimited for Unix, and semi-colon delimited for
-Microsoft Windows). This user specified search path is used before trying
-the default search path.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_DEBUG
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Debug options (see <strong>-debug</strong> for details)</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_FILTER_MODULE_PATH
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for filter process modules
-(invoked via <strong>-process</strong>). This path allows the user to arbitrarily
-extend GraphicsMagick's image processing functionality by adding loadable
-modules to an arbitrary location rather than copying them into the
-GraphicsMagick installation directory. The formatting of the search path
-is similar to operating system search paths (i.e. colon delimited for
-Unix, and semi-colon delimited for Microsoft Windows). This user
-specified search path is used before trying the default search path.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_HOME
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to top of GraphicsMagick installation directory. Only observed
-by "uninstalled" builds of GraphicsMagick which do not have their location
-hard-coded or set by an installer.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_MMAP_READ
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_READ</strong> is set to <strong>TRUE</strong>, GraphicsMagick
-will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_IO_FSYNC
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_IO_FSYNC</strong> is set to <strong>TRUE</strong>, then GraphicsMagick
-will request that the output file is fully flushed and synchronized to
-disk when it is closed. This incurs a performance penalty, but has the
-benefit that if the power fails or the system crashes, the file should be
-valid on disk. If image files are referenced from a database, then this
-option helps assure that the files referenced by the database are
-valid.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_IOBUF_SIZE
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and
-writing encoded files. The default is 16384, which is observed to work
-well for many cases. The best value for a local filesystem is usually the
-the native filesystem block size (e.g. 4096, 8192, or even 131,072 for
-ZFS) in order to minimize the number of physical disk I/O operations.
-I/O performance to files accessed over a network may benefit
-significantly by tuning this option. Larger values are not necessarily
-better (they may be slower!), and there is rarely any benefit from using
-values larger than 32768. Use convert's <strong>-verbose</strong> option in order
-to evaluate read and write rates in pixels per second while keeping in
-mind that the operating system will try to cache files in RAM.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_LIMIT_DISK
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of disk space allowed for use by the pixel cache.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_LIMIT_FILES
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of open files.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_LIMIT_MAP
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_LIMIT_MEMORY
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    MAGICK_TMPDIR
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to directory where GraphicsMagick should write temporary
-files. The default is to use the system default, or the location set by
-<strong>TMPDIR</strong>.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    TMPDIR
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For POSIX-compatible systems (Unix-compatible), the path to the
-directory where all applications should write temporary files.
-Overridden by <strong>MAGICK_TMPDIR</strong> if it is set.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    TMP <i>or TEMP</i>
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For Microsoft Windows, the path to the directory where applications
-should write temporary files. Overridden by <strong>MAGICK_TMPDIR</strong> if it
-is set.</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    OMP_NUM_THREADS
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>As per the OpenMP standard, this specifies the number of threads to
-use in parallel regions. Some compilers default the number of threads to
-use to the number of processor cores available while others default to
-just one thread. See the OpenMP specification for other standard
-adjustments and your compiler's manual for vendor-specific settings.</td></tr></table>
-</td></tr></table>
-     <p>
-<i><a href="#top">Back to Contents</a></i> 
-&nbsp;</p>
-<table BORDER=0 WIDTH="100%"> 
-<tr> 
-<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
-SRC="images/right_triangle.png"  ALT=">" BORDER=0 
-height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#00B04F"><font size="+1">
-<a NAME="mont-file"></a>Configuration Files
-</font></font></font></b></td></tr></table>
-<table width="94%" border="0" cellspacing="0" cellpadding="8">
-<tr><td width="3%"><br></td><td>
-<p>GraphicsMagick uses a number of XML format configuration files:
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    colors.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors configuration file</td></tr></table>
-<pre>
-  &lt;?xml version="1.0"?&gt;
-  &lt;colormap&gt;
-    &lt;color name="AliceBlue" red="240" green="248" blue="255"
-           compliance="SVG, X11, XPM" /&gt;
-  &lt;/colormap&gt;
-</pre>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    delegates.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>delegates configuration file</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    log.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>logging configuration file</td></tr></table>
-<pre>
-  &lt;?xml version="1.0"?&gt;
-  &lt;magicklog&gt;
-    &lt;log events="None" /&gt;
-    &lt;log output="stdout" /&gt;
-    &lt;log filename="Magick-%d.log" /&gt;
-    &lt;log generations="3" /&gt;
-    &lt;log limit="2000" /&gt;
-    &lt;log format="%t %r %u %p %m/%f/%l/%d:\n  %e"  /&gt;
-  &lt;/magicklog&gt;
-</pre>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    modules.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>loadable modules configuration file</td></tr></table>
-<pre>
-  &lt;?xml version="1.0"?&gt;
-  &lt;modulemap&gt;
-    &lt;module magick="8BIM" name="META" /&gt;
-  &lt;/modulemap&gt;
-</pre>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#FFFFFF">
-<img SRC="images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#00B04F"><font size="+1">
-    type.mgk
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>master type (fonts) configuration file</td></tr></table>
-<pre>
-  &lt;?xml version="1.0"?&gt;
-  &lt;typemap&gt;
-    &lt;<strong></strong>include file="type-windows.mgk" /&gt;
-    &lt;type
-      name="AvantGarde-Book"
-      fullname="AvantGarde Book"
-      family="AvantGarde"
-      foundry="URW"
-      weight="400"
-      style="normal"
-      stretch="normal"
-      format="type1"
-      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
-      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
-    /&gt;
-  &lt;/typemap&gt;
-</pre>
-</td></tr></table>
-     <p>
-<i><a href="#top">Back to Contents</a></i> 
-&nbsp;</p>
-<table BORDER=0 WIDTH="100%"> 
-<tr> 
-<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
-SRC="images/right_triangle.png"  ALT=">" BORDER=0 
-height=14 width=15><b><font face="Helvetica, Arial"><font 
-color="#00B04F"><font size="+1">
-<a NAME="mont-ackn"></a>Acknowledgements
-</font></font></font></b></td></tr></table>
-<table width="94%" border="0" cellspacing="0" cellpadding="8">
-<tr><td width="3%"><br></td><td>
-<p>
-The <strong>MIT X Consortium</strong> for making network transparent graphics a reality.
 <br>&nbsp;<br>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="time"></a>gm time
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="time-desc"></a>Description
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
 <p>
-<em>Michael Halle</em>, <strong>Spatial Imaging Group at MIT</strong>, for the initial
-implementation of Alan Paeth's image rotation algorithm.
-<br>&nbsp;<br>
-<p>
-<em>David Pensak</em>, <strong>E. I. du Pont de Nemours and Company</strong>, for
-providing a computing environment that made this program possible.
-<br>&nbsp;<br>
-<p>
-<em>Peder Langlo</em>, <strong>Hewlett Packard</strong>, Norway, made hundreds of suggestions
-and bug reports. Without Peder, this software would not be nearly
-as useful as it is today.
-<p>
-<em>Rod Bogart</em> and <em>John W. Peterson</em>, <strong>University of Utah</strong>.
-Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
-<p>
-<em>Paul Heckbert</em>, <strong>Carnegie Mellon University</strong>. Image resizing is
-based on his Zoom program.
-<p>
-<em>Paul Raveling</em>, <strong>USC Information Sciences Institute</strong>. The
-spatial subdivision color reduction algorithm is based on his Img software.
+<strong>time</strong> executes an arbitrary <strong>gm</strong> utility command
+(e.g. <strong>convert</strong>) and reports the user and elapsed time.  This
+provides way to measure command execution times similar to the Unix
+'time' command but in a portable and consistent way.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -17161,50 +17180,134 @@ spatial subdivision color reduction algorithm is based on his Img software.
 SRC="images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#00B04F"><font size="+1">
-<a NAME="copy"></a>Copyright
+<a NAME="time-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
-<p>
-<strong>Copyright (C) 2002 - 2010 GraphicsMagick Group, an organization
-dedicated to making software imaging solutions freely available.</strong>
-<p>
-<strong>Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files
-("GraphicsMagick"), to deal in GraphicsMagick without restriction,
-including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
-and to permit persons to whom GraphicsMagick is furnished to do so,
-subject to the following conditions:</strong>
-<p>
-<strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of GraphicsMagick.</strong>
-<p>
-<strong>The software is provided "as is", without warranty of any kind,
-express or implied, including but not limited to the warranties of
-merchantability, fitness for a particular purpose and noninfringement.
-In no event shall GraphicsMagick Group be liable for any claim, damages
-or other liability, whether in an action of contract, tort or otherwise,
-arising from, out of or in connection with GraphicsMagick or the use or
-other dealings in GraphicsMagick.</strong>
-<p>
-<strong>Except as contained in this notice, the name of the GraphicsMagick
-Group shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in GraphicsMagick without prior written
-authorization from the GraphicsMagick Group.</strong>
-<p>
-<strong>Additional copyrights and licenses apply to this software. You should
-have received a copy of Copyright.txt with this package, which describes
-additional copyrights and licenses which apply to this software;
-otherwise see http://www.graphicsmagick.org/Copyright.html.</strong>
+<p>To obtain time information for the execution of a
+command:
+<pre>
+% gm time convert input.ppm -gaussian 0x2 output.ppm
+convert input.ppm -gaussian 0x2 output.ppm    22.60s user 0.00s system 2354% cpu 0.960 total
+</pre>
+<p>Here is the interpretation of the above output:
+<ul>
+<li><strong>user</strong> - the total user time consumed.
+<li><strong>system</strong> - the total system time consumed.
+<li><strong>total</strong> - the total elapsed time consumed.
+</ul>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
-<HR>
-
-[<a href="index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
-<BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2011</a></p></td>
-</tr></table>
-</body></html>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="time-opti"></a>Options
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>The time command reqires no options other than the gm command to
+execute.
+</td></tr></table>
+</td></tr></table>
+<br>&nbsp;<br>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="version"></a>gm version
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="version-desc"></a>Description
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>
+<strong>version</strong> displays the software release version, build quantum
+(pixel sample) depth, web site URL, copyright notice, enabled features
+support, configuration parameters, and final build options used to
+build the software.  The available information depends on how the
+software was configured and the host system.
+</td></tr></table>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="version-exam"></a>Examples
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>To display the version information:
+<pre>
+  % gm -version
+  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2012 GraphicsMagick Group.
+  Additional copyrights and licenses apply to this software.
+  See http://www.GraphicsMagick.org/www/Copyright.html for details.
+  Feature Support:
+    Thread Safe              yes
+    Large Files (&gt; 32 bit)   yes
+    Large Memory (&gt; 32 bit)  no
+    BZIP                     yes
+    DPS                      no
+    FlashPix                 no
+    FreeType                 yes
+    Ghostscript (Library)    no
+    JBIG                     no
+    JPEG-2000                yes
+    JPEG                     yes
+    Little CMS               yes
+    Loadable Modules         no
+    OpenMP                   yes (201107)
+    PNG                      yes
+    TIFF                     yes
+    TRIO                     no
+    UMEM                     no
+    WMF                      no
+    X11                      yes
+    XML                      yes
+    ZLIB                     yes
+  Host type: i386-pc-solaris2.11
+  Configured using the command:
+    ./configure  ...
+  Final Build Parameters:
+    CC       = ...
+    CFLAGS   = ...
+    CPPFLAGS = ...
+    CXX      = ...
+    CXXFLAGS = ...
+    LDFLAGS  = ...
+    LIBS     = ...
+</pre>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#FFFFFF"><img 
+SRC="images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#00B04F"><font size="+1">
+<a NAME="version-opti"></a>Options
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>The version command does not currently support any options.
+</td></tr></table>
+</td></tr></table>

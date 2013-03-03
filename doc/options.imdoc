@@ -30,7 +30,7 @@
 
 <utils apps=all>
 <p>
-This is a combined list of the commandline options used by the
+This is a combined list of the command-line options used by the
 GraphicsMagick utilities (<i>animate</i>, <i>compare</i>,
 <i>composite</i>, <i>convert</i>, <i>display</i>, <i>identify</i>,
 <i>import</i>, <i>mogrify</i> and <i>montage</i>).
@@ -3255,6 +3255,16 @@ execution return status.</pp>
 
 
 
+<!-- ------------ -metric ------------------------------------------- -->
+
+<utils apps=compare>
+<opt>-metric <metric></opt>
+
+<abs>comparison metric (MAE, MSE, PAE, PSNR, RMSE)</abs>
+
+</utils>
+
+
 
 <!-- ------------ -minify ------------------------------------------ -->
 
@@ -3622,6 +3632,7 @@ to the argument, then the argument has a range of 0 to 100 percent.</pp>
 <pp>
 The following is a description of the operators:</pp>
 <dl>
+
 <dt>Add</dt>
 <dd>Result is rvalue added to channel value.
 </dd>

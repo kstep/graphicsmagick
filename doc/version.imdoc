@@ -1,0 +1,136 @@
+<imdoc>
+<title>Version</title>
+<gm>
+<sect NAME="version">gm version
+</gm>
+<im>
+<sect NAME="version-top">NAME
+version - display software version, feature, and build information
+</sect>
+<format type=html>
+<sect NAME="version-contents">Contents
+
+<dl>
+<dt>
+<a href="#version-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#version-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#version-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#version-opti">Options</a>
+</dt>
+
+</dl>
+</format>
+</sect>
+
+<sect NAME="version-syno">Synopsis
+
+<p>
+<s>gm version</s></p>
+
+</sect>
+
+</im>
+
+<sect NAME="version-desc">Description
+<p>
+
+<s>version</s> displays the software release version, build quantum
+(pixel sample) depth, web site URL, copyright notice, enabled features
+support, configuration parameters, and final build options used to
+build the software.  The available information depends on how the
+software was configured and the host system.</p>
+
+</sect>
+
+<sect NAME="version-exam">Examples
+
+<p>To display the version information:</p>
+
+<pre>
+  % gm -version
+  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2012 GraphicsMagick Group.
+  Additional copyrights and licenses apply to this software.
+  See http://www.GraphicsMagick.org/www/Copyright.html for details.
+  
+  Feature Support:
+    Thread Safe              yes
+    Large Files (> 32 bit)   yes
+    Large Memory (> 32 bit)  no
+    BZIP                     yes
+    DPS                      no
+    FlashPix                 no
+    FreeType                 yes
+    Ghostscript (Library)    no
+    JBIG                     no
+    JPEG-2000                yes
+    JPEG                     yes
+    Little CMS               yes
+    Loadable Modules         no
+    OpenMP                   yes (201107)
+    PNG                      yes
+    TIFF                     yes
+    TRIO                     no
+    UMEM                     no
+    WMF                      no
+    X11                      yes
+    XML                      yes
+    ZLIB                     yes
+  
+  Host type: i386-pc-solaris2.11
+  
+  Configured using the command:
+    ./configure  ...
+  
+  Final Build Parameters:
+    CC       = ...
+    CFLAGS   = ...
+    CPPFLAGS = ...
+    CXX      = ...
+    CXXFLAGS = ...
+    LDFLAGS  = ...
+    LIBS     = ...
+
+</pre>
+
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="version-opti">Options
+
+<p>The version command does not currently support any options.</p>
+
+</sect>
+<im>
+<back>
+
+<format type=man>
+<sect NAME="version-also">SEE ALSO
+<p>
+GraphicsMagick(1),
+animate(1),
+compare(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
+</p>
+</sect>
+</format>
+</im>
+</sect>
+</imdoc>

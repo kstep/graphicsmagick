@@ -1,0 +1,104 @@
+<imdoc>
+<title>Time</title>
+<gm>
+<sect NAME="time">gm time
+</gm>
+<im>
+<sect NAME="time-top">NAME
+time - time the execution of a gm command
+</sect>
+<format type=html>
+<sect NAME="time-contents">Contents
+
+<dl>
+<dt>
+<a href="#time-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#time-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#time-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#time-opti">Options</a>
+</dt>
+
+</dl>
+</format>
+</sect>
+
+<sect NAME="time-syno">Synopsis
+
+<p>
+<s>gm time</s> <i>command</i></p>
+
+</sect>
+
+</im>
+
+<sect NAME="time-desc">Description
+<p>
+
+<s>time</s> executes an arbitrary <s>gm</s> utility command
+(e.g. <s>convert</s>) and reports the user and elapsed time.  This
+provides way to measure command execution times similar to the Unix
+'time' command but in a portable and consistent way.</p>
+
+</sect>
+
+<sect NAME="time-exam">Examples
+
+<p>To obtain time information for the execution of a
+command:</p>
+
+<pre>
+% gm time convert input.ppm -gaussian 0x2 output.ppm
+convert input.ppm -gaussian 0x2 output.ppm    22.60s user 0.00s system 2354% cpu 0.960 total
+</pre>
+
+
+<p>Here is the interpretation of the above output:</p>
+
+<ul>
+<li><s>user</s> - the total user time consumed.</li>
+<li><s>system</s> - the total system time consumed.</li>
+<li><s>total</s> - the total elapsed time consumed.</li>
+</ul>
+
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="time-opti">Options
+
+<p>The time command reqires no options other than the gm command to
+execute.</p>
+
+</sect>
+<im>
+<back>
+
+<format type=man>
+<sect NAME="time-also">SEE ALSO
+<p>
+GraphicsMagick(1),
+animate(1),
+compare(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
+</p>
+</sect>
+</format>
+</im>
+</sect>
+</imdoc>

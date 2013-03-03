@@ -34,21 +34,6 @@ montage - create a composite image by combining several separate images
 <a href="#mont-xres">X Resources</a>
 </dt>
 
-<dt>
-<a href="#mont-envi">Environment</a>
-</dt>
-
-<dt>
-<a href="#mont-file">Configuration File</a>
-</dt>
-
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </sect>
 </format>
@@ -338,54 +323,7 @@ image. The default is not to place a title at the top of the composite
 image.</p>
 
 </sect>
-<back>
 
-<sect NAME="mont-envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="mont-file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
-
-<sect NAME="mont-ackn">Acknowledgements
-
-<p>
-The <s>MIT X Consortium</s> for making network transparent graphics a reality.
-</p>
-
-<p>
-<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
-implementation of Alan Paeth's image rotation algorithm.
-</p>
-
-<p>
-<i>David Pensak</i>, <s>E. I. du Pont de Nemours and Company</s>, for
-providing a computing environment that made this program possible.
-</p>
-
-<gm>
-<p>
-<i>Peder Langlo</i>, <s>Hewlett Packard</s>, Norway, made hundreds of suggestions
-and bug reports. Without Peder, this software would not be nearly
-as useful as it is today.</p>
-
-<p>
-<i>Rod Bogart</i> and <i>John W. Peterson</i>, <s>University of Utah</s>.
-Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.</p>
-
-<p>
-<i>Paul Heckbert</i>, <s>Carnegie Mellon University</s>. Image resizing is
-based on his Zoom program.</p>
-
-<p>
-<i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>. The
-spatial subdivision color reduction algorithm is based on his Img software.</p>
-</gm>
-
-</sect>
 <im>
 <format type=man>
 <sect NAME="mont-also">See also
@@ -406,7 +344,6 @@ mogrify(1)
 <back>
 </im>
 <gm>
-<include file=copyright.imdoc>
 </gm>
 </utils>
 </imdoc>

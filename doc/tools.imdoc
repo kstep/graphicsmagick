@@ -42,3 +42,18 @@ and/or creates an annotated difference image.</p>
 <s>Conjure</s> interprets and executes scripts in
 the Magick Scripting Language (MSL).</p>
 
+<p>
+<s>Batch</s> executes an arbitary number of the utility commands
+(e.g. <s>convert</s>) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process to an arbitrary script or program.</p>
+
+<p>
+<s>Benchmark</s> executes one of the other utility commands
+(e.g. <s>convert</s>) for a specified number of iterations, or
+execution time, and reports execution time and other profiling
+information such as CPU utilization. <s>Benchmark</s> provides various
+operating modes including executing the command with varying number of
+threads, and alternate output formats such as comma-separated value
+(CSV).</p>
+
