@@ -334,7 +334,6 @@ The latter can appear after the final group of input images.</p>
 </sect>
 <back>
 
-<im>
 <sect NAME="envi">Environment
 <include file=environment.imdoc>
 </sect>
@@ -345,6 +344,7 @@ The latter can appear after the final group of input images.</p>
 </sect>
 <back>
 
+<im>
 <format type=man>
 <sect NAME="also">SEE ALSO
 <p>
@@ -354,7 +354,7 @@ montage(1), mogrify(1), composite(1)
 </p>
 </sect>
 </format>
-<include file=copyright.imdoc>
 </im>
+<include file=copyright.imdoc>
 </utils>
 </imdoc>
