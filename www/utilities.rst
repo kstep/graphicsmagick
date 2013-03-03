@@ -20,10 +20,11 @@ GraphicsMagick Utilities
               Magick++
 
 
-.. _programming : programming.html
 .. _animate : animate.html
-.. _composite : composite.html
+.. _batch: batch.html
+.. _benchmark: benchmark.html
 .. _compare : compare.html
+.. _composite : composite.html
 .. _conjure : conjure.html
 .. _convert : convert.html
 .. _display : display.html
@@ -31,6 +32,9 @@ GraphicsMagick Utilities
 .. _import : import.html
 .. _mogrify : mogrify.html
 .. _montage : montage.html
+.. _programming : programming.html
+.. _time: time.html
+.. _version: version.html
 
 
 GraphicsMagick provides a powerful command line utility `gm`, which
@@ -43,15 +47,19 @@ commands are as follows:
 
 ===============  =========================================================================
 animate_         Animate a sequence of images
+batch_           Executes an arbitary number of utility commands
+benchmark_       Measure and report utility command performance.
+compare_         Compare two images using statistics and/or visual differencing
 composite_       Composite images together
 conjure_         Execute a Magick Scripting Language (MSL) XML script
-compare_         Compare two images using statistics and/or visual differencing
 convert_         Convert an image or sequence of images
 display_         Display an image on a workstation running X
 identify_        Describe an image or image sequence
 import_          Capture an application or X server screen
 mogrify_         Transform an image or sequence of images
 montage_         Create a composite image (in a grid) from separate images
+time_            Time the execution of a utility command.
+version_         Report GraphicsMagick version, features, and build options.
 ===============  =========================================================================
 
 --------------------------------------------------------------------------
