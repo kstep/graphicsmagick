@@ -76,11 +76,11 @@ ChangeLog file for full details.</p>
 <li>Due to <a class="reference external" href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967">GCC bug 53967</a>, several key agorithms (e.g. convolution)
 may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
 enabled for floating point math (<cite>-mfpmath=sse</cite>) if the GCC option
-<cite>-frename-registers</cite> is used. Default 32-builds do not experience
-the problem since they use '387 math.  It is not clear in what
-version of GCC this problem started but it was not noticed by the
-developers until the GCC 4.6 timeframe.  Other compilers do not
-suffer from this bug.</li>
+<cite>-frename-registers</cite> is used. Default 32-bit builds do not
+experience the problem since they use '387 math.  It is not clear
+in what version of GCC this problem started but it was not noticed
+by the developers until the GCC 4.6 timeframe.  Other compilers do
+not suffer from this bug.</li>
 </ul>
 </blockquote>
 <p>Security Fixes:</p>
