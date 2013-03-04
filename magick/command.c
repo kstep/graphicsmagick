@@ -7804,7 +7804,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("use_pixmap",option+1) == 0)
+        if ((LocaleCompare("use_pixmap",option+1) == 0) ||
+            (LocaleCompare("usePixmap",option+1) == 0))
           {
             resource_info.use_pixmap=(*option == '-');
             break;

@@ -12284,9 +12284,6 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
         SetErrorHandler(MagickXWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
-/*       (void) signal(SIGINT,MagickXSignalHandler); */
-/*       (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*       (void) signal(SIGTERM,MagickXSignalHandler); */
     }
   else
     {
@@ -12794,9 +12791,6 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
     }
-/*   (void) signal(SIGINT,MagickXSignalHandler); */
-/*   (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*   (void) signal(SIGTERM,MagickXSignalHandler); */
   /*
     Initialize Image and Magnify X images.
   */

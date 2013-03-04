@@ -1139,9 +1139,6 @@ MagickXAnimateImages(Display *display,
         SetErrorHandler(MagickXWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
-/*       (void) signal(SIGINT,MagickXSignalHandler); */
-/*       (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*       (void) signal(SIGTERM,MagickXSignalHandler); */
     }
   else
     {
@@ -1650,9 +1647,6 @@ MagickXAnimateImages(Display *display,
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
     }
-/*   (void) signal(SIGINT,MagickXSignalHandler); */
-/*   (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*   (void) signal(SIGTERM,MagickXSignalHandler); */
   /*
     Initialize X image structure.
   */

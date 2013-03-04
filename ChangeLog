@@ -1,3 +1,9 @@
+2013-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (DisplayImageCommand): display is supposed to
+	respond to +/-usePixmap, but was not.  It was responding to
+	+/-use_pixmap.  Now it responds to both.
+
 2013-03-03  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* doc/GraphicsMagick.imdoc: Relocated some <im> .. </im> tags, to
