@@ -1,18 +1,22 @@
-.TH gm 1 "2013/01/26" "GraphicsMagick"
+.TH gm 1 "2013/03/03" "GraphicsMagick"
 .TP
 .in 15
 .in 15
 .in 20
 .SH NAME
 
-gm - GraphicsMagick command-line utilities to create, edit, or convert images
+gm - command-line utility to create, edit, compare, convert, or display images
 
 .SH SYNOPSIS
 
 \fBgm animate\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP
 
-\fBcompare\fP \fB[\fP \fIoptions\fP \fB... ]\fP \fIreference-image\fP
+\fBgm batch\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fB[\fP \fIscript\fP \fB]\fP
+
+\fBgm benchmark\fP \fB[\fP \fIoptions ...\fP \fB]\fP subcommand
+
+\fBgm compare\fP \fB[\fP \fIoptions\fP \fB... ]\fP \fIreference-image\fP
 \fB[\fP \fIoptions\fP \fB... ]\fP \fIcompare-image\fP
 \fB[\fP \fIoptions\fP \fB... ]\fP
 
@@ -36,50 +40,87 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 \fBgm montage\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP \fIoutput-file\fP
+
+\fBgm time\fP subcommand
+
+\fBgm version\fP
 .SH DESCRIPTION
- GraphicsMagick's \fBgm\fP provides a suite of command-line
-utilities for creating, converting, editing, and displaying
-images:
+ GraphicsMagick's \fBgm\fP provides a suite of utilities for
+creating, comparing, converting, editing, and displaying images.  All
+of the utilities are provided as sub-commands of a single \fBgm\fP
+executable:
 
-\fBGm display\fP
-is a machine architecture independent
-image processing and display facility. It can display an image on any workstation
-display running an \fIX\fP server.
+\fBanimate\fP
+displays an animation (e.g. a GIF file) on any workstation display
+running an \fIX\fP server.
 
-\fBGm import\fP
-reads an image from any visible window
-on an \fIX\fP server and outputs it as an image file. You can capture
-a single window, the entire screen, or any rectangular portion of the screen.
+\fBbatch\fP
+executes an arbitary number of the utility commands
+(e.g. \fBconvert\fP) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.
 
-\fBGm montage\fP
-creates a composite by combining several
-separate images. The images are tiled on the composite image with the name
-of the image optionally appearing just below the individual tile.
+\fBbenchmark\fP
+executes one of the other utility commands (e.g. \fBconvert\fP) for a
+specified number of iterations, or execution time, and reports
+execution time and other profiling information such as CPU
+utilization. \fBBenchmark\fP provides various operating modes
+including executing the command with a varying number of threads, and
+alternate reporting formats such as comma-separated value (CSV).
 
-\fBGm convert\fP
-converts an input file using one image
-format to an output file with the same or differing image format while applying
-an arbitrary number of image transformations.
+\fBcompare\fP
+compares two images and reports difference statistics according to
+specified metrics and/or outputs an image with a visual representation
+of the differences.  It may also be used to test if images are similar
+within a particular range and specified metric, returning a truth
+value to the executing environment.
 
-\fBGm mogrify\fP
-transforms an image or a sequence of
-images. These transforms include \fBimage scaling\fP, \fBimage rotation\fP,
-\fBcolor
-reduction\fP, and others. The transmogrified image
-\fBoverwrites\fP the
-original image.
-
-\fBGm identify\fP
-describes the format and characteristics
-of one or more image files. It will also report if an image is incomplete
-or corrupt.
-
-\fBGm composite\fP
+\fBcomposite\fP
 composites images (blends or merges images together) to create new images.
 
-\fBGm conjure\fP
+\fBconjure\fP
 interprets and executes scripts in
 the Magick Scripting Language (MSL).
+
+\fBconvert\fP
+converts an input file using one image format to an output file with
+the same or differing image format while applying an arbitrary number
+of image transformations.
+
+\fBdisplay\fP
+is a machine architecture independent image processing and display
+facility. It can display an image on any workstation display running
+an \fIX\fP server.
+
+\fBidentify\fP
+describes the format and characteristics of one or more image
+files. It will also report if an image is incomplete or corrupt.
+
+\fBimport\fP
+reads an image from any visible window on an \fIX\fP server and
+outputs it as an image file. You can capture a single window, the
+entire screen, or any rectangular portion of the screen.
+
+\fBmogrify\fP
+transforms an image or a sequence of images. These transforms include
+\fBimage scaling\fP, \fBimage rotation\fP, \fBcolor reduction\fP,
+and others. The transmogrified image \fBoverwrites\fP the original
+image.
+
+\fBmontage\fP
+creates a composite by combining several separate images. The images
+are tiled on the composite image with the name of the image optionally
+appearing just below the individual tile.
+
+\fBtime\fP
+executes a subcommand and reports the user, system, and total
+execution time consumed.
+
+\fBversion\fP
+reports the GraphicsMagick release version, maximum sample-depth,
+copyright notice, supported features, and the options used while
+building the software.
 
 The \fBGraphicsMagick\fP utilities recognize the following image formats:
 
@@ -285,25 +326,25 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
 
 
 \fISupport for some of these formats require additional programs or libraries.
-README
-tells where to find this software\fP.
+See README
+in the source package for where to find optional additional software\fP.
 
 Note, a format delineated with + means that if more than one
-image is specified, it is composited into a single multi-image file. Use
-\fB+adjoin\fP
-if you want a single image produced for each frame.
+image is specified, frames are combined into a single multi-image
+file. Use \fB+adjoin\fP if you want a single image produced for each
+frame.
 
-Your installation might not support all of the formats in the list.  To get
-an up-to-date listing of the formats supported by your particular
-configuration, run "convert -list format".
+Your installation might not support all of the formats in the list.
+To get an accurate listing of the formats supported by your particular
+configuration, run "gm convert -list format".
 
-Raw images are expected to have one byte per pixel unless \fBgm\fP
-is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
-is expected to be stored two or four
-bytes per pixel, respectively, in most-significant-byte-first order.
-You can tell if \fBgm\fP was compiled in 16-bit mode by typing
-"gm version" without any options, and looking for "Q:16" in the first line of
-output.
+Raw images are expected to have one byte per pixel unless \fBgm\fP is
+compiled in 16-bit quantum mode or in 32-bit quantum mode. Here, the
+raw data is expected to be stored two or four bytes per pixel,
+respectively, in most-significant-byte-first order.  For example, you
+can tell if \fBgm\fP was compiled in 16-bit mode by typing "gm
+version" without any options, and looking for "Q:16" in the first line
+of output.
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the
@@ -364,6 +405,7 @@ option. For example,
 
     image%02d.miff
 
+
 writes files \fIimage00.miff, image01.miff,\fP etc. Only a single
 specification is allowed within an output filename. If more than one
 specification is present, it will be ignored. It is best to embed the
@@ -382,7 +424,7 @@ until the set is terminated by the appearance of any option or \fB-noop\fP.
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 
-This is a combined list of the commandline options used by the
+This is a combined list of the command-line options used by the
 GraphicsMagick utilities (\fIanimate\fP, \fIcompare\fP,
 \fIcomposite\fP, \fIconvert\fP, \fIdisplay\fP, \fIidentify\fP,
 \fIimport\fP, \fImogrify\fP and \fImontage\fP).
@@ -408,6 +450,7 @@ include a printf style formatting specification for the numeric part
 of the filename.  For example,
 
     image%02d.miff
+
 .TP
 .B "-affine \fI<matrix>"\fP
 \fRdrawing transform matrix
@@ -453,6 +496,7 @@ The argument string is comma delimited and is in the following form
   greenslope,greenoffset,greenpower:
   blueslope,blueoffset,bluepower:
   saturation
+
 
 with the unity (no change) specification being:
 "1.0,0.0,1.0:1.0,0.0,1.0:1.0,0.0,1.0:1.0"
@@ -585,6 +629,7 @@ For example, if you type the following command:
 
     gm convert -clip -negate cockatoo.tif negated.tif
 
+
 only the pixels within the clipping path are negated.
 
 The \fB-clip\fP feature requires the XML library.  If the XML library
@@ -613,6 +658,7 @@ to produce a nice sepia toned image like:
 
     gm convert input.ppm -modulate 115,0,100 \\
               -colorize 7,21,50 output.ppm.
+
 .TP
 .B "-colormap \fI<type>"\fP
 \fRdefine the colormap type
@@ -695,6 +741,7 @@ For example,
 
      -comment "%m:%f %wx%h"
 
+
 produces an image comment of \fBMIFF:bird.miff 512x480\fP for an image
 titled \fBbird.miff\fP and whose width is 512 and height is 480.
 
@@ -757,6 +804,7 @@ composite operators are available:
      CopyMagenta
      CopyYellow
      CopyBlack
+
 
 The behavior of each operator is described below.
 .in 15
@@ -1016,6 +1064,7 @@ or \fB+contrast\fP to reduce the image contrast.
 For a more pronounced effect you can repeat the option:
 
     gm convert rose: -contrast -contrast rose_c2.png
+
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
@@ -1083,6 +1132,7 @@ Transform, Warning, X11, or User.
 For example, to log cache and blob events, use
 
     gm convert -debug "Cache,Blob" rose: rose.png
+
 
 The "User" domain is normally empty, but developers can log "User" events
 in their private copy of GraphicsMagick.
@@ -1479,6 +1529,7 @@ For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:
 
     gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+
 .TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
@@ -1571,6 +1622,7 @@ Here are the valid methods:
     Previous        Overwrite the image area with
                     what was there prior to rendering
                     the image.
+
 .TP
 .B "-dissolve \fI<percent>"\fP
 \fRdissolve an image into another by the given percent
@@ -1613,14 +1665,17 @@ and pixel operations.  The shape primitives are
      path            path specification
      image           operator x0,y0 w,h filename
 
+
 The text primitive is
 
      text            x0,y0 string
+
 
 The text gravity primitive is
 
      gravity         NorthWest, North, NorthEast, West, Center,
                      East, SouthWest, South, or SouthEast
+
 
 The text gravity primitive only affects the placement of text and
 does not interact with the other primitives.  It is equivalent to
@@ -1635,10 +1690,12 @@ The transformation primitives are
      skewX           degrees
      skewY           degrees
 
+
 The pixel operation primitives are
 
      color           x0,y0 method
      matte           x0,y0 method
+
 
 The shape primitives are drawn in the color specified in the preceding
 \fB-stroke\fP option. Except for the \fBline\fP and \fBpoint\fP
@@ -1674,6 +1731,7 @@ that extends to 150,150 use:
 
      -draw 'circle 100,100 150,150'
 
+
 \fBPaths\fP
 (See Paths)
 represent an outline of an object which is defined in terms of
@@ -1691,6 +1749,7 @@ and filename:
 
      -draw 'image Over 100,100 225,225 image.jpg'
 
+
 You can use 0,0 for the image size, which means to use the actual
 dimensions found in the image header. Otherwise, it will
 be scaled to the given dimensions.
@@ -1706,6 +1765,7 @@ For example,
 
 
      -draw 'text 100,100 "%m:%f %wx%h"'
+
 
 annotates the image with MIFF:bird.miff 512x480 for an image titled
 bird.miff
@@ -1743,6 +1803,7 @@ with a method:
      floodfill
      filltoborder
      reset
+
 
 Consider the target pixel as that specified by your coordinate. The
 \fBpoint\fP
@@ -1816,6 +1877,7 @@ it on a red color backdrop image:
     gm convert infile.jpg -thumbnail 120x80 -background red -gravity center \\
               -extent 140x100 outfile.jpg
 
+
 This command reduces or expands a JPEG image to fit on an 800x600
 display: 
 
@@ -1825,6 +1887,7 @@ display:
               -compose Copy -gravity center \\
               -extent 800x600 \\
               -quality 92 output.jpg
+
 
 If the aspect ratio of the input image isn't exactly 4:3, then the
 image is centered on an 800x600 black canvas. 
@@ -1859,6 +1922,7 @@ Colors are represented in GraphicsMagick in the same form used by SVG. Use "gm c
     rgb(r,g,b)         (r,g,b are decimal numbers)
     rgba(r,g,b,a)      (r,g,b,a are decimal numbers)
 
+
 Enclose the color specification in quotation marks to prevent the "#"
 or the parentheses from being interpreted by your shell.
 
@@ -1867,6 +1931,7 @@ For example,
     gm convert -fill blue ...
     gm convert -fill "#ddddff" ...
     gm convert -fill "rgb(65000,65000,65535)" ...
+
 
 The shorter forms are scaled up, if necessary by replication.  For example, 
 #3af, #33aaff, and #3333aaaaffff are all equivalent.
@@ -1896,6 +1961,7 @@ time):
      Lanczos
      Bessel
      Sinc
+
 
 The default filter is automatically selected to provide the best quality
 while consuming a reasonable amount of time. The \fBMitchell\fP filter
@@ -1927,9 +1993,11 @@ black canvas image:
               -compose over -page +0-100 \\
               frame.png -flatten output.png
 
+
 and this flattens a Photoshop PSD file:
 
     gm convert input.psd -flatten output.png
+
 
 
 .TP
@@ -2006,9 +2074,11 @@ characters:
      \\n   newline
      \\r   carriage return
 
+
 For example,
 
      -format "%m:%f %wx%h"
+
 
 displays \fBMIFF:bird.miff 512x480\fP for an image
 titled \fBbird.miff\fP and whose width is 512 and height is 480.
@@ -2029,10 +2099,12 @@ The values of image type (\fB%p\fP) which may be returned include:
      ColorSeparationMatte
      Optimize
 
+
 You can also use the following special formatting syntax to print Exif
 information contained in the file:
 
      %[EXIF:<tag>]
+
 
 Where "<tag>" can be one of the following:
 
@@ -2121,6 +2193,7 @@ Where "<tag>" can be one of the following:
      SensingMethod
      FileSource
      SceneType
+
 
 Surround the format specification with quotation marks to prevent your shell
 from misinterpreting any spaces and square brackets.
@@ -2402,6 +2475,7 @@ For example,
 
      -label "%m:%f %wx%h"
 
+
 produces an image label of \fBMIFF:bird.miff 512x480\fP for an image titled
 \fBbird.miff\fP
 and whose width is 512 and height is 480.
@@ -2433,6 +2507,7 @@ sensitive to pixel quantum depth.
 For example,
 
      -colorspace gray -lat "10x10-5%"
+
 
 will help clarify a scanned grayscale or color document, producing a
 bi-level equivalent.
@@ -2526,9 +2601,11 @@ special format characters:
      \\n   newline
      \\r   carriage return
 
+
 For example:
 
     gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
+
 
 The default behavior is to print all of the components.
 .TP
@@ -2580,6 +2657,7 @@ Choose from these \fIStandard Colormap\fP types:
      green
      blue
 
+
 The \fIX server\fP must support the \fIStandard Colormap\fP you choose,
 otherwise an error occurs. Use \fBlist\fP as the type and \fBdisplay\fP
 searches the list of colormap types in \fBtop-to-bottom\fP order until
@@ -2626,6 +2704,9 @@ execution return status.
 .TP
 .B "-median \fI<radius>"\fP
 \fRapply a median filter to the image
+.TP
+.B "-metric \fI<metric>"\fP
+\fRcomparison metric (MAE, MSE, PAE, PSNR, RMSE)
 .TP
 .B "-minify \fI<factor>"\fP
 \fRminify the image
@@ -2713,6 +2794,7 @@ canvas image at specified offsets:
               -compose CopyGreen -page +0+40  green.png \\
               -compose CopyBlue  -page +0+180 blue.png \\
               -mosaic output.png
+
 .TP
 .B "-motion-blur \fI<radius>{x<sigma>}{+angle}"\fP
 \fRSimulate motion blur
@@ -2758,6 +2840,7 @@ noise types:
      Laplacian
      Poisson
      Random (uniform distribution)
+
 .TP
 .B "-noop"
 \fRNOOP (no option)
@@ -3082,10 +3165,12 @@ value:
 
     gm convert in.bmp -operator red assign "50%" out.bmp
 
+
 The following applies 50% thresholding to the image and returns a gray
 image:
 
     gm convert in.bmp -operator gray threshold "50%" out.bmp
+
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>"\fP
 \fRordered dither the image
@@ -3194,6 +3279,7 @@ page are:
      Flse          612   936
      HalfLetter    396   612
 
+
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, \fB-page\fP behaves much like
 \fB-geometry\fP (e.g.  -page letter+43+43>).
@@ -3300,6 +3386,7 @@ from these previews:
      CharcoalDrawing
      JPEG
 
+
 The default preview is \fBJPEG\fP.
 .TP
 .B "-process \fI<command>"\fP
@@ -3346,6 +3433,7 @@ in the \fIAPP1\fP profile), use
 
 
     gm convert cockatoo.jpg exifdata.app1
+
 Note that GraphicsMagick does not attempt to update any profile to
 reflect changes made to the image, e.g., rotation from portrait to landscape
 orientation, so it is possible that the preserved profile may contain
@@ -3398,6 +3486,7 @@ filter-type is 4 or less, the specified filter-type is used for all scanlines:
      2: up
      3: average
      4: Paeth
+
 
 If filter-type is 5, adaptive filtering is used when quality is greater
 than 50 and the image does not have a color map, otherwise no filtering
@@ -3489,10 +3578,12 @@ Identity matrix of order 3
   0 1 0
   0 0 1
 
+
 which may be formatted into a convenient matrix argument similar to
 (comma is treated as white space):
 
   -recolor "1 0 0, 0 1 0, 0 0 1"
+
 
 Identity matrix of order 4
 
@@ -3500,6 +3591,7 @@ Identity matrix of order 4
   0 1 0 0
   0 0 1 0
   0 0 0 1
+
 
 Identity matrix of order 5.  The last row is required to exist
 for the purpose of parsing, but is otherwise not used.
@@ -3510,6 +3602,7 @@ for the purpose of parsing, but is otherwise not used.
   0 0 0 1 0
   0 0 0 0 1
 
+
 As an example, an image wrongly in BGR channel order may be converted
 to RGB using this matrix (blue->red, red->blue):
 
@@ -3517,12 +3610,14 @@ to RGB using this matrix (blue->red, red->blue):
   0 1 0
   1 0 0
 
+
 and an RGB image using standard Rec.709 primaries may be converted
 to grayscale using this matrix of standard weighting factors:
 
   0.2126 0.7152 0.0722
   0.2126 0.7152 0.0722
   0.2126 0.7152 0.0722
+
 
 and contrast may be reduced by scaling down by 80% and adding a 10%
 offset:
@@ -3532,6 +3627,7 @@ offset:
   0.0 0.0 0.8 0.0 0.1
   0.0 0.0 0.0 0.8 0.1
   0.0 0.0 0.0 0.0 1.0
+
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -3697,9 +3793,11 @@ printf\fP format specification in the file name. For example,
 
     gm montage -scenes 5-7 image.miff montage.miff
 
+
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and
 
     gm animate -scenes 0-12 image%02d.miff
+
 
 animates files image00.miff, image01.miff, through image12.miff.
 .TP
@@ -3806,6 +3904,7 @@ For Photo CD images, choose from these sizes:
      1536x1024
      3072x2048
 
+
 Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 .TP
@@ -3896,6 +3995,7 @@ To efficiently create a black and white image from a color image, use
 
     gm convert -threshold 50% in.png out.png
 
+
 The optimum threshold value depends on the nature of the image.
 In order to threshold individual channels, use the \fB-operator\fP
 subcommand with it's \fBThreshold\fP, \fBThreshold-White\fP, or
@@ -3932,6 +4032,7 @@ For example,
 
      -title "%m:%f %wx%h"
 
+
 produces an image title of MIFF:bird.miff 512x480 for an image
 titled bird.miff and whose width is 512 and height is 480.
 .TP
@@ -3942,6 +4043,7 @@ This option applies the transformation matrix from a previous
 \fB-affine\fP option.
 
     gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -4002,6 +4104,7 @@ are present, use
 
     gm convert bird.pgm -type TrueColor bird.jpg
 
+
 Similarly, using -type TrueColorMatte will force the encoder to
 write an alpha channel even though the image is opaque, if the output
 format supports transparency.
@@ -4011,6 +4114,7 @@ type if it occurs previously on the command line.  For example, to obtain
 a DirectClass solid color canvas image rather than PsuedoClass, use
 
     gm convert -size 640x480 -type TrueColor xc:red red.miff
+
 
 Likewise, specify \fB-type\fP \fBBilevel\fP, \fBGrayscale\fP,
 \fBTrueColor\fP, or \fBTrueColorMatte\fP prior to reading a Postscript
@@ -4177,6 +4281,7 @@ Choose from these visual classes:
      default
      visual id
 
+
 The X server must support the visual you choose, otherwise an error occurs.
 If a visual is not specified, the visual class that can display the most
 simultaneous colors on the default screen is chosen.
@@ -4234,6 +4339,7 @@ often as needed):
 
     gm convert input.jpg -resize 50% -write input50.jpg \\
               -resize 25% input25.jpg
+
 .TP
 .B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]
@@ -4257,14 +4363,194 @@ The equivalent X resource for this option is
 See
 "X Resources", below,
 for details.
+.SH ENVIRONMENT
+.TP
+.B "COLUMNS"
+\fROutput screen width. Used when formatting text for the screen. Many
+Unix systems keep this shell variable up to date, but it may need to be
+explicitly exported in order for GraphicsMagick to see it.
+.TP
+.B "DISPLAY"
+\fRX11 display ID (host, display number, and screen in the form
+hostname:display.screen).
+.TP
+.B "HOME"
+\fRLocation of user's home directory. GraphicsMagick searches for
+configuration files in $HOME/.magick if the directory exists. See
+\fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
+\fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
+.TP
+.B "MAGICK_CODER_STABILITY"
+\fRThe minimum coder stability level before it will be used. The
+available levels are \fBPRIMARY\fP, \fBSTABLE\fP, and \fBUNSTABLE\fP.
+The default minimum level is \fBUNSTABLE\fP, which means that all
+available coders will be used. The purpose of this option is to reduce
+the security exposure (or apparent complexity) due to the huge number of
+formats supported. Coders at the \fBPRIMARY\fP level are commonly used
+formats with very well maintained implementations. Coders at the
+\fBSTABLE\fP level are reasonably well maintained but represent less used
+formats. Coders at the \fBUNSTABLE\fP level either have weak
+implementations, the file format itself is weak, or the probability the
+coder will be needed is vanishingly small.
+.TP
+.B "MAGICK_CODER_MODULE_PATH"
+\fRSearch path to use when searching for image format coder modules.
+This path allows the user to arbitrarily extend the image formats
+supported by GraphicsMagick by adding loadable modules to an arbitrary
+location rather than copying them into the GraphicsMagick installation
+directory. The formatting of the search path is similar to operating
+system search paths (i.e. colon delimited for Unix, and semi-colon
+delimited for Microsoft Windows). This user specified search path is used
+before trying the default search path.
+.TP
+.B "MAGICK_CONFIGURE_PATH"
+\fRSearch path to use when searching for configuration (.mgk) files.
+The formatting of the search path is similar to operating system search
+paths (i.e. colon delimited for Unix, and semi-colon delimited for
+Microsoft Windows). This user specified search path is used before trying
+the default search path.
+.TP
+.B "MAGICK_DEBUG"
+\fRDebug options (see \fB-debug\fP for details)
+.TP
+.B "MAGICK_FILTER_MODULE_PATH"
+\fRSearch path to use when searching for filter process modules
+(invoked via \fB-process\fP). This path allows the user to arbitrarily
+extend GraphicsMagick's image processing functionality by adding loadable
+modules to an arbitrary location rather than copying them into the
+GraphicsMagick installation directory. The formatting of the search path
+is similar to operating system search paths (i.e. colon delimited for
+Unix, and semi-colon delimited for Microsoft Windows). This user
+specified search path is used before trying the default search path.
+.TP
+.B "MAGICK_HOME"
+\fRPath to top of GraphicsMagick installation directory. Only observed
+by "uninstalled" builds of GraphicsMagick which do not have their location
+hard-coded or set by an installer.
+.TP
+.B "MAGICK_MMAP_READ"
+\fRIf \fBMAGICK_MMAP_READ\fP is set to \fBTRUE\fP, GraphicsMagick
+will attempt to memory-map the input file for reading. This usually
+substantially improves read performance if the file has recently been
+read. However, testing shows that performance may be reduced for files
+accessed for the first time via a network since some operating systems
+failed to do read-ahead over network mounts for memory mapped files.
+.TP
+.B "MAGICK_IO_FSYNC"
+\fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick
+will request that the output file is fully flushed and synchronized to
+disk when it is closed. This incurs a performance penalty, but has the
+benefit that if the power fails or the system crashes, the file should be
+valid on disk. If image files are referenced from a database, then this
+option helps assure that the files referenced by the database are
+valid.
+.TP
+.B "MAGICK_IOBUF_SIZE"
+\fRThe amount of I/O buffering (in bytes) to use when reading and
+writing encoded files. The default is 16384, which is observed to work
+well for many cases. The best value for a local filesystem is usually the
+the native filesystem block size (e.g. 4096, 8192, or even 131,072 for
+ZFS) in order to minimize the number of physical disk I/O operations.
+I/O performance to files accessed over a network may benefit
+significantly by tuning this option. Larger values are not necessarily
+better (they may be slower!), and there is rarely any benefit from using
+values larger than 32768. Use convert's \fB-verbose\fP option in order
+to evaluate read and write rates in pixels per second while keeping in
+mind that the operating system will try to cache files in RAM.
+.TP
+.B "MAGICK_LIMIT_DISK"
+\fRMaximum amount of disk space allowed for use by the pixel cache.
+.TP
+.B "MAGICK_LIMIT_FILES"
+\fRMaximum number of open files.
+.TP
+.B "MAGICK_LIMIT_MAP"
+\fRMaximum size of a memory map.
+.TP
+.B "MAGICK_LIMIT_MEMORY"
+\fRMaximum amount of memory to allocate from the heap.
+.TP
+.B "MAGICK_TMPDIR"
+\fRPath to directory where GraphicsMagick should write temporary
+files. The default is to use the system default, or the location set by
+\fBTMPDIR\fP.
+.TP
+.B "TMPDIR"
+\fRFor POSIX-compatible systems (Unix-compatible), the path to the
+directory where all applications should write temporary files.
+Overridden by \fBMAGICK_TMPDIR\fP if it is set.
+.TP
+.B "TMP \fIor TEMP"\fP
+\fRFor Microsoft Windows, the path to the directory where applications
+should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
+is set.
+.TP
+.B "OMP_NUM_THREADS"
+\fRAs per the OpenMP standard, this specifies the number of threads to
+use in parallel regions. Some compilers default the number of threads to
+use to the number of processor cores available while others default to
+just one thread. See the OpenMP specification for other standard
+adjustments and your compiler's manual for vendor-specific settings.
+.SH CONFIGURATION FILES
+GraphicsMagick uses a number of XML format configuration files:
+.TP
+.B "colors.mgk"
+\fRcolors configuration file
+
+  <?xml version="1.0"?>
+  <colormap>
+    <color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" />
+  </colormap>
+
+.TP
+.B "delegates.mgk"
+\fRdelegates configuration file
+.TP
+.B "log.mgk"
+\fRlogging configuration file
+
+  <?xml version="1.0"?>
+  <magicklog>
+    <log events="None" />
+    <log output="stdout" />
+    <log filename="Magick-%d.log" />
+    <log generations="3" />
+    <log limit="2000" />
+    <log format="%t %r %u %p %m/%f/%l/%d:\\n  %e"  />
+  </magicklog>
+
+.TP
+.B "modules.mgk"
+\fRloadable modules configuration file
+
+  <?xml version="1.0"?>
+  <modulemap>
+    <module magick="8BIM" name="META" />
+  </modulemap>
+
+.TP
+.B "type.mgk"
+\fRmaster type (fonts) configuration file
+
+  <?xml version="1.0"?>
+  <typemap>
+    <\fB\fPinclude file="type-windows.mgk" />
+    <type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    />
+  </typemap>
+
 .SH GM ANIMATE
-.SH SYNOPSIS
-
-\fBanimate\fP \fB[\fP \fIoptions\fP \fB...]\fP \fIfile\fP [ [
-\fIoptions\fP ...] \fIfile\fP ...]
-
-.SH DESCRIPTION
-</im>
 
 \fBAnimate\fP displays a sequence of images on any workstation display
 running an X server. \fBanimate\fP first determines the hardware capabilities
@@ -4295,17 +4581,20 @@ To animate a set of images of a cockatoo, use:
 
     gm animate cockatoo.*
 
+
 To animate a cockatoo image sequence while using the Standard Colormap
 \fIbest\fP, use:
 
     xstdcmap -best
     gm animate -map best cockatoo.*
 
+
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 
 
     gm animate +borderwidth -backdrop cockatoo.*
+
 .SH OPTIONS
 
 For a more detailed description of each option, see
@@ -4478,6 +4767,7 @@ third with only 16 colors, use:
 
     gm animate -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3
+
 
 \fBAnimate\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified
@@ -4724,6 +5014,194 @@ information is sometimes used by a window manager to provide some sort
 of header identifying the window. The default is the image file name.
 .in 15
 
+.SH GM BATCH
+.SH DESCRIPTION
+
+\fBbatch\fP executes an arbitary number of the utility commands
+(e.g. \fBconvert\fP) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.
+.SH EXAMPLES
+ To drive \fB'gm batch'\fP using a shell script (or a program
+written in any language), have the script/program send commands to 'gm
+batch' via its standard input.  Specify that standard input should be
+used by using \fB'-'\fP as the file name.  The following example
+converts all files matching '*.jpg' to TIFF format while rotating each
+file by 90 degrees and stripping all embedded profiles.  The shell
+script syntax is standard Unix shell:
+
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \\
+    +profile "'*'" "'$outfile'"
+  done | gm batch -echo on -feedback on -
+
+
+We can accomplish the same as the previous example by putting all the
+commands in a text file and then specifying the name of the text file
+as the script to execute:
+
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \\
+    +profile "'*'" "'$outfile'"
+  done > script.txt
+  gm batch -echo on -feedback on script.txt
+
+.SH OPTIONS
+
+Options are processed from left to right and must appear before any filename argument.
+.TP
+.B "-echo \fIon|off"\fP
+\fRcommand echo on or off
+
+Specify \fBon\fP to enable echoing commands to standard output as
+they are read or \fBoff\fP to disable.  The default is
+\fBoff\fP.
+.TP
+.B "-escape \fIunix|windows"\fP
+\fRParse using unix or windows syntax
+
+Commands must be parsed from the input stream and escaping needs to be
+used to protect spaces or quoting characters in the input. Specify
+\fBunix\fP to use unix-style command line parsing or \fBwindows\fP
+for Microsoft Windows command shell style parsing. The default depends
+on if the software is compiled for Microsoft Windows or for a
+Unix-type system (including Cygwin on Microsoft Windows).  It is
+recommended to use unix syntax because it is more powerful and more
+portable.
+.TP
+.B "-fail \fItext"\fP
+\fRtext to print if a command fails
+
+When feedback is enabled, this specifies the text to print when the
+command fails.  The default text is \fBFAIL\fP.
+.TP
+.B "-feedback \fIon|off"\fP
+\fRenable error feedback
+
+Print text (see -pass and -fail options) feedback after each
+command to indicate the result, the default is \fBoff\fP.
+.TP
+.B "-help"
+
+Prints batch command help.
+.TP
+.B "-pass \fItext"\fP
+\fRtext to print if a command passes
+
+When feedback is enabled, this specifies the text to print when the
+command passes.  The default text is \fBPASS\fP.
+.TP
+.B "-prompt \fItext"\fP
+\fRPrompt text to use for command line
+
+If no filename argument was specified, a simple command prompt appears
+where you may enter GraphicsMagick commands.  The default prompt is
+\fBGM>\fP.  Use this option to change the prompt to something else.
+.TP
+.B "-stop-on-error \fIon|off"\fP
+\fRSpecify if command processing stops on error
+
+Normally command processing continues if a command encounters an
+error.  Specify \fB-stop-on-error on\fP to cause processing to quit
+immediately on error.
+.SH GM BENCHMARK
+.SH DESCRIPTION
+
+\fBbenchmark\fP executes an arbitrary \fBgm\fP utility command
+(e.g. \fBconvert\fP) for one or more loops, and/or a specified
+execution time, and reports many execution metrics.  For builds using
+OpenMP, a mode is provided to execute the benchmark with an increasing
+number of threads and provide a report of speedup and multi-thread
+execution efficiency.  If \fBbenchmark\fP is used to execute a
+command without any additional benchmark options, then the command is
+run once.
+.SH EXAMPLES
+To obtain benchmark information for a single execution of a
+command:
+
+    gm benchmark convert input.ppm -gaussian 0x1 output.ppm
+
+To obtain benchmark information from 100 iterations of the
+command:
+
+    gm benchmark -iterations 100 convert input.ppm \\
+      -gaussian 0x1 output.ppm
+
+To obtain benchmark information by iterating the command until a
+specified amount of time (in seconds) has been consumed:
+
+    gm benchmark -duration 30 convert input.ppm \\
+      -gaussian 0x1 output.ppm
+
+To obtain a full performance report with an increasing number of
+threads (1-32 threads, stepping the number of threads by four each
+time):
+
+    gm benchmark -duration 3 -stepthreads 4 convert \\
+      input.ppm -gaussian 0x2 output.ppm
+
+Here is the interpretation of the output:
+
+    \fBthreads\fP - number of threads used.
+    \fBiter\fP - number of command iterations executed.
+    \fBuser\fP - total user time consumed.
+    \fBtotal\fP - total elapsed time consumed.
+    \fBiter/s\fP - number of command iterations per second.
+    \fBiter/cpu\fP - amount of CPU time consumed per iteration.
+    \fBspeedup\fP - speedup compared with one thread.
+    \fBkarp-flatt\fP - Karp-Flatt measure of speedup efficiency.
+
+\fIPlease note that the reported "speedup" is based on the
+execution time of just one thread.  A preliminary warm-up pass is used
+before timing the first loop in order to ensure that the CPU is
+brought out of power-saving modes and that system caches are warmed
+up.  Most modern CPUs provide a "turbo" mode where the CPU clock speed
+is increased (e.g. by a factor of two) when only one or two cores are
+active.  If the CPU grows excessively hot (due to insufficient
+cooling), then it may dial back its clock rates as a form of thermal
+management.  These factors result in an under-reporting of speedup
+compared to if "turbo" mode was disabled and the CPU does not need to
+worry about thermal management.  The \fBpowertop\fP utility available
+under Linux and Solaris provides a way to observe CPU core clock rates
+while a benchmark is running.\fP
+.SH OPTIONS
+ Options are processed from left to right and must appear before
+any argument.
+.TP
+.B "-duration \fIduration"\fP
+\fRduration to run benchmark
+Specify the number of seconds to run the benchmark. The command is
+executed repeatedly until the specified amount of time has
+elapsed.
+.TP
+.B "-help"
+
+Prints benchmark command help.
+.TP
+.B "-iterations \fIloops"\fP
+\fRnumber of command iterations
+Specify the number of iterations to run the benchmark. The command
+is executed repeatedly until the specified number of iterations has
+been reached.
+.TP
+.B "-rawcsv"
+\fRPrint results in CSV format
+Print results in a comma-separated value (CSV) format which is easy
+to parse for plotting or importing into a spreadsheet or database.
+The values reported are \fBthreads\fP, \fBiterations\fP,
+\fBuser_time\fP, and \fBelapsed_time\fP.
+.TP
+.B "-stepthreads \fIstep"\fP
+\fRexecute a per-thread benchmark ramp
+ Execute a per-thread benchmark ramp, incrementing the number of
+threads at each step by the specified value.  The maximum number of
+threads is taken from the standard OMP_NUM_THREADS
+environment variable.
 .SH GM COMPARE
 
 \fBcompare\fP compares two similar images using a specified statistical
@@ -4740,10 +5218,12 @@ use:
 
     gm compare -metric mse original.miff compare.miff
 
+
 To create an annotated difference image use:
 
     gm compare -algorithm annotate -highlight-color purple
             -file diff.miff original.miff compare.miff
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -4805,6 +5285,9 @@ Options, above.
 .B "-maximum-error \fI<limit>"\fP
 \fRspecifies the maximum amount of total image error
 .TP
+.B "-metric \fI<metric>"\fP
+\fRcomparison metric (MAE, MSE, PAE, PSNR, RMSE)
+.TP
 .B "-monitor"
 \fRshow progress indication
 .TP
@@ -4846,10 +5329,12 @@ To composite an image of a cockatoo with a perch, use:
 
     gm composite cockatoo.miff perch.ras composite.miff
 
+
 To compute the difference between images in a series, use:
 
     gm composite -compose difference series.2 series.1
               difference.miff
+
 
 To composite an image of a cockatoo with a perch starting at location (100,150),
 use:
@@ -4857,11 +5342,13 @@ use:
     gm composite -geometry +100+150 cockatoo.miff
               perch.ras composite.miff
 
+
 To tile a logo across your image of a cockatoo, use
 
     gm convert +shade 30x60 cockatoo.miff mask.miff
     gm composite -compose bumpmap -tile logo.png
               cockatoo.miff mask.miff composite.miff
+
 
 To composite a red, green, and blue color plane into a single composite image,
 try
@@ -4870,6 +5357,7 @@ try
               red-green.png
     gm composite -compose CopyBlue blue.png red-green.png 
               gm composite.png
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -5086,9 +5574,11 @@ script:
       <write filename="image.png" />
     </image>
 
+
 invoked with
 
     gm conjure -dimensions 400x400 incantation.msl
+
 
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
@@ -5179,11 +5669,13 @@ example:
     <write filename="output.mng" />
     </image>
 
+
 .in 15
 .in 20
 
 
     <image size="400x400" />
+
 
 .in 15
 .in 15
@@ -5202,6 +5694,7 @@ valid for the life of their \fB<image>\fPelement.
     <image>   -- creates the image
     .....     -- do stuff with it
     </image>  -- dispose of the image
+
 
 .in 15
 .in 20
@@ -5223,6 +5716,7 @@ life of the group:
         <write filename="image.mng" />  -- output
     </group>                          -- dispose of both images
 
+
 .in 15
 .in 15
 .B "<read>"
@@ -5241,6 +5735,7 @@ Read a new image from a disk file.
 
     <read filename="image.gif" />
 
+
 .in 15
 .in 20
 
@@ -5252,6 +5747,7 @@ To read two images use
 
     <read filename="image.gif" />
     <read filename="image.png />
+
 
 .in 15
 .in 15
@@ -5270,6 +5766,7 @@ a single multiple-image file or multiple ones if necessary.
 
 
      <write filename=image.tiff" />
+
 .in 15
 .B "<get>"
 .in 20
@@ -5284,6 +5781,7 @@ use. Currently only \fIwidth\fP and \fIheight\fP are supported.
 
     <get width="base-width" height="base-height" />
     <print output="Image size is %[base-width]x%[base-height].\\n" />
+
 
 .in 15
 .in 15
@@ -5312,6 +5810,7 @@ Read one or more IPTC, ICC or generic profiles from file and assign to image
 
     <profile iptc="profile.iptc" generic="generic.dat" />
 
+
 .in 15
 .in 20
 
@@ -5322,6 +5821,7 @@ To remove a specified profile use "!" as the filename eg
 
 
     <profile icm="!" iptc="profile.iptc" />
+
 
 .in 15
 .in 15
@@ -5386,6 +5886,7 @@ To remove a specified profile use "!" as the filename eg
         </image>
         <write filename="result.png"/>
     </group>
+
 
 .in 15
 .in 15
@@ -5629,10 +6130,6 @@ To remove a specified profile use "!" as the filename eg
 .in 20
  \fR
 
-.TP
-.in 15
-.in 15
-.in 20
 .SH GM CONVERT
 
 \fBConvert\fP converts an input file using one image format to an output
@@ -5648,6 +6145,7 @@ To make a thumbnail of a JPEG image, use:
     gm convert -size 120x120 cockatoo.jpg -resize 120x120
             +profile "*" thumbnail.jpg
 
+
 In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the image is going to be downscaled to 120x120, allowing it to run
 faster by avoiding returning full-resolution images to GraphicsMagick for
@@ -5661,21 +6159,25 @@ To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
 
     gm convert cockatoo.miff sun:cockatoo.ras
 
+
 To convert a multi-page \fIPostScript\fP document to individual FAX pages,
 use:
 
     gm convert -monochrome document.ps fax:page
+
 
 To convert a TIFF image to a \fIPostScript\fP A4 page with the image in
 the lower left-hand corner, use:
 
     gm convert -page A4+0+0 image.tiff document.ps
 
+
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 
     gm convert -depth 8 -size 768x512+128 gray:raw
             image.pgm
+
 
 In this example, "raw" is the input file.  Its format is "gray" and it
 has the dimensions and number of header bytes specified by the -size
@@ -5688,9 +6190,11 @@ To convert a Photo CD image to a TIFF image, use:
     gm convert -size 1536x1024 img0009.pcd image.tiff
     gm convert img0009.pcd[4] image.tiff
 
+
 To create a visual image directory of all your JPEG images, use:
 
     gm convert 'vid:*.jpg' directory.miff
+
 
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:
@@ -5699,18 +6203,22 @@ use:
             -draw "text 100,100 Cockatoo"
             bird.jpg bird.miff
 
+
 To tile a 640x480 image with a JPEG texture with bumps use:
 
     gm convert -size 640x480 tile:bumps.jpg tiled.png
+
 
 To surround an icon with an ornamental border to use with Mosaic(1), use:
 
     gm convert -mattecolor "#697B8F" -frame 6x6 bird.jpg
             icon.png
 
+
 To create a MNG animation from a DNA molecule sequence, use:
 
     gm convert -delay 20 dna.* dna.mng
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -6267,32 +6775,39 @@ pixels in height and position the window at location (200,200), use:
 
     gm display -geometry 640x480+200+200! cockatoo.miff
 
+
 To display an image of a cockatoo without a border centered on a backdrop,
 use:
 
     gm display +borderwidth -backdrop cockatoo.miff
 
+
 To tile a slate texture onto the root window, use:
 
     gm display -size 1280x1024 -window root slate.png
 
+
 To display a visual image directory of all your JPEG images, use:
 
     gm display 'vid:*.jpg'
+
 
 To display a MAP image that is 640 pixels in width and 480 pixels in height
 with 256 colors, use:
 
     gm display -size 640x480+256 cockatoo.map
 
+
 To display an image of a cockatoo specified with a \fBWorld Wide Web (WWW)\fP
 uniform resource locator \fB(URL)\fP, use:
 
     gm display ftp://wizards.dupont.com/images/cockatoo.jpg
 
+
 To display histogram of an image, use:
 
     gm gm convert file.jpg HISTOGRAM:- | gm display -
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -6303,6 +6818,7 @@ and the third with only 16 colors, use:
 
     gm display -colors 32 cockatoo.miff -noop duck.miff
                  -colors 16 macaw.miff
+
 
 \fBDisplay\fP options can appear on the command line or in your X resources
 file. See \fIX(1)\fP. Options on the command line supersede values specified
@@ -6745,6 +7261,7 @@ The keyboard accelerators that
     Ctl+O     Press to load an image from a file.
     space     Press to display the next image.
 
+
 If the image is a multi-paged document such as a
 \fIPostScript\fP document,
 you can skip ahead several pages by preceding this command with a number.
@@ -6752,6 +7269,7 @@ For example to display the fourth page beyond the current page,
 press 4space.
 
     backspace Press to display the former image.
+
 
 If the image is a multi-paged document such as a
 \fIPostScript\fP document,
@@ -6858,6 +7376,7 @@ For example to display the fourth page preceding the current page, press
     Find     Press to browse documentation about
              GraphicsMagick.
     1-9      Press to change the level of magnification.
+
 
 Use the arrow keys to move the image one pixel up, down, left, or right
 within the magnify window. Be sure to first map the magnify window by pressing
@@ -7033,6 +7552,7 @@ To set the geometry of the Magnify or Pan or window, use the geometry resource.
 For example, to set the Pan window geometry to 256x256, use:
 
     gm display.pan.geometry: 256x256
+
 .SH IMAGE LOADING
 
 To select an image to display, choose \fBOpen\fP of the \fBFile\fP sub-menu
@@ -8349,6 +8869,10 @@ image. Panning is much faster with Pixmaps than with a XImage. Pixmaps
 are considered a precious resource, use them with discretion.
 .in 15
 
+.TP
+.in 15
+.in 15
+.in 20
 .SH GM IDENTIFY
 
 \fBIdentify\fP describes the format and characteristics of one or more
@@ -8363,6 +8887,7 @@ also displayed. An example line output from \fBidentify\fP follows:
 
     images/aquarium.miff 640x480 PseudoClass 256c
            308135b MIFF 0.000u 0:01
+
 
 If -verbose is set, expect additional output including any image
 comment:
@@ -8379,6 +8904,7 @@ comment:
     format: MIFF
     comments:
     Imported from MTV raster image: aquarium.mtv
+
 
 For some formats, additional format-specific information about the file
 will be written if the -debug coder or -debug all option
@@ -8464,15 +8990,18 @@ in the MIFF image format to a file entitled window.miff, use:
 
     gm import window.miff
 
+
 To select an X window or an area of the screen with the mouse and save it
 in the Encapsulated PostScript format to include in another document, use:
 
     gm import figure.eps
 
+
 To capture the entire X server screen in the JPEG image format in a file
 entitled root.jpeg, without using the mouse, use:
 
     gm import -window root root.jpeg
+
 
 To capture the 512x256 area at the upper right corner of the X server
 screen in the PNG image format in a well-compressed file entitled corner.png,
@@ -8480,6 +9009,7 @@ without using the mouse,  use:
 
     gm import -window root -crop 512x256-0+0 -quality 90
            corner.png
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -8646,9 +9176,11 @@ To convert all the TIFF files in a particular directory to JPEG, use:
 
     gm mogrify -format jpeg *.tiff
 
+
 To convert a directory full of JPEG images to thumbnails, use:
 
     gm mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
+
 
 In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
@@ -8663,6 +9195,7 @@ To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: 
 
     gm mogrify -resize 640x480! cockatoo.miff
+
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -9159,6 +9692,7 @@ it to a file called birds, use:
     gm montage cockatoo.miff parrot.miff hummingbird.miff
             birds.miff
 
+
 To tile several bird images so that they are at most 256 pixels in width
 and 192 pixels in height, surrounded by a red border, and separated by
 10 pixels of background color, use:
@@ -9166,21 +9700,25 @@ and 192 pixels in height, surrounded by a red border, and separated by
     gm montage -geometry 256x192+10+10 -bordercolor red
             birds.* montage.miff
 
+
 To create an unlabeled parrot image, 640 by 480 pixels, and surrounded
 by a border of black, use:
 
     gm montage -geometry 640x480 -bordercolor black
             -label "" parrot.miff bird.miff
 
+
 To create an image of an eagle with a textured background, use:
 
     gm montage -texture bumps.jpg eagle.jpg eagle.png
+
 
 To join several GIF images together without any extraneous graphics (e.g.
 no label, no shadowing, no surrounding tile frame), use:
 
     gm montage +frame +shadow +label -tile 5x1
             -geometry 50x50+0+0 *.png joined.png
+
 .SH OPTIONS
 
 Any option you specify on the command line remains in effect for the group
@@ -9192,6 +9730,7 @@ the third with only 16 colors, use:
 
     gm montage -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3 cockatoos.miff
+
 
 For a more detailed description of each option, see
 Options, above.
@@ -9472,244 +10011,79 @@ The default is black.
 This resource specifies the title to be placed at the top of the composite
 image. The default is not to place a title at the top of the composite
 image.
-.SH ENVIRONMENT
-.TP
-.B "COLUMNS"
-\fROutput screen width. Used when formatting text for the screen. Many
-Unix systems keep this shell variable up to date, but it may need to be
-explicitly exported in order for GraphicsMagick to see it.
-.TP
-.B "DISPLAY"
-\fRX11 display ID (host, display number, and screen in the form
-hostname:display.screen).
-.TP
-.B "HOME"
-\fRLocation of user's home directory. GraphicsMagick searches for
-configuration files in $HOME/.magick if the directory exists. See
-\fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
-\fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
-.TP
-.B "MAGICK_CODER_STABILITY"
-\fRThe minimum coder stability level before it will be used. The
-available levels are \fBPRIMARY\fP, \fBSTABLE\fP, and \fBUNSTABLE\fP.
-The default minimum level is \fBUNSTABLE\fP, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the \fBPRIMARY\fP level are commonly used
-formats with very well maintained implementations. Coders at the
-\fBSTABLE\fP level are reasonably well maintained but represent less used
-formats. Coders at the \fBUNSTABLE\fP level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.
-.TP
-.B "MAGICK_CODER_MODULE_PATH"
-\fRSearch path to use when searching for image format coder modules.
-This path allows the user to arbitrarily extend the image formats
-supported by GraphicsMagick by adding loadable modules to an arbitrary
-location rather than copying them into the GraphicsMagick installation
-directory. The formatting of the search path is similar to operating
-system search paths (i.e. colon delimited for Unix, and semi-colon
-delimited for Microsoft Windows). This user specified search path is used
-before trying the default search path.
-.TP
-.B "MAGICK_CONFIGURE_PATH"
-\fRSearch path to use when searching for configuration (.mgk) files.
-The formatting of the search path is similar to operating system search
-paths (i.e. colon delimited for Unix, and semi-colon delimited for
-Microsoft Windows). This user specified search path is used before trying
-the default search path.
-.TP
-.B "MAGICK_DEBUG"
-\fRDebug options (see \fB-debug\fP for details)
-.TP
-.B "MAGICK_FILTER_MODULE_PATH"
-\fRSearch path to use when searching for filter process modules
-(invoked via \fB-process\fP). This path allows the user to arbitrarily
-extend GraphicsMagick's image processing functionality by adding loadable
-modules to an arbitrary location rather than copying them into the
-GraphicsMagick installation directory. The formatting of the search path
-is similar to operating system search paths (i.e. colon delimited for
-Unix, and semi-colon delimited for Microsoft Windows). This user
-specified search path is used before trying the default search path.
-.TP
-.B "MAGICK_HOME"
-\fRPath to top of GraphicsMagick installation directory. Only observed
-by "uninstalled" builds of GraphicsMagick which do not have their location
-hard-coded or set by an installer.
-.TP
-.B "MAGICK_MMAP_READ"
-\fRIf \fBMAGICK_MMAP_READ\fP is set to \fBTRUE\fP, GraphicsMagick
-will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.
-.TP
-.B "MAGICK_IO_FSYNC"
-\fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick
-will request that the output file is fully flushed and synchronized to
-disk when it is closed. This incurs a performance penalty, but has the
-benefit that if the power fails or the system crashes, the file should be
-valid on disk. If image files are referenced from a database, then this
-option helps assure that the files referenced by the database are
-valid.
-.TP
-.B "MAGICK_IOBUF_SIZE"
-\fRThe amount of I/O buffering (in bytes) to use when reading and
-writing encoded files. The default is 16384, which is observed to work
-well for many cases. The best value for a local filesystem is usually the
-the native filesystem block size (e.g. 4096, 8192, or even 131,072 for
-ZFS) in order to minimize the number of physical disk I/O operations.
-I/O performance to files accessed over a network may benefit
-significantly by tuning this option. Larger values are not necessarily
-better (they may be slower!), and there is rarely any benefit from using
-values larger than 32768. Use convert's \fB-verbose\fP option in order
-to evaluate read and write rates in pixels per second while keeping in
-mind that the operating system will try to cache files in RAM.
-.TP
-.B "MAGICK_LIMIT_DISK"
-\fRMaximum amount of disk space allowed for use by the pixel cache.
-.TP
-.B "MAGICK_LIMIT_FILES"
-\fRMaximum number of open files.
-.TP
-.B "MAGICK_LIMIT_MAP"
-\fRMaximum size of a memory map.
-.TP
-.B "MAGICK_LIMIT_MEMORY"
-\fRMaximum amount of memory to allocate from the heap.
-.TP
-.B "MAGICK_TMPDIR"
-\fRPath to directory where GraphicsMagick should write temporary
-files. The default is to use the system default, or the location set by
-\fBTMPDIR\fP.
-.TP
-.B "TMPDIR"
-\fRFor POSIX-compatible systems (Unix-compatible), the path to the
-directory where all applications should write temporary files.
-Overridden by \fBMAGICK_TMPDIR\fP if it is set.
-.TP
-.B "TMP \fIor TEMP"\fP
-\fRFor Microsoft Windows, the path to the directory where applications
-should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
-is set.
-.TP
-.B "OMP_NUM_THREADS"
-\fRAs per the OpenMP standard, this specifies the number of threads to
-use in parallel regions. Some compilers default the number of threads to
-use to the number of processor cores available while others default to
-just one thread. See the OpenMP specification for other standard
-adjustments and your compiler's manual for vendor-specific settings.
-.SH CONFIGURATION FILES
-GraphicsMagick uses a number of XML format configuration files:
-.TP
-.B "colors.mgk"
-\fRcolors configuration file
+.SH GM TIME
+.SH DESCRIPTION
 
-  <?xml version="1.0"?>
-  <colormap>
-    <color name="AliceBlue" red="240" green="248" blue="255"
-           compliance="SVG, X11, XPM" />
-  </colormap>
-.TP
-.B "delegates.mgk"
-\fRdelegates configuration file
-.TP
-.B "log.mgk"
-\fRlogging configuration file
+\fBtime\fP executes an arbitrary \fBgm\fP utility command
+(e.g. \fBconvert\fP) and reports the user and elapsed time.  This
+provides way to measure command execution times similar to the Unix
+\'time' command but in a portable and consistent way.
+.SH EXAMPLES
+To obtain time information for the execution of a
+command:
 
-  <?xml version="1.0"?>
-  <magicklog>
-    <log events="None" />
-    <log output="stdout" />
-    <log filename="Magick-%d.log" />
-    <log generations="3" />
-    <log limit="2000" />
-    <log format="%t %r %u %p %m/%f/%l/%d:\\n  %e"  />
-  </magicklog>
-.TP
-.B "modules.mgk"
-\fRloadable modules configuration file
+% gm time convert input.ppm -gaussian 0x2 output.ppm
+convert input.ppm -gaussian 0x2 output.ppm    22.60s user 0.00s system 2354% cpu 0.960 total
 
-  <?xml version="1.0"?>
-  <modulemap>
-    <module magick="8BIM" name="META" />
-  </modulemap>
-.TP
-.B "type.mgk"
-\fRmaster type (fonts) configuration file
+Here is the interpretation of the above output:
 
-  <?xml version="1.0"?>
-  <typemap>
-    <\fB\fPinclude file="type-windows.mgk" />
-    <type
-      name="AvantGarde-Book"
-      fullname="AvantGarde Book"
-      family="AvantGarde"
-      foundry="URW"
-      weight="400"
-      style="normal"
-      stretch="normal"
-      format="type1"
-      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
-      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
-    />
-  </typemap>
-.SH ACKNOWLEDGEMENTS
+    \fBuser\fP - the total user time consumed.
+    \fBsystem\fP - the total system time consumed.
+    \fBtotal\fP - the total elapsed time consumed.
 
-The \fBMIT X Consortium\fP for making network transparent graphics a reality.
+.SH OPTIONS
+The time command reqires no options other than the gm command to
+execute.
+.SH GM VERSION
+.SH DESCRIPTION
 
+\fBversion\fP displays the software release version, build quantum
+(pixel sample) depth, web site URL, copyright notice, enabled features
+support, configuration parameters, and final build options used to
+build the software.  The available information depends on how the
+software was configured and the host system.
+.SH EXAMPLES
+To display the version information:
 
-\fIMichael Halle\fP, \fBSpatial Imaging Group at MIT\fP, for the initial
-implementation of Alan Paeth's image rotation algorithm.
+  % gm -version
+  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2012 GraphicsMagick Group.
+  Additional copyrights and licenses apply to this software.
+  See http://www.GraphicsMagick.org/www/Copyright.html for details.
+  Feature Support:
+    Thread Safe              yes
+    Large Files (> 32 bit)   yes
+    Large Memory (> 32 bit)  no
+    BZIP                     yes
+    DPS                      no
+    FlashPix                 no
+    FreeType                 yes
+    Ghostscript (Library)    no
+    JBIG                     no
+    JPEG-2000                yes
+    JPEG                     yes
+    Little CMS               yes
+    Loadable Modules         no
+    OpenMP                   yes (201107)
+    PNG                      yes
+    TIFF                     yes
+    TRIO                     no
+    UMEM                     no
+    WMF                      no
+    X11                      yes
+    XML                      yes
+    ZLIB                     yes
+  Host type: i386-pc-solaris2.11
+  Configured using the command:
+    ./configure  ...
+  Final Build Parameters:
+    CC       = ...
+    CFLAGS   = ...
+    CPPFLAGS = ...
+    CXX      = ...
+    CXXFLAGS = ...
+    LDFLAGS  = ...
+    LIBS     = ...
 
-
-\fIDavid Pensak\fP, \fBE. I. du Pont de Nemours and Company\fP, for
-providing a computing environment that made this program possible.
-
-
-\fIPeder Langlo\fP, \fBHewlett Packard\fP, Norway, made hundreds of suggestions
-and bug reports. Without Peder, this software would not be nearly
-as useful as it is today.
-
-\fIRod Bogart\fP and \fIJohn W. Peterson\fP, \fBUniversity of Utah\fP.
-Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
-
-\fIPaul Heckbert\fP, \fBCarnegie Mellon University\fP. Image resizing is
-based on his Zoom program.
-
-\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP. The
-spatial subdivision color reduction algorithm is based on his Img software.
-.SH COPYRIGHT
-
-\fBCopyright (C) 2002 - 2010 GraphicsMagick Group, an organization
-dedicated to making software imaging solutions freely available.\fP
-
-\fBPermission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files
-("GraphicsMagick"), to deal in GraphicsMagick without restriction,
-including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
-and to permit persons to whom GraphicsMagick is furnished to do so,
-subject to the following conditions:\fP
-
-\fBThe above copyright notice and this permission notice shall be included
-in all copies or substantial portions of GraphicsMagick.\fP
-
-\fBThe software is provided "as is", without warranty of any kind,
-express or implied, including but not limited to the warranties of
-merchantability, fitness for a particular purpose and noninfringement.
-In no event shall GraphicsMagick Group be liable for any claim, damages
-or other liability, whether in an action of contract, tort or otherwise,
-arising from, out of or in connection with GraphicsMagick or the use or
-other dealings in GraphicsMagick.\fP
-
-\fBExcept as contained in this notice, the name of the GraphicsMagick
-Group shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in GraphicsMagick without prior written
-authorization from the GraphicsMagick Group.\fP
-
-\fBAdditional copyrights and licenses apply to this software. You should
-have received a copy of Copyright.txt with this package, which describes
-additional copyrights and licenses which apply to this software;
-otherwise see http://www.graphicsmagick.org/Copyright.html.\fP
+.SH OPTIONS
+The version command does not currently support any options.

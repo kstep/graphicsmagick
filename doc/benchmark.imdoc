@@ -83,7 +83,7 @@ command:</p>
 <format type=man>
 <pre>
     gm benchmark -iterations 100 convert input.ppm \
-    -gaussian 0x1 output.ppm
+      -gaussian 0x1 output.ppm
 </pre>
 </format>
 
@@ -100,7 +100,7 @@ specified amount of time (in seconds) has been consumed:</p>
 <format type=man>
 <pre>
     gm benchmark -duration 30 convert input.ppm \
-    -gaussian 0x1 output.ppm
+      -gaussian 0x1 output.ppm
 </pre>
 </format>
 
@@ -125,21 +125,21 @@ time):</p>
 <format type=man>
 <pre>
     gm benchmark -duration 3 -stepthreads 4 convert \
-    input.ppm -gaussian 0x2 output.ppm
+      input.ppm -gaussian 0x2 output.ppm
 </pre>
 </format>
 
 <p>Here is the interpretation of the output:</p>
 
 <ul>
-<li><s>threads</s> - the number of threads used.</li>
-<li><s>iter</s> - the number of command iterations executed.</li>
-<li><s>user</s> - the total user time consumed.</li>
-<li><s>total</s> - the total elapsed time consumed.</li>
-<li><s>iter/s</s> - the number of command iterations per second.</li>
-<li><s>iter/cpu</s> - the amount of CPU time consumed per iteration.</li>
-<li><s>speedup</s> - the speedup compared with one thread.</li>
-<li><s>karp-flatt</s> - the Karp-Flatt measure of speedup efficiency.</li>
+<li><s>threads</s> - number of threads used.</li>
+<li><s>iter</s> - number of command iterations executed.</li>
+<li><s>user</s> - total user time consumed.</li>
+<li><s>total</s> - total elapsed time consumed.</li>
+<li><s>iter/s</s> - number of command iterations per second.</li>
+<li><s>iter/cpu</s> - amount of CPU time consumed per iteration.</li>
+<li><s>speedup</s> - speedup compared with one thread.</li>
+<li><s>karp-flatt</s> - Karp-Flatt measure of speedup efficiency.</li>
 </ul>
 
 <p><i>Please note that the reported "speedup" is based on the

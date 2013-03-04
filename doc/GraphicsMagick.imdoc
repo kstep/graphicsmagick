@@ -354,7 +354,7 @@ montage(1), mogrify(1), composite(1)
 </p>
 </sect>
 </format>
-</im>
 <include file=copyright.imdoc>
+</im>
 </utils>
 </imdoc>
