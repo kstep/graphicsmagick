@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.18 (TBD)
+1.3.18 (March 9, 2013)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
@@ -65,6 +65,9 @@ Bug fixes:
     GraphicsMagick has returned the image.
 
   * C API: It is now possible to invoke CloseBlob() multiple times.
+
+  * display: Display was supposed to respond to +/-usePixmap, but was
+    not. It was responding to +/-use_pixmap.  Now it responds to both.
 
   * Windows/VisualMagick: Fix building GraphicsMagick with Intel ICC
     compiler driven by Visual Studio Professional 2012.
