@@ -3280,7 +3280,7 @@ static MagickPassFail funcDCM_Palette(Image *image,DicomStream *dcm,ExceptionInf
       /*
         Allocate color map first time in
       */
-      if (!AllocateImageColormap(image,dcm->length))
+      if (!AllocateImageColormap(image,(const unsigned long) dcm->length))
         {
           ThrowException(exception,ResourceLimitError,UnableToCreateColormap,image->filename);
           return MagickFail;

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -429,10 +429,10 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       output has been truncated.
     */
     {
-      long
+      ssize_t
 	space_available;
       
-      space_available=context->mvg_alloc - context->mvg_length - 1;
+      space_available=(ssize_t) context->mvg_alloc - (ssize_t) context->mvg_length - 1;
       formatted_length = -1;
       if (space_available > 0)
 	{
@@ -2408,7 +2408,7 @@ MagickExport void DrawComposite(DrawContext context,
       char
         buffer[MaxTextExtent];
 
-      FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
+      FormatString(buffer,"%" MAGICK_SIZE_T_F "d bytes", (4L*blob_length/3L+4L));
       ThrowDrawException(ResourceLimitWarning,MemoryAllocationFailed,buffer)
     }
 

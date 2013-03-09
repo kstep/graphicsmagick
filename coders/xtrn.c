@@ -386,7 +386,7 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
 	  /* Adjust the length of the buffer to fit */
 	}
     }
-  return(tlen);
+  return((int) tlen);
 }
 
 static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)

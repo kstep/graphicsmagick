@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -686,9 +686,11 @@ TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 #if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "TIFF read blob: data=0x%p size=%ld, returns %"
-			  MAGICK_OFF_F "d",
-			  data, (long) size, (magick_off_t) result);
+                          "TIFF read blob: data=0x%p size=%"
+                          MAGICK_SIZE_T_F "u, returns %"
+			  MAGICK_SIZE_T_F "u",
+			  data, (MAGICK_SIZE_T) size,
+                          (MAGICK_SIZE_T) result);
 #endif /* LOG_TIFF_BLOB_IO */
 
   return result;
@@ -745,7 +747,7 @@ TIFFUnmapBlob(thandle_t ARGUNUSED(image),
 #if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "TIFF unmap blob: base=%p size=%" MAGICK_OFF_F "d",
+			  "TIFF unmap blob: base=0x%p size=%" MAGICK_OFF_F "d",
 			  base,(magick_off_t) size);
 #endif  /* LOG_TIFF_BLOB_IO */
 }
@@ -772,7 +774,7 @@ TIFFWarnings(const char *module,const char *format,va_list warning)
   return(True);
 }
 
-/* Write data a current offset */
+/* Write data at current offset */
 static tsize_t
 TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
@@ -784,10 +786,10 @@ TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 #if LOG_TIFF_BLOB_IO
   if (((Image *) image)->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "TIFF write blob: data=%p size=%" MAGICK_OFF_F
-			  "u, returns %" MAGICK_OFF_F "d",
-			  data, (magick_off_t) size,
-			  (magick_off_t) result);
+			  "TIFF write blob: data=0x%p size=%" MAGICK_SIZE_T_F
+			  "u, returns %" MAGICK_SIZE_T_F "u",
+			  data, (MAGICK_SIZE_T) size,
+			  (MAGICK_SIZE_T) result);
 #endif  /* LOG_TIFF_BLOB_IO */
 
   return result;

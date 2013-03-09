@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003-2012 GraphicsMagick Group
+  Copyright (C) 2003-2013 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -32,6 +32,7 @@ extern MagickExport void
 #if defined(MAGICK_IMPLEMENTATION)
 
 extern MagickExport void
+  *MagickMallocAlignedArray(const size_t alignment,const size_t count,const size_t size),
   *MagickMallocArray(const size_t count,const size_t size) MAGICK_FUNC_MALLOC MAGICK_FUNC_ALLOC_SIZE_2ARG(1,2);
 
 extern MagickExport size_t
@@ -78,6 +79,13 @@ extern MagickExport size_t
 #define MagickAllocateAlignedMemory(type,alignment,size)		\
   ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) :	\
    ((type) MAGICK_ASSUME_ALIGNED(MagickMallocAligned((size_t) alignment, (size_t) (size)),alignment)))
+
+/*
+  Allocate array aligned to a specified alignment boundary
+*/
+#define MagickAllocateAlignedArray(type,alignment,count,size)		\
+  ((((size) != ((size_t) (size))) || (size == 0)) ? ((type) 0) :	\
+   ((type) MAGICK_ASSUME_ALIGNED(MagickMallocAlignedArray((size_t) alignment, (size_t) (count), (size_t) (size)),alignment)))
 
 /*
   Free aligned memory (from MagickAllocateAlignedMemory()) and set pointer to

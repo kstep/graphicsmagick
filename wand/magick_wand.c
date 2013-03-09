@@ -120,8 +120,8 @@ struct _MagickWand
     *quantize_info;
 
   Image
-    *image,
-    *images;
+    *image,             /* Current working image */
+    *images;            /* Whole image list */
 
   unsigned int
     iterator;
@@ -2133,8 +2133,8 @@ MagickExtentImage(MagickWand *wand,const size_t width,const size_t height,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  geometry.width=width;
-  geometry.height=height;
+  geometry.width=(unsigned long) width;
+  geometry.height=(unsigned long) height;
   geometry.x=x;
   geometry.y=y;
   extent_image=ExtentImage(wand->image,&geometry,&wand->exception);
@@ -3909,6 +3909,55 @@ WandExport unsigned int MagickGetImageMatteColor(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e P a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImagePage() retrieves the image page size and offset used when
+%  placing (e.g. compositing) the image.
+%
+%  The format of the MagickGetImagePage method is:
+%
+%      MagickGetImagePage(MagickWand *wand,
+%                         unsigned long *width,
+%                         unsigned long *height,
+%                         long *x,
+%                         long *y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width, height: The region size.
+%
+%    o x, y: Offset (from top left) on base canvas image on
+%      which to composite image data.
+%
+*/
+WandExport unsigned int MagickGetImagePage(MagickWand *wand,
+                                           unsigned long *width,
+                                           unsigned long *height,
+                                           long *x,
+                                           long *y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  *width=wand->image->page.width;
+  *height=wand->image->page.height;
+  *x=wand->image->page.x;
+  *y=wand->image->page.y;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e P i x e l s                                   %
 %                                                                             %
 %                                                                             %
@@ -4025,7 +4074,7 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
       if (result)
         (void) memcpy(result,profile,profile_length);
     }
-  *length=profile_length;
+  *length=(unsigned long) profile_length;
   return (result);
 }
 
@@ -6808,7 +6857,7 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
   /*
     Clone profile
   */
-  *length=profile_length;
+  *length=(unsigned long) profile_length;
   cloned_profile=MagickAllocateMemory(unsigned char *,profile_length);
   if (!cloned_profile)
     return 0;
@@ -7352,7 +7401,7 @@ WandExport unsigned int MagickSetDepth(MagickWand *wand,const size_t depth)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  wand->image_info->depth = depth;
+  wand->image_info->depth = (unsigned long) depth;
   return(True);
 }
 
@@ -8312,6 +8361,56 @@ WandExport unsigned int MagickSetImageOption(MagickWand *wand,
   (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s=%.1024s",
     format,key,value);
   (void) AddDefinitions(wand->image_info,option,&wand->exception);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e P a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImagePage() sets the image page size and offset used when
+%  placing (e.g. compositing) the image.  Pass all zeros for the
+%  default placement.
+%
+%  The format of the MagickSetImagePage method is:
+%
+%       unsigned int MagickSetImagePage(MagickWand *wand,
+%                                       const unsigned long width,
+%                                       const unsigned long height,
+%                                       const long x,
+%                                       const long y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o width, height: The region size.
+%
+%    o x, y: Offset (from top left) on base canvas image on
+%      which to composite image data.
+%
+*/
+WandExport unsigned int MagickSetImagePage(MagickWand *wand,
+                                           const unsigned long width,
+                                           const unsigned long height,
+                                           const long x,
+                                           const long y)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->page.width=width;
+  wand->image->page.height=height;
+  wand->image->page.x=x;
+  wand->image->page.y=y;
   return(True);
 }
 

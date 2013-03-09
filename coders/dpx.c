@@ -1154,28 +1154,28 @@ DPXOrientationToOrientationType(const unsigned int orientation)
 
   switch (orientation)
     {
-    case 0:
+    case 0U:
       orientation_type=TopLeftOrientation;
       break;
-    case 1:
+    case 1U:
       orientation_type=TopRightOrientation;
       break;
-    case 2:
+    case 2U:
       orientation_type=BottomLeftOrientation;
       break;
-    case 3:
+    case 3U:
       orientation_type=BottomRightOrientation;
       break;
-    case 4:
+    case 4U:
       orientation_type=LeftTopOrientation;
       break;
-    case 5:
+    case 5U:
       orientation_type=RightTopOrientation;
       break;
-    case 6:
+    case 6U:
       orientation_type=LeftBottomOrientation;
       break;
-    case 7:
+    case 7U:
       orientation_type=RightBottomOrientation;
       break;
     }
@@ -2782,37 +2782,37 @@ STATIC void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
       *p='0';
 }
 
-STATIC unsigned int OrientationTypeToDPXOrientation(const OrientationType orientation_type)
+STATIC U16 OrientationTypeToDPXOrientation(const OrientationType orientation_type)
 {
-  unsigned int
-    orientation = 0;
+  U16
+    orientation = 0U;
 
   switch (orientation_type)
     {
     case UndefinedOrientation:
     case TopLeftOrientation:
-      orientation=0;
+      orientation=0U;
       break;
     case TopRightOrientation:
-      orientation=1;
+      orientation=1U;
       break;
     case BottomLeftOrientation:
-      orientation=2;
+      orientation=2U;
       break;
     case BottomRightOrientation:
-      orientation=3;
+      orientation=3U;
       break;
     case LeftTopOrientation:
-      orientation=4;
+      orientation=4U;
       break;
     case RightTopOrientation:
-      orientation=5;
+      orientation=5U;
       break;
     case LeftBottomOrientation:
-      orientation=6;
+      orientation=6U;
       break;
     case RightBottomOrientation:
-      orientation=7;
+      orientation=7U;
       break;
     }
   return orientation;
@@ -3691,7 +3691,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   image_data_offset=2048;
   if (user_data)
-    image_data_offset += user_data_length;
+    image_data_offset += (unsigned int) user_data_length;
   image_data_offset=RoundUpToBoundary(image_data_offset,IMAGE_DATA_ROUNDING);
 
   /* Element Descriptor */
@@ -3719,7 +3719,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       dpx_image_info.element_info[i]=dpx_image_info.element_info[i-1];
       /* Compute offset to data */
       dpx_image_info.element_info[i].data_offset=
-        dpx_image_info.element_info[i-1].data_offset+element_size;
+        dpx_image_info.element_info[i-1].data_offset+(U32) element_size;
     }
 
   /*
@@ -3813,7 +3813,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) strlcpy(dpx_file_info.header_format_version,"V2.0",
                  sizeof(dpx_file_info.header_format_version));
   dpx_file_info.file_size=
-    dpx_file_info.image_data_offset+number_of_elements*element_size;
+    dpx_file_info.image_data_offset+number_of_elements*(U32) element_size;
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Estimated file length: %u",dpx_file_info.file_size);
@@ -3821,7 +3821,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
   dpx_file_info.industry_section_length=sizeof(dpx_mp_info)+sizeof(dpx_tv_info);
-  dpx_file_info.user_defined_length=(user_data ? user_data_length : 0);
+  dpx_file_info.user_defined_length=(U32) (user_data ? user_data_length : 0);
   (void) strlcpy(dpx_file_info.image_filename,image->filename,
                  sizeof(dpx_file_info.image_filename));
   GenerateDPXTimeStamp(dpx_file_info.creation_datetime,

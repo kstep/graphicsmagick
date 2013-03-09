@@ -1063,7 +1063,7 @@ NTGhostscriptGetString(const char *name, char *ptr, const size_t len)
   
   for (i=0; i < sizeof(hkeys)/sizeof(hkeys[0]); ++i)
     {
-      length = len;
+      length = (int) len;
       if (NTGetRegistryValue(hkeys[i].hkey, key, name, ptr, &length) == 0)
 	{
 	  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
@@ -2194,7 +2194,7 @@ MagickExport struct dirent *NTreaddir(DIR *entry)
       sizeof(entry->file_info.d_name))
     return ((struct dirent *) NULL);
   entry->firsttime=FALSE;
-  entry->file_info.d_namlen=strlen(entry->file_info.d_name);
+  entry->file_info.d_namlen=(int) strlen(entry->file_info.d_name);
   return (&entry->file_info);
 }
 

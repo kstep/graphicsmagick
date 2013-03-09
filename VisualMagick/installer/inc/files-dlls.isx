@@ -1,6 +1,6 @@
 #ifdef COPYRIGHT
 ;
-; Copyright (C) 2003, 2008 GraphicsMagick Group
+; Copyright (C) 2003 - 2012 GraphicsMagick Group
 ;
 ; This program is covered by multiple licenses, which are described in
 ; Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -8,25 +8,31 @@
 ;
 #endif
 
-; Compiler-dependent redistributable DLLs
-; Source: "..\bin\msvcr70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-; Source: "..\bin\msvcp70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-; Source: "..\bin\mfc70.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+#define  public MSVCRedist "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist"
 
+#ifdef WIN64
+  #define  public CPUARCH "amd64"
+#else
+  #define  public CPUARCH "x86"
+#endif
+
+;
+; MSVC Runtime DLLs and manifests
+;
 ; C runtime
-Source: "..\bin\msvcr90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.CRT\msvcr90.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; C++ standard runtime
-; Source: "..\bin\msvcp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-Source: "..\bin\Microsoft.VC90.CRT.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.CRT\msvcp90.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; OpenMP runtime
-Source: "..\bin\vcomp90.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-Source: "..\bin\Microsoft.VC90.OpenMP.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.OPENMP\vcomp90.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.OPENMP\Microsoft.VC90.OpenMP.manifest; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; MFC C++ runtime
-; Source: "..\bin\mfc90.dll";   DestDir: {#MagickLibDirectory}; Flags: ignoreversion
-; Source: "..\bin\Microsoft.VC90.MFC.manifest"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.MFC\mfc90.dll;   DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+; Source: {#MSVCRedist}\{#CPUARCH}\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; DLLs
 Source: "..\bin\CORE_RL*.dll"; DestDir: {#MagickLibDirectory}; Flags: ignoreversion

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -1052,8 +1052,8 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
 	  if (IsDirectory(filelist[j]) <= 0)
 	    break;
 
-      /* ListFiles() changes current directory without restoring. */
-      if (chdir(current_directory) != 0)
+      /* ListFiles() may change current directory without restoring. */
+      if ((strlen(current_directory) > 0) && (chdir(current_directory) != 0))
         {
           for (j=0; j < number_files; j++)
 	    MagickFreeMemory(filelist[j]);
@@ -1431,7 +1431,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
         path to it.  Otherwise, remove any trailing path component
         (typically the program name) and try again.
       */
-      if (chdir(path) == 0)
+      if ((strlen(path) >0 ) && (chdir(path) == 0))
         {
           if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
             MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
@@ -1443,7 +1443,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
           p=strrchr(temporary_path,DirectorySeparator[0]);
           if (p)
             *p='\0';
-          if (chdir(temporary_path) == 0)
+          if ((strlen(temporary_path) > 0) && (chdir(temporary_path) == 0))
             {
               if (getcwd(execution_path,sizeof(execution_path)-2) == NULL)
                 MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
@@ -1484,7 +1484,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
             if (length > MaxTextExtent-1)
               length = MaxTextExtent-1;
             (void) strlcpy(temporary_path,start,length+1);
-            if (chdir(temporary_path) == 0)
+            if ((strlen(temporary_path) > 0) && (chdir(temporary_path) == 0))
               {
                 if (temporary_path[length-1] != DirectorySeparator[0])
                   (void) strlcat(temporary_path,DirectorySeparator,sizeof(temporary_path));
@@ -1505,7 +1505,7 @@ MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
   /*
     Restore original working directory.
   */
-  if (chdir(original_cwd) != 0)
+  if ((strlen(original_cwd) > 0) && (chdir(original_cwd) != 0))
     return(MagickFail);
 
   if (execution_path[0] != '\0')
@@ -3007,6 +3007,7 @@ static int IsDirectory(const char *path)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 +     I s G e o m e t r y                                                     %
 %                                                                             %
 %                                                                             %
@@ -3059,15 +3060,15 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsGlob() returns MagickTrue if the path specification contains a globbing
-%  patten.as determined by GetGlob.
+%  patten as determined by GetGlob.
 %
 %  The format of the IsGlob method is:
 %
-%      MagickBool IsGlob(const char *geometry)
+%      MagickBool IsGlob(const char *path)
 %
 %  A description of each parameter follows:
 %
-%    o status: IsGlob() returns True if the path specification contains
+%    o status: Returns MagickTrue if the path specification contains
 %      a globbing patten.
 %
 %    o path: The path.
@@ -3076,16 +3077,30 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 */
 MagickExport MagickBool IsGlob(const char *path)
 {
-  MagickBool
-    status;
+  register const char
+    *p;
 
-  status=(strchr(path,'*') != (char *) NULL) ||
-    (strchr(path,'?') != (char *) NULL) ||
-    (strchr(path,'{') != (char *) NULL) ||
-    (strchr(path,'}') != (char *) NULL) ||
-    (strchr(path,'[') != (char *) NULL) ||
-    (strchr(path,']') != (char *) NULL);
-  return(status);
+  MagickBool
+    status = MagickFalse;
+
+  for (p = path; *p != '\0'; p++)
+    {
+      switch (*p)
+        {
+        case '*':
+        case '?':
+        case '{':
+        case '}':
+        case '[':
+        case ']':
+          {
+            status = MagickTrue;
+            break;
+          }
+        }
+    }
+
+  return status ;
 }
 
 /*
@@ -3696,6 +3711,11 @@ MagickSpawnVP(const unsigned int verbose,const char *file, char *const argv[])
   message[0]='\0';
   errno=0;
 
+  assert(file != (const char *) NULL);
+
+  if (strlen(file) == 0)
+    return -1;
+
   {
     /*
       Verify that we are allowed to run this program.
@@ -3989,7 +4009,7 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
 %    o filename: Buffer to update with generated filename.  Buffer must
 %                be at least MaxTextExtent bytes long.
 %
-%    o template: Filename generation template (e.g. "image%02d.miff").
+%    o filename_template: Filename generation template (e.g. "image%02d.miff").
 %
 %    o scene_template: Template for scene part which is appended to
 %                template if template does not contain a scene format
@@ -4865,7 +4885,7 @@ SubstituteString(char **buffer,const char *search,const char *replace)
   register char
     *p=*buffer;
 
-  register unsigned int
+  register size_t
     i;
 
   size_t
@@ -5433,6 +5453,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %    o formatted_text: The address of a character string containing the embedded
 %      formatting characters.
 %
+%    o translate: text translation callback function
+%
 */
 MagickExport char *TranslateTextEx(const ImageInfo *image_info,
                                    Image *image,
@@ -5807,6 +5829,8 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
         break;
       }
     }
+    if (*p == '\0')
+      break;
   }
   *q='\0';
   DestroyImageInfo(clone_info);

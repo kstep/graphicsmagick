@@ -124,9 +124,7 @@ extern "C" {
 #endif
 typedef unsigned int Quantum;
 #else
-#  ifndef _CH_
-#    error "Specified value of QuantumDepth is not supported"
-#  endif
+#  error "Specified value of QuantumDepth is not supported"
 #endif
 
 #define OpaqueOpacity  0UL
@@ -382,7 +380,7 @@ typedef enum
 } NoiseType;
 
 /*
-  Image orientation.  Based on TIFF standard values.
+  Image orientation.  Based on TIFF standard values (also EXIF).
 */
 typedef enum               /* Line direction / Frame Direction */
 {                          /* -------------- / --------------- */
@@ -943,7 +941,9 @@ typedef struct _ImageInfo
     *client_data;            /* User-specified data to pass to coder */
 
   FILE
-    *file;                   /* If not null, stdio FILE to read image from */
+    *file;                   /* If not null, stdio FILE * to read image from
+                                (fopen mode "rb") or write image to (fopen
+                                mode "rb+"). */
 
   char
     magick[MaxTextExtent],   /* File format to read. Overrides file extension */

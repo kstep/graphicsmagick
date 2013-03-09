@@ -25,21 +25,6 @@ a file.
 <a href="#imp-opti">Options</a>
 </dt>
 
-<dt>
-<a href="#imp-envi">Environment</a>
-</dt>
-
-<dt>
-<a href="#imp-file">Configuration Files</a>
-</dt>
-
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </sect>
 </format>
@@ -161,16 +146,6 @@ Options, above.
 </sect>
 <im>
 
-<sect NAME="imp-envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="imp-file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
-
 <format type=man>
 <sect NAME="imp-also">SEE ALSO
 <p>
@@ -191,6 +166,5 @@ montage(1)
 </im>
 </utils>
 <im>
-<include file=copyright.imdoc>
 </im>
 </imdoc>

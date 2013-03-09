@@ -23,12 +23,6 @@ conjure - process a Magick Scripting Language (MSL) script
 <dt>
 <a href="#conj-msl">Magick Scripting Language</a>
 </dt>
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </sect>
 </format>
@@ -378,7 +372,6 @@ montage(1)
 </p>
 </sect>
 </format>
-<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

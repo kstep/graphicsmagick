@@ -3,7 +3,8 @@
 # Copyright (C) 2004-2012 GraphicsMagick Group
 # Test image processing
 # This script should be executed prior to Montage
-. ${srcdir}/utilities/tests/common.sh
+. ./common.shi
+. ${top_srcdir}/utilities/tests/common.sh
 
 # Number of tests we plan to execute
 test_plan_fn 59

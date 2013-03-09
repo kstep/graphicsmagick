@@ -1676,7 +1676,7 @@ DrawImage(Image *image,const DrawInfo *draw_info)
   MagickPassFail
     status;
 
-  unsigned long
+  size_t
     number_points;
 
   /*

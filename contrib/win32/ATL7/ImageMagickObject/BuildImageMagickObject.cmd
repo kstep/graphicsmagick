@@ -3,11 +3,14 @@ if {%1} == {} (
   (@echo -)
   (@echo BuildImageMagickObject debug ^| release ^| clean PATH_TO_ROOT NAME_OF_VISUALMAGICK)
   (@echo -)
-  (@echo  Example: BuildIt release ..\..\..\.. VisualMagick)
+  (@echo  Example: BuildImageMagickObject release ..\..\..\.. VisualMagick)
+  (@echo -)
+  (@echo Make sure to start a command shell suitably initialized for Visual Studio development)
+  (@echo In modern Visual Studio, vcvarsall.bat in the VC directory is used for that purpose ...)
+  (@echo    vcvarsall.bat x86 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64)
   (@echo -)
   goto :EOF
 )
-if not defined DevEnvDir (call vsvars32)
 set PATH_TO_ROOT=..\..\..\..
 if not {%2} == {} (
   set PATH_TO_ROOT=%2
@@ -49,6 +52,7 @@ if {%1}=={clean} (
   del /Q ImageMagickObject_p.c >nul 2>&1
   del /Q ImageMagickObject_i.c >nul 2>&1
   del /Q dlldata.c >nul 2>&1
+  del /Q ImageMagickObject.dll.manifest >nul 2>&1
   goto :EOF
 )
 copy %MAGICK_HOME%\*.mgk .\ >nul 2>&1
@@ -74,22 +78,21 @@ if {%1}=={debug} (
     (@echo Problem - the lib subdirectory of VisualMagick is missing important libraries)
     goto :EOF
   )
-  cl /LDd /EHsc /I%PATH_TO_ROOT%\ /Zi /D_DEBUG /MTd ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_DB_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_DB_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
+  cl /LDd /EHsc /I%PATH_TO_ROOT%\ /Zi /D_DEBUG /MTd ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_DB_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_DB_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /MANIFEST /IDLOUT:ImageMagickObject.idl
+  mt -manifest ImageMagickObject.dll.manifest -outputresource:ImageMagickObject.dll;2
 )
 if {%1}=={release} (
   if not exist %PATH_TO_MAGICK%\lib\CORE_RL_magick_.lib (
     (@echo Problem - the lib subdirectory of VisualMagick is missing important libraries)
     goto :EOF
   )
-  cl /LD /EHsc /I%PATH_TO_ROOT%\ /Zi /MT ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_RL_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_RL_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /IDLOUT:ImageMagickObject.idl
+  cl /LD /EHsc /I%PATH_TO_ROOT%\ /Zi /MT ImageMagickObject.cpp %PATH_TO_MAGICK%\lib\CORE_RL_*.lib %PATH_TO_MAGICK%\lib\IM_MOD_RL_*.lib ImageMagickObject.def winmm.lib wsock32.lib advapi32.lib comsvcs.lib ImageMagickObject.res /link /MANIFEST /IDLOUT:ImageMagickObject.idl
+  mt -manifest ImageMagickObject.dll.manifest -outputresource:ImageMagickObject.dll;2
 )
 if not exist ImageMagickObject.dll (
   (@echo Problem - the ImageMagickObject DLL is missing. It did not build correctly)
   goto :EOF
 )
-:copy %MAGICK_HOME%\*.dll .\quarantine\ >nul 2>&1
-:::::copy ImageMagickObject.dll \\Kinyani\D$\SOAPTests\
-:::::copy ImageMagickObject.pdb \\Kinyani\D$\SOAPTests\
 if {%1}=={x_debug} (
   move ImageMagickObject.dll .\quarantine\ >nul 2>&1
   move ImageMagickObject.pdb .\quarantine\ >nul 2>&1

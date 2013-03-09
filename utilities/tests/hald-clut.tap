@@ -2,7 +2,8 @@
 # -*- shell-script -*-
 # Copyright (C) 2004-2012 GraphicsMagick Group
 # Test hald CLUT operations
-. ${srcdir}/utilities/tests/common.sh
+. ./common.shi
+. ${top_srcdir}/utilities/tests/common.sh
 
 # Number of tests we plan to execute
 test_plan_fn 12

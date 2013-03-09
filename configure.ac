@@ -15,13 +15,10 @@ AC_PREREQ(2.69)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
-AC_CONFIG_MACRO_DIR([ltdl/m4])
-
-# Directory where AC_LIBOBJ replacement files are to be found.
-AC_CONFIG_LIBOBJ_DIR([ltdl])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Directory where autotools helper scripts lives.
-AC_CONFIG_AUX_DIR([ltdl/config])
+AC_CONFIG_AUX_DIR([config])
 
 # Include the TAP driver
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
@@ -196,6 +193,9 @@ AC_SUBST(MAN_DIR)
 # Get full paths to source and build directories
 srcdirfull="`cd $srcdir && pwd`"
 builddir="`pwd`"
+
+WinPathScript="${srcdirfull}/winpath.sh"
+AC_SUBST([WinPathScript])
 
 #
 # Compute variables useful for running uninstalled software
@@ -398,26 +398,14 @@ fi
 AC_SUBST(LFS_CPPFLAGS)
 
 #
-# Configure libtool & libltdl
+# Configure libtool
 #
 
 # Configure libtool
-dnl AC_DISABLE_SHARED
-dnl AC_ENABLE_STATIC
-dnl AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 LT_INIT([disable-shared win32-dll])
-dnl AC_PROG_LIBTOOL
 LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
-
-# Configure libltdl
-LT_CONFIG_LTDL_DIR([ltdl])
-LTDL_INIT([nonrecursive installable])
-# Substitute INCLTDL and LIBLTDL in the Makefiles
-#AC_SUBST(INCLTDL)
-#AC_SUBST(LIBLTDL)
-
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -460,19 +448,6 @@ if test "$build_modules" != 'no' ; then
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
-# Only use/depend on libtdl if we are building modules.  This is a
-# change from previous releases (prior to 1.3.17) which supported
-# loaded modules via libtdl if shared libraries were built.  of
-# whether modules are built or not.
-with_ltdl='no'
-if test "$build_modules" != 'no' ; then
-  with_ltdl='yes'
-fi
-
-AM_CONDITIONAL(WITH_LTDL, test "$with_ltdl" != 'no')
-if test "$with_ltdl" != 'no' ; then
-  AC_DEFINE(HasLTDL,1,Define if using libltdl to support dynamically loadable modules)
-fi
 
 # Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
@@ -1143,6 +1118,42 @@ AC_MSG_RESULT($UINTPTR_T)
 AC_SUBST(UINTPTR_T)
 AC_SUBST(UINTPTR_F)
 
+MAGICK_SIZE_T='none'
+MAGICK_SIZE_T_F='none'
+MAGICK_SSIZE_T='none'
+MAGICK_SSIZE_T_F='none'
+AC_MSG_CHECKING(for size_t format specification)
+if test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long
+then
+  # Normal case for LP32 and LP64
+  MAGICK_SIZE_T='unsigned long'
+  MAGICK_SIZE_T_F='"l"'
+  MAGICK_SSIZE_T='unsigned long'
+  MAGICK_SSIZE_T_F='"l"'
+elif test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long_long
+then
+  # Maybe a LLP64 architecture like WIN64
+  case "${build_os}" in
+    mingw* )
+      MAGICK_SIZE_T='unsigned long long'
+      MAGICK_SIZE_T_F='"I64"'
+      MAGICK_SSIZE_T='signed long long'
+      MAGICK_SSIZE_T_F='"I64"'
+    ;;
+    *)
+      MAGICK_SIZE_T='unsigned long long'
+      MAGICK_SIZE_T_F='"ll"'
+      MAGICK_SSIZE_T='signed long long'
+      MAGICK_SSIZE_T_F='"ll"'
+    ;;
+  esac
+fi
+AC_MSG_RESULT($MAGICK_SIZE_T_F)
+AC_SUBST(MAGICK_SIZE_T)
+AC_SUBST(MAGICK_SIZE_T_F)
+AC_SUBST(MAGICK_SSIZE_T)
+AC_SUBST(MAGICK_SSIZE_T_F)
+
 
 ########
 #
@@ -1485,6 +1496,48 @@ then
    fi
 fi
 AC_SUBST(LIB_TRIO)
+
+
+#
+# Optionally check for libltdl if using it is still enabled
+#
+# Only use/depend on libtdl if we are building modules.  This is a
+# change from previous releases (prior to 1.3.17) which supported
+# loaded modules via libtdl if shared libraries were built.  of
+# whether modules are built or not.
+have_ltdl='no'
+LIB_LTDL=''
+if test "$build_modules" != 'no'
+then
+  AC_MSG_CHECKING([for libltdl ])
+  AC_MSG_RESULT()
+  failed=0
+  passed=0
+  AC_CHECK_HEADER([ltdl.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_LIB([ltdl],[lt_dlinit],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],)
+  AC_MSG_CHECKING([if libltdl package is complete])
+  if test $passed -gt 0
+  then
+    if test $failed -gt 0
+    then
+      AC_MSG_RESULT([no -- some components failed test])
+      have_ltdl='no (failed tests)'
+    else
+      LIB_LTDL='-lltdl'
+      LIBS="$LIB_LTDL $LIBS"
+      AC_DEFINE(HasLTDL,1,[Define if using libltdl to support dynamically loadable modules])
+      AC_MSG_RESULT([yes])
+      have_ltdl='yes'
+    fi
+  else
+    AC_MSG_RESULT([no])
+  fi
+  if test "$have_ltdl" != 'yes'
+  then
+    AC_MSG_FAILURE([libltdl is required by modules build],[1])
+  fi
+fi
+AM_CONDITIONAL(WITH_LTDL, test "$have_ltdl" != 'no')
 
 #
 # Check for ZLIB
@@ -1928,7 +1981,7 @@ then
        failed=`expr $failed + 1`,)
   
     if test $passed -gt 0; then
-      for var in 5 4 2 '' ; do
+      for var in 7 6 5 4 2 '' ; do
         if test "x${var}" = 'x' ; then
           pnglib='png'
         else
@@ -3221,12 +3274,15 @@ if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then
    DELEGATES="$DELEGATES xfig"
    MAGICK_FEATURES="$MAGICK_FEATURES XFIG"
 fi
+if test "$have_xml"      = 'yes' ; then
+   DELEGATES="$DELEGATES xml"
+   MAGICK_FEATURES="$MAGICK_FEATURES XML"
+fi
 if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$build_modules" != 'no' || \
-   test "${native_win32_build}" = 'yes' ; then
+if test "$build_modules" != 'no' ; then
    MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
 fi
 # Remove extraneous spaces from output variables (asthetic)
@@ -3268,42 +3324,12 @@ fi
 # Build library dependency list for libMagick
 #
 
-# The with_ltdl variable is set to 'yes' if we will be linking against
-# libltdl.  We only link against libltdl if we are building coders and
-# filters as modules.
-
 # The build_modules variable is set to 'yes' if coders and filters are
-# to be built as modules.
-
-# This is kind of tricky since ${LIBLTDL} may reference a .la file
-# which represents a shared library which will be formally installed
-# (due to --enable-ltdl-install) or it may also reference an already
-# formally installed libltdl using -lltdl syntax.  We don't want to
-# care if the installed libltdl is built from the bundled libltdl, of
-# if it is already formally installed.
-
-# Libltdl ltdl/Makefile.inc supports automake conditionals
-# INSTALL_LTDL and CONVENIENCE_LTDL
-
-#echo "with_included_ltdl      = $with_included_ltdl"
-#echo "enable_ltdl_install     = $enable_ltdl_install"
-#echo "enable_ltdl_convenience = $enable_ltdl_convenience"
-
-MAGICK_LIBLTDL=''       # Libltdl for GraphicsMagick build
-MAGICK_API_LIBLTDL=''   # Libltdl for dependent application (API) build
-MAGICK_LTDLDEPS=''      # Extra libltdl dependencies
-if test "$with_ltdl" != 'no'
-then
-  MAGICK_API_LIBLTDL='-lltdl'
-  MAGICK_LIBLTDL=${LIBLTDL}
-  MAGICK_LTDLDEPS=${LTDLDEPS}
-fi
-AC_SUBST(MAGICK_LIBLTDL)
-AC_SUBST(MAGICK_LTDLDEPS)
+# to be built as modules.  This requires libltdl ($LIB_LTDL).
 
 if test "$build_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_LTDL $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
   MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
@@ -3329,7 +3355,7 @@ MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 MAGICK_API_CFLAGS=$CFLAGS
 MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_API_DEP_LIBS="$MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
+MAGICK_API_DEP_LIBS="$MAGICK_DEP_LIBS"
 MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_API_DEP_LIBS"
 
 MAGICK_API_DEP_LIBS=`echo $MAGICK_API_DEP_LIBS | sed -e 's/  */ /g'`

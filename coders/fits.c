@@ -617,7 +617,7 @@ ModuleExport void UnregisterFITSImage(void)
 */
 int InsertRowHDU(char *buffer, const char *data, int offset)
 {
-  int
+  size_t
     len;
 
   if (data == NULL)
@@ -625,7 +625,8 @@ int InsertRowHDU(char *buffer, const char *data, int offset)
   len = strlen(data);
   len = Min(len,80); /* Each card image is 80 bytes max */
 
-  if (len > FITS_BLOCK_SIZE-offset) len = FITS_BLOCK_SIZE-offset;
+  if (len > (size_t) (FITS_BLOCK_SIZE-offset))
+	len = FITS_BLOCK_SIZE-offset;
 
   (void) strncpy(buffer+offset,data,len);
   return offset +80;

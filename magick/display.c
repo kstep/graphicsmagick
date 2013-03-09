@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -5393,7 +5393,8 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
       /*
         Select image.
       */
-      if (chdir(resource_info->home_directory) != 0)
+      if ((strlen(resource_info->home_directory) > 0) &&
+          (chdir(resource_info->home_directory) != 0))
         {
           MagickXNoticeWidget(display,windows,"Unable to restore directory:",
                               resource_info->home_directory);
@@ -10299,9 +10300,9 @@ static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resou
 
       GetPathComponent(image->filename,HeadPath,path);
       GetPathComponent(image->filename,TailPath,filename);
-      if (chdir(path) != 0)
-        MagickXNoticeWidget(display,windows,"Unable to change to directory:",
-                            path);
+      if ((strlen(path) > 0) && (chdir(path) != 0))
+          MagickXNoticeWidget(display,windows,"Unable to change to directory:",
+                              path);
     }
   MagickXFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
@@ -12283,9 +12284,6 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
         SetErrorHandler(MagickXWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
-/*       (void) signal(SIGINT,MagickXSignalHandler); */
-/*       (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*       (void) signal(SIGTERM,MagickXSignalHandler); */
     }
   else
     {
@@ -12793,9 +12791,6 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
     }
-/*   (void) signal(SIGINT,MagickXSignalHandler); */
-/*   (void) signal(SIGSEGV,MagickXSignalHandler); */
-/*   (void) signal(SIGTERM,MagickXSignalHandler); */
   /*
     Initialize Image and Magnify X images.
   */
@@ -13866,7 +13861,8 @@ MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
   if (getcwd(working_directory,MaxTextExtent-1) == NULL)
     MagickFatalError(ConfigureFatalError,UnableToGetCurrentDirectory,
                      NULL);
-  if (chdir(resource_info->home_directory) != 0)
+  if ((strlen(resource_info->home_directory) > 0) &&
+      (chdir(resource_info->home_directory) != 0))
     {
       MagickFatalError(ConfigureFatalError,UnableToRestoreCurrentDirectory,
                        resource_info->home_directory);

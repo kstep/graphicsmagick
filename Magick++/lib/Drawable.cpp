@@ -290,7 +290,7 @@ void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
       p++;
     }
 
-  DrawBezier( context_, num_coords, coordinates );
+  DrawBezier( context_, (const unsigned long) num_coords, coordinates );
   delete [] coordinates;
 }
 Magick::DrawableBase* Magick::DrawableBezier::copy() const
@@ -800,7 +800,7 @@ void Magick::DrawablePolygon::operator()
       p++;
     }
 
-  DrawPolygon( context_, num_coords, coordinates );
+  DrawPolygon( context_, (const unsigned long) num_coords, coordinates );
   delete [] coordinates;
 }
 Magick::DrawableBase* Magick::DrawablePolygon::copy() const
@@ -840,7 +840,7 @@ void Magick::DrawablePolyline::operator()
       p++;
     }
 
-  DrawPolyline( context_, num_coords, coordinates );
+  DrawPolyline( context_, (const unsigned long) num_coords, coordinates );
   delete [] coordinates;
 }
 Magick::DrawableBase* Magick::DrawablePolyline::copy() const
@@ -1050,7 +1050,7 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
 void Magick::DrawableDashArray::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetStrokeDashArray( context_, _size, _dasharray );
+  DrawSetStrokeDashArray( context_, (const unsigned long) _size, _dasharray );
 }
 Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 {

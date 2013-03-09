@@ -71,6 +71,12 @@ Roberto de Deus Barbosa Murta
                 (-lat), which executes in linear rather than quadratic
                 time.
 
+Kenneth Xu
+
+                Contributed the implementation of 'gm batch', a simple
+                batch mode for GraphicsMagick.
+
+
 Former GraphicsMagick Contributors
 ==================================
 
@@ -195,7 +201,7 @@ Thomas R Crimmins
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2012 GraphicsMagick Group
+| Copyright (C) 2002 - 2013 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

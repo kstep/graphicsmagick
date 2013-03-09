@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -59,7 +59,8 @@ MagickReallocFunc ReallocFunc = realloc;
 %
 %  MagickAllocFunctions() provides a way for the user to supply a preferred
 %  free(), malloc(), and realloc() functions.  Otherwise the default system
-%  versions are used.
+%  versions are used.  If an alternative allocator is to be used, this
+%  function should be invoked prior to invoking InitializeMagick().
 %
 %  The format of the  MagickAllocFunctions method is:
 %
@@ -174,7 +175,7 @@ MagickExport void * MagickMalloc(const size_t size)
 %  alignment and ending at at least the requested alignment.
 %
 %  The requested alignment should be a power of 2 at least as large as
-%  sizeof(void *).
+%  sizeof a void pointer.
 % 
 %  NULL is returned if insufficient memory is available, the requested
 %  size is zero, or integer overflow was detected.
@@ -182,11 +183,18 @@ MagickExport void * MagickMalloc(const size_t size)
 %  This function is intended for allocating special-purpose buffers
 %  which benefit from specific alignment.
 %
+%  The allocated memory should only be freed using MagickFreeAligned()
+%  and may not be reallocated.
+%
 %  The format of the  MagickMallocAligned method is:
 %
 %      void * MagickMallocAligned(size_t alignment, const size_t size)
 %
 %  A description of each parameter follows:
+%
+%
+%    o alignment: The alignment of the base and size of the allocated
+%                 memory.
 %
 %    o size: The size of the memory in bytes to allocate.
 %
@@ -221,7 +229,7 @@ MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size
     alloc_size=(size+alignment-1)+sizeof(void *);
     if (alloc_size > size)
       {
-	if ((alloc_p = (MallocFunc)(alloc_size)) != NULL)
+	if ((alloc_p = ((MallocFunc)(alloc_size))) != NULL)
 	  {
 	    alligned_p=(void*) RoundUpToAlignment((magick_uintptr_t)alloc_p+
 						  sizeof(void *),alignment);
@@ -232,6 +240,68 @@ MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size
 #endif
 
   return alligned_p;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   M a g i c k M a l l o c A l i g n e d A r r a y                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickMallocAlignedArray() returns a pointer to a block of memory of
+%  sufficient size to support an array of elements of a specified size.
+%  The allocation's base address is an even multiple of the specified
+%  alignment.  The size of the buffer allocation is rounded up as required
+%  in order to consume a block of memory starting at least at the requested
+%  alignment and ending at at least the requested alignment.
+%
+%  NULL is returned if the required memory exceeds the range of size_t,
+%  the computed size is zero, or there is insufficient memory available.
+%
+%  This function is intended for allocating special-purpose buffers
+%  which benefit from specific alignment.
+%
+%  The allocated memory should only be freed using MagickFreeAligned()
+%  and may not be reallocated.
+%
+%  The format of the MagickMallocArray method is:
+%
+%      void *MagickMallocAlignedArray(const size_t alignment,
+%                                     const size_t count,
+%                                     const size_t size);
+%
+%  A description of each parameter follows:
+%
+%    o alignment: The alignment of the base and size of the allocated
+%                 memory.
+%
+%    o count: The number of elements in the array.
+%
+%    o size: The size of one array element.
+%
+*/
+MagickExport void *MagickMallocAlignedArray(const size_t alignment,
+                                            const size_t count,
+                                            const size_t size)
+{
+  size_t
+    allocation_size;
+
+  void
+    *allocation;
+
+  allocation = (void *) NULL;
+  allocation_size=MagickArraySize(count,size);
+
+  if (allocation_size)
+    allocation = MagickMallocAligned(alignment,allocation_size);
+
+  return allocation;
 }
 
 /*

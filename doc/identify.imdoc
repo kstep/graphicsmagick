@@ -1,4 +1,37 @@
 <imdoc>
+
+<!-- ------------------------------------------------------------------- -->
+<!-- GraphicsMagick.imdoc: combined pages of convert, composite, et al.  -->
+<!-- ------------------------------------------------------------------- -->
+<!-- Markup tags in this document are                                    -->
+<!--   <imdoc> (Identifies file as ImageMagick document source file)     -->
+<!--   <sect> name=section_name (section); remainder of line is title    -->
+<!--   <ss>   (subsection)                                               -->
+<!--   <opt>  (option)                                                   -->
+<!--   <abs>  (abstract of an option)                                    -->
+<!--   <p>    (regular print paragraph, not OK to nest)                  -->
+<!--   <pp>   (small print paragraph, not OK to nest)                    -->
+<!--   <sp>   (subparagraph, must be inside p or pp, OK to nest          -->
+<!--   <ul>   (== HTML ul)                                               -->
+<!--   <li>   (== HTML li)                                               -->
+<!--   <dl>   (== HTML dl)                                               -->
+<!--   <dt>   (== HTML dt, dt without a dd is OK)                        -->
+<!--   <dd>   (== HTML dd, dd without a dt is OK)                        -->
+<!--   <i>    (== HTML em)                                               -->
+<!--   <s>    (== HTML strong)                                           -->
+<!--   <tt>   (== HTML tt)                                               -->
+<!--   <bq>   (== HTML blockquote)                                       -->
+<!--   <pre>  (== HTML pre, not allowed in pp or sp)                     -->
+<!--   <utils apps=name,...> (which apps the enclosed lines pertain to)  -->
+<!--   <format type=html|tex|man>                                        -->
+<!--   <back>                                                            -->
+<!--   <home>                                                            -->
+<!--   <include file=filename>                                           -->
+<!--   <!-- (== HTML !--) comment, must not contain newlines, close with -->
+<!--                                                                     -->
+<!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>     -->
+<!-- ------------------------------------------------------------------- -->
+
 <utils apps=identify>
 <title>Identify</title>
 <gm>
@@ -24,13 +57,6 @@ identify - describe an image or image sequence.
 <a href="#ident-opti">Options</a>
 </dt>
 
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </sect>
 </format>
@@ -145,6 +171,5 @@ montage(1)
 </im>
 </utils>
 <im>
-<include file=copyright.imdoc>
 </im>
 </imdoc>

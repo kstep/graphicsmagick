@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -986,6 +986,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       (LocaleCompare(values,"true") == 0);
                     break;
                   }
+                if (LocaleCompare(keyword,"orientation") == 0)
+                  {
+                    image->orientation=StringToOrientationType(values);
+                    break;
+                  }
                 (void) SetImageAttribute(image,keyword,
                   *values == '{' ? values+1 : values);
                 break;
@@ -1356,7 +1361,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       length=(int) (1.01*packet_size*image->columns+12);
                       if (version != 0)
                         length=ReadBlobMSBLong(image);
-                      zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
+                      zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
                     }
                   if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
                     break;
@@ -1412,7 +1417,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       length=(int) (1.01*packet_size*image->columns+600);
                       if (version != 0)
                         length=ReadBlobMSBLong(image);
-                      bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
+                      bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
                     }
                   if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
                     break;
@@ -2050,6 +2055,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
+    if (image->orientation != UndefinedOrientation)
+      {
+        FormatString(buffer,"orientation=%s\n",
+                     OrientationTypeToString(image->orientation));
+        (void) WriteBlobString(image,buffer);
+      }
     /*
       Old MIFF readers (including GM 1.1) expect the ICC profile,
       followed by the IPTC profile, followed by any remaining
@@ -2271,7 +2282,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             length=zip_info.next_out-compress_pixels;
             if (length != 0)
               {
-                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlobMSBLong(image,(const magick_uint32_t) length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
           } while (zip_info.avail_in != 0);
@@ -2286,7 +2297,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 length=zip_info.next_out-compress_pixels;
                 if (length == 0)
                   break;
-                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlobMSBLong(image,(const magick_uint32_t) length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
               status=!deflateEnd(&zip_info);
@@ -2322,7 +2333,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             length=bzip_info.next_out-(char *) compress_pixels;
             if (length != 0)
               {
-                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlobMSBLong(image,(const magick_uint32_t) length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
           } while (bzip_info.avail_in != 0);
@@ -2338,7 +2349,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 length=bzip_info.next_out-(char *) compress_pixels;
                 if (length == 0)
                   break;
-                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlobMSBLong(image,(const magick_uint32_t) length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
               status=!BZ2_bzCompressEnd(&bzip_info);

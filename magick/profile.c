@@ -883,10 +883,10 @@ ProfileImage(Image *image,const char *name,unsigned char *profile,
 
           xform.source_profile=cmsOpenProfileFromMemTHR((cmsContext) &xform,
 							(unsigned char *) existing_profile,
-							existing_profile_length);
+							(cmsUInt32Number) existing_profile_length);
           xform.target_profile=cmsOpenProfileFromMemTHR((cmsContext) &xform,
 							(unsigned char *) profile,
-							length);
+							(cmsUInt32Number) length);
           if ((xform.source_profile == (cmsHPROFILE) NULL) ||
               (xform.target_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException3(ResourceLimitError,UnableToManageColor,

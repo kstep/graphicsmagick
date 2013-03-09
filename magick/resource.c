@@ -574,6 +574,13 @@ MagickExport void InitializeMagickResources(void)
       max_threads=1;
     omp_set_num_threads((int) max_threads);
     max_threads=omp_get_max_threads();
+    /*
+      Enable the dynamic adjustment of the number of threads up to the
+      value set by omp_set_num_threads(), but only if there is more
+      than one thread available.
+    */
+    if (getenv("OMP_DYNAMIC") == NULL)
+      omp_set_dynamic(max_threads > 1);
 #endif /* HAVE_OPENMP */
   }
 

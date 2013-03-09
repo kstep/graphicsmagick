@@ -141,7 +141,7 @@ Here is the simple benchmark script::
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2008-2012 GraphicsMagick Group
+| Copyright (C) 2008 - 2013 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

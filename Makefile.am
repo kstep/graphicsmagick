@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2011 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -16,7 +16,7 @@ topincludedir = @includedir@/GraphicsMagick
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
-ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
+ACLOCAL_AMFLAGS = -I m4
 
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
 
@@ -29,7 +29,6 @@ DISTCHECK_CONFIGURE_FLAGS=$(DISTCHECK_CONFIG_FLAGS)
 ## Make sure these will be cleaned even when they're not built by
 ## default.
 CLEANFILES = \
-	$(LTDL_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
 	$(TESTS_CLEANFILES) \
@@ -45,11 +44,9 @@ bin_SCRIPTS = \
 	$(WAND_BIN_SCRPTS)
 
 include_HEADERS =
-	$(LTDL_INSTALLHEADERS)
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(LIBLTDL_NOINST_HDRS) \
 	$(MAGICK_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
@@ -69,7 +66,7 @@ TEST_EXTENSIONS = .sh .tap
 
 # Tests with .tap extensions use the TAP protocol and TAP driver
 TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-	$(top_srcdir)/ltdl/config/tap-driver.sh
+	$(top_srcdir)/scripts/tap-driver.sh
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
@@ -95,6 +92,7 @@ XFAIL_TESTS = \
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2012 \
 	ChangeLog.2011 \
 	ChangeLog.2010 \
 	ChangeLog.2009 \
@@ -150,7 +148,6 @@ BUILT_SOURCES =
 MOSTLYCLEANFILES =
 
 include config/Makefile.am
-include ltdl/Makefile.inc
 include coders/Makefile.am
 include magick/Makefile.am
 include filters/Makefile.am
@@ -253,14 +250,14 @@ ptrcheck:
 	$(MAKE) MEMCHECK='valgrind --tool=exp-ptrcheck --quiet $(VALGRIND_EXTRA_OPTS)' check
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
+DISTDIRS = locale scripts www PerlMagick TclMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(\.pyc)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/\.hg)|(/\.#)|(/\.deps)|(\.pyc)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \

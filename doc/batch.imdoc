@@ -1,0 +1,207 @@
+<imdoc>
+<title>Batch</title>
+<gm>
+<sect NAME="batch">gm batch
+</gm>
+<im>
+<sect NAME="batch-top">NAME
+batch - execute multiple gm commands as a script
+</sect>
+<format type=html>
+<sect NAME="batch-contents">Contents
+
+<dl>
+<dt>
+<a href="#batch-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#batch-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#batch-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#batch-opti">Options</a>
+</dt>
+
+</dl>
+</format>
+</sect>
+
+<sect NAME="batch-syno">Synopsis
+
+<p>
+<s>gm batch</s> <s>[</s> <i>options ...</i> <s>]</s> <s>[</s> <i>script</i> <s>]</s></p>
+
+</sect>
+
+</im>
+
+<sect NAME="batch-desc">Description
+<p>
+<s>batch</s> executes an arbitary number of the utility commands
+(e.g. <s>convert</s>) in the form of a simple linear batch script in
+order to improve execution efficiency, and/or to allow use as a
+subordinate co-process under the control of an arbitrary script or
+program.</p>
+
+</sect>
+
+<sect NAME="batch-exam">Examples
+
+<p> To drive <s>'gm batch'</s> using a shell script (or a program
+written in any language), have the script/program send commands to 'gm
+batch' via its standard input.  Specify that standard input should be
+used by using <s>'-'</s> as the file name.  The following example
+converts all files matching '*.jpg' to TIFF format while rotating each
+file by 90 degrees and stripping all embedded profiles.  The shell
+script syntax is standard Unix shell:</p>
+
+<pre>
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \
+    +profile "'*'" "'$outfile'"
+  done | gm batch -echo on -feedback on -
+
+</pre>
+
+<p>
+We can accomplish the same as the previous example by putting all the
+commands in a text file and then specifying the name of the text file
+as the script to execute:</p>
+
+<pre>
+  for file in *.jpg
+  do
+    outfile=`basename $file .jpg`.tiff
+    echo convert -verbose "'$file'" -rotate 90 \
+    +profile "'*'" "'$outfile'"
+  done > script.txt
+  gm batch -echo on -feedback on script.txt
+
+</pre>
+
+</sect>
+<back>
+
+<!-- --------------------- Options ---------------------------------- -->
+
+<sect NAME="batch-opti">Options
+
+<p>
+Options are processed from left to right and must appear before any filename argument.</p>
+
+<!-- ------------ -echo ------------------------------------- -->
+
+<opt>-echo on|off</opt>
+
+<abs>command echo on or off</abs>
+
+<p>
+Specify <s>on</s> to enable echoing commands to standard output as
+they are read or <s>off</s> to disable.  The default is
+<s>off</s>.</p>
+
+<!-- ------------ -escape ------------------------------------- -->
+
+<opt>-escape unix|windows</opt>
+
+<abs>Parse using unix or windows syntax</abs>
+
+<p>
+Commands must be parsed from the input stream and escaping needs to be
+used to protect spaces or quoting characters in the input. Specify
+<s>unix</s> to use unix-style command line parsing or <s>windows</s>
+for Microsoft Windows command shell style parsing. The default depends
+on if the software is compiled for Microsoft Windows or for a
+Unix-type system (including Cygwin on Microsoft Windows).  It is
+recommended to use unix syntax because it is more powerful and more
+portable.</p>
+
+<!-- ------------ -fail ------------------------------------- -->
+
+<opt>-fail text</opt>
+
+<abs>text to print if a command fails</abs>
+
+<p>
+When feedback is enabled, this specifies the text to print when the
+command fails.  The default text is <s>FAIL</s>.</p>
+
+<!-- ------------ -feedback ------------------------------------- -->
+
+<opt>-feedback on|off</opt>
+
+<abs>enable error feedback</abs>
+
+<p>
+Print text (see -pass and -fail options) feedback after each
+command to indicate the result, the default is <s>off</s>.</p>
+
+<!-- ------------ -help ------------------------------------- -->
+
+<opt>-help</opt>
+
+<p>
+Prints batch command help.</p>
+
+<!-- ------------ -pass ------------------------------------- -->
+
+<opt>-pass text</opt>
+
+<abs>text to print if a command passes</abs>
+
+<p>
+When feedback is enabled, this specifies the text to print when the
+command passes.  The default text is <s>PASS</s>.</p>
+
+<!-- ------------ -prompt ------------------------------------- -->
+
+<opt>-prompt text</opt>
+
+<abs>Prompt text to use for command line</abs>
+
+<p>
+If no filename argument was specified, a simple command prompt appears
+where you may enter GraphicsMagick commands.  The default prompt is
+<s>GM></s>.  Use this option to change the prompt to something else.</p>
+
+<!-- ------------ -prompt ------------------------------------- -->
+
+<opt>-stop-on-error on|off</opt>
+
+<abs>Specify if command processing stops on error</abs>
+
+<p>
+Normally command processing continues if a command encounters an
+error.  Specify <s>-stop-on-error on</s> to cause processing to quit
+immediately on error.</p>
+
+</sect>
+<im>
+<back>
+
+<format type=man>
+<sect NAME="batch-also">SEE ALSO
+<p>
+GraphicsMagick(1),
+animate(1),
+compare(1),
+conjure(1),
+convert(1),
+display(1),
+identify(1),
+import(1),
+mogrify(1),
+montage(1)
+</p>
+</sect>
+</format>
+</im>
+</sect>
+</imdoc>

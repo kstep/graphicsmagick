@@ -28,21 +28,6 @@ compare - compare two images.
 <a href="#comp-opti">Options</a>
 </dt>
 
-<dt>
-<a href="#comp-envi">Environment</a>
-</dt>
-
-<dt>
-<a href="#comp-file">Configuration Files</a>
-</dt>
-
-<dt>
-<a href="#auth">Authors</a>
-</dt>
-
-<dt>
-<a href="#copy">Copyright</a>
-</dt>
 </dl>
 </format>
 </sect>
@@ -144,16 +129,6 @@ Options, above.
 <im>
 <back>
 
-<sect NAME="comp-envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="comp-file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
-
 <format type=man>
 <sect NAME="comp-also">SEE ALSO
 <p>
@@ -170,7 +145,6 @@ montage(1)
 </p>
 </sect>
 </format>
-<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

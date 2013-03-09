@@ -421,7 +421,6 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
 
   size_t
     allocated_pixels,
-    length,
     row_bytes;
 
   unsigned char
@@ -430,6 +429,7 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
 
   unsigned long
     bytes_per_pixel,
+	length,
     number_pixels,
     scanline_length,
     width;
@@ -683,12 +683,12 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   length=(q-pixels);
   if (bytes_per_line > 200)
     {
-      (void) WriteBlobMSBShort(image,length);
+      (void) WriteBlobMSBShort(image,(const magick_uint16_t) length);
       length+=2;
     }
   else
     {
-      (void) WriteBlobByte(image,(long) length);
+      (void) WriteBlobByte(image,(const magick_uint8_t) length);
       length++;
     }
   while (q != pixels)
@@ -1598,7 +1598,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0x1f2);
-      (void) WriteBlobMSBShort(image,profile_length+4);
+      (void) WriteBlobMSBShort(image,(const magick_uint16_t) profile_length+4);
       (void) WriteBlobString(image,"8BIM");
       (void) WriteBlob(image,profile_length,
                        profile_info);
@@ -1611,7 +1611,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
-      (void) WriteBlobMSBShort(image,profile_length+4);
+      (void) WriteBlobMSBShort(image,(const magick_uint16_t) profile_length+4);
       (void) WriteBlobMSBLong(image,0x00000000UL);
       (void) WriteBlob(image,profile_length,
                        profile_info);
@@ -1655,7 +1655,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       if (blob == (unsigned char *) NULL)
         return(False);
       (void) WriteBlobMSBShort(image,PictJPEGOp);
-      (void) WriteBlobMSBLong(image,length+154);
+      (void) WriteBlobMSBLong(image,(const magick_uint16_t) length+154);
       (void) WriteBlobMSBShort(image,0x0000);
       (void) WriteBlobMSBLong(image,0x00010000UL);
       (void) WriteBlobMSBLong(image,0x00000000UL);

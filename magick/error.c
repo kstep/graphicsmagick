@@ -560,6 +560,7 @@ MagickExport void _MagickError(const ExceptionType error,const char *reason,
       GetLocaleExceptionMessage(error,description));
 }
 #endif
+#if !defined(PREFIX_MAGICK_SYMBOLS)
 #undef MagickError
 MagickExport void MagickError(const ExceptionType error,const char *reason,
   const char *description)
@@ -568,6 +569,7 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
     (*error_handler)(error,GetLocaleExceptionMessage(error,reason),
       GetLocaleExceptionMessage(error,description));
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -609,6 +611,7 @@ MagickExport void _MagickFatalError(const ExceptionType error,const char *reason
   errno=0;
 }
 #endif
+#if !defined(PREFIX_MAGICK_SYMBOLS)
 #undef MagickFatalError
 MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
   const char *description)
@@ -618,6 +621,7 @@ MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
       GetLocaleExceptionMessage(error,description));
   errno=0;
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -657,6 +661,7 @@ MagickExport void _MagickWarning(const ExceptionType warning,const char *reason,
       GetLocaleExceptionMessage(warning,description));
 }
 #endif
+#if !defined(PREFIX_MAGICK_SYMBOLS)
 #undef MagickWarning
 MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
   const char *description)
@@ -665,6 +670,7 @@ MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
     (*warning_handler)(warning,GetLocaleExceptionMessage(warning,reason),
       GetLocaleExceptionMessage(warning,description));
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -833,6 +839,7 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 %
 %
 */
+#if !defined(PREFIX_MAGICK_SYMBOLS)
 #undef ThrowException
 MagickExport void ThrowException(ExceptionInfo *exception,
   const ExceptionType severity,const char *reason,const char *description)
@@ -855,6 +862,7 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   exception->signature=0UL;
   return;
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

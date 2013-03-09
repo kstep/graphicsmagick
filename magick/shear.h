@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003-2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -17,6 +17,8 @@ extern "C" {
 
 extern MagickExport Image
   *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
+  *AutoOrientImage(const Image *image,const OrientationType current_orientation,
+                   ExceptionInfo *exception),
   *RotateImage(const Image *,const double,ExceptionInfo *),
   *ShearImage(const Image *,const double,const double,ExceptionInfo *);
 

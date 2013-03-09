@@ -1402,7 +1402,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 */
 static void RemoveTemporaryInputFile(ImageInfo *image_info)
 {
-  int
+  size_t
     filename_length;
 
   /*
@@ -1417,7 +1417,7 @@ static void RemoveTemporaryInputFile(ImageInfo *image_info)
     separate files.
   */
   filename_length=strlen(image_info->filename);
-  if ((filename_length > 4) &&
+  if ((filename_length > 4U) &&
       (LocaleCompare(image_info->filename+filename_length-4,".mpc") == 0))
     {
       char remove_name[MaxTextExtent];

@@ -1,4 +1,4 @@
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004 - 2012 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -24,7 +24,8 @@ WAND_INCLUDE_HDRS = \
 	wand/drawing_wand.h \
 	wand/magick_wand.h \
 	wand/pixel_wand.h \
-	wand/wand_api.h
+	wand/wand_api.h \
+	wand/wand_symbols.h
 
 # Headers which are installed
 wandinc_HEADERS = \

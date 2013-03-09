@@ -90,20 +90,6 @@ display - display an image on any workstation running X
 <li>
 <a href="#disp-impa">User Preferences</a></li>
 
-<li>
-<a href="#disp-envi">Environment</a></li>
-
-<li>
-<a href="#disp-file">Configuration Files</a></li>
-
-<li>
-<a href="#disp-ackn">Acknowledgement</a></li>
-
-<li>
-<a href="#auth">Authors</a></li>
-
-<li>
-<a href="#copy">Copyright</a></li>
 </ul>
 
 </sect>
@@ -2762,44 +2748,6 @@ are considered a precious resource, use them with discretion.</dd>
 
 <im>
 
-<sect NAME="disp-envi">Environment
-<include file=environment.imdoc>
-</sect>
-<back>
-
-<sect NAME="disp-file">Configuration Files
-<include file=config_files.imdoc>
-</sect>
-<back>
-
-<sect NAME="disp-ackn">Acknowledgements
-
-<p>
-The <s>MIT X Consortium</s> for making network transparent graphics a
-reality.</p>
-
-<p>
-<i>Peder Langlo</i>, <s>Hewlett Packard</s>, Norway, made hundreds of suggestions
-and bug reports. Without Peder, <s>GraphicsMagick</s> would not be nearly
-as useful as it is today.</p>
-
-<p>
-<i>Rod Bogart</i> and <i>John W. Peterson</i>, <s>University of Utah</s>.
-Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.</p>
-
-<p>
-<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
-implementation of Alan Paeth's image rotation algorithm.</p>
-
-<p>
-<i>David Pensak</i>, <s>E. I. du Pont de Nemours and Company</s>, for
-providing a computing environment that made this program possible.</p>
-
-<p>
-<i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>. The
-spatial subdivision color reduction algorithm is based on his Img software.</p>
-</sect>
-<back>
 <format type=man>
 <sect NAME="disp-also">SEE ALSO
 <p>
@@ -2815,7 +2763,6 @@ mogrify(1),
 montage(1)
 </p>
 </sect>
-<include file=copyright.imdoc>
 </im>
 </utils>
 </imdoc>

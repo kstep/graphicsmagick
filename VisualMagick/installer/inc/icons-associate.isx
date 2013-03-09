@@ -14,6 +14,6 @@ Name: "{group}\GraphicsMagick For Windows Page"; Filename: "{app}\www\INSTALL-wi
 ; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\GraphicsMagick License"; Filename: "{app}\Copyright.txt"
 #ifdef MSVCProprietary
-  Name: "{group}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"
-  Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
+  Name: {group}\GraphicsMagick Display {#MagickARCHDescription}; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"
+  Name: {userdesktop}\GraphicsMagick Display {#MagickARCHDescription}; Filename: "{#MagickAppDirectory}\gmdisplay.exe"; IconFilename: "{#MagickAppDirectory}\GraphicsMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
 #endif

@@ -4,7 +4,8 @@
 # Test I/O using pipes
 # Note that running a test command containing a pipe blows up
 # test_command_fn so we will only check final status.
-. ${srcdir}/utilities/tests/common.sh
+. ./common.shi
+. ${top_srcdir}/utilities/tests/common.sh
 
 # Number of tests we plan to execute
 test_plan_fn 8

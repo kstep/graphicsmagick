@@ -1,6 +1,7 @@
 #!/bin/sh
 # Copyright (C) 2004-2012 GraphicsMagick Group
-. ${srcdir}/tests/common.shi
+. ./common.shi
+. ${top_srcdir}/tests/common.shi
 
 # Test program
 rwblob=./rwblob
@@ -50,7 +51,7 @@ done
 # EPDF format
 for type in ${check_types}
 do
-  test_command_fn "EPDF ${type}" -F 'PS TIFF' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
+  test_command_fn "EPDF ${type}" -F 'PS' ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" EPDF
 done
 
 # EPT format

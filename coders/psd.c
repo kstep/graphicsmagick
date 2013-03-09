@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2012 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -692,7 +692,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read PSD raster colormap.
           */
-          if (!AllocateImageColormap(image,length/3))
+          if (!AllocateImageColormap(image,(const unsigned long) (length/3UL)))
             {
               if(logging)
                 {
@@ -1015,8 +1015,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (logging)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "      unsupported data: length=%ld",
-                                        (long) size-combinedlength);
+                                        "      unsupported data: length=%"
+                                        MAGICK_SIZE_T_F "u",
+                                        (MAGICK_SIZE_T) size-combinedlength);
                 }
               for (j=0; j < (long) (size-combinedlength); j++)
                 (void) ReadBlobByte(image);
@@ -1810,7 +1811,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     
     if ( iptc_profile != 0 )
       {
-        (void) WriteBlobMSBLong( image, iptc_profile_length );
+        (void) WriteBlobMSBLong( image, (const magick_uint32_t) iptc_profile_length );
         (void) WriteBlob( image, iptc_profile_length, iptc_profile );
       }
     else

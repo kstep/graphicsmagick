@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 GraphicsMagick Group
+  Copyright (C) 2005,2012 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -18,11 +18,11 @@ typedef pthread_key_t MagickTsdKey_t;
 #elif defined(MSWINDOWS)
 typedef DWORD MagickTsdKey_t;
 #else
-/* FIXME: This type should be based on magick_uintptr_t */
-typedef unsigned long * MagickTsdKey_t;
+typedef void *MagickTsdKey_t;
 #endif
 
 extern MagickExport MagickPassFail
+  MagickTsdKeyCreate2(MagickTsdKey_t *key,MagickFreeFunc destructor),
   MagickTsdKeyCreate(MagickTsdKey_t *key),
   MagickTsdKeyDelete(MagickTsdKey_t key),
   MagickTsdSetSpecific(MagickTsdKey_t key, const void *value);

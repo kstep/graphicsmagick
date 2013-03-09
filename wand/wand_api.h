@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+#include <wand/wand_symbols.h>
 #include <magick/api.h>
 
 #if defined(_VISUALC_)

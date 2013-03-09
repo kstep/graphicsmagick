@@ -505,7 +505,9 @@ static inline ViewInfo
 {
   return image->default_views->views[omp_get_thread_num()];
 }
-#define AccessDefaultCacheView(image) AccessDefaultCacheViewInlined(image)
+#if !defined(AccessDefaultCacheView)
+#  define AccessDefaultCacheView(image) AccessDefaultCacheViewInlined(image)
+#endif
 
 
 /*
@@ -830,22 +832,23 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
     if ((x >= 0) && ((x+columns) <= cache_info->columns) &&
         (y >= 0) && ((y+rows) <= cache_info->rows))
       {
-        MagickPassFail
-          status;
-
         /*
           Pixel request is inside cache extents.
         */
-        if (IsNexusInCore(cache_info,nexus_info))
-          return(pixels);
-        status=ReadCachePixels(cache_info,nexus_info,exception);
-        if (cache_info->indexes_valid)
-          status &= ReadCacheIndexes(cache_info,nexus_info,exception);
-        if (status == MagickFail)
+        if (!IsNexusInCore(cache_info,nexus_info))
           {
-            ThrowException(exception,CacheError,UnableToReadPixelCache,
-                           image->filename);
-            return((const PixelPacket *) NULL);
+            MagickPassFail
+              status;
+
+            status=ReadCachePixels(cache_info,nexus_info,exception);
+            if (cache_info->indexes_valid)
+              status &= ReadCacheIndexes(cache_info,nexus_info,exception);
+            if (status == MagickFail)
+              {
+                ThrowException(exception,CacheError,UnableToReadPixelCache,
+                               image->filename);
+                pixels = (PixelPacket *) NULL;
+              }
           }
         return(pixels);
       }
@@ -864,7 +867,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
   q=pixels;
   for (v=0; v < (long) rows; v++)
     {
-      for (u=0; u < (long) columns; u+=length)
+      for (u=0; u < (long) columns; u+=(long) length)
         {
           length=Min(cache_info->columns-(x+u),columns-u);
           if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
@@ -918,7 +921,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
           /*
             Transfer a run of pixels.
           */
-          p=AcquireCacheNexus(image,x+u,y+v,length,1,image_nexus,exception);
+          p=AcquireCacheNexus(image,x+u,y+v,(const unsigned long) length,1,image_nexus,exception);
           if (p == (const PixelPacket *) NULL)
             break;
           (void) memcpy(q,p,length*sizeof(PixelPacket));
@@ -1904,14 +1907,8 @@ GetCacheNexus(Image *image,const long x,const long y,
               const unsigned long columns,const unsigned long rows,
               NexusInfo *nexus_info,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
   PixelPacket
     *pixels;
-
-  MagickPassFail
-    status;
 
   /*
     Transfer pixels from the cache.
@@ -1924,20 +1921,33 @@ GetCacheNexus(Image *image,const long x,const long y,
     SetCacheNexus().
   */
   pixels=SetCacheNexus(image,x,y,columns,rows,nexus_info,exception);
-  if (pixels == (PixelPacket *) NULL)
-    return((PixelPacket *) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  if (IsNexusInCore(cache_info,nexus_info))
-    return(pixels);
-  status=ReadCachePixels(cache_info,nexus_info,exception);
-  if (cache_info->indexes_valid)
-    status&=ReadCacheIndexes(cache_info,nexus_info,exception);
-  if (status == MagickFail)
+  if (pixels != (PixelPacket *) NULL)
     {
-      ThrowException(exception,CacheError,UnableToGetPixelsFromCache,
-                     image->filename);
-      return((PixelPacket *) NULL);
+      CacheInfo
+        *cache_info;
+
+      cache_info=(CacheInfo *) image->cache;
+      assert(cache_info->signature == MagickSignature);
+      /*
+        If underlying image pixels are not already suited for being
+        updated in-place, then make a working copy in our cache view
+        buffer.
+      */
+      if (!IsNexusInCore(cache_info,nexus_info))
+        {
+          MagickPassFail
+            status;
+
+          status=ReadCachePixels(cache_info,nexus_info,exception);
+          if (cache_info->indexes_valid)
+            status&=ReadCacheIndexes(cache_info,nexus_info,exception);
+          if (status == MagickFail)
+            {
+              ThrowException(exception,CacheError,UnableToGetPixelsFromCache,
+                             image->filename);
+              pixels=(PixelPacket *) NULL;
+            }
+        }
     }
   return(pixels);
 }
@@ -3759,42 +3769,49 @@ SetCacheNexus(Image *image,const long x,const long y,
               const unsigned long columns,const unsigned long rows,
               NexusInfo *nexus_info,ExceptionInfo *exception)
 {
-  CacheInfo
-    *cache_info;
-
-  magick_uint64_t
-    number_pixels;
-
-  magick_off_t
-    offset;
-
-  RectangleInfo
-    region;
+  PixelPacket
+    *pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (ModifyCache(image,exception) == MagickFail)
-    return((PixelPacket *) NULL);
-  /*
-    Validate pixel cache geometry.
-  */
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  offset=y*(magick_off_t) cache_info->columns+x;
-  if (offset < 0)
-    return((PixelPacket *) NULL);
-  number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
-  offset+=(rows-1)*(magick_off_t) cache_info->columns+columns-1;
-  if ((magick_uint64_t) offset >= number_pixels)
-    return((PixelPacket *) NULL);
-  /*
-    Return pixel cache.
-  */
-  region.x=x;
-  region.y=y;
-  region.width=columns;
-  region.height=rows;
-  return(SetNexus(image,&region,nexus_info,exception));
+  pixels=(PixelPacket *) NULL;
+  if (ModifyCache(image,exception) != MagickFail)
+    {
+      magick_off_t
+        offset;
+
+      CacheInfo
+        *cache_info;
+
+      /*
+        Validate pixel cache geometry.
+      */
+      assert(image->cache != (Cache) NULL);
+      cache_info=(CacheInfo *) image->cache;
+      offset=y*(magick_off_t) cache_info->columns+x;
+      if (offset >= 0)
+        {
+          magick_uint64_t
+            number_pixels;
+          number_pixels=(magick_uint64_t) cache_info->columns*cache_info->rows;
+          offset+=(rows-1)*(magick_off_t) cache_info->columns+columns-1;
+          if ((magick_uint64_t) offset < number_pixels)
+            {
+              RectangleInfo
+                region;
+
+              /*
+                Return pixel cache.
+              */
+              region.x=x;
+              region.y=y;
+              region.width=columns;
+              region.height=rows;
+              pixels=SetNexus(image,&region,nexus_info,exception);
+            }
+        }
+    }
+  return pixels;
 }
 
 /*
@@ -4119,10 +4136,10 @@ SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->pixels == (PixelPacket *) NULL)
     {
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-			    "Failed to allocate %lu bytes for nexus staging "
+			    "Failed to allocate %" MAGICK_SIZE_T_F "u bytes for nexus staging "
 			    "(number pixels=%" MAGICK_OFF_F "u, region width=%lu, "
 			    "region height=%lu, cache columns=%lu)!",
-			    (unsigned long) length,
+			    (MAGICK_SIZE_T) length,
 			    number_pixels,
 			    nexus_info->region.width,
 			    nexus_info->region.height,
@@ -4469,11 +4486,12 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
 				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
-				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      "d.  Wrote %" MAGICK_SSIZE_T_F "d rather than %"
+                                      MAGICK_SIZE_T_F "u bytes (%s).",
 				      y,
 				      row_offset,
-				      (long) bytes_written,
-				      (unsigned long) length,
+				      (MAGICK_SSIZE_T) bytes_written,
+				      (MAGICK_SIZE_T) length,
 				      strerror(errno));
 		break;
 	      }
@@ -4630,12 +4648,14 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
 		< (ssize_t) length)
 	      {
 		(void) LogMagickEvent(CacheEvent,GetMagickModule(),
-				      "Failed to write row %ld at file offset %" MAGICK_OFF_F
-				      "d.  Wrote %ld rather than %lu bytes (%s).",
+				      "Failed to write row %ld at file offset %"
+                                      MAGICK_OFF_F "d.  Wrote %"
+                                      MAGICK_SSIZE_T_F "d rather than %"
+                                      MAGICK_SIZE_T_F "u bytes (%s).",
 				      y,
 				      row_offset,
-				      (long) bytes_written,
-				      (unsigned long) length,
+				      (MAGICK_SSIZE_T) bytes_written,
+				      (MAGICK_SIZE_T) length,
 				      strerror(errno));
 		break;
 	      }

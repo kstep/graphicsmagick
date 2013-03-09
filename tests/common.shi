@@ -1,7 +1,5 @@
 # -*- shell-script -*-
-SRCDIR=`dirname $0`
-SRCDIR=`cd $SRCDIR && pwd`
-TOPSRCDIR=`cd $srcdir && pwd`
-. ./common.shi
-. $TOPSRCDIR/scripts/tap-functions.shi
-cd tests || exit 1
+subdir=tests
+SRCDIR=${top_srcdir}/${subdir}
+. ${top_srcdir}/scripts/tap-functions.shi
+cd ${subdir} || exit 1

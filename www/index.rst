@@ -2,9 +2,9 @@
 .. This text is in reStucturedText format, so it may look a bit odd.
 .. See http://docutils.sourceforge.net/rst.html for details.
 
-=======================================
+======================================
 GraphicsMagick Image Processing System
-=======================================
+======================================
 
 .. meta::
    :description: GraphicsMagick is a robust collection of tools and libraries to read,
@@ -26,7 +26,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.17 (Released October 13, 2012) `download release`__
+Current Release              1.3.18 (Released March 9, 2013) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `visit Mercurial repository`__
 ===========================  ========================================================
@@ -42,6 +42,7 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _`GNU GPL` :  http://www.fsf.org/licenses/licenses.html
 .. _ImageMagick : http://www.imagemagick.org/
 .. _Open Source Initiative : http://www.opensource.org/
+.. _`MIT License` : http://opensource.org/licenses/MIT
 .. _OSSCC : http://www.osscc.net/en/index.html
 .. _OpenMP : http://www.openmp.org/
 .. _`see the multi-thread benchmark results` : OpenMP.html
@@ -83,9 +84,9 @@ fly, making it suitable for building dynamic Web
 applications. GraphicsMagick may be used to resize, rotate, sharpen,
 color reduce, or add special effects to an image and save the result
 in the same or differing image format. Image processing operations are
-available from the command line, as well as through C, C++, Perl, PHP,
-Python, Tcl, Ruby, or Windows COM programming interfaces. With some
-modification, language extensions for ImageMagick may be used.
+available from the command line, as well as through C, C++, Lua, Perl,
+PHP, Python, Tcl, Ruby, or Windows COM programming interfaces. With
+some modification, language extensions for ImageMagick may be used.
 
 GraphicsMagick is originally derived from ImageMagick_ 5.5.2 as of
 November 2002 but has been completely independent of the ImageMagick
@@ -119,9 +120,9 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
   * GM is available for free, and may be used to support both open and
     proprietary applications.
   
-  * GM is distributed under an X11-style license ("MIT License"),
-    approved by the `Open Source Initiative`_, recommended for use
-    by the `OSSCC`_, and compatible with the `GNU GPL`_.
+  * GM is distributed under an X11-style license (`MIT License`_),
+    approved by the `Open Source Initiative`_, recommended for use by
+    the `OSSCC`_, and compatible with the `GNU GPL`_.
 
   * GM source code is managed in Mercurial_, a distributed source
     control management tool which supports management of local
@@ -158,5 +159,5 @@ Here are just a few examples of what GraphicsMagick can do:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2012
+Copyright |copy| GraphicsMagick Group 2002 - 2013
 

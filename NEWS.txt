@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on October 13, 2012
+This file was last updated on March 9, 2013
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -14,6 +14,125 @@ ChangeLog file for full details.
 
 .. contents::
   :local:
+
+1.3.18 (March 10, 2013)
+==========================
+
+.. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
+
+Special Issues:
+
+  * Due to `GCC bug 53967`_, several key agorithms (e.g. convolution)
+    may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
+    enabled for floating point math (`-mfpmath=sse`) if the GCC option
+    `-frename-registers` is used. Default 32-bit builds do not
+    experience the problem since they use '387 math.  It is not clear
+    in what version of GCC this problem started but it was not noticed
+    by the developers until the GCC 4.6 timeframe.  Other compilers do
+    not suffer from this bug.
+
+Security Fixes:
+
+  * None.
+
+Bug fixes:
+
+  * Fixed bug with format substitutions if input string ends with a
+    single '%'.
+
+  * BMP: Fixed an old bug with decoding chromaticity primaries.
+
+  * PNG: Fixed reading of interlaced images.  Fix reading of sub-8-bit
+    palette and grayscale images.  Some PNG sub-formats were written
+    incorrectly.  Fix crash in PNG8 writer if image colors happened to
+    be non-zero but image was not actually colormapped.
+
+  * PNG: Configure script now also searches for libpng versions 16 and
+    17.
+
+  * TIFF: Fix a crash which was noticed when writing RGBA separated
+    (planar) format.
+
+  * `--enable-symbol-prefix` was not prefixing all of the C
+    symbols. Some core C library functions were not prefixed.  This
+    option applies to the Wand library API as well now.
+
+  * C API: When input is from a user-provided file descriptor, the
+    file position is restored after reading the file header bytes.
+    Previously the file position was rewound to the beginning of the
+    file.  This allows reading embedded image data from the current
+    offset in a file, and allows continuing to use the stream after
+    GraphicsMagick has returned the image.
+
+  * C API: It is now possible to invoke CloseBlob() multiple times.
+
+  * display: Display was supposed to respond to +/-usePixmap, but was
+    not. It was responding to +/-use_pixmap.  Now it responds to both.
+
+  * Windows/VisualMagick: Fix building GraphicsMagick with Intel ICC
+    compiler driven by Visual Studio Professional 2012.
+
+  * Windows: Avoid a crash and produce a useful diagnostic if
+    Ghostscript is needed but not yet installed.
+
+
+New Features:
+
+  * GM utility: New 'batch' command was contributed by Kenneth Xu
+    which supports executing any number of other GM utility
+    sub-commands in a single invokation in a sort of "batch" script.
+    Input may be piped from standard input, from a specified file, or
+    from a 'GM >' command prompt.  This utilities front-end allows any
+    other program/script to drive 'gm' using a co-process model and
+    speeds up execution by eliminating utility start-up/shut-down
+    time.
+
+  * WIN64 (64-bit Windows): Windows 64-bit is now officially supported.
+
+  * convert/mogrify: Now support -auto-orient to automatically rotate
+    the image upright for viewing based on its current orientation
+    setting.  Also support -orient to support setting the current
+    image orientation.  Please note that the orientation property of
+    EXIF profiles is not yet updated so the EXIF profile will be wrong
+    after using -auto-orient.
+
+  * C API: AutoOrientImage(), new New function to automatically orient
+    the image so that it is upright for normal viewing.
+
+  * Wand API: MagickGetImagePage()/MagickSetImagePage(), new functions
+    to support getting and setting the image page size and offsets.
+
+  * PNG: Added PNG48 and PNG64 support. Added PNG00 support (png
+    encoder that inherits its color-type and bit-depth from the input,
+    if the input was a PNG datastream).
+
+Feature improvements:
+
+  * GraphicsMagick TAP tests may now be run stand-alone using Perl's
+    'prove' TAP test driver.
+
+Performance Improvements:
+
+  * Detection of glob specifications in file names is more efficient.
+
+Windows Delegate Updates:
+
+  * None.
+
+Behavior Changes:
+
+  * ltdl: Libltdl is no longer bundled.  Libltdl must be previously
+    installed on the system in order to build the modules
+    configuration.
+
+  * AppendImages() now converts subsequent images to the colorspace of
+    the first image, and no longer converts the first image to RGB.
+    Instead, it is assumed the user knows what she is doing.
+
+  * SetImageColorRegion() no longer automatically converts the image
+    to RGB.  The user is responsible for assuring that the provided
+    color is in the same colorspace as the image.
+
 
 1.3.17 (October 13, 2012)
 ==========================
@@ -66,9 +185,9 @@ New Features:
 
 Feature improvements:
 
-  * -lat: The adaptive threshold algorithm is replaced with a new
-     algorithm which scales linearly (rather than quadratically) with
-     area size.
+  * `-lat`: The adaptive threshold algorithm is replaced with a new
+    algorithm which scales linearly (rather than quadratically) with
+    area size.
 
   * Tests: Test suite is re-written to use TAP-based tests.
 
@@ -118,7 +237,7 @@ Security Fixes:
 Bug fixes:
 
   * SWT: SWT reader suffered from a number of implementation errors
-         which caused it not to work any more.  Works again.
+    which caused it not to work any more.  Works again.
 
   * XBM: Fix memory leak observed when reading file in 'ping' mode.
 
@@ -130,11 +249,11 @@ Bug fixes:
     'ssize_t' are declared.  This is necessary since
     MagickExtentImage() uses these types as part of its definition.
 
-  * +repage was not working because parser was insisting that it
+  * `+repage` was not working because parser was insisting that it
     should include an argument.
 
   * -units was scaling existing resolution the wrong way around
-     (i.e. multiplying rather than dividing).
+    (i.e. multiplying rather than dividing).
 
   * PerlMagick: Fix compilation with Perl 5.16.
 
@@ -2109,4 +2228,4 @@ The objectives of GraphicsMagick are to:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2012
+Copyright |copy| GraphicsMagick Group 2002 - 2013

@@ -356,7 +356,7 @@ int status;
   {    
     magick_size = ReadBlob(orig, (Size<16384)?Size:16384, cache_block);
     zip_info.next_in = cache_block;
-    zip_info.avail_in = magick_size;    
+    zip_info.avail_in = (uInt) magick_size;    
 
     while(zip_info.avail_in>0)
     {

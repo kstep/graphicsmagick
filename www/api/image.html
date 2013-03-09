@@ -27,7 +27,6 @@
 <li><a href="../README.html">Install</a></li>
 <li><a href="../Hg.html">Source</a></li>
 <li><a href="../NEWS.html">News</a> </li>
-<li><a href="https://sourceforge.net/tracker/?group_id=73485" target="top_">Bugs</a></li>
 <li><a href="../utilities.html">Utilities</a></li>
 <li><a href="../programming.html">Programming</a></li>
 <li><a href="../reference.html">Reference</a></li>
@@ -774,7 +773,8 @@ MagickPassFail SetImageColorRegion( <a class="reference external" href="../api/t
 <h2>Description</h2>
 <p>SetImageColorRegion() sets the red, green, blue and opacity components
 of each pixel in the specified region to those from a specified pixel
-value.</p>
+value.  Please note that it is assumed that the pixel value is in
+the same colorspace as the image.</p>
 <p>The format of the SetImageColorRegion method is:</p>
 <pre class="literal-block">
 MagickPassFail SetImageColorRegion( <a class="reference external" href="../api/types.html#image">Image</a> *image, long x, long y, unsigned long width,
