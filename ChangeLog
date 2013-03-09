@@ -1,3 +1,7 @@
+2013-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh, www/index.rst: Prepare for 1.3.18 release.
+
 2013-03-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (DisplayImageCommand): display is supposed to
