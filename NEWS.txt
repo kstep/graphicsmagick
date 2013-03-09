@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.18 (March 9, 2013)
+1.3.18 (March 10, 2013)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
