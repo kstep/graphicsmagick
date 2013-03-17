@@ -47,11 +47,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#building-under-cygwin" id="id5">Building under Cygwin</a></li>
-<li><a class="reference internal" href="#building-under-mingw-msys" id="id6">Building under MinGW &amp; MSYS</a></li>
-<li><a class="reference internal" href="#dealing-with-configuration-failures" id="id7">Dealing with configuration failures</a></li>
-<li><a class="reference internal" href="#makefile-build-targets" id="id8">Makefile Build Targets</a></li>
-<li><a class="reference internal" href="#build-install" id="id9">Build &amp; Install</a></li>
-<li><a class="reference internal" href="#verifying-the-build" id="id10">Verifying The Build</a></li>
+<li><a class="reference internal" href="#building-under-mingw-msys" id="id6">Building under MinGW &amp; MSYS</a><ul>
+<li><a class="reference internal" href="#cross-compilation-on-unix-linux-host" id="id7">Cross-compilation On Unix/Linux Host</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dealing-with-configuration-failures" id="id8">Dealing with configuration failures</a></li>
+<li><a class="reference internal" href="#makefile-build-targets" id="id9">Makefile Build Targets</a></li>
+<li><a class="reference internal" href="#build-install" id="id10">Build &amp; Install</a></li>
+<li><a class="reference internal" href="#verifying-the-build" id="id11">Verifying The Build</a></li>
 </ul>
 </div>
 <div class="section" id="archive-formats">
@@ -844,9 +847,45 @@ installation layout (e.g. <tt class="docutils literal"><span class="pre">C:\Grap
 <tt class="docutils literal"><span class="pre">C:\GraphicsMagick\lib</span></tt>, <tt class="docutils literal"><span class="pre">C:\GraphicsMagick\share</span></tt>, etc.). Paths
 which may be embedded in libraries and configuration files are
 transformed into Windows paths so they don't depend on MSYS.</p>
+<div class="section" id="cross-compilation-on-unix-linux-host">
+<h2><a class="toc-backref" href="#id7">Cross-compilation On Unix/Linux Host</a></h2>
+<p>Given a modern and working MinGW32 or mingw-w64 installation, it is
+easy to cross-compile GraphicsMagick from a Unix-type host to produce
+Microsoft Windows executables.</p>
+<p>This incantation produces a static WIN32 <cite>gm.exe</cite> executable on an
+Ubuntu Linux host with the i686-w64 cross-compiler installed:</p>
+<pre class="literal-block">
+./configure '--host=i686-w64-mingw32' '--disable-shared'
+</pre>
+<p>and this incantation produces a static WIN64 <cite>gm.exe</cite> executable on an
+Ubuntu Linux host with the x86_64-w64 cross-compiler installed:</p>
+<pre class="literal-block">
+./configure '--host=x86_64-w64-mingw32' '--disable-shared'
+</pre>
+<p>For a full-fledged GraphicsMagick program, normally one will want to
+pre-install or cross-compile the optional libraries that
+GraphicsMagick may depend on and install them where the cross-compiler
+will find them, or add extra <cite>CPPFLAGS</cite> and <cite>LDFLAGS</cite> options so that
+the compiler searches for header files and libraries in the correct
+place.</p>
+<p>Configuring for building with shared libraries (libGraphicsMagick,
+libGraphicsMagickWand, and libGraphicsMagick++ DLLs) and modules
+(coders as DLLs) is also supported by the cross-builds.  A cross-built
+libtool libltdl needs to be built in advance in order to use the
+<cite>--with-modules</cite> modules option.</p>
+<p>After configuring the software for cross-compilation, the software is
+built using <cite>make</cite> as usual and everything should be as with native
+compilation except that <cite>make check</cite> is likely not available (testing
+might be possible on build system via WINE, not currently
+tested/supported by GraphicsMagick authors).</p>
+<p>Use of the <cite>DESTDIR</cite> approach as described in the <a class="reference internal" href="#build-install">Build &amp; Install</a>
+section is recommended in order to install the build products into a
+formal directory tree before preparing to copy onto the Windows target
+system (e.g. by packaging via an installer).</p>
+</div>
 </div>
 <div class="section" id="dealing-with-configuration-failures">
-<h1><a class="toc-backref" href="#id7">Dealing with configuration failures</a></h1>
+<h1><a class="toc-backref" href="#id8">Dealing with configuration failures</a></h1>
 <p>While configure is designed to ease installation of GraphicsMagick, it
 often discovers problems that would otherwise be encountered later
 when compiling GraphicsMagick. The configure script tests for headers
@@ -882,7 +921,7 @@ configure output and a description of what you expected to see (and
 why) so the failure you are observing can be identified and resolved.</p>
 </div>
 <div class="section" id="makefile-build-targets">
-<h1><a class="toc-backref" href="#id8">Makefile Build Targets</a></h1>
+<h1><a class="toc-backref" href="#id9">Makefile Build Targets</a></h1>
 <p>Once GraphicsMagick is configured, these standard build targets are
 available from the generated Makefiles:</p>
 <blockquote>
@@ -913,7 +952,7 @@ an 'uninstall' target.</blockquote>
 </blockquote>
 </div>
 <div class="section" id="build-install">
-<h1><a class="toc-backref" href="#id9">Build &amp; Install</a></h1>
+<h1><a class="toc-backref" href="#id10">Build &amp; Install</a></h1>
 <p>Now that GraphicsMagick is configured, type</p>
 <pre class="literal-block">
 make
@@ -931,7 +970,7 @@ make DESTDIR=/my/dest/dir install
 </pre>
 </div>
 <div class="section" id="verifying-the-build">
-<h1><a class="toc-backref" href="#id10">Verifying The Build</a></h1>
+<h1><a class="toc-backref" href="#id11">Verifying The Build</a></h1>
 <p>To confirm your installation of the GraphicsMagick distribution was
 successful, ensure that the installation directory is in your executable
 search path and type</p>

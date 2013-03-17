@@ -1,3 +1,8 @@
+2013-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* INSTALL-unix.txt: Add a section about building Windows binaries
+	by cross-compiling from a Unix/Linux system.
+
 2013-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac, magick/magick_types.h.in: Fix issues noticed when
