@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2012 GraphicsMagick Group
+# Copyright (C) 2003-2013 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -1077,7 +1077,7 @@ then
   UINT64_T='unsigned long long'
   UINT64_F='"ll"'
 fi
-case "${build_os}" in
+case "${host_os}" in
   mingw* )
     UINT64_F='"I64"'
     ;;
@@ -1133,7 +1133,7 @@ then
 elif test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long_long
 then
   # Maybe a LLP64 architecture like WIN64
-  case "${build_os}" in
+  case "${host_os}" in
     mingw* )
       MAGICK_SIZE_T='unsigned long long'
       MAGICK_SIZE_T_F='"I64"'
