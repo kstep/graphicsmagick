@@ -1,3 +1,10 @@
+2013-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Revert use of
+	omp_set_dynamic() since it caused a severe performance regression
+	when doing a -stepthreads benchmark or when the number of OpenMP
+	threads is set via OMP_NUM_THREADS.
+
 2013-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* INSTALL-unix.txt: Add a section about building Windows binaries
