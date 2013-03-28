@@ -195,7 +195,7 @@ but ssh also provides its own way to enable compression on a
 site-by-site basis (e.g. via .ssh/config).  For example an entry in
 .ssh/config will enable use of compression::
 
-  Host graphicsmagick.hg.sourceforge.net
+  Host hg.code.sf.net
     Compression yes
 
 Email Notifications
