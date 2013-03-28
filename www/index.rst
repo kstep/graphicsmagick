@@ -21,7 +21,7 @@ GraphicsMagick Image Processing System
 
 .. _download GraphicsMagick release : http://sourceforge.net/projects/graphicsmagick/files/
 .. _`download development snapshots` : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/
-.. _`visit Mercurial repository`: http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
+.. _`visit Mercurial repository`: http://sourceforge.net/p/graphicsmagick/code/
 
 .. _programming : programming.html
 

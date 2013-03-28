@@ -1,3 +1,11 @@
+2013-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/Hg.rst, www/index.rst: Update SourceForge Mercurial
+	repository location (see
+	http://hg.code.sf.net/p/graphicsmagick/code) due to project
+	"upgrade".  For the moment there are old and new
+	repositories. Changes will be pushed to the new repository.
+
 2013-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources): Revert use of

@@ -22,7 +22,7 @@ GraphicsMagick Mercurial
 
 .. _Mercurial : http://mercurial.selenic.com/
 .. _TortoiseHg : http://tortoisehg.bitbucket.org/
-.. _`GraphicsMagick repository at SourceForge` : http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
+.. _`GraphicsMagick repository at SourceForge` : http://sourceforge.net/p/graphicsmagick/code/
 
 .. contents::
 
@@ -61,7 +61,7 @@ Cloning the Mercurial Repository
 To get the tree and place it in a sub-directory of your current working
 directory, issue the command::
 
-  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
+  hg clone http://hg.code.sf.net/p/graphicsmagick/code GM
 
 Selecting a version of the code
 ========================================
@@ -158,7 +158,7 @@ The repository hierarchy is as follows:
 3. Stable
 
   The stable repository is available via http at
-  "http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/".
+  "http://hg.code.sf.net/p/graphicsmagick/code".
   Any changes in the unstable development repository are pushed to
   the stable repository (by me) once any necessary adjustments have
   been made and the software test suite has passed.
@@ -168,7 +168,7 @@ you may use these steps:
 
 1. Clone the stable respository at SourceForge::
 
-     hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
+     hg clone http://hg.code.sf.net/p/graphicsmagick/code GM
 
 2. Adjust your local repository path default to use the unstable repository.
 
