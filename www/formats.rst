@@ -22,6 +22,7 @@ GraphicsMagick Supported Formats
 .. _color : color.html
 .. _CALS : http://www.fileformat.info/format/cals/egff.htm
 .. _CGM : http://www.fileformat.info/format/cgm/egff.htm
+.. _CIN : motion-picture.html
 .. _DICOM : http://dicom.nema.org/
 .. _DICONDE : http://www.geinspectiontechnologies.com/en/products/software/diconde.html
 .. _DPX : motion-picture.html
@@ -99,6 +100,9 @@ image formats.
    | CALS_        | R    | Continuous Acquisition    | Specified in MIL-R-28002 and MIL-PRF-28002.      |
    |              |      | and Life-cycle Support    | Standard blueprint archive format as used by the |
    |              |      | Type 1 image              | US military to replace microfiche.               |
+   +--------------+------+---------------------------+--------------------------------------------------+
+   | CIN_         | R    | Kodak Cineon              | Kodak Cineon Log format (4.5 draft).             |
+   |              |      |                           | Precursor to SMPTE DPX_                          |
    +--------------+------+---------------------------+--------------------------------------------------+
    | CGM_         | R    | Computer Graphics         | Requires ralcgm_ to render CGM files.            |
    |              |      | Metafile                  |                                                  |

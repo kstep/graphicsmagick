@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
-<title>GraphicsMagick Motion Picture Features</title>
+<title>GraphicsMagick Cineon and SMTPE DPX Support</title>
 <meta content="Describes GraphicsMagick's support for Cineon and SMPTE DPX formats. " name="description" />
 <meta content="GraphicsMagick, Cineon, DPX, SMPTE 268M, Motion Picture" name="keywords" />
 <link rel="stylesheet" href="docutils-articles.css" type="text/css" />
@@ -34,8 +34,8 @@
 <li><a href="reference.html">Reference</a></li>
 </ul>
 </div>
-<div class="document" id="graphicsmagick-motion-picture-features">
-<h1 class="title">GraphicsMagick Motion Picture Features</h1>
+<div class="document" id="graphicsmagick-cineon-and-smtpe-dpx-support">
+<h1 class="title">GraphicsMagick Cineon and SMTPE DPX Support</h1>
 
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
@@ -60,106 +60,238 @@
 <li><a class="reference internal" href="#animating-a-sequence" id="id14">Animating A Sequence</a></li>
 <li><a class="reference internal" href="#displaying-one-image-frame" id="id15">Displaying One Image Frame</a></li>
 <li><a class="reference internal" href="#viewing-a-sequence" id="id16">Viewing A Sequence</a></li>
+<li><a class="reference internal" href="#using-the-batch-capability" id="id17">Using the Batch capability</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#options-and-attributes" id="id17">Options And Attributes</a><ul>
-<li><a class="reference internal" href="#command-options" id="id18">Command options</a></li>
-<li><a class="reference internal" href="#dpx-attributes" id="id19">DPX Attributes</a></li>
+<li><a class="reference internal" href="#options-and-attributes" id="id18">Options And Attributes</a><ul>
+<li><a class="reference internal" href="#command-options" id="id19">Command options</a></li>
+<li><a class="reference internal" href="#dpx-attributes" id="id20">DPX Attributes</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="introduction">
 <h1><a class="toc-backref" href="#id1">Introduction</a></h1>
-<p>Features have been added to <a class="reference external" href="index.html">GraphicsMagick</a> 1.2 (and later) to make it
-more suitable for processing images used by the motion picture (film and
-high-definition) industry. In particular, industrial strength support for
-<a class="reference external" href="http://www.smpte.org/">SMPTE</a> DPX Version 2.0 (<a class="reference external" href="http://www.smpte.org/">SMPTE</a> 268M-2003) has been added for
-<a class="reference external" href="index.html">GraphicsMagick</a> 1.2. Legacy 10-bit Kodak Cineon is also supported. A new
-logarithmic RGB space based on Kodak's Cineon log definition has been
-added to support images which use a logarithmic density encoding (with
-range of 0 to 2.048) according to Kodak specifications. Support for
-legacy Kodak 4.5 Cineon format has been improved.</p>
-<p><a class="reference external" href="index.html">GraphicsMagick</a>'s DPX support has already been put to use in the
-industry. It was used to perform 16-bit TIFF to DPX conversion for
-<a class="reference external" href="http://en.wikipedia.org/wiki/Christopher_Reeve">Christopher Reeve</a>'s last film &quot;<a class="reference external" href="http://www.everyonesherodvd.com/flash/ehero.html">Everyone's Hero</a>&quot;. While this may not
-be <a class="reference external" href="http://en.wikipedia.org/wiki/Christopher_Reeve">Christopher Reeve</a>'s most memorable work, the film's images turned
-out great, and the kids are sure to enjoy the film.</p>
-<p>The modern motion picture industry usually shoots on film and then
-uses a machine known as a <em>datacine</em> (e.g. <a class="reference external" href="http://www.dft-film.com/scanners/spirit_4k.php">Spirit 4K DataCine</a> or
-Cintel DSX) or a <em>scanner</em> (e.g. <a class="reference external" href="http://www.filmlight.ltd.uk/">Northlight Scanner</a> or
-<a class="reference external" href="http://www.lasergraphics.com/">Lasergraphics</a> Director) to convert each film image into an
-individual image file. An alternative to this is to use a high
-definition CCD camera such as the <a class="reference external" href="http://www.grassvalley.com/products/cameras/viper/">Grass Valley Viper</a> or the
-Panavision Genesis to capture images to uncompressed files directly. A
-rather inferior approach is to use a video high definition compressed
-format like HDCAM and convert each frame to a file for processing.</p>
-<p>Images scanned from film are usually in either a log colorspace similar
-to Cineon Log (10 bits per sample is most common), or in a linear format
-(16 bits per sample is common). Some cameras (such as the <a class="reference external" href="http://www.grassvalley.com/products/cameras/viper/">Grass Valley
-Viper</a>) use log encoding similar to Cineon Log. Log encoding has the
-advantage that fewer bits are necessary to cover the extended dynamic
-range of film, and that the log encoding approximates the density
-characteristics of film (approximately linear when log encoded).</p>
-<p>While there is some continued use of the legacy Kodak Cineon format due
-to existing equipment and software, the standard image file format for
-motion picture frames is <a class="reference external" href="http://www.smpte.org/">SMPTE</a> DPX (<a class="reference external" href="http://www.smpte.org/">SMPTE</a> 268M-2003). This format is
-somewhat similar to the Kodak Cineon format, but has the advantage that
-it is an industry standard rather than a vendor standard. DPX files are
-practically always uncompressed. The design of DPX places header content
-at fixed offsets, and the image raster data offsets may be computed, so
-DPX files may be read or updated without rewriting the entire file.</p>
+<p>GraphicsMagick supports legacy Legacy 10-bit Kodak Cineon format as
+well as high-grade support for <a class="reference external" href="http://www.smpte.org/">SMPTE</a> DPX Version 2.0 (<a class="reference external" href="http://www.smpte.org/">SMPTE</a>
+268M-2003).  SMPTE DPX RGB and YCbCr colorspaces are supported.  The
+DPX implementation supports 8, 10, 12, and 16 bits/sample and any
+arbitrary image pixel size.  The Cineon implementation supports 8 and
+10 bits/sample.</p>
 <p>Film images are usually captured at <em>2K</em> resolution (82 pixels/mm),
 <em>4K</em> resolution (164 pixels/mm), or even <em>8K</em> resolution (328
-pixels/mm), where the actual resolution values approximate the horizontal
-dimension of the image. A table of <a class="reference external" href="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/">typical pixel resolutions</a> for various
-film sizes may be found on the <a class="reference external" href="http://www.digitalintermediates.org/">Digital Intermediates</a> site. File sizes may
-be quite large and range in size from 8MB to as much as 180MB. The common
+pixels/mm), where the actual resolution values approximate the
+horizontal dimension of the image. A table of <a class="reference external" href="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/">typical pixel
+resolutions</a> for various film sizes may be found on the <a class="reference external" href="http://blog.surrealroad.com//">Surreal
+Road</a> site (table reproduced here for convenience). File sizes may be
+quite large and range in size from 8MB to as much as 180MB. The common
 10-bit <em>2K</em> format consumes 12MB of disk while a 10-bit <em>4K</em> scan
-consumes 50MB of disk. A typical movie has an average of 144K frames (at
-24 frames per second) so just one movie consumes terabytes of storage.
-Businesses which specialize in handling digital intermediates may have
-available on-line storage ranging from several tens of terabytes to
-several hundred terabytes. While <em>2K</em> has been the standard working
-resolution due to storage requirements and processing time, recently
-there is a trend to scanning at <em>4K</em> resolution since most experts say
-that this is the resolution necessary to capture the full resolution of a
-35mm frame (but some claim more!). IMAX film (10X the area of 35mm film!)
-can likely support <em>21K</em> resolution once someone builds a machine
-capable of doing so but is currently scanned at <em>8K</em> resolution. Some
-shops scan at <em>4K</em> but then reduce the image to <em>2K</em> as the working
-format so that the full resolution is available for later use, but the
-processing of the feature may be done on a normal <em>2K</em> schedule. An
-alternative is to do the work at <em>2K</em> but record a record of all the
-changes so that the changes may be re-played to obtain similar results at
-<em>4K</em>.</p>
-<p>The end result of the effort of encoding motion picture images to digital
-image files is to have a digital master which does not degrade over time
-and which has captured the maximum available information from the
-original film print. This digital master may be targeted toward producing
-film prints for showing in a theater, used to create DVDs, used as a
-master for <em>digital cinema</em> for viewing in suitably equipped theaters,
-or used to support television broadcasts.</p>
-<p>Processing film images is a specialty business. Many business exist which
-offer specialized software and hardware to process film images. Common
-tasks are <em>color grading</em> (adjusting color for a correct film print),
-dust busting, and compositing. While <a class="reference external" href="index.html">GraphicsMagick</a> could (with some
-effort) be used to accomplish many of these things it can never expect to
-compete in these specialized areas. <a class="reference external" href="index.html">GraphicsMagick</a> lacks the high-quality
-graphical user interface necessary for a colorist or artist to interact
-with a sequence of images. <a class="reference external" href="index.html">GraphicsMagick</a> lacks the experienced and
-dedicated team necessary to assure the desired results with particular
-media.</p>
+consumes 50MB of disk.</p>
+<table border="1" class="docutils">
+<caption>Standard data resolutions</caption>
+<colgroup>
+<col width="57%" />
+<col width="13%" />
+<col width="18%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Format</th>
+<th class="head">Picture
+aspect
+ratio</th>
+<th class="head">Standard
+pixel
+resolution</th>
+<th class="head">Pixel
+aspect
+ratio</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Apple iPod video</td>
+<td class="decimal">1.33</td>
+<td>320×240</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>Apple iPhone video</td>
+<td class="decimal">1.5</td>
+<td>480×320</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>Sony PlayStationPortable</td>
+<td class="decimal">1.76</td>
+<td>480×272</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>SD video (PAL, DV)</td>
+<td class="decimal">1.33</td>
+<td>720×576</td>
+<td class="decimal">1.067</td>
+</tr>
+<tr><td>SD video (NTSC, DV)</td>
+<td class="decimal">1.33</td>
+<td>720×486</td>
+<td class="decimal">0.9</td>
+</tr>
+<tr><td>SD video (PAL, square pixels)</td>
+<td class="decimal">1.33</td>
+<td>768×576</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>SD video (NTSC, square pixels)</td>
+<td class="decimal">1.33</td>
+<td>648×486</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>DVD video (NTSC, 4:3)</td>
+<td class="decimal">1.33</td>
+<td>720×480</td>
+<td class="decimal">0.9</td>
+</tr>
+<tr><td>DVD video (PAL, 4:3)</td>
+<td class="decimal">1.33</td>
+<td>720×576</td>
+<td class="decimal">1.067</td>
+</tr>
+<tr><td>DVD video (NTSC, 16:9)</td>
+<td class="decimal">1.78</td>
+<td>720×480</td>
+<td class="decimal">1.185</td>
+</tr>
+<tr><td>DVD video (PAL, 16:9)</td>
+<td class="decimal">1.78</td>
+<td>720×576</td>
+<td class="decimal">1.69</td>
+</tr>
+<tr><td>Blu-ray</td>
+<td class="decimal">1.78</td>
+<td>1920×1080</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>HD video &#64;720</td>
+<td class="decimal">1.78</td>
+<td>1280×720</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>HD video &#64;1080 (certain types)</td>
+<td class="decimal">1.78</td>
+<td>1440×1080</td>
+<td class="decimal">1.33</td>
+</tr>
+<tr><td>HD video &#64;1080</td>
+<td class="decimal">1.78</td>
+<td>1920×1080</td>
+<td class="decimal">1.0</td>
+</tr>
+<tr><td>DVC Pro HD &#64;59.94i</td>
+<td class="decimal">1.78</td>
+<td>1280×1080</td>
+<td class="decimal">1.5</td>
+</tr>
+<tr><td>16mm</td>
+<td class="decimal">1.37</td>
+<td>1712×1240</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Super-16</td>
+<td class="decimal">1.65</td>
+<td>2048×1240</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>“Academy” aperture (2k)</td>
+<td class="decimal">1.37</td>
+<td>1828×1332</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>“Academy” aperture (4k)</td>
+<td class="decimal">1.37</td>
+<td>3656×2664</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Cinemascope (Squeezed, 2k)</td>
+<td class="decimal">2.35</td>
+<td>1828×1556</td>
+<td class="decimal">2.00</td>
+</tr>
+<tr><td>Cinemascope (Squeezed, 4k)</td>
+<td class="decimal">2.35</td>
+<td>3656×2664</td>
+<td class="decimal">2.00</td>
+</tr>
+<tr><td>Cinemascope (Unsqueezed, 2k)</td>
+<td class="decimal">2.35</td>
+<td>2048×872</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Cinemascope (Unsqueezed, 4k)</td>
+<td class="decimal">2.35</td>
+<td>3656×1556</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Full Aperture (2k)</td>
+<td class="decimal">1.33</td>
+<td>2048×1556</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Full Aperture (4k)</td>
+<td class="decimal">1.33</td>
+<td>4096×3112</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>8-perf “VistaVision” (3k)</td>
+<td class="decimal">1.5</td>
+<td>3072×2048</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>8-perf “VistaVision” (6k)</td>
+<td class="decimal">1.5</td>
+<td>6144×4096</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Red (16:9, 4k)</td>
+<td class="decimal">1.78</td>
+<td>4096×2304</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Red (2:1, 4k)</td>
+<td class="decimal">2.0</td>
+<td>4096×2048</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Digital Cinema (2k)</td>
+<td class="decimal">1.9</td>
+<td>2048×1080</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>Digital Cinema (4k)</td>
+<td class="decimal">1.9</td>
+<td>4096×2160</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>UHDTV (&quot;4k&quot;)</td>
+<td class="decimal">1.78</td>
+<td>3840×2160</td>
+<td class="decimal">1.00</td>
+</tr>
+<tr><td>UHDTV (&quot;8k&quot;)</td>
+<td class="decimal">1.78</td>
+<td>7860×4320</td>
+<td class="decimal">1.00</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="applications">
 <h1><a class="toc-backref" href="#id2">Applications</a></h1>
-<p>The strength of <a class="reference external" href="index.html">GraphicsMagick</a> versus specialized proprietary software
-are its cost (absolutely free!), open source availability (user is able
-to fix software flaws or tailor software to meet specific needs), general
-purpose image processing capabilities, deep image capabilities (up to
-32-bits per sample), excellent performance, platform independence, lack
-of encumbering usage licenses, and robust implementation. Examples of
-areas where <a class="reference external" href="index.html">GraphicsMagick</a> may be used are:</p>
+<p>The strength of GraphicsMagick versus specialized proprietary software
+are its cost (absolutely free!), open source availability (user is
+able to fix software flaws or tailor software to meet specific needs),
+general purpose image processing capabilities, deep image capabilities
+(up to 32-bits per sample), excellent performance, platform
+independence, lack of encumbering usage licenses, and robust
+implementation. Examples of areas where GraphicsMagick may be used
+are:</p>
 <blockquote>
 <ul class="simple">
 <li>View the image on a display.</li>
@@ -174,21 +306,15 @@ areas where <a class="reference external" href="index.html">GraphicsMagick</a> m
 <li>Text annotations</li>
 <li>Compositions</li>
 <li>Drawing on images (for example drawing markers on image)</li>
-<li>Conversion to and from other formats (e.g. Kodak Cineon, TIFF, JPEG, SGI,</li>
-<li>Postscript, PNG, and PNM)</li>
+<li>Conversion to and from other formats (e.g. Kodak Cineon, TIFF, JPEG, SGI,
+Postscript, PNG, and PNM)</li>
 </ul>
 </blockquote>
-<p><a class="reference external" href="index.html">GraphicsMagick</a> performs well when compared with other software. Since it
-is free and portable, it may be installed on any available system with no
-license fees. For example, if a studio has a computing cluster of several
-hundred Linux, SGI IRIX, Solaris, FreeBSD, or Mac OS X systems, then
-<a class="reference external" href="index.html">GraphicsMagick</a> may be installed across all systems and used for any
-desired purpose.</p>
-<p><a class="reference external" href="index.html">GraphicsMagick</a>'s DPX file format support is very comprehensive. It goes
-beyond the DPX format support in other applications by striving to
-implement the complete DPX specification rather than just a few commonly
-used sub-formats. The capabilities of <a class="reference external" href="index.html">GraphicsMagick</a>'s DPX support are as
-follows:</p>
+<p>GraphicsMagick's DPX file format support is very comprehensive. It
+goes beyond the DPX format support in other applications by striving
+to implement the complete DPX specification rather than just a few
+commonly used sub-formats. The capabilities of GraphicsMagick's DPX
+support are as follows:</p>
 </div>
 <div class="section" id="dpx-features">
 <h1><a class="toc-backref" href="#id3">DPX features</a></h1>
@@ -197,8 +323,8 @@ follows:</p>
 <blockquote>
 <ul class="simple">
 <li>Anything which can be read, can also be written.</li>
-<li>All DPX header information (including the user specific area) are stored as
-image attributes and restored when the image is written.</li>
+<li>All DPX header information (including the user specific area) are
+stored as image attributes and restored when the image is written.</li>
 <li>Image source header information is updated appropriately.</li>
 </ul>
 </blockquote>
@@ -210,8 +336,8 @@ image attributes and restored when the image is written.</li>
 <li>Linear RGB</li>
 <li>Cineon Log RGB (default density range = 2.048)</li>
 <li>Grayscale (Luma)</li>
-<li>Rec. 601 and Rec. 709 YCbCr (4:4:4 and 4:2:2). Below-black and above-white
-values are clipped.</li>
+<li>Rec. 601 and Rec. 709 YCbCr (4:4:4 and 4:2:2). Below-black and
+above-white values are clipped.</li>
 </ul>
 </blockquote>
 </div>
@@ -235,55 +361,56 @@ values are clipped.</li>
 <ul class="simple">
 <li>Composite video.</li>
 <li>Floating point formats (32 and 64 bits)</li>
-<li>Depth channel (not supportable within <a class="reference external" href="index.html">GraphicsMagick</a>).</li>
+<li>Depth channel (not supportable within GraphicsMagick).</li>
 <li>Studio (reduced range) YCbCr and RGB.</li>
 </ul>
 </blockquote>
-<p>The software is written efficiently so the performance when reading and
-writing files is limited by the performance of the file I/O subsystem.
-The software is designed to avoid seeking while reading and writing so
-that files may be read and written over pipes, or via a user provided
-file descriptor.</p>
+<p>The software is written efficiently so the performance when reading
+and writing files is limited by the performance of the file I/O
+subsystem.  The software is designed to avoid seeking while reading
+and writing so that files may be read and written over pipes, or via a
+user provided file descriptor.</p>
 </div>
 </div>
 <div class="section" id="using-graphicsmagick">
 <h1><a class="toc-backref" href="#id8">Using GraphicsMagick</a></h1>
 <div class="section" id="image-resize">
 <h2><a class="toc-backref" href="#id9">Image Resize</a></h2>
-<p><a class="reference external" href="index.html">GraphicsMagick</a> is easy to use. The following is an example of scaling a
-<em>4K</em> 16 bit scan to a <em>2K</em> <em>Academy</em> 10 bit image using the <a class="reference external" href="convert.html">convert</a>
+<p>GraphicsMagick is easy to use. The following is an example of scaling
+a <em>4K</em> 16 bit scan to a <em>2K</em> <em>Academy</em> 10 bit image using the <a class="reference external" href="convert.html">convert</a>
 command:</p>
 <pre class="literal-block">
 gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx
 </pre>
-<p>The above example uses the default resizing filters which are optimized
-for quality, but take longer than some other filters. The <em>box</em> resize
-filter provides reasonably good scaling in a reasonable amount of time:</p>
+<p>The above example uses the default resizing filters which are
+optimized for quality, but take longer than some other filters. The
+<em>box</em> resize filter provides reasonably good scaling in a reasonable
+amount of time:</p>
 <pre class="literal-block">
 gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx
 </pre>
 <p>The above example command takes about 4 seconds (on an Apple 2.5GHz G5
 PowerMac or Intel 2.4GHz Xeon) to down-convert from a 131MB <em>5K</em>
 (5232x4376) original 16-bit scan from a NorthLight scanner to a 11MB
-<em>2K</em> 10-bit working image. Operations on more typical <em>2K</em> images
-take about a quarter of a second.</p>
+<em>2K</em> 10-bit working image. Operations on more typical <em>2K</em> images take
+about a quarter of a second.</p>
 </div>
 <div class="section" id="annotate-image">
 <h2><a class="toc-backref" href="#id10">Annotate Image</a></h2>
-<p>The following example shows how <a class="reference external" href="index.html">GraphicsMagick</a>'s resize capability may be
-combined with its powerful drawing capability to take a full size source image
-and produce a smaller (720x576) version which includes the image filename and
-timecode at the top of the image, and a logo <em>bug</em> image in the bottom right
-corner:</p>
+<p>The following example shows how GraphicsMagick's resize capability may
+be combined with its powerful drawing capability to take a full size
+source image and produce a smaller (720x576) version which includes
+the image filename and timecode at the top of the image, and a logo
+<em>bug</em> image in the bottom right corner:</p>
 <pre class="literal-block">
 gm convert infile.dpx -resize '720x576!' \
   -draw 'fill &quot;white&quot;;text-undercolor &quot;Blue&quot;;font &quot;Helvetica&quot;;font-size 18;\
      text 10,20 &quot;%f (%[DPX:tv.time.code])&quot;;image atop 500,400 0,0 &quot;gm-125x80t.png&quot;' \
   outfile.dpx
 </pre>
-<p>As may be seen, the argument to -draw can become extremely long, so to make
-things easy, the drawing commands may be placed in a simple text file and
-passed by reference to the draw comand:</p>
+<p>As may be seen, the argument to -draw can become extremely long, so to
+make things easy, the drawing commands may be placed in a simple text
+file and passed by reference to the draw comand:</p>
 <p>First lets check what we edited into our drawing command file:</p>
 <pre class="literal-block">
 % cat drawcmd.txt
@@ -299,12 +426,13 @@ image atop 500,400 &quot;0,0 &quot;gm-125x80t.png&quot;
 <pre class="literal-block">
 gm convert infile.dpx -resize '720x576!' -draw '&#64;drawcmd.txt' outfile.dpx
 </pre>
-<p>The <tt class="docutils literal">0,0</tt> in the image composition command argument says to use the image as
-is. If the composited image should be automatically resized, then simply
-replace the <tt class="docutils literal">0,0</tt> with the desired size.</p>
-<p>There are a number of powerful scripting environments for <a class="reference external" href="index.html">GraphicsMagick</a>. One
-of these is RMagick (Ruby language interface to <a class="reference external" href="index.html">GraphicsMagick</a>). In Ruby, the
-same effect may be obtained via a script that looks like:</p>
+<p>The <tt class="docutils literal">0,0</tt> in the image composition command argument says to use the
+image as is. If the composited image should be automatically resized,
+then simply replace the <tt class="docutils literal">0,0</tt> with the desired size.</p>
+<p>There are a number of powerful scripting environments for
+GraphicsMagick. One of these is RMagick (Ruby language interface to
+GraphicsMagick). In Ruby, the same effect may be obtained via a script
+that looks like:</p>
 <pre class="literal-block">
 #! /usr/local/bin/ruby -w
 require 'RMagick'
@@ -321,8 +449,8 @@ gc.composite(500, 400, 0, 0, frog, AtopCompositeOp)
 gc.draw(img)
 img.write('outfile.dpx')
 </pre>
-<p>In addition to Ruby, there are scripting interfaces for Perl, Python, Tcl, and
-Ch (C-like scripting language).</p>
+<p>In addition to Ruby, there are scripting interfaces for Perl, Python,
+Tcl, and Ch (C-like scripting language).</p>
 </div>
 <div class="section" id="colorspace-transformation">
 <h2><a class="toc-backref" href="#id11">Colorspace Transformation</a></h2>
@@ -333,52 +461,56 @@ gm convert 2k.dpx -depth 10 -colorspace Rec709YCbCr -sampling-factor 4:2:2 2k-yc
 </div>
 <div class="section" id="modifying-an-image-in-place">
 <h2><a class="toc-backref" href="#id12">Modifying An Image In-Place</a></h2>
-<p>Besides convert, which converts from one file to another, there is <a class="reference external" href="mogrify.html">mogrify</a>
-which transforms the file in place. A temporary file is used (if necessary) to
-ensure that the existing image file is not damaged if something goes wrong
-(e.g., not enough disk space). Note that unlike some applications supporting
-DPX/Cineon, when a file is modifed <em>in-place</em> , it is completely re-written.
-While <a class="reference external" href="index.html">GraphicsMagick</a> makes every attempt to preserve header information, some
-previously existing features of the file (such as the offset to the pixel data)
-may change.</p>
+<p>Besides convert, which converts from one file to another, there is
+<a class="reference external" href="mogrify.html">mogrify</a> which transforms the file in place. A temporary file is used
+(if necessary) to ensure that the existing image file is not damaged
+if something goes wrong (e.g., not enough disk space). Note that
+unlike some applications supporting DPX/Cineon, when a file is modifed
+<em>in-place</em> , it is completely re-written.  While GraphicsMagick makes
+every attempt to preserve header information, some previously existing
+features of the file (such as the offset to the pixel data) may
+change.</p>
 <p>A typical mogrify command is</p>
 <pre class="literal-block">
 gm mogrify -resize 1828x1556 -depth 10 file-0001.dpx file-0002.dpx
 </pre>
-<p>Multiple files may be specified on the command line so the same command may
-process hundreds of files in one invocation.</p>
-<p>Unix users can use the find and xargs programs to perform operations on any
-number of files:</p>
+<p>Multiple files may be specified on the command line so the same
+command may process hundreds of files in one invocation.</p>
+<p>Unix users can use the find and xargs programs to perform operations
+on any number of files:</p>
 <pre class="literal-block">
 find /assets/001 -name '*.dpx' -print | \
   xargs gm mogrify -resize 1828x1556 -depth 10
 </pre>
-<p>Xargs works by pasting as many file names as possible on the end of the command
-provided to it.</p>
-<p>The GNU version of xargs provides an added benefit. It is able to run several
-commands in the background. This means that if your system has multiple CPUs,
-it can take advantage of all the CPUs while still using one command:</p>
+<p>Xargs works by pasting as many file names as possible on the end of
+the command provided to it.</p>
+<p>The GNU version of xargs provides an added benefit. It is able to run
+several commands in the background. This means that if your system has
+multiple CPUs, it can take advantage of all the CPUs while still using
+one command:</p>
 <pre class="literal-block">
 find /assets/001 -name '*.dpx' -print | \
   xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10
 </pre>
-<p>The mogrify command supports the -output-directory option to sent files to a
-different directory than the input files. This allows processing a large number
-of files without overwriting the input files:</p>
+<p>The mogrify command supports the -output-directory option to sent
+files to a different directory than the input files. This allows
+processing a large number of files without overwriting the input
+files:</p>
 <pre class="literal-block">
 mkdir dest
 cd source
 gm mogrify -output-directory ../dest -resize 1828x1556 -depth 10 '*.dpx'
 </pre>
-<p>Note that the entire input file path specification is preserved when composing
-the output path so that the input file path is simply appended to the output
-directory path. Also, unless the -create-directories option is added, the user
-is responsible for creating any necessary destination directories. As an
-example of the path composition algorithm, if the input file name is specified
-as source/file.dpx and the output directory is specified as dest, then the
-output file path will be dest/source/file.dpx.</p>
-<p>Here is an incantation which recursively processes all DPX files under source
-and sends the result to a similar directory tree under dest.</p>
+<p>Note that the entire input file path specification is preserved when
+composing the output path so that the input file path is simply
+appended to the output directory path. Also, unless the
+-create-directories option is added, the user is responsible for
+creating any necessary destination directories. As an example of the
+path composition algorithm, if the input file name is specified as
+source/file.dpx and the output directory is specified as dest, then
+the output file path will be dest/source/file.dpx.</p>
+<p>Here is an incantation which recursively processes all DPX files under
+source and sends the result to a similar directory tree under dest.</p>
 <pre class="literal-block">
 mkdir dest
 cd source
@@ -388,11 +520,12 @@ find . name '*.dpx' -print | xargs gm mogrify -output-directory ../dest \
 </div>
 <div class="section" id="creating-a-contact-sheet">
 <h2><a class="toc-backref" href="#id13">Creating A Contact Sheet</a></h2>
-<p><a class="reference external" href="index.html">GraphicsMagick</a> may be used to create a contact sheet (grid of thumbnails with
-name and size) by using the <em>VID</em> pseudoformat which accepts a wildcarded
-argument of files (protected by quotes!) to read. The output files are buffered
-while files are being read so there is a practical limit to the number of files
-which may be processed at once. To output to a Postscript file:</p>
+<p>GraphicsMagick may be used to create a contact sheet (grid of
+thumbnails with name and size) by using the <em>VID</em> pseudoformat which
+accepts a wildcarded argument of files (protected by quotes!) to
+read. The output files are buffered while files are being read so
+there is a practical limit to the number of files which may be
+processed at once. To output to a Postscript file:</p>
 <pre class="literal-block">
 gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.ps&quot;
 </pre>
@@ -405,28 +538,30 @@ contact-sheet-999.jpg:</p>
 <pre class="literal-block">
 gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet-%03d.jpg&quot;
 </pre>
-<p>or to a MIFF file which may be used to interactively browse the original files
-using 'gm display':</p>
+<p>or to a MIFF file which may be used to interactively browse the
+original files using 'gm display':</p>
 <pre class="literal-block">
 gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.miff&quot;
 </pre>
 </div>
 <div class="section" id="animating-a-sequence">
 <h2><a class="toc-backref" href="#id14">Animating A Sequence</a></h2>
-<p><a class="reference external" href="index.html">GraphicsMagick</a> may be used to animate an image sequence on an X11
+<p>GraphicsMagick may be used to animate an image sequence on an X11
 display using the <a class="reference external" href="animate.html">animate</a> subcommand. Frames are buffered in memory
 (pre-loaded into the X11 server) so the number of frames which may be
-animated at once is limited. <a class="reference external" href="index.html">GraphicsMagick</a> has been used to animate
-1080P (1920x1080) images at 24 frames per second with at least 300 frames
-in the sequence.More frames may be buffered on 64-bit systems. Many more
-frames may be animated by preparing a reduced set of frames in advance.</p>
+animated at once is limited. GraphicsMagick has been used to animate
+1080P (1920x1080) images at 24 frames per second with at least 300
+frames in the sequence.More frames may be buffered on 64-bit
+systems. Many more frames may be animated by preparing a reduced set
+of frames in advance.</p>
 <p>To visualize an animation at 24 frames per second (delay (1/24)*100) use</p>
 <pre class="literal-block">
 gm animate -delay 4.17 'Frame_*.dpx'
 </pre>
-<p>In order to obtain a preview of a larger sequence, and if the frames are
-numbered, a broader span of time may be animated by selecting every 10^th frame
-(terminating with zero) to animate at 2.4 frames per second:</p>
+<p>In order to obtain a preview of a larger sequence, and if the frames
+are numbered, a broader span of time may be animated by selecting
+every 10^th frame (terminating with zero) to animate at 2.4 frames per
+second:</p>
 <pre class="literal-block">
 gm animate -delay 41.7 'Frame_*0.dpx'
 </pre>
@@ -444,93 +579,121 @@ gm display -title '%f (%[DPX:tv.time.code])' foo.dpx
 </div>
 <div class="section" id="viewing-a-sequence">
 <h2><a class="toc-backref" href="#id16">Viewing A Sequence</a></h2>
-<p>A sequence of images may be displayed on an X11 server using the <a class="reference external" href="display.html">display</a>
-subcommand. Unlike 'gm animate' there are no arbitrary limits when
-displaying a sequence this way. Unlike 'gm animate' the inter-frame delay
-can not be set to less than a second (100 ticks is one second).</p>
+<p>A sequence of images may be displayed on an X11 server using the
+<a class="reference external" href="display.html">display</a> subcommand. Unlike 'gm animate' there are no arbitrary limits
+when displaying a sequence this way. Unlike 'gm animate' the
+inter-frame delay can not be set to less than a second (100 ticks is
+one second).</p>
 <pre class="literal-block">
 gm display +progress -delay 100 'Frame_*.dpx'
 </pre>
 </div>
+<div class="section" id="using-the-batch-capability">
+<h2><a class="toc-backref" href="#id17">Using the Batch capability</a></h2>
+<p>A 'batch' command is provided (starting with the GraphicsMagick 1.3.18
+release) which supports executing an arbitrary number of
+GraphicsMagick commands from a file, or provided via standard input,
+while executing just one instance of GraphicsMagick.  This provides
+for more efficiency and for use of GraphicsMagick as a co-process.  An
+arbitrary script which produces the commands may continue to produce
+the commands as GraphicsMagick executes them.  For example (Bourne
+shell script):</p>
+<pre class="literal-block">
+outdir=outdir
+mkdir $outdir
+find fromdir -name '*.dpx'| sort |
+while read infile
+do
+    outfile=$outdir/`basename $infile`
+    echo time convert $infile -gaussian 0x1 $outfile
+done | gm batch -
+</pre>
+</div>
 </div>
 <div class="section" id="options-and-attributes">
-<h1><a class="toc-backref" href="#id17">Options And Attributes</a></h1>
+<h1><a class="toc-backref" href="#id18">Options And Attributes</a></h1>
 <div class="section" id="command-options">
-<h2><a class="toc-backref" href="#id18">Command options</a></h2>
+<h2><a class="toc-backref" href="#id19">Command options</a></h2>
 <p>The following command options are particularly useful when dealing with
 DPX files:</p>
 <dl class="docutils">
 <dt>-colorspace {CineonLog|RGB|Gray|Rec601Luma|Rec709Luma|Rec601YCbCr|Rec709YCbCr}</dt>
-<dd>Specifies the colorspace to be used when saving the DPX file. CineonLog
-selects log encoding according to Kodak Cineon specifications. RGB selects
-linear RGB encoding. Gray selects linear gray encoding similar to RGB, but
-with a single channel. Rec601Luma requests that RGB is converted to a gray
-image using Rec601 Luma. Rec709Luma requests that RGB is converted to a
-gray image using Rec709Luma. Rec601YCbCr requests that the image is saved
-as YCbCr according to Rec601 (SDTV) specifications. Rec709CbCr requests
-that the image is saved as YCbCr according to Rec709 (HDTV) specifications.</dd>
+<dd>Specifies the colorspace to be used when saving the DPX
+file. CineonLog selects log encoding according to Kodak Cineon
+specifications. RGB selects linear RGB encoding. Gray selects
+linear gray encoding similar to RGB, but with a single
+channel. Rec601Luma requests that RGB is converted to a gray image
+using Rec601 Luma. Rec709Luma requests that RGB is converted to a
+gray image using Rec709Luma. Rec601YCbCr requests that the image
+is saved as YCbCr according to Rec601 (SDTV)
+specifications. Rec709CbCr requests that the image is saved as
+YCbCr according to Rec709 (HDTV) specifications.</dd>
 <dt>-endian {lsb|msb}</dt>
-<dd>Specifies the endian order to use when writing the DPX file. <a class="reference external" href="index.html">GraphicsMagick</a>
-writes big-endian DPX files by default since they are the most portable.
-Other implementations may use the native order of the host CPU (e.g.
-little-endian when using an Intel 'x86 CPU).</dd>
+<dd>Specifies the endian order to use when writing the DPX
+file. GraphicsMagick writes big-endian DPX files by default since
+they are the most portable.  Other implementations may use the
+native order of the host CPU (e.g.  little-endian when using an
+Intel 'x86 CPU).</dd>
 <dt>-depth &lt;value&gt;</dt>
-<dd>Specifies the number of bits to preserve in a color sample. By default the
-output file is written with the same number of bits as the input file. For
-example, if the input file is 16 bits, it may be reduced to 10 bits via
-'-depth 10'.</dd>
+<dd>Specifies the number of bits to preserve in a color sample. By
+default the output file is written with the same number of bits as
+the input file. For example, if the input file is 16 bits, it may
+be reduced to 10 bits via '-depth 10'.</dd>
 <dt>-define dpx:bits-per-sample=&lt;value&gt;</dt>
-<dd>If the dpx:bits-per-sample key is defined, <a class="reference external" href="index.html">GraphicsMagick</a> will write DPX
-images with the specified bits per sample, overriding any existing depth
-value. If this option is not specified, then the value is based on the
-existing image depth value from the original image file. The DPX standard
-supports bits per sample values of 1, 8, 10, 12, and 16. Many DPX readers
-demand a sample size of 10 bits with type A padding (see below).</dd>
+<dd>If the dpx:bits-per-sample key is defined, GraphicsMagick will
+write DPX images with the specified bits per sample, overriding
+any existing depth value. If this option is not specified, then
+the value is based on the existing image depth value from the
+original image file. The DPX standard supports bits per sample
+values of 1, 8, 10, 12, and 16. Many DPX readers demand a sample
+size of 10 bits with type A padding (see below).</dd>
 <dt>-define dpx:colorspace={rgb|cineonlog}</dt>
-<dd>Use the dpx:colorspace option when reading a DPX file to specify the
-colorspace the DPX file uses. This overrides the colorspace type
-implied by the DPX header (if any). Currently files with the transfer
-characteristic Printing Density are assumed to be log encoded density
-while files marked as Linear are assumed to be linear. Hint: use
-<tt class="docutils literal"><span class="pre">-define</span> dpx:colorspace=rgb</tt> in order to avoid the log to linear
-transformation for DPX files which use Printing Density.</dd>
+<dd>Use the dpx:colorspace option when reading a DPX file to specify
+the colorspace the DPX file uses. This overrides the colorspace
+type implied by the DPX header (if any). Currently files with the
+transfer characteristic Printing Density are assumed to be log
+encoded density while files marked as Linear are assumed to be
+linear. Hint: use <tt class="docutils literal"><span class="pre">-define</span> dpx:colorspace=rgb</tt> in order to avoid
+the log to linear transformation for DPX files which use Printing
+Density.</dd>
 <dt>-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</dt>
-<dd>DPX samples may be output within 32-bit words. They may be tightly packed
-end-to-end within the words (&quot;packed&quot;), padded with null bits to the right
-of the sample (&quot;a&quot; or &quot;lsbpad&quot;), or padded with null bits to the left of
-the sample (&quot;b&quot; or &quot;msbpad&quot;). This option only has an effect for sample
-sizes of 10 or 12 bits. If samples are not packed, the DPX standard
-recommends type A padding. Many DPX readers demand a sample size of 10 bits
-with type A padding.</dd>
+<dd>DPX samples may be output within 32-bit words. They may be tightly
+packed end-to-end within the words (&quot;packed&quot;), padded with null
+bits to the right of the sample (&quot;a&quot; or &quot;lsbpad&quot;), or padded with
+null bits to the left of the sample (&quot;b&quot; or &quot;msbpad&quot;). This option
+only has an effect for sample sizes of 10 or 12 bits. If samples
+are not packed, the DPX standard recommends type A padding. Many
+DPX readers demand a sample size of 10 bits with type A padding.</dd>
 <dt>-define dpx:pixel-endian={lsb|msb}</dt>
-<dd>DPX pixels should use the endian order that the DPX header specifies.
-Sometimes there is a mis-match and the pixels use a different endian order
-than the file header specifies. For example, the file header may specify
-little endian, but the pixels are in big-endian order. To work around that
-use -define dpx-pixel-endian=msb when reading the file. Likewise, this
-option may be used to intentionally write the pixels using a different
-order than the header. Files obtained from the <a class="reference external" href="http://www.digitalpreservation.gov/">Library Of Congress</a> use
-big-endian 10-bit packed pixels in a file marked as little-endian so this
-option must be used to read such files correctly.</dd>
+<dd>DPX pixels should use the endian order that the DPX header
+specifies.  Sometimes there is a mis-match and the pixels use a
+different endian order than the file header specifies. For
+example, the file header may specify little endian, but the pixels
+are in big-endian order. To work around that use -define
+dpx-pixel-endian=msb when reading the file. Likewise, this option
+may be used to intentionally write the pixels using a different
+order than the header.</dd>
 <dt>-define dpx:swap-samples={true|false}</dt>
-<dd><a class="reference external" href="index.html">GraphicsMagick</a> strives to adhere to the DPX standard but certain aspects of
-the standard can be quite confusing. As a result, some 10-bit DPX files
-have Red and Blue interchanged, or Cb and Cr interchanged due to an
-different interpretation of the standard, or getting the wires crossed. The
-swap-samples option may be supplied when reading or writing in order to
-read or write using the necessary sample order.</dd>
+<dd>GraphicsMagick strives to adhere to the DPX standard but certain
+aspects of the standard can be quite confusing. As a result, some
+10-bit DPX files have Red and Blue interchanged, or Cb and Cr
+interchanged due to an different interpretation of the standard,
+or getting the wires crossed. The swap-samples option may be
+supplied when reading or writing in order to read or write using
+the necessary sample order.</dd>
 <dt>-interlace plane</dt>
-<dd>By default, samples are stored contiguously in a single element when
-possible. Specifying '-interlace plane' causes each sample type (e.g.
-'red') to be stored in its own image element. Planar storage is fully
-supported for grayscale (with alpha) and RGB. For YCbCr, chroma must be
-4:2:2 subsampled in order to use planar storage. While planar storage
-offers a number of benefits, it seems that very few DPX-supporting
-applications support it.</dd>
+<dd>By default, samples are stored contiguously in a single element
+when possible. Specifying '-interlace plane' causes each sample
+type (e.g.  'red') to be stored in its own image element. Planar
+storage is fully supported for grayscale (with alpha) and RGB. For
+YCbCr, chroma must be 4:2:2 subsampled in order to use planar
+storage. While planar storage offers a number of benefits, it
+seems that very few DPX-supporting applications support it.</dd>
 <dt>-sampling-factor 4:2:2</dt>
-<dd>Select 4:2:2 subsampling when saving an image in YCbCr format. Subsampling
-is handled via a general-purpose image resize algorithm (lanczos) rather
-than a dedicated filter so subsampling is slow (but good).</dd>
+<dd>Select 4:2:2subsampling when saving an image in YCbCr
+format. Subsampling is handled via a general-purpose image resize
+algorithm (lanczos) rather than a dedicated filter so subsampling
+is slow (but good).</dd>
 <dt>-set reference-white &lt;value&gt;</dt>
 <dd>Set the 90% white card level (default 685) for Cineon Log.</dd>
 <dt>-set reference-black &lt;value&gt;</dt>
@@ -545,14 +708,14 @@ Cineon Log.</dd>
 </dl>
 </div>
 <div class="section" id="dpx-attributes">
-<h2><a class="toc-backref" href="#id19">DPX Attributes</a></h2>
-<p><a class="reference external" href="index.html">GraphicsMagick</a> provides almost full access to DPX header attributes. DPX
-header attributes are shown in the output of 'gm identify -verbose' and
-may be set using the -define syntax (e.g. '-define
-dpx:mp.frame.position=2000') on the command line in order to add a value,
-or override an existing value. The attributes in the list below may be
-viewed or updated. The names are similar to the attribute descriptions
-from the DPX standard.</p>
+<h2><a class="toc-backref" href="#id20">DPX Attributes</a></h2>
+<p>GraphicsMagick provides almost full access to DPX header
+attributes. DPX header attributes are shown in the output of 'gm
+identify -verbose' and may be set using the -define syntax
+(e.g. '-define dpx:mp.frame.position=2000') on the command line in
+order to add a value, or override an existing value. The attributes in
+the list below may be viewed or updated. The names are similar to the
+attribute descriptions from the DPX standard.</p>
 <pre class="literal-block">
 dpx:file.copyright
 dpx:file.creation.datetime
@@ -620,7 +783,7 @@ gm identify -format '%[dpx:*]' foo.dpx
 </pre>
 <p>to list all DPX header attributes.</p>
 <hr class="docutils" />
-<p>Copyright © <a class="reference external" href="index.html">GraphicsMagick</a> Group 2002 - 2013</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2013</p>
 </div>
 </div>
 </div>
