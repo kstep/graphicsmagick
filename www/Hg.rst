@@ -208,12 +208,33 @@ list at SourceForge whenever a change is submitted to the development
 (unstable) repository.  Subscribe to this list if you would like to be
 notified by email of changes when they occur.
 
+Rsync The Repository
+====================
+
+.. _rsync : http://rsync.samba.org/
+
+It is possible to use the rsync_ program to make a copy of the
+GraphicsMagick Mercurial repository.  Using rsync_ might be faster for
+the initial repository checkout, but the copied repository might not
+be coherent if it was updated while the rsync_ was in progress.  If
+there is any problem, just execute the same rsync_ command again
+without deleting any files and the remaining changes (updated files)
+will be transferred.  To use rsync_ to copy the repository do::
+
+  mkdir -p GM
+  rsync -avPSz hg.code.sf.net::p/graphicsmagick/code/ GM/
+
+Rsync will not checkout a working set of files.  To accomplish that
+do::
+
+  cd GM
+  hg update
+
 Mercurial Topics
 ====================
 
-`Merge Program <http://mercurial.selenic.com/wiki/MergeProgram>`_
-`Merge Tool Configuration <http://mercurial.selenic.com/wiki/MergeToolConfiguration>`_
-`Keep "My" or "Their" files when doing a merge <http://mercurial.selenic.com/wiki/TipsAndTricks#mergemineortheir>`_
+* `Merge Tool Configuration <http://mercurial.selenic.com/wiki/MergeToolConfiguration>`_
+* `Keep "My" or "Their" files when doing a merge <http://mercurial.selenic.com/wiki/TipsAndTricks#mergemineortheir>`_
 
 
 --------------------------------------------------------------------------
