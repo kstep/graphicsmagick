@@ -144,25 +144,34 @@ for real-time display, such as for video games and virtual reality.
 GraphicsMagick has been significantly updated to use multiple CPU
 cores to speed up the image processing, and work continues to thread
 the few remaining algorithms, or remove inefficiencies in algorithms
-which don't see as much speed-up as they should.  We have already
-observed multi-core speedup of up to 32X (on a UltraSPARC-T2 CPU) and
-expect that upward trend to continue.</p>
+which don't see as much speed-up as they should.  Linear speedup as
+cores are added is typical for CPU-bound algorithms on well-designed
+CPUs.  Regardless, <a class="reference external" href="http://en.wikipedia.org/wiki/Amdal%27s_law">Amdahl's law</a> is a significant factor
+in GraphicsMagick, with non-parallelizable code paths often dominating
+the time.</p>
 <p>It is my belief that stand-alone GPUs are a poor design (expensive,
 inefficient, failure-prone, bandwidth bottlenecked, lack
 functionality, are insecure, and are not supported in servers) and
-that multi-core will ultimately prevail.  Functionality which
+that multi-core CPUs will ultimately prevail.  Functionality which
 currently works best in a GPU will simply be integrated into
 tomorrow's multi-core CPUs and C compilers will naturally support that
 functionality.  Once GPU capabilities are integrated into CPUs, there
-will be no more need to develop special code for a GPU.  Today
-(December, 2011) 16 core CPUs are readily available for purchase at
-reasonable prices, and this trend is certain to continue.  This year
-(2011), a 50 core CPU capable of running GraphicsMagick has been
-demonstrated which provides a wopping 1 TeraFLOPS of performance.
-Future multi-core CPUs will use a similar amount of power to today's
-CPUs and will fit into a very small (1U) chassis.  Due to this trend,
-there is no value obtained by expending energy toward developing
-specialized code for today's GPUs.</p>
+will be no more need to develop specialized code for a GPU.  Today 16
+core CPUs are readily available for purchase in systems at reasonable
+prices, and this trend is certain to continue.</p>
+<p>Intel's <a class="reference external" href="http://en.wikipedia.org/wiki/Xeon_Phi">Xeon Phi</a> offers a
+61 core 'x86 CPU in a GPU-like plugin form-factor which provides over
+a TeraFLOP of performance.  Being based on power-hungry plug-in cards,
+this solution suffers from many of the issues associated with GPUs.
+However, since it supports OpenMP, it may be a suitable target for
+executing some GraphicsMagick algorithms. Effective use of Xeon Phi
+currently requires use of Intel's development tools so from that
+standpoint it is not much more open than GPUs.</p>
+<p>Future multi-core CPUs will use a similar amount of power to today's
+CPUs, will idle at very low power consumption levels, and will fit
+into a very small chassis.  Due to this trend, there is no value
+obtained by expending energy toward developing specialized code for
+today's GPUs.</p>
 </div>
 <div class="section" id="what-is-the-meaning-of-magick">
 <h1><a class="toc-backref" href="#id4">What is the meaning of &quot;magick&quot;?</a></h1>
