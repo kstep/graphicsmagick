@@ -51,9 +51,7 @@ Web Access
 
 The `GraphicsMagick repository at SourceForge`_ web interface is
 available which may be used to interactively view the latest versions
-of files, or the changes to files, using your web browser.  Due to the
-way that Mercurial_ works, you may also clone a new repository from
-this interface via the same URL.
+of files, or the changes to files, using your web browser.
 
 Cloning the Mercurial Repository
 ==================================
