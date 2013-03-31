@@ -1,3 +1,9 @@
+2013-03-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (tag_table): Add support for SubjectArea EXIF
+	tag.  Resolves SourceForge issue #229 "Cannot Parse the
+	SubjectArea EXIF Info".
+
 2013-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/Hg.rst, www/index.rst: Update SourceForge Mercurial
