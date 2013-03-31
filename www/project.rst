@@ -6,7 +6,7 @@
 GraphicsMagick Project Information
 ==================================
 
-.. _Bugs : https://sourceforge.net/tracker/?group_id=73485
+.. _Bugs : https://sourceforge.net/p/graphicsmagick/_list/tickets
 .. _`Change Logs` : Changes.html
 .. _Contribute : contribute.html
 .. _`Development Process` : process.html
@@ -15,7 +15,7 @@ GraphicsMagick Project Information
 .. _`Install` : README.html
 .. _License : Copyright.html
 .. _Links : links.html
-.. _`Mailing Lists` : http://sourceforge.net/mail/?group_id=73485
+.. _`Mailing Lists` : https://sourceforge.net/p/graphicsmagick/mailman/
 .. _`Mission` : mission.html
 .. _News : NEWS.html
 .. _`Source Control` : Hg.html
