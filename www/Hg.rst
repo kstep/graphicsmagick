@@ -156,10 +156,11 @@ The repository hierarchy is as follows:
 3. Stable
 
   The stable repository is available via http at
-  "http://hg.code.sf.net/p/graphicsmagick/code".
-  Any changes in the unstable development repository are pushed to
-  the stable repository (by me) once any necessary adjustments have
-  been made and the software test suite has passed.
+  "http://hg.code.sf.net/p/graphicsmagick/code".  Any changes in the
+  unstable development repository are pushed to the stable repository
+  (by the developer responsible for this role) once any necessary
+  adjustments have been made, documentation files have been generated,
+  and the software test suite has passed on at least one machine.
 
 To build your local development repository (as quickly as possible),
 you may use these steps:
