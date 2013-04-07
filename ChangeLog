@@ -1,3 +1,9 @@
+2013-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXMakeImage): Use ThumbnailImage() rather
+	than SampleImage() when creating the panner image to improve the
+	quality of the image.
+
 2013-03-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (tag_table): Add support for SubjectArea EXIF

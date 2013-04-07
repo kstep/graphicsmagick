@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -5593,7 +5593,7 @@ MagickXMakeImage(Display *display,
           if ((window->pixel_info->colors != 0) ||
               (window->image->rows > (unsigned long) XDisplayHeight(display,window->screen)) ||
               (window->image->columns > (unsigned long) XDisplayWidth(display,window->screen)))
-            resize_image=SampleImage(window->image,width,height,
+            resize_image=ThumbnailImage(window->image,width,height,
               &image->exception);
           else
             resize_image=ZoomImage(window->image,width,height,
