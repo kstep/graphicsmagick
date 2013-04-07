@@ -6208,9 +6208,6 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
           register unsigned int
             bytes_per_pixel;
 
-          unsigned char
-            channel[sizeof(unsigned long)];
-
           /*
             Convert to multi-byte color-mapped X image.
           */
@@ -6226,11 +6223,9 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
               pixel=pixels[indexes[x]];
               for (k=0; k < (int) bytes_per_pixel; k++)
               {
-                channel[k]=(unsigned char) pixel;
+                *q++=(unsigned char) pixel;
                 pixel>>=8;
               }
-              for (k=0; k < (int) bytes_per_pixel; k++)
-                *q++=channel[k];
             }
             q+=scanline_pad;
           }
@@ -6450,9 +6445,6 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
                 register unsigned int
                   bytes_per_pixel;
 
-                unsigned char
-                  channel[sizeof(unsigned long)];
-
                 /*
                   Convert to multi-byte continuous-tone X image.
                 */
@@ -6468,11 +6460,9 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
                     pixel=MagickXGammaPixel(map_info,p);
                     for (k=0; k < (int) bytes_per_pixel; k++)
                     {
-                      channel[k]=(unsigned char) pixel;
+                      *q++=(unsigned char) pixel;
                       pixel>>=8;
                     }
-                    for (k=0; k < (int) bytes_per_pixel; k++)
-                      *q++=channel[k];
                     p++;
                   }
                   q+=scanline_pad;

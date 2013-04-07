@@ -1,3 +1,9 @@
+2013-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c, magick/attribute.c, magick/map.c, magick/render.c,
+	magick/widget.c, magick/xwindow.c: Fixes to reduce warnings with
+	GCC 4.8.0 at -O3 optimimization level, and for clang 3.2.
+
 2013-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXMakeImage): Use ThumbnailImage() rather

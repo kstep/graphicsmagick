@@ -865,6 +865,7 @@ MagickMapIterateNext(MagickMapIterator iterator,const char **key)
 
   LockSemaphoreInfo(iterator->map->semaphore);
 
+  *key=(const char *) NULL;
   switch (iterator->position)
     {
     case FrontPosition:

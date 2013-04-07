@@ -1589,7 +1589,11 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
     reply_info,
     reset_info,
     scroll_info,
-    selection_info,
+    selection_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     slider_info,
     south_info,
     text_info;
@@ -5390,7 +5394,11 @@ MagickExport void MagickXFontBrowserWidget(Display *display,MagickXWindows *wind
     reply_info,
     reset_info,
     scroll_info,
-    selection_info,
+    selection_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     slider_info,
     south_info,
     text_info;
@@ -6644,7 +6652,11 @@ MagickExport void MagickXListBrowserWidget(Display *display,MagickXWindows *wind
     north_info,
     reply_info,
     scroll_info,
-    selection_info,
+    selection_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     slider_info,
     south_info,
     text_info;
@@ -8805,7 +8817,11 @@ MagickExport void MagickXTextViewWidget(Display *display,
     list_info,
     north_info,
     scroll_info,
-    selection_info,
+    selection_info =
+    {
+      (char *) NULL, (char *) NULL, (char *) NULL,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    },
     slider_info,
     south_info;
 

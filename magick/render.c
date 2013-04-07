@@ -3358,11 +3358,12 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     PathInfo
       * restrict path_info;
 
-    path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
-    if (path_info == (PathInfo *) NULL)
-      return(MagickFail);
-
-    if (path_info != (PathInfo *) NULL)
+    if ((path_info=ConvertPrimitiveToPath(draw_info,primitive_info))
+        == (PathInfo *) NULL)
+      {
+        return(MagickFail);
+      }
+    else
       {
 	unsigned int
 	  index;
