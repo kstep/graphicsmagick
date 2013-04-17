@@ -1749,9 +1749,10 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((photometric == PHOTOMETRIC_PALETTE) ||
           ((photometric == PHOTOMETRIC_MINISWHITE ||
             photometric == PHOTOMETRIC_MINISBLACK) &&
-	   (1 == bits_per_sample) &&
-	   (image_info->type != TrueColorType) &&
-	   (image_info->type != TrueColorMatteType))
+           ((image_info->type == PaletteType) ||
+            (image_info->type == PaletteMatteType)) &&
+            (MaxColormapSize > MaxValueGivenBits(bits_per_sample))
+	   )
 	  )
         {
           /*

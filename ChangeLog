@@ -1,3 +1,8 @@
+2013-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Return DirectClass images by
+	default for MINISWHITE and MINISBLACK TIFF formats.
+
 2013-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wpg.c, magick/attribute.c, magick/map.c, magick/render.c,
