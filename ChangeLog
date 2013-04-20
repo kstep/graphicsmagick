@@ -1,3 +1,8 @@
+2013-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteXMPProfile): Add support for writing 'XMP'
+	profile in JPEG.
+
 2013-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Return DirectClass images by

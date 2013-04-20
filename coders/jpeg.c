@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2011 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -119,7 +119,11 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 */
 #define ICC_MARKER  (JPEG_APP0+2)
 #define IPTC_MARKER  (JPEG_APP0+13)
+#define XML_MARKER  (JPEG_APP0+1)
 #define MaxBufferExtent  8192
+#define JPEG_MARKER_MAX_SIZE 65533
+static const char *xmp_std_header="http://ns.adobe.com/xap/1.0/";
+
 
 typedef struct _DestinationManager
 {
@@ -392,6 +396,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     *image;
 
   size_t
+    header_length=0,
     length;
 
   register size_t
@@ -445,21 +450,30 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Detect EXIF and XMP profiles.
   */
-  if ((marker==1) && (length > 4) &&
+  if ((marker == 1) && (length > 4) &&
       (strncmp((char *) profile,"Exif",4) == 0))
-    FormatString(profile_name,"EXIF");
-  else if (((marker==1) && length > 5) &&
-	   (strncmp((char *) profile,"http:",5) == 0))
-    FormatString((char *) profile,"XMP");
+    {
+      FormatString(profile_name,"EXIF");
+    }
+  else if (((marker == 1) && (length > strlen(xmp_std_header)+1)) &&
+           (memcmp(profile, xmp_std_header, strlen(xmp_std_header)+1) == 0))
+    {
+      /*
+        XMP is required to fit in one 64KB chunk.  Strip off its JPEG
+         namespace header.
+      */
+      header_length=strlen(xmp_std_header)+1;
+      FormatString((char *) profile_name,"XMP");
+    }
 
   /*
     Store profile in Image.
   */
-  status=AppendImageProfile(image,profile_name,profile,length);
+  status=AppendImageProfile(image,profile_name,profile+header_length,length-header_length);
   MagickFreeMemory(profile);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
-                        profile_name,(unsigned long) length);
+                        profile_name,(unsigned long) -header_length);
 
   return (status);
 }
@@ -1722,6 +1736,74 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 			  "IPTC profile: %ld bytes",(long) profile_length);
 }
 
+static void WriteXMPProfile(j_compress_ptr jpeg_info,Image *image)
+{
+  static const char
+    *profile_id="XMP";
+
+  const unsigned char
+    *profile;
+
+  size_t
+    remaining,
+    count,
+    index,
+    header_length,
+    marker_length,
+    profile_length = 0,
+    total_length;
+
+  /*
+    Retrieve profile.
+  */
+  profile=GetImageProfile(image,profile_id,&profile_length);
+  if ((profile == ( const unsigned char *) NULL) ||
+      (profile_length == 0))
+    return;
+
+  /*
+    Compute sizes of things.
+  */
+  header_length=strlen(xmp_std_header)+1; /* Include terminating null */
+  total_length=header_length+profile_length;
+  remaining=total_length;
+
+  /*
+    Output header
+  */
+  marker_length=Min(remaining,JPEG_MARKER_MAX_SIZE);
+  jpeg_write_m_header(jpeg_info,XML_MARKER,marker_length);
+  count=marker_length;
+  {
+    for (index=0 ; index < header_length; index++)
+      {
+        jpeg_write_m_byte(jpeg_info,xmp_std_header[index]);
+        --remaining;
+        --count;
+      }
+  }
+
+  /*
+    Output profile data
+  */
+  for (index=0; remaining > 0; --remaining)
+    {
+      if (count == 0)
+        {
+          marker_length=Min(remaining,JPEG_MARKER_MAX_SIZE);
+          jpeg_write_m_header(jpeg_info,XML_MARKER,marker_length);
+          count=marker_length;
+        }
+      jpeg_write_m_byte(jpeg_info,profile[index]);
+      index++;
+      count--;
+    }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+			  "%s profile: %ld bytes",profile_id, (long) profile_length);
+}
+
 static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 {
   DestinationManager
@@ -2287,6 +2369,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
         i,(int) Min(strlen(attribute->value+i),65533L));
   WriteICCProfile(&jpeg_info,image);
   WriteIPTCProfile(&jpeg_info,image);
+  WriteXMPProfile(&jpeg_info,image);
   {
     const char
       *profile_name;
@@ -2308,7 +2391,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
           j;
 
         if (LocaleNCompare(profile_name,"APP",3) != 0 &&
-            LocaleNCompare(profile_name,"Exif",4) != 0)
+            LocaleNCompare(profile_name,"EXIF",4) != 0)
           continue;
         x=1;
         if (LocaleNCompare(profile_name,"APP",3) == 0)
