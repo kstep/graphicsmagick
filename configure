@@ -20764,7 +20764,7 @@ then
   # Normal case for LP32 and LP64
   MAGICK_SIZE_T='unsigned long'
   MAGICK_SIZE_T_F='"l"'
-  MAGICK_SSIZE_T='unsigned long'
+  MAGICK_SSIZE_T='signed long'
   MAGICK_SSIZE_T_F='"l"'
 elif test $ac_cv_sizeof_size_t -eq $ac_cv_sizeof_unsigned_long_long
 then

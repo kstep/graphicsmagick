@@ -1,5 +1,7 @@
 2013-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: MAGICK_SSIZE_T should always be a signed type.
+
 	* coders/jpeg.c (WriteXMPProfile): Add support for writing 'XMP'
 	profile in JPEG.
 	(WriteJPEGImage): Restructure/tidy JPEG profile writing code.
