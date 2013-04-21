@@ -2,6 +2,7 @@
 
 	* coders/jpeg.c (WriteXMPProfile): Add support for writing 'XMP'
 	profile in JPEG.
+	(WriteJPEGImage): Restructure/tidy JPEG profile writing code.
 
 2013-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
