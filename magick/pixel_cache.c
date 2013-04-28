@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -216,6 +216,10 @@ typedef struct _NexusInfo
   /* Selected region (width, height, x, y) */
   RectangleInfo region;
 
+  /* Nexus pixels are non-strided and in core */
+  MagickBool in_core;
+
+#if 0
   /* FIXME, use: Region starting offset in pixels */
   /* offset=nexus_info->region.y*(magick_off_t) cache_info->columns+nexus_info->region.x */
   magick_off_t region_offset;
@@ -226,9 +230,7 @@ typedef struct _NexusInfo
 
   /* FIXME, use: Pixels are accessed linearly (rather than as a rectangle) */
   MagickBool direct_flag;
-
-  /* FIXME, use: Nexus is in core (does not require sync) */
-  MagickBool in_core_flag;
+#endif
 
   /* Unique number for structure validation */
   unsigned long signature;
@@ -266,12 +268,6 @@ static const PixelPacket
   *AcquireCacheNexus(const Image *image,const long x,const long y,
     const unsigned long columns,const unsigned long rows,NexusInfo *nexus_info,
     ExceptionInfo *exception);
-
-static IndexPacket
-  *GetNexusIndexes(const NexusInfo *nexus_info);
-
-static PixelPacket
-  *GetNexusPixels(const NexusInfo *nexus_info);
 
 static MagickPassFail
   OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception),
@@ -318,7 +314,7 @@ static MagickPassFail
   signals.
 
 */
-static inline ssize_t
+static ssize_t
 FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
 {
   register ssize_t
@@ -368,7 +364,7 @@ FilePositionRead(int file, void *buffer, size_t length,magick_off_t offset)
   by signals.
 
 */
-static inline ssize_t
+static ssize_t
 FilePositionWrite(int file, const void *buffer,size_t length,magick_off_t offset)
 {
   register ssize_t
@@ -526,7 +522,8 @@ static inline ViewInfo
 %
 %  The format of the IsNexusInCore() method is:
 %
-%      MagickPassFail IsNexusInCore(const Cache cache,const NexusInfo *nexus_info)
+%      MagickPassFail IsNexusInCore(const Cache cache,
+%                                   const NexusInfo *nexus_info)
 %
 %  A description of each parameter follows:
 %
@@ -540,31 +537,30 @@ static inline ViewInfo
 %
 */
 static inline MagickPassFail
-IsNexusInCore(const Cache cache,const NexusInfo *nexus_info)
+IsNexusInCore(const CacheInfo *cache_info,const NexusInfo *nexus_info)
 {
   MagickPassFail
     status=MagickFail;
 
-  const CacheInfo
-    * restrict cache_info=(const CacheInfo *) cache;
-
-  if (cache_info && (cache_info->storage_class != UndefinedClass))
+  if (cache_info->type == PingCache)
     {
-      if (cache_info->type == PingCache)
-        {
-          status=MagickPass;
-        }
-      else
-        {
-	  magick_off_t
-	    offset;
-
-          offset=nexus_info->region.y*
-            (magick_off_t) cache_info->columns+nexus_info->region.x;
-          if (nexus_info->pixels == (cache_info->pixels+offset))
-            status=MagickPass;
-        }
+      /*
+        Some coders *do* read the pixels in 'ping' mode.  Skip sync on
+        such pixels.
+      */
+      status=MagickPass;
     }
+  else
+    {
+      magick_off_t
+        offset;
+
+      offset=nexus_info->region.y*
+        (magick_off_t) cache_info->columns+nexus_info->region.x;
+      if (nexus_info->pixels == (cache_info->pixels+offset))
+        status=MagickPass;
+    }
+
   return(status);
 }
 
@@ -599,11 +595,11 @@ MagickExport PixelPacket *
 AccessCacheViewPixels(const ViewInfo *view)
 {
   const View
-    *view_info = (const View *) view;
+    * restrict view_info = (const View *) view;
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return GetNexusPixels(view_info->nexus_info);
+  return view_info->nexus_info->pixels;
 }
 
 /*
@@ -770,7 +766,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
                   NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
-    *cache_info;
+    * restrict cache_info;
 
   magick_uint64_t
     number_pixels;
@@ -779,11 +775,11 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
     offset;
 
   IndexPacket
-    *indexes,
-    *nexus_indexes;
+    * restrict indexes,
+    * restrict nexus_indexes;
 
   PixelPacket
-    *pixels,
+    * restrict pixels,
     virtual_pixel;
 
   RectangleInfo
@@ -803,7 +799,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
     length;
 
   NexusInfo
-    *image_nexus;
+    * restrict image_nexus;
 
   /*
     Acquire pixels.
@@ -835,7 +831,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
         /*
           Pixel request is inside cache extents.
         */
-        if (!IsNexusInCore(cache_info,nexus_info))
+        if (!nexus_info->in_core)
           {
             MagickPassFail
               status;
@@ -855,7 +851,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
   /*
     Pixel request is outside cache extents.
   */
-  indexes=GetNexusIndexes(nexus_info);
+  indexes=nexus_info->indexes;
   image_nexus=AllocateCacheNexus();
   if (image_nexus == (NexusInfo *) NULL)
     {
@@ -912,7 +908,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
               *q++=(*p);
               if (indexes == (IndexPacket *) NULL)
                 continue;
-              nexus_indexes=GetNexusIndexes(image_nexus);
+              nexus_indexes=image_nexus->indexes;
               if (nexus_indexes == (IndexPacket *) NULL)
                 continue;
               *indexes++=(*nexus_indexes);
@@ -928,7 +924,7 @@ AcquireCacheNexus(const Image *image,const long x,const long y,
           q+=length;
           if (indexes == (IndexPacket *) NULL)
             continue;
-          nexus_indexes=GetNexusIndexes(image_nexus);
+          nexus_indexes=image_nexus->indexes;
           if (nexus_indexes == (IndexPacket *) NULL)
             continue;
           (void) memcpy(indexes,nexus_indexes,length*sizeof(IndexPacket));
@@ -981,7 +977,7 @@ AcquireCacheViewPixels(const ViewInfo *view,
                        const unsigned long rows,ExceptionInfo *exception)
 {
   const View
-    *view_info = (const View *) view;
+    * restrict view_info = (const View *) view;
   
   assert(view_info != (const View *) NULL);
   assert(view_info->signature == MagickSignature);
@@ -1020,11 +1016,11 @@ MagickExport const IndexPacket *
 AcquireCacheViewIndexes(const ViewInfo *view)
 {
   const View
-    *view_info = (const View *) view;
+    * restrict view_info = (const View *) view;
 
   assert(view_info != (const View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return GetNexusIndexes(view_info->nexus_info);
+  return view_info->nexus_info->indexes;
 }
 
 /*
@@ -1933,7 +1929,7 @@ GetCacheNexus(Image *image,const long x,const long y,
         updated in-place, then make a working copy in our cache view
         buffer.
       */
-      if (!IsNexusInCore(cache_info,nexus_info))
+      if (!nexus_info->in_core)
         {
           MagickPassFail
             status;
@@ -2115,7 +2111,7 @@ GetCacheViewIndexes(const ViewInfo *view)
 
   assert(view_info != (View *) NULL);
   assert(view_info->signature == MagickSignature);
-  return GetNexusIndexes(view_info->nexus_info);
+  return view_info->nexus_info->indexes;
 }
 
 /*
@@ -2372,77 +2368,6 @@ AllocateCacheNexus(void)
       nexus_info->signature=MagickSignature;
     }
   return nexus_info;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t N e x u s I n d e x e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNexusIndexes() returns the indexes associated with the specified cache
-%  nexus.
-%
-%  The format of the GetNexusIndexes() method is:
-%
-%      IndexPacket *GetNexusIndexes(const NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o indexes: GetNexusIndexes returns the indexes associated with the
-%      specified cache nexus.
-%
-%    o nexus: specifies which cache nexus to return the colormap indexes.
-%
-%
-*/
-static IndexPacket *
-GetNexusIndexes(const NexusInfo *nexus_info)
-{
-  assert(nexus_info != (NexusInfo *)NULL);
-  assert(nexus_info->signature == MagickSignature);
-  return nexus_info->indexes;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t N e x u s P i x e l s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetNexusPixels() returns the pixels associated with the specified cache
-%  nexus.
-%
-%  The format of the GetNexusPixels() method is:
-%
-%      PixelPacket *GetNexusPixels(const NexusInfo *nexus_info)
-%
-%  A description of each parameter follows:
-%
-%    o pixels: GetNexusPixels returns the pixels associated with the specified
-%      cache nexus.
-%
-%    o nexus: specifies which cache nexus to return the pixels.
-%
-%
-*/
-static PixelPacket *
-GetNexusPixels(const NexusInfo *nexus_info)
-{
-  assert(nexus_info != (const NexusInfo *) NULL);
-  assert(nexus_info->signature == MagickSignature);
-
-  return nexus_info->pixels;
 }
 
 /*
@@ -3467,7 +3392,7 @@ ReadCacheIndexes(const Cache cache,const NexusInfo *nexus_info,
   assert(cache_info->signature == MagickSignature);
   if (!cache_info->indexes_valid)
     return(MagickFail);
-  if (IsNexusInCore(cache,nexus_info))
+  if (nexus_info->in_core)
     return(MagickPass);
   offset=nexus_info->region.y*(magick_off_t) cache_info->columns+nexus_info->region.x;
   length=nexus_info->region.width*sizeof(IndexPacket);
@@ -3610,7 +3535,7 @@ ReadCachePixels(const Cache cache,const NexusInfo *nexus_info,
   /* printf("ReadCachePixels\n"); */
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if (IsNexusInCore(cache,nexus_info))
+  if (nexus_info->in_core)
     return(MagickPass);
   offset=nexus_info->region.y*(magick_off_t) cache_info->columns+nexus_info->region.x;
   length=nexus_info->region.width*sizeof(PixelPacket);
@@ -4101,6 +4026,7 @@ SetNexus(const Image *image,const RectangleInfo *region,
             nexus_info->indexes=(IndexPacket *) NULL;
             if (cache_info->indexes_valid)
               nexus_info->indexes=cache_info->indexes+offset;
+            nexus_info->in_core=IsNexusInCore(cache_info,nexus_info);
             return(nexus_info->pixels);
           }
     }
@@ -4136,7 +4062,8 @@ SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->pixels == (PixelPacket *) NULL)
     {
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
-			    "Failed to allocate %" MAGICK_SIZE_T_F "u bytes for nexus staging "
+			    "Failed to allocate %" MAGICK_SIZE_T_F
+                            "u bytes for nexus staging "
 			    "(number pixels=%" MAGICK_OFF_F "u, region width=%lu, "
 			    "region height=%lu, cache columns=%lu)!",
 			    (MAGICK_SIZE_T) length,
@@ -4147,6 +4074,7 @@ SetNexus(const Image *image,const RectangleInfo *region,
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
 		     image->filename);
     }
+  nexus_info->in_core=IsNexusInCore(cache_info,nexus_info);
 
   return(nexus_info->pixels);
 }
@@ -4205,7 +4133,7 @@ SyncCacheNexus(Image *image,const NexusInfo *nexus_info,
       ThrowException(exception,CacheError,PixelCacheIsNotOpen,image->filename);
       status=MagickFail;
     }
-  else if (IsNexusInCore(cache_info,nexus_info))
+  else if (nexus_info->in_core)
     {
       status=MagickPass;
     }
@@ -4405,7 +4333,7 @@ WriteCacheIndexes(Cache cache,const NexusInfo *nexus_info)
   assert(cache_info->signature == MagickSignature);
   if (!cache_info->indexes_valid)
     return(MagickFail);
-  if (IsNexusInCore(cache,nexus_info))
+  if (nexus_info->in_core)
     return(MagickPass);
   offset=nexus_info->region.y*(magick_off_t) cache_info->columns+nexus_info->region.x;
   length=nexus_info->region.width*sizeof(IndexPacket);
@@ -4571,7 +4499,7 @@ WriteCachePixels(Cache cache,const NexusInfo *nexus_info)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if (IsNexusInCore(cache,nexus_info))
+  if (nexus_info->in_core)
     return(MagickPass);
   offset=nexus_info->region.y*(magick_off_t) cache_info->columns+nexus_info->region.x;
   length=nexus_info->region.width*sizeof(PixelPacket);

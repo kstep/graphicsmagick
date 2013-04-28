@@ -1,3 +1,14 @@
+2013-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* design/pixel-cache-struct.dot: Update structure relationships
+	diagram.
+
+	* design/pixel-cache.dot: Update call flow diagram.
+
+	* magick/pixel_cache.c: Eliminate use of internal functions
+	GetNexusIndexes(), GetNexusPixels().  Reduce usage of internal
+	function IsNexusInCore().
+
 2013-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: MAGICK_SSIZE_T should always be a signed type.

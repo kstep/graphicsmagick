@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2008 GraphicsMagick Group
+  Copyright (C) 2008, 2013 GraphicsMagick Group
 
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with
@@ -36,6 +36,10 @@ digraph "pixel-cache" {
                 GetImagePixelsEx GetIndexes GetOnePixel GetPixels SetImagePixels \
                 SetImagePixelsEx SyncImagePixels SyncImagePixelsEx };
 
+  {rank=same; WriteCacheIndexes WriteCachePixels ReadCachePixels ReadCacheIndexes };
+
+  {rank=same; ClonePixelCache OpenCache FilePositionRead FilePositionWrite };
+
   AccessCacheViewPixels [color="chartreuse"];
   AccessMutableIndexes [color="chartreuse"];
   AccessMutablePixels [color="chartreuse"];
@@ -70,7 +74,6 @@ digraph "pixel-cache" {
 
 /*   DestroyCacheInfo [color="salmon"]; */
   DestroyCacheNexus [color="salmon"];
-/*   DestroyPixelStream [color="salmon"]; */
   AllocateCacheNexus [color="salmon"];
   ModifyCache [color="salmon"];
   /* PersistCache [color="salmon"]; */
@@ -81,7 +84,6 @@ digraph "pixel-cache" {
   AcquireCacheNexus -> DestroyCacheNexus;
   AcquireCacheNexus -> AllocateCacheNexus;
   AcquireCacheNexus -> GetNexusIndexes;
-  AcquireCacheNexus -> IsNexusInCore;
   AcquireCacheNexus -> ReadCacheIndexes;
   AcquireCacheNexus -> ReadCachePixels;
   AcquireCacheNexus -> SetNexus;
@@ -102,7 +104,6 @@ digraph "pixel-cache" {
 /*   DestroyPixelStream -> LockSemaphoreInfo; */
 /*   DestroyPixelStream -> UnlockSemaphoreInfo; */
 /*   GetCacheInfo -> AllocateSemaphoreInfo; */
-  GetCacheNexus -> IsNexusInCore;
   GetCacheNexus -> ReadCacheIndexes;
   GetCacheNexus -> ReadCachePixels;
   GetCacheNexus -> SetCacheNexus;
@@ -138,13 +139,15 @@ digraph "pixel-cache" {
   SetImagePixels -> SetCacheViewPixels;
   SetImagePixelsEx -> SetCacheViewPixels;
   SyncCacheNexus -> ClipCacheNexus;
-  SyncCacheNexus -> IsNexusInCore;
   SyncCacheNexus -> WriteCachePixels;
   SyncCacheNexus -> WriteCacheIndexes;
   SyncCacheViewPixels -> SyncCacheNexus;
   SyncImagePixels -> SyncCacheViewPixels;
   SyncImagePixelsEx -> SyncCacheViewPixels;
-  WriteCacheIndexes -> IsNexusInCore;
-  WriteCachePixels -> IsNexusInCore;
+  SetNexus -> IsNexusInCore;
 
+  ReadCacheIndexes -> FilePositionRead;
+  ReadCachePixels -> FilePositionRead;
+  WriteCacheIndexes -> FilePositionWrite;
+  WriteCachePixels -> FilePositionWrite;
 }
