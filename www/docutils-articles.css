@@ -505,6 +505,7 @@ pre.doctest-block {
 	border-style : solid;
 	line-height : 13pt;
 	background-color : #E8F8F0;
+        overflow:auto; /* auto scroll */
 }
 
 span.classifier {
