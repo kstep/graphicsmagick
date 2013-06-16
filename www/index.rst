@@ -156,8 +156,13 @@ Here are just a few examples of what GraphicsMagick can do:
   
   * Describe the format and characteristics of an image
 
+------------
+
+This page has been translated into `Spanish
+<http://www.webhostinghub.com/support/es/misc/sistema-de-procesamiento>`_
+language by Maria Ramos  from `Webhostinghub.com/support/edu
+<http://www.webhostinghub.com/support/edu>`_.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
 Copyright |copy| GraphicsMagick Group 2002 - 2013
-
