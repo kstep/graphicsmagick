@@ -8332,7 +8332,7 @@ WandExport unsigned int MagickSetImageMatteColor(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetImageOption() associates one or options with a particular image
-%  format (.e.g MagickSetImageOption(wand,"jpeg","perserve","yes").
+%  format (.e.g MagickSetImageOption(wand,"jpeg","preserve-settings","true").
 %
 %  The format of the MagickSetImageOption method is:
 %
