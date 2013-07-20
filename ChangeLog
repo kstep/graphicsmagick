@@ -1,3 +1,9 @@
+2013-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXMakeImage): Only use ThumbnailImage()
+	for DirectClass images in order to avoid a crash while creating
+	the panner image.
+
 2013-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* design/pixel-cache-struct.dot: Update structure relationships
