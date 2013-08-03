@@ -1728,7 +1728,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
 #ifdef PNG_READ_CHECK_FOR_INVALID_INDEX_SUPPORTED
-    /* Disable new libpng-1.5.10 feature */
+    /* Disable new libpng-1.5.10 feature while reading */
     png_set_check_for_invalid_index (ping, 0);
 #endif
 
@@ -2272,15 +2272,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
         }
     }
-  /*
-    Read image scanlines.
-  */
   if (image->delay != 0)
     mng_info->scenes_found++;
-  if (image_info->ping && (image_info->number_scenes != 0) &&
+  if (image_info->ping && ((mng_info->mng_type == 0) ||
+     ((image_info->number_scenes != 0) &&
       mng_info->scenes_found > (long) (image_info->first_scene+
-                                       image_info->number_scenes))
+                                       image_info->number_scenes))))
     {
+      /* This happens later in non-ping decodes */
+      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+        image->storage_class=DirectClass;
+
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Skipping PNG image data for scene %ld",
@@ -2289,13 +2291,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
-      if (image != (Image *) NULL)
-        image->columns=0;
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage().");
       return (image);
     }
+
+  /*
+    Read image scanlines.
+  */
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Reading PNG IDAT chunk(s)");

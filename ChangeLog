@@ -1,3 +1,8 @@
+2013-08-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): ping a png faster by
+	returning the image without reading the pixel data.
+
 2013-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXMakeImage): Only use ThumbnailImage()
