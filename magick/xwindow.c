@@ -5593,11 +5593,23 @@ MagickXMakeImage(Display *display,
           if ((window->pixel_info->colors != 0) ||
               (window->image->rows > (unsigned long) XDisplayHeight(display,window->screen)) ||
               (window->image->columns > (unsigned long) XDisplayWidth(display,window->screen)))
-            resize_image=ThumbnailImage(window->image,width,height,
-              &image->exception);
+            {
+              /*
+                The resized image should be in the same storage class
+                as the original (or bad things will happen).
+              */
+              if (window->image->storage_class == PseudoClass)
+                resize_image=SampleImage(window->image,width,height,
+                                         &image->exception);
+              else
+                resize_image=ThumbnailImage(window->image,width,height,
+                                            &image->exception);
+            }
           else
-            resize_image=ZoomImage(window->image,width,height,
-              &image->exception);
+            {
+              resize_image=ZoomImage(window->image,width,height,
+                                     &image->exception);
+            }
           if (resize_image != (Image *) NULL)
             {
               if (window->image != image)
