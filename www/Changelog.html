@@ -38,6 +38,15 @@
 <p>2013-08-10  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/render.c (DrawImage): Improve error handling so that
+rendering bails on image access/update errors.  Resolves
+SourceForge issues #233 &quot;Another SVG that hangs GraphicsMagick&quot;
+and #232 &quot;Another SVG that hangs GraphicsMagick&quot;.  The resolution
+of the bug is to return from image access/update error right away
+rather than adjusting the rendering density to produce a smaller
+image.</li>
+<li>magick/error.h: Hide exception throwing convenience macros under
+MAGICK_IMPLEMENTATION definition.</li>
 <li>Magick++/demo/demos.tap: Fix file naming for 'zoom' demos.</li>
 <li>magick/annotate.c (RenderFreetype): Improve error handling so
 that rendering bails on image access/update errors.</li>

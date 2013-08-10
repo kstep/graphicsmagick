@@ -371,7 +371,6 @@ extern MagickExport WarningHandler
   (_MagickWarning(severity_,#reason_,#description_))
 
 #  endif
-#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #define ThrowBinaryException(severity_,reason_,description_) \
 do { \
@@ -464,6 +463,8 @@ do { \
   CloseBlob(image_); \
   return(MagickFail); \
 } while (0);
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

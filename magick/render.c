@@ -1361,7 +1361,7 @@ DrawClipPath(Image *image,const DrawInfo *draw_info, const char *name)
     *clone_info;
 
   MagickPassFail
-    status;
+    status=MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1391,8 +1391,8 @@ DrawClipPath(Image *image,const DrawInfo *draw_info, const char *name)
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
   MagickFreeMemory(clone_info->clip_path);
-  status=DrawImage(image->clip_mask,clone_info);
-  status|=NegateImage(image->clip_mask,False);
+  status&=DrawImage(image->clip_mask,clone_info);
+  status&=NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"end clip-path");
   return(status);
@@ -1538,7 +1538,7 @@ DrawDashPolygon(const DrawInfo *draw_info,const PrimitiveInfo *primitive_info,
           j++;
           dash_polygon[0].coordinates=j;
           dash_polygon[j].primitive=UndefinedPrimitive;
-          status|=DrawStrokePolygon(image,clone_info,dash_polygon);
+          status&=DrawStrokePolygon(image,clone_info,dash_polygon);
         }
       n++;
       if (draw_info->dash_pattern[n] == 0.0)
@@ -1561,7 +1561,7 @@ DrawDashPolygon(const DrawInfo *draw_info,const PrimitiveInfo *primitive_info,
       j++;
       dash_polygon[0].coordinates=(size_t) j;
       dash_polygon[j].primitive=UndefinedPrimitive;
-      status|=DrawStrokePolygon(image,clone_info,dash_polygon);
+      status&=DrawStrokePolygon(image,clone_info,dash_polygon);
     }
   MagickFreeMemory(dash_polygon);
   DestroyDrawInfo(clone_info);
@@ -2989,16 +2989,20 @@ DrawImage(Image *image,const DrawInfo *draw_info)
         if ((n != 0) && (graphic_context[n]->clip_path != (char *) NULL) &&
             (LocaleCompare(graphic_context[n]->clip_path,
              graphic_context[n-1]->clip_path) != 0))
-          (void) DrawClipPath(image,graphic_context[n],
-            graphic_context[n]->clip_path);
-        (void) DrawPrimitive(image,graphic_context[n],primitive_info);
+          if (DrawClipPath(image,graphic_context[n],
+                           graphic_context[n]->clip_path) == MagickFail)
+            status=MagickFail;
+        if (DrawPrimitive(image,graphic_context[n],primitive_info)
+            == MagickFail)
+          status=MagickFail;
       }
     if (primitive_info->text != (char *) NULL)
       MagickFreeMemory(primitive_info->text);
-    status=MagickMonitorFormatted(q-primitive,
-                                  (magick_uint64_t) primitive_extent,
-                                  &image->exception,
-                                  RenderImageText,image->filename);
+    if (MagickMonitorFormatted(q-primitive,
+                               (magick_uint64_t) primitive_extent,
+                               &image->exception,
+                               RenderImageText,image->filename) == MagickFail)
+      status=MagickFail;
     if (status == MagickFail)
       break;
   }
@@ -3012,9 +3016,10 @@ DrawImage(Image *image,const DrawInfo *draw_info)
   for ( ; n >= 0; n--)
     DestroyDrawInfo(graphic_context[n]);
   MagickFreeMemory(graphic_context);
-  if (status == MagickFail)
+  if ((status == MagickFail) &&
+      (image->exception.severity < ErrorException))
     ThrowBinaryException(DrawError,NonconformingDrawingPrimitiveDefinition,
-      keyword);
+                         keyword);
   return(status);
 }
 
@@ -3789,14 +3794,19 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
     *q;
 
   MagickPassFail
-    status;
+    status=MagickPass;
 
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"  begin draw-primitive");
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),
     "    affine: %g,%g,%g,%g,%g,%g",draw_info->affine.sx,draw_info->affine.rx,
     draw_info->affine.ry,draw_info->affine.sy,draw_info->affine.tx,
     draw_info->affine.ty);
-  status=MagickPass;
+  status &= ModifyCache(image,&image->exception);
+  if (status == MagickFail)
+    {
+      (void) LogMagickEvent(RenderEvent,GetMagickModule(),"  end draw-primitive");
+      return status;
+    }
   x=(long) ceil(primitive_info->point.x-0.5);
   y=(long) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
@@ -3805,9 +3815,12 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
     {
       q=GetImagePixels(image,x,y,1,1);
       if (q == (PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       *q=draw_info->fill;
-      (void) SyncImagePixels(image);
+      status&=SyncImagePixels(image);
       break;
     }
     case ColorPrimitive:
@@ -3819,9 +3832,12 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
         {
           q=GetImagePixels(image,x,y,1,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           *q=draw_info->fill;
-          (void) SyncImagePixels(image);
+          status&=SyncImagePixels(image);
           break;
         }
         case ReplaceMethod:
@@ -3834,13 +3850,19 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
             target;
 
           color=draw_info->fill;
-          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
+          status&=AcquireOnePixelByReference(image,&target,x,y,
+                                             &image->exception);
+          if (status == MagickFail)
+            break;
           pattern=draw_info->fill_pattern;
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             for (x=0; x < (long) image->columns; x++)
             {
               if (!FuzzyColorMatch(q,&target,image->fuzz))
@@ -3850,10 +3872,12 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 }
               if (pattern != (Image *) NULL)
                 {
-                  (void) AcquireOnePixelByReference(pattern,&color,
-                    (long) (x-pattern->tile_info.x) % pattern->columns,
-                    (long) (y-pattern->tile_info.y) % pattern->rows,
-                    &image->exception);
+                  status&=AcquireOnePixelByReference(pattern,&color,
+                     (long) (x-pattern->tile_info.x) % pattern->columns,
+                     (long) (y-pattern->tile_info.y) % pattern->rows,
+                     &image->exception);
+                  if (status == MagickFail)
+                    break;
                   if (!pattern->matte)
                     color.opacity=OpaqueOpacity;
                 }
@@ -3861,7 +3885,8 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 AlphaCompositePixel(q,&color,color.opacity,q,q->opacity);
               q++;
             }
-            if (!SyncImagePixels(image))
+            status&=SyncImagePixels(image);
+            if (status == MagickFail)
               break;
           }
           break;
@@ -3873,14 +3898,17 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
+          status&=AcquireOnePixelByReference(image,&target,x,y,
+                                             &image->exception);
+          if (status == MagickFail)
+            break;
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;
               target=border_color;
             }
-          (void) ColorFloodfillImage(image,draw_info,target,x,y,
-            primitive_info->method);
+          status&=ColorFloodfillImage(image,draw_info,target,x,y,
+                                      primitive_info->method);
           break;
         }
         case ResetMethod:
@@ -3889,13 +3917,17 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             for (x=0; x < (long) image->columns; x++)
             {
               *q=draw_info->fill;
               q++;
             }
-            if (!SyncImagePixels(image))
+            status&=SyncImagePixels(image);
+            if (status == MagickFail)
               break;
           }
           break;
@@ -3914,9 +3946,12 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
         {
           q=GetImagePixels(image,x,y,1,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           q->opacity=TransparentOpacity;
-          (void) SyncImagePixels(image);
+          status&=SyncImagePixels(image);
           break;
         }
         case ReplaceMethod:
@@ -3924,8 +3959,11 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
           PixelPacket
             target;
 
-          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
-          (void) TransparentImage(image,target,TransparentOpacity);
+          status&=AcquireOnePixelByReference(image,&target,x,y,
+                                             &image->exception);
+          if (status == MagickFail)
+              break;
+          status&=TransparentImage(image,target,TransparentOpacity);
           break;
         }
         case FloodfillMethod:
@@ -3935,14 +3973,17 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          (void) AcquireOnePixelByReference(image,&target,x,y,&image->exception);
+          status&=AcquireOnePixelByReference(image,&target,x,y,
+                                             &image->exception);
+          if (status == MagickFail)
+              break;
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;
               target=border_color;
             }
-          (void) MatteFloodfillImage(image,target,TransparentOpacity,x,y,
-            primitive_info->method);
+          status&=MatteFloodfillImage(image,target,TransparentOpacity,x,y,
+                                      primitive_info->method);
           break;
         }
         case ResetMethod:
@@ -3951,13 +3992,17 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             for (x=0; x < (long) image->columns; x++)
-            {
-              q->opacity=draw_info->fill.opacity;
-              q++;
-            }
-            if (!SyncImagePixels(image))
+              {
+                q->opacity=draw_info->fill.opacity;
+                q++;
+              }
+            status&=SyncImagePixels(image);
+            if (status == MagickFail)
               break;
           }
           break;
@@ -3980,7 +4025,7 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
       FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
-      status=AnnotateImage(image,clone_info);
+      status&=AnnotateImage(image,clone_info);
       DestroyDrawInfo(clone_info);
       break;
     }
@@ -4012,7 +4057,10 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
           image->exception.description);
       DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       if ((primitive_info[1].point.x != composite_image->columns) &&
           (primitive_info[1].point.y != composite_image->rows))
         {
@@ -4035,7 +4083,7 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
       affine=draw_info->affine;
       affine.tx=x;
       affine.ty=y;
-      (void) DrawAffineImage(image,composite_image,&affine);
+      status&=DrawAffineImage(image,composite_image,&affine);
       DestroyImage(composite_image);
       break;
     }
@@ -4062,9 +4110,9 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
           clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
-          status=DrawPolygonPrimitive(image,clone_info,primitive_info);
+          status&=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
-          (void) DrawDashPolygon(draw_info,primitive_info,image);
+          status&=DrawDashPolygon(draw_info,primitive_info,image);
           break;
         }
       mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
@@ -4085,18 +4133,18 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
                (draw_info->linejoin == RoundJoin)) ||
                (primitive_info[i].primitive != UndefinedPrimitive))
             {
-              (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
+              status&=DrawPolygonPrimitive(image,draw_info,primitive_info);
               break;
             }
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
           clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
-          status=DrawPolygonPrimitive(image,clone_info,primitive_info);
+          status&=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
-          status|=DrawStrokePolygon(image,draw_info,primitive_info);
+          status&=DrawStrokePolygon(image,draw_info,primitive_info);
           break;
         }
-      status=DrawPolygonPrimitive(image,draw_info,primitive_info);
+      status&=DrawPolygonPrimitive(image,draw_info,primitive_info);
       break;
     }
   }
@@ -4197,8 +4245,10 @@ DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   for (p=primitive_info; p->primitive != UndefinedPrimitive; p+=p->coordinates)
   {
     stroke_polygon=TraceStrokePolygon(draw_info,p);
-    status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
+    status&=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
     MagickFreeMemory(stroke_polygon);
+    if (status == MagickFail)
+      break;
     q=p+p->coordinates-1;
     closed_path=(q->point.x == p->point.x) && (q->point.y == p->point.y);
     if ((draw_info->linecap == RoundCap) && !closed_path)

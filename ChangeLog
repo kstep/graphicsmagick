@@ -1,5 +1,16 @@
 2013-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/render.c (DrawImage): Improve error handling so that
+	rendering bails on image access/update errors.  Resolves
+	SourceForge issues #233 "Another SVG that hangs GraphicsMagick"
+	and #232 "Another SVG that hangs GraphicsMagick".  The resolution
+	of the bug is to return from image access/update error right away
+	rather than adjusting the rendering density to produce a smaller
+	image.
+
+	* magick/error.h: Hide exception throwing convenience macros under
+	MAGICK_IMPLEMENTATION definition.
+
 	* Magick++/demo/demos.tap: Fix file naming for 'zoom' demos.
 
 	* magick/annotate.c (RenderFreetype): Improve error handling so
