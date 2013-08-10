@@ -29,6 +29,6 @@ test_command_fn "piddle" -F TTF ${MEMCHECK} ./piddle
 test_command_fn "shapes" -F TTF ${MEMCHECK} ./shapes
 for filter in bessel blackman box catrom cubic gaussian hamming hanning hermite lanczos mitchell point quadratic sample scale sinc triangle
 do
-    test_command_fn "zoom ${filter}" ${MEMCHECK} ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff
+    test_command_fn "zoom ${filter}" ${MEMCHECK} ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  zoom_${filter}_out.miff
 done
 :

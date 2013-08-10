@@ -1,5 +1,7 @@
 2013-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/demo/demos.tap: Fix file naming for 'zoom' demos.
+
 	* magick/annotate.c (RenderFreetype): Improve error handling so
 	that rendering bails on image access/update errors.
 
