@@ -1,3 +1,8 @@
+2013-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): Improve error handling so
+	that rendering bails on image access/update errors.
+
 2013-08-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): ping a png faster by
