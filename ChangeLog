@@ -1,3 +1,8 @@
+2013-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (ReadPNMImage): Fix SourceForge issue #237
+	"Incorrect MAXVAL scaling when reading PAM images".
+
 2013-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/render.c (DrawImage): Improve error handling so that
