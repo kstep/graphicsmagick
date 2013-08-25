@@ -1,3 +1,7 @@
+2013-08-26  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+        * dcraw\dcraw.c Updated from autor
+        * dcraw\dcraw.c.patch 
+
 2013-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): Fix SourceForge issue #237
