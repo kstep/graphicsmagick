@@ -38,6 +38,10 @@
 <p>2013-09-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/tiff.c (WriteTIFFImage): Increase rows-per-strip as
+required to try to avoid more than 32K strips per image since some
+programs seem to use a 16-bit strip counter and fail with more
+than 32K strips.  Problem was reported by Kevin Myers.</li>
 <li>magick/transform.c (MosaicImages): Fix unsigned underflow
 problem with -mosaic when page offset is negative and exceeds
 image width or height.  This problem caused assertions, out of
