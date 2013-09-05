@@ -1,3 +1,11 @@
+2013-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/transform.c (MosaicImages): Fix unsigned underflow
+	problem with -mosaic when page offset is negative and exceeds
+	image width or height.  This problem caused assertions, out of
+	memory errors, or pixel cache limit errors due to requesting an
+	image of outrageous size.
+
 2013-08-26  Jaroslav Fojtik  <JaFojtik@seznam.cz>
         * dcraw\dcraw.c Updated from autor
         * dcraw\dcraw.c.patch 

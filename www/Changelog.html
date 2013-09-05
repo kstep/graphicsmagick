@@ -35,6 +35,16 @@
 <div class="document">
 
 
+<p>2013-09-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/transform.c (MosaicImages): Fix unsigned underflow
+problem with -mosaic when page offset is negative and exceeds
+image width or height.  This problem caused assertions, out of
+memory errors, or pixel cache limit errors due to requesting an
+image of outrageous size.</li>
+</ul>
+</blockquote>
 <dl class="docutils">
 <dt>2013-08-26  Jaroslav Fojtik  &lt;<a class="reference external" href="mailto:JaFojtik&#37;&#52;&#48;seznam&#46;cz">JaFojtik<span>&#64;</span>seznam<span>&#46;</span>cz</a>&gt;</dt>
 <dd>* dcrawdcraw.c Updated from autor
