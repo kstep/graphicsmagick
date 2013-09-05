@@ -4122,12 +4122,6 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (rows_per_strip < 1)
         rows_per_strip=1;
 
-      /*
-        FIXME: it seems that some programs fail to handle more than
-        32K or 64K strips in an image due to using a 16-bit strip
-        counter.  The solution is to use a larger strip size.
-      */
-
       switch (compress_tag)
         {
         case COMPRESSION_JPEG:
