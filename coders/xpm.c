@@ -347,6 +347,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickFreeMemory(textlist);
       ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
+  image->depth=GetImageDepth(image,&image->exception);
+  image->depth=NormalizeDepthToOctet(image->depth);
   j=0;
   key[width]='\0';
   if (!image_info->ping)

@@ -35,6 +35,25 @@
 <div class="document">
 
 
+<p>2013-09-08  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/miff.c: PseudoClass format was written incorrectly in
+that sample storage size is supposed to be selected based on the
+size of the colormap, but it was being selected based on the depth
+parameter instead, leading to excessively sized files and failure
+to read what was written.  RLE compressed formats had the sense of
+the alpha channel inverted from the other compression methods, and
+contrary to the specification.  PseudoClass with Alpha was not
+supported at all, and reading a file claiming to be such caused an
+assertion to be thrown.  Note that these fixes may cause some
+existing files to no longer be read correctly.</li>
+<li>coders/xpm.c (ReadXPMImage): XPM is rarely used to produce
+16-bit output.  Set image depth based on the colormap.</li>
+<li>coders/tim.c (ReadTIMImage): PSX TIM is not able to produce more
+than 8-bit output, set image depth appropriately.</li>
+</ul>
+</blockquote>
 <p>2013-09-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

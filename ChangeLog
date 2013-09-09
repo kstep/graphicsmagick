@@ -1,3 +1,22 @@
+2013-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c: PseudoClass format was written incorrectly in
+	that sample storage size is supposed to be selected based on the
+	size of the colormap, but it was being selected based on the depth
+	parameter instead, leading to excessively sized files and failure
+	to read what was written.  RLE compressed formats had the sense of
+	the alpha channel inverted from the other compression methods, and
+	contrary to the specification.  PseudoClass with Alpha was not
+	supported at all, and reading a file claiming to be such caused an
+	assertion to be thrown.  Note that these fixes may cause some
+	existing files to no longer be read correctly.
+
+	* coders/xpm.c (ReadXPMImage): XPM is rarely used to produce
+	16-bit output.  Set image depth based on the colormap.
+
+	* coders/tim.c (ReadTIMImage): PSX TIM is not able to produce more
+	than 8-bit output, set image depth appropriately.
+
 2013-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Increase rows-per-strip as

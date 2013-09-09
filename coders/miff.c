@@ -137,8 +137,11 @@ static unsigned int IsMIFF(const unsigned char *magick,const size_t length)
 */
 
 
-static unsigned int PushImageRLEPixels(Image *image,
- const QuantumType quantum_type,const unsigned char *source)
+static unsigned int
+ImportRLEPixels(Image *image,
+                const QuantumType quantum_type,
+                const unsigned int quantum_size,
+                const unsigned char *source)
 {
 
   register const unsigned char
@@ -166,8 +169,9 @@ static unsigned int PushImageRLEPixels(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
-  assert((image->depth == 8) || (image->depth == 16) || (image->depth == 32));
+  assert((quantum_size == 8) || (quantum_size == 16) || (quantum_size == 32));
   assert(((quantum_type == IndexQuantum) && (image->storage_class == PseudoClass)) ||
+         ((quantum_type == IndexAlphaQuantum) && (image->storage_class == PseudoClass)) ||
          ((quantum_type == CMYKAQuantum) && (image->storage_class == DirectClass) && image->matte) ||
          ((quantum_type == CMYKQuantum) && (image->storage_class == DirectClass) && !image->matte) ||
          ((quantum_type == RGBAQuantum) && (image->storage_class == DirectClass) && image->matte) ||
@@ -191,7 +195,7 @@ static unsigned int PushImageRLEPixels(Image *image,
         /*
           PseudoClass
         */
-        switch (image->depth)
+        switch (quantum_size)
           {
           case 8:
             {
@@ -206,7 +210,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                     }
                   length--;
                   *indexes++=index;
-                  *q++=pixel;
+                *q++=pixel;
                 }
               break;
             }
@@ -230,6 +234,9 @@ static unsigned int PushImageRLEPixels(Image *image,
             }
           case 32:
             {
+              /*
+                This case should never actually be used.
+              */
               for (x=(long) image->columns; x > 0; x--)
                 {
                   if (length == 0)
@@ -246,8 +253,86 @@ static unsigned int PushImageRLEPixels(Image *image,
                   *indexes++=index;
                   *q++=pixel;
                 }
+              break;
             }
-            break;
+          }
+        break;
+      }
+    case IndexAlphaQuantum:
+      {
+        /*
+          PseudoClass plus alpha channel
+        */
+        switch (quantum_size)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      quantum=(*p++);
+                      pixel.opacity=MaxRGB-ScaleCharToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++ << 8);
+                      index|=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=MaxRGB-ScaleShortToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              /*
+                This case should never actually be used.
+              */
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++ << 24);
+                      index|=(*p++ << 16);
+                      index|=(*p++ << 8);
+                      index|=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=MaxRGB-ScaleLongToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
           }
         break;
       }
@@ -256,7 +341,7 @@ static unsigned int PushImageRLEPixels(Image *image,
         /*
           Directclass CMYK & matte
         */
-        switch (image->depth)
+        switch (quantum_size)
           {
           case 8:
             {
@@ -268,7 +353,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       pixel.green=ScaleCharToQuantum(*p++);
                       pixel.blue=ScaleCharToQuantum(*p++);
                       pixel.opacity=ScaleCharToQuantum(*p++);
-                      index=(IndexPacket) ScaleCharToQuantum(*p++);
+                      index=(IndexPacket) MaxRGB-ScaleCharToQuantum(*p++);
                       length=(*p++)+1;
                     }
                   length--;
@@ -297,7 +382,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       pixel.opacity=ScaleShortToQuantum(quantum);
                       quantum=(*p++ << 8);
                       quantum|=(*p++);
-                      index=ScaleShortToQuantum(quantum);
+                      index=(IndexPacket) MaxRGB-ScaleShortToQuantum(quantum);
                       length=(*p++)+1;
                     }
                   length--;
@@ -336,7 +421,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       quantum|=(*p++ << 16);
                       quantum|=(*p++ << 8);
                       quantum|=(*p++);
-                      index=(IndexPacket) ScaleLongToQuantum(quantum);
+                      index=(IndexPacket) MaxRGB-ScaleLongToQuantum(quantum);
                       length=(*p++)+1;
                     }
                   length--;
@@ -353,7 +438,7 @@ static unsigned int PushImageRLEPixels(Image *image,
         /*
           Directclass CMYK without matte
         */
-        switch (image->depth)
+        switch (quantum_size)
           {
           case 8:
             {
@@ -438,7 +523,7 @@ static unsigned int PushImageRLEPixels(Image *image,
         /*
           Directclass RGB with matte
         */
-        switch (image->depth)
+        switch (quantum_size)
           {
           case 8:
             {
@@ -449,7 +534,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       pixel.red=ScaleCharToQuantum(*p++);
                       pixel.green=ScaleCharToQuantum(*p++);
                       pixel.blue=ScaleCharToQuantum(*p++);
-                      pixel.opacity=ScaleCharToQuantum(*p++);
+                      pixel.opacity=MaxRGB-ScaleCharToQuantum(*p++);
                       length=(*p++)+1;
                     }
                   length--;
@@ -474,7 +559,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       pixel.blue=ScaleShortToQuantum(quantum);
                       quantum=(*p++ << 8);
                       quantum|=(*p++);
-                      pixel.opacity=ScaleShortToQuantum(quantum);
+                      pixel.opacity=MaxRGB-ScaleShortToQuantum(quantum);
                       length=(*p++)+1;
                     }
                   length--;
@@ -507,7 +592,7 @@ static unsigned int PushImageRLEPixels(Image *image,
                       quantum|=(*p++ << 16);
                       quantum|=(*p++ << 8);
                       quantum|=(*p++);
-                      pixel.opacity=ScaleLongToQuantum(quantum);
+                      pixel.opacity=MaxRGB-ScaleLongToQuantum(quantum);
                       length=(*p++)+1;
                     }
                   length--;
@@ -523,7 +608,7 @@ static unsigned int PushImageRLEPixels(Image *image,
         /*
           Directclass RGB without matte
         */
-        switch (image->depth)
+        switch (quantum_size)
           {
           case 8:
             {
@@ -679,8 +764,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   unsigned int
     colors,
+    depth,
     packet_size,
-    sample_size;
+    quantum_size;
 
   ProfileInfo
     *profiles=0;
@@ -1167,6 +1253,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           }
       }
 
+    /*
+      Create a normalized version of depth.
+    */
+    if (image->depth <= 8)
+      depth=8;
+    else if (image->depth <= 16)
+      depth=16;
+    else
+      depth=32;
+
     if (image->montage != (char *) NULL)
       {
         register char
@@ -1241,47 +1337,57 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             /*
               Read image colormap from file.
             */
-            packet_size=3*image->depth/8;
+            packet_size=3*depth/8;
             colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
-            if (image->depth <= 8)
-              for (i=0; i < (long) image->colors; i++)
+            switch (depth)
               {
-                image->colormap[i].red=ScaleCharToQuantum(*p++);
-                image->colormap[i].green=ScaleCharToQuantum(*p++);
-                image->colormap[i].blue=ScaleCharToQuantum(*p++);
-              }
-            else
-              if (image->depth <= 16)
-                for (i=0; i < (long) image->colors; i++)
+              case 8:
                 {
-                  pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].red=ScaleShortToQuantum(pixel);
-                  p+=2;
-                  pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].green=ScaleShortToQuantum(pixel);
-                  p+=2;
-                  pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].blue=ScaleShortToQuantum(pixel);
-                  p+=2;
+                  for (i=0; i < (long) image->colors; i++)
+                    {
+                      image->colormap[i].red=ScaleCharToQuantum(*p++);
+                      image->colormap[i].green=ScaleCharToQuantum(*p++);
+                      image->colormap[i].blue=ScaleCharToQuantum(*p++);
+                    }
+                  break;
                 }
-              else
-                for (i=0; i < (long) image->colors; i++)
+              case 16:
                 {
-                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].red=ScaleLongToQuantum(pixel);
-                  p+=4;
-                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].green=ScaleLongToQuantum(pixel);
-                  p+=4;
-                  pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].blue=ScaleLongToQuantum(pixel);
-                  p+=4;
+                  for (i=0; i < (long) image->colors; i++)
+                    {
+                      pixel=(*p << 8) | *(p+1);
+                      image->colormap[i].red=ScaleShortToQuantum(pixel);
+                      p+=2;
+                      pixel=(*p << 8) | *(p+1);
+                      image->colormap[i].green=ScaleShortToQuantum(pixel);
+                      p+=2;
+                      pixel=(*p << 8) | *(p+1);
+                      image->colormap[i].blue=ScaleShortToQuantum(pixel);
+                      p+=2;
+                    }
+                  break;
                 }
+              case 32:
+                {
+                  for (i=0; i < (long) image->colors; i++)
+                    {
+                      pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                      image->colormap[i].red=ScaleLongToQuantum(pixel);
+                      p+=4;
+                      pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                      image->colormap[i].green=ScaleLongToQuantum(pixel);
+                      p+=4;
+                      pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
+                      image->colormap[i].blue=ScaleLongToQuantum(pixel);
+                      p+=4;
+                    }
+                }
+              } /* switch (depth) */
             MagickFreeMemory(colormap);
           }
       }
@@ -1289,15 +1395,38 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     /*
+      Determine import properties
+    */
+    quantum_size=0;
+    if (image->storage_class == PseudoClass)
+      {
+        quantum_type=image->matte ? IndexAlphaQuantum : IndexQuantum;
+        if (image->colors <= 256)
+          quantum_size=8;
+        else if (image->colors <= 65535)
+          quantum_size=16;
+        else
+          quantum_size=32;
+      }
+    else
+      {
+        quantum_type=RGBQuantum;
+        quantum_size=depth;
+        if (image->colorspace == CMYKColorspace)
+          quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
+        else
+          quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
+      }
+     /*
       Allocate image pixels.
     */
-    packet_size=image->depth/8;
+    packet_size=quantum_size/8;
     if (image->storage_class == DirectClass)
-      packet_size=3*image->depth/8;
+      packet_size=3*quantum_size/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth/8;
+      packet_size+=quantum_size/8;
     if (image->matte)
-      packet_size+=image->depth/8;
+      packet_size+=quantum_size/8;
     if (image->compression == RLECompression)
       packet_size++;
     pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
@@ -1309,26 +1438,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Read image pixels.
     */
-    quantum_type=RGBQuantum;
-    sample_size=image->depth;
-    if (image->storage_class == PseudoClass)
-      {
-        quantum_type=image->matte ? IndexAlphaQuantum : IndexQuantum;
-        if (image->colors <= 256)
-          sample_size=8;
-        else if (image->colors <= 65535)
-          sample_size=16;
-        else
-          sample_size=32;
-      }
-    else
-      {
-        if (image->colorspace == CMYKColorspace)
-          quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
-        else
-          quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
-      }
-    length=0;
+   length=0;
     switch (image->compression)
       {
 #if defined(HasZLIB)
@@ -1374,7 +1484,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=inflateEnd(&zip_info);
                   status|=code >= 0;
                 }
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
+              (void) ImportImagePixelArea(image,quantum_type,quantum_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -1430,7 +1540,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=BZ2_bzDecompressEnd(&bzip_info);
                   status|=code >= 0;
                 }
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels,0,0);
+              (void) ImportImagePixelArea(image,quantum_type,quantum_size,pixels,0,0);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -1460,7 +1570,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   length+=*(p-1)+1;
                 }
 
-              (void) PushImageRLEPixels(image,quantum_type,pixels);
+              (void) ImportRLEPixels(image,quantum_type,quantum_size,pixels);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -1482,7 +1592,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,(const unsigned char*) pixels_p,0,0);
+              (void) ImportImagePixelArea(image,quantum_type,quantum_size,(const unsigned char*) pixels_p,0,0);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -1663,6 +1773,7 @@ ModuleExport void UnregisterMIFFImage(void)
 %
 */
 static void WriteRunlengthPacket(const Image *image,
+                                 const unsigned int quantum_size,
                                  const PixelPacket *pixel,
                                  const size_t length,
                                  unsigned char **qp,
@@ -1671,42 +1782,77 @@ static void WriteRunlengthPacket(const Image *image,
   register unsigned char
     *q;
 
-  unsigned long
+  unsigned int
     value;
+
+  assert((quantum_size == 8) || (quantum_size == 16) || (quantum_size == 32));
 
   q = *qp;
 
   if (image->storage_class != DirectClass)
     {
       value=index;
-      if (image->depth > 16)
+      /*
+        Fall-through logic
+      */
+      switch (quantum_size)
         {
-          *q++=(unsigned char) (value >> 24);
-          *q++=(unsigned char) (value >> 16);
+        case 32:
+          {
+            *q++=(unsigned char) (value >> 24);
+            *q++=(unsigned char) (value >> 16);
+          }
+        case 16:
+          {
+            *q++=(unsigned char) (value >> 8);
+          }
+        case 8:
+          {
+            *q++=(unsigned char) value;
+          }
+        } /* switch (quantum_size) */
+      if (image->matte)
+        {
+          value=MaxRGB-pixel->opacity;
+          switch (quantum_size)
+            {
+            case 32:
+              {
+                *q++=(unsigned char) (value >> 24);
+                *q++=(unsigned char) (value >> 16);
+              }
+            case 16:
+              {
+                *q++=(unsigned char) (value >> 8);
+              }
+            case 8:
+              {
+                *q++=(unsigned char) value;
+              }
+            } /* switch (quantum_size) */
         }
-      if (image->depth > 8)
-        *q++=(unsigned char) (value >> 8);
-      *q++=(unsigned char) value;
     }
   else
     {
-      if (image->depth <= 8)
+      switch (quantum_size)
         {
-          *q++=ScaleQuantumToChar(pixel->red);
-          *q++=ScaleQuantumToChar(pixel->green);
-          *q++=ScaleQuantumToChar(pixel->blue);
-          if (image->colorspace == CMYKColorspace)
-            {
-              *q++=ScaleQuantumToChar(pixel->opacity);
+        case 8:
+          {
+            *q++=ScaleQuantumToChar(pixel->red);
+            *q++=ScaleQuantumToChar(pixel->green);
+            *q++=ScaleQuantumToChar(pixel->blue);
+            if (image->colorspace == CMYKColorspace)
+              {
+                *q++=ScaleQuantumToChar(pixel->opacity);
+                if (image->matte)
+                  *q++=ScaleQuantumToChar(index);
+              }
+            else
               if (image->matte)
-                *q++=ScaleQuantumToChar(index);
-            }
-          else
-            if (image->matte)
-              *q++=ScaleQuantumToChar(pixel->opacity);
-        }
-      else
-        if (image->depth <= 16)
+                *q++=ScaleQuantumToChar(MaxRGB-pixel->opacity);
+            break;
+          }
+        case 16:
           {
             value=ScaleQuantumToShort(pixel->red);
             *q++=(unsigned char) (value >> 8);
@@ -1724,7 +1870,7 @@ static void WriteRunlengthPacket(const Image *image,
                 *q++=(unsigned char) value;
                 if (image->matte)
                   {
-                    value=ScaleQuantumToShort(index);
+                    value=ScaleQuantumToShort(MaxRGB-index);
                     *q++=(unsigned char) (value >> 8);
                     *q++=(unsigned char) value;
                   }
@@ -1732,12 +1878,13 @@ static void WriteRunlengthPacket(const Image *image,
             else
               if (image->matte)
                 {
-                  value=ScaleQuantumToShort(pixel->opacity);
+                  value=ScaleQuantumToShort(MaxRGB-pixel->opacity);
                   *q++=(unsigned char) (value >> 8);
                   *q++=(unsigned char) value;
                 }
+            break;
           }
-        else if (image->depth <= 32)
+        case 32:
           {
             value=ScaleQuantumToLong(pixel->red);
             *q++=(unsigned char) (value >> 24);
@@ -1763,7 +1910,7 @@ static void WriteRunlengthPacket(const Image *image,
                 *q++=(unsigned char) value;
                 if (image->matte)
                   {
-                    value=ScaleQuantumToLong(index);
+                    value=ScaleQuantumToLong(MaxRGB-index);
                     *q++=(unsigned char) (value >> 24);
                     *q++=(unsigned char) (value >> 16);
                     *q++=(unsigned char) (value >> 8);
@@ -1773,13 +1920,14 @@ static void WriteRunlengthPacket(const Image *image,
             else
               if (image->matte)
                 {
-                  value=ScaleQuantumToLong(pixel->opacity);
+                  value=ScaleQuantumToLong(MaxRGB-pixel->opacity);
                   *q++=(unsigned char) (value >> 24);
                   *q++=(unsigned char) (value >> 16);
                   *q++=(unsigned char) (value >> 8);
                   *q++=(unsigned char) value;
                 }
           }
+        }  /* switch (quantum_size) */
     }
   *q++=(unsigned char) length;
   *qp=q;
@@ -1836,7 +1984,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     depth,
-    status;
+    status,
+    quantum_size;
 
   unsigned long
     packet_size,
@@ -1893,18 +2042,31 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       depth=16;
     else
       depth=8;
+    if (image->storage_class != DirectClass)
+      {
+        if (image->colors > 65536)
+          quantum_size=32;
+        else if (image->colors > 256)
+          quantum_size=16;
+        else
+          quantum_size=8;
+      }
+    else
+      {
+        quantum_size=depth;
+      }
     /*
       Allocate image pixels.
     */
-    packet_size=depth/8;
+    packet_size=quantum_size/8;
     if (image->storage_class == DirectClass)
-      packet_size=3*depth/8;
+      packet_size=3*quantum_size/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=depth/8;
+      packet_size+=quantum_size/8;
     if (image->matte)
-      packet_size+=depth/8;
+      packet_size+=quantum_size/8;
     if (compression == RLECompression)
-      packet_size+=depth/8;
+      packet_size+=quantum_size/8;
     length=packet_size*image->columns;
     pixels=MagickAllocateMemory(unsigned char *,length);
     length=(size_t) (1.01*packet_size*image->columns+600);
@@ -2179,44 +2341,55 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write colormap to file.
         */
         q=colormap;
-        if (image->depth <= 8)
-          for (i=0; i < (long) image->colors; i++)
+        switch (depth)
           {
-            *q++=ScaleQuantumToChar(image->colormap[i].red);
-            *q++=ScaleQuantumToChar(image->colormap[i].green);
-            *q++=ScaleQuantumToChar(image->colormap[i].blue);
-          }
-#if QuantumDepth > 8
-        else
-          if (image->depth <= 16)
-            for (i=0; i < (long) image->colors; i++)
+          case 8:
             {
-              *q++=ScaleQuantumToShort(image->colormap[i].red) >> 8;
-              *q++=ScaleQuantumToShort(image->colormap[i].red);
-              *q++=ScaleQuantumToShort(image->colormap[i].green) >> 8;
-              *q++=ScaleQuantumToShort(image->colormap[i].green);
-              *q++=ScaleQuantumToShort(image->colormap[i].blue) >> 8;
-              *q++=ScaleQuantumToShort(image->colormap[i].blue);
+              for (i=0; i < (long) image->colors; i++)
+                {
+                  *q++=ScaleQuantumToChar(image->colormap[i].red);
+                  *q++=ScaleQuantumToChar(image->colormap[i].green);
+                  *q++=ScaleQuantumToChar(image->colormap[i].blue);
+                }
+              break;
+            }
+#if QuantumDepth > 8
+          case 16:
+            {
+              for (i=0; i < (long) image->colors; i++)
+                {
+                  *q++=ScaleQuantumToShort(image->colormap[i].red) >> 8;
+                  *q++=ScaleQuantumToShort(image->colormap[i].red);
+                  *q++=ScaleQuantumToShort(image->colormap[i].green) >> 8;
+                  *q++=ScaleQuantumToShort(image->colormap[i].green);
+                  *q++=ScaleQuantumToShort(image->colormap[i].blue) >> 8;
+                  *q++=ScaleQuantumToShort(image->colormap[i].blue);
+                }
+              break;
             }
 #endif /* QuantumDepth > 8 */
 #if QuantumDepth > 16
-          else
-            for (i=0; i < (long) image->colors; i++)
+          case 32:
             {
-              *q++=image->colormap[i].red >> 24;
-              *q++=image->colormap[i].red >> 16;
-              *q++=image->colormap[i].red >> 8;
-              *q++=image->colormap[i].red;
-              *q++=image->colormap[i].green >> 24;
-              *q++=image->colormap[i].green >> 16;
-              *q++=image->colormap[i].green >> 8;
-              *q++=image->colormap[i].green;
-              *q++=image->colormap[i].blue >> 24;
-              *q++=image->colormap[i].blue >> 16;
-              *q++=image->colormap[i].blue >> 8;
-              *q++=image->colormap[i].blue;
+              for (i=0; i < (long) image->colors; i++)
+                {
+                  *q++=image->colormap[i].red >> 24;
+                  *q++=image->colormap[i].red >> 16;
+                  *q++=image->colormap[i].red >> 8;
+                  *q++=image->colormap[i].red;
+                  *q++=image->colormap[i].green >> 24;
+                  *q++=image->colormap[i].green >> 16;
+                  *q++=image->colormap[i].green >> 8;
+                  *q++=image->colormap[i].green;
+                  *q++=image->colormap[i].blue >> 24;
+                  *q++=image->colormap[i].blue >> 16;
+                  *q++=image->colormap[i].blue >> 8;
+                  *q++=image->colormap[i].blue;
+                }
+              break;
             }
 #endif /* QuantumDepth > 16 */
+          } /* switch (depth) */
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         MagickFreeMemory(colormap);
       }
@@ -2246,7 +2419,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     status=True;
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Using QuantumType %s, depth %u",
-                          QuantumTypeToString(quantum_type),depth);
+                          QuantumTypeToString(quantum_type),quantum_size);
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -2272,7 +2445,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
+          (void) ExportImagePixelArea(image,quantum_type,quantum_size,pixels,0,0);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2322,7 +2495,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
+          (void) ExportImagePixelArea(image,quantum_type,quantum_size,pixels,0,0);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
@@ -2373,7 +2546,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             else
               {
                 if (x > 0)
-                  WriteRunlengthPacket(image,&pixel,length,&q,index);
+                  WriteRunlengthPacket(image,quantum_size,&pixel,length,&q,index);
                 length=0;
               }
             if (image->storage_class == PseudoClass)
@@ -2381,13 +2554,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             pixel=(*p);
             p++;
           }
-          WriteRunlengthPacket(image,&pixel,length,&q,index);
+          WriteRunlengthPacket(image,quantum_size,&pixel,length,&q,index);
           (void) WriteBlob(image,q-pixels,pixels);
           break;
         }
         default:
         {
-          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0,0);
+          (void) ExportImagePixelArea(image,quantum_type,quantum_size,pixels,0,0);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }

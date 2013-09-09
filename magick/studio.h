@@ -355,6 +355,8 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
   (((offset)+((alignment)-1)) & ~((alignment)-1))
 #define AssertAlignment(offset,alignment) \
   (assert((((size_t) offset) % (size_t) alignment) == (size_t) 0))
+#define NormalizeDepthToOctet(depth) (depth < 8 ? 8 : \
+  (depth < 16 ? 16 : (depth < 32 ? 32 : depth)))
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
