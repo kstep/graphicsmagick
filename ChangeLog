@@ -1,3 +1,10 @@
+2013-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c (MagickFreeCMSTransform): Only delete the CMS
+	transform if it is non-null.  If lcms returned a null transform,
+	an assertion was thrown in lcms when the pointer was freed.
+	Problem was reported by James Bardin.
+
 2013-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c: PseudoClass format was written incorrectly in
