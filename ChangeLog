@@ -1,3 +1,12 @@
+2013-09-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Fixes to be able to read MIFF
+	written by ImageMagick 6.X, including DirectClass grayscale
+	images.  Interoperabilty is not completely assured since
+	ImageMagick is not consistent with itself and may only be able to
+	read the file it just wrote.  Reading DirectClass grayscale RLE
+	compressed images is not supported yet.
+
 2013-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/profile.c (MagickFreeCMSTransform): Only delete the CMS
@@ -39,7 +48,7 @@
 
 2013-08-26  Jaroslav Fojtik  <JaFojtik@seznam.cz>
         * dcraw\dcraw.c Updated from autor
-        * dcraw\dcraw.c.patch 
+        * dcraw\dcraw.c.patch
 
 2013-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

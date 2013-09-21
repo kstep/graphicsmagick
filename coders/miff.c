@@ -866,7 +866,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=c;
               c=ReadBlobByte(image);
-            } while ((isalnum(c) || (c == '-')) && (c != EOF));
+            } while ((isalnum(c) || (c == '-') || (c == ':')) && (c != EOF));
             *p='\0';
             while ((isspace(c) || (c == '=')) && (c != EOF))
               c=ReadBlobByte(image);
@@ -944,7 +944,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
                   {
-                    image->colorspace=(StringToColorspaceType(values));
+                    /*
+                      ImageMagick now uses colorspace=sRGB for ordinary RGB images.
+                    */
+                    if (LocaleCompare(values,"sRGB") == 0)
+                      image->colorspace=RGBColorspace;
+                    else
+                      image->colorspace=(StringToColorspaceType(values));
                     break;
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
@@ -1095,7 +1101,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     MagickFreeMemory(geometry);
                     break;
                   }
-                if (LocaleNCompare(keyword,"profile-",8) == 0)
+                if ((LocaleNCompare(keyword,"profile-",8) == 0) ||
+                    (LocaleNCompare(keyword,"profile:",8) == 0))
                   {
                     i=(long) number_of_profiles;
                     MagickReallocMemory(ProfileInfo *,profiles,(i+1)*sizeof(ProfileInfo));
@@ -1412,16 +1419,31 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       {
         quantum_type=RGBQuantum;
         quantum_size=depth;
-        if (image->colorspace == CMYKColorspace)
-          quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
+        if IsGrayColorspace(image->colorspace)
+          {
+            quantum_type=GrayQuantum;
+            if (image->matte)
+              quantum_type=GrayAlphaQuantum;
+          }
+        else if (image->colorspace == CMYKColorspace)
+          {
+            quantum_type=CMYKQuantum;
+            if (image->matte)
+              quantum_type=CMYKAQuantum;
+          }
         else
-          quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
+          {
+            quantum_type=RGBQuantum;
+            if (image->matte)
+              quantum_type=RGBAQuantum;
+          }
       }
      /*
       Allocate image pixels.
     */
     packet_size=quantum_size/8;
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) &&
+        (!IsGrayColorspace(image->colorspace)))
       packet_size=3*quantum_size/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=quantum_size/8;
