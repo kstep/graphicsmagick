@@ -1,3 +1,11 @@
+2013-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwfile.tap: Add tests for PGM and PPM ASCII subformats.
+
+	* coders/pnm.c (WritePNMImage): PGM "P2" format writer was broken
+	at 8-bit depth due to lack of white-space between the output
+	values.  Fixed now.
+
 2013-09-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): Fixes to be able to read MIFF

@@ -1601,6 +1601,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 			/* Use LUT for speed */
 			value=ScaleQuantumToChar(index);
 			AppendUnsignedCharValueToString(j,buffer,value);
+                        buffer[j++] = ' ';
 		      }
 		    else
 		      {
