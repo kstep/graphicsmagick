@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003 - 2012 GraphicsMagick Group
+ * Copyright (C) 2003 - 2013 GraphicsMagick Group
  * Copyright (C) 2003 ImageMagick Studio
  * Copyright 1991-1999 E. I. du Pont de Nemours and Company
  *
@@ -89,6 +89,8 @@ int main ( int argc, char **argv )
               arg++;
               option=argv[arg];
               imageInfo->compression=UndefinedCompression;
+              if (LocaleCompare("Undefined",option) == 0)
+                imageInfo->compression=UndefinedCompression;
               if (LocaleCompare("None",option) == 0)
                 imageInfo->compression=NoCompression;
               if (LocaleCompare("BZip",option) == 0)
@@ -149,6 +151,10 @@ int main ( int argc, char **argv )
             {
               pause=1;
             }
+          else if (LocaleCompare("quality",option+1) == 0)
+            {
+              imageInfo->quality=atol(argv[++arg]);
+            }
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
@@ -180,7 +186,8 @@ int main ( int argc, char **argv )
       (void) printf("arg=%d, argc=%d\n", arg, argc);
       (void) printf ( "Usage: %s [-compress algorithm -debug events -depth "
 		      "integer -filespec spec -log format -nocheck "
-		      "-size geometry -stdio -verbose] infile format\n", argv[0] );
+		      " -quality quality -size geometry -stdio -verbose]"
+                      " infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
