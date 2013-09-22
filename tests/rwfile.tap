@@ -252,8 +252,8 @@ do
   do
     test_command_fn "PGM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
     test_command_fn "PGM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
-    test_command_fn "PGM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -compress None -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
-    test_command_fn "PGM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -compress None -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
   done
 done
 
@@ -292,8 +292,8 @@ do
   do
     test_command_fn "PPM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
     test_command_fn "PPM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
-    test_command_fn "PPM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -compress None -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
-    test_command_fn "PPM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -compress None -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
   done
 done
 
