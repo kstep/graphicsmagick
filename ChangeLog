@@ -1,5 +1,9 @@
 2013-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tests/rwblob.c: Add support for -quality option.
+
+	* tests/rwfile.c: Add support for -quality option.
+
 	* tests/rwfile.tap: Add tests for PGM and PPM ASCII subformats.
 
 	* coders/pnm.c (WritePNMImage): PGM "P2" format writer was broken
