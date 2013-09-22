@@ -1,6 +1,6 @@
 #!/bin/sh
 # -*- shell-script -*-
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 . ./common.shi
 . ${top_srcdir}/tests/common.shi
 
@@ -11,7 +11,7 @@ rwfile=./rwfile
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 400
+test_plan_fn 456
 
 # AVS format
 for type in ${check_types}
@@ -213,6 +213,8 @@ for type in ${check_types}
 do
   test_command_fn "PBM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PBM
   test_command_fn "PBM ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PBM
+  test_command_fn "PBM ASCII ${type}" ${MEMCHECK} ${rwfile} -compress None -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PBM
+  test_command_fn "PBM ASCII ${type} (stdio)" ${MEMCHECK} ${rwfile} -compress None -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PBM
 done
 
 # PCD format
@@ -246,8 +248,13 @@ done
 # PGM format
 for type in ${check_types}
 do
-  test_command_fn "PGM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
-  test_command_fn "PGM ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+  for depth in 8 16
+  do
+    test_command_fn "PGM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -compress None -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -compress None -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+  done
 done
 
 # PICON format
@@ -281,8 +288,13 @@ done
 # PPM format
 for type in ${check_types}
 do
-  test_command_fn "PPM ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
-  test_command_fn "PPM ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+  for depth in 8 16
+  do
+    test_command_fn "PPM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -compress None -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -compress None -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+  done
 done
 
 # PS format
