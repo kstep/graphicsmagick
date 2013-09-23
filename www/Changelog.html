@@ -38,6 +38,11 @@
 <p>2013-09-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/tiff.c: Allow reading signed integer TIFF files even
+though internal storage uses signed integers.  Negative values
+will be handled incorrectly and positive values will be scaled to
+only 1/2 of the available unsigned range.  Perhaps the situation
+will improve in the future.</li>
 <li>tests/rwfile_miff.tap: Test MIFF with specific depths.</li>
 <li>tests/rwblob.c: Add support for -quality option.</li>
 <li>tests/rwfile.c: Add support for -quality option.</li>

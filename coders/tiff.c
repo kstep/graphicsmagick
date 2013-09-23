@@ -1023,7 +1023,8 @@ QuantumTransferMode(const Image *image,
 {
   *quantum_type=UndefinedQuantum;
   *quantum_samples=0;
-  if ((sample_format == SAMPLEFORMAT_UINT) ||
+  if ((sample_format == SAMPLEFORMAT_INT) ||
+      (sample_format == SAMPLEFORMAT_UINT) ||
       (sample_format == SAMPLEFORMAT_VOID) ||
       (sample_format == SAMPLEFORMAT_IEEEFP))
     {
