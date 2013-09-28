@@ -1,3 +1,9 @@
+2013-09-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c: As an extension to the standard PNM and PAM
+	formats, support writing 32-bit sample depth in the Q32 build, and
+	supporting reading 32-bit sample depth in all builds.
+
 2013-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c: Allow reading signed integer TIFF files even

@@ -11,7 +11,7 @@ rwfile=./rwfile
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 456
+test_plan_fn 512
 
 # AVS format
 for type in ${check_types}
@@ -208,6 +208,16 @@ do
   test_command_fn "P7 ${type} (stdio)" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" P7
 done
 
+# PAM format
+for type in ${check_types}
+do
+  for depth in 8 16 32
+  do
+    test_command_fn "PAM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -filespec "out_${type}_${depth}_%d" "${SRCDIR}/input_${type}.miff" PAM
+    test_command_fn "PAM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_${depth}_stdio_%d" "${SRCDIR}/input_${type}.miff" PAM
+  done
+done
+
 # PBM format
 for type in ${check_types}
 do
@@ -248,12 +258,12 @@ done
 # PGM format
 for type in ${check_types}
 do
-  for depth in 8 16
+  for depth in 8 16 32
   do
-    test_command_fn "PGM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
-    test_command_fn "PGM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
-    test_command_fn "PGM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PGM
-    test_command_fn "PGM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -filespec "out_${type}_${depth}_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -stdio -filespec "out_${type}_${depth}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -filespec "out_${type}_${depth}_%d" "${SRCDIR}/input_${type}.miff" PGM
+    test_command_fn "PGM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -depth ${depth} -quality 0 -stdio -filespec "out_${type}_${depth}_stdio_%d" "${SRCDIR}/input_${type}.miff" PGM
   done
 done
 
@@ -288,12 +298,12 @@ done
 # PPM format
 for type in ${check_types}
 do
-  for depth in 8 16
+  for depth in 8 16 32
   do
-    test_command_fn "PPM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
-    test_command_fn "PPM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
-    test_command_fn "PPM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -filespec "out_${type}_%d" "${SRCDIR}/input_${type}.miff" PPM
-    test_command_fn "PPM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -stdio -filespec "out_${type}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -filespec "out_${type}_${depth}_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -stdio -filespec "out_${type}_${depth}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -filespec "out_${type}_${depth}_%d" "${SRCDIR}/input_${type}.miff" PPM
+    test_command_fn "PPM ASCII ${type} (stdio, depth ${depth})" ${MEMCHECK} ${rwfile} -quality 0 -stdio -filespec "out_${type}_${depth}_stdio_%d" "${SRCDIR}/input_${type}.miff" PPM
   done
 done
 
