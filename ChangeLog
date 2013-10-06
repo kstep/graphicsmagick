@@ -1,3 +1,9 @@
+2013-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (NTGhostscriptFind): 64-bit application should
+	not search for Ghostscript in 32-bit registry.  SourceForge bug
+	#243 "GM on Windows will find Ghostscript only if both are 32 bit"
+
 2013-09-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c: As an extension to the standard PNM and PAM
