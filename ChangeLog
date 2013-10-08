@@ -1,3 +1,8 @@
+2013-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (NTGhostscriptEXE): Use gswin64c.exe as
+	Ghostscript executable name in a 64-bit application.
+
 2013-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (NTGhostscriptFind): 64-bit application should
