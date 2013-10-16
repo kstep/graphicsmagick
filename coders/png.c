@@ -1689,6 +1689,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       return(image);
     }
+
+#ifdef PNG_BENIGN_ERRORS_SUPPORTED
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
+#endif
+
   /*
     Prepare PNG for reading.
   */
@@ -6457,6 +6463,12 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 #endif
       return(MagickFail);
     }
+
+#ifdef PNG_BENIGN_ERRORS_SUPPORTED
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
+#endif
+
   /*
     Prepare PNG for writing.
   */
