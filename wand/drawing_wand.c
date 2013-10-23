@@ -4852,7 +4852,7 @@ WandExport void DrawSetStrokeLineJoin(DrawingWand *drawing_wand,
           p="round";
           break;
         case BevelJoin:
-          p="square";
+          p="bevel";
           break;
         default:
           break;

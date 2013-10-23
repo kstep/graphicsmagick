@@ -1,3 +1,12 @@
+2013-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c (DrawSetStrokeLineJoin): BevelJoin should
+	produce MVG text "bevel".
+
+	* magick/draw.c (DrawSetStrokeLineJoin): BevelJoin should produce
+	MVG text "bevel".  Fixes SourceForge bug "#245 error occured to
+	DrawableStrokeLineJoin(LineJoin.BevelJoin)".
+
 2013-10-16  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* Added calls to png_set_benign_errors() to allow benign errors

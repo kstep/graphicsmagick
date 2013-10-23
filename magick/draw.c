@@ -5187,7 +5187,7 @@ MagickExport void DrawSetStrokeLineJoin(DrawContext context,
           p = "round";
           break;
         case BevelJoin:
-          p = "square";
+          p = "bevel";
           break;
         default:
           break;
