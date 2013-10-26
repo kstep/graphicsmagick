@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on March 9, 2013
+This file was last updated on October 26, 2013
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,10 +15,133 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.18 (March 10, 2013)
+1.3.19 (TBD)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
+
+Special Issues:
+
+  * Due to `GCC bug 53967`_, several key agorithms (e.g. convolution)
+    may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
+    enabled for floating point math (`-mfpmath=sse`) if the GCC option
+    `-frename-registers` is used. Default 32-bit builds do not
+    experience the problem since they use '387 math.  It is not clear
+    in what version of GCC this problem started but it was not noticed
+    by the developers until the GCC 4.6 timeframe.  Other compilers do
+    not suffer from this bug.
+
+Security Fixes:
+
+  * None
+
+Bug fixes:
+
+  * Build: Fix cross-compilation for MinGW64 on Linux build machine.
+
+  * OpenMP: Revert use of omp_set_dynamic() since it caused
+    performance issues when using GCC's GOMP implementation and the
+    number of threads to use is specified.
+
+  * EXIF profile: Support the `SubjectArea` EXIF tag.
+
+  * PAM: Fix MAXVAL scaling when reading PAM images.  PAM was only
+    working correctly for images with 256 or 64k levels.
+
+  * PNM: PGM "P2" format writer wrote bad output for 8-bit depth.
+
+  * PNG: With libpng 1.6.X, avoid a crash while copying a PNG with a
+    "known incorrect ICC profile".
+
+  * Mosaic: Fixed unsigned underflow problem with -mosaic when page
+    offset is negative and exceeds image width or height, resulting in
+    assertions, out of memory errors, or pixel cache limit errors.
+
+  * TIFF writer: Try to avoid writing more than 32k strips per image
+    by increasing rows-per-strip since some programs fail to read
+    images with more than 32k strips per image.
+
+  * TIM reader: PSX TIM reports 8-bit depth (rather than 16).
+
+  * XPM reader: Reported depth now depends on the colormap rather than
+    always claiming to be 16-bit.
+
+  * MIFF writer: PseudoClass format was written incorrectly for depth
+    greater than 8.
+
+  * MIFF writer: RLE compressed format used inverted alpha from the
+    other subformats and contrary to the MIFF specification.
+
+  * MIFF reader: Fixes Fixes to be able to read MIFF written by
+    ImageMagick 6.X, including DirectClass grayscale images (except
+    for RLE compressed).
+
+  * CMS profile: Only delete the CMS transform if it is non-null.
+    Fixes assersion observed when lcms returned a null profile and
+    GraphicsMagick attempted to deallocate it.
+
+  * Windows Ghostscript: 64-bit GraphicsMagick no longer requires both
+    32-bit and 64-bit builds of Ghostscript to be installed in order
+    to read Postscript and PDF formats.
+
+  * TTF font rendering: Improve FreeType rendering error logic so that
+    rendering returns immediately on pixel access errors rather than
+    plowing on ahead.
+
+  * Drawing: Improve error handling logic so that drawing returns
+    quickly on pixel access errors rather than plowing on ahead.  This
+    avoids problems with SVGs which take seemingly forever to render.
+
+  * Drawing via C/C++ APIs: `BevelJoin` no longer causes a MVG parsing
+    error.
+
+New Features:
+
+  * JPEG: Add support for writing 'XMP' profile.
+
+  * PNM: As a simple extension to the standard PNM and PAM formats,
+    support writing and reading 32-bit sample depth.  Writing such
+    files is only supported by the Q32 build.
+
+Feature improvements:
+
+  * X11 `display`: For DirectClass image, use ThumbnailImage() rather
+    than SampleImage() when creating the panner icon to improve the
+    quality of the image.
+
+Performance Improvements:
+
+  * PNG: `ping` a PNG faster by avoiding reading the image data.
+
+Windows Delegate Updates:
+
+  * None
+
+Behavior Changes:
+
+  * TIFF: Returns DirectClass images by default for MINISWHITE and
+    MINISBLACK TIFF formats (rather then colormapped).
+
+  * MIFF: Now writes PseudoClass images correctly when depth is
+    greater than 8.  This impacts the reader, which will not be able
+    to read previously written incorrect format correctly.  Images
+    like this should be very rare.  The solution is to use an older
+    GraphicsMagick version to convert such images to a valid storage
+    format (with a depth of 8) so that they may be read with this
+    version.
+
+  * MIFF: Now writes RLE-compressed RGBA images with correct
+    alpha. This impacts the reader, which will not be able to read
+    previously written incorrect format correctly. Images like this
+    should be very rare. A solution is to use an older GraphicsMagick
+    version to use a compression algorithm other than RLE so that they
+    are read correctly with this version.  Another solution is to
+    process problematic images with '-operator Opacity Negate 0' to
+    invert the alpha channel.
+
+
+1.3.18 (March 10, 2013)
+==========================
 
 Special Issues:
 
