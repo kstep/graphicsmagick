@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1065,6 +1065,18 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_big5;
       if (LocaleCompare(encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
+#if defined(ft_encoding_johab)
+      if (LocaleCompare(encoding,"Johab") == 0)
+        encoding_type=ft_encoding_johab;
+#endif
+#if defined(ft_encoding_latin_1)
+      if (LocaleCompare(encoding,"Latin-1") == 0)
+        encoding_type=ft_encoding_latin_1;
+#endif
+#if defined(ft_encoding_latin_2)
+      if (LocaleCompare(encoding,"Latin-2") == 0)
+        encoding_type=ft_encoding_latin_2;
+#endif
       if (LocaleCompare(encoding,"None") == 0)
         encoding_type=ft_encoding_none;
       if (LocaleCompare(encoding,"SJIScode") == 0)

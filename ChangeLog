@@ -1,3 +1,10 @@
+2013-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS.txt: Update news since last release.
+
+	* magick/annotate.c (RenderFreetype): Support Johab, Latin-1, and
+	Latin-2 encodings.
+
 2013-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/drawing_wand.c (DrawSetStrokeLineJoin): BevelJoin should
