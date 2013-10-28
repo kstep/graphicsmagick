@@ -1295,7 +1295,6 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     return((Image *) NULL);
   mosaic_image->columns=page.width;
   mosaic_image->rows=page.height;
-  fprintf(stderr,"Mosaic columns=%lu rows=%lu\n", mosaic_image->columns, mosaic_image->rows);
 
   /*
     Canvas image supports transparency if any subordinate image uses
