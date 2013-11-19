@@ -1,3 +1,10 @@
+2013-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): TIFFDefaultStripSize() sometimes
+	returns zero so make sure that rows-per-strip is at least one to
+	avoid divide by zero error.  This bug was added in the current
+	development cycle.
+
 2013-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Update news since last release.
