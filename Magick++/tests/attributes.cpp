@@ -1112,12 +1112,12 @@ int main( int /*argc*/, char ** argv)
     // page
     //
     // Test default
-    if ( image.page() != Geometry(0,0,0,0) )
+    if ( image.page() != Geometry(image.columns(),image.rows(),0,0) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", page default "
 	     << "(" << string(image.page()) << ")"
-	     << " is not empty as expected" << endl;
+	     << " is not image dimensions as expected" << endl;
       }
 
     // Test set/get

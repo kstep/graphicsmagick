@@ -1,3 +1,10 @@
+2013-11-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ReadImage): Consistently initialize Image
+	page width and height to image width and height. Resolves
+	SourceForge bug #253 convert pdf output page is the wrong size
+	with -geometry "100%".
+
 2013-11-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): TIFFDefaultStripSize() sometimes
