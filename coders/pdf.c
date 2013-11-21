@@ -817,14 +817,38 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       geometry.y=(long) text_size;
       FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
       if (image_info->page != (char *) NULL)
-        (void) strlcpy(page_geometry,image_info->page,MaxTextExtent);
+        {
+          (void) strlcpy(page_geometry,image_info->page,MaxTextExtent);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Page: %s (from ImageInfo) ", page_geometry);
+
+        }
       else
-        if ((image->page.width != 0) && (image->page.height != 0))
-          (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
-                              image->page.height,image->page.x,image->page.y);
-        else
-          if (LocaleCompare(image_info->magick,"PDF") == 0)
-            (void) strcpy(page_geometry,PSPageGeometry);
+        {
+          if ((image->page.width != 0) && (image->page.height != 0))
+            {
+              (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
+                                  image->page.height,image->page.x,image->page.y);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Page: %s (from Image)", page_geometry);
+            }
+          else
+            {
+              if (LocaleCompare(image_info->magick,"PDF") == 0)
+                {
+                  (void) strlcpy(page_geometry,PSPageGeometry,sizeof(page_geometry));
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Page: %s (defaulted)", page_geometry);
+                }
+              else
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Page: %s (from Image columns/rows)",
+                                        page_geometry);
+
+                }
+            }
+        }
       (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
                                &geometry.width,&geometry.height);
       (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
