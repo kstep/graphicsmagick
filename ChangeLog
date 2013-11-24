@@ -1,3 +1,10 @@
+2013-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): Support rendering UTF-8
+	21-bit code points.  Was limited to 16-bit code points due to an
+	oversight/bug.  Resolves SourceForge bug "#149 Rendering UTF-8
+	encoded file displays wrong glyphs".
+
 2013-11-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (ReadImage): Consistently initialize Image

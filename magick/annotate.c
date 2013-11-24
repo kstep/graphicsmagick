@@ -97,6 +97,8 @@
 /*
   Forward declarations.
 */
+typedef magick_int32_t magick_code_point_t;
+
 static unsigned int
   RenderType(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
@@ -472,7 +474,7 @@ static int GetOneCharacter(const unsigned char *text,size_t *length)
   return((int) c);
 }
 
-static unsigned short *EncodeSJIS(const char *text,size_t *count)
+static magick_code_point_t *EncodeSJIS(const char *text,size_t *count)
 {
   int
     c;
@@ -480,21 +482,22 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
   size_t
     length;
 
-  unsigned short
+  magick_code_point_t
     *encoding;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  encoding=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (encoding == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  encoding=MagickAllocateArray(magick_code_point_t *,
+                               (strlen(text)+MaxTextExtent),
+                               sizeof(magick_code_point_t));
+  if (encoding == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=encoding;
@@ -509,7 +512,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
           *q++=(unsigned char) *p;
         break;
       }
-    *q=(unsigned short) c;
+    *q=(magick_code_point_t) c;
     q++;
   }
   *count=q-encoding;
@@ -545,23 +548,24 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
 %
 %
 */
-static unsigned short *EncodeText(const char *text,size_t *count)
+static magick_code_point_t *EncodeText(const char *text,size_t *count)
 {
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
-  unsigned short
+  magick_code_point_t
     *encoding;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  encoding=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (encoding == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  encoding=MagickAllocateArray(magick_code_point_t *,
+                               (strlen(text)+MaxTextExtent),
+                               sizeof(magick_code_point_t));
+  if (encoding == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=encoding;
@@ -601,10 +605,9 @@ static unsigned short *EncodeText(const char *text,size_t *count)
 %
 %
 */
-
-static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
+static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
 {
-  unsigned long
+  unsigned int
     c;
 
   if (*length < 1)
@@ -613,7 +616,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
   if (!(c & 0x80))
     {
       *length=1;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 2) || ((text[1] & 0xc0) != 0x80))
     {
@@ -625,7 +628,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       *length=2;
       c=(text[0] & 0x1f) << 6;
       c|=text[1] & 0x3f;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 3) || ((text[2] & 0xc0) != 0x80))
     {
@@ -638,7 +641,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       c=(text[0] & 0xf) << 12;
       c|=(text[1] & 0x3f) << 6;
       c|=text[2] & 0x3f;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 4) || ((c & 0xf8) != 0xf0) || ((text[3] & 0xc0) != 0x80))
     {
@@ -650,10 +653,10 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
   c|=(text[1] & 0x3f) << 12;
   c|=(text[2] & 0x3f) << 6;
   c|=text[3] & 0x3f;
-  return((long) c);
+  return((int) c);
 }
 
-static unsigned short *EncodeUnicode(const char *text,size_t *count)
+static magick_code_point_t *EncodeUnicode(const char *text,size_t *count)
 {
   int
     c;
@@ -661,21 +664,22 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
   size_t
     length;
 
-  unsigned short
+  magick_code_point_t
     *unicode;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  unicode=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (unicode == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  unicode=MagickAllocateArray(magick_code_point_t *,
+                              (strlen(text)+MaxTextExtent),
+                              sizeof(magick_code_point_t));
+  if (unicode == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=unicode;
@@ -690,7 +694,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
           *q++=(unsigned char) *p;
         break;
       }
-    *q=(unsigned short) c;
+    *q=(magick_code_point_t) c;
     q++;
   }
   *count=q-unicode;
@@ -1017,7 +1021,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       0, 0
     };
 
-  unsigned short
+  magick_code_point_t
     *text;
 
   MagickPassFail
@@ -1131,7 +1135,8 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     }
 
   /*
-    Convert text to 2-byte format as prescribed by the encoding.
+    Convert text to 4-byte format (supporting up to 21 code point
+    bits) as prescribed by the encoding.
   */
   switch (encoding_type)
   {
@@ -1165,7 +1170,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
-  if (text == (unsigned short *) NULL)
+  if (text == (magick_code_point_t *) NULL)
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
