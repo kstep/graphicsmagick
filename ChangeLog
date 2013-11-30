@@ -1,3 +1,20 @@
+2013-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c (DrawSetStrokeDashArray): Use array size
+	specified by user and don't expect user-provided array to be
+	terminated by 0.0.  Resolves SourceForge bug "#250 Unexpected
+	results from DrawSetStrokeDashArray".
+
+	* magick/draw.c (DrawSetStrokeDashArray): Use array size specified
+	by user and don't expect user-provided array to be terminated by
+	0.0.
+
+	* wand/drawing_wand.c (DrawGetStrokeDashArray): terminating 0.0 to
+	array returned to user.
+
+	* magick/draw.c (DrawGetStrokeDashArray): Add terminating 0.0 to
+	array returned to user.
+
 2013-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c (RenderFreetype): Support rendering UTF-8

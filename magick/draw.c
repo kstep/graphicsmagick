@@ -4801,19 +4801,20 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 
   p = CurrentContext->dash_pattern;
   if( p != (const double *) NULL )
-    while( *p++ != 0)
+    while( *p++ != 0.0)
       n++;
 
   *num_elems = n;
   dasharray = (double *)NULL;
   if (n != 0)
     {
-      dasharray = MagickAllocateMemory(double *, n*sizeof(double));
+      dasharray = MagickAllocateArray(double *, n+1, sizeof(double));
       p = CurrentContext->dash_pattern;
       q = dasharray;
       i = n;
       while( i-- )
         *q++ = *p++;
+      *q=0.0;
     }
   return dasharray;
 }
@@ -4862,27 +4863,29 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
   register double
     *q;
 
-  unsigned int
+  unsigned long
     i,
-    updated = False,
     n_new = num_elems,
     n_old = 0;
+
+  MagickBool
+    updated = MagickFalse;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
   q = CurrentContext->dash_pattern;
   if( q != (const double *) NULL )
-    while( *q++ != 0)
+    while( *q++ != 0.0)
       n_old++;
 
   if( (n_old == 0) && (n_new == 0) )
     {
-      updated = False;
+      updated = MagickFalse;
     }
   else if( n_old != n_new )
     {
-      updated = True;
+      updated = MagickTrue;
     }
   else if((CurrentContext->dash_pattern != (double*)NULL)
           && (dasharray != (double*)NULL))
@@ -4894,7 +4897,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
         {
           if(AbsoluteValue(*p - *q) > MagickEpsilon)
             {
-              updated = True;
+              updated = MagickTrue;
               break;
             }
           ++p;
@@ -4909,15 +4912,16 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 
       if( n_new != 0)
         {
-          CurrentContext->dash_pattern = MagickAllocateMemory(double *,
-            (n_new+1)*sizeof(double));
+          CurrentContext->dash_pattern = MagickAllocateArray(double *,
+                                                             (n_new+1),
+                                                             sizeof(double));
           if(CurrentContext->dash_pattern)
             {
               q=CurrentContext->dash_pattern;
               p=dasharray;
-              while( *p )
+              for (i=n_new; i != 0; i--)
                 *q++=*p++;
-              *q=0;
+              *q=0.0;
             }
           else
             {

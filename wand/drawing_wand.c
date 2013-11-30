@@ -4478,18 +4478,19 @@ WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
   assert(number_elements != (unsigned long *)NULL);
   p=CurrentContext->dash_pattern;
   if ( p != (const double *) NULL )
-    while (*p++ != 0)
+    while (*p++ != 0.0)
       n++;
   *number_elements=n;
   dash_array=(double *)NULL;
   if (n != 0)
     {
-      dash_array=(double *) AcquireMagickMemory(n*sizeof(double));
+      dash_array=MagickAllocateArray(double *, n+1, sizeof(double));
       p=CurrentContext->dash_pattern;
       q=dash_array;
       i=n;
       while (i--)
         *q++=(*p++);
+      *q=0.0;
     }
   return(dash_array);
 }
@@ -4536,18 +4537,21 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
   register double
     *q;
 
-  unsigned int
+  unsigned long
     i,
-    updated=MagickFalse,
-    n_new=number_elements,
-    n_old=0;
+    n_new = number_elements,
+    n_old = 0;
+
+  MagickBool
+    updated = MagickFalse;
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   q=CurrentContext->dash_pattern;
   if (q != (const double *) NULL)
-    while (*q++ != 0)
+    while (*q++ != 0.0)
       n_old++;
+
   if ((n_old == 0) && (n_new == 0))
     {
       updated=MagickFalse;
@@ -4576,12 +4580,12 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
   if (drawing_wand->filter_off || updated)
     {
       if (CurrentContext->dash_pattern != (double *) NULL)
-        CurrentContext->dash_pattern=(double *)
-          RelinquishMagickMemory(CurrentContext->dash_pattern);
+        MagickFreeMemory(CurrentContext->dash_pattern);
       if (n_new != 0)
         {
-          CurrentContext->dash_pattern=(double *)
-            AcquireMagickMemory((n_new+1)*sizeof(double));
+          CurrentContext->dash_pattern=MagickAllocateArray(double *,
+                                                           (n_new+1),
+                                                           sizeof(double));
           if (!CurrentContext->dash_pattern)
             {
               ThrowException3(&drawing_wand->exception,
@@ -4591,9 +4595,9 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
             {
               q=CurrentContext->dash_pattern;
               p=dash_array;
-              while (*p)
+              for (i=n_new; i != 0; i--)
                 *q++=*p++;
-              *q=0;
+              *q=0.0;
             }
         }
       (void) MvgPrintf(drawing_wand,"stroke-dash_array ");
