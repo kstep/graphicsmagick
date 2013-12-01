@@ -637,6 +637,16 @@ if test "$with_jbig" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jbig=$with_jbig "
 fi
 
+# Disable WEBP.
+AC_ARG_WITH(webp,
+        AS_HELP_STRING([--without-webp],
+                             [disable WEBP support]),
+        [with_webp=$withval],
+        [with_webp='yes'])
+if test "$with_webp" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-webp=$with_webp "
+fi
+
 # Disable JPEG.
 AC_ARG_WITH(jpeg,
 	      AS_HELP_STRING([--without-jpeg],
@@ -2409,6 +2419,40 @@ AM_CONDITIONAL(HasJBIG, test "$have_jbig" = 'yes')
 AC_SUBST(LIB_JBIG)
 
 #
+# Check for WEBP
+#
+have_webp='no'
+LIB_WEBP=''
+if test "$with_webp" != 'no'
+then
+    AC_MSG_CHECKING(for WEBP support )
+    AC_MSG_RESULT()
+    failed=0
+    passed=0
+    AC_CHECK_HEADER(webp/decode.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(webp,WebPDecodeRGB,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if WEBP package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+  AC_MSG_RESULT(no -- some components failed test)
+        have_webp='no (failed tests)'
+    else
+  LIB_WEBP='-lwebp'
+  LIBS="$LIB_WEBP $LIBS"
+  AC_DEFINE(HasWEBP,1,Define if you have WEBP library)
+  AC_MSG_RESULT(yes)
+        have_webp='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasWEBP, test "$have_webp" = 'yes')
+AC_SUBST(LIB_WEBP)
+
+#
 # Check for XML
 #
 have_xml='no'
@@ -3206,6 +3250,10 @@ if test "$have_jbig"   = 'yes' ; then
    DELEGATES="$DELEGATES jbig"
    MAGICK_FEATURES="$MAGICK_FEATURES JBIG"
 fi
+if test "$have_webp"   = 'yes' ; then
+   DELEGATES="$DELEGATES webp"
+   MAGICK_FEATURES="$MAGICK_FEATURES WEBP"
+fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    DELEGATES="$DELEGATES jng"
    MAGICK_FEATURES="$MAGICK_FEATURES JNG"
@@ -3331,7 +3379,7 @@ if test "$build_modules" != 'no'
 then
   MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_LTDL $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_WEBP $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3453,6 +3501,7 @@ fi
 echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
+echo "WEBP              --with-webp=$with_webp        	$have_webp"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG-2000         --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS v1           --with-lcms=$with_lcms        	$have_lcms"

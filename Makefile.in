@@ -1016,6 +1016,15 @@ coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_wbmp_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_wbmp_la_rpath = -rpath $(codersdir)
+coders_webp_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1)
+am_coders_webp_la_OBJECTS = coders/coders_webp_la-webp.lo
+coders_webp_la_OBJECTS = $(am_coders_webp_la_OBJECTS)
+coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(coders_webp_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
+@HasWEBP_TRUE@@WITH_MODULES_TRUE@am_coders_webp_la_rpath = -rpath \
+@HasWEBP_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
 coders_wmf_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
@@ -1172,7 +1181,7 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	coders/xpm.c coders/yuv.c coders/dps.c coders/clipboard.c \
 	coders/emf.c coders/fpx.c coders/jbig.c coders/jnx.c \
 	coders/jpeg.c coders/jp2.c coders/ept.c coders/tiff.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	coders/x.c coders/xwd.c coders/webp.c filters/analyze.c
 @HasX11_TRUE@am__objects_1 =  \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-animate.lo \
 @HasX11_TRUE@	magick/magick_libGraphicsMagick_la-display.lo \
@@ -1276,7 +1285,9 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-analyze.lo \
 @HasTIFF_TRUE@	coders/magick_libGraphicsMagick_la-tiff.lo
 @HasX11_TRUE@am__objects_12 = coders/magick_libGraphicsMagick_la-x.lo \
 @HasX11_TRUE@	coders/magick_libGraphicsMagick_la-xwd.lo
-am__objects_13 = $(am__objects_4) \
+@HasWEBP_TRUE@am__objects_13 =  \
+@HasWEBP_TRUE@	coders/magick_libGraphicsMagick_la-webp.lo
+am__objects_14 = $(am__objects_4) \
 	coders/magick_libGraphicsMagick_la-art.lo \
 	coders/magick_libGraphicsMagick_la-avi.lo \
 	coders/magick_libGraphicsMagick_la-avs.lo \
@@ -1366,11 +1377,11 @@ am__objects_13 = $(am__objects_4) \
 	coders/magick_libGraphicsMagick_la-yuv.lo $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
 	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12)
-am__objects_14 = filters/magick_libGraphicsMagick_la-analyze.lo
+	$(am__objects_12) $(am__objects_13)
+am__objects_15 = filters/magick_libGraphicsMagick_la-analyze.lo
 @WITH_MODULES_FALSE@am_magick_libGraphicsMagick_la_OBJECTS =  \
 @WITH_MODULES_FALSE@	$(am__objects_2) $(am__objects_3) \
-@WITH_MODULES_FALSE@	$(am__objects_13) $(am__objects_14)
+@WITH_MODULES_FALSE@	$(am__objects_14) $(am__objects_15)
 @WITH_MODULES_TRUE@am_magick_libGraphicsMagick_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_2) $(am__objects_3)
 magick_libGraphicsMagick_la_OBJECTS =  \
@@ -1381,9 +1392,9 @@ magick_libGraphicsMagick_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 wand_libGraphicsMagickWand_la_DEPENDENCIES = $(LIBMAGICK) \
 	$(am__DEPENDENCIES_1)
-am__objects_15 = wand/drawing_wand.lo wand/magick_compat.lo \
+am__objects_16 = wand/drawing_wand.lo wand/magick_compat.lo \
 	wand/magick_wand.lo wand/pixel_wand.lo
-am_wand_libGraphicsMagickWand_la_OBJECTS = $(am__objects_15)
+am_wand_libGraphicsMagickWand_la_OBJECTS = $(am__objects_16)
 wand_libGraphicsMagickWand_la_OBJECTS =  \
 	$(am_wand_libGraphicsMagickWand_la_OBJECTS)
 wand_libGraphicsMagickWand_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1637,12 +1648,12 @@ SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
 	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
 	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
 	$(magick_libGraphicsMagick_la_SOURCES) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -1714,12 +1725,12 @@ DIST_SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
 	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
 	$(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) \
-	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
-	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
-	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) \
+	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
+	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
+	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
+	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
+	$(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
 	$(am__magick_libGraphicsMagick_la_SOURCES_DIST) \
 	$(wand_libGraphicsMagickWand_la_SOURCES) \
 	$(Magick___demo_analyze_SOURCES) \
@@ -2100,6 +2111,7 @@ LIB_TIFF = @LIB_TIFF@
 LIB_TRIO = @LIB_TRIO@
 LIB_TTF = @LIB_TTF@
 LIB_UMEM = @LIB_UMEM@
+LIB_WEBP = @LIB_WEBP@
 LIB_WMF = @LIB_WMF@
 LIB_WMF_DEPS = @LIB_WMF_DEPS@
 LIB_X11 = @LIB_X11@
@@ -2458,6 +2470,8 @@ codersdir = $(MagickCoderModulesPath)
 @HasTIFF_TRUE@MAGICK_TIFF_SRCS = coders/ept.c coders/tiff.c
 @HasX11_TRUE@MAGICK_X11_CODER_MODULES = coders/x.la coders/xwd.la
 @HasX11_TRUE@MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
+@HasWEBP_TRUE@MAGICK_WEBP_MODULES = coders/webp.la
+@HasWEBP_TRUE@MAGICK_WEBP_SRCS = coders/webp.c
 MAGICK_CODER_SRCS = \
 	$(MAGICK_PNG_SRCS) \
 	coders/art.c \
@@ -2554,7 +2568,8 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JPEG_SRCS) \
 	$(MAGICK_JP2_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
-	$(MAGICK_X11_CODER_SRCS)
+	$(MAGICK_X11_CODER_SRCS) \
+	$(MAGICK_WEBP_SRCS)
 
 @WITH_MODULES_FALSE@coders_LTLIBRARIES = 
 @WITH_MODULES_TRUE@coders_LTLIBRARIES = \
@@ -2647,7 +2662,8 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_TRUE@	coders/yuv.la \
 @WITH_MODULES_TRUE@	$(MAGICK_DPS_MODULES) $(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICK_JBIG_MODULES) $(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) \
-@WITH_MODULES_TRUE@	$(MAGICK_PNG_MODULES) $(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
+@WITH_MODULES_TRUE@	$(MAGICK_PNG_MODULES) $(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES) \
+@WITH_MODULES_TRUE@	$(MAGICK_WEBP_MODULES)
 
 
 # ART coder module
@@ -3249,6 +3265,12 @@ coders_yuv_la_SOURCES = coders/yuv.c
 coders_yuv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD = $(LIBMAGICK)
+
+# WEBP coder module
+coders_webp_la_SOURCES = coders/webp.c
+coders_webp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_webp_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_webp_la_LIBADD = $(LIBMAGICK) $(LIB_WEBP)
 magickincdir = $(topincludedir)/magick
 
 # Headers which are installed
@@ -4967,6 +4989,10 @@ coders/coders_wbmp_la-wbmp.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/wbmp.la: $(coders_wbmp_la_OBJECTS) $(coders_wbmp_la_DEPENDENCIES) $(EXTRA_coders_wbmp_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_wbmp_la_LINK) $(am_coders_wbmp_la_rpath) $(coders_wbmp_la_OBJECTS) $(coders_wbmp_la_LIBADD) $(LIBS)
+coders/coders_webp_la-webp.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/webp.la: $(coders_webp_la_OBJECTS) $(coders_webp_la_DEPENDENCIES) $(EXTRA_coders_webp_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_webp_la_LINK) $(am_coders_webp_la_rpath) $(coders_webp_la_OBJECTS) $(coders_webp_la_LIBADD) $(LIBS)
 coders/coders_wmf_la-wmf.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/wmf.la: $(coders_wmf_la_OBJECTS) $(coders_wmf_la_DEPENDENCIES) $(EXTRA_coders_wmf_la_DEPENDENCIES) coders/$(am__dirstamp)
@@ -5380,6 +5406,8 @@ coders/magick_libGraphicsMagick_la-tiff.lo: coders/$(am__dirstamp) \
 coders/magick_libGraphicsMagick_la-x.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 coders/magick_libGraphicsMagick_la-xwd.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+coders/magick_libGraphicsMagick_la-webp.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 filters/magick_libGraphicsMagick_la-analyze.lo:  \
 	filters/$(am__dirstamp) filters/$(DEPDIR)/$(am__dirstamp)
@@ -5822,6 +5850,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_vid_la-vid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_viff_la-viff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wbmp_la-wbmp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_webp_la-webp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wmf_la-wmf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_wpg_la-wpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_x_la-x.Plo@am__quote@
@@ -5923,6 +5952,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-vid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-viff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-wbmp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-webp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-wmf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-wpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-x.Plo@am__quote@
@@ -6682,6 +6712,13 @@ coders/coders_wbmp_la-wbmp.lo: coders/wbmp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/wbmp.c' object='coders/coders_wbmp_la-wbmp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wbmp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_wbmp_la-wbmp.lo `test -f 'coders/wbmp.c' || echo '$(srcdir)/'`coders/wbmp.c
+
+coders/coders_webp_la-webp.lo: coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_webp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_webp_la-webp.lo -MD -MP -MF coders/$(DEPDIR)/coders_webp_la-webp.Tpo -c -o coders/coders_webp_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/coders_webp_la-webp.Tpo coders/$(DEPDIR)/coders_webp_la-webp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/webp.c' object='coders/coders_webp_la-webp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_webp_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_webp_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
 
 coders/coders_wmf_la-wmf.lo: coders/wmf.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_wmf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/coders_wmf_la-wmf.lo -MD -MP -MF coders/$(DEPDIR)/coders_wmf_la-wmf.Tpo -c -o coders/coders_wmf_la-wmf.lo `test -f 'coders/wmf.c' || echo '$(srcdir)/'`coders/wmf.c
@@ -8012,6 +8049,13 @@ coders/magick_libGraphicsMagick_la-xwd.lo: coders/xwd.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/xwd.c' object='coders/magick_libGraphicsMagick_la-xwd.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libGraphicsMagick_la-xwd.lo `test -f 'coders/xwd.c' || echo '$(srcdir)/'`coders/xwd.c
+
+coders/magick_libGraphicsMagick_la-webp.lo: coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/magick_libGraphicsMagick_la-webp.lo -MD -MP -MF coders/$(DEPDIR)/magick_libGraphicsMagick_la-webp.Tpo -c -o coders/magick_libGraphicsMagick_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/magick_libGraphicsMagick_la-webp.Tpo coders/$(DEPDIR)/magick_libGraphicsMagick_la-webp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/webp.c' object='coders/magick_libGraphicsMagick_la-webp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/magick_libGraphicsMagick_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
 
 filters/magick_libGraphicsMagick_la-analyze.lo: filters/analyze.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/magick_libGraphicsMagick_la-analyze.lo -MD -MP -MF filters/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Tpo -c -o filters/magick_libGraphicsMagick_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c

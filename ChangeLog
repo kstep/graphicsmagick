@@ -1,3 +1,10 @@
+2013-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/webp.c: Incorporated simple WebP support as contributed
+	by "TIMEBUG" at users.sf.net plus a few security changes. Does not
+	yet support Windows Visual Studio build, input from a pipe,
+	attached profiles, animation, or incremental pixel I/O.
+
 2013-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/drawing_wand.c (DrawSetStrokeDashArray): Use array size

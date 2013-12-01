@@ -736,6 +736,9 @@ LIB_XML
 HasXML_FALSE
 HasXML_TRUE
 xml2_config
+LIB_WEBP
+HasWEBP_FALSE
+HasWEBP_TRUE
 LIB_JBIG
 HasJBIG_FALSE
 HasJBIG_TRUE
@@ -1048,6 +1051,7 @@ with_dps
 with_fpx
 with_gslib
 with_jbig
+with_webp
 with_jpeg
 with_jp2
 with_lcms
@@ -1755,6 +1759,7 @@ Optional Packages:
   --with-fpx              enable FlashPIX support
   --with-gslib            enable Ghostscript library support (not recommended)
   --without-jbig          disable JBIG support
+  --without-webp          disable WEBP support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG v2 support
   --without-lcms          disable lcms (v1.1X) support
@@ -18952,6 +18957,19 @@ if test "$with_jbig" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jbig=$with_jbig "
 fi
 
+# Disable WEBP.
+
+# Check whether --with-webp was given.
+if test "${with_webp+set}" = set; then :
+  withval=$with_webp; with_webp=$withval
+else
+  with_webp='yes'
+fi
+
+if test "$with_webp" != 'yes' ; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-webp=$with_webp "
+fi
+
 # Disable JPEG.
 
 # Check whether --with-jpeg was given.
@@ -26516,6 +26534,103 @@ fi
 
 
 #
+# Check for WEBP
+#
+have_webp='no'
+LIB_WEBP=''
+if test "$with_webp" != 'no'
+then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WEBP support " >&5
+$as_echo_n "checking for WEBP support ... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+    failed=0
+    passed=0
+    ac_fn_c_check_header_mongrel "$LINENO" "webp/decode.h" "ac_cv_header_webp_decode_h" "$ac_includes_default"
+if test "x$ac_cv_header_webp_decode_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WebPDecodeRGB in -lwebp" >&5
+$as_echo_n "checking for WebPDecodeRGB in -lwebp... " >&6; }
+if ${ac_cv_lib_webp_WebPDecodeRGB+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwebp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char WebPDecodeRGB ();
+int
+main ()
+{
+return WebPDecodeRGB ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_webp_WebPDecodeRGB=yes
+else
+  ac_cv_lib_webp_WebPDecodeRGB=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_webp_WebPDecodeRGB" >&5
+$as_echo "$ac_cv_lib_webp_WebPDecodeRGB" >&6; }
+if test "x$ac_cv_lib_webp_WebPDecodeRGB" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WEBP package is complete" >&5
+$as_echo_n "checking if WEBP package is complete... " >&6; }
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+        have_webp='no (failed tests)'
+    else
+  LIB_WEBP='-lwebp'
+  LIBS="$LIB_WEBP $LIBS"
+
+$as_echo "#define HasWEBP 1" >>confdefs.h
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        have_webp='yes'
+    fi
+    else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    fi
+fi
+ if test "$have_webp" = 'yes'; then
+  HasWEBP_TRUE=
+  HasWEBP_FALSE='#'
+else
+  HasWEBP_TRUE='#'
+  HasWEBP_FALSE=
+fi
+
+
+
+#
 # Check for XML
 #
 have_xml='no'
@@ -29457,6 +29572,10 @@ if test "$have_jbig"   = 'yes' ; then
    DELEGATES="$DELEGATES jbig"
    MAGICK_FEATURES="$MAGICK_FEATURES JBIG"
 fi
+if test "$have_webp"   = 'yes' ; then
+   DELEGATES="$DELEGATES webp"
+   MAGICK_FEATURES="$MAGICK_FEATURES WEBP"
+fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    DELEGATES="$DELEGATES jng"
    MAGICK_FEATURES="$MAGICK_FEATURES JNG"
@@ -29582,7 +29701,7 @@ if test "$build_modules" != 'no'
 then
   MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_LTDL $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_WEBP $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 
 
@@ -29933,6 +30052,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HasJBIG_TRUE}" && test -z "${HasJBIG_FALSE}"; then
   as_fn_error $? "conditional \"HasJBIG\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HasWEBP_TRUE}" && test -z "${HasWEBP_FALSE}"; then
+  as_fn_error $? "conditional \"HasWEBP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HasXML_TRUE}" && test -z "${HasXML_FALSE}"; then
@@ -32542,6 +32665,7 @@ fi
 echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
+echo "WEBP              --with-webp=$with_webp        	$have_webp"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG-2000         --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS v1           --with-lcms=$with_lcms        	$have_lcms"

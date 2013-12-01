@@ -246,6 +246,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterVIDImage();
   RegisterVIFFImage();
   RegisterWBMPImage();
+#if defined(HasWEBP)
+  RegisterWEBPImage();
+#endif
   RegisterWMFImage();
   RegisterWPGImage();
 #if defined(HasX11)
@@ -401,6 +404,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterVIDImage();
   UnregisterVIFFImage();
   UnregisterWBMPImage();
+#if defined(HasWEBP)
+  UnregisterWEBPImage();
+#endif
   UnregisterWMFImage();
   UnregisterWPGImage();
 #if defined(HasX11)
