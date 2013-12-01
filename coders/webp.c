@@ -1,7 +1,5 @@
 /*
-% Copyright (C) 2003, 2013 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
-% Copyright 1991-1999 E. I. du Pont de Nemours and Company
+% Copyright (C) 2013 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -158,6 +156,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       q=GetImagePixelsEx(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
+
       for (x=0; x < (size_t) image->columns; x++)
         {
           SetRedSample(q,ScaleCharToQuantum(*p++));
@@ -223,6 +222,7 @@ ModuleExport void RegisterWEBPImage(void)
 #endif
   entry->description=description;
   entry->adjoin=False;
+  entry->seekable_stream=MagickTrue;
   if (*version != '\0')
     entry->version=version;
   entry->module="WEBP";

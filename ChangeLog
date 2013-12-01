@@ -4,6 +4,8 @@
 	by "TIMEBUG" at users.sf.net plus a few security changes. Does not
 	yet support Windows Visual Studio build, input from a pipe,
 	attached profiles, animation, or incremental pixel I/O.
+	(RegisterWEBPImage): Register WebP as requiring seekable stream so
+	input from pipe works.
 
 2013-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
