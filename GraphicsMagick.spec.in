@@ -31,7 +31,8 @@ Buildroot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
 BuildRequires: libtiff-devel, zlib-devel
 BuildRequires: freetype-devel >= 2.0.1
-Requires: bzip2, freetype, libjpeg, libpng, zlib
+BuildRequires: libwebp-devel
+Requires: bzip2, freetype, libjpeg, libpng, libwebp, zlib
 
 %description
 GraphicsMagick(TM) provides a powerful image manipulation and

@@ -1,3 +1,9 @@
+2013-12-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Update RPM spec file to add
+	libwebp-devel as a build dependency, and libwebp as a run-time
+	depdendency.
+
 2013-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/webp.c: Incorporated simple WebP support as contributed
