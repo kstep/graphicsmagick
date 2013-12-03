@@ -1,5 +1,11 @@
 2013-12-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c: Add value scaling changes which will be necessary
+	to support all the build depths supported by IJG JPEG 9a.
+
+	* coders/webp.c (ReadWEBPImage): Support 'ping'. Improve quality
+	of error reporting.
+
 	* GraphicsMagick.spec.in: Update RPM spec file to add
 	libwebp-devel as a build dependency, and libwebp as a run-time
 	depdendency.

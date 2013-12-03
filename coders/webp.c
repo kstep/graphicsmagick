@@ -82,18 +82,8 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 static Image *ReadWEBPImage(const ImageInfo *image_info,
                             ExceptionInfo *exception)
 {
-  int
-    height,
-    width;
-
   Image
     *image;
-
-  int
-    status;
-
-  size_t
-    length;
 
   unsigned long
     count,
@@ -101,6 +91,9 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
 
   register PixelPacket
     *q;
+
+  size_t
+    length;
 
   register size_t
     x;
@@ -112,6 +105,12 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     *stream,
     *pixels;
 
+  WebPBitstreamFeatures
+    stream_features;
+
+  int
+    webp_status;
+
   /*
     Open image file.
   */
@@ -120,9 +119,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  image->depth=8;
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == MagickFail)
+  if (OpenBlob(image_info,image,ReadBinaryBlobMode,exception) == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read WEBP file.
@@ -139,15 +136,52 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       MagickFreeMemory(stream);
       ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
     }
-
-  pixels=(unsigned char *) WebPDecodeRGBA(stream,length,&width,&height);
+  if ((webp_status=WebPGetFeatures(stream,length,&stream_features)) != VP8_STATUS_OK)
+    {
+      MagickFreeMemory(stream);
+      switch (webp_status)
+        {
+        case VP8_STATUS_OUT_OF_MEMORY:
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          break;
+        case VP8_STATUS_BITSTREAM_ERROR:
+          ThrowReaderException(CorruptImageError,CorruptImage,image);
+          break;
+        case VP8_STATUS_UNSUPPORTED_FEATURE:
+          ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image);
+          break;
+        case VP8_STATUS_NOT_ENOUGH_DATA:
+          ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
+          break;
+        default:
+          {
+            ThrowReaderException(CorruptImageError,CorruptImage,image);
+          }
+        }
+    }
+  image->depth=8;
+  image->columns=(size_t) stream_features.width;
+  image->rows=(size_t) stream_features.height;
+  image->matte=(stream_features.has_alpha ? MagickTrue : MagickFalse);
+  if (image->ping)
+    {
+      MagickFreeMemory(stream);
+      CloseBlob(image);
+      return(image);
+    }
+  if (image->matte)
+    pixels=(unsigned char *) WebPDecodeRGBA(stream,length,
+                                            &stream_features.width,
+                                            &stream_features.height);
+  else
+    pixels=(unsigned char *) WebPDecodeRGB(stream,length,
+                                            &stream_features.width,
+                                            &stream_features.height);
   if (pixels == (unsigned char *) NULL)
     {
       MagickFreeMemory(stream);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowReaderException(CoderError,NoDataReturned,image);
     }
-  image->columns=(size_t) width;
-  image->rows=(size_t) height;
 
   p=pixels;
 
@@ -162,7 +196,10 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
           SetRedSample(q,ScaleCharToQuantum(*p++));
           SetGreenSample(q,ScaleCharToQuantum(*p++));
           SetBlueSample(q,ScaleCharToQuantum(*p++));
-          SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(*p++));
+          if (image->matte)
+            SetOpacitySample(q,MaxRGB-ScaleCharToQuantum(*p++));
+          else
+            SetOpacitySample(q,OpaqueOpacity);
           q++;
         }
 
