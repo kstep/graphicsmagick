@@ -1347,13 +1347,17 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	{
 	  if (jpeg_info.data_precision > 8)
 	    {
+              unsigned int
+                scale_short;
+
+              scale_short=65535U/MaxValueGivenBits(jpeg_info.data_precision);
 	      for (x=0; x < (long) image->columns; x++)
 		{
-		  q->red=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
-		  q->green=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
-		  q->blue=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+		  q->red=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
+		  q->green=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
+		  q->blue=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
 		  if (jpeg_info.output_components > 3)
-		    q->opacity=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+		    q->opacity=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
 		  else
 		    q->opacity=OpaqueOpacity;
 		  q++;
@@ -2448,6 +2452,11 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {
+      unsigned int
+        scale_short;
+
+      scale_short=65535U/MaxValueGivenBits(jpeg_info.data_precision);
+
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
         {
 	  if (image->logging)
@@ -2466,7 +2475,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   for (x=0; x < (long) image->columns; x++)
                     {
                       *q++=(JSAMPLE) (ScaleQuantumToShort(GetGraySample(p))/
-                                      16U);
+                                      scale_short);
                       p++;
                     }
                 }
@@ -2475,7 +2484,7 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                   for (x=0; x < (long) image->columns; x++)
                     {
                       *q++=(JSAMPLE)
-                        (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16U);
+                        (ScaleQuantumToShort(PixelIntensityToQuantum(p))/scale_short);
                       p++;
                     }
                 }
