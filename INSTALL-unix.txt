@@ -309,6 +309,10 @@ Optional Packages/Options
 
     disable JBIG support
 
+--without-jp2
+
+    disable JPEG v2 support
+
 --without-jpeg
 
     disable JPEG support
