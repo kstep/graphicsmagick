@@ -598,7 +598,7 @@ How can I convert my GIF animation sequence to individual image files?
 
 Use the scene embedded file format with convert_::
 
-    gm convert animation.gif frame%02d.gif 
+    gm convert animation.gif +adjoin frame%02d.gif 
 
 The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.

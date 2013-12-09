@@ -633,7 +633,7 @@ gm convert -font Helvetica -pointsize 100 -density 300 ...
 <h1><a class="toc-backref" href="#id25">How can I convert my GIF animation sequence to individual image files?</a></h1>
 <p>Use the scene embedded file format with <a class="reference external" href="convert.html">convert</a>:</p>
 <pre class="literal-block">
-gm convert animation.gif frame%02d.gif
+gm convert animation.gif +adjoin frame%02d.gif
 </pre>
 <p>The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.</p>
