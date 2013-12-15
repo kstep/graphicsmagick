@@ -4917,11 +4917,9 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
                                                              sizeof(double));
           if(CurrentContext->dash_pattern)
             {
-              q=CurrentContext->dash_pattern;
-              p=dasharray;
-              for (i=n_new; i != 0; i--)
-                *q++=*p++;
-              *q=0.0;
+              for (i=0; i < n_new; i++)
+                CurrentContext->dash_pattern[i]=dasharray[i];
+              CurrentContext->dash_pattern[n_new]=0.0;
             }
           else
             {
@@ -4935,13 +4933,14 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
         (void) MvgPrintf(context, "none");
       else
         {
-          p = dasharray;
-          i = n_new;
-          (void) MvgPrintf(context, "%g", *p++);
-          while (i--)
-            (void) MvgPrintf(context, ",%g", *p++);
+          for (i=0; i < n_new; i++)
+            {
+              if (i != 0)
+                (void) MvgPrintf(context, ",");
+              (void) MvgPrintf(context, "%g", dasharray[i]);
+            }
         }
-      (void) MvgPrintf(context, "0 \n");
+      (void) MvgPrintf(context, "\n");
     }
 }
 

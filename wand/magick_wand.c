@@ -1907,6 +1907,7 @@ WandExport unsigned int MagickDrawImage(MagickWand *wand,
   if ((draw_info == (DrawInfo *) NULL) ||
       (draw_info->primitive == (char *) NULL))
     return(False);
+  fprintf(stderr,"%s\n",draw_info->primitive);
   status=DrawImage(wand->image,draw_info);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);

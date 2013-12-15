@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2012 GraphicsMagick Group */
+/* Copyright (C) 2003-2013 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4593,25 +4593,24 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
             }
           else
             {
-              q=CurrentContext->dash_pattern;
-              p=dash_array;
-              for (i=n_new; i != 0; i--)
-                *q++=*p++;
-              *q=0.0;
+              for (i=0; i < n_new; i++)
+                CurrentContext->dash_pattern[i]=dash_array[i];
+              CurrentContext->dash_pattern[n_new]=0.0;
             }
         }
-      (void) MvgPrintf(drawing_wand,"stroke-dash_array ");
+      (void) MvgPrintf(drawing_wand,"stroke-dasharray ");
       if ( n_new == 0 )
         (void) MvgPrintf(drawing_wand, "none");
       else
         {
-          p=dash_array;
-          i=n_new;
-          (void) MvgPrintf(drawing_wand,"%g",*p++);
-          while (i--)
-            (void) MvgPrintf(drawing_wand,",%g",*p++);
+          for (i=0; i < n_new; i++)
+            {
+              if (i != 0)
+                (void) MvgPrintf(drawing_wand, ",");
+              (void) MvgPrintf(drawing_wand, "%g", dash_array[i]);
+            }
         }
-      (void) MvgPrintf(drawing_wand,"0 \n");
+      (void) MvgPrintf(drawing_wand,"\n");
     }
 }
 

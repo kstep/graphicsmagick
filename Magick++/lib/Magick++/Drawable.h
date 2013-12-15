@@ -1610,6 +1610,10 @@ private:
 };
 
 // Stroke dasharray
+//
+// dasharray_ is an allocated array terminated by value 0.0 or 0.
+// The array is copied so the original does not need to be preserved.
+// Pass a null pointer to clear an existing dash array setting.
 class MagickDLLDecl DrawableDashArray : public DrawableBase
 {
 public:

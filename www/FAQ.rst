@@ -370,8 +370,8 @@ example, ::
     gm composite -geometry +0+375 composite.miff image4.gif composite.miff
 
 
-How do I create a GIF animation sequence to display within Netscape?
---------------------------------------------------------------------
+How do I create a GIF animation sequence to display within Firefox?
+-------------------------------------------------------------------
 
 Use convert_ with the *-delay* and *-page* options. The *-delay* option
 is used to specify the delay in *1/100ths of a second* between the
@@ -390,7 +390,7 @@ Use *-page* to specify the *left* and *top* locations of the image frame ::
     gm convert frame1.gif -page +50"+1"00 frame2.gif -page +0"+1"00 \
       frame3.gif animation.gif
 
-Finally, if you want the image to loop within *Netscape*, use *-loop* ::
+Finally, if you want the image to loop within *FireFox*, use *-loop* ::
 
     gm convert -loop 50 frame*.gif animation.gif
 
@@ -603,8 +603,8 @@ Use the scene embedded file format with convert_::
 The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.
 
-How can I remove the background that prints around my image when I display it with Netscape?
---------------------------------------------------------------------------------------------
+How can I remove the background that prints around my image when I display it with Firefox?
+-------------------------------------------------------------------------------------------
 
 Use the +page option of the convert_ command::
 
@@ -613,7 +613,7 @@ Use the +page option of the convert_ command::
 GIF allows for a page offset relative to some background. The page
 offset information may have been in your GIF image already or it
 could have been introduced by GraphicsMagick. Either way, +page
-removes the unwanted page offset and Netscape should behave as
+removes the unwanted page offset and FireFox should behave as
 expected.
 
 How do I create a GIF or PNG image with Web safe colors?
@@ -621,7 +621,8 @@ How do I create a GIF or PNG image with Web safe colors?
 
 Web safe colors are not normally needed any more since almost all
 computers now have true color displays. However, this FAQ may still be
-useful.
+useful since it demonstrates how a colormap from an image may be
+applied to another image..
 
 Use the -map option of the convert_ command::
 
@@ -630,15 +631,6 @@ Use the -map option of the convert_ command::
 Netscape predefines 216 colors for colormapped displays. Use the above
 command to ensure only these predefined colors are used. Otherwise
 Netscape dithers your image with varying degrees of image fidelity.
-
-How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?
-------------------------------------------------------------------
-
-The default PDF compression is *Zip*. You need Acrobat 3.0 and above
-to read Zip compressed PDF. Instead use no compression or LZW
-compression when you create the PDF file::
-
-    gm convert +compress images.tiff image.pdf
 
 How can I add a matte layer to my image?
 ----------------------------------------
