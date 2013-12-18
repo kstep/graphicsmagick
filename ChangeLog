@@ -1,3 +1,8 @@
+2013-12-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Properly scale 16-bit input
+	PNG down to 8-bit when using a Q8 build.
+
 2013-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/demo/piddle.cpp (main): Use DrawableDashArray to make
