@@ -1,3 +1,13 @@
+2013-12-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/alpha_composite.h (BlendCompositePixel): Fix from Troy
+	Patteson to eliminate induced color problems when compositing two
+	images which include fully transparent pixels.  Now fully
+	transparent pixels do not contribute any color to the composed
+	result. Opacity used when blending is now based on the average
+	opacity of both pixels.  Resolves SourceForge issue #148 "Pixel
+	interpolation problem with rotated transparent images ".
+
 2013-12-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Properly scale 16-bit input

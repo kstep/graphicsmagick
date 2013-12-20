@@ -35,6 +35,18 @@
 <div class="document">
 
 
+<p>2013-12-20  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/alpha_composite.h (BlendCompositePixel): Fix from Troy
+Patteson to eliminate induced color problems when compositing two
+images which include fully transparent pixels.  Now fully
+transparent pixels do not contribute any color to the composed
+result. Opacity used when blending is now based on the average
+opacity of both pixels.  Resolves SourceForge issue #148 &quot;Pixel
+interpolation problem with rotated transparent images &quot;.</li>
+</ul>
+</blockquote>
 <p>2013-12-18  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
