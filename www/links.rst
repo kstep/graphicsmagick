@@ -51,15 +51,15 @@ __ CVE_GraphicsMagick_
 
 Search Secunia for `GraphicsMagick`__ vulnerabilities.
 
-.. _Secunia_GraphicsMagick : http://secunia.com/search/?search=GraphicsMagick
+.. _Secunia_GraphicsMagick : http://secunia.com/advisories/search/?search=GraphicsMagick
 
 __ Secunia_GraphicsMagick_
 
-Seach SecurityFocus Bugtraq for `GraphicsMagick`__ vulnerabilities.
+Seach SecurityFocus Bugtraq for `GraphicsMagick`__ vulnerabilities (select Vendor 'GraphicsMagick').
 
 __ Bugtraq_GraphicsMagick_
 
-.. _Bugtraq_GraphicsMagick : http://search.securityfocus.com/swsearch?sbm=%2F&metaname=alldoc&query=graphicsmagick&x=0&y=0
+.. _Bugtraq_GraphicsMagick : http://www.securityfocus.com/bid
 
 
 Image Processing Topics
