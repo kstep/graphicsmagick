@@ -1,7 +1,7 @@
 #include "winver.h"
 
-#define THIS_PROJECT_VERSION_NUM		8,4,0,0
-#define THIS_PROJECT_VERSION_STRING		"8d 15-Jan-2012"
+#define THIS_PROJECT_VERSION_NUM		9,0,0,0
+#define THIS_PROJECT_VERSION_STRING		"9 13-Jan-2013"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -26,14 +26,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "ProductName", "Independent JPEG Group's JPEG 8d\0"
-            VALUE "FileDescription", "GraphicsMagick library and utility programs\0"
+            VALUE "ProductName", "Independent JPEG Group's JPEG 9\0"
+            VALUE "FileDescription", "IJG JPEG library\0"
             VALUE "OriginalFilename", "jpeg\0"
             VALUE "InternalName", "GraphicsMagick\0"
             VALUE "FileVersion", THIS_PROJECT_VERSION_STRING "\0"
             VALUE "ProductVersion", THIS_PROJECT_VERSION_STRING "\0"
             VALUE "CompanyName", "Independent JPEG Group\0"
-            VALUE "LegalCopyright", "Copyright © 1991-2012, Thomas G. Lane, Guido Vollbeding\0"
+            VALUE "LegalCopyright", "Copyright (C) 1991-2013, Thomas G. Lane, Guido Vollbeding\0"
             VALUE "Comments", "http://www.ijg.org\0"
         END
     END
