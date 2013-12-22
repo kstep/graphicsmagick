@@ -1,5 +1,7 @@
 2013-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lcms/include/lcms2.h: Update lcms to release 2.5.
+
 	* png/README: Update PNG library to release 1.6.8.
 
 	* jpeg: Update Windows IJG JPEG library to release 9.
