@@ -650,7 +650,6 @@ PyObject * libxml_xmlParserSetValidate(PyObject *self, PyObject *args);
 PyObject * libxml_xmlPathToURI(PyObject *self, PyObject *args);
 PyObject * libxml_xmlPedanticParserDefault(PyObject *self, PyObject *args);
 PyObject * libxml_xmlPopInput(PyObject *self, PyObject *args);
-PyObject * libxml_xmlPopInputCallbacks(PyObject *self, PyObject *args);
 #if defined(LIBXML_TREE_ENABLED)
 PyObject * libxml_xmlPreviousElementSibling(PyObject *self, PyObject *args);
 #endif /* defined(LIBXML_TREE_ENABLED) */
@@ -1919,6 +1918,9 @@ PyObject * libxml_xmlXPathNextPrecedingSibling(PyObject *self, PyObject *args);
 PyObject * libxml_xmlXPathNextSelf(PyObject *self, PyObject *args);
 #endif /* defined(LIBXML_XPATH_ENABLED) */
 #if defined(LIBXML_XPATH_ENABLED)
+PyObject * libxml_xmlXPathNodeEval(PyObject *self, PyObject *args);
+#endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
 PyObject * libxml_xmlXPathNodeSetFreeNs(PyObject *self, PyObject *args);
 #endif /* defined(LIBXML_XPATH_ENABLED) */
 #if defined(LIBXML_XPATH_ENABLED)
@@ -1966,6 +1968,9 @@ PyObject * libxml_xmlXPathRegisterAllFunctions(PyObject *self, PyObject *args);
 #if defined(LIBXML_XPATH_ENABLED)
 PyObject * libxml_xmlXPathRegisterNs(PyObject *self, PyObject *args);
 #endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
+PyObject * libxml_xmlXPathRegisterVariable(PyObject *self, PyObject *args);
+#endif
 #if defined(LIBXML_XPATH_ENABLED)
 PyObject * libxml_xmlXPathRegisteredFuncsCleanup(PyObject *self, PyObject *args);
 #endif /* defined(LIBXML_XPATH_ENABLED) */

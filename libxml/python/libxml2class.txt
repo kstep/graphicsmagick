@@ -209,7 +209,6 @@ iOFTPMatch()
 iOHTTPMatch()
 normalizeWindowsPath()
 parserGetDirectory()
-popInputCallbacks()
 registerDefaultInputCallbacks()
 registerDefaultOutputCallbacks()
 registerHTTPPostCallbacks()
@@ -523,6 +522,7 @@ Class xmlNode(xmlCore)
     xpathCastNodeToNumber()
     xpathCastNodeToString()
     xpathCmpNodes()
+    xpathNodeEval()
 
     # functions from module xpathInternals
     xpathNewNodeSet()
@@ -1087,6 +1087,7 @@ Class xpathContext()
 
     # functions from module python
     registerXPathFunction()
+    xpathRegisterVariable()
 
     # functions from module xpath
     xpathContextSetCache()

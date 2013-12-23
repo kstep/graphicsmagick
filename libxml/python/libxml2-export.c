@@ -650,7 +650,6 @@
     { (char *)"xmlPathToURI", libxml_xmlPathToURI, METH_VARARGS, NULL },
     { (char *)"xmlPedanticParserDefault", libxml_xmlPedanticParserDefault, METH_VARARGS, NULL },
     { (char *)"xmlPopInput", libxml_xmlPopInput, METH_VARARGS, NULL },
-    { (char *)"xmlPopInputCallbacks", libxml_xmlPopInputCallbacks, METH_VARARGS, NULL },
 #if defined(LIBXML_TREE_ENABLED)
     { (char *)"xmlPreviousElementSibling", libxml_xmlPreviousElementSibling, METH_VARARGS, NULL },
 #endif /* defined(LIBXML_TREE_ENABLED) */
@@ -1919,6 +1918,9 @@
     { (char *)"xmlXPathNextSelf", libxml_xmlXPathNextSelf, METH_VARARGS, NULL },
 #endif /* defined(LIBXML_XPATH_ENABLED) */
 #if defined(LIBXML_XPATH_ENABLED)
+    { (char *)"xmlXPathNodeEval", libxml_xmlXPathNodeEval, METH_VARARGS, NULL },
+#endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
     { (char *)"xmlXPathNodeSetFreeNs", libxml_xmlXPathNodeSetFreeNs, METH_VARARGS, NULL },
 #endif /* defined(LIBXML_XPATH_ENABLED) */
 #if defined(LIBXML_XPATH_ENABLED)
@@ -1966,6 +1968,9 @@
 #if defined(LIBXML_XPATH_ENABLED)
     { (char *)"xmlXPathRegisterNs", libxml_xmlXPathRegisterNs, METH_VARARGS, NULL },
 #endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
+    { (char *)"xmlXPathRegisterVariable", libxml_xmlXPathRegisterVariable, METH_VARARGS, NULL },
+#endif
 #if defined(LIBXML_XPATH_ENABLED)
     { (char *)"xmlXPathRegisteredFuncsCleanup", libxml_xmlXPathRegisteredFuncsCleanup, METH_VARARGS, NULL },
 #endif /* defined(LIBXML_XPATH_ENABLED) */

@@ -65,7 +65,7 @@ libxml_htmlCreateMemoryParserCtxt(PyObject *self ATTRIBUTE_UNUSED, PyObject *arg
     int py_buffsize0;
     int size;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#i:htmlCreateMemoryParserCtxt", &buffer, &py_buffsize0, &size))
+    if (!PyArg_ParseTuple(args, (char *)"s#i:htmlCreateMemoryParserCtxt", &buffer, &py_buffsize0, &size))
         return(NULL);
 
     c_retval = htmlCreateMemoryParserCtxt(buffer, size);
@@ -155,7 +155,7 @@ libxml_htmlCtxtReadMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     char * encoding;
     int options;
 
-    if (!PyArg_ParseTuple(args, (char *)"Ot#izzi:htmlCtxtReadMemory", &pyobj_ctxt, &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
+    if (!PyArg_ParseTuple(args, (char *)"Os#izzi:htmlCtxtReadMemory", &pyobj_ctxt, &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
         return(NULL);
     ctxt = (htmlParserCtxtPtr) PyparserCtxt_Get(pyobj_ctxt);
 
@@ -267,6 +267,7 @@ libxml_htmlDocDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlDocPtr) PyxmlNode_Get(pyobj_cur);
 
     c_retval = htmlDocDump(f, cur);
+    PyFile_Release(f);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -448,6 +449,7 @@ libxml_htmlNodeDumpFile(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
 
     htmlNodeDumpFile(out, doc, cur);
+    PyFile_Release(out);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -474,6 +476,7 @@ libxml_htmlNodeDumpFileFormat(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
 
     c_retval = htmlNodeDumpFileFormat(out, doc, cur, encoding, format);
+    PyFile_Release(out);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -556,7 +559,7 @@ libxml_htmlParseChunk(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     int size;
     int terminate;
 
-    if (!PyArg_ParseTuple(args, (char *)"Ot#ii:htmlParseChunk", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &terminate))
+    if (!PyArg_ParseTuple(args, (char *)"Os#ii:htmlParseChunk", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &terminate))
         return(NULL);
     ctxt = (htmlParserCtxtPtr) PyparserCtxt_Get(pyobj_ctxt);
 
@@ -702,7 +705,7 @@ libxml_htmlReadMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     char * encoding;
     int options;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#izzi:htmlReadMemory", &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
+    if (!PyArg_ParseTuple(args, (char *)"s#izzi:htmlReadMemory", &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
         return(NULL);
 
     c_retval = htmlReadMemory(buffer, size, URL, encoding, options);
@@ -913,6 +916,7 @@ libxml_xmlACatalogDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     out = (FILE *) PyFile_Get(pyobj_out);
 
     xmlACatalogDump(catal, out);
+    PyFile_Release(out);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -1312,6 +1316,7 @@ libxml_xmlCatalogDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     out = (FILE *) PyFile_Get(pyobj_out);
 
     xmlCatalogDump(out);
+    PyFile_Release(out);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -1892,7 +1897,7 @@ libxml_xmlCreateMemoryParserCtxt(PyObject *self ATTRIBUTE_UNUSED, PyObject *args
     int py_buffsize0;
     int size;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#i:xmlCreateMemoryParserCtxt", &buffer, &py_buffsize0, &size))
+    if (!PyArg_ParseTuple(args, (char *)"s#i:xmlCreateMemoryParserCtxt", &buffer, &py_buffsize0, &size))
         return(NULL);
 
     c_retval = xmlCreateMemoryParserCtxt(buffer, size);
@@ -1997,7 +2002,7 @@ libxml_xmlCtxtReadMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     char * encoding;
     int options;
 
-    if (!PyArg_ParseTuple(args, (char *)"Ot#izzi:xmlCtxtReadMemory", &pyobj_ctxt, &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
+    if (!PyArg_ParseTuple(args, (char *)"Os#izzi:xmlCtxtReadMemory", &pyobj_ctxt, &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
         return(NULL);
     ctxt = (xmlParserCtxtPtr) PyparserCtxt_Get(pyobj_ctxt);
 
@@ -2032,7 +2037,7 @@ libxml_xmlCtxtResetPush(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     char * filename;
     char * encoding;
 
-    if (!PyArg_ParseTuple(args, (char *)"Ot#izz:xmlCtxtResetPush", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &filename, &encoding))
+    if (!PyArg_ParseTuple(args, (char *)"Os#izz:xmlCtxtResetPush", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &filename, &encoding))
         return(NULL);
     ctxt = (xmlParserCtxtPtr) PyparserCtxt_Get(pyobj_ctxt);
 
@@ -2074,6 +2079,7 @@ libxml_xmlDebugCheckDocument(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
 
     c_retval = xmlDebugCheckDocument(output, doc);
+    PyFile_Release(output);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -2094,6 +2100,7 @@ libxml_xmlDebugDumpAttr(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     attr = (xmlAttrPtr) PyxmlNode_Get(pyobj_attr);
 
     xmlDebugDumpAttr(output, attr, depth);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2114,6 +2121,7 @@ libxml_xmlDebugDumpAttrList(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     attr = (xmlAttrPtr) PyxmlNode_Get(pyobj_attr);
 
     xmlDebugDumpAttrList(output, attr, depth);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2133,6 +2141,7 @@ libxml_xmlDebugDumpDTD(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     dtd = (xmlDtdPtr) PyxmlNode_Get(pyobj_dtd);
 
     xmlDebugDumpDTD(output, dtd);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2152,6 +2161,7 @@ libxml_xmlDebugDumpDocument(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
 
     xmlDebugDumpDocument(output, doc);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2171,6 +2181,7 @@ libxml_xmlDebugDumpDocumentHead(PyObject *self ATTRIBUTE_UNUSED, PyObject *args)
     doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
 
     xmlDebugDumpDocumentHead(output, doc);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2190,6 +2201,7 @@ libxml_xmlDebugDumpEntities(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     doc = (xmlDocPtr) PyxmlNode_Get(pyobj_doc);
 
     xmlDebugDumpEntities(output, doc);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2210,6 +2222,7 @@ libxml_xmlDebugDumpNode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
 
     xmlDebugDumpNode(output, node, depth);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2230,6 +2243,7 @@ libxml_xmlDebugDumpNodeList(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
 
     xmlDebugDumpNodeList(output, node, depth);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2250,6 +2264,7 @@ libxml_xmlDebugDumpOneNode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
 
     xmlDebugDumpOneNode(output, node, depth);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2267,6 +2282,7 @@ libxml_xmlDebugDumpString(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     output = (FILE *) PyFile_Get(pyobj_output);
 
     xmlDebugDumpString(output, str);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -2380,6 +2396,7 @@ libxml_xmlDocDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlDocPtr) PyxmlNode_Get(pyobj_cur);
 
     c_retval = xmlDocDump(f, cur);
+    PyFile_Release(f);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -2402,6 +2419,7 @@ libxml_xmlDocFormatDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlDocPtr) PyxmlNode_Get(pyobj_cur);
 
     c_retval = xmlDocFormatDump(f, cur, format);
+    PyFile_Release(f);
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -2461,6 +2479,7 @@ libxml_xmlElemDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     cur = (xmlNodePtr) PyxmlNode_Get(pyobj_cur);
 
     xmlElemDump(f, doc, cur);
+    PyFile_Release(f);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -3639,6 +3658,7 @@ libxml_xmlLsOneNode(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
 
     xmlLsOneNode(output, node);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -4839,7 +4859,7 @@ libxml_xmlParseChunk(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     int size;
     int terminate;
 
-    if (!PyArg_ParseTuple(args, (char *)"Ot#ii:xmlParseChunk", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &terminate))
+    if (!PyArg_ParseTuple(args, (char *)"Os#ii:xmlParseChunk", &pyobj_ctxt, &chunk, &py_buffsize0, &size, &terminate))
         return(NULL);
     ctxt = (xmlParserCtxtPtr) PyparserCtxt_Get(pyobj_ctxt);
 
@@ -5135,7 +5155,7 @@ libxml_xmlParseMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     int py_buffsize0;
     int size;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#i:xmlParseMemory", &buffer, &py_buffsize0, &size))
+    if (!PyArg_ParseTuple(args, (char *)"s#i:xmlParseMemory", &buffer, &py_buffsize0, &size))
         return(NULL);
 
     c_retval = xmlParseMemory(buffer, size);
@@ -5731,16 +5751,6 @@ libxml_xmlPopInput(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     return(py_retval);
 }
 
-PyObject *
-libxml_xmlPopInputCallbacks(PyObject *self ATTRIBUTE_UNUSED, PyObject *args ATTRIBUTE_UNUSED) {
-    PyObject *py_retval;
-    int c_retval;
-
-    c_retval = xmlPopInputCallbacks();
-    py_retval = libxml_intWrap((int) c_retval);
-    return(py_retval);
-}
-
 #if defined(LIBXML_TREE_ENABLED)
 PyObject *
 libxml_xmlPreviousElementSibling(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
@@ -5772,6 +5782,7 @@ libxml_xmlPrintURI(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     uri = (xmlURIPtr) PyURI_Get(pyobj_uri);
 
     xmlPrintURI(stream, uri);
+    PyFile_Release(stream);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -5837,7 +5848,7 @@ libxml_xmlReadMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     char * encoding;
     int options;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#izzi:xmlReadMemory", &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
+    if (!PyArg_ParseTuple(args, (char *)"s#izzi:xmlReadMemory", &buffer, &py_buffsize0, &size, &URL, &encoding, &options))
         return(NULL);
 
     c_retval = xmlReadMemory(buffer, size, URL, encoding, options);
@@ -6110,7 +6121,7 @@ libxml_xmlRecoverMemory(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     int py_buffsize0;
     int size;
 
-    if (!PyArg_ParseTuple(args, (char *)"t#i:xmlRecoverMemory", &buffer, &py_buffsize0, &size))
+    if (!PyArg_ParseTuple(args, (char *)"s#i:xmlRecoverMemory", &buffer, &py_buffsize0, &size))
         return(NULL);
 
     c_retval = xmlRecoverMemory(buffer, size);
@@ -6202,6 +6213,7 @@ libxml_xmlRegexpPrint(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     regexp = (xmlRegexpPtr) PyxmlReg_Get(pyobj_regexp);
 
     xmlRegexpPrint(output, regexp);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -6261,6 +6273,7 @@ libxml_xmlRelaxNGDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     schema = (xmlRelaxNGPtr) PyrelaxNgSchema_Get(pyobj_schema);
 
     xmlRelaxNGDump(output, schema);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -6280,6 +6293,7 @@ libxml_xmlRelaxNGDumpTree(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     schema = (xmlRelaxNGPtr) PyrelaxNgSchema_Get(pyobj_schema);
 
     xmlRelaxNGDumpTree(output, schema);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -6815,6 +6829,7 @@ libxml_xmlSchemaDump(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     schema = (xmlSchemaPtr) PySchema_Get(pyobj_schema);
 
     xmlSchemaDump(output, schema);
+    PyFile_Release(output);
     Py_INCREF(Py_None);
     return(Py_None);
 }
@@ -13930,6 +13945,28 @@ libxml_xmlXPathNextSelf(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
 #endif /* defined(LIBXML_XPATH_ENABLED) */
 #if defined(LIBXML_XPATH_ENABLED)
 PyObject *
+libxml_xmlXPathNodeEval(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    xmlXPathObjectPtr c_retval;
+    xmlNodePtr node;
+    PyObject *pyobj_node;
+    xmlChar * str;
+    xmlXPathContextPtr ctx;
+    PyObject *pyobj_ctx;
+
+    if (!PyArg_ParseTuple(args, (char *)"OzO:xmlXPathNodeEval", &pyobj_node, &str, &pyobj_ctx))
+        return(NULL);
+    node = (xmlNodePtr) PyxmlNode_Get(pyobj_node);
+    ctx = (xmlXPathContextPtr) PyxmlXPathContext_Get(pyobj_ctx);
+
+    c_retval = xmlXPathNodeEval(node, str, ctx);
+    py_retval = libxml_xmlXPathObjectPtrWrap((xmlXPathObjectPtr) c_retval);
+    return(py_retval);
+}
+
+#endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
+PyObject *
 libxml_xmlXPathNodeSetFreeNs(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     xmlNsPtr ns;
     PyObject *pyobj_ns;
@@ -14211,6 +14248,8 @@ libxml_xmlXPathRegisterNs(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
 }
 
 #endif /* defined(LIBXML_XPATH_ENABLED) */
+#if defined(LIBXML_XPATH_ENABLED)
+#endif
 #if defined(LIBXML_XPATH_ENABLED)
 PyObject *
 libxml_xmlXPathRegisteredFuncsCleanup(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {

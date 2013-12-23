@@ -5,13 +5,23 @@ import sys
 # The root of all libxml2 errors.
 class libxmlError(Exception): pass
 
+# Type of the wrapper class for the C objects wrappers
+def checkWrapper(obj):
+    try:
+        n = type(_obj).__name__
+        if n != 'PyCObject' and n != 'PyCapsule':
+            return 1
+    except:
+        return 0
+    return 0
+
 #
 # id() is sometimes negative ...
 #
 def pos_id(o):
     i = id(o)
     if (i < 0):
-        return (sys.maxint - i)
+        return (sys.maxsize - i)
     return i
 
 #
@@ -62,9 +72,20 @@ class ioWrapper:
     def io_read(self, len = -1):
         if self.__io == None:
             return(-1)
-        if len < 0:
-            return(self.__io.read())
-        return(self.__io.read(len))
+        try:
+            if len < 0:
+                ret = self.__io.read()
+            else:
+                ret = self.__io.read(len)
+        except Exception:
+            import sys
+            e = sys.exc_info()[1]
+            print("failed to read from Python:", type(e))
+            print("on IO:", self.__io)
+            self.__io == None
+            return(-1)
+
+        return(ret)
 
     def io_write(self, str, len = -1):
         if self.__io == None:
@@ -79,7 +100,7 @@ class ioReadWrapper(ioWrapper):
         self._o = libxml2mod.xmlCreateInputBuffer(self, enc)
 
     def __del__(self):
-        print "__del__"
+        print("__del__")
         self.io_close()
         if self._o != None:
             libxml2mod.xmlFreeParserInputBuffer(self._o)
@@ -95,12 +116,19 @@ class ioWriteWrapper(ioWrapper):
     def __init__(self, _obj, enc = ""):
 #        print "ioWriteWrapper.__init__", _obj
         if type(_obj) == type(''):
-            print "write io from a string"
+            print("write io from a string")
             self.o = None
-        elif type(_obj) == types.InstanceType:
-            print "write io from instance of %s" % (_obj.__class__)
-            ioWrapper.__init__(self, _obj)
-            self._o = libxml2mod.xmlCreateOutputBuffer(self, enc)
+        elif type(_obj).__name__ == 'PyCapsule':
+            file = libxml2mod.outputBufferGetPythonFile(_obj)
+            if file != None:
+                ioWrapper.__init__(self, file)
+            else:
+                ioWrapper.__init__(self, _obj)
+            self._o = _obj
+#        elif type(_obj) == types.InstanceType:
+#            print(("write io from instance of %s" % (_obj.__class__)))
+#            ioWrapper.__init__(self, _obj)
+#            self._o = libxml2mod.xmlCreateOutputBuffer(self, enc)
         else:
             file = libxml2mod.outputBufferGetPythonFile(_obj)
             if file != None:
@@ -265,22 +293,22 @@ class xmlCore:
         ret = libxml2mod.parent(self._o)
         if ret == None:
             return None
-        return xmlNode(_obj=ret)
+        return nodeWrap(ret)
     def get_children(self):
         ret = libxml2mod.children(self._o)
         if ret == None:
             return None
-        return xmlNode(_obj=ret)
+        return nodeWrap(ret)
     def get_last(self):
         ret = libxml2mod.last(self._o)
         if ret == None:
             return None
-        return xmlNode(_obj=ret)
+        return nodeWrap(ret)
     def get_next(self):
         ret = libxml2mod.next(self._o)
         if ret == None:
             return None
-        return xmlNode(_obj=ret)
+        return nodeWrap(ret)
     def get_properties(self):
         ret = libxml2mod.properties(self._o)
         if ret == None:
@@ -290,7 +318,7 @@ class xmlCore:
         ret = libxml2mod.prev(self._o)
         if ret == None:
             return None
-        return xmlNode(_obj=ret)
+        return nodeWrap(ret)
     def get_content(self):
         return libxml2mod.xmlNodeGetContent(self._o)
     getContent = get_content  # why is this duplicate naming needed ?
@@ -317,7 +345,7 @@ class xmlCore:
                 ret = libxml2mod.parent(self._o)
                 if ret == None:
                     return None
-                return xmlNode(_obj=ret)
+                return nodeWrap(ret)
             elif attr == "properties":
                 ret = libxml2mod.properties(self._o)
                 if ret == None:
@@ -327,22 +355,22 @@ class xmlCore:
                 ret = libxml2mod.children(self._o)
                 if ret == None:
                     return None
-                return xmlNode(_obj=ret)
+                return nodeWrap(ret)
             elif attr == "last":
                 ret = libxml2mod.last(self._o)
                 if ret == None:
                     return None
-                return xmlNode(_obj=ret)
+                return nodeWrap(ret)
             elif attr == "next":
                 ret = libxml2mod.next(self._o)
                 if ret == None:
                     return None
-                return xmlNode(_obj=ret)
+                return nodeWrap(ret)
             elif attr == "prev":
                 ret = libxml2mod.prev(self._o)
                 if ret == None:
                     return None
-                return xmlNode(_obj=ret)
+                return nodeWrap(ret)
             elif attr == "content":
                 return libxml2mod.xmlNodeGetContent(self._o)
             elif attr == "name":
@@ -357,7 +385,7 @@ class xmlCore:
                     else:
                         return None
                 return xmlDoc(_obj=ret)
-            raise AttributeError,attr
+            raise AttributeError(attr)
     else:
         parent = property(get_parent, None, None, "Parent node")
         children = property(get_children, None, None, "First child node")
@@ -400,7 +428,7 @@ class xmlCore:
                    prefixes=None,
                    with_comments=0):
         if nodes:
-            nodes = map(lambda n: n._o, nodes)
+            nodes = [n._o for n in nodes]
         return libxml2mod.xmlC14NDocDumpMemory(
             self.get_doc()._o,
             nodes,
@@ -414,7 +442,7 @@ class xmlCore:
                    prefixes=None,
                    with_comments=0):
         if nodes:
-            nodes = map(lambda n: n._o, nodes)
+            nodes = [n._o for n in nodes]
         return libxml2mod.xmlC14NDocSaveTo(
             self.get_doc()._o,
             nodes,
@@ -564,10 +592,10 @@ def nodeWrap(o):
 def xpathObjectRet(o):
     otype = type(o)
     if otype == type([]):
-        ret = map(xpathObjectRet, o)
+        ret = list(map(xpathObjectRet, o))
         return ret
     elif otype == type(()):
-        ret = map(xpathObjectRet, o)
+        ret = list(map(xpathObjectRet, o))
         return tuple(ret)
     elif otype == type('') or otype == type(0) or otype == type(0.0):
         return o
@@ -603,7 +631,7 @@ def registerErrorHandler(f, ctx):
     """Register a Python written function to for error reporting.
        The function is called back as f(ctx, error). """
     import sys
-    if not sys.modules.has_key('libxslt'):
+    if 'libxslt' not in sys.modules:
         # normal behaviour when libxslt is not imported
         ret = libxml2mod.xmlRegisterErrorHandler(f,ctx)
     else:
@@ -682,8 +710,9 @@ class relaxNgValidCtxtCore:
         libxml2mod.xmlRelaxNGSetValidErrors(self._o, err_func, warn_func, arg)
 
     
-def _xmlTextReaderErrorFunc((f,arg),msg,severity,locator):
+def _xmlTextReaderErrorFunc(xxx_todo_changeme,msg,severity,locator):
     """Intermediate callback to wrap the locator"""
+    (f,arg) = xxx_todo_changeme
     return f(arg,msg,severity,xmlTextReaderLocator(locator))
 
 class xmlTextReaderCore:
@@ -719,10 +748,34 @@ class xmlTextReaderCore:
             return arg
 
 #
-# The cleanup now goes though a wrappe in libxml.c
+# The cleanup now goes though a wrapper in libxml.c
 #
 def cleanupParser():
     libxml2mod.xmlPythonCleanupParser()
+
+#
+# The interface to xmlRegisterInputCallbacks.
+# Since this API does not allow to pass a data object along with
+# match/open callbacks, it is necessary to maintain a list of all
+# Python callbacks.
+#
+__input_callbacks = []
+def registerInputCallback(func):
+    def findOpenCallback(URI):
+        for cb in reversed(__input_callbacks):
+            o = cb(URI)
+            if o is not None:
+                return o
+    libxml2mod.xmlRegisterInputCallback(findOpenCallback)
+    __input_callbacks.append(func)
+
+def popInputCallbacks():
+    # First pop python-level callbacks, when no more available - start
+    # popping built-in ones.
+    if len(__input_callbacks) > 0:
+        __input_callbacks.pop()
+    if len(__input_callbacks) == 0:
+        libxml2mod.xmlUnregisterInputCallback()
 
 # WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 #
@@ -866,6 +919,7 @@ def catalogConvert():
 
 def catalogDump(out):
     """Dump all the global catalog content to the given file. """
+    if out is not None: out.flush()
     libxml2mod.xmlCatalogDump(out)
 
 def catalogGetPublic(pubID):
@@ -1025,6 +1079,7 @@ def boolToText(boolval):
 
 def debugDumpString(output, str):
     """Dumps informations about the string, shorten it if necessary """
+    if output is not None: output.flush()
     libxml2mod.xmlDebugDumpString(output, str)
 
 def shellPrintXPathError(errorType, arg):
@@ -1042,8 +1097,7 @@ def dictCleanup():
 
 def initializeDict():
     """Do the dictionary mutex initialization. this function is
-      not thread safe, initialization should preferably be done
-       once at startup """
+       deprecated """
     ret = libxml2mod.xmlInitializeDict()
     return ret
 
@@ -1848,12 +1902,6 @@ def normalizeWindowsPath(path):
 def parserGetDirectory(filename):
     """lookup the directory for that file """
     ret = libxml2mod.xmlParserGetDirectory(filename)
-    return ret
-
-def popInputCallbacks():
-    """Clear the top input callback from the input stack. this
-       includes the compiled-in I/O. """
-    ret = libxml2mod.xmlPopInputCallbacks()
     return ret
 
 def registerDefaultInputCallbacks():
@@ -2966,13 +3014,12 @@ def valuePop(ctxt):
 
 class xmlNode(xmlCore):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlNode needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlNode got a wrong wrapper object type')
         self._o = _obj
         xmlCore.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlNode (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlNode (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     # accessors for xmlNode
     def ns(self):
@@ -3671,6 +3718,16 @@ class xmlNode(xmlCore):
         ret = libxml2mod.xmlXPathCmpNodes(self._o, node2__o)
         return ret
 
+    def xpathNodeEval(self, str, ctx):
+        """Evaluate the XPath Location Path in the given context. The
+          node 'node' is set as the context node. The context node is
+           not restored. """
+        if ctx is None: ctx__o = None
+        else: ctx__o = ctx._o
+        ret = libxml2mod.xmlXPathNodeEval(self._o, str, ctx__o)
+        if ret is None:raise xpathError('xmlXPathNodeEval() failed')
+        return xpathObjectRet(ret)
+
     #
     # xmlNode functions from module xpathInternals
     #
@@ -3901,13 +3958,12 @@ class xmlNode(xmlCore):
 
 class xmlDoc(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlDoc needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlDoc got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlDoc (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlDoc (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlDoc functions from module HTMLparser
@@ -5503,13 +5559,12 @@ class parserCtxt(parserCtxtCore):
 
 class xmlAttr(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlAttr needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlAttr got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlAttr (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlAttr (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlAttr functions from module debugXML
@@ -5582,13 +5637,12 @@ class xmlAttr(xmlNode):
 
 class xmlAttribute(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlAttribute needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlAttribute got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlAttribute (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlAttribute (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
 class catalog:
     def __init__(self, _obj=None):
@@ -5652,13 +5706,12 @@ class catalog:
 
 class xmlDtd(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlDtd needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlDtd got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlDtd (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlDtd (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlDtd functions from module debugXML
@@ -5719,23 +5772,21 @@ class xmlDtd(xmlNode):
 
 class xmlElement(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlElement needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlElement got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlElement (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlElement (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
 class xmlEntity(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlEntity needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlEntity got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlEntity (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlEntity (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlEntity functions from module parserInternals
@@ -5802,13 +5853,12 @@ class Error:
 
 class xmlNs(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlNs needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlNs got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlNs (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlNs (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlNs functions from module tree
@@ -7259,6 +7309,11 @@ class xpathContext:
         ret = libxml2mod.xmlRegisterXPathFunction(self._o, name, ns_uri, f)
         return ret
 
+    def xpathRegisterVariable(self, name, ns_uri, value):
+        """Register a variable with the XPath context """
+        ret = libxml2mod.xmlXPathRegisterVariable(self._o, name, ns_uri, value)
+        return ret
+
     #
     # xpathContext functions from module xpath
     #
@@ -8165,6 +8220,7 @@ XML_WAR_ENTITY_REDEFINED = 107
 XML_ERR_UNKNOWN_VERSION = 108
 XML_ERR_VERSION_MISMATCH = 109
 XML_ERR_NAME_TOO_LONG = 110
+XML_ERR_USER_STOP = 111
 XML_NS_ERR_XML_NAMESPACE = 200
 XML_NS_ERR_UNDEFINED_NAMESPACE = 201
 XML_NS_ERR_QNAME = 202
