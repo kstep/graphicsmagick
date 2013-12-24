@@ -38,7 +38,7 @@
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on October 26, 2013</p>
+<p>This file was last updated on December 24, 2013</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -94,24 +94,18 @@ not suffer from this bug.</li>
 <blockquote>
 <ul class="simple">
 <li>Build: Fix cross-compilation for MinGW64 on Linux build machine.</li>
+<li>CMS profile: Only delete the CMS transform if it is non-null.
+Fixes assersion observed when lcms returned a null profile and
+GraphicsMagick attempted to deallocate it.</li>
+<li>Drawing: Improve error handling logic so that drawing returns
+quickly on pixel access errors rather than plowing on ahead.  This
+avoids problems with SVGs which take seemingly forever to render.</li>
+<li>Drawing via C/C++ APIs: <cite>BevelJoin</cite> no longer causes a MVG parsing
+error.</li>
 <li>OpenMP: Revert use of omp_set_dynamic() since it caused
 performance issues when using GCC's GOMP implementation and the
 number of threads to use is specified.</li>
 <li>EXIF profile: Support the <cite>SubjectArea</cite> EXIF tag.</li>
-<li>PAM: Fix MAXVAL scaling when reading PAM images.  PAM was only
-working correctly for images with 256 or 64k levels.</li>
-<li>PNM: PGM &quot;P2&quot; format writer wrote bad output for 8-bit depth.</li>
-<li>PNG: With libpng 1.6.X, avoid a crash while copying a PNG with a
-&quot;known incorrect ICC profile&quot;.</li>
-<li>Mosaic: Fixed unsigned underflow problem with -mosaic when page
-offset is negative and exceeds image width or height, resulting in
-assertions, out of memory errors, or pixel cache limit errors.</li>
-<li>TIFF writer: Try to avoid writing more than 32k strips per image
-by increasing rows-per-strip since some programs fail to read
-images with more than 32k strips per image.</li>
-<li>TIM reader: PSX TIM reports 8-bit depth (rather than 16).</li>
-<li>XPM reader: Reported depth now depends on the colormap rather than
-always claiming to be 16-bit.</li>
 <li>MIFF writer: PseudoClass format was written incorrectly for depth
 greater than 8.</li>
 <li>MIFF writer: RLE compressed format used inverted alpha from the
@@ -119,34 +113,60 @@ other subformats and contrary to the MIFF specification.</li>
 <li>MIFF reader: Fixes Fixes to be able to read MIFF written by
 ImageMagick 6.X, including DirectClass grayscale images (except
 for RLE compressed).</li>
-<li>CMS profile: Only delete the CMS transform if it is non-null.
-Fixes assersion observed when lcms returned a null profile and
-GraphicsMagick attempted to deallocate it.</li>
-<li>Windows Ghostscript: 64-bit GraphicsMagick no longer requires both
-32-bit and 64-bit builds of Ghostscript to be installed in order
-to read Postscript and PDF formats.</li>
+<li>Mosaic: Fixed unsigned underflow problem with -mosaic when page
+offset is negative and exceeds image width or height, resulting in
+assertions, out of memory errors, or pixel cache limit errors.</li>
+<li>PDF: Consistently initialize Image page width and height to image
+width and height.  While general to all of GraphicsMagick, this
+change is to assure that the PDF writer computes page dimensioning
+consistently.  PDF page dimensioning was wrong if the image had
+been resized with -geometry &quot;100%&quot;.</li>
+<li>PAM: Fix MAXVAL scaling when reading PAM images.  PAM was only
+working correctly for images with 256 or 64k levels.</li>
+<li>PNM: PGM &quot;P2&quot; format writer wrote bad output for 8-bit depth.</li>
+<li>PNG: With libpng 1.6.X, avoid a crash while copying a PNG with a
+&quot;known incorrect ICC profile&quot;.</li>
+<li>PNG: Q8 GM build now correctly reads 16-bit PNG files.</li>
+<li>TIFF writer: Try to avoid writing more than 32k strips per image
+by increasing rows-per-strip since some programs fail to read
+images with more than 32k strips per image.</li>
+<li>TIM reader: PSX TIM reports 8-bit depth (rather than 16).</li>
 <li>TTF font rendering: Improve FreeType rendering error logic so that
 rendering returns immediately on pixel access errors rather than
 plowing on ahead.</li>
-<li>Drawing: Improve error handling logic so that drawing returns
-quickly on pixel access errors rather than plowing on ahead.  This
-avoids problems with SVGs which take seemingly forever to render.</li>
-<li>Drawing via C/C++ APIs: <cite>BevelJoin</cite> no longer causes a MVG parsing
-error.</li>
+<li>TTF font rendering: Support rendering UTF-8 up to 21-bit code
+points.  Was only supporting 16-bit code points.</li>
+<li>Wand API: DrawSetStrokeDashArray() / DrawGetStrokeDashArray(), fix
+failure to work properly due to this code path never being tested.</li>
+<li>Windows Ghostscript: 64-bit GraphicsMagick no longer requires both
+32-bit and 64-bit builds of Ghostscript to be installed in order
+to read Postscript and PDF formats.</li>
+<li>XPM reader: Reported depth now depends on the colormap rather than
+always claiming to be 16-bit.</li>
 </ul>
 </blockquote>
 <p>New Features:</p>
 <blockquote>
 <ul class="simple">
 <li>JPEG: Add support for writing 'XMP' profile.</li>
-<li>PNM: As a simple extension to the standard PNM and PAM formats,
-support writing and reading 32-bit sample depth.  Writing such
-files is only supported by the Q32 build.</li>
+<li>PNM: As a simple non-standard extension to the standard PNM and
+PAM formats, support writing and reading 32-bit sample depth.
+Writing such files is only supported by the Q32 build although
+they may be read by any build.</li>
+<li>WebP: Now supports reading and writing Google's WebP format.</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
 <blockquote>
 <ul class="simple">
+<li>Pixel composition based on BlendCompositePixel() is enhanced to
+completely eliminate under-color from the blending if the
+under-pixel is fully transparent.  Also blends based on the
+average opacity of both pixels rather than only the over-pixel.
+This change did not result in any change in the GM test suite
+results but it is possible that there could be some negative
+impact from it.  Please report any issues noticed which are due to
+this change.</li>
 <li>X11 <cite>display</cite>: For DirectClass image, use ThumbnailImage() rather
 than SampleImage() when creating the panner icon to improve the
 quality of the image.</li>
@@ -161,14 +181,16 @@ quality of the image.</li>
 <p>Windows Delegate Updates:</p>
 <blockquote>
 <ul class="simple">
-<li>None</li>
+<li>Updated IJG JPEG library to release 9.</li>
+<li>Updated PNG library to release 1.6.8.</li>
+<li>Updated lcms2 library to release 2.5.</li>
+<li>Updated libxml2 library to release 2.9.1.</li>
+<li>Updated FreeType library to release 2.5.2.</li>
 </ul>
 </blockquote>
 <p>Behavior Changes:</p>
 <blockquote>
 <ul class="simple">
-<li>TIFF: Returns DirectClass images by default for MINISWHITE and
-MINISBLACK TIFF formats (rather then colormapped).</li>
 <li>MIFF: Now writes PseudoClass images correctly when depth is
 greater than 8.  This impacts the reader, which will not be able
 to read previously written incorrect format correctly.  Images
@@ -184,6 +206,8 @@ version to use a compression algorithm other than RLE so that they
 are read correctly with this version.  Another solution is to
 process problematic images with '-operator Opacity Negate 0' to
 invert the alpha channel.</li>
+<li>TIFF: Returns DirectClass images by default for MINISWHITE and
+MINISBLACK TIFF formats (rather then colormapped).</li>
 </ul>
 </blockquote>
 </div>
