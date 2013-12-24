@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Unix-specific FreeType low-level system interface (body).            */
 /*                                                                         */
-/*  Copyright 1996-2001, 2002 by                                           */
+/*  Copyright 1996-2002, 2004-2008, 2013 by                                */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -23,7 +23,7 @@
 #include FT_SYSTEM_H
 #include FT_ERRORS_H
 #include FT_TYPES_H
-#include FT_INTERNAL_OBJECTS_H
+#include FT_INTERNAL_STREAM_H
 
   /* memory-mapping includes and definitions */
 #ifdef HAVE_UNISTD_H
@@ -67,6 +67,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 
   /*************************************************************************/
@@ -182,16 +183,16 @@
   /*************************************************************************/
   /*                                                                       */
   /* <Function>                                                            */
-  /*    ft_close_stream                                                    */
+  /*    ft_close_stream_by_munmap                                          */
   /*                                                                       */
   /* <Description>                                                         */
-  /*    The function to close a stream.                                    */
+  /*    The function to close a stream which is opened by mmap.            */
   /*                                                                       */
   /* <Input>                                                               */
   /*    stream :: A pointer to the stream object.                          */
   /*                                                                       */
   FT_CALLBACK_DEF( void )
-  ft_close_stream( FT_Stream  stream )
+  ft_close_stream_by_munmap( FT_Stream  stream )
   {
     munmap( (MUNMAP_ARG_CAST)stream->descriptor.pointer, stream->size );
 
@@ -201,9 +202,31 @@
   }
 
 
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Function>                                                            */
+  /*    ft_close_stream_by_free                                            */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    The function to close a stream which is created by ft_alloc.       */
+  /*                                                                       */
+  /* <Input>                                                               */
+  /*    stream :: A pointer to the stream object.                          */
+  /*                                                                       */
+  FT_CALLBACK_DEF( void )
+  ft_close_stream_by_free( FT_Stream  stream )
+  {
+    ft_free( NULL, stream->descriptor.pointer );
+
+    stream->descriptor.pointer = NULL;
+    stream->size               = 0;
+    stream->base               = 0;
+  }
+
+
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Error )
+  FT_BASE_DEF( FT_Error )
   FT_Stream_Open( FT_Stream    stream,
                   const char*  filepathname )
   {
@@ -212,7 +235,7 @@
 
 
     if ( !stream )
-      return FT_Err_Invalid_Stream_Handle;
+      return FT_THROW( Invalid_Stream_Handle );
 
     /* open the file */
     file = open( filepathname, O_RDONLY );
@@ -220,7 +243,7 @@
     {
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
 
     /* Here we ensure that a "fork" will _not_ duplicate   */
@@ -243,7 +266,28 @@
       goto Fail_Map;
     }
 
-    stream->size = stat_buf.st_size;
+    /* XXX: TODO -- real 64bit platform support                        */
+    /*                                                                 */
+    /* `stream->size' is typedef'd to unsigned long (in `ftsystem.h'); */
+    /* `stat_buf.st_size', however, is usually typedef'd to off_t      */
+    /* (in sys/stat.h).                                                */
+    /* On some platforms, the former is 32bit and the latter is 64bit. */
+    /* To avoid overflow caused by fonts in huge files larger than     */
+    /* 2GB, do a test.  Temporary fix proposed by Sean McBride.        */
+    /*                                                                 */
+    if ( stat_buf.st_size > LONG_MAX )
+    {
+      FT_ERROR(( "FT_Stream_Open: file is too big\n" ));
+      goto Fail_Map;
+    }
+    else if ( stat_buf.st_size == 0 )
+    {
+      FT_ERROR(( "FT_Stream_Open: zero-length file\n" ));
+      goto Fail_Map;
+    }
+
+    /* This cast potentially truncates a 64bit to 32bit! */
+    stream->size = (unsigned long)stat_buf.st_size;
     stream->pos  = 0;
     stream->base = (unsigned char *)mmap( NULL,
                                           stream->size,
@@ -252,11 +296,51 @@
                                           file,
                                           0 );
 
-    if ( (long)stream->base == -1 )
+    /* on some RTOS, mmap might return 0 */
+    if ( (long)stream->base != -1 && stream->base != NULL )
+      stream->close = ft_close_stream_by_munmap;
+    else
     {
+      ssize_t  total_read_count;
+
+
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not `mmap' file `%s'\n", filepathname ));
-      goto Fail_Map;
+
+      stream->base = (unsigned char*)ft_alloc( NULL, stream->size );
+
+      if ( !stream->base )
+      {
+        FT_ERROR(( "FT_Stream_Open:" ));
+        FT_ERROR(( " could not `alloc' memory\n" ));
+        goto Fail_Map;
+      }
+
+      total_read_count = 0;
+      do
+      {
+        ssize_t  read_count;
+
+
+        read_count = read( file,
+                           stream->base + total_read_count,
+                           stream->size - total_read_count );
+
+        if ( read_count <= 0 )
+        {
+          if ( read_count == -1 && errno == EINTR )
+            continue;
+
+          FT_ERROR(( "FT_Stream_Open:" ));
+          FT_ERROR(( " error while `read'ing file `%s'\n", filepathname ));
+          goto Fail_Read;
+        }
+
+        total_read_count += read_count;
+
+      } while ( (unsigned long)total_read_count != stream->size );
+
+      stream->close = ft_close_stream_by_free;
     }
 
     close( file );
@@ -264,14 +348,16 @@
     stream->descriptor.pointer = stream->base;
     stream->pathname.pointer   = (char*)filepathname;
 
-    stream->close = ft_close_stream;
-    stream->read  = 0;
+    stream->read = 0;
 
     FT_TRACE1(( "FT_Stream_Open:" ));
     FT_TRACE1(( " opened `%s' (%d bytes) successfully\n",
                 filepathname, stream->size ));
 
     return FT_Err_Ok;
+
+  Fail_Read:
+    ft_free( NULL, stream->base );
 
   Fail_Map:
     close( file );
@@ -280,7 +366,7 @@
     stream->size = 0;
     stream->pos  = 0;
 
-    return FT_Err_Cannot_Open_Stream;
+    return FT_THROW( Cannot_Open_Stream );
   }
 
 
@@ -297,7 +383,7 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Memory )
+  FT_BASE_DEF( FT_Memory )
   FT_New_Memory( void )
   {
     FT_Memory  memory;
@@ -321,7 +407,7 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( void )
+  FT_BASE_DEF( void )
   FT_Done_Memory( FT_Memory  memory )
   {
 #ifdef FT_DEBUG_MEMORY

@@ -1,5 +1,7 @@
 2013-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* ttf: Update FreeType to release 2.5.2.
+
 	* Updated build to use Automake 1.14.1.
 
 2013-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

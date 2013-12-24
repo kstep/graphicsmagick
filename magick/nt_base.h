@@ -65,6 +65,9 @@ extern "C" {
 /* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
 #define HAVE_TIFFSWABARRAYOFTRIPLES 1
 
+/* Define to 1 if you have the <ft2build.h> header file. */
+#define HAVE_FT2BUILD_H 1
+
 // Define to support memory mapping files for improved performance
 #define HAVE_MMAP_FILEIO 1
 

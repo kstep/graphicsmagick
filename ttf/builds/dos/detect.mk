@@ -3,7 +3,7 @@
 #
 
 
-# Copyright 1996-2000, 2003 by
+# Copyright 1996-2000, 2003, 2004, 2006 by
 # David Turner, Robert Wilhelm, and Werner Lemberg.
 #
 # This file is part of the FreeType project, and may only be used, modified,
@@ -43,6 +43,21 @@ ifeq ($(PLATFORM),ansi)
       ifeq ($(is_dos),)
         is_dos := $(findstring MDOS\COMMAND,$(COMSPEC))
       endif
+
+      # We also try to recognize Dos 7.x without Windows 9X launched.
+      # See builds/win32/detect.mk for explanations about the logic.
+      #
+      ifeq ($(is_dos),)
+        ifdef winbootdir
+#ifneq ($(OS),Windows_NT)
+          # If win32 is available, do not trigger this test.
+          ifndef windir
+            is_dos := $(findstring Windows,$(strip $(shell ver)))
+          endif
+#endif
+        endif
+      endif
+
     endif # test COMSPEC
 
     ifneq ($(is_dos),)
@@ -58,9 +73,7 @@ ifeq ($(PLATFORM),dos)
   # Use DJGPP (i.e. gcc) by default.
   #
   CONFIG_FILE := dos-gcc.mk
-  ifndef CC
-    CC        := gcc
-  endif
+  CC          ?= gcc
 
   # additionally, we provide hooks for various other compilers
   #
@@ -103,11 +116,23 @@ ifeq ($(PLATFORM),dos)
     SEP    := /
     DELETE := rm
     COPY   := cp
+    CAT    := cat
     setup: std_setup
   else
     SEP    := $(BACKSLASH)
     DELETE := del
-    COPY   := copy
+    CAT    := type
+
+    # Setting COPY is a bit trickier.  We can be running DJGPP on some
+    # Windows NT derivatives, like XP.  See builds/win32/detect.mk for
+    # explanations why we need hacking here.
+    #
+    ifeq ($(OS),Windows_NT)
+      COPY := cmd.exe /c copy
+    else
+      COPY := copy
+    endif  # test NT
+
     setup: dos_setup
   endif
 

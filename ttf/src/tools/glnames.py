@@ -6,7 +6,7 @@
 #
 
 
-# Copyright 1996-2000, 2003 by
+# Copyright 1996-2000, 2003, 2005, 2007, 2008, 2011 by
 # David Turner, Robert Wilhelm, and Werner Lemberg.
 #
 # This file is part of the FreeType project, and may only be used, modified,
@@ -20,20 +20,23 @@
 
 usage: %s <output-file>
 
-  This very simple python script is used to generate the glyph names
-  tables defined in the PSNames module.
+  This python script generates the glyph names tables defined in the
+  `psnames' module.
 
   Its single argument is the name of the header file to be created.
 """
 
 
-import sys, string
+import sys, string, struct, re, os.path
 
 
-# This table is used to name the glyphs according to the Macintosh
-# specification.  It is used by the TrueType Postscript names table.
+# This table lists the glyphs according to the Macintosh specification.
+# It is used by the TrueType Postscript names table.
 #
-# See http://fonts.apple.com/TTRefMan/RM06/Chap6post.html
+# See
+#
+#   http://fonts.apple.com/TTRefMan/RM06/Chap6post.html
+#
 # for the official list.
 #
 mac_standard_names = \
@@ -145,9 +148,10 @@ mac_standard_names = \
 ]
 
 
-# The list of standard "SID" glyph names.  For the official list,
+# The list of standard `SID' glyph names.  For the official list,
 # see Annex A of document at
-# http://partners.adobe.com/asn/developer/pdfs/tn/5176.CFF.pdf.
+#
+#   http://partners.adobe.com/public/developer/en/font/5176.CFF.pdf  .
 #
 sid_standard_names = \
 [
@@ -408,10 +412,10 @@ t1_expert_encoding = \
 ]
 
 
-# This data has been taken literally from the file `glyphlist.txt',
-# version 2.0, 22 Sept 2002.  It is available from
+# This data has been taken literally from the files `glyphlist.txt'
+# and `zapfdingbats.txt' version 2.0, Sept 2002.  It is available from
 #
-#   http://partners.adobe.com/asn/developer/typeforum/unicodegn.html
+#   http://sourceforge.net/adobe/aglfn/
 #
 adobe_glyph_list = """\
 A;0041
@@ -4695,26 +4699,454 @@ zretroflexhook;0290
 zstroke;01B6
 zuhiragana;305A
 zukatakana;30BA
+a100;275E
+a101;2761
+a102;2762
+a103;2763
+a104;2764
+a105;2710
+a106;2765
+a107;2766
+a108;2767
+a109;2660
+a10;2721
+a110;2665
+a111;2666
+a112;2663
+a117;2709
+a118;2708
+a119;2707
+a11;261B
+a120;2460
+a121;2461
+a122;2462
+a123;2463
+a124;2464
+a125;2465
+a126;2466
+a127;2467
+a128;2468
+a129;2469
+a12;261E
+a130;2776
+a131;2777
+a132;2778
+a133;2779
+a134;277A
+a135;277B
+a136;277C
+a137;277D
+a138;277E
+a139;277F
+a13;270C
+a140;2780
+a141;2781
+a142;2782
+a143;2783
+a144;2784
+a145;2785
+a146;2786
+a147;2787
+a148;2788
+a149;2789
+a14;270D
+a150;278A
+a151;278B
+a152;278C
+a153;278D
+a154;278E
+a155;278F
+a156;2790
+a157;2791
+a158;2792
+a159;2793
+a15;270E
+a160;2794
+a161;2192
+a162;27A3
+a163;2194
+a164;2195
+a165;2799
+a166;279B
+a167;279C
+a168;279D
+a169;279E
+a16;270F
+a170;279F
+a171;27A0
+a172;27A1
+a173;27A2
+a174;27A4
+a175;27A5
+a176;27A6
+a177;27A7
+a178;27A8
+a179;27A9
+a17;2711
+a180;27AB
+a181;27AD
+a182;27AF
+a183;27B2
+a184;27B3
+a185;27B5
+a186;27B8
+a187;27BA
+a188;27BB
+a189;27BC
+a18;2712
+a190;27BD
+a191;27BE
+a192;279A
+a193;27AA
+a194;27B6
+a195;27B9
+a196;2798
+a197;27B4
+a198;27B7
+a199;27AC
+a19;2713
+a1;2701
+a200;27AE
+a201;27B1
+a202;2703
+a203;2750
+a204;2752
+a205;276E
+a206;2770
+a20;2714
+a21;2715
+a22;2716
+a23;2717
+a24;2718
+a25;2719
+a26;271A
+a27;271B
+a28;271C
+a29;2722
+a2;2702
+a30;2723
+a31;2724
+a32;2725
+a33;2726
+a34;2727
+a35;2605
+a36;2729
+a37;272A
+a38;272B
+a39;272C
+a3;2704
+a40;272D
+a41;272E
+a42;272F
+a43;2730
+a44;2731
+a45;2732
+a46;2733
+a47;2734
+a48;2735
+a49;2736
+a4;260E
+a50;2737
+a51;2738
+a52;2739
+a53;273A
+a54;273B
+a55;273C
+a56;273D
+a57;273E
+a58;273F
+a59;2740
+a5;2706
+a60;2741
+a61;2742
+a62;2743
+a63;2744
+a64;2745
+a65;2746
+a66;2747
+a67;2748
+a68;2749
+a69;274A
+a6;271D
+a70;274B
+a71;25CF
+a72;274D
+a73;25A0
+a74;274F
+a75;2751
+a76;25B2
+a77;25BC
+a78;25C6
+a79;2756
+a7;271E
+a81;25D7
+a82;2758
+a83;2759
+a84;275A
+a85;276F
+a86;2771
+a87;2772
+a88;2773
+a89;2768
+a8;271F
+a90;2769
+a91;276C
+a92;276D
+a93;276A
+a94;276B
+a95;2774
+a96;2775
+a97;275B
+a98;275C
+a99;275D
+a9;2720
 """
 
 
-t1_bias    = 0
-glyph_list = []
+# string table management
+#
+class StringTable:
+  def __init__( self, name_list, master_table_name ):
+    self.names        = name_list
+    self.master_table = master_table_name
+    self.indices      = {}
+    index             = 0
+
+    for name in name_list:
+      self.indices[name] = index
+      index += len( name ) + 1
+
+    self.total = index
+
+  def dump( self, file ):
+    write = file.write
+    write( "  static const char  " + self.master_table +
+           "[" + repr( self.total ) + "] =\n" )
+    write( "  {\n" )
+
+    line = ""
+    for name in self.names:
+      line += "    '"
+      line += string.join( ( re.findall( ".", name ) ), "','" )
+      line += "', 0,\n"
+
+    write( line + "  };\n\n\n" )
+
+  def dump_sublist( self, file, table_name, macro_name, sublist ):
+    write = file.write
+    write( "#define " + macro_name + "  " + repr( len( sublist ) ) + "\n\n" )
+
+    write( "  /* Values are offsets into the `" +
+           self.master_table + "' table */\n\n" )
+    write( "  static const short  " + table_name +
+           "[" + macro_name + "] =\n" )
+    write( "  {\n" )
+
+    line  = "    "
+    comma = ""
+    col   = 0
+
+    for name in sublist:
+      line += comma
+      line += "%4d" % self.indices[name]
+      col  += 1
+      comma = ","
+      if col == 14:
+        col   = 0
+        comma = ",\n    "
+
+    write( line + "\n  };\n\n\n" )
 
 
-def adobe_glyph_names():
-  """return the list of glyph names from the adobe list"""
+# We now store the Adobe Glyph List in compressed form.  The list is put
+# into a data structure called `trie' (because it has a tree-like
+# appearance).  Consider, for example, that you want to store the
+# following name mapping:
+#
+#   A        => 1
+#   Aacute   => 6
+#   Abalon   => 2
+#   Abstract => 4
+#
+# It is possible to store the entries as follows.
+#
+#   A => 1
+#   |
+#   +-acute => 6
+#   |
+#   +-b
+#     |
+#     +-alon => 2
+#     |
+#     +-stract => 4
+#
+# We see that each node in the trie has:
+#
+# - one or more `letters'
+# - an optional value
+# - zero or more child nodes
+#
+# The first step is to call
+#
+#   root = StringNode( "", 0 )
+#   for word in map.values():
+#     root.add( word, map[word] )
+#
+# which creates a large trie where each node has only one children.
+#
+# Executing
+#
+#   root = root.optimize()
+#
+# optimizes the trie by merging the letters of successive nodes whenever
+# possible.
+#
+# Each node of the trie is stored as follows.
+#
+# - First the node's letter, according to the following scheme.  We
+#   use the fact that in the AGL no name contains character codes > 127.
+#
+#     name         bitsize     description
+#     ----------------------------------------------------------------
+#     notlast            1     Set to 1 if this is not the last letter
+#                              in the word.
+#     ascii              7     The letter's ASCII value.
+#
+# - The letter is followed by a children count and the value of the
+#   current key (if any).  Again we can do some optimization because all
+#   AGL entries are from the BMP; this means that 16 bits are sufficient
+#   to store its Unicode values.  Additionally, no node has more than
+#   127 children.
+#
+#     name         bitsize     description
+#     -----------------------------------------
+#     hasvalue           1     Set to 1 if a 16-bit Unicode value follows.
+#     num_children       7     Number of children.  Can be 0 only if
+#                              `hasvalue' is set to 1.
+#     value             16     Optional Unicode value.
+#
+# - A node is finished by a list of 16bit absolute offsets to the
+#   children, which must be sorted in increasing order of their first
+#   letter.
+#
+# For simplicity, all 16bit quantities are stored in big-endian order.
+#
+# The root node has first letter = 0, and no value.
+#
+class StringNode:
+  def __init__( self, letter, value ):
+    self.letter   = letter
+    self.value    = value
+    self.children = {}
 
-  lines  = string.split( adobe_glyph_list, '\n' )
-  glyphs = []
+  def __cmp__( self, other ):
+    return ord( self.letter[0] ) - ord( other.letter[0] )
 
-  for line in lines:
-    if line:
-      fields = string.split( line, ';' )
-#     print fields[1] + ' - ' + fields[0]
-      glyphs.append( fields[0] )
+  def add( self, word, value ):
+    if len( word ) == 0:
+      self.value = value
+      return
 
-  return glyphs
+    letter = word[0]
+    word   = word[1:]
+
+    if self.children.has_key( letter ):
+      child = self.children[letter]
+    else:
+      child = StringNode( letter, 0 )
+      self.children[letter] = child
+
+    child.add( word, value )
+
+  def optimize( self ):
+    # optimize all children first
+    children      = self.children.values()
+    self.children = {}
+
+    for child in children:
+      self.children[child.letter[0]] = child.optimize()
+
+    # don't optimize if there's a value,
+    # if we don't have any child or if we
+    # have more than one child
+    if ( self.value != 0 ) or ( not children ) or len( children ) > 1:
+      return self
+
+    child = children[0]
+
+    self.letter  += child.letter
+    self.value    = child.value
+    self.children = child.children
+
+    return self
+
+  def dump_debug( self, write, margin ):
+    # this is used during debugging
+    line = margin + "+-"
+    if len( self.letter ) == 0:
+      line += "<NOLETTER>"
+    else:
+      line += self.letter
+
+    if self.value:
+      line += " => " + repr( self.value )
+
+    write( line + "\n" )
+
+    if self.children:
+      margin += "| "
+      for child in self.children.values():
+        child.dump_debug( write, margin )
+
+  def locate( self, index ):
+    self.index = index
+    if len( self.letter ) > 0:
+      index += len( self.letter ) + 1
+    else:
+      index += 2
+
+    if self.value != 0:
+      index += 2
+
+    children = self.children.values()
+    children.sort()
+
+    index += 2 * len( children )
+    for child in children:
+      index = child.locate( index )
+
+    return index
+
+  def store( self, storage ):
+    # write the letters
+    l = len( self.letter )
+    if l == 0:
+      storage += struct.pack( "B", 0 )
+    else:
+      for n in range( l ):
+        val = ord( self.letter[n] )
+        if n < l - 1:
+          val += 128
+        storage += struct.pack( "B", val )
+
+    # write the count
+    children = self.children.values()
+    children.sort()
+
+    count = len( children )
+
+    if self.value != 0:
+      storage += struct.pack( "!BH", count + 128, self.value )
+    else:
+      storage += struct.pack( "B", count )
+
+    for child in children:
+      storage += struct.pack( "!H", child.index )
+
+    for child in children:
+      storage = child.store( storage )
+
+    return storage
 
 
 def adobe_glyph_values():
@@ -4737,7 +5169,7 @@ def adobe_glyph_values():
 
 
 def filter_glyph_names( alist, filter ):
-  """filter 'alist' by taking _out_ all glyph names that are in 'filter'"""
+  """filter `alist' by taking _out_ all glyph names that are in `filter'"""
 
   count  = 0
   extras = []
@@ -4751,107 +5183,56 @@ def filter_glyph_names( alist, filter ):
   return extras
 
 
-def dump_mac_indices( file, all_glyphs ):
-  write = file.write
-
-  write( "  static const unsigned short  mac_standard_names[" + \
-         repr( len( mac_standard_names ) + 1 ) + "] =\n" )
-  write( "  {\n" )
-
-  for name in mac_standard_names:
-    write( "    " + repr( all_glyphs.index( name ) ) + ",\n" )
-
-  write( "    0\n" )
-  write( "  };\n" )
-  write( "\n" )
-  write( "\n" )
-
-
-def dump_glyph_list( file, base_list, adobe_list ):
-  write = file.write
-
-  name_list = []
-
-  write( "  static const char* const  ps_glyph_names[] =\n" )
-  write( "  {\n" )
-
-  for name in base_list:
-    write( '    "' + name + '",\n' )
-    name_list.append( name )
-
-  write( "\n" )
-  write( "#ifdef FT_CONFIG_OPTION_ADOBE_GLYPH_LIST\n" )
-  write( "\n" )
-
-  for name in adobe_list:
-    write( '    "' + name + '",\n' )
-    name_list.append( name )
-
-  write( "\n" )
-  write( "#endif /* FT_CONFIG_OPTION_ADOBE_GLYPH_LIST */\n" )
-  write( "\n" )
-  write( "    NULL\n" )
-  write( "  };\n" )
-  write( "\n" )
-  write( "\n" )
-
-  return name_list
-
-
-def dump_unicode_values( file, sid_list, adobe_list ):
-  """build the glyph names to unicode values table"""
-
-  write = file.write
-
-  agl_names, agl_unicodes = adobe_glyph_values()
-
-  write( "\n" )
-  write( "  static const unsigned short  ps_names_to_unicode[" + \
-          repr( len( sid_list ) + len( adobe_list ) + 1 ) + "] =\n" )
-  write( "  {\n" )
-
-  for name in sid_list:
-    try:
-      index = agl_names.index( name )
-      write( "    0x" + agl_unicodes[index] + "U,\n" )
-    except:
-      write( "    0,\n" )
-
-  write( "\n" )
-  write( "#ifdef FT_CONFIG_OPTION_ADOBE_GLYPH_LIST\n" )
-  write( "\n" )
-
-  for name in adobe_list:
-    try:
-      index = agl_names.index( name )
-      write( "    0x" + agl_unicodes[index] + "U,\n" )
-    except:
-      write( "    0,\n" )
-
-  write( "\n" )
-  write( "#endif /* FT_CONFIG_OPTION_ADOBE_GLYPH_LIST */\n" )
-  write( "    0\n" )
-  write( "  };\n" )
-  write( "\n" )
-  write( "\n" )
-  write( "\n" )
-
-
 def dump_encoding( file, encoding_name, encoding_list ):
+  """dump a given encoding"""
+
+  write = file.write
+  write( "  /* the following are indices into the SID name table */\n" )
+  write( "  static const unsigned short  " + encoding_name +
+         "[" + repr( len( encoding_list ) ) + "] =\n" )
+  write( "  {\n" )
+
+  line  = "    "
+  comma = ""
+  col   = 0
+  for value in encoding_list:
+    line += comma
+    line += "%3d" % value
+    comma = ","
+    col  += 1
+    if col == 16:
+      col = 0
+      comma = ",\n    "
+
+  write( line + "\n  };\n\n\n" )
+
+
+def dump_array( the_array, write, array_name ):
   """dumps a given encoding"""
 
-  write = file.write
-
-  write( "  static const unsigned short  " + encoding_name + "[" + \
-          repr( len( encoding_list ) + 1 ) + "] =\n" )
+  write( "  static const unsigned char  " + array_name +
+         "[" + repr( len( the_array ) ) + "L] =\n" )
   write( "  {\n" )
 
-  for value in encoding_list:
-    write( "    " + repr( value ) + ",\n" )
-  write( "    0\n" )
-  write( "  };\n" )
-  write( "\n" )
-  write( "\n" )
+  line  = ""
+  comma = "    "
+  col   = 0
+
+  for value in the_array:
+    line += comma
+    line += "%3d" % ord( value )
+    comma = ","
+    col  += 1
+
+    if col == 16:
+      col   = 0
+      comma = ",\n    "
+
+    if len( line ) > 1024:
+      write( line )
+      line = ""
+
+  write( line + "\n  };\n\n\n" )
 
 
 def main():
@@ -4866,37 +5247,27 @@ def main():
 
   count_sid = len( sid_standard_names )
 
-  # 'mac_extras' contains the list of glyph names in the Macintosh standard
-  # encoding which are not in either the Adobe Glyph List or the SID
-  # Standard Names.
+  # `mac_extras' contains the list of glyph names in the Macintosh standard
+  # encoding which are not in the SID Standard Names.
   #
-  mac_extras = filter_glyph_names( mac_standard_names, adobe_glyph_names() )
-  mac_extras = filter_glyph_names( mac_extras, sid_standard_names )
+  mac_extras = filter_glyph_names( mac_standard_names, sid_standard_names )
 
-  # 'base_list' contains the first names of our final glyph names table.
-  # It consists of the 'mac_extras' glyph names, followed by the SID
-  # Standard names.
+  # `base_list' contains the names of our final glyph names table.
+  # It consists of the `mac_extras' glyph names, followed by the SID
+  # standard names.
   #
   mac_extras_count = len( mac_extras )
-  t1_bias          = mac_extras_count
   base_list        = mac_extras + sid_standard_names
-
-  # 'adobe_list' contains the glyph names that are in the AGL, but not in
-  # the base_list; they will be placed after base_list glyph names in
-  # our final table.
-  #
-  adobe_list  = filter_glyph_names( adobe_glyph_names(), base_list )
-  adobe_count = len( adobe_list )
 
   write( "/***************************************************************************/\n" )
   write( "/*                                                                         */\n" )
 
-  write( "/*  %-71s*/\n" % sys.argv[1] )
+  write( "/*  %-71s*/\n" % os.path.basename( sys.argv[1] ) )
 
   write( "/*                                                                         */\n" )
-  write( "/*    PostScript glyph names (specification only).                         */\n" )
+  write( "/*    PostScript glyph names.                                              */\n" )
   write( "/*                                                                         */\n" )
-  write( "/*  Copyright 2000-2001, 2003 by                                           */\n" )
+  write( "/*  Copyright 2005, 2008, 2011 by                                          */\n" )
   write( "/*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */\n" )
   write( "/*                                                                         */\n" )
   write( "/*  This file is part of the FreeType project, and may only be used,       */\n" )
@@ -4908,42 +5279,204 @@ def main():
   write( "/***************************************************************************/\n" )
   write( "\n" )
   write( "\n" )
-  write( "  /* this file has been generated automatically -- do not edit! */\n" )
+  write( "  /* This file has been generated automatically -- do not edit! */\n" )
   write( "\n" )
   write( "\n" )
 
-  # dump final glyph list (mac extras + sid standard names + AGL glyph names)
+  # dump final glyph list (mac extras + sid standard names)
   #
-  name_list = dump_glyph_list( file, base_list, adobe_list )
+  st = StringTable( base_list, "ft_standard_glyph_names" )
 
-  # dump t1_standard_list
-  write( "  static const char* const * const  sid_standard_names = " \
-          + "ps_glyph_names + " + repr( t1_bias ) + ";\n" )
-  write( "\n" )
-  write( "\n" )
-
-  write( "#define NUM_SID_GLYPHS " + repr( len( sid_standard_names ) ) + "\n" )
-  write( "\n" )
-  write( "#ifdef FT_CONFIG_OPTION_ADOBE_GLYPH_LIST\n" )
-  write( "#define NUM_ADOBE_GLYPHS " + \
-          repr( len( base_list ) + len( adobe_list ) - t1_bias ) + "\n" )
-  write( "#else\n" )
-  write( "#define NUM_ADOBE_GLYPHS " + \
-          repr( len( base_list ) - t1_bias )  + "\n" )
-  write( "#endif\n" )
-  write( "\n" )
-  write( "\n" )
-
-  # dump mac indices table
-  dump_mac_indices( file, name_list )
-
-  # dump unicode values table
-  dump_unicode_values( file, sid_standard_names, adobe_list )
+  st.dump( file )
+  st.dump_sublist( file, "ft_mac_names",
+                   "FT_NUM_MAC_NAMES", mac_standard_names )
+  st.dump_sublist( file, "ft_sid_names",
+                   "FT_NUM_SID_NAMES", sid_standard_names )
 
   dump_encoding( file, "t1_standard_encoding", t1_standard_encoding )
   dump_encoding( file, "t1_expert_encoding", t1_expert_encoding )
 
-  write( "/* END */\n" )
+  # dump the AGL in its compressed form
+  #
+  agl_glyphs, agl_values = adobe_glyph_values()
+  dict = StringNode( "", 0 )
+
+  for g in range( len( agl_glyphs ) ):
+    dict.add( agl_glyphs[g], eval( "0x" + agl_values[g] ) )
+
+  dict       = dict.optimize()
+  dict_len   = dict.locate( 0 )
+  dict_array = dict.store( "" )
+
+  write( """\
+  /*
+   *  This table is a compressed version of the Adobe Glyph List (AGL),
+   *  optimized for efficient searching.  It has been generated by the
+   *  `glnames.py' python script located in the `src/tools' directory.
+   *
+   *  The lookup function to get the Unicode value for a given string
+   *  is defined below the table.
+   */
+
+#ifdef FT_CONFIG_OPTION_ADOBE_GLYPH_LIST
+
+""" )
+
+  dump_array( dict_array, write, "ft_adobe_glyph_list" )
+
+  # write the lookup routine now
+  #
+  write( """\
+  /*
+   *  This function searches the compressed table efficiently.
+   */
+  static unsigned long
+  ft_get_adobe_glyph_index( const char*  name,
+                            const char*  limit )
+  {
+    int                   c = 0;
+    int                   count, min, max;
+    const unsigned char*  p = ft_adobe_glyph_list;
+
+
+    if ( name == 0 || name >= limit )
+      goto NotFound;
+
+    c     = *name++;
+    count = p[1];
+    p    += 2;
+
+    min = 0;
+    max = count;
+
+    while ( min < max )
+    {
+      int                   mid = ( min + max ) >> 1;
+      const unsigned char*  q   = p + mid * 2;
+      int                   c2;
+
+
+      q = ft_adobe_glyph_list + ( ( (int)q[0] << 8 ) | q[1] );
+
+      c2 = q[0] & 127;
+      if ( c2 == c )
+      {
+        p = q;
+        goto Found;
+      }
+      if ( c2 < c )
+        min = mid + 1;
+      else
+        max = mid;
+    }
+    goto NotFound;
+
+  Found:
+    for (;;)
+    {
+      /* assert (*p & 127) == c */
+
+      if ( name >= limit )
+      {
+        if ( (p[0] & 128) == 0 &&
+             (p[1] & 128) != 0 )
+          return (unsigned long)( ( (int)p[2] << 8 ) | p[3] );
+
+        goto NotFound;
+      }
+      c = *name++;
+      if ( p[0] & 128 )
+      {
+        p++;
+        if ( c != (p[0] & 127) )
+          goto NotFound;
+
+        continue;
+      }
+
+      p++;
+      count = p[0] & 127;
+      if ( p[0] & 128 )
+        p += 2;
+
+      p++;
+
+      for ( ; count > 0; count--, p += 2 )
+      {
+        int                   offset = ( (int)p[0] << 8 ) | p[1];
+        const unsigned char*  q      = ft_adobe_glyph_list + offset;
+
+        if ( c == ( q[0] & 127 ) )
+        {
+          p = q;
+          goto NextIter;
+        }
+      }
+      goto NotFound;
+
+    NextIter:
+      ;
+    }
+
+  NotFound:
+    return 0;
+  }
+
+#endif /* FT_CONFIG_OPTION_ADOBE_GLYPH_LIST */
+
+""" )
+
+  if 0:  # generate unit test, or don't
+    #
+    # now write the unit test to check that everything works OK
+    #
+    write( "#ifdef TEST\n\n" )
+
+    write( "static const char* const  the_names[] = {\n" )
+    for name in agl_glyphs:
+      write( '  "' + name + '",\n' )
+    write( "  0\n};\n" )
+
+    write( "static const unsigned long  the_values[] = {\n" )
+    for val in agl_values:
+      write( '  0x' + val + ',\n' )
+    write( "  0\n};\n" )
+
+    write( """
+#include <stdlib.h>
+#include <stdio.h>
+
+  int
+  main( void )
+  {
+    int                   result = 0;
+    const char* const*    names  = the_names;
+    const unsigned long*  values = the_values;
+
+
+    for ( ; *names; names++, values++ )
+    {
+      const char*    name      = *names;
+      unsigned long  reference = *values;
+      unsigned long  value;
+
+
+      value = ft_get_adobe_glyph_index( name, name + strlen( name ) );
+      if ( value != reference )
+      {
+        result = 1;
+        fprintf( stderr, "name '%s' => %04x instead of %04x\\n",
+                         name, value, reference );
+      }
+    }
+
+    return result;
+  }
+""" )
+
+    write( "#endif /* TEST */\n" )
+
+  write("\n/* END */\n")
 
 
 # Now run the main routine
