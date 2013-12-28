@@ -2301,10 +2301,17 @@ dnl First see if there is a library
     fi
 
 dnl Now test for the headers
-    # Some Freetype installs appear to require that <ft2build.h> be
-    # included prior to including <freetype/freetype.h>.  Oops!
-    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>'],[ft2build=''],[])
-    AC_CHECK_HEADER(freetype/freetype.h,[have_freetype_h='yes'],[have_freetype_h='no'],[$FT2BUILD_H])
+    # Modern Freetype2 installs require that <ft2build.h> be included
+    # prior to including any other FreeType2 headers.  This header
+    # produces defines which must be used to include remaining API
+    # headers.
+    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>' ; have_freetype_h='yes'],[FT2BUILD_H='' ; have_freetype_h='no'],[])
+    if test "${FT2BUILD_H}x" = 'x'
+    then
+       # Last ditch, test old include style where everything is rooted
+       # under 'freetype'
+       AC_CHECK_HEADER([freetype/freetype.h],[have_freetype_h='yes'],[have_freetype_h='no'],)
+    fi
     if test "$have_freetype_h" = 'yes'
     then
 	passed=`expr $passed + 1`

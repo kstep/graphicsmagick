@@ -26106,18 +26106,23 @@ fi
       fi
     fi
 
-    # Some Freetype installs appear to require that <ft2build.h> be
-    # included prior to including <freetype/freetype.h>.  Oops!
+    # Modern Freetype2 installs require that <ft2build.h> be included
+    # prior to including any other FreeType2 headers.  This header
+    # produces defines which must be used to include remaining API
+    # headers.
     ac_fn_c_check_header_mongrel "$LINENO" "ft2build.h" "ac_cv_header_ft2build_h" "$ac_includes_default"
 if test "x$ac_cv_header_ft2build_h" = xyes; then :
-  FT2BUILD_H='#include <ft2build.h>'
+  FT2BUILD_H='#include <ft2build.h>' ; have_freetype_h='yes'
 else
-  ft2build=''
+  FT2BUILD_H='' ; have_freetype_h='no'
 fi
 
 
-    ac_fn_c_check_header_compile "$LINENO" "freetype/freetype.h" "ac_cv_header_freetype_freetype_h" "$FT2BUILD_H
-"
+    if test "${FT2BUILD_H}x" = 'x'
+    then
+       # Last ditch, test old include style where everything is rooted
+       # under 'freetype'
+       ac_fn_c_check_header_mongrel "$LINENO" "freetype/freetype.h" "ac_cv_header_freetype_freetype_h" "$ac_includes_default"
 if test "x$ac_cv_header_freetype_freetype_h" = xyes; then :
   have_freetype_h='yes'
 else
@@ -26125,6 +26130,7 @@ else
 fi
 
 
+    fi
     if test "$have_freetype_h" = 'yes'
     then
 	passed=`expr $passed + 1`

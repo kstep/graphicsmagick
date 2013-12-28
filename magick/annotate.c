@@ -55,42 +55,31 @@
 #include "magick/xwindow.h"
 #if defined(HasTTF)
 
-#if defined(__MINGW32__)
-#  undef interface  /* Remove interface define */
-#endif
+#  if defined(__MINGW32__)
+#    undef interface  /* Remove interface define */
+#  endif
 
-#if defined(HAVE_FT2BUILD_H)
-  /*
-    Modern libwmf2 installs may require that <ft2build.h> be included
-    before including other libwmf headers.  Including <ft2build.h>
-    establishes definitions used by other FreeType headers.
-  */
-#  include <ft2build.h>
-#endif /* defined(HAVE_FT2BUILD_H) */
-
-#if defined(FT_FREETYPE_H)
-#  include FT_FREETYPE_H
-#else
-#  include <freetype/freetype.h>
-#endif /* defined(FT_FREETYPE_H) */
-
-#if defined(FT_GLYPH_H)
-#  include FT_GLYPH_H
-#else
-#  include <freetype/ftglyph.h>
-#endif /* defined(FT_GLYPH_H) */
-
-#if defined(FT_OUTLINE_H)
-#  include FT_OUTLINE_H
-#else
-#  include <freetype/ftoutln.h>
-#endif /* defined(FT_OUTLINE_H) */
-
-#if defined(FT_BBOX_H)
-#  include FT_BBOX_H
-#else
-#  include <freetype/ftbbox.h>
-#endif /* defined(FT_BBOX_H) */
+#  if defined(HAVE_FT2BUILD_H)
+     /*
+       Modern FreeType2 installs require that <ft2build.h> be included
+       before including other FreeType2 headers.  Including
+       <ft2build.h> establishes definitions used by other FreeType2
+       headers.
+     */
+#    include <ft2build.h>
+#    include FT_FREETYPE_H
+#    include FT_GLYPH_H
+#    include FT_OUTLINE_H
+#    include FT_BBOX_H
+#  else
+     /*
+       Very old way to include FreeType2
+     */
+#    include <freetype/freetype.h>
+#    include <freetype/ftglyph.h>
+#    include <freetype/ftoutln.h>
+#    include <freetype/ftbbox.h>
+#  endif /* defined(HAVE_FT2BUILD_H) */
 
 #endif /* defined(HasTTF) */
 
