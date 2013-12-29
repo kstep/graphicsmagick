@@ -1255,8 +1255,17 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
 
   /*
     The format of the GS_LIB string is a path similar to
-    "c:\gs8.14\lib;C:\gs\fonts;C:\gs\gs8.14\Resource". Ghostscript
-    7.0X does not include the Resource entry.
+
+    "C:\Program Files\gs\gs9.10\bin;C:\Program Files\gs\gs9.10\lib;C:\Program Files\gs\gs9.10\fonts"
+
+    Ghostscript 7.0X does not include the Resource entry.
+
+    Search path used by GPL Ghostscript 9.10 (2013-08-30):
+      C:\Program Files\gs\gs9.10\bin ; C:\Program Files\gs\gs9.10\lib ;
+      C:\Program Files\gs\gs9.10\fonts ; %rom%Resource/Init/ ; %rom%lib/ ;
+      c:/gs/gs9.10/Resource/Init ; c:/gs/gs9.10/lib ;
+      c:/gs/gs9.10/Resource/Font ; c:/gs/fonts
+
   */
   {
     const char
@@ -1271,14 +1280,14 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
           font_dir_file[MaxTextExtent];
             
         const char
-          *seperator;
+          *separator;
             
         int
           length;
             
-        seperator = strchr(start,DirectoryListSeparator);
-        if (seperator)
-          length=seperator-start;
+        separator = strchr(start,DirectoryListSeparator);
+        if (separator)
+          length=separator-start;
         else
           length=end-start;
         (void) strlcpy(font_dir,start,Min(length+1,MaxTextExtent));
@@ -1294,6 +1303,36 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
             return TRUE;
           }
         start += length+1;
+      }
+  }
+  {
+    /*
+      Check "c:/gs/fonts" since Ghostscript also looks there.  This
+      may be a more convenient place to put fonts since it would be
+      used by every Ghostscript installation on the system.
+
+      This part of the path to check is hard-coded in the Ghostscript
+      binary via AROOTDIR=c:/gs in base/msvclib.mak and it is highly
+      unlikely that Windows users will use a Ghostscript built with a
+      different GS_LIB_DEFAULT (which includes AROOTDIR) definition.
+    */
+
+    const char *
+      gs_font_dir           = "c:\\gs\\fonts";
+
+    char
+      font_dir_file[MaxTextExtent];
+
+    (void) strlcpy(font_dir_file,gs_font_dir,MaxTextExtent);
+    (void) strlcat(font_dir_file,DirectorySeparator,MaxTextExtent);
+    (void) strlcat(font_dir_file,"fonts.dir",MaxTextExtent);
+    if (IsAccessible(font_dir_file))
+      {
+        (void) strlcpy(path,gs_font_dir,path_length);
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                              "Ghostscript fonts in directory \"%s\"",
+                              path);
+        return TRUE;
       }
   }
 
