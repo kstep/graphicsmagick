@@ -1,3 +1,13 @@
+2013-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/delegate.c (InvokePostscriptDelegate): Log return status.
+
+	* magick/nt_base.c (NTGhostscriptFonts): For Microsoft Windows,
+	also search c:\gs\fonts for Ghostscript font files.
+
+	* coders/ept.c (ReadEPTImage): Fix crash observed when Ghostscript
+	fails to produce output.
+
 2013-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c: Simplify FreeType2 header inclusion.
