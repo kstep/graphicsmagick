@@ -320,6 +320,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   CloseBlob(image);
   filesize=GetBlobSize(image);
   DestroyImage(image);
+  image=(Image *) NULL;
   /*
     Use Ghostscript to convert Postscript image.
   */
