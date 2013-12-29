@@ -960,7 +960,13 @@ InvokePostscriptDelegate(const unsigned int verbose,
 	MagickFreeMemory(argv[i]);
       MagickFreeMemory(argv);
       if ((status == 0) || (status <= -100))
-	return(MagickFail);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Returning with failure");
+          return(MagickFail);
+        }
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Returning with success");
       return(MagickPass);
     }
 #endif /* defined(HasGS) || defined(MSWINDOWS) */
@@ -992,6 +998,8 @@ InvokePostscriptDelegate(const unsigned int verbose,
           }
         else
           {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Invoking Ghostscript utility command");
             if (MagickSpawnVP(verbose,argv[1],argv+1) == 0)
               status=MagickPass;
           }
@@ -1000,6 +1008,10 @@ InvokePostscriptDelegate(const unsigned int verbose,
 	MagickFreeMemory(argv);
       }
   }
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Returning with %s", status == MagickFail ?
+                        "failure" : "success");
 
   return status;
 }
