@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 24, 2013
+This file was last updated on December 31, 2013
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.19 (TBD)
+1.3.19 (December 31, 2013)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
@@ -33,11 +33,20 @@ Special Issues:
 
 Security Fixes:
 
-  * None
+  * EPT: Fix crash observed when Ghostscript fails to produce useful
+    output.  This was particularly noticeable when Ghostscript was not
+    installed.  This crash could be used to cause denial of service.
+
+  * PNG: With libpng 1.6.X, avoid a crash while copying a PNG with a
+    "known incorrect ICC profile".  This crash could be used to cause
+    denial of service.
 
 Bug fixes:
 
   * Build: Fix cross-compilation for MinGW64 on Linux build machine.
+
+  * Build: configure FreeType test no longer insists that
+    <freetype/freetype.h> can be included.
 
   * CMS profile: Only delete the CMS transform if it is non-null.
     Fixes assersion observed when lcms returned a null profile and
@@ -49,6 +58,10 @@ Bug fixes:
 
   * Drawing via C/C++ APIs: `BevelJoin` no longer causes a MVG parsing
     error.
+
+  * EPT: Fix crash observed when Ghostscript fails to produce useful
+    output.  This was particularly noticeable when Ghostscript was not
+    installed.
 
   * OpenMP: Revert use of omp_set_dynamic() since it caused
     performance issues when using GCC's GOMP implementation and the
@@ -118,7 +131,9 @@ New Features:
     Writing such files is only supported by the Q32 build although
     they may be read by any build.
 
-  * WebP: Now supports reading and writing Google's WebP format.
+  * WebP: Now supports reading and writing Google's WebP format.  This
+    feature is not currently supported by the Windows Visual Studio
+    build.
 
 Feature improvements:
 
@@ -172,6 +187,13 @@ Behavior Changes:
 
   * TIFF: Returns DirectClass images by default for MINISWHITE and
     MINISBLACK TIFF formats (rather then colormapped).
+
+  * Windows: Also search c:\gs\fonts for Ghostscript font files.  This
+    search path is normally hard-coded into Ghostscript binaries and
+    is a convenient place to put fonts so they may be shared by
+    multiple Ghostscript versions.
+
+  * XPM: Now limits color resolution to 16-bits, even with Q32 build.
 
 
 1.3.18 (March 10, 2013)

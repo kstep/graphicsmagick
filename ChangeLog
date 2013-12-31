@@ -1,5 +1,14 @@
 2013-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh: Update for 1.3.19 release.
+
+	* www/index.rst: Update for 1.3.19 release.
+
+	* NEWS.txt: Update for 1.3.19 release.
+
+	* magick/blob.c (GetBlobTemporary): Add assertions to assure that
+	image and blob are valid structures.
+
 	* coders/png.c (ReadOnePNGImage): Fix problem peculiar to Q8 build
 	with reading 1-bit PNG files.
 

@@ -38,13 +38,13 @@
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on December 24, 2013</p>
+<p>This file was last updated on December 31, 2013</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#tbd" id="id1">1.3.19 (TBD)</a></li>
+<li><a class="reference internal" href="#december-31-2013" id="id1">1.3.19 (December 31, 2013)</a></li>
 <li><a class="reference internal" href="#march-10-2013" id="id2">1.3.18 (March 10, 2013)</a></li>
 <li><a class="reference internal" href="#october-13-2012" id="id3">1.3.17 (October 13, 2012)</a></li>
 <li><a class="reference internal" href="#june-24-2012" id="id4">1.3.16 (June 24, 2012)</a></li>
@@ -69,8 +69,8 @@ ChangeLog file for full details.</p>
 <li><a class="reference internal" href="#released-in-may-2003" id="id23">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
-<div class="section" id="tbd">
-<h1><a class="toc-backref" href="#id1">1.3.19 (TBD)</a></h1>
+<div class="section" id="december-31-2013">
+<h1><a class="toc-backref" href="#id1">1.3.19 (December 31, 2013)</a></h1>
 <p>Special Issues:</p>
 <blockquote>
 <ul class="simple">
@@ -87,13 +87,20 @@ not suffer from this bug.</li>
 <p>Security Fixes:</p>
 <blockquote>
 <ul class="simple">
-<li>None</li>
+<li>EPT: Fix crash observed when Ghostscript fails to produce useful
+output.  This was particularly noticeable when Ghostscript was not
+installed.  This crash could be used to cause denial of service.</li>
+<li>PNG: With libpng 1.6.X, avoid a crash while copying a PNG with a
+&quot;known incorrect ICC profile&quot;.  This crash could be used to cause
+denial of service.</li>
 </ul>
 </blockquote>
 <p>Bug fixes:</p>
 <blockquote>
 <ul class="simple">
 <li>Build: Fix cross-compilation for MinGW64 on Linux build machine.</li>
+<li>Build: configure FreeType test no longer insists that
+&lt;freetype/freetype.h&gt; can be included.</li>
 <li>CMS profile: Only delete the CMS transform if it is non-null.
 Fixes assersion observed when lcms returned a null profile and
 GraphicsMagick attempted to deallocate it.</li>
@@ -102,6 +109,9 @@ quickly on pixel access errors rather than plowing on ahead.  This
 avoids problems with SVGs which take seemingly forever to render.</li>
 <li>Drawing via C/C++ APIs: <cite>BevelJoin</cite> no longer causes a MVG parsing
 error.</li>
+<li>EPT: Fix crash observed when Ghostscript fails to produce useful
+output.  This was particularly noticeable when Ghostscript was not
+installed.</li>
 <li>OpenMP: Revert use of omp_set_dynamic() since it caused
 performance issues when using GCC's GOMP implementation and the
 number of threads to use is specified.</li>
@@ -153,7 +163,9 @@ always claiming to be 16-bit.</li>
 PAM formats, support writing and reading 32-bit sample depth.
 Writing such files is only supported by the Q32 build although
 they may be read by any build.</li>
-<li>WebP: Now supports reading and writing Google's WebP format.</li>
+<li>WebP: Now supports reading and writing Google's WebP format.  This
+feature is not currently supported by the Windows Visual Studio
+build.</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -208,6 +220,11 @@ process problematic images with '-operator Opacity Negate 0' to
 invert the alpha channel.</li>
 <li>TIFF: Returns DirectClass images by default for MINISWHITE and
 MINISBLACK TIFF formats (rather then colormapped).</li>
+<li>Windows: Also search c:gsfonts for Ghostscript font files.  This
+search path is normally hard-coded into Ghostscript binaries and
+is a convenient place to put fonts so they may be shared by
+multiple Ghostscript versions.</li>
+<li>XPM: Now limits color resolution to 16-bits, even with Q32 build.</li>
 </ul>
 </blockquote>
 </div>
