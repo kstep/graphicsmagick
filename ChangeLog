@@ -1,5 +1,11 @@
 2013-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/png.c (ReadOnePNGImage): Fix problem peculiar to Q8 build
+	with reading 1-bit PNG files.
+
+	* PerlMagick/t/png/(write-16.t, read.t, write-16.t, write.t):
+	Update expected signatures
+
 	* coders/xpm.c (WriteXPMImage): Limit XPM color resolution to what
 	XPM can traditionally handle.
 

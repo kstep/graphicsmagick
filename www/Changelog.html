@@ -38,6 +38,10 @@
 <p>2013-12-31  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/png.c (ReadOnePNGImage): Fix problem peculiar to Q8 build
+with reading 1-bit PNG files.</li>
+<li>PerlMagick/t/png/(write-16.t, read.t, write-16.t, write.t):
+Update expected signatures</li>
 <li>coders/xpm.c (WriteXPMImage): Limit XPM color resolution to what
 XPM can traditionally handle.</li>
 <li>magick/enhance.c (GammaImage): Eliminate a compiler warning.</li>
