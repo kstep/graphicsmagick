@@ -1772,7 +1772,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #  else
   png_set_strip_16(ping);
 #  endif
-  ping_bit_depth=8;
+  if (ping_bit_depth > 8)
+    ping_bit_depth=8;
   image->depth=8;
 #else
   if (ping_bit_depth > 8)
