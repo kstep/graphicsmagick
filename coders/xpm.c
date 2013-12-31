@@ -860,6 +860,11 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Limit color resolution to what XPM can traditionally handle
+  */
+  if (image->depth > 16)
+    image->depth=16;
   transparent=False;
   if (image->storage_class == PseudoClass)
     {

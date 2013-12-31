@@ -1,5 +1,8 @@
 2013-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xpm.c (WriteXPMImage): Limit XPM color resolution to what
+	XPM can traditionally handle.
+
 	* magick/enhance.c (GammaImage): Eliminate a compiler warning.
 
 	* coders/png.c (ReadOnePNGImage): Eliminate a compiler warning.
