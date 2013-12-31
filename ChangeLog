@@ -1,3 +1,11 @@
+2013-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c (GammaImage): Eliminate a compiler warning.
+
+	* coders/png.c (ReadOnePNGImage): Eliminate a compiler warning.
+
+	* coders/pcl.c (WritePCLImage): Eliminate a compiler warning.
+
 2013-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/delegate.c (InvokePostscriptDelegate): Log return status.
