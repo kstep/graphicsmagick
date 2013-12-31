@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999 - 2013
 //
 // Implementation of Drawable (Graphic objects)
 //
@@ -1027,14 +1027,19 @@ Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
 Magick::DrawableDashArray::DrawableDashArray
 (const Magick::DrawableDashArray& original_)
   : DrawableBase (original_),
-    _size(0),
-    _dasharray(0)
+    _size(original_._size),
+    _dasharray(new double[_size+1])
 {
-  dasharray( original_._dasharray );
+  // Copy elements
+  {
+    for (size_t i=0; i < _size; i++)
+      _dasharray[i]=original_._dasharray[i];
+    _dasharray[_size]=0.0;
+  }
 }
 Magick::DrawableDashArray::~DrawableDashArray( void )
 {
-  delete _dasharray;
+  delete [] _dasharray;
   _size = 0;
   _dasharray = 0;
 }
@@ -1043,10 +1048,19 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
 {
   if( this != &original_ )
     {
-      dasharray( original_._dasharray );
+      delete [] _dasharray;
+      _size=original_._size;
+      _dasharray = new double[_size+1];
+      // Copy elements
+      {
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=original_._dasharray[i];
+        _dasharray[_size]=0.0;
+      }
     }
   return *this;
 }
+// Invoke object
 void Magick::DrawableDashArray::operator()
   ( MagickLib::DrawContext context_ ) const
 {
@@ -1058,28 +1072,28 @@ Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 }
 void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 {
-  MagickFreeMemory(_dasharray);
+  delete [] _dasharray;
+  _size = 0;
+  _dasharray = 0;
 
   if(dasharray_)
     {
       // Count elements in dash array
-      unsigned int n = 0;
+      size_t n = 0;
       {
         const double *p = dasharray_;
-        while(*p++ != 0)
+        while(*p++ != 0.0)
           n++;
       }
       _size = n;
 
       // Allocate elements
-      _dasharray=MagickAllocateMemory(double*,(n+1)*sizeof(double));
+      _dasharray=new double[_size+1];
       // Copy elements
       {
-        double *q = _dasharray;
-        const double *p = dasharray_;
-        while( *p )
-          *q++=*p++;
-        *q=0;
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=dasharray_[i];
+        _dasharray[_size]=0.0;
       }
     }
 }
@@ -1087,12 +1101,15 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 // code to the const double* version.
 void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
 {
-  MagickFreeMemory(_dasharray);
+  if (_dasharray)
+      delete [] _dasharray;
+  _size = 0;
+  _dasharray = 0;
 
   if(dasharray_)
     {
       // Count elements in dash array
-      unsigned int n = 0;
+      size_t n = 0;
       {
         const unsigned int *p = dasharray_;
         while(*p++ != 0)
@@ -1101,14 +1118,12 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
       _size = n;
 
       // Allocate elements
-      _dasharray=MagickAllocateMemory(double*,(n+1)*sizeof(double));
+      _dasharray=new double[_size+1];
       // Copy elements
       {
-        double *q = _dasharray;
-        const unsigned int *p = dasharray_;
-        while( *p )
-          *q++=static_cast<double>(*p++);
-        *q=0;
+        for (size_t i=0; i < _size; i++)
+          _dasharray[i]=dasharray_[i];
+        _dasharray[_size]=0;
       }
     }
 }

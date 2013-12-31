@@ -196,14 +196,20 @@ building under Microsoft Windows:
 
      http://www.cl.cam.ac.uk/~mgk25/jbigkit/
 
-  to read the JBIG image format.
+  to read and write the JBIG image format.
+
+* GraphicsMagick requires the WebP library available via HTTPS from
+
+     https://developers.google.com/speed/webp/
+
+  to read and write the WebP image format.
 
 * GraphicsMagick requires the Independent JPEG Group's software
   available from
 
      http://www.ijg.org/
 
-  to read the JPEG v1 image format.
+  to read and write the JPEG v1 image format.
 
   Apply this JPEG patch to Independent JPEG Group's (6b release!)
   source distribution if you want to read lossless jpeg-encoded DICOM

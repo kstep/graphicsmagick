@@ -21,12 +21,12 @@ GraphicsMagick Image Processing System
 
 .. _download GraphicsMagick release : http://sourceforge.net/projects/graphicsmagick/files/
 .. _`download development snapshots` : ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/snapshots/
-.. _`visit Mercurial repository`: http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
+.. _`visit Mercurial repository`: http://sourceforge.net/p/graphicsmagick/code/
 
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.18 (Released March 9, 2013) `download release`__
+Current Release              1.3.19 (Released December 31, 2013) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `visit Mercurial repository`__
 ===========================  ========================================================
@@ -156,8 +156,13 @@ Here are just a few examples of what GraphicsMagick can do:
   
   * Describe the format and characteristics of an image
 
+------------
+
+This page has been translated into `Spanish
+<http://www.webhostinghub.com/support/es/misc/sistema-de-procesamiento>`_
+language by Maria Ramos  from `Webhostinghub.com/support/edu
+<http://www.webhostinghub.com/support/edu>`_.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
 Copyright |copy| GraphicsMagick Group 2002 - 2013
-

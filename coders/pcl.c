@@ -996,12 +996,14 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               register unsigned char
                 bit,
                 byte;
-              int
+
+              unsigned int
                 blk_ind;
+
               /*
                 Monochrome row
               */
-              blk_ind = ((image->colormap == NULL) || (image->colormap[0].red == 0)) ? 0 : 1;
+              blk_ind = ((image->colormap == NULL) || (image->colormap[0].red == 0)) ? 0U : 1U;
               indexes=AccessImmutableIndexes(image);
               bit=0;
               byte=0;

@@ -281,9 +281,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_value,
     samples_per_pixel;
 
-  Quantum
-    *scale;
-
   /*
     Open image file.
   */
@@ -568,7 +565,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       number_pixels=image->columns*image->rows;
       if (number_pixels == 0)
         ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
-      scale=(Quantum *) NULL;
       if (image->storage_class == PseudoClass)
         {
           /*
@@ -596,19 +592,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       i++;
                     }
             }
-        }
-      if ((image->storage_class != PseudoClass) || (max_value > MaxRGB))
-        {
-          /*
-            Compute pixel scaling table.
-          */
-          scale=MagickAllocateMemory(Quantum *,
-                                     (max_value+1)*sizeof(Quantum));
-          if (scale == (Quantum *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                 image);
-          for (i=0; i <= max_value; i++)
-            scale[i]=ScaleAnyToQuantum((unsigned long) i, max_value);
         }
       if (image_info->ping && (image_info->subrange != 0))
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -699,8 +682,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			ValidateScalingIndex(image, intensity, max_value);
 			if (EOFBlob(image))
 			  break;
-			if (scale != (Quantum *) NULL)
-			  intensity=scale[intensity];
 			index=intensity;
 			VerifyColormapIndex(image,index);
 			indexes[x]=index;
@@ -720,8 +701,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			ValidateScalingIndex(image, intensity, max_value);
 			if (EOFBlob(image))
 			  break;
-			if (scale != (Quantum *) NULL)
-			  intensity=scale[intensity];
+                        intensity=ScaleAnyToQuantum(intensity, max_value);
 			q->red=q->green=q->blue=intensity;
 			is_monochrome &= IsMonochrome(*q);
 			q++;
@@ -775,12 +755,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (EOFBlob(image))
                       break;
                     ValidateScalingPixel(image, pixel, max_value);
-                    if (scale != (Quantum *) NULL)
-                      {
-                        pixel.red=scale[pixel.red];
-                        pixel.green=scale[pixel.green];
-                        pixel.blue=scale[pixel.blue];
-                      }
+                    pixel.red=ScaleAnyToQuantum(pixel.red, max_value);
+                    pixel.green=ScaleAnyToQuantum(pixel.green, max_value);
+                    pixel.blue=ScaleAnyToQuantum(pixel.blue, max_value);
                     q->red=(Quantum) pixel.red;
                     q->green=(Quantum) pixel.green;
                     q->blue=(Quantum) pixel.blue;
@@ -827,13 +804,20 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MagickBool
 	      check_pixels,
               is_grayscale,
-              is_monochrome;
+              is_monochrome,
+              use_scaling;
         
             unsigned long
               row_count=0;
         
             ThreadViewDataSet
               *scanline_set;
+
+            double
+              sample_scale;
+
+            unsigned int
+              sample_max;
 
 #if defined(HAVE_OPENMP) && !defined(DisableSlowOpenMP)
             int
@@ -853,6 +837,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    */
 	    quantum_type=UndefinedQuantum;
 	    import_options.grayscale_miniswhite=MagickFalse;
+            sample_max=RoundDoubleToQuantum((MaxRGBDouble*max_value)/
+                                            MaxValueGivenBits(bits_per_sample));
+            sample_scale=MaxRGBDouble/sample_max;
+            use_scaling=(MaxRGB != sample_max);
 	    bytes_per_row=0;
 	    if (1 == samples_per_pixel)
 	      {
@@ -898,8 +886,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		      quantum_type=CMYKAQuantum;
 		  }
 	      }
-
-	    
 
 	    if (1 == samples_per_pixel)
 	      {
@@ -994,6 +980,26 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 					    &import_options,&import_info))
                     thread_status=MagickFail;
                 /*
+                  Scale sub-ranged pixels up to full range if necessary
+                */
+                if ((thread_status != MagickFail) && (use_scaling))
+                  for (x=0; x < image->columns; x++)
+                    {
+                      SetRedSample(&q[x],
+                                   RoundDoubleToQuantum(sample_scale*
+                                                        GetRedSample(&q[x])));
+                      SetGreenSample(&q[x],
+                                     RoundDoubleToQuantum(sample_scale*
+                                                          GetGreenSample(&q[x])));
+                      SetBlueSample(&q[x],
+                                    RoundDoubleToQuantum(sample_scale*
+                                                         GetBlueSample(&q[x])));
+                      if (image->matte)
+                        SetOpacitySample(&q[x],
+                                         RoundDoubleToQuantum(sample_scale*
+                                                              GetOpacitySample(&q[x])));
+                    }
+                /*
                   For a DirectClass image, check all pixels for
                   gray/monochrome status since this format is often
                   used for input from Ghostscript, which may output
@@ -1004,13 +1010,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (thread_status != MagickFail)
 		  if (check_pixels)
 		    if (thread_is_grayscale || thread_is_monochrome)
-		      for (x=image->columns; x; x--)
+		      for (x=0; x < image->columns; x++)
 			{
-			  thread_is_grayscale = thread_is_grayscale && IsGray(*q);
-			  thread_is_monochrome = thread_is_monochrome && IsMonochrome(*q);
+			  thread_is_grayscale = thread_is_grayscale && IsGray(q[x]);
+			  thread_is_monochrome = thread_is_monochrome && IsMonochrome(q[x]);
 			  if (!thread_is_grayscale && !thread_is_monochrome)
 			    break;
-			  q++;
 			}
 
                 if (thread_status != MagickFail)
@@ -1042,8 +1047,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         default:
           ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
         }
-      if (scale != (Quantum *) NULL)
-        MagickFreeMemory(scale);
       /*
         Proceed to next image.
       */
@@ -1306,7 +1309,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
     {
-      depth=(image->depth <= 8 ? 8 : 16);
+      depth=(image->depth <= 8 ? 8 : image->depth <= 16 ? 16 : 32);
 
       /*
 	Write PNM file header.
@@ -1536,11 +1539,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 
 	    i=0;
 	    j=0;
-	    
-	    if (depth <= 8)
-	      value=255;
-	    else
-	      value=65535;
+
+            value=(depth <=8 ? 255 : depth <= 16 ? 65535 : 4294967295);
+
 	    j += sprintf(&buffer[j],"%u\n",value);
 	    for (y=0; y < image->rows; y++)
 	      {
@@ -1561,12 +1562,19 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 			/* Use LUT for speed */
 			value=ScaleQuantumToChar(index);
 			AppendUnsignedCharValueToString(j,buffer,value);
+                        buffer[j++] = ' ';
 		      }
-		    else
+                    else if (depth <= 16)
 		      {
 			value=ScaleQuantumToShort(index);
 			j += sprintf(&buffer[j]," %u",value);
 		      }
+                    else
+                      {
+			value=ScaleQuantumToLong(index);
+			j += sprintf(&buffer[j]," %u",value);
+                      }
+
 		    i++;
 		    if (i == 12)
 		      {
@@ -1622,10 +1630,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 	    i=0;
 	    j=0;
 
-	    if (depth <= 8)
-	      value=255;
-	    else
-	      value=65535;
+            value=(depth <=8 ? 255 : (depth <= 16 ? 65535 : 4294967295));
+
 	    j += sprintf(&buffer[j],"%u\n",value);
 	    for (y=0; y < image->rows; y++)
 	      {
@@ -1650,10 +1656,19 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 			AppendUnsignedCharValueToString(j,buffer,value);
 			buffer[j++] = ' ';
 		      }
+                    else if (depth <= 16)
+                      {
+			j += sprintf(&buffer[j],"%u %u %u ",
+                                     ScaleQuantumToShort(p->red),
+				     ScaleQuantumToShort(p->green),
+                                     ScaleQuantumToShort(p->blue));
+                      }
 		    else
 		      {
-			j += sprintf(&buffer[j],"%u %u %u ",ScaleQuantumToShort(p->red),
-				     ScaleQuantumToShort(p->green),ScaleQuantumToShort(p->blue));
+			j += sprintf(&buffer[j],"%u %u %u ",
+                                     (unsigned int) ScaleQuantumToLong(p->red),
+				     (unsigned int) ScaleQuantumToLong(p->green),
+                                     (unsigned int) ScaleQuantumToLong(p->blue));
 		      }
 		    i++;
 		    if (i == 4)
@@ -1718,7 +1733,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 	    /*
 	      Deduce correct export parameters.
 	    */
-	    bits_per_sample=(depth > 8 ? 16 : 8);
+            bits_per_sample=(depth <=8 ? 8 : (depth <= 16 ? 16 : 32));
 	    quantum_type=RGBQuantum;
 	    if (PBM_RAW_Format == format)
 	      {

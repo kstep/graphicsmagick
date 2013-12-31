@@ -1749,7 +1749,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     {
       DestroyImageInfo(clone_info);
-      return(image);
+      return((Image *) NULL);
     }
   if (GetBlobTemporary(image))
     RemoveTemporaryInputFile(clone_info);
@@ -1880,6 +1880,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
       next->magick_rows=next->rows;
+    if (next->page.width == 0)
+      next->page.width=next->columns;
+    if (next->page.height == 0)
+      next->page.height=next->rows;
   }
   DestroyImageInfo(clone_info);
   return(image);

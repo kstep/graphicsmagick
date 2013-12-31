@@ -1,3 +1,10 @@
+2013-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableDashArray): DrawableDashArray now uses
+	C++ memory allocation rather than from GraphicsMagick library.
+	Also, implement direct copy constructor and assignment operator
+	rather than using dasyarray() method.
+
 2012-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* COPYING: Change Magick++ usage license to be exactly the MIT

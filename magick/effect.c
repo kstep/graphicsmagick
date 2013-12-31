@@ -1448,6 +1448,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
                 float_packet_t
                   pixel;
 
+
                 const PixelPacket
                   * restrict r;
 

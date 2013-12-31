@@ -1023,7 +1023,8 @@ QuantumTransferMode(const Image *image,
 {
   *quantum_type=UndefinedQuantum;
   *quantum_samples=0;
-  if ((sample_format == SAMPLEFORMAT_UINT) ||
+  if ((sample_format == SAMPLEFORMAT_INT) ||
+      (sample_format == SAMPLEFORMAT_UINT) ||
       (sample_format == SAMPLEFORMAT_VOID) ||
       (sample_format == SAMPLEFORMAT_IEEEFP))
     {
@@ -1749,9 +1750,10 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((photometric == PHOTOMETRIC_PALETTE) ||
           ((photometric == PHOTOMETRIC_MINISWHITE ||
             photometric == PHOTOMETRIC_MINISBLACK) &&
-	   (1 == bits_per_sample) &&
-	   (image_info->type != TrueColorType) &&
-	   (image_info->type != TrueColorMatteType))
+           ((image_info->type == PaletteType) ||
+            (image_info->type == PaletteMatteType)) &&
+            (MaxColormapSize > MaxValueGivenBits(bits_per_sample))
+	   )
 	  )
         {
           /*
@@ -4107,7 +4109,21 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         uncompressed data.
       */
       scanline_size=TIFFScanlineSize(tiff);
-      rows_per_strip=Max(TIFFDefaultStripSize(tiff,0),1);
+      rows_per_strip=TIFFDefaultStripSize(tiff,0);
+      if (rows_per_strip < 1)
+        rows_per_strip=1;
+      /*
+        It seems that some programs fail to handle more than 32K or
+        64K strips in an image due to using a 16-bit strip counter.
+        The solution is to use a larger strip size.  This approach
+        might cause excessively large strips for mega-sized images and
+        someday we may remove the solution since the problematic
+        readers will have expired.
+      */
+      if ((image->rows/rows_per_strip) > 32767)
+        rows_per_strip=image->rows/32768;
+      if (rows_per_strip < 1)
+        rows_per_strip=1;
 
       switch (compress_tag)
         {
@@ -4131,11 +4147,15 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         case COMPRESSION_ADOBE_DEFLATE:
           {
             /*
-              Deflate strips compress better up to 32K of data.
+              Deflate strips compress better up to 32K of data
+              (enlarge if necessary)..
             */
-            rows_per_strip = (uint32) (32*1024) / Max(scanline_size,1);
-            if (rows_per_strip < 1)
-              rows_per_strip=1;
+            unsigned int
+              proposed_rows_per_strip;
+
+            proposed_rows_per_strip = (uint32) (32*1024) / Max(scanline_size,1);
+            if (proposed_rows_per_strip > rows_per_strip)
+              rows_per_strip=proposed_rows_per_strip;
             /*
               Use horizontal differencing (type 2) for images which are
               likely to be continuous tone.  The TIFF spec says that this

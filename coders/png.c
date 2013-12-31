@@ -1689,6 +1689,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       return(image);
     }
+
+#ifdef PNG_BENIGN_ERRORS_SUPPORTED
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
+#endif
+
   /*
     Prepare PNG for reading.
   */
@@ -1728,7 +1734,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
 #ifdef PNG_READ_CHECK_FOR_INVALID_INDEX_SUPPORTED
-    /* Disable new libpng-1.5.10 feature */
+    /* Disable new libpng-1.5.10 feature while reading */
     png_set_check_for_invalid_index (ping, 0);
 #endif
 
@@ -1760,6 +1766,22 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       &ping_compression_method,
                       &ping_filter_method);
 
+#if (QuantumDepth == 8)
+#  ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
+  png_set_scale_16(ping);
+#  else
+  png_set_strip_16(ping);
+#  endif
+  if (ping_bit_depth > 8)
+    ping_bit_depth=8;
+  image->depth=8;
+#else
+  if (ping_bit_depth > 8)
+    image->depth=16;
+  else
+    image->depth=8;
+#endif
+
   ping_file_depth = ping_bit_depth;
 
   /* Save bit-depth and color-type in case we later want to write a PNG00 */
@@ -1774,20 +1796,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (void) SetImageAttribute(image,"png:IHDR.bit-depth-orig",msg);
   }
 
-
   (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
                       &ping_trans_color);
 
   (void) png_get_bKGD(ping, ping_info, &ping_background);
-
-#if (QuantumDepth == 8)
-  image->depth=8;
-#else
-  if (ping_bit_depth > 8)
-    image->depth=16;
-  else
-    image->depth=8;
-#endif
 
   if (logging)
     {
@@ -2272,15 +2284,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
         }
     }
-  /*
-    Read image scanlines.
-  */
   if (image->delay != 0)
     mng_info->scenes_found++;
-  if (image_info->ping && (image_info->number_scenes != 0) &&
+  if (image_info->ping && ((mng_info->mng_type == 0) ||
+     ((image_info->number_scenes != 0) &&
       mng_info->scenes_found > (long) (image_info->first_scene+
-                                       image_info->number_scenes))
+                                       image_info->number_scenes))))
     {
+      /* This happens later in non-ping decodes */
+      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+        image->storage_class=DirectClass;
+
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Skipping PNG image data for scene %ld",
@@ -2289,13 +2303,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
-      if (image != (Image *) NULL)
-        image->columns=0;
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage().");
       return (image);
     }
+
+  /*
+    Read image scanlines.
+  */
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Reading PNG IDAT chunk(s)");
@@ -2681,7 +2697,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 for (x=0; x < (long) image->columns; x++)
                   {
                     index=indexes[x];
-                    if (index < ping_num_trans)
+                    if (index < (unsigned int) ping_num_trans)
                       q->opacity=
                         ScaleCharToQuantum(255-ping_trans_alpha[index]);
 		    else
@@ -6453,6 +6469,12 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 #endif
       return(MagickFail);
     }
+
+#ifdef PNG_BENIGN_ERRORS_SUPPORTED
+  /* Allow benign errors */
+  png_set_benign_errors(ping, 1);
+#endif
+
   /*
     Prepare PNG for writing.
   */

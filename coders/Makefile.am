@@ -56,6 +56,11 @@ MAGICK_X11_CODER_MODULES = coders/x.la coders/xwd.la
 MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 endif
 
+if HasWEBP
+MAGICK_WEBP_MODULES = coders/webp.la
+MAGICK_WEBP_SRCS = coders/webp.c
+endif
+
 MAGICK_CODER_SRCS = \
 	$(MAGICK_PNG_SRCS) \
 	coders/art.c \
@@ -152,7 +157,8 @@ MAGICK_CODER_SRCS = \
 	$(MAGICK_JPEG_SRCS) \
 	$(MAGICK_JP2_SRCS) \
 	$(MAGICK_TIFF_SRCS) \
-	$(MAGICK_X11_CODER_SRCS)
+	$(MAGICK_X11_CODER_SRCS) \
+	$(MAGICK_WEBP_SRCS)
 
 if WITH_MODULES
 coders_LTLIBRARIES = \
@@ -245,7 +251,8 @@ coders_LTLIBRARIES = \
 	coders/yuv.la \
 	$(MAGICK_DPS_MODULES) $(MAGICK_FPX_MODULES) $(MAGICK_GDI32_MODULES) \
 	$(MAGICK_JBIG_MODULES) $(MAGICK_JPEG_MODULES) $(MAGICK_JP2_MODULES) \
-	$(MAGICK_PNG_MODULES) $(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES)
+	$(MAGICK_PNG_MODULES) $(MAGICK_TIFF_MODULES) $(MAGICK_X11_CODER_MODULES) \
+	$(MAGICK_WEBP_MODULES)
 else
 coders_LTLIBRARIES =
 endif # WITH_MODULES
@@ -849,3 +856,9 @@ coders_yuv_la_SOURCES      = coders/yuv.c
 coders_yuv_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD       = $(LIBMAGICK)
+
+# WEBP coder module
+coders_webp_la_SOURCES     = coders/webp.c
+coders_webp_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_webp_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_webp_la_LIBADD      = $(LIBMAGICK) $(LIB_WEBP)

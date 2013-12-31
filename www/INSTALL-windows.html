@@ -79,23 +79,31 @@ section.</blockquote>
 <div class="section" id="prerequisites">
 <h2><a class="toc-backref" href="#id2">Prerequisites</a></h2>
 <blockquote>
-<p>While multiple versions of GraphicsMagick may be installed at one time,
-if your intention is to replace a prior installation of GraphicsMagick
-with a newer version, then it may be wise to uninstall the existing
-GraphicsMagick (see uninstall procedure) prior to installing the newer
-version.</p>
+<p>While multiple versions of GraphicsMagick may be installed at one
+time, if your intention is to replace a prior installation of
+GraphicsMagick with a newer version, then it is wise to uninstall
+the existing GraphicsMagick (see uninstall procedure) prior to
+installing the newer version.</p>
 <p>While it is not a requirement, it is strongly recommended that the
-<a class="reference external" href="http://www.ghostscript.com/download/">Ghostscript</a> package (GraphicsMagick
-is tested with version 9.06) be installed. GraphicsMagick uses
-Ghostscript to render Postscript and PDF files, as well as formats
-where a translator to Postscript is available. GraphicsMagick will also
-use the fonts delivered with Ghostscript to support the standard set of
-Adobe Postscript fonts like &quot;Helvetica&quot; and &quot;Times Roman&quot; if these
-fonts are not available as TrueType fonts.</p>
-<p>The installation package includes the GraphicsMagick Perl extension (
-PerlMagick &lt;perl.html&gt;) as an installation option. If you would like to
-use this extension, then you must install
-<a class="reference external" href="http://www.activestate.com/activeperl/downloads/">ActiveState ActivePerl</a>
+<a class="reference external" href="http://sourceforge.net/projects/ghostscript/">Ghostscript</a>
+package (GraphicsMagick is tested with version 9.10) be
+installed. GraphicsMagick uses Ghostscript to render Postscript and
+PDF files, as well as formats where a translator to Postscript is
+available. GraphicsMagick will use the <a class="reference external" href="http://sourceforge.net/projects/gs-fonts/">Ghostscript Fonts</a> to support the
+standard set of Adobe Postscript fonts like &quot;Helvetica&quot; and &quot;Times
+Roman&quot; if these fonts are not available as TrueType fonts.  The
+Ghostscript fonts need to manually installed with administrator
+privileges in the Ghostscript installation directory.</p>
+<p>Make sure to install a Ghostscript which is compatible with the
+GraphicsMagick you are installing.  For example, if you are
+installing a 64-bit GraphicsMagick, you should install a 64-bit
+Ghostscript.  The installation order of the two packages is not
+important.  Both 32 and 64-bit versions of GraphicsMagick and
+Ghostscript may be installed at the same time.</p>
+<p>The installation package includes the GraphicsMagick Perl extension
+( <a class="reference external" href="perl.html">PerlMagick</a>) as an installation option. If you would
+like to use this extension, then you must install <a class="reference external" href="http://www.activestate.com/activeperl/downloads/">ActiveState
+ActivePerl</a>
 prior to commencing with installation of GraphicsMagick.</p>
 </blockquote>
 </div>

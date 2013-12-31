@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2009 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -457,6 +457,7 @@ TracePSClippingPath(unsigned char *blob,size_t length,
     in_subpath;
 
   first[0].x=first[0].y=first[1].x=first[1].y=0;
+  last[1].x=last[1].y=last[2].x=last[2].y=0;
   path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
@@ -702,6 +703,7 @@ TraceSVGClippingPath(unsigned char *blob,size_t length,
     in_subpath;
 
   first[0].x=first[0].y=first[1].x=first[1].y=0;
+  last[1].x=last[1].y=last[2].x=last[2].y=0;
   path=AllocateString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
@@ -1277,6 +1279,7 @@ static const TagInfo
     {  0x9208, (char *) "LightSource"},
     {  0x9209, (char *) "Flash"},
     {  0x920A, (char *) "FocalLength"},
+    {  0x9214, (char *) "SubjectArea"},
     {  0x927C, (char *) "MakerNote"},
     {  0x9286, (char *) "UserComment"},
     {  0x9290, (char *) "SubSecTime"},

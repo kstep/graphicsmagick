@@ -55,7 +55,7 @@
 <li><a class="reference internal" href="#how-do-i-change-the-default-postscript-page-size" id="id11">How do I change the default <em>PostScript</em> page size?</a></li>
 <li><a class="reference internal" href="#i-get-a-memory-allocation-error-what-can-i-do" id="id12">I get a memory allocation error. What can I do?</a></li>
 <li><a class="reference internal" href="#how-do-i-concatenate-three-images-left-to-right-with-no-borders-frames-or-text" id="id13">How do I concatenate three images left-to-right with no borders, frames, or text?</a></li>
-<li><a class="reference internal" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-netscape" id="id14">How do I create a GIF animation sequence to display within Netscape?</a></li>
+<li><a class="reference internal" href="#how-do-i-create-a-gif-animation-sequence-to-display-within-firefox" id="id14">How do I create a GIF animation sequence to display within Firefox?</a></li>
 <li><a class="reference internal" href="#when-i-display-a-postscript-image-white-borders-are-trimmed" id="id15">When I display a <em>PostScript</em> image, white borders are trimmed.</a></li>
 <li><a class="reference internal" href="#what-are-visual-image-directories-how-do-i-use-them" id="id16">What are visual image directories? How do I use them?</a></li>
 <li><a class="reference internal" href="#how-can-i-include-the-window-frame-when-importing-a-window" id="id17">How can I include the window frame when importing a window?</a></li>
@@ -67,15 +67,14 @@
 <li><a class="reference internal" href="#how-can-i-make-postscript-text-look-good" id="id23">How can I make Postscript text look good?</a></li>
 <li><a class="reference internal" href="#how-can-i-annotate-an-image-with-text-that-is-2-to-3-inches-tall" id="id24">How can I annotate an image with text that is 2 to 3 inches tall?</a></li>
 <li><a class="reference internal" href="#how-can-i-convert-my-gif-animation-sequence-to-individual-image-files" id="id25">How can I convert my GIF animation sequence to individual image files?</a></li>
-<li><a class="reference internal" href="#how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape" id="id26">How can I remove the background that prints around my image when I display it with Netscape?</a></li>
+<li><a class="reference internal" href="#how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-firefox" id="id26">How can I remove the background that prints around my image when I display it with Firefox?</a></li>
 <li><a class="reference internal" href="#how-do-i-create-a-gif-or-png-image-with-web-safe-colors" id="id27">How do I create a GIF or PNG image with Web safe colors?</a></li>
-<li><a class="reference internal" href="#how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format" id="id28">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></li>
-<li><a class="reference internal" href="#how-can-i-add-a-matte-layer-to-my-image" id="id29">How can I add a matte layer to my image?</a></li>
-<li><a class="reference internal" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id30">How can I draw with text using 'convert' under Windows NT?</a></li>
-<li><a class="reference internal" href="#why-are-my-jpeg-files-larger-than-expected" id="id31">Why are my JPEG files larger than expected?</a></li>
-<li><a class="reference internal" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id32">How do I extract a single image from a multi-image file?</a></li>
-<li><a class="reference internal" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id33">How can I extract and combine CMYK channels in a CMYK image?</a></li>
-<li><a class="reference internal" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id34">How can I create a solid or patterned canvas image?</a></li>
+<li><a class="reference internal" href="#how-can-i-add-a-matte-layer-to-my-image" id="id28">How can I add a matte layer to my image?</a></li>
+<li><a class="reference internal" href="#how-can-i-draw-with-text-using-convert-under-windows-nt" id="id29">How can I draw with text using 'convert' under Windows NT?</a></li>
+<li><a class="reference internal" href="#why-are-my-jpeg-files-larger-than-expected" id="id30">Why are my JPEG files larger than expected?</a></li>
+<li><a class="reference internal" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id31">How do I extract a single image from a multi-image file?</a></li>
+<li><a class="reference internal" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id32">How can I extract and combine CMYK channels in a CMYK image?</a></li>
+<li><a class="reference internal" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id33">How can I create a solid or patterned canvas image?</a></li>
 </ul>
 </div>
 <div class="section" id="how-does-graphicsmagick-differ-from-imagemagick">
@@ -144,25 +143,34 @@ for real-time display, such as for video games and virtual reality.
 GraphicsMagick has been significantly updated to use multiple CPU
 cores to speed up the image processing, and work continues to thread
 the few remaining algorithms, or remove inefficiencies in algorithms
-which don't see as much speed-up as they should.  We have already
-observed multi-core speedup of up to 32X (on a UltraSPARC-T2 CPU) and
-expect that upward trend to continue.</p>
+which don't see as much speed-up as they should.  Linear speedup as
+cores are added is typical for CPU-bound algorithms on well-designed
+CPUs.  Regardless, <a class="reference external" href="http://en.wikipedia.org/wiki/Amdal%27s_law">Amdahl's law</a> is a significant factor
+in GraphicsMagick, with non-parallelizable code paths often dominating
+the time.</p>
 <p>It is my belief that stand-alone GPUs are a poor design (expensive,
 inefficient, failure-prone, bandwidth bottlenecked, lack
 functionality, are insecure, and are not supported in servers) and
-that multi-core will ultimately prevail.  Functionality which
+that multi-core CPUs will ultimately prevail.  Functionality which
 currently works best in a GPU will simply be integrated into
 tomorrow's multi-core CPUs and C compilers will naturally support that
 functionality.  Once GPU capabilities are integrated into CPUs, there
-will be no more need to develop special code for a GPU.  Today
-(December, 2011) 16 core CPUs are readily available for purchase at
-reasonable prices, and this trend is certain to continue.  This year
-(2011), a 50 core CPU capable of running GraphicsMagick has been
-demonstrated which provides a wopping 1 TeraFLOPS of performance.
-Future multi-core CPUs will use a similar amount of power to today's
-CPUs and will fit into a very small (1U) chassis.  Due to this trend,
-there is no value obtained by expending energy toward developing
-specialized code for today's GPUs.</p>
+will be no more need to develop specialized code for a GPU.  Today 16
+core CPUs are readily available for purchase in systems at reasonable
+prices, and this trend is certain to continue.</p>
+<p>Intel's <a class="reference external" href="http://en.wikipedia.org/wiki/Xeon_Phi">Xeon Phi</a> offers a
+61 core 'x86 CPU in a GPU-like plugin form-factor which provides over
+a TeraFLOP of performance.  Being based on power-hungry plug-in cards,
+this solution suffers from many of the issues associated with GPUs.
+However, since it supports OpenMP, it may be a suitable target for
+executing some GraphicsMagick algorithms. Effective use of Xeon Phi
+currently requires use of Intel's development tools so from that
+standpoint it is not much more open than GPUs.</p>
+<p>Future multi-core CPUs will use a similar amount of power to today's
+CPUs, will idle at very low power consumption levels, and will fit
+into a very small chassis.  Due to this trend, there is no value
+obtained by expending energy toward developing specialized code for
+today's GPUs.</p>
 </div>
 <div class="section" id="what-is-the-meaning-of-magick">
 <h1><a class="toc-backref" href="#id4">What is the meaning of &quot;magick&quot;?</a></h1>
@@ -406,8 +414,8 @@ gm composite -geometry +0+300 composite.miff image3.gif composite.miff
 gm composite -geometry +0+375 composite.miff image4.gif composite.miff
 </pre>
 </div>
-<div class="section" id="how-do-i-create-a-gif-animation-sequence-to-display-within-netscape">
-<h1><a class="toc-backref" href="#id14">How do I create a GIF animation sequence to display within Netscape?</a></h1>
+<div class="section" id="how-do-i-create-a-gif-animation-sequence-to-display-within-firefox">
+<h1><a class="toc-backref" href="#id14">How do I create a GIF animation sequence to display within Firefox?</a></h1>
 <p>Use <a class="reference external" href="convert.html">convert</a> with the <em>-delay</em> and <em>-page</em> options. The <em>-delay</em> option
 is used to specify the delay in <em>1/100ths of a second</em> between the
 display of each frame of the animation. For example,</p>
@@ -425,7 +433,7 @@ gm convert -delay 20 frame1.gif -delay 10 frame2.gif \
 gm convert frame1.gif -page +50&quot;+1&quot;00 frame2.gif -page +0&quot;+1&quot;00 \
   frame3.gif animation.gif
 </pre>
-<p>Finally, if you want the image to loop within <em>Netscape</em>, use <em>-loop</em></p>
+<p>Finally, if you want the image to loop within <em>FireFox</em>, use <em>-loop</em></p>
 <pre class="literal-block">
 gm convert -loop 50 frame*.gif animation.gif
 </pre>
@@ -624,13 +632,13 @@ gm convert -font Helvetica -pointsize 100 -density 300 ...
 <h1><a class="toc-backref" href="#id25">How can I convert my GIF animation sequence to individual image files?</a></h1>
 <p>Use the scene embedded file format with <a class="reference external" href="convert.html">convert</a>:</p>
 <pre class="literal-block">
-gm convert animation.gif frame%02d.gif
+gm convert animation.gif +adjoin frame%02d.gif
 </pre>
 <p>The resulting image files are titled frame01.gif, frame02.gif,
 frame03.gif, etc.</p>
 </div>
-<div class="section" id="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-netscape">
-<h1><a class="toc-backref" href="#id26">How can I remove the background that prints around my image when I display it with Netscape?</a></h1>
+<div class="section" id="how-can-i-remove-the-background-that-prints-around-my-image-when-i-display-it-with-firefox">
+<h1><a class="toc-backref" href="#id26">How can I remove the background that prints around my image when I display it with Firefox?</a></h1>
 <p>Use the +page option of the <a class="reference external" href="convert.html">convert</a> command:</p>
 <pre class="literal-block">
 gm convert +page alpha.gif beta.gif
@@ -638,14 +646,15 @@ gm convert +page alpha.gif beta.gif
 <p>GIF allows for a page offset relative to some background. The page
 offset information may have been in your GIF image already or it
 could have been introduced by GraphicsMagick. Either way, +page
-removes the unwanted page offset and Netscape should behave as
+removes the unwanted page offset and FireFox should behave as
 expected.</p>
 </div>
 <div class="section" id="how-do-i-create-a-gif-or-png-image-with-web-safe-colors">
 <h1><a class="toc-backref" href="#id27">How do I create a GIF or PNG image with Web safe colors?</a></h1>
 <p>Web safe colors are not normally needed any more since almost all
 computers now have true color displays. However, this FAQ may still be
-useful.</p>
+useful since it demonstrates how a colormap from an image may be
+applied to another image..</p>
 <p>Use the -map option of the <a class="reference external" href="convert.html">convert</a> command:</p>
 <pre class="literal-block">
 gm convert -map netscape: alpha.gif beta.gif
@@ -654,17 +663,8 @@ gm convert -map netscape: alpha.gif beta.gif
 command to ensure only these predefined colors are used. Otherwise
 Netscape dithers your image with varying degrees of image fidelity.</p>
 </div>
-<div class="section" id="how-come-adobe-acrobat-2-1-can-t-read-graphicsmagick-s-pdf-format">
-<h1><a class="toc-backref" href="#id28">How come Adobe Acrobat 2.1 can't read GraphicsMagick's PDF format?</a></h1>
-<p>The default PDF compression is <em>Zip</em>. You need Acrobat 3.0 and above
-to read Zip compressed PDF. Instead use no compression or LZW
-compression when you create the PDF file:</p>
-<pre class="literal-block">
-gm convert +compress images.tiff image.pdf
-</pre>
-</div>
 <div class="section" id="how-can-i-add-a-matte-layer-to-my-image">
-<h1><a class="toc-backref" href="#id29">How can I add a matte layer to my image?</a></h1>
+<h1><a class="toc-backref" href="#id28">How can I add a matte layer to my image?</a></h1>
 <p>One way is to use a bitmap as your transparency mask First, use the
 -matte option to add an all-opaque opacity channel, then use the
 composite utility to copy the graylevel samples from the mask file
@@ -678,7 +678,7 @@ variable opacity, use a format like MIFF, TIFF, or PNG as your output
 image format.</p>
 </div>
 <div class="section" id="how-can-i-draw-with-text-using-convert-under-windows-nt">
-<h1><a class="toc-backref" href="#id30">How can I draw with text using 'convert' under Windows NT?</a></h1>
+<h1><a class="toc-backref" href="#id29">How can I draw with text using 'convert' under Windows NT?</a></h1>
 <p>The problem is that NT interprets the command line differently than
 Unix does, causing the documented command to fail. The following
 command has been reported to work correctly (all on one line):</p>
@@ -694,13 +694,13 @@ gm convert.exe -pointsize 18 -draw &quot;text 0,0 &quot;This is my text!&quot;&q
 </pre>
 </div>
 <div class="section" id="why-are-my-jpeg-files-larger-than-expected">
-<h1><a class="toc-backref" href="#id31">Why are my JPEG files larger than expected?</a></h1>
+<h1><a class="toc-backref" href="#id30">Why are my JPEG files larger than expected?</a></h1>
 <p>Your JPEG files may contain embedded &quot;profiles&quot; such as Exif or IPTC,
 or they may contain uncompressed thumbnails. You can use the <cite>+profile
 &quot;*&quot;</cite> commandline option or an equivalent API method to remove them.</p>
 </div>
 <div class="section" id="how-do-i-extract-a-single-image-from-a-multi-image-file">
-<h1><a class="toc-backref" href="#id32">How do I extract a single image from a multi-image file?</a></h1>
+<h1><a class="toc-backref" href="#id31">How do I extract a single image from a multi-image file?</a></h1>
 <p>Use a square-bracket syntax to indicate which frame or frames you
 want. For example,</p>
 <pre class="literal-block">
@@ -711,7 +711,7 @@ to surround the file specification with quotation marks, to prevent
 the shell from interpreting the square brackets.</p>
 </div>
 <div class="section" id="how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image">
-<h1><a class="toc-backref" href="#id33">How can I extract and combine CMYK channels in a CMYK image?</a></h1>
+<h1><a class="toc-backref" href="#id32">How can I extract and combine CMYK channels in a CMYK image?</a></h1>
 <p>GraphicsMagick 1.2.2 and later support combining multiple channels in of
 any image file format in order to create a CMYK image file.  For example,
 starting with a CMYK JPEG file, we can create a set of separate files
@@ -737,7 +737,7 @@ can split to a set of files, and join a set of files, but the only
 supported format is a raw format which is not easy to deal with.</p>
 </div>
 <div class="section" id="how-can-i-create-a-solid-or-patterned-canvas-image">
-<h1><a class="toc-backref" href="#id34">How can I create a solid or patterned canvas image?</a></h1>
+<h1><a class="toc-backref" href="#id33">How can I create a solid or patterned canvas image?</a></h1>
 <p>Canvas images may be created using the 'XC:' or 'TILE:' pseudo-image
 formats. XC produces solid color images based on an color you specify
 while TILE produces a tiled image based on an an image you specify. Both

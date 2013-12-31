@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -633,7 +633,8 @@ static void MagickFreeCMSTransform(void * cmsTransformVoid)
   cmsHTRANSFORM
     cmsTransform=(cmsHTRANSFORM) cmsTransformVoid;
 
-  cmsDeleteTransform(cmsTransform);
+  if (cmsTransform != (cmsHTRANSFORM) NULL)
+      cmsDeleteTransform(cmsTransform);
 }
 
 static const char *

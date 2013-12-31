@@ -1562,7 +1562,9 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 MagickExport MagickBool GetBlobTemporary(const Image *image)
 {
   assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(image->blob != (const BlobInfo *) NULL);
+  assert(image->blob->signature == MagickSignature);
   return (image->blob->temporary != MagickFalse);
 }
 

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    VMS-specific FreeType low-level system interface (body).             */
 /*                                                                         */
-/*  Copyright 1996-2001, 2002 by                                           */
+/*  Copyright 1996-2002, 2005, 2010, 2013 by                               */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -203,7 +203,7 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Error )
+  FT_BASE_DEF( FT_Error )
   FT_Stream_Open( FT_Stream    stream,
                   const char*  filepathname )
   {
@@ -212,7 +212,7 @@
 
 
     if ( !stream )
-      return FT_Err_Invalid_Stream_Handle;
+      return FT_THROW( Invalid_Stream_Handle );
 
     /* open the file */
     file = open( filepathname, O_RDONLY );
@@ -220,7 +220,7 @@
     {
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
 
     if ( fstat( file, &stat_buf ) < 0 )
@@ -231,6 +231,13 @@
     }
 
     stream->size = stat_buf.st_size;
+    if ( !stream->size )
+    {
+      FT_ERROR(( "FT_Stream_Open:" ));
+      FT_ERROR(( " opened `%s' but zero-sized\n", filepathname ));
+      goto Fail_Map;
+    }
+
     stream->pos  = 0;
     stream->base = (unsigned char *)mmap( NULL,
                                           stream->size,
@@ -267,7 +274,7 @@
     stream->size = 0;
     stream->pos  = 0;
 
-    return FT_Err_Cannot_Open_Stream;
+    return FT_THROW( Cannot_Open_Stream );
   }
 
 
@@ -284,7 +291,7 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Memory )
+  FT_BASE_DEF( FT_Memory )
   FT_New_Memory( void )
   {
     FT_Memory  memory;
@@ -308,7 +315,7 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( void )
+  FT_BASE_DEF( void )
   FT_Done_Memory( FT_Memory  memory )
   {
 #ifdef FT_DEBUG_MEMORY

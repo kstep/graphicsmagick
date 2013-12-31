@@ -309,6 +309,10 @@ Optional Packages/Options
 
     disable JBIG support
 
+--without-jp2
+
+    disable JPEG v2 support
+
 --without-jpeg
 
     disable JPEG support
@@ -806,6 +810,46 @@ installation layout (e.g. ``C:\GraphicsMagick\bin``,
 which may be embedded in libraries and configuration files are
 transformed into Windows paths so they don't depend on MSYS.
 
+Cross-compilation On Unix/Linux Host
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Given a modern and working MinGW32 or mingw-w64 installation, it is
+easy to cross-compile GraphicsMagick from a Unix-type host to produce
+Microsoft Windows executables.
+
+This incantation produces a static WIN32 `gm.exe` executable on an
+Ubuntu Linux host with the i686-w64 cross-compiler installed::
+
+  ./configure '--host=i686-w64-mingw32' '--disable-shared'
+
+and this incantation produces a static WIN64 `gm.exe` executable on an
+Ubuntu Linux host with the x86_64-w64 cross-compiler installed::
+
+  ./configure '--host=x86_64-w64-mingw32' '--disable-shared'
+
+For a full-fledged GraphicsMagick program, normally one will want to
+pre-install or cross-compile the optional libraries that
+GraphicsMagick may depend on and install them where the cross-compiler
+will find them, or add extra `CPPFLAGS` and `LDFLAGS` options so that
+the compiler searches for header files and libraries in the correct
+place.
+
+Configuring for building with shared libraries (libGraphicsMagick,
+libGraphicsMagickWand, and libGraphicsMagick++ DLLs) and modules
+(coders as DLLs) is also supported by the cross-builds.  A cross-built
+libtool libltdl needs to be built in advance in order to use the
+`--with-modules` modules option.
+
+After configuring the software for cross-compilation, the software is
+built using `make` as usual and everything should be as with native
+compilation except that `make check` is likely not available (testing
+might be possible on build system via WINE, not currently
+tested/supported by GraphicsMagick authors).
+
+Use of the `DESTDIR` approach as described in the `Build & Install`_
+section is recommended in order to install the build products into a
+formal directory tree before preparing to copy onto the Windows target
+system (e.g. by packaging via an installer).
 
 Dealing with configuration failures
 -----------------------------------

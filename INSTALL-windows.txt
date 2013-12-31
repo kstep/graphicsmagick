@@ -22,25 +22,35 @@ Installing Using Installer Package
 Prerequisites
 -------------
 
-  While multiple versions of GraphicsMagick may be installed at one time,
-  if your intention is to replace a prior installation of GraphicsMagick
-  with a newer version, then it may be wise to uninstall the existing
-  GraphicsMagick (see uninstall procedure) prior to installing the newer
-  version.
+  While multiple versions of GraphicsMagick may be installed at one
+  time, if your intention is to replace a prior installation of
+  GraphicsMagick with a newer version, then it is wise to uninstall
+  the existing GraphicsMagick (see uninstall procedure) prior to
+  installing the newer version.
 
   While it is not a requirement, it is strongly recommended that the
-  `Ghostscript <http://www.ghostscript.com/download/>`_ package (GraphicsMagick
-  is tested with version 9.06) be installed. GraphicsMagick uses
-  Ghostscript to render Postscript and PDF files, as well as formats
-  where a translator to Postscript is available. GraphicsMagick will also
-  use the fonts delivered with Ghostscript to support the standard set of
-  Adobe Postscript fonts like "Helvetica" and "Times Roman" if these
-  fonts are not available as TrueType fonts.
+  `Ghostscript <http://sourceforge.net/projects/ghostscript/>`_
+  package (GraphicsMagick is tested with version 9.10) be
+  installed. GraphicsMagick uses Ghostscript to render Postscript and
+  PDF files, as well as formats where a translator to Postscript is
+  available. GraphicsMagick will use the `Ghostscript Fonts
+  <http://sourceforge.net/projects/gs-fonts/>`_ to support the
+  standard set of Adobe Postscript fonts like "Helvetica" and "Times
+  Roman" if these fonts are not available as TrueType fonts.  The
+  Ghostscript fonts need to manually installed with administrator
+  privileges in the Ghostscript installation directory.
 
-  The installation package includes the GraphicsMagick Perl extension (
-  PerlMagick <perl.html>) as an installation option. If you would like to
-  use this extension, then you must install
-  `ActiveState ActivePerl <http://www.activestate.com/activeperl/downloads/>`_
+  Make sure to install a Ghostscript which is compatible with the
+  GraphicsMagick you are installing.  For example, if you are
+  installing a 64-bit GraphicsMagick, you should install a 64-bit
+  Ghostscript.  The installation order of the two packages is not
+  important.  Both 32 and 64-bit versions of GraphicsMagick and
+  Ghostscript may be installed at the same time.
+
+  The installation package includes the GraphicsMagick Perl extension
+  ( `PerlMagick <perl.html>`_) as an installation option. If you would
+  like to use this extension, then you must install `ActiveState
+  ActivePerl <http://www.activestate.com/activeperl/downloads/>`_
   prior to commencing with installation of GraphicsMagick.
 
 Retrieve Install Package

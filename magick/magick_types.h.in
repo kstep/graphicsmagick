@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2013 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -74,20 +74,20 @@ extern "C" {
 
   typedef magick_uint64_t magick_uintmax_t;
 
-#  if defined(WIN32)
-  typedef unsigned long magick_uintptr_t;
-#  define MAGICK_SIZE_T_F "l"
-#  define MAGICK_SIZE_T unsigned long
-#  define MAGICK_SSIZE_T_F "l"
-#  define MAGICK_SSIZE_T long
-#  elif defined(WIN64)
+#  if defined(WIN64)
   /* WIN64 uses the LLP64 model */
   typedef unsigned long long magick_uintptr_t;
 #  define MAGICK_SIZE_T_F "I64"
 #  define MAGICK_SIZE_T unsigned __int64
 #  define MAGICK_SSIZE_T_F "I64"
 #  define MAGICK_SSIZE_T signed __int64
-#  endif
+#  else
+  typedef unsigned long magick_uintptr_t;
+#  define MAGICK_SIZE_T_F "l"
+#  define MAGICK_SIZE_T unsigned long
+#  define MAGICK_SSIZE_T_F "l"
+#  define MAGICK_SSIZE_T long
+#  endif // defined(WIN64)
 
 #else
 

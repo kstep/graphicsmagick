@@ -250,7 +250,7 @@ typedef struct _DrawInfo
     *server_name;
 
   double
-    *dash_pattern;
+    *dash_pattern; /* Terminated by value 0.0 (i.e. < MagickEpsilon)*/
 
   char
     *clip_path;

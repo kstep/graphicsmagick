@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2005, 2008 GraphicsMagick Group
+  Copyright (C) 2003, 2005, 2008, 2013 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -40,18 +40,35 @@ static inline void BlendCompositePixel(PixelPacket *composite,
                                        const double alpha)
 {
   double
-    color;
+    color,
+    opacity;
 
-  color=((double) p->red*(MaxRGBDouble-alpha)+q->red*alpha)/MaxRGBDouble;
-  composite->red=RoundDoubleToQuantum(color);
+  if (q->opacity == TransparentOpacity)
+    {
+	  composite->red=p->red;
+	  composite->green=p->green;
+	  composite->blue=p->blue;
+    }
+  else if (p->opacity == TransparentOpacity)
+    {
+	  composite->red=q->red;
+	  composite->green=q->green;
+	  composite->blue=q->blue;
+    }
+  else
+    {
+	  color=((double) p->red*(MaxRGBDouble-alpha)+q->red*alpha)/MaxRGBDouble;
+	  composite->red=RoundDoubleToQuantum(color);
 
-  color=((double) p->green*(MaxRGBDouble-alpha)+q->green*alpha)/MaxRGBDouble;
-  composite->green=RoundDoubleToQuantum(color);
+	  color=((double) p->green*(MaxRGBDouble-alpha)+q->green*alpha)/MaxRGBDouble;
+	  composite->green=RoundDoubleToQuantum(color);
 
-  color=((double) p->blue*(MaxRGBDouble-alpha)+q->blue*alpha)/MaxRGBDouble;
-  composite->blue=RoundDoubleToQuantum(color);
+	  color=((double) p->blue*(MaxRGBDouble-alpha)+q->blue*alpha)/MaxRGBDouble;
+	  composite->blue=RoundDoubleToQuantum(color);
+    }
 
-  composite->opacity=p->opacity;
+  opacity=((double) p->opacity*(MaxRGBDouble-alpha)+q->opacity*alpha)/MaxRGBDouble;
+  composite->opacity=RoundDoubleToQuantum(opacity);
 }
 
 /*

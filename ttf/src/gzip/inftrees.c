@@ -131,6 +131,9 @@ uIntf *v                /* working area: values in order of bit length */
   uInt z;                       /* number of entries in current table */
 
 
+  /* Make compiler happy */
+  r.base = 0;
+
   /* Generate counts for each bit length */
   p = c;
 #define C0 *p++ = 0;
@@ -363,6 +366,9 @@ z_streamp z             /* for messages */
     if (r == Z_DATA_ERROR)
       z->msg = (char*)"oversubscribed distance tree";
     else if (r == Z_BUF_ERROR) {
+#if 0
+    {
+#endif
 #ifdef PKZIP_BUG_WORKAROUND
       r = Z_OK;
     }
@@ -401,11 +407,11 @@ local inflate_huft *fixed_td;
 
 
 local int inflate_trees_fixed( /* bl, bd, tl, td, z) */
-uIntf *bl,               /* literal desired/actual bit depth */
-uIntf *bd,               /* distance desired/actual bit depth */
-inflate_huft * FAR *tl,  /* literal/length tree result */
-inflate_huft * FAR *td,  /* distance tree result */
-z_streamp z              /* for memory allocation */
+uIntf *bl,                      /* literal desired/actual bit depth */
+uIntf *bd,                      /* distance desired/actual bit depth */
+const inflate_huft * FAR *tl,   /* literal/length tree result */
+const inflate_huft * FAR *td,   /* distance tree result */
+z_streamp z                     /* for memory allocation */
 )
 {
 #ifdef BUILDFIXED

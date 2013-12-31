@@ -1273,12 +1273,16 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   {
     page.x=next->page.x;
     page.y=next->page.y;
-    if ((next->columns+page.x) > page.width)
-      page.width=next->columns+page.x;
+    /*
+      Without casts, unsigned underflow can occur here if page offset
+      is negative and has greater magnitude than image size.
+    */
+    if (((long) next->columns+page.x) > (long) page.width)
+      page.width=(long) next->columns+page.x;
     if (next->page.width > page.width)
       page.width=next->page.width;
-    if ((next->rows+page.y) > page.height)
-      page.height=next->rows+page.y;
+    if (((long) next->rows+page.y) > (long) page.height)
+      page.height=(long) next->rows+page.y;
     if (next->page.height > page.height)
       page.height=next->page.height;
   }

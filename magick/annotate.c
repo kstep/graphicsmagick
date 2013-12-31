@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -55,48 +55,39 @@
 #include "magick/xwindow.h"
 #if defined(HasTTF)
 
-#if defined(__MINGW32__)
-#  undef interface  /* Remove interface define */
-#endif
+#  if defined(__MINGW32__)
+#    undef interface  /* Remove interface define */
+#  endif
 
-#if defined(HAVE_FT2BUILD_H)
-  /*
-    Modern libwmf2 installs may require that <ft2build.h> be included
-    before including other libwmf headers.  Including <ft2build.h>
-    establishes definitions used by other FreeType headers.
-  */
-#  include <ft2build.h>
-#endif /* defined(HAVE_FT2BUILD_H) */
-
-#if defined(FT_FREETYPE_H)
-#  include FT_FREETYPE_H
-#else
-#  include <freetype/freetype.h>
-#endif /* defined(FT_FREETYPE_H) */
-
-#if defined(FT_GLYPH_H)
-#  include FT_GLYPH_H
-#else
-#  include <freetype/ftglyph.h>
-#endif /* defined(FT_GLYPH_H) */
-
-#if defined(FT_OUTLINE_H)
-#  include FT_OUTLINE_H
-#else
-#  include <freetype/ftoutln.h>
-#endif /* defined(FT_OUTLINE_H) */
-
-#if defined(FT_BBOX_H)
-#  include FT_BBOX_H
-#else
-#  include <freetype/ftbbox.h>
-#endif /* defined(FT_BBOX_H) */
+#  if defined(HAVE_FT2BUILD_H)
+     /*
+       Modern FreeType2 installs require that <ft2build.h> be included
+       before including other FreeType2 headers.  Including
+       <ft2build.h> establishes definitions used by other FreeType2
+       headers.
+     */
+#    include <ft2build.h>
+#    include FT_FREETYPE_H
+#    include FT_GLYPH_H
+#    include FT_OUTLINE_H
+#    include FT_BBOX_H
+#  else
+     /*
+       Very old way to include FreeType2
+     */
+#    include <freetype/freetype.h>
+#    include <freetype/ftglyph.h>
+#    include <freetype/ftoutln.h>
+#    include <freetype/ftbbox.h>
+#  endif /* defined(HAVE_FT2BUILD_H) */
 
 #endif /* defined(HasTTF) */
 
 /*
   Forward declarations.
 */
+typedef magick_int32_t magick_code_point_t;
+
 static unsigned int
   RenderType(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,TypeMetric *),
@@ -472,7 +463,7 @@ static int GetOneCharacter(const unsigned char *text,size_t *length)
   return((int) c);
 }
 
-static unsigned short *EncodeSJIS(const char *text,size_t *count)
+static magick_code_point_t *EncodeSJIS(const char *text,size_t *count)
 {
   int
     c;
@@ -480,21 +471,22 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
   size_t
     length;
 
-  unsigned short
+  magick_code_point_t
     *encoding;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  encoding=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (encoding == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  encoding=MagickAllocateArray(magick_code_point_t *,
+                               (strlen(text)+MaxTextExtent),
+                               sizeof(magick_code_point_t));
+  if (encoding == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=encoding;
@@ -509,7 +501,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
           *q++=(unsigned char) *p;
         break;
       }
-    *q=(unsigned short) c;
+    *q=(magick_code_point_t) c;
     q++;
   }
   *count=q-encoding;
@@ -545,23 +537,24 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
 %
 %
 */
-static unsigned short *EncodeText(const char *text,size_t *count)
+static magick_code_point_t *EncodeText(const char *text,size_t *count)
 {
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
-  unsigned short
+  magick_code_point_t
     *encoding;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  encoding=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (encoding == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  encoding=MagickAllocateArray(magick_code_point_t *,
+                               (strlen(text)+MaxTextExtent),
+                               sizeof(magick_code_point_t));
+  if (encoding == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=encoding;
@@ -601,10 +594,9 @@ static unsigned short *EncodeText(const char *text,size_t *count)
 %
 %
 */
-
-static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
+static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
 {
-  unsigned long
+  unsigned int
     c;
 
   if (*length < 1)
@@ -613,7 +605,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
   if (!(c & 0x80))
     {
       *length=1;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 2) || ((text[1] & 0xc0) != 0x80))
     {
@@ -625,7 +617,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       *length=2;
       c=(text[0] & 0x1f) << 6;
       c|=text[1] & 0x3f;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 3) || ((text[2] & 0xc0) != 0x80))
     {
@@ -638,7 +630,7 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
       c=(text[0] & 0xf) << 12;
       c|=(text[1] & 0x3f) << 6;
       c|=text[2] & 0x3f;
-      return((long) c);
+      return((int) c);
     }
   if ((*length < 4) || ((c & 0xf8) != 0xf0) || ((text[3] & 0xc0) != 0x80))
     {
@@ -650,10 +642,10 @@ static long GetUnicodeCharacter(const unsigned char *text,size_t *length)
   c|=(text[1] & 0x3f) << 12;
   c|=(text[2] & 0x3f) << 6;
   c|=text[3] & 0x3f;
-  return((long) c);
+  return((int) c);
 }
 
-static unsigned short *EncodeUnicode(const char *text,size_t *count)
+static magick_code_point_t *EncodeUnicode(const char *text,size_t *count)
 {
   int
     c;
@@ -661,21 +653,22 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   register const char
     *p;
 
-  register unsigned short
+  register magick_code_point_t
     *q;
 
   size_t
     length;
 
-  unsigned short
+  magick_code_point_t
     *unicode;
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short *) NULL);
-  unicode=MagickAllocateMemory(unsigned short *,
-    (strlen(text)+MaxTextExtent)*sizeof(unsigned short));
-  if (unicode == (unsigned short *) NULL)
+    return((magick_code_point_t *) NULL);
+  unicode=MagickAllocateArray(magick_code_point_t *,
+                              (strlen(text)+MaxTextExtent),
+                              sizeof(magick_code_point_t));
+  if (unicode == (magick_code_point_t *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToConvertText);
   q=unicode;
@@ -690,7 +683,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
           *q++=(unsigned char) *p;
         break;
       }
-    *q=(unsigned short) c;
+    *q=(magick_code_point_t) c;
     q++;
   }
   *count=q-unicode;
@@ -963,7 +956,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     encoding_type;
 
   FT_Error
-    status;
+    ft_status;
 
   FT_Face
     face;
@@ -1017,11 +1010,11 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       0, 0
     };
 
-  unsigned int
-    active;
-
-  unsigned short
+  magick_code_point_t
     *text;
+
+  MagickPassFail
+    status=MagickPass;
 
   glyph.image=(FT_Glyph) 0;
   last_glyph.image=(FT_Glyph) 0;
@@ -1029,27 +1022,27 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
-  status=FT_Init_FreeType(&library);
-  if (status)
+  ft_status=FT_Init_FreeType(&library);
+  if (ft_status)
     ThrowBinaryException(TypeError,UnableToInitializeFreetypeLibrary,
       draw_info->font);
   if (*draw_info->font != '@')
-    status=FT_New_Face(library,draw_info->font,0,&face);
+    ft_status=FT_New_Face(library,draw_info->font,0,&face);
   else
-    status=FT_New_Face(library,draw_info->font+1,0,&face);
-  if (status != 0)
+    ft_status=FT_New_Face(library,draw_info->font+1,0,&face);
+  if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(TypeError,UnableToReadFont,draw_info->font)
     }
   if (face->num_charmaps != 0)
-    status=FT_Set_Charmap(face,face->charmaps[0]);
+    ft_status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_unicode;
-  status=FT_Select_Charmap(face,encoding_type);
-  if (status != 0)
+  ft_status=FT_Select_Charmap(face,encoding_type);
+  if (ft_status != 0)
     {
       encoding_type=ft_encoding_none;
-      status=FT_Select_Charmap(face,encoding_type);
+      ft_status=FT_Select_Charmap(face,encoding_type);
     }
   if (encoding != (char *) NULL)
     {
@@ -1065,6 +1058,18 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_big5;
       if (LocaleCompare(encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
+#if defined(ft_encoding_johab)
+      if (LocaleCompare(encoding,"Johab") == 0)
+        encoding_type=ft_encoding_johab;
+#endif
+#if defined(ft_encoding_latin_1)
+      if (LocaleCompare(encoding,"Latin-1") == 0)
+        encoding_type=ft_encoding_latin_1;
+#endif
+#if defined(ft_encoding_latin_2)
+      if (LocaleCompare(encoding,"Latin-2") == 0)
+        encoding_type=ft_encoding_latin_2;
+#endif
       if (LocaleCompare(encoding,"None") == 0)
         encoding_type=ft_encoding_none;
       if (LocaleCompare(encoding,"SJIScode") == 0)
@@ -1075,8 +1080,8 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_unicode;
       if (LocaleCompare(encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
-      status=FT_Select_Charmap(face,encoding_type);
-      if (status != 0)
+      ft_status=FT_Select_Charmap(face,encoding_type);
+      if (ft_status != 0)
         ThrowBinaryException(TypeError,UnrecognizedFontEncoding,encoding);
     }
   /*
@@ -1115,11 +1120,12 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
-      return MagickPass;
+      return status;
     }
 
   /*
-    Convert text to 2-byte format as prescribed by the encoding.
+    Convert text to 4-byte format (supporting up to 21 code point
+    bits) as prescribed by the encoding.
   */
   switch (encoding_type)
   {
@@ -1153,7 +1159,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
-  if (text == (unsigned short *) NULL)
+  if (text == (magick_code_point_t *) NULL)
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
@@ -1202,11 +1208,11 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     glyph.origin=origin;
     glyph.image=0;
-    status=FT_Load_Glyph(face,glyph.id,FT_LOAD_DEFAULT);
-    if (status != False)
+    ft_status=FT_Load_Glyph(face,glyph.id,FT_LOAD_DEFAULT);
+    if (ft_status != False)
       continue;
-    status=FT_Get_Glyph(face->glyph,&glyph.image);
-    if (status != False)
+    ft_status=FT_Get_Glyph(face->glyph,&glyph.image);
+    if (ft_status != False)
       continue;
 #if 0
     /*
@@ -1246,15 +1252,16 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (draw_info->render)
       {
+        status &= ModifyCache(image,&image->exception);
         if ((draw_info->fill.opacity != TransparentOpacity) ||
             (pattern != (Image *) NULL))
           {
             /*
               Rasterize the glyph.
             */
-            status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
+            ft_status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
               (FT_Vector *) NULL,True);
-            if (status != False)
+            if (ft_status != False)
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
             image->storage_class=DirectClass;
@@ -1280,55 +1287,66 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                 }
               q=GetImagePixels(image,(long) ceil(point.x-0.5),
                 (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
-              active=q != (PixelPacket *) NULL;
-              for (x=0; x < (long) bitmap->bitmap.width; x++, pc++)
-              {
-                if (((long) ceil(point.x+x-0.5) < 0) ||
-                    ((unsigned long) ceil(point.x+x-0.5) >= image->columns))
-                 {
-                    q++;
-                    continue;
-                 }
-                /* 8-bit gray-level pixmap */
-                if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
-                  {
-                    if (draw_info->text_antialias)
-                      opacity=ScaleCharToQuantum(p[pc]);
-                    else
-                      opacity=(p[pc] < 127 ? OpaqueOpacity : TransparentOpacity);
-                  }
-                /* 1-bit monochrome bitmap */
-                else if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
-                  {
-                    opacity=((p[(x >> 3) + pcr] & (1 << (~x & 0x07))) ?
-                        TransparentOpacity : OpaqueOpacity);
-                  }
-                else
-                  {
-                    continue; /* ignore it? */
-                  }
-                fill_color=draw_info->fill;
-                if (pattern != (Image *) NULL)
-                  (void) AcquireOnePixelByReference(pattern,&fill_color,
-                    (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
-                    (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
-                            &image->exception);
-                opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
-                if (!active)
-                  q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
-                    (long) ceil(point.y+y-0.5),1,1);
-                if (q == (PixelPacket *) NULL)
-                  {
-                    q++;
-                    continue;
-                  }
-                AlphaCompositePixel(q,&fill_color,opacity,q,
-                                    image->matte ? q->opacity : OpaqueOpacity);
-                if (!active)
-                  (void) SyncImagePixels(image);
-                q++;
-              }
-              (void) SyncImagePixels(image);
+              if (q == (PixelPacket *) NULL)
+                status=MagickFail;
+              if (status != MagickFail)
+                {
+                  for (x=0; x < (long) bitmap->bitmap.width; x++, pc++)
+                    {
+                      if (((long) ceil(point.x+x-0.5) < 0) ||
+                          ((unsigned long) ceil(point.x+x-0.5) >= image->columns))
+                        {
+                          q++;
+                          continue;
+                        }
+                      /* 8-bit gray-level pixmap */
+                      if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
+                        {
+                          if (draw_info->text_antialias)
+                            opacity=ScaleCharToQuantum(p[pc]);
+                          else
+                            opacity=(p[pc] < 127 ? OpaqueOpacity : TransparentOpacity);
+                        }
+                      /* 1-bit monochrome bitmap */
+                      else if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+                        {
+                          opacity=((p[(x >> 3) + pcr] & (1 << (~x & 0x07))) ?
+                                   TransparentOpacity : OpaqueOpacity);
+                        }
+                      else
+                        {
+                          continue; /* ignore it? */
+                        }
+                      fill_color=draw_info->fill;
+                      if (pattern != (Image *) NULL)
+                        {
+                          if (AcquireOnePixelByReference
+                              (pattern,&fill_color,
+                               (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
+                               (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
+                               &image->exception) == MagickFail)
+                            {
+                              status=MagickFail;
+                            }
+                        }
+                      if (status != MagickFail)
+                        {
+                          opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
+                          AlphaCompositePixel(q,&fill_color,opacity,q,
+                                              image->matte ? q->opacity : OpaqueOpacity);
+                          (void) SyncImagePixels(image);
+                        }
+                      q++;
+                      if (status == MagickFail)
+                        break;
+                    }
+                  if (SyncImagePixels(image) != MagickPass)
+                    status=MagickFail;
+                  if (status == MagickFail)
+                    break;
+                }
+              if (status == MagickFail)
+                break;
             }
           }
       }
@@ -1344,7 +1362,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
   metrics->bounds.y2/=64.0;
-  if (draw_info->render)
+  if ((status != MagickFail)&& (draw_info->render))
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
       {
@@ -1365,7 +1383,7 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
-  return(MagickPass);
+  return(status);
 }
 #else
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,

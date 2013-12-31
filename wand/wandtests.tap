@@ -1,9 +1,11 @@
 #!/bin/sh
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 # Test wand interface
 . ./common.shi
 . ${srcdir}/wand/common.shi
 test_plan_fn 2
+rm -f drawtest_out.miff
 test_command_fn 'wand vector drawing' ${MEMCHECK} ./drawtest drawtest_out.miff
+rm -f wandtest_out.miff
 test_command_fn 'wand api' ${MEMCHECK} ./wandtest
 :

@@ -36,28 +36,28 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  *
  * the version string like "1.2.3"
  */
-#define LIBXML_DOTTED_VERSION "2.9.0"
+#define LIBXML_DOTTED_VERSION "2.9.1"
 
 /**
  * LIBXML_VERSION:
  *
  * the version number: 1.2.3 value is 10203
  */
-#define LIBXML_VERSION 20900
+#define LIBXML_VERSION 20901
 
 /**
  * LIBXML_VERSION_STRING:
  *
  * the version number string, 1.2.3 value is "10203"
  */
-#define LIBXML_VERSION_STRING "20900"
+#define LIBXML_VERSION_STRING "20901"
 
 /**
  * LIBXML_VERSION_EXTRA:
  *
  * extra version information, used to show a CVS compilation
  */
-#define LIBXML_VERSION_EXTRA "-GITv2.9.0-rc2-5-g7651606"
+#define LIBXML_VERSION_EXTRA "-GITv2.9.0-69-gc0a8dd1"
 
 /**
  * LIBXML_TEST_VERSION:
@@ -65,7 +65,7 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  * Macro to check that the libxml version in use is compatible with
  * the version the software has been compiled against
  */
-#define LIBXML_TEST_VERSION xmlCheckVersion(20900);
+#define LIBXML_TEST_VERSION xmlCheckVersion(20901);
 
 #ifndef VMS
 #if 0
@@ -102,6 +102,15 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
     (defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE - 0 >= 199506L))
 #define LIBXML_THREAD_ENABLED
 #endif
+#endif
+
+/**
+ * LIBXML_THREAD_ALLOC_ENABLED:
+ *
+ * Whether the allocation hooks are per-thread
+ */
+#if 0
+#define LIBXML_THREAD_ALLOC_ENABLED
 #endif
 
 /**

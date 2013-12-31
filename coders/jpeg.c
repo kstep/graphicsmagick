@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2011 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -119,7 +119,11 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 */
 #define ICC_MARKER  (JPEG_APP0+2)
 #define IPTC_MARKER  (JPEG_APP0+13)
+#define XML_MARKER  (JPEG_APP0+1)
 #define MaxBufferExtent  8192
+#define JPEG_MARKER_MAX_SIZE 65533
+static const char *xmp_std_header="http://ns.adobe.com/xap/1.0/";
+
 
 typedef struct _DestinationManager
 {
@@ -226,7 +230,8 @@ static unsigned int JPEGMessageHandler(j_common_ptr jpeg_info,int msg_level)
       if (image->logging)
 	{
 	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-				"[%s] JPEG Warning: \"%s\" (code=%d, parms=0x%02x,0x%02x,"
+				"[%s] JPEG Warning: \"%s\" (code=%d, "
+                                "parms=0x%02x,0x%02x,"
 				"0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x)",
 				image->filename,message,err->msg_code,
 				err->msg_parm.i[0], err->msg_parm.i[1],
@@ -247,7 +252,8 @@ static unsigned int JPEGMessageHandler(j_common_ptr jpeg_info,int msg_level)
 	{
 	  (err->format_message)(jpeg_info,message);
 	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-				"[%s] JPEG Trace: \"%s\"",image->filename,message);
+				"[%s] JPEG Trace: \"%s\"",image->filename,
+                                message);
 	}
     }
   return(True);
@@ -321,7 +327,8 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   if (image->logging)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			    "[%s] JPEG Error: \"%s\" (code=%d, parms=0x%02x,0x%02x,"
+			    "[%s] JPEG Error: \"%s\" (code=%d, "
+                            "parms=0x%02x,0x%02x,"
 			    "0x%02x,0x%02x,0x%02x,0x%02x,0x%02x,0x%02x)",
 			    image->filename,message,err->msg_code,
 			    err->msg_parm.i[0], err->msg_parm.i[1],
@@ -330,9 +337,11 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
 			    err->msg_parm.i[6], err->msg_parm.i[7]);
     }
   if (error_manager->completed)
-    ThrowException2(&image->exception,CoderWarning,(char *) message,image->filename);
+    ThrowException2(&image->exception,CoderWarning,(char *) message,
+                    image->filename);
   else
-    ThrowException2(&image->exception,CoderError,(char *) message,image->filename);
+    ThrowException2(&image->exception,CoderError,(char *) message,
+                    image->filename);
   longjmp(error_manager->error_recovery,1);
 }
 
@@ -392,6 +401,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     *image;
 
   size_t
+    header_length=0,
     length;
 
   register size_t
@@ -445,21 +455,31 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Detect EXIF and XMP profiles.
   */
-  if ((marker==1) && (length > 4) &&
+  if ((marker == 1) && (length > 4) &&
       (strncmp((char *) profile,"Exif",4) == 0))
-    FormatString(profile_name,"EXIF");
-  else if (((marker==1) && length > 5) &&
-	   (strncmp((char *) profile,"http:",5) == 0))
-    FormatString((char *) profile,"XMP");
+    {
+      FormatString(profile_name,"EXIF");
+    }
+  else if (((marker == 1) && (length > strlen(xmp_std_header)+1)) &&
+           (memcmp(profile, xmp_std_header, strlen(xmp_std_header)+1) == 0))
+    {
+      /*
+        XMP is required to fit in one 64KB chunk.  Strip off its JPEG
+         namespace header.
+      */
+      header_length=strlen(xmp_std_header)+1;
+      FormatString((char *) profile_name,"XMP");
+    }
 
   /*
     Store profile in Image.
   */
-  status=AppendImageProfile(image,profile_name,profile,length);
+  status=AppendImageProfile(image,profile_name,profile+header_length,
+                            length-header_length);
   MagickFreeMemory(profile);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
-                        profile_name,(unsigned long) length);
+                        profile_name,(unsigned long) -header_length);
 
   return (status);
 }
@@ -1327,13 +1347,17 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	{
 	  if (jpeg_info.data_precision > 8)
 	    {
+              unsigned int
+                scale_short;
+
+              scale_short=65535U/MaxValueGivenBits(jpeg_info.data_precision);
 	      for (x=0; x < (long) image->columns; x++)
 		{
-		  q->red=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
-		  q->green=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
-		  q->blue=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+		  q->red=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
+		  q->green=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
+		  q->blue=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
 		  if (jpeg_info.output_components > 3)
-		    q->opacity=ScaleShortToQuantum(16*GETJSAMPLE(*p++));
+		    q->opacity=ScaleShortToQuantum(scale_short*GETJSAMPLE(*p++));
 		  else
 		    q->opacity=OpaqueOpacity;
 		  q++;
@@ -1609,28 +1633,54 @@ static void TerminateDestination(j_compress_ptr cinfo)
     }
 }
 
-static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
+/*
+  Output generic APPN profile
+*/
+static void WriteAPPNProfile(j_compress_ptr jpeg_info,
+                              const unsigned char *profile,
+                              const size_t profile_length,
+                              const char * profile_name)
+{
+  size_t
+    j;
+  
+  int
+    marker_id;
+  
+  marker_id=JPEG_APP0+(int) MagickAtoL(profile_name+3);
+  for (j=0; j < profile_length; j+=65533L)
+    jpeg_write_marker(jpeg_info,marker_id,
+                      profile+j,(int)
+                      Min(profile_length-j,65533L));
+}
+
+/*
+  Output EXIF profile
+*/
+static void WriteEXIFProfile(j_compress_ptr jpeg_info,
+                              const unsigned char *profile,
+                              const size_t profile_length)
+{
+  size_t
+    j;
+
+  for (j=0; j < profile_length; j+=65533L)
+    jpeg_write_marker(jpeg_info,JPEG_APP0+1,
+                      profile+j,(int)
+                      Min(profile_length-j,65533L));
+}
+
+/*
+  Output ICC color profile as a APP marker.
+*/
+static void WriteICCProfile(j_compress_ptr jpeg_info,
+                            const unsigned char *color_profile,
+                            const size_t profile_length)
 {
   register long
     i,
     j;
 
-  const unsigned char
-    *color_profile;
-
-  size_t
-    profile_length;
-
-  /*
-    Retrieve color profile.
-  */
-  color_profile=GetImageProfile(image,"ICM",&profile_length);
-  if (color_profile == ( const unsigned char *) NULL)
-    return;
-
-  /*
-    Save color profile as a APP marker.
-  */
   for (i=0; i < (long) profile_length; i+=65519)
   {
     unsigned char
@@ -1652,12 +1702,14 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
     MagickFreeMemory(profile);
   }
-  if (image->logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "ICC profile: %ld bytes",(long) profile_length);
 }
 
-static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
+/*
+  Output binary Photoshop resource data using an APP marker.
+*/
+static void WriteIPTCProfile(j_compress_ptr jpeg_info,
+                            const unsigned char *iptc_profile,
+                            const size_t profile_length)
 {
   register long
     i;
@@ -1666,22 +1718,6 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
     roundup,
     tag_length;
 
-  const unsigned char
-    *iptc_profile;
-
-  size_t
-    profile_length;
-
-  /*
-    Retrieve IPTC profile from Image.
-  */
-  iptc_profile=GetImageProfile(image,"IPTC",&profile_length);
-  if (iptc_profile == ( const unsigned char *) NULL)
-    return;
-
-  /*
-    Save binary Photoshop resource data using an APP marker.
-  */
 #ifdef GET_ONLY_IPTC_DATA
   tag_length=26;
 #else
@@ -1716,10 +1752,117 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
       (length+roundup+tag_length));
     MagickFreeMemory(profile);
   }
+}
 
-  if (image->logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "IPTC profile: %ld bytes",(long) profile_length);
+/*
+  Output Adobe XMP XML profile.
+*/
+static void WriteXMPProfile(j_compress_ptr jpeg_info,
+                            const unsigned char *profile,
+                            const size_t profile_length)
+{
+  size_t
+    remaining,
+    count,
+    index,
+    header_length,
+    marker_length,
+    total_length;
+
+  header_length=strlen(xmp_std_header)+1; /* Include terminating null */
+  total_length=header_length+profile_length;
+  remaining=total_length;
+
+  marker_length=Min(remaining,JPEG_MARKER_MAX_SIZE);
+  jpeg_write_m_header(jpeg_info,XML_MARKER,marker_length);
+  count=marker_length;
+  {
+    for (index=0 ; index < header_length; index++)
+      {
+        jpeg_write_m_byte(jpeg_info,xmp_std_header[index]);
+        --remaining;
+        --count;
+      }
+  }
+
+  for (index=0; remaining > 0; --remaining)
+    {
+      if (count == 0)
+        {
+          marker_length=Min(remaining,JPEG_MARKER_MAX_SIZE);
+          jpeg_write_m_header(jpeg_info,XML_MARKER,marker_length);
+          count=marker_length;
+        }
+      jpeg_write_m_byte(jpeg_info,profile[index]);
+      index++;
+      count--;
+    }
+}
+
+/*
+  Output profiles to JPEG stream.
+*/
+static void WriteProfiles(j_compress_ptr jpeg_info,Image *image)
+{
+  const char
+    *profile_name;
+
+  const unsigned char *
+    profile;
+
+  ImageProfileIterator
+    profile_iterator;
+    
+  size_t
+    profile_length=0;
+
+  profile_iterator=AllocateImageProfileIterator(image);
+  while(NextImageProfile(profile_iterator,&profile_name,&profile,
+                         &profile_length) != MagickFail)
+    {
+      if (LocaleNCompare(profile_name,"APP",3) == 0)
+        {
+          WriteAPPNProfile(jpeg_info, profile, profile_length, profile_name);
+        }
+      else if (LocaleCompare(profile_name,"EXIF") == 0)
+        {
+          WriteEXIFProfile(jpeg_info, profile, profile_length);
+        }
+      else if ((LocaleCompare(profile_name,"ICM") == 0) ||
+               (LocaleCompare(profile_name,"ICC") == 0))
+        {
+          WriteICCProfile(jpeg_info, profile, profile_length);
+        }
+      else if ((LocaleCompare(profile_name,"IPTC") == 0) ||
+               (LocaleCompare(profile_name,"8BIM") == 0))
+        {
+          WriteIPTCProfile(jpeg_info, profile, profile_length);
+        }
+      else if (LocaleCompare(profile_name,"XMP") == 0)
+        {
+          WriteXMPProfile(jpeg_info, profile, profile_length);
+        }
+      else
+        {
+          /*
+            Skip unknown profile type
+          */
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Skipped Profile: %s, %"
+                                  MAGICK_SIZE_T_F "u bytes",
+                                  profile_name,
+                                  (MAGICK_SIZE_T) profile_length);
+          continue;
+        }
+      
+      if (image->logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Wrote Profile: %s, %"
+                              MAGICK_SIZE_T_F "u bytes",profile_name,
+                              (MAGICK_SIZE_T) profile_length);
+    }
+  DeallocateImageProfileIterator(profile_iterator);
 }
 
 static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
@@ -2067,7 +2210,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
       */
       huffman_memory=(magick_int64_t) jpeg_info.input_components*
         image->columns*image->rows*sizeof(JSAMPLE);
-      jpeg_info.optimize_coding=AcquireMagickResource(MemoryResource,huffman_memory);
+      jpeg_info.optimize_coding=AcquireMagickResource(MemoryResource,
+                                                      huffman_memory);
     }
   if (!jpeg_info.optimize_coding)
     huffman_memory=0;
@@ -2099,7 +2243,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
 #if defined(C_LOSSLESS_SUPPORTED)
       if (quality < 100)
-        ThrowException(&image->exception,CoderWarning,LosslessToLossyJPEGConversion,(char *) NULL);
+        ThrowException(&image->exception,CoderWarning,
+                       LosslessToLossyJPEGConversion,(char *) NULL);
       else
         {
           int
@@ -2174,7 +2319,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
 
   if (image->logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Starting JPEG compression");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Starting JPEG compression");
   jpeg_start_compress(&jpeg_info,True);
   if (image->logging)
     {
@@ -2228,7 +2374,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 				"Colorspace: GRAY");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-				"Sampling factors: %dx%d",jpeg_info.comp_info[0].h_samp_factor,
+				"Sampling factors: %dx%d",
+                                jpeg_info.comp_info[0].h_samp_factor,
 				jpeg_info.comp_info[0].v_samp_factor);
 	}
       else if (IsRGBCompatibleColorspace(image->colorspace))
@@ -2285,45 +2432,12 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (long) strlen(attribute->value); i+=65533L)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(int) Min(strlen(attribute->value+i),65533L));
+#if 0
   WriteICCProfile(&jpeg_info,image);
   WriteIPTCProfile(&jpeg_info,image);
-  {
-    const char
-      *profile_name;
-    
-    size_t
-      profile_length;
-    
-    const unsigned char *
-      profile_info;
-    
-    ImageProfileIterator
-      profile_iterator;
-
-    profile_iterator=AllocateImageProfileIterator(image);
-    while(NextImageProfile(profile_iterator,&profile_name,&profile_info,
-                           &profile_length) != MagickFail)
-      {
-        register long
-          j;
-
-        if (LocaleNCompare(profile_name,"APP",3) != 0 &&
-            LocaleNCompare(profile_name,"Exif",4) != 0)
-          continue;
-        x=1;
-        if (LocaleNCompare(profile_name,"APP",3) == 0)
-          x=MagickAtoL(profile_name+3);
-        if (image->logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Profile: %s, %lu bytes",profile_name,
-                                (unsigned long) profile_length);
-        for (j=0; j < (long) profile_length; j+=65533L)
-          jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
-                            profile_info+j,(int)
-                            Min(profile_length-j,65533L));
-      }
-    DeallocateImageProfileIterator(profile_iterator);
-  }
+  WriteXMPProfile(&jpeg_info,image);
+#endif
+  WriteProfiles(&jpeg_info,image);
   /*
     Convert MIFF to JPEG raster pixels.
   */
@@ -2338,6 +2452,11 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {
+      unsigned int
+        scale_short;
+
+      scale_short=65535U/MaxValueGivenBits(jpeg_info.data_precision);
+
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
         {
 	  if (image->logging)
@@ -2346,7 +2465,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 				  jpeg_info.data_precision);
           for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                                   &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               q=jpeg_pixels;
@@ -2354,7 +2474,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 {
                   for (x=0; x < (long) image->columns; x++)
                     {
-                      *q++=(JSAMPLE) (ScaleQuantumToShort(GetGraySample(p))/16U);
+                      *q++=(JSAMPLE) (ScaleQuantumToShort(GetGraySample(p))/
+                                      scale_short);
                       p++;
                     }
                 }
@@ -2362,7 +2483,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 {
                   for (x=0; x < (long) image->columns; x++)
                     {
-                      *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16U);
+                      *q++=(JSAMPLE)
+                        (ScaleQuantumToShort(PixelIntensityToQuantum(p))/scale_short);
                       p++;
                     }
                 }
@@ -2380,11 +2502,13 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
           {
 	    if (image->logging)
 	      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-				    "Writing %d bit JCS_RGB or JCS_YCbCr samples",
+				    "Writing %d bit JCS_RGB or "
+                                    "JCS_YCbCr samples",
 				    jpeg_info.data_precision);
             for (y=0; y < (long) image->rows; y++)
               {
-                p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                                     &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
                 q=jpeg_pixels;
@@ -2411,7 +2535,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 				    jpeg_info.data_precision);
             for (y=0; y < (long) image->rows; y++)
               {
-                p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                                     &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
                 q=jpeg_pixels;
@@ -2460,7 +2585,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
               {
                 for (x=0; x < (long) image->columns; x++)
                   {
-                    *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                    *q++=(JSAMPLE)
+                      ScaleQuantumToChar(PixelIntensityToQuantum(p));
                     p++;
                   }
               }
@@ -2482,7 +2608,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 				  jpeg_info.data_precision);
           for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                                   &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               q=jpeg_pixels;
@@ -2509,7 +2636,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
 				  jpeg_info.data_precision);
           for (y=0; y < (long) image->rows; y++)
             {
-              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                                   &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               q=jpeg_pixels;
@@ -2533,7 +2661,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
         }
   if (image->logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Finishing JPEG compression");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Finishing JPEG compression");
   jpeg_finish_compress(&jpeg_info);
   /*
     Free memory.

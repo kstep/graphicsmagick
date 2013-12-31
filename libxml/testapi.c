@@ -17832,7 +17832,7 @@ test_xmlRelaxNGValidatePushCData(void) {
     int n_ctxt;
     xmlChar * data; /* some character data read */
     int n_data;
-    int len; /* the lenght of the data */
+    int len; /* the length of the data */
     int n_len;
 
     for (n_ctxt = 0;n_ctxt < gen_nb_xmlRelaxNGValidCtxtPtr;n_ctxt++) {
@@ -27094,7 +27094,7 @@ test_xmlValidatePushCData(void) {
     int n_ctxt;
     xmlChar * data; /* some character data read */
     int n_data;
-    int len; /* the lenght of the data */
+    int len; /* the length of the data */
     int n_len;
 
     for (n_ctxt = 0;n_ctxt < gen_nb_xmlValidCtxtPtr;n_ctxt++) {
@@ -33167,7 +33167,7 @@ test_xmlExpGetLanguage(void) {
     int n_exp;
     xmlChar ** langList; /* where to store the tokens */
     int n_langList;
-    int len; /* the allocated lenght of @list */
+    int len; /* the allocated length of @list */
     int n_len;
 
     for (n_ctxt = 0;n_ctxt < gen_nb_xmlExpCtxtPtr;n_ctxt++) {
@@ -33222,7 +33222,7 @@ test_xmlExpGetStart(void) {
     int n_exp;
     xmlChar ** tokList; /* where to store the tokens */
     int n_tokList;
-    int len; /* the allocated lenght of @list */
+    int len; /* the allocated length of @list */
     int n_len;
 
     for (n_ctxt = 0;n_ctxt < gen_nb_xmlExpCtxtPtr;n_ctxt++) {
@@ -46852,6 +46852,54 @@ test_xmlXPathNewContext(void) {
 
 
 static int
+test_xmlXPathNodeEval(void) {
+    int test_ret = 0;
+
+#if defined(LIBXML_XPATH_ENABLED)
+    int mem_base;
+    xmlXPathObjectPtr ret_val;
+    xmlNodePtr node; /* the node to to use as the context node */
+    int n_node;
+    xmlChar * str; /* the XPath expression */
+    int n_str;
+    xmlXPathContextPtr ctx; /* the XPath context */
+    int n_ctx;
+
+    for (n_node = 0;n_node < gen_nb_xmlNodePtr;n_node++) {
+    for (n_str = 0;n_str < gen_nb_const_xmlChar_ptr;n_str++) {
+    for (n_ctx = 0;n_ctx < gen_nb_xmlXPathContextPtr;n_ctx++) {
+        mem_base = xmlMemBlocks();
+        node = gen_xmlNodePtr(n_node, 0);
+        str = gen_const_xmlChar_ptr(n_str, 1);
+        ctx = gen_xmlXPathContextPtr(n_ctx, 2);
+
+        ret_val = xmlXPathNodeEval(node, (const xmlChar *)str, ctx);
+        desret_xmlXPathObjectPtr(ret_val);
+        call_tests++;
+        des_xmlNodePtr(n_node, node, 0);
+        des_const_xmlChar_ptr(n_str, (const xmlChar *)str, 1);
+        des_xmlXPathContextPtr(n_ctx, ctx, 2);
+        xmlResetLastError();
+        if (mem_base != xmlMemBlocks()) {
+            printf("Leak of %d blocks found in xmlXPathNodeEval",
+	           xmlMemBlocks() - mem_base);
+	    test_ret++;
+            printf(" %d", n_node);
+            printf(" %d", n_str);
+            printf(" %d", n_ctx);
+            printf("\n");
+        }
+    }
+    }
+    }
+    function_tests++;
+#endif
+
+    return(test_ret);
+}
+
+
+static int
 test_xmlXPathNodeSetCreate(void) {
     int test_ret = 0;
 
@@ -46952,11 +47000,52 @@ test_xmlXPathOrderDocElems(void) {
     return(test_ret);
 }
 
+
+static int
+test_xmlXPathSetContextNode(void) {
+    int test_ret = 0;
+
+#if defined(LIBXML_XPATH_ENABLED)
+    int mem_base;
+    int ret_val;
+    xmlNodePtr node; /* the node to to use as the context node */
+    int n_node;
+    xmlXPathContextPtr ctx; /* the XPath context */
+    int n_ctx;
+
+    for (n_node = 0;n_node < gen_nb_xmlNodePtr;n_node++) {
+    for (n_ctx = 0;n_ctx < gen_nb_xmlXPathContextPtr;n_ctx++) {
+        mem_base = xmlMemBlocks();
+        node = gen_xmlNodePtr(n_node, 0);
+        ctx = gen_xmlXPathContextPtr(n_ctx, 1);
+
+        ret_val = xmlXPathSetContextNode(node, ctx);
+        desret_int(ret_val);
+        call_tests++;
+        des_xmlNodePtr(n_node, node, 0);
+        des_xmlXPathContextPtr(n_ctx, ctx, 1);
+        xmlResetLastError();
+        if (mem_base != xmlMemBlocks()) {
+            printf("Leak of %d blocks found in xmlXPathSetContextNode",
+	           xmlMemBlocks() - mem_base);
+	    test_ret++;
+            printf(" %d", n_node);
+            printf(" %d", n_ctx);
+            printf("\n");
+        }
+    }
+    }
+    function_tests++;
+#endif
+
+    return(test_ret);
+}
+
 static int
 test_xpath(void) {
     int test_ret = 0;
 
-    if (quiet == 0) printf("Testing xpath : 30 of 38 functions ...\n");
+    if (quiet == 0) printf("Testing xpath : 32 of 40 functions ...\n");
     test_ret += test_xmlXPathCastBooleanToNumber();
     test_ret += test_xmlXPathCastBooleanToString();
     test_ret += test_xmlXPathCastNodeSetToBoolean();
@@ -46987,9 +47076,11 @@ test_xpath(void) {
     test_ret += test_xmlXPathIsInf();
     test_ret += test_xmlXPathIsNaN();
     test_ret += test_xmlXPathNewContext();
+    test_ret += test_xmlXPathNodeEval();
     test_ret += test_xmlXPathNodeSetCreate();
     test_ret += test_xmlXPathObjectCopy();
     test_ret += test_xmlXPathOrderDocElems();
+    test_ret += test_xmlXPathSetContextNode();
 
     if (test_ret != 0)
 	printf("Module xpath: %d errors\n", test_ret);

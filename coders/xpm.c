@@ -347,6 +347,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickFreeMemory(textlist);
       ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
+  image->depth=GetImageDepth(image,&image->exception);
+  image->depth=NormalizeDepthToOctet(image->depth);
   j=0;
   key[width]='\0';
   if (!image_info->ping)
@@ -858,6 +860,11 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
+  /*
+    Limit color resolution to what XPM can traditionally handle
+  */
+  if (image->depth > 16)
+    image->depth=16;
   transparent=False;
   if (image->storage_class == PseudoClass)
     {

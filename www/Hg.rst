@@ -22,7 +22,7 @@ GraphicsMagick Mercurial
 
 .. _Mercurial : http://mercurial.selenic.com/
 .. _TortoiseHg : http://tortoisehg.bitbucket.org/
-.. _`GraphicsMagick repository at SourceForge` : http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/
+.. _`GraphicsMagick repository at SourceForge` : http://sourceforge.net/p/graphicsmagick/code/
 
 .. contents::
 
@@ -51,9 +51,7 @@ Web Access
 
 The `GraphicsMagick repository at SourceForge`_ web interface is
 available which may be used to interactively view the latest versions
-of files, or the changes to files, using your web browser.  Due to the
-way that Mercurial_ works, you may also clone a new repository from
-this interface via the same URL.
+of files, or the changes to files, using your web browser.
 
 Cloning the Mercurial Repository
 ==================================
@@ -61,7 +59,7 @@ Cloning the Mercurial Repository
 To get the tree and place it in a sub-directory of your current working
 directory, issue the command::
 
-  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
+  hg clone http://hg.code.sf.net/p/graphicsmagick/code GM
 
 Selecting a version of the code
 ========================================
@@ -158,17 +156,18 @@ The repository hierarchy is as follows:
 3. Stable
 
   The stable repository is available via http at
-  "http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/".
-  Any changes in the unstable development repository are pushed to
-  the stable repository (by me) once any necessary adjustments have
-  been made and the software test suite has passed.
+  "http://hg.code.sf.net/p/graphicsmagick/code".  Any changes in the
+  unstable development repository are pushed to the stable repository
+  (by the developer responsible for this role) once any necessary
+  adjustments have been made, documentation files have been generated,
+  and the software test suite has passed on at least one machine.
 
 To build your local development repository (as quickly as possible),
 you may use these steps:
 
 1. Clone the stable respository at SourceForge::
 
-     hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
+     hg clone http://hg.code.sf.net/p/graphicsmagick/code GM
 
 2. Adjust your local repository path default to use the unstable repository.
 
@@ -195,7 +194,7 @@ but ssh also provides its own way to enable compression on a
 site-by-site basis (e.g. via .ssh/config).  For example an entry in
 .ssh/config will enable use of compression::
 
-  Host graphicsmagick.hg.sourceforge.net
+  Host hg.code.sf.net
     Compression yes
 
 Email Notifications
@@ -208,12 +207,33 @@ list at SourceForge whenever a change is submitted to the development
 (unstable) repository.  Subscribe to this list if you would like to be
 notified by email of changes when they occur.
 
+Rsync The Repository
+====================
+
+.. _rsync : http://rsync.samba.org/
+
+It is possible to use the rsync_ program to make a copy of the
+GraphicsMagick Mercurial repository.  Using rsync_ might be faster for
+the initial repository checkout, but the copied repository might not
+be coherent if it was updated while the rsync_ was in progress.  If
+there is any problem, just execute the same rsync_ command again
+without deleting any files and the remaining changes (updated files)
+will be transferred.  To use rsync_ to copy the repository do::
+
+  mkdir -p GM
+  rsync -avPSz hg.code.sf.net::p/graphicsmagick/code/ GM/
+
+Rsync will not checkout a working set of files.  To accomplish that
+do::
+
+  cd GM
+  hg update
+
 Mercurial Topics
 ====================
 
-`Merge Program <http://mercurial.selenic.com/wiki/MergeProgram>`_
-`Merge Tool Configuration <http://mercurial.selenic.com/wiki/MergeToolConfiguration>`_
-`Keep "My" or "Their" files when doing a merge <http://mercurial.selenic.com/wiki/TipsAndTricks#mergemineortheir>`_
+* `Merge Tool Configuration <http://mercurial.selenic.com/wiki/MergeToolConfiguration>`_
+* `Keep "My" or "Their" files when doing a merge <http://mercurial.selenic.com/wiki/TipsAndTricks#mergemineortheir>`_
 
 
 --------------------------------------------------------------------------

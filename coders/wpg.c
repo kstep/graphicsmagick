@@ -832,11 +832,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     unsigned int NumOfEntries;
   } WPGColorMapRec;
 
+  /*
   typedef struct {
     unsigned long PS_unknown1;
     unsigned int PS_unknown2;
     unsigned int PS_unknown3;
-  } WPGPSl1Record;  
+  } WPGPSl1Record;
+  */
 
   Image
     *image,

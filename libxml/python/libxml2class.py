@@ -133,6 +133,7 @@ def catalogConvert():
 
 def catalogDump(out):
     """Dump all the global catalog content to the given file. """
+    if out is not None: out.flush()
     libxml2mod.xmlCatalogDump(out)
 
 def catalogGetPublic(pubID):
@@ -292,6 +293,7 @@ def boolToText(boolval):
 
 def debugDumpString(output, str):
     """Dumps informations about the string, shorten it if necessary """
+    if output is not None: output.flush()
     libxml2mod.xmlDebugDumpString(output, str)
 
 def shellPrintXPathError(errorType, arg):
@@ -309,8 +311,7 @@ def dictCleanup():
 
 def initializeDict():
     """Do the dictionary mutex initialization. this function is
-      not thread safe, initialization should preferably be done
-       once at startup """
+       deprecated """
     ret = libxml2mod.xmlInitializeDict()
     return ret
 
@@ -1115,12 +1116,6 @@ def normalizeWindowsPath(path):
 def parserGetDirectory(filename):
     """lookup the directory for that file """
     ret = libxml2mod.xmlParserGetDirectory(filename)
-    return ret
-
-def popInputCallbacks():
-    """Clear the top input callback from the input stack. this
-       includes the compiled-in I/O. """
-    ret = libxml2mod.xmlPopInputCallbacks()
     return ret
 
 def registerDefaultInputCallbacks():
@@ -2233,13 +2228,12 @@ def valuePop(ctxt):
 
 class xmlNode(xmlCore):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlNode needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlNode got a wrong wrapper object type')
         self._o = _obj
         xmlCore.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlNode (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlNode (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     # accessors for xmlNode
     def ns(self):
@@ -2938,6 +2932,16 @@ class xmlNode(xmlCore):
         ret = libxml2mod.xmlXPathCmpNodes(self._o, node2__o)
         return ret
 
+    def xpathNodeEval(self, str, ctx):
+        """Evaluate the XPath Location Path in the given context. The
+          node 'node' is set as the context node. The context node is
+           not restored. """
+        if ctx is None: ctx__o = None
+        else: ctx__o = ctx._o
+        ret = libxml2mod.xmlXPathNodeEval(self._o, str, ctx__o)
+        if ret is None:raise xpathError('xmlXPathNodeEval() failed')
+        return xpathObjectRet(ret)
+
     #
     # xmlNode functions from module xpathInternals
     #
@@ -3168,13 +3172,12 @@ class xmlNode(xmlCore):
 
 class xmlDoc(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlDoc needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlDoc got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlDoc (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlDoc (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlDoc functions from module HTMLparser
@@ -4770,13 +4773,12 @@ class parserCtxt(parserCtxtCore):
 
 class xmlAttr(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlAttr needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlAttr got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlAttr (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlAttr (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlAttr functions from module debugXML
@@ -4849,13 +4851,12 @@ class xmlAttr(xmlNode):
 
 class xmlAttribute(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlAttribute needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlAttribute got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlAttribute (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlAttribute (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
 class catalog:
     def __init__(self, _obj=None):
@@ -4919,13 +4920,12 @@ class catalog:
 
 class xmlDtd(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlDtd needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlDtd got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlDtd (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlDtd (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlDtd functions from module debugXML
@@ -4986,23 +4986,21 @@ class xmlDtd(xmlNode):
 
 class xmlElement(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlElement needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlElement got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlElement (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlElement (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
 class xmlEntity(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlEntity needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlEntity got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlEntity (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlEntity (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlEntity functions from module parserInternals
@@ -5069,13 +5067,12 @@ class Error:
 
 class xmlNs(xmlNode):
     def __init__(self, _obj=None):
-        if type(_obj).__name__ != 'PyCObject':
-            raise TypeError, 'xmlNs needs a PyCObject argument'
+        if checkWrapper(_obj) != 0:            raise TypeError('xmlNs got a wrong wrapper object type')
         self._o = _obj
         xmlNode.__init__(self, _obj=_obj)
 
     def __repr__(self):
-        return "<xmlNs (%s) object at 0x%x>" % (self.name, long(pos_id (self)))
+        return "<xmlNs (%s) object at 0x%x>" % (self.name, int(pos_id (self)))
 
     #
     # xmlNs functions from module tree
@@ -6526,6 +6523,11 @@ class xpathContext:
         ret = libxml2mod.xmlRegisterXPathFunction(self._o, name, ns_uri, f)
         return ret
 
+    def xpathRegisterVariable(self, name, ns_uri, value):
+        """Register a variable with the XPath context """
+        ret = libxml2mod.xmlXPathRegisterVariable(self._o, name, ns_uri, value)
+        return ret
+
     #
     # xpathContext functions from module xpath
     #
@@ -7432,6 +7434,7 @@ XML_WAR_ENTITY_REDEFINED = 107
 XML_ERR_UNKNOWN_VERSION = 108
 XML_ERR_VERSION_MISMATCH = 109
 XML_ERR_NAME_TOO_LONG = 110
+XML_ERR_USER_STOP = 111
 XML_NS_ERR_XML_NAMESPACE = 200
 XML_NS_ERR_UNDEFINED_NAMESPACE = 201
 XML_NS_ERR_QNAME = 202

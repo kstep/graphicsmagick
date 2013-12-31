@@ -2,9 +2,9 @@
 /*                                                                         */
 /*  pshalgo.c                                                              */
 /*                                                                         */
-/*    PostScript hinting algorithm 3 (body).                               */
+/*    PostScript hinting algorithm (body).                                 */
 /*                                                                         */
-/*  Copyright 2001, 2002, 2003 by                                          */
+/*  Copyright 2001-2010, 2012, 2013 by                                     */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used        */
@@ -19,6 +19,7 @@
 #include <ft2build.h>
 #include FT_INTERNAL_OBJECTS_H
 #include FT_INTERNAL_DEBUG_H
+#include FT_INTERNAL_CALC_H
 #include "pshalgo.h"
 
 #include "pshnterr.h"
@@ -35,8 +36,11 @@
 #endif
 
 
-#define  COMPUTE_INFLEXS  /* compute inflection points to optimize "S" and others */
-#define  STRONGER         /* slightly increase the contrast of smooth hinting */
+#define  COMPUTE_INFLEXS  /* compute inflection points to optimize `S' */
+                          /* and similar glyphs                        */
+#define  STRONGER         /* slightly increase the contrast of smooth  */
+                          /* hinting                                   */
+
 
   /*************************************************************************/
   /*************************************************************************/
@@ -46,13 +50,13 @@
   /*************************************************************************/
   /*************************************************************************/
 
-  /* return true iff two stem hints overlap */
+  /* return true if two stem hints overlap */
   static FT_Int
   psh_hint_overlap( PSH_Hint  hint1,
                     PSH_Hint  hint2 )
   {
-    return ( hint1->org_pos + hint1->org_len >= hint2->org_pos &&
-             hint2->org_pos + hint2->org_len >= hint1->org_pos );
+    return hint1->org_pos + hint1->org_len >= hint2->org_pos &&
+           hint2->org_pos + hint2->org_len >= hint1->org_pos;
   }
 
 
@@ -89,7 +93,7 @@
   }
 
 
-  /* internal function used to record a new hint */
+  /* internal function to record a new hint */
   static void
   psh_hint_table_record( PSH_Hint_Table  table,
                          FT_UInt         idx )
@@ -99,7 +103,7 @@
 
     if ( idx >= table->max_hints )
     {
-      FT_ERROR(( "psh_hint_table_record: invalid hint index %d\n", idx ));
+      FT_TRACE0(( "psh_hint_table_record: invalid hint index %d\n", idx ));
       return;
     }
 
@@ -109,8 +113,8 @@
 
     psh_hint_activate( hint );
 
-    /* now scan the current active hint set in order to determine */
-    /* if we are overlapping with another segment                 */
+    /* now scan the current active hint set to check */
+    /* whether `hint' overlaps with another hint     */
     {
       PSH_Hint*  sorted = table->sort_global;
       FT_UInt    count  = table->num_hints;
@@ -133,7 +137,7 @@
     if ( table->num_hints < table->max_hints )
       table->sort_global[table->num_hints++] = hint;
     else
-      FT_ERROR(( "psh_hint_table_record: too many sorted hints!  BUG!\n" ));
+      FT_TRACE0(( "psh_hint_table_record: too many sorted hints!  BUG!\n" ));
   }
 
 
@@ -172,11 +176,13 @@
                        PS_Mask_Table   counter_masks,
                        FT_Memory       memory )
   {
-    FT_UInt   count = hints->num_hints;
+    FT_UInt   count;
     FT_Error  error;
 
     FT_UNUSED( counter_masks );
 
+
+    count = hints->num_hints;
 
     /* allocate our tables */
     if ( FT_NEW_ARRAY( table->sort,  2 * count     ) ||
@@ -190,7 +196,7 @@
     table->num_zones   = 0;
     table->zone        = 0;
 
-    /* now, initialize the "hints" array */
+    /* initialize the `table->hints' array */
     {
       PSH_Hint  write = table->hints;
       PS_Hint   read  = hints->hints;
@@ -204,30 +210,31 @@
       }
     }
 
-    /* we now need to determine the initial "parent" stems; first  */
+    /* we now need to determine the initial `parent' stems; first  */
     /* activate the hints that are given by the initial hint masks */
     if ( hint_masks )
     {
-      FT_UInt  Count = hint_masks->num_masks;
-      PS_Mask  Mask  = hint_masks->masks;
+      PS_Mask  mask = hint_masks->masks;
 
 
+      count             = hint_masks->num_masks;
       table->hint_masks = hint_masks;
 
-      for ( ; Count > 0; Count--, Mask++ )
-        psh_hint_table_record_mask( table, Mask );
+      for ( ; count > 0; count--, mask++ )
+        psh_hint_table_record_mask( table, mask );
     }
 
-    /* now, do a linear parse in case some hints were left alone */
+    /* finally, do a linear parse in case some hints were left alone */
     if ( table->num_hints != table->max_hints )
     {
-      FT_UInt  Index, Count;
+      FT_UInt  idx;
 
 
-      FT_ERROR(( "psh_hint_table_init: missing/incorrect hint masks!\n" ));
-      Count = table->max_hints;
-      for ( Index = 0; Index < Count; Index++ )
-        psh_hint_table_record( table, Index );
+      FT_TRACE0(( "psh_hint_table_init: missing/incorrect hint masks\n" ));
+
+      count = table->max_hints;
+      for ( idx = 0; idx < count; idx++ )
+        psh_hint_table_record( table, idx );
     }
 
   Exit:
@@ -275,8 +282,8 @@
           {
             hint2 = sort[0];
             if ( psh_hint_overlap( hint, hint2 ) )
-              FT_ERROR(( "psh_hint_table_activate_mask:"
-                         " found overlapping hints\n" ))
+              FT_TRACE0(( "psh_hint_table_activate_mask:"
+                          " found overlapping hints\n" ))
           }
 #else
           count2 = 0;
@@ -288,8 +295,8 @@
             if ( count < table->max_hints )
               table->sort[count++] = hint;
             else
-              FT_ERROR(( "psh_hint_tableactivate_mask:"
-                         " too many active hints\n" ));
+              FT_TRACE0(( "psh_hint_tableactivate_mask:"
+                          " too many active hints\n" ));
           }
         }
       }
@@ -375,11 +382,11 @@
           len += delta;
       }
       else
-        len = ( len + 32 ) & -64;
+        len = FT_PIX_ROUND( len );
     }
 
     if ( do_snapping )
-      len = ( len + 32 ) & -64;
+      len = FT_PIX_ROUND( len );
 
     return  len;
   }
@@ -394,13 +401,13 @@
                    FT_Fixed        delta,
                    FT_Int          dimension )
   {
-    PSH_Hint  hint;
-    FT_UInt   count;
+    FT_UInt  count;
 
 
     for ( count = 0; count < table->max_hints; count++ )
     {
-      hint = table->hints + count;
+      PSH_Hint  hint = table->hints + count;
+
 
       hint->cur_pos = FT_MulFix( hint->org_pos, scale ) + delta;
       hint->cur_len = FT_MulFix( hint->org_len, scale );
@@ -417,11 +424,11 @@
   psh_hint_snap_stem_side_delta( FT_Fixed  pos,
                                  FT_Fixed  len )
   {
-    FT_Fixed  delta1 = ( ( pos + 32 ) & -64 ) - pos;
-    FT_Fixed  delta2 = ( ( pos + len + 32 ) & -64  ) - pos - len;
+    FT_Fixed  delta1 = FT_PIX_ROUND( pos ) - pos;
+    FT_Fixed  delta2 = FT_PIX_ROUND( pos + len ) - pos - len;
 
 
-    if ( ABS( delta1 ) <= ABS( delta2 ) )
+    if ( FT_ABS( delta1 ) <= FT_ABS( delta2 ) )
       return delta1;
     else
       return delta2;
@@ -511,6 +518,9 @@
             if ( !psh_hint_is_fitted( parent ) )
               psh_hint_align( parent, globals, dimension, glyph );
 
+            /* keep original relation between hints, this is, use the */
+            /* scaled distance between the centers of the hints to    */
+            /* compute the new position                               */
             par_org_center = parent->org_pos + ( parent->org_len >> 1 );
             par_cur_center = parent->cur_pos + ( parent->cur_len >> 1 );
             cur_org_center = hint->org_pos   + ( hint->org_len   >> 1 );
@@ -533,13 +543,58 @@
               /* the stem is less than one pixel; we will center it
                * around the nearest pixel center
                */
-#if 1
-              pos = ( pos + ( len >> 1 ) ) & -64;
-#else
-             /* this seems to be a bug! */
-              pos = ( pos + ( ( len >> 1 ) & -64 ) );
-#endif
-              len = 64;
+              if ( len >= 32 )
+              {
+                /* This is a special case where we also widen the stem
+                 * and align it to the pixel grid.
+                 *
+                 *   stem_center          = pos + (len/2)
+                 *   nearest_pixel_center = FT_ROUND(stem_center-32)+32
+                 *   new_pos              = nearest_pixel_center-32
+                 *                        = FT_ROUND(stem_center-32)
+                 *                        = FT_FLOOR(stem_center-32+32)
+                 *                        = FT_FLOOR(stem_center)
+                 *   new_len              = 64
+                 */
+                pos = FT_PIX_FLOOR( pos + ( len >> 1 ) );
+                len = 64;
+              }
+              else if ( len > 0 )
+              {
+                /* This is a very small stem; we simply align it to the
+                 * pixel grid, trying to find the minimum displacement.
+                 *
+                 * left               = pos
+                 * right              = pos + len
+                 * left_nearest_edge  = ROUND(pos)
+                 * right_nearest_edge = ROUND(right)
+                 *
+                 * if ( ABS(left_nearest_edge - left) <=
+                 *      ABS(right_nearest_edge - right) )
+                 *    new_pos = left
+                 * else
+                 *    new_pos = right
+                 */
+                FT_Pos  left_nearest  = FT_PIX_ROUND( pos );
+                FT_Pos  right_nearest = FT_PIX_ROUND( pos + len );
+                FT_Pos  left_disp     = left_nearest - pos;
+                FT_Pos  right_disp    = right_nearest - ( pos + len );
+
+
+                if ( left_disp < 0 )
+                  left_disp = -left_disp;
+                if ( right_disp < 0 )
+                  right_disp = -right_disp;
+                if ( left_disp <= right_disp )
+                  pos = left_nearest;
+                else
+                  pos = right_nearest;
+              }
+              else
+              {
+                /* this is a ghost stem; we simply round it */
+                pos = FT_PIX_ROUND( pos );
+              }
             }
             else
             {
@@ -562,7 +617,7 @@
         if ( len < 64 )
           len = 64;
         else
-          len = ( len + 32 ) & -64;
+          len = FT_PIX_ROUND( len );
 
         switch ( align.align )
         {
@@ -583,9 +638,9 @@
           default:
             hint->cur_len = len;
             if ( len & 64 )
-              pos = ( ( pos + ( len >> 1 ) ) & -64 ) + 32;
+              pos = FT_PIX_FLOOR( pos + ( len >> 1 ) ) + 32;
             else
-              pos = ( pos + ( len >> 1 ) + 32 ) & -64;
+              pos = FT_PIX_ROUND( pos + ( len >> 1 ) );
 
             hint->cur_pos = pos - ( len >> 1 );
             hint->cur_len = len;
@@ -739,13 +794,13 @@
 
             if ( ( len / 64 ) & 1 )
             {
-              delta_a = ( center & -64 ) + 32 - center;
-              delta_b = ( ( center + 32 ) & - 64 ) - center;
+              delta_a = FT_PIX_FLOOR( center ) + 32 - center;
+              delta_b = FT_PIX_ROUND( center ) - center;
             }
             else
             {
-              delta_a = ( ( center + 32 ) & - 64 ) - center;
-              delta_b = ( center & -64 ) + 32 - center;
+              delta_a = FT_PIX_ROUND( center ) - center;
+              delta_b = FT_PIX_FLOOR( center ) + 32 - center;
             }
 
             /* We choose between B) and C) above based on the amount
@@ -762,8 +817,7 @@
               FT_Fixed  side_delta = psh_hint_snap_stem_side_delta ( pos,
                                                                      len );
 
-
-              if ( ABS( side_delta ) < ABS( delta_b ) )
+              if ( FT_ABS( side_delta ) < FT_ABS( delta_b ) )
                 pos += side_delta;
               else
                 pos += delta_b;
@@ -844,7 +898,7 @@
 
 #ifdef DEBUG_ZONES
 
-#include <stdio.h>
+#include FT_CONFIG_STANDARD_LIBRARY_H
 
   static void
   psh_print_zone( PSH_Zone  zone )
@@ -871,6 +925,104 @@
   /*************************************************************************/
   /*************************************************************************/
 
+#if 1
+
+#define  psh_corner_is_flat      ft_corner_is_flat
+#define  psh_corner_orientation  ft_corner_orientation
+
+#else
+
+  FT_LOCAL_DEF( FT_Int )
+  psh_corner_is_flat( FT_Pos  x_in,
+                      FT_Pos  y_in,
+                      FT_Pos  x_out,
+                      FT_Pos  y_out )
+  {
+    FT_Pos  ax = x_in;
+    FT_Pos  ay = y_in;
+
+    FT_Pos  d_in, d_out, d_corner;
+
+
+    if ( ax < 0 )
+      ax = -ax;
+    if ( ay < 0 )
+      ay = -ay;
+    d_in = ax + ay;
+
+    ax = x_out;
+    if ( ax < 0 )
+      ax = -ax;
+    ay = y_out;
+    if ( ay < 0 )
+      ay = -ay;
+    d_out = ax + ay;
+
+    ax = x_out + x_in;
+    if ( ax < 0 )
+      ax = -ax;
+    ay = y_out + y_in;
+    if ( ay < 0 )
+      ay = -ay;
+    d_corner = ax + ay;
+
+    return ( d_in + d_out - d_corner ) < ( d_corner >> 4 );
+  }
+
+  static FT_Int
+  psh_corner_orientation( FT_Pos  in_x,
+                          FT_Pos  in_y,
+                          FT_Pos  out_x,
+                          FT_Pos  out_y )
+  {
+    FT_Int  result;
+
+
+    /* deal with the trivial cases quickly */
+    if ( in_y == 0 )
+    {
+      if ( in_x >= 0 )
+        result = out_y;
+      else
+        result = -out_y;
+    }
+    else if ( in_x == 0 )
+    {
+      if ( in_y >= 0 )
+        result = -out_x;
+      else
+        result = out_x;
+    }
+    else if ( out_y == 0 )
+    {
+      if ( out_x >= 0 )
+        result = in_y;
+      else
+        result = -in_y;
+    }
+    else if ( out_x == 0 )
+    {
+      if ( out_y >= 0 )
+        result = -in_x;
+      else
+        result =  in_x;
+    }
+    else /* general case */
+    {
+      long long  delta = (long long)in_x * out_y - (long long)in_y * out_x;
+
+      if ( delta == 0 )
+        result = 0;
+      else
+        result = 1 - 2 * ( delta < 0 );
+    }
+
+    return result;
+  }
+
+#endif /* !1 */
+
+
 #ifdef COMPUTE_INFLEXS
 
   /* compute all inflex points in a given glyph */
@@ -883,8 +1035,8 @@
     for ( n = 0; n < glyph->num_contours; n++ )
     {
       PSH_Point  first, start, end, before, after;
-      FT_Angle   angle_in, angle_seg, angle_out;
-      FT_Angle   diff_in, diff_out;
+      FT_Pos     in_x, in_y, out_x, out_y;
+      FT_Int     orient_prev, orient_cur;
       FT_Int     finished = 0;
 
 
@@ -902,9 +1054,10 @@
         if ( end == first )
           goto Skip;
 
-      } while ( PSH_POINT_EQUAL_ORG( end, first ) );
+        in_x = end->org_u - start->org_u;
+        in_y = end->org_v - start->org_v;
 
-      angle_seg = PSH_POINT_ANGLE( start, end );
+      } while ( in_x == 0 && in_y == 0 );
 
       /* extend the segment start whenever possible */
       before = start;
@@ -917,14 +1070,18 @@
           if ( before == first )
             goto Skip;
 
-        } while ( PSH_POINT_EQUAL_ORG( before, start ) );
+          out_x = start->org_u - before->org_u;
+          out_y = start->org_v - before->org_v;
 
-        angle_in = PSH_POINT_ANGLE( before, start );
+        } while ( out_x == 0 && out_y == 0 );
 
-      } while ( angle_in == angle_seg );
+        orient_prev = psh_corner_orientation( in_x, in_y, out_x, out_y );
 
-      first   = start;
-      diff_in = FT_Angle_Diff( angle_in, angle_seg );
+      } while ( orient_prev == 0 );
+
+      first = start;
+      in_x  = out_x;
+      in_y  = out_y;
 
       /* now, process all segments in the contour */
       do
@@ -940,19 +1097,17 @@
             if ( after == first )
               finished = 1;
 
-          } while ( PSH_POINT_EQUAL_ORG( end, after ) );
+            out_x = after->org_u - end->org_u;
+            out_y = after->org_v - end->org_v;
 
-          angle_out = PSH_POINT_ANGLE( end, after );
+          } while ( out_x == 0 && out_y == 0 );
 
-        } while ( angle_out == angle_seg );
+          orient_cur = psh_corner_orientation( in_x, in_y, out_x, out_y );
 
-        diff_out = FT_Angle_Diff( angle_seg, angle_out );
+        } while ( orient_cur == 0 );
 
-        if ( ( diff_in ^ diff_out ) < 0 )
+        if ( ( orient_cur ^ orient_prev ) < 0 )
         {
-          /* diff_in and diff_out have different signs, we have */
-          /* inflection points here...                          */
-
           do
           {
             psh_point_set_inflex( start );
@@ -963,10 +1118,11 @@
           psh_point_set_inflex( start );
         }
 
-        start     = end;
-        end       = after;
-        angle_seg = angle_out;
-        diff_in   = diff_out;
+        start       = end;
+        end         = after;
+        orient_prev = orient_cur;
+        in_x        = out_x;
+        in_y        = out_y;
 
       } while ( !finished );
 
@@ -1005,8 +1161,8 @@
     int     result = PSH_DIR_NONE;
 
 
-    ax = ( dx >= 0 ) ? dx : -dx;
-    ay = ( dy >= 0 ) ? dy : -dy;
+    ax = FT_ABS( dx );
+    ay = FT_ABS( dy );
 
     if ( ay * 12 < ax )
     {
@@ -1111,7 +1267,7 @@
     /* clear all fields */
     FT_MEM_ZERO( glyph, sizeof ( *glyph ) );
 
-    memory = globals->memory;
+    memory = glyph->memory = globals->memory;
 
     /* allocate and setup points + contours arrays */
     if ( FT_NEW_ARRAY( glyph->points,   outline->n_points   ) ||
@@ -1191,34 +1347,16 @@
         /* detect smooth points */
         if ( point->flags & PSH_POINT_OFF )
           point->flags |= PSH_POINT_SMOOTH;
-        else if ( point->dir_in  != PSH_DIR_NONE ||
-                  point->dir_out != PSH_DIR_NONE )
+
+        else if ( point->dir_in == point->dir_out )
         {
-          if ( point->dir_in == point->dir_out )
-            point->flags |= PSH_POINT_SMOOTH;
-        }
-        else
-        {
-          FT_Angle  angle_in, angle_out, diff;
-
-
-          angle_in  = FT_Atan2( dxi, dyi );
-          angle_out = FT_Atan2( dxo, dyo );
-
-          diff = angle_in - angle_out;
-          if ( diff < 0 )
-            diff = -diff;
-
-          if ( diff > FT_ANGLE_PI )
-            diff = FT_ANGLE_2PI - diff;
-
-          if ( diff < FT_ANGLE_PI / 16 )
+          if ( point->dir_out != PSH_DIR_NONE           ||
+               psh_corner_is_flat( dxi, dyi, dxo, dyo ) )
             point->flags |= PSH_POINT_SMOOTH;
         }
       }
     }
 
-    glyph->memory  = memory;
     glyph->outline = outline;
     glyph->globals = globals;
 
@@ -1323,8 +1461,8 @@
       ;
     }
 
-    /* for each extrema, determine its direction along the */
-    /* orthogonal axis                                     */
+    /* for each extremum, determine its direction along the */
+    /* orthogonal axis                                      */
     for ( n = 0; n < glyph->num_points; n++ )
     {
       PSH_Point  point, before, after;
@@ -1370,123 +1508,160 @@
   }
 
 
-#define PSH_STRONG_THRESHOLD  30
-
-
   /* major_dir is the direction for points on the bottom/left of the stem; */
   /* Points on the top/right of the stem will have a direction of          */
   /* -major_dir.                                                           */
 
   static void
-  psh_hint_table_find_strong_point( PSH_Hint_Table  table,
-                                    PSH_Point       point,
-                                    FT_Int          major_dir )
+  psh_hint_table_find_strong_points( PSH_Hint_Table  table,
+                                     PSH_Point       point,
+                                     FT_UInt         count,
+                                     FT_Int          threshold,
+                                     FT_Int          major_dir )
   {
     PSH_Hint*  sort      = table->sort;
     FT_UInt    num_hints = table->num_hints;
-    FT_Int     point_dir = 0;
 
 
-    if ( PSH_DIR_COMPARE( point->dir_in, major_dir ) )
-      point_dir = point->dir_in;
-
-    else if ( PSH_DIR_COMPARE( point->dir_out, major_dir ) )
-      point_dir = point->dir_out;
-
-    if ( point_dir )
+    for ( ; count > 0; count--, point++ )
     {
-      FT_UInt  flag;
+      FT_Int  point_dir = 0;
+      FT_Pos  org_u     = point->org_u;
 
 
-      for ( ; num_hints > 0; num_hints--, sort++ )
+      if ( psh_point_is_strong( point ) )
+        continue;
+
+      if ( PSH_DIR_COMPARE( point->dir_in, major_dir ) )
+        point_dir = point->dir_in;
+
+      else if ( PSH_DIR_COMPARE( point->dir_out, major_dir ) )
+        point_dir = point->dir_out;
+
+      if ( point_dir )
       {
-        PSH_Hint  hint = sort[0];
-        FT_Pos    d;
-
-
         if ( point_dir == major_dir )
         {
-          flag = PSH_POINT_EDGE_MIN;
-          d    = point->org_u - hint->org_pos;
+          FT_UInt  nn;
 
-          if ( ABS( d ) < PSH_STRONG_THRESHOLD )
+
+          for ( nn = 0; nn < num_hints; nn++ )
           {
-          Is_Strong:
-            psh_point_set_strong( point );
-            point->flags2 |= flag;
-            point->hint    = hint;
-            break;
+            PSH_Hint  hint = sort[nn];
+            FT_Pos    d    = org_u - hint->org_pos;
+
+
+            if ( d < threshold && -d < threshold )
+            {
+              psh_point_set_strong( point );
+              point->flags2 |= PSH_POINT_EDGE_MIN;
+              point->hint    = hint;
+              break;
+            }
           }
         }
         else if ( point_dir == -major_dir )
         {
-          flag = PSH_POINT_EDGE_MAX;
-          d    = point->org_u - hint->org_pos - hint->org_len;
+          FT_UInt  nn;
 
-          if ( ABS( d ) < PSH_STRONG_THRESHOLD )
-            goto Is_Strong;
+
+          for ( nn = 0; nn < num_hints; nn++ )
+          {
+            PSH_Hint  hint = sort[nn];
+            FT_Pos    d    = org_u - hint->org_pos - hint->org_len;
+
+
+            if ( d < threshold && -d < threshold )
+            {
+              psh_point_set_strong( point );
+              point->flags2 |= PSH_POINT_EDGE_MAX;
+              point->hint    = hint;
+              break;
+            }
+          }
         }
       }
-    }
 
 #if 1
-    else if ( psh_point_is_extremum( point ) )
-    {
-      /* treat extrema as special cases for stem edge alignment */
-      FT_UInt  min_flag, max_flag;
-
-
-      if ( major_dir == PSH_DIR_HORIZONTAL )
+      else if ( psh_point_is_extremum( point ) )
       {
-        min_flag = PSH_POINT_POSITIVE;
-        max_flag = PSH_POINT_NEGATIVE;
-      }
-      else
-      {
-        min_flag = PSH_POINT_NEGATIVE;
-        max_flag = PSH_POINT_POSITIVE;
-      }
+        /* treat extrema as special cases for stem edge alignment */
+        FT_UInt  nn, min_flag, max_flag;
 
-      for ( ; num_hints > 0; num_hints--, sort++ )
-      {
-        PSH_Hint  hint = sort[0];
-        FT_Pos    d;
-        FT_Int    flag;
 
+        if ( major_dir == PSH_DIR_HORIZONTAL )
+        {
+          min_flag = PSH_POINT_POSITIVE;
+          max_flag = PSH_POINT_NEGATIVE;
+        }
+        else
+        {
+          min_flag = PSH_POINT_NEGATIVE;
+          max_flag = PSH_POINT_POSITIVE;
+        }
 
         if ( point->flags2 & min_flag )
         {
-          flag = PSH_POINT_EDGE_MIN;
-          d    = point->org_u - hint->org_pos;
-
-          if ( ABS( d ) < PSH_STRONG_THRESHOLD )
+          for ( nn = 0; nn < num_hints; nn++ )
           {
-          Is_Strong2:
-            point->flags2 |= flag;
-            point->hint    = hint;
-            psh_point_set_strong( point );
-            break;
+            PSH_Hint  hint = sort[nn];
+            FT_Pos    d    = org_u - hint->org_pos;
+
+
+            if ( d < threshold && -d < threshold )
+            {
+              point->flags2 |= PSH_POINT_EDGE_MIN;
+              point->hint    = hint;
+              psh_point_set_strong( point );
+              break;
+            }
           }
         }
         else if ( point->flags2 & max_flag )
         {
-          flag = PSH_POINT_EDGE_MAX;
-          d    = point->org_u - hint->org_pos - hint->org_len;
+          for ( nn = 0; nn < num_hints; nn++ )
+          {
+            PSH_Hint  hint = sort[nn];
+            FT_Pos    d    = org_u - hint->org_pos - hint->org_len;
 
-          if ( ABS( d ) < PSH_STRONG_THRESHOLD )
-            goto Is_Strong2;
+
+            if ( d < threshold && -d < threshold )
+            {
+              point->flags2 |= PSH_POINT_EDGE_MAX;
+              point->hint    = hint;
+              psh_point_set_strong( point );
+              break;
+            }
+          }
         }
 
-        if ( point->org_u >= hint->org_pos                 &&
-             point->org_u <= hint->org_pos + hint->org_len )
+        if ( point->hint == NULL )
         {
-          point->hint = hint;
+          for ( nn = 0; nn < num_hints; nn++ )
+          {
+            PSH_Hint  hint = sort[nn];
+
+
+            if ( org_u >= hint->org_pos                 &&
+                org_u <= hint->org_pos + hint->org_len )
+            {
+              point->hint = hint;
+              break;
+            }
+          }
         }
       }
-    }
 
 #endif /* 1 */
+    }
   }
+
+
+  /* the accepted shift for strong points in fractional pixels */
+#define PSH_STRONG_THRESHOLD  32
+
+  /* the maximum shift value in font units */
+#define PSH_STRONG_THRESHOLD_MAXIMUM  30
 
 
   /* find strong points in a glyph */
@@ -1494,69 +1669,154 @@
   psh_glyph_find_strong_points( PSH_Glyph  glyph,
                                 FT_Int     dimension )
   {
-    /* a point is strong if it is located on a stem                   */
-    /* edge and has an "in" or "out" tangent to the hint's direction  */
+    /* a point is `strong' if it is located on a stem edge and       */
+    /* has an `in' or `out' tangent parallel to the hint's direction */
+
+    PSH_Hint_Table  table     = &glyph->hint_tables[dimension];
+    PS_Mask         mask      = table->hint_masks->masks;
+    FT_UInt         num_masks = table->hint_masks->num_masks;
+    FT_UInt         first     = 0;
+    FT_Int          major_dir = dimension == 0 ? PSH_DIR_VERTICAL
+                                               : PSH_DIR_HORIZONTAL;
+    PSH_Dimension   dim       = &glyph->globals->dimension[dimension];
+    FT_Fixed        scale     = dim->scale_mult;
+    FT_Int          threshold;
+
+
+    threshold = (FT_Int)FT_DivFix( PSH_STRONG_THRESHOLD, scale );
+    if ( threshold > PSH_STRONG_THRESHOLD_MAXIMUM )
+      threshold = PSH_STRONG_THRESHOLD_MAXIMUM;
+
+    /* process secondary hints to `selected' points */
+    if ( num_masks > 1 && glyph->num_points > 0 )
     {
-      PSH_Hint_Table  table     = &glyph->hint_tables[dimension];
-      PS_Mask         mask      = table->hint_masks->masks;
-      FT_UInt         num_masks = table->hint_masks->num_masks;
-      FT_UInt         first     = 0;
-      FT_Int          major_dir = dimension == 0 ? PSH_DIR_VERTICAL
-                                                 : PSH_DIR_HORIZONTAL;
-
-
-      /* process secondary hints to "selected" points */
-      if ( num_masks > 1 && glyph->num_points > 0 )
+      /* the `endchar' op can reduce the number of points */
+      first = mask->end_point > glyph->num_points
+                ? glyph->num_points
+                : mask->end_point;
+      mask++;
+      for ( ; num_masks > 1; num_masks--, mask++ )
       {
-        first = mask->end_point;
-        mask++;
-        for ( ; num_masks > 1; num_masks--, mask++ )
+        FT_UInt  next;
+        FT_Int   count;
+
+
+        next  = mask->end_point > glyph->num_points
+                  ? glyph->num_points
+                  : mask->end_point;
+        count = next - first;
+        if ( count > 0 )
         {
-          FT_UInt  next;
-          FT_Int   count;
+          PSH_Point  point = glyph->points + first;
 
 
-          next  = mask->end_point;
-          count = next - first;
-          if ( count > 0 )
+          psh_hint_table_activate_mask( table, mask );
+
+          psh_hint_table_find_strong_points( table, point, count,
+                                             threshold, major_dir );
+        }
+        first = next;
+      }
+    }
+
+    /* process primary hints for all points */
+    if ( num_masks == 1 )
+    {
+      FT_UInt    count = glyph->num_points;
+      PSH_Point  point = glyph->points;
+
+
+      psh_hint_table_activate_mask( table, table->hint_masks->masks );
+
+      psh_hint_table_find_strong_points( table, point, count,
+                                         threshold, major_dir );
+    }
+
+    /* now, certain points may have been attached to a hint and */
+    /* not marked as strong; update their flags then            */
+    {
+      FT_UInt    count = glyph->num_points;
+      PSH_Point  point = glyph->points;
+
+
+      for ( ; count > 0; count--, point++ )
+        if ( point->hint && !psh_point_is_strong( point ) )
+          psh_point_set_strong( point );
+    }
+  }
+
+
+  /* find points in a glyph which are in a blue zone and have `in' or */
+  /* `out' tangents parallel to the horizontal axis                   */
+  static void
+  psh_glyph_find_blue_points( PSH_Blues  blues,
+                              PSH_Glyph  glyph )
+  {
+    PSH_Blue_Table  table;
+    PSH_Blue_Zone   zone;
+    FT_UInt         glyph_count = glyph->num_points;
+    FT_UInt         blue_count;
+    PSH_Point       point = glyph->points;
+
+
+    for ( ; glyph_count > 0; glyph_count--, point++ )
+    {
+      FT_Pos  y;
+
+
+      /* check tangents */
+      if ( !PSH_DIR_COMPARE( point->dir_in,  PSH_DIR_HORIZONTAL ) &&
+           !PSH_DIR_COMPARE( point->dir_out, PSH_DIR_HORIZONTAL ) )
+        continue;
+
+      /* skip strong points */
+      if ( psh_point_is_strong( point ) )
+        continue;
+
+      y = point->org_u;
+
+      /* look up top zones */
+      table      = &blues->normal_top;
+      blue_count = table->count;
+      zone       = table->zones;
+
+      for ( ; blue_count > 0; blue_count--, zone++ )
+      {
+        FT_Pos  delta = y - zone->org_bottom;
+
+
+        if ( delta < -blues->blue_fuzz )
+          break;
+
+        if ( y <= zone->org_top + blues->blue_fuzz )
+          if ( blues->no_overshoots || delta <= blues->blue_threshold )
           {
-            PSH_Point  point = glyph->points + first;
-
-
-            psh_hint_table_activate_mask( table, mask );
-
-            for ( ; count > 0; count--, point++ )
-              psh_hint_table_find_strong_point( table, point, major_dir );
-          }
-          first = next;
-        }
-      }
-
-      /* process primary hints for all points */
-      if ( num_masks == 1 )
-      {
-        FT_UInt    count = glyph->num_points;
-        PSH_Point  point = glyph->points;
-
-
-        psh_hint_table_activate_mask( table, table->hint_masks->masks );
-        for ( ; count > 0; count--, point++ )
-        {
-          if ( !psh_point_is_strong( point ) )
-            psh_hint_table_find_strong_point( table, point, major_dir );
-        }
-      }
-
-      /* now, certain points may have been attached to hint and */
-      /* not marked as strong; update their flags then          */
-      {
-        FT_UInt    count = glyph->num_points;
-        PSH_Point  point = glyph->points;
-
-
-        for ( ; count > 0; count--, point++ )
-          if ( point->hint && !psh_point_is_strong( point ) )
+            point->cur_u = zone->cur_bottom;
             psh_point_set_strong( point );
+            psh_point_set_fitted( point );
+          }
+      }
+
+      /* look up bottom zones */
+      table      = &blues->normal_bottom;
+      blue_count = table->count;
+      zone       = table->zones + blue_count - 1;
+
+      for ( ; blue_count > 0; blue_count--, zone-- )
+      {
+        FT_Pos  delta = zone->org_top - y;
+
+
+        if ( delta < -blues->blue_fuzz )
+          break;
+
+        if ( y >= zone->org_bottom - blues->blue_fuzz )
+          if ( blues->no_overshoots || delta < blues->blue_threshold )
+          {
+            point->cur_u = zone->cur_top;
+            psh_point_set_strong( point );
+            psh_point_set_fitted( point );
+          }
       }
     }
   }
@@ -1570,54 +1830,49 @@
     PSH_Dimension  dim   = &glyph->globals->dimension[dimension];
     FT_Fixed       scale = dim->scale_mult;
 
+    FT_UInt        count = glyph->num_points;
+    PSH_Point      point = glyph->points;
 
+
+    for ( ; count > 0; count--, point++ )
     {
-      FT_UInt    count = glyph->num_points;
-      PSH_Point  point = glyph->points;
+      PSH_Hint  hint = point->hint;
 
 
-      for ( ; count > 0; count--, point++ )
+      if ( hint )
       {
-        PSH_Hint  hint = point->hint;
+        FT_Pos  delta;
 
 
-        if ( hint )
+        if ( psh_point_is_edge_min( point ) )
+          point->cur_u = hint->cur_pos;
+
+        else if ( psh_point_is_edge_max( point ) )
+          point->cur_u = hint->cur_pos + hint->cur_len;
+
+        else
         {
-          FT_Pos  delta;
+          delta = point->org_u - hint->org_pos;
 
+          if ( delta <= 0 )
+            point->cur_u = hint->cur_pos + FT_MulFix( delta, scale );
 
-          if ( psh_point_is_edge_min( point ) )
-          {
-            point->cur_u = hint->cur_pos;
-          }
-          else if ( psh_point_is_edge_max( point ) )
-          {
-            point->cur_u = hint->cur_pos + hint->cur_len;
-          }
-          else
-          {
-            delta = point->org_u - hint->org_pos;
+          else if ( delta >= hint->org_len )
+            point->cur_u = hint->cur_pos + hint->cur_len +
+                             FT_MulFix( delta - hint->org_len, scale );
 
-            if ( delta <= 0 )
-              point->cur_u = hint->cur_pos + FT_MulFix( delta, scale );
-
-            else if ( delta >= hint->org_len )
-              point->cur_u = hint->cur_pos + hint->cur_len +
-                               FT_MulFix( delta - hint->org_len, scale );
-
-            else if ( hint->org_len > 0 )
-              point->cur_u = hint->cur_pos +
-                               FT_MulDiv( delta, hint->cur_len,
-                                          hint->org_len );
-            else
-              point->cur_u = hint->cur_pos;
-          }
-          psh_point_set_fitted( point );
+          else /* hint->org_len > 0 */
+            point->cur_u = hint->cur_pos +
+                             FT_MulDiv( delta, hint->cur_len,
+                                        hint->org_len );
         }
+        psh_point_set_fitted( point );
       }
     }
   }
 
+
+#define  PSH_MAX_STRONG_INTERNAL  16
 
   static void
   psh_glyph_interpolate_normal_points( PSH_Glyph  glyph,
@@ -1625,111 +1880,147 @@
   {
 
 #if 1
+    /* first technique: a point is strong if it is a local extremum */
 
-    PSH_Dimension  dim   = &glyph->globals->dimension[dimension];
-    FT_Fixed       scale = dim->scale_mult;
+    PSH_Dimension  dim    = &glyph->globals->dimension[dimension];
+    FT_Fixed       scale  = dim->scale_mult;
+    FT_Memory      memory = glyph->memory;
+
+    PSH_Point*     strongs     = NULL;
+    PSH_Point      strongs_0[PSH_MAX_STRONG_INTERNAL];
+    FT_UInt        num_strongs = 0;
+
+    PSH_Point      points = glyph->points;
+    PSH_Point      points_end = points + glyph->num_points;
+    PSH_Point      point;
 
 
-    /* first technique: a point is strong if it is a local extrema */
+    /* first count the number of strong points */
+    for ( point = points; point < points_end; point++ )
     {
-      FT_UInt    count = glyph->num_points;
-      PSH_Point  point = glyph->points;
+      if ( psh_point_is_strong( point ) )
+        num_strongs++;
+    }
+
+    if ( num_strongs == 0 )  /* nothing to do here */
+      return;
+
+    /* allocate an array to store a list of points, */
+    /* stored in increasing org_u order             */
+    if ( num_strongs <= PSH_MAX_STRONG_INTERNAL )
+      strongs = strongs_0;
+    else
+    {
+      FT_Error  error;
 
 
-      for ( ; count > 0; count--, point++ )
+      if ( FT_NEW_ARRAY( strongs, num_strongs ) )
+        return;
+    }
+
+    num_strongs = 0;
+    for ( point = points; point < points_end; point++ )
+    {
+      PSH_Point*  insert;
+
+
+      if ( !psh_point_is_strong( point ) )
+        continue;
+
+      for ( insert = strongs + num_strongs; insert > strongs; insert-- )
       {
-        if ( psh_point_is_strong( point ) )
+        if ( insert[-1]->org_u <= point->org_u )
+          break;
+
+        insert[0] = insert[-1];
+      }
+      insert[0] = point;
+      num_strongs++;
+    }
+
+    /* now try to interpolate all normal points */
+    for ( point = points; point < points_end; point++ )
+    {
+      if ( psh_point_is_strong( point ) )
+        continue;
+
+      /* sometimes, some local extrema are smooth points */
+      if ( psh_point_is_smooth( point ) )
+      {
+        if ( point->dir_in == PSH_DIR_NONE   ||
+             point->dir_in != point->dir_out )
           continue;
 
-        /* sometimes, some local extremas are smooth points */
-        if ( psh_point_is_smooth( point ) )
+        if ( !psh_point_is_extremum( point ) &&
+             !psh_point_is_inflex( point )   )
+          continue;
+
+        point->flags &= ~PSH_POINT_SMOOTH;
+      }
+
+      /* find best enclosing point coordinates then interpolate */
+      {
+        PSH_Point   before, after;
+        FT_UInt     nn;
+
+
+        for ( nn = 0; nn < num_strongs; nn++ )
+          if ( strongs[nn]->org_u > point->org_u )
+            break;
+
+        if ( nn == 0 )  /* point before the first strong point */
         {
-          if ( point->dir_in == PSH_DIR_NONE   ||
-               point->dir_in != point->dir_out )
-            continue;
+          after = strongs[0];
 
-          if ( !psh_point_is_extremum( point )   &&
-               !psh_point_is_inflex( point ) )
-            continue;
-
-          point->flags &= ~PSH_POINT_SMOOTH;
+          point->cur_u = after->cur_u +
+                           FT_MulFix( point->org_u - after->org_u,
+                                      scale );
         }
-
-        /* find best enclosing point coordinates */
+        else
         {
-          PSH_Point  before = 0;
-          PSH_Point  after  = 0;
+          before = strongs[nn - 1];
 
-          FT_Pos     diff_before = -32000;
-          FT_Pos     diff_after  =  32000;
-          FT_Pos     u = point->org_u;
+          for ( nn = num_strongs; nn > 0; nn-- )
+            if ( strongs[nn - 1]->org_u < point->org_u )
+              break;
 
-          FT_Int     count2 = glyph->num_points;
-          PSH_Point  cur    = glyph->points;
-
-
-          for ( ; count2 > 0; count2--, cur++ )
+          if ( nn == num_strongs )  /* point is after last strong point */
           {
-            if ( psh_point_is_strong( cur ) )
-            {
-              FT_Pos  diff = cur->org_u - u;;
+            before = strongs[nn - 1];
 
-
-              if ( diff <= 0 )
-              {
-                if ( diff > diff_before )
-                {
-                  diff_before = diff;
-                  before      = cur;
-                }
-              }
-              else if ( diff >= 0 )
-              {
-                if ( diff < diff_after )
-                {
-                  diff_after = diff;
-                  after      = cur;
-                }
-              }
-            }
-          }
-
-          if ( !before )
-          {
-            if ( !after )
-              continue;
-
-            /* we are before the first strong point coordinate; */
-            /* simply translate the point                       */
-            point->cur_u = after->cur_u +
-                           FT_MulFix( point->org_u - after->org_u, scale );
-          }
-          else if ( !after )
-          {
-            /* we are after the last strong point coordinate; */
-            /* simply translate the point                     */
             point->cur_u = before->cur_u +
-                           FT_MulFix( point->org_u - before->org_u, scale );
+                             FT_MulFix( point->org_u - before->org_u,
+                                        scale );
           }
           else
           {
-            if ( diff_before == 0 )
+            FT_Pos  u;
+
+
+            after = strongs[nn];
+
+            /* now interpolate point between before and after */
+            u = point->org_u;
+
+            if ( u == before->org_u )
               point->cur_u = before->cur_u;
 
-            else if ( diff_after == 0 )
+            else if ( u == after->org_u )
               point->cur_u = after->cur_u;
 
             else
               point->cur_u = before->cur_u +
-                             FT_MulDiv( u - before->org_u,
-                                        after->cur_u - before->cur_u,
-                                        after->org_u - before->org_u );
+                               FT_MulDiv( u - before->org_u,
+                                          after->cur_u - before->cur_u,
+                                          after->org_u - before->org_u );
           }
-
-          psh_point_set_fitted( point );
         }
+        psh_point_set_fitted( point );
       }
     }
+
+    if ( strongs != strongs_0 )
+      FT_FREE( strongs );
 
 #endif /* 1 */
 
@@ -1902,7 +2193,7 @@
 
     /* something to do? */
     if ( outline->n_points == 0 || outline->n_contours == 0 )
-      return PSH_Err_Ok;
+      return FT_Err_Ok;
 
 #ifdef DEBUG_HINTER
 
@@ -1932,17 +2223,25 @@
       PSH_Dimension  dim_x = &glyph->globals->dimension[0];
       PSH_Dimension  dim_y = &glyph->globals->dimension[1];
 
-      FT_Fixed x_scale = dim_x->scale_mult;
-      FT_Fixed y_scale = dim_y->scale_mult;
+      FT_Fixed  x_scale = dim_x->scale_mult;
+      FT_Fixed  y_scale = dim_y->scale_mult;
 
-      FT_Fixed scaled;
-      FT_Fixed fitted;
+      FT_Fixed  old_x_scale = x_scale;
+      FT_Fixed  old_y_scale = y_scale;
+
+      FT_Fixed  scaled;
+      FT_Fixed  fitted;
+
+      FT_Bool  rescale = FALSE;
 
 
       scaled = FT_MulFix( globals->blues.normal_top.zones->org_ref, y_scale );
-      fitted = ( scaled + 32 ) & -64;
+      fitted = FT_PIX_ROUND( scaled );
 
-      if (scaled != fitted ) {
+      if ( fitted != 0 && scaled != fitted )
+      {
+        rescale = TRUE;
+
         y_scale = FT_MulDiv( y_scale, fitted, scaled );
 
         if ( fitted < scaled )
@@ -1950,41 +2249,47 @@
 
         psh_globals_set_scale( glyph->globals, x_scale, y_scale, 0, 0 );
       }
-    }
 
-    glyph->do_horz_hints = 1;
-    glyph->do_vert_hints = 1;
+      glyph->do_horz_hints = 1;
+      glyph->do_vert_hints = 1;
 
-    glyph->do_horz_snapping = FT_BOOL( hint_mode == FT_RENDER_MODE_MONO ||
-                                       hint_mode == FT_RENDER_MODE_LCD  );
+      glyph->do_horz_snapping = FT_BOOL( hint_mode == FT_RENDER_MODE_MONO ||
+                                         hint_mode == FT_RENDER_MODE_LCD  );
 
-    glyph->do_vert_snapping = FT_BOOL( hint_mode == FT_RENDER_MODE_MONO  ||
-                                       hint_mode == FT_RENDER_MODE_LCD_V );
+      glyph->do_vert_snapping = FT_BOOL( hint_mode == FT_RENDER_MODE_MONO  ||
+                                         hint_mode == FT_RENDER_MODE_LCD_V );
 
-    glyph->do_stem_adjust   = FT_BOOL( hint_mode != FT_RENDER_MODE_LIGHT );
+      glyph->do_stem_adjust   = FT_BOOL( hint_mode != FT_RENDER_MODE_LIGHT );
 
-    for ( dimension = 0; dimension < 2; dimension++ )
-    {
-      /* load outline coordinates into glyph */
-      psh_glyph_load_points( glyph, dimension );
+      for ( dimension = 0; dimension < 2; dimension++ )
+      {
+        /* load outline coordinates into glyph */
+        psh_glyph_load_points( glyph, dimension );
 
-      /* compute local extrema */
-      psh_glyph_compute_extrema( glyph );
+        /* compute local extrema */
+        psh_glyph_compute_extrema( glyph );
 
-      /* compute aligned stem/hints positions */
-      psh_hint_table_align_hints( &glyph->hint_tables[dimension],
-                                  glyph->globals,
-                                  dimension,
-                                  glyph );
+        /* compute aligned stem/hints positions */
+        psh_hint_table_align_hints( &glyph->hint_tables[dimension],
+                                    glyph->globals,
+                                    dimension,
+                                    glyph );
 
-      /* find strong points, align them, then interpolate others */
-      psh_glyph_find_strong_points( glyph, dimension );
-      psh_glyph_interpolate_strong_points( glyph, dimension );
-      psh_glyph_interpolate_normal_points( glyph, dimension );
-      psh_glyph_interpolate_other_points( glyph, dimension );
+        /* find strong points, align them, then interpolate others */
+        psh_glyph_find_strong_points( glyph, dimension );
+        if ( dimension == 1 )
+          psh_glyph_find_blue_points( &globals->blues, glyph );
+        psh_glyph_interpolate_strong_points( glyph, dimension );
+        psh_glyph_interpolate_normal_points( glyph, dimension );
+        psh_glyph_interpolate_other_points( glyph, dimension );
 
-      /* save hinted coordinates back to outline */
-      psh_glyph_save_points( glyph, dimension );
+        /* save hinted coordinates back to outline */
+        psh_glyph_save_points( glyph, dimension );
+
+        if ( rescale )
+          psh_globals_set_scale( glyph->globals,
+                                 old_x_scale, old_y_scale, 0, 0 );
+      }
     }
 
   Exit:

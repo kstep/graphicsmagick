@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -5593,11 +5593,23 @@ MagickXMakeImage(Display *display,
           if ((window->pixel_info->colors != 0) ||
               (window->image->rows > (unsigned long) XDisplayHeight(display,window->screen)) ||
               (window->image->columns > (unsigned long) XDisplayWidth(display,window->screen)))
-            resize_image=SampleImage(window->image,width,height,
-              &image->exception);
+            {
+              /*
+                The resized image should be in the same storage class
+                as the original (or bad things will happen).
+              */
+              if (window->image->storage_class == PseudoClass)
+                resize_image=SampleImage(window->image,width,height,
+                                         &image->exception);
+              else
+                resize_image=ThumbnailImage(window->image,width,height,
+                                            &image->exception);
+            }
           else
-            resize_image=ZoomImage(window->image,width,height,
-              &image->exception);
+            {
+              resize_image=ZoomImage(window->image,width,height,
+                                     &image->exception);
+            }
           if (resize_image != (Image *) NULL)
             {
               if (window->image != image)
@@ -6208,9 +6220,6 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
           register unsigned int
             bytes_per_pixel;
 
-          unsigned char
-            channel[sizeof(unsigned long)];
-
           /*
             Convert to multi-byte color-mapped X image.
           */
@@ -6226,11 +6235,9 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
               pixel=pixels[indexes[x]];
               for (k=0; k < (int) bytes_per_pixel; k++)
               {
-                channel[k]=(unsigned char) pixel;
+                *q++=(unsigned char) pixel;
                 pixel>>=8;
               }
-              for (k=0; k < (int) bytes_per_pixel; k++)
-                *q++=channel[k];
             }
             q+=scanline_pad;
           }
@@ -6450,9 +6457,6 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
                 register unsigned int
                   bytes_per_pixel;
 
-                unsigned char
-                  channel[sizeof(unsigned long)];
-
                 /*
                   Convert to multi-byte continuous-tone X image.
                 */
@@ -6468,11 +6472,9 @@ MagickXMakeImageLSBFirst(const MagickXResourceInfo *resource_info,
                     pixel=MagickXGammaPixel(map_info,p);
                     for (k=0; k < (int) bytes_per_pixel; k++)
                     {
-                      channel[k]=(unsigned char) pixel;
+                      *q++=(unsigned char) pixel;
                       pixel>>=8;
                     }
-                    for (k=0; k < (int) bytes_per_pixel; k++)
-                      *q++=channel[k];
                     p++;
                   }
                   q+=scanline_pad;

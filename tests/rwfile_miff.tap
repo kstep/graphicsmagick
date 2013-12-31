@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2013 GraphicsMagick Group
 # Test MIFF format with various storage and compression types
 . ./common.shi
 . ${top_srcdir}/tests/common.shi
@@ -13,14 +13,20 @@ check_types='bilevel gray pallette truecolor'
 # Comression types we will test
 compress_types='none bzip zip rle'
 
+# Depths we will test
+depths='8 16 32'
+
 # Number of tests we plan to run
-test_plan_fn 16
+test_plan_fn 48
 
 for compress in ${compress_types}
 do
   for type in ${check_types}
   do
-    test_command_fn "MIFF ${compress} ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_${compress}_%d" -compress $compress "${SRCDIR}/input_${type}.miff" MIFF
+    for depth in ${depths}
+    do 
+       test_command_fn "MIFF ${compress} ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_${compress}_%d" -compress ${compress} -depth ${depth} "${SRCDIR}/input_${type}.miff" MIFF
+    done
   done
 done
 

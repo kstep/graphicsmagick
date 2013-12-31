@@ -66,7 +66,7 @@ digraph "pixel-cache-struct" {
 
   "NexusInfo" [
      shape=record,
-     label="<Struct> \N|{<pixels> pixels[]|<indexes> indexes[]|staging|length|<region> region|signature}"
+     label="<Struct> \N|{<pixels> pixels[]|<indexes> indexes[]|staging|length|<region> region|in_core|signature}"
      ];
 
   "CacheInfo" [

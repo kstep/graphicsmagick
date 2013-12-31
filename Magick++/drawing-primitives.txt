@@ -132,7 +132,7 @@ stroke-antialias truth-value (0 or 1)
 stroke-dasharray (none|comma-delimited-numeric-list)
 stroke-dashoffset dashoffset
 stroke-linecap (butt|round|square)
-stroke-linejoin (butt|miter|round|square)
+stroke-linejoin (bevel|miter|round)
 stroke-miterlimit limit
 stroke-opacity opacity[%]
 stroke-width linewidth

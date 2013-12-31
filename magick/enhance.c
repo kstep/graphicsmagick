@@ -592,7 +592,9 @@ GammaCorrectPixels(void *mutable_data,             /* User provided mutable data
 MagickExport MagickPassFail GammaImage(Image *image,const char *level)
 {
   double
+#if MaxMap == MaxRGB
     gamma_color=0.0,
+#endif /* if MaxMap == MaxRGB */
     gamma_red=1.0,
     gamma_green=1.0,
     gamma_blue=1.0;
@@ -629,7 +631,9 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
 
   if ((unity_gamma) && (gamma_red != 1.0))
     {
+#if MaxMap == MaxRGB
       gamma_color=gamma_red;
+#endif /* if MaxMap == MaxRGB */
       level_color = MagickTrue;
     }
   else

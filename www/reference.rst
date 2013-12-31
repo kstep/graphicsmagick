@@ -10,6 +10,9 @@ GraphicsMagick Reference Information
 .. _Formats : formats.html
 .. _MIFF : miff.html
 .. _Links : links.html
+.. _`Colors` : color.html
+
+`Colors`_ - Reference of colors known by GraphicsMagick.
 
 `FAQ`_ - Answers for the questions asked the most often.
 
