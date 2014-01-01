@@ -66,5 +66,5 @@ version_         Report GraphicsMagick version, features, and build options.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2013
+Copyright |copy| GraphicsMagick Group 2002 - 2014
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2013 GraphicsMagick Group
+  Copyright (C) 2003 - 2014 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -34,12 +34,12 @@ extern "C" {
   identifying the release.
 */
 #define MagickPackageName "GraphicsMagick"
-#define MagickCopyright  "Copyright (C) 2002-2013 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
+#define MagickCopyright  "Copyright (C) 2002-2014 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
 #define MagickLibVersion  0x141101
 #define MagickLibVersionText  "1.4"
 #define MagickLibVersionNumber 14,11,1
-#define MagickChangeDate   "20131231"
-#define MagickReleaseDate  "snapshot-20131231"
+#define MagickChangeDate   "20140101"
+#define MagickReleaseDate  "snapshot-20140101"
 	
 /*
   The MagickLibInterfaceNewest and MagickLibInterfaceOldest defines

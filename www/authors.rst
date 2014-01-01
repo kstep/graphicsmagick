@@ -201,7 +201,7 @@ Thomas R Crimmins
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2013 GraphicsMagick Group
+| Copyright (C) 2002 - 2014 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this
