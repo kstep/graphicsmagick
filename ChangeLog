@@ -1,11 +1,11 @@
 2014-01-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* coders/png.c (ReadOnePNGImage): Don't use libpng function
-	png_set_scale_16_to_8() when scaling 16-bit input PNG down to
-	8-bit in a Q8 build.  "scale" is more accurate, but the slight
-	difference causes reference tests to fail and causes unexpected
-	difference between the behavior of PNG and other formats.  So
-	we simply let the GM import routines do the job.
+	* coders/png.c (ReadOnePNGImage): Use libpng function
+	png_set_strip_16_to_8() when scaling 16-bit input PNG down to
+	8-bit in a Q8 build.  The png_set_scale_16_to_8() function is
+	more accurate, but the slight difference causes reference tests
+	to fail and causes unexpected difference between the behavior
+	of PNG and other formats.
 
 2014-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
