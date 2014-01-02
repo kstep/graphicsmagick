@@ -1,3 +1,10 @@
+2014-01-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Use png_strip_16_to_8() in
+	preference to png_set_scale_16_to_8() when scaling 16-bit input
+	PNG down to 8-bit in a Q8 build.  "scale" is more accurate than
+	"strip", but the slight difference causes reference tests to fail.
+
 2014-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* INSTALL-windows.txt: Update for 2014.
