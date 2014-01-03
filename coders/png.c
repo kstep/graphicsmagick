@@ -1770,7 +1770,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if (QuantumDepth == 8)
   if (ping_bit_depth > 8)
   {
-#  ifdef PNG_READ_STRIP_16_TO_8_SUPPORTED
+#  if defined(PNG_READ_STRIP_16_TO_8_SUPPORTED) || \
+      defined(PNG_READ_16_TO_8_SUPPORTED)
     png_set_strip_16(ping);
 #  else
 #    ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
