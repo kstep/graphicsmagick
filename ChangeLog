@@ -5,7 +5,9 @@
 	8-bit in a Q8 build.  The png_set_scale_16_to_8() function is
 	more accurate, but the slight difference causes reference tests
 	to fail and causes unexpected difference between the behavior
-	of PNG and other formats.
+	of PNG and other formats.  If png_set_strip_16_to_8() is not
+	supported in libpng, then we use png_set_scale_16_to_8() if
+	that is available.
 
 2014-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
