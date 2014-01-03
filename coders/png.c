@@ -1780,7 +1780,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_bit_depth=8;
     image->depth=8;
   }
-#else
+#else /* QuantumDepth > 8 */
   if (ping_bit_depth > 8)
     image->depth=16;
   else
