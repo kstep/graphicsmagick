@@ -6393,6 +6393,22 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       return MagickFail;
     }
 
+  if (logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Image Characteristics:\n"
+                            "  CMYK:       %u\n"
+                            "  Grayscale:  %u\n"
+                            "  Monochrome: %u\n"
+                            "  Opaque:     %u\n"
+                            "  Palette:    %u",
+                            characteristics.cmyk,
+                            characteristics.grayscale ,
+                            characteristics.monochrome,
+                            characteristics.opaque,
+                            characteristics.palette);
+    }
+
   /* Initialize some stuff */
   ping_background.red = 0;
   ping_background.green = 0;
@@ -6411,6 +6427,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     image_colors=0;
   image_depth=image->depth;
   image_matte=image->matte;
+
+  /*
+    Optimize logic does not deal properly with matte enabled but no
+    actual transparency so eliminate that case immediately.
+  */
+  if (image_info->type == OptimizeType)
+    image_matte=!characteristics.opaque;
 
   if (image->storage_class == PseudoClass &&
       image_colors <= 256)
@@ -6836,7 +6859,16 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                     break;
                 }
               if (x != 0)
-                png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
+                {
+                  png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
+                }
+              else if (logging)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Single transparent color (%d,%d,%d index=%d)",
+                                        ping_trans_color.red,ping_trans_color.green,
+                                        ping_trans_color.blue,ping_trans_color.index);
+                }
             }
           if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
             {

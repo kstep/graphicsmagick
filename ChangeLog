@@ -1,5 +1,10 @@
 2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/png.c (WriteOnePNGImage): In optimize mode, disable matte
+	channel immediately if there are no non-opaque pixels.  Also added
+	some useful logging.  Resolves SourceForge issue #252 "convert an
+	8bit PNG result in a corrupted image ".
+
 	* wand/magick_wand.c (MagickSetImageGravity): New Wand method to
 	set image gravity.
 	(MagickGetImageGravity): New wand method to get image gravity.
