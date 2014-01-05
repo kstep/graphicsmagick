@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2012 GraphicsMagick Group
+  Copyright (C) 2012-2014 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -211,6 +211,7 @@
 #define MagickGetImageFormat GmMagickGetImageFormat
 #define MagickGetImageFuzz GmMagickGetImageFuzz
 #define MagickGetImageGamma GmMagickGetImageGamma
+#define MagickGetImageGravity GmMagickGetImageGravity
 #define MagickGetImage GmMagickGetImage
 #define MagickGetImageGreenPrimary GmMagickGetImageGreenPrimary
 #define MagickGetImageHeight GmMagickGetImageHeight
@@ -312,6 +313,7 @@
 #define MagickSetImageFormat GmMagickSetImageFormat
 #define MagickSetImageFuzz GmMagickSetImageFuzz
 #define MagickSetImageGamma GmMagickSetImageGamma
+#defube MagickSetImageGravity GmMagickSetImageGravity
 #define MagickSetImage GmMagickSetImage
 #define MagickSetImageGreenPrimary GmMagickSetImageGreenPrimary
 #define MagickSetImageIndex GmMagickSetImageIndex
