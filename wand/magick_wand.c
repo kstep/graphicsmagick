@@ -3650,6 +3650,37 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e G r a v i t y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageGravity() gets the image gravity.
+%
+%  The format of the MagickGetImageGravity method is:
+%
+%      GravityType MagickGetImageGravity(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport GravityType MagickGetImageGravity(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(wand->image->gravity);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e G r e e n P r i m a r y                       %
 %                                                                             %
 %                                                                             %
@@ -8126,6 +8157,51 @@ WandExport unsigned int MagickSetImageGamma(MagickWand *wand,const double gamma)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->gamma=gamma;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e G r a v i t y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageGravity() sets the image gravity.  This is used
+%  when evaluating regions defined by a geometry and the image
+%  dimensions.  It may be used in conjunction with operations which
+%  use a geometry parameter to adjust the x, y parameters of the
+%  final operation. Gravity is used in composition to determine where
+%  the image should be placed within the defined geometry region.
+%  It may be used with montage to effect placement of the image within
+%  the tile.
+%
+%  The format of the MagickSetImageGravity method is:
+%
+%      unsigned int MagickSetImageGravity(MagickWand *wand,const GravityType)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o gravity: The image gravity.  Available values are ForgetGravity,
+%        NorthWestGravity, NorthGravity, NorthEastGravity, WestGravity,
+%        CenterGravity, EastGravity, SouthWestGravity, SouthGravity,
+%        SouthEastGravity, and StaticGravity
+%
+*/
+WandExport unsigned int MagickSetImageGravity(MagickWand *wand,
+                                              const GravityType gravity)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->image->gravity=gravity;
   return(True);
 }
 

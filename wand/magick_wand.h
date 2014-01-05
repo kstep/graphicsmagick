@@ -274,6 +274,7 @@ extern WandExport unsigned int
   MagickSetImageColorspace(MagickWand *,const ColorspaceType),
   MagickSetImageGreenPrimary(MagickWand *,const double,const double),
   MagickSetImageGamma(MagickWand *,const double),
+  MagickSetImageGravity(MagickWand *,const GravityType),
   MagickSetImageFilename(MagickWand *,const char *),
   MagickSetImageFormat(MagickWand *wand,const char *format),
   MagickSetImageFuzz(MagickWand *,const double),
