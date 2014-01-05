@@ -1,5 +1,8 @@
 2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/gif.c: Log when Netscape loop exension is read and
+	written.
+
 	* coders/png.c (WriteOnePNGImage): In optimize mode, disable matte
 	channel immediately if there are no non-opaque pixels.  Also added
 	some useful logging.  Resolves SourceForge issue #252 "convert an
