@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2012
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -586,6 +586,10 @@ namespace Magick
     
     // Resize image by using simple ratio algorithm
     void            scale ( const Geometry &geometry_ );
+
+    // Resize image using several algorithms to make smaller images
+    // very quickly.
+    void            thumbnail ( const Geometry &geometry_ );
     
     // Segment (coalesce similar image components) by analyzing the
     // histograms of the color components and identifying units that

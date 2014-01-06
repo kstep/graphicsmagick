@@ -1,3 +1,8 @@
+2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (thumbnail): New method for fast image resizing,
+	particularly to make thumbnails.
+
 2013-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableDashArray): DrawableDashArray now uses

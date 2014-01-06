@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2012
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -836,6 +836,7 @@ namespace Magick
   using MagickLib::ThresholdImage;
   using MagickLib::ThrowException;
   using MagickLib::ThrowLoggedException;
+  using MagickLib::ThumbnailImage;
   using MagickLib::TransformHSL;
   using MagickLib::TransformImage;
   using MagickLib::TransformRGBImage;

@@ -1219,6 +1219,15 @@ quality::
 
     void            scale ( const Geometry &geometry_ )
 
+scale
++++++
+
+Resize image using several algorithms to make smaller images very
+quickly.  This is very useful to create thumbnails from large images
+but usually works well for any image resizing purpose::
+
+    void            thumbnail ( const Geometry &geometry_ );
+
 segment
 +++++++
     

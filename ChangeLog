@@ -1,5 +1,8 @@
 2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/lib/Image.cpp (thumbnail): New method for fast image
+	resizing, particularly to make thumbnails.
+
 	* coders/gif.c: Log when Netscape loop exension is read and
 	written.
 
