@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2009-2013 GraphicsMagick Group
+  Copyright (C) 2009-2014 GraphicsMagick Group
 
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -109,43 +109,75 @@ extern "C" {
 
   Note that GCC 3.2 on MinGW does not define __GNUC__ or __GNUC_MINOR__.
 
+  Clang/llvm supports __has_attribute(attribute) to test if an attribute is
+  supported, and __has_builtin(builtin) to test if a builtin is supported.
+  Clang/llvm attempts to support most GCC features.
+
 */
 #if !defined(__attribute__)
-#  if (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__))
+#  if ((!defined(__clang__)) && (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__)))
 #    define __attribute__(x) /*nothing*/
 #  else
-#    if (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1))) /* 3.1+ */
+#    if defined(__clang__)
+#      define MAGICK_CLANG_HAS_ATTRIBUTE(attribute) __has_attribute(attribute)
+#      define MAGICK_CLANG_HAS_BUILTIN(builtin) __has_builtin(builtin)
+#    else
+#      define MAGICK_CLANG_HAS_ATTRIBUTE(attribute) (0)
+#      define MAGICK_CLANG_HAS_BUILTIN(builtin) (0)
+#    endif
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__deprecated__)) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))) /* 3.1+ */
 #      define MAGICK_FUNC_DEPRECATED __attribute__((__deprecated__))
 #    endif
-#    if (__GNUC__ >= 3)  /* 3.0+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__malloc__)) || \
+         (__GNUC__ >= 3))  /* 3.0+ */
 #      define MAGICK_FUNC_MALLOC __attribute__((__malloc__))
 #    endif
-#    if (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3)))  /* 3.3+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__nonnull__)) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))))  /* 3.3+ */
   /* Supports argument syntax like __attribute__((nonnull (1, 2))) but
      don't know how to support non-GCC fallback. */
 #      define MAGICK_FUNC_NONNULL __attribute__((__nonnull__))
 #    endif
-#    if (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5))) /* 2.5+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__noreturn__)) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5)))) /* 2.5+ */
 #      define MAGICK_FUNC_NORETURN __attribute__((__noreturn__))
 #    endif
-#    if ((__GNUC__) >= 3) /* 2.96+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__pure__)) || \
+         ((__GNUC__) >= 3)) /* 2.96+ */
 #      define MAGICK_FUNC_PURE __attribute__((__pure__))
 #    endif
-#    if (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 7))) /* 2.7+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__unused__)) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 7)))) /* 2.7+ */
 #      define MAGICK_FUNC_UNUSED __attribute__((__unused__))
 #    endif
-#    if (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3)))  /* 3.3+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__warn_unused_result__)) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))))  /* 3.3+ */
 #      define MAGICK_FUNC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
 #    endif
-#    if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))  /* 4.3+ */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__alloc_size__)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
 #      define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) __attribute__((__alloc_size__(arg_num)))
 #      define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) __attribute__((__alloc_size__(arg_num1,arg_num2)))
+#    endif
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__hot__)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
 #      define MAGICK_FUNC_HOT __attribute__((__hot__))
+#    endif
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__cold__)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
 #      define MAGICK_FUNC_COLD __attribute__((__cold__))
+#    endif
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__optimize__)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
 #      define MAGICK_OPTIMIZE_FUNC(opt) __attribute__((__optimize__ (opt)))
 #    endif
-#    if (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))  /* 4.7+ */
+#    if ((MAGICK_CLANG_HAS_BUILTIN(__builtin_assume_aligned)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))))  /* 4.7+ */
 #      define MAGICK_ASSUME_ALIGNED(exp,align) __builtin_assume_aligned(exp,align)
+#    endif
+#    if ((MAGICK_CLANG_HAS_BUILTIN(__builtin_assume_aligned)) || \
+         (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))))  /* 4.7+ */
 #      define MAGICK_ASSUME_ALIGNED_OFFSET(exp,align,offset) __builtin_assume_aligned(exp,align,offset)
 #    endif
 #  endif

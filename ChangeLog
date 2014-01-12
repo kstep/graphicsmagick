@@ -1,3 +1,8 @@
+2014-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/common.h: Support use of clang/llvm __attribute__ and
+	__builtin extensions similar to the existing support for GCC.
+
 2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/Image.cpp (thumbnail): New method for fast image
