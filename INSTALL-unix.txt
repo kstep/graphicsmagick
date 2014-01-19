@@ -267,7 +267,7 @@ Optional Packages/Options
 
 --without-threads
 
-    disable threads support.
+    disable POSIX threads API support
 
 --with-frozenpaths
 
@@ -600,12 +600,15 @@ Several configure options require special note:
 --without-threads
 
   By default, the GraphicsMagick library is compiled to be fully
-  thread safe by using thread APIs to implement required locking. If
-  the locking or dependence on thread APIs is undesireable, then
-  specify --without-threads.  Specifying this option also disables
-  OpenMP support.  Testing shows that the overhead from thread safety
-  is virtually unmeasurable so usually there is no reason to disable
-  multi-thread support.
+  thread safe by using thread APIs to implement required locking.
+  This is intended to allow the GraphicsMagick library to be used by
+  multi-threaded programs using native POSIX threads. If the locking
+  or dependence on thread APIs is undesireable, then specify
+  --without-threads.  Testing shows that the overhead from thread
+  safety is virtually unmeasurable so usually there is no reason to
+  disable multi-thread support.  While previous versions disabled
+  OpenMP support when this option was supplied, that is no longer the
+  case.
 
 --disable-largefile
 

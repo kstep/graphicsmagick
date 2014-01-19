@@ -35,6 +35,19 @@
 <div class="document">
 
 
+<p>2014-01-19  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/tsd.c: Implement TSD for &quot;pure&quot; OpenMP mode without
+relying on POSIX or WIN32 TSD APIs.</li>
+<li>magick/semaphore.c: Implement OpenMP-based locking so that code
+can compile in a &quot;pure&quot; OpenMP mode without relying on POSIX or
+WIN32 locking APIs.</li>
+<li>configure.ac: --without-threads no longer disables use of
+OpenMP.  Use the already existing option --disable-openmp to
+disable OpenMP.</li>
+</ul>
+</blockquote>
 <p>2014-01-12  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

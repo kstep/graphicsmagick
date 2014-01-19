@@ -298,13 +298,12 @@ else
 fi
 
 #
-# Determine Posix threads settings
+# Determine POSIX threads settings
 #
-# Enable support for threads
+# Enable support for POSIX thread APIs
 AC_ARG_WITH(threads,
 	      AS_HELP_STRING([--without-threads],
-                             [disable threads support (also disables
-                             OpenMP)]),
+                             [disable POSIX threads API support]),
 	      [with_threads=$withval],
 	      [with_threads='yes'])
 
@@ -339,10 +338,6 @@ fi
 #
 # Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
 # variable to these options.
-if test "$have_threads" != 'yes'
-then
-  ac_cv_prog_c_openmp=unsupported
-fi
 
 AC_OPENMP([C])
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"

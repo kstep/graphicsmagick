@@ -1,3 +1,16 @@
+2014-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tsd.c: Implement TSD for "pure" OpenMP mode without
+	relying on POSIX or WIN32 TSD APIs.
+
+	* magick/semaphore.c: Implement OpenMP-based locking so that code
+	can compile in a "pure" OpenMP mode without relying on POSIX or
+	WIN32 locking APIs.
+
+	* configure.ac: --without-threads no longer disables use of
+	OpenMP.  Use the already existing option --disable-openmp to
+	disable OpenMP.
+
 2014-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/common.h: Support use of clang/llvm __attribute__ and

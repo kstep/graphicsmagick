@@ -16796,7 +16796,7 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #if defined(MSWINDOWS) || defined(HAVE_PTHREAD)
   supported=MagickTrue;
 #endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
-  PrintFeature("Thread Safe", supported);
+  PrintFeature("Native Thread Safe", supported);
 
   /* Large File Support */
   {

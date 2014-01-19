@@ -186,7 +186,6 @@ MagickExport void *
 AccessThreadViewDataById(ThreadViewDataSet *data_set,
                          unsigned int index)
 {
-  index=omp_get_thread_num();
   assert(index < data_set->nviews);
   return data_set->view_data[index];
 }

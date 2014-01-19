@@ -39,12 +39,14 @@
 #include "magick/utility.h"
 
 #if defined(HAVE_PTHREAD)
-#  define USE_POSIX_THREADS 1
+#  define USE_PTHREAD_LOCKS 1
 #elif defined(MSWINDOWS)
-#  define USE_WIN32_THREADS 1
+#  define USE_WIN32_LOCKS 1
+#elif defined(HAVE_OPENMP)
+#  define USE_OPENMP_LOCKS 1
 #endif
 
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_PTHREAD_LOCKS)
 #  include <pthread.h>
 #  define PTHREAD_MUTEX_DESTROY(semaphore_mutex)			\
   {									\
@@ -132,7 +134,7 @@
   }
 #endif
 
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #  include <windows.h>
 #  define USE_SPINLOCKS
 #  define SPINLOCK_DELAY_MILLI_SECS 10
@@ -145,14 +147,18 @@
 */
 struct _SemaphoreInfo
 {
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_lock_t
+    mutex;              /* OpenMP lock */
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   pthread_mutex_t
     mutex;		/* POSIX thread mutex */
-#endif
-#if defined(USE_WIN32_THREADS)
+#endif /* if defined(USE_PTHREAD_LOCKS) */
+#if defined(USE_WIN32_LOCKS)
   CRITICAL_SECTION
     mutex;		/* Windows critical section */
-#endif
+#endif /* defined(USE_WIN32_LOCKS) */
 
   unsigned long
     signature;		/* Used to validate structure */
@@ -161,12 +167,20 @@ struct _SemaphoreInfo
 /*
   Static declaractions.
 */
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+static omp_lock_t 
+  semaphore_mutex;
+
+static unsigned int
+  active_semaphore = MagickFalse;
+#endif /* defined(USE_OPENMP_LOCKS) */
+
+#if defined(USE_PTHREAD_LOCKS)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
-#endif
+#endif /* defined(USE_PTHREAD_LOCKS) */
 
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
 static CRITICAL_SECTION
   semaphore_mutex;
@@ -232,25 +246,38 @@ static void spinlock_release (LONG volatile *sl)
 MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-#if defined(USE_POSIX_THREADS)
-  PTHREAD_MUTEX_LOCK(&semaphore_mutex);
-#endif /* defined(USE_POSIX_THREADS) */
-#if defined(USE_WIN32_THREADS)
-#if !defined(USE_SPINLOCKS)
+#if defined(USE_OPENMP_LOCKS)
   if (!active_semaphore)
-    InitializeCriticalSection(&semaphore_mutex);
-  active_semaphore=MagickTrue;
+    {
+      omp_init_lock(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
+  omp_set_lock(&semaphore_mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
+  PTHREAD_MUTEX_LOCK(&semaphore_mutex);
+#endif /* defined(USE_PTHREAD_LOCKS) */
+#if defined(USE_WIN32_LOCKS)
+#  if !defined(USE_SPINLOCKS)
+  if (!active_semaphore)
+    {
+      InitializeCriticalSection(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
   EnterCriticalSection(&semaphore_mutex);
-#else
+#  else
   spinlock_wait(&semaphore_mutex);
-#endif
-#endif
+#  endif
+#endif /* defined(USE_WIN32_LOCKS) */
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_unset_lock(&semaphore_mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_UNLOCK(&semaphore_mutex);
-#endif
-#if defined(USE_WIN32_THREADS)
+#endif /* defined(USE_PTHREAD_LOCKS) */
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
 #else
@@ -302,7 +329,10 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Initialize the semaphore.
   */
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_init_lock(&semaphore_info->mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   {
     pthread_mutexattr_t 
       mutexattr;
@@ -323,7 +353,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     PTHREAD_MUTEXATTR_DESTROY(&mutexattr);
   }
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
   InitializeCriticalSection(&semaphore_info->mutex);
 #endif
   
@@ -352,7 +382,14 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 */
 MagickExport void DestroySemaphore(void)
 {
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  if (active_semaphore)
+    {
+      omp_destroy_lock(&semaphore_mutex);
+      active_semaphore=MagickFalse;
+    }
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   /*
     We use static pthread mutex initialization with
     PTHREAD_MUTEX_INITIALIZER so semaphore mutex should not be
@@ -360,11 +397,13 @@ MagickExport void DestroySemaphore(void)
   */
   /* PTHREAD_MUTEX_DESTROY(&semaphore_mutex); */
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
   if (active_semaphore)
-    DeleteCriticalSection(&semaphore_mutex);
-  active_semaphore=MagickFalse;
+    {
+      DeleteCriticalSection(&semaphore_mutex);
+      active_semaphore=MagickFalse;
+    }
 #endif
 #endif
 }
@@ -398,31 +437,47 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
   assert((*semaphore_info)->signature == MagickSignature);
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  if (!active_semaphore)
+    {
+      omp_init_lock(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
+  omp_set_lock(&semaphore_mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_LOCK(&semaphore_mutex);
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
-    InitializeCriticalSection(&semaphore_mutex);
-  active_semaphore=MagickTrue;
+    {
+      InitializeCriticalSection(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
   EnterCriticalSection(&semaphore_mutex);
 #else
   spinlock_wait(&semaphore_mutex);
 #endif
 #endif
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_destroy_lock(&(*semaphore_info)->mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_DESTROY(&(*semaphore_info)->mutex);
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   (void) memset((void *) *semaphore_info,0xbf,sizeof(SemaphoreInfo));
   MagickFreeAlignedMemory((*semaphore_info));
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_unset_lock(&semaphore_mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_UNLOCK(&semaphore_mutex);
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
 #else
@@ -452,7 +507,14 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport void InitializeSemaphore(void)
 {
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  if (!active_semaphore)
+    {
+      omp_init_lock(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   /*
     We use static pthread mutex initialization with
     PTHREAD_MUTEX_INITIALIZER so explicit runtime initialization is
@@ -461,11 +523,13 @@ MagickExport void InitializeSemaphore(void)
 /*   (void) pthread_mutex_init(&semaphore_mutex, */
 /*     (const pthread_mutexattr_t *) NULL); */
 #endif
-#if defined(USE_WIN32_THREADS)
+#if defined(USE_WIN32_LOCKS)
 #if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
-    InitializeCriticalSection(&semaphore_mutex);
-  active_semaphore=MagickTrue;
+    {
+      InitializeCriticalSection(&semaphore_mutex);
+      active_semaphore=MagickTrue;
+    }
 #endif
 #endif
 }
@@ -530,12 +594,15 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_set_lock(&semaphore_info->mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_LOCK(&semaphore_info->mutex);
-#endif
-#if defined(USE_WIN32_THREADS)
+#endif /* defined(USE_PTHREAD_LOCKS) */
+#if defined(USE_WIN32_LOCKS)
   EnterCriticalSection(&semaphore_info->mutex);
-#endif
+#endif /* defined(USE_WIN32_LOCKS) */
 }
 
 /*
@@ -566,10 +633,13 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
 
-#if defined(USE_POSIX_THREADS)
+#if defined(USE_OPENMP_LOCKS)
+  omp_unset_lock(&semaphore_info->mutex);
+#endif /* defined(USE_OPENMP_LOCKS) */
+#if defined(USE_PTHREAD_LOCKS)
   PTHREAD_MUTEX_UNLOCK(&semaphore_info->mutex);
-#endif
-#if defined(USE_WIN32_THREADS)
+#endif /* defined(USE_PTHREAD_LOCKS) */
+#if defined(USE_WIN32_LOCKS)
   LeaveCriticalSection(&semaphore_info->mutex);
-#endif
+#endif /* defined(USE_WIN32_LOCKS) */
 }

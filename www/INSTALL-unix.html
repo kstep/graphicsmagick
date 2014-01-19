@@ -306,7 +306,7 @@ directory (only one can be used for development)</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--without-threads</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>disable threads support.</td></tr>
+<tr><td>&nbsp;</td><td>disable POSIX threads API support</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--with-frozenpaths</span></kbd></td>
 </tr>
@@ -653,12 +653,15 @@ the person who builds GraphicsMagick.</td></tr>
 <kbd><span class="option">--without-threads</span></kbd></td>
 </tr>
 <tr><td>&nbsp;</td><td>By default, the GraphicsMagick library is compiled to be fully
-thread safe by using thread APIs to implement required locking. If
-the locking or dependence on thread APIs is undesireable, then
-specify --without-threads.  Specifying this option also disables
-OpenMP support.  Testing shows that the overhead from thread safety
-is virtually unmeasurable so usually there is no reason to disable
-multi-thread support.</td></tr>
+thread safe by using thread APIs to implement required locking.
+This is intended to allow the GraphicsMagick library to be used by
+multi-threaded programs using native POSIX threads. If the locking
+or dependence on thread APIs is undesireable, then specify
+--without-threads.  Testing shows that the overhead from thread
+safety is virtually unmeasurable so usually there is no reason to
+disable multi-thread support.  While previous versions disabled
+OpenMP support when this option was supplied, that is no longer the
+case.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--disable-largefile</span></kbd></td>
 </tr>
