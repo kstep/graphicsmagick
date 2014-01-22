@@ -1,3 +1,10 @@
+2014-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (ReadPNMImage): Fix scaling of alpha in sub-ranged
+	pixels.  Addresses SourceForge issue #237 "Incorrect MAXVAL
+	scaling when reading PAM images", which was not fully fixed in by
+	the previous attempt.
+
 2014-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/tsd.c: Implement TSD for "pure" OpenMP mode without
