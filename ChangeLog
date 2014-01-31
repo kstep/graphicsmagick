@@ -1,3 +1,9 @@
+2014-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickDrawImage): Remove development debug
+	fprintf which causes each drawing primitive to be printed to
+	stderr.
+
 2014-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): Fix scaling of alpha in sub-ranged
