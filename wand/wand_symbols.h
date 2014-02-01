@@ -211,6 +211,7 @@
 #define MagickGetImageFormat GmMagickGetImageFormat
 #define MagickGetImageFuzz GmMagickGetImageFuzz
 #define MagickGetImageGamma GmMagickGetImageGamma
+#define MagickGetImageGeometry GmMagickGetImageGeometry
 #define MagickGetImageGravity GmMagickGetImageGravity
 #define MagickGetImage GmMagickGetImage
 #define MagickGetImageGreenPrimary GmMagickGetImageGreenPrimary
@@ -219,6 +220,7 @@
 #define MagickGetImageIndex GmMagickGetImageIndex
 #define MagickGetImageInterlaceScheme GmMagickGetImageInterlaceScheme
 #define MagickGetImageIterations GmMagickGetImageIterations
+#define MagickGetImageMatte GmMagickGetImageMatte
 #define MagickGetImageMatteColor GmMagickGetImageMatteColor
 #define MagickGetImagePage GmMagickGetImagePage
 #define MagickGetImagePixels GmMagickGetImagePixels
@@ -319,6 +321,7 @@
 #define MagickSetImageIndex GmMagickSetImageIndex
 #define MagickSetImageInterlaceScheme GmMagickSetImageInterlaceScheme
 #define MagickSetImageIterations GmMagickSetImageIterations
+#define MagickSetImageMatte GmMagickSetImageMatte
 #define MagickSetImageMatteColor GmMagickSetImageMatteColor
 #define MagickSetImageOption GmMagickSetImageOption
 #define MagickSetImagePage GmMagickSetImagePage

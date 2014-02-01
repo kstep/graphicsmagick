@@ -3643,7 +3643,38 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->gamma);
 }
-
+/*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k G e t I m a g e G e o m e t r y                               %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  MagickGetImageGeometry() gets the image geometry string.  NULL is
+ %  returned if the image does not contain a geometry string.
+ %
+ %  The format of the MagickGetImageGeometry method is:
+ %
+ %      const char *MagickGetImageGeometry(MagickWand *wand)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o wand: The magick wand.
+ %
+ */
+WandExport const char *MagickGetImageGeometry(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(wand->image->geometry);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -3898,7 +3929,37 @@ WandExport unsigned long MagickGetImageIterations(MagickWand *wand)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   return(wand->image->iterations);
 }
-
+/*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k G e t I m a g e M a t t e                                     %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  MagickGetImageMatte() gets the image matte flag.  The flag is MagickTrue
+ %  if the image supports an opacity (inverse of transparency) channel.
+ %
+ %  The format of the MagickGetImageMatte method is:
+ %
+ %      MagickBool MagickGetImageMatte(MagickWand *wand)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o wand: The magick wand.
+ %
+ */
+WandExport MagickBool MagickGetImageMatte(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return(wand->image->matte);
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -8160,6 +8221,43 @@ WandExport unsigned int MagickSetImageGamma(MagickWand *wand,const double gamma)
 }
 
 /*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k S e t I m a g e G e o m e t r y                               %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  MagickSetImageGeometry() sets the image geometry string. 
+ %
+ %  The format of the MagickSetImageGeometry method is:
+ %
+ %      unsigned int MagickSetImageGeometry(MagickWand *wand,
+ %        const char *geometry)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o wand: The magick wand.
+ %
+ %    o geometry: The image geometry.
+ %
+ */
+WandExport unsigned int MagickSetImageGeometry(MagickWand *wand,
+                                               const char *geometry)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  (void) CloneString(&wand->image->geometry,geometry);
+
+  return(True);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -8357,6 +8455,45 @@ WandExport unsigned int MagickSetImageIterations(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   wand->image->iterations=iterations;
+  return(True);
+}
+
+/*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k S e t I m a g e M a t t e                                     %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  MagickSetImageMatte() sets the image matte flag.  The image opacity
+ %  (inverse of transparency) channel is enabled if the matte flag is
+ %  True.
+ %
+ %  The format of the MagickSetImageMatte method is:
+ %
+ %      unsigned int MagickSetImageMatte(MagickWand *wand,
+ %        const unsigned int matte)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o wand: The magick wand.
+ %
+ %    o matte: The image matte.
+ %
+ */
+WandExport unsigned int MagickSetImageMatte(MagickWand *wand,
+                                            const unsigned int matte)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  wand->images->matte = matte;
+
   return(True);
 }
 
