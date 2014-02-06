@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -43,6 +43,7 @@
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/enum_strings.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/tempfile.h"
@@ -968,6 +969,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(page_geometry,PSPageGeometry);
     (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Image Resolution: %gx%g %s",
+                          image->x_resolution,
+                          image->y_resolution,
+                          ResolutionTypeToString(image->units));
     /*
       Scale relative to dots-per-inch.
     */
@@ -978,12 +984,34 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
+    /*
+      Use image resolution information if it appears to be valid.
+      If resolution units are not specified, then we assume DPI.
+    */
+    if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
+      {
+        x_resolution = image->x_resolution;
+        y_resolution = image->y_resolution;
+        if (image->units == PixelsPerCentimeterResolution)
+          {
+            x_resolution *= 2.54;
+            y_resolution *= 2.54;
+          }
+      }
     if (image_info->density != (char *) NULL)
       {
         count=GetMagickDimension(image_info->density,&x_resolution,&y_resolution,NULL,NULL);
         if (count != 2)
           y_resolution=x_resolution;
+        if (image_info->units == PixelsPerCentimeterResolution)
+          {
+            x_resolution *= 2.54;
+            y_resolution *= 2.54;
+          }
       }
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Postscript Resolution: %gx%g DPI",
+                          x_resolution,y_resolution);
     x_scale=(geometry.width*dx_resolution)/x_resolution;
     geometry.width=(unsigned long) (x_scale+0.5);
     y_scale=(geometry.height*dy_resolution)/y_resolution;

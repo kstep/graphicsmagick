@@ -1,5 +1,14 @@
 2014-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/ps3.c (WritePS3Image): Use image resolution similar to PDF
+	changes.
+
+	* coders/ps2.c (WritePS2Image): Use image resolution similar to PDF
+	changes.
+
+	* coders/ps.c (WritePSImage): Use image resolution similar to PDF
+	changes.
+
 	* coders/pdf.c (WritePDFImage): Use resolution from image if it
 	appears to be valid.  Resolves SourceForge issue #261 "PNG Pixel
 	Density Not Preserved Converting to PDF".

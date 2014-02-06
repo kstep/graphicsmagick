@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -44,6 +44,7 @@
 #include "magick/color.h"
 #include "magick/compress.h"
 #include "magick/constitute.h"
+#include "magick/enum_strings.h"
 #include "magick/magick.h"
 #include "magick/map.h"
 #include "magick/monitor.h"
@@ -1289,6 +1290,11 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
     (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
        &geometry.width,&geometry.height);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Image Resolution: %gx%g %s",
+                          image->x_resolution,
+                          image->y_resolution,
+                          ResolutionTypeToString(image->units));
     /*
       Scale relative to dots-per-inch. First whatever resolution passed
       in image_info. Then resolution from the image. Last default PS
@@ -1301,33 +1307,35 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
+    /*
+      Use image resolution information if it appears to be valid.
+      If resolution units are not specified, then we assume DPI.
+    */
+    if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
+      {
+        x_resolution = image->x_resolution;
+        y_resolution = image->y_resolution;
+        if (image->units == PixelsPerCentimeterResolution)
+          {
+            x_resolution *= 2.54;
+            y_resolution *= 2.54;
+          }
+      }
     if (image_info->density != (char *) NULL)
       {
-        double 
-          unit_conversion;
-
-        unit_conversion=
-          image_info->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         count=GetMagickDimension(image_info->density,&x_resolution,
-          &y_resolution,NULL,NULL);
-        x_resolution*=unit_conversion;
+                                 &y_resolution,NULL,NULL);
         if (count != 2)
           y_resolution=x_resolution;
-        else
-          y_resolution*=unit_conversion;
+        if (image_info->units == PixelsPerCentimeterResolution)
+          {
+            x_resolution *= 2.54;
+            y_resolution *= 2.54;
+          }
       }
-    else
-      {
-        double 
-          unit_conversion;
-
-        unit_conversion=
-          image->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
-        if (image->x_resolution > 0.0)
-          x_resolution=image->x_resolution*unit_conversion;
-        if (image->y_resolution > 0.0)
-          y_resolution=image->y_resolution*unit_conversion;
-      }
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Postscript Resolution: %gx%g DPI",
+                          x_resolution,y_resolution);
     x_scale=(geometry.width*dx_resolution)/x_resolution;
     geometry.width=(unsigned long) (x_scale+0.5);
     y_scale=(geometry.height*dy_resolution)/y_resolution;
