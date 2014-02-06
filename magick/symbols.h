@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2013 GraphicsMagick Group
+  Copyright (C) 2003 - 2014 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -875,6 +875,7 @@
 #define ResetTimer GmResetTimer
 #define ResizeFilterToString GmResizeFilterToString
 #define ResizeImage GmResizeImage
+#define ResolutionTypeToString GmResolutionTypeToString
 #define ReverseImageList GmReverseImageList
 #define RollImage GmRollImage
 #define RotateImage GmRotateImage
@@ -947,6 +948,7 @@
 #define StringToNoiseType GmStringToNoiseType
 #define StringToPreviewType GmStringToPreviewType
 #define StringToQuantumOperator GmStringToQuantumOperator
+#define StringToResolutionType GmStringToResolutionType
 #define StringToResourceType GmStringToResourceType
 #define StringToVirtualPixelMethod GmStringToVirtualPixelMethod
 #define Strip GmStrip

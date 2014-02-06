@@ -1,3 +1,14 @@
+2014-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Use resolution from image if it
+	appears to be valid.  Resolves SourceForge issue #261 "PNG Pixel
+	Density Not Preserved Converting to PDF".
+
+	* magick/enum_strings.c (StringToResolutionType): New function to
+	convert ResolutionType to C string.
+	(ResolutionTypeToString): New function to convert from C string to
+	ResolutionType.
+
 2014-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c (MagickGetImageGeometry): New function to get

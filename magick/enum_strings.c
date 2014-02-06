@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2008 - 2012 GraphicsMagick Group
+% Copyright (C) 2008 - 2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1434,6 +1434,32 @@ MagickExport const char *ResizeFilterToString(const FilterTypes filter)
     }
 
   return filter_string;
+}
+
+/*
+  ResolutionType
+*/
+MagickExport ResolutionType StringToResolutionType(const char *option)
+{
+  ResolutionType
+    resolution_type = UndefinedResolution;
+
+  if (LocaleCompare("PixelsPerInch",option) == 0)
+    resolution_type=PixelsPerInchResolution;
+  else if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+    resolution_type=PixelsPerCentimeterResolution;
+
+  return resolution_type;
+}
+MagickExport const char *ResolutionTypeToString(const ResolutionType resolution_type)
+{
+  switch (resolution_type)
+    {
+    case UndefinedResolution: return ("Undefined");
+    case PixelsPerInchResolution: return ("PixelsPerInch");
+    case PixelsPerCentimeterResolution: return ("PixelsPerCentimeter");
+    }
+  return ("unknown");
 }
 
 /*
