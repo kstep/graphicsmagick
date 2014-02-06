@@ -869,26 +869,32 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       if (count != 2)
         y_resolution=x_resolution;
       /*
-        Use image resolution information if it appears to be valid.
-        If resolution units are not specified, then we assume DPI.
+        Use override resolution information if it appears to be valid.
       */
-      if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0))
-        {
-          x_resolution = image->x_resolution;
-          y_resolution = image->y_resolution;
-          if (image->units == PixelsPerCentimeterResolution)
-            {
-              x_resolution *= 2.54;
-              y_resolution *= 2.54;
-            }
-        }
-      if (image_info->density != (char *) NULL)
+      if ((image_info->density != (char *) NULL) &&
+          ((image_info->units == PixelsPerInchResolution) ||
+           (image_info->units == PixelsPerCentimeterResolution)))
         {
           count=GetMagickDimension(image_info->density,&x_resolution,
                                    &y_resolution,NULL,NULL);
           if (count != 2)
             y_resolution=x_resolution;
           if (image_info->units == PixelsPerCentimeterResolution)
+            {
+              x_resolution *= 2.54;
+              y_resolution *= 2.54;
+            }
+        }
+      /*
+        Use image resolution information if it appears to be valid.
+      */
+      else if ((image->x_resolution > 0.0) && (image->y_resolution > 0.0) &&
+               ((image->units == PixelsPerInchResolution) ||
+                (image->units == PixelsPerCentimeterResolution)))
+        {
+          x_resolution = image->x_resolution;
+          y_resolution = image->y_resolution;
+          if (image->units == PixelsPerCentimeterResolution)
             {
               x_resolution *= 2.54;
               y_resolution *= 2.54;

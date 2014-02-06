@@ -1,5 +1,9 @@
 2014-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/{ps.c, ps2.c, ps3.c, pdf.c}: Only use resolution from
+	image or -density if units was properly specified.  Without units,
+	resolution is worthless.
+
 	* coders/ps3.c (WritePS3Image): Use image resolution similar to PDF
 	changes.
 
