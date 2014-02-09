@@ -8396,7 +8396,9 @@ WandExport unsigned int MagickSetImageIndex(MagickWand *wand,const long index)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageInterlaceScheme() sets the image compression.
+%  MagickSetImageInterlaceScheme() sets the image interlace scheme.  Please
+%  use SetInterlaceScheme() instead to change the interlace scheme used when
+%  writing the image.
 %
 %  The format of the MagickSetImageInterlaceScheme method is:
 %
@@ -9063,7 +9065,8 @@ WandExport unsigned int MagickSetImageVirtualPixelMethod(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetInterlaceScheme() sets the image compression.
+%  MagickSetInterlaceScheme() sets the interlace scheme used when writing
+%  the image.
 %
 %  The format of the MagickSetInterlaceScheme method is:
 %

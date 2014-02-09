@@ -1,3 +1,10 @@
+2014-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c: Documentation improvements for
+	MagickSetInterlaceScheme() and MagickSetImageInterlaceScheme().
+	Resolves SourceForge bug #262 "setImageInterlaceScheme doesn't
+	make image progressive".
+
 2014-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/{ps.c, ps2.c, ps3.c, pdf.c}: Only use resolution from
