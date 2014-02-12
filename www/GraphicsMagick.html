@@ -5678,16 +5678,19 @@ width=15><b><font face="Helvetica, Arial"
     MAGICK_CODER_STABILITY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
-available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, and <strong>UNSTABLE</strong>.
-The default minimum level is <strong>UNSTABLE</strong>, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the <strong>PRIMARY</strong> level are commonly used
-formats with very well maintained implementations. Coders at the
-<strong>STABLE</strong> level are reasonably well maintained but represent less used
-formats. Coders at the <strong>UNSTABLE</strong> level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.</td></tr></table>
+available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, <strong>UNSTABLE</strong>,
+and <strong>BROKEN</strong>.  The default minimum level is <strong>UNSTABLE</strong>,
+which means that all available working coders will be used. The
+purpose of this option is to reduce the security exposure (or apparent
+complexity) due to the huge number of formats supported. Coders at the
+<strong>PRIMARY</strong> level are commonly used formats with very well
+maintained implementations. Coders at the <strong>STABLE</strong> level are
+reasonably well maintained but represent less used formats. Coders at
+the <strong>UNSTABLE</strong> level either have weak implementations, the file
+format itself is weak, or the probability the coder will be needed is
+vanishingly small. Coders at the <strong>BROKEN</strong> level are known to
+often not work properly or might not be useful in their current state
+at all.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

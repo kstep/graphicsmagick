@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1031,7 +1031,9 @@ InitializeMagick(const char *path)
   */
   if ((p=getenv("MAGICK_CODER_STABILITY")) != (const char *) NULL)
     {
-      if (LocaleCompare(p,"UNSTABLE") == 0)
+      if (LocaleCompare(p,"BROKEN") == 0)
+	MinimumCoderClass=BrokenCoderClass;
+      else if (LocaleCompare(p,"UNSTABLE") == 0)
 	MinimumCoderClass=UnstableCoderClass;
       else if (LocaleCompare(p,"STABLE") == 0)
 	MinimumCoderClass=StableCoderClass;

@@ -1,3 +1,19 @@
+2014-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (RegisterPSDImage): Set PSD to UnstableCoderClass
+	since its implementation is currently rather marginal.  It may
+	even be that this coder deserves to be marked with the new
+	BrokenCoderClass.  We are still looking for a volunteer to iron
+	out the wrinkles in the PSD reader.
+
+	* magick/magick.h (CoderClass): Added BrokenCoderClass to mark
+	coders which often malfunction or are not very useful in their
+	current condition.  Sometimes there is still hope that problems
+	will be resolved and so the source file is not outright deleted.
+	This setting allows us to mark and use coders which might
+	malfunction by defining MAGICK_CODER_STABILITY=BROKEN in the
+	environment while not causing danger for normal use.
+
 2014-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c: Documentation improvements for
