@@ -233,6 +233,9 @@ static void spinlock_release (LONG volatile *sl)
 %  AcquireSemaphoreInfo() locks a semaphore, initializing it first if
 %  necessary.
 %
+%  This function is deprecated, should not be used for new code, and should
+%  be removed when possible from existing code.
+%
 %  The format of the AcquireSemaphoreInfo method is:
 %
 %      void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
@@ -546,6 +549,9 @@ MagickExport void InitializeSemaphore(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method LiberateSemaphoreInfo unlocks the semaphore if it has been allocated.
+%
+%  This function is deprecated, should not be used for new code, and should
+%  be removed when possible from existing code.
 %
 %  The format of the LiberateSemaphoreInfo method is:
 %

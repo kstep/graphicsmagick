@@ -1,3 +1,10 @@
+2014-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/semaphore.c (AcquireSemaphoreInfo): Document that this
+	function was deprecated.
+	(LiberateSemaphoreInfo): Document that this function was
+	deprecated.
+
 2014-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c (RegisterPSDImage): Set PSD to UnstableCoderClass
