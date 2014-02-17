@@ -1,3 +1,13 @@
+2014-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (InterpolatePrimary): Added a hack so that
+	affine transformations and displace composite do not have
+	background colored fringing on the transferred image edges when
+	the background is completely transparent.  Fringing problem was
+	caused by one or more of the line ends being a transparent pixel
+	outside of the bounds of the original image content.  May not be
+	the final solution.
+
 2014-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/semaphore.c (AcquireSemaphoreInfo): Document that this

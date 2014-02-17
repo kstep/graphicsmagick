@@ -2614,37 +2614,49 @@ InterpolateViewColor(const ViewInfo *view,
   register const PixelPacket
     *p;
 
-  p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
-  if (p == (const PixelPacket *) NULL)
-    {
-      (void) AcquireOneCacheViewPixel(view,color,(long) x_offset,
-                                      (long) y_offset,exception);
-    }
-  else
-    {
-      double
-        alpha,
-        beta,
-        one_minus_alpha,
-        one_minus_beta;
+  const Image
+    *image = ((const View *) view)->image;
 
-      alpha=x_offset-floor(x_offset);
-      beta=y_offset-floor(y_offset);
-      one_minus_alpha=1.0-alpha;
-      one_minus_beta=1.0-beta;
-      color->red=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].red+alpha*p[1].red)+
-         beta*(one_minus_alpha*p[2].red+alpha*p[3].red)+0.5);
-      color->green=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].green+alpha*p[1].green)+
-         beta*(one_minus_alpha*p[2].green+alpha*p[3].green)+0.5);
-      color->blue=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].blue+alpha*p[1].blue)+
-         beta*(one_minus_alpha*p[2].blue+alpha*p[3].blue)+0.5);
-      color->opacity=(Quantum)
-        (one_minus_beta*(one_minus_alpha*p[0].opacity+alpha*p[1].opacity)+
-         beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
-    }
+  MagickBool
+    matte;
+
+  double
+    alpha,
+    beta;
+
+  matte = image->matte && IsRGBColorspace(image->colorspace);
+  alpha=x_offset-floor(x_offset);
+  beta=y_offset-floor(y_offset);
+
+  if ((p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,
+                                exception)) == (const PixelPacket *) NULL)
+    return;
+
+#define PrimaryContribution(p,index,channel)                    \
+  ((matte) && (p[index].opacity == TransparentOpacity) ? 0.0 :  \
+   (double) p[index].channel)
+#define OpacityContribution(p,index,channel)    \
+  ((double) p[index].opacity)
+#define InterpolatePrimary(p,channel)                           \
+  ((Quantum)                                                    \
+   ((1.0-beta)*((1.0-alpha)*PrimaryContribution(p,0,channel) +  \
+                alpha*PrimaryContribution(p,1,channel)) +       \
+    beta*((1.0-alpha)*PrimaryContribution(p,2,channel) +        \
+          alpha*PrimaryContribution(p,3,channel))+0.5))
+#define InterpolateOpacity(p,channel)                           \
+  ((Quantum)                                                    \
+   ((1.0-beta)*((1.0-alpha)*OpacityContribution(p,0,channel) +  \
+                alpha*OpacityContribution(p,1,channel)) +       \
+    beta*((1.0-alpha)*OpacityContribution(p,2,channel) +        \
+          alpha*OpacityContribution(p,3,channel))+0.5))
+
+  color->red=InterpolatePrimary(p,red);
+  color->green=InterpolatePrimary(p,green);
+  color->blue=InterpolatePrimary(p,blue);
+  if (!matte)
+    color->opacity=OpaqueOpacity;
+  else
+    color->opacity=InterpolateOpacity(p,opacity);
 }
 MagickExport PixelPacket InterpolateColor(const Image *image,
   const double x_offset,const double y_offset,ExceptionInfo *exception)

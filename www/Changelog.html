@@ -35,6 +35,18 @@
 <div class="document">
 
 
+<p>2014-02-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/pixel_cache.c (InterpolatePrimary): Added a hack so that
+affine transformations and displace composite do not have
+background colored fringing on the transferred image edges when
+the background is completely transparent.  Fringing problem was
+caused by one or more of the line ends being a transparent pixel
+outside of the bounds of the original image content.  May not be
+the final solution.</li>
+</ul>
+</blockquote>
 <p>2014-02-14  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
