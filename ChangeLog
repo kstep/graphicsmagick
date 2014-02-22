@@ -1,3 +1,10 @@
+2014-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Fix documentation to note that 'unspecified
+	alpha' is the GraphicsMagick default when writing TIFF rather than
+	'associated alpha'.  Much thanks to Mats Peterson for alerting us
+	of this error.
+
 2014-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c (InterpolatePrimary): Added a hack so that
