@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1043,7 +1043,8 @@ XShearImage(Image *image,const double degrees,
 #define XShearImageText  "[%s] X Shear: %+g degrees, region %lux%lu%+ld%+ld...  "
 
   long
-    y;
+    y,
+    xr_offset;
 
   unsigned long
     row_count=0;
@@ -1056,6 +1057,14 @@ XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
+
+  assert(x_offset >= 0);
+  assert(x_offset < (long) image->columns);
+  assert(y_offset >= 0);
+  assert(y_offset < (long) image->rows);
+  assert(width <= (image->columns-(unsigned long) x_offset));
+  assert(height <= (image->rows-(unsigned long) y_offset));
+  xr_offset=image->columns-width-x_offset;
 
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
@@ -1075,7 +1084,8 @@ XShearImage(Image *image,const double degrees,
         displacement;
 
       long
-        step;
+        step,
+        skip;
 
       PixelPacket
         pixel;
@@ -1127,19 +1137,18 @@ XShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels left-to-right.
                 */
-                if (step > x_offset)
-                  break;
+                skip = (step > x_offset) ? step - x_offset : 0;
                 p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
                     break;
                   }
-                p+=x_offset;
+                p+=x_offset+skip;
                 q=p-step;
-                (void) memcpy(q,p,width*sizeof(PixelPacket));
+                (void) memcpy(q,p,(width-(unsigned long)skip)*sizeof(PixelPacket));
                 q+=width;
-                for (i=0; i < (long) step; i++)
+                for (i=0; i < step; i++)
                   *q++=image->background_color;
                 break;
               }
@@ -1148,17 +1157,18 @@ XShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels right-to-left.
                 */
+                skip = (step > xr_offset) ? step - xr_offset : 0;
                 p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
                     break;
                   }
-                p+=x_offset+width;
+                p+=x_offset+width-skip;
                 q=p+step;
-                for (i=0; i < (long) width; i++)
+                for (i=0; i < ((long) width - skip); i++)
                   *--q=(*--p);
-                for (i=0; i < (long) step; i++)
+                for (i=0; i < step; i++)
                   *--q=image->background_color;
                 break;
               }
@@ -1196,8 +1206,6 @@ XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels left-to-right.
             */
-            if (step > x_offset)
-              break;
             p=GetImagePixelsEx(image,0,y+y_offset,image->columns,1,exception);
             if (p == (PixelPacket *) NULL)
               {
@@ -1321,7 +1329,8 @@ YShearImage(Image *image,const double degrees,
 #define YShearImageText  "[%s] Y Shear: %+g degrees, region %lux%lu%+ld%+ld...  "
 
   long
-    y;
+    x,
+    yr_offset;
 
   unsigned long
     row_count=0;
@@ -1335,6 +1344,14 @@ YShearImage(Image *image,const double degrees,
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
 
+  assert(x_offset >= 0);
+  assert(x_offset < (long) image->columns);
+  assert(y_offset >= 0);
+  assert(y_offset < (long) image->rows);
+  assert(width <= (image->columns-(unsigned long) x_offset));
+  assert(height <= (image->rows-(unsigned long) y_offset));
+  yr_offset=image->rows-height-y_offset;
+
 #if defined(HAVE_OPENMP)
 #  if defined(TUNE_OPENMP)
 #    pragma omp parallel for schedule(runtime) shared(row_count, status)
@@ -1346,7 +1363,7 @@ YShearImage(Image *image,const double degrees,
 #    endif
 #  endif
 #endif
-  for (y=0; y < (long) width; y++)
+  for (x=0; x < (long) width; x++)
     {
       double
         alpha,
@@ -1359,7 +1376,8 @@ YShearImage(Image *image,const double degrees,
         } direction;
 
       long
-        step;
+        step,
+        skip;
 
       register PixelPacket
         *p,
@@ -1381,7 +1399,7 @@ YShearImage(Image *image,const double degrees,
       if (thread_status == MagickFail)
         continue;
 
-      displacement=degrees*(y-width/2.0);
+      displacement=degrees*(x-width/2.0);
       if (displacement == 0.0)
         continue;
       if (displacement > 0.0)
@@ -1405,17 +1423,16 @@ YShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels top-to-bottom.
                 */
-                if (step > y_offset)
-                  break;
-                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
+                skip = (step > y_offset) ? step - y_offset : 0;
+                p=GetImagePixelsEx(image,x+x_offset,0,1,image->rows,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
                     break;
                   }
-                p+=y_offset;
+                p+=y_offset+skip;
                 q=p-step;
-                (void) memcpy(q,p,height*sizeof(PixelPacket));
+                (void) memcpy(q,p,(height-(unsigned long)skip)*sizeof(PixelPacket));
                 q+=height;
                 for (i=0; i < (long) step; i++)
                   *q++=image->background_color;
@@ -1426,17 +1443,18 @@ YShearImage(Image *image,const double degrees,
                 /*
                   Transfer pixels bottom-to-top.
                 */
-                p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
+                skip = (step > yr_offset) ? step - yr_offset : 0;
+                p=GetImagePixelsEx(image,x+x_offset,0,1,image->rows,exception);
                 if (p == (PixelPacket *) NULL)
                   {
                     thread_status=MagickFail;
                     break;
                   }
-                p+=y_offset+height;
+                p+=y_offset+height-skip;
                 q=p+step;
-                for (i=0; i < (long) height; i++)
+                for (i=0; i < ((long) height - skip); i++)
                   *--q=(*--p);
-                for (i=0; i < (long) step; i++)
+                for (i=0; i < step; i++)
                   *--q=image->background_color;
                 break;
               }
@@ -1474,9 +1492,7 @@ YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels top-to-bottom.
             */
-            if (step > y_offset)
-              break;
-            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
+            p=GetImagePixelsEx(image,x+x_offset,0,1,image->rows,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;
@@ -1507,7 +1523,7 @@ YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels bottom-to-top.
             */
-            p=GetImagePixelsEx(image,y+x_offset,0,1,image->rows,exception);
+            p=GetImagePixelsEx(image,x+x_offset,0,1,image->rows,exception);
             if (p == (PixelPacket *) NULL)
               {
                 thread_status=MagickFail;

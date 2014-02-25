@@ -1,3 +1,9 @@
+2014-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/shear.c: Applied patch by Troy Patteson to fix
+	SourceForge issue #260 "Rotation exhibits clipping/shearing errors
+	for short wide images at some angles".
+
 2014-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Fix documentation to note that 'unspecified
