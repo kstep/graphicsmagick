@@ -1249,7 +1249,7 @@ XShearImage(Image *image,const double degrees,
               {
                 p--;
                 q--;
-                if ((x_offset+width+step-i) >= image->columns)
+                if ((x_offset+width+step-i) > image->columns)
                   continue;
                 BlendCompositePixel(q,&pixel,p,alpha);
                 pixel=(*p);
@@ -1535,7 +1535,7 @@ YShearImage(Image *image,const double degrees,
               {
                 p--;
                 q--;
-                if ((y_offset+height+step-i) >= image->rows)
+                if ((y_offset+height+step-i) > image->rows)
                   continue;
                 BlendCompositePixel(q,&pixel,p,alpha);
                 pixel=(*p);
@@ -1640,7 +1640,11 @@ RotateImage(const Image *image,const double degrees,ExceptionInfo *exception)
     height,
     rotations,
     width,
-    y_width;
+    shear1_width,
+    shear2_height,
+    shear3_width,
+    max_width,
+    max_height;
 
   /*
     Adjust rotation angle.
@@ -1669,16 +1673,19 @@ RotateImage(const Image *image,const double degrees,ExceptionInfo *exception)
   /*
     Compute image size.
   */
-  width=image->columns;
-  height=image->rows;
-  if ((rotations == 1) || (rotations == 3))
-    {
-      width=image->rows;
-      height=image->columns;
-    }
-  x_offset=(long) ceil(fabs(2.0*height*shear.y)-0.5);
-  y_width=(unsigned long) floor(fabs(height*shear.x)+width+0.5);
-  y_offset=(long) ceil(fabs(y_width*shear.y)-0.5);
+  width=integral_image->columns;
+  height=integral_image->rows;
+  shear1_width=(unsigned long) floor(fabs(height*shear.x)+width+0.5);
+  shear2_height=(unsigned long) floor(fabs(shear1_width*shear.y)+height+0.5);
+  shear3_width=(unsigned long) floor(fabs(shear2_height*shear.x)+shear1_width+0.5);
+  /*
+    Compute maximum bounds to perform 3 shear operations.
+    Add extra pixels to account for fractional displacement
+  */
+  max_width = ((shear3_width > shear1_width) ? shear3_width : shear1_width) + 2;
+  max_height = shear2_height + 2;
+  x_offset = (long) floor((max_width-width)/2.0+0.5);
+  y_offset = (long) floor((max_height-height)/2.0+0.5);
   /*
     Surround image with a border.
   */
@@ -1697,18 +1704,19 @@ RotateImage(const Image *image,const double degrees,ExceptionInfo *exception)
   rotate_image->storage_class=DirectClass;
   rotate_image->matte|=rotate_image->background_color.opacity != OpaqueOpacity;
   
-  if (XShearImage(rotate_image,shear.x,width,height,x_offset,
-		  (long) (rotate_image->rows-height)/2,exception) != MagickPass)
+  if (XShearImage(rotate_image,shear.x,width,height,
+          x_offset,y_offset,exception) != MagickPass)
     goto rotate_image_exception;
 
-  if (YShearImage(rotate_image,shear.y,y_width,height,
-		  (long) (rotate_image->columns-y_width)/2,y_offset,exception)
+  if (YShearImage(rotate_image,shear.y,shear1_width,height,
+		  (long) (rotate_image->columns-shear1_width)/2,y_offset,exception)
       != MagickPass)
     goto rotate_image_exception;
 
-  if (XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
-		  (long) (rotate_image->columns-y_width)/2,0,exception)
-      != MagickPass)
+  if (XShearImage(rotate_image,shear.x,shear1_width,shear2_height,
+		  (long) (rotate_image->columns-shear1_width)/2,
+		  (long) (rotate_image->rows-shear2_height)/2,exception)
+     != MagickPass)
     goto rotate_image_exception;
 
   if (CropToFitImage(&rotate_image,shear.x,shear.y,width,height,True,exception)

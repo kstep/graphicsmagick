@@ -1,5 +1,13 @@
 2014-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/shear.c: Applied patch by Troy Patteson to improve
+	non-integral rotation by around 40% by minimizing added image
+	borders.  This may cause small differences in results for some
+	images.
+
+	* reference/filter/Rotate10.miff: Update rotate 10 degrees
+	reference image so that PerlMagick test passes.
+
 	* magick/shear.c: Applied patch by Troy Patteson to fix
 	SourceForge issue #260 "Rotation exhibits clipping/shearing errors
 	for short wide images at some angles".
