@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2617,46 +2617,64 @@ InterpolateViewColor(const ViewInfo *view,
   const Image
     *image = ((const View *) view)->image;
 
-  MagickBool
+  register MagickBool
     matte;
 
   double
     alpha,
-    beta;
+    beta,
+    one_minus_alpha,
+    one_minus_beta,
+    p0_area,
+    p1_area,
+    p2_area,
+    p3_area,
+    p_area;
 
-  matte = image->matte && IsRGBColorspace(image->colorspace);
-  alpha=x_offset-floor(x_offset);
-  beta=y_offset-floor(y_offset);
-
-  if ((p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,
-                                exception)) == (const PixelPacket *) NULL)
+  p=AcquireCacheViewPixels(view,(long) x_offset,(long) y_offset,2,2,exception);
+  if (p == (const PixelPacket *) NULL)
     return;
 
-#define PrimaryContribution(p,index,channel)                    \
-  ((matte) && (p[index].opacity == TransparentOpacity) ? 0.0 :  \
-   (double) p[index].channel)
-#define OpacityContribution(p,index,channel)    \
-  ((double) p[index].opacity)
-#define InterpolatePrimary(p,channel)                           \
-  ((Quantum)                                                    \
-   ((1.0-beta)*((1.0-alpha)*PrimaryContribution(p,0,channel) +  \
-                alpha*PrimaryContribution(p,1,channel)) +       \
-    beta*((1.0-alpha)*PrimaryContribution(p,2,channel) +        \
-          alpha*PrimaryContribution(p,3,channel))+0.5))
-#define InterpolateOpacity(p,channel)                           \
-  ((Quantum)                                                    \
-   ((1.0-beta)*((1.0-alpha)*OpacityContribution(p,0,channel) +  \
-                alpha*OpacityContribution(p,1,channel)) +       \
-    beta*((1.0-alpha)*OpacityContribution(p,2,channel) +        \
-          alpha*OpacityContribution(p,3,channel))+0.5))
+  matte = image->matte && IsRGBColorspace(image->colorspace);
 
-  color->red=InterpolatePrimary(p,red);
-  color->green=InterpolatePrimary(p,green);
-  color->blue=InterpolatePrimary(p,blue);
-  if (!matte)
-    color->opacity=OpaqueOpacity;
+  alpha=x_offset-floor(x_offset);
+  beta=y_offset-floor(y_offset);
+  one_minus_alpha=1.0-alpha;
+  one_minus_beta=1.0-beta;
+  p0_area = ((!matte) || (p[0].opacity != TransparentOpacity)
+             ? one_minus_beta * one_minus_alpha : 0.0);
+  p1_area = ((!matte) || (p[1].opacity != TransparentOpacity)
+             ? one_minus_beta * alpha : 0.0);
+  p2_area = ((!matte) || (p[2].opacity != TransparentOpacity)
+             ? beta * one_minus_alpha : 0.0);
+  p3_area = ((!matte) || (p[3].opacity != TransparentOpacity)
+             ? beta * alpha : 0.0);
+  p_area = p0_area + p1_area + p2_area + p3_area;
+  if (p_area <= 0.5/MaxRGBDouble)
+    {
+      color->red=0;
+      color->green=0;
+      color->blue=0;
+      color->opacity=TransparentOpacity;
+    }
   else
-    color->opacity=InterpolateOpacity(p,opacity);
+    {
+      color->red=(Quantum)
+        (((p0_area*p[0].red+p1_area*p[1].red+
+           p2_area*p[2].red+p3_area*p[3].red)/p_area)+0.5);
+      color->green=(Quantum)
+        (((p0_area*p[0].green+p1_area*p[1].green+
+           p2_area*p[2].green+p3_area*p[3].green)/p_area)+0.5);
+      color->blue=(Quantum)
+        (((p0_area*p[0].blue+p1_area*p[1].blue+
+           p2_area*p[2].blue+p3_area*p[3].blue)/p_area)+0.5);
+      if (!matte)
+        color->opacity=OpaqueOpacity;
+      else
+        color->opacity=(Quantum)
+          (one_minus_beta*(one_minus_alpha*p[0].opacity+alpha*p[1].opacity)+
+           beta*(one_minus_alpha*p[2].opacity+alpha*p[3].opacity)+0.5);
+    }
 }
 MagickExport PixelPacket InterpolateColor(const Image *image,
   const double x_offset,const double y_offset,ExceptionInfo *exception)

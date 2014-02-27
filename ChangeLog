@@ -1,3 +1,11 @@
+2014-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (InterpolateViewColor): Applied patch by
+	Troy Patteson plus fixes to ignore opacity channel if image matte
+	is false.  Replaces most of the code rewritten on 2014-02-16 and
+	which produced a faint darkened border.  The results look stellar
+	now.
+
 2014-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c: Applied patch by Troy Patteson to improve
@@ -21,7 +29,7 @@
 
 2014-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/pixel_cache.c (InterpolatePrimary): Added a hack so that
+	* magick/pixel_cache.c (InterpolateViewColor): Added a hack so that
 	affine transformations and displace composite do not have
 	background colored fringing on the transferred image edges when
 	the background is completely transparent.  Fringing problem was
