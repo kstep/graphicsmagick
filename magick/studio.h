@@ -446,6 +446,20 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #endif
 
 /*
+  MinGW configure may find _aligned_malloc when the CRT version should not
+  support it.  Make sure that HAVE__ALIGNED_MALLOC is not defined when it
+  shouldn't be.
+*/
+#if defined(MSWINDOWS)
+#  if defined(HAVE__ALIGNED_MALLOC)
+#    if ((defined(_VISUALC_) && defined(_MSC_VER) && _MSC_VER < 1310) || \
+         (defined(__MINGW32__) && !(__MSVCRT_VERSION__ >= 0x0700)))
+#      undef HAVE__ALIGNED_MALLOC
+#    endif
+#  endif
+#endif
+
+/*
   C99 isblank() is not portable enough yet.
 */
 #define MagickIsBlank(c) (c== ' ' || c == '\t')

@@ -297,7 +297,7 @@ MagickExport void DestroyLogInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InitializeLogInfo initializes the constitute facility
+%  Method InitializeLogInfo initializes the logging facility
 %
 %  The format of the InitializeLogInfo method is:
 %
@@ -1060,6 +1060,9 @@ MagickExport unsigned long SetLogEventMask(const char *events)
 
   event_flags=log_info->events;
   UnlockSemaphoreInfo(log_semaphore);
+
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                        "Set log event mask: %s", events ? events : "None");
 
   return (event_flags);
 }

@@ -135,7 +135,11 @@ extern "C" {
 #  define HAVE_GLOBALMEMORYSTATUSEX 1
 #endif
 
-#if defined(_VISUALC_) && (_MSC_VER >= 1300)
+/*
+  _aligned_malloc comes with msvcr70.dll
+*/
+#if ((defined(_VISUALC_) && (_MSC_VER >= 1300)) ||              \
+     (defined(__MINGW32__) && (__MSVCRT_VERSION__ >= 0x0700)))
 #  define HAVE__ALIGNED_MALLOC 1
 #endif
 
