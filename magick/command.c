@@ -17090,6 +17090,12 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
   LONG
     lRet;
 
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
+
   memset(szKey, 0, _MAX_PATH*2*sizeof(char));
   strcpy(szKey, szRegPath);
   strcat(szKey, "GraphicsMagick");

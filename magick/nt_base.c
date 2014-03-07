@@ -598,6 +598,8 @@ MagickExport void *NTdlsym(void *handle,const char *name)
 */
 MagickExport int NTmunmap(void *map,size_t length)
 {
+  ARG_NOT_USED(length);
+
   if (!UnmapViewOfFile(map))
     return(-1);
   return(0);
@@ -677,6 +679,8 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 {
   char
     buffer[3*MaxTextExtent];
+
+  ARG_NOT_USED(error);
 
   if (reason == (char *) NULL)
     {
@@ -865,7 +869,7 @@ NTGhostscriptFind(const char **gs_productfamily,
       "Aladdin Ghostscript" 
     };
 
-  int
+  unsigned int
     product_index;
 
   MagickPassFail
@@ -1036,8 +1040,10 @@ NTGhostscriptGetString(const char *name, char *ptr, const size_t len)
       { HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE" }
     };
 
+  unsigned int
+    i;
+
   int
-    i,
     length;
   
   char
@@ -1909,6 +1915,8 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
   char
     buffer[2*MaxTextExtent];
 
+  ARG_NOT_USED(warning);
+
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
@@ -2034,6 +2042,8 @@ MagickExport void *NTmmap(char *address,size_t length,int protection,int flags,
     access_mode=0,
     protection_mode=0;
 
+  ARG_NOT_USED(address);
+
   map=(void *) NULL;
   shmem_handle=INVALID_HANDLE_VALUE;
   file_handle=INVALID_HANDLE_VALUE;
@@ -2122,6 +2132,7 @@ MagickExport void *NTmmap(char *address,size_t length,int protection,int flags,
 */
 MagickExport int NTmsync(void *addr, size_t len, int flags)
 {
+  ARG_NOT_USED(flags);
   if (!FlushViewOfFile(addr,len))
     return(-1);
   return(0);
@@ -2264,6 +2275,7 @@ MagickExport struct dirent *NTreaddir(DIR *entry)
 */
 MagickExport void NTseekdir(DIR *entry,long position)
 {
+  ARG_NOT_USED(position);
   assert(entry != (DIR *) NULL);
 }
 

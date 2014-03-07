@@ -2011,6 +2011,12 @@ static unsigned int ZLIBEncode2Image(Image *image,const size_t length,
   const unsigned long quality,unsigned char *pixels,WriteByteHook write_byte,
   void *info)
 {
+  ARG_NOT_USED(length);
+  ARG_NOT_USED(quality);
+  ARG_NOT_USED(pixels);
+  ARG_NOT_USED(write_byte);
+  ARG_NOT_USED(info);
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
