@@ -1628,7 +1628,8 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Found: windows resource \"%.1024s\"",id);
   /*
-    Load resource into global memory.
+    Load resource into global memory (in WIN32, resources are already
+    in memory).
   */
   global=LoadResource(handle,resource);
   if (!global)
@@ -1638,12 +1639,12 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   */
   length=SizeofResource(handle,resource);
   /*
-    Lock the resource in memory.
+    Lock the resource in memory (really just dereferences an object
+    permanently in memory).
   */
   value=(unsigned char *) LockResource(global);
   if (!value)
     {
-      FreeResource(global); /* Obsolete 16 bit API */
       return((unsigned char *) NULL);
     }
   blob=MagickAllocateMemory(unsigned char *,length+1);
@@ -1652,8 +1653,6 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
       (void) memcpy(blob,value,length);
       blob[length]='\0';
     }
-  UnlockResource(global); /* Obsolete 16 bit API with no replacement */
-  FreeResource(global); /* Obsolete 16 bit API */
   return(blob);
 }
 

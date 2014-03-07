@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2013 GraphicsMagick Group
+# Copyright (C) 2003-2014 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -1166,7 +1166,7 @@ AC_SUBST(MAGICK_SSIZE_T_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([_aligned_malloc atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
+AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \

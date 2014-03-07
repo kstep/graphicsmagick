@@ -1,3 +1,15 @@
+2014-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (NTResourceToBlob): According to Microsoft
+	Report article 193678 (http://support.microsoft.com/kb/193678),
+	FreeResource() is not needed in WIN32 and performs no useful
+	function.  Remove use of it.  Also remove use of UnlockResource()
+	which is similarly unuseful for WIN32.
+
+	* configure.ac (MAGICK_LIBRARY_REVISION): Test for Windows
+	_aligned_malloc() is not reliable.  Use Windows CRT version to
+	decide if it is available.
+
 2014-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h: Make sure that Windows _aligned_malloc() is not
