@@ -1,5 +1,7 @@
 2014-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* ttf: Updated FreeType to release 2.5.3 of March 6, 2014.
+
 	* jpeg: Update to libjpeg 9a of 19-Jan-2014.
 
 	* png: Update to Libpng 1.6.10 - March 6, 2014.
