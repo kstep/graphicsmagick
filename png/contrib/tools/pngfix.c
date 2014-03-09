@@ -1,8 +1,8 @@
 /* pngfix.c
  *
- * Copyright (c) 2013 John Cunningham Bowler
+ * Copyright (c) 2014 John Cunningham Bowler
  *
- * Last changed in libpng 1.6.8 [December 19, 2013]
+ * Last changed in libpng 1.6.10 [March 6, 2014]
  *
  * This code is released under the libpng license.
  * For conditions of distribution and use, see the disclaimer
@@ -32,7 +32,6 @@
 #  define FIX_GCC volatile
 #else
 #  define FIX_GCC
-#  error not tested
 #endif
 
 #define PROGRAM_NAME "pngfix"
@@ -3160,13 +3159,13 @@ read_chunk(struct file *file)
 /* This returns a file* from a png_struct in an implementation specific way. */
 static struct file *get_control(png_const_structrp png_ptr);
 
-static void
+static void PNGCBAPI
 error_handler(png_structp png_ptr, png_const_charp message)
 {
    stop(get_control(png_ptr),  LIBPNG_ERROR_CODE, message);
 }
 
-static void
+static void PNGCBAPI
 warning_handler(png_structp png_ptr, png_const_charp message)
 {
    struct file *file = get_control(png_ptr);
@@ -3178,7 +3177,7 @@ warning_handler(png_structp png_ptr, png_const_charp message)
 /* Read callback - this is where the work gets done to check the stream before
  * passing it to libpng
  */
-static void
+static void PNGCBAPI
 read_callback(png_structp png_ptr, png_bytep buffer, size_t count)
    /* Return 'count' bytes to libpng in 'buffer' */
 {
