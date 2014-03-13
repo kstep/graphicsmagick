@@ -354,9 +354,11 @@ static const char *EncodingErrorString(WebPEncodingError error)
     case VP8_ENC_ERROR_FILE_TOO_BIG:
       result = "File too big (> 4GB)";
       break;
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
     case VP8_ENC_ERROR_USER_ABORT:
       result = "User abort";
       break;
+#endif
     case VP8_ENC_ERROR_LAST:
       break;
     }
