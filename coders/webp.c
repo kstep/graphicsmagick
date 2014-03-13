@@ -317,6 +317,53 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
+static const char *EncodingErrorString(WebPEncodingError error)
+{
+  const char
+    *result = "Unknown error";
+
+  switch (error)
+    {
+    case VP8_ENC_OK:
+      result = "OK";
+      break;
+    case VP8_ENC_ERROR_OUT_OF_MEMORY:
+      result = "Out of memory";
+      break;
+    case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
+      result = "Bitstream out of memory";
+      break;
+    case VP8_ENC_ERROR_NULL_PARAMETER:
+      result = "NULL parameter";
+      break;
+    case VP8_ENC_ERROR_INVALID_CONFIGURATION:
+      result = "Invalid configuration";
+      break;
+    case VP8_ENC_ERROR_BAD_DIMENSION:
+      result = "Bad dimension";
+      break;
+    case VP8_ENC_ERROR_PARTITION0_OVERFLOW:
+      result = "Partition 0 overflow (> 512K)";
+      break;
+    case VP8_ENC_ERROR_PARTITION_OVERFLOW:
+      result = "Partition overflow (> 16M)";
+      break;
+    case VP8_ENC_ERROR_BAD_WRITE:
+      result = "Bad write";
+      break;
+    case VP8_ENC_ERROR_FILE_TOO_BIG:
+      result = "File too big (> 4GB)";
+      break;
+    case VP8_ENC_ERROR_USER_ABORT:
+      result = "User abort";
+      break;
+    case VP8_ENC_ERROR_LAST:
+      break;
+    }
+
+  return result;
+}
+
 static int WebPWriter(const unsigned char *stream,size_t length,
                       const WebPPicture *const picture)
 {
@@ -377,6 +424,12 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   if (WebPPictureInit(&picture) == 0)
     ThrowWriterException(ResourceLimitError, MemoryAllocationFailed, image);
+  /*
+    Make sure that image is in an RGB type space and DirectClass.
+  */
+  (void) TransformColorspace(image,RGBColorspace);
+  image->storage_class=DirectClass;
+
   picture.writer=WebPWriter;
   picture.custom_ptr=(void *) image;
   picture.stats=(&statistics);
@@ -388,7 +441,6 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
     configure.quality = (float) image_info->quality;
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-
   /*
     Allocate memory for pixels.
   */
@@ -417,15 +469,28 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
         }
     }
 
+  /*
+    "Returns false in case of memory error."
+  */
   if (image->matte != MagickTrue)
     webp_status=WebPPictureImportRGB(&picture,pixels,3*picture.width);
   else
     webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
   MagickFreeMemory(pixels);
-  webp_status=WebPEncode(&configure, &picture);
+  if (webp_status)
+    {
+      /*
+        "Returns false in case of error, true otherwise.
+        In case of error, picture->error_code is updated accordingly."
+      */
+      webp_status=WebPEncode(&configure, &picture);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "WebP status code: %d (\"%s\")", picture.error_code,
+                            EncodingErrorString(picture.error_code));
+    }
   WebPPictureFree(&picture);
   CloseBlob(image);
 
-  return(webp_status == 0 ? MagickPass : MagickFail);
+  return (webp_status ? MagickPass : MagickFail);
 }
 #endif

@@ -1,3 +1,12 @@
+2014-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/{rwblob.tap, rwfile.tap}: Added tests for WEBP.
+
+	* tests/{rwblob.c, rwfile.c}: Add lossy hint for WEBP.
+
+	* coders/webp.c (WriteWEBPImage): Fix inverted return status.
+	Added a tiny bit of logging.
+
 2014-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ttf: Updated FreeType to release 2.5.3 of March 6, 2014.
