@@ -101,8 +101,8 @@
 #undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
-#define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
-#define PNG_SORT_PALETTE    /* This works as of 5.4.0. */
+#define GMPNG_BUILD_PALETTE   /* This works as of 5.4.3. */
+#define GMPNG_SORT_PALETTE    /* This works as of 5.4.0. */
 #if defined(HasJPEG)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -112,13 +112,15 @@
   setjmp/longjmp is claimed to be safe on these platforms:
   setjmp/longjmp is alleged to be unsafe on these platforms:
 */
-#ifndef SETJMP_IS_THREAD_SAFE
-#define PNG_SETJMP_NOT_THREAD_SAFE
-#endif
+#ifdef PNG_SETJMP_SUPPORTED
+# ifndef SETJMP_IS_THREAD_SAFE
+#   define GMPNG_SETJMP_NOT_THREAD_SAFE
+# endif
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+# if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
 static SemaphoreInfo
   *png_semaphore = (SemaphoreInfo *) NULL;
+# endif
 #endif
 
 /*
@@ -483,7 +485,7 @@ static const char* PngColorTypeToString(const unsigned int color_type)
   return result;
 }
 
-#if defined(PNG_SORT_PALETTE)
+#if defined(GMPNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1628,7 +1630,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.blue=65537;
   transparent_color.opacity=65537;
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -1673,7 +1675,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (png_pixels != (unsigned char *) NULL)
@@ -2306,7 +2308,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               "    Skipping PNG image data for scene %ld",
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
@@ -2668,7 +2670,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       MagickFreeMemory(png_pixels);
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
@@ -2874,7 +2876,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_destroy_read_struct(&ping,&ping_info,&end_info);
 
   MagickFreeMemory(png_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -6103,7 +6105,7 @@ ModuleExport void RegisterPNGImage(void)
       entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       png_semaphore=AllocateSemaphoreInfo();
 #endif
 }
@@ -6139,7 +6141,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG00");
   (void) UnregisterMagickInfo("JNG");
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   DestroySemaphoreInfo(&png_semaphore);
 #endif
 }
@@ -6478,7 +6480,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -6493,7 +6495,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 #endif
       png_destroy_write_struct(&ping,&ping_info);
       MagickFreeMemory(png_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFail);
@@ -6588,7 +6590,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
         ping_colortype=PNG_COLOR_TYPE_PALETTE;
 
-#if defined(PNG_SORT_PALETTE)
+#if defined(GMPNG_SORT_PALETTE)
         if (CompressColormapTransFirst(image) == MagickFail)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                                image);
@@ -6969,7 +6971,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   }
                 else
                   {
-#if defined(PNG_SORT_PALETTE)
+#if defined(GMPNG_SORT_PALETTE)
                     if (mng_info->optimize)
                       {
                         if (CompressColormapTransFirst(image) == MagickFail)
@@ -7168,6 +7170,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Compression strategy: Z_HUFFMAN_ONLY");
       png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+      png_set_compression_level(ping,2);
     }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7875,7 +7878,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
   MagickFreeMemory(png_pixels);
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -8820,7 +8823,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       }
   }
 
-#ifdef PNG_BUILD_PALETTE
+#ifdef GMPNG_BUILD_PALETTE
   if (optimize)
     {
       /*

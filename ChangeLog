@@ -1,3 +1,12 @@
+2014-03-16  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Don't block threads when PNG_SETJMP_SUPPORTED is
+	not enabled.
+
+	* coders/png.c: Changed prefix of macros defined in coders/png.c
+	from PNG_ to GMPNG_.  PNG_ is reserved for macros defined by
+	libpng.
+
 2014-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: Don't use setvbuf() to set stdio block size if
