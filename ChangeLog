@@ -1,3 +1,8 @@
+2014-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c: Don't use setvbuf() to set stdio block size if
+	filesystem block size is zero (e.g. MAGICK_IOBUF_SIZE=0)
+
 2014-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/{rwblob.tap, rwfile.tap}: Added tests for WEBP.
@@ -10,6 +15,7 @@
 2014-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ttf: Updated FreeType to release 2.5.3 of March 6, 2014.
+	Provides security fixes for CVE-2014-2240.
 
 	* jpeg: Update to libjpeg 9a of 19-Jan-2014.
 

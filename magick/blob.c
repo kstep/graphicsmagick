@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1217,7 +1217,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         vbuf_size;
 
       vbuf_size=MagickGetFileSystemBlockSize();
-      (void) setvbuf(file,NULL,_IOFBF,vbuf_size);
+      if (0 != vbuf_size)
+        (void) setvbuf(file,NULL,_IOFBF,vbuf_size);
 
       /* Get file length */
       if (MagickFseek(file,0L,SEEK_END) != -1)
@@ -2608,21 +2609,24 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                       vbuf_size;
 
 		    vbuf_size=MagickGetFileSystemBlockSize();
-                    if (setvbuf(image->blob->handle.std,NULL,_IOFBF,vbuf_size) != 0)
+                    if (0 != vbuf_size)
                       {
-                        if (image->logging)
-                          (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                                "  setvbuf of %" MAGICK_SIZE_T_F
-                                                "u bytes returns failure!",
-                                                (MAGICK_SIZE_T) vbuf_size);
-                      }
-                    else
-                      {
-                        if (image->logging)
-                          (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                                "  I/O buffer set to %"
-                                                MAGICK_SIZE_T_F "u bytes",
-                                                (MAGICK_SIZE_T) vbuf_size);
+                        if (setvbuf(image->blob->handle.std,NULL,_IOFBF,vbuf_size) != 0)
+                          {
+                            if (image->logging)
+                              (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                                    "  setvbuf of %" MAGICK_SIZE_T_F
+                                                    "u bytes returns failure!",
+                                                    (MAGICK_SIZE_T) vbuf_size);
+                          }
+                        else
+                          {
+                            if (image->logging)
+                              (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                                    "  I/O buffer set to %"
+                                                    MAGICK_SIZE_T_F "u bytes",
+                                                    (MAGICK_SIZE_T) vbuf_size);
+                          }
                       }
                     /*
                       Enable fsync-on-close mode if requested.
