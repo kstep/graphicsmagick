@@ -1,4 +1,4 @@
-.TH gm 1 "2014/02/22" "GraphicsMagick"
+.TH gm 1 "2014/03/16" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -4414,7 +4414,9 @@ Microsoft Windows). This user specified search path is used before trying
 the default search path.
 .TP
 .B "MAGICK_DEBUG"
-\fRDebug options (see \fB-debug\fP for details)
+\fRDebug options (see \fB-debug\fP for details).  Setting debug
+options via an environment variable is currently necessary to see the
+complete initialization process.
 .TP
 .B "MAGICK_FILTER_MODULE_PATH"
 \fRSearch path to use when searching for filter process modules
@@ -4434,10 +4436,15 @@ hard-coded or set by an installer.
 .B "MAGICK_MMAP_READ"
 \fRIf \fBMAGICK_MMAP_READ\fP is set to \fBTRUE\fP, GraphicsMagick
 will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.
+substantially improves repeated read performance since the file is
+already in memory after the first time it has been read. However,
+testing shows that performance may be reduced for files accessed for
+the first time since data is accessed via page-faults (upon first
+access) and many operating systems fail to do sequential read-ahead of
+memory mapped files, and particularly if those files are accessed over
+a network.  If many large input files are read, then enabling this
+option may harm performance by overloading the operating system's VM
+system as it then needs to free unmapped pages and map new ones.
 .TP
 .B "MAGICK_IO_FSYNC"
 \fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick

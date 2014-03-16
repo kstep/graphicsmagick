@@ -84,7 +84,9 @@ the default search path.</abs>
 
 <opt>MAGICK_DEBUG</opt>
 
-<abs>Debug options (see <s>-debug</s> for details)</abs>
+<abs>Debug options (see <s>-debug</s> for details).  Setting debug
+options via an environment variable is currently necessary to see the
+complete initialization process.</abs>
 
 <opt>MAGICK_FILTER_MODULE_PATH</opt>
 
@@ -107,10 +109,15 @@ hard-coded or set by an installer.</abs>
 
 <abs>If <s>MAGICK_MMAP_READ</s> is set to <s>TRUE</s>, GraphicsMagick
 will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.</abs>
+substantially improves repeated read performance since the file is
+already in memory after the first time it has been read. However,
+testing shows that performance may be reduced for files accessed for
+the first time since data is accessed via page-faults (upon first
+access) and many operating systems fail to do sequential read-ahead of
+memory mapped files, and particularly if those files are accessed over
+a network.  If many large input files are read, then enabling this
+option may harm performance by overloading the operating system's VM
+system as it then needs to free unmapped pages and map new ones.</abs>
 
 <opt>MAGICK_IO_FSYNC</opt>
 
