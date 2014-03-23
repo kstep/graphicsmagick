@@ -427,7 +427,7 @@ Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
 
   With this feature enabled, you should be able to nab a copy of...
     
-    ``VisualMagick\utilities\UTIL_convert_xxx_exe.dsp``  (for C)
+    ``VisualMagick\utilities\UTIL_gm_xxx_exe.dsp``  (for C)
 
      -or-
 
