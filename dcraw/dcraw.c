@@ -25,6 +25,12 @@
 
 #define DCRAW_VERSION "9.19"
 
+#if defined(_VISUALC_)
+# pragma warning(disable : 4005)
+# pragma warning(disable : 4133)
+# pragma warning(disable : 4146)
+# pragma warning(disable : 4305)
+#endif
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
