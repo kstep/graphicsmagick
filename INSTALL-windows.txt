@@ -273,10 +273,13 @@ Applicability
 Important Notes
 ---------------
 
-  On some platforms Visual C++ may fail with an internal compiler error.
-  If this happens to you, then make sure that your compiler is updated
-  with the latest fixes from the Microsoft web site and the problem
-  should go away.
+  On some platforms Visual C++ may fail with an internal compiler
+  error.  If this happens to you, then make sure that your compiler is
+  updated with the latest fixes from the Microsoft web site and the
+  problem will hopefully go away.  If the problem does not go away,
+  then adjust the settings for the module which failed and disable
+  optimization, and the problem is likely to go away (but with less
+  performance).
 
 Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
 -----------------------------------------------------------

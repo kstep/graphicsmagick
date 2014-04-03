@@ -4800,16 +4800,32 @@ popups that are independent windows but appear over the specified window.</pp>
 
 <dopt>-set <attribute> <value></opt>
 
-<abs>set an image attribut</abs>
+<abs>set an image attribute</abs>
 
 
 <pp>
 Set a named image attribute.  The attribute is set on the current
 (previously specified on command line) image.</pp>
 
+
 </utils>
 
 
+<!-- ------------ +set ------------------------------------------ -->
+
+<utils apps=composite,convert,display,mogrify,import>
+
+<dopt>+set <attribute></opt>
+
+<abs>unset an image attribute</abs>
+
+
+<pp>
+Unset a named image attribute.  The attribute is removed from the current
+(previously specified on command line) image.</pp>
+
+
+</utils>
 
 
 <!-- ------------ -segment ------------------------------------------ -->

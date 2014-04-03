@@ -1,3 +1,15 @@
+2014-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Allow specifying the TIFF image
+	software tag.  In the special case that the string length is zero
+	(e.g. -set software '') then the tag is skipped entirely.  This is
+	to support SourceForge feature request #37 "Option to prevent
+	addition of Exif Software tag" opened by Jean-Louis Grall.  Please
+	note that this tag is not an EXIF tag.
+
+	* magick/command.c: composite, convert, display, mogrify, and
+	import now support +set to remove an existing image attribute.
+
 2014-03-16  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Don't block threads when PNG_SETJMP_SUPPORTED is

@@ -2503,8 +2503,6 @@ SetImageAttribute(Image *image,const char *key,const char *value)
       DestroyImageAttribute(attribute);
       return(MagickPass);
     }
-  if (*value == '\0')
-    return(MagickFail);
   attribute=MagickAllocateMemory(ImageAttribute *,sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
     return(MagickFail);
