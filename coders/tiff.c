@@ -4591,8 +4591,20 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (attribute != (const ImageAttribute *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
 
-      (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
-                          GetMagickVersion((unsigned long *) NULL));
+      attribute=GetImageAttribute(image,"software");
+      if (attribute != (const ImageAttribute *) NULL)
+        {
+          /*
+            Allow skipping software tag if attribute exists but is empty.
+          */
+          if (strlen(attribute->value))
+            (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,attribute->value);
+        }
+      else
+        {
+          (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
+                              GetMagickVersion((unsigned long *) NULL));
+        }
 
 #if 0
       /*
