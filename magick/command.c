@@ -16926,6 +16926,13 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined(HasUMEM) */
   PrintFeature("UMEM", supported);
 
+  /* WebP */
+  supported=MagickFalse;
+#if defined(HasWEBP)
+  supported=MagickTrue;
+#endif /* defined(HasWEBP) */
+  PrintFeature("WebP", supported);
+
   /* WMF */
   supported=MagickFalse;
 #if defined(HasWMF) || defined(HasWMFlite)

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2013 GraphicsMagick Group
+% Copyright (C) 2013 - 2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -22,6 +22,9 @@
 %                              Software Design                                %
 %                                  TIMEBUG                                    %
 %                                January 2013                                 %
+%                                                                             %
+%                          Subsequent Development By                          %
+%                               Bob Friesenhahn                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -139,10 +142,16 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   if ((webp_status=WebPGetFeatures(stream,length,&stream_features)) != VP8_STATUS_OK)
     {
       MagickFreeMemory(stream);
+
       switch (webp_status)
         {
+        case VP8_STATUS_OK:
+          break;
         case VP8_STATUS_OUT_OF_MEMORY:
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          break;
+        case VP8_STATUS_INVALID_PARAM:
+          ThrowReaderException(CoderError,WebPInvalidParameter,image);
           break;
         case VP8_STATUS_BITSTREAM_ERROR:
           ThrowReaderException(CorruptImageError,CorruptImage,image);
@@ -150,14 +159,29 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         case VP8_STATUS_UNSUPPORTED_FEATURE:
           ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image);
           break;
+        case VP8_STATUS_SUSPENDED:
+          /*
+            Incremental decoder object may be left in SUSPENDED state
+             if the picture is only partially decoded, pending
+             additional input.  We are not doing incremental decoding
+             at this time.
+          */
+          break;
+        case VP8_STATUS_USER_ABORT:
+          /*
+            This is what is returned if the user terminates the
+            decoding.
+          */
+          ThrowReaderException(CoderError,WebPDecodingFailedUserAbort,image);
+          break;
         case VP8_STATUS_NOT_ENOUGH_DATA:
           ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
           break;
-        default:
-          {
-            ThrowReaderException(CorruptImageError,CorruptImage,image);
-          }
         }
+      /*
+        Catch-all if not handled above.
+      */
+      ThrowReaderException(CorruptImageError,CorruptImage,image);
     }
   image->depth=8;
   image->columns=(size_t) stream_features.width;
@@ -251,7 +275,32 @@ ModuleExport void RegisterWEBPImage(void)
   MagickInfo
     *entry;
 
+  int
+    web_encoder_version;
+
+  unsigned int
+    webp_major,
+    webp_minor,
+    webp_revision;
+
   *version='\0';
+
+  /*
+    Obtain the encoder's version number from the library, packed in
+    hexadecimal using 8bits for each of major/minor/revision. E.g:
+    v2.5.7 is 0x020507.
+
+    Also capture the encoder ABI version from <webp/encode.h> which is
+    in the form MAJOR(8b) + MINOR(8b) where ABI is related to the
+    library ABI and not the package release version.
+  */
+  web_encoder_version=(WebPGetEncoderVersion());
+  webp_major=(web_encoder_version >> 16) & 0xff;
+  webp_minor=(web_encoder_version >> 8) & 0xff;
+  webp_revision=web_encoder_version & 0xff;
+  FormatString(version, "libwepb v%u.%u.%u, ENCODER ABI 0x%04X", webp_major,
+               webp_minor, webp_revision, WEBP_ENCODER_ABI_VERSION);
+
   entry=SetMagickInfo("WEBP");
 #if defined(HasWEBP)
   entry->decoder=(DecoderHandler) ReadWEBPImage;
@@ -317,55 +366,6 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
-static const char *EncodingErrorString(WebPEncodingError error)
-{
-  const char
-    *result = "Unknown error";
-
-  switch (error)
-    {
-    case VP8_ENC_OK:
-      result = "OK";
-      break;
-    case VP8_ENC_ERROR_OUT_OF_MEMORY:
-      result = "Out of memory";
-      break;
-    case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
-      result = "Bitstream out of memory";
-      break;
-    case VP8_ENC_ERROR_NULL_PARAMETER:
-      result = "NULL parameter";
-      break;
-    case VP8_ENC_ERROR_INVALID_CONFIGURATION:
-      result = "Invalid configuration";
-      break;
-    case VP8_ENC_ERROR_BAD_DIMENSION:
-      result = "Bad dimension";
-      break;
-    case VP8_ENC_ERROR_PARTITION0_OVERFLOW:
-      result = "Partition 0 overflow (> 512K)";
-      break;
-    case VP8_ENC_ERROR_PARTITION_OVERFLOW:
-      result = "Partition overflow (> 16M)";
-      break;
-    case VP8_ENC_ERROR_BAD_WRITE:
-      result = "Bad write";
-      break;
-    case VP8_ENC_ERROR_FILE_TOO_BIG:
-      result = "File too big (> 4GB)";
-      break;
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
-    case VP8_ENC_ERROR_USER_ABORT:
-      result = "User abort";
-      break;
-#endif
-    case VP8_ENC_ERROR_LAST:
-      break;
-    }
-
-  return result;
-}
-
 static int WebPWriter(const unsigned char *stream,size_t length,
                       const WebPPicture *const picture)
 {
@@ -424,8 +424,13 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Initialize WebP picture. This function is declared as 'static
+    inline'.  It returns false if there is a mismatch between the
+    libwebp headers and library.
+  */
   if (WebPPictureInit(&picture) == 0)
-    ThrowWriterException(ResourceLimitError, MemoryAllocationFailed, image);
+    ThrowWriterException(DelegateError, WebPABIMismatch, image);
   /*
     Make sure that image is in an RGB type space and DirectClass.
   */
@@ -438,11 +443,11 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
   picture.width=(int) image->columns;
   picture.height=(int) image->rows;
   if (WebPConfigInit(&configure) == 0)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(DelegateError, WebPABIMismatch, image);
   if (image_info->quality != DefaultCompressionQuality)
     configure.quality = (float) image_info->quality;
-  if (WebPValidateConfig(&configure) == 0)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+  if (WebPValidateConfig(&configure) != 1)
+    ThrowWriterException(CoderError,WebPInvalidConfiguration,image);
   /*
     Allocate memory for pixels.
   */
@@ -486,10 +491,60 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
         In case of error, picture->error_code is updated accordingly."
       */
       webp_status=WebPEncode(&configure, &picture);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "WebP status code: %d (\"%s\")", picture.error_code,
-                            EncodingErrorString(picture.error_code));
-    }
+      if (! webp_status)
+        {
+          int
+            picture_error_code;
+
+          picture_error_code=picture.error_code;
+          WebPPictureFree(&picture);
+
+          switch (picture_error_code)
+            {
+            case VP8_ENC_OK:
+              break;
+            case VP8_ENC_ERROR_OUT_OF_MEMORY:
+              ThrowWriterException(CoderError,WebPEncodingFailedOutOfMemory,image);
+              break;
+            case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
+              ThrowWriterException(CoderError,WebPEncodingFailedBitstreamOutOfMemory,image);
+              break;
+            case VP8_ENC_ERROR_NULL_PARAMETER:
+              ThrowWriterException(CoderError,WebPEncodingFailedNULLParameter,image);
+              break;
+            case VP8_ENC_ERROR_INVALID_CONFIGURATION:
+              ThrowWriterException(CoderError,WebPEncodingFailedInvalidConfiguration,image);
+              break;
+            case VP8_ENC_ERROR_BAD_DIMENSION:
+              ThrowWriterException(CoderError,WebPEncodingFailedBadDimension,image);
+              break;
+            case VP8_ENC_ERROR_PARTITION0_OVERFLOW:
+              ThrowWriterException(CoderError,WebPEncodingFailedPartition0Overflow,image);
+              break;
+            case VP8_ENC_ERROR_PARTITION_OVERFLOW:
+              ThrowWriterException(CoderError,WebPEncodingFailedPartitionOverflow,image);
+              break;
+            case VP8_ENC_ERROR_BAD_WRITE:
+              ThrowWriterException(CoderError,WebPEncodingFailedBadWrite,image);
+              break;
+            case VP8_ENC_ERROR_FILE_TOO_BIG:
+              ThrowWriterException(CoderError,WebPEncodingFailedFileTooBig,image);
+              break;
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
+            case VP8_ENC_ERROR_USER_ABORT:     /* Added in v0.1.99 */
+              ThrowWriterException(CoderError,WebPEncodingFailedUserAbort,image);
+              break;
+            case VP8_ENC_ERROR_LAST:           /* Added in v0.1.99 */
+              break;
+#endif
+            } /* switch (picture_error_code) */
+          /*
+            Catch-all in case a code is added that we are not
+            explicitly prepared for.
+          */
+          ThrowWriterException(CoderError,WebPEncodingFailed,image);
+        } /* if (! webp_status) */
+    } /* if (webp_status) */
   WebPPictureFree(&picture);
   CloseBlob(image);
 

@@ -276,6 +276,48 @@
       <Message name="UnsupportedCellTypeInTheMatrix">
         Unsupported cell type in the matrix
       </Message>
+      <Message name="WebPInvalidConfiguration">
+        Invalid WebP configuration parameters supplied
+      </Message>
+      <Message name="WebPEncodingFailed">
+        WebP encoding failed: unknown reason
+      </Message>
+      <Message name="WebPEncodingFailedOutOfMemory">
+        WebP encoding failed: out of memory
+      </Message>
+      <Message name="WebPEncodingFailedBitstreamOutOfMemory">
+        WebP encoding failed: bitstream out of memory
+      </Message>
+      <Message name="WebPEncodingFailedNULLParameter">
+        WebP encoding failed: null parameter
+      </Message>
+      <Message name="WebPEncodingFailedInvalidConfiguration">
+        WebP encoding failed: invalid configuration
+      </Message>
+      <Message name="WebPEncodingFailedBadDimension">
+        WebP encoding failed: bad dimension
+      </Message>
+      <Message name="WebPEncodingFailedPartition0Overflow">
+        WebP encoding failed: partition 0 overflow (> 512K)
+      </Message>
+      <Message name="WebPEncodingFailedPartitionOverflow">
+        WebP encoding failed: partition overflow (> 16M)
+      </Message>
+      <Message name="WebPEncodingFailedBadWrite">
+        WebP encoding failed: bad write
+      </Message>
+      <Message name="WebPEncodingFailedFileTooBig">
+        WebP encoding failed: File too big (> 4GB)
+      </Message>
+      <Message name="WebPEncodingFailedUserAbort">
+        WebP encoding failed: user abort
+      </Message>
+      <Message name="WebPDecodingFailedUserAbort">
+        WebP decoding failed: user abort
+      </Message>
+      <Message name="WebPInvalidParameter">
+        WebP failed: invalid parameter
+      </Message>
     </Error>
     <FatalError>
       <Message name="Default">
@@ -538,6 +580,9 @@
       </Message>
       <Message name="UnableToWriteSVGFormat">
         Unable to write SVG format
+      </Message>
+      <Message name="WebPABIMismatch">
+        WebP library ABI does not match header ABI (build issue!)
       </Message>
     </Error>
     <FatalError>

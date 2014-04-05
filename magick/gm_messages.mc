@@ -515,6 +515,90 @@ Unsupported cell type in the matrix
 .
 
 MessageId       = +1
+SymbolicName    = CoderErrorWebPDecodingFailedUserAbort
+Language        = English
+WebP decoding failed: user abort
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailed
+Language        = English
+WebP encoding failed: unknown reason
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedBadDimension
+Language        = English
+WebP encoding failed: bad dimension
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedBadWrite
+Language        = English
+WebP encoding failed: bad write
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedBitstreamOutOfMemory
+Language        = English
+WebP encoding failed: bitstream out of memory
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedFileTooBig
+Language        = English
+WebP encoding failed: File too big (> 4GB)
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedInvalidConfiguration
+Language        = English
+WebP encoding failed: invalid configuration
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedNULLParameter
+Language        = English
+WebP encoding failed: null parameter
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedOutOfMemory
+Language        = English
+WebP encoding failed: out of memory
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedPartition0Overflow
+Language        = English
+WebP encoding failed: partition 0 overflow (> 512K)
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedPartitionOverflow
+Language        = English
+WebP encoding failed: partition overflow (> 16M)
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPEncodingFailedUserAbort
+Language        = English
+WebP encoding failed: user abort
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPInvalidConfiguration
+Language        = English
+Invalid WebP configuration parameters supplied
+.
+
+MessageId       = +1
+SymbolicName    = CoderErrorWebPInvalidParameter
+Language        = English
+WebP failed: invalid parameter
+.
+
+MessageId       = +1
 SymbolicName    = CoderErrorZipCompressionNotSupported
 Language        = English
 ZIP compression is not supported
@@ -992,6 +1076,12 @@ MessageId       = +1
 SymbolicName    = DelegateErrorUnableToWriteSVGFormat
 Language        = English
 Unable to write SVG format
+.
+
+MessageId       = +1
+SymbolicName    = DelegateErrorWebPABIMismatch
+Language        = English
+WebP library ABI does not match header ABI (build issue!)
 .
 
 MessageId       = +1
