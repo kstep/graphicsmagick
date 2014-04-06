@@ -58,6 +58,13 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #include <webp/encode.h>
 
 /*
+  Progress indication support not added until v0.1.99
+*/
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+#  define SUPPORT_PROGRESS 1
+#endif
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -366,8 +373,11 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
-static int WebPWriter(const unsigned char *stream,size_t length,
-                      const WebPPicture *const picture)
+/*
+  Called to write data to blob
+*/
+static int WriterCallback(const unsigned char *stream,size_t length,
+                          const WebPPicture *const picture)
 {
   Image
     *image;
@@ -376,6 +386,21 @@ static int WebPWriter(const unsigned char *stream,size_t length,
   return (length != 0 ? (int) WriteBlob(image,length,stream) : 1);
 }
 
+/*
+  Called to provide progress indication
+*/
+#if SUPPORT_PROGRESS
+static int ProgressCallback(int percent, const WebPPicture* picture)
+{
+  Image
+    *image;
+
+  image=(Image *) picture->custom_ptr;
+  return MagickMonitorFormatted(percent, 101, &image->exception,
+                                SaveImageText, image->filename,
+                                image->columns, image->rows);
+}
+#endif
 
 static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
 {
@@ -437,8 +462,11 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
   (void) TransformColorspace(image,RGBColorspace);
   image->storage_class=DirectClass;
 
-  picture.writer=WebPWriter;
+  picture.writer=WriterCallback;
   picture.custom_ptr=(void *) image;
+#if SUPPORT_PROGRESS
+  picture.progress_hook=ProgressCallback;
+#endif
   picture.stats=(&statistics);
   picture.width=(int) image->columns;
   picture.height=(int) image->rows;
@@ -545,6 +573,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(CoderError,WebPEncodingFailed,image);
         } /* if (! webp_status) */
     } /* if (webp_status) */
+
   WebPPictureFree(&picture);
   CloseBlob(image);
 

@@ -1,5 +1,7 @@
 2014-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/webp.c: Add progress indication support to WebP writer.
+
 	* magick/command.c (VersionCommand): WebP support is included in
 	-version output.
 
