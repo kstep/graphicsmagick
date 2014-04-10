@@ -1915,6 +1915,15 @@ BenchmarkImageCommand(ImageInfo *image_info,
       return MagickFail;
     }
 
+  if (raw_csv)
+    {
+      /*
+        Print a header line since spreadsheet programs (and Python's
+        CSV parser) use the first line as the column titles.
+      */
+      (void) fprintf(stderr,"\"Threads\",\"Iterations\",\"User Time\",\"Elapsed Time\"\n");
+    }
+
   do
     {
       char
@@ -2089,7 +2098,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	if (raw_csv)
 	  {
 	    /* RAW CSV value output */
-	    (void) fprintf(stderr,"%ld,%ld,%.2f,%.3f",
+	    (void) fprintf(stderr,"\"%ld\",\"%ld\",\"%.2f\",\"%.3f\"",
 			   threads_limit,iteration,user_time,elapsed_time);
 	  }
 	else
