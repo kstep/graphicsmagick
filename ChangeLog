@@ -1,3 +1,26 @@
+2014-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Added support for HardLight composition
+	operator.
+
+	* www/perl.rst: Update PerlMagick documentation, including the
+	composition operators.
+
+	* coders/xcf.c (GIMPBlendModeToCompositeOperator): Use new
+	HardLight composition operator to support XCF GIMP_HARDLIGHT_MODE
+	blend mode.  Contributed by Sara Shafaei.
+
+	* coders/psd.c (CompositeOperatorToPSDBlendMode): Use new
+	HardLight composition operator to support PSD "hLit" blend mode.
+	Contributed by Sara Shafaei.
+
+	* wand/magick_wand.c (MagickOperatorImageChannel): New function to
+	apply an operator to an image channel.  Contributed by Sara
+	Shafaei.
+
+	* magick/composite.c (HardLightCompositePixels): New HardLight
+	composition operator.  Contributed by Sara Shafaei.
+
 2014-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (BenchmarkImageCommand): Add a CSV title line

@@ -34,8 +34,8 @@ best way to avoid problems.
 For Unix, you typically need to be root to install the software. There
 are ways around this. Consult the Perl manual pages for more information.
 
-Windows XP / Windows 2000
--------------------------
+Windows XP - Windows 8
+----------------------
 
 Please note that a nice GUI installer is available for GraphicsMagick.
 PerlMagick is included in this installer. If you are using the installer,
@@ -363,7 +363,7 @@ The following image manipulation methods are available:
    +-----------------+---------------------------------+---------------------+
    |                 |channel=>{Red, Cyan, Green,      |extract a channel    |
    |Channel          |Magenta, Blue, Yellow, Opacity,  |from the image       |
-   |                 |Black}                           |                     |
+   |                 |Black, Matte, All, Gray}         |                     |
    +-----------------+---------------------------------+---------------------+
    |Charcoal         |order=>integer                   |simulate a charcoal  |
    |                 |                                 |drawing              |
@@ -401,14 +401,21 @@ The following image manipulation methods are available:
    |Compare          |image=>image-handle              |compare image to a   |
    |                 |                                 |reference image      |
    +-----------------+---------------------------------+---------------------+
-   |                 |image=>image-handle, compose=>   |                     |
-   |                 |{Over, In, Out, Atop, Xor, Plus, |                     |
-   |                 |Minus, Add, Subtract, Difference,|                     |
-   |                 |Multiply, Bumpmap, Copy, CopyRed,|                     |
-   |                 |CopyGreen, CopyBlue, CopyMatte,  |                     |
-   |                 |Dissolve, Clear, Displace,       |                     |
-   |Composite        |Modulate, Threshold}, mask=>     |composite one image  |
-   |                 |image-handle, geometry=>geometry,|onto another         |
+   |                 |image=>image-handle, compose=>{  |                     |
+   |                 |Over, In, Out, Atop, Xor, Plus,  |                     |
+   |                 |Minus, Add, Subtract,            |                     |
+   |                 |Difference, Multiply, Bumpmap,   |                     |
+   |                 |Copy, CopyRed, CopyGreen,        |                     |
+   |                 |CopyBlue, CopyOpacity,           |                     |
+   |                 |Clear, Dissolve, Displace,       |                     |
+   |                 |Modulate, Threshold, No, Darken, |                     |
+   |                 |Lighten, Hue, Saturate,          |                     |
+   |Composite        |Colorize, Luminize, Screen,      |composite one image  |
+   |                 |Overlay, CopyCyan, CopyMagenta,  |onto another         |
+   |                 |CopyYellow, CopyBlack, Divide,   |                     |
+   |                 |HardLight},                      |                     |
+   |                 |mask=>                           |                     |
+   |                 |image-handle, geometry=>geometry,|                     |
    |                 |x=>integer, y=>integer, gravity=>|                     |
    |                 |{NorthWest, North, NorthEast,    |                     |
    |                 |West, Center, East, SouthWest,   |                     |
@@ -442,9 +449,10 @@ The following image manipulation methods are available:
    |                 |                                 |within an image      |
    +-----------------+---------------------------------+---------------------+
    |                 |primitive=>{point, line,         |                     |
-   |                 |rectangle, arc, ellipse, circle, |                     |
-   |                 |path, polyline, polygon, bezier, |                     |
-   |                 |color, matte, text, @filename},  |                     |
+   |                 |rectangle, roundRectangle, arc,  |                     |
+   |                 |ellipse, circle, polyline,       |                     |
+   |                 |polygon, ,bezier, path, color,   |                     |
+   |                 |matte, text, image, @filename},  |                     |
    |                 |points=>string , method=>{Point, |                     |
    |                 |Replace, Floodfill, FillToBorder,|                     |
    |                 |Reset}, stroke=> color name, fill|annotate an image    |
@@ -795,7 +803,8 @@ And here is a list of all the image attributes you can set:
    |                |                                    |comment.           |
    +----------------+------------------------------------+-------------------+
    |compression     |{None, BZip, Fax, Group4, JPEG,     |type of image      |
-   |                |LosslessJPEG, LZW, RLE, Zip, LZMA}  |compression        |
+   |                |LosslessJPEG, LZW, RLE, Zip, LZMA   |compression        |
+   |                |JPEG2000, JBIG1, JBIG2}             |                   |
    +----------------+------------------------------------+-------------------+
    |                |{No, Configure, Annotate, Render,   |log copious        |
    |debug           |Transform, Locale, Coder, X11,      |debugging          |
@@ -826,6 +835,16 @@ And here is a list of all the image attributes you can set:
    +----------------+------------------------------------+-------------------+
    |display         |string                              |specifies the X    |
    |                |                                    |server to contact  |
+   +----------------+------------------------------------+-------------------+
+   |endian          |{Undefined, LSB, MSB, Native}       |specifies the      |
+   |                |                                    |ordering of bytes  |
+   |                |                                    |in a multi-byte    |
+   |                |                                    |word. MSB is       |
+   |                |                                    |big-endian, LSB is |
+   |                |                                    |little-endian, and |
+   |                |                                    |Native is whatever |
+   |                |                                    |the current host   |
+   |                |                                    |uses by default.   |
    +----------------+------------------------------------+-------------------+
    |file            |filehandle                          |set the image      |
    |                |                                    |filehandle         |
@@ -912,7 +931,7 @@ And here is a list of all the image attributes you can set:
    |preview         |Sharpen, Blur, Threshold,           |the Preview image  |
    |                |EdgeDetect, Spread, Solarize, Shade,|format             |
    |                |Raise, Segment, Swirl, Implode,     |                   |
-   |                |Wave, OilPaint, CharcoalDrawing,    |                   |
+   |                |Wave, OilPaint, Charcoal,           |                   |
    |                |JPEG}                               |                   |
    +----------------+------------------------------------+-------------------+
    |quality         |integer                             |JPEG/MIFF/PNG      |

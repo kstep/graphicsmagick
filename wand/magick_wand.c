@@ -6012,6 +6012,70 @@ WandExport unsigned int MagickOpaqueImage(MagickWand *wand,
 }
 
 /*
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %   M a g i c k O p e r a t o r I m a g e C h a n n e l                       %
+ %                                                                             %
+ %                                                                             %
+ %                                                                             %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %
+ %  MagickOperatorImageChannel() performs the requested arithmetic,
+ %  bitwise-logical, or value operation on the selected channels of
+ %  the entire image.  The AllChannels channel option operates on all
+ %  color channels whereas the GrayChannel channel option treats the
+ %  color channels as a grayscale intensity.
+ %
+ %  These operations are on the DirectClass pixels of the image and do not
+ %  update pixel indexes or colormap.
+ %
+ %  The format of the MagickOperatorImageChannel method is:
+ %
+ %      MagickPassFail MagickOperatorImageChannel(MagickWand *wand,
+ %        const ChannelType channel,const QuantumOperator quantum_operator,
+ %        const double rvalue)
+ %
+ %  A description of each parameter follows:
+ %
+ %    o wand: The magick wand.
+ %
+ %    o channel: Channel to operate on (RedChannel, CyanChannel,
+ %        GreenChannel, MagentaChannel, BlueChannel, YellowChannel,
+ %        OpacityChannel, BlackChannel, MatteChannel, AllChannels,
+ %        GrayChannel).  The AllChannels type only updates color
+ %        channels.  The GrayChannel type treats the color channels
+ %        as if they represent an intensity.
+ %
+ %    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
+ %        AssignQuantumOp, DepthQuantumOp, DivideQuantumOp, GammaQuantumOp,
+ %        LShiftQuantumOp, MultiplyQuantumOp,  NegateQuantumOp,
+ %        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
+ %        NoiseLaplacianQuantumOp, NoiseMultiplicativeQuantumOp,
+ %        NoisePoissonQuantumOp, NoiseRandomQuantumOp, NoiseUniformQuantumOp,
+ %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp,
+ %        ThresholdBlackQuantumOp, ThresholdQuantumOp, ThresholdWhiteQuantumOp,
+ %        XorQuantumOp).
+ %
+ %    o rvalue: Operator argument.
+ %
+ */
+WandExport unsigned int
+MagickOperatorImageChannel(MagickWand *wand,
+                           const ChannelType channel,
+                           const QuantumOperator quantum_operator,
+                           const double rvalue)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  return QuantumOperatorImage(wand->image,channel,quantum_operator,
+                              rvalue,&wand->exception);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

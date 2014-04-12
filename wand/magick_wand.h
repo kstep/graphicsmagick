@@ -230,6 +230,8 @@ extern WandExport unsigned int
   MagickOilPaintImage(MagickWand *,const double),
   MagickOpaqueImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double),
+  MagickOperatorImageChannel(MagickWand *,const ChannelType,const QuantumOperator,
+    const double),
   MagickPingImage(MagickWand *,const char *),
   MagickPreviousImage(MagickWand *),
   MagickProfileImage(MagickWand *,const char *,const unsigned char *,

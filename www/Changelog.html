@@ -35,6 +35,26 @@
 <div class="document">
 
 
+<p>2014-04-12  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>PerlMagick/Magick.xs: Added support for HardLight composition
+operator.</li>
+<li>www/perl.rst: Update PerlMagick documentation, including the
+composition operators.</li>
+<li>coders/xcf.c (GIMPBlendModeToCompositeOperator): Use new
+HardLight composition operator to support XCF GIMP_HARDLIGHT_MODE
+blend mode.  Contributed by Sara Shafaei.</li>
+<li>coders/psd.c (CompositeOperatorToPSDBlendMode): Use new
+HardLight composition operator to support PSD &quot;hLit&quot; blend mode.
+Contributed by Sara Shafaei.</li>
+<li>wand/magick_wand.c (MagickOperatorImageChannel): New function to
+apply an operator to an image channel.  Contributed by Sara
+Shafaei.</li>
+<li>magick/composite.c (HardLightCompositePixels): New HardLight
+composition operator.  Contributed by Sara Shafaei.</li>
+</ul>
+</blockquote>
 <p>2014-04-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

@@ -43,7 +43,7 @@
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#installation" id="id2">Installation</a><ul>
 <li><a class="reference internal" href="#unix" id="id3">UNIX</a></li>
-<li><a class="reference internal" href="#windows-xp-windows-2000" id="id4">Windows XP / Windows 2000</a></li>
+<li><a class="reference internal" href="#windows-xp-windows-8" id="id4">Windows XP - Windows 8</a></li>
 <li><a class="reference internal" href="#running-the-regression-tests" id="id5">Running the Regression Tests</a></li>
 </ul>
 </li>
@@ -80,8 +80,8 @@ best way to avoid problems.</p>
 <p>For Unix, you typically need to be root to install the software. There
 are ways around this. Consult the Perl manual pages for more information.</p>
 </div>
-<div class="section" id="windows-xp-windows-2000">
-<h2><a class="toc-backref" href="#id4">Windows XP / Windows 2000</a></h2>
+<div class="section" id="windows-xp-windows-8">
+<h2><a class="toc-backref" href="#id4">Windows XP - Windows 8</a></h2>
 <p>Please note that a nice GUI installer is available for GraphicsMagick.
 PerlMagick is included in this installer. If you are using the installer,
 then there is no need to compile PerlMagick.</p>
@@ -436,7 +436,7 @@ color</td>
 <tr><td>Channel</td>
 <td>channel=&gt;{Red, Cyan, Green,
 Magenta, Blue, Yellow, Opacity,
-Black}</td>
+Black, Matte, All, Gray}</td>
 <td>extract a channel
 from the image</td>
 </tr>
@@ -495,13 +495,20 @@ image</td>
 reference image</td>
 </tr>
 <tr><td>Composite</td>
-<td>image=&gt;image-handle, compose=&gt;
-{Over, In, Out, Atop, Xor, Plus,
-Minus, Add, Subtract, Difference,
-Multiply, Bumpmap, Copy, CopyRed,
-CopyGreen, CopyBlue, CopyMatte,
-Dissolve, Clear, Displace,
-Modulate, Threshold}, mask=&gt;
+<td>image=&gt;image-handle, compose=&gt;{
+Over, In, Out, Atop, Xor, Plus,
+Minus, Add, Subtract,
+Difference, Multiply, Bumpmap,
+Copy, CopyRed, CopyGreen,
+CopyBlue, CopyOpacity,
+Clear, Dissolve, Displace,
+Modulate, Threshold, No, Darken,
+Lighten, Hue, Saturate,
+Colorize, Luminize, Screen,
+Overlay, CopyCyan, CopyMagenta,
+CopyYellow, CopyBlack, Divide,
+HardLight},
+mask=&gt;
 image-handle, geometry=&gt;geometry,
 x=&gt;integer, y=&gt;integer, gravity=&gt;
 {NorthWest, North, NorthEast,
@@ -552,9 +559,10 @@ within an image</td>
 </tr>
 <tr><td>Draw</td>
 <td>primitive=&gt;{point, line,
-rectangle, arc, ellipse, circle,
-path, polyline, polygon, bezier,
-color, matte, text, &#64;filename},
+rectangle, roundRectangle, arc,
+ellipse, circle, polyline,
+polygon, ,bezier, path, color,
+matte, text, image, &#64;filename},
 points=&gt;string , method=&gt;{Point,
 Replace, Floodfill, FillToBorder,
 Reset}, stroke=&gt; color name, fill
@@ -1055,7 +1063,8 @@ comment.</td>
 </tr>
 <tr><td>compression</td>
 <td>{None, BZip, Fax, Group4, JPEG,
-LosslessJPEG, LZW, RLE, Zip, LZMA}</td>
+LosslessJPEG, LZW, RLE, Zip, LZMA
+JPEG2000, JBIG1, JBIG2}</td>
 <td>type of image
 compression</td>
 </tr>
@@ -1106,6 +1115,18 @@ image</td>
 <td>string</td>
 <td>specifies the X
 server to contact</td>
+</tr>
+<tr><td>endian</td>
+<td>{Undefined, LSB, MSB, Native}</td>
+<td>specifies the
+ordering of bytes
+in a multi-byte
+word. MSB is
+big-endian, LSB is
+little-endian, and
+Native is whatever
+the current host
+uses by default.</td>
 </tr>
 <tr><td>file</td>
 <td>filehandle</td>
@@ -1240,7 +1261,7 @@ Despeckle, ReduceNoise, AddNoise,
 Sharpen, Blur, Threshold,
 EdgeDetect, Spread, Solarize, Shade,
 Raise, Segment, Swirl, Implode,
-Wave, OilPaint, CharcoalDrawing,
+Wave, OilPaint, Charcoal,
 JPEG}</td>
 <td>type of preview for
 the Preview image

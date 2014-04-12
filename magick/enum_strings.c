@@ -393,6 +393,9 @@ MagickExport const char *CompositeOperatorToString(const CompositeOperator compo
     case DivideCompositeOp:
       composite_op_text = "Divide";
       break;
+    case HardLightCompositeOp:
+      composite_op_text = "HardLight";
+      break;
     }
 
   return composite_op_text;
@@ -477,6 +480,8 @@ MagickExport CompositeOperator StringToCompositeOperator(const char *option)
     composite_op=CopyBlackCompositeOp;
   else if (LocaleCompare("Divide",option) == 0)
     composite_op=DivideCompositeOp;
+  else if (LocaleCompare("HardLight",option) == 0)
+    composite_op=HardLightCompositeOp;
 
   return composite_op;
 }

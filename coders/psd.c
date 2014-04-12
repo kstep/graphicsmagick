@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -355,7 +355,7 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   if (LocaleNCompare(mode,"over",4) == 0)
     return(OverlayCompositeOp);
   if (LocaleNCompare(mode,"hLit",4) == 0)
-    return(OverCompositeOp);
+    return(HardLightCompositeOp);
   if (LocaleNCompare(mode,"sLit",4) == 0)
     return(OverCompositeOp);
   if (LocaleNCompare(mode,"smud",4) == 0)
@@ -373,25 +373,24 @@ static char *CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
 
   switch ( inOp )
   {
-    case OverCompositeOp:    outMode = (char *) "norm";  break;
+    case OverCompositeOp:      outMode = (char *) "norm";  break;
     case MultiplyCompositeOp:  outMode = (char *) "mul ";  break;
     case DissolveCompositeOp:  outMode = (char *) "diss";  break;
-    case DifferenceCompositeOp:  outMode = (char *) "diff";  break;
+    case DifferenceCompositeOp:outMode = (char *) "diff";  break;
     case DarkenCompositeOp:    outMode = (char *) "dark";  break;
-    case LightenCompositeOp:  outMode = (char *) "lite";  break;
-    case HueCompositeOp:    outMode = (char *) "hue ";  break;
+    case LightenCompositeOp:   outMode = (char *) "lite";  break;
+    case HueCompositeOp:       outMode = (char *) "hue ";  break;
     case SaturateCompositeOp:  outMode = (char *) "sat ";  break;
     case ColorizeCompositeOp:  outMode = (char *) "colr";  break;
     case LuminizeCompositeOp:  outMode = (char *) "lum ";  break;
     case ScreenCompositeOp:    outMode = (char *) "scrn";  break;
-    case OverlayCompositeOp:  outMode = (char *) "over";  break;
+    case OverlayCompositeOp:   outMode = (char *) "over";  break;
+    case HardLightCompositeOp: outMode = (char *) "hLit";  break;
 
     default:
       outMode = (char *) "norm";
 /*
 
-  if (LocaleNCompare(mode,"hLit",4) == 0)
-    return(OverCompositeOp);
   if (LocaleNCompare(mode,"sLit",4) == 0)
     return(OverCompositeOp);
   if (LocaleNCompare(mode,"smud",4) == 0)

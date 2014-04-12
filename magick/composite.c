@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1752,6 +1752,70 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 
   return MagickPass;
 }
+
+
+static MagickPassFail
+HardLightCompositePixels(void *mutable_data,               /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
+                         const Image *source_image,         /* Source image */
+                         const PixelPacket *source_pixels,  /* Pixel row in source image */
+                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                         Image *update_image,               /* Update image */
+                         PixelPacket *update_pixels,        /* Pixel row in update image */
+                         IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                         const long npixels,                /* Number of pixels in row */
+                         ExceptionInfo *exception           /* Exception report */
+                         )
+{
+  register long
+    i;
+    
+  PixelPacket
+    destination,
+    source;
+    
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+    
+  /*
+    The result of base-image gets lighting effects by change-image.
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double
+        value;
+        
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+        
+      if(((double) source.red/MaxRGBDouble)<0.5)
+        value=((double) source.red*destination.red*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.red/MaxRGBDouble) *
+                               (1.0-(double)destination.red/MaxRGBDouble));
+      destination.red=RoundDoubleToQuantum(value);
+        
+      if(((double) source.green/MaxRGBDouble)<0.5)
+        value=((double) source.green*destination.green*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.green/MaxRGBDouble) *
+                               (1.0-(double)destination.green/MaxRGBDouble));
+      destination.green=RoundDoubleToQuantum(value);
+        
+      if(((double) source.blue/MaxRGBDouble)<0.5)
+        value=((double) source.blue*destination.blue*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.blue/MaxRGBDouble) *
+                               (1.0-(double)destination.blue/MaxRGBDouble));
+      destination.blue=RoundDoubleToQuantum(value);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1789,7 +1853,7 @@ DivideCompositePixels(void *mutable_data,                /* User provided mutabl
 %      MinusCompositeOp, ModulateCompositeOp, MultiplyCompositeOp,
 %      NoCompositeOp, OutCompositeOp, OverlayCompositeOp, PlusCompositeOp,
 %      SaturateCompositeOp, ScreenCompositeOp, SubtractCompositeOp,
-%      ThresholdCompositeOp, XorCompositeOp.
+%      ThresholdCompositeOp, XorCompositeOp, HardLightCompositeOp.
 %
 %    o composite_image: The composite image.
 %
@@ -1930,6 +1994,9 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       break;
     case DivideCompositeOp:
       call_back=DivideCompositePixels;
+      break;
+    case HardLightCompositeOp:
+      call_back=HardLightCompositePixels;
       break;
     default:
       {
@@ -2347,7 +2414,7 @@ CompositeImage(Image *canvas_image,
 %      MinusCompositeOp, ModulateCompositeOp, MultiplyCompositeOp,
 %      NoCompositeOp, OutCompositeOp, OverlayCompositeOp, PlusCompositeOp,
 %      SaturateCompositeOp, ScreenCompositeOp, SubtractCompositeOp,
-%      ThresholdCompositeOp, XorCompositeOp.
+%      ThresholdCompositeOp, XorCompositeOp, HardLightCompositeOp.
 %
 %    o options: This optional structure passes options required by
 %        ModulateComposite and ThresholdComposite and NULL may be

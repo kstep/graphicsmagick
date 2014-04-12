@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright (C) 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -200,6 +200,7 @@ static char
     "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
     "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
     "CopyCyan", "CopyMagenta", "CopyYellow", "CopyBlack", "Divide",
+    "HardLight",
     (char *) NULL
   },
   *CompressionTypes[] =
