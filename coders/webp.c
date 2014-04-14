@@ -315,7 +315,7 @@ ModuleExport void RegisterWEBPImage(void)
 #endif
   entry->description=description;
   entry->adjoin=False;
-  entry->seekable_stream=MagickTrue;
+  entry->seekable_stream=MagickFalse;
   if (*version != '\0')
     entry->version=version;
   entry->module="WEBP";
