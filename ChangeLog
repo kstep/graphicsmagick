@@ -1,3 +1,15 @@
+2014-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc: Document WebP encoder options.
+
+	* coders/webp.c (WriteWEBPImage): Support all of the WebP encoder
+	options via -define arguments.  Most of this work is contributed
+	by Roman Hiestand.
+
+	* configure.ac: User-provided LIBS should be prepended to LIBS
+	that configure script produces so that user option takes
+	precedence.
+
 2014-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/Magick.xs: Added support for HardLight composition

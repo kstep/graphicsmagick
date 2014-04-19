@@ -58,10 +58,30 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #include <webp/encode.h>
 
 /*
+  Release versions vs ABI versions
+
+    0.1.3  - 0x0002
+    0.1.99 - 0x0100
+    0.2.0  - 0x0200
+    0.2.1  - 0x0200
+    0.3.0  - 0x0201
+    0.4.0  - 0x0202
+*/
+
+/*
   Progress indication support not added until v0.1.99
 */
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
 #  define SUPPORT_PROGRESS 1
+#  define SUPPORT_USER_ABORT
+#endif
+#if WEBP_ENCODER_ABI_VERSION >= 0x0200 /* >= 0.2.0 */
+#  define SUPPORT_CONFIG_WEBP_HINT_GRAPH
+#endif
+#if WEBP_ENCODER_ABI_VERSION >= 0x0201 /* >= 0.3.0 */
+#  define SUPPORT_CONFIG_EMULATE_JPEG_SIZE
+#  define SUPPORT_CONFIG_THREAD_LEVEL
+#  define SUPPORT_CONFIG_LOW_MEMORY
 #endif
 
 /*
@@ -389,7 +409,7 @@ static int WriterCallback(const unsigned char *stream,size_t length,
 /*
   Called to provide progress indication
 */
-#if SUPPORT_PROGRESS
+#if defined(SUPPORT_PROGRESS)
 static int ProgressCallback(int percent, const WebPPicture* picture)
 {
   Image
@@ -404,6 +424,9 @@ static int ProgressCallback(int percent, const WebPPicture* picture)
 
 static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
 {
+  const char
+    *value;
+
   int
     webp_status;
 
@@ -464,7 +487,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
 
   picture.writer=WriterCallback;
   picture.custom_ptr=(void *) image;
-#if SUPPORT_PROGRESS
+#if defined(SUPPORT_PROGRESS)
   picture.progress_hook=ProgressCallback;
 #endif
   picture.stats=(&statistics);
@@ -474,6 +497,68 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateError, WebPABIMismatch, image);
   if (image_info->quality != DefaultCompressionQuality)
     configure.quality = (float) image_info->quality;
+
+  if ((value=AccessDefinition(image_info,"webp","lossless")))
+    configure.lossless=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","method")))
+    configure.method=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","image-hint")))
+    {
+      if (LocaleCompare(value,"default") == 0)
+        configure.image_hint=WEBP_HINT_DEFAULT;
+      if (LocaleCompare(value,"picture") == 0)
+        configure.image_hint=WEBP_HINT_PICTURE;
+      if (LocaleCompare(value,"photo") == 0)
+        configure.image_hint=WEBP_HINT_PHOTO;
+#if defined(SUPPORT_CONFIG_WEBP_HINT_GRAPH)
+      if (LocaleCompare(value,"graph") == 0)
+        configure.image_hint=WEBP_HINT_GRAPH;
+#endif
+    }
+  if ((value=AccessDefinition(image_info,"webp","target-size")))
+    configure.target_size=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","target-psnr")))
+    configure.target_PSNR=(float) MagickAtoF(value);
+  if ((value=AccessDefinition(image_info,"webp","segments")))
+    configure.segments=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","sns-strength")))
+    configure.sns_strength=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-strength")))
+    configure.filter_strength=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-sharpness")))
+    configure.filter_sharpness=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-type")))
+    configure.filter_type=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","auto-filter")))
+    configure.autofilter=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","alpha-compression")))
+    configure.alpha_compression=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","alpha-filtering")))
+    configure.alpha_filtering=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","alpha-quality")))
+    configure.alpha_quality=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","pass")))
+    configure.pass=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","show-compressed")))
+    configure.show_compressed=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","preprocessing")))
+    configure.preprocessing=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","partitions")))
+    configure.partitions=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","partition-limit")))
+    configure.partition_limit=MagickAtoI(value);
+#if defined(SUPPORT_CONFIG_EMULATE_JPEG_SIZE)
+  if ((value=AccessDefinition(image_info,"webp","emulate-jpeg-size")))
+    configure.emulate_jpeg_size=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+#endif
+#if defined(SUPPORT_CONFIG_THREAD_LEVEL)
+  if ((value=AccessDefinition(image_info,"webp","thread-level")))
+    configure.thread_level=MagickAtoI(value);
+#endif
+#if defined(SUPPORT_CONFIG_LOW_MEMORY)
+  if ((value=AccessDefinition(image_info,"webp","low-memory")))
+    configure.low_memory=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+#endif
   if (WebPValidateConfig(&configure) != 1)
     ThrowWriterException(CoderError,WebPInvalidConfiguration,image);
   /*
@@ -558,7 +643,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
             case VP8_ENC_ERROR_FILE_TOO_BIG:
               ThrowWriterException(CoderError,WebPEncodingFailedFileTooBig,image);
               break;
-#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
+#if defined(SUPPORT_USER_ABORT)
             case VP8_ENC_ERROR_USER_ABORT:     /* Added in v0.1.99 */
               ThrowWriterException(CoderError,WebPEncodingFailedUserAbort,image);
               break;

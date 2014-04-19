@@ -1,4 +1,4 @@
-.TH gm 1 "2014/04/02" "GraphicsMagick"
+.TH gm 1 "2014/04/19" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1521,6 +1521,191 @@ Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
+
+.in 15
+.in 15
+.B "webp:lossless={true|false}"
+.in 20
+ \fR
+.in 20
+Enable lossless encoding.
+
+.in 15
+.in 15
+.B "webp:method={0-6}"
+.in 20
+ \fR
+.in 20
+Quality/speed trade-off.
+
+.in 15
+.in 15
+.B "webp:image-hint={default,graph,photo,picture}"
+.in 20
+ \fR
+.in 20
+Hint for image type.
+
+.in 15
+.in 15
+.B "webp:target-size=<integer>"
+.in 20
+ \fR
+.in 20
+Target size in bytes.
+
+.in 15
+.in 15
+.B "webp:target-psnr=<float>"
+.in 20
+ \fR
+.in 20
+Minimal distortion to try to achieve.
+
+.in 15
+.in 15
+.B "webp:segments={1-4}"
+.in 20
+ \fR
+.in 20
+Maximum number of segments to use.
+
+.in 15
+.in 15
+.B "webp:sns-strength={0-100}"
+.in 20
+ \fR
+.in 20
+Spatial Noise Shaping.
+
+.in 15
+.in 15
+.B "webp:filter-strength={0-100}"
+.in 20
+ \fR
+.in 20
+Filter strength.
+
+.in 15
+.in 15
+.B "webp:filter-sharpness={0-7}"
+.in 20
+ \fR
+.in 20
+Filter sharpness.
+
+.in 15
+.in 15
+.B "webp:filter-type={0,1}"
+.in 20
+ \fR
+.in 20
+Filtering type. 0 = simple, 1 = strong (only used if
+filter-strength > 0 or autofilter is enabled).
+
+.in 15
+.in 15
+.B "webp:auto-filter={true|false}"
+.in 20
+ \fR
+.in 20
+Auto adjust filter's strength.
+
+.in 15
+.in 15
+.B "webp:alpha-compression=<integer>"
+.in 20
+ \fR
+.in 20
+Algorithm for encoding the alpha plane (0 = none, 1 = compressed
+with WebP lossless). Default is 1.
+
+.in 15
+.in 15
+.B "webp:alpha-filtering=<integer>"
+.in 20
+ \fR
+.in 20
+Predictive filtering method for alpha plane. 0: none, 1: fast, 2:
+best. Default is 1.
+
+.in 15
+.in 15
+.B "webp:alpha-quality={0-100}"
+.in 20
+ \fR
+.in 20
+Between 0 (smallest size) and 100 (lossless). Default is 100.
+
+.in 15
+.in 15
+.B "webp:pass=[1..10]"
+.in 20
+ \fR
+.in 20
+Number of entropy-analysis passes.
+
+.in 15
+.in 15
+.B "webp:show-compressed={true|false}"
+.in 20
+ \fR
+.in 20
+Export the compressed picture back.  In-loop filtering is not
+applied.
+
+.in 15
+.in 15
+.B "webp:preprocessing=[0,1,2]"
+.in 20
+ \fR
+.in 20
+0=none, 1=segment-smooth, 2=pseudo-random dithering
+
+.in 15
+.in 15
+.B "webp:partitions=[0-3]"
+.in 20
+ \fR
+.in 20
+log2(number of token partitions) in [0..3].  Default is 0 for
+easier progressive decoding.
+
+.in 15
+.in 15
+.B "webp:partition-limit={0-100}"
+.in 20
+ \fR
+.in 20
+Quality degradation allowed to fit the 512k limit on prediction
+modes coding (0: no degradation, 100: maximum possible
+degradation).
+
+.in 15
+.in 15
+.B "webp:emulate-jpeg-size={true|false}"
+.in 20
+ \fR
+.in 20
+If true, compression parameters will be remapped to better match
+the expected output size from JPEG compression. Generally, the output
+size will be similar but the degradation will be lower.
+
+.in 15
+.in 15
+.B "webp:thread-level=<integer>"
+.in 20
+ \fR
+.in 20
+If non-zero, try and use multi-threaded encoding.
+
+.in 15
+.in 15
+.B "webp:low-memory={true|false}"
+.in 20
+ \fR
+.in 20
+If set, reduce memory usage (but increase CPU use)
 
 .in 15
 

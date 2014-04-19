@@ -1635,6 +1635,81 @@ is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
 </dd>
+<dt>webp:lossless={true|false}</dt>
+<dd>Enable lossless encoding.
+</dd>
+<dt>webp:method={0-6}</dt>
+<dd>Quality/speed trade-off.
+</dd>
+<dt>webp:image-hint={default,graph,photo,picture}</dt>
+<dd>Hint for image type.
+</dd>
+<dt>webp:target-size=&lt;integer&gt;</dt>
+<dd>Target size in bytes.
+</dd>
+<dt>webp:target-psnr=&lt;float&gt;</dt>
+<dd>Minimal distortion to try to achieve.
+</dd>
+<dt>webp:segments={1-4}</dt>
+<dd>Maximum number of segments to use.
+</dd>
+<dt>webp:sns-strength={0-100}</dt>
+<dd>Spatial Noise Shaping.
+</dd>
+<dt>webp:filter-strength={0-100}</dt>
+<dd>Filter strength.
+</dd>
+<dt>webp:filter-sharpness={0-7}</dt>
+<dd>Filter sharpness.
+</dd>
+<dt>webp:filter-type={0,1}</dt>
+<dd>Filtering type. 0 = simple, 1 = strong (only used if
+filter-strength &gt; 0 or autofilter is enabled).
+</dd>
+<dt>webp:auto-filter={true|false}</dt>
+<dd>Auto adjust filter's strength.
+</dd>
+<dt>webp:alpha-compression=&lt;integer&gt;</dt>
+<dd>Algorithm for encoding the alpha plane (0 = none, 1 = compressed
+with WebP lossless). Default is 1.
+</dd>
+<dt>webp:alpha-filtering=&lt;integer&gt;</dt>
+<dd>Predictive filtering method for alpha plane. 0: none, 1: fast, 2:
+best. Default is 1.
+</dd>
+<dt>webp:alpha-quality={0-100}</dt>
+<dd>Between 0 (smallest size) and 100 (lossless). Default is 100.
+</dd>
+<dt>webp:pass=[1..10]</dt>
+<dd>Number of entropy-analysis passes.
+</dd>
+<dt>webp:show-compressed={true|false}</dt>
+<dd>Export the compressed picture back.  In-loop filtering is not
+applied.
+</dd>
+<dt>webp:preprocessing=[0,1,2]</dt>
+<dd>0=none, 1=segment-smooth, 2=pseudo-random dithering
+</dd>
+<dt>webp:partitions=[0-3]</dt>
+<dd>log2(number of token partitions) in [0..3].  Default is 0 for
+easier progressive decoding.
+</dd>
+<dt>webp:partition-limit={0-100}</dt>
+<dd>Quality degradation allowed to fit the 512k limit on prediction
+modes coding (0: no degradation, 100: maximum possible
+degradation).
+</dd>
+<dt>webp:emulate-jpeg-size={true|false}</dt>
+<dd>If true, compression parameters will be remapped to better match
+the expected output size from JPEG compression. Generally, the output
+size will be similar but the degradation will be lower.
+</dd>
+<dt>webp:thread-level=&lt;integer&gt;</dt>
+<dd>If non-zero, try and use multi-threaded encoding.
+</dd>
+<dt>webp:low-memory={true|false}</dt>
+<dd>If set, reduce memory usage (but increase CPU use)
+</dd>
 </dl>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, to create a postscript file that will render only the black

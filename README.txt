@@ -198,7 +198,8 @@ building under Microsoft Windows:
 
   to read and write the JBIG image format.
 
-* GraphicsMagick requires the WebP library available via HTTPS from
+* GraphicsMagick requires the WebP library version 0.1.99 (or later)
+  available via HTTPS from
 
      https://developers.google.com/speed/webp/
 
