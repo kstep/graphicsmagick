@@ -1,3 +1,11 @@
+2014-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetMagickGeometry): Deal with resize geometry
+	missing width or height (e.g. '640x' or 'x480') by substituting
+	the missing value with one which preserves the image aspect ratio.
+	This has been documented to be supported since almost the dawn of
+	GraphicsMagick but was not actually supported until now.
+
 2014-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Document WebP encoder options.

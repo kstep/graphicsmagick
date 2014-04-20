@@ -1920,10 +1920,10 @@ GetMagickDimension(const char *str,double *width,double *height,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, @, !,
-%  <, and >, as well as +x, and +y offsets.  The geometry string has the
-%  form:
+%  GetMagickGeometry() is similar to GetGeometry() except that existing
+%  'width', and 'height' input values are modified by the geometry
+%  influenced by the meta characters:  %, @, !, <, and >, as well as
+%  +x, and +y offsets.  The geometry string has the form:
 %
 %      <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}
 %
@@ -1947,6 +1947,11 @@ GetMagickDimension(const char *str,double *width,double *height,
 %  height, and x/y offset values as required to center the scaled image
 %  into the region specified by the supplied width and height.
 %
+%  If only the width is specified, the width assumes the value and the
+%  height is chosen to maintain the aspect ratio of the image. Similarly,
+%  if only the height is specified (e.g., -geometry x256), the width is
+%  chosen to maintain the aspect ratio.
+%
 %  The format of the GetMagickGeometry method is:
 %
 %      int GetMagickGeometry(const char *geometry,long *x,long *y,
@@ -1955,7 +1960,8 @@ GetMagickDimension(const char *str,double *width,double *height,
 %  A description of each parameter follows:
 %
 %    o flags:  Method GetMagickGeometry returns a bitmask that indicates
-%      which of the five values (PercentValue, AspectValue, LessValue,
+%      which of the twelve values (XValue, YValue, WidthValue, HeightValue,
+%      XNegative, YNegative, PercentValue, AspectValue, LessValue,
 %      GreaterValue, AreaValue, MinimumValue) were located in the geometry
 %      string.
 %
@@ -1998,6 +2004,16 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   former_width=(*width);
   former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
+  /*
+    Deal with width or height being missing from geometry.  Supply
+    missing value required to preserve current image aspect ratio.
+  */
+  if (((flags & WidthValue) && !(flags & HeightValue)))
+    *height=(unsigned long) floor(((double) former_height/former_width)*
+                                  (*width)+0.5);
+  else if ((!(flags & WidthValue) && (flags & HeightValue)))
+    *width=(unsigned long) floor(((double) former_width/former_height)*
+                                 (*height)+0.5);
   if (flags & PercentValue)
     {
       double
@@ -2061,16 +2077,11 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       else
 	{
 	  double
-	    scale_height=1.0,
-	    scale_width=1.0;
+	    scale_height,
+	    scale_width;
 
-	  if ((flags & HeightValue) != 0)
-	    scale_height=(double) *height/former_height;
-
-	  if ((flags & WidthValue) != 0)
-	    scale_width=(double) *width/former_width;
-	  else
-	    scale_width=scale_height;
+          scale_height=(double) *height/former_height;
+          scale_width=(double) *width/former_width;
 
 	  scale_factor=scale_width;
 	  if ((flags & MinimumValue) != 0)
