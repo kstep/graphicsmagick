@@ -25,7 +25,7 @@ test_command_fn 'Convert piped to identify (explicit PNM)' test $?
 ${GM} convert ${CONVERT_FLAGS} - 'null:' < ${SUNRISE_MIFF}
 test_command_fn 'Convert implicit MIFF stdin to null:' test $?
 
-${GM} convert ${CONVERT_FLAGS} MIFF:- 'null:' < ${SUNRISE_MIFF}#!/bin/sh
+${GM} convert ${CONVERT_FLAGS} MIFF:- 'null:' < ${SUNRISE_MIFF}
 test_command_fn 'Convert explicit MIFF stdin to null:' test $?
 
 ${GM} convert ${CONVERT_FLAGS} ${SUNRISE_MIFF} - | ${GM} identify -format '%m %wx%h %r %q-bit' -
