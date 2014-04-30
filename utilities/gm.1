@@ -1,4 +1,4 @@
-.TH gm 1 "2014/04/19" "GraphicsMagick"
+.TH gm 1 "2014/04/29" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2239,6 +2239,7 @@ characters:
      %d   directory
      %e   filename extension
      %f   filename
+     %g   page dimensions and offsets
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -2247,17 +2248,33 @@ characters:
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   image minimum bit depth
+     %q   image bit depth
      %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
      %w   width
-     %x   x resolution
-     %y   y resolution
+     %x   horizontal resolution
+     %y   vertical resolution
+     %A   transparency supported
+     %C   compression type
+     %D   GIF disposal method
+     %G   Original width and height
+     %H   page height
+     %M   original filename specification
+     %O   page offset (x,y)
+     %P   page dimensions (width,height)
+     %Q   compression quality
+     %T   time delay (in centi-seconds)
+     %U   resolution units
+     %W   page width
+     %X   page horizontal offset (x)
+     %Y   page vertical offset (y)
+     %@   trim bounding box
      %#   signature
      \\n   newline
      \\r   carriage return
+     %%   %
 
 
 For example,

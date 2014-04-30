@@ -1,3 +1,16 @@
+2014-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (TranslateTextEx): Support additional format
+	specifiers 'g', 'A', 'C', 'D', 'G', 'H', 'M', 'O', 'P', 'Q', 'T',
+	'U', 'W', 'X', and '@'.
+	(GetMagickGeometry): Support '>' and '<' qualifiers with '@'
+	qualifier to specify if image should be resized if larger or
+	lesser than given area specification.  Resolves SourceForge bug
+	#216 ">" wont take effect when use @ to specify the maximum area.
+
+	* magick/transform.c (GetImageMosaicDimensions): Move mosaic
+	dimensions code to a static function for possible future re-use.
+
 2014-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/gradient.c (GradientImage): Update image is_grayscale and
