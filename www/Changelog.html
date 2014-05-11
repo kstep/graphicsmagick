@@ -35,6 +35,31 @@
 <div class="document">
 
 
+<p>2014-05-11  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/composite.c (MultiplyCompositePixels): Multiply
+composition now uses SVG interpretation of how alpha should be
+handled.  No longer does a simple multiply of alpha channel.
+Behavior change.  Patch contributed by Sara Shafaei.</li>
+<li>coders/msl.c (ProcessMSLScript): Deal with case where
+image_info-&gt;attributes is NULL.</li>
+</ul>
+</blockquote>
+<p>2014-04-29  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/utility.c (TranslateTextEx): Support additional format
+specifiers 'g', 'A', 'C', 'D', 'G', 'H', 'M', 'O', 'P', 'Q', 'T',
+'U', 'W', 'X', and '&#64;'.
+(GetMagickGeometry): Support '&gt;' and '&lt;' qualifiers with '&#64;'
+qualifier to specify if image should be resized if larger or
+lesser than given area specification.  Resolves SourceForge bug
+#216 &quot;&gt;&quot; wont take effect when use &#64; to specify the maximum area.</li>
+<li>magick/transform.c (GetImageMosaicDimensions): Move mosaic
+dimensions code to a static function for possible future re-use.</li>
+</ul>
+</blockquote>
 <p>2014-04-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

@@ -751,25 +751,47 @@ MultiplyCompositePixels(void *mutable_data,                /* User provided muta
     The result of change-image * base-image. This is useful for the
     creation of drop-shadows.
   */
+
+
   for (i=0; i < npixels; i++)
     {
-      double
-        value;
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      value=((double) source.red*destination.red)/MaxRGBDouble;
-      destination.red=RoundDoubleToQuantum(value);
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
 
-      value=((double) source.green*destination.green)/MaxRGBDouble;
-      destination.green=RoundDoubleToQuantum(value);
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
 
-      value=((double) source.blue*destination.blue)/MaxRGBDouble;
-      destination.blue=RoundDoubleToQuantum(value);
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
 
-      value=((double) source.opacity*destination.opacity)/MaxRGBDouble;
-      destination.opacity=RoundDoubleToQuantum(value);
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(((double)source.red*(1.0-source_alpha)*
+                  (double)destination.red*(1.0-dest_alpha))/MaxRGBDouble+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.green*(1.0-source_alpha)*
+                  (double)destination.green*(1.0-dest_alpha))/MaxRGBDouble+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.blue*(1.0-source_alpha)*
+                  (double)destination.blue*(1.0-dest_alpha))/MaxRGBDouble+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }

@@ -1,3 +1,13 @@
+2014-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (MultiplyCompositePixels): Multiply
+	composition now uses SVG interpretation of how alpha should be
+	handled.  No longer does a simple multiply of alpha channel.
+	Behavior change.  Patch contributed by Sara Shafaei.
+
+	* coders/msl.c (ProcessMSLScript): Deal with case where
+	image_info->attributes is NULL.
+
 2014-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (TranslateTextEx): Support additional format
