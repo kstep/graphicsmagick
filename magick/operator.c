@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2004 - 2012 GraphicsMagick Group
+% Copyright (C) 2004 - 2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -85,7 +85,7 @@ typedef struct _ChannelOptions_t
 %        channels.  The GrayChannel type treats the color channels
 %        as if they represent an intensity.
 %
-%    o quantum_operator: Operator to use (AddQuantumOp,AndQuantumOp,
+%    o quantum_operator: Operator to use (AddQuantumOp, AndQuantumOp,
 %        AssignQuantumOp, DepthQuantumOp, DivideQuantumOp, GammaQuantumOp,
 %        LShiftQuantumOp, MultiplyQuantumOp,  NegateQuantumOp,
 %        NoiseGaussianQuantumOp, NoiseImpulseQuantumOp,
@@ -93,6 +93,7 @@ typedef struct _ChannelOptions_t
 %        NoisePoissonQuantumOp, NoiseRandomQuantumOp, NoiseUniformQuantumOp,
 %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp,
 %        ThresholdBlackQuantumOp, ThresholdQuantumOp, ThresholdWhiteQuantumOp,
+%        ThresholdBlackNegateQuantumOp, ThresholdWhiteNegateQuantumOp,
 %        XorQuantumOp).
 %
 %    o rvalue: Operator argument.
@@ -2029,6 +2030,194 @@ QuantumThresholdWhiteCB(void *mutable_data,
   return (MagickPass);
 }
 
+static inline Quantum ApplyThresholdBlackNegateOperator(const Quantum intensity,
+                                                        const Quantum quantum,
+                                                        const Quantum threshold)
+{
+  Quantum
+    result;
+
+  if (intensity < threshold)
+    result=MaxRGB-quantum;
+  else
+    result=quantum;
+
+  return result;
+}
+static MagickPassFail
+QuantumThresholdBlackNegateCB(void *mutable_data,
+                              const void *immutable_data,
+                              Image *image,
+                              PixelPacket *pixels,
+                              IndexPacket *indexes,
+                              const long npixels,
+                              ExceptionInfo *exception)
+{
+  const QuantumImmutableContext
+    *context=(const QuantumImmutableContext *) immutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = ApplyThresholdBlackNegateOperator(pixels[i].red,pixels[i].red,context->quantum_value);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = ApplyThresholdBlackNegateOperator(pixels[i].green,pixels[i].green,context->quantum_value);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = ApplyThresholdBlackNegateOperator(pixels[i].blue,pixels[i].blue,context->quantum_value);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = ApplyThresholdBlackNegateOperator(pixels[i].opacity,pixels[i].opacity,context->quantum_value);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      /*
+        For the all-channels case we bend the rules a bit and only
+        threshold to black if the computed intensity of the color
+        channels is less than the threshold.  This allows black
+        thresholding to work without causing a color shift.  If
+        individual channels need to be thresholded, then per-channel
+        thresholding will be required for each channel to be
+        thresholded.
+      */
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red=ApplyThresholdBlackNegateOperator(intensity,pixels[i].red,context->quantum_value);
+          pixels[i].green=ApplyThresholdBlackNegateOperator(intensity,pixels[i].green,context->quantum_value);
+          pixels[i].blue=ApplyThresholdBlackNegateOperator(intensity,pixels[i].blue,context->quantum_value);
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            ApplyThresholdBlackNegateOperator(intensity,intensity,context->quantum_value);
+        }
+      break;
+    }
+  return (MagickPass);
+}
+
+static inline Quantum ApplyThresholdWhiteNegateOperator(const Quantum intensity,
+                                                        const Quantum quantum,
+                                                        const Quantum threshold)
+{
+  Quantum
+    result;
+
+  if (intensity > threshold)
+    result=MaxRGB-quantum;
+  else
+    result=quantum;
+
+  return result;
+}
+static MagickPassFail
+QuantumThresholdWhiteNegateCB(void *mutable_data,
+                              const void *immutable_data,
+                              Image *image,
+                              PixelPacket *pixels,
+                              IndexPacket *indexes,
+                              const long npixels,
+                              ExceptionInfo *exception)
+{
+  const QuantumImmutableContext
+    *context=(const QuantumImmutableContext *) immutable_data;
+
+  register long
+    i;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(image);
+  ARG_NOT_USED(indexes);
+  ARG_NOT_USED(exception);
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].red = ApplyThresholdWhiteNegateOperator(pixels[i].red,pixels[i].red,context->quantum_value);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].green = ApplyThresholdWhiteNegateOperator(pixels[i].green,pixels[i].green,context->quantum_value);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].blue = ApplyThresholdWhiteNegateOperator(pixels[i].blue,pixels[i].blue,context->quantum_value);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      for (i=0; i < npixels; i++)
+        pixels[i].opacity = ApplyThresholdWhiteNegateOperator(pixels[i].opacity,pixels[i].opacity,context->quantum_value);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      /*
+        For the all-channels case we bend the rules a bit and only
+        threshold to white if the computed intensity of the color
+        channels exceeds the threshold.  This allows white
+        thresholding to work without causing a color shift.  If
+        individual channels need to be thresholded, then per-channel
+        thresholding will be required for each channel to be
+        thresholded.
+      */
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = ApplyThresholdWhiteNegateOperator(intensity,pixels[i].red,context->quantum_value);
+          pixels[i].green = ApplyThresholdWhiteNegateOperator(intensity,pixels[i].green,context->quantum_value);
+          pixels[i].blue = ApplyThresholdWhiteNegateOperator(intensity,pixels[i].blue,context->quantum_value);
+        }
+      break;
+    case GrayChannel:
+      for (i=0; i < npixels; i++)
+        {
+          Quantum
+            intensity;
+
+          intensity = PixelIntensity(&pixels[i]);
+          pixels[i].red = pixels[i].green = pixels[i].blue =
+            ApplyThresholdWhiteNegateOperator(intensity,intensity,context->quantum_value);
+        }
+      break;
+    }
+  return (MagickPass);
+}
+
 static MagickPassFail
 QuantumXorCB(void *mutable_data,
              const void *immutable_data,
@@ -2167,6 +2356,12 @@ QuantumOperatorRegionImage(Image *image,
       break;
     case ThresholdWhiteQuantumOp:
       call_back=QuantumThresholdWhiteCB;
+      break;
+    case ThresholdBlackNegateQuantumOp:
+      call_back=QuantumThresholdBlackNegateCB;
+      break;
+    case ThresholdWhiteNegateQuantumOp:
+      call_back=QuantumThresholdWhiteNegateCB;
       break;
     case XorQuantumOp:
       call_back=QuantumXorCB;

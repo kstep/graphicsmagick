@@ -354,6 +354,8 @@ namespace Magick
   using MagickLib::ThresholdQuantumOp;
   using MagickLib::ThresholdBlackQuantumOp;
   using MagickLib::ThresholdWhiteQuantumOp;
+  using MagickLib::ThresholdBlackNegateQuantumOp;
+  using MagickLib::ThresholdWhiteNegateQuantumOp;
   using MagickLib::XorQuantumOp;
   using MagickLib::NoiseGaussianQuantumOp;
   using MagickLib::NoiseImpulseQuantumOp;

@@ -6056,6 +6056,7 @@ WandExport unsigned int MagickOpaqueImage(MagickWand *wand,
  %        NoisePoissonQuantumOp, NoiseRandomQuantumOp, NoiseUniformQuantumOp,
  %        OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp,
  %        ThresholdBlackQuantumOp, ThresholdQuantumOp, ThresholdWhiteQuantumOp,
+ %        ThresholdBlackNegateQuantumOp, ThresholdWhiteNegateQuantumOp,
  %        XorQuantumOp).
  %
  %    o rvalue: Operator argument.

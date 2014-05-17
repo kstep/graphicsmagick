@@ -1242,6 +1242,12 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
   else if ((LocaleCompare("threshold-white",option) == 0) ||
            (LocaleCompare("ThresholdWhite",option) == 0))
     quantum_operator=ThresholdWhiteQuantumOp;
+  else if ((LocaleCompare("threshold-black-negate",option) == 0) ||
+           (LocaleCompare("ThresholdBlackNegate",option) == 0))
+    quantum_operator=ThresholdBlackNegateQuantumOp;
+  else if ((LocaleCompare("threshold-white-negate",option) == 0) ||
+           (LocaleCompare("ThresholdWhiteNegate",option) == 0))
+    quantum_operator=ThresholdWhiteNegateQuantumOp;
   else if (LocaleCompare("xor",option) == 0)
     quantum_operator=XorQuantumOp;
   else if ((LocaleCompare("noise-gaussian",option) == 0) ||
@@ -1327,6 +1333,12 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
       break;
     case ThresholdWhiteQuantumOp:
       operator_text="threshold-white";
+      break;
+    case ThresholdBlackNegateQuantumOp:
+      operator_text="threshold-black-negate";
+      break;
+    case ThresholdWhiteNegateQuantumOp:
+      operator_text="threshold-white-negate";
       break;
     case XorQuantumOp:
       operator_text="xor";

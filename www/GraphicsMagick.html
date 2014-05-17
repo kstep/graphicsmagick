@@ -3766,16 +3766,16 @@ independently so that operations are on a per-channel basis.</font></td></tr></t
 <strong>Gray</strong> treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
 <strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>,
 <strong>LShift</strong>, <strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>,
 <strong>Or</strong>, <strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>,
-<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
-<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
-<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
-<strong>Noise-Poisson</strong>, <strong>Noise-Random</strong>, and
-<strong>Noise-Uniform</strong>.</font></td></tr></table>
+<strong>Threshold</strong>, <strong>Threshold-White</strong>,
+<strong>Threshold-White-Negate</strong>, <strong>Threshold-Black</strong>,
+<strong>Threshold-Black-Negate</strong>, <strong>Xor</strong>, <strong>Noise-Gaussian</strong>,
+<strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
+<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>,
+<strong>Noise-Random</strong>, and <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3852,10 +3852,22 @@ remove apparent noise from the bright parts of an image. If <strong>all</strong>
 channels are specified, then thresholding is done based on computed pixel
 intensity.
 </dd>
+<dt>Threshold-White-Negate</dt>
+<dd>Result is negated (inverted) if channel value is greater than
+rvalue and is unchanged if it is less than or equal to rvalue. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
 <dt>Threshold-black</dt>
 <dd>Result is minimum (black) if channel value is less than than rvalue
 and is unchanged if it is greater than or equal to rvalue. This can be
 used to remove apparent noise from the dark parts of an image. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+<dt>Threshold-Black-Negate</dt>
+<dd>Result is negated (inverted) if channel value is less than than
+rvalue and is unchanged if it is greater than or equal to rvalue. If
 <strong>all</strong> channels are specified, then thresholding is done based on
 computed pixel intensity.
 </dd>
