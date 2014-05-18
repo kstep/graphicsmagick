@@ -1,3 +1,10 @@
+2014-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Be ultra-pedantic with CPPFLAGS
+	and include paths in order to assure that only required
+	directories are supplied, and to avoid accidential collision with
+	system header files.
+
 2014-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/operator.h ("C"): New quantum operators

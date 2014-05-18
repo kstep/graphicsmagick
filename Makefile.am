@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2013 GraphicsMagick Group
+# Copyright (C) 2004-2014 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -10,15 +10,18 @@
 
 # Don't require all the GNU mandated files
 # Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
-AUTOMAKE_OPTIONS = 1.12 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign dist-lzip
+# nostdinc 
+AUTOMAKE_OPTIONS = 1.12 subdir-objects nostdinc color-tests parallel-tests dist-bzip2 dist-xz foreign dist-lzip
 
 topincludedir = @includedir@/GraphicsMagick
 
+# CPPFLAGS required by all C/C++ code
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 ACLOCAL_AMFLAGS = -I m4
 
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
+MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
 
 # Options to pass when running configure in the distcheck target.
 #

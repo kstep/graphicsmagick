@@ -6,17 +6,10 @@
  *
  */
 
-#if !defined(_VISUALC_)
-#include <magick_config.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
 #include <time.h>
 #include <wand/magick_wand.h>
 

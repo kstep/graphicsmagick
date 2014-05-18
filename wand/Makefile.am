@@ -9,6 +9,8 @@
 
 wandincdir = $(topincludedir)/wand
 
+WAND_CPPFLAGS = $(AM_CPPFLAGS)
+
 WAND_SOURCES = \
         wand/drawing_wand.c \
 	wand/drawing_wand.h \
@@ -43,6 +45,7 @@ WAND_MANS = \
 LIBWAND=wand/libGraphicsMagickWand.la
 
 wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
+wand_libGraphicsMagickWand_la_CPPFLAGS = $(WAND_CPPFLAGS)
 wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
@@ -59,10 +62,12 @@ WAND_EXTRA_DIST = \
 	$(WAND_TESTS)
 
 wand_drawtest_LDADD        = $(LIBWAND)
+wand_drawtest_CPPFLAGS     = $(WAND_CPPFLAGS)
 wand_drawtest_LDFLAGS      = $(LDFLAGS)
 wand_drawtest_SOURCES      = wand/drawtest.c
 
 wand_wandtest_LDADD        = $(LIBWAND)
+wand_wandtest_CPPFLAGS     = $(WAND_CPPFLAGS)
 wand_wandtest_LDFLAGS      = $(LDFLAGS)
 wand_wandtest_SOURCES      = wand/wandtest.c
 

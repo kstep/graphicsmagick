@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright (C) 2004-2013 GraphicsMagick Group
+# Copyright (C) 2004-2014 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -44,7 +44,7 @@
 #
 #
 
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2014 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -54,7 +54,7 @@
 #
 #
 
-# Copyright (C) 2004 GraphicsMagick Group
+# Copyright (C) 2004-2014 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -67,8 +67,10 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright (C) 1999 - 2012 Bob Friesenhahn
+# Copyright (C) 1999-2014 Bob Friesenhahn
 #
+
+#AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
 # Copyright (C) 2004-2012 GraphicsMagick Group
 #
@@ -313,15 +315,23 @@ LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
 	$(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 Magick___lib_libGraphicsMagick___la_DEPENDENCIES = $(LIBMAGICK)
 am__dirstamp = $(am__leading_dot)dirstamp
-am_Magick___lib_libGraphicsMagick___la_OBJECTS = Magick++/lib/Blob.lo \
-	Magick++/lib/BlobRef.lo Magick++/lib/CoderInfo.lo \
-	Magick++/lib/Color.lo Magick++/lib/Drawable.lo \
-	Magick++/lib/Exception.lo Magick++/lib/Functions.lo \
-	Magick++/lib/Geometry.lo Magick++/lib/Image.lo \
-	Magick++/lib/ImageRef.lo Magick++/lib/Montage.lo \
-	Magick++/lib/Options.lo Magick++/lib/Pixels.lo \
-	Magick++/lib/STL.lo Magick++/lib/Thread.lo \
-	Magick++/lib/TypeMetric.lo
+am_Magick___lib_libGraphicsMagick___la_OBJECTS =  \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo \
+	Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo
 Magick___lib_libGraphicsMagick___la_OBJECTS =  \
 	$(am_Magick___lib_libGraphicsMagick___la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -1120,7 +1130,7 @@ coders_yuv_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_yuv_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_yuv_la_rpath = -rpath $(codersdir)
 filters_analyze_la_DEPENDENCIES = $(LIBMAGICK)
-am_filters_analyze_la_OBJECTS = filters/analyze.lo
+am_filters_analyze_la_OBJECTS = filters/filters_analyze_la-analyze.lo
 filters_analyze_la_OBJECTS = $(am_filters_analyze_la_OBJECTS)
 filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1420,8 +1430,10 @@ magick_libGraphicsMagick_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 wand_libGraphicsMagickWand_la_DEPENDENCIES = $(LIBMAGICK) \
 	$(am__DEPENDENCIES_1)
-am__objects_16 = wand/drawing_wand.lo wand/magick_compat.lo \
-	wand/magick_wand.lo wand/pixel_wand.lo
+am__objects_16 = wand/wand_libGraphicsMagickWand_la-drawing_wand.lo \
+	wand/wand_libGraphicsMagickWand_la-magick_compat.lo \
+	wand/wand_libGraphicsMagickWand_la-magick_wand.lo \
+	wand/wand_libGraphicsMagickWand_la-pixel_wand.lo
 am_wand_libGraphicsMagickWand_la_OBJECTS = $(am__objects_16)
 wand_libGraphicsMagickWand_la_OBJECTS =  \
 	$(am_wand_libGraphicsMagickWand_la_OBJECTS)
@@ -1453,89 +1465,91 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_4 = $(am__EXEEXT_3)
 am__EXEEXT_5 = wand/drawtest$(EXEEXT) wand/wandtest$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
-am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
+am_Magick___demo_analyze_OBJECTS =  \
+	Magick++/demo/Magick___demo_analyze-analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_2 = Magick++/lib/libGraphicsMagick++.la
 Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
+am_Magick___demo_button_OBJECTS =  \
+	Magick++/demo/Magick___demo_button-button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
 Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
+am_Magick___demo_demo_OBJECTS =  \
+	Magick++/demo/Magick___demo_demo-demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
 Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
+am_Magick___demo_detrans_OBJECTS =  \
+	Magick++/demo/Magick___demo_detrans-detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
 Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
+am_Magick___demo_flip_OBJECTS =  \
+	Magick++/demo/Magick___demo_flip-flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
 Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
+am_Magick___demo_gravity_OBJECTS =  \
+	Magick++/demo/Magick___demo_gravity-gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
 Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
+am_Magick___demo_piddle_OBJECTS =  \
+	Magick++/demo/Magick___demo_piddle-piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
 Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
+am_Magick___demo_shapes_OBJECTS =  \
+	Magick++/demo/Magick___demo_shapes-shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
 Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
+am_Magick___demo_zoom_OBJECTS =  \
+	Magick++/demo/Magick___demo_zoom-zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
 Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_appendImages_OBJECTS =  \
-	Magick++/tests/appendImages.$(OBJEXT)
+am_Magick___tests_appendImages_OBJECTS = Magick++/tests/Magick___tests_appendImages-appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
 Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_Magick___tests_attributes_OBJECTS =  \
-	Magick++/tests/attributes.$(OBJEXT)
+	Magick++/tests/Magick___tests_attributes-attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
 Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_averageImages_OBJECTS =  \
-	Magick++/tests/averageImages.$(OBJEXT)
+am_Magick___tests_averageImages_OBJECTS = Magick++/tests/Magick___tests_averageImages-averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
 Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_coalesceImages_OBJECTS =  \
-	Magick++/tests/coalesceImages.$(OBJEXT)
+am_Magick___tests_coalesceImages_OBJECTS = Magick++/tests/Magick___tests_coalesceImages-coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
 Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_Magick___tests_coderInfo_OBJECTS =  \
-	Magick++/tests/coderInfo.$(OBJEXT)
+	Magick++/tests/Magick___tests_coderInfo-coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
 Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
+am_Magick___tests_color_OBJECTS =  \
+	Magick++/tests/Magick___tests_color-color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
 Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_colorHistogram_OBJECTS =  \
-	Magick++/tests/colorHistogram.$(OBJEXT)
+am_Magick___tests_colorHistogram_OBJECTS = Magick++/tests/Magick___tests_colorHistogram-colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
 Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_Magick___tests_exceptions_OBJECTS =  \
-	Magick++/tests/exceptions.$(OBJEXT)
+	Magick++/tests/Magick___tests_exceptions-exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
 Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_montageImages_OBJECTS =  \
-	Magick++/tests/montageImages.$(OBJEXT)
+am_Magick___tests_montageImages_OBJECTS = Magick++/tests/Magick___tests_montageImages-montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
 Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_morphImages_OBJECTS =  \
-	Magick++/tests/morphImages.$(OBJEXT)
+am_Magick___tests_morphImages_OBJECTS = Magick++/tests/Magick___tests_morphImages-morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
 Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_readWriteBlob_OBJECTS =  \
-	Magick++/tests/readWriteBlob.$(OBJEXT)
+am_Magick___tests_readWriteBlob_OBJECTS = Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
 Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_Magick___tests_readWriteImages_OBJECTS =  \
-	Magick++/tests/readWriteImages.$(OBJEXT)
+am_Magick___tests_readWriteImages_OBJECTS = Magick++/tests/Magick___tests_readWriteImages-readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
 Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_2)
@@ -1565,13 +1579,13 @@ utilities_gm_DEPENDENCIES = $(LIBMAGICK)
 utilities_gm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(utilities_gm_LDFLAGS) $(LDFLAGS) -o $@
-am_wand_drawtest_OBJECTS = wand/drawtest.$(OBJEXT)
+am_wand_drawtest_OBJECTS = wand/wand_drawtest-drawtest.$(OBJEXT)
 wand_drawtest_OBJECTS = $(am_wand_drawtest_OBJECTS)
 wand_drawtest_DEPENDENCIES = $(LIBWAND)
 wand_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(wand_drawtest_LDFLAGS) $(LDFLAGS) -o $@
-am_wand_wandtest_OBJECTS = wand/wandtest.$(OBJEXT)
+am_wand_wandtest_OBJECTS = wand/wand_wandtest-wandtest.$(OBJEXT)
 wand_wandtest_OBJECTS = $(am_wand_wandtest_OBJECTS)
 wand_wandtest_DEPENDENCIES = $(LIBWAND)
 wand_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1590,7 +1604,7 @@ AM_V_at = $(am__v_at_@AM_V@)
 am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
-DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/magick
+DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
@@ -2341,12 +2355,15 @@ xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
 # Use XZ_OPT (a environment variable) to tune xz compression levels (e.g. XZ_OPT=-8e)
-AUTOMAKE_OPTIONS = 1.12 subdir-objects color-tests parallel-tests dist-bzip2 dist-xz foreign dist-lzip
+# nostdinc 
+AUTOMAKE_OPTIONS = 1.12 subdir-objects nostdinc color-tests parallel-tests dist-bzip2 dist-xz foreign dist-lzip
 topincludedir = @includedir@/GraphicsMagick
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-	-I$(top_srcdir)/Magick++/lib
+
+# CPPFLAGS required by all C/C++ code
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 ACLOCAL_AMFLAGS = -I m4
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
+MODULECOMMONCPPFLAGS = $(AM_CPPFLAGS)
 
 # Options to pass when running configure in the distcheck target.
 #
@@ -2500,6 +2517,10 @@ codersdir = $(MagickCoderModulesPath)
 @HasX11_TRUE@MAGICK_X11_CODER_SRCS = coders/x.c coders/xwd.c
 @HasWEBP_TRUE@MAGICK_WEBP_MODULES = coders/webp.la
 @HasWEBP_TRUE@MAGICK_WEBP_SRCS = coders/webp.c
+MAGICK_CODER_CPPFLAGS = \
+	$(MODULECOMMONCPPFLAGS) \
+	$(MODULE_EXTRA_CPPFLAGS)
+
 MAGICK_CODER_SRCS = \
 	$(MAGICK_PNG_SRCS) \
 	coders/art.c \
@@ -2696,607 +2717,607 @@ MAGICK_CODER_SRCS = \
 
 # ART coder module
 coders_art_la_SOURCES = coders/art.c
-coders_art_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_art_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_art_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_art_la_LIBADD = $(LIBMAGICK)
 
 # AVI coder module
 coders_avi_la_SOURCES = coders/avi.c
-coders_avi_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_avi_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_avi_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_avi_la_LIBADD = $(LIBMAGICK)
 
 # AVS coder module
 coders_avs_la_SOURCES = coders/avs.c
-coders_avs_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_avs_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_avs_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_avs_la_LIBADD = $(LIBMAGICK)
 
 # BMP coder module
 coders_bmp_la_SOURCES = coders/bmp.c
-coders_bmp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_bmp_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_bmp_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_bmp_la_LIBADD = $(LIBMAGICK)
 
 # CALS coder module
 coders_cals_la_SOURCES = coders/cals.c
-coders_cals_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_cals_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_cals_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_cals_la_LIBADD = $(LIBMAGICK)
 
 # CAPTION coder module
 coders_caption_la_SOURCES = coders/caption.c
-coders_caption_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_caption_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_caption_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_caption_la_LIBADD = $(LIBMAGICK)
 
 # CINEON coder module
 coders_cineon_la_SOURCES = coders/cineon.c
-coders_cineon_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_cineon_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_cineon_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_cineon_la_LIBADD = $(LIBMAGICK)
 
 # CLIPBOARD coder module
 coders_clipboard_la_SOURCES = coders/clipboard.c
-coders_clipboard_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_clipboard_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_clipboard_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_clipboard_la_LIBADD = $(LIBMAGICK) $(LIB_GDI32)
 
 # CMYK coder module
 coders_cmyk_la_SOURCES = coders/cmyk.c
-coders_cmyk_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_cmyk_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_cmyk_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_cmyk_la_LIBADD = $(LIBMAGICK)
 
 # CUT coder module
 coders_cut_la_SOURCES = coders/cut.c
-coders_cut_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_cut_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_cut_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_cut_la_LIBADD = $(LIBMAGICK)
 
 # DCM coder module
 coders_dcm_la_SOURCES = coders/dcm.c
-coders_dcm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dcm_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dcm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dcm_la_LIBADD = $(LIBMAGICK)
 
 # DCRAW coder module
 coders_dcraw_la_SOURCES = coders/dcraw.c
-coders_dcraw_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dcraw_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dcraw_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dcraw_la_LIBADD = $(LIBMAGICK)
 
 # DIB coder module
 coders_dib_la_SOURCES = coders/dib.c
-coders_dib_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dib_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dib_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dib_la_LIBADD = $(LIBMAGICK)
 
 # DPS coder module
 coders_dps_la_SOURCES = coders/dps.c
-coders_dps_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dps_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dps_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dps_la_LIBADD = $(LIBMAGICK) $(LIB_DPS) $(LIB_XEXT) $(LIB_X11)
 
 # DPX coder module
 coders_dpx_la_SOURCES = coders/dpx.c
-coders_dpx_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_dpx_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_dpx_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_dpx_la_LIBADD = $(LIBMAGICK) 
 
 # EMF coder module
 coders_emf_la_SOURCES = coders/emf.c
-coders_emf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_emf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_emf_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_emf_la_LIBADD = $(LIBMAGICK) $(LIB_GDI32)
 
 # EPT coder module
 coders_ept_la_SOURCES = coders/ept.c
-coders_epd_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_epd_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_ept_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ept_la_LIBADD = $(LIBMAGICK) $(LIB_GS) $(LIB_MATH)
 
 # FAX coder module
 coders_fax_la_SOURCES = coders/fax.c
-coders_fax_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_fax_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_fax_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_fax_la_LIBADD = $(LIBMAGICK)
 
 # FITS coder module
 coders_fits_la_SOURCES = coders/fits.c
-coders_fits_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_fits_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_fits_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_fits_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # FPX coder module
 coders_fpx_la_SOURCES = coders/fpx.c
-coders_fpx_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_fpx_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_fpx_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_fpx_la_LIBADD = $(LIBMAGICK) $(LIB_FPX)
 
 # GIF coder module
 coders_gif_la_SOURCES = coders/gif.c
-coders_gif_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_gif_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_gif_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_gif_la_LIBADD = $(LIBMAGICK)
 
 # GRAY coder module
 coders_gray_la_SOURCES = coders/gray.c
-coders_gray_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_gray_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_gray_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_gray_la_LIBADD = $(LIBMAGICK)
 
 # GRADIENT coder module
 coders_gradient_la_SOURCES = coders/gradient.c
-coders_gradient_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_gradient_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_gradient_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_gradient_la_LIBADD = $(LIBMAGICK)
 
 # HISTOGRAM coder module
 coders_histogram_la_SOURCES = coders/histogram.c
-coders_histogram_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_histogram_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_histogram_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_histogram_la_LIBADD = $(LIBMAGICK)
 
 # HRZ coder module
 coders_hrz_la_SOURCES = coders/hrz.c
-coders_hrz_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_hrz_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_hrz_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_hrz_la_LIBADD = $(LIBMAGICK)
 
 # HTML coder module
 coders_html_la_SOURCES = coders/html.c
-coders_html_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_html_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_html_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_html_la_LIBADD = $(LIBMAGICK)
 
 # ICON coder module
 coders_icon_la_SOURCES = coders/icon.c
-coders_icon_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_icon_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_icon_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_icon_la_LIBADD = $(LIBMAGICK)
 
 # Identity coder module
 coders_identity_la_SOURCES = coders/identity.c
-coders_identity_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_identity_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_identity_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_identity_la_LIBADD = $(LIBMAGICK)
 
 # Info coder module
 coders_info_la_SOURCES = coders/info.c
-coders_info_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_info_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_info_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_info_la_LIBADD = $(LIBMAGICK)
 
 # JBIG coder module
 coders_jbig_la_SOURCES = coders/jbig.c
-coders_jbig_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_jbig_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_jbig_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_jbig_la_LIBADD = $(LIBMAGICK) $(LIB_JBIG)
 
 # JNX coder module
 coders_jnx_la_SOURCES = coders/jnx.c
-coders_jnx_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_jnx_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_jnx_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_jnx_la_LIBADD = $(LIBMAGICK) $(LIB_JPEG)
 
 # JPEG coder module
 coders_jpeg_la_SOURCES = coders/jpeg.c
-coders_jpeg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_jpeg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_jpeg_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_jpeg_la_LIBADD = $(LIBMAGICK) $(LIB_JPEG)
 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES = coders/jp2.c
-coders_jp2_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_jp2_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_jp2_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_jp2_la_LIBADD = $(LIBMAGICK) $(LIB_JP2) $(LIB_JPEG) $(LIB_MATH)
 
 # LABEL coder module
 coders_label_la_SOURCES = coders/label.c
-coders_label_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_label_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_label_la_LDFLAGS = $(MODULECOMMONFLAGS) $(LIB_MATH)
 coders_label_la_LIBADD = $(LIBMAGICK)
 
 # LOCALE coder module
 coders_locale_la_SOURCES = coders/locale.c
-coders_locale_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_locale_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_locale_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_locale_la_LIBADD = $(LIBMAGICK)
 
 # LOGO coder module
 coders_logo_la_SOURCES = coders/logo.c
-coders_logo_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_logo_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_logo_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_logo_la_LIBADD = $(LIBMAGICK)
 
 # MAC coder module
 coders_mac_la_SOURCES = coders/mac.c
-coders_mac_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mac_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mac_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mac_la_LIBADD = $(LIBMAGICK)
 
 # MAP coder module
 coders_map_la_SOURCES = coders/map.c
-coders_map_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_map_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_map_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_map_la_LIBADD = $(LIBMAGICK)
 
 # MAT coder module
 coders_mat_la_SOURCES = coders/mat.c
-coders_mat_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mat_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mat_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mat_la_LIBADD = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_MATH)
 
 # MATTE coder module
 coders_matte_la_SOURCES = coders/matte.c
-coders_matte_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_matte_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_matte_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_matte_la_LIBADD = $(LIBMAGICK)
 
 # META coder module
 coders_meta_la_SOURCES = coders/meta.c
-coders_meta_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_meta_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_meta_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_meta_la_LIBADD = $(LIBMAGICK)
 
 # MIFF coder module
 coders_miff_la_SOURCES = coders/miff.c
-coders_miff_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_miff_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_miff_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_miff_la_LIBADD = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_BZLIB)
 
 # MONO coder module
 coders_mono_la_SOURCES = coders/mono.c
-coders_mono_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mono_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mono_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mono_la_LIBADD = $(LIBMAGICK)
 
 # MPC coder module
 coders_mpc_la_SOURCES = coders/mpc.c
-coders_mpc_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mpc_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mpc_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mpc_la_LIBADD = $(LIBMAGICK)
 
 # MPEG coder module
 coders_mpeg_la_SOURCES = coders/mpeg.c
-coders_mpeg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mpeg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mpeg_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mpeg_la_LIBADD = $(LIBMAGICK)
 
 # MPR coder module
 coders_mpr_la_SOURCES = coders/mpr.c
-coders_mpr_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mpr_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mpr_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mpr_la_LIBADD = $(LIBMAGICK)
 
 # MSL coder module
 coders_msl_la_SOURCES = coders/msl.c
-coders_msl_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_msl_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_msl_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_msl_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # MTV coder module
 coders_mtv_la_SOURCES = coders/mtv.c
-coders_mtv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mtv_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mtv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mtv_la_LIBADD = $(LIBMAGICK)
 
 # MVG coder module
 coders_mvg_la_SOURCES = coders/mvg.c
-coders_mvg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_mvg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_mvg_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_mvg_la_LIBADD = $(LIBMAGICK)
 
 # NULL coder module
 coders_null_la_SOURCES = coders/null.c
-coders_null_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_null_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_null_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_null_la_LIBADD = $(LIBMAGICK)
 
 # OTB coder module
 coders_otb_la_SOURCES = coders/otb.c
-coders_otb_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_otb_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_otb_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_otb_la_LIBADD = $(LIBMAGICK)
 
 # PALM coder module
 coders_palm_la_SOURCES = coders/palm.c
-coders_palm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_palm_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_palm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_palm_la_LIBADD = $(LIBMAGICK)
 
 # PCD coder module
 coders_pcd_la_SOURCES = coders/pcd.c
-coders_pcd_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pcd_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pcd_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pcd_la_LIBADD = $(LIBMAGICK)
 
 # PCL coder module
 coders_pcl_la_SOURCES = coders/pcl.c
-coders_pcl_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pcl_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pcl_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pcl_la_LIBADD = $(LIBMAGICK)
 
 # PCX coder module
 coders_pcx_la_SOURCES = coders/pcx.c
-coders_pcx_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pcx_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pcx_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pcx_la_LIBADD = $(LIBMAGICK)
 
 # PDB coder module
 coders_pdb_la_SOURCES = coders/pdb.c
-coders_pdb_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pdb_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pdb_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pdb_la_LIBADD = $(LIBMAGICK)
 
 # PDF coder module
 coders_pdf_la_SOURCES = coders/pdf.c
-coders_pdf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pdf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pdf_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pdf_la_LIBADD = $(LIBMAGICK) $(LIB_ZLIB) $(LIB_GS)
 
 # PICT coder module
 coders_pict_la_SOURCES = coders/pict.c
-coders_pict_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pict_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pict_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pict_la_LIBADD = $(LIBMAGICK)
 
 # PIX coder module
 coders_pix_la_SOURCES = coders/pix.c
-coders_pix_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pix_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pix_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pix_la_LIBADD = $(LIBMAGICK)
 
 # PNG coder module
 coders_png_la_SOURCES = coders/png.c
-coders_png_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_png_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_png_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_png_la_LIBADD = $(LIBMAGICK) $(LIB_PNG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PLASMA coder module
 coders_plasma_la_SOURCES = coders/plasma.c
-coders_plasma_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_plasma_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_plasma_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_plasma_la_LIBADD = $(LIBMAGICK)
 
 # PNM coder module
 coders_pnm_la_SOURCES = coders/pnm.c
-coders_pnm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pnm_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pnm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pnm_la_LIBADD = $(LIBMAGICK)
 
 # PREVIEW coder module
 coders_preview_la_SOURCES = coders/preview.c
-coders_preview_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_preview_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_preview_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_preview_la_LIBADD = $(LIBMAGICK)
 
 # PS coder module
 coders_ps_la_SOURCES = coders/ps.c
-coders_ps_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_ps_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_ps_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ps_la_LIBADD = $(LIBMAGICK) $(LIB_GS) $(LIB_MATH)
 
 # PS2 coder module
 coders_ps2_la_SOURCES = coders/ps2.c
-coders_ps2_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_ps2_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_ps2_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ps2_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_LZMA) $(LIB_ZLIB) $(LIB_MATH)
 
 # PS3 coder module
 coders_ps3_la_SOURCES = coders/ps3.c
-coders_ps3_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_ps3_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_ps3_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ps3_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_LZMA) $(LIB_ZLIB) $(LIB_MATH)
 
 # PSD coder module
 coders_psd_la_SOURCES = coders/psd.c
-coders_psd_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_psd_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_psd_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_psd_la_LIBADD = $(LIBMAGICK)
 
 # PWP coder module
 coders_pwp_la_SOURCES = coders/pwp.c
-coders_pwp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_pwp_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_pwp_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pwp_la_LIBADD = $(LIBMAGICK)
 
 # RGB coder module
 coders_rgb_la_SOURCES = coders/rgb.c
-coders_rgb_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_rgb_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_rgb_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_rgb_la_LIBADD = $(LIBMAGICK)
 
 # RLA coder module
 coders_rla_la_SOURCES = coders/rla.c
-coders_rla_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_rla_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_rla_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_rla_la_LIBADD = $(LIBMAGICK)
 
 # RLE coder module
 coders_rle_la_SOURCES = coders/rle.c
-coders_rle_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_rle_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_rle_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_rle_la_LIBADD = $(LIBMAGICK)
 
 # SCT coder module
 coders_sct_la_SOURCES = coders/sct.c
-coders_sct_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_sct_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_sct_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_sct_la_LIBADD = $(LIBMAGICK)
 
 # SFW coder module
 coders_sfw_la_SOURCES = coders/sfw.c
-coders_sfw_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_sfw_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_sfw_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_sfw_la_LIBADD = $(LIBMAGICK)
 
 # SGI coder module
 coders_sgi_la_SOURCES = coders/sgi.c
-coders_sgi_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_sgi_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_sgi_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_sgi_la_LIBADD = $(LIBMAGICK)
 
 # STEGANO coder module
 coders_stegano_la_SOURCES = coders/stegano.c
-coders_stegano_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_stegano_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_stegano_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_stegano_la_LIBADD = $(LIBMAGICK)
 
 # SUN coder module
 coders_sun_la_SOURCES = coders/sun.c
-coders_sun_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_sun_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_sun_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_sun_la_LIBADD = $(LIBMAGICK)
 
 # SVG coder module
 coders_svg_la_SOURCES = coders/svg.c
-coders_svg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_svg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_svg_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_svg_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # TGA coder module
 coders_tga_la_SOURCES = coders/tga.c
-coders_tga_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_tga_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tga_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tga_la_LIBADD = $(LIBMAGICK)
 
 # TIFF coder module
 coders_tiff_la_SOURCES = coders/tiff.c
-coders_tiff_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_tiff_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tiff_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tiff_la_LIBADD = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JBIG) $(LIB_JPEG) $(LIB_LZMA) $(LIB_ZLIB) $(LIB_MATH)
 
 # TILE coder module
 coders_tile_la_SOURCES = coders/tile.c
-coders_tile_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_tile_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tile_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tile_la_LIBADD = $(LIBMAGICK)
 
 # TIM coder module
 coders_tim_la_SOURCES = coders/tim.c
-coders_tim_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_tim_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_tim_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_tim_la_LIBADD = $(LIBMAGICK)
 
 # TOPOL coder module
 coders_topol_la_SOURCES = coders/topol.c
-coders_topol_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_topol_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_topol_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_topol_la_LIBADD = $(LIBMAGICK)
 
 # TTF coder module
 coders_ttf_la_SOURCES = coders/ttf.c
-coders_ttf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_ttf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_ttf_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_ttf_la_LIBADD = $(LIBMAGICK)
 
 # TXT coder module
 coders_txt_la_SOURCES = coders/txt.c
-coders_txt_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_txt_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_txt_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_txt_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
 # UIL coder module
 coders_uil_la_SOURCES = coders/uil.c
-coders_uil_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_uil_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_uil_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_uil_la_LIBADD = $(LIBMAGICK)
 
 # URL coder module
 coders_url_la_SOURCES = coders/url.c
-coders_url_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_url_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_url_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_url_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # UYVY coder module
 coders_uyvy_la_SOURCES = coders/uyvy.c
-coders_uyvy_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_uyvy_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_uyvy_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_uyvy_la_LIBADD = $(LIBMAGICK)
 
 # VICAR coder module
 coders_vicar_la_SOURCES = coders/vicar.c
-coders_vicar_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_vicar_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_vicar_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_vicar_la_LIBADD = $(LIBMAGICK)
 
 # VID coder module
 coders_vid_la_SOURCES = coders/vid.c
-coders_vid_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_vid_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_vid_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_vid_la_LIBADD = $(LIBMAGICK)
 
 # VIFF coder module
 coders_viff_la_SOURCES = coders/viff.c
-coders_viff_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_viff_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_viff_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_viff_la_LIBADD = $(LIBMAGICK)
 
 # WBMP coder module
 coders_wbmp_la_SOURCES = coders/wbmp.c
-coders_wbmp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_wbmp_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_wbmp_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_wbmp_la_LIBADD = $(LIBMAGICK)
 
 # WMF coder module
 coders_wmf_la_SOURCES = coders/wmf.c
-coders_wmf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_wmf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_wmf_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_wmf_la_LIBADD = $(LIBMAGICK) $(LIB_WMF) $(LIB_WMF_DEPS) $(LIB_MATH)
 
 # WPG coder module
 coders_wpg_la_SOURCES = coders/wpg.c
-coders_wpg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_wpg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_wpg_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_wpg_la_LIBADD = $(LIBMAGICK)
 
 # X coder module
 coders_x_la_SOURCES = coders/x.c
-coders_x_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_x_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_x_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_x_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
 
 # XBM coder module
 coders_xbm_la_SOURCES = coders/xbm.c
-coders_xbm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_xbm_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xbm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xbm_la_LIBADD = $(LIBMAGICK)
 
 # XC coder module
 coders_xc_la_SOURCES = coders/xc.c
-coders_xc_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_xc_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xc_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xc_la_LIBADD = $(LIBMAGICK)
 
 # XCF coder module
 coders_xcf_la_SOURCES = coders/xcf.c
-coders_xcf_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_xcf_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xcf_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xcf_la_LIBADD = $(LIBMAGICK)
 
 # XPM coder module
 coders_xpm_la_SOURCES = coders/xpm.c
-coders_xpm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_xpm_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xpm_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xpm_la_LIBADD = $(LIBMAGICK)
 
 # XWD coder module
 coders_xwd_la_SOURCES = coders/xwd.c
-coders_xwd_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_xwd_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xwd_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xwd_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
 
 # YUV coder module
 coders_yuv_la_SOURCES = coders/yuv.c
-coders_yuv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_yuv_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD = $(LIBMAGICK)
 
 # WEBP coder module
 coders_webp_la_SOURCES = coders/webp.c
-coders_webp_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
+coders_webp_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_webp_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_webp_la_LIBADD = $(LIBMAGICK) $(LIB_WEBP)
 magickincdir = $(topincludedir)/magick
@@ -3319,7 +3340,7 @@ LIBMAGICK = magick/libGraphicsMagick.la
 @WITH_MODULES_TRUE@magick_libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 @WITH_MODULES_FALSE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS)
 @WITH_MODULES_TRUE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS)
-magick_libGraphicsMagick_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
+magick_libGraphicsMagick_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 magick_libGraphicsMagick_la_LDFLAGS = \
 	-no-undefined -export-symbols-regex ".*" \
 	$(MAGICK_LT_RELEASE_OPTS) \
@@ -3607,6 +3628,7 @@ MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
 
 # Where filter modules get installed
 filtersdir = $(MagickFilterModulesPath)
+MAGICK_FILTER_CPPFLAGS = $(AM_CPPFLAGS)
 MAGICK_FILTER_SRCS = \
 	filters/analyze.c
 
@@ -3614,11 +3636,14 @@ MAGICK_FILTER_SRCS = \
 @WITH_MODULES_TRUE@filters_LTLIBRARIES = \
 @WITH_MODULES_TRUE@	filters/analyze.la
 
+filters_CPPFLAGS = $(MAGICK_FILTER_CPPFLAGS)
 
 # Analyze filter module
 filters_analyze_la_SOURCES = filters/analyze.c
+filters_analyze_la_CPPFLAGS = $(MAGICK_FILTER_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(LIBMAGICK)
+MAGICKPP_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/Magick++/lib
 @WITH_MAGICK_PLUS_PLUS_FALSE@LIBMAGICKPP = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
@@ -3709,6 +3734,9 @@ Magick___lib_libGraphicsMagick___la_SOURCES = \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
+Magick___lib_libGraphicsMagick___la_CPPFLAGS = \
+	$(MAGICKPP_CPPFLAGS)
+
 magickpptopincdir = $(topincludedir)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 MAGICKPP_TOP_INCHEADERS_OPT = \
@@ -3762,46 +3790,67 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 
 Magick___demo_analyze_SOURCES = Magick++/demo/analyze.cpp
 Magick___demo_analyze_LDADD = $(LIBMAGICKPP)
+Magick___demo_analyze_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_button_SOURCES = Magick++/demo/button.cpp
 Magick___demo_button_LDADD = $(LIBMAGICKPP)
+Magick___demo_button_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_demo_SOURCES = Magick++/demo/demo.cpp
 Magick___demo_demo_LDADD = $(LIBMAGICKPP)
+Magick___demo_demo_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_detrans_SOURCES = Magick++/demo/detrans.cpp
 Magick___demo_detrans_LDADD = $(LIBMAGICKPP)
+Magick___demo_detrans_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_flip_SOURCES = Magick++/demo/flip.cpp
 Magick___demo_flip_LDADD = $(LIBMAGICKPP)
+Magick___demo_flip_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_gravity_SOURCES = Magick++/demo/gravity.cpp
 Magick___demo_gravity_LDADD = $(LIBMAGICKPP)
+Magick___demo_gravity_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_piddle_SOURCES = Magick++/demo/piddle.cpp
 Magick___demo_piddle_LDADD = $(LIBMAGICKPP)
+Magick___demo_piddle_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_shapes_SOURCES = Magick++/demo/shapes.cpp
 Magick___demo_shapes_LDADD = $(LIBMAGICKPP)
+Magick___demo_shapes_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___demo_zoom_SOURCES = Magick++/demo/zoom.cpp
 Magick___demo_zoom_LDADD = $(LIBMAGICKPP)
+Magick___demo_zoom_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_appendImages_SOURCES = Magick++/tests/appendImages.cpp
 Magick___tests_appendImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_appendImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_attributes_SOURCES = Magick++/tests/attributes.cpp
 Magick___tests_attributes_LDADD = $(LIBMAGICKPP)
+Magick___tests_attributes_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_averageImages_SOURCES = Magick++/tests/averageImages.cpp
 Magick___tests_averageImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_averageImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_coalesceImages_SOURCES = Magick++/tests/coalesceImages.cpp
 Magick___tests_coalesceImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_coalesceImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_coderInfo_SOURCES = Magick++/tests/coderInfo.cpp
 Magick___tests_coderInfo_LDADD = $(LIBMAGICKPP)
+Magick___tests_coderInfo_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_color_SOURCES = Magick++/tests/color.cpp
 Magick___tests_color_LDADD = $(LIBMAGICKPP)
+Magick___tests_color_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_colorHistogram_SOURCES = Magick++/tests/colorHistogram.cpp
 Magick___tests_colorHistogram_LDADD = $(LIBMAGICKPP)
+Magick___tests_colorHistogram_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_exceptions_SOURCES = Magick++/tests/exceptions.cpp
 Magick___tests_exceptions_LDADD = $(LIBMAGICKPP)
+Magick___tests_exceptions_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_montageImages_SOURCES = Magick++/tests/montageImages.cpp
 Magick___tests_montageImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_montageImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_morphImages_SOURCES = Magick++/tests/morphImages.cpp
 Magick___tests_morphImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_morphImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
 Magick___tests_readWriteBlob_LDADD = $(LIBMAGICKPP)
+Magick___tests_readWriteBlob_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(LIBMAGICKPP)
+Magick___tests_readWriteImages_CPPFLAGS = $(MAGICKPP_CPPFLAGS)
 TESTS_CHECK_PGRMS = \
 	tests/bitstream \
         tests/constitute \
@@ -3856,6 +3905,7 @@ TESTS_CLEANFILES = \
         tests/*out*.*
 
 wandincdir = $(topincludedir)/wand
+WAND_CPPFLAGS = $(AM_CPPFLAGS)
 WAND_SOURCES = \
         wand/drawing_wand.c \
 	wand/drawing_wand.h \
@@ -3890,6 +3940,7 @@ WAND_MANS = \
 
 LIBWAND = wand/libGraphicsMagickWand.la
 wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
+wand_libGraphicsMagickWand_la_CPPFLAGS = $(WAND_CPPFLAGS)
 wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	$(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
@@ -3906,9 +3957,11 @@ WAND_EXTRA_DIST = \
 	$(WAND_TESTS)
 
 wand_drawtest_LDADD = $(LIBWAND)
+wand_drawtest_CPPFLAGS = $(WAND_CPPFLAGS)
 wand_drawtest_LDFLAGS = $(LDFLAGS)
 wand_drawtest_SOURCES = wand/drawtest.c
 wand_wandtest_LDADD = $(LIBWAND)
+wand_wandtest_CPPFLAGS = $(WAND_CPPFLAGS)
 wand_wandtest_LDFLAGS = $(LDFLAGS)
 wand_wandtest_SOURCES = wand/wandtest.c
 WAND_CHECK_PGRMS = \
@@ -4616,37 +4669,53 @@ Magick++/lib/$(am__dirstamp):
 Magick++/lib/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) Magick++/lib/$(DEPDIR)
 	@: > Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Blob.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/BlobRef.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/CoderInfo.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Color.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Drawable.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Exception.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Functions.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Geometry.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Image.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/ImageRef.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Montage.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Options.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Pixels.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/STL.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/Thread.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
-Magick++/lib/TypeMetric.lo: Magick++/lib/$(am__dirstamp) \
+Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo:  \
+	Magick++/lib/$(am__dirstamp) \
 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/lib/libGraphicsMagick++.la: $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_DEPENDENCIES) $(EXTRA_Magick___lib_libGraphicsMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
@@ -5167,7 +5236,7 @@ filters/$(am__dirstamp):
 filters/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) filters/$(DEPDIR)
 	@: > filters/$(DEPDIR)/$(am__dirstamp)
-filters/analyze.lo: filters/$(am__dirstamp) \
+filters/filters_analyze_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 
 filters/analyze.la: $(filters_analyze_la_OBJECTS) $(filters_analyze_la_DEPENDENCIES) $(EXTRA_filters_analyze_la_DEPENDENCIES) filters/$(am__dirstamp)
@@ -5553,14 +5622,14 @@ wand/$(am__dirstamp):
 wand/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) wand/$(DEPDIR)
 	@: > wand/$(DEPDIR)/$(am__dirstamp)
-wand/drawing_wand.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
-wand/magick_compat.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
-wand/magick_wand.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
-wand/pixel_wand.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
+wand/wand_libGraphicsMagickWand_la-drawing_wand.lo:  \
+	wand/$(am__dirstamp) wand/$(DEPDIR)/$(am__dirstamp)
+wand/wand_libGraphicsMagickWand_la-magick_compat.lo:  \
+	wand/$(am__dirstamp) wand/$(DEPDIR)/$(am__dirstamp)
+wand/wand_libGraphicsMagickWand_la-magick_wand.lo:  \
+	wand/$(am__dirstamp) wand/$(DEPDIR)/$(am__dirstamp)
+wand/wand_libGraphicsMagickWand_la-pixel_wand.lo:  \
+	wand/$(am__dirstamp) wand/$(DEPDIR)/$(am__dirstamp)
 
 wand/libGraphicsMagickWand.la: $(wand_libGraphicsMagickWand_la_OBJECTS) $(wand_libGraphicsMagickWand_la_DEPENDENCIES) $(EXTRA_wand_libGraphicsMagickWand_la_DEPENDENCIES) wand/$(am__dirstamp)
 	$(AM_V_CCLD)$(wand_libGraphicsMagickWand_la_LINK) -rpath $(libdir) $(wand_libGraphicsMagickWand_la_OBJECTS) $(wand_libGraphicsMagickWand_la_LIBADD) $(LIBS)
@@ -5628,55 +5697,64 @@ Magick++/demo/$(am__dirstamp):
 Magick++/demo/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) Magick++/demo/$(DEPDIR)
 	@: > Magick++/demo/$(DEPDIR)/$(am__dirstamp)
-Magick++/demo/analyze.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_analyze-analyze.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/analyze$(EXEEXT): $(Magick___demo_analyze_OBJECTS) $(Magick___demo_analyze_DEPENDENCIES) $(EXTRA_Magick___demo_analyze_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/analyze$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_analyze_OBJECTS) $(Magick___demo_analyze_LDADD) $(LIBS)
-Magick++/demo/button.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_button-button.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/button$(EXEEXT): $(Magick___demo_button_OBJECTS) $(Magick___demo_button_DEPENDENCIES) $(EXTRA_Magick___demo_button_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/button$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_button_OBJECTS) $(Magick___demo_button_LDADD) $(LIBS)
-Magick++/demo/demo.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_demo-demo.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/demo$(EXEEXT): $(Magick___demo_demo_OBJECTS) $(Magick___demo_demo_DEPENDENCIES) $(EXTRA_Magick___demo_demo_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/demo$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_demo_OBJECTS) $(Magick___demo_demo_LDADD) $(LIBS)
-Magick++/demo/detrans.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_detrans-detrans.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/detrans$(EXEEXT): $(Magick___demo_detrans_OBJECTS) $(Magick___demo_detrans_DEPENDENCIES) $(EXTRA_Magick___demo_detrans_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/detrans$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_detrans_OBJECTS) $(Magick___demo_detrans_LDADD) $(LIBS)
-Magick++/demo/flip.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_flip-flip.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/flip$(EXEEXT): $(Magick___demo_flip_OBJECTS) $(Magick___demo_flip_DEPENDENCIES) $(EXTRA_Magick___demo_flip_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/flip$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_flip_OBJECTS) $(Magick___demo_flip_LDADD) $(LIBS)
-Magick++/demo/gravity.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_gravity-gravity.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/gravity$(EXEEXT): $(Magick___demo_gravity_OBJECTS) $(Magick___demo_gravity_DEPENDENCIES) $(EXTRA_Magick___demo_gravity_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/gravity$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_gravity_OBJECTS) $(Magick___demo_gravity_LDADD) $(LIBS)
-Magick++/demo/piddle.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_piddle-piddle.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/piddle$(EXEEXT): $(Magick___demo_piddle_OBJECTS) $(Magick___demo_piddle_DEPENDENCIES) $(EXTRA_Magick___demo_piddle_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/piddle$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_piddle_OBJECTS) $(Magick___demo_piddle_LDADD) $(LIBS)
-Magick++/demo/shapes.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_shapes-shapes.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/shapes$(EXEEXT): $(Magick___demo_shapes_OBJECTS) $(Magick___demo_shapes_DEPENDENCIES) $(EXTRA_Magick___demo_shapes_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
 	@rm -f Magick++/demo/shapes$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_shapes_OBJECTS) $(Magick___demo_shapes_LDADD) $(LIBS)
-Magick++/demo/zoom.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+Magick++/demo/Magick___demo_zoom-zoom.$(OBJEXT):  \
+	Magick++/demo/$(am__dirstamp) \
 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/demo/zoom$(EXEEXT): $(Magick___demo_zoom_OBJECTS) $(Magick___demo_zoom_DEPENDENCIES) $(EXTRA_Magick___demo_zoom_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
@@ -5688,78 +5766,84 @@ Magick++/tests/$(am__dirstamp):
 Magick++/tests/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) Magick++/tests/$(DEPDIR)
 	@: > Magick++/tests/$(DEPDIR)/$(am__dirstamp)
-Magick++/tests/appendImages.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_appendImages-appendImages.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/appendImages$(EXEEXT): $(Magick___tests_appendImages_OBJECTS) $(Magick___tests_appendImages_DEPENDENCIES) $(EXTRA_Magick___tests_appendImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/appendImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_appendImages_OBJECTS) $(Magick___tests_appendImages_LDADD) $(LIBS)
-Magick++/tests/attributes.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_attributes-attributes.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/attributes$(EXEEXT): $(Magick___tests_attributes_OBJECTS) $(Magick___tests_attributes_DEPENDENCIES) $(EXTRA_Magick___tests_attributes_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/attributes$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_attributes_OBJECTS) $(Magick___tests_attributes_LDADD) $(LIBS)
-Magick++/tests/averageImages.$(OBJEXT):  \
+Magick++/tests/Magick___tests_averageImages-averageImages.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/averageImages$(EXEEXT): $(Magick___tests_averageImages_OBJECTS) $(Magick___tests_averageImages_DEPENDENCIES) $(EXTRA_Magick___tests_averageImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/averageImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_averageImages_OBJECTS) $(Magick___tests_averageImages_LDADD) $(LIBS)
-Magick++/tests/coalesceImages.$(OBJEXT):  \
+Magick++/tests/Magick___tests_coalesceImages-coalesceImages.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/coalesceImages$(EXEEXT): $(Magick___tests_coalesceImages_OBJECTS) $(Magick___tests_coalesceImages_DEPENDENCIES) $(EXTRA_Magick___tests_coalesceImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/coalesceImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coalesceImages_OBJECTS) $(Magick___tests_coalesceImages_LDADD) $(LIBS)
-Magick++/tests/coderInfo.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_coderInfo-coderInfo.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/coderInfo$(EXEEXT): $(Magick___tests_coderInfo_OBJECTS) $(Magick___tests_coderInfo_DEPENDENCIES) $(EXTRA_Magick___tests_coderInfo_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/coderInfo$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coderInfo_OBJECTS) $(Magick___tests_coderInfo_LDADD) $(LIBS)
-Magick++/tests/color.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_color-color.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/color$(EXEEXT): $(Magick___tests_color_OBJECTS) $(Magick___tests_color_DEPENDENCIES) $(EXTRA_Magick___tests_color_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/color$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_color_OBJECTS) $(Magick___tests_color_LDADD) $(LIBS)
-Magick++/tests/colorHistogram.$(OBJEXT):  \
+Magick++/tests/Magick___tests_colorHistogram-colorHistogram.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/colorHistogram$(EXEEXT): $(Magick___tests_colorHistogram_OBJECTS) $(Magick___tests_colorHistogram_DEPENDENCIES) $(EXTRA_Magick___tests_colorHistogram_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/colorHistogram$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_colorHistogram_OBJECTS) $(Magick___tests_colorHistogram_LDADD) $(LIBS)
-Magick++/tests/exceptions.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_exceptions-exceptions.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/exceptions$(EXEEXT): $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_DEPENDENCIES) $(EXTRA_Magick___tests_exceptions_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/exceptions$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_LDADD) $(LIBS)
-Magick++/tests/montageImages.$(OBJEXT):  \
+Magick++/tests/Magick___tests_montageImages-montageImages.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/montageImages$(EXEEXT): $(Magick___tests_montageImages_OBJECTS) $(Magick___tests_montageImages_DEPENDENCIES) $(EXTRA_Magick___tests_montageImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/montageImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_montageImages_OBJECTS) $(Magick___tests_montageImages_LDADD) $(LIBS)
-Magick++/tests/morphImages.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+Magick++/tests/Magick___tests_morphImages-morphImages.$(OBJEXT):  \
+	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/morphImages$(EXEEXT): $(Magick___tests_morphImages_OBJECTS) $(Magick___tests_morphImages_DEPENDENCIES) $(EXTRA_Magick___tests_morphImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/morphImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_morphImages_OBJECTS) $(Magick___tests_morphImages_LDADD) $(LIBS)
-Magick++/tests/readWriteBlob.$(OBJEXT):  \
+Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
 Magick++/tests/readWriteBlob$(EXEEXT): $(Magick___tests_readWriteBlob_OBJECTS) $(Magick___tests_readWriteBlob_DEPENDENCIES) $(EXTRA_Magick___tests_readWriteBlob_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/readWriteBlob$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteBlob_OBJECTS) $(Magick___tests_readWriteBlob_LDADD) $(LIBS)
-Magick++/tests/readWriteImages.$(OBJEXT):  \
+Magick++/tests/Magick___tests_readWriteImages-readWriteImages.$(OBJEXT):  \
 	Magick++/tests/$(am__dirstamp) \
 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
 
@@ -5820,13 +5904,13 @@ utilities/gm.$(OBJEXT): utilities/$(am__dirstamp) \
 utilities/gm$(EXEEXT): $(utilities_gm_OBJECTS) $(utilities_gm_DEPENDENCIES) $(EXTRA_utilities_gm_DEPENDENCIES) utilities/$(am__dirstamp)
 	@rm -f utilities/gm$(EXEEXT)
 	$(AM_V_CCLD)$(utilities_gm_LINK) $(utilities_gm_OBJECTS) $(utilities_gm_LDADD) $(LIBS)
-wand/drawtest.$(OBJEXT): wand/$(am__dirstamp) \
+wand/wand_drawtest-drawtest.$(OBJEXT): wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 
 wand/drawtest$(EXEEXT): $(wand_drawtest_OBJECTS) $(wand_drawtest_DEPENDENCIES) $(EXTRA_wand_drawtest_DEPENDENCIES) wand/$(am__dirstamp)
 	@rm -f wand/drawtest$(EXEEXT)
 	$(AM_V_CCLD)$(wand_drawtest_LINK) $(wand_drawtest_OBJECTS) $(wand_drawtest_LDADD) $(LIBS)
-wand/wandtest.$(OBJEXT): wand/$(am__dirstamp) \
+wand/wand_wandtest-wandtest.$(OBJEXT): wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 
 wand/wandtest$(EXEEXT): $(wand_wandtest_OBJECTS) $(wand_wandtest_DEPENDENCIES) $(EXTRA_wand_wandtest_DEPENDENCIES) wand/$(am__dirstamp)
@@ -5888,43 +5972,43 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/analyze.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/button.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/demo.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/detrans.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/flip.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/gravity.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/piddle.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/shapes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/zoom.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Blob.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/BlobRef.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/CoderInfo.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Color.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Drawable.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Exception.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Functions.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Geometry.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Image.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/ImageRef.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Montage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Options.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Pixels.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/STL.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Thread.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/TypeMetric.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/appendImages.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/attributes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/averageImages.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/coalesceImages.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/coderInfo.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/color.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/colorHistogram.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/exceptions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/montageImages.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/morphImages.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/readWriteBlob.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/readWriteImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Blob.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-BlobRef.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-CoderInfo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Drawable.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Exception.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Functions.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Geometry.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-ImageRef.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Montage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Options.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Pixels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-STL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Thread.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-TypeMetric.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_art_la-art.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_avi_la-avi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_avs_la-avs.Plo@am__quote@
@@ -6127,7 +6211,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-xpm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-xwd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/magick_libGraphicsMagick_la-yuv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/analyze.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_analyze_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-PreRvIcccm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Plo@am__quote@
@@ -6217,12 +6301,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_rwblob-rwblob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_rwfile-rwfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/gm.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/drawing_wand.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/drawtest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/magick_compat.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/magick_wand.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/pixel_wand.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wandtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_drawtest-drawtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-drawing_wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_compat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-pixel_wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_wandtest-wandtest.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -6947,6 +7031,13 @@ coders/coders_yuv_la-yuv.lo: coders/yuv.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/yuv.c' object='coders/coders_yuv_la-yuv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_yuv_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/coders_yuv_la-yuv.lo `test -f 'coders/yuv.c' || echo '$(srcdir)/'`coders/yuv.c
+
+filters/filters_analyze_la-analyze.lo: filters/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_analyze_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT filters/filters_analyze_la-analyze.lo -MD -MP -MF filters/$(DEPDIR)/filters_analyze_la-analyze.Tpo -c -o filters/filters_analyze_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) filters/$(DEPDIR)/filters_analyze_la-analyze.Tpo filters/$(DEPDIR)/filters_analyze_la-analyze.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='filters/analyze.c' object='filters/filters_analyze_la-analyze.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_analyze_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_analyze_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
 magick/magick_libGraphicsMagick_la-analyze.lo: magick/analyze.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-analyze.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-analyze.Tpo -c -o magick/magick_libGraphicsMagick_la-analyze.lo `test -f 'magick/analyze.c' || echo '$(srcdir)/'`magick/analyze.c
@@ -8229,6 +8320,34 @@ filters/magick_libGraphicsMagick_la-analyze.lo: filters/analyze.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/magick_libGraphicsMagick_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
+wand/wand_libGraphicsMagickWand_la-drawing_wand.lo: wand/drawing_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libGraphicsMagickWand_la-drawing_wand.lo -MD -MP -MF wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-drawing_wand.Tpo -c -o wand/wand_libGraphicsMagickWand_la-drawing_wand.lo `test -f 'wand/drawing_wand.c' || echo '$(srcdir)/'`wand/drawing_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-drawing_wand.Tpo wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-drawing_wand.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/drawing_wand.c' object='wand/wand_libGraphicsMagickWand_la-drawing_wand.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libGraphicsMagickWand_la-drawing_wand.lo `test -f 'wand/drawing_wand.c' || echo '$(srcdir)/'`wand/drawing_wand.c
+
+wand/wand_libGraphicsMagickWand_la-magick_compat.lo: wand/magick_compat.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libGraphicsMagickWand_la-magick_compat.lo -MD -MP -MF wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_compat.Tpo -c -o wand/wand_libGraphicsMagickWand_la-magick_compat.lo `test -f 'wand/magick_compat.c' || echo '$(srcdir)/'`wand/magick_compat.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_compat.Tpo wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_compat.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/magick_compat.c' object='wand/wand_libGraphicsMagickWand_la-magick_compat.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libGraphicsMagickWand_la-magick_compat.lo `test -f 'wand/magick_compat.c' || echo '$(srcdir)/'`wand/magick_compat.c
+
+wand/wand_libGraphicsMagickWand_la-magick_wand.lo: wand/magick_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libGraphicsMagickWand_la-magick_wand.lo -MD -MP -MF wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_wand.Tpo -c -o wand/wand_libGraphicsMagickWand_la-magick_wand.lo `test -f 'wand/magick_wand.c' || echo '$(srcdir)/'`wand/magick_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_wand.Tpo wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-magick_wand.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/magick_wand.c' object='wand/wand_libGraphicsMagickWand_la-magick_wand.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libGraphicsMagickWand_la-magick_wand.lo `test -f 'wand/magick_wand.c' || echo '$(srcdir)/'`wand/magick_wand.c
+
+wand/wand_libGraphicsMagickWand_la-pixel_wand.lo: wand/pixel_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libGraphicsMagickWand_la-pixel_wand.lo -MD -MP -MF wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-pixel_wand.Tpo -c -o wand/wand_libGraphicsMagickWand_la-pixel_wand.lo `test -f 'wand/pixel_wand.c' || echo '$(srcdir)/'`wand/pixel_wand.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-pixel_wand.Tpo wand/$(DEPDIR)/wand_libGraphicsMagickWand_la-pixel_wand.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/pixel_wand.c' object='wand/wand_libGraphicsMagickWand_la-pixel_wand.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libGraphicsMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libGraphicsMagickWand_la-pixel_wand.lo `test -f 'wand/pixel_wand.c' || echo '$(srcdir)/'`wand/pixel_wand.c
+
 tests/tests_bitstream-bitstream.o: tests/bitstream.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_bitstream_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_bitstream-bitstream.o -MD -MP -MF tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo -c -o tests/tests_bitstream-bitstream.o `test -f 'tests/bitstream.c' || echo '$(srcdir)/'`tests/bitstream.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo tests/$(DEPDIR)/tests_bitstream-bitstream.Po
@@ -8313,6 +8432,34 @@ tests/tests_rwfile-rwfile.obj: tests/rwfile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwfile_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_rwfile-rwfile.obj `if test -f 'tests/rwfile.c'; then $(CYGPATH_W) 'tests/rwfile.c'; else $(CYGPATH_W) '$(srcdir)/tests/rwfile.c'; fi`
 
+wand/wand_drawtest-drawtest.o: wand/drawtest.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_drawtest-drawtest.o -MD -MP -MF wand/$(DEPDIR)/wand_drawtest-drawtest.Tpo -c -o wand/wand_drawtest-drawtest.o `test -f 'wand/drawtest.c' || echo '$(srcdir)/'`wand/drawtest.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_drawtest-drawtest.Tpo wand/$(DEPDIR)/wand_drawtest-drawtest.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/drawtest.c' object='wand/wand_drawtest-drawtest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_drawtest-drawtest.o `test -f 'wand/drawtest.c' || echo '$(srcdir)/'`wand/drawtest.c
+
+wand/wand_drawtest-drawtest.obj: wand/drawtest.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_drawtest-drawtest.obj -MD -MP -MF wand/$(DEPDIR)/wand_drawtest-drawtest.Tpo -c -o wand/wand_drawtest-drawtest.obj `if test -f 'wand/drawtest.c'; then $(CYGPATH_W) 'wand/drawtest.c'; else $(CYGPATH_W) '$(srcdir)/wand/drawtest.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_drawtest-drawtest.Tpo wand/$(DEPDIR)/wand_drawtest-drawtest.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/drawtest.c' object='wand/wand_drawtest-drawtest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_drawtest-drawtest.obj `if test -f 'wand/drawtest.c'; then $(CYGPATH_W) 'wand/drawtest.c'; else $(CYGPATH_W) '$(srcdir)/wand/drawtest.c'; fi`
+
+wand/wand_wandtest-wandtest.o: wand/wandtest.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_wandtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_wandtest-wandtest.o -MD -MP -MF wand/$(DEPDIR)/wand_wandtest-wandtest.Tpo -c -o wand/wand_wandtest-wandtest.o `test -f 'wand/wandtest.c' || echo '$(srcdir)/'`wand/wandtest.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_wandtest-wandtest.Tpo wand/$(DEPDIR)/wand_wandtest-wandtest.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/wandtest.c' object='wand/wand_wandtest-wandtest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_wandtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_wandtest-wandtest.o `test -f 'wand/wandtest.c' || echo '$(srcdir)/'`wand/wandtest.c
+
+wand/wand_wandtest-wandtest.obj: wand/wandtest.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_wandtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_wandtest-wandtest.obj -MD -MP -MF wand/$(DEPDIR)/wand_wandtest-wandtest.Tpo -c -o wand/wand_wandtest-wandtest.obj `if test -f 'wand/wandtest.c'; then $(CYGPATH_W) 'wand/wandtest.c'; else $(CYGPATH_W) '$(srcdir)/wand/wandtest.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_wandtest-wandtest.Tpo wand/$(DEPDIR)/wand_wandtest-wandtest.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/wandtest.c' object='wand/wand_wandtest-wandtest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_wandtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_wandtest-wandtest.obj `if test -f 'wand/wandtest.c'; then $(CYGPATH_W) 'wand/wandtest.c'; else $(CYGPATH_W) '$(srcdir)/wand/wandtest.c'; fi`
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
@@ -8336,6 +8483,412 @@ tests/tests_rwfile-rwfile.obj: tests/rwfile.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo: Magick++/lib/Blob.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Blob.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo `test -f 'Magick++/lib/Blob.cpp' || echo '$(srcdir)/'`Magick++/lib/Blob.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Blob.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Blob.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Blob.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Blob.lo `test -f 'Magick++/lib/Blob.cpp' || echo '$(srcdir)/'`Magick++/lib/Blob.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo: Magick++/lib/BlobRef.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-BlobRef.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo `test -f 'Magick++/lib/BlobRef.cpp' || echo '$(srcdir)/'`Magick++/lib/BlobRef.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-BlobRef.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-BlobRef.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/BlobRef.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-BlobRef.lo `test -f 'Magick++/lib/BlobRef.cpp' || echo '$(srcdir)/'`Magick++/lib/BlobRef.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo: Magick++/lib/CoderInfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-CoderInfo.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo `test -f 'Magick++/lib/CoderInfo.cpp' || echo '$(srcdir)/'`Magick++/lib/CoderInfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-CoderInfo.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-CoderInfo.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/CoderInfo.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-CoderInfo.lo `test -f 'Magick++/lib/CoderInfo.cpp' || echo '$(srcdir)/'`Magick++/lib/CoderInfo.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo: Magick++/lib/Color.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Color.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo `test -f 'Magick++/lib/Color.cpp' || echo '$(srcdir)/'`Magick++/lib/Color.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Color.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Color.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Color.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Color.lo `test -f 'Magick++/lib/Color.cpp' || echo '$(srcdir)/'`Magick++/lib/Color.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo: Magick++/lib/Drawable.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Drawable.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo `test -f 'Magick++/lib/Drawable.cpp' || echo '$(srcdir)/'`Magick++/lib/Drawable.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Drawable.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Drawable.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Drawable.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Drawable.lo `test -f 'Magick++/lib/Drawable.cpp' || echo '$(srcdir)/'`Magick++/lib/Drawable.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo: Magick++/lib/Exception.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Exception.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo `test -f 'Magick++/lib/Exception.cpp' || echo '$(srcdir)/'`Magick++/lib/Exception.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Exception.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Exception.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Exception.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Exception.lo `test -f 'Magick++/lib/Exception.cpp' || echo '$(srcdir)/'`Magick++/lib/Exception.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo: Magick++/lib/Functions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Functions.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo `test -f 'Magick++/lib/Functions.cpp' || echo '$(srcdir)/'`Magick++/lib/Functions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Functions.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Functions.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Functions.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Functions.lo `test -f 'Magick++/lib/Functions.cpp' || echo '$(srcdir)/'`Magick++/lib/Functions.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo: Magick++/lib/Geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Geometry.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo `test -f 'Magick++/lib/Geometry.cpp' || echo '$(srcdir)/'`Magick++/lib/Geometry.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Geometry.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Geometry.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Geometry.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Geometry.lo `test -f 'Magick++/lib/Geometry.cpp' || echo '$(srcdir)/'`Magick++/lib/Geometry.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo: Magick++/lib/Image.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Image.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo `test -f 'Magick++/lib/Image.cpp' || echo '$(srcdir)/'`Magick++/lib/Image.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Image.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Image.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Image.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Image.lo `test -f 'Magick++/lib/Image.cpp' || echo '$(srcdir)/'`Magick++/lib/Image.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo: Magick++/lib/ImageRef.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-ImageRef.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo `test -f 'Magick++/lib/ImageRef.cpp' || echo '$(srcdir)/'`Magick++/lib/ImageRef.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-ImageRef.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-ImageRef.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/ImageRef.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-ImageRef.lo `test -f 'Magick++/lib/ImageRef.cpp' || echo '$(srcdir)/'`Magick++/lib/ImageRef.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo: Magick++/lib/Montage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Montage.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo `test -f 'Magick++/lib/Montage.cpp' || echo '$(srcdir)/'`Magick++/lib/Montage.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Montage.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Montage.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Montage.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Montage.lo `test -f 'Magick++/lib/Montage.cpp' || echo '$(srcdir)/'`Magick++/lib/Montage.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo: Magick++/lib/Options.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Options.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo `test -f 'Magick++/lib/Options.cpp' || echo '$(srcdir)/'`Magick++/lib/Options.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Options.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Options.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Options.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Options.lo `test -f 'Magick++/lib/Options.cpp' || echo '$(srcdir)/'`Magick++/lib/Options.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo: Magick++/lib/Pixels.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Pixels.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo `test -f 'Magick++/lib/Pixels.cpp' || echo '$(srcdir)/'`Magick++/lib/Pixels.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Pixels.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Pixels.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Pixels.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Pixels.lo `test -f 'Magick++/lib/Pixels.cpp' || echo '$(srcdir)/'`Magick++/lib/Pixels.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo: Magick++/lib/STL.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-STL.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo `test -f 'Magick++/lib/STL.cpp' || echo '$(srcdir)/'`Magick++/lib/STL.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-STL.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-STL.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/STL.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-STL.lo `test -f 'Magick++/lib/STL.cpp' || echo '$(srcdir)/'`Magick++/lib/STL.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo: Magick++/lib/Thread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Thread.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo `test -f 'Magick++/lib/Thread.cpp' || echo '$(srcdir)/'`Magick++/lib/Thread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Thread.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-Thread.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/Thread.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-Thread.lo `test -f 'Magick++/lib/Thread.cpp' || echo '$(srcdir)/'`Magick++/lib/Thread.cpp
+
+Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo: Magick++/lib/TypeMetric.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo -MD -MP -MF Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-TypeMetric.Tpo -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo `test -f 'Magick++/lib/TypeMetric.cpp' || echo '$(srcdir)/'`Magick++/lib/TypeMetric.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-TypeMetric.Tpo Magick++/lib/$(DEPDIR)/Magick___lib_libGraphicsMagick___la-TypeMetric.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/lib/TypeMetric.cpp' object='Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___lib_libGraphicsMagick___la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/lib/Magick___lib_libGraphicsMagick___la-TypeMetric.lo `test -f 'Magick++/lib/TypeMetric.cpp' || echo '$(srcdir)/'`Magick++/lib/TypeMetric.cpp
+
+Magick++/demo/Magick___demo_analyze-analyze.o: Magick++/demo/analyze.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_analyze_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_analyze-analyze.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Tpo -c -o Magick++/demo/Magick___demo_analyze-analyze.o `test -f 'Magick++/demo/analyze.cpp' || echo '$(srcdir)/'`Magick++/demo/analyze.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/analyze.cpp' object='Magick++/demo/Magick___demo_analyze-analyze.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_analyze_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_analyze-analyze.o `test -f 'Magick++/demo/analyze.cpp' || echo '$(srcdir)/'`Magick++/demo/analyze.cpp
+
+Magick++/demo/Magick___demo_analyze-analyze.obj: Magick++/demo/analyze.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_analyze_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_analyze-analyze.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Tpo -c -o Magick++/demo/Magick___demo_analyze-analyze.obj `if test -f 'Magick++/demo/analyze.cpp'; then $(CYGPATH_W) 'Magick++/demo/analyze.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/analyze.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_analyze-analyze.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/analyze.cpp' object='Magick++/demo/Magick___demo_analyze-analyze.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_analyze_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_analyze-analyze.obj `if test -f 'Magick++/demo/analyze.cpp'; then $(CYGPATH_W) 'Magick++/demo/analyze.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/analyze.cpp'; fi`
+
+Magick++/demo/Magick___demo_button-button.o: Magick++/demo/button.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_button_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_button-button.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Tpo -c -o Magick++/demo/Magick___demo_button-button.o `test -f 'Magick++/demo/button.cpp' || echo '$(srcdir)/'`Magick++/demo/button.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/button.cpp' object='Magick++/demo/Magick___demo_button-button.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_button_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_button-button.o `test -f 'Magick++/demo/button.cpp' || echo '$(srcdir)/'`Magick++/demo/button.cpp
+
+Magick++/demo/Magick___demo_button-button.obj: Magick++/demo/button.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_button_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_button-button.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Tpo -c -o Magick++/demo/Magick___demo_button-button.obj `if test -f 'Magick++/demo/button.cpp'; then $(CYGPATH_W) 'Magick++/demo/button.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/button.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_button-button.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/button.cpp' object='Magick++/demo/Magick___demo_button-button.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_button_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_button-button.obj `if test -f 'Magick++/demo/button.cpp'; then $(CYGPATH_W) 'Magick++/demo/button.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/button.cpp'; fi`
+
+Magick++/demo/Magick___demo_demo-demo.o: Magick++/demo/demo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_demo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_demo-demo.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Tpo -c -o Magick++/demo/Magick___demo_demo-demo.o `test -f 'Magick++/demo/demo.cpp' || echo '$(srcdir)/'`Magick++/demo/demo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/demo.cpp' object='Magick++/demo/Magick___demo_demo-demo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_demo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_demo-demo.o `test -f 'Magick++/demo/demo.cpp' || echo '$(srcdir)/'`Magick++/demo/demo.cpp
+
+Magick++/demo/Magick___demo_demo-demo.obj: Magick++/demo/demo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_demo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_demo-demo.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Tpo -c -o Magick++/demo/Magick___demo_demo-demo.obj `if test -f 'Magick++/demo/demo.cpp'; then $(CYGPATH_W) 'Magick++/demo/demo.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/demo.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_demo-demo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/demo.cpp' object='Magick++/demo/Magick___demo_demo-demo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_demo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_demo-demo.obj `if test -f 'Magick++/demo/demo.cpp'; then $(CYGPATH_W) 'Magick++/demo/demo.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/demo.cpp'; fi`
+
+Magick++/demo/Magick___demo_detrans-detrans.o: Magick++/demo/detrans.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_detrans_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_detrans-detrans.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Tpo -c -o Magick++/demo/Magick___demo_detrans-detrans.o `test -f 'Magick++/demo/detrans.cpp' || echo '$(srcdir)/'`Magick++/demo/detrans.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/detrans.cpp' object='Magick++/demo/Magick___demo_detrans-detrans.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_detrans_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_detrans-detrans.o `test -f 'Magick++/demo/detrans.cpp' || echo '$(srcdir)/'`Magick++/demo/detrans.cpp
+
+Magick++/demo/Magick___demo_detrans-detrans.obj: Magick++/demo/detrans.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_detrans_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_detrans-detrans.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Tpo -c -o Magick++/demo/Magick___demo_detrans-detrans.obj `if test -f 'Magick++/demo/detrans.cpp'; then $(CYGPATH_W) 'Magick++/demo/detrans.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/detrans.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_detrans-detrans.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/detrans.cpp' object='Magick++/demo/Magick___demo_detrans-detrans.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_detrans_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_detrans-detrans.obj `if test -f 'Magick++/demo/detrans.cpp'; then $(CYGPATH_W) 'Magick++/demo/detrans.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/detrans.cpp'; fi`
+
+Magick++/demo/Magick___demo_flip-flip.o: Magick++/demo/flip.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_flip_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_flip-flip.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Tpo -c -o Magick++/demo/Magick___demo_flip-flip.o `test -f 'Magick++/demo/flip.cpp' || echo '$(srcdir)/'`Magick++/demo/flip.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/flip.cpp' object='Magick++/demo/Magick___demo_flip-flip.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_flip_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_flip-flip.o `test -f 'Magick++/demo/flip.cpp' || echo '$(srcdir)/'`Magick++/demo/flip.cpp
+
+Magick++/demo/Magick___demo_flip-flip.obj: Magick++/demo/flip.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_flip_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_flip-flip.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Tpo -c -o Magick++/demo/Magick___demo_flip-flip.obj `if test -f 'Magick++/demo/flip.cpp'; then $(CYGPATH_W) 'Magick++/demo/flip.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/flip.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_flip-flip.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/flip.cpp' object='Magick++/demo/Magick___demo_flip-flip.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_flip_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_flip-flip.obj `if test -f 'Magick++/demo/flip.cpp'; then $(CYGPATH_W) 'Magick++/demo/flip.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/flip.cpp'; fi`
+
+Magick++/demo/Magick___demo_gravity-gravity.o: Magick++/demo/gravity.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_gravity_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_gravity-gravity.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Tpo -c -o Magick++/demo/Magick___demo_gravity-gravity.o `test -f 'Magick++/demo/gravity.cpp' || echo '$(srcdir)/'`Magick++/demo/gravity.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/gravity.cpp' object='Magick++/demo/Magick___demo_gravity-gravity.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_gravity_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_gravity-gravity.o `test -f 'Magick++/demo/gravity.cpp' || echo '$(srcdir)/'`Magick++/demo/gravity.cpp
+
+Magick++/demo/Magick___demo_gravity-gravity.obj: Magick++/demo/gravity.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_gravity_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_gravity-gravity.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Tpo -c -o Magick++/demo/Magick___demo_gravity-gravity.obj `if test -f 'Magick++/demo/gravity.cpp'; then $(CYGPATH_W) 'Magick++/demo/gravity.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/gravity.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_gravity-gravity.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/gravity.cpp' object='Magick++/demo/Magick___demo_gravity-gravity.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_gravity_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_gravity-gravity.obj `if test -f 'Magick++/demo/gravity.cpp'; then $(CYGPATH_W) 'Magick++/demo/gravity.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/gravity.cpp'; fi`
+
+Magick++/demo/Magick___demo_piddle-piddle.o: Magick++/demo/piddle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_piddle_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_piddle-piddle.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Tpo -c -o Magick++/demo/Magick___demo_piddle-piddle.o `test -f 'Magick++/demo/piddle.cpp' || echo '$(srcdir)/'`Magick++/demo/piddle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/piddle.cpp' object='Magick++/demo/Magick___demo_piddle-piddle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_piddle_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_piddle-piddle.o `test -f 'Magick++/demo/piddle.cpp' || echo '$(srcdir)/'`Magick++/demo/piddle.cpp
+
+Magick++/demo/Magick___demo_piddle-piddle.obj: Magick++/demo/piddle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_piddle_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_piddle-piddle.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Tpo -c -o Magick++/demo/Magick___demo_piddle-piddle.obj `if test -f 'Magick++/demo/piddle.cpp'; then $(CYGPATH_W) 'Magick++/demo/piddle.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/piddle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_piddle-piddle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/piddle.cpp' object='Magick++/demo/Magick___demo_piddle-piddle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_piddle_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_piddle-piddle.obj `if test -f 'Magick++/demo/piddle.cpp'; then $(CYGPATH_W) 'Magick++/demo/piddle.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/piddle.cpp'; fi`
+
+Magick++/demo/Magick___demo_shapes-shapes.o: Magick++/demo/shapes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_shapes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_shapes-shapes.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Tpo -c -o Magick++/demo/Magick___demo_shapes-shapes.o `test -f 'Magick++/demo/shapes.cpp' || echo '$(srcdir)/'`Magick++/demo/shapes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/shapes.cpp' object='Magick++/demo/Magick___demo_shapes-shapes.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_shapes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_shapes-shapes.o `test -f 'Magick++/demo/shapes.cpp' || echo '$(srcdir)/'`Magick++/demo/shapes.cpp
+
+Magick++/demo/Magick___demo_shapes-shapes.obj: Magick++/demo/shapes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_shapes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_shapes-shapes.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Tpo -c -o Magick++/demo/Magick___demo_shapes-shapes.obj `if test -f 'Magick++/demo/shapes.cpp'; then $(CYGPATH_W) 'Magick++/demo/shapes.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/shapes.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_shapes-shapes.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/shapes.cpp' object='Magick++/demo/Magick___demo_shapes-shapes.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_shapes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_shapes-shapes.obj `if test -f 'Magick++/demo/shapes.cpp'; then $(CYGPATH_W) 'Magick++/demo/shapes.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/shapes.cpp'; fi`
+
+Magick++/demo/Magick___demo_zoom-zoom.o: Magick++/demo/zoom.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_zoom_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_zoom-zoom.o -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Tpo -c -o Magick++/demo/Magick___demo_zoom-zoom.o `test -f 'Magick++/demo/zoom.cpp' || echo '$(srcdir)/'`Magick++/demo/zoom.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/zoom.cpp' object='Magick++/demo/Magick___demo_zoom-zoom.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_zoom_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_zoom-zoom.o `test -f 'Magick++/demo/zoom.cpp' || echo '$(srcdir)/'`Magick++/demo/zoom.cpp
+
+Magick++/demo/Magick___demo_zoom-zoom.obj: Magick++/demo/zoom.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_zoom_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/demo/Magick___demo_zoom-zoom.obj -MD -MP -MF Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Tpo -c -o Magick++/demo/Magick___demo_zoom-zoom.obj `if test -f 'Magick++/demo/zoom.cpp'; then $(CYGPATH_W) 'Magick++/demo/zoom.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/zoom.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Tpo Magick++/demo/$(DEPDIR)/Magick___demo_zoom-zoom.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/demo/zoom.cpp' object='Magick++/demo/Magick___demo_zoom-zoom.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___demo_zoom_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/demo/Magick___demo_zoom-zoom.obj `if test -f 'Magick++/demo/zoom.cpp'; then $(CYGPATH_W) 'Magick++/demo/zoom.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/demo/zoom.cpp'; fi`
+
+Magick++/tests/Magick___tests_appendImages-appendImages.o: Magick++/tests/appendImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_appendImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_appendImages-appendImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Tpo -c -o Magick++/tests/Magick___tests_appendImages-appendImages.o `test -f 'Magick++/tests/appendImages.cpp' || echo '$(srcdir)/'`Magick++/tests/appendImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/appendImages.cpp' object='Magick++/tests/Magick___tests_appendImages-appendImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_appendImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_appendImages-appendImages.o `test -f 'Magick++/tests/appendImages.cpp' || echo '$(srcdir)/'`Magick++/tests/appendImages.cpp
+
+Magick++/tests/Magick___tests_appendImages-appendImages.obj: Magick++/tests/appendImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_appendImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_appendImages-appendImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Tpo -c -o Magick++/tests/Magick___tests_appendImages-appendImages.obj `if test -f 'Magick++/tests/appendImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/appendImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/appendImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_appendImages-appendImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/appendImages.cpp' object='Magick++/tests/Magick___tests_appendImages-appendImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_appendImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_appendImages-appendImages.obj `if test -f 'Magick++/tests/appendImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/appendImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/appendImages.cpp'; fi`
+
+Magick++/tests/Magick___tests_attributes-attributes.o: Magick++/tests/attributes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_attributes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_attributes-attributes.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Tpo -c -o Magick++/tests/Magick___tests_attributes-attributes.o `test -f 'Magick++/tests/attributes.cpp' || echo '$(srcdir)/'`Magick++/tests/attributes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/attributes.cpp' object='Magick++/tests/Magick___tests_attributes-attributes.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_attributes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_attributes-attributes.o `test -f 'Magick++/tests/attributes.cpp' || echo '$(srcdir)/'`Magick++/tests/attributes.cpp
+
+Magick++/tests/Magick___tests_attributes-attributes.obj: Magick++/tests/attributes.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_attributes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_attributes-attributes.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Tpo -c -o Magick++/tests/Magick___tests_attributes-attributes.obj `if test -f 'Magick++/tests/attributes.cpp'; then $(CYGPATH_W) 'Magick++/tests/attributes.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/attributes.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_attributes-attributes.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/attributes.cpp' object='Magick++/tests/Magick___tests_attributes-attributes.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_attributes_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_attributes-attributes.obj `if test -f 'Magick++/tests/attributes.cpp'; then $(CYGPATH_W) 'Magick++/tests/attributes.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/attributes.cpp'; fi`
+
+Magick++/tests/Magick___tests_averageImages-averageImages.o: Magick++/tests/averageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_averageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_averageImages-averageImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Tpo -c -o Magick++/tests/Magick___tests_averageImages-averageImages.o `test -f 'Magick++/tests/averageImages.cpp' || echo '$(srcdir)/'`Magick++/tests/averageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/averageImages.cpp' object='Magick++/tests/Magick___tests_averageImages-averageImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_averageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_averageImages-averageImages.o `test -f 'Magick++/tests/averageImages.cpp' || echo '$(srcdir)/'`Magick++/tests/averageImages.cpp
+
+Magick++/tests/Magick___tests_averageImages-averageImages.obj: Magick++/tests/averageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_averageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_averageImages-averageImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Tpo -c -o Magick++/tests/Magick___tests_averageImages-averageImages.obj `if test -f 'Magick++/tests/averageImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/averageImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/averageImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_averageImages-averageImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/averageImages.cpp' object='Magick++/tests/Magick___tests_averageImages-averageImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_averageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_averageImages-averageImages.obj `if test -f 'Magick++/tests/averageImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/averageImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/averageImages.cpp'; fi`
+
+Magick++/tests/Magick___tests_coalesceImages-coalesceImages.o: Magick++/tests/coalesceImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coalesceImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_coalesceImages-coalesceImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Tpo -c -o Magick++/tests/Magick___tests_coalesceImages-coalesceImages.o `test -f 'Magick++/tests/coalesceImages.cpp' || echo '$(srcdir)/'`Magick++/tests/coalesceImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/coalesceImages.cpp' object='Magick++/tests/Magick___tests_coalesceImages-coalesceImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coalesceImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_coalesceImages-coalesceImages.o `test -f 'Magick++/tests/coalesceImages.cpp' || echo '$(srcdir)/'`Magick++/tests/coalesceImages.cpp
+
+Magick++/tests/Magick___tests_coalesceImages-coalesceImages.obj: Magick++/tests/coalesceImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coalesceImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_coalesceImages-coalesceImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Tpo -c -o Magick++/tests/Magick___tests_coalesceImages-coalesceImages.obj `if test -f 'Magick++/tests/coalesceImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/coalesceImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/coalesceImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_coalesceImages-coalesceImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/coalesceImages.cpp' object='Magick++/tests/Magick___tests_coalesceImages-coalesceImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coalesceImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_coalesceImages-coalesceImages.obj `if test -f 'Magick++/tests/coalesceImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/coalesceImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/coalesceImages.cpp'; fi`
+
+Magick++/tests/Magick___tests_coderInfo-coderInfo.o: Magick++/tests/coderInfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coderInfo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_coderInfo-coderInfo.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Tpo -c -o Magick++/tests/Magick___tests_coderInfo-coderInfo.o `test -f 'Magick++/tests/coderInfo.cpp' || echo '$(srcdir)/'`Magick++/tests/coderInfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/coderInfo.cpp' object='Magick++/tests/Magick___tests_coderInfo-coderInfo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coderInfo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_coderInfo-coderInfo.o `test -f 'Magick++/tests/coderInfo.cpp' || echo '$(srcdir)/'`Magick++/tests/coderInfo.cpp
+
+Magick++/tests/Magick___tests_coderInfo-coderInfo.obj: Magick++/tests/coderInfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coderInfo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_coderInfo-coderInfo.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Tpo -c -o Magick++/tests/Magick___tests_coderInfo-coderInfo.obj `if test -f 'Magick++/tests/coderInfo.cpp'; then $(CYGPATH_W) 'Magick++/tests/coderInfo.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/coderInfo.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_coderInfo-coderInfo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/coderInfo.cpp' object='Magick++/tests/Magick___tests_coderInfo-coderInfo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_coderInfo_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_coderInfo-coderInfo.obj `if test -f 'Magick++/tests/coderInfo.cpp'; then $(CYGPATH_W) 'Magick++/tests/coderInfo.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/coderInfo.cpp'; fi`
+
+Magick++/tests/Magick___tests_color-color.o: Magick++/tests/color.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_color_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_color-color.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Tpo -c -o Magick++/tests/Magick___tests_color-color.o `test -f 'Magick++/tests/color.cpp' || echo '$(srcdir)/'`Magick++/tests/color.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/color.cpp' object='Magick++/tests/Magick___tests_color-color.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_color_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_color-color.o `test -f 'Magick++/tests/color.cpp' || echo '$(srcdir)/'`Magick++/tests/color.cpp
+
+Magick++/tests/Magick___tests_color-color.obj: Magick++/tests/color.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_color_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_color-color.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Tpo -c -o Magick++/tests/Magick___tests_color-color.obj `if test -f 'Magick++/tests/color.cpp'; then $(CYGPATH_W) 'Magick++/tests/color.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/color.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_color-color.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/color.cpp' object='Magick++/tests/Magick___tests_color-color.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_color_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_color-color.obj `if test -f 'Magick++/tests/color.cpp'; then $(CYGPATH_W) 'Magick++/tests/color.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/color.cpp'; fi`
+
+Magick++/tests/Magick___tests_colorHistogram-colorHistogram.o: Magick++/tests/colorHistogram.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_colorHistogram_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_colorHistogram-colorHistogram.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Tpo -c -o Magick++/tests/Magick___tests_colorHistogram-colorHistogram.o `test -f 'Magick++/tests/colorHistogram.cpp' || echo '$(srcdir)/'`Magick++/tests/colorHistogram.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/colorHistogram.cpp' object='Magick++/tests/Magick___tests_colorHistogram-colorHistogram.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_colorHistogram_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_colorHistogram-colorHistogram.o `test -f 'Magick++/tests/colorHistogram.cpp' || echo '$(srcdir)/'`Magick++/tests/colorHistogram.cpp
+
+Magick++/tests/Magick___tests_colorHistogram-colorHistogram.obj: Magick++/tests/colorHistogram.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_colorHistogram_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_colorHistogram-colorHistogram.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Tpo -c -o Magick++/tests/Magick___tests_colorHistogram-colorHistogram.obj `if test -f 'Magick++/tests/colorHistogram.cpp'; then $(CYGPATH_W) 'Magick++/tests/colorHistogram.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/colorHistogram.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_colorHistogram-colorHistogram.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/colorHistogram.cpp' object='Magick++/tests/Magick___tests_colorHistogram-colorHistogram.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_colorHistogram_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_colorHistogram-colorHistogram.obj `if test -f 'Magick++/tests/colorHistogram.cpp'; then $(CYGPATH_W) 'Magick++/tests/colorHistogram.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/colorHistogram.cpp'; fi`
+
+Magick++/tests/Magick___tests_exceptions-exceptions.o: Magick++/tests/exceptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_exceptions_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_exceptions-exceptions.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Tpo -c -o Magick++/tests/Magick___tests_exceptions-exceptions.o `test -f 'Magick++/tests/exceptions.cpp' || echo '$(srcdir)/'`Magick++/tests/exceptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/exceptions.cpp' object='Magick++/tests/Magick___tests_exceptions-exceptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_exceptions_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_exceptions-exceptions.o `test -f 'Magick++/tests/exceptions.cpp' || echo '$(srcdir)/'`Magick++/tests/exceptions.cpp
+
+Magick++/tests/Magick___tests_exceptions-exceptions.obj: Magick++/tests/exceptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_exceptions_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_exceptions-exceptions.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Tpo -c -o Magick++/tests/Magick___tests_exceptions-exceptions.obj `if test -f 'Magick++/tests/exceptions.cpp'; then $(CYGPATH_W) 'Magick++/tests/exceptions.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/exceptions.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_exceptions-exceptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/exceptions.cpp' object='Magick++/tests/Magick___tests_exceptions-exceptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_exceptions_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_exceptions-exceptions.obj `if test -f 'Magick++/tests/exceptions.cpp'; then $(CYGPATH_W) 'Magick++/tests/exceptions.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/exceptions.cpp'; fi`
+
+Magick++/tests/Magick___tests_montageImages-montageImages.o: Magick++/tests/montageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_montageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_montageImages-montageImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Tpo -c -o Magick++/tests/Magick___tests_montageImages-montageImages.o `test -f 'Magick++/tests/montageImages.cpp' || echo '$(srcdir)/'`Magick++/tests/montageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/montageImages.cpp' object='Magick++/tests/Magick___tests_montageImages-montageImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_montageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_montageImages-montageImages.o `test -f 'Magick++/tests/montageImages.cpp' || echo '$(srcdir)/'`Magick++/tests/montageImages.cpp
+
+Magick++/tests/Magick___tests_montageImages-montageImages.obj: Magick++/tests/montageImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_montageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_montageImages-montageImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Tpo -c -o Magick++/tests/Magick___tests_montageImages-montageImages.obj `if test -f 'Magick++/tests/montageImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/montageImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/montageImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_montageImages-montageImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/montageImages.cpp' object='Magick++/tests/Magick___tests_montageImages-montageImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_montageImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_montageImages-montageImages.obj `if test -f 'Magick++/tests/montageImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/montageImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/montageImages.cpp'; fi`
+
+Magick++/tests/Magick___tests_morphImages-morphImages.o: Magick++/tests/morphImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_morphImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_morphImages-morphImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Tpo -c -o Magick++/tests/Magick___tests_morphImages-morphImages.o `test -f 'Magick++/tests/morphImages.cpp' || echo '$(srcdir)/'`Magick++/tests/morphImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/morphImages.cpp' object='Magick++/tests/Magick___tests_morphImages-morphImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_morphImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_morphImages-morphImages.o `test -f 'Magick++/tests/morphImages.cpp' || echo '$(srcdir)/'`Magick++/tests/morphImages.cpp
+
+Magick++/tests/Magick___tests_morphImages-morphImages.obj: Magick++/tests/morphImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_morphImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_morphImages-morphImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Tpo -c -o Magick++/tests/Magick___tests_morphImages-morphImages.obj `if test -f 'Magick++/tests/morphImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/morphImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/morphImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_morphImages-morphImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/morphImages.cpp' object='Magick++/tests/Magick___tests_morphImages-morphImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_morphImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_morphImages-morphImages.obj `if test -f 'Magick++/tests/morphImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/morphImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/morphImages.cpp'; fi`
+
+Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.o: Magick++/tests/readWriteBlob.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteBlob_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Tpo -c -o Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.o `test -f 'Magick++/tests/readWriteBlob.cpp' || echo '$(srcdir)/'`Magick++/tests/readWriteBlob.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/readWriteBlob.cpp' object='Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteBlob_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.o `test -f 'Magick++/tests/readWriteBlob.cpp' || echo '$(srcdir)/'`Magick++/tests/readWriteBlob.cpp
+
+Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.obj: Magick++/tests/readWriteBlob.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteBlob_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Tpo -c -o Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.obj `if test -f 'Magick++/tests/readWriteBlob.cpp'; then $(CYGPATH_W) 'Magick++/tests/readWriteBlob.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/readWriteBlob.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_readWriteBlob-readWriteBlob.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/readWriteBlob.cpp' object='Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteBlob_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_readWriteBlob-readWriteBlob.obj `if test -f 'Magick++/tests/readWriteBlob.cpp'; then $(CYGPATH_W) 'Magick++/tests/readWriteBlob.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/readWriteBlob.cpp'; fi`
+
+Magick++/tests/Magick___tests_readWriteImages-readWriteImages.o: Magick++/tests/readWriteImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_readWriteImages-readWriteImages.o -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Tpo -c -o Magick++/tests/Magick___tests_readWriteImages-readWriteImages.o `test -f 'Magick++/tests/readWriteImages.cpp' || echo '$(srcdir)/'`Magick++/tests/readWriteImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/readWriteImages.cpp' object='Magick++/tests/Magick___tests_readWriteImages-readWriteImages.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_readWriteImages-readWriteImages.o `test -f 'Magick++/tests/readWriteImages.cpp' || echo '$(srcdir)/'`Magick++/tests/readWriteImages.cpp
+
+Magick++/tests/Magick___tests_readWriteImages-readWriteImages.obj: Magick++/tests/readWriteImages.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Magick++/tests/Magick___tests_readWriteImages-readWriteImages.obj -MD -MP -MF Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Tpo -c -o Magick++/tests/Magick___tests_readWriteImages-readWriteImages.obj `if test -f 'Magick++/tests/readWriteImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/readWriteImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/readWriteImages.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Tpo Magick++/tests/$(DEPDIR)/Magick___tests_readWriteImages-readWriteImages.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Magick++/tests/readWriteImages.cpp' object='Magick++/tests/Magick___tests_readWriteImages-readWriteImages.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/Magick___tests_readWriteImages-readWriteImages.obj `if test -f 'Magick++/tests/readWriteImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/readWriteImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/readWriteImages.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

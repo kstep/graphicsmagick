@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2014 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -32,7 +32,7 @@ else
 magick_libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS) $(MAGICK_CODER_SRCS) $(MAGICK_FILTER_SRCS)
 magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS)
 endif # WITH_MODULES
-magick_libGraphicsMagick_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
+magick_libGraphicsMagick_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBRARY_EXTRA_CPPFLAGS)
 magick_libGraphicsMagick_la_LDFLAGS = \
 	-no-undefined -export-symbols-regex ".*" \
 	$(MAGICK_LT_RELEASE_OPTS) \
