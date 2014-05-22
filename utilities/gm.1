@@ -1,4 +1,4 @@
-.TH gm 1 "2014/05/17" "GraphicsMagick"
+.TH gm 1 "2014/05/21" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -3277,7 +3277,7 @@ intensity.
 .in 20
  \fR
 .in 20
-Result is negated (inverted) if channel value is greater than
+Result is set to black if channel value is greater than
 rvalue and is unchanged if it is less than or equal to rvalue. If
 \fBall\fP channels are specified, then thresholding is done based on
 computed pixel intensity.
@@ -3300,7 +3300,7 @@ computed pixel intensity.
 .in 20
  \fR
 .in 20
-Result is negated (inverted) if channel value is less than than
+Result is set to white if channel value is less than than
 rvalue and is unchanged if it is greater than or equal to rvalue. If
 \fBall\fP channels are specified, then thresholding is done based on
 computed pixel intensity.

@@ -1,3 +1,9 @@
+2014-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/operator.c: Decided that ThresholdBlackNegateQuantumOp
+	and ThresholdWhiteNegateQuantumOp should set the result to white
+	or black respectively rather than being based on subtraction.
+
 2014-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Be ultra-pedantic with CPPFLAGS

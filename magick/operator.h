@@ -52,8 +52,8 @@ typedef enum
   /* Below added on 2012-03-17 */
   NoiseRandomQuantumOp,           /* Random noise */
   /* Below added on 2014-05-17 */
-  ThresholdBlackNegateQuantumOp,  /* Below threshold is negated (inverted) */
-  ThresholdWhiteNegateQuantumOp   /* Above threshold is negated (inverted) */
+  ThresholdBlackNegateQuantumOp,  /* Below threshold is set to white */
+  ThresholdWhiteNegateQuantumOp   /* Above threshold is set to black */
 
  } QuantumOperator;
 

@@ -2038,7 +2038,7 @@ static inline Quantum ApplyThresholdBlackNegateOperator(const Quantum intensity,
     result;
 
   if (intensity < threshold)
-    result=MaxRGB-quantum;
+    result=MaxRGB;
   else
     result=quantum;
 
@@ -2132,7 +2132,7 @@ static inline Quantum ApplyThresholdWhiteNegateOperator(const Quantum intensity,
     result;
 
   if (intensity > threshold)
-    result=MaxRGB-quantum;
+    result=0U;
   else
     result=quantum;
 
