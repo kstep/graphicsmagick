@@ -1,3 +1,10 @@
+2014-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Be quite a lot more draconian
+	when retrieving the baseline standard TIFF tags we need in order
+	to avoid consuming uninitalized data later.  An error with these
+	tags will result in failure to read the image file.
+
 2014-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/operator.c: Decided that ThresholdBlackNegateQuantumOp

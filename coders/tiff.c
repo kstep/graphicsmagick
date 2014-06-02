@@ -880,9 +880,9 @@ InitializeImageColormap(Image *image, TIFF *tiff)
     max_sample_value,
     status = MagickFail;
 
-  if (TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample) == -1)
+  if (TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample) != 1)
     return status;
-  if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric) == -1)
+  if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric) != 1)
     return status;
 
   /*
@@ -1406,21 +1406,33 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (image_info->verbose > 1)
         TIFFPrintDirectory(tiff,stdout,False);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
-      if ((photometric == PHOTOMETRIC_LOGL) || (photometric == PHOTOMETRIC_LOGLUV))
-        (void) TIFFSetField(tiff,TIFFTAG_SGILOGDATAFMT,SGILOGDATAFMT_FLOAT);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
-      (void) TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
-      (void) TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&planar_config);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
-      if (TIFFGetField(tiff,TIFFTAG_ORIENTATION,&orientation))
+
+      /*
+        Read critical tags.  We need a value for these tags in order to proceed.
+      */
+      status = 1;
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric) == 1);
+      if ((status == 1) &&
+          ((photometric == PHOTOMETRIC_LOGL) || (photometric == PHOTOMETRIC_LOGLUV)))
+        status &= (TIFFSetField(tiff,TIFFTAG_SGILOGDATAFMT,SGILOGDATAFMT_FLOAT) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag) == 1);
+      status &= (TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width) == 1);
+      status &= (TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&planar_config) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1);
+      status &= (TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order) == 1);
+      if (status == 0)
+        {
+          TIFFClose(tiff);
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,
+                               image);
+        }
+      if (TIFFGetField(tiff,TIFFTAG_ORIENTATION,&orientation) == 1)
         image->orientation=(OrientationType) orientation;
       if (logging)
         {
@@ -1452,10 +1464,10 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               double
                 value;
               
-              if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value))
+              if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value) == 1)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "Special min sample value: %g", value);
-              if (TIFFGetField(tiff,TIFFTAG_SMAXSAMPLEVALUE,&value))
+              if (TIFFGetField(tiff,TIFFTAG_SMAXSAMPLEVALUE,&value) == 1)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                       "Special max sample value: %g", value);
             }
@@ -1496,22 +1508,26 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->x_resolution=x_resolution;
       image->y_resolution=y_resolution;
       chromaticity=(float *) NULL;
-      (void) TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
-      if (chromaticity != (float *) NULL)
+      if (TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity) == 1)
         {
-          image->chromaticity.white_point.x=chromaticity[0];
-          image->chromaticity.white_point.y=chromaticity[1];
+          if (chromaticity != (float *) NULL)
+            {
+              image->chromaticity.white_point.x=chromaticity[0];
+              image->chromaticity.white_point.y=chromaticity[1];
+            }
         }
       chromaticity=(float *) NULL;
-      (void) TIFFGetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,&chromaticity);
-      if (chromaticity != (float *) NULL)
+      if (TIFFGetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,&chromaticity) == 1)
         {
-          image->chromaticity.red_primary.x=chromaticity[0];
-          image->chromaticity.red_primary.y=chromaticity[1];
-          image->chromaticity.green_primary.x=chromaticity[2];
-          image->chromaticity.green_primary.y=chromaticity[3];
-          image->chromaticity.blue_primary.x=chromaticity[4];
-          image->chromaticity.blue_primary.y=chromaticity[5];
+          if (chromaticity != (float *) NULL)
+            {
+              image->chromaticity.red_primary.x=chromaticity[0];
+              image->chromaticity.red_primary.y=chromaticity[1];
+              image->chromaticity.green_primary.x=chromaticity[2];
+              image->chromaticity.green_primary.y=chromaticity[3];
+              image->chromaticity.blue_primary.x=chromaticity[4];
+              image->chromaticity.blue_primary.y=chromaticity[5];
+            }
         }
       {
         /*
@@ -1595,7 +1611,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       extra_samples=0;
       if (TIFFGetField(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-                       &sample_info))
+                       &sample_info) == 1)
         {
           int
             sample_index;
@@ -1684,8 +1700,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	  pagenumber;
 
 	pagenumber=(unsigned short) image->scene;
-	(void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&pagenumber,&pages);
-	image->scene=pagenumber;
+	if (TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&pagenumber,&pages) == 1)
+          image->scene=pagenumber;
       }
 
       if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
@@ -1832,7 +1848,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (TIFFIsTiled(tiff))
               method=RGBATiledMethod;
-            else if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip))
+            else if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
               method=RGBAStrippedMethod;
           }
       }
@@ -2213,8 +2229,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Obtain tile geometry
             */
-            if(!TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns) ||
-               !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
+            if(!(TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns) == 1) ||
+               !(TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows) == 1))
               {
                 TIFFClose(tiff);
                 ThrowReaderException(CoderError,ImageIsNotTiled,image);
@@ -2514,8 +2530,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Obtain tile geometry
             */
-            if (!TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns) ||
-                !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
+            if (!(TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns) == 1) ||
+                !(TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows)) == 1)
               {
                 TIFFClose(tiff);
                 ThrowReaderException(CoderError,ImageIsNotTiled,image);
