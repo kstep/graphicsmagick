@@ -1429,6 +1429,12 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == 0)
         {
           TIFFClose(tiff);
+          /*
+            Promote TIFF warnings to errors for these critical tags.
+          */
+          if ((exception->severity > WarningException) &&
+              (exception->severity < ErrorException))
+            exception->severity += (ErrorException - WarningException);
           ThrowReaderException(CorruptImageError,ImproperImageHeader,
                                image);
         }

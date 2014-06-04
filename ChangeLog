@@ -1,3 +1,8 @@
+2014-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Make sure that libtiff warnings
+	are promoted to errors for critical tags.
+
 2014-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Be quite a lot more draconian
