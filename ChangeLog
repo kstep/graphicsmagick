@@ -1,7 +1,9 @@
 2014-06-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Free png_pixels and
-	quantum_scanline before error return.
+	quantum_scanline before error return.  Use "png_error()"
+	instead of "ThrowException2()" for errors occuring while
+	decoding a PNG so proper cleanup will happen.
 
 2014-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

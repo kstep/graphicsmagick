@@ -2032,10 +2032,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   {
                     if (mng_info->global_trns_length >
                         mng_info->global_plte_length)
-                      (void) ThrowException2(&image->exception,CoderError,
-                                             "global tRNS has more entries"
-                                             " than global PLTE",
-                                             image_info->filename);
+                       png_error(ping, "global tRNS has more entries"
+                                             " than global PLTE");
                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
                                  (int) mng_info->global_trns_length,NULL);
                   }
@@ -2066,9 +2064,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
             }
           else
-            (void) ThrowException2(&image->exception,CoderError,
-                                   "No global PLTE in file",
-                                   image_info->filename);
+            png_error (ping, "No global PLTE in file");
         }
     }
 
