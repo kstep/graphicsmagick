@@ -1,3 +1,8 @@
+2014-06-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Free png_pixels before error
+	return.
+
 2014-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): Make sure that libtiff warnings

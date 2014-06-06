@@ -1260,8 +1260,7 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
     
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
-      if (mng_info->global_plte != (png_colorp) NULL)
-        MagickFreeMemory(mng_info->global_plte);
+      MagickFreeMemory(mng_info->global_plte);
       MagickFreeMemory(mng_info);
       *have_mng_structure=MagickFalse;
     }
@@ -1675,11 +1674,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      MagickFreeMemory(png_pixels);
+
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
-      if (png_pixels != (unsigned char *) NULL)
-        MagickFreeMemory(png_pixels);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage() with error.");
@@ -2308,6 +2307,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               "    Skipping PNG image data for scene %ld",
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      MagickFreeMemory(png_pixels);
+
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
@@ -2874,8 +2875,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Free memory.
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
-
   MagickFreeMemory(png_pixels);
+
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
@@ -7875,7 +7876,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     Free PNG resources.
   */
   png_destroy_write_struct(&ping,&ping_info);
-
   MagickFreeMemory(png_pixels);
 
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
