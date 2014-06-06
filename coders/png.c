@@ -1585,6 +1585,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   unsigned char
     *png_pixels;
 
+  Quantum
+    *quantum_scanline;
+
   long
     y;
 
@@ -1668,17 +1671,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   png_pixels=(unsigned char *) NULL;
+  quantum_scanline=(Quantum *) NULL;
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-      MagickFreeMemory(png_pixels);
-
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
+      MagickFreeMemory(png_pixels);
+      MagickFreeMemory(quantum_scanline);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage() with error.");
@@ -2308,7 +2312,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       MagickFreeMemory(png_pixels);
-
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
@@ -2530,9 +2533,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else /* image->storage_class != DirectClass */
     for (pass=0; pass < num_passes; pass++)
       {
-        Quantum
-          *quantum_scanline;
-
         register Quantum
           *r;
 
@@ -7876,6 +7876,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     Free PNG resources.
   */
   png_destroy_write_struct(&ping,&ping_info);
+
   MagickFreeMemory(png_pixels);
 
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
