@@ -35,6 +35,15 @@
 <div class="document">
 
 
+<p>2014-06-06  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (ReadOnePNGImage): Free png_pixels and
+quantum_scanline before error return.  Use &quot;png_error()&quot;
+instead of &quot;ThrowException2()&quot; for errors occuring while
+decoding a PNG so proper cleanup will happen.</li>
+</ul>
+</blockquote>
 <p>2014-06-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
