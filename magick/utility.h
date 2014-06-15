@@ -54,7 +54,7 @@ typedef struct _TokenInfo
 */
 
 #undef ARGUNUSED
-#define ARGUNUSED(arg) arg __attribute__((__unused__))
+#define ARGUNUSED(arg) arg MAGICK_ATTRIBUTE((__unused__))
 #undef ARG_NOT_USED
 #define ARG_NOT_USED(arg) (void) arg
 
@@ -146,7 +146,7 @@ extern MagickExport void
   SetGeometry(const Image *,RectangleInfo *);
 
 extern MagickExport void
-  FormatString(char *string,const char *format,...) __attribute__((__format__ (__printf__,2,3))),
+  FormatString(char *string,const char *format,...) MAGICK_ATTRIBUTE((__format__ (__printf__,2,3))),
   FormatStringList(char *string,const char *format,va_list operands);
 
 extern MagickExport magick_int64_t

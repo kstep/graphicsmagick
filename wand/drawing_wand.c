@@ -168,12 +168,12 @@ struct _DrawingWand
 static int
   MvgPrintf(DrawingWand *drawing_wand, const char *format, ...)
 #if defined(__GNUC__)
-__attribute__ ((format (printf, 2, 3)))
+MAGICK_ATTRIBUTE ((format (printf, 2, 3)))
 #endif
 ,
   MvgAutoWrapPrintf(DrawingWand *drawing_wand, const char *format, ...)
 #if defined(__GNUC__)
-__attribute__ ((format (printf, 2, 3)))
+MAGICK_ATTRIBUTE ((format (printf, 2, 3)))
 #endif
 ;
 static void

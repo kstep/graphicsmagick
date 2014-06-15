@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003-2009 GraphicsMagick Group
+  Copyright (C) 2003-2014 GraphicsMagick Group
   Copyright (C) 2003 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -100,8 +100,10 @@ typedef struct _SuperDoublePixelPacket
 } SuperDoublePixelPacket;
 #define DoublePixelPacket SuperDoublePixelPacket
 
-#if !defined(__GNUC__) && !defined(__attribute__)
-#  define __attribute__(x) /*nothing*/
+#if !defined(__GNUC__) && !defined(MAGICK_ATTRIBUTE)
+#  define MAGICK_ATTRIBUTE(x) /*nothing*/
+#else
+#  define MAGICK_ATTRIBUTE(x) __attribute__(x)
 #endif
 
 extern WandExport void
@@ -111,7 +113,7 @@ extern WandExport void
 
 extern WandExport int
   FormatMagickString(char *,const size_t,const char *,...)
-    __attribute__((format (printf,3,4))),
+    MAGICK_ATTRIBUTE((format (printf,3,4))),
   FormatMagickStringList(char *string,const size_t length,
     const char *format,va_list operands);
 

@@ -45,7 +45,7 @@ extern "C" {
 
 extern WandExport int
   FormatMagickString(char *,const size_t,const char *,...)
-    __attribute__((format (printf,3,4)));
+    MAGICK_ATTRIBUTE((format (printf,3,4)));
 extern WandExport size_t
   CopyMagickString(char *,const char *,const size_t);
 

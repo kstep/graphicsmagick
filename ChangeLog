@@ -1,3 +1,10 @@
+2014-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/common.h (MAGICK_ATTRIBUTE): Don't undefine __attribute__
+	since this may be used by system or compiler headers.  Define
+	private macro instead.  Resolves SourceForge bug #270 "Compile
+	error with g++ -std=c++11".
+
 2014-06-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Free png_pixels and

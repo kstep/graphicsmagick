@@ -114,10 +114,11 @@ extern "C" {
   Clang/llvm attempts to support most GCC features.
 
 */
-#if !defined(__attribute__)
+#if !defined(MAGICK_ATTRIBUTE)
 #  if ((!defined(__clang__)) && (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__)))
-#    define __attribute__(x) /*nothing*/
+#    define MAGICK_ATTRIBUTE(x) /*nothing*/
 #  else
+#    define MAGICK_ATTRIBUTE(x) __attribute__(x)
 #    if defined(__clang__)
 #      define MAGICK_CLANG_HAS_ATTRIBUTE(attribute) __has_attribute(attribute)
 #      define MAGICK_CLANG_HAS_BUILTIN(builtin) __has_builtin(builtin)
@@ -127,50 +128,50 @@ extern "C" {
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__deprecated__)) || \
          (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))) /* 3.1+ */
-#      define MAGICK_FUNC_DEPRECATED __attribute__((__deprecated__))
+#      define MAGICK_FUNC_DEPRECATED MAGICK_ATTRIBUTE((__deprecated__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__malloc__)) || \
          (__GNUC__ >= 3))  /* 3.0+ */
-#      define MAGICK_FUNC_MALLOC __attribute__((__malloc__))
+#      define MAGICK_FUNC_MALLOC MAGICK_ATTRIBUTE((__malloc__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__nonnull__)) || \
          (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))))  /* 3.3+ */
-  /* Supports argument syntax like __attribute__((nonnull (1, 2))) but
+  /* Supports argument syntax like MAGICK_ATTRIBUTE((nonnull (1, 2))) but
      don't know how to support non-GCC fallback. */
-#      define MAGICK_FUNC_NONNULL __attribute__((__nonnull__))
+#      define MAGICK_FUNC_NONNULL MAGICK_ATTRIBUTE((__nonnull__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__noreturn__)) || \
          (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5)))) /* 2.5+ */
-#      define MAGICK_FUNC_NORETURN __attribute__((__noreturn__))
+#      define MAGICK_FUNC_NORETURN MAGICK_ATTRIBUTE((__noreturn__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__pure__)) || \
          ((__GNUC__) >= 3)) /* 2.96+ */
-#      define MAGICK_FUNC_PURE __attribute__((__pure__))
+#      define MAGICK_FUNC_PURE MAGICK_ATTRIBUTE((__pure__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__unused__)) || \
          (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 7)))) /* 2.7+ */
-#      define MAGICK_FUNC_UNUSED __attribute__((__unused__))
+#      define MAGICK_FUNC_UNUSED MAGICK_ATTRIBUTE((__unused__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__warn_unused_result__)) || \
          (((__GNUC__) > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))))  /* 3.3+ */
-#      define MAGICK_FUNC_WARN_UNUSED_RESULT __attribute__((__warn_unused_result__))
+#      define MAGICK_FUNC_WARN_UNUSED_RESULT MAGICK_ATTRIBUTE((__warn_unused_result__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__alloc_size__)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
-#      define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) __attribute__((__alloc_size__(arg_num)))
-#      define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) __attribute__((__alloc_size__(arg_num1,arg_num2)))
+#      define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) MAGICK_ATTRIBUTE((__alloc_size__(arg_num)))
+#      define MAGICK_FUNC_ALLOC_SIZE_2ARG(arg_num1,arg_num2) MAGICK_ATTRIBUTE((__alloc_size__(arg_num1,arg_num2)))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__hot__)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
-#      define MAGICK_FUNC_HOT __attribute__((__hot__))
+#      define MAGICK_FUNC_HOT MAGICK_ATTRIBUTE((__hot__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__cold__)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
-#      define MAGICK_FUNC_COLD __attribute__((__cold__))
+#      define MAGICK_FUNC_COLD MAGICK_ATTRIBUTE((__cold__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__optimize__)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
-#      define MAGICK_OPTIMIZE_FUNC(opt) __attribute__((__optimize__ (opt)))
+#      define MAGICK_OPTIMIZE_FUNC(opt) MAGICK_ATTRIBUTE((__optimize__ (opt)))
 #    endif
 #    if ((MAGICK_CLANG_HAS_BUILTIN(__builtin_assume_aligned)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))))  /* 4.7+ */
