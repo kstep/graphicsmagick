@@ -1,5 +1,8 @@
 2014-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_compat.h: Use MAGICK_ATTRIBUTE definition from
+	magick/common.h.
+
 	* magick/common.h (MAGICK_ATTRIBUTE): Don't undefine __attribute__
 	since this may be used by system or compiler headers.  Define
 	private macro instead.  Resolves SourceForge bug #270 "Compile

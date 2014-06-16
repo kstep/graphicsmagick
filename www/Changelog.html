@@ -38,6 +38,8 @@
 <p>2014-06-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>wand/magick_compat.h: Use MAGICK_ATTRIBUTE definition from
+magick/common.h.</li>
 <li>magick/common.h (MAGICK_ATTRIBUTE): Don't undefine __attribute__
 since this may be used by system or compiler headers.  Define
 private macro instead.  Resolves SourceForge bug #270 &quot;Compile

@@ -21,6 +21,7 @@ extern "C" {
 
 #include "wand/wand_symbols.h"
 
+#include "magick/common.h"
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
@@ -99,12 +100,6 @@ typedef struct _SuperDoublePixelPacket
     index;
 } SuperDoublePixelPacket;
 #define DoublePixelPacket SuperDoublePixelPacket
-
-#if !defined(__GNUC__) && !defined(MAGICK_ATTRIBUTE)
-#  define MAGICK_ATTRIBUTE(x) /*nothing*/
-#else
-#  define MAGICK_ATTRIBUTE(x) __attribute__(x)
-#endif
 
 extern WandExport void
   *RelinquishMagickMemory(void *),
