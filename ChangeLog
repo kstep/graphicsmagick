@@ -1,5 +1,9 @@
 2014-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/composite.c (ScreenCompositePixels): Implementation of
+	Screen composite contributed by Brendan Lane.  SourceForge patch
+	#30 "Missing Screen composite operation".
+
 	* wand/magick_compat.c: Re-worked Wand library implementation to
 	depend directly on GraphicsMagick library functionality rather
 	than using ImageMagick shim code from magick_compat.c and

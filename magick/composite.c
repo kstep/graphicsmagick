@@ -1669,6 +1669,86 @@ LuminizeCompositePixels(void *mutable_data,                /* User provided muta
 
 
 static MagickPassFail
+ScreenCompositePixels(void *mutable_data,                /* User provided mutable data */
+                      const void *immutable_data,        /* User provided immutable data */
+                      const Image *source_image,         /* Source image */
+                      const PixelPacket *source_pixels,  /* Pixel row in source image */
+                      const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                      Image *update_image,               /* Update image */
+                      PixelPacket *update_pixels,        /* Pixel row in update image */
+                      IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                      const long npixels,                /* Number of pixels in row */
+                      ExceptionInfo *exception           /* Exception report */
+                      )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Input colors are complimented and multiplied, then the product is
+    complimented again.
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(((double)source.red+(double)destination.red-
+                  ((double)source.red*(double)destination.red)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.green+(double)destination.green-
+                  ((double)source.green*(double)destination.green)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.blue+(double)destination.blue-
+                  ((double)source.blue*(double)destination.blue)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
 CopyBlackCompositePixels(void *mutable_data,                /* User provided mutable data */
                          const void *immutable_data,        /* User provided immutable data */
                          const Image *source_image,         /* Source image */
@@ -1997,7 +2077,7 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       call_back=LuminizeCompositePixels;
       break;
     case ScreenCompositeOp:
-      /* Not implemented (Photoshop & PDF) */
+      call_back=ScreenCompositePixels;
       break;
     case OverlayCompositeOp:
       /* Not implemented (Photoshop & PDF) */
