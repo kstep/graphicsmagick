@@ -1,3 +1,17 @@
+2014-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_compat.c: Re-worked Wand library implementation to
+	depend directly on GraphicsMagick library functionality rather
+	than using ImageMagick shim code from magick_compat.c and
+	magick_compat.h. The magick_compat.c source module becomes "dead
+	code", which remains only to support the existing ABI, and will be
+	deleted at the next major ABI break point.
+
+	* magick/utility.c (MagickFormatString): New private function to
+	format a string into a buffer with a specified size.  Same as
+	previously existing FormatString() except requires a length
+	argument.
+
 2014-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_compat.h: Use MAGICK_ATTRIBUTE definition from

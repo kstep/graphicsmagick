@@ -536,6 +536,8 @@
 #define MagickCreateDirectoryPath GmMagickCreateDirectoryPath
 #define MagickDestroyCommandInfo GmMagickDestroyCommandInfo
 #define MagickFindRawImageMinMax GmMagickFindRawImageMinMax
+#define MagickFormatString GmMagickFormatString
+#define MagickFormatStringList GmMagickFormatStringList
 #define MagickFree GmMagickFree
 #define MagickFreeAligned GmMagickFreeAligned
 #define MagickGetBitRevTable GmMagickGetBitRevTable

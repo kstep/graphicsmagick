@@ -3550,6 +3550,63 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  M a g i c k F o r m a t S t r i n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFormatString prints formatted output of a variable
+%  argument list buffer, limiting its output to a specified buffer size.
+%
+%  The format of the MagickFormatString method is:
+%
+%      void MagickFormatString(char *string,const size_t length,
+%                              const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o  string:  Method FormatString returns the formatted string in this
+%      character buffer. Buffer must be at least MaxTextExtent characters
+%      in size.
+%
+%   o  length:  Maximum number of characters to write into buffer, not
+%      including a terminating null byte.  The result is always terminated
+%      with a null byte.
+%
+%   o  format:  A string describing the format to use to write the remaining
+%      arguments.
+%
+%
+*/
+MagickExport void MagickFormatStringList(char *string,
+                                         const size_t length,
+                                         const char *format, 
+                                         va_list operands)
+{
+#if defined(HAVE_VSNPRINTF)
+  (void) vsnprintf(string,length,format,operands);
+#else
+  (void) vsprintf(string,format,operands);
+#endif
+}
+MagickExport void MagickFormatString(char *string,
+                                     const size_t length,
+                                     const char *format,...)
+{
+  va_list
+    operands;
+
+  va_start(operands,format);
+  MagickFormatStringList(string, length, format, operands);
+  va_end(operands);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k R a n d R e e n t r a n t                                     %
 %                                                                             %
 %                                                                             %

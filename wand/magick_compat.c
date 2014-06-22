@@ -28,6 +28,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
+% THIS MODULE IS SCHEDULED FOR DELETION. IT CONTAINS DEAD CODE WHICH REMAINS
+% ONLY TO SUPPORT THE PREVIOUSLY EXISTING ABI.
 */
 
 /*
@@ -38,7 +40,90 @@
 #include "magick/error.h"
 #include "magick/utility.h"
 #include "wand/wand_api.h"
-#include "wand/magick_compat.h"
+#include "wand/wand_private.h"
+
+/*
+  Legacy definitions to compile code below with same exported symbols as
+  before.
+*/
+#define AcquireMagickMemory(memory) malloc(memory)
+#define AcquireUniqueFileResource(char_pointer) AcquireTemporaryFileName(char_pointer)
+  /* #define CopyMagickString GMPrivateCopyMagickString */
+  /* #define FormatMagickString GMPrivateFormatMagickString */
+#define GetAffineMatrix(affine_matrix) IdentityAffine(affine_matrix)
+#define InheritException(copy,original) CopyException(copy,original)
+#define RelinquishUniqueFileResource LiberateTemporaryFile
+#define ThrowMagickException ThrowException
+
+#define PsiNegative YNegative
+#define PsiValue XValue
+#define RhoValue WidthValue
+#define SigmaValue HeightValue
+#define XiNegative XNegative
+#define XiValue YValue
+
+#define ConcatenateMagickString GMPrivateConcatenateMagickString
+#define GeometryInfo GMPrivateGeometryInfo
+#define ImportImagePixels GMPrivateImportImagePixels
+#define ParseAbsoluteGeometry GMPrivateParseAbsoluteGeometry
+#define ParseGeometry GMPrivateParseGeometry
+#define RelinquishMagickMemory GMPrivateRelinquishMagickMemory
+#define ResizeMagickMemory GMPrivateResizeMagickMemory
+#define SetGeometryInfo GMPrivateSetGeometryInfo
+#define _GeometryInfo _GMPrivateGeometryInfo
+
+#define ExportImagePixels DispatchImage
+
+typedef struct _GeometryInfo
+{
+  double
+    rho,
+    sigma,
+    xi,
+    psi;
+} GeometryInfo;
+
+typedef struct _MagickPixelPacket
+{
+  ColorspaceType
+    colorspace;
+
+  unsigned int
+    matte;
+
+  Quantum
+    red,
+    green,
+    blue,
+    opacity;
+
+  IndexPacket
+    index;
+} MagickPixelPacket;
+
+
+extern WandExport void
+  *RelinquishMagickMemory(void *),
+  *ResizeMagickMemory(void *memory,const size_t size),
+   SetGeometryInfo(GeometryInfo *geometry_info);
+
+extern WandExport int
+  FormatMagickString(char *,const size_t,const char *,...)
+    MAGICK_ATTRIBUTE((format (printf,3,4))),
+  FormatMagickStringList(char *string,const size_t length,
+    const char *format,va_list operands);
+
+extern WandExport unsigned int
+  ImportImagePixels(Image *image,const long x_offset,
+    const long y_offset,const unsigned long columns,const unsigned long rows,
+    const char *map,const StorageType type,const void *pixels),
+  ParseAbsoluteGeometry(const char *geometry,RectangleInfo *region_info),
+  ParseGeometry(const char *geometry,GeometryInfo *geometry_info),
+  QueryMagickColor(const char *,MagickPixelPacket *,ExceptionInfo *);
+
+extern WandExport size_t
+  ConcatenateMagickString(char *,const char *,const size_t),
+  CopyMagickString(char *,const char *,const size_t);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

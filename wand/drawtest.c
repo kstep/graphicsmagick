@@ -391,7 +391,8 @@ int main ( int argc, char **argv )
       exit( 1 );
     }
 
-  CopyMagickString( outfile, argv[1], MaxTextExtent );
+  outfile[MaxTextExtent-1]='\0';
+  (void) strncpy( outfile, argv[1], MaxTextExtent-1 );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
     InitializeMagick((char *) NULL);

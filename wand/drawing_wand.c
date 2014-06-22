@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2013 GraphicsMagick Group */
+/* Copyright (C) 2003-2014 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -68,7 +68,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "wand/magick_wand.h"
-#include "wand/magick_compat.h"
+#include "wand/wand_private.h"
 
 /*
   Define declarations.
@@ -190,7 +190,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
   assert(drawing_wand->signature == MagickSignature);
   if (drawing_wand->mvg == (char*) NULL)
     {
-      drawing_wand->mvg=(char *) AcquireMagickMemory(alloc_size);
+      drawing_wand->mvg=MagickAllocateMemory(char *,alloc_size);
       if ( drawing_wand->mvg == (char*) NULL )
         {
           ThrowException3(&drawing_wand->exception,
@@ -211,8 +211,7 @@ static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
     {
       size_t realloc_size=drawing_wand->mvg_alloc + alloc_size;
 
-      drawing_wand->mvg=(char *)
-        ResizeMagickMemory(drawing_wand->mvg,realloc_size);
+      MagickReallocMemory(char *,drawing_wand->mvg,realloc_size);
       if (drawing_wand->mvg == NULL)
         {
           ThrowException3(&drawing_wand->exception,
@@ -591,7 +590,7 @@ WandExport void DrawAnnotation(DrawingWand *drawing_wand,const double x,
   assert(text != (const unsigned char *) NULL);
   escaped_text=EscapeString((const char*)text,'\'');
   (void) MvgPrintf(drawing_wand,"text %g,%g '%s'\n",x,y,escaped_text);
-  escaped_text=(char *) RelinquishMagickMemory(escaped_text);
+  MagickFreeMemory(escaped_text);
 }
 
 /*
@@ -1110,7 +1109,7 @@ WandExport void DrawSetClipUnits(DrawingWand *drawing_wand,
           AffineMatrix
             affine;
 
-          GetAffineMatrix(&affine);
+          IdentityAffine(&affine);
           affine.sx=CurrentContext->bounds.x2;
           affine.sy=CurrentContext->bounds.y2;
           affine.tx=CurrentContext->bounds.x1;
@@ -1401,7 +1400,7 @@ WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
   if (fill_url[0] != '#')
     ThrowException(&drawing_wand->exception,DrawWarning,
       NotARelativeURL,fill_url);
-  (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",fill_url+1);
+  (void) MagickFormatString(pattern,MaxTextExtent,"[%.1024s]",fill_url+1);
   if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
       ThrowException(&drawing_wand->exception,DrawWarning,
@@ -1412,7 +1411,7 @@ WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
       char
         pattern_spec[MaxTextExtent];
 
-      (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
+      (void) MagickFormatString(pattern_spec,MaxTextExtent,"url(%.1024s)",
         fill_url);
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
@@ -2235,13 +2234,13 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
   if (!blob)
     return;
   base64=Base64Encode(blob,blob_length,&encoded_length);
-  blob=(unsigned char *) RelinquishMagickMemory(blob);
+  MagickFreeMemory(blob);
   if (!base64)
     {
       char
         buffer[MaxTextExtent];
 
-      (void) FormatMagickString(buffer,MaxTextExtent,"%"
+      (void) MagickFormatString(buffer,MaxTextExtent,"%"
                                 MAGICK_SIZE_T_F "d bytes",
         (4L*blob_length/3L+4L));
       ThrowException(&drawing_wand->exception,ResourceLimitWarning,
@@ -2271,7 +2270,7 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
       }
       (void) MvgPrintf(drawing_wand,"'\n");
     }
-  media_type=(char *) RelinquishMagickMemory(media_type);
+  MagickFreeMemory(media_type);
 }
 
 /*
@@ -3705,15 +3704,15 @@ WandExport void DrawPopPattern(DrawingWand *drawing_wand)
   if (drawing_wand->pattern_id == NULL)
     ThrowException(&drawing_wand->exception,DrawWarning,
       NotCurrentlyPushingPatternDefinition,NULL);
-  (void) FormatMagickString(key,MaxTextExtent,"[%.1024s]",
+  (void) MagickFormatString(key,MaxTextExtent,"[%.1024s]",
     drawing_wand->pattern_id);
   (void) SetImageAttribute(drawing_wand->image,key,
     drawing_wand->mvg+drawing_wand->pattern_offset);
-  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
+  (void) MagickFormatString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
     drawing_wand->pattern_bounds.width,drawing_wand->pattern_bounds.height,
     drawing_wand->pattern_bounds.x,drawing_wand->pattern_bounds.y);
   (void) SetImageAttribute(drawing_wand->image,key,geometry);
-  drawing_wand->pattern_id=(char *) RelinquishMagickMemory(drawing_wand->pattern_id);
+  MagickFreeMemory(drawing_wand->pattern_id);
   drawing_wand->pattern_id=NULL;
   drawing_wand->pattern_offset=0;
   drawing_wand->pattern_bounds.x=0;
@@ -3826,8 +3825,8 @@ WandExport void DrawPushGraphicContext(DrawingWand *drawing_wand)
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
   drawing_wand->index++;
-  drawing_wand->graphic_context=(DrawInfo **) ResizeMagickMemory(
-    drawing_wand->graphic_context,(drawing_wand->index+1)*sizeof(DrawInfo *));
+  MagickReallocMemory(DrawInfo **,drawing_wand->graphic_context,
+                      (drawing_wand->index+1)*sizeof(DrawInfo *));
   if (drawing_wand->graphic_context == (DrawInfo **) NULL)
     ThrowException3(&drawing_wand->exception,ResourceLimitError,
       MemoryAllocationFailed,UnableToDrawOnImage);
@@ -4004,7 +4003,7 @@ WandExport void DrawRotate(DrawingWand *drawing_wand,const double degrees)
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  GetAffineMatrix(&affine);
+  IdentityAffine(&affine);
   affine.sx=cos(DegreesToRadians(fmod(degrees,360.0)));
   affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
   affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
@@ -4094,7 +4093,7 @@ WandExport void DrawScale(DrawingWand *drawing_wand,const double x,
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  GetAffineMatrix(&affine);
+  IdentityAffine(&affine);
   affine.sx=x;
   affine.sy=y;
   AdjustAffine( drawing_wand, &affine );
@@ -4133,7 +4132,7 @@ WandExport void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  GetAffineMatrix(&affine);
+  IdentityAffine(&affine);
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
   AdjustAffine(drawing_wand,&affine);
   (void) MvgPrintf(drawing_wand,"skewX %g\n",degrees);
@@ -4171,7 +4170,7 @@ WandExport void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  GetAffineMatrix(&affine);
+  IdentityAffine(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawAffine(drawing_wand,&affine);
   (void) MvgPrintf(drawing_wand,"skewY %g\n",degrees);
@@ -4339,7 +4338,7 @@ WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
   if (stroke_url[0] != '#')
     ThrowException(&drawing_wand->exception,DrawWarning,
       NotARelativeURL,stroke_url);
-  (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",stroke_url+1);
+  (void) MagickFormatString(pattern,MaxTextExtent,"[%.1024s]",stroke_url+1);
   if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
       ThrowException(&drawing_wand->exception,DrawWarning,
@@ -4350,7 +4349,7 @@ WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
       char
         pattern_spec[MaxTextExtent];
 
-      (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
+      (void) MagickFormatString(pattern_spec,MaxTextExtent,"url(%.1024s)",
         stroke_url);
       if (CurrentContext->stroke.opacity != TransparentOpacity)
         CurrentContext->stroke.opacity=CurrentContext->opacity;
@@ -5429,7 +5428,7 @@ WandExport void DrawTranslate(DrawingWand *drawing_wand,const double x,
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
-  GetAffineMatrix(&affine);
+  IdentityAffine(&affine);
   affine.tx=x;
   affine.ty=y;
   AdjustAffine(drawing_wand,&affine );
@@ -5509,7 +5508,7 @@ WandExport DrawingWand *NewDrawingWand(void)
   */
   InitializeMagick(NULL);
 
-  drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
+  drawing_wand=MagickAllocateMemory(DrawingWand *,sizeof(struct _DrawingWand));
   if (drawing_wand == (DrawingWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateDrawingWand);
@@ -5527,8 +5526,8 @@ WandExport DrawingWand *NewDrawingWand(void)
   drawing_wand->pattern_bounds.width=0;
   drawing_wand->pattern_bounds.height=0;
   drawing_wand->index=0;
-  drawing_wand->graphic_context=(DrawInfo **)
-    AcquireMagickMemory(sizeof(DrawInfo *));
+  drawing_wand->graphic_context=MagickAllocateMemory(DrawInfo **,
+                                                     sizeof(DrawInfo *));
   if (drawing_wand->graphic_context == (DrawInfo **) NULL)
     {
       ThrowException3(&drawing_wand->exception,ResourceLimitError,

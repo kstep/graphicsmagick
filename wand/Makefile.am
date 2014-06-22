@@ -1,4 +1,4 @@
-# Copyright (C) 2004 - 2012 GraphicsMagick Group
+# Copyright (C) 2004 - 2014 GraphicsMagick Group
 
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -15,12 +15,12 @@ WAND_SOURCES = \
         wand/drawing_wand.c \
 	wand/drawing_wand.h \
 	wand/magick_compat.c \
-	wand/magick_compat.h \
 	wand/magick_wand.c \
 	wand/magick_wand.h \
 	wand/pixel_wand.c \
 	wand/pixel_wand.h \
-	wand/wand_api.h
+	wand/wand_api.h \
+	wand/wand_private.h
 
 WAND_INCLUDE_HDRS = \
 	wand/drawing_wand.h \

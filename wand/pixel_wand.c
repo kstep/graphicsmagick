@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2009 GraphicsMagick Group */
+/* Copyright (C) 2003-2014 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -69,11 +69,22 @@
 #include "magick/studio.h"
 #include "magick/error.h"
 #include "wand/magick_wand.h"
-#include "wand/magick_compat.h"
+#include "wand/wand_private.h"
 
 /*
   Typedef declarations.
 */
+
+typedef struct _SuperDoublePixelPacket
+{
+  double
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} SuperDoublePixelPacket;
+
 struct _PixelWand
 {
   ExceptionInfo
@@ -85,7 +96,7 @@ struct _PixelWand
   unsigned int
     matte;
 
-  DoublePixelPacket
+  SuperDoublePixelPacket
     pixel;
 
   unsigned long
@@ -211,7 +222,7 @@ WandExport void DestroyPixelWand(PixelWand *wand)
 {
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  wand=(PixelWand *) RelinquishMagickMemory(wand);
+  MagickFreeMemory(wand);
 }
 
 /*
@@ -243,7 +254,7 @@ WandExport PixelWand *NewPixelWand(void)
   */
   InitializeMagick(NULL);
 
-  wand=(struct _PixelWand *) AcquireMagickMemory(sizeof(struct _PixelWand));
+  wand=MagickAllocateMemory(struct _PixelWand *,sizeof(struct _PixelWand));
   if (wand == (PixelWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
 		      UnableToAllocateWand);
@@ -284,8 +295,8 @@ WandExport PixelWand **NewPixelWands(const unsigned long number_wands)
   struct _PixelWand
     **wands;
 
-  wands=(struct _PixelWand **)
-    AcquireMagickMemory((size_t) number_wands*sizeof(struct _PixelWand *));
+  wands=MagickAllocateMemory(struct _PixelWand **,
+                             (size_t) number_wands*sizeof(struct _PixelWand *));
   if (wands == (PixelWand **) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
 		      UnableToAllocateWand);
@@ -331,14 +342,14 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
       UnableToAllocateString);
   **description='\0';
   if (wand->exception.reason != (char *) NULL)
-    (void) CopyMagickString(*description,GetLocaleExceptionMessage(
+    (void) strlcpy(*description,GetLocaleExceptionMessage(
       wand->exception.severity,wand->exception.reason),MaxTextExtent);
   if (wand->exception.description != (char *) NULL)
     {
-      (void) ConcatenateMagickString(*description," (",MaxTextExtent);
-      (void) ConcatenateMagickString(*description,GetLocaleExceptionMessage(
+      (void) strlcat(*description," (",MaxTextExtent);
+      (void) strlcat(*description,GetLocaleExceptionMessage(
         wand->exception.severity,wand->exception.description),MaxTextExtent);
-      (void) ConcatenateMagickString(*description,")",MaxTextExtent);
+      (void) strlcat(*description,")",MaxTextExtent);
     }
   return(wand->exception.severity);
 }
@@ -1089,7 +1100,7 @@ WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
 */
 WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 {
-  MagickPixelPacket
+  PixelPacket
     pixel;
 
   unsigned int
@@ -1097,16 +1108,18 @@ WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  status=QueryMagickColor(color,&pixel,&wand->exception);
+
+  status=QueryColorDatabase(color,&pixel,&wand->exception);
   if (status == False)
     return(status);
-  wand->colorspace=pixel.colorspace;
-  wand->matte=pixel.matte;
+
+  wand->colorspace=RGBColorspace;
+  wand->matte=0;
   wand->pixel.red=(double) pixel.red/MaxRGB;
   wand->pixel.green=(double) pixel.green/MaxRGB;
   wand->pixel.blue=(double) pixel.blue/MaxRGB;
   wand->pixel.opacity=(double) pixel.opacity/MaxRGB;
-  wand->pixel.index=(double) pixel.index/MaxRGB;
+  wand->pixel.index=0;
   return(status);
 }
 

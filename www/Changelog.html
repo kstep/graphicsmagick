@@ -35,6 +35,21 @@
 <div class="document">
 
 
+<p>2014-06-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>wand/magick_compat.c: Re-worked Wand library implementation to
+depend directly on GraphicsMagick library functionality rather
+than using ImageMagick shim code from magick_compat.c and
+magick_compat.h. The magick_compat.c source module becomes &quot;dead
+code&quot;, which remains only to support the existing ABI, and will be
+deleted at the next major ABI break point.</li>
+<li>magick/utility.c (MagickFormatString): New private function to
+format a string into a buffer with a specified size.  Same as
+previously existing FormatString() except requires a length
+argument.</li>
+</ul>
+</blockquote>
 <p>2014-06-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
