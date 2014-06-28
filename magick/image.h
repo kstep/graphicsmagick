@@ -219,13 +219,23 @@ typedef enum
   ColorizeCompositeOp,
   LuminizeCompositeOp,
   ScreenCompositeOp,
-  OverlayCompositeOp,  /* Not yet implemented */
+  OverlayCompositeOp,
   CopyCyanCompositeOp,
   CopyMagentaCompositeOp,
   CopyYellowCompositeOp,
   CopyBlackCompositeOp,
   DivideCompositeOp,
-  HardLightCompositeOp
+  HardLightCompositeOp,
+  ExclusionCompositeOp,
+  ColorDodgeCompositeOp,
+  ColorBurnCompositeOp,
+  SoftLightCompositeOp,
+  LinearBurnCompositeOp,
+  LinearDodgeCompositeOp,
+  LinearLightCompositeOp,
+  VividLightCompositeOp,
+  PinLightCompositeOp,
+  HardMixCompositeOp
 } CompositeOperator;
 
 typedef enum

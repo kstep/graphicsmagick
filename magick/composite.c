@@ -698,23 +698,43 @@ DifferenceCompositePixels(void *mutable_data,                /* User provided mu
   */
   for (i=0; i < npixels; i++)
     {
-      double
-        value;
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      value=source.red-(double) destination.red;
-      destination.red=(Quantum) AbsoluteValue(value);
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
 
-      value=source.green-(double) destination.green;
-      destination.green=(Quantum) AbsoluteValue(value);
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
 
-      value=source.blue-(double) destination.blue;
-      destination.blue=(Quantum) AbsoluteValue(value);
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
 
-      value=source.opacity-(double) destination.opacity;
-      destination.opacity=(Quantum) AbsoluteValue(value);
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(fabs(source.red - destination.red)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(fabs(source.green - destination.green)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(fabs(source.blue - destination.blue)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }
@@ -1339,28 +1359,43 @@ DarkenCompositePixels(void *mutable_data,                /* User provided mutabl
 
   for (i=0; i < npixels; i++)
     {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      if (source.opacity == TransparentOpacity)
-        {
-        }
-      else if (destination.opacity == TransparentOpacity)
-        {
-          destination=source;
-        }
-      else
-        {
-          if (source.red < destination.red)
-            destination.red=source.red;
-          if (source.green < destination.green)
-            destination.green=source.green;
-          if (source.blue < destination.blue)
-            destination.blue=source.blue;
-          if (source.opacity < destination.opacity)
-            destination.opacity=source.opacity;
-        }
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(fmin(source.red,destination.red)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(fmin(source.green,destination.green)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(fmin(source.blue,destination.blue)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }
@@ -1395,28 +1430,43 @@ LightenCompositePixels(void *mutable_data,                /* User provided mutab
 
   for (i=0; i < npixels; i++)
     {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
 
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
 
-      if (source.opacity == TransparentOpacity)
-        {
-        }
-      else if (destination.opacity == TransparentOpacity)
-        {
-          destination=source;
-        }
-      else
-        {
-          if (source.red > destination.red)
-            destination.red=source.red;
-          if (source.green > destination.green)
-            destination.green=source.green;
-          if (source.blue > destination.blue)
-            destination.blue=source.blue;
-          if (source.opacity > destination.opacity)
-            destination.opacity=source.opacity;
-        }
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(fmax(source.red,destination.red)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(fmax(source.green,destination.green)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(fmax(source.blue,destination.blue)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }
@@ -1693,8 +1743,7 @@ ScreenCompositePixels(void *mutable_data,                /* User provided mutabl
   ARG_NOT_USED(exception);
 
   /*
-    Input colors are complimented and multiplied, then the product is
-    complimented again.
+    Input colors are complimented and multiplied, then the product is complimented again.
   */
 
 
@@ -1737,6 +1786,97 @@ ScreenCompositePixels(void *mutable_data,                /* User provided mutabl
       composite=(((double)source.blue+(double)destination.blue-
                   ((double)source.blue*(double)destination.blue)/MaxRGBDouble)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+OverlayCompositePixels(void *mutable_data,               /* User provided mutable data */
+                       const void *immutable_data,        /* User provided immutable data */
+                       const Image *source_image,         /* Source image */
+                       const PixelPacket *source_pixels,  /* Pixel row in source image */
+                       const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                       Image *update_image,               /* Update image */
+                       PixelPacket *update_pixels,        /* Pixel row in update image */
+                       IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                       const long npixels,                /* Number of pixels in row */
+                       ExceptionInfo *exception           /* Exception report */
+                       )
+{
+  register long
+    i;
+    
+  PixelPacket
+    destination,
+    source;
+    
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+    
+  /*
+    Multiplies or screens, depending on the destination colour.
+    Overlay(a,b) = HardLight(b,a)
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
+      double
+        value;
+        
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+        
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(destination.red < (0.5*MaxRGBDouble))
+        value=((double) source.red*destination.red*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.red/MaxRGBDouble) *
+                               (1.0-(double)destination.red/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(destination.green < (0.5*MaxRGBDouble))
+        value=((double) source.green*destination.green*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.green/MaxRGBDouble) *
+                               (1.0-(double)destination.green/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(destination.blue < (0.5*MaxRGBDouble))
+        value=((double) source.blue*destination.blue*2.0)/MaxRGBDouble;
+      else
+        value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.blue/MaxRGBDouble) *
+                               (1.0-(double)destination.blue/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.blue=RoundDoubleToQuantum(composite);
@@ -1886,32 +2026,924 @@ HardLightCompositePixels(void *mutable_data,               /* User provided muta
 
   for (i=0; i < npixels; i++)
     {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
       double
         value;
         
       PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
       PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
         
-      if(((double) source.red/MaxRGBDouble)<0.5)
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red <= (0.5*MaxRGBDouble))
         value=((double) source.red*destination.red*2.0)/MaxRGBDouble;
       else
         value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.red/MaxRGBDouble) *
                                (1.0-(double)destination.red/MaxRGBDouble));
-      destination.red=RoundDoubleToQuantum(value);
-        
-      if(((double) source.green/MaxRGBDouble)<0.5)
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green <= (0.5*MaxRGBDouble))
         value=((double) source.green*destination.green*2.0)/MaxRGBDouble;
       else
         value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.green/MaxRGBDouble) *
                                (1.0-(double)destination.green/MaxRGBDouble));
-      destination.green=RoundDoubleToQuantum(value);
-        
-      if(((double) source.blue/MaxRGBDouble)<0.5)
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue <= (0.5*MaxRGBDouble))
         value=((double) source.blue*destination.blue*2.0)/MaxRGBDouble;
       else
         value= MaxRGBDouble * (1.0 - 2.0 * (1.0-(double) source.blue/MaxRGBDouble) *
                                (1.0-(double)destination.blue/MaxRGBDouble));
-      destination.blue=RoundDoubleToQuantum(value);
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+ExclusionCompositePixels(void *mutable_data,                /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
+                         const Image *source_image,         /* Source image */
+                         const PixelPacket *source_pixels,  /* Pixel row in source image */
+                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                         Image *update_image,               /* Update image */
+                         PixelPacket *update_pixels,        /* Pixel row in update image */
+                         IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                         const long npixels,                /* Number of pixels in row */
+                         ExceptionInfo *exception           /* Exception report */
+                         )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+   A similar effect to Difference, but lower in contrast.
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      composite=(((double)source.red+(double)destination.red-
+                  2*((double)source.red*(double)destination.red)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.green+(double)destination.green-
+                  2*((double)source.green*(double)destination.green)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      composite=(((double)source.blue+(double)destination.blue-
+                  2*((double)source.blue*(double)destination.blue)/MaxRGBDouble)*
+                 (1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+ColorDodgeCompositePixels(void *mutable_data,               /* User provided mutable data */
+                          const void *immutable_data,        /* User provided immutable data */
+                          const Image *source_image,         /* Source image */
+                          const PixelPacket *source_pixels,  /* Pixel row in source image */
+                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                          Image *update_image,               /* Update image */
+                          PixelPacket *update_pixels,        /* Pixel row in update image */
+                          IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                          const long npixels,                /* Number of pixels in row */
+                          ExceptionInfo *exception           /* Exception report */
+                          )
+{
+  register long
+    i;
+    
+  PixelPacket
+    destination,
+    source;
+    
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+    
+  /*
+    Brightens the destination color by an amount depending on the source color
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
+      double
+        value;
+        
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+        
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red == MaxRGB)
+	value = MaxRGBDouble;
+      else
+        value=fmin(MaxRGBDouble,destination.red/(1.0-(double) source.red/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green == MaxRGB)
+	value = MaxRGBDouble;
+      else
+        value=fmin(MaxRGBDouble,destination.green/(1.0-(double) source.green/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue == MaxRGB)
+	value = MaxRGBDouble;
+      else
+        value=fmin(MaxRGBDouble,destination.blue/(1.0-(double) source.blue/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+ColorBurnCompositePixels(void *mutable_data,               /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
+                         const Image *source_image,         /* Source image */
+                         const PixelPacket *source_pixels,  /* Pixel row in source image */
+                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                         Image *update_image,               /* Update image */
+                         PixelPacket *update_pixels,        /* Pixel row in update image */
+                         IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                         const long npixels,                /* Number of pixels in row */
+                         ExceptionInfo *exception           /* Exception report */
+                         )
+{
+  register long
+    i;
+    
+  PixelPacket
+    destination,
+    source;
+    
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+    
+  /*
+    Darkens the destination color by an amount depending on the source color
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+
+      double
+        value;
+        
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+        
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red == 0)
+	value=0;
+      else
+	//        value=fmax(0.,((double)source.red+(double)destination.red-MaxRGBDouble)/((double) source.red/MaxRGBDouble));
+	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.red)/((double) source.red/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green == 0)
+	value=0;
+      else
+	//        value=fmax(0.,((double)source.green+(double)destination.green-MaxRGBDouble)/((double) source.green/MaxRGBDouble));
+	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.green)/((double) source.green/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue == 0)
+	value=0;
+      else
+	//        value=fmax(0.,((double)source.blue+(double)destination.blue-MaxRGBDouble)/((double) source.blue/MaxRGBDouble));
+	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.blue)/((double) source.blue/MaxRGBDouble));
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+SoftLightCompositePixels(void *mutable_data,               /* User provided mutable data */
+                         const void *immutable_data,        /* User provided immutable data */
+                         const Image *source_image,         /* Source image */
+                         const PixelPacket *source_pixels,  /* Pixel row in source image */
+                         const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                         Image *update_image,               /* Update image */
+                         PixelPacket *update_pixels,        /* Pixel row in update image */
+                         IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                         const long npixels,                /* Number of pixels in row */
+                         ExceptionInfo *exception           /* Exception report */
+                         )
+{
+  register long
+    i;
+    
+  PixelPacket
+    destination,
+    source;
+    
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+    
+  /*
+    Darkens or lightens, depending on the source color
+  */
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double ramp;
+
+      double
+        value;
+        
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      
+      if(source.red <= (0.5*MaxRGBDouble))
+        value=destination.red*(1.0 - (1.0-(double)destination.red/MaxRGBDouble)*(1.0-2.0*(double)source.red/MaxRGBDouble));
+      else
+      {
+	if(destination.red <= (0.25*MaxRGBDouble))
+	  ramp = ((16.0*((double)destination.red/MaxRGBDouble)-12.0)*((double)destination.red/MaxRGBDouble)+4.0)*(double)destination.red/MaxRGBDouble;
+	else
+	  ramp = sqrt((double)destination.red/MaxRGBDouble);
+        value=destination.red + ((2.0*source.red)-MaxRGBDouble)*(ramp-(double)destination.red/MaxRGBDouble);
+      }
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green <= (0.5*MaxRGBDouble))
+        value=destination.green*(1.0 - (1.0-(double)destination.green/MaxRGBDouble)*(1.0-2.0*(double)source.green/MaxRGBDouble));
+      else
+      {
+	if(destination.green <= (0.25*MaxRGBDouble))
+	  ramp = ((16.0*((double)destination.green/MaxRGBDouble)-12.0)*((double)destination.green/MaxRGBDouble)+4.0)*(double)destination.green/MaxRGBDouble;
+	else
+	  ramp = sqrt((double)destination.green/MaxRGBDouble);
+        value=destination.green + ((2.0*source.green)-MaxRGBDouble)*(ramp-(double)destination.green/MaxRGBDouble);
+      }
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue <= (0.5*MaxRGBDouble))
+        value=destination.blue*(1.0 - (1.0-(double)destination.blue/MaxRGBDouble)*(1.0-2.0*(double)source.blue/MaxRGBDouble));
+      else
+      {
+	if(destination.blue <= (0.25*MaxRGBDouble))
+	  ramp = ((16.0*((double)destination.blue/MaxRGBDouble)-12.0)*((double)destination.blue/MaxRGBDouble)+4.0)*(double)destination.blue/MaxRGBDouble;
+	else
+	  ramp = sqrt((double)destination.blue/MaxRGBDouble);
+        value=destination.blue + ((2.0*source.blue)-MaxRGBDouble)*(ramp-(double)destination.blue/MaxRGBDouble);
+      }
+      composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+LinearBurnCompositePixels(void *mutable_data,                /* User provided mutable data */
+                          const void *immutable_data,        /* User provided immutable data */
+                          const Image *source_image,         /* Source image */
+                          const PixelPacket *source_pixels,  /* Pixel row in source image */
+                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                          Image *update_image,               /* Update image */
+                          PixelPacket *update_pixels,        /* Pixel row in update image */
+                          IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                          const long npixels,                /* Number of pixels in row */
+                          ExceptionInfo *exception           /* Exception report */
+                          )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Inverts the sum of the inverted images
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      value = fmax(0.0,source.red+destination.red-MaxRGBDouble);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      value = fmax(0.0,source.green+destination.green-MaxRGBDouble);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      value = fmax(0.0,source.blue+destination.blue-MaxRGBDouble);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+LinearDodgeCompositePixels(void *mutable_data,                /* User provided mutable data */
+                           const void *immutable_data,        /* User provided immutable data */
+                           const Image *source_image,         /* Source image */
+                           const PixelPacket *source_pixels,  /* Pixel row in source image */
+                           const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                           Image *update_image,               /* Update image */
+                           PixelPacket *update_pixels,        /* Pixel row in update image */
+                           IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                           const long npixels,                /* Number of pixels in row */
+                           ExceptionInfo *exception           /* Exception report */
+                           )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    A simple alpha-blended sum of the images
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      value = fmin(MaxRGBDouble,source.red+destination.red);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      value = fmin(MaxRGBDouble,source.green+destination.green);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      value = fmin(MaxRGBDouble,source.blue+destination.blue);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+LinearLightCompositePixels(void *mutable_data,                /* User provided mutable data */
+                           const void *immutable_data,        /* User provided immutable data */
+                           const Image *source_image,         /* Source image */
+                           const PixelPacket *source_pixels,  /* Pixel row in source image */
+                           const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                           Image *update_image,               /* Update image */
+                           PixelPacket *update_pixels,        /* Pixel row in update image */
+                           IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                           const long npixels,                /* Number of pixels in row */
+                           ExceptionInfo *exception           /* Exception report */
+                           )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Acts like LinearDodge (sum) for bright source pixels, LinearBurn (inverted sum) for dark source pixels
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.red+destination.red-MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.green+destination.green-MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.blue+destination.blue-MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+VividLightCompositePixels(void *mutable_data,                /* User provided mutable data */
+                          const void *immutable_data,        /* User provided immutable data */
+                          const Image *source_image,         /* Source image */
+                          const PixelPacket *source_pixels,  /* Pixel row in source image */
+                          const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                          Image *update_image,               /* Update image */
+                          PixelPacket *update_pixels,        /* Pixel row in update image */
+                          IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                          const long npixels,                /* Number of pixels in row */
+                          ExceptionInfo *exception           /* Exception report */
+                          )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Acts like ColorDodge for bright source pixels, ColorBurn for dark source pixels
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red==MaxRGB)
+	value = MaxRGBDouble;
+      else if(source.red==0)
+	value = 0.;
+      else if(source.red>=(0.5*MaxRGBDouble))
+	value = fmin(MaxRGBDouble,destination.red/(2.0-(2.0*(double)source.red/MaxRGBDouble)));
+      else
+	value = fmax(0.0,(destination.red+2.0*source.red-MaxRGBDouble)/(2.0*(double)source.red/MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green==MaxRGB)
+	value = MaxRGBDouble;
+      else if(source.green==0)
+	value = 0.;
+      else if(source.green>=(0.5*MaxRGBDouble))
+	value = fmin(MaxRGBDouble,destination.green/(2.0-(2.0*(double)source.green/MaxRGBDouble)));
+      else
+	value = fmax(0.0,(destination.green+2.0*source.green-MaxRGBDouble)/(2.0*(double)source.green/MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue==MaxRGB)
+	value = MaxRGBDouble;
+      else if(source.blue==0)
+	value = 0.;
+      else if(source.blue>=(0.5*MaxRGBDouble))
+	value = fmin(MaxRGBDouble,destination.blue/(2.0-(2.0*(double)source.blue/MaxRGBDouble)));
+      else
+	value = fmax(0.0,(destination.blue+2.0*source.blue-MaxRGBDouble)/(2.0*(double)source.blue/MaxRGBDouble));
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+PinLightCompositePixels(void *mutable_data,                /* User provided mutable data */
+                        const void *immutable_data,        /* User provided immutable data */
+                        const Image *source_image,         /* Source image */
+                        const PixelPacket *source_pixels,  /* Pixel row in source image */
+                        const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                        Image *update_image,               /* Update image */
+                        PixelPacket *update_pixels,        /* Pixel row in update image */
+                        IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                        const long npixels,                /* Number of pixels in row */
+                        ExceptionInfo *exception           /* Exception report */
+                        )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Acts like Lighten for bright source pixels, Darken for dark source pixels
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red>=(0.5*MaxRGBDouble))
+	value = fmax((double)destination.red,2.0*((double)source.red-0.5*MaxRGBDouble));
+      else
+	value = fmin((double)destination.red,2.0*(double)source.red);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green>=(0.5*MaxRGBDouble))
+	value = fmax((double)destination.green,2.0*((double)source.green-0.5*MaxRGBDouble));
+      else
+	value = fmin((double)destination.green,2.0*(double)source.green);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue>=(0.5*MaxRGBDouble))
+	value = fmax((double)destination.blue,2.0*((double)source.blue-0.5*MaxRGBDouble));
+      else
+	value = fmin((double)destination.blue,2.0*(double)source.blue);
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
+
+      ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
+    }
+
+  return MagickPass;
+}
+
+
+static MagickPassFail
+HardMixCompositePixels(void *mutable_data,                /* User provided mutable data */
+                       const void *immutable_data,        /* User provided immutable data */
+                       const Image *source_image,         /* Source image */
+                       const PixelPacket *source_pixels,  /* Pixel row in source image */
+                       const IndexPacket *source_indexes, /* Pixel row indexes in source image */
+                       Image *update_image,               /* Update image */
+                       PixelPacket *update_pixels,        /* Pixel row in update image */
+                       IndexPacket *update_indexes,       /* Pixel row indexes in update image */
+                       const long npixels,                /* Number of pixels in row */
+                       ExceptionInfo *exception           /* Exception report */
+                       )
+{
+  register long
+    i;
+
+  PixelPacket
+    destination,
+    source;
+
+  ARG_NOT_USED(mutable_data);
+  ARG_NOT_USED(immutable_data);
+  ARG_NOT_USED(exception);
+
+  /*
+    Averages each channel, then thresholds at half-value;
+    i.e. sets to zero if the average value is less than one half,
+    sets to full if above half.
+  */
+
+
+  for (i=0; i < npixels; i++)
+    {
+      double gamma;
+      double source_alpha;
+      double dest_alpha;
+      double composite;
+      double value;
+
+      PrepareSourcePacket(&source,source_pixels,source_image,source_indexes,i);
+      PrepareDestinationPacket(&destination,update_pixels,update_image,update_indexes,i);
+
+      source_alpha=(double) source.opacity/MaxRGBDouble;
+      dest_alpha=(double) destination.opacity/MaxRGBDouble;
+
+      gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+        (1.0-source_alpha)*(1.0-dest_alpha);
+      gamma=gamma < 0.0 ? 0.0 : (gamma > 1.0) ? 1.0 : gamma;
+
+      composite=MaxRGBDouble*(1.0-gamma);
+      destination.opacity=RoundDoubleToQuantum(composite);
+
+      gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+
+      if(source.red + destination.red < MaxRGB)
+	value = 0.0;
+      else
+	value = MaxRGBDouble;
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.red*(1.0-source_alpha)*dest_alpha+
+                 destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.red=RoundDoubleToQuantum(composite);
+
+      if(source.green + destination.green < MaxRGB)
+	value = 0.0;
+      else
+	value = MaxRGBDouble;
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.green*(1.0-source_alpha)*dest_alpha+
+                 destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.green=RoundDoubleToQuantum(composite);
+
+      if(source.blue + destination.blue < MaxRGB)
+	value = 0.0;
+      else
+	value = MaxRGBDouble;
+      composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
+                 source.blue*(1.0-source_alpha)*dest_alpha+
+                 destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
+      destination.blue=RoundDoubleToQuantum(composite);
 
       ApplyPacketUpdates(update_pixels,update_indexes,update_image,&destination,i);
     }
@@ -2080,7 +3112,7 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       call_back=ScreenCompositePixels;
       break;
     case OverlayCompositeOp:
-      /* Not implemented (Photoshop & PDF) */
+      call_back=OverlayCompositePixels;
       break;
     case CopyCyanCompositeOp:
       call_back=CopyRedCompositePixels;
@@ -2099,6 +3131,36 @@ GetCompositionPixelIteratorCallback(const CompositeOperator compose,
       break;
     case HardLightCompositeOp:
       call_back=HardLightCompositePixels;
+      break;
+    case ExclusionCompositeOp:
+      call_back=ExclusionCompositePixels;
+      break;
+    case ColorDodgeCompositeOp:
+      call_back=ColorDodgeCompositePixels;
+      break;
+    case ColorBurnCompositeOp:
+      call_back=ColorBurnCompositePixels;
+      break;
+    case SoftLightCompositeOp:
+      call_back=SoftLightCompositePixels;
+      break;
+    case LinearBurnCompositeOp:
+      call_back=LinearBurnCompositePixels;
+      break;
+    case LinearDodgeCompositeOp:
+      call_back=LinearDodgeCompositePixels;
+      break;
+    case LinearLightCompositeOp:
+      call_back=LinearLightCompositePixels;
+      break;
+    case VividLightCompositeOp:
+      call_back=VividLightCompositePixels;
+      break;
+    case PinLightCompositeOp:
+      call_back=PinLightCompositePixels;
+      break;
+    case HardMixCompositeOp:
+      call_back=HardMixCompositePixels;
       break;
     default:
       {

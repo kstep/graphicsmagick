@@ -1,3 +1,15 @@
+2014-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c: Composition improvements and additions
+	contributed by Brendan Lane via SourceForge patch #34 "Most of the
+	missing Photoshop separable compositing operations"
+	(https://sourceforge.net/p/graphicsmagick/patches/34/).  These
+	composition operators were modified to include alpha in their
+	computations: Difference, Darken, Lighten, HardLight, and these
+	operators were added Overlay, Exclusion, ColorBurn, ColorDodge,
+	SoftLight, LinearBurn, LinearDodge, LinearLight, VividLight,
+	PinLight, HardMix.
+
 2014-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c (ScreenCompositePixels): Implementation of

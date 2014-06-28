@@ -238,9 +238,9 @@ static CompositeOperator GIMPBlendModeToCompositeOperator( unsigned int blendMod
     case GIMP_COLOR_MODE:       return( ColorizeCompositeOp );
     case GIMP_DIVIDE_MODE:      return( DivideCompositeOp );
     case GIMP_HARDLIGHT_MODE:   return( HardLightCompositeOp );
+    case GIMP_DODGE_MODE:       return( ColorDodgeCompositeOp );
+    case GIMP_BURN_MODE:        return( ColorBurnCompositeOp );
     /* these are the ones we don't support...yet */
-    case GIMP_DODGE_MODE:       return( OverCompositeOp );
-    case GIMP_BURN_MODE:        return( OverCompositeOp );
     case GIMP_BEHIND_MODE:      return( OverCompositeOp );
     case GIMP_VALUE_MODE:       return( OverCompositeOp );
     default:                    return( OverCompositeOp );

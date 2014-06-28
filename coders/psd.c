@@ -357,13 +357,25 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   if (LocaleNCompare(mode,"hLit",4) == 0)
     return(HardLightCompositeOp);
   if (LocaleNCompare(mode,"sLit",4) == 0)
-    return(OverCompositeOp);
+    return(SoftLightCompositeOp);
   if (LocaleNCompare(mode,"smud",4) == 0)
-    return(OverCompositeOp);
+    return(ExclusionCompositeOp);
   if (LocaleNCompare(mode,"div ",4) == 0)
-    return(OverCompositeOp);
+    return(ColorDodgeCompositeOp);
   if (LocaleNCompare(mode,"idiv",4) == 0)
-    return(OverCompositeOp);
+    return(ColorBurnCompositeOp);
+  if (LocaleNCompare(mode,"lbrn",4) == 0)
+    return(LinearBurnCompositeOp);
+  if (LocaleNCompare(mode,"lddg",4) == 0)
+    return(LinearDodgeCompositeOp);
+  if (LocaleNCompare(mode,"lLit",4) == 0)
+    return(LinearLightCompositeOp);
+  if (LocaleNCompare(mode,"vLit",4) == 0)
+    return(VividLightCompositeOp);
+  if (LocaleNCompare(mode,"pLit",4) == 0)
+    return(PinLightCompositeOp);
+  if (LocaleNCompare(mode,"hMix",4) == 0)
+    return(HardMixCompositeOp);
   return(OverCompositeOp);
 }
 
@@ -386,21 +398,19 @@ static char *CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
     case ScreenCompositeOp:    outMode = (char *) "scrn";  break;
     case OverlayCompositeOp:   outMode = (char *) "over";  break;
     case HardLightCompositeOp: outMode = (char *) "hLit";  break;
+    case ExclusionCompositeOp: outMode = (char *) "smud";  break;
+    case ColorDodgeCompositeOp:outMode = (char *) "div ";  break;
+    case ColorBurnCompositeOp: outMode = (char *) "idiv";  break;
+    case SoftLightCompositeOp: outMode = (char *) "sLit";  break;
+    case LinearBurnCompositeOp:outMode = (char *) "lbrn";  break;
+    case LinearDodgeCompositeOp:outMode= (char *) "lddg";  break;
+    case LinearLightCompositeOp:outMode= (char *) "lLit";  break;
+    case VividLightCompositeOp:outMode = (char *) "vLit";  break;
+    case PinLightCompositeOp:  outMode = (char *) "pLit";  break;
+    case HardMixCompositeOp:   outMode = (char *) "hMix";  break;
 
     default:
       outMode = (char *) "norm";
-/*
-
-  if (LocaleNCompare(mode,"sLit",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"smud",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"div ",4) == 0)
-    return(OverCompositeOp);
-  if (LocaleNCompare(mode,"idiv",4) == 0)
-    return(OverCompositeOp);
-
-*/
   }
 
   return outMode;

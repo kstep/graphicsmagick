@@ -205,6 +205,16 @@ namespace Magick
   using MagickLib::CopyBlackCompositeOp;
   using MagickLib::DivideCompositeOp;
   using MagickLib::HardLightCompositeOp;
+  using MagickLib::ExclusionCompositeOp;
+  using MagickLib::ColorDodgeCompositeOp;
+  using MagickLib::ColorBurnCompositeOp;
+  using MagickLib::SoftLightCompositeOp;
+  using MagickLib::LinearBurnCompositeOp;
+  using MagickLib::LinearDodgeCompositeOp;
+  using MagickLib::LinearLightCompositeOp;
+  using MagickLib::VividLightCompositeOp;
+  using MagickLib::PinLightCompositeOp;
+  using MagickLib::HardMixCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;

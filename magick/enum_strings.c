@@ -396,6 +396,36 @@ MagickExport const char *CompositeOperatorToString(const CompositeOperator compo
     case HardLightCompositeOp:
       composite_op_text = "HardLight";
       break;
+    case ExclusionCompositeOp:
+      composite_op_text = "Exclusion";
+      break;
+    case ColorDodgeCompositeOp:
+      composite_op_text = "ColorDodge";
+      break;
+    case ColorBurnCompositeOp:
+      composite_op_text = "ColorBurn";
+      break;
+    case SoftLightCompositeOp:
+      composite_op_text = "SoftLight";
+      break;
+    case LinearBurnCompositeOp:
+      composite_op_text = "LinearBurn";
+      break;
+    case LinearDodgeCompositeOp:
+      composite_op_text = "LinearDodge";
+      break;
+    case LinearLightCompositeOp:
+      composite_op_text = "LinearLight";
+      break;
+    case VividLightCompositeOp:
+      composite_op_text = "VividLight";
+      break;
+    case PinLightCompositeOp:
+      composite_op_text = "PinLight";
+      break;
+    case HardMixCompositeOp:
+      composite_op_text = "HardMix";
+      break;
     }
 
   return composite_op_text;
@@ -482,6 +512,26 @@ MagickExport CompositeOperator StringToCompositeOperator(const char *option)
     composite_op=DivideCompositeOp;
   else if (LocaleCompare("HardLight",option) == 0)
     composite_op=HardLightCompositeOp;
+  else if (LocaleCompare("Exclusion",option) == 0)
+    composite_op=ExclusionCompositeOp;
+  else if (LocaleCompare("ColorDodge",option) == 0)
+    composite_op=ColorDodgeCompositeOp;
+  else if (LocaleCompare("ColorBurn",option) == 0)
+    composite_op=ColorBurnCompositeOp;
+  else if (LocaleCompare("SoftLight",option) == 0)
+    composite_op=SoftLightCompositeOp;
+  else if (LocaleCompare("LinearBurn",option) == 0)
+    composite_op=LinearBurnCompositeOp;
+  else if (LocaleCompare("LinearDodge",option) == 0)
+    composite_op=LinearDodgeCompositeOp;
+  else if (LocaleCompare("LinearLight",option) == 0)
+    composite_op=LinearLightCompositeOp;
+  else if (LocaleCompare("VividLight",option) == 0)
+    composite_op=VividLightCompositeOp;
+  else if (LocaleCompare("PinLight",option) == 0)
+    composite_op=PinLightCompositeOp;
+  else if (LocaleCompare("HardMix",option) == 0)
+    composite_op=HardMixCompositeOp;
 
   return composite_op;
 }

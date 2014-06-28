@@ -200,7 +200,9 @@ static char
     "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
     "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
     "CopyCyan", "CopyMagenta", "CopyYellow", "CopyBlack", "Divide",
-    "HardLight",
+    "HardLight", "Exclusion", "ColorDodge", "ColorBurn", "SoftLight",
+    "LinearBurn", "LinearDodge", "LinearLight", "VividLight", "PinLight",
+    "HardMix",
     (char *) NULL
   },
   *CompressionTypes[] =
