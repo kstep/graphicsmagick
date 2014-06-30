@@ -1,3 +1,8 @@
+2014-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/pixel_wand.c (PixelSetMagenta): Fix documentation.
+	Resolves SourceForge bug #273 'Green Magenta' typo in docs.
+
 2014-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c: Composition improvements and additions

@@ -1353,7 +1353,7 @@ WandExport void PixelSetMagenta(PixelWand *wand,const double magenta)
 %
 %    o wand: The pixel wand.
 %
-%    o magenta: The green magenta.
+%    o magenta: The magenta color.
 %
 */
 WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
@@ -1384,7 +1384,7 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %
 %    o wand: The pixel wand.
 %
-%    o opacity: The opacity color.
+%    o opacity: The opacity value.
 %
 */
 WandExport void PixelSetOpacity(PixelWand *wand,const double opacity)
@@ -1423,7 +1423,7 @@ WandExport void PixelSetOpacity(PixelWand *wand,const double opacity)
 %
 %    o wand: The pixel wand.
 %
-%    o opacity: The opacity color.
+%    o opacity: The opacity value.
 %
 */
 WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
@@ -1454,9 +1454,10 @@ WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
 %
 %    o wand: The pixel wand.
 %
-%    o color: Return the pixel wand color here.
+%    o color: The pixel wand color (expressed as a PixelPacket).
 %
 */
+/* FIXME: color argument should be const! */
 WandExport void PixelSetQuantumColor(PixelWand *wand,PixelPacket *color)
 {
   assert(wand != (PixelWand *) NULL);
