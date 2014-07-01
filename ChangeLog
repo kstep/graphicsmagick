@@ -1,5 +1,10 @@
 2014-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/composite.c: Fixes by Brendan Lane for color channel
+	overflows in modified/new quantum operators.  Fixes test suite
+	results for Q32 build and makes LinearBurn and LinearDodge work
+	correctly at all.
+
 	* wand/pixel_wand.c (PixelSetMagenta): Fix documentation.
 	Resolves SourceForge bug #273 'Green Magenta' typo in docs.
 

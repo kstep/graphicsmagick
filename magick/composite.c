@@ -718,19 +718,19 @@ DifferenceCompositePixels(void *mutable_data,                /* User provided mu
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      composite=(fabs(source.red - destination.red)*
+      composite=(fabs((double)source.red - (double)destination.red)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      composite=(fabs(source.green - destination.green)*
+      composite=(fabs((double)source.green - (double)destination.green)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      composite=(fabs(source.blue - destination.blue)*
+      composite=(fabs((double)source.blue - (double)destination.blue)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -1379,19 +1379,19 @@ DarkenCompositePixels(void *mutable_data,                /* User provided mutabl
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      composite=(fmin(source.red,destination.red)*
+      composite=(fmin((double)source.red,(double)destination.red)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      composite=(fmin(source.green,destination.green)*
+      composite=(fmin((double)source.green,(double)destination.green)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      composite=(fmin(source.blue,destination.blue)*
+      composite=(fmin((double)source.blue,(double)destination.blue)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -1450,19 +1450,19 @@ LightenCompositePixels(void *mutable_data,                /* User provided mutab
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      composite=(fmax(source.red,destination.red)*
+      composite=(fmax((double)source.red,(double)destination.red)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      composite=(fmax(source.green,destination.green)*
+      composite=(fmax((double)source.green,(double)destination.green)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      composite=(fmax(source.blue,destination.blue)*
+      composite=(fmax((double)source.blue,(double)destination.blue)*
                  (1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2221,7 +2221,7 @@ ColorDodgeCompositePixels(void *mutable_data,               /* User provided mut
       if(source.red == MaxRGB)
 	value = MaxRGBDouble;
       else
-        value=fmin(MaxRGBDouble,destination.red/(1.0-(double) source.red/MaxRGBDouble));
+        value=fmin(MaxRGBDouble,(double)destination.red/(1.0-(double) source.red/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2230,7 +2230,7 @@ ColorDodgeCompositePixels(void *mutable_data,               /* User provided mut
       if(source.green == MaxRGB)
 	value = MaxRGBDouble;
       else
-        value=fmin(MaxRGBDouble,destination.green/(1.0-(double) source.green/MaxRGBDouble));
+        value=fmin(MaxRGBDouble,(double)destination.green/(1.0-(double) source.green/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2239,7 +2239,7 @@ ColorDodgeCompositePixels(void *mutable_data,               /* User provided mut
       if(source.blue == MaxRGB)
 	value = MaxRGBDouble;
       else
-        value=fmin(MaxRGBDouble,destination.blue/(1.0-(double) source.blue/MaxRGBDouble));
+        value=fmin(MaxRGBDouble,(double)destination.blue/(1.0-(double) source.blue/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2308,7 +2308,6 @@ ColorBurnCompositePixels(void *mutable_data,               /* User provided muta
       if(source.red == 0)
 	value=0;
       else
-	//        value=fmax(0.,((double)source.red+(double)destination.red-MaxRGBDouble)/((double) source.red/MaxRGBDouble));
 	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.red)/((double) source.red/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.red*(1.0-source_alpha)*dest_alpha+
@@ -2318,7 +2317,6 @@ ColorBurnCompositePixels(void *mutable_data,               /* User provided muta
       if(source.green == 0)
 	value=0;
       else
-	//        value=fmax(0.,((double)source.green+(double)destination.green-MaxRGBDouble)/((double) source.green/MaxRGBDouble));
 	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.green)/((double) source.green/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.green*(1.0-source_alpha)*dest_alpha+
@@ -2328,7 +2326,6 @@ ColorBurnCompositePixels(void *mutable_data,               /* User provided muta
       if(source.blue == 0)
 	value=0;
       else
-	//        value=fmax(0.,((double)source.blue+(double)destination.blue-MaxRGBDouble)/((double) source.blue/MaxRGBDouble));
 	value = MaxRGBDouble-fmin(MaxRGBDouble,(MaxRGBDouble-(double)destination.blue)/((double) source.blue/MaxRGBDouble));
       composite=(value*(1.0-source_alpha)*(1.0-dest_alpha)+
                  source.blue*(1.0-source_alpha)*dest_alpha+
@@ -2501,19 +2498,19 @@ LinearBurnCompositePixels(void *mutable_data,                /* User provided mu
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      value = fmax(0.0,source.red+destination.red-MaxRGBDouble);
+      value = fmax(0.0,(double)source.red+(double)destination.red-MaxRGBDouble);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      value = fmax(0.0,source.green+destination.green-MaxRGBDouble);
+      value = fmax(0.0,(double)source.green+(double)destination.green-MaxRGBDouble);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      value = fmax(0.0,source.blue+destination.blue-MaxRGBDouble);
+      value = fmax(0.0,(double)source.blue+(double)destination.blue-MaxRGBDouble);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2578,19 +2575,19 @@ LinearDodgeCompositePixels(void *mutable_data,                /* User provided m
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      value = fmin(MaxRGBDouble,source.red+destination.red);
+      value = fmin(MaxRGBDouble,(double)source.red+(double)destination.red);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      value = fmin(MaxRGBDouble,source.green+destination.green);
+      value = fmin(MaxRGBDouble,(double)source.green+(double)destination.green);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      value = fmin(MaxRGBDouble,source.blue+destination.blue);
+      value = fmin(MaxRGBDouble,(double)source.blue+(double)destination.blue);
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2655,19 +2652,19 @@ LinearLightCompositePixels(void *mutable_data,                /* User provided m
 
       gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
 
-      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.red+destination.red-MaxRGBDouble));
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*(double)source.red+(double)destination.red-MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.red=RoundDoubleToQuantum(composite);
 
-      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.green+destination.green-MaxRGBDouble));
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*(double)source.green+(double)destination.green-MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
       destination.green=RoundDoubleToQuantum(composite);
 
-      value = fmin(MaxRGBDouble,fmax(0.0,2.0*source.blue+destination.blue-MaxRGBDouble));
+      value = fmin(MaxRGBDouble,fmax(0.0,2.0*(double)source.blue+(double)destination.blue-MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2739,7 +2736,7 @@ VividLightCompositePixels(void *mutable_data,                /* User provided mu
       else if(source.red>=(0.5*MaxRGBDouble))
 	value = fmin(MaxRGBDouble,destination.red/(2.0-(2.0*(double)source.red/MaxRGBDouble)));
       else
-	value = fmax(0.0,(destination.red+2.0*source.red-MaxRGBDouble)/(2.0*(double)source.red/MaxRGBDouble));
+	value = fmax(0.0,((double)destination.red+2.0*source.red-MaxRGBDouble)/(2.0*(double)source.red/MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.red*(1.0-source_alpha)*dest_alpha+
                  destination.red*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2752,7 +2749,7 @@ VividLightCompositePixels(void *mutable_data,                /* User provided mu
       else if(source.green>=(0.5*MaxRGBDouble))
 	value = fmin(MaxRGBDouble,destination.green/(2.0-(2.0*(double)source.green/MaxRGBDouble)));
       else
-	value = fmax(0.0,(destination.green+2.0*source.green-MaxRGBDouble)/(2.0*(double)source.green/MaxRGBDouble));
+	value = fmax(0.0,((double)destination.green+2.0*source.green-MaxRGBDouble)/(2.0*(double)source.green/MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.green*(1.0-source_alpha)*dest_alpha+
                  destination.green*(1.0-dest_alpha)*source_alpha)*gamma;
@@ -2765,7 +2762,7 @@ VividLightCompositePixels(void *mutable_data,                /* User provided mu
       else if(source.blue>=(0.5*MaxRGBDouble))
 	value = fmin(MaxRGBDouble,destination.blue/(2.0-(2.0*(double)source.blue/MaxRGBDouble)));
       else
-	value = fmax(0.0,(destination.blue+2.0*source.blue-MaxRGBDouble)/(2.0*(double)source.blue/MaxRGBDouble));
+	value = fmax(0.0,((double)destination.blue+2.0*source.blue-MaxRGBDouble)/(2.0*(double)source.blue/MaxRGBDouble));
       composite=((value*(1.0-source_alpha)*(1.0-dest_alpha))+
                  source.blue*(1.0-source_alpha)*dest_alpha+
                  destination.blue*(1.0-dest_alpha)*source_alpha)*gamma;
