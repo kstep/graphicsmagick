@@ -1,3 +1,8 @@
+2014-07-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/Magick++/Image.h (Magick): Fix complilation errors
+	caused by continued raw use of __attribute__.
+
 2014-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c: Fixes by Brendan Lane for color channel

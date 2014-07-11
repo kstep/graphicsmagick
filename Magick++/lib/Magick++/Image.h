@@ -482,7 +482,7 @@ namespace Magick
     // Apply an arithmetic or bitwise operator to the image pixel quantums.
     void            quantumOperator ( const ChannelType channel_,
                                       const QuantumOperator operator_,
-                                      Quantum rvalue_) __attribute__ ((deprecated));
+                                      Quantum rvalue_) MAGICK_FUNC_DEPRECATED;
     void            quantumOperator ( const ChannelType channel_,
                                       const QuantumOperator operator_,
                                       double rvalue_);
@@ -491,7 +491,7 @@ namespace Magick
                                       const unsigned int rows_,
                                       const ChannelType channel_,
                                       const QuantumOperator operator_,
-                                      const Quantum rvalue_) __attribute__ ((deprecated));
+                                      const Quantum rvalue_) MAGICK_FUNC_DEPRECATED;
     void            quantumOperator ( const int x_,const int y_,
                                       const unsigned int columns_,
                                       const unsigned int rows_,
