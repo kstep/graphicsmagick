@@ -540,6 +540,8 @@
 #define MagickFormatStringList GmMagickFormatStringList
 #define MagickFree GmMagickFree
 #define MagickFreeAligned GmMagickFreeAligned
+#define MagickFmin GmMagickFmin
+#define MagickFmax GmMagickFmax
 #define MagickGetBitRevTable GmMagickGetBitRevTable
 #define MagickGetFileSystemBlockSize GmMagickGetFileSystemBlockSize
 #define MagickGetMMUPageSize GmMagickGetMMUPageSize

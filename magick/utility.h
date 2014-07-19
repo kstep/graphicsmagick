@@ -174,6 +174,9 @@ extern MagickExport size_t
 #  define strlcpy(dst,src,size) MagickStrlCpy(dst,src,size)
 #endif
 
+extern double MagickFmin(const double x, const double y) MAGICK_FUNC_CONST;
+extern double MagickFmax(const double x, const double y) MAGICK_FUNC_CONST;
+
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

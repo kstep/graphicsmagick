@@ -3550,6 +3550,72 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  M a g i c k F m i n                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFmin emulates C'99 fmin(), which returns the minimum of two
+%  double values.  This is implemented as a function rather than a macro.
+%
+%  The format of the MagickFmin method is:
+%
+%      double MagickFmin(const double x, const double y)
+%
+%  A description of each parameter follows.
+%
+%   o  x: first input value
+%
+%   o  y: second input value
+%
+%   o  returns: minimum of values x or y
+%
+%
+*/
+double MagickFmin(const double x, const double y)
+{
+  return Min(x,y);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k F m a x                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFmax emulates C'99 fmax(), which returns the maximum of two
+%  double values.  This is implemented as a function rather than a macro.
+%
+%  The format of the MagickFmax method is:
+%
+%      double MagickFmax(const double x, const double y)
+%
+%  A description of each parameter follows.
+%
+%   o  x: first input value
+%
+%   o  y: second input value
+%
+%   o  returns: maximum of values x or y
+%
+%
+*/
+double MagickFmax(const double x, const double y)
+{
+  return Max(x,y);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M a g i c k F o r m a t S t r i n g                                        %
 %                                                                             %
 %                                                                             %

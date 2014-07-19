@@ -144,6 +144,10 @@ extern "C" {
          (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5)))) /* 2.5+ */
 #      define MAGICK_FUNC_NORETURN MAGICK_ATTRIBUTE((__noreturn__))
 #    endif
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__const__)) || \
+         ((__GNUC__) >= 3)) /* 2.5+ */
+#      define MAGICK_FUNC_CONST MAGICK_ATTRIBUTE((__const__))
+#    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__pure__)) || \
          ((__GNUC__) >= 3)) /* 2.96+ */
 #      define MAGICK_FUNC_PURE MAGICK_ATTRIBUTE((__pure__))
