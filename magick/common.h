@@ -199,6 +199,9 @@ extern "C" {
 #if !defined (MAGICK_FUNC_NORETURN)
 #  define MAGICK_FUNC_NORETURN /*nothing*/
 #endif
+#if !defined (MAGICK_FUNC_CONST)
+#  define MAGICK_FUNC_CONST /*nothing*/
+#endif
 #if !defined (MAGICK_FUNC_PURE)
 #  define MAGICK_FUNC_PURE /*nothing*/
 #endif
