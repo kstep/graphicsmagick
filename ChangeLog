@@ -1,3 +1,8 @@
+2014-07-20  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/bmp.c: "opacity" read from a BMP3 is actually "alpha",
+	so store q->opacity=MaxRGB-opacity instead of q->opacity=opacity.
+
 2014-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* webp, VisualMagick/webp: Integrate webp 0.4.0 into windows
