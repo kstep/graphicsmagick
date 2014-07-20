@@ -144,8 +144,11 @@ extern "C" {
          (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5)))) /* 2.5+ */
 #      define MAGICK_FUNC_NORETURN MAGICK_ATTRIBUTE((__noreturn__))
 #    endif
-#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__const__)) || \
-         ((__GNUC__) >= 3)) /* 2.5+ */
+  /* clang 3.0 seems to have difficulties with __has_attribute(__const__) but
+     clang 3.3 does not.  Just assume that it is supported for clang since
+     Linux headers are riddled with it. */
+#    if (defined(__clang__) || \
+         (((__GNUC__) > 3) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 5)))) /* 2.5+ */
 #      define MAGICK_FUNC_CONST MAGICK_ATTRIBUTE((__const__))
 #    endif
 #    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__pure__)) || \
