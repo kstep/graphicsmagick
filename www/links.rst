@@ -31,7 +31,7 @@ Debian `GraphicsMagick packages <http://packages.debian.org/search?keywords=Grap
 
 `IceWalkers <http://www.icewalkers.com/Linux/Software/519400/GraphicsMagick.html>`_ GraphicsMagick Entry.
 
-`Ohloh <http://www.ohloh.net/p/GraphicsMagick>`_ GraphicsMagick Entry.
+`Black Duck | Open HUB <http://www.openhub.net/p/GraphicsMagick>`_ GraphicsMagick Entry.
 
 `SourceForge <http://sourceforge.net/projects/graphicsmagick/>`_ GraphicsMagick Entry.
 
