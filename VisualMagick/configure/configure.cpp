@@ -985,6 +985,8 @@ void CConfigureApp::process_library( const char *root,
   add_includes(includes_list, extra, levels-2);
   extra = "..\\ttf\\include";
   add_includes(includes_list, extra, levels-2);
+  extra = "..\\webp\\src";
+  add_includes(includes_list, extra, levels-2);
   extra = "..\\libxml\\include";
   add_includes(includes_list, extra, levels-2);
   add_includes(includes_list, staging, levels-2);
@@ -1070,6 +1072,7 @@ void CConfigureApp::process_library( const char *root,
           workspace->write_project_dependency(project,"CORE_jp2");
           workspace->write_project_dependency(project,"CORE_png");
           workspace->write_project_dependency(project,"CORE_libxml");
+          workspace->write_project_dependency(project,"CORE_webp");
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_wmf");
           if (useX11Stubs)
@@ -1136,6 +1139,12 @@ void CConfigureApp::process_library( const char *root,
         {
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      // webp module depends on webp
+      if (name.compare("webp") == 0)
+        {
+          workspace->write_project_dependency(project,"CORE_webp");
+        }
+
       // Finish the project library dependencies
       workspace->write_end_project(project);
     }
@@ -1258,6 +1267,11 @@ void CConfigureApp::process_module( const char *root,
   if (name.compare("hdf") == 0)
     {
       extra = "..\\zlib";
+      add_includes(includes_list, extra, levels-2);
+    }
+  if (name.compare("webp") == 0)
+    {
+      extra = "..\\webp\\src";
       add_includes(includes_list, extra, levels-2);
     }
   if (name.compare("wmf") == 0)
@@ -3413,7 +3427,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_RL_zlib_.lib");
 	   lib_shared_list.push_back("CORE_RL_bzlib_.lib");
 	   lib_shared_list.push_back("CORE_RL_jpeg_.lib");
-       lib_shared_list.push_back("CORE_RL_jp2_.lib");
+           lib_shared_list.push_back("CORE_RL_jp2_.lib");
 	   lib_shared_list.push_back("CORE_RL_png_.lib");
 	   lib_shared_list.push_back("CORE_RL_ttf_.lib");
 	   lib_shared_list.push_back("CORE_RL_jbig_.lib");
@@ -3424,6 +3438,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_RL_filters_.lib");
 	   lib_shared_list.push_back("CORE_RL_coders_.lib");
 	   lib_shared_list.push_back("CORE_RL_libxml_.lib");
+	   lib_shared_list.push_back("CORE_RL_webp_.lib");
 	   lib_shared_list.push_back("CORE_RL_wmf_.lib");
 	   lib_shared_list.push_back("CORE_RL_magick_.lib");
 	 }
@@ -3476,7 +3491,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_DB_zlib_.lib");
 	   lib_shared_list.push_back("CORE_DB_bzlib_.lib");
 	   lib_shared_list.push_back("CORE_DB_jpeg_.lib");
-       lib_shared_list.push_back("CORE_DB_jp2_.lib");
+           lib_shared_list.push_back("CORE_DB_jp2_.lib");
 	   lib_shared_list.push_back("CORE_DB_png_.lib");
 	   lib_shared_list.push_back("CORE_DB_ttf_.lib");
 	   lib_shared_list.push_back("CORE_DB_jbig_.lib");
@@ -3488,6 +3503,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_DB_coders_.lib");
 	   lib_shared_list.push_back("CORE_DB_libxml_.lib");
 	   lib_shared_list.push_back("CORE_DB_wmf_.lib");
+	   lib_shared_list.push_back("CORE_DB_webp_.lib");
 	   lib_shared_list.push_back("CORE_DB_magick_.lib");
 	 }
    }
@@ -4416,6 +4432,9 @@ void ConfigureVS6Project::write_file(const char *filename)
 {
   m_stream << "# Begin Source File" << endl;
   m_stream << "SOURCE=" << filename << endl;
+#if 1
+  "# PROP Intermediate_Dir "Release\dir1""
+#endif
   m_stream << "# End Source File" << endl;
 }
 

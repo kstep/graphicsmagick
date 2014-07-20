@@ -1,3 +1,4 @@
+// This may look like C code, but it is really -*- C++ -*-
 // Configure.h : main header file for the CONFIGURE application
 //
 
