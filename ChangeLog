@@ -2,6 +2,7 @@
 
 	* coders/bmp.c: "opacity" read from a BMP3 is actually "alpha",
 	so store q->opacity=MaxRGB-opacity instead of q->opacity=opacity.
+	Reference: Bug tracker [bugs:#271] Blank result for BMP resize.
 
 2014-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
