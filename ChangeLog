@@ -1,3 +1,10 @@
+2014-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* webp, VisualMagick/webp: Integrate webp 0.4.0 into windows
+	build.  May require manual renaming of output object files in
+	project files to build webp until VisualMagick configure is
+	improved!
+
 2014-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c: fmin() and fmax() are defined by C'99 and
