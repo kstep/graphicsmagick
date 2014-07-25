@@ -85,8 +85,9 @@ applications. GraphicsMagick may be used to resize, rotate, sharpen,
 color reduce, or add special effects to an image and save the result
 in the same or differing image format. Image processing operations are
 available from the command line, as well as through C, C++, Lua, Perl,
-PHP, Python, Tcl, Ruby, or Windows COM programming interfaces. With
-some modification, language extensions for ImageMagick may be used.
+PHP, Python, Tcl, Ruby, Windows .NET, or Windows COM programming
+interfaces. With some modification, language extensions for
+ImageMagick may be used.
 
 GraphicsMagick is originally derived from ImageMagick_ 5.5.2 as of
 November 2002 but has been completely independent of the ImageMagick
