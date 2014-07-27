@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1612,12 +1612,16 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
+#ifdef MagickLibName
+  handle=GetModuleHandle(MagickLibName);
+#else
   FormatString(directory,"%.1024s%.1024s%.1024s",GetClientPath(),
     DirectorySeparator,GetClientFilename());
   if (IsAccessible(directory))
     handle=GetModuleHandle(directory);
   else
     handle=GetModuleHandle(0);
+#endif
   if (!handle)
     return((unsigned char *) NULL);
   /*

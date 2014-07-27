@@ -1,5 +1,9 @@
 2014-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.c (NTResourceToBlob): Support loading mgk files
+	as Windows resource from library if MagickLibName is defined.
+	Patch contributed by Dirk Lemstra via SF patch #32.
+
 	* magick/log.c: Added SetLogMethod() to allow an
 	application/library to specify a function to be called for
 	logging.  Patch contributed by Dirk Lemstra.
