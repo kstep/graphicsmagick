@@ -99,6 +99,14 @@ is similar to operating system search paths (i.e. colon delimited for
 Unix, and semi-colon delimited for Microsoft Windows). This user
 specified search path is used before trying the default search path.</abs>
 
+<opt>MAGICK_GHOSTSCRIPT_PATH</opt>
+
+<abs>For Microsoft Windows, specify the path to the Ghostscript
+installation rather than searching for it via the Windows registry.
+This helps in case Ghostscript is not installed via the Ghostscript
+Windows installer or the user wants more control over the Ghostscript
+used.</abs>
+
 <opt>MAGICK_HOME</opt>
 
 <abs>Path to top of GraphicsMagick installation directory. Only observed

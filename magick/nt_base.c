@@ -1116,8 +1116,26 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
   path[0]='\0';
 
   if (NULL == result)
-    if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
-      result=cache;
+    {
+      const char
+        *directory;
+
+      directory=getenv("MAGICK_GHOSTSCRIPT_PATH");
+      if (directory != (const char *) NULL)
+        {
+          FormatString(cache, "%.1024s%sgsdll%u.dll", directory,
+            DirectorySeparator, (unsigned int) sizeof(directory)*8);
+          if (IsAccessibleAndNotEmpty(cache))
+            result=cache;
+          else
+            (void) LogMagickEvent(ConfigureEvent, GetMagickModule(),
+              "Unable to find ghostscript library: \"%s\"", cache);
+        }
+      else if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
+        {
+          result=cache;
+        }
+    }
 
   if (result)
     {

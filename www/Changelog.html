@@ -40,7 +40,12 @@
 <ul class="simple">
 <li>magick/nt_base.c (NTResourceToBlob): Support loading mgk files
 as Windows resource from library if MagickLibName is defined.
-Patch contributed by Dirk Lemstra via SF patch #32.</li>
+Patch contributed by Dirk Lemstra via SF patch #32.
+(NTGhostscriptDLL): For Microsoft Windows, add support for a
+MAGICK_GHOSTSCRIPT_PATH environment variable which specifies the
+path to Ghostscript.  If this environment variable is defined,
+then the Windows registry is not used to find Ghostscript.  Patch
+contributed by Dirk Lemstra via SF patch #39.</li>
 <li>magick/log.c: Added SetLogMethod() to allow an
 application/library to specify a function to be called for
 logging.  Patch contributed by Dirk Lemstra.</li>

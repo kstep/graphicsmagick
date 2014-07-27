@@ -1,4 +1,4 @@
-.TH gm 1 "2014/05/21" "GraphicsMagick"
+.TH gm 1 "2014/07/27" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -4657,6 +4657,13 @@ GraphicsMagick installation directory. The formatting of the search path
 is similar to operating system search paths (i.e. colon delimited for
 Unix, and semi-colon delimited for Microsoft Windows). This user
 specified search path is used before trying the default search path.
+.TP
+.B "MAGICK_GHOSTSCRIPT_PATH"
+\fRFor Microsoft Windows, specify the path to the Ghostscript
+installation rather than searching for it via the Windows registry.
+This helps in case Ghostscript is not installed via the Ghostscript
+Windows installer or the user wants more control over the Ghostscript
+used.
 .TP
 .B "MAGICK_HOME"
 \fRPath to top of GraphicsMagick installation directory. Only observed
