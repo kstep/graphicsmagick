@@ -1,3 +1,9 @@
+2014-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c: Added SetLogMethod() to allow an
+	application/library to specify a function to be called for
+	logging.  Patch contributed by Dirk Lemstra.
+
 2014-07-20  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/bmp.c: "opacity" read from a BMP3 is actually "alpha",

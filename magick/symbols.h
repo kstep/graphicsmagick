@@ -915,6 +915,7 @@
 #define SetImageVirtualPixelMethod GmSetImageVirtualPixelMethod
 #define SetLogEventMask GmSetLogEventMask
 #define SetLogFormat GmSetLogFormat
+#define SetLogMethod GmSetLogMethod
 #define SetMagickInfo GmSetMagickInfo
 #define SetMagickRegistry GmSetMagickRegistry
 #define SetMagickResourceLimit GmSetMagickResourceLimit

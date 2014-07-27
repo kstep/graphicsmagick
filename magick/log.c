@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -61,7 +61,8 @@ typedef enum
   XMLFileOutput = 0x0004,
   TXTFileOutput = 0x0008,
   Win32DebugOutput = 0x0010,
-  Win32EventlogOutput = 0x0020
+  Win32EventlogOutput = 0x0020,
+  MethodOutput = 0x0040
 } LogOutputType;
 
 typedef struct _OutputInfo
@@ -98,6 +99,9 @@ typedef struct _LogInfo
 
   TimerInfo
     timer;
+
+  LogMethod
+    method;
 } LogInfo;
 
 typedef struct _EventInfo
@@ -758,6 +762,17 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
       (void) fprintf(file,"\n");
       (void) fflush(file);
     }
+  if ((log_info->output_type & MethodOutput) && (log_info->method != (LogMethod) NULL))
+    {
+      char
+        buffer[MaxTextExtent];
+
+      FormatString(buffer,
+        "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+          timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+            user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      log_info->method(type,buffer);
+    }
   UnlockSemaphoreInfo(log_semaphore);
   return(True);
 }
@@ -1109,5 +1124,52 @@ MagickExport void SetLogFormat(const char *format)
     }
 
   (void) CloneString(&log_info->format,format);
+  UnlockSemaphoreInfo(log_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t L o g M e t h o d                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetLogMethod() sets the method that should be called when logging.
+%
+%  The format of the SetLogMethod method is:
+%
+%      SetLogFormat(LogMethod)
+%
+%  A description of each parameter follows:
+%
+%    o method: pointer to a method that will be called when LogMagickEvent is
+%      being called.
+%
+%
+*/
+MagickExport void SetLogMethod(LogMethod method)
+{
+  if (log_info == (LogInfo *) NULL)
+    AllocateLogInfo();
+
+  LockSemaphoreInfo(log_semaphore);
+
+  if (log_configured == False)
+    {
+      ExceptionInfo
+        exception;
+
+      GetExceptionInfo(&exception);
+      (void) ReadLogConfigureFile(MagickLogFilename,0,&exception);
+      DestroyExceptionInfo(&exception);
+    }
+  log_info->output_type=(LogOutputType) (log_info->output_type |
+    MethodOutput);
+  log_info->method=method;
   UnlockSemaphoreInfo(log_semaphore);
 }

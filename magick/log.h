@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2014 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -71,6 +71,9 @@ typedef enum
   AllEventsMask          = 0x7FFFFFFF
 } LogEventType;
 
+typedef void
+  (*LogMethod)(const ExceptionType,const char *);
+
 /*
   Method declarations.
 */
@@ -87,7 +90,8 @@ extern MagickExport unsigned long
   SetLogEventMask(const char *events);
 
 extern MagickExport void
-  SetLogFormat(const char *format);
+  SetLogFormat(const char *format),
+  SetLogMethod(LogMethod);
 
 #if defined(MAGICK_IMPLEMENTATION)
 
