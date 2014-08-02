@@ -4432,7 +4432,7 @@ void ConfigureVS6Project::write_file(const char *filename)
 {
   m_stream << "# Begin Source File" << endl;
   m_stream << "SOURCE=" << filename << endl;
-#if 1
+#if 0 // FIXME TODO
   "# PROP Intermediate_Dir "Release\dir1""
 #endif
   m_stream << "# End Source File" << endl;
