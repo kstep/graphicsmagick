@@ -23,6 +23,7 @@
 
 #include <string>
 #include <list>
+#include <map>
 
 using namespace std;
 
@@ -36,6 +37,7 @@ enum {DLLPROJECT, LIBPROJECT, EXEPROJECT};
 enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, ADD_ON, THIRDPARTY, PROJECT};
 enum {CPPCOMPILETOOL, RESCOMPILETOOL, MIDLCOMPILETOOL, LIBRARYTOOL, LINKERTOOL};
 enum {OP_REPLACEFILES, OP_RENAMEFILES};
+enum {Q8, Q16, Q32};
 
 class ConfigureProject
 {
@@ -65,7 +67,7 @@ public:
   virtual void write_end_target(void) = 0;
   virtual void write_begin_project(const char *name,int type) = 0;
   virtual void write_end_project(void) = 0;
-  virtual void write_file(const char *filename) = 0;
+  virtual void write_file(string &filename) = 0;
   virtual void write_configuration(const char *name, const char *subname,
                                    int state) = 0;
   virtual void write_properties(const char *name,
@@ -171,7 +173,7 @@ public:
   void write_end_target(void);
   void write_begin_project(const char *name,int type);
   void write_end_project(void);
-  void write_file(const char *filename);
+  void write_file(string &filename);
   void write_configuration(const char *name, const char *subname, int state);
   void write_properties(const char *name,
                         const char *outputpath, const char *intermediatepath,
@@ -250,6 +252,7 @@ class ConfigureVS7Project : public ConfigureProject
 public:
   ConfigureVS7Project() {};
   ~ConfigureVS7Project( void );
+  map<string, int> m_fileNames;
 
   void write_begin_group(const char *name);
   void write_end_group(void);
@@ -257,7 +260,7 @@ public:
   void write_end_target(void);
   void write_begin_project(const char *name,int type);
   void write_end_project(void);
-  void write_file(const char *filename);
+  void write_file(string &filename);
   void write_configuration(const char *name, const char *subname, int state);
   void write_properties(const char *name,
                         const char *outputpath,
@@ -334,6 +337,26 @@ public:
   void write_project_dependency(ConfigureProject *project, const char *dep_name);
 };
 
+class CommandLineInfo : public CCommandLineInfo
+{
+  BOOL m_build64Bit;
+  BOOL m_noWizard;
+  BOOL m_openMP;
+  int m_projectType;
+  int m_quantumDepth;
+public:
+  CommandLineInfo(int quantumDepth, int projectType, BOOL openMP, BOOL build64Bit);
+  CommandLineInfo(const CommandLineInfo& obj);
+  CommandLineInfo& operator =(const CommandLineInfo& obj);
+  BOOL build64Bit();
+  BOOL noWizard();
+  BOOL openMP();
+  int projectType();
+  int quantumDepth();
+
+  virtual void ParseParam(const char* pszParam, BOOL bFlag, BOOL bLast);
+};
+
 class CConfigureApp : public CWinApp
 {
 public:
@@ -408,6 +431,7 @@ public:
   bool CConfigureApp::process_one_entry(const char *entry, int nLinesRead,
                                         int runtime);
   int CConfigureApp::load_environment_file( const char *inputfile, int runtime);
+  void replace_keywords(std::string fileName);
 };
 
 bool is_project_type(const char *root, const int project_type);

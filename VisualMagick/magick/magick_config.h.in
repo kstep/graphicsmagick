@@ -54,7 +54,7 @@
 // value of 16 is recommended if it is desired that all features be
 // fully supported but even a value of 8 allows reading 16-bit files
 // (while losing precision).
-#define QuantumDepth 8
+$$QuantumDepth
 
 /////////////
 //

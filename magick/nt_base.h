@@ -95,6 +95,10 @@ extern "C" {
 # define tempnam _tempnam
 #endif
 
+#if !defined(hypot)
+#  define hypot  _hypot
+#endif
+
 #if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
 #define vsnprintf _vsnprintf 
 #endif

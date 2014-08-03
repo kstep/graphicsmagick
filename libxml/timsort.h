@@ -24,7 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #else
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#elif defined(WIN32)
+#elif defined(WIN32) || defined(WIN64)
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 #endif

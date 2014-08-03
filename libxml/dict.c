@@ -48,7 +48,7 @@
 #else
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#elif defined(WIN32)
+#elif defined(WIN32) || defined(WIN64)
 typedef unsigned __int32 uint32_t;
 #endif
 #endif

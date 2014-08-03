@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2002-2012 GraphicsMagick Group
+// Copyright (C) 2002-2014 GraphicsMagick Group
 //
 // This program is covered by multiple licenses, which are described in
 // Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -54,6 +54,8 @@ CConfigureApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CConfigureApp initialization
 
+int projectType = MULTITHREADEDDLL;
+int quantumDepth = Q8;
 BOOL useX11Stubs = TRUE;
 BOOL decorateFiles = FALSE;
 BOOL optionalFiles = FALSE;
@@ -63,6 +65,8 @@ BOOL onebigdllMode = FALSE;
 //BOOL generateFontmap = FALSE;
 BOOL visualStudio7 = TRUE;
 BOOL m_bigCoderDLL = FALSE;
+BOOL openMP = FALSE;
+BOOL build64Bit = FALSE;
 
 string release_loc;
 string debug_loc;
@@ -630,6 +634,43 @@ int CConfigureApp::load_environment_file(const char *inputfile, int runtime)
   inpStream.close();
   inpStream.clear();
   return true;
+}
+
+void CConfigureApp::replace_keywords(std::string fileName)
+{
+  string
+    line,
+    str;
+
+  ifstream infile(fileName.c_str(), ifstream::in | ifstream::binary);
+  if (infile.is_open())
+    {
+      while (getline(infile,line))
+      {
+        if (!line.empty() && *line.rbegin() == '\r')
+          line.erase(line.length()-1,1);
+
+        if (line == "$$QuantumDepth")
+          {
+            if (quantumDepth == Q8)
+              line="#define QuantumDepth 8";
+            else if (quantumDepth == Q16)
+              line="#define QuantumDepth 16";
+            else if (quantumDepth == Q32)
+              line="#define QuantumDepth 32";
+          }
+        str += line + "\n";
+      }
+
+      infile.close();
+
+      ofstream outfile(fileName.c_str(), ofstream::out | ofstream::binary);
+      if (outfile.is_open())
+      {
+        outfile << str;
+        outfile.close();
+      }
+    }
 }
 
 // Process a utility
@@ -1959,6 +2000,7 @@ void CConfigureApp::process_project_replacements( const char *root,
                           {
                             SetFileTimeEx(s3);
                           }
+                        replace_keywords(s3);
                       }
                     else if (operation == OP_RENAMEFILES)
                       {
@@ -2084,13 +2126,15 @@ public:
     nCurrent = 1;
     nTotal = 10;
     nPercent = 0;
+	 canPump = TRUE;
   }
 
   void Pumpit()
   {
     nPercent = (nCurrent * 100)/nTotal;
     SetPercentComplete(nPercent);
-    Pump();
+    if (canPump)
+      canPump = Pump();
     nCurrent++;
     if (nCurrent > nTotal)
       nCurrent = 0;
@@ -2100,6 +2144,8 @@ public:
     nCurrent,
     nTotal,
     nPercent;
+  BOOL
+    canPump;
 };
 
 #define THIS_SUB_KEY FALSE
@@ -2838,12 +2884,18 @@ BOOL CConfigureApp::InitInstance()
   bin_loc = "..\\bin\\";
   lib_loc = "..\\lib\\";
 
+  CommandLineInfo info = CommandLineInfo(quantumDepth, projectType, openMP, build64Bit);
+  ParseCommandLine(info);
+
   wizard.m_Page2.m_useX11Stubs = useX11Stubs;
   wizard.m_Page2.m_decorateFiles = decorateFiles;
   wizard.m_Page2.m_optionalFiles = optionalFiles;
   wizard.m_Page2.m_standalone = standaloneMode;
   wizard.m_Page2.m_visualStudio7 = visualStudio7;
   //wizard.m_Page2.m_bigCoderDLL = m_bigCoderDLL;
+  wizard.m_Page2.m_build64Bit = info.build64Bit();
+  wizard.m_Page2.m_openMP = info.openMP();
+  wizard.m_Page2.m_projectType = info.projectType();
 
   wizard.m_Page3.m_tempRelease = release_loc.c_str();
   wizard.m_Page3.m_tempDebug = debug_loc.c_str();
@@ -2923,7 +2975,14 @@ BOOL CConfigureApp::InitInstance()
     }
 #endif
 
-  int nResponse = wizard.DoModal();
+  int nResponse = ID_WIZFINISH;
+  if (info.noWizard())
+    {
+      wizard.Create();
+      wizard.ShowWindow(SW_HIDE);
+    }
+  else
+    nResponse = wizard.DoModal();
   if (nResponse == ID_WIZFINISH)
     {
       bool
@@ -2934,6 +2993,9 @@ BOOL CConfigureApp::InitInstance()
       optionalFiles = wizard.m_Page2.m_optionalFiles;
       standaloneMode = wizard.m_Page2.m_standalone;
       visualStudio7 = wizard.m_Page2.m_visualStudio7;
+      build64Bit = wizard.m_Page2.m_build64Bit;
+      openMP = wizard.m_Page2.m_openMP;
+      quantumDepth = wizard.m_Page2.m_quantumDepth;
       //m_bigCoderDLL = wizard.m_Page2.m_bigCoderDLL;
       release_loc = wizard.m_Page3.m_tempRelease;
       debug_loc = wizard.m_Page3.m_tempDebug;
@@ -3174,7 +3236,7 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
 
   project->write_begin_project(libname.c_str(), dll?DLLPROJECT:LIBPROJECT);
 
-  project->write_configuration(libname.c_str(), "Win32 Release", 0);
+  project->write_configuration(libname.c_str(), (build64Bit ? "x64 Release" : "Win32 Release"), 0);
 
   project->write_properties(libname.c_str(),
                             get_full_path(root + "\\",lib_path).c_str(), // output
@@ -3225,7 +3287,7 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
                                  runtime, project_type, dll?DLLPROJECT:LIBPROJECT, 0, isCOMproject);
     }
 
-  project->write_configuration(libname.c_str(), "Win32 Debug", 1);
+  project->write_configuration(libname.c_str(), (build64Bit ? "x64 Debug" : "Win32 Debug"), 1);
 
   project->write_properties(libname.c_str(),
                             get_full_path(root + "\\",lib_path).c_str(), // output
@@ -3317,14 +3379,14 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
             {
               for (list<string>::iterator it = source_list.begin();
                    it != source_list.end(); it++)
-                project->write_file((*it).c_str());
+                project->write_file(*it);
             }
           // add in any hard coded resources from the config file
           if (group.compare("resource") == 0)
             {
               for (list<string>::iterator it2 = resource_list.begin();
                    it2 != resource_list.end(); it2++)
-                project->write_file((*it2).c_str());
+                project->write_file(*it2);
             }
           project->write_end_group();
           if (valid_dirs[i].group != NULL)
@@ -3340,6 +3402,77 @@ ConfigureProject *CConfigureApp::write_project_lib( bool dll,
 
   project->m_stream.close();
   return project;
+}
+
+CommandLineInfo::CommandLineInfo(int quantumDepth, int projectType, BOOL openMP, BOOL build64Bit)
+{
+  m_quantumDepth = quantumDepth;
+  m_projectType = projectType;
+  m_openMP = openMP;
+  m_build64Bit = build64Bit;
+  m_noWizard = FALSE;
+}
+
+CommandLineInfo::CommandLineInfo(const CommandLineInfo& obj)
+{
+  *this = obj;
+}
+
+CommandLineInfo& CommandLineInfo::operator=(const CommandLineInfo& obj)
+{
+  return *this;
+}
+
+BOOL CommandLineInfo::build64Bit()
+{
+  return m_build64Bit;
+}
+
+BOOL CommandLineInfo::noWizard()
+{
+  return m_noWizard;
+}
+
+BOOL CommandLineInfo::openMP()
+{
+  return m_openMP;
+}
+
+int CommandLineInfo::projectType()
+{
+  return m_projectType;
+}
+
+int CommandLineInfo::quantumDepth()
+{
+  return m_quantumDepth;
+}
+
+void CommandLineInfo::ParseParam(const char* pszParam, BOOL bFlag, BOOL bLast)
+{
+  if (!bFlag)
+    return;
+
+  if (strcmpi(pszParam, "x64") == 0)
+    m_build64Bit = TRUE;
+  else if (strcmpi(pszParam, "mtd") == 0)
+    m_projectType = MULTITHREADEDDLL;
+  else if (strcmpi(pszParam, "sts") == 0)
+    m_projectType = SINGLETHREADEDSTATIC;
+  else if (strcmpi(pszParam, "mts") == 0)
+    m_projectType = MULTITHREADEDSTATIC;
+  else if (strcmpi(pszParam, "mtsd") == 0)
+    m_projectType = MULTITHREADEDSTATICDLL;
+  else if (strcmpi(pszParam, "noWizard") == 0)
+    m_noWizard = TRUE;
+  else if (strcmpi(pszParam, "openMP") == 0)
+    m_openMP = TRUE;
+  else if (strcmpi(pszParam, "Q8") == 0)
+    m_quantumDepth=Q8;
+  else if (strcmpi(pszParam, "Q16") == 0)
+    m_quantumDepth=Q16;
+  else if (strcmpi(pszParam, "Q32") == 0)
+    m_quantumDepth=Q32;
 }
 
 ConfigureProject *CConfigureApp::write_project_exe(
@@ -3391,7 +3524,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 
   project->write_begin_project(libname.c_str(), EXEPROJECT);
 
-  project->write_configuration(libname.c_str(), "Win32 Release", 0);
+  project->write_configuration(libname.c_str(), (build64Bit ? "x64 Release" : "Win32 Release"), 0);
 
   project->write_properties(libname.c_str(),
                             get_full_path(root + "\\",bin_path).c_str(), // output
@@ -3456,7 +3589,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
     lib_shared_list.pop_back();
   /* ...... */
 
-  project->write_configuration(libname.c_str(), "Win32 Debug", 1);
+  project->write_configuration(libname.c_str(), (build64Bit ? "x64 Debug" : "Win32 Debug"), 1);
 
   project->write_properties(libname.c_str(),
                             get_full_path(root + "\\",bin_path).c_str(), // output
@@ -3546,7 +3679,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
          it != source_list.end();
          it++)
       {
-        project->write_file((*it).c_str());
+        project->write_file(*it);
       }
   }
   for (int i=0; valid_dirs[i].group != NULL; i++)
@@ -3671,12 +3804,12 @@ void ConfigureProject::generate_dir(
                 relpath += "..\\";
               relpath += path;
               relpath += data.cFileName;
-              write_file(get_full_path(dir,relpath).c_str());
+              write_file(get_full_path(dir,relpath));
             }
           else
             {
               string relpath = otherpath + data.cFileName;
-              write_file(get_full_path("",relpath).c_str());
+              write_file(get_full_path("",relpath));
             }
 
         } while (FindNextFile(handle, &data));
@@ -4428,7 +4561,7 @@ void ConfigureVS6Project::write_end_group()
   m_stream << "# End Group" << endl;
 }
 
-void ConfigureVS6Project::write_file(const char *filename)
+void ConfigureVS6Project::write_file(string &filename)
 {
   m_stream << "# Begin Source File" << endl;
   m_stream << "SOURCE=" << filename << endl;
@@ -4512,10 +4645,10 @@ void ConfigureVS7Workspace::write_end()
        it1++)
     {
       string guid = (*it1)->m_GuidText;
-      m_stream << "\t\t{" << guid.c_str() << "}.Debug.ActiveCfg = Debug|Win32" << endl;
-      m_stream << "\t\t{" << guid.c_str() << "}.Debug.Build.0 = Debug|Win32" << endl;
-      m_stream << "\t\t{" << guid.c_str() << "}.Release.ActiveCfg = Release|Win32" << endl;
-      m_stream << "\t\t{" << guid.c_str() << "}.Release.Build.0 = Release|Win32" << endl;
+      m_stream << "\t\t{" << guid.c_str() << "}.Debug.ActiveCfg = Debug|" << (build64Bit ? "x64" : "Win32") << endl;
+      m_stream << "\t\t{" << guid.c_str() << "}.Debug.Build.0 = Debug|" << (build64Bit ? "x64" : "Win32") << endl;
+      m_stream << "\t\t{" << guid.c_str() << "}.Release.ActiveCfg = Release|" << (build64Bit ? "x64" : "Win32") << endl;
+      m_stream << "\t\t{" << guid.c_str() << "}.Release.Build.0 = Release|" << (build64Bit ? "x64" : "Win32") << endl;
     }
   m_stream << "\tEndGlobalSection" << endl;
 
@@ -4575,9 +4708,9 @@ void ConfigureVS7Project::write_begin_project(const char *name, int type)
   m_stream << "  Version=\"7.00\"" << endl;
   m_stream << "  Name=\"" << name << "\"" << endl;
   m_stream << "  ProjectGUID=\"{" << m_GuidText << "}\"" << endl;
-  m_stream << "  Keyword=\"Win32Proj\">" << endl;
+  m_stream << "  Keyword=\"" << (build64Bit ? "x64" : "Win32") << "Proj\">" << endl;
   m_stream << "  <Platforms>" << endl;
-  m_stream << "    <Platform Name=\"Win32\"/>" << endl;
+  m_stream << "    <Platform Name=\""<< (build64Bit ? "x64" : "Win32") << "\"/>" << endl;
   m_stream << "  </Platforms>" << endl;
 }
 
@@ -4618,10 +4751,10 @@ void ConfigureVS7Project::write_properties( const char *name,
   switch (mode)
     {
     case 0:
-      m_stream << "      Name=\"Release|Win32\"" << endl;
+      m_stream << "      Name=\"Release|" << (build64Bit ? "x64" : "Win32") << "\"" << endl;
       break;
     case 1:
-      m_stream << "      Name=\"Debug|Win32\"" << endl;
+      m_stream << "      Name=\"Debug|" << (build64Bit ? "x64" : "Win32") << "\"" << endl;
       break;
     }
   m_stream << "      OutputDirectory=\"" << outputpath << "\"" << endl;
@@ -4819,6 +4952,8 @@ void ConfigureVS7Project::write_cpp_compiler_tool_options( int type,
   m_stream << "        CompileAs=\"0\"" << endl; // C or C++ compile
   // expandDisable 0,expandOnlyInline 1,expandAnySuitable 2 
   m_stream << "        InlineFunctionExpansion=\"2\"" << endl;
+  if (openMP)
+    m_stream << "        OpenMP=\"TRUE\"" << endl;
   switch (mode)
     {
     case 0:
@@ -4909,7 +5044,11 @@ void ConfigureVS7Project::write_cpp_compiler_tool_defines( list<string> &defines
     m_stream << ";_CONSOLE";
   else
     m_stream << ";_WINDOWS";
-  m_stream << ";WIN32;_VISUALC_;NeedFunctionPrototypes";
+  if (build64Bit)
+    m_stream << ";WIN64";
+  else
+    m_stream << ";WIN32";
+  m_stream << ";_VISUALC_;NeedFunctionPrototypes";
   {
     for (
          list<string>::iterator it = defines_list.begin();
@@ -4985,7 +5124,10 @@ void ConfigureVS7Project::write_link_tool_dependencies( string &root,
       strmode = "DB_";
       break;
     }
-  m_stream << "        AdditionalDependencies=\"";
+  if (build64Bit)
+    m_stream << "        AdditionalDependencies=\"/MACHINE:AMD64 ";
+  else
+    m_stream << "        AdditionalDependencies=\"/MACHINE:X86 ";
   if (onebigdllMode || (standaloneMode && (type == EXEPROJECT)))
     {
       switch (runtime)
@@ -5100,7 +5242,7 @@ void ConfigureVS7Project::write_link_tool_options( bool bNeedsRelo,
   m_stream << "        SuppressStartupBanner=\"TRUE\"" << endl; // /nologo
   // linkIncrementalDefault 0, linkIncrementalNo 1, linkIncrementalYes 2 
   m_stream << "        LinkIncremental=\"1\"" << endl;
-  m_stream << "        TargetMachine=\"1\"" << endl;
+  m_stream << "        TargetMachine=\"" << (build64Bit ? "17" : "1") << "\"" << endl;
 
   //subSystemNotSet 0,subSystemConsole 1,subSystemWindows 2
   switch(type)
@@ -5222,9 +5364,34 @@ void ConfigureVS7Project::write_end_group()
   m_stream << "    </Filter>" << endl;
 }
 
-void ConfigureVS7Project::write_file(const char *filename)
+void ConfigureVS7Project::write_file(string &filename)
 {
-  m_stream << "      <File RelativePath=\"" << filename << "\"/>" << endl;
+  string name = filename.substr(filename.find_last_of("\\") + 1);
+  int count = 1;
+  if (name.substr(name.find_last_of(".")) == ".c")
+   {
+     if (m_fileNames.find(name) == m_fileNames.end())
+       m_fileNames.insert(make_pair(name, count));
+     else
+       count = ++m_fileNames[name];
+   }
+
+  if (count == 1)
+    {
+      m_stream << "      <File RelativePath=\"" << filename << "\"/>" << endl;
+    }
+  else
+    {
+      name = name.substr(0, name.find_last_of(".") + 1);
+      m_stream << "      <File RelativePath=\"" << filename << "\">" << endl;
+      m_stream << "        <FileConfiguration Name=\"Debug|" << (build64Bit ? "x64" : "Win32") << "\">" << endl;
+      m_stream << "          <Tool Name=\"VCCLCompilerTool\" ObjectFile=\"$(IntDir)" << name << count << ".obj\"/>" << endl;
+      m_stream << "        </FileConfiguration>" << endl;
+      m_stream << "        <FileConfiguration Name=\"Release|" << (build64Bit ? "x64 " : "Win32") << "\">" << endl;
+      m_stream << "          <Tool Name=\"VCCLCompilerTool\" ObjectFile=\"$(IntDir)" << name << count << ".obj\"/>" << endl;
+      m_stream << "        </FileConfiguration>" << endl;
+      m_stream << "      </File>" << endl;
+    }
 }
 
 BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval)
