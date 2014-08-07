@@ -1,5 +1,8 @@
 2014-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* dcraw/dcraw.c: Fix dcraw build for x64 target when only WIN64 is
+	defined (by also defining WIN32).
+
 	* VisualMagick/configure/configure.cpp (write_file): Fix problem
 	with x64 project naming which caused object file disambiguation
 	not to work for x64 target. Make line terminations consistent.
