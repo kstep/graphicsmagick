@@ -1,3 +1,9 @@
+2014-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/configure/configure.cpp (write_file): Fix problem
+	with x64 project naming which caused object file disambiguation
+	not to work for x64 target. Make line terminations consistent.
+
 2014-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick: VisualMagick fixes by Dirk Lemstra to improve
