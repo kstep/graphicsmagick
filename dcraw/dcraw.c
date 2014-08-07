@@ -50,7 +50,10 @@
 #include <time.h>
 #include <sys/types.h>
 
-#if defined(DJGPP) || defined(__MINGW32__) || defined(WIN32) || defined(WIN64)
+#if defined(WIN64)
+#  define WIN32 1
+#endif
+#if defined(DJGPP) || defined(__MINGW32__) || defined(WIN32)
 #define fseeko fseek
 #define ftello ftell
 #else
