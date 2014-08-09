@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -3579,9 +3579,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
   (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   have_mng_structure=MagickTrue;
-#if (QuantumDepth == 16)
-  mng_info->optimize=image_info->type == OptimizeType;
-#endif
 
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
@@ -5259,86 +5256,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 #endif
         }
 
-#if (QuantumDepth == 16)  /* TO DO: treat Q:32 */
-      /* Determine if bit depth can be reduced from 16 to 8.
-       * Note that the method GetImageDepth doesn't check background
-       * and doesn't handle PseudoClass specially.  Also it uses
-       * multiplication and division by 257 instead of shifting, so
-       * might be slower.
-       */
-      if (mng_info->optimize && image->depth == 16)
-        {
-          int
-            ok_to_reduce;
-
-          const PixelPacket
-            *p;
-
-          ok_to_reduce=((((image->background_color.red >> 8) & 0xff)
-                         == (image->background_color.red & 0xff)) &&
-                        (((image->background_color.green >> 8) & 0xff)
-                         == (image->background_color.green & 0xff)) &&
-                        (((image->background_color.blue >> 8) & 0xff)
-                         == (image->background_color.blue & 0xff)));
-          if (ok_to_reduce && image->storage_class == PseudoClass)
-            {
-              int index;
-
-              for (index=0; index < (long) image->colors; index++)
-                {
-                  ok_to_reduce=((((image->colormap[index].red >> 8) & 0xff)
-                                 == (image->colormap[index].red & 0xff)) &&
-                                (((image->colormap[index].green >> 8) & 0xff)
-                                 == (image->colormap[index].green & 0xff)) &&
-                                (((image->colormap[index].blue >> 8) & 0xff)
-                                 == (image->colormap[index].blue & 0xff)));
-                  if (!ok_to_reduce)
-                    break;
-                }
-            }
-          if (ok_to_reduce && image->storage_class != PseudoClass)
-            {
-              long
-                y;
-
-              register long
-                x;
-
-              for (y=0; y < (long) image->rows; y++)
-                {
-                  p=AcquireImagePixels(image,0,y,image->columns,1,
-                                       &image->exception);
-                  if (p == (const PixelPacket *) NULL)
-                    break;
-                  for (x=(long) image->columns; x > 0; x--)
-                    {
-                      ok_to_reduce=((((p->red >> 8) & 0xff) ==
-                                    (p->red & 0xff)) &&
-                                    (((p->green >> 8) & 0xff) ==
-                                    (p->green & 0xff)) &&
-                                    (((p->blue >> 8) & 0xff) ==
-                                    (p->blue & 0xff)) &&
-                                    (((!image->matte ||
-                                       ((p->opacity >> 8) & 0xff) ==
-                                    (p->opacity & 0xff)))));
-                      if (!ok_to_reduce)
-                        break;
-                      p++;
-                    }
-                  if (x != 0)
-                    break;
-                }
-            }
-          if (ok_to_reduce)
-            {
-              image->depth=8;
-              if (logging)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                      "  Reducing PNG bit depth to 8"
-                                      " without loss of info");
-            }
-        }
-#endif
       /*
         Transfer most significant exception to exception argument
         FIXME: should status be used to terminate processing?
@@ -6438,8 +6355,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         ping_colortype=PNG_COLOR_TYPE_GRAY;
       if (image_info->type == GrayscaleMatteType)
         ping_colortype=PNG_COLOR_TYPE_GRAY_ALPHA;
-      /*       if (!mng_info->optimize && matte) */
-      /*         ping_colortype=PNG_COLOR_TYPE_RGB_ALPHA; */
 
       if (logging)
         {
@@ -6456,7 +6371,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                 ping_bit_depth);
         }
 
-      if (matte && (mng_info->optimize || mng_info->IsPalette))
+      if (matte && mng_info->IsPalette)
         {
           register const PixelPacket
             *p=NULL;
@@ -6609,40 +6524,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   while ((int) (1 << ping_bit_depth) <
                                 (long) image_colors)
                     ping_bit_depth <<= 1;
-                }
-              else if (mng_info->optimize && ping_colortype ==
-                       PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
-                       mng_info->IsPalette)
-                {
-
-                  /* Check if grayscale is reducible */
-                  int
-                    depth_4_ok=MagickTrue,
-                    depth_2_ok=MagickTrue,
-                    depth_1_ok=MagickTrue;
-
-                  for (i=0; i < (long) image_colors; i++)
-                    {
-                      unsigned char
-                        intensity;
-
-                      intensity=ScaleQuantumToChar(image->colormap[i].red);
-
-                      if ((intensity & 0x0f) != ((intensity & 0xf0) >> 4))
-                        depth_4_ok=depth_2_ok=depth_1_ok=MagickFalse;
-                      else if ((intensity & 0x03) !=
-                          ((intensity & 0x0c) >> 2))
-                        depth_2_ok=depth_1_ok=MagickFalse;
-                      else if ((intensity & 0x01) !=
-                          ((intensity & 0x02) >> 1))
-                        depth_1_ok=MagickFalse;
-                    }
-                  if (depth_1_ok)
-                    ping_bit_depth=1;
-                  else if (depth_2_ok)
-                    ping_bit_depth=2;
-                  else if (depth_4_ok)
-                    ping_bit_depth=4;
                 }
             }
         }
@@ -8440,8 +8321,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       mng_info->write_png48 || mng_info->write_png64)
     optimize=MagickFalse;
   else
-    optimize=(image_info->type == OptimizeType || image_info->type ==
-              UndefinedType);
+    optimize=(image_info->type == UndefinedType);
 
   if (logging)
     {
@@ -8451,12 +8331,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "  Checking input image(s)");
-      if (optimize)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Optimize: TRUE");
-      else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Optimize: FALSE");
+
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    Image_info depth: %ld",
                             image_info->depth);

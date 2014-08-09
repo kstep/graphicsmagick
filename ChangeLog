@@ -1,6 +1,6 @@
 2014-08-08  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* coders/png.c: Eliminated palette-optimization (see
+	* coders/png.c: Eliminated palette and depth optimization (see
 	https://sourceforge.net/p/graphicsmagick/feature-requests/35/).
 
 2014-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
