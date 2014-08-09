@@ -3,7 +3,7 @@
 	* NEWS.txt: Updated NEWS file to document changes since previous
 	release.
 
-2013-08-26  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+2014-08-09  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
         * coders/webp.c webp cannot be compiled when HasWEBP is not set.
 
