@@ -3536,15 +3536,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
   default_fb.right=0;
 
   /*
-    Set image_info->type=OptimizeType (new in version 5.4.0) to get the
-    following optimizations:
-
-    o  Opaque matte channel is removed.
-    o  If matte channel is present but only one transparent color is
-    present, RGB+tRNS is written instead of RGBA
-  */
-
-  /*
     Open image file.
   */
   assert(image_info != (const ImageInfo *) NULL);
