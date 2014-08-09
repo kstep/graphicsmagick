@@ -51,6 +51,9 @@
 */
 #if defined(HasWEBP)
 static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
+#else
+ #define WebPGetEncoderVersion()  (0)
+ #define WEBP_ENCODER_ABI_VERSION 0
 #endif
 
 #if defined(HasWEBP)
