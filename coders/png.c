@@ -325,7 +325,6 @@ typedef struct _MngInfo
     need_fram,
     object_id,
     old_framing_mode,
-    optimize,
     saved_bkgd_index;
 
   int
@@ -3540,15 +3539,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
     Set image_info->type=OptimizeType (new in version 5.4.0) to get the
     following optimizations:
 
-    o  16-bit depth is reduced to 8 if all pixels contain samples whose
-    high byte and low byte are identical.
     o  Opaque matte channel is removed.
     o  If matte channel is present but only one transparent color is
     present, RGB+tRNS is written instead of RGBA
-    o  Grayscale images are reduced to 1, 2, or 4 bit depth if
-    this can be done without loss.
-    o  Palette is sorted to remove unused entries and to put a
-    transparent color first, if PNG_SORT_PALETTE is also defined.
   */
 
   /*
@@ -6499,7 +6492,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       matte=image_matte;
       if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
         image_matte=MagickFalse;
-      if ((mng_info->optimize || mng_info->IsPalette) &&
+      if (mng_info->IsPalette &&
           characteristics.grayscale && (!image_matte || image_depth >= 8))
         {
           if (image_matte)
@@ -7084,8 +7077,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         rowbytes*=3;
       else if (mng_info->write_png32)
         rowbytes*=4;
-      else if (!mng_info->write_png8 &&
-               ((mng_info->optimize || mng_info->IsPalette) &&
+      else if (!mng_info->write_png8 && (mng_info->IsPalette &&
                 IsGrayImage(image,&image->exception)))
         rowbytes*=(image_matte ? 2 : 1);
       else
@@ -7102,7 +7094,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       else if (mng_info->write_png64)
         rowbytes*=8;
 
-      else if ((mng_info->optimize || mng_info->IsPalette) &&
+      else if (mng_info->IsPalette &&
           IsGrayImage(image,&image->exception))
         rowbytes*=(image_matte ? 4 : 2);
 
@@ -7122,8 +7114,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
        !mng_info->write_png32 && !mng_info->write_png48 &&
-       !mng_info->write_png64) && (mng_info->optimize ||
-       mng_info->IsPalette ||
+       !mng_info->write_png64) && (mng_info->IsPalette ||
        image_info->type == BilevelType) &&
        !image_matte &&
        IsMonochromeImage(image,&image->exception))
@@ -7168,7 +7159,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
              !mng_info->write_png32 && !mng_info->write_png48 &&
              !mng_info->write_png64) &&
             (!image_matte || (ping_bit_depth >= QuantumDepth)) &&
-            (mng_info->optimize || mng_info->IsPalette) &&
+            mng_info->IsPalette &&
             IsGrayImage(image,&image->exception))
           {
             if (logging)
@@ -8235,7 +8226,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     all_images_are_gray,
     logging,
     need_defi,
-    optimize,
+    build_palette,
     use_global_plte;
 
   register long
@@ -8317,11 +8308,13 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->adjoin=image_info->adjoin && (image->next != (Image *) NULL) &&
     write_mng;
 
+#ifdef GMPNG_BUILD_PALETTE
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
       mng_info->write_png48 || mng_info->write_png64)
-    optimize=MagickFalse;
+    build_palette=MagickFalse;
   else
-    optimize=(image_info->type == UndefinedType);
+    build_palette=(image_info->type == UndefinedType);
+#endif
 
   if (logging)
     {
@@ -8386,7 +8379,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   }
 
 #ifdef GMPNG_BUILD_PALETTE
-  if (optimize)
+  if (build_palette)
     {
       /*
         Sometimes we get DirectClass images that have 256 colors or fewer.
