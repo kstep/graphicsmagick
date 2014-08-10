@@ -356,23 +356,42 @@ performance).</blockquote>
 <h2><a class="toc-backref" href="#id19">Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation</a></h2>
 <blockquote>
 <p>The Visual C++ distribution targeted at Windows 2000 through Windows
-7 (and maybe Windows 8) does not provide any stock workspace (DSW)
-or project files (DSP) except for those included with third party
-libraries. Instead, there is a &quot;configure&quot; program that must run to
-create build environments to satisfy various requirements.</p>
+8 does not provide any stock workspace (DSW) or project files (DSP)
+except for those included with third party libraries. Instead, there
+is a &quot;configure&quot; program that must run to create build
+environments to satisfy various requirements.</p>
+<p>The configure program resides in VisualMagickconfigure in the
+GraphicsMagick source tree.  A pre-compiled configure.exe is
+provided, as well as Visual Studio project files to recompile it
+from source code if needed.</p>
+<p>Once started, the configure program provides this configuration
+dialog after proceeding past the initial notifications screen:</p>
+<img alt="Configure program screen shot" class="align-center" src="configure-target-setup.png" style="width: 512.0px; height: 485.0px;" />
+<p>In addition to (or as a replacement to) the above dialog, the
+configure.exe program supports these command-line options:</p>
+<dl class="docutils">
+<dt><cite>/Q8 /Q16 /Q32</cite></dt>
+<dd>Set quantum depth</dd>
+<dt><cite>/x64</cite></dt>
+<dd>Add x64 configuration</dd>
+<dt><cite>/mtd /sts /mts /mtsd</cite></dt>
+<dd>Set project type</dd>
+<dt><cite>/noWizard</cite></dt>
+<dd>Do not show the wizard</dd>
+<dt><cite>/openMP</cite></dt>
+<dd>Enable openMP</dd>
+</dl>
 <p>The Visual C++ system provides three different types of &quot;runtimes&quot;
 that must match across all application, library, and DLL code that is
 built. The &quot;configure&quot; program creates a set of build files that are
 consistent for a specific runtime selection.</p>
 <p>The three options for runtime support are:</p>
-<blockquote>
 <ol class="arabic simple">
-<li>Dynamic Multi-threaded DLL runtimes (VisualDynamicMT).</li>
-<li>Static Single-threaded runtimes (VisualStaticST).</li>
-<li>Static Multi-threaded runtimes (VisualStaticMT).</li>
-<li>Static Multi-threaded DLL runtimes (VisualStaticMTDLL).</li>
+<li>Dynamic Multi-threaded DLL runtimes (VisualDynamicMT), <cite>/mtd</cite> option</li>
+<li>Static Single-threaded runtimes (<cite>VisualStaticST</cite>), <cite>/sts</cite> option</li>
+<li>Static Multi-threaded runtimes (VisualStaticMT), <cite>/mts</cite> option</li>
+<li>Static Multi-threaded DLL runtimes (VisualStaticMTDLL), <cite>/mtsd</cite> option</li>
 </ol>
-</blockquote>
 <p>In addition to these runtimes, the VisualMagick build environment allows
 you to select whether to include the X11 libraries in the build or not.
 X11 DLLs and headers are provided with the VisualMagick build
@@ -380,9 +399,9 @@ environment. Most Windows users do not use X11 so they will prefer to
 build without X11 support. When X11 is not supported, gm subcommands
 'animate', 'display', and 'import' will not work.</p>
 <p>This leads to five different possible build options, which should
-cover almost any particular situation. The default binary distribution
-is built using #1 from above with the X11 libraries included. This
-results in an X11 compatible build using all DLL's for everything and
+cover almost any particular situation. The default binary
+distribution is built using #1 from above with the X11 libraries
+excluded. This results build using all DLL's for everything and
 multi-threaded support (the only option for DLL's).</p>
 <p>To do a build for your requirements, simply go to the configure sub-
 directory under VisualMagick and open the configure.dsw workspace (for
@@ -634,17 +653,16 @@ double-clicking from Windows Explorer.</li>
 <li>Configure Initial GraphicsMagick Visual Studio Workspace<ol class="loweralpha">
 <li>Use Windows Explorer to navigate to <cite>GMVisualMagickconfigure</cite>.</li>
 <li>Double-click on <cite>configure.exe</cite> to run configure program.</li>
-<li>Select DLL build.</li>
+<li>Select desired build options: DLL build, Quantum Depth, 64-bit, OpenMP)</li>
 <li>Check <cite>Build demo and test programs</cite>.</li>
-<li>Click on Edit <cite>magick_config.h</cite> and ensure that
-UseInstalledGraphicsMagick and ProvideDllMain are defined.</li>
 <li>Finish remaining configure wizard screens to complete.</li>
 <li><cite>File</cite> -&gt; <cite>Close Workspace</cite>.</li>
 </ol>
 </li>
 </ol>
-<ol class="arabic simple" start="2">
-<li>Open Workspace, set build configuration, build GraphicsMagick software.<ol class="loweralpha">
+<ol class="arabic" start="2">
+<li><p class="first">Open Workspace, set build configuration, build GraphicsMagick software.</p>
+<ol class="loweralpha simple">
 <li>Open workspace <cite>GMVisualMagickconfigureconfigure.sln</cite> by
 double-clicking from Windows Explorer.</li>
 <li>Build -&gt; &quot;Set Active Configuration&quot; -&gt; &quot;All - Win32 Release&quot; -&gt; OK</li>
@@ -672,18 +690,27 @@ project.</li>
 <li>File -&gt; <cite>Close Workspace</cite></li>
 </ol>
 </li>
-<li>Build ImageMagickObject<ol class="loweralpha">
+<li><p class="first">Build ImageMagickObject</p>
+<ol class="loweralpha simple">
 <li><tt class="docutils literal">cd GM\contrib\win32\ATL7\ImageMagickObject</tt></li>
 <li><tt class="docutils literal">BuildImageMagickObject clean</tt></li>
 <li><tt class="docutils literal">BuildImageMagickObject release</tt></li>
 <li><tt class="docutils literal">cd <span class="pre">..\..\..\..</span></tt></li>
 </ol>
 </li>
-<li>Open Windows Command Shell Window<ol class="loweralpha">
-<li><tt class="docutils literal">cd GM\PerlMagick</tt></li>
-<li><tt class="docutils literal">nmake clean</tt> (only if this is a rebuild)</li>
-<li><tt class="docutils literal">perl Makefile.nt</tt></li>
-<li><tt class="docutils literal">nmake release</tt></li>
+<li><p class="first">Open Windows Command Shell Window</p>
+<ol class="loweralpha">
+<li><p class="first"><tt class="docutils literal">cd GM\PerlMagick</tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal">nmake clean</tt> (only if this is a rebuild)</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">C:\Perl32\perl</span> Makefile.nt</tt></p>
+<p>Note that if multiple Perl's are installed, then it may be
+necessary to specify the full path to perl.exe in order to use
+the correct Perl.</p>
+</li>
+<li><p class="first"><tt class="docutils literal">nmake release</tt></p>
+</li>
 </ol>
 </li>
 </ol>

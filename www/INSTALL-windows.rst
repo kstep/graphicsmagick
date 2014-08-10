@@ -285,10 +285,43 @@ Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
 -----------------------------------------------------------
 
   The Visual C++ distribution targeted at Windows 2000 through Windows
-  7 (and maybe Windows 8) does not provide any stock workspace (DSW)
-  or project files (DSP) except for those included with third party
-  libraries. Instead, there is a "configure" program that must run to
-  create build environments to satisfy various requirements.
+  8 does not provide any stock workspace (DSW) or project files (DSP)
+  except for those included with third party libraries. Instead, there
+  is a "configure" program that must run to create build
+  environments to satisfy various requirements.
+
+  The configure program resides in VisualMagick\configure in the
+  GraphicsMagick source tree.  A pre-compiled configure.exe is
+  provided, as well as Visual Studio project files to recompile it
+  from source code if needed.
+
+  Once started, the configure program provides this configuration
+  dialog after proceeding past the initial notifications screen:
+
+  .. image:: configure-target-setup.png
+     :height: 485px
+     :width: 512px
+     :scale: 100%
+     :alt: Configure program screen shot
+     :align: center
+
+  In addition to (or as a replacement to) the above dialog, the
+  configure.exe program supports these command-line options:
+
+  `/Q8 /Q16 /Q32`
+             Set quantum depth
+
+  `/x64`
+             Add x64 configuration
+
+  `/mtd /sts /mts /mtsd`
+             Set project type
+
+  `/noWizard`
+             Do not show the wizard
+
+  `/openMP`
+             Enable openMP
 
   The Visual C++ system provides three different types of "runtimes"
   that must match across all application, library, and DLL code that is
@@ -297,10 +330,10 @@ Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
 
   The three options for runtime support are:
 
-    1) Dynamic Multi-threaded DLL runtimes (VisualDynamicMT).
-    2) Static Single-threaded runtimes (VisualStaticST).
-    3) Static Multi-threaded runtimes (VisualStaticMT).
-    4) Static Multi-threaded DLL runtimes (VisualStaticMTDLL).
+  1) Dynamic Multi-threaded DLL runtimes (VisualDynamicMT), `/mtd` option
+  2) Static Single-threaded runtimes (`VisualStaticST`), `/sts` option
+  3) Static Multi-threaded runtimes (VisualStaticMT), `/mts` option
+  4) Static Multi-threaded DLL runtimes (VisualStaticMTDLL), `/mtsd` option
 
   In addition to these runtimes, the VisualMagick build environment allows
   you to select whether to include the X11 libraries in the build or not.
@@ -310,9 +343,9 @@ Windows XP, Vista, 7 Visual C++ 6.0 through 9.0 Compilation
   'animate', 'display', and 'import' will not work.
 
   This leads to five different possible build options, which should
-  cover almost any particular situation. The default binary distribution
-  is built using #1 from above with the X11 libraries included. This
-  results in an X11 compatible build using all DLL's for everything and
+  cover almost any particular situation. The default binary
+  distribution is built using #1 from above with the X11 libraries
+  excluded. This results build using all DLL's for everything and
   multi-threaded support (the only option for DLL's).
 
   To do a build for your requirements, simply go to the configure sub-
@@ -602,16 +635,13 @@ Windows Distribution Build Procedure
 
      b. Double-click on `configure.exe` to run configure program.
 
-     c. Select DLL build.
+     c. Select desired build options: DLL build, Quantum Depth, 64-bit, OpenMP)
 
      d. Check `Build demo and test programs`.
 
-     e. Click on Edit `magick_config.h` and ensure that
-        UseInstalledGraphicsMagick and ProvideDllMain are defined.
+     e. Finish remaining configure wizard screens to complete.
 
-     f. Finish remaining configure wizard screens to complete.
-
-     g. `File` -> `Close Workspace`.
+     f. `File` -> `Close Workspace`.
 
   2. Open Workspace, set build configuration, build GraphicsMagick software.
 
@@ -668,7 +698,11 @@ Windows Distribution Build Procedure
 
      b. ``nmake clean`` (only if this is a rebuild)
 
-     c. ``perl Makefile.nt``
+     c. ``C:\Perl32\perl Makefile.nt``
+
+        Note that if multiple Perl's are installed, then it may be
+        necessary to specify the full path to perl.exe in order to use
+        the correct Perl.
 
      d. ``nmake release``
 

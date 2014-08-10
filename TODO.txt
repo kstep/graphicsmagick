@@ -7,8 +7,6 @@ See website for "wish list".
 Short Term
 ==========
 
-* Update Windows libtiff to 4.0
-
 * -random-threshold needs to have gamma 2.2 pre-applied to the pixels
   for correct appearance.
 
@@ -16,9 +14,6 @@ Short Term
 
 * AddCompare, and Distortion wrapper functions to
   the Wand API.
-
-* Verify that delegate-subsystem exceptions propogate properly from
- BlobToImage().
 
 * ctime(), localtime(), and strerror(), all have reentrant
   forms and are (perhaps) not thread safe under FreeBSD.

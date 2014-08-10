@@ -95,6 +95,7 @@ XFAIL_TESTS = \
 # should want to concatenate them.
 CHANGELOGS = \
 	ChangeLog \
+	ChangeLog.2013 \
 	ChangeLog.2012 \
 	ChangeLog.2011 \
 	ChangeLog.2010 \
@@ -111,8 +112,6 @@ CHANGELOGS = \
 TOP_EXTRA_DIST = \
 	$(CHANGELOGS) \
 	Copyright.txt \
-	INSTALL-unix.txt \
-	INSTALL-windows.txt \
 	NEWS.txt \
 	README.txt \
 	TODO.txt \
