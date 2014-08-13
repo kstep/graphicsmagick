@@ -167,13 +167,13 @@ Performance Improvements:
 
 Windows Delegate Updates/Additions:
 
-  * PNG: Libpng 1.6.10 - March 6, 2014.
+  * PNG: Libpng 1.6.12 - June 12, 2014.
 
   * JPEG: libjpeg 9a of January 19, 2014.
 
   * FreeType: FreeType 2.5.3 of March 6, 2014.
 
-  * WebP: webp 0.4.0.
+  * WebP: webp 0.4.0 of January 20, 2013.
 
   * zlib: zlib 1.2.8 of April 28, 2013.
 
