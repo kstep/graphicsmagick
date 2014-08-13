@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on August 9, 2014
+This file was last updated on August 12, 2014
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -169,11 +169,13 @@ Windows Delegate Updates/Additions:
 
   * PNG: Libpng 1.6.10 - March 6, 2014.
 
-  * JPEG: libjpeg 9a of 19-Jan-2014.
+  * JPEG: libjpeg 9a of January 19, 2014.
 
   * FreeType: FreeType 2.5.3 of March 6, 2014.
 
-  * WebP: webp 0.4.0
+  * WebP: webp 0.4.0.
+
+  * zlib: zlib 1.2.8 of April 28, 2013.
 
 Build Changes:
 
