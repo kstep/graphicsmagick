@@ -57,11 +57,11 @@ software was configured and the host system.</p>
 
 <pre>
   % gm -version
-  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
-  Copyright (C) 2002-2012 GraphicsMagick Group.
+  GraphicsMagick 1.3.19 2013-12-31 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2013 GraphicsMagick Group.
   Additional copyrights and licenses apply to this software.
   See http://www.GraphicsMagick.org/www/Copyright.html for details.
-  
+
   Feature Support:
     Thread Safe              yes
     Large Files (> 32 bit)   yes
@@ -80,12 +80,12 @@ software was configured and the host system.</p>
     PNG                      yes
     TIFF                     yes
     TRIO                     no
-    UMEM                     no
+    UMEM                     yes
     WMF                      no
     X11                      yes
     XML                      yes
     ZLIB                     yes
-  
+
   Host type: i386-pc-solaris2.11
   
   Configured using the command:

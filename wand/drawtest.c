@@ -6,17 +6,10 @@
  *
  */
 
-#if !defined(_VISUALC_)
-#include <magick_config.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
 #include <time.h>
 #include <wand/magick_wand.h>
 
@@ -398,7 +391,8 @@ int main ( int argc, char **argv )
       exit( 1 );
     }
 
-  CopyMagickString( outfile, argv[1], MaxTextExtent );
+  outfile[MaxTextExtent-1]='\0';
+  (void) strncpy( outfile, argv[1], MaxTextExtent-1 );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
     InitializeMagick((char *) NULL);

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -16,6 +16,7 @@
 */
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
+#include "magick/color.h"
 #include "magick/gradient.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -133,5 +134,9 @@ MagickExport MagickPassFail GradientImage(Image *image,
           status=MagickFail;
       }
     }
+  if (IsGray(*start_color) && IsGray(*stop_color))
+    image->is_grayscale=MagickTrue;
+  if (IsMonochrome(*start_color) && ColorMatch(start_color,stop_color))
+    image->is_monochrome=MagickTrue;
   return(status);
 }

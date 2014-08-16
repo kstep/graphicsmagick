@@ -17,6 +17,12 @@
 #if defined(_VISUALC_) && !defined(JAS_WIN_MSVC_BUILD)
 # define JAS_WIN_MSVC_BUILD
 #endif
+#if defined(JAS_WIN_MSVC_BUILD)
+# pragma warning(disable : 4013)
+# pragma warning(disable : 4018)
+# pragma warning(disable : 4244)
+# pragma warning(disable : 4715)
+#endif
 #if !defined(JAS_WIN_MSVC_BUILD)
 /* A configure-based build is being used. */
 

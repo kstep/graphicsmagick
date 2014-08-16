@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2013 GraphicsMagick Group
+  Copyright (C) 2003 - 2014 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -25,6 +25,7 @@ extern "C" {
 #include <io.h>
 #include <process.h>
 #include <errno.h>
+#include <malloc.h>
 #if defined(_DEBUG)
 #include <crtdbg.h>
 #endif
@@ -94,6 +95,10 @@ extern "C" {
 # define tempnam _tempnam
 #endif
 
+#if !defined(hypot)
+#  define hypot  _hypot
+#endif
+
 #if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
 #define vsnprintf _vsnprintf 
 #endif
@@ -135,7 +140,14 @@ extern "C" {
 #  define HAVE_GLOBALMEMORYSTATUSEX 1
 #endif
 
-#if defined(_VISUALC_) && (_MSC_VER >= 1300)
+/*
+  _aligned_malloc was introduced in Visual Studio .NET 2003.
+  The feature is is introduced in msvcr71.dll and is capable of
+  working on Windows '98 given that the correct run-time libraries
+  are installed.
+*/
+#if ((defined(_VISUALC_) && (_MSC_VER >= 1310)) ||              \
+     (defined(__MINGW32__) && (__MSVCRT_VERSION__ >= 0x0700)))
 #  define HAVE__ALIGNED_MALLOC 1
 #endif
 

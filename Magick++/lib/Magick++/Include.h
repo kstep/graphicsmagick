@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2012
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -46,7 +46,7 @@ namespace MagickLib
 // Provide appropriate DLL imports/exports for Visual C++,
 // Borland C++Builder and MinGW builds.
 //
-#if defined(WIN32) && !defined(__CYGWIN__) //&& !defined(__MINGW32__)
+#if (defined(WIN32) || defined(WIN64)) && !defined (__CYGWIN__) //&& !defined(__MINGW32__)
 # define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
@@ -95,13 +95,105 @@ namespace MagickLib
 #    if defined(_VISUALC_)
 #      pragma message( "Magick++ lib static interface" )
 #    endif
+#    if defined(_MSC_VER) && defined(STATIC_MAGICK) && !defined(NOAUTOLINK_MAGICK)
+#      if defined(_DEBUG)
+#        if defined(HasBZLIB)
+#          pragma comment(lib, "CORE_DB_bzlib_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_coders_.lib")
+#        pragma comment(lib, "CORE_DB_filters_.lib")
+#        if defined(HasJBIG)
+#          pragma comment(lib, "CORE_DB_jbig_.lib")
+#        endif
+#        if defined(HasJP2)
+#          pragma comment(lib, "CORE_DB_jp2_.lib")
+#        endif
+#        if defined(HasJPEG)
+#          pragma comment(lib, "CORE_DB_jpeg_.lib")
+#        endif
+#        if defined(HasLCMS)
+#          pragma comment(lib, "CORE_DB_lcms_.lib")
+#        endif
+#        if defined(HasXML)
+#          pragma comment(lib, "CORE_DB_libxml_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_magick_.lib")
+#        pragma comment(lib, "CORE_DB_Magick++_.lib")
+#        if defined(HasPNG)
+#          pragma comment(lib, "CORE_DB_png_.lib")
+#        endif
+#        if defined(HasTIFF)
+#          pragma comment(lib, "CORE_DB_tiff_.lib")
+#        endif
+#        if defined(HasTTF)
+#          pragma comment(lib, "CORE_DB_ttf_.lib")
+#        endif
+#        pragma comment(lib, "CORE_DB_wand_.lib")
+#        if defined(HasWMFlite)
+#          pragma comment(lib, "CORE_DB_wmf_.lib")
+#        endif
+#        if defined(HasX11)
+#          pragma comment(lib, "CORE_DB_xlib_.lib")
+#        endif
+#        if defined(HasZLIB)
+#          pragma comment(lib, "CORE_DB_zlib_.lib")
+#        endif
+#      else
+#        if defined(HasBZLIB)
+#          pragma comment(lib, "CORE_RL_bzlib_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_coders_.lib")
+#        pragma comment(lib, "CORE_RL_filters_.lib")
+#        if defined(HasJBIG)
+#          pragma comment(lib, "CORE_RL_jbig_.lib")
+#        endif
+#        if defined(HasJP2)
+#          pragma comment(lib, "CORE_RL_jp2_.lib")
+#        endif
+#        if defined(HasJPEG)
+#          pragma comment(lib, "CORE_RL_jpeg_.lib")
+#        endif
+#        if defined(HasLCMS)
+#          pragma comment(lib, "CORE_RL_lcms_.lib")
+#        endif
+#        if defined(HasXML)
+#          pragma comment(lib, "CORE_RL_libxml_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_magick_.lib")
+#        pragma comment(lib, "CORE_RL_Magick++_.lib")
+#        if defined(HasPNG)
+#          pragma comment(lib, "CORE_RL_png_.lib")
+#        endif
+#        if defined(HasTIFF)
+#          pragma comment(lib, "CORE_RL_tiff_.lib")
+#        endif
+#        if defined(HasTTF)
+#          pragma comment(lib, "CORE_RL_ttf_.lib")
+#        endif
+#        pragma comment(lib, "CORE_RL_wand_.lib")
+#        if defined(HasWMFlite)
+#          pragma comment(lib, "CORE_RL_wmf_.lib")
+#        endif
+#        if defined(HasX11)
+#          pragma comment(lib, "CORE_RL_xlib_.lib")
+#        endif
+#        if defined(HasZLIB)
+#          pragma comment(lib, "CORE_RL_zlib_.lib")
+#        endif
+#      endif
+#      if defined(_WIN32_WCE)
+#        pragma comment(lib, "wsock32.lib")
+#      else
+#        pragma comment(lib, "ws2_32.lib")
+#      endif
+#    endif
 #  endif
 #else
 #  define MagickDLLDecl
 #  define MagickDLLDeclExtern
 #endif
 
-#if defined(WIN32) && defined(_VISUALC_)
+#if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
 #  pragma warning(disable : 4996) /* function deprecation warnings */
 #endif
 
@@ -204,6 +296,17 @@ namespace Magick
   using MagickLib::CopyYellowCompositeOp;
   using MagickLib::CopyBlackCompositeOp;
   using MagickLib::DivideCompositeOp;
+  using MagickLib::HardLightCompositeOp;
+  using MagickLib::ExclusionCompositeOp;
+  using MagickLib::ColorDodgeCompositeOp;
+  using MagickLib::ColorBurnCompositeOp;
+  using MagickLib::SoftLightCompositeOp;
+  using MagickLib::LinearBurnCompositeOp;
+  using MagickLib::LinearDodgeCompositeOp;
+  using MagickLib::LinearLightCompositeOp;
+  using MagickLib::VividLightCompositeOp;
+  using MagickLib::PinLightCompositeOp;
+  using MagickLib::HardMixCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;
@@ -234,6 +337,130 @@ namespace Magick
   using MagickLib::LSBEndian;
   using MagickLib::MSBEndian;
   using MagickLib::NativeEndian;
+
+  // Exception types
+  using MagickLib::ExceptionType;
+  using MagickLib::UndefinedException;
+  using MagickLib::EventException;
+  using MagickLib::ExceptionEvent;
+  using MagickLib::ResourceEvent;
+  using MagickLib::ResourceLimitEvent;
+  using MagickLib::TypeEvent;
+  using MagickLib::AnnotateEvent;
+  using MagickLib::OptionEvent;
+  using MagickLib::DelegateEvent;
+  using MagickLib::MissingDelegateEvent;
+  using MagickLib::CorruptImageEvent;
+  using MagickLib::FileOpenEvent;
+  using MagickLib::BlobEvent;
+  using MagickLib::StreamEvent;
+  using MagickLib::CacheEvent;
+  using MagickLib::CoderEvent;
+  using MagickLib::ModuleEvent;
+  using MagickLib::DrawEvent;
+  using MagickLib::RenderEvent;
+  using MagickLib::ImageEvent;
+  using MagickLib::WandEvent;
+  using MagickLib::TemporaryFileEvent;
+  using MagickLib::TransformEvent;
+  using MagickLib::XServerEvent;
+  using MagickLib::X11Event;
+  using MagickLib::UserEvent;
+  using MagickLib::MonitorEvent;
+  using MagickLib::LocaleEvent;
+  using MagickLib::DeprecateEvent;
+  using MagickLib::RegistryEvent;
+  using MagickLib::ConfigureEvent;
+  using MagickLib::WarningException;
+  using MagickLib::ExceptionWarning;
+  using MagickLib::ResourceWarning;
+  using MagickLib::ResourceLimitWarning;
+  using MagickLib::TypeWarning;
+  using MagickLib::AnnotateWarning;
+  using MagickLib::OptionWarning;
+  using MagickLib::DelegateWarning;
+  using MagickLib::MissingDelegateWarning;
+  using MagickLib::CorruptImageWarning;
+  using MagickLib::FileOpenWarning;
+  using MagickLib::BlobWarning;
+  using MagickLib::StreamWarning;
+  using MagickLib::CacheWarning;
+  using MagickLib::CoderWarning;
+  using MagickLib::ModuleWarning;
+  using MagickLib::DrawWarning;
+  using MagickLib::RenderWarning;
+  using MagickLib::ImageWarning;
+  using MagickLib::WandWarning;
+  using MagickLib::TemporaryFileWarning;
+  using MagickLib::TransformWarning;
+  using MagickLib::XServerWarning;
+  using MagickLib::X11Warning;
+  using MagickLib::UserWarning;
+  using MagickLib::MonitorWarning;
+  using MagickLib::LocaleWarning;
+  using MagickLib::DeprecateWarning;
+  using MagickLib::RegistryWarning;
+  using MagickLib::ConfigureWarning;
+  using MagickLib::ErrorException;
+  using MagickLib::ExceptionError;
+  using MagickLib::ResourceError;
+  using MagickLib::ResourceLimitError;
+  using MagickLib::TypeError;
+  using MagickLib::AnnotateError;
+  using MagickLib::OptionError;
+  using MagickLib::DelegateError;
+  using MagickLib::MissingDelegateError;
+  using MagickLib::CorruptImageError;
+  using MagickLib::FileOpenError;
+  using MagickLib::BlobError;
+  using MagickLib::StreamError;
+  using MagickLib::CacheError;
+  using MagickLib::CoderError;
+  using MagickLib::ModuleError;
+  using MagickLib::DrawError;
+  using MagickLib::RenderError;
+  using MagickLib::ImageError;
+  using MagickLib::WandError;
+  using MagickLib::TemporaryFileError;
+  using MagickLib::TransformError;
+  using MagickLib::XServerError;
+  using MagickLib::X11Error;
+  using MagickLib::UserError;
+  using MagickLib::MonitorError;
+  using MagickLib::LocaleError;
+  using MagickLib::DeprecateError;
+  using MagickLib::RegistryError;
+  using MagickLib::ConfigureError;
+  using MagickLib::FatalErrorException;
+  using MagickLib::ExceptionFatalError;
+  using MagickLib::ResourceFatalError;
+  using MagickLib::ResourceLimitFatalError;
+  using MagickLib::TypeFatalError;
+  using MagickLib::AnnotateFatalError;
+  using MagickLib::OptionFatalError;
+  using MagickLib::DelegateFatalError;
+  using MagickLib::MissingDelegateFatalError;
+  using MagickLib::CorruptImageFatalError;
+  using MagickLib::FileOpenFatalError;
+  using MagickLib::BlobFatalError;
+  using MagickLib::StreamFatalError;
+  using MagickLib::CacheFatalError;
+  using MagickLib::CoderFatalError;
+  using MagickLib::ModuleFatalError;
+  using MagickLib::DrawFatalError;
+  using MagickLib::RenderFatalError;
+  using MagickLib::ImageFatalError;
+  using MagickLib::WandFatalError;
+  using MagickLib::TemporaryFileFatalError;
+  using MagickLib::TransformFatalError;
+  using MagickLib::XServerFatalError;
+  using MagickLib::X11FatalError;
+  using MagickLib::UserFatalError;
+  using MagickLib::MonitorFatalError;
+  using MagickLib::LocaleFatalError;
+  using MagickLib::DeprecateFatalError;
+  using MagickLib::RegistryFatalError;
+  using MagickLib::ConfigureFatalError;
 
   // Fill rules
   using MagickLib::FillRule;
@@ -341,6 +568,7 @@ namespace Magick
   using MagickLib::ResetMethod;
 
   // Arithmetic and bitwise operators
+  using MagickLib::UndefinedQuantumOp;
   using MagickLib::AddQuantumOp;
   using MagickLib::AndQuantumOp;
   using MagickLib::AssignQuantumOp;
@@ -353,6 +581,8 @@ namespace Magick
   using MagickLib::ThresholdQuantumOp;
   using MagickLib::ThresholdBlackQuantumOp;
   using MagickLib::ThresholdWhiteQuantumOp;
+  using MagickLib::ThresholdBlackNegateQuantumOp;
+  using MagickLib::ThresholdWhiteNegateQuantumOp;
   using MagickLib::XorQuantumOp;
   using MagickLib::NoiseGaussianQuantumOp;
   using MagickLib::NoiseImpulseQuantumOp;
@@ -456,6 +686,7 @@ namespace Magick
   using MagickLib::CharPixel;
   using MagickLib::ShortPixel;
   using MagickLib::IntegerPixel;
+  using MagickLib::LongPixel;
   using MagickLib::FloatPixel;
   using MagickLib::DoublePixel;
 
@@ -494,6 +725,14 @@ namespace Magick
   using MagickLib::MemoryResource;
   using MagickLib::PixelsResource;
   using MagickLib::ThreadsResource;
+
+  // Virtual pixel methods
+  using MagickLib::VirtualPixelMethod;
+  using MagickLib::UndefinedVirtualPixelMethod;
+  using MagickLib::ConstantVirtualPixelMethod;
+  using MagickLib::EdgeVirtualPixelMethod;
+  using MagickLib::MirrorVirtualPixelMethod;
+  using MagickLib::TileVirtualPixelMethod;
 
 #if defined(MAGICK_IMPLEMENTATION)
   //
@@ -664,7 +903,6 @@ namespace Magick
   using MagickLib::EnhanceImage;
   using MagickLib::EqualizeImage;
   using MagickLib::ExceptionInfo;
-  using MagickLib::ExceptionType;
   using MagickLib::ExecuteModuleProcess;
   using MagickLib::ExportImagePixelArea;
   using MagickLib::FileOpenError;
@@ -836,6 +1074,7 @@ namespace Magick
   using MagickLib::ThresholdImage;
   using MagickLib::ThrowException;
   using MagickLib::ThrowLoggedException;
+  using MagickLib::ThumbnailImage;
   using MagickLib::TransformHSL;
   using MagickLib::TransformImage;
   using MagickLib::TransformRGBImage;

@@ -1,4 +1,4 @@
-# Copyright (C) 2003-2013 GraphicsMagick Group
+# Copyright (C) 2003-2014 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1998, 1999 E. I. du Pont de Nemours and Company
 #
@@ -298,13 +298,12 @@ else
 fi
 
 #
-# Determine Posix threads settings
+# Determine POSIX threads settings
 #
-# Enable support for threads
+# Enable support for POSIX thread APIs
 AC_ARG_WITH(threads,
 	      AS_HELP_STRING([--without-threads],
-                             [disable threads support (also disables
-                             OpenMP)]),
+                             [disable POSIX threads API support]),
 	      [with_threads=$withval],
 	      [with_threads='yes'])
 
@@ -339,10 +338,6 @@ fi
 #
 # Sets Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS
 # variable to these options.
-if test "$have_threads" != 'yes'
-then
-  ac_cv_prog_c_openmp=unsupported
-fi
 
 AC_OPENMP([C])
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"
@@ -1171,7 +1166,7 @@ AC_SUBST(MAGICK_SSIZE_T_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([_aligned_malloc atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
+AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   mkstemp _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
@@ -3384,9 +3379,9 @@ fi
 
 if test "$build_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_LTDL $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIBS_USER $LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_ZLIB $LIB_LTDL $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_WEBP $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
+  MAGICK_DEP_LIBS="$LIBS_USER $LIB_JBIG $LIB_WEBP $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_LZMA $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_OMP $LIB_UMEM $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

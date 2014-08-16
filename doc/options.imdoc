@@ -1205,7 +1205,7 @@ imagemask operator instead of the image operator.
 <dt>tiff:alpha={unspecified|associated|unassociated}</dt>
 <dd>Specify the TIFF alpha channel type when reading or writing TIFF files,
 overriding the normal value. The default alpha channel type for new files
-is associated alpha. Existing alpha settings are preserved when
+is unspecified alpha. Existing alpha settings are preserved when
 converting from one TIFF file to another. When a TIFF file uses
 associated alpha, the image pixels are pre-multiplied (i.e. altered) with
 the alpha channel. Files with "associated" alpha appear as if they were
@@ -1323,6 +1323,104 @@ is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
 </dd>
+
+<dt>webp:lossless={true|false}</dt>
+<dd>Enable lossless encoding.
+</dd>
+
+<dt>webp:method={0-6}</dt>
+<dd>Quality/speed trade-off.
+</dd>
+
+<dt>webp:image-hint={default,graph,photo,picture}</dt>
+<dd>Hint for image type.
+</dd>
+
+<dt>webp:target-size=<integer></dt>
+<dd>Target size in bytes.
+</dd>
+
+<dt>webp:target-psnr=<float></dt>
+<dd>Minimal distortion to try to achieve.
+</dd>
+
+<dt>webp:segments={1-4}</dt>
+<dd>Maximum number of segments to use.
+</dd>
+
+<dt>webp:sns-strength={0-100}</dt>
+<dd>Spatial Noise Shaping.
+</dd>
+
+<dt>webp:filter-strength={0-100}</dt>
+<dd>Filter strength.
+</dd>
+
+<dt>webp:filter-sharpness={0-7}</dt>
+<dd>Filter sharpness.
+</dd>
+
+<dt>webp:filter-type={0,1}</dt>
+<dd>Filtering type. 0 = simple, 1 = strong (only used if
+filter-strength > 0 or autofilter is enabled).
+</dd>
+
+<dt>webp:auto-filter={true|false}</dt>
+<dd>Auto adjust filter's strength.
+</dd>
+
+<dt>webp:alpha-compression=<integer></dt>
+<dd>Algorithm for encoding the alpha plane (0 = none, 1 = compressed
+with WebP lossless). Default is 1.
+</dd>
+
+<dt>webp:alpha-filtering=<integer></dt>
+<dd>Predictive filtering method for alpha plane. 0: none, 1: fast, 2:
+best. Default is 1.
+</dd>
+
+<dt>webp:alpha-quality={0-100}</dt>
+<dd>Between 0 (smallest size) and 100 (lossless). Default is 100.
+</dd>
+
+<dt>webp:pass=[1..10]</dt>
+<dd>Number of entropy-analysis passes.
+</dd>
+
+<dt>webp:show-compressed={true|false}</dt>
+<dd>Export the compressed picture back.  In-loop filtering is not
+applied.
+</dd>
+
+<dt>webp:preprocessing=[0,1,2]</dt>
+<dd>0=none, 1=segment-smooth, 2=pseudo-random dithering
+</dd>
+
+<dt>webp:partitions=[0-3]</dt>
+<dd>log2(number of token partitions) in [0..3].  Default is 0 for
+easier progressive decoding.
+</dd>
+
+<dt>webp:partition-limit={0-100}</dt>
+<dd>Quality degradation allowed to fit the 512k limit on prediction
+modes coding (0: no degradation, 100: maximum possible
+degradation).
+</dd>
+
+<dt>webp:emulate-jpeg-size={true|false}</dt>
+<dd>If true, compression parameters will be remapped to better match
+the expected output size from JPEG compression. Generally, the output
+size will be similar but the degradation will be lower.
+</dd>
+
+<dt>webp:thread-level=<integer></dt>
+<dd>If non-zero, try and use multi-threaded encoding.
+</dd>
+
+<dt>webp:low-memory={true|false}</dt>
+<dd>If set, reduce memory usage (but increase CPU use)
+</dd>
+
 </dl>
 
 <pp>
@@ -2182,6 +2280,7 @@ characters:</pp>
      %d   directory
      %e   filename extension
      %f   filename
+     %g   page dimensions and offsets
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -2190,17 +2289,33 @@ characters:</pp>
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   image minimum bit depth
+     %q   image bit depth
      %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
      %w   width
-     %x   x resolution
-     %y   y resolution
+     %x   horizontal resolution
+     %y   vertical resolution
+     %A   transparency supported
+     %C   compression type
+     %D   GIF disposal method
+     %G   Original width and height
+     %H   page height
+     %M   original filename specification
+     %O   page offset (x,y)
+     %P   page dimensions (width,height)
+     %Q   compression quality
+     %T   time delay (in centi-seconds)
+     %U   resolution units
+     %W   page width
+     %X   page horizontal offset (x)
+     %Y   page vertical offset (y)
+     %@   trim bounding box
      %#   signature
      \n   newline
      \r   carriage return
+     %%   %
 </pre>
 
 <pp>
@@ -3611,16 +3726,16 @@ independently so that operations are on a per-channel basis.</pp>
 <s>Gray</s> treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</pp>
-<pp>
-Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
+<pp>Select an operator from <s>Add</s>, <s>And</s>, <s>Assign</s>,
 <s>Depth</s>, <s>Divide</s>, <s>Gamma</s>, <s>Negate</s>,
 <s>LShift</s>, <s>Log</s>, <s>Max</s>, <s>Min</s>, <s>Multiply</s>,
 <s>Or</s>, <s>Pow</s> <s>RShift</s>, <s>Subtract</s>,
-<s>Threshold</s>, <s>Threshold-White</s>, <s>Threshold-Black</s>,
-<s>Xor</s>, <s>Noise-Gaussian</s>, <s>Noise-Impulse</s>,
-<s>Noise-Laplacian</s>, <s>Noise-Multiplicative</s>,
-<s>Noise-Poisson</s>, <s>Noise-Random</s>, and
-<s>Noise-Uniform</s>.</pp>
+<s>Threshold</s>, <s>Threshold-White</s>,
+<s>Threshold-White-Negate</s>, <s>Threshold-Black</s>,
+<s>Threshold-Black-Negate</s>, <s>Xor</s>, <s>Noise-Gaussian</s>,
+<s>Noise-Impulse</s>, <s>Noise-Laplacian</s>,
+<s>Noise-Multiplicative</s>, <s>Noise-Poisson</s>,
+<s>Noise-Random</s>, and <s>Noise-Uniform</s>.</pp>
 <pp>
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3716,10 +3831,24 @@ channels are specified, then thresholding is done based on computed pixel
 intensity.
 </dd>
 
+<dt>Threshold-White-Negate</dt>
+<dd>Result is set to black if channel value is greater than
+rvalue and is unchanged if it is less than or equal to rvalue. If
+<s>all</s> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+
 <dt>Threshold-black</dt>
 <dd>Result is minimum (black) if channel value is less than than rvalue
 and is unchanged if it is greater than or equal to rvalue. This can be
 used to remove apparent noise from the dark parts of an image. If
+<s>all</s> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+
+<dt>Threshold-Black-Negate</dt>
+<dd>Result is set to white if channel value is less than than
+rvalue and is unchanged if it is greater than or equal to rvalue. If
 <s>all</s> channels are specified, then thresholding is done based on
 computed pixel intensity.
 </dd>
@@ -4800,16 +4929,32 @@ popups that are independent windows but appear over the specified window.</pp>
 
 <dopt>-set <attribute> <value></opt>
 
-<abs>set an image attribut</abs>
+<abs>set an image attribute</abs>
 
 
 <pp>
 Set a named image attribute.  The attribute is set on the current
 (previously specified on command line) image.</pp>
 
+
 </utils>
 
 
+<!-- ------------ +set ------------------------------------------ -->
+
+<utils apps=composite,convert,display,mogrify,import>
+
+<dopt>+set <attribute></opt>
+
+<abs>unset an image attribute</abs>
+
+
+<pp>
+Unset a named image attribute.  The attribute is removed from the current
+(previously specified on command line) image.</pp>
+
+
+</utils>
 
 
 <!-- ------------ -segment ------------------------------------------ -->

@@ -1213,6 +1213,70 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t I m a g e M o s a i c D i m e n s i o n s                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageMosaicDimensions returns the bounding region of the canvas
+%  which supports the images in the list as would be returned by
+%  MosaicImages().  The bounding region is computed based on the image size
+%  and page offsets of each image in the image list.
+%
+%  The format of the GetImageMosaicDimensions method is:
+%
+%      RectangleInfo GetImageMosaicDimensions(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o bounds: Method GetImageMosaicDimensions returns the bounding box of
+%      the image canvas.
+%
+%    o image: The image.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static RectangleInfo GetImageMosaicDimensions(const Image *image)
+{
+  RectangleInfo
+    page;
+
+  register const Image
+    *next;
+
+  page.width=image->columns;
+  page.height=image->rows;
+  page.x=0;
+  page.y=0;
+  for (next=image; next != (Image *) NULL; next=next->next)
+  {
+    page.x=next->page.x;
+    page.y=next->page.y;
+    /*
+      Without casts, unsigned underflow can occur here if page offset
+      is negative and has greater magnitude than image size.
+    */
+    if (((long) next->columns+page.x) > (long) page.width)
+      page.width=(long) next->columns+page.x;
+    if (next->page.width > page.width)
+      page.width=next->page.width;
+    if (((long) next->rows+page.y) > (long) page.height)
+      page.height=(long) next->rows+page.y;
+    if (next->page.height > page.height)
+      page.height=next->page.height;
+  }
+
+  return page;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     M o s a i c I m a g e s                                                 %
 %                                                                             %
 %                                                                             %
@@ -1265,27 +1329,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   /*
     Determine mosaic bounding box.
   */
-  page.width=image->columns;
-  page.height=image->rows;
-  page.x=0;
-  page.y=0;
-  for (next=image; next != (Image *) NULL; next=next->next)
-  {
-    page.x=next->page.x;
-    page.y=next->page.y;
-    /*
-      Without casts, unsigned underflow can occur here if page offset
-      is negative and has greater magnitude than image size.
-    */
-    if (((long) next->columns+page.x) > (long) page.width)
-      page.width=(long) next->columns+page.x;
-    if (next->page.width > page.width)
-      page.width=next->page.width;
-    if (((long) next->rows+page.y) > (long) page.height)
-      page.height=(long) next->rows+page.y;
-    if (next->page.height > page.height)
-      page.height=next->page.height;
-  }
+  page=GetImageMosaicDimensions(image);
 
   /*
     Allocate canvas image.

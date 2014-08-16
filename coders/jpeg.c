@@ -479,7 +479,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   MagickFreeMemory(profile);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Profile: %s, %lu bytes",
-                        profile_name,(unsigned long) -header_length);
+                        profile_name, (unsigned long) header_length);
 
   return (status);
 }

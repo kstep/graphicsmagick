@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999-2010
+// Copyright Bob Friesenhahn, 1999-2014
 //
 // Implementation of Image
 //
@@ -1668,6 +1668,27 @@ void Magick::Image::scale ( const Geometry &geometry_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     ScaleImage( image(), width, height, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
+// Resize image using several algorithms to make smaller images very
+// quickly.
+void Magick::Image::thumbnail ( const Geometry &geometry_ )
+{
+  long x = 0;
+  long y = 0;
+  unsigned long width = columns();
+  unsigned long height = rows();
+
+  GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
+		      &x, &y,
+		      &width, &height );
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    ThumbnailImage( image(), width, height, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }

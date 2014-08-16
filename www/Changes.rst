@@ -25,6 +25,7 @@ GraphicsMagick Change Logs
 
 .. _GraphicsMagick : index.html
 .. _`This Year` : Changelog.html
+.. _2013 : ChangeLog-2013.html
 .. _2012 : ChangeLog-2012.html
 .. _2011 : ChangeLog-2011.html
 .. _2010 : ChangeLog-2010.html
@@ -40,7 +41,9 @@ GraphicsMagick Change Logs
 
 The following are the ``GraphicsMagick`` change logs since 2001:
 
-  * `This Year`_ (1.3.18 - 1.3.19 released)
+  * `This Year`_ (no releases yet)
+
+  * 2013_ (1.3.18 - 1.3.19 released)
 
   * 2012_ (1.3.14 - 1.3.17 released)
 
@@ -71,4 +74,4 @@ The following are the ``GraphicsMagick`` change logs since 2001:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2013
+Copyright |copy| GraphicsMagick Group 2002 - 2014

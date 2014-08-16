@@ -363,9 +363,6 @@
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
 
-/* Define to 1 if you have the `_aligned_malloc' function. */
-#undef HAVE__ALIGNED_MALLOC
-
 /* Define to 1 if you have the `_exit' function. */
 #undef HAVE__EXIT
 

@@ -4553,7 +4553,10 @@ ProcessMSLScript(const ImageInfo *image_info,Image **image,
                       UnableToInterpretMSLImage);
   msl_info.image_info[0]=CloneImageInfo(image_info);
   msl_info.draw_info[0]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  msl_info.attributes[0]=CloneImage(image_info->attributes,0,0,True,exception);
+  if (image_info->attributes)
+    msl_info.attributes[0]=CloneImage(image_info->attributes,0,0,True,exception);
+  else
+    msl_info.attributes[0]=(Image *) NULL;
   msl_info.group_info[0].numImages=0;
   /* the first slot is used to point to the MSL file image */
   *msl_info.image=msl_image;

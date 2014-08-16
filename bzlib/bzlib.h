@@ -70,7 +70,7 @@ typedef
 #include <stdio.h>
 #endif
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(WIN64)
 # include <windows.h>
 # ifdef small
     /* windows.h define small to char */

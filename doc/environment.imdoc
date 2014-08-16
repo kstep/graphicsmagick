@@ -49,16 +49,19 @@ configuration files in $HOME/.magick if the directory exists. See
 <opt>MAGICK_CODER_STABILITY</opt>
 
 <abs>The minimum coder stability level before it will be used. The
-available levels are <s>PRIMARY</s>, <s>STABLE</s>, and <s>UNSTABLE</s>.
-The default minimum level is <s>UNSTABLE</s>, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the <s>PRIMARY</s> level are commonly used
-formats with very well maintained implementations. Coders at the
-<s>STABLE</s> level are reasonably well maintained but represent less used
-formats. Coders at the <s>UNSTABLE</s> level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.</abs>
+available levels are <s>PRIMARY</s>, <s>STABLE</s>, <s>UNSTABLE</s>,
+and <s>BROKEN</s>.  The default minimum level is <s>UNSTABLE</s>,
+which means that all available working coders will be used. The
+purpose of this option is to reduce the security exposure (or apparent
+complexity) due to the huge number of formats supported. Coders at the
+<s>PRIMARY</s> level are commonly used formats with very well
+maintained implementations. Coders at the <s>STABLE</s> level are
+reasonably well maintained but represent less used formats. Coders at
+the <s>UNSTABLE</s> level either have weak implementations, the file
+format itself is weak, or the probability the coder will be needed is
+vanishingly small. Coders at the <s>BROKEN</s> level are known to
+often not work properly or might not be useful in their current state
+at all.</abs>
 
 <opt>MAGICK_CODER_MODULE_PATH</opt>
 
@@ -81,7 +84,9 @@ the default search path.</abs>
 
 <opt>MAGICK_DEBUG</opt>
 
-<abs>Debug options (see <s>-debug</s> for details)</abs>
+<abs>Debug options (see <s>-debug</s> for details).  Setting debug
+options via an environment variable is currently necessary to see the
+complete initialization process.</abs>
 
 <opt>MAGICK_FILTER_MODULE_PATH</opt>
 
@@ -94,6 +99,14 @@ is similar to operating system search paths (i.e. colon delimited for
 Unix, and semi-colon delimited for Microsoft Windows). This user
 specified search path is used before trying the default search path.</abs>
 
+<opt>MAGICK_GHOSTSCRIPT_PATH</opt>
+
+<abs>For Microsoft Windows, specify the path to the Ghostscript
+installation rather than searching for it via the Windows registry.
+This helps in case Ghostscript is not installed via the Ghostscript
+Windows installer or the user wants more control over the Ghostscript
+used.</abs>
+
 <opt>MAGICK_HOME</opt>
 
 <abs>Path to top of GraphicsMagick installation directory. Only observed
@@ -104,10 +117,15 @@ hard-coded or set by an installer.</abs>
 
 <abs>If <s>MAGICK_MMAP_READ</s> is set to <s>TRUE</s>, GraphicsMagick
 will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.</abs>
+substantially improves repeated read performance since the file is
+already in memory after the first time it has been read. However,
+testing shows that performance may be reduced for files accessed for
+the first time since data is accessed via page-faults (upon first
+access) and many operating systems fail to do sequential read-ahead of
+memory mapped files, and particularly if those files are accessed over
+a network.  If many large input files are read, then enabling this
+option may harm performance by overloading the operating system's VM
+system as it then needs to free unmapped pages and map new ones.</abs>
 
 <opt>MAGICK_IO_FSYNC</opt>
 

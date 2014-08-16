@@ -10,7 +10,7 @@ rwblob=./rwblob
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 180
+test_plan_fn 184
 
 # AVS format
 for type in ${check_types}
@@ -262,6 +262,12 @@ done
 for type in ${check_types}
 do
   test_command_fn "WBMP ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" WBMP
+done
+
+# WEBP format
+for type in ${check_types}
+do
+  test_command_fn "WEBP ${type}" -F WEBP ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" WEBP
 done
 
 # XBM format

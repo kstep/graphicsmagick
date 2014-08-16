@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2013 GraphicsMagick Group
+% Copyright (C) 2013 - 2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -22,6 +22,9 @@
 %                              Software Design                                %
 %                                  TIMEBUG                                    %
 %                                January 2013                                 %
+%                                                                             %
+%                          Subsequent Development By                          %
+%                               Bob Friesenhahn                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -48,11 +51,41 @@
 */
 #if defined(HasWEBP)
 static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
+#else
+ #define WebPGetEncoderVersion()  (0)
+ #define WEBP_ENCODER_ABI_VERSION 0
 #endif
 
 #if defined(HasWEBP)
 #include <webp/decode.h>
 #include <webp/encode.h>
+
+/*
+  Release versions vs ABI versions
+
+    0.1.3  - 0x0002
+    0.1.99 - 0x0100
+    0.2.0  - 0x0200
+    0.2.1  - 0x0200
+    0.3.0  - 0x0201
+    0.4.0  - 0x0202
+*/
+
+/*
+  Progress indication support not added until v0.1.99
+*/
+#if WEBP_ENCODER_ABI_VERSION >= 0x0100 /* >= v0.1.99 */
+#  define SUPPORT_PROGRESS 1
+#  define SUPPORT_USER_ABORT
+#endif
+#if WEBP_ENCODER_ABI_VERSION >= 0x0200 /* >= 0.2.0 */
+#  define SUPPORT_CONFIG_WEBP_HINT_GRAPH
+#endif
+#if WEBP_ENCODER_ABI_VERSION >= 0x0201 /* >= 0.3.0 */
+#  define SUPPORT_CONFIG_EMULATE_JPEG_SIZE
+#  define SUPPORT_CONFIG_THREAD_LEVEL
+#  define SUPPORT_CONFIG_LOW_MEMORY
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,10 +172,16 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   if ((webp_status=WebPGetFeatures(stream,length,&stream_features)) != VP8_STATUS_OK)
     {
       MagickFreeMemory(stream);
+
       switch (webp_status)
         {
+        case VP8_STATUS_OK:
+          break;
         case VP8_STATUS_OUT_OF_MEMORY:
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          break;
+        case VP8_STATUS_INVALID_PARAM:
+          ThrowReaderException(CoderError,WebPInvalidParameter,image);
           break;
         case VP8_STATUS_BITSTREAM_ERROR:
           ThrowReaderException(CorruptImageError,CorruptImage,image);
@@ -150,14 +189,29 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
         case VP8_STATUS_UNSUPPORTED_FEATURE:
           ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image);
           break;
+        case VP8_STATUS_SUSPENDED:
+          /*
+            Incremental decoder object may be left in SUSPENDED state
+             if the picture is only partially decoded, pending
+             additional input.  We are not doing incremental decoding
+             at this time.
+          */
+          break;
+        case VP8_STATUS_USER_ABORT:
+          /*
+            This is what is returned if the user terminates the
+            decoding.
+          */
+          ThrowReaderException(CoderError,WebPDecodingFailedUserAbort,image);
+          break;
         case VP8_STATUS_NOT_ENOUGH_DATA:
           ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
           break;
-        default:
-          {
-            ThrowReaderException(CorruptImageError,CorruptImage,image);
-          }
         }
+      /*
+        Catch-all if not handled above.
+      */
+      ThrowReaderException(CorruptImageError,CorruptImage,image);
     }
   image->depth=8;
   image->columns=(size_t) stream_features.width;
@@ -251,7 +305,32 @@ ModuleExport void RegisterWEBPImage(void)
   MagickInfo
     *entry;
 
+  int
+    web_encoder_version;
+
+  unsigned int
+    webp_major,
+    webp_minor,
+    webp_revision;
+
   *version='\0';
+
+  /*
+    Obtain the encoder's version number from the library, packed in
+    hexadecimal using 8bits for each of major/minor/revision. E.g:
+    v2.5.7 is 0x020507.
+
+    Also capture the encoder ABI version from <webp/encode.h> which is
+    in the form MAJOR(8b) + MINOR(8b) where ABI is related to the
+    library ABI and not the package release version.
+  */
+  web_encoder_version=(WebPGetEncoderVersion());
+  webp_major=(web_encoder_version >> 16) & 0xff;
+  webp_minor=(web_encoder_version >> 8) & 0xff;
+  webp_revision=web_encoder_version & 0xff;
+  FormatString(version, "libwepb v%u.%u.%u, ENCODER ABI 0x%04X", webp_major,
+               webp_minor, webp_revision, WEBP_ENCODER_ABI_VERSION);
+
   entry=SetMagickInfo("WEBP");
 #if defined(HasWEBP)
   entry->decoder=(DecoderHandler) ReadWEBPImage;
@@ -259,7 +338,7 @@ ModuleExport void RegisterWEBPImage(void)
 #endif
   entry->description=description;
   entry->adjoin=False;
-  entry->seekable_stream=MagickTrue;
+  entry->seekable_stream=MagickFalse;
   if (*version != '\0')
     entry->version=version;
   entry->module="WEBP";
@@ -317,8 +396,11 @@ ModuleExport void UnregisterWEBPImage(void)
 %
 */
 
-static int WebPWriter(const unsigned char *stream,size_t length,
-                      const WebPPicture *const picture)
+/*
+  Called to write data to blob
+*/
+static int WriterCallback(const unsigned char *stream,size_t length,
+                          const WebPPicture *const picture)
 {
   Image
     *image;
@@ -327,9 +409,27 @@ static int WebPWriter(const unsigned char *stream,size_t length,
   return (length != 0 ? (int) WriteBlob(image,length,stream) : 1);
 }
 
+/*
+  Called to provide progress indication
+*/
+#if defined(SUPPORT_PROGRESS)
+static int ProgressCallback(int percent, const WebPPicture* picture)
+{
+  Image
+    *image;
+
+  image=(Image *) picture->custom_ptr;
+  return MagickMonitorFormatted(percent, 101, &image->exception,
+                                SaveImageText, image->filename,
+                                image->columns, image->rows);
+}
+#endif
 
 static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
 {
+  const char
+    *value;
+
   int
     webp_status;
 
@@ -375,20 +475,95 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Initialize WebP picture. This function is declared as 'static
+    inline'.  It returns false if there is a mismatch between the
+    libwebp headers and library.
+  */
   if (WebPPictureInit(&picture) == 0)
-    ThrowWriterException(ResourceLimitError, MemoryAllocationFailed, image);
-  picture.writer=WebPWriter;
+    ThrowWriterException(DelegateError, WebPABIMismatch, image);
+  /*
+    Make sure that image is in an RGB type space and DirectClass.
+  */
+  (void) TransformColorspace(image,RGBColorspace);
+  image->storage_class=DirectClass;
+
+  picture.writer=WriterCallback;
   picture.custom_ptr=(void *) image;
+#if defined(SUPPORT_PROGRESS)
+  picture.progress_hook=ProgressCallback;
+#endif
   picture.stats=(&statistics);
   picture.width=(int) image->columns;
   picture.height=(int) image->rows;
   if (WebPConfigInit(&configure) == 0)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(DelegateError, WebPABIMismatch, image);
   if (image_info->quality != DefaultCompressionQuality)
     configure.quality = (float) image_info->quality;
-  if (WebPValidateConfig(&configure) == 0)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
+  if ((value=AccessDefinition(image_info,"webp","lossless")))
+    configure.lossless=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","method")))
+    configure.method=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","image-hint")))
+    {
+      if (LocaleCompare(value,"default") == 0)
+        configure.image_hint=WEBP_HINT_DEFAULT;
+      if (LocaleCompare(value,"picture") == 0)
+        configure.image_hint=WEBP_HINT_PICTURE;
+      if (LocaleCompare(value,"photo") == 0)
+        configure.image_hint=WEBP_HINT_PHOTO;
+#if defined(SUPPORT_CONFIG_WEBP_HINT_GRAPH)
+      if (LocaleCompare(value,"graph") == 0)
+        configure.image_hint=WEBP_HINT_GRAPH;
+#endif
+    }
+  if ((value=AccessDefinition(image_info,"webp","target-size")))
+    configure.target_size=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","target-psnr")))
+    configure.target_PSNR=(float) MagickAtoF(value);
+  if ((value=AccessDefinition(image_info,"webp","segments")))
+    configure.segments=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","sns-strength")))
+    configure.sns_strength=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-strength")))
+    configure.filter_strength=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-sharpness")))
+    configure.filter_sharpness=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","filter-type")))
+    configure.filter_type=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","auto-filter")))
+    configure.autofilter=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","alpha-compression")))
+    configure.alpha_compression=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","alpha-filtering")))
+    configure.alpha_filtering=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","alpha-quality")))
+    configure.alpha_quality=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","pass")))
+    configure.pass=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","show-compressed")))
+    configure.show_compressed=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+  if ((value=AccessDefinition(image_info,"webp","preprocessing")))
+    configure.preprocessing=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","partitions")))
+    configure.partitions=MagickAtoI(value);
+  if ((value=AccessDefinition(image_info,"webp","partition-limit")))
+    configure.partition_limit=MagickAtoI(value);
+#if defined(SUPPORT_CONFIG_EMULATE_JPEG_SIZE)
+  if ((value=AccessDefinition(image_info,"webp","emulate-jpeg-size")))
+    configure.emulate_jpeg_size=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+#endif
+#if defined(SUPPORT_CONFIG_THREAD_LEVEL)
+  if ((value=AccessDefinition(image_info,"webp","thread-level")))
+    configure.thread_level=MagickAtoI(value);
+#endif
+#if defined(SUPPORT_CONFIG_LOW_MEMORY)
+  if ((value=AccessDefinition(image_info,"webp","low-memory")))
+    configure.low_memory=(LocaleCompare(value,"TRUE") == 0 ? 1 : 0);
+#endif
+  if (WebPValidateConfig(&configure) != 1)
+    ThrowWriterException(CoderError,WebPInvalidConfiguration,image);
   /*
     Allocate memory for pixels.
   */
@@ -417,15 +592,79 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
         }
     }
 
+  /*
+    "Returns false in case of memory error."
+  */
   if (image->matte != MagickTrue)
     webp_status=WebPPictureImportRGB(&picture,pixels,3*picture.width);
   else
     webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
   MagickFreeMemory(pixels);
-  webp_status=WebPEncode(&configure, &picture);
+  if (webp_status)
+    {
+      /*
+        "Returns false in case of error, true otherwise.
+        In case of error, picture->error_code is updated accordingly."
+      */
+      webp_status=WebPEncode(&configure, &picture);
+      if (! webp_status)
+        {
+          int
+            picture_error_code;
+
+          picture_error_code=picture.error_code;
+          WebPPictureFree(&picture);
+
+          switch (picture_error_code)
+            {
+            case VP8_ENC_OK:
+              break;
+            case VP8_ENC_ERROR_OUT_OF_MEMORY:
+              ThrowWriterException(CoderError,WebPEncodingFailedOutOfMemory,image);
+              break;
+            case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
+              ThrowWriterException(CoderError,WebPEncodingFailedBitstreamOutOfMemory,image);
+              break;
+            case VP8_ENC_ERROR_NULL_PARAMETER:
+              ThrowWriterException(CoderError,WebPEncodingFailedNULLParameter,image);
+              break;
+            case VP8_ENC_ERROR_INVALID_CONFIGURATION:
+              ThrowWriterException(CoderError,WebPEncodingFailedInvalidConfiguration,image);
+              break;
+            case VP8_ENC_ERROR_BAD_DIMENSION:
+              ThrowWriterException(CoderError,WebPEncodingFailedBadDimension,image);
+              break;
+            case VP8_ENC_ERROR_PARTITION0_OVERFLOW:
+              ThrowWriterException(CoderError,WebPEncodingFailedPartition0Overflow,image);
+              break;
+            case VP8_ENC_ERROR_PARTITION_OVERFLOW:
+              ThrowWriterException(CoderError,WebPEncodingFailedPartitionOverflow,image);
+              break;
+            case VP8_ENC_ERROR_BAD_WRITE:
+              ThrowWriterException(CoderError,WebPEncodingFailedBadWrite,image);
+              break;
+            case VP8_ENC_ERROR_FILE_TOO_BIG:
+              ThrowWriterException(CoderError,WebPEncodingFailedFileTooBig,image);
+              break;
+#if defined(SUPPORT_USER_ABORT)
+            case VP8_ENC_ERROR_USER_ABORT:     /* Added in v0.1.99 */
+              ThrowWriterException(CoderError,WebPEncodingFailedUserAbort,image);
+              break;
+            case VP8_ENC_ERROR_LAST:           /* Added in v0.1.99 */
+              break;
+#endif
+            } /* switch (picture_error_code) */
+          /*
+            Catch-all in case a code is added that we are not
+            explicitly prepared for.
+          */
+          ThrowWriterException(CoderError,WebPEncodingFailed,image);
+        } /* if (! webp_status) */
+    } /* if (webp_status) */
+
   WebPPictureFree(&picture);
   CloseBlob(image);
 
-  return(webp_status == 0 ? MagickPass : MagickFail);
+  return (webp_status ? MagickPass : MagickFail);
 }
 #endif

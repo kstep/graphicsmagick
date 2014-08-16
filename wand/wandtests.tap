@@ -7,5 +7,5 @@ test_plan_fn 2
 rm -f drawtest_out.miff
 test_command_fn 'wand vector drawing' ${MEMCHECK} ./drawtest drawtest_out.miff
 rm -f wandtest_out.miff
-test_command_fn 'wand api' ${MEMCHECK} ./wandtest
+test_command_fn 'wand api' -F TTF ${MEMCHECK} ./wandtest
 :

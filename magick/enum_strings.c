@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2008 - 2012 GraphicsMagick Group
+% Copyright (C) 2008 - 2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -393,6 +393,39 @@ MagickExport const char *CompositeOperatorToString(const CompositeOperator compo
     case DivideCompositeOp:
       composite_op_text = "Divide";
       break;
+    case HardLightCompositeOp:
+      composite_op_text = "HardLight";
+      break;
+    case ExclusionCompositeOp:
+      composite_op_text = "Exclusion";
+      break;
+    case ColorDodgeCompositeOp:
+      composite_op_text = "ColorDodge";
+      break;
+    case ColorBurnCompositeOp:
+      composite_op_text = "ColorBurn";
+      break;
+    case SoftLightCompositeOp:
+      composite_op_text = "SoftLight";
+      break;
+    case LinearBurnCompositeOp:
+      composite_op_text = "LinearBurn";
+      break;
+    case LinearDodgeCompositeOp:
+      composite_op_text = "LinearDodge";
+      break;
+    case LinearLightCompositeOp:
+      composite_op_text = "LinearLight";
+      break;
+    case VividLightCompositeOp:
+      composite_op_text = "VividLight";
+      break;
+    case PinLightCompositeOp:
+      composite_op_text = "PinLight";
+      break;
+    case HardMixCompositeOp:
+      composite_op_text = "HardMix";
+      break;
     }
 
   return composite_op_text;
@@ -477,6 +510,28 @@ MagickExport CompositeOperator StringToCompositeOperator(const char *option)
     composite_op=CopyBlackCompositeOp;
   else if (LocaleCompare("Divide",option) == 0)
     composite_op=DivideCompositeOp;
+  else if (LocaleCompare("HardLight",option) == 0)
+    composite_op=HardLightCompositeOp;
+  else if (LocaleCompare("Exclusion",option) == 0)
+    composite_op=ExclusionCompositeOp;
+  else if (LocaleCompare("ColorDodge",option) == 0)
+    composite_op=ColorDodgeCompositeOp;
+  else if (LocaleCompare("ColorBurn",option) == 0)
+    composite_op=ColorBurnCompositeOp;
+  else if (LocaleCompare("SoftLight",option) == 0)
+    composite_op=SoftLightCompositeOp;
+  else if (LocaleCompare("LinearBurn",option) == 0)
+    composite_op=LinearBurnCompositeOp;
+  else if (LocaleCompare("LinearDodge",option) == 0)
+    composite_op=LinearDodgeCompositeOp;
+  else if (LocaleCompare("LinearLight",option) == 0)
+    composite_op=LinearLightCompositeOp;
+  else if (LocaleCompare("VividLight",option) == 0)
+    composite_op=VividLightCompositeOp;
+  else if (LocaleCompare("PinLight",option) == 0)
+    composite_op=PinLightCompositeOp;
+  else if (LocaleCompare("HardMix",option) == 0)
+    composite_op=HardMixCompositeOp;
 
   return composite_op;
 }
@@ -1237,6 +1292,12 @@ MagickExport QuantumOperator StringToQuantumOperator(const char *option)
   else if ((LocaleCompare("threshold-white",option) == 0) ||
            (LocaleCompare("ThresholdWhite",option) == 0))
     quantum_operator=ThresholdWhiteQuantumOp;
+  else if ((LocaleCompare("threshold-black-negate",option) == 0) ||
+           (LocaleCompare("ThresholdBlackNegate",option) == 0))
+    quantum_operator=ThresholdBlackNegateQuantumOp;
+  else if ((LocaleCompare("threshold-white-negate",option) == 0) ||
+           (LocaleCompare("ThresholdWhiteNegate",option) == 0))
+    quantum_operator=ThresholdWhiteNegateQuantumOp;
   else if (LocaleCompare("xor",option) == 0)
     quantum_operator=XorQuantumOp;
   else if ((LocaleCompare("noise-gaussian",option) == 0) ||
@@ -1322,6 +1383,12 @@ MagickExport const char *QuantumOperatorToString(const QuantumOperator quantum_o
       break;
     case ThresholdWhiteQuantumOp:
       operator_text="threshold-white";
+      break;
+    case ThresholdBlackNegateQuantumOp:
+      operator_text="threshold-black-negate";
+      break;
+    case ThresholdWhiteNegateQuantumOp:
+      operator_text="threshold-white-negate";
       break;
     case XorQuantumOp:
       operator_text="xor";
@@ -1434,6 +1501,32 @@ MagickExport const char *ResizeFilterToString(const FilterTypes filter)
     }
 
   return filter_string;
+}
+
+/*
+  ResolutionType
+*/
+MagickExport ResolutionType StringToResolutionType(const char *option)
+{
+  ResolutionType
+    resolution_type = UndefinedResolution;
+
+  if (LocaleCompare("PixelsPerInch",option) == 0)
+    resolution_type=PixelsPerInchResolution;
+  else if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+    resolution_type=PixelsPerCentimeterResolution;
+
+  return resolution_type;
+}
+MagickExport const char *ResolutionTypeToString(const ResolutionType resolution_type)
+{
+  switch (resolution_type)
+    {
+    case UndefinedResolution: return ("Undefined");
+    case PixelsPerInchResolution: return ("PixelsPerInch");
+    case PixelsPerCentimeterResolution: return ("PixelsPerCentimeter");
+    }
+  return ("unknown");
 }
 
 /*

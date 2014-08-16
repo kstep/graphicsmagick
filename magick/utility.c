@@ -1920,32 +1920,41 @@ GetMagickDimension(const char *str,double *width,double *height,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, @, !,
-%  <, and >, as well as +x, and +y offsets.  The geometry string has the
-%  form:
+%  GetMagickGeometry() is similar to GetGeometry() except that existing
+%  'width', and 'height' input values are modified by the geometry
+%  influenced by the meta characters:  %, @, !, <, and >, as well as
+%  +x, and +y offsets.  The geometry string has the form:
 %
 %      <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}
 %
 %  For example, the string "640x480>" is a valid geometry string.
 %
-%  The interpretation of the geometry string parameters are as follows:
-%    %: The geometry width and height parameters are interpreted as a
-%       percentage of the supplied width and height parameters.
-%    @: The geometry parameter represents the desired total area (e.g.
-%       "307520@") or width x height (e.g. "640*480@") of the final image.
-%    !: Force the width and height values to be absolute values.  The
-%       original image aspect ratio is not maintained.
-%    <: Update the provided width and height parameters if its dimensions
-%       are less than the geometry specification.
-%    >: Update the provided width and height parameters if its dimensions
-%       are greater than the geometry specification.
-%    ^: Width and height are increased as required to preserve aspect ratio
-%       while ensuring that width and height are no less than specified.
+%  The interpretation of the extra geometry string parameters are as
+%  follows:
+%    %: (PercentValue) The geometry width and height parameters are
+%       interpreted as a percentage of the supplied width and height
+%       parameters.
+%    @: (AreaValue) The geometry parameter represents the desired total
+%       area (e.g. "307520@") or width x height (e.g. "640x480@") of the
+%       final image.
+%    !: (AspectValue) Force the width and height values to be absolute
+%       values.  The original image aspect ratio is not maintained.
+%    <: (LessValue) Update the provided width and height parameters if
+%       its dimensions are less than the geometry specification.
+%    >: (GreaterValue) Update the provided width and height parameters
+%       if its dimensions are greater than the geometry specification.
+%    ^: (MinimumValue) Width and height are increased as required to
+%       preserve aspect ratio while ensuring that width and height are
+%       no less than specified.
 %
 %  Any supplied offset parameters are used to adjust the image width,
 %  height, and x/y offset values as required to center the scaled image
 %  into the region specified by the supplied width and height.
+%
+%  If only the width is specified, the width assumes the value and the
+%  height is chosen to maintain the aspect ratio of the image. Similarly,
+%  if only the height is specified (e.g., -geometry x256), the width is
+%  chosen to maintain the aspect ratio.
 %
 %  The format of the GetMagickGeometry method is:
 %
@@ -1955,7 +1964,8 @@ GetMagickDimension(const char *str,double *width,double *height,
 %  A description of each parameter follows:
 %
 %    o flags:  Method GetMagickGeometry returns a bitmask that indicates
-%      which of the five values (PercentValue, AspectValue, LessValue,
+%      which of the twelve values (XValue, YValue, WidthValue, HeightValue,
+%      XNegative, YNegative, PercentValue, AspectValue, LessValue,
 %      GreaterValue, AreaValue, MinimumValue) were located in the geometry
 %      string.
 %
@@ -1971,7 +1981,7 @@ GetMagickDimension(const char *str,double *width,double *height,
 %
 */
 MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
-  unsigned long *width,unsigned long *height)
+                                   unsigned long *width,unsigned long *height)
 {
   int
     flags;
@@ -1998,110 +2008,142 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   former_width=(*width);
   former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
-  if (flags & PercentValue)
-    {
-      double
-        x_scale,
-        y_scale;
 
-      /*
-        Geometry is a percentage of the image size.
-      */
-      x_scale=(*width);
-      y_scale=(*height);
-      count=GetMagickDimension(geometry,&x_scale,&y_scale,NULL,NULL);
-      if (count == 1)
-        y_scale=x_scale;
-      *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
-      *height=(unsigned long) floor((y_scale*former_height/100.0)+0.5);
-      former_width=(*width);
-      former_height=(*height);
-    }
   if (flags & AreaValue) /* @  */
     {
       double
         scale_factor,
         original_area,
-        target_area,
-        target_width,
-        target_height;
+        target_area;
+
+      MagickBool
+        resize;
 
       /*
-        Geometry is a maximum area in pixels.
+        Geometry is an area in pixels.
       */
-      target_width=(*width);
-      target_height=(*height);
-      target_area=target_width*target_height;
-      count=GetMagickDimension(geometry,&target_width,&target_height,NULL,NULL);
-      if (count == 2)
-        target_area=target_width*target_height;
-      if (count == 1)
-        target_area=target_width;
-      original_area=(double)former_width*former_height;
-      scale_factor=1/sqrt(original_area/target_area);
-      *width=(unsigned long) floor(former_width*scale_factor+0.25);
-      *height=(unsigned long) floor(former_height*scale_factor+0.25);
-      former_width=(*width);
-      former_height=(*height);
-    }
-  if (!(flags & AspectValue) && /* ! */
-      ((*width != former_width) || (*height != former_height)))
-    {
-      double
-        scale_factor;
-
-      /*
-        Respect aspect ratio of the image but assure that it is no
-        larger than specified.
-      */
-      if ((former_width == 0) || (former_height == 0))
-	{
-	  scale_factor=1.0;
-	}
+      target_area=0.0;
+      if (flags & WidthValue)
+        target_area=(double) (*width);
+      if (flags & HeightValue)
+        target_area *= (double) (*height);
+      original_area=(double) former_width*former_height;
+      resize=MagickFalse;
+      if (flags & GreaterValue)
+        {
+          /* Resize if image area greater than target */
+          if (original_area > target_area)
+            resize=MagickTrue;
+        }
+      else if (flags & LessValue)
+        {
+          /* Resize if image area less than target */
+          if (original_area < target_area)
+            resize=MagickTrue;
+        }
       else
-	{
-	  double
-	    scale_height=1.0,
-	    scale_width=1.0;
+        {
+          /* Always resize */
+          resize=MagickTrue;
+        }
 
-	  if ((flags & HeightValue) != 0)
-	    scale_height=(double) *height/former_height;
-
-	  if ((flags & WidthValue) != 0)
-	    scale_width=(double) *width/former_width;
-	  else
-	    scale_width=scale_height;
-
-	  scale_factor=scale_width;
-	  if ((flags & MinimumValue) != 0)
-	    {
-	      /* Width and height are minimum values */
-	      if (scale_width < scale_height)
-		scale_factor=scale_height;
-	    }
-	  else
-	    {
-	      /* Width and height are maximum values */
-	      if (scale_width > scale_height)
-		scale_factor=scale_height;
-	    }
-	}
-    *width=(unsigned long) floor(scale_factor*former_width+0.5);
-    *height=(unsigned long) floor(scale_factor*former_height+0.5);
-  }
-  if (flags & GreaterValue) /* > */
-    {
-      if (former_width < *width)
-        *width=former_width;
-      if (former_height < *height)
-        *height=former_height;
+      if (resize)
+        {
+          scale_factor=1.0/sqrt(original_area/target_area);
+          *width=(unsigned long) floor(former_width*scale_factor+0.25);
+          *height=(unsigned long) floor(former_height*scale_factor+0.25);
+        }
+      else
+        {
+          *width=former_width;
+          *height=former_height;
+        }
     }
-  if (flags & LessValue) /* < */
+  else
     {
-      if (former_width > *width)
-        *width=former_width;
-      if (former_height > *height)
-        *height=former_height;
+      /*
+        Deal with width or height being missing from geometry.  Supply
+        missing value required to preserve current image aspect ratio.
+      */
+      if (((flags & WidthValue) && !(flags & HeightValue)))
+        *height=(unsigned long) floor(((double) former_height/former_width)*
+                                      (*width)+0.5);
+      else if ((!(flags & WidthValue) && (flags & HeightValue)))
+        *width=(unsigned long) floor(((double) former_width/former_height)*
+                                     (*height)+0.5);
+      if (flags & PercentValue)
+        {
+          double
+            x_scale,
+            y_scale;
+
+          /*
+            Geometry is a percentage of the image size.
+          */
+          x_scale=(*width);
+          y_scale=(*height);
+          count=GetMagickDimension(geometry,&x_scale,&y_scale,NULL,NULL);
+          if (count == 1)
+            y_scale=x_scale;
+          *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
+          *height=(unsigned long) floor((y_scale*former_height/100.0)+0.5);
+          former_width=(*width);
+          former_height=(*height);
+        }
+      if (!(flags & AspectValue) && /* ! */
+          ((*width != former_width) || (*height != former_height)))
+        {
+          double
+            scale_factor;
+
+          /*
+            Respect aspect ratio of the image but assure that it is no
+            larger than specified.
+          */
+          if ((former_width == 0) || (former_height == 0))
+            {
+              scale_factor=1.0;
+            }
+          else
+            {
+              double
+                scale_height,
+                scale_width;
+
+              scale_height=(double) *height/former_height;
+              scale_width=(double) *width/former_width;
+
+              scale_factor=scale_width;
+              if ((flags & MinimumValue) != 0)
+                {
+                  /* Width and height are minimum values */
+                  if (scale_width < scale_height)
+                    scale_factor=scale_height;
+                }
+              else
+                {
+                  /* Width and height are maximum values */
+                  if (scale_width > scale_height)
+                    scale_factor=scale_height;
+                }
+            }
+          *width=(unsigned long) floor(scale_factor*former_width+0.5);
+          *height=(unsigned long) floor(scale_factor*former_height+0.5);
+        }
+      if (flags & GreaterValue) /* > */
+        {
+          if (former_width < *width)
+            *width=former_width;
+          if (former_height < *height)
+            *height=former_height;
+        }
+      if (flags & LessValue) /* < */
+        {
+          if (former_width > *width)
+            *width=former_width;
+          if (former_height > *height)
+            *height=former_height;
+        }
     }
 
   return(flags);
@@ -3501,6 +3543,129 @@ MagickExport void LocaleUpper(char *string)
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
     *q=(char) toupper((int) *q);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k F m i n                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFmin emulates C'99 fmin(), which returns the minimum of two
+%  double values.  This is implemented as a function rather than a macro.
+%
+%  The format of the MagickFmin method is:
+%
+%      double MagickFmin(const double x, const double y)
+%
+%  A description of each parameter follows.
+%
+%   o  x: first input value
+%
+%   o  y: second input value
+%
+%   o  returns: minimum of values x or y
+%
+%
+*/
+double MagickFmin(const double x, const double y)
+{
+  return Min(x,y);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k F m a x                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFmax emulates C'99 fmax(), which returns the maximum of two
+%  double values.  This is implemented as a function rather than a macro.
+%
+%  The format of the MagickFmax method is:
+%
+%      double MagickFmax(const double x, const double y)
+%
+%  A description of each parameter follows.
+%
+%   o  x: first input value
+%
+%   o  y: second input value
+%
+%   o  returns: maximum of values x or y
+%
+%
+*/
+double MagickFmax(const double x, const double y)
+{
+  return Max(x,y);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k F o r m a t S t r i n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickFormatString prints formatted output of a variable
+%  argument list buffer, limiting its output to a specified buffer size.
+%
+%  The format of the MagickFormatString method is:
+%
+%      void MagickFormatString(char *string,const size_t length,
+%                              const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o  string:  Method FormatString returns the formatted string in this
+%      character buffer. Buffer must be at least MaxTextExtent characters
+%      in size.
+%
+%   o  length:  Maximum number of characters to write into buffer, not
+%      including a terminating null byte.  The result is always terminated
+%      with a null byte.
+%
+%   o  format:  A string describing the format to use to write the remaining
+%      arguments.
+%
+%
+*/
+MagickExport void MagickFormatStringList(char *string,
+                                         const size_t length,
+                                         const char *format, 
+                                         va_list operands)
+{
+#if defined(HAVE_VSNPRINTF)
+  (void) vsnprintf(string,length,format,operands);
+#else
+  (void) vsprintf(string,format,operands);
+#endif
+}
+MagickExport void MagickFormatString(char *string,
+                                     const size_t length,
+                                     const char *format,...)
+{
+  va_list
+    operands;
+
+  va_start(operands,format);
+  MagickFormatStringList(string, length, format, operands);
+  va_end(operands);
 }
 
 /*
@@ -5469,9 +5634,6 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
   const ImageAttribute
     *attribute;
 
-  ImageInfo
-    *clone_info;
-
   register char
     *p,
     *q;
@@ -5505,7 +5667,6 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
   if (translated_text == (char *) NULL)
     return NULL;
   (void) strlcpy(translated_text,text,length);
-  clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)
   {
@@ -5615,15 +5776,17 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       }
       case 'g':
       {
-        /* Group ? */
-        FormatString(buffer,"0x%lx",clone_info->group);
+        /* page dimensions and offsets */
+        FormatString(buffer,"%lux%lu%+ld%+ld",
+                     image->page.width,image->page.height,
+                     image->page.x,image->page.y);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'h':
       {
         /* Image height */
-        FormatString(buffer,"%lu",image->magick_rows ? image->magick_rows : 256);
+        FormatString(buffer,"%lu",image->rows);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
@@ -5673,7 +5836,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'o':
       {
         /* Output filename */
-        q+=(translate)(q,clone_info->filename,MaxTextExtent);
+        q+=(translate)(q,image_info->filename,MaxTextExtent);
         break;
       }
       case 'p':
@@ -5705,22 +5868,23 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'r':
       {
         /* Image type */
-        q+=(translate)(q,ImageTypeToString(GetImageType(image,&image->exception)),MaxTextExtent);
+        q+=(translate)(q,ImageTypeToString(GetImageType(image,&image->exception)),
+                       MaxTextExtent);
         break;
       }
       case 's':
       {
         /* Scene number */
         FormatString(buffer,"%lu",image->scene);
-        if (clone_info->subrange != 0)
-          FormatString(buffer,"%lu",clone_info->subimage);
+        if (image_info->subrange != 0)
+          FormatString(buffer,"%lu",image_info->subimage);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'u':
       {
         /* Unique temporary filename */
-        if (strlcpy(buffer,clone_info->unique,MaxTextExtent) == 0)
+        if (strlcpy(buffer,image_info->unique,MaxTextExtent) == 0)
           if (!AcquireTemporaryFileName(buffer))
             break;
         q+=(translate)(q,buffer,MaxTextExtent);
@@ -5729,8 +5893,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'w':
       {
         /* Image width */
-        FormatString(buffer,"%lu",
-          image->magick_columns ? image->magick_columns : 256);
+        FormatString(buffer,"%lu",image->columns);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
@@ -5751,9 +5914,116 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'z':
       {
         /* Second unique temporary filename */
-        if (strlcpy(buffer,clone_info->zero,MaxTextExtent) == 0)
+        if (strlcpy(buffer,image_info->zero,MaxTextExtent) == 0)
           if (!AcquireTemporaryFileName(buffer))
             break;
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'A':
+      {
+        /* Transparency supported */
+        FormatString(buffer,"%s",image->matte? "true" : "false");
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'C':
+      {
+        /* Image compression type */
+        FormatString(buffer,"%s",CompressionTypeToString(image->compression));
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'D':
+      {
+        /* GIF disposal method */
+        FormatString(buffer,"%d",image->dispose);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'G':
+      {
+        /* Original image width and height */
+        FormatString(buffer,"%lux%lu",image->magick_columns,image->magick_rows);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'H':
+      {
+        /* page height */
+        FormatString(buffer,"%lu",image->page.height);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'M':
+      {
+        /* Original filename specification */
+        q+=(translate)(q,image->magick_filename,MaxTextExtent);
+        break;
+      }
+      case 'O':
+      {
+        /* page offset */
+        FormatString(buffer,"%+ld%+ld",image->page.x,image->page.y);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'P':
+      {
+        /* page dimensions */
+        FormatString(buffer,"%lux%lu",image->page.width,image->page.height);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'Q':
+      {
+        /* Compression quality */
+        FormatString(buffer,"%lu",image_info->quality);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'T':
+      {
+        /* time delay (in centi-seconds) */
+        FormatString(buffer,"%lu",image->delay);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'U':
+      {
+        /* resolution units */
+        FormatString(buffer,"%s",ResolutionTypeToString(image->units));
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'W':
+      {
+        /* page width */
+        FormatString(buffer,"%lu",image->page.width);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'X':
+      {
+        /* page x offset */
+        FormatString(buffer,"%+ld",image->page.x);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case 'Y':
+      {
+        /* page y offset */
+        FormatString(buffer,"%+ld",image->page.y);
+        q+=(translate)(q,buffer,MaxTextExtent);
+        break;
+      }
+      case '@':
+      {
+        /* trim bounding box */
+        RectangleInfo bounds = GetImageBoundingBox(image,
+                                                   &image->exception);
+        FormatString(buffer,"%lux%lu%+ld%+ld",bounds.width,bounds.height,
+                     bounds.x,bounds.y);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
@@ -5778,7 +6048,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
 
         /* Try to get the attribute from image_info */
         if (attribute == (const ImageAttribute *) NULL)
-            attribute=GetImageInfoAttribute(clone_info,image,key);
+            attribute=GetImageInfoAttribute(image_info,image,key);
 
         if (attribute != (const ImageAttribute *) NULL)
           {
@@ -5833,7 +6103,6 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       break;
   }
   *q='\0';
-  DestroyImageInfo(clone_info);
   if (text != (char *) formatted_text)
     MagickFreeMemory(text);
   return(translated_text);

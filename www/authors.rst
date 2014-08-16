@@ -41,40 +41,39 @@ Jaroslav Fojtik
                 WPG coder modules. Improved the FITS and TXT coder
                 modules.
 
-Rolf Schroedter
-		Principal author of TclMagick.
-
-David N. Welton
-		Co-author of TclMagick, particularly in the Unix environment.
-
-Mark Mitchell
-                Contributed a new design for the web pages, including the
-                formatting scripts, and converted many pages to the new
-                format.
-
-Richard Nolde
-		Contributed code for converting between native floating
-		point types, and short (16/24) bit float types.
-
-Clément Follet
-		Contributed Hald CLUT and ASC-CDL implementations.
-
-John Sergeant
-		Re-wrote the HP PCL writer to work much better,
-		including support for compression.  Implemented
-		support for CALS type 1 format.  Re-wrote the DICOM
-		reader.
-
-Roberto de Deus Barbosa Murta
-
-                Contributed the adaptive threshold implementation
-                (-lat), which executes in linear rather than quadratic
-                time.
-
 Kenneth Xu
 
                 Contributed the implementation of 'gm batch', a simple
                 batch mode for GraphicsMagick.
+
+Troy Patteson
+
+                Contributed a several significant patches to fix image
+                rotation bugs and improve image rotation performance,
+                as well as an improved bi-linear interpolation
+                implementation.
+
+Sara Shafaei
+
+                Contributed a number of Wand API functions as well as
+                fixes for several composition operators.
+
+Brendan Lane
+
+                Contributed a large number of new Photoshop
+                composition operators and alpha-channel fixes for
+                existing ones.
+
+Dirk Lemstra
+
+                Contributed improvements to the VisualMagick configure
+                program to support configuring more build options via
+                the GUI dialogs and to deal with similarly named
+                files.
+
+Roman Hiestand
+
+                Contributed WebP coder improvements.
 
 
 Former GraphicsMagick Contributors
@@ -111,6 +110,37 @@ Lars Ruben Skyum
 		Contributed the -clippath functionality, added
 		-define support, improved color profile support,
 		and re-wrote the PS3 coder.
+
+Rolf Schroedter
+		Principal author of TclMagick.
+
+David N. Welton
+		Co-author of TclMagick, particularly in the Unix environment.
+
+Mark Mitchell
+                Contributed a new design for the web pages, including the
+                formatting scripts, and converted many pages to the new
+                format.
+
+Richard Nolde
+		Contributed code for converting between native floating
+		point types, and short (16/24) bit float types.
+
+Clément Follet
+		Contributed Hald CLUT and ASC-CDL implementations.
+
+John Sergeant
+		Re-wrote the HP PCL writer to work much better,
+		including support for compression.  Implemented
+		support for CALS type 1 format.  Re-wrote the DICOM
+		reader.
+
+Roberto de Deus Barbosa Murta
+
+                Contributed the adaptive threshold implementation
+                (-lat), which executes in linear rather than quadratic
+                time.
+
 
 Other Contributors (via ImageMagick)
 ====================================
@@ -201,7 +231,7 @@ Thomas R Crimmins
 
 ---------------------------------------------------------------------------
 
-| Copyright (C) 2002 - 2013 GraphicsMagick Group
+| Copyright (C) 2002 - 2014 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

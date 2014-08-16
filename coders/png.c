@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -101,8 +101,7 @@
 #undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
-#define PNG_BUILD_PALETTE   /* This works as of 5.4.3. */
-#define PNG_SORT_PALETTE    /* This works as of 5.4.0. */
+#define GMPNG_BUILD_PALETTE   /* This works as of 5.4.3. */
 #if defined(HasJPEG)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -112,13 +111,15 @@
   setjmp/longjmp is claimed to be safe on these platforms:
   setjmp/longjmp is alleged to be unsafe on these platforms:
 */
-#ifndef SETJMP_IS_THREAD_SAFE
-#define PNG_SETJMP_NOT_THREAD_SAFE
-#endif
+#ifdef PNG_SETJMP_SUPPORTED
+# ifndef SETJMP_IS_THREAD_SAFE
+#   define GMPNG_SETJMP_NOT_THREAD_SAFE
+# endif
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+# if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
 static SemaphoreInfo
   *png_semaphore = (SemaphoreInfo *) NULL;
+# endif
 #endif
 
 /*
@@ -324,7 +325,6 @@ typedef struct _MngInfo
     need_fram,
     object_id,
     old_framing_mode,
-    optimize,
     saved_bkgd_index;
 
   int
@@ -482,299 +482,6 @@ static const char* PngColorTypeToString(const unsigned int color_type)
 
   return result;
 }
-
-#if defined(PNG_SORT_PALETTE)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o m p r e s s C o l o r m a p T r a n s F i r s t                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CompressColormapTransFirst compresses an image colormap removing
-%  any duplicate and unused color entries and putting the transparent colors
-%  first.
-%
-%  The format of the CompressColormapTransFirst method is:
-%
-%      unsigned int CompressColormapTransFirst(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%      This function updates image->colors and image->colormap.
-%
-%
-*/
-static MagickPassFail CompressColormapTransFirst(Image *image)
-{
-  int
-    remap_needed,
-    k;
-
-  long
-    j,
-    new_number_colors,
-    number_colors,
-    y;
-
-  PixelPacket
-    *colormap;
-
-  register const PixelPacket
-    *p;
-
-  IndexPacket
-    top_used;
-
-  register long
-    i,
-    x;
-
-  IndexPacket
-    *map,
-    *opacity;
-
-  unsigned char
-    *marker,
-    have_transparency;
-
-  /*
-    Determine if colormap can be compressed.
-  */
-  assert(image != (Image *) NULL);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    CompressColorMapTransFirst %s (%ld colors)",
-         image->filename,(long)image->colors);
-  if (image->storage_class != PseudoClass || image->colors > 256 ||
-      image->colors < 2)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    Could not compress colormap");
-      if (image->colors > 256 || image->colors == 0)
-        return(MagickFalse);
-      else
-        return(MagickTrue);
-    }
-  marker=MagickAllocateMemory(unsigned char *,image->colors);
-  if (marker == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                         "Unable to compress image colormap")
-      opacity=MagickAllocateMemory(IndexPacket *,
-                                   image->colors*sizeof(IndexPacket));
-  if (opacity == (IndexPacket *) NULL)
-    {
-      MagickFreeMemory(marker);
-      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                           "Unable to compress image colormap")
-        }
-  /*
-    Mark colors that are present.
-  */
-  number_colors=(long) image->colors;
-  for (i=0; i < number_colors; i++)
-    {
-      marker[i]=MagickFalse;
-      opacity[i]=OpaqueOpacity;
-    }
-  top_used=0;
-  for (y=0; y < (long) image->rows; y++)
-    {
-      register const IndexPacket
-        *indexes;
-
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      indexes=AccessImmutableIndexes(image);
-      if (image->matte)
-        for (x=0; x < (long) image->columns; x++)
-          {
-            marker[(int) indexes[x]]=MagickTrue;
-            opacity[(int) indexes[x]]=p->opacity;
-            if (indexes[x] > top_used)
-              top_used=indexes[x];
-            p++;
-          }
-      else
-        for (x=0; x < (long) image->columns; x++)
-          {
-            marker[(int) indexes[x]]=MagickTrue;
-            if (indexes[x] > top_used)
-              top_used=indexes[x];
-          }
-    }
-
-  if (image->matte)
-    {
-      /*
-        Mark background color, topmost occurrence if more than one.
-      */
-      for (i=number_colors-1; i; i--)
-        {
-          if (RGBColorMatchExact(image->colormap[i],image->background_color))
-            {
-              marker[i]=MagickTrue;
-              break;
-            }
-        }
-    }
-  /*
-    Unmark duplicates.
-  */
-  for (i=0; i < number_colors-1; i++)
-    if (marker[i])
-      {
-        for (j=i+1; j < number_colors; j++)
-          if ((opacity[i] == opacity[j]) &&
-              (RGBColorMatchExact(image->colormap[i],image->colormap[j])))
-            marker[j]=MagickFalse;
-      }
-  /*
-    Count colors that still remain.
-  */
-  have_transparency=MagickFalse;
-  new_number_colors=0;
-  for (i=0; i < number_colors; i++)
-    if (marker[i])
-      {
-        new_number_colors++;
-        if (opacity[i] != OpaqueOpacity)
-          have_transparency=MagickTrue;
-      }
-  if ((!have_transparency || (marker[0] && (opacity[0] == TransparentOpacity)))
-      && (new_number_colors == number_colors))
-    {
-      /*
-        No duplicate or unused entries, and transparency-swap not needed
-      */
-      MagickFreeMemory(marker);
-      MagickFreeMemory(opacity);
-      return(MagickPass);
-    }
-
-  remap_needed=MagickFalse;
-  if ((long) top_used >= new_number_colors)
-    remap_needed=MagickTrue;
-
-  /*
-    Compress colormap.
-  */
-
-  colormap=MagickAllocateMemory(PixelPacket *,
-                                image->colors*sizeof(PixelPacket));
-  if (colormap == (PixelPacket *) NULL)
-    {
-      MagickFreeMemory(marker);
-      MagickFreeMemory(opacity);
-      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                           "Unable to compress image colormap")
-        }
-  /*
-    Eliminate unused colormap entries.
-  */
-  map=MagickAllocateMemory(IndexPacket *,number_colors*sizeof(IndexPacket));
-  if (map == (IndexPacket *) NULL)
-    {
-      MagickFreeMemory(marker);
-      MagickFreeMemory(opacity);
-      MagickFreeMemory(colormap);
-      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                           "Unable to compress image colormap")
-        }
-  k=0;
-  for (i=0; i < number_colors; i++)
-    {
-      map[i]=(IndexPacket) k;
-      if (marker[i])
-        {
-          for (j=i+1; j < number_colors; j++)
-            {
-              if ((opacity[i] == opacity[j]) &&
-                  (RGBColorMatchExact(image->colormap[i],image->colormap[j])))
-                {
-                  map[j]=(IndexPacket) k;
-                  marker[j]=MagickFalse;
-                }
-            }
-          k++;
-        }
-    }
-  j=0;
-  for (i=0; i < number_colors; i++)
-    {
-      if (marker[i])
-        {
-          colormap[j]=image->colormap[i];
-          j++;
-        }
-    }
-  if (have_transparency && (opacity[0] != TransparentOpacity))
-    {
-      /*
-        Move the first transparent color to palette entry 0.
-      */
-      for (i=1; i < number_colors; i++)
-        {
-          if (marker[i] && opacity[i] == TransparentOpacity)
-            {
-              PixelPacket
-                temp_colormap;
-
-              temp_colormap=colormap[0];
-              colormap[0]=colormap[(int) map[i]];
-              colormap[map[i]]=temp_colormap;
-              for (j=0; j < number_colors; j++)
-                {
-                  if (map[j] == 0)
-                    map[j]=map[i];
-                  else if (map[j] == map[i])
-                    map[j]=0;
-                }
-              remap_needed=MagickTrue;
-              break;
-            }
-        }
-    }
-
-  MagickFreeMemory(opacity);
-  MagickFreeMemory(marker);
-
-  if (remap_needed)
-    {
-      /*
-        Remap pixels.
-      */
-      for (y=0; y < (long) image->rows; y++)
-        {
-          register IndexPacket
-            *indexes;
-
-          p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-            {
-              j=(int) indexes[x];
-              indexes[x]=map[j];
-            }
-          if (!SyncImagePixels(image))
-            break;
-        }
-      for (i=0; i < new_number_colors; i++)
-        image->colormap[i]=colormap[i];
-    }
-  MagickFreeMemory(colormap);
-  image->colors=new_number_colors;
-  MagickFreeMemory(map);
-  return(MagickPass);
-}
-#endif
 #endif /* HasPNG */
 
 /*
@@ -1258,8 +965,7 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
     
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
-      if (mng_info->global_plte != (png_colorp) NULL)
-        MagickFreeMemory(mng_info->global_plte);
+      MagickFreeMemory(mng_info->global_plte);
       MagickFreeMemory(mng_info);
       *have_mng_structure=MagickFalse;
     }
@@ -1584,6 +1290,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   unsigned char
     *png_pixels;
 
+  Quantum
+    *quantum_scanline;
+
   long
     y;
 
@@ -1628,7 +1337,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.blue=65537;
   transparent_color.opacity=65537;
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -1667,17 +1376,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   png_pixels=(unsigned char *) NULL;
+  quantum_scanline=(Quantum *) NULL;
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
-      if (png_pixels != (unsigned char *) NULL)
-        MagickFreeMemory(png_pixels);
+      MagickFreeMemory(png_pixels);
+      MagickFreeMemory(quantum_scanline);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage() with error.");
@@ -1764,18 +1474,24 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                       &ping_colortype,
                       &ping_interlace_method,
                       &ping_compression_method,
+
                       &ping_filter_method);
 
 #if (QuantumDepth == 8)
-#  ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
-  png_set_scale_16(ping);
-#  else
-  png_set_strip_16(ping);
-#  endif
   if (ping_bit_depth > 8)
+  {
+#  if defined(PNG_READ_STRIP_16_TO_8_SUPPORTED) || \
+      defined(PNG_READ_16_TO_8_SUPPORTED)
+    png_set_strip_16(ping);
+#  else
+#    ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
+    png_set_scale_16(ping);
+#    endif
+#  endif
     ping_bit_depth=8;
-  image->depth=8;
-#else
+    image->depth=8;
+  }
+#else /* QuantumDepth > 8 */
   if (ping_bit_depth > 8)
     image->depth=16;
   else
@@ -2021,10 +1737,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   {
                     if (mng_info->global_trns_length >
                         mng_info->global_plte_length)
-                      (void) ThrowException2(&image->exception,CoderError,
-                                             "global tRNS has more entries"
-                                             " than global PLTE",
-                                             image_info->filename);
+                       png_error(ping, "global tRNS has more entries"
+                                             " than global PLTE");
                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
                                  (int) mng_info->global_trns_length,NULL);
                   }
@@ -2055,9 +1769,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
             }
           else
-            (void) ThrowException2(&image->exception,CoderError,
-                                   "No global PLTE in file",
-                                   image_info->filename);
+            png_error (ping, "No global PLTE in file");
         }
     }
 
@@ -2300,7 +2012,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               "    Skipping PNG image data for scene %ld",
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      MagickFreeMemory(png_pixels);
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
@@ -2521,9 +2234,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else /* image->storage_class != DirectClass */
     for (pass=0; pass < num_passes; pass++)
       {
-        Quantum
-          *quantum_scanline;
-
         register Quantum
           *r;
 
@@ -2662,7 +2372,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       MagickFreeMemory(png_pixels);
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       if (logging)
@@ -2866,9 +2576,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Free memory.
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
-
   MagickFreeMemory(png_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -3829,15 +3539,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
     Set image_info->type=OptimizeType (new in version 5.4.0) to get the
     following optimizations:
 
-    o  16-bit depth is reduced to 8 if all pixels contain samples whose
-    high byte and low byte are identical.
     o  Opaque matte channel is removed.
     o  If matte channel is present but only one transparent color is
     present, RGB+tRNS is written instead of RGBA
-    o  Grayscale images are reduced to 1, 2, or 4 bit depth if
-    this can be done without loss.
-    o  Palette is sorted to remove unused entries and to put a
-    transparent color first, if PNG_SORT_PALETTE is also defined.
   */
 
   /*
@@ -3868,9 +3572,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
   (void) memset(mng_info,0,sizeof(MngInfo));
   mng_info->image=image;
   have_mng_structure=MagickTrue;
-#if (QuantumDepth == 16)
-  mng_info->optimize=image_info->type == OptimizeType;
-#endif
 
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
@@ -5548,86 +5249,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 #endif
         }
 
-#if (QuantumDepth == 16)  /* TO DO: treat Q:32 */
-      /* Determine if bit depth can be reduced from 16 to 8.
-       * Note that the method GetImageDepth doesn't check background
-       * and doesn't handle PseudoClass specially.  Also it uses
-       * multiplication and division by 257 instead of shifting, so
-       * might be slower.
-       */
-      if (mng_info->optimize && image->depth == 16)
-        {
-          int
-            ok_to_reduce;
-
-          const PixelPacket
-            *p;
-
-          ok_to_reduce=((((image->background_color.red >> 8) & 0xff)
-                         == (image->background_color.red & 0xff)) &&
-                        (((image->background_color.green >> 8) & 0xff)
-                         == (image->background_color.green & 0xff)) &&
-                        (((image->background_color.blue >> 8) & 0xff)
-                         == (image->background_color.blue & 0xff)));
-          if (ok_to_reduce && image->storage_class == PseudoClass)
-            {
-              int index;
-
-              for (index=0; index < (long) image->colors; index++)
-                {
-                  ok_to_reduce=((((image->colormap[index].red >> 8) & 0xff)
-                                 == (image->colormap[index].red & 0xff)) &&
-                                (((image->colormap[index].green >> 8) & 0xff)
-                                 == (image->colormap[index].green & 0xff)) &&
-                                (((image->colormap[index].blue >> 8) & 0xff)
-                                 == (image->colormap[index].blue & 0xff)));
-                  if (!ok_to_reduce)
-                    break;
-                }
-            }
-          if (ok_to_reduce && image->storage_class != PseudoClass)
-            {
-              long
-                y;
-
-              register long
-                x;
-
-              for (y=0; y < (long) image->rows; y++)
-                {
-                  p=AcquireImagePixels(image,0,y,image->columns,1,
-                                       &image->exception);
-                  if (p == (const PixelPacket *) NULL)
-                    break;
-                  for (x=(long) image->columns; x > 0; x--)
-                    {
-                      ok_to_reduce=((((p->red >> 8) & 0xff) ==
-                                    (p->red & 0xff)) &&
-                                    (((p->green >> 8) & 0xff) ==
-                                    (p->green & 0xff)) &&
-                                    (((p->blue >> 8) & 0xff) ==
-                                    (p->blue & 0xff)) &&
-                                    (((!image->matte ||
-                                       ((p->opacity >> 8) & 0xff) ==
-                                    (p->opacity & 0xff)))));
-                      if (!ok_to_reduce)
-                        break;
-                      p++;
-                    }
-                  if (x != 0)
-                    break;
-                }
-            }
-          if (ok_to_reduce)
-            {
-              image->depth=8;
-              if (logging)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                      "  Reducing PNG bit depth to 8"
-                                      " without loss of info");
-            }
-        }
-#endif
       /*
         Transfer most significant exception to exception argument
         FIXME: should status be used to terminate processing?
@@ -6097,7 +5718,7 @@ ModuleExport void RegisterPNGImage(void)
       entry->coder_class=PrimaryCoderClass;
       (void) RegisterMagickInfo(entry);
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       png_semaphore=AllocateSemaphoreInfo();
 #endif
 }
@@ -6133,7 +5754,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG00");
   (void) UnregisterMagickInfo("JNG");
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   DestroySemaphoreInfo(&png_semaphore);
 #endif
 }
@@ -6387,6 +6008,22 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       return MagickFail;
     }
 
+  if (logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Image Characteristics:\n"
+                            "  CMYK:       %u\n"
+                            "  Grayscale:  %u\n"
+                            "  Monochrome: %u\n"
+                            "  Opaque:     %u\n"
+                            "  Palette:    %u",
+                            characteristics.cmyk,
+                            characteristics.grayscale ,
+                            characteristics.monochrome,
+                            characteristics.opaque,
+                            characteristics.palette);
+    }
+
   /* Initialize some stuff */
   ping_background.red = 0;
   ping_background.green = 0;
@@ -6405,6 +6042,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     image_colors=0;
   image_depth=image->depth;
   image_matte=image->matte;
+
+  /*
+    Optimize logic does not deal properly with matte enabled but no
+    actual transparency so eliminate that case immediately.
+  */
+  if (image_info->type == OptimizeType)
+    image_matte=!characteristics.opaque;
 
   if (image->storage_class == PseudoClass &&
       image_colors <= 256)
@@ -6449,7 +6093,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   png_set_write_fn(ping,image,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   LockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -6464,7 +6108,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 #endif
       png_destroy_write_struct(&ping,&ping_info);
       MagickFreeMemory(png_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
       return(MagickFail);
@@ -6559,12 +6203,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
         ping_colortype=PNG_COLOR_TYPE_PALETTE;
 
-#if defined(PNG_SORT_PALETTE)
-        if (CompressColormapTransFirst(image) == MagickFail)
-          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                               image);
-        number_colors=image->colors;
-#endif
         palette=MagickAllocateMemory(png_color *,
                                      number_colors*sizeof(png_color));
         if (palette == (png_color *) NULL)
@@ -6710,8 +6348,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         ping_colortype=PNG_COLOR_TYPE_GRAY;
       if (image_info->type == GrayscaleMatteType)
         ping_colortype=PNG_COLOR_TYPE_GRAY_ALPHA;
-      /*       if (!mng_info->optimize && matte) */
-      /*         ping_colortype=PNG_COLOR_TYPE_RGB_ALPHA; */
 
       if (logging)
         {
@@ -6728,7 +6364,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                 ping_bit_depth);
         }
 
-      if (matte && (mng_info->optimize || mng_info->IsPalette))
+      if (matte && mng_info->IsPalette)
         {
           register const PixelPacket
             *p=NULL;
@@ -6830,7 +6466,16 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                     break;
                 }
               if (x != 0)
-                png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
+                {
+                  png_set_invalid(ping, ping_info, PNG_INFO_tRNS);
+                }
+              else if (logging)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Single transparent color (%d,%d,%d index=%d)",
+                                        ping_trans_color.red,ping_trans_color.green,
+                                        ping_trans_color.blue,ping_trans_color.index);
+                }
             }
           if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
             {
@@ -6847,7 +6492,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       matte=image_matte;
       if (png_get_valid(ping, ping_info, PNG_INFO_tRNS))
         image_matte=MagickFalse;
-      if ((mng_info->optimize || mng_info->IsPalette) &&
+      if (mng_info->IsPalette &&
           characteristics.grayscale && (!image_matte || image_depth >= 8))
         {
           if (image_matte)
@@ -6873,40 +6518,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                 (long) image_colors)
                     ping_bit_depth <<= 1;
                 }
-              else if (mng_info->optimize && ping_colortype ==
-                       PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
-                       mng_info->IsPalette)
-                {
-
-                  /* Check if grayscale is reducible */
-                  int
-                    depth_4_ok=MagickTrue,
-                    depth_2_ok=MagickTrue,
-                    depth_1_ok=MagickTrue;
-
-                  for (i=0; i < (long) image_colors; i++)
-                    {
-                      unsigned char
-                        intensity;
-
-                      intensity=ScaleQuantumToChar(image->colormap[i].red);
-
-                      if ((intensity & 0x0f) != ((intensity & 0xf0) >> 4))
-                        depth_4_ok=depth_2_ok=depth_1_ok=MagickFalse;
-                      else if ((intensity & 0x03) !=
-                          ((intensity & 0x0c) >> 2))
-                        depth_2_ok=depth_1_ok=MagickFalse;
-                      else if ((intensity & 0x01) !=
-                          ((intensity & 0x02) >> 1))
-                        depth_1_ok=MagickFalse;
-                    }
-                  if (depth_1_ok)
-                    ping_bit_depth=1;
-                  else if (depth_2_ok)
-                    ping_bit_depth=2;
-                  else if (depth_4_ok)
-                    ping_bit_depth=4;
-                }
             }
         }
       else
@@ -6931,16 +6542,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   }
                 else
                   {
-#if defined(PNG_SORT_PALETTE)
-                    if (mng_info->optimize)
-                      {
-                        if (CompressColormapTransFirst(image) == MagickFail)
-                          ThrowWriterException(ResourceLimitError,
-                                               MemoryAllocationFailed,
-                                               image);
-                        number_colors=image->colors;
-                      }
-#endif
                     palette=MagickAllocateArray(png_color *,
                                                 number_colors,
                                                 sizeof(png_color));
@@ -7130,6 +6731,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "    Compression strategy: Z_HUFFMAN_ONLY");
       png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+      png_set_compression_level(ping,2);
     }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7475,8 +7077,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         rowbytes*=3;
       else if (mng_info->write_png32)
         rowbytes*=4;
-      else if (!mng_info->write_png8 &&
-               ((mng_info->optimize || mng_info->IsPalette) &&
+      else if (!mng_info->write_png8 && (mng_info->IsPalette &&
                 IsGrayImage(image,&image->exception)))
         rowbytes*=(image_matte ? 2 : 1);
       else
@@ -7493,7 +7094,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       else if (mng_info->write_png64)
         rowbytes*=8;
 
-      else if ((mng_info->optimize || mng_info->IsPalette) &&
+      else if (mng_info->IsPalette &&
           IsGrayImage(image,&image->exception))
         rowbytes*=(image_matte ? 4 : 2);
 
@@ -7513,8 +7114,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
        !mng_info->write_png32 && !mng_info->write_png48 &&
-       !mng_info->write_png64) && (mng_info->optimize ||
-       mng_info->IsPalette ||
+       !mng_info->write_png64) && (mng_info->IsPalette ||
        image_info->type == BilevelType) &&
        !image_matte &&
        IsMonochromeImage(image,&image->exception))
@@ -7559,7 +7159,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
              !mng_info->write_png32 && !mng_info->write_png48 &&
              !mng_info->write_png64) &&
             (!image_matte || (ping_bit_depth >= QuantumDepth)) &&
-            (mng_info->optimize || mng_info->IsPalette) &&
+            mng_info->IsPalette &&
             IsGrayImage(image,&image->exception))
           {
             if (logging)
@@ -7837,7 +7437,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
   MagickFreeMemory(png_pixels);
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
@@ -8626,7 +8226,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     all_images_are_gray,
     logging,
     need_defi,
-    optimize,
+    build_palette,
     use_global_plte;
 
   register long
@@ -8708,12 +8308,13 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->adjoin=image_info->adjoin && (image->next != (Image *) NULL) &&
     write_mng;
 
+#ifdef GMPNG_BUILD_PALETTE
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
       mng_info->write_png48 || mng_info->write_png64)
-    optimize=MagickFalse;
+    build_palette=MagickFalse;
   else
-    optimize=(image_info->type == OptimizeType || image_info->type ==
-              UndefinedType);
+    build_palette=(image_info->type == UndefinedType);
+#endif
 
   if (logging)
     {
@@ -8723,12 +8324,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "  Checking input image(s)");
-      if (optimize)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Optimize: TRUE");
-      else
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "    Optimize: FALSE");
+
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    Image_info depth: %ld",
                             image_info->depth);
@@ -8782,8 +8378,8 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       }
   }
 
-#ifdef PNG_BUILD_PALETTE
-  if (optimize)
+#ifdef GMPNG_BUILD_PALETTE
+  if (build_palette)
     {
       /*
         Sometimes we get DirectClass images that have 256 colors or fewer.

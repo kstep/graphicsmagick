@@ -1,4 +1,4 @@
-.TH gm 1 "2013/05/11" "GraphicsMagick"
+.TH gm 1 "2014/07/27" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1352,7 +1352,7 @@ imagemask operator instead of the image operator.
 .in 20
 Specify the TIFF alpha channel type when reading or writing TIFF files,
 overriding the normal value. The default alpha channel type for new files
-is associated alpha. Existing alpha settings are preserved when
+is unspecified alpha. Existing alpha settings are preserved when
 converting from one TIFF file to another. When a TIFF file uses
 associated alpha, the image pixels are pre-multiplied (i.e. altered) with
 the alpha channel. Files with "associated" alpha appear as if they were
@@ -1521,6 +1521,191 @@ Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
+
+.in 15
+.in 15
+.B "webp:lossless={true|false}"
+.in 20
+ \fR
+.in 20
+Enable lossless encoding.
+
+.in 15
+.in 15
+.B "webp:method={0-6}"
+.in 20
+ \fR
+.in 20
+Quality/speed trade-off.
+
+.in 15
+.in 15
+.B "webp:image-hint={default,graph,photo,picture}"
+.in 20
+ \fR
+.in 20
+Hint for image type.
+
+.in 15
+.in 15
+.B "webp:target-size=<integer>"
+.in 20
+ \fR
+.in 20
+Target size in bytes.
+
+.in 15
+.in 15
+.B "webp:target-psnr=<float>"
+.in 20
+ \fR
+.in 20
+Minimal distortion to try to achieve.
+
+.in 15
+.in 15
+.B "webp:segments={1-4}"
+.in 20
+ \fR
+.in 20
+Maximum number of segments to use.
+
+.in 15
+.in 15
+.B "webp:sns-strength={0-100}"
+.in 20
+ \fR
+.in 20
+Spatial Noise Shaping.
+
+.in 15
+.in 15
+.B "webp:filter-strength={0-100}"
+.in 20
+ \fR
+.in 20
+Filter strength.
+
+.in 15
+.in 15
+.B "webp:filter-sharpness={0-7}"
+.in 20
+ \fR
+.in 20
+Filter sharpness.
+
+.in 15
+.in 15
+.B "webp:filter-type={0,1}"
+.in 20
+ \fR
+.in 20
+Filtering type. 0 = simple, 1 = strong (only used if
+filter-strength > 0 or autofilter is enabled).
+
+.in 15
+.in 15
+.B "webp:auto-filter={true|false}"
+.in 20
+ \fR
+.in 20
+Auto adjust filter's strength.
+
+.in 15
+.in 15
+.B "webp:alpha-compression=<integer>"
+.in 20
+ \fR
+.in 20
+Algorithm for encoding the alpha plane (0 = none, 1 = compressed
+with WebP lossless). Default is 1.
+
+.in 15
+.in 15
+.B "webp:alpha-filtering=<integer>"
+.in 20
+ \fR
+.in 20
+Predictive filtering method for alpha plane. 0: none, 1: fast, 2:
+best. Default is 1.
+
+.in 15
+.in 15
+.B "webp:alpha-quality={0-100}"
+.in 20
+ \fR
+.in 20
+Between 0 (smallest size) and 100 (lossless). Default is 100.
+
+.in 15
+.in 15
+.B "webp:pass=[1..10]"
+.in 20
+ \fR
+.in 20
+Number of entropy-analysis passes.
+
+.in 15
+.in 15
+.B "webp:show-compressed={true|false}"
+.in 20
+ \fR
+.in 20
+Export the compressed picture back.  In-loop filtering is not
+applied.
+
+.in 15
+.in 15
+.B "webp:preprocessing=[0,1,2]"
+.in 20
+ \fR
+.in 20
+0=none, 1=segment-smooth, 2=pseudo-random dithering
+
+.in 15
+.in 15
+.B "webp:partitions=[0-3]"
+.in 20
+ \fR
+.in 20
+log2(number of token partitions) in [0..3].  Default is 0 for
+easier progressive decoding.
+
+.in 15
+.in 15
+.B "webp:partition-limit={0-100}"
+.in 20
+ \fR
+.in 20
+Quality degradation allowed to fit the 512k limit on prediction
+modes coding (0: no degradation, 100: maximum possible
+degradation).
+
+.in 15
+.in 15
+.B "webp:emulate-jpeg-size={true|false}"
+.in 20
+ \fR
+.in 20
+If true, compression parameters will be remapped to better match
+the expected output size from JPEG compression. Generally, the output
+size will be similar but the degradation will be lower.
+
+.in 15
+.in 15
+.B "webp:thread-level=<integer>"
+.in 20
+ \fR
+.in 20
+If non-zero, try and use multi-threaded encoding.
+
+.in 15
+.in 15
+.B "webp:low-memory={true|false}"
+.in 20
+ \fR
+.in 20
+If set, reduce memory usage (but increase CPU use)
 
 .in 15
 
@@ -2054,6 +2239,7 @@ characters:
      %d   directory
      %e   filename extension
      %f   filename
+     %g   page dimensions and offsets
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -2062,17 +2248,33 @@ characters:
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   image minimum bit depth
+     %q   image bit depth
      %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
      %w   width
-     %x   x resolution
-     %y   y resolution
+     %x   horizontal resolution
+     %y   vertical resolution
+     %A   transparency supported
+     %C   compression type
+     %D   GIF disposal method
+     %G   Original width and height
+     %H   page height
+     %M   original filename specification
+     %O   page offset (x,y)
+     %P   page dimensions (width,height)
+     %Q   compression quality
+     %T   time delay (in centi-seconds)
+     %U   resolution units
+     %W   page width
+     %X   page horizontal offset (x)
+     %Y   page vertical offset (y)
+     %@   trim bounding box
      %#   signature
      \\n   newline
      \\r   carriage return
+     %%   %
 
 
 For example,
@@ -2893,16 +3095,16 @@ independently so that operations are on a per-channel basis.
 \fBGray\fP treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.
-
 Select an operator from \fBAdd\fP, \fBAnd\fP, \fBAssign\fP,
 \fBDepth\fP, \fBDivide\fP, \fBGamma\fP, \fBNegate\fP,
 \fBLShift\fP, \fBLog\fP, \fBMax\fP, \fBMin\fP, \fBMultiply\fP,
 \fBOr\fP, \fBPow\fP \fBRShift\fP, \fBSubtract\fP,
-\fBThreshold\fP, \fBThreshold-White\fP, \fBThreshold-Black\fP,
-\fBXor\fP, \fBNoise-Gaussian\fP, \fBNoise-Impulse\fP,
-\fBNoise-Laplacian\fP, \fBNoise-Multiplicative\fP,
-\fBNoise-Poisson\fP, \fBNoise-Random\fP, and
-\fBNoise-Uniform\fP.
+\fBThreshold\fP, \fBThreshold-White\fP,
+\fBThreshold-White-Negate\fP, \fBThreshold-Black\fP,
+\fBThreshold-Black-Negate\fP, \fBXor\fP, \fBNoise-Gaussian\fP,
+\fBNoise-Impulse\fP, \fBNoise-Laplacian\fP,
+\fBNoise-Multiplicative\fP, \fBNoise-Poisson\fP,
+\fBNoise-Random\fP, and \fBNoise-Uniform\fP.
 
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3071,6 +3273,17 @@ intensity.
 
 .in 15
 .in 15
+.B "Threshold-White-Negate"
+.in 20
+ \fR
+.in 20
+Result is set to black if channel value is greater than
+rvalue and is unchanged if it is less than or equal to rvalue. If
+\fBall\fP channels are specified, then thresholding is done based on
+computed pixel intensity.
+
+.in 15
+.in 15
 .B "Threshold-black"
 .in 20
  \fR
@@ -3078,6 +3291,17 @@ intensity.
 Result is minimum (black) if channel value is less than than rvalue
 and is unchanged if it is greater than or equal to rvalue. This can be
 used to remove apparent noise from the dark parts of an image. If
+\fBall\fP channels are specified, then thresholding is done based on
+computed pixel intensity.
+
+.in 15
+.in 15
+.B "Threshold-Black-Negate"
+.in 20
+ \fR
+.in 20
+Result is set to white if channel value is less than than
+rvalue and is unchanged if it is greater than or equal to rvalue. If
 \fBall\fP channels are specified, then thresholding is done based on
 computed pixel intensity.
 
@@ -3811,9 +4035,15 @@ the specified window, and more importantly, you can capture menus or other
 popups that are independent windows but appear over the specified window.
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
 
 Set a named image attribute.  The attribute is set on the current
+(previously specified on command line) image.
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
+
+Unset a named image attribute.  The attribute is removed from the current
 (previously specified on command line) image.
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
@@ -4382,16 +4612,19 @@ configuration files in $HOME/.magick if the directory exists. See
 .TP
 .B "MAGICK_CODER_STABILITY"
 \fRThe minimum coder stability level before it will be used. The
-available levels are \fBPRIMARY\fP, \fBSTABLE\fP, and \fBUNSTABLE\fP.
-The default minimum level is \fBUNSTABLE\fP, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the \fBPRIMARY\fP level are commonly used
-formats with very well maintained implementations. Coders at the
-\fBSTABLE\fP level are reasonably well maintained but represent less used
-formats. Coders at the \fBUNSTABLE\fP level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.
+available levels are \fBPRIMARY\fP, \fBSTABLE\fP, \fBUNSTABLE\fP,
+and \fBBROKEN\fP.  The default minimum level is \fBUNSTABLE\fP,
+which means that all available working coders will be used. The
+purpose of this option is to reduce the security exposure (or apparent
+complexity) due to the huge number of formats supported. Coders at the
+\fBPRIMARY\fP level are commonly used formats with very well
+maintained implementations. Coders at the \fBSTABLE\fP level are
+reasonably well maintained but represent less used formats. Coders at
+the \fBUNSTABLE\fP level either have weak implementations, the file
+format itself is weak, or the probability the coder will be needed is
+vanishingly small. Coders at the \fBBROKEN\fP level are known to
+often not work properly or might not be useful in their current state
+at all.
 .TP
 .B "MAGICK_CODER_MODULE_PATH"
 \fRSearch path to use when searching for image format coder modules.
@@ -4411,7 +4644,9 @@ Microsoft Windows). This user specified search path is used before trying
 the default search path.
 .TP
 .B "MAGICK_DEBUG"
-\fRDebug options (see \fB-debug\fP for details)
+\fRDebug options (see \fB-debug\fP for details).  Setting debug
+options via an environment variable is currently necessary to see the
+complete initialization process.
 .TP
 .B "MAGICK_FILTER_MODULE_PATH"
 \fRSearch path to use when searching for filter process modules
@@ -4423,6 +4658,13 @@ is similar to operating system search paths (i.e. colon delimited for
 Unix, and semi-colon delimited for Microsoft Windows). This user
 specified search path is used before trying the default search path.
 .TP
+.B "MAGICK_GHOSTSCRIPT_PATH"
+\fRFor Microsoft Windows, specify the path to the Ghostscript
+installation rather than searching for it via the Windows registry.
+This helps in case Ghostscript is not installed via the Ghostscript
+Windows installer or the user wants more control over the Ghostscript
+used.
+.TP
 .B "MAGICK_HOME"
 \fRPath to top of GraphicsMagick installation directory. Only observed
 by "uninstalled" builds of GraphicsMagick which do not have their location
@@ -4431,10 +4673,15 @@ hard-coded or set by an installer.
 .B "MAGICK_MMAP_READ"
 \fRIf \fBMAGICK_MMAP_READ\fP is set to \fBTRUE\fP, GraphicsMagick
 will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.
+substantially improves repeated read performance since the file is
+already in memory after the first time it has been read. However,
+testing shows that performance may be reduced for files accessed for
+the first time since data is accessed via page-faults (upon first
+access) and many operating systems fail to do sequential read-ahead of
+memory mapped files, and particularly if those files are accessed over
+a network.  If many large input files are read, then enabling this
+option may harm performance by overloading the operating system's VM
+system as it then needs to free unmapped pages and map new ones.
 .TP
 .B "MAGICK_IO_FSYNC"
 \fRIf \fBMAGICK_IO_FSYNC\fP is set to \fBTRUE\fP, then GraphicsMagick
@@ -5501,7 +5748,10 @@ Options, above.
 \fRset scene number
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
 .TP
 .B "-sharpen \fI<radius>{x<sigma>}"\fP
 \fRsharpen the image
@@ -6589,7 +6839,10 @@ Options, above.
 \fRset scene number
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -7009,7 +7262,10 @@ Options, above.
 \fRrange of image scene numbers to read
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -9133,7 +9389,10 @@ Options, above.
 \fRspecify the screen to capture
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
 .TP
 .B "-silent"
 \fRoperate silently
@@ -9528,7 +9787,10 @@ Options, above.
 \fRset scene number
 .TP
 .B "-set \fI<attribute> <value>"\fP
-\fRset an image attribut
+\fRset an image attribute
+.TP
+.B "+set \fI<attribute>"\fP
+\fRunset an image attribute
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -10046,8 +10308,8 @@ software was configured and the host system.
 To display the version information:
 
   % gm -version
-  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
-  Copyright (C) 2002-2012 GraphicsMagick Group.
+  GraphicsMagick 1.3.19 2013-12-31 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2013 GraphicsMagick Group.
   Additional copyrights and licenses apply to this software.
   See http://www.GraphicsMagick.org/www/Copyright.html for details.
   Feature Support:
@@ -10068,7 +10330,7 @@ To display the version information:
     PNG                      yes
     TIFF                     yes
     TRIO                     no
-    UMEM                     no
+    UMEM                     yes
     WMF                      no
     X11                      yes
     XML                      yes

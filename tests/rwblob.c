@@ -412,6 +412,7 @@ int main ( int argc, char **argv )
           (!strcmp( "PCD", format )) ||
           (!strcmp( "PCDS", format )) ||
           (!strcmp( "UYVY", format )) ||
+          (!strcmp( "WEBP", format )) ||
           (!strcmp( "YUV", format ))  ||
           (final->compression == JPEGCompression))
         fuzz_factor = 0.06;

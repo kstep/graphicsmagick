@@ -764,7 +764,7 @@ int wmf_canvas_set_polyfill (wmfAPI * API, wmfCanvas * canvas, unsigned short mo
   if ((mode != ALTERNATE) && (mode != WINDING))
     {
       WMF_ERROR (API, "Unexpected polygon fill mode! Expected one of ALTERNATE or WINDING");
-      return;
+      return -1;
     }
   if (construct->polyfill == mode) return 0;
 
@@ -976,7 +976,7 @@ int wmf_canvas_line (wmfAPI * API, wmfCanvas * canvas,
 {
   unsigned long Size = 3 + 2;
 
-  wmfRecordBox rbox;
+  /* wmfRecordBox rbox; */
 
   wmfConstruct * construct = (wmfConstruct *) canvas;
 
@@ -1577,7 +1577,7 @@ int wmf_canvas_text (wmfAPI * API, wmfCanvas * canvas,
   if ((construct == 0) || (str == 0)) return -1;
 
   length = (strlen (str) + 1) / 2; /* TODO: do conversion from UTF-8 to... ?? */
-  if (length == 0) return;
+  if (length == 0) return 0;
 
   Size += length;
 

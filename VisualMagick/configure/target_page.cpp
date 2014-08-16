@@ -19,13 +19,16 @@ IMPLEMENT_DYNCREATE(CTargetPage, CPropertyPage)
 CTargetPage::CTargetPage() : CPropertyPage(CTargetPage::IDD)
 {
 	//{{AFX_DATA_INIT(CTargetPage)
-	m_projectType = -1;
+	m_projectType = 0;
+	m_quantumDepth = Q8;
 	m_useX11Stubs = FALSE;
 	m_decorateFiles = FALSE;
 	m_optionalFiles = FALSE;
 	m_standalone = FALSE;
 	m_visualStudio7 = FALSE;
 	m_bigCoderDLL = FALSE;
+	m_build64Bit = FALSE;
+	m_openMP = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -38,12 +41,15 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CTargetPage)
 	DDX_Radio(pDX, IDC_PROJECT_TYPE, m_projectType);
+	DDX_CBIndex(pDX,IDC_QUANTUM_DEPTH, m_quantumDepth);
 	DDX_Check(pDX, IDC_USE_X11_STUBS, m_useX11Stubs);
 	DDX_Check(pDX, IDC_DECORATE_FILES, m_decorateFiles);
 	DDX_Check(pDX, IDC_INCLUDE_OPTIONAL, m_optionalFiles);
 	DDX_Check(pDX, IDC_STANDALONE, m_standalone);
 	DDX_Check(pDX, IDC_GENERATE_VS7, m_visualStudio7);
 	DDX_Check(pDX, IDC_BIGCODERDLL, m_bigCoderDLL);
+	DDX_Check(pDX, IDC_BUILD_64_BIT, m_build64Bit);
+	DDX_Check(pDX, IDC_OPEN_MP, m_openMP);
 	//}}AFX_DATA_MAP
 }
 
@@ -60,7 +66,6 @@ BOOL CTargetPage::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 	
-	m_projectType = 0;
 	UpdateData(FALSE);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control

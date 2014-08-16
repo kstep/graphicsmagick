@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2013 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -950,7 +950,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               loop=!LocaleNCompare((char *) header,"NETSCAPE2.0",11);
             while (ReadBlobBlock(image,header) != 0)
             if (loop)
-              iterations=(header[2] << 8) | header[1];
+              {
+                iterations=(header[2] << 8) | header[1];
+                if (image->logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Loop extension with iterations %lu",
+                                        iterations);
+
+              }
             break;
           }
           default:
@@ -1464,6 +1471,10 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Write Netscape Loop extension.
             */
+            if (image->logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Loop extension with iterations %lu",
+                                    image->iterations);
             (void) WriteBlobByte(image,0x21);
             (void) WriteBlobByte(image,0xff);
             (void) WriteBlobByte(image,0x0b);

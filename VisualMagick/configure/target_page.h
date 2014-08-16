@@ -23,12 +23,15 @@ public:
 	//{{AFX_DATA(CTargetPage)
 	enum { IDD = IDD_TARGET_PAGE };
 	int		m_projectType;
+	int		m_quantumDepth;
 	BOOL	m_useX11Stubs;
 	BOOL	m_decorateFiles;
 	BOOL	m_optionalFiles;
 	BOOL	m_standalone;
 	BOOL	m_visualStudio7;
 	BOOL	m_bigCoderDLL;
+	BOOL	m_build64Bit;
+	BOOL	m_openMP;
 	//}}AFX_DATA
 
 

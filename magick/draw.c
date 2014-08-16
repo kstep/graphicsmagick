@@ -345,12 +345,12 @@ struct _DrawVTable
 static int
   MvgPrintf(DrawContext context, const char *format, ...)
 #if defined(__GNUC__)
-__attribute__ ((format (printf, 2, 3)))
+MAGICK_ATTRIBUTE ((format (printf, 2, 3)))
 #endif
 ,
   MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
 #if defined(__GNUC__)
-__attribute__ ((format (printf, 2, 3)))
+MAGICK_ATTRIBUTE ((format (printf, 2, 3)))
 #endif
 ;
 static void

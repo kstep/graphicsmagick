@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1915,6 +1915,15 @@ BenchmarkImageCommand(ImageInfo *image_info,
       return MagickFail;
     }
 
+  if (raw_csv)
+    {
+      /*
+        Print a header line since spreadsheet programs (and Python's
+        CSV parser) use the first line as the column titles.
+      */
+      (void) fprintf(stderr,"\"Threads\",\"Iterations\",\"User Time\",\"Elapsed Time\"\n");
+    }
+
   do
     {
       char
@@ -2089,7 +2098,7 @@ BenchmarkImageCommand(ImageInfo *image_info,
 	if (raw_csv)
 	  {
 	    /* RAW CSV value output */
-	    (void) fprintf(stderr,"%ld,%ld,%.2f,%.3f",
+	    (void) fprintf(stderr,"\"%ld\",\"%ld\",\"%.2f\",\"%.3f\"",
 			   threads_limit,iteration,user_time,elapsed_time);
 	  }
 	else
@@ -3809,12 +3818,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowCompositeException(OptionError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  ThrowCompositeException(OptionError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,option);
@@ -4127,6 +4136,7 @@ static void CompositeUsage(void)
       "                     horizontal and vertical sampling factors",
       "-scene value         image scene number",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
       "-stegano offset      hide watermark within an image",
@@ -5720,12 +5730,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowConvertException(OptionError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  ThrowConvertException(OptionError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
@@ -6249,6 +6259,7 @@ static void ConvertUsage(void)
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen geometry    sharpen the image",
       "-shave geometry      shave pixels from the image edges",
@@ -6565,6 +6576,7 @@ static void DisplayUsage(void)
       "-scenes range        image scene range",
       "-segment value       segment an image",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
       "-texture filename    name of texture to tile onto the image background",
@@ -7675,12 +7687,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
@@ -10765,10 +10777,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               *value;
 
             key=argv[++i];
-            value=argv[++i];
             (void) SetImageAttribute(*image,key,(char *) NULL);
             if (*option == '-')
-              (void) SetImageAttribute(*image,key,value);
+              {
+                value=argv[++i];
+                (void) SetImageAttribute(*image,key,value);
+              }
             continue;
           }
         if (LocaleCompare("segment",option+1) == 0)
@@ -13274,12 +13288,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
@@ -13762,6 +13776,7 @@ static void MogrifyUsage(void)
       "-seed value          pseudo-random number generator seed value",
       "-segment values      segment an image",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen radius      sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
@@ -14744,12 +14759,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowMontageException(OptionError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  ThrowMontageException(OptionError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
@@ -15097,6 +15112,7 @@ static void MontageUsage(void)
       "                     horizontal and vertical sampling factors",
       "-scenes range        image scene range",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
@@ -15846,12 +15862,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("set",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '-')
               {
                 /* -set attribute value */
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
@@ -16096,6 +16112,7 @@ static void ImportUsage(void)
       "-scene value         image scene number",
       "-screen              select image from root window",
       "-set attribute value set image attribute",
+      "+set attribute       unset image attribute",
       "-silent              operate silently, i.e. don't ring any bells ",
       "-snaps value         number of screen snapshots",
       "-thumbnail geometry  resize the image (optimized for thumbnails)",
@@ -16796,7 +16813,7 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #if defined(MSWINDOWS) || defined(HAVE_PTHREAD)
   supported=MagickTrue;
 #endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
-  PrintFeature("Thread Safe", supported);
+  PrintFeature("Native Thread Safe", supported);
 
   /* Large File Support */
   {
@@ -16917,6 +16934,13 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   supported=MagickTrue;
 #endif /* defined(HasUMEM) */
   PrintFeature("UMEM", supported);
+
+  /* WebP */
+  supported=MagickFalse;
+#if defined(HasWEBP)
+  supported=MagickTrue;
+#endif /* defined(HasWEBP) */
+  PrintFeature("WebP", supported);
 
   /* WMF */
   supported=MagickFalse;
@@ -17089,6 +17113,12 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
 
   LONG
     lRet;
+
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(argc);
+  ARG_NOT_USED(argv);
+  ARG_NOT_USED(metadata);
+  ARG_NOT_USED(exception);
 
   memset(szKey, 0, _MAX_PATH*2*sizeof(char));
   strcpy(szKey, szRegPath);

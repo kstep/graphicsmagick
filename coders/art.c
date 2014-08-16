@@ -202,7 +202,7 @@ static MagickPassFail WriteARTImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
   DataSize = (long)((image->columns+7) / 8);
-  Padding = (unsigned char)((-DataSize) & 0x01);  
+  Padding = (unsigned char)((-(long) DataSize) & 0x01);  
 
   pixels=MagickAllocateMemory(unsigned char *,(size_t) (DataSize));
   if (pixels == (unsigned char *) NULL)

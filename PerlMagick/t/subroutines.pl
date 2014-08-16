@@ -117,7 +117,7 @@ sub testCompositeCompare {
     }
 
   $background->set(depth=>8);
-#  if ("$composite_options" =~ /Dissolve/) {
+#  if ("$composite_options" =~ /Multiply/) {
 #    $background->write(filename=>"$refimage_name", compression=>'None');
 #    $background->Display();
 #  }
@@ -171,6 +171,7 @@ sub testCompositeCompare {
   return 0;
 
  COMPARE_RUNTIME_ERROR:
+  defined $ENV{'PERL_DEBUG'} && $composite->Display();
   undef $background;
   undef $composite;
   undef $refimage;

@@ -1133,7 +1133,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
                 if (quantum_bits.opacity == 8)
                   opacity|=(opacity >> 8);
-                  q->opacity=ScaleShortToQuantum(opacity);
+                q->opacity=MaxRGB-ScaleShortToQuantum(opacity);
               }
             q->red=ScaleShortToQuantum(red);
             q->green=ScaleShortToQuantum(green);
@@ -1227,7 +1227,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
                 if (quantum_bits.opacity == 8)
                   opacity|=(opacity >> 8);
-                  q->opacity=ScaleShortToQuantum(opacity);
+                q->opacity=MaxRGB-ScaleShortToQuantum(opacity);
               }
             q->red=ScaleShortToQuantum(red);
             q->green=ScaleShortToQuantum(green);

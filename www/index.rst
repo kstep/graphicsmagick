@@ -26,7 +26,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.19 (Released December 31, 2013) `download release`__
+Current Release              1.3.20 (Released August 16, 2014) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `visit Mercurial repository`__
 ===========================  ========================================================
@@ -85,8 +85,9 @@ applications. GraphicsMagick may be used to resize, rotate, sharpen,
 color reduce, or add special effects to an image and save the result
 in the same or differing image format. Image processing operations are
 available from the command line, as well as through C, C++, Lua, Perl,
-PHP, Python, Tcl, Ruby, or Windows COM programming interfaces. With
-some modification, language extensions for ImageMagick may be used.
+PHP, Python, Tcl, Ruby, Windows .NET, or Windows COM programming
+interfaces. With some modification, language extensions for
+ImageMagick may be used.
 
 GraphicsMagick is originally derived from ImageMagick_ 5.5.2 as of
 November 2002 but has been completely independent of the ImageMagick
@@ -165,4 +166,4 @@ language by Maria Ramos  from `Webhostinghub.com/support/edu
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2013
+Copyright |copy| GraphicsMagick Group 2002 - 2014

@@ -996,8 +996,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                                          GetBlueSample(&q[x])));
                       if (image->matte)
                         SetOpacitySample(&q[x],
+                                         MaxRGB-
                                          RoundDoubleToQuantum(sample_scale*
-                                                              GetOpacitySample(&q[x])));
+                                                              (MaxRGB-
+                                                               GetOpacitySample(&q[x]))));
                     }
                 /*
                   For a DirectClass image, check all pixels for

@@ -457,7 +457,7 @@ ModuleExport void RegisterJNXImage(void)
   entry = SetMagickInfo("JNX");
   entry->decoder = (DecoderHandler) ReadJNXImage;
   /* entry->encoder = (EncoderHandler)WriteJNXImage; */
-  entry->description = "JNX: Garmin tile strorage format";
+  entry->description = "JNX: Garmin tile storage format";
   entry->module = "JNX";
   (void) RegisterMagickInfo(entry);
 }

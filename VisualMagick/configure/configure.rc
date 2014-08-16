@@ -111,24 +111,33 @@ BEGIN
                     153,33,152,10
     CONTROL         "Decorate exe files with build options",
                     IDC_DECORATE_FILES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,135,139,10
-    GROUPBOX        "Build options",IDC_STATIC,7,122,304,77
+                    15,151,139,10
+    GROUPBOX        "Build options",IDC_STATIC,7,122,304,93
     CONTROL         "Static Multi-threaded DLL runtimes",IDC_PROJECT_TYPE3,
                     "Button",BS_AUTORADIOBUTTON,15,95,124,10
     LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
     LTEXT           "Dynamic (DLL) Builds",IDC_STATIC,13,19,68,8
     CONTROL         "Include all demo, test, appl, and contrib directories",
                     IDC_INCLUDE_OPTIONAL,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,151,204,10
+                    WS_TABSTOP,15,167,204,10
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    167,236,10
-    PUSHBUTTON      "Edit ""magick_config.h""",IDC_EditConfig,109,204,92,14
+                    182,236,10
+    PUSHBUTTON      "Edit ""magick_config.h""",IDC_EditConfig,109,219,92,14
     CONTROL         "Generate Visual Studio 7 format",IDC_GENERATE_VS7,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,182,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,198,140,10
     CONTROL         "All coders go into one big DLL",IDC_BIGCODERDLL,"Button",
                     BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,186,134,
                     111,10
+    CONTROL         "Build 64-bit distribution",IDC_BUILD_64_BIT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,135,
+                    100,10
+    LTEXT           "Quantum depth",IDC_STATIC,205,134,55,8
+    COMBOBOX        IDC_QUANTUM_DEPTH,260,132,47,50,CBS_DROPDOWNLIST |
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Enable OpenMP",IDC_OPEN_MP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,205,148,
+                    66,10
 END
 
 IDD_SYSTEM_PAGE DIALOG  0, 0, 318, 233
@@ -253,13 +262,13 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "This program is part of the GraphicMagick imaging tookit."
-            VALUE "CompanyName", "GraphicMagick (originally ImageMagick) Development Group"
-            VALUE "FileDescription", "GraphicMagick Win32 Configure Application"
+            VALUE "CompanyName", "GraphicsMagick Group"
+            VALUE "FileDescription", "GraphicMagick Windows Configure Application"
             VALUE "FileVersion", "1, 0, 0, 2"
             VALUE "InternalName", "Configure"
-            VALUE "LegalCopyright", "This program is LGPL"
+            VALUE "LegalCopyright", "Same as GraphicsMagick copyright."
             VALUE "OriginalFilename", "Configure.EXE"
-            VALUE "ProductName", "Win32 Configure Application"
+            VALUE "ProductName", "Windows Configure Application"
             VALUE "ProductVersion", "1, 0, 0, 2"
         END
     END
@@ -269,6 +278,21 @@ BEGIN
     END
 END
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_TARGET_PAGE DLGINIT
+BEGIN
+    IDC_QUANTUM_DEPTH, 0x403, 3, 0,
+0x3851, "\000"
+    IDC_QUANTUM_DEPTH, 0x403, 4, 0,
+0x3151, 0x0036
+    IDC_QUANTUM_DEPTH, 0x403, 4, 0,
+0x3351, 0x0032
+    0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

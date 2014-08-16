@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -598,6 +598,8 @@ MagickExport void *NTdlsym(void *handle,const char *name)
 */
 MagickExport int NTmunmap(void *map,size_t length)
 {
+  ARG_NOT_USED(length);
+
   if (!UnmapViewOfFile(map))
     return(-1);
   return(0);
@@ -677,6 +679,8 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 {
   char
     buffer[3*MaxTextExtent];
+
+  ARG_NOT_USED(error);
 
   if (reason == (char *) NULL)
     {
@@ -865,7 +869,7 @@ NTGhostscriptFind(const char **gs_productfamily,
       "Aladdin Ghostscript" 
     };
 
-  int
+  unsigned int
     product_index;
 
   MagickPassFail
@@ -1036,8 +1040,10 @@ NTGhostscriptGetString(const char *name, char *ptr, const size_t len)
       { HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE" }
     };
 
+  unsigned int
+    i;
+
   int
-    i,
     length;
   
   char
@@ -1110,8 +1116,26 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
   path[0]='\0';
 
   if (NULL == result)
-    if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
-      result=cache;
+    {
+      const char
+        *directory;
+
+      directory=getenv("MAGICK_GHOSTSCRIPT_PATH");
+      if (directory != (const char *) NULL)
+        {
+          FormatString(cache, "%.1024s%sgsdll%u.dll", directory,
+            DirectorySeparator, (unsigned int) sizeof(directory)*8);
+          if (IsAccessibleAndNotEmpty(cache))
+            result=cache;
+          else
+            (void) LogMagickEvent(ConfigureEvent, GetMagickModule(),
+              "Unable to find ghostscript library: \"%s\"", cache);
+        }
+      else if (NTGhostscriptGetString("GS_DLL", cache, sizeof(cache)))
+        {
+          result=cache;
+        }
+    }
 
   if (result)
     {
@@ -1606,12 +1630,16 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
+#ifdef MagickLibName
+  handle=GetModuleHandle(MagickLibName);
+#else
   FormatString(directory,"%.1024s%.1024s%.1024s",GetClientPath(),
     DirectorySeparator,GetClientFilename());
   if (IsAccessible(directory))
     handle=GetModuleHandle(directory);
   else
     handle=GetModuleHandle(0);
+#endif
   if (!handle)
     return((unsigned char *) NULL);
   /*
@@ -1628,7 +1656,8 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Found: windows resource \"%.1024s\"",id);
   /*
-    Load resource into global memory.
+    Load resource into global memory (in WIN32, resources are already
+    in memory).
   */
   global=LoadResource(handle,resource);
   if (!global)
@@ -1638,12 +1667,12 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   */
   length=SizeofResource(handle,resource);
   /*
-    Lock the resource in memory.
+    Lock the resource in memory (really just dereferences an object
+    permanently in memory).
   */
   value=(unsigned char *) LockResource(global);
   if (!value)
     {
-      FreeResource(global); /* Obsolete 16 bit API */
       return((unsigned char *) NULL);
     }
   blob=MagickAllocateMemory(unsigned char *,length+1);
@@ -1652,8 +1681,6 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
       (void) memcpy(blob,value,length);
       blob[length]='\0';
     }
-  UnlockResource(global); /* Obsolete 16 bit API with no replacement */
-  FreeResource(global); /* Obsolete 16 bit API */
   return(blob);
 }
 
@@ -1910,6 +1937,8 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
   char
     buffer[2*MaxTextExtent];
 
+  ARG_NOT_USED(warning);
+
   if (reason == (char *) NULL)
     return;
   if (description == (char *) NULL)
@@ -2035,6 +2064,8 @@ MagickExport void *NTmmap(char *address,size_t length,int protection,int flags,
     access_mode=0,
     protection_mode=0;
 
+  ARG_NOT_USED(address);
+
   map=(void *) NULL;
   shmem_handle=INVALID_HANDLE_VALUE;
   file_handle=INVALID_HANDLE_VALUE;
@@ -2123,6 +2154,7 @@ MagickExport void *NTmmap(char *address,size_t length,int protection,int flags,
 */
 MagickExport int NTmsync(void *addr, size_t len, int flags)
 {
+  ARG_NOT_USED(flags);
   if (!FlushViewOfFile(addr,len))
     return(-1);
   return(0);
@@ -2265,6 +2297,7 @@ MagickExport struct dirent *NTreaddir(DIR *entry)
 */
 MagickExport void NTseekdir(DIR *entry,long position)
 {
+  ARG_NOT_USED(position);
   assert(entry != (DIR *) NULL);
 }
 

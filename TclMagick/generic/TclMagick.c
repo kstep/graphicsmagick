@@ -1028,7 +1028,9 @@ static int wandObjCmd(
         "darken",    "lighten",     "hue",        "saturate",
         "colorize",  "luminize",    "screen",     "overlay",
         "copycyan",  "copymagenta", "copyyellow", "copyblack",
-        "replace",
+        "divide",    "hardlight",   "exclusion",  "colordodge",
+        "colorburn", "softlight",   "linearburn", "lineardodge",
+        "linearlight","vividlight", "pinlight",   "hardmix",
 	(char *) NULL
     };
     static CompositeOperator opTypes[] = {
@@ -1041,7 +1043,9 @@ static int wandObjCmd(
         DarkenCompositeOp,    LightenCompositeOp,     HueCompositeOp,        SaturateCompositeOp,
         ColorizeCompositeOp,  LuminizeCompositeOp,    ScreenCompositeOp,     OverlayCompositeOp,
         CopyCyanCompositeOp,  CopyMagentaCompositeOp, CopyYellowCompositeOp, CopyBlackCompositeOp,
-        ReplaceCompositeOp
+        DivideCompositeOp,    HardLightCompositeOp,   ExclusionCompositeOp,  ColorDodgeCompositeOp,
+	ColorBurnCompositeOp, SoftLightCompositeOp,   LinearBurnCompositeOp, LinearDodgeCompositeOp,
+        LinearLightCompositeOp,VividLightCompositeOp, PinLightCompositeOp,   HardMixCompositeOp
     };
     static CONST char *compressNames[] = {
         "undefined", "none",   "bzip",

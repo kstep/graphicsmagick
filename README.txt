@@ -61,13 +61,13 @@ Installation
   Installation instructions may be found in the following files (or their
   HTML equivalents):
 
-  * Unix / MacOS-X / Cygwin / MinGW:
+  * Unix / Linux / \*BSD / MacOS-X / Cygwin / MinGW:
 
-    `INSTALL-unix.txt <INSTALL-unix.html>`_
+    `Installation on Unix-like systems <INSTALL-unix.html>`_
 
   * Microsoft Windows (Via "setup" style installer or from source code):
 
-    `INSTALL-windows.txt <INSTALL-windows.html>`_
+    `Installation on Microsoft Windows <INSTALL-windows.html>`_
 
 Add-On Libraries & Programs
 ---------------------------
@@ -198,7 +198,8 @@ building under Microsoft Windows:
 
   to read and write the JBIG image format.
 
-* GraphicsMagick requires the WebP library available via HTTPS from
+* GraphicsMagick requires the WebP library version 0.1.99 (or later)
+  available via HTTPS from
 
      https://developers.google.com/speed/webp/
 
@@ -377,4 +378,4 @@ building under Microsoft Windows:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2013
+Copyright |copy| GraphicsMagick Group 2002 - 2014

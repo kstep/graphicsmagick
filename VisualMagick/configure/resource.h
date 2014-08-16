@@ -39,6 +39,9 @@
 #define IDC_EditConfig                  1028
 #define IDC_GENERATE_VS7                1029
 #define IDC_BIGCODERDLL                 1030
+#define IDC_QUANTUM_DEPTH               1031
+#define IDC_BUILD_64_BIT                1032
+#define IDC_OPEN_MP                     1033
 #define IDD_WAITDIALOG                  23040
 #define IDC_MSGCTRL                     23041
 #define IDC_PROGRESSCTRL                23042
@@ -49,7 +52,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

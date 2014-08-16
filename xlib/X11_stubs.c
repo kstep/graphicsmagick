@@ -35,7 +35,7 @@ in this Software without prior written authorization from the X Consortium.
 #define XlibSpecificationRelease 6
 
 #include <stdlib.h>
-#if !defined(WIN32)
+#if (!defined(WIN32) && !defined(WIN64))
 #include <unistd.h>
 #else
 #if defined(_VISUALC_)
@@ -1349,7 +1349,7 @@ typedef struct {
     char **supported_values;
 } XIMValuesList;
 
-#if defined(WIN32) && !defined(_XLIBINT_)
+#if (defined(WIN32) || defined(WIN64)) && !defined(_XLIBINT_)
 #define _Xdebug (*_Xdebug_p)
 #endif
 
