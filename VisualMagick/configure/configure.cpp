@@ -1125,7 +1125,8 @@ void CConfigureApp::process_library( const char *root,
           workspace->write_project_dependency(project,"CORE_jp2");
           workspace->write_project_dependency(project,"CORE_png");
           workspace->write_project_dependency(project,"CORE_libxml");
-          workspace->write_project_dependency(project,"CORE_webp");
+          if(visualStudio7)
+            workspace->write_project_dependency(project,"CORE_webp");
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_wmf");
           if (useX11Stubs)
@@ -1195,7 +1196,8 @@ void CConfigureApp::process_library( const char *root,
       // webp module depends on webp
       if (name.compare("webp") == 0)
         {
-          workspace->write_project_dependency(project,"CORE_webp");
+          if(visualStudio7)
+            workspace->write_project_dependency(project,"CORE_webp");
         }
 
       // Finish the project library dependencies
@@ -3583,7 +3585,8 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_RL_filters_.lib");
 	   lib_shared_list.push_back("CORE_RL_coders_.lib");
 	   lib_shared_list.push_back("CORE_RL_libxml_.lib");
-	   lib_shared_list.push_back("CORE_RL_webp_.lib");
+           if(visualStudio7)
+	     lib_shared_list.push_back("CORE_RL_webp_.lib");
 	   lib_shared_list.push_back("CORE_RL_wmf_.lib");
 	   lib_shared_list.push_back("CORE_RL_magick_.lib");
 	 }
@@ -3648,7 +3651,8 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_DB_coders_.lib");
 	   lib_shared_list.push_back("CORE_DB_libxml_.lib");
 	   lib_shared_list.push_back("CORE_DB_wmf_.lib");
-	   lib_shared_list.push_back("CORE_DB_webp_.lib");
+           if(visualStudio7)
+	     lib_shared_list.push_back("CORE_DB_webp_.lib");
 	   lib_shared_list.push_back("CORE_DB_magick_.lib");
 	 }
    }
