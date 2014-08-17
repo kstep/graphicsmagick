@@ -662,6 +662,18 @@ void CConfigureApp::replace_keywords(std::string fileName)
         str += line + "\n";
       }
 
+	/* WEBP is not compatible with Visual Studio 6, undef it.
+           Note: This fix will not impact newer Visual Studio versions. */
+      if(!visualStudio7)
+      {
+        str += "\n";
+        str += "#if defined(_MSC_VER) && (_MSC_VER<=1200)\n";
+        str += " #if defined(HasWEBP)\n";
+        str += "  #undef HasWEBP\n";
+        str += " #endif\n";
+        str += "#endif\n";
+      }
+
       infile.close();
 
       ofstream outfile(fileName.c_str(), ofstream::out | ofstream::binary);
