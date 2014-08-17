@@ -366,6 +366,11 @@ void CConfigureApp::generate_a_dependency( ConfigureWorkspace *w,ConfigureProjec
           if (LocalFindNoCase(strName,"CORE_%sjpeg",0) == 0)
             continue;
         }
+      if(!visualStudio7)
+      {
+        if(LocalFindNoCase(strName,"CORE_%swebp",0) == 0)
+            continue;
+      }
       if (LocalFindNoCase(strName,s,0) == 0)
         {
           // NOTE: This is case sensitive - so be warned!
@@ -1038,8 +1043,11 @@ void CConfigureApp::process_library( const char *root,
   add_includes(includes_list, extra, levels-2);
   extra = "..\\ttf\\include";
   add_includes(includes_list, extra, levels-2);
-  extra = "..\\webp\\src";
-  add_includes(includes_list, extra, levels-2);
+  if(visualStudio7)
+  {
+    extra = "..\\webp\\src";
+    add_includes(includes_list, extra, levels-2);
+  }
   extra = "..\\libxml\\include";
   add_includes(includes_list, extra, levels-2);
   add_includes(includes_list, staging, levels-2);
@@ -1324,7 +1332,7 @@ void CConfigureApp::process_module( const char *root,
       extra = "..\\zlib";
       add_includes(includes_list, extra, levels-2);
     }
-  if (name.compare("webp") == 0)
+  if (name.compare("webp") == 0 && visualStudio7)
     {
       extra = "..\\webp\\src";
       add_includes(includes_list, extra, levels-2);
@@ -3585,7 +3593,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_RL_filters_.lib");
 	   lib_shared_list.push_back("CORE_RL_coders_.lib");
 	   lib_shared_list.push_back("CORE_RL_libxml_.lib");
-           if(visualStudio7)
+       if(visualStudio7)
 	     lib_shared_list.push_back("CORE_RL_webp_.lib");
 	   lib_shared_list.push_back("CORE_RL_wmf_.lib");
 	   lib_shared_list.push_back("CORE_RL_magick_.lib");
@@ -3651,7 +3659,7 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_DB_coders_.lib");
 	   lib_shared_list.push_back("CORE_DB_libxml_.lib");
 	   lib_shared_list.push_back("CORE_DB_wmf_.lib");
-           if(visualStudio7)
+       if(visualStudio7)
 	     lib_shared_list.push_back("CORE_DB_webp_.lib");
 	   lib_shared_list.push_back("CORE_DB_magick_.lib");
 	 }
