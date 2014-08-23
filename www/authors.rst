@@ -53,6 +53,28 @@ Troy Patteson
                 as well as an improved bi-linear interpolation
                 implementation.
 
+Sara Shafaei
+
+                Contributed a number of Wand API functions as well as
+                fixes for several composition operators.
+
+Brendan Lane
+
+                Contributed a large number of new Photoshop
+                composition operators and alpha-channel fixes for
+                existing ones.
+
+Dirk Lemstra
+
+                Contributed improvements to the VisualMagick configure
+                program to support configuring more build options via
+                the GUI dialogs and to deal with similarly named
+                files.
+
+Roman Hiestand
+
+                Contributed WebP coder improvements.
+
 
 Former GraphicsMagick Contributors
 ==================================

@@ -61,13 +61,13 @@ Installation
   Installation instructions may be found in the following files (or their
   HTML equivalents):
 
-  * Unix / MacOS-X / Cygwin / MinGW:
+  * Unix / Linux / \*BSD / MacOS-X / Cygwin / MinGW:
 
-    `INSTALL-unix.txt <INSTALL-unix.html>`_
+    `Installation on Unix-like systems <INSTALL-unix.html>`_
 
   * Microsoft Windows (Via "setup" style installer or from source code):
 
-    `INSTALL-windows.txt <INSTALL-windows.html>`_
+    `Installation on Microsoft Windows <INSTALL-windows.html>`_
 
 Add-On Libraries & Programs
 ---------------------------
