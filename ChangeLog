@@ -1,7 +1,13 @@
+2014-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enum_strings.c (StringToCompositeOperator): Support
+	composite operator names similar to the major brand, without
+	losing any compatibility with previous naming.
+
 2014-08-23  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 	* coders/png.c: Fixed handling of transparency when writing
 	indexed PNG. Reference: SourceForge Bug tracker [bugs:#267]
-        Transparency lost when converting from GIF to PNG.
+	Transparency lost when converting from GIF to PNG.
 
 2014-08-17  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
