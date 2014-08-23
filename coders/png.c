@@ -6259,8 +6259,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
             ping_num_trans=(unsigned short) (i+1);
         if (ping_num_trans != 0)
           ping_valid_trns = 1;
-        if (ping_num_trans == 0)
-          MagickFreeMemory(ping_trans_alpha);
+        MagickFreeMemory(ping_trans_alpha);
         /*
           Identify which colormap entry is the background color.
         */
@@ -6825,6 +6824,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                            ping_num_trans,
                            &ping_trans_color);
      }
+
+  MagickFreeMemory(ping_trans_alpha);
 
   if (image_matte && (!mng_info->adjoin || !mng_info->equal_backgrounds))
     {
