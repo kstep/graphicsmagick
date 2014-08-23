@@ -1,3 +1,8 @@
+2014-08-23  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+	* coders/png.c: Fixed handling of transparency when writing
+	indexed PNG. Reference: SourceForge Bug tracker [bugs:#267]
+        Transparency lost when converting from GIF to PNG.
+
 2014-08-08  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Eliminated palette and depth optimization (see
