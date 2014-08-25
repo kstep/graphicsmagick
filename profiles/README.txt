@@ -24,6 +24,29 @@ CMY.icm
   (x,y)=(0.346, 0.359)
   Hue=159.58, Chroma=0.00
 
+cmyk.icm
+
+  Date: Mon, 25 Aug 2014 13:03:39 +1000
+  From: Graeme Gill <graeme@argyllcms.com>
+  To: LCMS mailing list <lcms-user@lists.sourceforge.net>
+  Subject: Re: [Lcms-user] free fallback CMYK profile
+
+  jcupitt@gmail.com wrote:
+
+  > Can anyone point me to a reasonable, freely-licenced CMYK profile?
+
+  Hi,
+          I'm happy to offer a public domain one based on a chemical
+  proof measurement set, which is a pretty clean, well behaved
+  CMYK response. The B2A table conversions are setup for an
+  sRGB source.
+
+  You can find it here <http://www.argyllcms.com/cmyk.icm>
+
+  I'll include it with future ArgyllCMS releases.
+
+Graeme Gill.
+
 LCMSLABI.ICM
   little cms Relative L*a*b* identity profile
   WhitePoint : D50
