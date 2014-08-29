@@ -1953,12 +1953,8 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           char
             layer_name[MaxTextExtent];
 
-          if (layer_count < 100)
-            FormatString( layer_name, "L%02d", layer_count );
-          else
-            FormatString( layer_name, "L%04d", layer_count );
+          FormatString( layer_name, "L%04d", layer_count++ );
           WritePascalString( image, layer_name, 4 );
-          layer_count++;
         }
         tmp_image = tmp_image->next;
       };
