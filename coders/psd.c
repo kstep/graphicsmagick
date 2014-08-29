@@ -1719,8 +1719,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     i;
 
   unsigned char
-    *pixels,
-    layer_name[4];
+    *pixels;
 
   unsigned int
     packet_size,
@@ -1944,8 +1943,22 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image, 3, &layer_name[1]);
           */ 
         } else {
-          (void) sprintf((char *) layer_name, "L%02d", layer_count++ );
-          WritePascalString( image, (char*)layer_name, 4 );
+          /*
+            In Photoshop 5.5 the maximum number of layers was 100 but
+            Photoshop CS5 supports 8000 layers.
+
+            Layer name is documented to be a Pascal string, padded to
+            a multiple of 4 bytes.
+          */
+          char
+            layer_name[MaxTextExtent];
+
+          if (layer_count < 100)
+            FormatString( layer_name, "L%02d", layer_count );
+          else
+            FormatString( layer_name, "L%04d", layer_count );
+          WritePascalString( image, layer_name, 4 );
+          layer_count++;
         }
         tmp_image = tmp_image->next;
       };

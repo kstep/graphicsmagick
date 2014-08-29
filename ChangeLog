@@ -1,3 +1,11 @@
+2014-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (WritePSDImage): Fix small stack over-write if more
+	than 99 layers are written to PSD format.  Similar to
+	CVE-2014-1947 for ImageMagick.  Changed layer naming to use at
+	least 4 digits.  Issue was brought to our attention by Rex Dieter
+	and change is mostly based on his patch.
+
 2014-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enum_strings.c (StringToCompositeOperator): Support

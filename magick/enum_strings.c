@@ -491,14 +491,16 @@ MagickExport CompositeOperator StringToCompositeOperator(const char *option)
         { PinLightCompositeOp, "PinLight" },
         { HardMixCompositeOp, "HardMix" }
         /* Apparently missing IM operators */
+        /* ChangeMask */
+        /* DivideDst */
         /* Dst */
-        /* DstOver */
+        /* DstAtop */
         /* DstIn */
         /* DstOut */
-        /* DstAtop */
-        /* Src */
+        /* DstOver */
+        /* MinusDst */
         /* PegtopLight */
-        /* ChangeMask */
+        /* Src */
       };
 
   CompositeOperator

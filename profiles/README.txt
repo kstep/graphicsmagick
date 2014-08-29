@@ -1,3 +1,7 @@
+.. -*- mode: rst -*-
+.. This text is in reStucturedText format, so it may look a bit odd.
+.. See http://docutils.sourceforge.net/rst.html for details.
+
 BetaRGB.icc
 
   BetaRGB RGB working space profile. Copyrighted by Bruce J. Lindbloom.
@@ -17,6 +21,7 @@ BRG.icc
   Sanity test profile which swaps blue and green channels.
 
 CMY.icm
+
   CMY to Lab colorspace conversion profile 
   WhitePoint : D50
   XYZ=(1.0, 1.0, 0.8)
@@ -45,7 +50,7 @@ cmyk.icm
 
   I'll include it with future ArgyllCMS releases.
 
-Graeme Gill.
+  Graeme Gill.
 
 LCMSLABI.ICM
   little cms Relative L*a*b* identity profile
