@@ -14,9 +14,9 @@
 extern "C" {
 #endif
 
-/**
- ** Borland C++ Builder DLL compilation defines
- **/
+/*
+ * Borland C++ Builder DLL compilation defines
+ */
 #if defined(__BORLANDC__) && defined(_DLL)
 #  pragma message("BCBMagick lib DLL export interface")
 #  define _MAGICKDLL_

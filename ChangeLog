@@ -1,3 +1,15 @@
+2014-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/type.c (ReadTypeConfigureFile): Support reading type
+	configuration file from Windows resource. Patch by Dirk Lemstra
+	via SF patches #32.
+
+	* Magick++/lib/Magick++/STL.h: Fixed code analysis warning in
+	STL.h. Patch by Dirk Lemstra via SF patches #32.
+
+	* Magick++/lib/Magick++/Include.h: Autolink WebP in Visual
+	Studio. Patch by Dirk Lemstra via SF patches #32.
+
 2014-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c (WritePSDImage): Fix small stack over-write if more

@@ -129,6 +129,9 @@ namespace MagickLib
 #          pragma comment(lib, "CORE_DB_ttf_.lib")
 #        endif
 #        pragma comment(lib, "CORE_DB_wand_.lib")
+#        if defined(HasWEBP)
+#          pragma comment(lib, "CORE_DB_webp_.lib")
+#        endif
 #        if defined(HasWMFlite)
 #          pragma comment(lib, "CORE_DB_wmf_.lib")
 #        endif
@@ -171,6 +174,9 @@ namespace MagickLib
 #          pragma comment(lib, "CORE_RL_ttf_.lib")
 #        endif
 #        pragma comment(lib, "CORE_RL_wand_.lib")
+#        if defined(HasWEBP)
+#          pragma comment(lib, "CORE_RL_webp_.lib")
+#        endif
 #        if defined(HasWMFlite)
 #          pragma comment(lib, "CORE_RL_wmf_.lib")
 #        endif
