@@ -1,5 +1,10 @@
 2014-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c: Added a new define called tiff:ignore-tags that
+	can be used to ignore tags in 'corrupted' files with unknown and
+	invalid tags. Without this patch the file cannot be read and
+	raises an error. Patch by Dirk Lemstra via SF patches #40.
+
 	* magick/type.c (ReadTypeConfigureFile): Support reading type
 	configuration file from Windows resource. Patch by Dirk Lemstra
 	via SF patches #32.

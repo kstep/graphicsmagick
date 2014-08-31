@@ -1235,6 +1235,15 @@ group3-compressed TIFF.  Please see the TIFF specification for the
 usage of this tag.  The default value is 4.
 </dd>
 
+<dt>tiff:ignore-tags=<tags></dt>
+<dd>If the tiff:ignore-tags key is defined, then it is used as a list
+of comma-delimited integer TIFF tag values to ignore while reading the
+TIFF file.  This is useful in order to be able to read files which
+which otherwise fail to read due to problems with TIFF tags.  Note
+that some TIFF tags are required in order to be able to read the image
+data at all.
+</dd>
+
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
 <dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
 determine the sample format used while writing TIFF files. The default is

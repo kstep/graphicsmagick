@@ -1,4 +1,4 @@
-.TH gm 1 "2014/07/27" "GraphicsMagick"
+.TH gm 1 "2014/08/31" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1388,6 +1388,19 @@ If the tiff:group-three-options key is defined, GraphicsMagick
 will use it to set the group3 options tag when writing
 group3-compressed TIFF.  Please see the TIFF specification for the
 usage of this tag.  The default value is 4.
+
+.in 15
+.in 15
+.B "tiff:ignore-tags=<tags>"
+.in 20
+ \fR
+.in 20
+If the tiff:ignore-tags key is defined, then it is used as a list
+of comma-delimited integer TIFF tag values to ignore while reading the
+TIFF file.  This is useful in order to be able to read files which
+which otherwise fail to read due to problems with TIFF tags.  Note
+that some TIFF tags are required in order to be able to read the image
+data at all.
 
 .in 15
 .in 15
