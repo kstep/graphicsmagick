@@ -194,7 +194,7 @@ MagickExport MagickPassFail AnnotateImage(Image *image,const DrawInfo *draw_info
   if (draw_info->text == (char *) NULL)
     return(MagickFail);
   if (*draw_info->text == '\0')
-    return(MagickFail);
+    return(MagickPass);
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,

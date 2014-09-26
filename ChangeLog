@@ -1,3 +1,8 @@
+2014-09-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (AnnotateImage): An empty text string should
+	not be treated as an error.  Resolves Debian bug 759956.
+
 2014-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c: Added a new define called tiff:ignore-tags that
