@@ -37,6 +37,7 @@
 */
 #include "magick/studio.h"
 #include "magick/gem.h"
+#include "magick/random-private.h"
 #include "magick/utility.h"
 
 /*

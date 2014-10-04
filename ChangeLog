@@ -1,3 +1,12 @@
+2014-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (TIFFIgnoreTags): Avoid warning about unused
+	strtol() return value on Linux.
+
+	* magick/random-private.h ("C"): Move random inlined
+	implementation bits to random-private.h, which is not installed,
+	or used outside of the core C library.
+
 2014-09-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/annotate.c (AnnotateImage): An empty text string should
@@ -41,7 +50,7 @@
 
 2014-08-17  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
-        * VisualMagick\configure\configure.cpp Remove webp when attempting
+	* VisualMagick\configure\configure.cpp Remove webp when attempting
 	to compile with Visual Studio 6.
 
 2014-08-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

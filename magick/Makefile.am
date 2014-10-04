@@ -301,6 +301,7 @@ MAGICK_NOINST_HDRS = \
 	magick/nt_feature.h \
 	magick/omp_data_view.h \
 	magick/prefetch.h \
+	magick/random-private.h \
 	magick/semaphore.h \
 	magick/spinlock.h \
 	magick/static.h \

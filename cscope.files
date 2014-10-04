@@ -229,6 +229,7 @@ magick/quantize.c
 magick/quantize.h
 magick/random.c
 magick/random.h
+magick/random-private.h
 magick/registry.c
 magick/registry.h
 magick/render.c
