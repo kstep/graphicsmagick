@@ -288,7 +288,11 @@ TIFFIgnoreTags(TIFF *tiff)
       while ((isspace((int) ((unsigned char) *p)) != 0))
         p++;
 
-      (void) strtol(p,&q,10);
+      {
+        /* Avoid warning about unused strtol return value on Linux */
+        long ignored = strtol(p,&q,10);
+        (void) ignored;
+      }
       if (p == q)
         return;
 
