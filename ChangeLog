@@ -1,3 +1,8 @@
+2014-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/wand_symbols.h (MagickSetImageGamma): Fix typo in
+	wand/wand_symbols.h.  Resolves SF bug #277.
+
 2014-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (TIFFIgnoreTags): Avoid warning about unused
