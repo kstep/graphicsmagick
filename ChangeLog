@@ -1,5 +1,8 @@
 2014-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pnm.c (ReadPNMImage): Validate PGM, PPM, and PAM header
+	MaxValue parameter.  Issue was reported by Hanno Böck.
+
 	* coders/pcx.c (ReadPCXImage): Fix for CVE-2014-8355, eliminate
 	memory leaks in error paths, and add PCX header logging.  Issue
 	was reported by Hanno Böck.

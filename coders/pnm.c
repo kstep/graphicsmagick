@@ -528,6 +528,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    }
 	}
 
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Dimensions: %lux%lu",
+                            image->columns,image->rows);
+      if ((image->columns == 0) || (image->rows == 0))
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
+			    max_value);
+      if (max_value == 0)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+
       if (max_value <= 1)
 	bits_per_sample=1;
       else if (max_value <= 255U)
@@ -539,10 +549,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       image->depth=Min(bits_per_sample,QuantumDepth);
 
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
-			    max_value);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Dimensions: %lux%lu",
-                            image->columns,image->rows);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image Depth: %u",
                             image->depth);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Samples Per Pixel: %u",
