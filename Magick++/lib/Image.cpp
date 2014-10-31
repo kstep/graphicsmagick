@@ -2789,8 +2789,8 @@ double Magick::Image::fontPointsize ( void ) const
 }
 
 // Font type metrics
-void Magick::Image::fontTypeMetrics( const std::string &text_,
-                                     TypeMetric *metrics )
+void Magick::Image::fontTypeMetrics ( const std::string &text_,
+                                      TypeMetric *metrics )
 {
   DrawInfo *drawInfo = options()->drawInfo();
   drawInfo->text = const_cast<char *>(text_.c_str());
@@ -2814,6 +2814,23 @@ std::string Magick::Image::format ( void ) const
   throwExceptionExplicit( CorruptImageWarning,
 			  "Unrecognized image magick type" );
   return std::string();
+}
+
+// Format the specified expression similar to command line '-format'.
+// For example "%wx%h" is converted to a string containing image
+// WIDTHxHEIGHT like "640x480".
+std::string Magick::Image::formatExpression ( const std::string expression )
+{
+  // TranslateText throws exceptions into Image.
+  modifyImage();
+  //MagickLib::Image = image( );
+  char *translated = MagickLib::TranslateText(constImageInfo( ),
+                                              image( ),
+                                              expression.c_str());
+  std::string translated_str(translated);
+  MagickFreeMemory(translated);
+  throwException( image( )->exception );
+  return translated_str;
 }
 
 // Gamma adjustment
