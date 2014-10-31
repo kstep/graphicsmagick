@@ -3270,7 +3270,14 @@ void Magick::Image::resolutionUnits
 }
 Magick::ResolutionType Magick::Image::resolutionUnits ( void ) const
 {
-  return constOptions()->resolutionUnits( );
+  Magick::ResolutionType units;
+  const MagickLib::Image *image = constImage( );
+  if (image)
+    units = image->units;
+  else
+    units = constOptions()->resolutionUnits( );
+
+  return units;
 }
 
 void Magick::Image::scene ( const unsigned int scene_ )

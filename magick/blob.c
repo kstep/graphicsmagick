@@ -435,14 +435,17 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
        (image->blob->mapped) && (image->blob->handle.std != (FILE *) NULL)))
     {
 #if defined(HAVE_POSIX_FALLOCATE)
+      /*
+        FIXME: Solaris 11.2 documentation says that posix_fallocate()
+        reports EINVAL for anything but UFS */
       int
         err_status;
 
       if ((err_status=posix_fallocate(fileno(image->blob->handle.std),
                                       0UL, size)) != 0)
         {
-          ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(err_status));
-          status=MagickFail;
+          /* ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(err_status)); */
+          /* status=MagickFail; */
         }
 #endif /* HAVE_POSIX_FALLOCATE */
     }

@@ -1,3 +1,13 @@
+2014-10-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (BlobReserveSize): Don't throw an exception if
+	posix_fallocate() fails since it seems that it is not supported
+	for all filesystem types, and is only intended for optimization.
+
+	* Magick++/lib/Image.cpp (resolutionUnits): Return resolution
+	units from Image if available, else return the value from
+	ImageInfo.  Issue was reported by Dirk Lemstra.
+
 2014-10-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pnm.c (ReadPNMImage): Validate PGM, PPM, and PAM header
