@@ -2827,8 +2827,12 @@ std::string Magick::Image::formatExpression ( const std::string expression )
   char *translated = MagickLib::TranslateText(constImageInfo( ),
                                               image( ),
                                               expression.c_str());
-  std::string translated_str(translated);
-  MagickFreeMemory(translated);
+  std::string translated_str;
+  if (translated != (char *) NULL)
+    {
+      translated_str=std::string(translated);
+      MagickFreeMemory(translated);
+    }
   throwException( image( )->exception );
   return translated_str;
 }
