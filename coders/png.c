@@ -1353,12 +1353,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
-  ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING, image,
+  ping=png_create_read_struct_2(png_get_libpng_ver(NULL),image,
                                 PNGErrorHandler,PNGWarningHandler, NULL,
                                 (png_malloc_ptr) png_IM_malloc,
                                 (png_free_ptr) png_IM_free);
 #else
-  ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_read_struct(png_get_libpng_ver(NULL),image,
                               PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
@@ -6059,13 +6059,13 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
-  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct_2(png_get_libpng_ver(NULL),image,
                                  PNGErrorHandler,PNGWarningHandler,
                                  (void *) NULL,
                                  (png_malloc_ptr) png_IM_malloc,
                                  (png_free_ptr) png_IM_free);
 #else
-  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct(png_get_libpng_ver(NULL),image,
                                PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
