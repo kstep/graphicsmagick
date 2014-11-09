@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH CWEBP 1 "December 12, 2013"
+.TH CWEBP 1 "Oct 13, 2014"
 .SH NAME
 cwebp \- compress an image file to a WebP file
 .SH SYNOPSIS
@@ -12,13 +12,19 @@ This manual page documents the
 command.
 .PP
 \fBcwebp\fP compresses an image using the WebP format.
-Input format can be either PNG, JPEG, TIFF or raw Y'CbCr samples.
+Input format can be either PNG, JPEG, TIFF, WebP or raw Y'CbCr samples.
 .SH OPTIONS
 The basic options are:
 .TP
 .BI \-o " string
 Specify the name of the output WebP file. If omitted, \fBcwebp\fP will
 perform compression but only report statistics.
+Using "\-" as output name will direct output to 'stdout'.
+.TP
+.BI \-\- " string
+Explicitly specify the input file. This option is useful if the input
+file starts with an '\-' for instance. This option must appear \fBlast\fP.
+Any other options afterward will be ignored.
 .TP
 .B \-h, \-help
 A short usage summary.
@@ -39,6 +45,15 @@ with lower quality. Best quality is achieved by using a value of 100.
 In case of lossless compression (specified by the \-lossless option), a small
 factor enables faster compression speed, but produces a larger file. Maximum
 compression is achieved by using a value of 100.
+.\" TODO(jzern): restore post-v0.4.1
+.\" .TP
+.\" .BI \-z " int
+.\" Switch on \fBlossless\fP compression mode with the specified level between 0
+.\" and 9, with level 0 being the fastest, 9 being the slowest. Fast mode
+.\" produces larger file size than slower ones. A good default is \-z 6.
+.\" This option is actually a shortcut for some predefined settings for quality
+.\" and method. If options \-q  or \-m are subsequently used, they will invalidate
+.\" the effect of this \-z option.
 .TP
 .BI \-alpha_q " int
 Specify the compression factor for alpha compression between 0 and 100.

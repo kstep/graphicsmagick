@@ -12,31 +12,35 @@
 set -e
 
 # Extract the latest SDK version from the final field of the form: iphoneosX.Y
-declare -r SDK=$(xcodebuild -showsdks \
+readonly SDK=$(xcodebuild -showsdks \
   | grep iphoneos | sort | tail -n 1 | awk '{print substr($NF, 9)}'
 )
 # Extract Xcode version.
-declare -r XCODE=$(xcodebuild -version | grep Xcode | cut -d " " -f2)
+readonly XCODE=$(xcodebuild -version | grep Xcode | cut -d " " -f2)
+if [[ -z "${XCODE}" ]]; then
+  echo "Xcode not available"
+  exit 1
+fi
 
-declare -r OLDPATH=${PATH}
+readonly OLDPATH=${PATH}
 
 # Add iPhoneOS-V6 to the list of platforms below if you need armv6 support.
 # Note that iPhoneOS-V6 support is not available with the iOS6 SDK.
-declare -r PLATFORMS="iPhoneSimulator iPhoneOS-V7 iPhoneOS-V7s"
-declare -r SRCDIR=$(dirname $0)
-declare -r TOPDIR=$(pwd)
-declare -r BUILDDIR="${TOPDIR}/iosbuild"
-declare -r TARGETDIR="${TOPDIR}/WebP.framework"
-declare -r DEVELOPER=$(xcode-select --print-path)
-declare -r PLATFORMSROOT="${DEVELOPER}/Platforms"
-declare -r LIPO=$(xcrun -sdk iphoneos${SDK} -find lipo)
+readonly PLATFORMS="iPhoneSimulator iPhoneOS-V7 iPhoneOS-V7s iPhoneOS-V7-arm64"
+readonly SRCDIR=$(dirname $0)
+readonly TOPDIR=$(pwd)
+readonly BUILDDIR="${TOPDIR}/iosbuild"
+readonly TARGETDIR="${TOPDIR}/WebP.framework"
+readonly DEVELOPER=$(xcode-select --print-path)
+readonly PLATFORMSROOT="${DEVELOPER}/Platforms"
+readonly LIPO=$(xcrun -sdk iphoneos${SDK} -find lipo)
 LIBLIST=''
 
 if [[ -z "${SDK}" ]]; then
   echo "iOS SDK not available"
   exit 1
-elif [[ ${SDK} < 4.0 ]]; then
-  echo "You need iOS SDK version 4.0 or above"
+elif [[ ${SDK} < 6.0 ]]; then
+  echo "You need iOS SDK version 6.0 or above"
   exit 1
 else
   echo "iOS SDK Version ${SDK}"
@@ -47,10 +51,25 @@ rm -rf ${TARGETDIR}
 mkdir -p ${BUILDDIR}
 mkdir -p ${TARGETDIR}/Headers/
 
-[[ -e ${SRCDIR}/configure ]] || (cd ${SRCDIR} && sh autogen.sh)
+if [[ ! -e ${SRCDIR}/configure ]]; then
+  if ! (cd ${SRCDIR} && sh autogen.sh); then
+    cat <<EOT
+Error creating configure script!
+This script requires the autoconf/automake and libtool to build. MacPorts can
+be used to obtain these:
+http://www.macports.org/install.php
+EOT
+    exit 1
+  fi
+fi
 
 for PLATFORM in ${PLATFORMS}; do
-  if [[ "${PLATFORM}" == "iPhoneOS-V7s" ]]; then
+  ARCH2=""
+  if [[ "${PLATFORM}" == "iPhoneOS-V7-arm64" ]]; then
+    PLATFORM="iPhoneOS"
+    ARCH="aarch64"
+    ARCH2="arm64"
+  elif [[ "${PLATFORM}" == "iPhoneOS-V7s" ]]; then
     PLATFORM="iPhoneOS"
     ARCH="armv7s"
   elif [[ "${PLATFORM}" == "iPhoneOS-V7" ]]; then
@@ -66,30 +85,20 @@ for PLATFORM in ${PLATFORMS}; do
   ROOTDIR="${BUILDDIR}/${PLATFORM}-${SDK}-${ARCH}"
   mkdir -p "${ROOTDIR}"
 
-  SDKROOT="${PLATFORMSROOT}/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDK}.sdk/"
-  CFLAGS="-arch ${ARCH} -pipe -isysroot ${SDKROOT}"
-  LDFLAGS="-arch ${ARCH} -pipe -isysroot ${SDKROOT}"
+  DEVROOT="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain"
+  SDKROOT="${PLATFORMSROOT}/"
+  SDKROOT+="${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDK}.sdk/"
+  CFLAGS="-arch ${ARCH2:-${ARCH}} -pipe -isysroot ${SDKROOT} -O3 -DNDEBUG"
+  CFLAGS+=" -miphoneos-version-min=6.0"
 
-  if [[ -z "${XCODE}" ]]; then
-    echo "XCODE not available"
-    exit 1
-  elif [[ ${SDK} < 5.0.0 ]]; then
-    DEVROOT="${PLATFORMSROOT}/${PLATFORM}.platform/Developer/"
-  else
-    DEVROOT="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain"
-    CFLAGS+=" -miphoneos-version-min=5.0"
-    LDFLAGS+=" -miphoneos-version-min=5.0"
-  fi
-
-  export CFLAGS
-  export LDFLAGS
-  export CXXFLAGS=${CFLAGS}
+  set -x
   export PATH="${DEVROOT}/usr/bin:${OLDPATH}"
-
   ${SRCDIR}/configure --host=${ARCH}-apple-darwin --prefix=${ROOTDIR} \
     --build=$(${SRCDIR}/config.guess) \
     --disable-shared --enable-static \
-    --enable-libwebpdecoder --enable-swap-16bit-csp
+    --enable-libwebpdecoder --enable-swap-16bit-csp \
+    CFLAGS="${CFLAGS}"
+  set +x
 
   # run make only in the src/ directory to create libwebpdecoder.a
   cd src/
@@ -104,5 +113,5 @@ for PLATFORM in ${PLATFORMS}; do
   export PATH=${OLDPATH}
 done
 
-cp -a ${SRCDIR}/src/webp/* ${TARGETDIR}/Headers/
+cp -a ${SRCDIR}/src/webp/*.h ${TARGETDIR}/Headers/
 ${LIPO} -create ${LIBLIST} -output ${TARGETDIR}/WebP

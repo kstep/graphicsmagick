@@ -35,7 +35,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-target_triplet = @target@
 bin_PROGRAMS = dwebp$(EXEEXT) cwebp$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3)
 @BUILD_VWEBP_TRUE@am__append_1 = vwebp
@@ -55,7 +54,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_pthread.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_HEADER = $(top_builddir)/src/webp/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
@@ -72,11 +71,13 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_cwebp_OBJECTS = cwebp-cwebp.$(OBJEXT) cwebp-metadata.$(OBJEXT) \
 	cwebp-jpegdec.$(OBJEXT) cwebp-pngdec.$(OBJEXT) \
-	cwebp-tiffdec.$(OBJEXT) cwebp-wicdec.$(OBJEXT)
+	cwebp-tiffdec.$(OBJEXT) cwebp-webpdec.$(OBJEXT) \
+	cwebp-wicdec.$(OBJEXT)
 cwebp_OBJECTS = $(am_cwebp_OBJECTS)
 am__DEPENDENCIES_1 =
-cwebp_DEPENDENCIES = ../src/libwebp.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+cwebp_DEPENDENCIES = libexampleutil.la ../src/libwebp.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_dwebp_OBJECTS = dwebp-dwebp.$(OBJEXT)
 dwebp_OBJECTS = $(am_dwebp_OBJECTS)
 dwebp_DEPENDENCIES = libexampleutil.la $(am__DEPENDENCIES_1) \
@@ -94,7 +95,7 @@ am_webpmux_OBJECTS = webpmux-webpmux.$(OBJEXT)
 webpmux_OBJECTS = $(am_webpmux_OBJECTS)
 webpmux_DEPENDENCIES = libexampleutil.la ../src/mux/libwebpmux.la \
 	../src/libwebp.la
-DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/webp
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
@@ -137,6 +138,7 @@ AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
+AVX2_FLAGS = @AVX2_FLAGS@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -202,6 +204,7 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SSE2_FLAGS = @SSE2_FLAGS@
 STRIP = @STRIP@
 TIFF_INCLUDES = @TIFF_INCLUDES@
 TIFF_LIBS = @TIFF_LIBS@
@@ -258,28 +261,25 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
-target = @target@
 target_alias = @target_alias@
-target_cpu = @target_cpu@
-target_os = @target_os@
-target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
 noinst_LTLIBRARIES = libexampleutil.la
-libexampleutil_la_SOURCES = example_util.c example_util.h
+libexampleutil_la_SOURCES = example_util.c example_util.h stopwatch.h
 dwebp_SOURCES = dwebp.c stopwatch.h
 dwebp_CPPFLAGS = $(AM_CPPFLAGS) $(USE_EXPERIMENTAL_CODE) \
 	$(JPEG_INCLUDES) $(PNG_INCLUDES)
 dwebp_LDADD = libexampleutil.la $(PNG_LIBS) $(JPEG_LIBS) \
 	$(am__append_4) $(am__append_6)
 cwebp_SOURCES = cwebp.c metadata.c metadata.h stopwatch.h jpegdec.c \
-	jpegdec.h pngdec.c pngdec.h tiffdec.c tiffdec.h wicdec.c \
-	wicdec.h
+	jpegdec.h pngdec.c pngdec.h tiffdec.c tiffdec.h webpdec.c \
+	webpdec.h wicdec.c wicdec.h
 cwebp_CPPFLAGS = $(AM_CPPFLAGS) $(USE_EXPERIMENTAL_CODE) \
 	$(JPEG_INCLUDES) $(PNG_INCLUDES) $(TIFF_INCLUDES)
-cwebp_LDADD = ../src/libwebp.la $(JPEG_LIBS) $(PNG_LIBS) $(TIFF_LIBS)
+cwebp_LDADD = libexampleutil.la ../src/libwebp.la $(JPEG_LIBS) \
+	$(PNG_LIBS) $(TIFF_LIBS)
 gif2webp_SOURCES = gif2webp.c gif2webp_util.c
 gif2webp_CPPFLAGS = $(AM_CPPFLAGS) $(USE_EXPERIMENTAL_CODE) $(GIF_INCLUDES)
 gif2webp_LDADD = libexampleutil.la ../src/mux/libwebpmux.la \
@@ -406,6 +406,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cwebp-metadata.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cwebp-pngdec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cwebp-tiffdec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cwebp-webpdec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cwebp-wicdec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwebp-dwebp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example_util.Plo@am__quote@
@@ -507,6 +508,20 @@ cwebp-tiffdec.obj: tiffdec.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tiffdec.c' object='cwebp-tiffdec.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cwebp-tiffdec.obj `if test -f 'tiffdec.c'; then $(CYGPATH_W) 'tiffdec.c'; else $(CYGPATH_W) '$(srcdir)/tiffdec.c'; fi`
+
+cwebp-webpdec.o: webpdec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cwebp-webpdec.o -MD -MP -MF $(DEPDIR)/cwebp-webpdec.Tpo -c -o cwebp-webpdec.o `test -f 'webpdec.c' || echo '$(srcdir)/'`webpdec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cwebp-webpdec.Tpo $(DEPDIR)/cwebp-webpdec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='webpdec.c' object='cwebp-webpdec.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cwebp-webpdec.o `test -f 'webpdec.c' || echo '$(srcdir)/'`webpdec.c
+
+cwebp-webpdec.obj: webpdec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cwebp-webpdec.obj -MD -MP -MF $(DEPDIR)/cwebp-webpdec.Tpo -c -o cwebp-webpdec.obj `if test -f 'webpdec.c'; then $(CYGPATH_W) 'webpdec.c'; else $(CYGPATH_W) '$(srcdir)/webpdec.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/cwebp-webpdec.Tpo $(DEPDIR)/cwebp-webpdec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='webpdec.c' object='cwebp-webpdec.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cwebp-webpdec.obj `if test -f 'webpdec.c'; then $(CYGPATH_W) 'webpdec.c'; else $(CYGPATH_W) '$(srcdir)/webpdec.c'; fi`
 
 cwebp-wicdec.o: wicdec.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(cwebp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cwebp-wicdec.o -MD -MP -MF $(DEPDIR)/cwebp-wicdec.Tpo -c -o cwebp-wicdec.o `test -f 'wicdec.c' || echo '$(srcdir)/'`wicdec.c

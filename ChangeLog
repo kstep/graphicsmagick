@@ -1,3 +1,7 @@
+2014-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* webp, VisualMagick/webp: Updated bundled WebP to 4.0.2 release.
+
 2014-11-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/tests/attributes.cpp: Add a simple test for
