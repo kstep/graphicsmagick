@@ -61,7 +61,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #include <webp/encode.h>
 
 /*
-  Release versions vs ABI versions
+  Release versions vs ABI versions (found in src/webp/encode.h)
 
     0.1.3  - 0x0002
     0.1.99 - 0x0100
@@ -69,6 +69,8 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
     0.2.1  - 0x0200
     0.3.0  - 0x0201
     0.4.0  - 0x0202
+    0.4.1  - 0x0202
+    0.4.2  - 0x0202
 */
 
 /*
@@ -81,6 +83,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #if WEBP_ENCODER_ABI_VERSION >= 0x0200 /* >= 0.2.0 */
 #  define SUPPORT_CONFIG_WEBP_HINT_GRAPH
 #endif
+/* These relate to 'struct WebPConfig' parameters */
 #if WEBP_ENCODER_ABI_VERSION >= 0x0201 /* >= 0.3.0 */
 #  define SUPPORT_CONFIG_EMULATE_JPEG_SIZE
 #  define SUPPORT_CONFIG_THREAD_LEVEL
