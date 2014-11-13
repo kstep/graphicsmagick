@@ -1,3 +1,16 @@
+2014-11-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/webp.c (WriteWEBPImage): WebP fix by Roman Hiestand to
+	make WebP lossless format truely lossless.
+
+	* tests/rwblob.tap (check_types): Added a test for WebP lossless.
+
+	* tests/rwfile.tap: Added a test for WebP lossless.
+
+	* tests/rwblob.c: Added support for -define.
+
+	* tests/rwfile.c: Added support for -define.
+
 2014-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* webp, VisualMagick/webp: Updated bundled WebP to 0.4.2 release.

@@ -114,6 +114,22 @@ int main ( int argc, char **argv )
             {
               (void) SetLogEventMask(argv[++arg]);
             }
+          else if (LocaleCompare("define",option+1) == 0)
+            {
+              if (arg == argc)
+                {
+                  (void) printf("-define argument missing\n");
+                  (void) fflush(stdout);
+                  exit_status = 1;
+                  goto program_exit;
+                }
+              if (AddDefinitions(imageInfo,argv[++arg],&exception)
+                  == MagickFail)
+                {
+                  exit_status = 1;
+                  goto program_exit;
+                }
+            }
           else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo->depth=QuantumDepth;
@@ -184,9 +200,10 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
-      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth "
-		      "integer -filespec spec -log format -nocheck "
-		      " -quality quality -size geometry -stdio -verbose]"
+      (void) printf ( "Usage: %s [-compress algorithm] [-debug events]"
+                      " [-depth integer] [-define value] [-filespec spec]"
+                      " [-log format] [-nocheck] [-quality quality]"
+                      " [-size geometry] -stdio -verbose]"
                       " infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
