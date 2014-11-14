@@ -1,3 +1,11 @@
+2014-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c (ReadPSDImage): Patch by Cédric Demière to fix
+	"Memory allocation failed" error when reading PSDs files which
+	have no layers.  Delivered via SF patch #41 "PSD : files without
+	layers".  Resolves SF bug #242 "Can not convert PSD to JPG or PNG
+	(gm convert: Memory allocation failed)".
+
 2014-11-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/webp.c (WriteWEBPImage): WebP fix by Roman Hiestand to
