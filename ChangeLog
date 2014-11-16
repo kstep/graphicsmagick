@@ -1,3 +1,8 @@
+2014-11-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c (ModulateImage): ModulateImage() should produce
+	a progress indication even if only the colormap is modified.
+
 2014-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c (ReadPSDImage): Patch by Cédric Demière to fix
