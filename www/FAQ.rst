@@ -739,6 +739,36 @@ To create a patterned canvas image using a user-supplied image::
 
   gm convert -size 640x480 tile:myimage.tiff canvas.tiff
 
+What does `identify` report?
+----------------------------
+
+GraphicsMagick is sophisticated image handling software supporting
+perhaps a hundred formats, and hundreds of subformats, yet it needs to
+be able to apply image processing algorithms in a consistent way, and
+save to many output formats.  Some image types are radically different
+than others.  Due to this, GraphicsMagick normalizes images it reads
+into only nine internal in-memory formats (see the description of
+-type) which are a specialization of just two internal formats.  The
+`identify` command reports the characteristics of one of those
+internal formats rather than the genuine properties of the input image
+file.  In fact, if the properties of all the input files were to be
+reported, it would require a book to describe all of the properties.
+For example, the WMF vector-drawing format is much different than the
+PNG image file format, yet GraphicsMagick can read both.
+
+Only limited original properties are preserved, and it depends on how
+GraphicsMagick was built.  For example, a "Q8" build can only report
+up to a depth of 8 bits, but a "Q32" build can report a depth of up to
+32 bits.  The original image depth is reported if it is at least 8
+bits, and equal to or less than the build depth.
+
+By default `identify` reports only the most basic properties::
+
+  % gm identify seaworld.jpg
+  seaworld.jpg JPEG 1530x1020+0+0 DirectClass 8-bit 204.0K 0.000u 0:01
+
+but with -verbose it can report on a large number of properties.
+
 --------------------------------------------------------------------------
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN

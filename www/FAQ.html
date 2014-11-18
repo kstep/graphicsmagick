@@ -75,6 +75,7 @@
 <li><a class="reference internal" href="#how-do-i-extract-a-single-image-from-a-multi-image-file" id="id31">How do I extract a single image from a multi-image file?</a></li>
 <li><a class="reference internal" href="#how-can-i-extract-and-combine-cmyk-channels-in-a-cmyk-image" id="id32">How can I extract and combine CMYK channels in a CMYK image?</a></li>
 <li><a class="reference internal" href="#how-can-i-create-a-solid-or-patterned-canvas-image" id="id33">How can I create a solid or patterned canvas image?</a></li>
+<li><a class="reference internal" href="#what-does-identify-report" id="id34">What does <cite>identify</cite> report?</a></li>
 </ul>
 </div>
 <div class="section" id="how-does-graphicsmagick-differ-from-imagemagick">
@@ -763,6 +764,33 @@ gm convert -size 640x480 tile:image:CROSSHATCH45 canvas.tiff
 <pre class="literal-block">
 gm convert -size 640x480 tile:myimage.tiff canvas.tiff
 </pre>
+</div>
+<div class="section" id="what-does-identify-report">
+<h1><a class="toc-backref" href="#id34">What does <cite>identify</cite> report?</a></h1>
+<p>GraphicsMagick is sophisticated image handling software supporting
+perhaps a hundred formats, and hundreds of subformats, yet it needs to
+be able to apply image processing algorithms in a consistent way, and
+save to many output formats.  Some image types are radically different
+than others.  Due to this, GraphicsMagick normalizes images it reads
+into only nine internal in-memory formats (see the description of
+-type) which are a specialization of just two internal formats.  The
+<cite>identify</cite> command reports the characteristics of one of those
+internal formats rather than the genuine properties of the input image
+file.  In fact, if the properties of all the input files were to be
+reported, it would require a book to describe all of the properties.
+For example, the WMF vector-drawing format is much different than the
+PNG image file format, yet GraphicsMagick can read both.</p>
+<p>Only limited original properties are preserved, and it depends on how
+GraphicsMagick was built.  For example, a &quot;Q8&quot; build can only report
+up to a depth of 8 bits, but a &quot;Q32&quot; build can report a depth of up to
+32 bits.  The original image depth is reported if it is at least 8
+bits, and equal to or less than the build depth.</p>
+<p>By default <cite>identify</cite> reports only the most basic properties:</p>
+<pre class="literal-block">
+% gm identify seaworld.jpg
+seaworld.jpg JPEG 1530x1020+0+0 DirectClass 8-bit 204.0K 0.000u 0:01
+</pre>
+<p>but with -verbose it can report on a large number of properties.</p>
 <hr class="docutils" />
 <p>Copyright © GraphicsMagick Group 2002 - 2014</p>
 </div>

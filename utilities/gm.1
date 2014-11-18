@@ -1,4 +1,4 @@
-.TH gm 1 "2014/08/31" "GraphicsMagick"
+.TH gm 1 "2014/11/17" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -9144,15 +9144,17 @@ are considered a precious resource, use them with discretion.
 .in 20
 .SH GM IDENTIFY
 
-\fBIdentify\fP describes the format and characteristics of one or more
-image files. It will also report if an image is incomplete or corrupt.
-The information displayed includes the scene number, the file name, the
-width and height of the image, whether the image is colormapped or not,
-the number of colors in the image, the number of bytes in the image, the
-format of the image (JPEG, PNM, etc.), and finally the number of seconds
-in both user time and elapsed time it took to read and process the image.
-If -verbose or +ping are provided as an option, the pixel read rate is
-also displayed. An example line output from \fBidentify\fP follows:
+\fBIdentify\fP describes the format and characteristics of one or
+more image files as internally supported by the software. It will also
+report if an image is incomplete or corrupt.  The information
+displayed includes the scene number, the file name, the width and
+height of the image, whether the image is colormapped or not, the
+number of colors in the image, the number of bytes in the image, the
+format of the image (JPEG, PNM, etc.), and finally the number of
+seconds in both user time and elapsed time it took to read and process
+the image.  If -verbose or +ping are provided as an option, the pixel
+read rate is also displayed. An example line output from
+\fBidentify\fP follows:
 
     images/aquarium.miff 640x480 PseudoClass 256c
            308135b MIFF 0.000u 0:01
