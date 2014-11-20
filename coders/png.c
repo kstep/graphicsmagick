@@ -2853,10 +2853,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         }
 
       if (length > PNG_MAX_UINT || count == 0)
-        {
-          ThrowReaderException(CorruptImageError,CorruptImage,image);
-          return (Image *) NULL;
-        }
+        ThrowReaderException(CorruptImageError,CorruptImage,image);
 
       chunk=(unsigned char *) NULL;
       p=NULL;
