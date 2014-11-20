@@ -746,14 +746,14 @@ GraphicsMagick is sophisticated image handling software supporting
 perhaps a hundred formats, and hundreds of subformats, yet it needs to
 be able to apply image processing algorithms in a consistent way, and
 save to many output formats.  Some image types are radically different
-than others.  Due to this, GraphicsMagick normalizes images it reads
+from others.  Due to this, GraphicsMagick normalizes images it reads
 into only nine internal in-memory formats (see the description of
 -type) which are a specialization of just two internal formats.  The
 `identify` command reports the characteristics of one of those
 internal formats rather than the genuine properties of the input image
 file.  In fact, if the properties of all the input files were to be
 reported, it would require a book to describe all of the properties.
-For example, the WMF vector-drawing format is much different than the
+For example, the WMF vector-drawing format is much different from the
 PNG image file format, yet GraphicsMagick can read both.
 
 Only limited original properties are preserved, and it depends on how
