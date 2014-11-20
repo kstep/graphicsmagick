@@ -1,7 +1,7 @@
-2014-11-19  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2014-11-20  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* coders/png.c (ReadJNGImage): return NULL immediately if read
-	fails in the JNG reader before an image has been initialized.
+	* coders/png.c (ReadJNGImage): Do not attempt to clean up
+	a NULL JNG image.
 
 2014-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

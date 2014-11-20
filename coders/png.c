@@ -3375,8 +3375,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
                            ExceptionInfo *exception)
 {
   Image
-    *image,
-    *previous;
+    *image;
 
   MngInfo
     *mng_info;
@@ -3409,8 +3408,8 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   /*
     Verify JNG signature.
   */
-  (void) ReadBlob(image,8,magic_number);
-  if (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
+  if ((ReadBlob(image,8,magic_number) != 8) ||
+      (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Allocate a MngInfo structure.
@@ -3426,7 +3425,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   have_mng_structure=MagickTrue;
 
   mng_info->image=image;
-  previous=image;
   image=ReadOneJNGImage(mng_info,image_info,exception);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (image == (Image *) NULL)
@@ -3434,11 +3432,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "exit ReadJNGImage() with error");
-      if (previous != (Image *) NULL)
-        {
-          CloseBlob(previous);
-          DestroyImageList(previous);
-        }
       return((Image *) NULL);
     }
   CloseBlob(image);
