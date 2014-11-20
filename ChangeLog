@@ -1,3 +1,8 @@
+2014-11-19  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadJNGImage): return NULL immediately if read
+	fails in the JNG reader before an image has been initialized.
+
 2014-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/FAQ.rst: Add a FAQ entry regarding what 'identify' reports.

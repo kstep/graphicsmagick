@@ -778,8 +778,8 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           char
             msg[MaxTextExtent];
         
-          (void) sprintf(msg,"Expected %lu bytes; found %lu bytes",
-                         (unsigned long) length,(unsigned long) check);
+            (void) sprintf(msg,"Expected %lu bytes; found %lu bytes",
+                           (unsigned long) length,(unsigned long) check);
           png_warning(png_ptr,msg);
           png_error(png_ptr,"Read Exception");
         }
@@ -1353,7 +1353,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
-  ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING, image,
                                 PNGErrorHandler,PNGWarningHandler, NULL,
                                 (png_malloc_ptr) png_IM_malloc,
                                 (png_free_ptr) png_IM_free);
@@ -2843,12 +2843,21 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       count=(unsigned int) ReadBlob(image,4,type);
 
       if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "  Reading JNG chunk type %c%c%c%c, length: %lu",
-                              type[0],type[1],type[2],type[3],length);
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                " Reading JNG chunk type %c%c%c%c, length: %lu",
+                                type[0],type[1],type[2],type[3],length);
+      
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "   count=%u\n",count);
+        }
 
       if (length > PNG_MAX_UINT || count == 0)
-        ThrowReaderException(CorruptImageError,CorruptImage,image);
+        {
+          ThrowReaderException(CorruptImageError,CorruptImage,image);
+          return (Image *) NULL;
+        }
+
       chunk=(unsigned char *) NULL;
       p=NULL;
       if (length)
@@ -3422,11 +3431,14 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (image == (Image *) NULL)
     {
-      CloseBlob(previous);
-      DestroyImageList(previous);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "exit ReadJNGImage() with error");
+      if (previous != (Image *) NULL)
+        {
+          CloseBlob(previous);
+          DestroyImageList(previous);
+        }
       return((Image *) NULL);
     }
   CloseBlob(image);
