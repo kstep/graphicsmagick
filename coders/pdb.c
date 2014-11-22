@@ -770,7 +770,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
   packets=(bits_per_pixel*image->columns/8)*image->rows;
-  p=MagickAllocateMemory(unsigned char *,2*packets);
+  p=MagickAllocateArray(unsigned char *,2,packets);
   if (p == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   buffer=MagickAllocateMemory(unsigned char *,256);

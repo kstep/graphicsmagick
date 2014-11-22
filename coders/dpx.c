@@ -1745,14 +1745,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swap_endian)
     SwabDPXImageInfo(&dpx_image_info);
-  image->columns=dpx_image_info.pixels_per_line;
-  image->rows=dpx_image_info.lines_per_image_element;
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Columns %ld, Rows %ld, Elements %u",
-                          image->columns, image->rows,
+                          "Pixels per line %u, Lines per image %u, Elements %u",
+                          (unsigned int) dpx_image_info.pixels_per_line,
+                          (unsigned int) dpx_image_info.lines_per_image_element,
                           (unsigned int) dpx_image_info.elements);
-
+  if (dpx_image_info.orientation > 7U)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (dpx_image_info.elements >
+      sizeof(dpx_image_info.element_info)/sizeof(dpx_image_info.element_info[0]))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  image->columns=dpx_image_info.pixels_per_line;
+  image->rows=dpx_image_info.lines_per_image_element;
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
   image->orientation=DPXOrientationToOrientationType(dpx_image_info.orientation);
 
