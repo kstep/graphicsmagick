@@ -1,3 +1,8 @@
+2014-11-24  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadPNGImage): Do not attempt to clean up
+	a "previous" NULL PNG image.
+
 2014-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xwd.c (ReadXWDImage): Add logging of XWD header values.
@@ -18,7 +23,7 @@
 2014-11-20  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadJNGImage): Do not attempt to clean up
-	a NULL JNG image.
+	a "previous" NULL JNG image.
 
 2014-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

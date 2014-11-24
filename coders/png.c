@@ -2594,8 +2594,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
                            ExceptionInfo *exception)
 {
   Image
-    *image,
-    *previous;
+    *image;
 
   MngInfo
     *mng_info;
@@ -2643,16 +2642,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   mng_info->image=image;
   have_mng_structure=MagickTrue;
 
-  previous=image;
   image=ReadOnePNGImage(mng_info,image_info,exception);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (image == (Image *) NULL)
     {
-      if (previous != (Image *) NULL)
-        {
-          CloseBlob(previous);
-          DestroyImageList(previous);
-        }
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "exit ReadPNGImage() with error");
