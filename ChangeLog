@@ -1,3 +1,12 @@
+2014-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xwd.c (ReadXWDImage): Add logging of XWD header values.
+	Fix memory leaks in error reporting paths.  Ping mode skips
+	allocating memory for data and colormap.  Added a few more header
+	validation checks (not complete).  XWD is put in
+	UnstableCoderClass until such time as header validation checks are
+	complete.
+
 2014-11-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdb.c (WritePDBImage): Use MagickAllocateArray() when

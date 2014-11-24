@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -39,6 +39,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -152,9 +153,6 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register long
-    i;
-
   register unsigned long
     pixel;
 
@@ -166,10 +164,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     lsb_first;
 
   XColor
-    *colors;
+    *colors = (XColor *) NULL;
 
   XImage
-    *ximage;
+    *ximage = (XImage *) NULL;
 
   XWDFileHeader
     header;
@@ -186,20 +184,89 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
-     Read in header information.
+    Read in header information.
+
+    XWDFileHeader is defined in /usr/include/X11/XWDFile.h
+
+    All elements are 32-bit unsigned storage but non-mask properties
+    in XImage use 32-bit signed values.
   */
   count=ReadBlob(image,sz_XWDheader,(char *) &header);
-  if (count == 0)
+  if (count != sz_XWDheader)
     ThrowReaderException(CorruptImageError,UnableToReadImageHeader,image);
-  image->columns=header.pixmap_width;
-  image->rows=header.pixmap_height;
-  image->depth=8;
   /*
     Ensure the header byte-order is most-significant byte first.
   */
   lsb_first=1;
   if (*(char *) &lsb_first)
     MSBOrderLong((unsigned char *) &header,sz_XWDheader);
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "XWDFileHeader:\n"
+                        "    header_size      : %u\n"
+                        "    file_version     : %u\n"
+                        "    pixmap_format    : %s\n"
+                        "    pixmap_depth     : %u\n"
+                        "    pixmap_width     : %u\n"
+                        "    pixmap_height    : %u\n"
+                        "    xoffset          : %u\n"
+                        "    byte_order       : %s\n"
+                        "    bitmap_unit      : %u\n"
+                        "    bitmap_bit_order : %s\n"
+                        "    bitmap_pad       : %u\n"
+                        "    bits_per_pixel   : %u\n"
+                        "    bytes_per_line   : %u\n"
+                        "    visual_class     : %s\n"
+                        "    red_mask         : 0x%06X\n"
+                        "    green_mask       : 0x%06X\n"
+                        "    blue_mask        : 0x%06X\n"
+                        "    bits_per_rgb     : %u\n"
+                        "    colormap_entries : %u\n"
+                        "    ncolors          : %u\n"
+                        "    window_width     : %u\n"
+                        "    window_height    : %u\n"
+                        "    window_x         : %u\n"
+                        "    window_y         : %u\n"
+                        "    window_bdrwidth  : %u",
+                        (unsigned int) header.header_size,
+                        (unsigned int) header.file_version,
+                        /* (unsigned int) header.pixmap_format, */
+                        (header.pixmap_format == XYBitmap ? "XYBitmap" :
+                         (header.pixmap_format == XYPixmap ? "XYPixmap" :
+                          (header.pixmap_format == ZPixmap ? "ZPixmap" : "?"))),
+                        (unsigned int) header.pixmap_depth,
+                        (unsigned int) header.pixmap_width,
+                        (unsigned int) header.pixmap_height,
+                        (unsigned int) header.xoffset,
+                        (header.byte_order == MSBFirst? "MSBFirst" :
+                         (header.byte_order == LSBFirst ? "LSBFirst" : "?")),
+                        (unsigned int) header.bitmap_unit,
+                        (header.bitmap_bit_order == MSBFirst? "MSBFirst" :
+                         (header.bitmap_bit_order == LSBFirst ? "LSBFirst" :
+                          "?")),
+                        (unsigned int) header.bitmap_pad,
+                        (unsigned int) header.bits_per_pixel,
+                        (unsigned int) header.bytes_per_line,
+                        (header.visual_class == StaticGray ? "StaticGray" :
+                         (header.visual_class == GrayScale ? "GrayScale" :
+                          (header.visual_class == StaticColor ? "StaticColor" :
+                           (header.visual_class == PseudoColor ? "PseudoColor" :
+                            (header.visual_class == TrueColor ? "TrueColor" :
+                             (header.visual_class == DirectColor ?
+                              "DirectColor" : "?")))))),
+                        (unsigned int) header.red_mask,
+                        (unsigned int) header.green_mask,
+                        (unsigned int) header.blue_mask,
+                        (unsigned int) header.bits_per_rgb,
+                        (unsigned int) header.colormap_entries,
+                        (unsigned int) header.ncolors,
+                        (unsigned int) header.window_width,
+                        (unsigned int) header.window_height,
+                        (unsigned int) header.window_x,
+                        (unsigned int) header.window_y,
+                        (unsigned int) header.window_bdrwidth
+                        );
+
   /*
     Check to see if the dump file is in the proper format.
   */
@@ -207,6 +274,35 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,InvalidFileFormatVersion,image);
   if (header.header_size < sz_XWDheader)
     ThrowReaderException(CorruptImageError,CorruptImage,image);
+  switch (header.visual_class)
+    {
+    case StaticGray:
+    case GrayScale:
+    case StaticColor:
+    case PseudoColor:
+    case TrueColor:
+    case DirectColor:
+      break;
+    default:
+      {
+        ThrowReaderException(CorruptImageError,CorruptImage,image);
+      }
+    }
+  switch (header.pixmap_format)
+    {
+    case XYBitmap:
+    case XYPixmap:
+    case ZPixmap:
+      break;
+    default:
+      {
+        ThrowReaderException(CorruptImageError,CorruptImage,image);
+      }
+    }
+
+  /*
+    Retrieve comment (if any)
+  */
   length=header.header_size-sz_XWDheader;
   if (length > ((~0UL)/sizeof(*comment)))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
@@ -214,12 +310,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,length,comment);
+  if (count != length)
+    ThrowReaderException(CorruptImageError,UnableToReadWindowNameFromDumpFile,
+                         image);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
   MagickFreeMemory(comment);
-  if (count == 0)
-    ThrowReaderException(CorruptImageError,UnableToReadWindowNameFromDumpFile,
-      image);
+
   /*
     Initialize the X image.
   */
@@ -241,231 +338,286 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->red_mask=header.red_mask;
   ximage->green_mask=header.green_mask;
   ximage->blue_mask=header.blue_mask;
-  /* Why those are signed ints is beyond me. */
-  if (ximage->depth < 0 || ximage->width < 0 || ximage->height < 0 ||
-      ximage->bitmap_pad < 0 || ximage->bytes_per_line < 0)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  /*
+    XImage uses signed integers rather than unsigned.  Check for
+    overflow due to assignment.
+  */
+  if (ximage->width < 0 ||
+      ximage->height < 0 ||
+      ximage->format < 0 ||
+      ximage->byte_order < 0 ||
+      ximage->bitmap_unit < 0 ||
+      ximage->bitmap_bit_order < 0 ||
+      ximage->bitmap_pad < 0 ||
+      ximage->depth < 0 ||
+      ximage->bytes_per_line < 0 ||
+      ximage->bits_per_pixel < 0)
+    {
+      MagickFreeMemory(ximage);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
   /* Guard against buffer overflow in libX11. */
   if (ximage->bits_per_pixel > 32 || ximage->bitmap_unit > 32)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    {
+      MagickFreeMemory(ximage);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
   status=XInitImage(ximage);
   if (status == False)
-    ThrowReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
-  /*
-    Read colormap.
-  */
-  colors=(XColor *) NULL;
-  if (header.ncolors != 0)
     {
-      XWDColor
-        color;
-
-      length=(size_t) header.ncolors;
-      if (length > ((~0UL)/sizeof(*colors)))
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-      colors=MagickAllocateArray(XColor *,length,sizeof(XColor));
-      if (colors == (XColor *) NULL)
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      for (i=0; i < (long) header.ncolors; i++)
-      {
-        count=ReadBlob(image,sz_XWDColor,(char *) &color);
-        if (count == 0)
-          ThrowReaderException(CorruptImageError,UnableToReadColormapFromDumpFile,image);
-        colors[i].pixel=color.pixel;
-        colors[i].red=color.red;
-        colors[i].green=color.green;
-        colors[i].blue=color.blue;
-        colors[i].flags=color.flags;
-      }
-      /*
-        Ensure the header byte-order is most-significant byte first.
-      */
-      lsb_first=1;
-      if (*(char *) &lsb_first)
-        for (i=0; i < (long) header.ncolors; i++)
-        {
-          MSBOrderLong((unsigned char *) &colors[i].pixel,
-            sizeof(unsigned long));
-          MSBOrderShort((unsigned char *) &colors[i].red,
-            3*sizeof(unsigned short));
-        }
+      MagickFreeMemory(ximage);
+      ThrowReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
     }
-  /*
-    Allocate the pixel buffer.
-  */
-#define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/((size_t) b) != ((size_t) a)))
-  length=ximage->bytes_per_line*ximage->height;
-  if (XWD_OVERFLOW(length,ximage->bytes_per_line,ximage->height))
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  if (ximage->format != ZPixmap)
-    {
-      size_t tmp=length;
-      length*=ximage->depth;
-      if (XWD_OVERFLOW(length,tmp,ximage->depth))
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
-  ximage->data=MagickAllocateMemory(char *,length);
-  if (ximage->data == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  count=ReadBlob(image,length,ximage->data);
-  if (count == 0)
-    ThrowReaderException(CorruptImageError,UnableToReadPixmapFromDumpFile,
-      image);
-  /*
-    Convert image to MIFF format.
-  */
   image->columns=ximage->width;
   image->rows=ximage->height;
-  if ((colors == (XColor *) NULL) || (ximage->red_mask != 0) ||
+  image->depth=8;
+  if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))
     image->storage_class=DirectClass;
   else
     image->storage_class=PseudoClass;
   image->colors=header.ncolors;
   if (!image_info->ping)
-    switch (image->storage_class)
     {
-      case DirectClass:
-      default:
-      {
-        register unsigned long
-          color;
+      /*
+        Read colormap.
+      */
+      colors=(XColor *) NULL;
+      if (header.ncolors != 0)
+        {
+          XWDColor
+            color;
 
-        unsigned long
-          blue_mask,
-          blue_shift,
-          green_mask,
-          green_shift,
-          red_mask,
-          red_shift;
+          register long
+            i;
 
-        /*
-          Determine shift and mask for red, green, and blue.
-        */
-        red_mask=ximage->red_mask;
-        red_shift=0;
-        while ((red_mask != 0) && ((red_mask & 0x01) == 0))
-        {
-          red_mask>>=1;
-          red_shift++;
-        }
-        green_mask=ximage->green_mask;
-        green_shift=0;
-        while ((green_mask != 0) && ((green_mask & 0x01) == 0))
-        {
-          green_mask>>=1;
-          green_shift++;
-        }
-        blue_mask=ximage->blue_mask;
-        blue_shift=0;
-        while ((blue_mask != 0) && ((blue_mask & 0x01) == 0))
-        {
-          blue_mask>>=1;
-          blue_shift++;
-        }
-        /*
-          Convert X image to DirectClass packets.
-        */
-        if (image->colors != 0)
-          for (y=0; y < (long) image->rows; y++)
-          {
-            q=SetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (long) image->columns; x++)
+          length=(size_t) header.ncolors;
+          if (length > ((~0UL)/sizeof(*colors)))
             {
-              pixel=XGetPixel(ximage,(int) x,(int) y);
-              index_val=(unsigned short) ((pixel >> red_shift) & red_mask);
-              q->red=ScaleShortToQuantum(colors[index_val].red);
-              index_val=(unsigned short) ((pixel >> green_shift) & green_mask);
-              q->green=ScaleShortToQuantum(colors[index_val].green);
-              index_val=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-              q->blue=ScaleShortToQuantum(colors[index_val].blue);
-              q++;
+              MagickFreeMemory(ximage);
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             }
-            if (!SyncImagePixels(image))
-              break;
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(y,image->rows,exception,
-					  LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-          }
-        else
-          for (y=0; y < (long) image->rows; y++)
-          {
-            q=SetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (long) image->columns; x++)
+          colors=MagickAllocateArray(XColor *,length,sizeof(XColor));
+          if (colors == (XColor *) NULL)
             {
-              pixel=XGetPixel(ximage,(int) x,(int) y);
-              color=(pixel >> red_shift) & red_mask;
-              q->red=ScaleShortToQuantum((color*65535L)/red_mask);
-              color=(pixel >> green_shift) & green_mask;
-              q->green=ScaleShortToQuantum((color*65535L)/green_mask);
-              color=(pixel >> blue_shift) & blue_mask;
-              q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
-              q++;
+              MagickFreeMemory(ximage);
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                   image);
             }
-            if (!SyncImagePixels(image))
-              break;
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(y,image->rows,exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-          }
-        break;
-      }
-      case PseudoClass:
-      {
-        /*
-          Convert X image to PseudoClass packets.
-        */
-        if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-            image);
-        for (i=0; i < (long) image->colors; i++)
-        {
-          image->colormap[i].red=ScaleShortToQuantum(colors[i].red);
-          image->colormap[i].green=ScaleShortToQuantum(colors[i].green);
-          image->colormap[i].blue=ScaleShortToQuantum(colors[i].blue);
+          for (i=0; i < (long) header.ncolors; i++)
+            {
+              count=ReadBlob(image,sz_XWDColor,(char *) &color);
+              if (count != sz_XWDColor)
+                {
+                  MagickFreeMemory(ximage);
+                  ThrowReaderException(CorruptImageError,
+                                       UnableToReadColormapFromDumpFile,image);
+                }
+              colors[i].pixel=color.pixel;
+              colors[i].red=color.red;
+              colors[i].green=color.green;
+              colors[i].blue=color.blue;
+              colors[i].flags=color.flags;
+            }
+          /*
+            Ensure the header byte-order is most-significant byte first.
+          */
+          lsb_first=1;
+          if (*(char *) &lsb_first)
+            for (i=0; i < (long) header.ncolors; i++)
+              {
+                MSBOrderLong((unsigned char *) &colors[i].pixel,
+                             sizeof(unsigned long));
+                MSBOrderShort((unsigned char *) &colors[i].red,
+                              3*sizeof(unsigned short));
+              }
         }
-        for (y=0; y < (long) image->rows; y++)
+      /*
+        Convert image to MIFF format.
+      */
+      /*
+        Allocate the pixel buffer.
+      */
+#define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/((size_t) b) != ((size_t) a)))
+      length=ximage->bytes_per_line*ximage->height;
+      if (XWD_OVERFLOW(length,ximage->bytes_per_line,ximage->height))
         {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
+          MagickFreeMemory(ximage);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
+      if (ximage->format != ZPixmap)
+        {
+          size_t tmp=length;
+          length*=ximage->depth;
+          if (XWD_OVERFLOW(length,tmp,ximage->depth))
+            {
+              MagickFreeMemory(ximage);
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                   image);
+            }
+        }
+      ximage->data=MagickAllocateMemory(char *,length);
+      if (ximage->data == (char *) NULL)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      count=ReadBlob(image,length,ximage->data);
+      if (count != length)
+        {
+          MagickFreeMemory(ximage->data);
+          MagickFreeMemory(ximage);
+          ThrowReaderException(CorruptImageError,
+                               UnableToReadPixmapFromDumpFile,image);
+        }
+      switch (image->storage_class)
+        {
+        case DirectClass:
+        default:
           {
-            index_val=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
-            VerifyColormapIndex(image,index_val);
-            indexes[x]=index_val;
-            *q++=image->colormap[index_val];
-          }
-          if (!SyncImagePixels(image))
+            register unsigned long
+              color;
+
+            unsigned long
+              blue_mask,
+              blue_shift,
+              green_mask,
+              green_shift,
+              red_mask,
+              red_shift;
+
+            /*
+              Determine shift and mask for red, green, and blue.
+            */
+            red_mask=ximage->red_mask;
+            red_shift=0;
+            while ((red_mask != 0) && ((red_mask & 0x01) == 0))
+              {
+                red_mask>>=1;
+                red_shift++;
+              }
+            green_mask=ximage->green_mask;
+            green_shift=0;
+            while ((green_mask != 0) && ((green_mask & 0x01) == 0))
+              {
+                green_mask>>=1;
+                green_shift++;
+              }
+            blue_mask=ximage->blue_mask;
+            blue_shift=0;
+            while ((blue_mask != 0) && ((blue_mask & 0x01) == 0))
+              {
+                blue_mask>>=1;
+                blue_shift++;
+              }
+            /*
+              Convert X image to DirectClass packets.
+            */
+            if (image->colors != 0)
+              for (y=0; y < (long) image->rows; y++)
+                {
+                  q=SetImagePixels(image,0,y,image->columns,1);
+                  if (q == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (long) image->columns; x++)
+                    {
+                      pixel=XGetPixel(ximage,(int) x,(int) y);
+                      index_val=(unsigned short)
+                        ((pixel >> red_shift) & red_mask);
+                      q->red=ScaleShortToQuantum(colors[index_val].red);
+                      index_val=(unsigned short)
+                        ((pixel >> green_shift) & green_mask);
+                      q->green=ScaleShortToQuantum(colors[index_val].green);
+                      index_val=(unsigned short)
+                        ((pixel >> blue_shift) & blue_mask);
+                      q->blue=ScaleShortToQuantum(colors[index_val].blue);
+                      q++;
+                    }
+                  if (!SyncImagePixels(image))
+                    break;
+                  if (QuantumTick(y,image->rows))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename,
+                                                image->columns,image->rows))
+                      break;
+                }
+            else
+              for (y=0; y < (long) image->rows; y++)
+                {
+                  q=SetImagePixels(image,0,y,image->columns,1);
+                  if (q == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (long) image->columns; x++)
+                    {
+                      pixel=XGetPixel(ximage,(int) x,(int) y);
+                      color=(pixel >> red_shift) & red_mask;
+                      q->red=ScaleShortToQuantum((color*65535L)/red_mask);
+                      color=(pixel >> green_shift) & green_mask;
+                      q->green=ScaleShortToQuantum((color*65535L)/green_mask);
+                      color=(pixel >> blue_shift) & blue_mask;
+                      q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
+                      q++;
+                    }
+                  if (!SyncImagePixels(image))
+                    break;
+                  if (QuantumTick(y,image->rows))
+                    if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                LoadImageText,image->filename,
+                                                image->columns,image->rows))
+                      break;
+                }
             break;
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
-                                        image->filename,
-					image->columns,image->rows))
-              break;
+          }
+        case PseudoClass:
+          {
+            /*
+              Convert X image to PseudoClass packets.
+            */
+            register long
+              i;
+
+            if (!AllocateImageColormap(image,image->colors))
+              {
+                MagickFreeMemory(ximage->data);
+                MagickFreeMemory(ximage);
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                     image);
+              }
+            for (i=0; i < (long) image->colors; i++)
+              {
+                image->colormap[i].red=ScaleShortToQuantum(colors[i].red);
+                image->colormap[i].green=ScaleShortToQuantum(colors[i].green);
+                image->colormap[i].blue=ScaleShortToQuantum(colors[i].blue);
+              }
+            for (y=0; y < (long) image->rows; y++)
+              {
+                q=SetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                indexes=AccessMutableIndexes(image);
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    index_val=(IndexPacket) (XGetPixel(ximage,(int) x,(int) y));
+                    VerifyColormapIndex(image,index_val);
+                    indexes[x]=index_val;
+                    *q++=image->colormap[index_val];
+                  }
+                if (!SyncImagePixels(image))
+                  break;
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitorFormatted(y,image->rows,exception,
+                                              LoadImageText,
+                                              image->filename,
+                                              image->columns,image->rows))
+                    break;
+              }
+            break;
+          }
         }
-        break;
-      }
     }
   /*
     Free image and colormap.
   */
-  if (header.ncolors != 0)
-    MagickFreeMemory(colors);
+  MagickFreeMemory(colors);
   MagickFreeMemory(ximage->data);
   MagickFreeMemory(ximage);
-  if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-      image->filename);
   CloseBlob(image);
   return(image);
 }
@@ -506,6 +658,7 @@ ModuleExport void RegisterXWDImage(void)
 #endif
   entry->magick=(MagickHandler) IsXWD;
   entry->adjoin=False;
+  entry->coder_class=UnstableCoderClass;
   entry->description="X Windows system window dump (color)";
   entry->module="XWD";
   (void) RegisterMagickInfo(entry);
