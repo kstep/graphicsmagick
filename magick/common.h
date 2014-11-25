@@ -180,6 +180,16 @@ extern "C" {
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))))  /* 4.3+ */
 #      define MAGICK_OPTIMIZE_FUNC(opt) MAGICK_ATTRIBUTE((__optimize__ (opt)))
 #    endif
+  /*
+    https://code.google.com/p/address-sanitizer/wiki/AddressSanitizer#Introduction
+
+    To ignore certain functions, one can use the no_sanitize_address attribute
+    supported by Clang (3.3+) and GCC (4.8+).
+  */
+#    if ((MAGICK_CLANG_HAS_ATTRIBUTE(__no_sanitize_address__)) ||       \
+         (((__GNUC__) > 4) || ((__GNUC__ == 8) && (__GNUC_MINOR__ >= 0))))  /* 4.8+ */
+#      define MAGICK_NO_SANITIZE_ADDRESS MAGICK_ATTRIBUTE((__no_sanitize_address__))
+#    endif
 #    if ((MAGICK_CLANG_HAS_BUILTIN(__builtin_assume_aligned)) || \
          (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))))  /* 4.7+ */
 #      define MAGICK_ASSUME_ALIGNED(exp,align) __builtin_assume_aligned(exp,align)

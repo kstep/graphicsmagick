@@ -1,3 +1,9 @@
+2014-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/common.h (MAGICK_NO_SANITIZE_ADDRESS): Add
+	MAGICK_NO_SANITIZE_ADDRESS macro definition for disabling
+	clang/GCC address sanitizer on a function if the need arises.
+
 2014-11-24  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadPNGImage): Do not attempt to clean up
