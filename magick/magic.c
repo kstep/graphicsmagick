@@ -60,7 +60,7 @@ StaticMagic[] =
 {
 #define MAGIC(name,offset,magic) {name,(unsigned char *)magic,sizeof(magic)-1,offset}
   MAGIC("WEBP", 8, "WEBP"),
-  MAGIC("AVI", 0, "RIFF"),
+  /* MAGIC("AVI", 0, "RIFF"), */
   MAGIC("8BIMWTEXT", 0, "8\000B\000I\000M\000#"),
   MAGIC("8BIMTEXT", 0, "8BIM#"),
   MAGIC("8BIM", 0, "8BIM"),

@@ -9,7 +9,6 @@
 <o>APP1JPEG <|>rw-<|>Raw JPEG binary data
 <o>ART      <|>r--<|>PF1: 1st Publisher
 <o>ARW      <|>r--<|>Sony Alpha DSLR RAW
-<o>AVI      <|>r--<|>Audio/Visual Interleaved
 <o>AVS      <|>rw+<|>AVS X image
 <o>BIE      <|>rw-<|>Joint Bi-level Image experts Group
 < >         <|>   <|>interchange format

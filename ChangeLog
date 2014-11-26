@@ -1,5 +1,10 @@
 2014-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/avi.c: AVI support in GraphicsMagick is completely
+	unusable and it could never compete with dedicated software like
+	'ffmpeg'.  Removing AVI support until such time it can be
+	supported properly.
+
 	* coders/viff.c: Add protections against buffer overflow by
 	verifying that buffer size allocation calculations do not
 	overflow.  Also added header logging for read and write. Work
