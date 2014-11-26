@@ -5801,6 +5801,22 @@ configuration files in $HOME/.magick if the directory exists. See
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    MAGICK_ACCESS_MONITOR
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>When set to <strong>TRUE</strong>, command line monitor mode (enabled by
+<strong>-monitor</strong>) will also show files accessed (including temporary
+files) and any external commands which are executed. This is useful
+for debugging, but also illustrates arguments made available to an
+access handler registered by the
+<strong>MagickSetConfirmAccessHandler()</strong> C library function.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_CODER_STABILITY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
@@ -6000,7 +6016,9 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_MAP
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory mapped file allocation.  A memory mapped
+file consumes memory when the file is accessed, although the system
+may reclaim such memory when needed.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6012,6 +6030,24 @@ width=15><b><font face="Helvetica, Arial"
     MAGICK_LIMIT_MEMORY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_PIXELS
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of total pixels (image rows times image colums) to
+allow for any image which is requested to be created or read.  This is
+useful to place a limit on how large an image may be.  If the input
+image file has image dimensions larger than the pixel limit, then the
+image memory allocation is denied and an error is returned
+immediately.  This is a per-image limit and does not limit the total
+number of pixels due to multiple image frames/pages (e.g. multi-page
+document or an animation).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
