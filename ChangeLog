@@ -1,3 +1,10 @@
+2014-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/viff.c: Add protections against buffer overflow by
+	verifying that buffer size allocation calculations do not
+	overflow.  Also added header logging for read and write. Work
+	performed due to complaint by Hanno Böck.
+
 2014-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/common.h (MAGICK_NO_SANITIZE_ADDRESS): Add

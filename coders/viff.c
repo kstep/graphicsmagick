@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -40,6 +40,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -50,6 +51,133 @@
 */
 static unsigned int
   WriteVIFFImage(const ImageInfo *,Image *);
+
+#define VFF_CM_genericRGB  15
+#define VFF_CM_ntscRGB  1
+#define VFF_CM_NONE  0
+#define VFF_DEP_DECORDER  0x4
+#define VFF_DEP_NSORDER  0x8
+#define VFF_DES_RAW  0
+#define VFF_LOC_IMPLICIT  1
+#define VFF_MAPTYP_NONE  0
+#define VFF_MAPTYP_1_BYTE  1
+#define VFF_MAPTYP_2_BYTE  2
+#define VFF_MAPTYP_4_BYTE  4
+#define VFF_MAPTYP_FLOAT  5
+#define VFF_MAPTYP_DOUBLE  7
+#define VFF_MS_NONE  0
+#define VFF_MS_ONEPERBAND  1
+#define VFF_MS_SHARED  3
+#define VFF_TYP_BIT  0
+#define VFF_TYP_1_BYTE  1
+#define VFF_TYP_2_BYTE  2
+#define VFF_TYP_4_BYTE  4
+#define VFF_TYP_FLOAT  5
+#define VFF_TYP_DOUBLE  9
+
+typedef struct _ViffInfo
+{
+  unsigned char
+  identifier,
+    file_type,
+    release,
+    version,
+    machine_dependency,
+    reserve[3];
+
+  char
+    comment[512];
+
+  magick_uint32_t
+    rows,
+    columns,
+    subrows;
+
+  magick_int32_t
+    x_offset,
+    y_offset;
+
+  float
+    x_pixel_size,
+    y_pixel_size;
+
+  magick_uint32_t
+    location_type,
+    location_dimension,
+    number_of_images,
+    number_data_bands,
+    data_storage_type,
+    data_encode_scheme,
+    map_scheme,
+    map_storage_type,
+    map_rows,
+    map_columns,
+    map_subrows,
+    map_enable,
+    maps_per_cycle,
+    color_space_model;
+} ViffInfo;
+
+static void LogVIFFInfo(const ViffInfo *viff_info)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "VIFFHeader:\n"
+                        "    FileId:             0x%02X\n"
+                        "    FileType:           0x%02X\n"
+                        "    Release:            0x%02X\n"
+                        "    Version:            0x%02X\n"
+                        "    MachineDep:         0x%02X\n"
+                        "    Comment:            \"%.512s\"\n"
+                        "    NumberOfRows:       %u\n"
+                        "    NumberOfColumns:    %u\n"
+                        "    LengthOfSubrow:     %u\n"
+                        "    StartX:             %d\n"
+                        "    StartY:             %d\n"
+                        "    XPixelSize:         %f (pixel width, meters)\n"
+                        "    YPixelSize:         %f (pixel height, meters)\n"
+                        "    LocationType:       0x%04X\n"
+                        "    LocationDim:        0x%04X\n"
+                        "    NumberOfImages:     %u\n"
+                        "    NumberOfBands:      %u\n"
+                        "    DataStorageType:    0x%04X\n"
+                        "    DataEncodingScheme: 0x%04X\n"
+                        "    MapScheme:          0x%04X\n"
+                        "    MapStorageType:     0x%04X\n"
+                        "    MapRowSize:         %u\n"
+                        "    MapColumnSize:      %u\n"
+                        "    MapSubrowSize:      %u\n"
+                        "    MapEnable:          0x%04X\n"
+                        "    MapsPerCycle:       %u\n"
+                        "    ColorSpaceModel:    0x%04X",
+                        viff_info->identifier,
+                        viff_info->file_type,
+                        viff_info->release,
+                        viff_info->version,
+                        viff_info->machine_dependency,
+                        viff_info->comment,
+                        viff_info->rows,
+                        viff_info->columns,
+                        viff_info->subrows,
+                        viff_info->x_offset,
+                        viff_info->y_offset,
+                        viff_info->x_pixel_size,
+                        viff_info->y_pixel_size,
+                        viff_info->location_type,
+                        viff_info->location_dimension,
+                        viff_info->number_of_images,
+                        viff_info->number_data_bands,
+                        viff_info->data_storage_type,
+                        viff_info->data_encode_scheme,
+                        viff_info->map_scheme,
+                        viff_info->map_storage_type,
+                        viff_info->map_rows,
+                        viff_info->map_columns,
+                        viff_info->map_subrows,
+                        viff_info->map_enable,
+                        viff_info->maps_per_cycle,
+                        viff_info->color_space_model
+                        );
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,71 +252,6 @@ static unsigned int IsVIFF(const unsigned char *magick,const size_t length)
 static Image *ReadVIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define VFF_CM_genericRGB  15
-#define VFF_CM_ntscRGB  1
-#define VFF_CM_NONE  0
-#define VFF_DEP_DECORDER  0x4
-#define VFF_DEP_NSORDER  0x8
-#define VFF_DES_RAW  0
-#define VFF_LOC_IMPLICIT  1
-#define VFF_MAPTYP_NONE  0
-#define VFF_MAPTYP_1_BYTE  1
-#define VFF_MAPTYP_2_BYTE  2
-#define VFF_MAPTYP_4_BYTE  4
-#define VFF_MAPTYP_FLOAT  5
-#define VFF_MAPTYP_DOUBLE  7
-#define VFF_MS_NONE  0
-#define VFF_MS_ONEPERBAND  1
-#define VFF_MS_SHARED  3
-#define VFF_TYP_BIT  0
-#define VFF_TYP_1_BYTE  1
-#define VFF_TYP_2_BYTE  2
-#define VFF_TYP_4_BYTE  4
-#define VFF_TYP_FLOAT  5
-#define VFF_TYP_DOUBLE  9
-
-  typedef struct _ViffInfo
-  {
-    unsigned char
-      identifier,
-      file_type,
-      release,
-      version,
-      machine_dependency,
-      reserve[3];
-
-    char
-      comment[512];
-
-    unsigned long
-      rows,
-      columns,
-      subrows;
-
-    long
-      x_offset,
-      y_offset;
-
-    float
-      x_bits_per_pixel,
-      y_bits_per_pixel;
-
-    unsigned long
-      location_type,
-      location_dimension,
-      number_of_images,
-      number_data_bands,
-      data_storage_type,
-      data_encode_scheme,
-      map_scheme,
-      map_storage_type,
-      map_rows,
-      map_columns,
-      map_subrows,
-      map_enable,
-      maps_per_cycle,
-      color_space_model;
-  } ViffInfo;
 
   double
     min_value,
@@ -223,7 +286,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     count;
 
   unsigned char
-    buffer[7],
     *viff_pixels;
 
   unsigned int
@@ -237,6 +299,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   ViffInfo
     viff_info;
+
+  magick_uint32_t (*ReadHeaderLong) (Image *image);
 
   /*
     Open image file.
@@ -263,73 +327,52 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Initialize VIFF image.
     */
-    (void) ReadBlob(image,7,(char *) buffer);
-    viff_info.file_type=buffer[0];
-    viff_info.release=buffer[1];
-    viff_info.version=buffer[2];
-    viff_info.machine_dependency=buffer[3];
+    (void) ReadBlob(image,sizeof(viff_info.file_type),&viff_info.file_type);
+    (void) ReadBlob(image,sizeof(viff_info.release),&viff_info.release);
+    (void) ReadBlob(image,sizeof(viff_info.version),&viff_info.version);
+    (void) ReadBlob(image,sizeof(viff_info.machine_dependency),
+                    &viff_info.machine_dependency);
+    (void) ReadBlob(image,sizeof(viff_info.reserve),&viff_info.reserve),
     (void) ReadBlob(image,512,(char *) viff_info.comment);
     viff_info.comment[511]='\0';
     if (strlen(viff_info.comment) > 4)
       (void) SetImageAttribute(image,"comment",viff_info.comment);
     if ((viff_info.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_info.machine_dependency == VFF_DEP_NSORDER))
-      {
-        viff_info.rows=ReadBlobLSBLong(image);
-        viff_info.columns=ReadBlobLSBLong(image);
-        viff_info.subrows=ReadBlobLSBLong(image);
-        viff_info.x_offset=(long) ReadBlobLSBLong(image);
-        viff_info.y_offset=(long) ReadBlobLSBLong(image);
-        viff_info.x_bits_per_pixel=(float) ReadBlobLSBLong(image);
-        viff_info.y_bits_per_pixel=(float) ReadBlobLSBLong(image);
-        viff_info.location_type=ReadBlobLSBLong(image);
-        viff_info.location_dimension=ReadBlobLSBLong(image);
-        viff_info.number_of_images=ReadBlobLSBLong(image);
-        viff_info.number_data_bands=ReadBlobLSBLong(image);
-        viff_info.data_storage_type=ReadBlobLSBLong(image);
-        viff_info.data_encode_scheme=ReadBlobLSBLong(image);
-        viff_info.map_scheme=ReadBlobLSBLong(image);
-        viff_info.map_storage_type=ReadBlobLSBLong(image);
-        viff_info.map_rows=ReadBlobLSBLong(image);
-        viff_info.map_columns=ReadBlobLSBLong(image);
-        viff_info.map_subrows=ReadBlobLSBLong(image);
-        viff_info.map_enable=ReadBlobLSBLong(image);
-        viff_info.maps_per_cycle=ReadBlobLSBLong(image);
-        viff_info.color_space_model=ReadBlobLSBLong(image);
-      }
+      ReadHeaderLong=ReadBlobLSBLong;
     else
-      {
-        viff_info.rows=ReadBlobMSBLong(image);
-        viff_info.columns=ReadBlobMSBLong(image);
-        viff_info.subrows=ReadBlobMSBLong(image);
-        viff_info.x_offset=(long) ReadBlobMSBLong(image);
-        viff_info.y_offset=(long) ReadBlobMSBLong(image);
-        viff_info.x_bits_per_pixel=(float) ReadBlobMSBLong(image);
-        viff_info.y_bits_per_pixel=(float) ReadBlobMSBLong(image);
-        viff_info.location_type=ReadBlobMSBLong(image);
-        viff_info.location_dimension=ReadBlobMSBLong(image);
-        viff_info.number_of_images=ReadBlobMSBLong(image);
-        viff_info.number_data_bands=ReadBlobMSBLong(image);
-        viff_info.data_storage_type=ReadBlobMSBLong(image);
-        viff_info.data_encode_scheme=ReadBlobMSBLong(image);
-        viff_info.map_scheme=ReadBlobMSBLong(image);
-        viff_info.map_storage_type=ReadBlobMSBLong(image);
-        viff_info.map_rows=ReadBlobMSBLong(image);
-        viff_info.map_columns=ReadBlobMSBLong(image);
-        viff_info.map_subrows=ReadBlobMSBLong(image);
-        viff_info.map_enable=ReadBlobMSBLong(image);
-        viff_info.maps_per_cycle=ReadBlobMSBLong(image);
-        viff_info.color_space_model=ReadBlobMSBLong(image);
-      }
+      ReadHeaderLong=ReadBlobMSBLong;
+    viff_info.rows=(ReadHeaderLong)(image);
+    viff_info.columns=(ReadHeaderLong)(image);
+    viff_info.subrows=(ReadHeaderLong)(image);
+    viff_info.x_offset=(int) (ReadHeaderLong)(image);
+    viff_info.y_offset=(int) (ReadHeaderLong)(image);
+    viff_info.x_pixel_size=(float) (ReadHeaderLong)(image);
+    viff_info.y_pixel_size=(float) (ReadHeaderLong)(image);
+    viff_info.location_type=(ReadHeaderLong)(image);
+    viff_info.location_dimension=(ReadHeaderLong)(image);
+    viff_info.number_of_images=(ReadHeaderLong)(image);
+    viff_info.number_data_bands=(ReadHeaderLong)(image);
+    viff_info.data_storage_type=(ReadHeaderLong)(image);
+    viff_info.data_encode_scheme=(ReadHeaderLong)(image);
+    viff_info.map_scheme=(ReadHeaderLong)(image);
+    viff_info.map_storage_type=(ReadHeaderLong)(image);
+    viff_info.map_rows=(ReadHeaderLong)(image);
+    viff_info.map_columns=(ReadHeaderLong)(image);
+    viff_info.map_subrows=(ReadHeaderLong)(image);
+    viff_info.map_enable=(ReadHeaderLong)(image);
+    viff_info.maps_per_cycle=(ReadHeaderLong)(image);
+    viff_info.color_space_model=(ReadHeaderLong)(image);
     for (i=0; i < 420; i++)
       (void) ReadBlobByte(image);
+    LogVIFFInfo(&viff_info);
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
-    image->depth=viff_info.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
+    image->depth=viff_info.x_pixel_size <= 8 ? 8 : QuantumDepth;
     /*
       Verify that we can read this VIFF image.
     */
-    number_pixels=viff_info.columns*viff_info.rows;
+    number_pixels=MagickArraySize(viff_info.columns,viff_info.rows);
     if (number_pixels == 0)
       ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,
         image);
@@ -401,8 +444,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        viff_colormap=MagickAllocateMemory(unsigned char *,
-          bytes_per_pixel*image->colors*viff_info.map_rows);
+        viff_colormap=MagickAllocateArray(unsigned char *,
+                                          MagickArraySize(bytes_per_pixel,
+                                                          image->colors),
+                                          viff_info.map_rows);
         if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
@@ -444,18 +489,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
           if (i < (long) image->colors)
             {
-              image->colormap[i].red=ScaleCharToQuantum((unsigned long) value);
-              image->colormap[i].green=ScaleCharToQuantum((unsigned long) value);
-              image->colormap[i].blue=ScaleCharToQuantum((unsigned long) value);
+              image->colormap[i].red=ScaleCharToQuantum((unsigned int) value);
+              image->colormap[i].green=ScaleCharToQuantum((unsigned int) value);
+              image->colormap[i].blue=ScaleCharToQuantum((unsigned int) value);
             }
           else
             if (i < (long) (2*image->colors))
               image->colormap[i % image->colors].green=
-                ScaleCharToQuantum((unsigned long) value);
+                ScaleCharToQuantum((unsigned int) value);
             else
               if (i < (long) (3*image->colors))
                 image->colormap[i % image->colors].blue=
-                  ScaleCharToQuantum((unsigned long) value);
+                  ScaleCharToQuantum((unsigned int) value);
         }
         MagickFreeMemory(viff_colormap);
         break;
@@ -486,11 +531,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       default: bytes_per_pixel=1; break;
     }
     if (viff_info.data_storage_type == VFF_TYP_BIT)
-      max_packets=((image->columns+7) >> 3)*image->rows;
+      max_packets=MagickArraySize(((image->columns+7) >> 3),image->rows);
     else
-      max_packets=number_pixels*viff_info.number_data_bands;
-    viff_pixels=MagickAllocateMemory(unsigned char *,
-      bytes_per_pixel*max_packets*sizeof(Quantum));
+      max_packets=MagickArraySize(number_pixels,viff_info.number_data_bands);
+    viff_pixels=MagickAllocateArray(unsigned char *,
+                                    MagickArraySize(bytes_per_pixel,
+                                                    max_packets),
+                                    sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
@@ -841,48 +888,6 @@ ModuleExport void UnregisterVIFFImage(void)
 #define VFF_TYP_1_BYTE  1
 static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 {
-
-  typedef struct _ViffInfo
-  {
-    char
-      identifier,
-      file_type,
-      release,
-      version,
-      machine_dependency,
-      reserve[3],
-      comment[512];
-
-    unsigned long
-      rows,
-      columns,
-      subrows;
-
-    long
-      x_offset,
-      y_offset;
-
-    unsigned int
-      x_bits_per_pixel,
-      y_bits_per_pixel;
-
-    unsigned long
-      location_type,
-      location_dimension,
-      number_of_images,
-      number_data_bands,
-      data_storage_type,
-      data_encode_scheme,
-      map_scheme,
-      map_storage_type,
-      map_rows,
-      map_columns,
-      map_subrows,
-      map_enable,
-      maps_per_cycle,
-      color_space_model;
-  } ViffInfo;
-
   const ImageAttribute
     *attribute;
 
@@ -905,7 +910,6 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     *q;
 
   unsigned char
-    buffer[8],
     *viff_pixels;
 
   unsigned int
@@ -964,8 +968,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_info.subrows=0;
     viff_info.x_offset=(~0);
     viff_info.y_offset=(~0);
-    viff_info.x_bits_per_pixel=0;
-    viff_info.y_bits_per_pixel=0;
+    viff_info.x_pixel_size=0;
+    viff_info.y_pixel_size=0;
     viff_info.location_type=VFF_LOC_IMPLICIT;
     viff_info.location_dimension=0;
     viff_info.number_of_images=1;
@@ -986,7 +990,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
         viff_info.number_data_bands=image->matte ? 4 : 3;
         viff_info.color_space_model=VFF_CM_genericRGB;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
-        packets=viff_info.number_data_bands*number_pixels;
+        packets=MagickArraySize(viff_info.number_data_bands,
+                                number_pixels);
       }
     else
       {
@@ -1011,31 +1016,42 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 Monochrome VIFF raster.
               */
               viff_info.data_storage_type=VFF_TYP_BIT;
-              packets=((image->columns+7) >> 3)*image->rows;
+              packets=MagickArraySize(((image->columns+7) >> 3),
+                                      image->rows);
             }
       }
     /*
       Write VIFF image header (pad to 1024 bytes).
     */
-    buffer[0]=viff_info.identifier;
-    buffer[1]=viff_info.file_type;
-    buffer[2]=viff_info.release;
-    buffer[3]=viff_info.version;
-    buffer[4]=viff_info.machine_dependency;
-    buffer[5]=viff_info.reserve[0];
-    buffer[6]=viff_info.reserve[1];
-    buffer[7]=viff_info.reserve[2];
-    (void) WriteBlob(image,8,(char *) buffer);
+    {
+      /* FIXME: this makes no sense to me but preserve original values
+         until we figure out why this was done. */
+      union
+      {
+        float f;
+        magick_uint32_t u;
+      } v;
+      v.u = (63 << 24) | (128 << 16);
+      viff_info.x_pixel_size=viff_info.y_pixel_size=v.f;
+      /* viff_info.x_pixel_size=(63 << 24) | (128 << 16); */
+      /* viff_info.y_pixel_size=(63 << 24) | (128 << 16); */
+    }
+    LogVIFFInfo(&viff_info);
+    (void) WriteBlob(image,sizeof(viff_info.identifier),&viff_info.identifier);
+    (void) WriteBlob(image,sizeof(viff_info.file_type),&viff_info.file_type);
+    (void) WriteBlob(image,sizeof(viff_info.release),&viff_info.release);
+    (void) WriteBlob(image,sizeof(viff_info.version),&viff_info.version);
+    (void) WriteBlob(image,sizeof(viff_info.machine_dependency),
+                     &viff_info.machine_dependency);
+    (void) WriteBlob(image,sizeof(viff_info.reserve),&viff_info.reserve);
     (void) WriteBlob(image,512,(char *) viff_info.comment);
     (void) WriteBlobMSBLong(image,viff_info.rows);
     (void) WriteBlobMSBLong(image,viff_info.columns);
     (void) WriteBlobMSBLong(image,viff_info.subrows);
-    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.x_offset);
-    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.y_offset);
-    viff_info.x_bits_per_pixel=(63 << 24) | (128 << 16);
-    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.x_bits_per_pixel);
-    viff_info.y_bits_per_pixel=(63 << 24) | (128 << 16);
-    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.y_bits_per_pixel);
+    (void) WriteBlobMSBLong(image,(magick_uint32_t) viff_info.x_offset);
+    (void) WriteBlobMSBLong(image,(magick_uint32_t) viff_info.y_offset);
+    (void) WriteBlobMSBLong(image,(magick_uint32_t) viff_info.x_pixel_size);
+    (void) WriteBlobMSBLong(image,(magick_uint32_t) viff_info.y_pixel_size);
     (void) WriteBlobMSBLong(image,viff_info.location_type);
     (void) WriteBlobMSBLong(image,viff_info.location_dimension);
     (void) WriteBlobMSBLong(image,viff_info.number_of_images);
@@ -1097,7 +1113,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          viff_colormap=MagickAllocateMemory(unsigned char *,3*image->colors);
+          viff_colormap=MagickAllocateMemory(unsigned char *,
+                                             MagickArraySize(3,image->colors));
           if (viff_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
               image);
