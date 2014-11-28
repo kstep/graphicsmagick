@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Geometry implementation
 //
@@ -24,18 +24,19 @@ int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
 {
   return (
-	  ( left_.isValid()   == right_.isValid() ) &&
-	  ( left_.width()     == right_.width() ) &&
-	  ( left_.height()    == right_.height() ) &&
-	  ( left_.xOff()      == right_.xOff() ) &&
-	  ( left_.yOff()      == right_.yOff() ) &&
-	  ( left_.xNegative() == right_.xNegative() ) &&
-	  ( left_.yNegative() == right_.yNegative() ) &&
-	  ( left_.percent()   == right_.percent() ) &&
-	  ( left_.aspect()    == right_.aspect() ) &&
-	  ( left_.greater()   == right_.greater() ) &&
-	  ( left_.less()      == right_.less() ) &&
-          ( left_.fillArea()  == right_.fillArea() )
+	  ( left_.isValid()     == right_.isValid() ) &&
+	  ( left_.width()       == right_.width() ) &&
+	  ( left_.height()      == right_.height() ) &&
+	  ( left_.xOff()        == right_.xOff() ) &&
+	  ( left_.yOff()        == right_.yOff() ) &&
+	  ( left_.xNegative()   == right_.xNegative() ) &&
+	  ( left_.yNegative()   == right_.yNegative() ) &&
+	  ( left_.percent()     == right_.percent() ) &&
+	  ( left_.aspect()      == right_.aspect() ) &&
+	  ( left_.greater()     == right_.greater() ) &&
+	  ( left_.less()        == right_.less() ) &&
+	  ( left_.limitPixels() == right_.limitPixels() ) &&
+          ( left_.fillArea()    == right_.fillArea() )
 	  );
 }
 int Magick::operator != ( const Magick::Geometry& left_,
@@ -86,6 +87,7 @@ Magick::Geometry::Geometry ( unsigned int width_,
     _aspect( false ),
     _greater( false ),
     _less( false ),
+    _limitPixels (false ),
     _fillArea( false )
 {
 }
@@ -103,6 +105,7 @@ Magick::Geometry::Geometry ( const std::string &geometry_ )
     _aspect( false ),
     _greater( false ),
     _less( false ),
+    _limitPixels (false ),
     _fillArea( false )
 {
   *this = geometry_; // Use assignment operator
@@ -122,6 +125,7 @@ Magick::Geometry::Geometry ( const char *geometry_ )
     _aspect( false ),
     _greater( false ),
     _less( false ),
+    _limitPixels ( false ),
     _fillArea( false )
 {
   *this = geometry_; // Use assignment operator
@@ -140,6 +144,7 @@ Magick::Geometry::Geometry ( const Geometry &geometry_ )
      _aspect( geometry_._aspect ),
      _greater( geometry_._greater ),
      _less( geometry_._less ),
+     _limitPixels( geometry_._limitPixels ),
      _fillArea( geometry_._fillArea )
 {
 }
@@ -157,6 +162,7 @@ Magick::Geometry::Geometry ( void )
     _aspect( false ),
     _greater( false ),
     _less( false ),
+    _limitPixels( false ),
     _fillArea( false )
 {
 }
@@ -182,6 +188,7 @@ Magick::Geometry& Magick::Geometry::operator = ( const Geometry& geometry_ )
       _aspect = geometry_._aspect;
       _greater = geometry_._greater;
       _less = geometry_._less;
+      _limitPixels = geometry_._limitPixels;
       _fillArea = geometry_._fillArea;
     }
   return *this;
@@ -252,19 +259,22 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   if ( ( flags & YNegative ) != 0 )
     _yNegative = true;
 
-  if ( ( flags & PercentValue ) != 0 )
+  if ( ( flags & PercentValue ) != 0 ) // '%'
     _percent = true;
 
-  if ( ( flags & AspectValue ) != 0 )
+  if ( ( flags & AspectValue ) != 0 )  // '!'
     _aspect = true;
 
-  if ( ( flags & LessValue ) != 0 )
+  if ( ( flags & LessValue ) != 0 )    // '<'
     _less = true;
 
-  if ( ( flags & GreaterValue ) != 0 )
+  if ( ( flags & GreaterValue ) != 0 ) // '>'
     _greater = true;
 
-  if ( ( flags & MinimumValue ) != 0 )
+  if ( ( flags & AreaValue ) != 0 )    // '@'
+    _limitPixels = true;
+
+  if ( ( flags & MinimumValue ) != 0 ) // '^'
     _fillArea= true;
 
   return *this;
@@ -333,6 +343,9 @@ Magick::Geometry::operator std::string() const
   if ( _less )
     geometry += '<';
 
+  if ( _limitPixels )
+    geometry += '@';
+
   if ( _fillArea )
     geometry += '^';
 
@@ -352,6 +365,7 @@ Magick::Geometry::Geometry ( const MagickLib::RectangleInfo &rectangle_ )
     _aspect(false),
     _greater(false),
     _less(false),
+    _limitPixels(false),
     _fillArea(false)
 {
 }

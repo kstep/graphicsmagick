@@ -96,7 +96,7 @@ either xoffset or yoffset both must be present.</p>
 <p>GraphicsMagick has added a number of qualifiers to the standard
 geometry string for use when resizing images. The form of an extended
 geometry string is
-&quot;&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{!}{&lt;}{&gt;}&quot;. Extended
+&quot;&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{&#64;}{!}{^}{&lt;}{&gt;}&quot;. Extended
 geometry strings should only be used when resizing an image. Using an
 extended geometry string for other applications may cause the API call
 to fail. The available qualifiers are shown in the following table:</p>
@@ -124,10 +124,14 @@ to fail. The available qualifiers are shown in the following table:</p>
 <tr><td>&gt;</td>
 <td>Resize only if the image is greater than the geometry specification.</td>
 </tr>
+<tr><td>&#64;</td>
+<td>Resize such that width and height are a maximum area in total pixels.</td>
+</tr>
+<tr><td>^</td>
+<td>Dimensions are treated as minimum rather than maximum values.</td>
+</tr>
 </tbody>
 </table>
-<p>Note that the area specification syntax ('&#64;') is not yet supported by
-Magick++ Geometry.</p>
 </div>
 <div class="section" id="postscript-page-size-extension-to-geometry-specifications">
 <h1>Postscript Page Size Extension To Geometry Specifications</h1>
@@ -391,6 +395,14 @@ public:
   // Resize if image is less than size (&lt;)
   void          less ( bool less_ );
   bool          less ( void ) const;
+
+  // Resize image to fit total pixel area specified by dimensions (&#64;).
+  void          limitPixels ( bool limitPixels_ );
+  bool          limitPixels ( void ) const;
+
+  // Dimensions are treated as minimum rather than maximum values (^)
+  void          fillArea ( bool fillArea_ );
+  bool          fillArea ( void ) const;
 
   // Does object contain valid geometry?
   void          isValid ( bool isValid_ );

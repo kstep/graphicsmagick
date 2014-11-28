@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Geometry Definition
 //
@@ -82,7 +82,11 @@ namespace Magick
     void          less ( bool less_ );
     bool          less ( void ) const;
 
-    // Resize image to fill specified dimensions
+    // Resize image to fit total pixel area specified by dimensions (@).
+    void          limitPixels ( bool limitPixels_ );
+    bool          limitPixels ( void ) const;
+
+    // Dimensions are treated as minimum rather than maximum values (^)
     void          fillArea ( bool fillArea_ );
     bool          fillArea ( void ) const;
 
@@ -122,7 +126,10 @@ namespace Magick
     bool          _aspect;         // Force exact size (!)
     bool          _greater;        // Re-size only if larger than geometry (>)
     bool          _less;           // Re-size only if smaller than geometry (<)
-    bool          _fillArea;       // Re-size image to fill a set of dimensions (^)
+    bool          _limitPixels;    // Resize image to fit total pixel area (@).
+    bool          _fillArea;       // Dimensions are treated as
+                                   // minimum rather than maximum
+                                   // values (^)
   };
 } // namespace Magick
 
@@ -240,6 +247,16 @@ inline void Magick::Geometry::less ( bool less_ )
 inline bool Magick::Geometry::less ( void ) const
 {
   return _less;
+}
+
+// Resize image to fit total pixel area specified by dimensions (@).
+inline void Magick::Geometry::limitPixels ( bool limitPixels_ )
+{
+  _limitPixels = limitPixels_;
+}
+inline bool Magick::Geometry::limitPixels ( void ) const
+{
+  return _limitPixels;
 }
 
 // Resize image to fit a set of dimensions

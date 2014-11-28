@@ -1,5 +1,10 @@
 2014-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Magick++/Geometry.h (Magick::Geometry): Add and document
+	limitPixels() and fillArea() methods to support '@' and '^'
+	geometry qualifiers.  Fill area contributed by Long Ho and
+	limitPixels() by Bob Friesenhahn.
+
 	* ../www/Magick++/Image.rst: Document extent and resize methods.
 
 	* lib/STL.cpp (extentImage): New function object to invoke image
