@@ -34,7 +34,8 @@ int Magick::operator == ( const Magick::Geometry& left_,
 	  ( left_.percent()   == right_.percent() ) &&
 	  ( left_.aspect()    == right_.aspect() ) &&
 	  ( left_.greater()   == right_.greater() ) &&
-	  ( left_.less()      == right_.less() )
+	  ( left_.less()      == right_.less() ) &&
+          ( left_.fillArea()  == right_.fillArea() )
 	  );
 }
 int Magick::operator != ( const Magick::Geometry& left_,
@@ -84,7 +85,8 @@ Magick::Geometry::Geometry ( unsigned int width_,
     _percent( false ),
     _aspect( false ),
     _greater( false ),
-    _less( false )
+    _less( false ),
+    _fillArea( false )
 {
 }
 
@@ -100,7 +102,8 @@ Magick::Geometry::Geometry ( const std::string &geometry_ )
     _percent( false ),
     _aspect( false ),
     _greater( false ),
-    _less( false )
+    _less( false ),
+    _fillArea( false )
 {
   *this = geometry_; // Use assignment operator
 }
@@ -118,7 +121,8 @@ Magick::Geometry::Geometry ( const char *geometry_ )
     _percent( false ),
     _aspect( false ),
     _greater( false ),
-    _less( false )
+    _less( false ),
+    _fillArea( false )
 {
   *this = geometry_; // Use assignment operator
 }
@@ -135,7 +139,8 @@ Magick::Geometry::Geometry ( const Geometry &geometry_ )
      _percent( geometry_._percent ),
      _aspect( geometry_._aspect ),
      _greater( geometry_._greater ),
-     _less( geometry_._less )
+     _less( geometry_._less ),
+     _fillArea( geometry_._fillArea )
 {
 }
 
@@ -151,7 +156,8 @@ Magick::Geometry::Geometry ( void )
     _percent( false ),
     _aspect( false ),
     _greater( false ),
-    _less( false )
+    _less( false ),
+    _fillArea( false )
 {
 }
 
@@ -176,6 +182,7 @@ Magick::Geometry& Magick::Geometry::operator = ( const Geometry& geometry_ )
       _aspect = geometry_._aspect;
       _greater = geometry_._greater;
       _less = geometry_._less;
+      _fillArea = geometry_._fillArea;
     }
   return *this;
 }
@@ -239,7 +246,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
       isValid( true );
     }
 
-  if ( ( flags & XNegative ) != 0 )	
+  if ( ( flags & XNegative ) != 0 )
     _xNegative = true;
 
   if ( ( flags & YNegative ) != 0 )
@@ -256,6 +263,9 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 
   if ( ( flags & GreaterValue ) != 0 )
     _greater = true;
+
+  if ( ( flags & MinimumValue ) != 0 )
+    _fillArea= true;
 
   return *this;
 }
@@ -313,7 +323,7 @@ Magick::Geometry::operator std::string() const
 
   if ( _percent )
     geometry += '%';
-  
+
   if ( _aspect )
     geometry += '!';
 
@@ -322,6 +332,9 @@ Magick::Geometry::operator std::string() const
 
   if ( _less )
     geometry += '<';
+
+  if ( _fillArea )
+    geometry += '^';
 
   return geometry;
 }
@@ -338,8 +351,9 @@ Magick::Geometry::Geometry ( const MagickLib::RectangleInfo &rectangle_ )
     _percent(false),
     _aspect(false),
     _greater(false),
-    _less(false)
-{    
+    _less(false),
+    _fillArea(false)
+{
 }
 
 // Return an ImageMagick RectangleInfo struct

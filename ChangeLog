@@ -1,3 +1,20 @@
+2014-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/Magick++/Image.rst: Document extent and resize methods.
+
+	* Magick++/lib/STL.cpp (extentImage): New function object to
+	invoke image extent method. Original implementation contributed by
+	Long Ho.  Subsequently modified by Bob Friesenhahn.
+	(resizeImage): New function object to invoke image resize
+	method. Contributed by Long Ho.
+
+	* Magick++/lib/Image.cpp (extent): New method to place image on
+	sized canvas of constant color using gravity.  Contributed by Long
+	Ho.
+	(resize): New method to resize image specifying geometry, filter,
+	and blur.  Original implementation contributed by Long Ho.
+	Subsequently modified by Bob Friesenhahn.
+
 2014-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/avi.c: AVI support in GraphicsMagick is completely

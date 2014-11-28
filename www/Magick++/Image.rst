@@ -780,6 +780,29 @@ Set all image pixels to the current background color::
 
     void            erase ( void )
 
+extent
+++++++
+
+Create an image canvas using background color sized according to
+geometry and composite existing image on it, with image placement
+controlled by gravity.  Parameters are obtained from existing image
+properties if they are not specified via a method
+parameter. Parameters which are supported by image properties (gravity
+and backgroundColor) update those image properties as a side-effect::
+
+    void            extent ( const Geometry &geometry_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const GravityType &gravity_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_,
+                             const GravityType &gravity_ );
+
+
 flip
 ++++
     
@@ -1185,6 +1208,27 @@ Reduce noise in image using a noise peak elimination filter::
     void            reduceNoise ( void )
 
     void            reduceNoise ( const double order_ )
+
+resize
+++++++
+
+Resize image, specifying geometry, filter, and blur (blur > 1.0 is
+more blurry and < 1.0 is sharper)::
+
+    void            resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_,
+                             const double blur_ )
+
+Resize image, specifying geometry and filter, with blur using Image
+default::
+
+    void            resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_ )
+
+Resize image, specifying only geometry, with filter and blur obtained
+from Image default.  Provides the same result as the `zoom` method::
+
+    void            resize ( const Geometry &geometry_ );
 
 roll
 ++++

@@ -345,17 +345,17 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  
+
   AffineMatrix _affine;
   _affine.sx = affine_.sx();
   _affine.sy = affine_.sy();
   _affine.rx = affine_.rx();
   _affine.ry = affine_.ry();
-  _affine.tx = affine_.tx();  
+  _affine.tx = affine_.tx();
   _affine.ty = affine_.ty();
-  
+
   MagickLib::Image* newImage =
-    AffineTransformImage( image(), &_affine, &exceptionInfo);     
+    AffineTransformImage( image(), &_affine, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -384,7 +384,7 @@ void Magick::Image::annotate ( const std::string &text_,
 
   DrawInfo *drawInfo
     = options()->drawInfo();
-  
+
   drawInfo->text = const_cast<char *>(text_.c_str());
 
   char boundingArea[MaxTextExtent];
@@ -881,6 +881,57 @@ void Magick::Image::erase ( void )
   throwImageException();
 }
 
+// Create an image canvas using background color sized according to
+// geometry and composite existing image on it, with image placement
+// controlled by gravity.  Parameters are obtained from existing image
+// properties if they are not specified via a method parameter.
+// Parameters which are supported by image properties (gravity and
+// backgroundColor) update those image properties as a side-effect.
+void Magick::Image::extent ( const Geometry &geometry_ )
+{
+  RectangleInfo geometry;
+
+  (void) GetImageGeometry(image(),
+                          static_cast<std::string>(geometry_).c_str(),
+                          MagickFalse, &geometry);
+  if (geometry.width == 0)
+    geometry.width = columns();
+  if (geometry.height == 0)
+    geometry.height = rows();
+  geometry.x = (-geometry.x);
+  geometry.y = (-geometry.y);
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage = ExtentImage( image(), &geometry,
+                                            &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
+void Magick::Image::extent ( const Geometry &geometry_,
+                             const GravityType &gravity_ )
+{
+
+  image()->gravity=gravity_;
+  extent( geometry_ );
+}
+
+void Magick::Image::extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_ )
+{
+  backgroundColor( backgroundColor_ );
+  extent( geometry_ );
+}
+
+void Magick::Image::extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_,
+                             const GravityType &gravity_ )
+{
+  backgroundColor( backgroundColor_ );
+  extent( geometry_, gravity_ );
+}
+
 // Flip image (reflect each scanline in the vertical direction)
 void Magick::Image::flip ( void )
 {
@@ -1139,7 +1190,7 @@ void  Magick::Image::haldClut ( const Image &clutImage_ )
   modifyImage();
   (void) HaldClutImage( image(), clutImage_.constImage() );
   throwImageException();
-}   
+}
 
 // Level image channel. Adjust the levels of the image channel by
 // scaling the values falling between specified white and black points
@@ -1249,7 +1300,7 @@ void            Magick::Image::motionBlur ( const double radius_,
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
-    
+
 
 // Negate image.  Set grayscale_ to true to effect grayscale values
 // only
@@ -1348,7 +1399,7 @@ void Magick::Image::process( std::string name_, const int argc, char **argv )
 {
   modifyImage();
 
-  unsigned int status = 
+  unsigned int status =
     ExecuteModuleProcess( name_.c_str(), &image(), argc, argv );
 
   if (status == false)
@@ -1460,7 +1511,7 @@ void Magick::Image::randomThresholdChannel( const Geometry &thresholds_,
                                       &exceptionInfo );
   throwImageException();
 }
-    
+
 // Read image into current object
 void Magick::Image::read ( const std::string &imageSpec_ )
 {
@@ -1479,7 +1530,7 @@ void Magick::Image::read ( const std::string &imageSpec_ )
       image->next = 0;
       next->previous = 0;
       DestroyImageList( next );
- 
+
     }
   replaceImage( image );
   throwException( exceptionInfo );
@@ -1591,6 +1642,43 @@ void Magick::Image::reduceNoise ( const double order_ )
   throwException( exceptionInfo );
 }
 
+// Resize image, specifying geometry, filter, and blur
+void Magick::Image::resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_,
+                             const double blur_ )
+{
+  long x = 0;
+  long y = 0;
+  unsigned long width = columns();
+  unsigned long height = rows();
+
+  GetMagickGeometry ( static_cast<std::string>(geometry_).c_str(),
+                      &x, &y,
+                      &width, &height );
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    ResizeImage( image(), width, height, filterType_, blur_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
+// Resize image, specifying geometry and filter, with blur using Image
+// default.
+void Magick::Image::resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_ )
+{
+  resize (geometry_, filterType_, image()->blur);
+}
+
+// Resize image, specifying only geometry, with filter and blur
+// obtained from Image default.  Same result as 'zoom' method.
+void Magick::Image::resize ( const Geometry &geometry_ )
+{
+  resize (geometry_, image()->filter, image()->blur);
+}
+
 // Roll image
 void Magick::Image::roll ( const Geometry &roll_ )
 {
@@ -1696,7 +1784,7 @@ void Magick::Image::thumbnail ( const Geometry &geometry_ )
 // Segment (coalesce similar image components) by analyzing the
 // histograms of the color components and identifying units that are
 // homogeneous with the fuzzy c-means technique.
-void Magick::Image::segment ( const double clusterThreshold_, 
+void Magick::Image::segment ( const double clusterThreshold_,
 			      const double smoothingThreshold_ )
 {
   modifyImage();
@@ -2055,26 +2143,8 @@ void Magick::Image::write ( const int x_,
 // Zoom image
 void Magick::Image::zoom( const Geometry &geometry_ )
 {
-  // Calculate new size.  This code should be supported using binary arguments
-  // in the ImageMagick library.
-  long x = 0;
-  long y = 0;
-  unsigned long width = columns();
-  unsigned long height = rows();
-
-  GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
-                     &x, &y,
-                     &width, &height );
-
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  MagickLib::Image* newImage =
-    ZoomImage( image(),
-               width,
-               height,
-               &exceptionInfo);
-  replaceImage( newImage );
-  throwException( exceptionInfo );
+  // Use resize() implementation.
+  resize( geometry_ );
 }
 
 /*
@@ -2368,7 +2438,7 @@ void Magick::Image::colorMap ( const unsigned int index_,
   if (index_ > (MaxColormapSize-1) )
     throwExceptionExplicit( OptionError,
                             "Colormap index must be less than MaxColormapSize" );
-  
+
   if ( !color_.isValid() )
     throwExceptionExplicit( OptionError,
 			    "Color argument is invalid");
@@ -2686,9 +2756,9 @@ void Magick::Image::fileName ( const std::string &fileName_ )
   fileName_.copy( image()->filename,
 		  sizeof(image()->filename) - 1 );
   image()->filename[ fileName_.length() ] = 0; // Null terminate
-  
+
   options()->fileName( fileName_ );
-  
+
 }
 std::string Magick::Image::fileName ( void ) const
 {
@@ -2736,7 +2806,7 @@ Magick::Image  Magick::Image::fillPattern ( void  ) const
 {
   // FIXME: This is inordinately innefficient
   Image texture;
-  
+
   const MagickLib::Image* tmpTexture = constOptions()->fillPattern( );
 
   if ( tmpTexture )
@@ -2807,7 +2877,7 @@ std::string Magick::Image::format ( void ) const
     = GetMagickInfo( constImage()->magick, &exceptionInfo);
   throwException( exceptionInfo );
 
-  if (( magick_info != 0 ) && 
+  if (( magick_info != 0 ) &&
       ( *magick_info->description != '\0' ))
     return std::string(magick_info->description);
 
@@ -2956,7 +3026,7 @@ void Magick::Image::magick ( const std::string &magick_ )
   magick_.copy( image()->magick,
 		sizeof(image()->magick) - 1 );
   image()->magick[ magick_.length() ] = 0;
-  
+
   options()->magick( magick_ );
 }
 std::string Magick::Image::magick ( void ) const
@@ -2992,11 +3062,11 @@ bool Magick::Image::matte ( void ) const
 void Magick::Image::matteColor ( const Color &matteColor_ )
 {
   modifyImage();
-  
+
   if ( matteColor_.isValid() )
     {
       image()->matte_color = matteColor_;
-      options()->matteColor( matteColor_ ); 
+      options()->matteColor( matteColor_ );
     }
   else
     {
@@ -3101,7 +3171,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 {
   // FIXME: This is inordinately innefficient
   Image texture;
-  
+
   const MagickLib::Image* tmpTexture = constOptions()->fillPattern( );
 
   if ( tmpTexture )
@@ -3128,7 +3198,7 @@ void Magick::Image::pixelColor ( const unsigned int x_, const unsigned int y_,
   if ( y_ > rows() || x_ > columns() )
     throwExceptionExplicit( OptionError,
                             "Access outside of image boundary" );
-      
+
   modifyImage();
 
   // Set image to DirectClass
@@ -3213,7 +3283,7 @@ Magick::Blob Magick::Image::profile( const std::string name_ ) const
 
   if (data)
     return Blob(data, length);
-  
+
   Blob blob;
   Image temp_image = *this;
   temp_image.write( &blob, name_ );
@@ -3453,7 +3523,7 @@ Magick::Image  Magick::Image::strokePattern ( void  ) const
 {
   // FIXME: This is inordinately innefficient
   Image texture;
-  
+
   const MagickLib::Image* tmpTexture = constOptions()->strokePattern( );
 
   if ( tmpTexture )
@@ -3673,7 +3743,7 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
   return *this;
 }
 
-//////////////////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////////////////
 //
 // Low-level Pixel Access Routines
 //
@@ -3871,7 +3941,7 @@ MagickLib::Image * Magick::Image::replaceImage
   ( MagickLib::Image* replacement_ )
 {
   MagickLib::Image* image;
-  
+
   if( replacement_ )
     image = replacement_;
   else

@@ -3,7 +3,6 @@ TclMagick/generic/TclMagick.h
 TclMagick/generic/TclMagickAppInit.c
 TclMagick/generic/TkMagick.c
 coders/art.c
-coders/avi.c
 coders/avs.c
 coders/bmp.c
 coders/cals.c

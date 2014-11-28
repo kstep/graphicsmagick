@@ -29,7 +29,7 @@ namespace Magick
   class MagickDLLDecl Geometry
   {
   public:
-    
+
     Geometry ( unsigned int width_,
 	       unsigned int height_,
 	       unsigned int xOff_ = 0,
@@ -41,31 +41,31 @@ namespace Magick
     Geometry ( const Geometry &geometry_ );
     Geometry ( );
     ~Geometry ( void );
-    
+
     // Width
     void          width ( unsigned int width_ );
     unsigned int  width ( void ) const;
-    
+
     // Height
     void          height ( unsigned int height_ );
     unsigned int  height ( void ) const;
-    
+
     // X offset from origin
     void          xOff ( unsigned int xOff_ );
     unsigned int  xOff ( void ) const;
-    
+
     // Y offset from origin
     void          yOff ( unsigned int yOff_ );
     unsigned int  yOff ( void ) const;
-    
+
     // Sign of X offset negative? (X origin at right)
     void          xNegative ( bool xNegative_ );
     bool          xNegative ( void ) const;
-    
+
     // Sign of Y offset negative? (Y origin at bottom)
     void          yNegative ( bool yNegative_ );
     bool          yNegative ( void ) const;
-    
+
     // Width and height are expressed as percentages
     void          percent ( bool percent_ );
     bool          percent ( void ) const;
@@ -73,29 +73,33 @@ namespace Magick
     // Resize without preserving aspect ratio (!)
     void          aspect ( bool aspect_ );
     bool          aspect ( void ) const;
-    
+
     // Resize if image is greater than size (>)
     void          greater ( bool greater_ );
     bool          greater ( void ) const;
-    
+
     // Resize if image is less than size (<)
     void          less ( bool less_ );
     bool          less ( void ) const;
-    
+
+    // Resize image to fill specified dimensions
+    void          fillArea ( bool fillArea_ );
+    bool          fillArea ( void ) const;
+
     // Does object contain valid geometry?
     void          isValid ( bool isValid_ );
     bool          isValid ( void ) const;
-    
+
     // Set via geometry string
     const Geometry& operator = ( const std::string &geometry_ );
     const Geometry& operator = ( const char * geometry_ );
 
     // Assignment operator
     Geometry& operator= ( const Geometry& Geometry_ );
-    
+
     // Return geometry string
     operator std::string() const;
-    
+
     //
     // Public methods below this point are for Magick++ use only.
     //
@@ -105,7 +109,7 @@ namespace Magick
 
     // Return an ImageMagick RectangleInfo struct
     operator MagickLib::RectangleInfo() const;
-    
+
   private:
     unsigned int  _width;
     unsigned int  _height;
@@ -118,6 +122,7 @@ namespace Magick
     bool          _aspect;         // Force exact size (!)
     bool          _greater;        // Re-size only if larger than geometry (>)
     bool          _less;           // Re-size only if smaller than geometry (<)
+    bool          _fillArea;       // Re-size image to fill a set of dimensions (^)
   };
 } // namespace Magick
 
@@ -235,6 +240,16 @@ inline void Magick::Geometry::less ( bool less_ )
 inline bool Magick::Geometry::less ( void ) const
 {
   return _less;
+}
+
+// Resize image to fit a set of dimensions
+inline void Magick::Geometry::fillArea ( bool fillArea_ )
+{
+  _fillArea = fillArea_;
+}
+inline bool Magick::Geometry::fillArea ( void ) const
+{
+  return _fillArea;
 }
 
 
