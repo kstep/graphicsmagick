@@ -3,6 +3,8 @@
 	* coders/dcm.c: Verify that DCM data is available before
 	attempting to use it.  Avoids a crash due to improper DCM header.
 	Problem was reported by Hanno Böck.
+	(DCM_ReadNonNativeImages): Fix array over-run (off by one error)
+	while looking for end of multi-fragment frames.
 
 2014-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

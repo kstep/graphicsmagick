@@ -4503,9 +4503,9 @@ static MagickPassFail DCM_ReadNonNativeImages(Image **image,const ImageInfo *ima
             }
           else
             {
-              /* Lookk for end of multi-fragment frames by checking for against offset table */
+              /* Look for end of multi-fragment frames by checking for against offset table */
               length=TellBlob(*image);
-              for (i=0; i <= dcm->offset_ct; i++)
+              for (i=0; i < dcm->offset_ct; i++)
                 if (length == dcm->offset_arr[i])
                   {
                     break;
