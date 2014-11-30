@@ -2903,8 +2903,11 @@ static MagickPassFail funcDCM_TransferSyntax(Image *image,DicomStream *dcm,Excep
     type,
     subtype;
 
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   p=(char *) dcm->data;
   if (strncmp(p,"1.2.840.10008.1.2",17) == 0)
@@ -3056,8 +3059,11 @@ static MagickPassFail funcDCM_PlanarConfiguration(Image *image,DicomStream *dcm,
 
 static MagickPassFail funcDCM_NumberOfFrames(Image *image,DicomStream *dcm,ExceptionInfo *exception)
 {
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   dcm->number_scenes=MagickAtoI((char *) dcm->data);
   return MagickPass;
@@ -3130,8 +3136,11 @@ static MagickPassFail funcDCM_WindowCenter(Image *image,DicomStream *dcm,Excepti
   char
     *p;
 
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   p = strrchr((char *) dcm->data,'\\');
   if (p)
@@ -3147,8 +3156,11 @@ static MagickPassFail funcDCM_WindowWidth(Image *image,DicomStream *dcm,Exceptio
   char
     *p;
 
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   p = strrchr((char *) dcm->data,'\\');
   if (p)
@@ -3164,8 +3176,11 @@ static MagickPassFail funcDCM_RescaleIntercept(Image *image,DicomStream *dcm,Exc
   char
     *p;
 
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   p = strrchr((char *) dcm->data,'\\');
   if (p)
@@ -3181,8 +3196,11 @@ static MagickPassFail funcDCM_RescaleSlope(Image *image,DicomStream *dcm,Excepti
   char
     *p;
 
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   p = strrchr((char *) dcm->data,'\\');
   if (p)
@@ -3195,8 +3213,12 @@ static MagickPassFail funcDCM_RescaleSlope(Image *image,DicomStream *dcm,Excepti
 
 static MagickPassFail funcDCM_RescaleType(Image *image,DicomStream *dcm,ExceptionInfo *exception)
 {
-  ARG_NOT_USED(image);
-  ARG_NOT_USED(exception);
+
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   if (strncmp((char *) dcm->data,"OD",2) == 0)
     dcm->rescale_type=DCM_RT_OPTICAL_DENSITY;
@@ -3245,6 +3267,12 @@ static MagickPassFail funcDCM_LUT(Image *image,DicomStream *dcm,ExceptionInfo *e
   register unsigned long
     i;
 
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
+
   colors=dcm->length/dcm->bytes_per_pixel;
   dcm->datum=(long) colors;
   dcm->graymap=MagickAllocateArray(unsigned short *,colors,sizeof(unsigned short));
@@ -3276,6 +3304,12 @@ static MagickPassFail funcDCM_Palette(Image *image,DicomStream *dcm,ExceptionInf
 
   unsigned short
     index;
+
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
 
   /*
     Initialize colormap (entries are always 16 bit)

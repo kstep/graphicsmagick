@@ -1,8 +1,8 @@
 2014-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/dcm.c (funcDCM_PhotometricInterpretation): Verify that
-	Photometric Interpretation data is available.  Avoids a crash due
-	to improper DCM header.  Problem was reported by Hanno Böck.
+	* coders/dcm.c: Verify that DCM data is available before
+	attempting to use it.  Avoids a crash due to improper DCM header.
+	Problem was reported by Hanno Böck.
 
 2014-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
