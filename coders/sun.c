@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-214 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -39,6 +39,7 @@
 #include "magick/analyze.h"
 #include "magick/blob.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -49,6 +50,63 @@
 */
 static unsigned int
   WriteSUNImage(const ImageInfo *,Image *);
+
+/* Raster Types */
+#define RT_STANDARD     1 /* Standard */
+#define RT_ENCODED      2 /* Byte encoded */
+#define RT_FORMAT_RGB   3 /* RGB format */
+
+/* Color Map Types */
+#define RMT_NONE        0 /* No color map */
+#define RMT_EQUAL_RGB   1 /* RGB color map */
+#define RMT_RAW         2 /* Raw color map */
+
+/*
+  Note that Sun headers described these fields as type 'int'.
+*/
+typedef struct _SUNInfo
+{
+  magick_uint32_t
+    magic,
+    width,
+    height,
+    depth,
+    length,
+    type,
+    maptype,
+    maplength;
+} SUNInfo;
+
+static void LogSUNInfo(const SUNInfo *sun_info)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "SunHeader:\n"
+                        "    Magic:     0x%04X\n"
+                        "    Width:     %u\n"
+                        "    Height:    %u\n"
+                        "    Depth:     %u\n"
+                        "    Length:    %u\n"
+                        "    Type:      %u (%s)\n"
+                        "    MapType:   %u (%s)\n"
+                        "    MapLength: %u\n",
+                        sun_info->magic,
+                        sun_info->width,
+                        sun_info->height,
+                        sun_info->depth,
+                        sun_info->length,
+                        sun_info->type,
+                        (sun_info->type == RT_STANDARD ? "Standard" :
+                         (sun_info->type == RT_ENCODED ? "RLE encoded" :
+                          (sun_info->type == RT_FORMAT_RGB ? "RGB format" :
+                           "?"))),
+                        sun_info->maptype,
+                        (sun_info->maptype == RMT_NONE ? "No color map" :
+                         (sun_info->maptype == RMT_EQUAL_RGB ? "RGB color map" :
+                          (sun_info->maptype == RMT_RAW ? "Raw color map" :
+                           "?"))),
+                        sun_info->maplength
+                        );
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,26 +258,6 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
 */
 static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define RMT_EQUAL_RGB  1
-#define RMT_NONE  0
-#define RMT_RAW  2
-#define RT_STANDARD  1
-#define RT_ENCODED  2
-#define RT_FORMAT_RGB  3
-
-  typedef struct _SUNInfo
-  {
-    magick_uint32_t
-      magic,
-      width,
-      height,
-      depth,
-      length,
-      type,
-      maptype,
-      maplength;
-  } SUNInfo;
-
   Image
     *image;
 
@@ -290,10 +328,45 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.type=ReadBlobMSBLong(image);
     sun_info.maptype=ReadBlobMSBLong(image);
     sun_info.maplength=ReadBlobMSBLong(image);
+    LogSUNInfo(&sun_info);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    /*
+      Verify that header values are in positive numeric range of a
+      32-bit 'int' even though we store them in an unsigned value.
+    */
+    if ((sun_info.magic | sun_info.width | sun_info.height | sun_info.depth |
+         sun_info.type | sun_info.maptype | sun_info.maplength) & (1U << 31))
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    /*
+      Verify that we support the image sub-type
+    */
+    if ((sun_info.type != RT_STANDARD) &&
+        (sun_info.type != RT_ENCODED) &&
+        (sun_info.type != RT_FORMAT_RGB))
+      ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image);
+    /*
+      Verify that we support the colormap type
+    */
+    if ((sun_info.maptype != RMT_NONE) &&
+        (sun_info.maptype != RMT_EQUAL_RGB) &&
+        (sun_info.maptype != RMT_RAW))
+      ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
+    /*
+      Insist that map length is zero if there is no colormap.
+    */
+    if ((sun_info.maptype == RMT_NONE) && (sun_info.maplength != 0))
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    /*
+      Insist on a supported depth
+    */
+    if ((sun_info.depth != 1) &&
+        (sun_info.depth != 8) &&
+        (sun_info.depth != 24) &&
+        (sun_info.depth != 32))
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     image->columns= sun_info.width;
     image->rows= sun_info.height;
-    if (sun_info.depth == 0 || sun_info.depth > 32)
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
     if (sun_info.depth < 24)
       {
@@ -333,17 +406,35 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         sun_colormap=MagickAllocateMemory(unsigned char *,image->colors);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-            image);
-        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].red=ScaleCharToQuantum(sun_colormap[i]);
-        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].green=ScaleCharToQuantum(sun_colormap[i]);
-        (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
+                               image);
+        do
+          {
+            if (ReadBlob(image,image->colors,(char *) sun_colormap) != image->colors)
+              {
+                status = MagickFail;
+                break;
+              }
+            for (i=0; i < (long) image->colors; i++)
+              image->colormap[i].red=ScaleCharToQuantum(sun_colormap[i]);
+            if (ReadBlob(image,image->colors,(char *) sun_colormap) != image->colors)
+              {
+                status = MagickFail;
+                break;
+              }
+            for (i=0; i < (long) image->colors; i++)
+              image->colormap[i].green=ScaleCharToQuantum(sun_colormap[i]);
+            if (ReadBlob(image,image->colors,(char *) sun_colormap) != image->colors)
+              {
+                status = MagickFail;
+                break;
+              }
+            for (i=0; i < (long) image->colors; i++)
+              image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
+            break;
+          } while (1);
         MagickFreeMemory(sun_colormap);
+        if (MagickFail == status)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         break;
       }
       case RMT_RAW:
@@ -358,8 +449,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
+        if (ReadBlob(image,sun_info.maplength,(char *) sun_colormap) != sun_info.maplength)
+          status = MagickFail;
         MagickFreeMemory(sun_colormap);
+        if (MagickFail == status)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         break;
       }
       default:
@@ -380,21 +474,36 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
-    if ((count == 0) && (sun_info.type != RT_ENCODED))
-      ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
+    /*
+      O'Reilly GFF book says that length might not always be accurate,
+      but we need to depend on something so we will insist on getting
+      the amount of data that was requested.
+    */
+    if (count != sun_info.length)
+      {
+        MagickFreeMemory(sun_data);
+        ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
+      }
     sun_pixels=sun_data;
     bytes_per_line=0;
     if (sun_info.type == RT_ENCODED)
       {
-        unsigned long
-          height;
-
         /*
-          Read run-length encoded raster pixels.
+          Read run-length encoded raster pixels (padded to 16-bit boundary).
+
+          bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         */
-        height=sun_info.height;
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
-        sun_pixels=MagickAllocateMemory(unsigned char *,bytes_per_line*height);
+
+        bytes_per_line=MagickArraySize(sun_info.width,sun_info.depth);
+        if ((bytes_per_line > 0) &&
+            ((bytes_per_line + 15) > bytes_per_line))
+          bytes_per_line += 15;
+        bytes_per_line=MagickArraySize(2,bytes_per_line);
+        bytes_per_line /= 16;
+
+        sun_pixels=MagickAllocateArray(unsigned char *,bytes_per_line,
+                                       sun_info.height);
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
@@ -650,25 +759,6 @@ ModuleExport void UnregisterSUNImage(void)
 */
 static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 {
-#define RMT_EQUAL_RGB  1
-#define RMT_NONE  0
-#define RMT_RAW  2
-#define RT_STANDARD  1
-#define RT_FORMAT_RGB  3
-
-  typedef struct _SUNInfo
-  {
-    magick_uint32_t
-      magic,
-      width,
-      height,
-      depth,
-      length,
-      type,
-      maptype,
-      maplength;
-  } SUNInfo;
-
   long
     y;
 
@@ -769,6 +859,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Write SUN header.
     */
+    LogSUNInfo(&sun_info);
     (void) WriteBlobMSBLong(image,sun_info.magic);
     (void) WriteBlobMSBLong(image,sun_info.width);
     (void) WriteBlobMSBLong(image,sun_info.height);

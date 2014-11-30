@@ -1,3 +1,9 @@
+2014-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sun.c: Thoroughly validate Sun Rasterfile headers and
+	verify that there are no arithmetic overflows in buffer-size
+	calculations.  Problem was reported by Hanno Böck.
+
 2014-11-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/Magick++/Geometry.h (Magick::Geometry): Add and
