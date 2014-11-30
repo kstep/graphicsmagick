@@ -3019,6 +3019,12 @@ static MagickPassFail funcDCM_PhotometricInterpretation(Image *image,DicomStream
   ARG_NOT_USED(image);
   ARG_NOT_USED(exception);
 
+  if (dcm->data == (unsigned char *) NULL)
+    {
+      ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+      return MagickFail;
+    }
+
   for (i=0; i < (long) Min(dcm->length, MaxTextExtent-1); i++)
     photometric[i]=dcm->data[i];
   photometric[i]='\0';
