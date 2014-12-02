@@ -67,6 +67,8 @@ MagickExport MagickPassFail AllocateImageColormap(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (colors > MaxColormapSize)
+    return (MagickFail);
   image->storage_class=PseudoClass;
   image->colors=colors;
   length=image->colors*sizeof(PixelPacket);

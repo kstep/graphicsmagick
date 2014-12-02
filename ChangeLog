@@ -1,3 +1,12 @@
+2014-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/colormap.c (AllocateImageColormap): Refuse to allocate a
+	colormap larger than MaxColormapSize.
+
+	* coders/psd.c (ReadPSDImage): Avoid extremely long execution time
+	if the PSD colormap size is astonishingly large.  Problem was
+	reported by Hanno Böck.
+
 2014-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dcm.c: Verify that DCM data is available before

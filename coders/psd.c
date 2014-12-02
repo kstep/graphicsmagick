@@ -701,9 +701,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read PSD raster colormap.
           */
-          if (!AllocateImageColormap(image,(const unsigned long) (length/3UL)))
+          unsigned long
+            colors;
+
+          colors=(const unsigned long) (length/3UL);
+          if (colors > MaxColormapSize)
             {
-              if(logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "  too many colors in colormap (%lu)",
+                                    colors);
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,
+                                   image);
+            }
+          if (!AllocateImageColormap(image,colors))
+            {
+              if (logging)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                         "  allocation of ImageColorMap failed");
