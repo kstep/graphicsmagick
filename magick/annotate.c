@@ -1028,6 +1028,9 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       0, 0
     };
 
+  MagickBool
+    active;
+
   magick_code_point_t
     *text;
 
@@ -1303,67 +1306,85 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                 {
                   continue;
                 }
+              /*
+                Try to get whole span.  May fail.
+              */
               q=GetImagePixels(image,(long) ceil(point.x-0.5),
                 (long) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
-              if (q == (PixelPacket *) NULL)
-                status=MagickFail;
-              if (status != MagickFail)
+              active=q != (PixelPacket *) NULL;
+              for (x=0; x < (long) bitmap->bitmap.width; x++, pc++)
                 {
-                  for (x=0; x < (long) bitmap->bitmap.width; x++, pc++)
+                  if (((long) ceil(point.x+x-0.5) < 0) ||
+                      ((unsigned long) ceil(point.x+x-0.5) >= image->columns))
                     {
-                      if (((long) ceil(point.x+x-0.5) < 0) ||
-                          ((unsigned long) ceil(point.x+x-0.5) >= image->columns))
-                        {
-                          q++;
-                          continue;
-                        }
-                      /* 8-bit gray-level pixmap */
-                      if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
-                        {
-                          if (draw_info->text_antialias)
-                            opacity=ScaleCharToQuantum(p[pc]);
-                          else
-                            opacity=(p[pc] < 127 ? OpaqueOpacity : TransparentOpacity);
-                        }
-                      /* 1-bit monochrome bitmap */
-                      else if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
-                        {
-                          opacity=((p[(x >> 3) + pcr] & (1 << (~x & 0x07))) ?
-                                   TransparentOpacity : OpaqueOpacity);
-                        }
-                      else
-                        {
-                          continue; /* ignore it? */
-                        }
-                      fill_color=draw_info->fill;
-                      if (pattern != (Image *) NULL)
-                        {
-                          if (AcquireOnePixelByReference
-                              (pattern,&fill_color,
-                               (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
-                               (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
-                               &image->exception) == MagickFail)
-                            {
-                              status=MagickFail;
-                            }
-                        }
-                      if (status != MagickFail)
-                        {
-                          opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
-                          AlphaCompositePixel(q,&fill_color,opacity,q,
-                                              image->matte ? q->opacity : OpaqueOpacity);
-                          if (SyncImagePixels(image) != MagickPass)
-                            status=MagickFail;
-                        }
-                      q++;
-                      if (status == MagickFail)
-                        break;
+                      if (active)
+                        q++;
+                      continue;
                     }
-                  if (SyncImagePixels(image) != MagickPass)
-                    status=MagickFail;
+                  /* 8-bit gray-level pixmap */
+                  if (bitmap->bitmap.pixel_mode == ft_pixel_mode_grays)
+                    {
+                      if (draw_info->text_antialias)
+                        opacity=ScaleCharToQuantum(p[pc]);
+                      else
+                        opacity=(p[pc] < 127 ? OpaqueOpacity : TransparentOpacity);
+                    }
+                  /* 1-bit monochrome bitmap */
+                  else if (bitmap->bitmap.pixel_mode == ft_pixel_mode_mono)
+                    {
+                      opacity=((p[(x >> 3) + pcr] & (1 << (~x & 0x07))) ?
+                               TransparentOpacity : OpaqueOpacity);
+                    }
+                  else
+                    {
+                      continue; /* ignore it? */
+                    }
+                  fill_color=draw_info->fill;
+                  if (pattern != (Image *) NULL)
+                    {
+                      if (AcquireOnePixelByReference
+                          (pattern,&fill_color,
+                           (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
+                           (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
+                           &image->exception) == MagickFail)
+                        {
+                          status=MagickFail;
+                        }
+                    }
+                  /*
+                    If not full span, then get one pixel.
+                  */
+                  if (!active)
+                    q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
+                                     (long) ceil(point.y+y-0.5),1,1);
+                  if (q == (PixelPacket *) NULL)
+                    {
+                      continue;
+                    }
+                  opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
+                  AlphaCompositePixel(q,&fill_color,opacity,q,
+                                      image->matte ? q->opacity : OpaqueOpacity);
+                  if (!active)
+                    {
+                      /*
+                        Sync the one pixel
+                      */
+                      if (SyncImagePixels(image) != MagickPass)
+                        status=MagickFail;
+                    }
+                  else
+                    {
+                      q++;
+                    }
                   if (status == MagickFail)
                     break;
                 }
+              /*
+                Sync the full span
+              */
+              if (active)
+                if (SyncImagePixels(image) != MagickPass)
+                  status=MagickFail;
               if (status == MagickFail)
                 break;
             }
