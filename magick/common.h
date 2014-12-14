@@ -113,6 +113,13 @@ extern "C" {
   supported, and __has_builtin(builtin) to test if a builtin is supported.
   Clang/llvm attempts to support most GCC features.
 
+   __SANITIZE_ADDRESS__ is defined by GCC and Clang if -fsanitize=address is
+   supplied.
+
+   After incuding valgrind/memcheck.h or valgrind/valgrind.h, the macro
+   RUNNING_ON_VALGRIND can be used to test if the program is run under valgrind.
+   See http://valgrind.org/docs/manual/manual-core-adv.html.
+
 */
 #if !defined(MAGICK_ATTRIBUTE)
 #  if ((!defined(__clang__)) && (!defined(__GNUC__) || (__GNUC__ < 2 || __STRICT_ANSI__)))
