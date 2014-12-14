@@ -911,6 +911,7 @@ namespace Magick
   using MagickLib::ExceptionInfo;
   using MagickLib::ExecuteModuleProcess;
   using MagickLib::ExportImagePixelArea;
+  using MagickLib::ExtentImage;
   using MagickLib::FileOpenError;
   using MagickLib::FileOpenFatalError;
   using MagickLib::FileOpenWarning;
@@ -1034,6 +1035,7 @@ namespace Magick
   using MagickLib::RegistryType;
   using MagickLib::RegistryWarning;
   using MagickLib::RemoveDefinitions;
+  using MagickLib::ResizeImage;
   using MagickLib::ResourceLimitError;
   using MagickLib::ResourceLimitFatalError;
   using MagickLib::ResourceLimitWarning;

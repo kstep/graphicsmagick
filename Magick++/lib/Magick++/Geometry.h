@@ -119,155 +119,35 @@ namespace Magick
     unsigned int  _height;
     unsigned int  _xOff;
     unsigned int  _yOff;
-    bool          _xNegative;
-    bool          _yNegative;
-    bool          _isValid;
-    bool          _percent;        // Interpret width & height as percentages (%)
-    bool          _aspect;         // Force exact size (!)
-    bool          _greater;        // Re-size only if larger than geometry (>)
-    bool          _less;           // Re-size only if smaller than geometry (<)
-    bool          _limitPixels;    // Resize image to fit total pixel area (@).
-    bool          _fillArea;       // Dimensions are treated as
-                                   // minimum rather than maximum
-                                   // values (^)
-  };
-} // namespace Magick
+    union
+    {
+      struct
+      {
+        // Bit-field for compact boolean storage
+        bool          _xNegative : 1;
+        bool          _yNegative : 1;
+        bool          _isValid : 1;
+        bool          _percent : 1;    // Interpret width & height as percentages (%)
+        bool          _aspect : 1;     // Force exact size (!)
+        bool          _greater : 1;    // Re-size only if larger than geometry (>)
+        bool          _less : 1;       // Re-size only if smaller than geometry (<)
+        bool          _limitPixels : 1;// Resize image to fit total pixel area (@).
+        bool          _fillArea : 1;   // Dimensions are treated as
+                                       // minimum rather than maximum
+                                       // values (^)
+      } _b;
+      struct
+      {
+        // Padding for future use.
+        unsigned int pad[2];
+      } _padding;
+    } _flags; // union
+  }; // class Geometry;
+}; // namespace Magick
 
 //
 // Inlines
 //
-
-// Does object contain valid geometry?
-inline void Magick::Geometry::isValid ( bool isValid_ )
-{
-  _isValid = isValid_;
-}
-
-inline bool Magick::Geometry::isValid ( void ) const
-{
-  return _isValid;
-}
-
-// Width
-inline void Magick::Geometry::width ( unsigned int width_ )
-{
-  _width = width_;
-  isValid( true );
-}
-inline unsigned int Magick::Geometry::width ( void ) const
-{
-  return _width;
-}
-
-// Height
-inline void Magick::Geometry::height ( unsigned int height_ )
-{
-  _height = height_;
-}
-inline unsigned int Magick::Geometry::height ( void ) const
-{
-  return _height;
-}
-
-// X offset from origin
-inline void Magick::Geometry::xOff ( unsigned int xOff_ )
-{
-  _xOff = xOff_;
-}
-inline unsigned int Magick::Geometry::xOff ( void ) const
-{
-  return _xOff;
-}
-
-// Y offset from origin
-inline void Magick::Geometry::yOff ( unsigned int yOff_ )
-{
-  _yOff = yOff_;
-}
-inline unsigned int Magick::Geometry::yOff ( void ) const
-{
-  return _yOff;
-}
-
-// Sign of X offset negative? (X origin at right)
-inline void Magick::Geometry::xNegative ( bool xNegative_ )
-{
-  _xNegative = xNegative_;
-}
-inline bool Magick::Geometry::xNegative ( void ) const
-{
-  return _xNegative;
-}
-
-// Sign of Y offset negative? (Y origin at bottom)
-inline void Magick::Geometry::yNegative ( bool yNegative_ )
-{
-  _yNegative = yNegative_;
-}
-inline bool Magick::Geometry::yNegative ( void ) const
-{
-  return _yNegative;
-}
-
-// Interpret width & height as percentages (%)
-inline void Magick::Geometry::percent ( bool percent_ )
-{
-  _percent = percent_;
-}
-inline bool Magick::Geometry::percent ( void ) const
-{
-  return _percent;
-}
-
-// Resize without preserving aspect ratio (!)
-inline void Magick::Geometry::aspect ( bool aspect_ )
-{
-  _aspect = aspect_;
-}
-inline bool Magick::Geometry::aspect ( void ) const
-{
-  return _aspect;
-}
-
-// Resize if image is greater than size (>)
-inline void Magick::Geometry::greater ( bool greater_ )
-{
-  _greater = greater_;
-}
-inline bool Magick::Geometry::greater ( void ) const
-{
-  return _greater;
-}
-
-// Resize if image is less than size (<)
-inline void Magick::Geometry::less ( bool less_ )
-{
-  _less = less_;
-}
-inline bool Magick::Geometry::less ( void ) const
-{
-  return _less;
-}
-
-// Resize image to fit total pixel area specified by dimensions (@).
-inline void Magick::Geometry::limitPixels ( bool limitPixels_ )
-{
-  _limitPixels = limitPixels_;
-}
-inline bool Magick::Geometry::limitPixels ( void ) const
-{
-  return _limitPixels;
-}
-
-// Resize image to fit a set of dimensions
-inline void Magick::Geometry::fillArea ( bool fillArea_ )
-{
-  _fillArea = fillArea_;
-}
-inline bool Magick::Geometry::fillArea ( void ) const
-{
-  return _fillArea;
-}
 
 
 #endif // Magick_Geometry_header
