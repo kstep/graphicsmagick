@@ -110,28 +110,46 @@ static unsigned int
 %  any of the following bits of information about the image by embedding
 %  the appropriate special characters:
 %
-%    %b   file size in bytes.
-%    %c   comment.
-%    %d   directory in which the image resides.
-%    %e   extension of the image file.
-%    %f   original filename of the image.
-%    %h   height of image.
-%    %i   filename of the image.
-%    %k   number of unique colors.
-%    %l   image label.
-%    %m   image file format.
-%    %n   number of images in a image sequence.
-%    %o   output image filename.
-%    %p   page number of the image.
-%    %q   image depth (8 or 16).
-%    %p   page number of the image.
-%    %q   image depth (8 or 16).
-%    %s   image scene number.
-%    %t   image filename without any extension.
-%    %u   a unique temporary filename.
-%    %w   image width.
-%    %x   x resolution of the image.
-%    %y   y resolution of the image.
+%    %b   file size
+%    %c   comment
+%    %d   directory
+%    %e   filename extension
+%    %f   filename
+%    %g   page dimensions and offsets
+%    %h   height
+%    %i   input filename
+%    %k   number of unique colors
+%    %l   label
+%    %m   magick
+%    %n   number of scenes
+%    %o   output filename
+%    %p   page number
+%    %q   image bit depth
+%    %r   image type description
+%    %s   scene number
+%    %t   top of filename
+%    %w   width
+%    %x   horizontal resolution
+%    %y   vertical resolution
+%    %A   transparency supported
+%    %C   compression type
+%    %D   GIF disposal method
+%    %G   Original width and height
+%    %H   page height
+%    %M   original filename specification
+%    %O   page offset (x,y)
+%    %P   page dimensions (width,height)
+%    %T   time delay (in centi-seconds)
+%    %U   resolution units
+%    %W   page width
+%    %X   page horizontal offset (x)
+%    %Y   page vertical offset (y)
+%    %@   trim bounding box
+%    %[a] named attribute 'a'
+%    %#   signature
+%    \n   newline
+%    \r   carriage return
+%    %%   % (literal)
 %
 %  The format of the AnnotateImage method is:
 %
@@ -219,7 +237,7 @@ MagickExport MagickPassFail AnnotateImage(Image *image,const DrawInfo *draw_info
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   matte=image->matte;
-  status=True;
+  status=MagickPass;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -1334,7 +1352,8 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
                           opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
                           AlphaCompositePixel(q,&fill_color,opacity,q,
                                               image->matte ? q->opacity : OpaqueOpacity);
-                          (void) SyncImagePixels(image);
+                          if (SyncImagePixels(image) != MagickPass)
+                            status=MagickFail;
                         }
                       q++;
                       if (status == MagickFail)
