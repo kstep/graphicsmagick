@@ -1,3 +1,14 @@
+2014-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (TranslateTextEx): Fix regression added on
+	2014-12-13 (yesterday) which caused output file name passed to
+	delegate programs to be wrong.
+
+	* magick/annotate.c (RenderFreetype): Fix regression added in
+	1.3.19 which caused spurious drawing errors to be produced while
+	rendering with text when all of the text is off the left-hand side
+	of the image.
+
 2014-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (CompareUsage): Options should be listed in
