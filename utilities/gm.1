@@ -1,4 +1,4 @@
-.TH gm 1 "2014/11/26" "GraphicsMagick"
+.TH gm 1 "2014/12/06" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -5500,8 +5500,8 @@ use:
 
 To create an annotated difference image use:
 
-    gm compare -algorithm annotate -highlight-color purple
-            -file diff.miff original.miff compare.miff
+    gm compare -highlight-style assign -highlight-color purple \\
+      -file diff.miff original.miff compare.miff
 
 .SH OPTIONS
 

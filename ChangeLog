@@ -1,3 +1,42 @@
+2014-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (CompareUsage): Options should be listed in
+	alphabetical order.
+
+	* magick/annotate.c (RenderFreetype): Immediately quit processing
+	and return an error if SyncImagePixels() reports a problem.
+
+	* coders/psd.c (ReadPSDImage): Return with an error right away if
+	SetImageEx() (to create solid-color background canvas) reports a
+	failure.
+
+	* magick/annotate.c (AnnotateImage): Document all of the
+	attributes which are supported.
+
+	* magick/utility.c (TranslateTextEx): Assure that attributes
+	requiring ImageInfo pointer are skipped.  AnnotateImage() does not
+	pass ImageInfo.  Also document all of the attributes which are
+	supported.
+
+	* doc/compare.imdoc: Compare documentation examples referred to
+	non-existing option -algorithm rather than the existing option
+	-highlight-style.  Fixes SourceForge bug #286 "docs are wrong
+	about `-algorithm` option of `gm compare`?".
+
+	* Magick++/lib/Magick++/Geometry.h (Magick): Re-implemented
+	Magick++ Geometry to use bit-fields for booleans and used a union
+	to reserve space for the future as well as to achieve the same
+	size as in the previous release.  Eliminated inline methods
+	because they make it impossible to change the class internal
+	design.  ABI was broken already when limitPixels() and fillArea()
+	methods were added on 2014-11-28.  Inline method instantiations in
+	already compiled applications will malfunction unless the
+	dependent applications are re-compiled.
+
+	* magick/image.c (SetImageEx): Add a new version of SetImage()
+	called SetImageEx() which reports exceptions to a provided
+	exception parameter rather than into the image.
+
 2014-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/colormap.c (AllocateImageColormap): Refuse to allocate a

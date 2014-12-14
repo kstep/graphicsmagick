@@ -35,6 +35,40 @@
 <div class="document">
 
 
+<p>2014-12-13  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/command.c (CompareUsage): Options should be listed in
+alphabetical order.</li>
+<li>magick/annotate.c (RenderFreetype): Immediately quit processing
+and return an error if SyncImagePixels() reports a problem.</li>
+<li>coders/psd.c (ReadPSDImage): Return with an error right away if
+SetImageEx() (to create solid-color background canvas) reports a
+failure.</li>
+<li>magick/annotate.c (AnnotateImage): Document all of the
+attributes which are supported.</li>
+<li>magick/utility.c (TranslateTextEx): Assure that attributes
+requiring ImageInfo pointer are skipped.  AnnotateImage() does not
+pass ImageInfo.  Also document all of the attributes which are
+supported.</li>
+<li>doc/compare.imdoc: Compare documentation examples referred to
+non-existing option -algorithm rather than the existing option
+-highlight-style.  Fixes SourceForge bug #286 &quot;docs are wrong
+about <cite>-algorithm</cite> option of <cite>gm compare</cite>?&quot;.</li>
+<li>Magick++/lib/Magick++/Geometry.h (Magick): Re-implemented
+Magick++ Geometry to use bit-fields for booleans and used a union
+to reserve space for the future as well as to achieve the same
+size as in the previous release.  Eliminated inline methods
+because they make it impossible to change the class internal
+design.  ABI was broken already when limitPixels() and fillArea()
+methods were added on 2014-11-28.  Inline method instantiations in
+already compiled applications will malfunction unless the
+dependent applications are re-compiled.</li>
+<li>magick/image.c (SetImageEx): Add a new version of SetImage()
+called SetImageEx() which reports exceptions to a provided
+exception parameter rather than into the image.</li>
+</ul>
+</blockquote>
 <p>2014-12-01  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

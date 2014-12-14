@@ -7459,8 +7459,8 @@ use:
 <p>
 To create an annotated difference image use:
 <pre>
-    gm compare -algorithm annotate -highlight-color purple
-            -file diff.miff original.miff compare.miff
+    gm compare -highlight-style assign -highlight-color purple \
+      -file diff.miff original.miff compare.miff
 </pre>
 </td></tr></table>
      <p>
