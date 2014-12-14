@@ -69,13 +69,13 @@ To create an annotated difference image use:</p>
 
 <format type=man,tex>
 <pre>
-    compare -algorithm annotate -highlight-color purple
-            -file diff.miff original.miff compare.miff
+    compare -highlight-style assign -highlight-color purple \
+      -file diff.miff original.miff compare.miff
 </pre>
 </format>
 <format type=html>
 <pre>
-    compare -algorithm annotate -highlight-color purple -file diff.miff original.miff compare.miff
+    compare -highlight-style assign -highlight-color purple -file diff.miff original.miff compare.miff
 </pre>
 </format>
 
