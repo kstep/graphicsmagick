@@ -1042,6 +1042,7 @@ extern MagickExport MagickPassFail
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ResetImagePage(Image *image,const char *page),
   SetImage(Image *image,const Quantum),
+  SetImageEx(Image *image,const Quantum opacity,ExceptionInfo *exception),
   SetImageColor(Image *image,const PixelPacket *pixel),
   SetImageColorRegion(Image *image,long x,long y,unsigned long width,
 		      unsigned long height,const PixelPacket *pixel),

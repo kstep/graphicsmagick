@@ -900,6 +900,7 @@
 #define SetFatalErrorHandler GmSetFatalErrorHandler
 #define SetGeometry GmSetGeometry
 #define SetImage GmSetImage
+#define SetImageEx GmSetImageEx
 #define SetImageAttribute GmSetImageAttribute
 #define SetImageChannelDepth GmSetImageChannelDepth
 #define SetImageClipMask GmSetImageClipMask
