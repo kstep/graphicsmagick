@@ -630,7 +630,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  (void) SetImage(image,OpaqueOpacity);
+  if (SetImageEx(image,OpaqueOpacity,exception) == MagickFail)
+    {
+      CloseBlob(image);
+      DestroyImageList(image);
+      return MagickFail;
+    }
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
     {
