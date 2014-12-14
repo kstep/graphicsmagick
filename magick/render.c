@@ -4025,6 +4025,11 @@ DrawPrimitive(Image *image,const DrawInfo *draw_info,
       FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
+      /*
+        FIXME: AnnotateImage sometimes returns error status here
+        without throwing exception and under conditions which should
+        be ok when rendering (e.g. off-canvas drawing).
+      */
       status&=AnnotateImage(image,clone_info);
       DestroyDrawInfo(clone_info);
       break;
