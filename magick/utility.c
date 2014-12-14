@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2014 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -5883,7 +5883,8 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'o':
       {
         /* Output filename */
-        q+=(translate)(q,image->filename,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          q+=(translate)(q,image_info->filename,MaxTextExtent);
         break;
       }
       case 'p':
