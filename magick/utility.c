@@ -5556,7 +5556,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method TranslateText replaces any embedded formatting characters with
-%  the appropriate image attribute and returns the translated text.
+%  the appropriate image attribute and returns the translated text.  See
+%  the documentation for TranslateTextEx() for the available translations.
 %
 %  The format of the TranslateText method is:
 %
@@ -5568,7 +5569,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %    o translated_text:  Method TranslateText returns the translated
 %      text string.
 %
-%    o image_info: The imageInfo.
+%    o image_info: The imageInfo (may be NULL!).
 %
 %    o image: The image.
 %
@@ -5601,6 +5602,52 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %  translation function.  The translation function should behave similar to
 %  strlcpy() but may translate text while it is copied.
 %
+%  The currently supported translations are:
+%
+%    %b   file size
+%    %c   comment
+%    %d   directory
+%    %e   filename extension
+%    %f   filename
+%    %g   page dimensions and offsets
+%    %h   height
+%    %i   input filename
+%    %k   number of unique colors
+%    %l   label
+%    %m   magick
+%    %n   number of scenes
+%    %o   output filename
+%    %p   page number
+%    %q   image bit depth
+%    %r   image type description
+%    %s   scene number
+%    %t   top of filename
+%    %u   first unique temporary filename
+%    %w   width
+%    %x   horizontal resolution
+%    %y   vertical resolution
+%    %z   second unique temporary filename
+%    %A   transparency supported
+%    %C   compression type
+%    %D   GIF disposal method
+%    %G   Original width and height
+%    %H   page height
+%    %M   original filename specification
+%    %O   page offset (x,y)
+%    %P   page dimensions (width,height)
+%    %Q   compression quality
+%    %T   time delay (in centi-seconds)
+%    %U   resolution units
+%    %W   page width
+%    %X   page horizontal offset (x)
+%    %Y   page vertical offset (y)
+%    %@   trim bounding box
+%    %[a] named attribute 'a'
+%    %#   signature
+%    \n   newline
+%    \r   carriage return
+%    %%   % (literal)
+%
 %  The format of the TranslateTextEx method is:
 %
 %      char *TranslateTextEx(const ImageInfo *image_info,Image *image,
@@ -5611,7 +5658,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %    o translated_text:  Method TranslateText returns the translated
 %      text string.
 %
-%    o image_info: The imageInfo.
+%    o image_info: The imageInfo (may be NULL!).
 %
 %    o image: The image.
 %
@@ -5836,7 +5883,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'o':
       {
         /* Output filename */
-        q+=(translate)(q,image_info->filename,MaxTextExtent);
+        q+=(translate)(q,image->filename,MaxTextExtent);
         break;
       }
       case 'p':
@@ -5876,18 +5923,22 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       {
         /* Scene number */
         FormatString(buffer,"%lu",image->scene);
-        if (image_info->subrange != 0)
-          FormatString(buffer,"%lu",image_info->subimage);
+        if (image_info != (const ImageInfo *) NULL)
+          if (image_info->subrange != 0)
+            FormatString(buffer,"%lu",image_info->subimage);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'u':
       {
         /* Unique temporary filename */
-        if (strlcpy(buffer,image_info->unique,MaxTextExtent) == 0)
-          if (!AcquireTemporaryFileName(buffer))
-            break;
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            if (strlcpy(buffer,image_info->unique,MaxTextExtent) == 0)
+              if (!AcquireTemporaryFileName(buffer))
+                break;
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'w':
@@ -5914,10 +5965,13 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'z':
       {
         /* Second unique temporary filename */
-        if (strlcpy(buffer,image_info->zero,MaxTextExtent) == 0)
-          if (!AcquireTemporaryFileName(buffer))
-            break;
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            if (strlcpy(buffer,image_info->zero,MaxTextExtent) == 0)
+              if (!AcquireTemporaryFileName(buffer))
+                break;
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'A':
@@ -5978,8 +6032,11 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'Q':
       {
         /* Compression quality */
-        FormatString(buffer,"%lu",image_info->quality);
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            FormatString(buffer,"%lu",image_info->quality);
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'T':
@@ -6048,6 +6105,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
 
         /* Try to get the attribute from image_info */
         if (attribute == (const ImageAttribute *) NULL)
+          if (image_info != (const ImageInfo *) NULL)
             attribute=GetImageInfoAttribute(image_info,image,key);
 
         if (attribute != (const ImageAttribute *) NULL)
