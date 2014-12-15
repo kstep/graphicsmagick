@@ -436,6 +436,10 @@ InitializeDelegateInfo(void)
 %
 */
 #if defined(POSIX)
+/*
+  Escape characters from the string 'src' to the string 'dst',
+  limiting the number of output characters according to 'size'.
+*/
 static size_t
 UnixShellTextEscape(char *dst, const char *src, const size_t size)
 {
@@ -482,6 +486,85 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
 #endif /* POSIX */
 
 #if defined(MSWINDOWS)
+/*
+  Escape a dynamically-allocated string argument (if needed),
+  replacing with a new allocation if escaping was necessary.
+*/
+static void
+WindowsArgumentTextEscape(char **arg)
+{
+  const char
+    *sa;
+
+  char
+    *escaped;
+
+  size_t
+    e,
+    i,
+    length;
+
+  MagickBool
+    do_escape=MagickFalse;
+
+  /*
+    Compute length, allowing for escape characters.
+
+    It is possible that other characters should be escaped, but we are
+    unaware of the specific characters or the correct syntax.  The
+    characters and syntax might depend on the version of Windows or
+    the Windows CRT used.
+  */
+  e=0;
+  length=0;
+  sa=*arg;
+  for ( i=0; sa[i] != '\0'; i++)
+    {
+      if (isspace(sa[i]))
+        {
+          length += 2;
+          do_escape=MagickTrue;
+        }
+      length++;
+    }
+  length++; /* null */
+  if (do_escape)
+    {
+      /*
+        Allocate buffer
+      */
+      escaped=MagickAllocateMemory(char *,length);
+      /*
+        Escape into buffer
+      */
+      if (escaped != (char *) NULL)
+        {
+          sa=*arg;
+          e=0;
+          for ( i=0; sa[i] != '\0'; i++)
+            {
+              char c=sa[i];
+              if (isspace(c))
+                {
+                  escaped[e++]='"';
+                  escaped[e++]=c;
+                  escaped[e++]='"';
+                }
+              else
+                {
+                  escaped[e++]=c;
+                }
+            }
+          escaped[e]='\0';
+          MagickFreeMemory(*arg);
+          *arg = escaped;
+        }
+    }
+}
+/*
+  Escape characters from the string 'src' to the string 'dst',
+  limiting the number of output characters according to 'size'.
+*/
 static size_t
 WindowsShellTextEscape(char *dst, const char *src, const size_t size)
 {
@@ -763,8 +846,26 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
                       arg_array[j] = expanded;
                     }
                 }
+#if defined(HAVE_SPAWNVP)
+              /*
+                Windows _spawnvp() pretends to offer an argv style
+                interface but actually splits arguments into
+                additional arguments based on white-space.  It might
+                have more wonderful properties we are not aware of
+                yet.  Escape white-space in arguments with double
+                quotes to avoid the splitting.
+
+                This code should likely be in MagickSpawnVP() but then
+                we would need to clone the input array so it can be
+                modified.
+
+                This undocumented feature is an example of why
+                Microsoft Windows can not be a secure operating
+                system.
+              */
+              WindowsArgumentTextEscape(&arg_array[j]);
+#endif
             }
-          
           /*
             Execute delegate using our secure "spawn" facility.
           */
