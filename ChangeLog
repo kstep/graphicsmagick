@@ -1,3 +1,11 @@
+2014-12-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/statistics.c (GetImageStatistics): Failed to compute
+	statistics for the Black channel of CMYK image files.  Problem
+	reported by Michael Below via Debian bug 773552:
+	"graphicsmagick-imagemagick-compat: convert to cmyk leaves k
+	channel empty".
+
 2014-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/delegate.c (InvokeDelegate): Windows spawnvp() splits
