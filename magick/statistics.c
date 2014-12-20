@@ -77,6 +77,10 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
   register long
     i;
 
+  const MagickBool
+    process_opacity=((image->matte) ||
+                     (image->colorspace == CMYKColorspace));
+
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
@@ -84,7 +88,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
   lstatistics.red.minimum=1.0;
   lstatistics.green.minimum=1.0;
   lstatistics.blue.minimum=1.0;
-  if (image->matte)
+  if (process_opacity)
     lstatistics.opacity.minimum=1.0;
 
   for (i=0; i < npixels; i++)
@@ -110,7 +114,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
       if (normalized <  lstatistics.blue.minimum)
         lstatistics.blue.minimum=normalized;
 
-      if ((image->matte) || (image->colorspace == CMYKColorspace))
+      if (process_opacity)
         {
           normalized=(double) pixel[i].opacity/MaxRGB;
           lstatistics.opacity.mean += normalized/context->samples;
@@ -143,7 +147,7 @@ static MagickPassFail GetImageStatisticsMean(void *mutable_data,
     if (lstatistics.blue.minimum < statistics->blue.minimum)
       statistics->blue.minimum=lstatistics.blue.minimum;
 
-    if ((image->matte) || (image->colorspace == CMYKColorspace))
+    if (process_opacity)
       {
         statistics->opacity.mean += lstatistics.opacity.mean;
         if (lstatistics.opacity.maximum > statistics->opacity.maximum)
@@ -177,6 +181,10 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
   register long
     i;
 
+  const MagickBool
+    process_opacity=((image->matte) ||
+                     (image->colorspace == CMYKColorspace));
+
   ARG_NOT_USED(indexes);
   ARG_NOT_USED(exception);
 
@@ -205,7 +213,7 @@ static MagickPassFail GetImageStatisticsVariance(void *mutable_data,
       lstatistics.blue.variance +=
         Square(normalized-lstatistics.blue.mean)/context->variance_divisor;
       
-      if ((image->matte) || (image->colorspace == CMYKColorspace))
+      if (process_opacity)
         {
           normalized=(double) pixel[i].opacity/MaxRGB;
           lstatistics.opacity.variance +=
@@ -237,12 +245,16 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
 
   double
     samples;
-  
+
+  const MagickBool
+    process_opacity=((image->matte) ||
+                     (image->colorspace == CMYKColorspace));
+
   (void) memset((void *) statistics, 0, sizeof(ImageStatistics));
   statistics->red.minimum=1.0;
   statistics->green.minimum=1.0;
   statistics->blue.minimum=1.0;
-  if ((image->matte) || (image->colorspace == CMYKColorspace))
+  if (process_opacity)
     statistics->opacity.minimum=1.0;
 
   samples=(double) image->rows*image->columns;
@@ -274,7 +286,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
       statistics->red.standard_deviation=sqrt(statistics->red.variance);
       statistics->green.standard_deviation=sqrt(statistics->green.variance);
       statistics->blue.standard_deviation=sqrt(statistics->blue.variance);
-      if ((image->matte) || (image->colorspace == CMYKColorspace))
+      if (process_opacity)
         statistics->opacity.standard_deviation=sqrt(statistics->opacity.variance);
     }
 
