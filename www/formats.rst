@@ -458,7 +458,10 @@ following table lists these pseudo image formats:
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | Tag          | Mode |       Description         |                      Notes                                  |
    +--------------+------+---------------------------+-------------------------------------------------------------+
-   | CAPTION      | R    | Image caption             | fixme                                                       |
+   | CAPTION      | R    | Image caption             | Draws text on a canvas image with size specified by `-size` |
+   |              |      |                           | canvas color as specified by `-background' (default white), |
+   |              |      |                           | and text stroke and fill colors as specified by `-stroke`   |
+   |              |      |                           | and `-fill`.  Capable of supporting multi-line text.        |
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | CLIPBOARD    | RW   | Windows Clipboard         | Only available under Microsoft Windows.                     |
    +--------------+------+---------------------------+-------------------------------------------------------------+
