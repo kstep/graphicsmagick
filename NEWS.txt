@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on August 16, 2014
+This file was last updated on December 21, 2014
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,10 +15,149 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.20 (August 16, 2014)
-=========================
+1.3.21 (December ??, 2014)
+==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
+
+Special Issues:
+
+  * Due to `GCC bug 53967`_, several key agorithms (e.g. convolution)
+    may execute much faster (e.g. 2-3X) for x86-64 and/or when SSE is
+    enabled for floating point math (`-mfpmath=sse`) if the GCC option
+    `-frename-registers` is used. Default 32-bit builds do not
+    experience the problem since they use '387 math.  It is not clear
+    in what version of GCC this problem started but it was not noticed
+    by the developers until the GCC 4.6 timeframe.  Other compilers do
+    not suffer from this bug.  Please lobby the GCC project to fix
+    this embarrassing performance bug.
+
+  * Magick++: Any libraries or applications using Magick++ should be
+    rebuilt in order to use this new release.  Libraries and
+    applications will be able to continue to use prior versions of
+    Magick++ without being re-built, provided that the system supports
+    library versioning.
+
+Security Fixes:
+
+  * Annotate: Some requestable text-subsitution attributes caused a
+    crash.
+
+  * DCM: Fix crash as well as small heap over-write.
+
+  * DPX: Fix crash due to DPX file reporting more elements than it
+    has.
+
+  * PCX: Fix for CVE-2014-8355.
+
+  * PNM: Validate PGM, PPM, and PAM header MaxValue parameter to avoid
+    crash on poorly-formed input.
+
+  * PSD: Avoid problems caused by huge PSD colormap size.
+
+  * PSD: Fix small stack over-write if more than 99 layers are written
+    to PSD format.
+
+  * PSD: Returns immediately if pixel limit was exceeded.
+
+  * SUN: Header validation is now made fully robust, and arithmetic
+    overflows in buffer-size calculations are detected to avoid heap
+    overwrite.
+
+  * VIFF: Fixes to prevent buffer overflow.
+
+  * Windows delegates: Fix unexpected argument splitting when invoking
+    an external delegate program via delegates.mgk.
+
+  * XWD: Improve header validation.  Added to UnstableCoderClass since
+    the reader for this format should not be entrusted with
+    untrustworthy input.
+
+Bug fixes:
+
+  * JNG: Fix double-free error in error path.
+
+  * Magick++ Image resolutionUnits() was not always returning correct
+    value.
+
+  * PCX: Eliminate memory leaks in error paths.
+
+  * PDB: In PDB writer, void possible under-allocation due to
+    arthimetic overflow when allocating packets.
+
+  * PNG: Fix double-free error in error path.
+
+  * PNG: Fixed handling of transparency when writing indexed PNG.
+
+  * PSD: Fix error when reading PSDs files which have no layers.
+
+  * Text annotation: An empty text string is no longer treated as an
+    error.
+
+  * Text annotation: Fix regression added in 1.3.19 which caused
+    spurious drawing errors to be produced while rendering with text
+    when all of the text is off the left-hand side of the image.
+
+  * WebP: WebP writer now writes truely lossless output when
+    requested.
+
+  * identify / GetImageStatistics(): Failed to compute statistics for
+    the Black channel of CMYK image files.
+
+New Features:
+
+  * compose: Supports composite operator names similar to the major
+    *Magick brand, without losing any any compatibility with previous
+    *naming.
+
+  * Magick++ Geometry: New methods limitPixels() and fillArea() to
+    support '@' and '^' geometry qualifiers.  This enancement breaks
+    the ABI due to previous use of inline methods and no place to put
+    the new flags.
+
+  * Magick++ Image::extent(): New method to place image on sized
+    canvas of constant color using gravity.
+
+  * Magick++ Image::formatExpression(): New method format a string
+    based on a format similar to command-line -format.
+
+  * Magick++ Image::resize(): New method to resize image specifying
+    geometry, filter, and blur.
+
+  * Magick++ STL extentImage: New New function object to invoke image
+    extent method.
+
+  * TIFF: Use define tiff:ignore-tags to ignore tags in 'corrupted'
+    files with unknown and invalid tags.  Use to read TIFF files which
+    otherwise can not be read due to errors.
+
+Feature improvements:
+
+  * None.
+
+Performance Improvements:
+
+  * None.
+
+Windows Delegate Updates/Additions:
+
+  * WebP: Update bundled WebP to 0.4.2 release.
+
+  * WebP is auto-linked in Visual Studio.
+
+Build Changes:
+
+  * WebP is not included in the build when building with Visual Studio
+    6 (1998 vintage compiler!) since it requires more modern C.
+
+Behavior Changes:
+
+  * AVI: Support for this format is removed since the implementation
+    was worthless.
+
+
+1.3.20 (August 16, 2014)
+=========================
 
 Special Issues:
 
