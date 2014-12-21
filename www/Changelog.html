@@ -38,6 +38,22 @@
 <p>2014-12-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/tiff.c (QuantumTransferMode): Fix quantum transfer
+handling for photometrics which might deliver one or three samples
+per pixel.  These were assuming that three samples were always
+provided.</li>
+</ul>
+</blockquote>
+<p>2014-12-21  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c: Impose a 10-million limit on dimensions
+when reading a PNG file.</li>
+</ul>
+</blockquote>
+<p>2014-12-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
 <li>NEWS.txt: Updated with improvements since previous release.</li>
 </ul>
 </blockquote>
