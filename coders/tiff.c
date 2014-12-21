@@ -848,8 +848,8 @@ TIFFGetBlobSize(thandle_t image_handle)
 /* Unmap BLOB memory */
 static void
 TIFFUnmapBlob(thandle_t ARGUNUSED(image),
-                          tdata_t ARGUNUSED(base),
-                          toff_t ARGUNUSED(size))
+              tdata_t ARGUNUSED(base),
+              toff_t ARGUNUSED(size))
 {
 #if LOG_TIFF_BLOB_IO
   Image
@@ -1132,8 +1132,11 @@ QuantumTransferMode(const Image *image,
 		    const uint16 planar_config,
 		    const unsigned int plane,
 		    QuantumType *quantum_type,
-		    int *quantum_samples)
+		    int *quantum_samples,
+                    ExceptionInfo *exception)
 {
+  ARG_NOT_USED(exception);
+
   *quantum_type=UndefinedQuantum;
   *quantum_samples=0;
   if ((sample_format == SAMPLEFORMAT_INT) ||
@@ -1266,6 +1269,8 @@ QuantumTransferMode(const Image *image,
         }
     }
   /* fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples); */
+  /* FIXME: Throw exception if there is an error */
+  /* FIXME: We do need to support YCbCr! */
   
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
@@ -1950,8 +1955,9 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         method=RGBAPuntMethod;
         quantum_type=UndefinedQuantum;
         quantum_samples=0;
-        if (QuantumTransferMode(image,photometric,sample_format,planar_config,0,
-                                &quantum_type,&quantum_samples) == MagickPass)
+        if (QuantumTransferMode(image,photometric,sample_format,planar_config,
+                                0,&quantum_type,&quantum_samples,exception)
+            == MagickPass)
           {
             method=ScanLineMethod;
             if (compress_tag == COMPRESSION_JPEG)
@@ -2057,7 +2063,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         PLANARCONFIG_CONTIG,0,&quantum_type,
-                                        &quantum_samples)
+                                        &quantum_samples,exception)
                     == MagickPass)
                   max_sample=quantum_samples;
               }
@@ -2092,7 +2098,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     */
                     if (QuantumTransferMode(image,photometric,sample_format,
                                             planar_config,sample,&quantum_type,
-                                            &quantum_samples) == MagickFail)
+                                            &quantum_samples,exception)
+                        == MagickFail)
                       {
                         CopyException(exception,&image->exception);
                         status=MagickFail;
@@ -2204,7 +2211,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         PLANARCONFIG_CONTIG,0,&quantum_type,
-                                        &quantum_samples) == MagickPass)
+                                        &quantum_samples,exception)
+                    == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -2222,7 +2230,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 */
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         planar_config,sample,&quantum_type,
-                                        &quantum_samples) == MagickFail)
+                                        &quantum_samples,exception)
+                    == MagickFail)
                   {
                     CopyException(exception,&image->exception);
                     status=MagickFail;
@@ -2398,7 +2407,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         PLANARCONFIG_CONTIG,0,&quantum_type,
-                                        &quantum_samples) == MagickPass)
+                                        &quantum_samples,exception)
+                    == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -2416,7 +2426,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		*/
 		if (QuantumTransferMode(image,photometric,sample_format,
 					planar_config,sample,
-					&quantum_type,&quantum_samples)
+					&quantum_type,&quantum_samples,
+                                        exception)
 		    == MagickFail)
 		  {
 		    CopyException(exception,&image->exception);
@@ -3913,7 +3924,6 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         }
 
-
       /*
         If the user has selected something other than MINISWHITE,
         MINISBLACK, or RGB, then remove JPEG compression.  Also remove
@@ -4880,7 +4890,8 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         PLANARCONFIG_CONTIG,0,&quantum_type,
-                                        &quantum_samples) == MagickPass)
+                                        &quantum_samples,&image->exception)
+                    == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -4893,7 +4904,8 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 */
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         planar_config,sample,&quantum_type,
-                                        &quantum_samples) == MagickFail)
+                                        &quantum_samples,&image->exception)
+                    == MagickFail)
                   {
                     status=MagickFail;
                     break;
@@ -5072,7 +5084,8 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (QuantumTransferMode(image,photometric,sample_format,
                                         PLANARCONFIG_CONTIG,0,&quantum_type,
-                                        &quantum_samples) == MagickPass)
+                                        &quantum_samples,&image->exception)
+                    == MagickPass)
                   max_sample=quantum_samples;
               }
             /*
@@ -5090,7 +5103,8 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		*/
 		if (QuantumTransferMode(image,photometric,sample_format,
 					planar_config,sample,&quantum_type,
-					&quantum_samples) == MagickFail)
+					&quantum_samples,&image->exception)
+                    == MagickFail)
 		  {
 		    status=MagickFail;
 		    break;
