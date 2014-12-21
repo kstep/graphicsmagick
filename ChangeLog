@@ -1,3 +1,8 @@
+2014-12-21  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Impose a 10-million limit on dimensions
+	when reading a PNG file.
+
 2014-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Updated with improvements since previous release.
