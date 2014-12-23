@@ -2033,6 +2033,11 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 else
                   method=StrippedMethod;
               }
+#if defined(COMPRESSION_JBIG)
+            else if (compress_tag == COMPRESSION_JBIG)
+              /* libtiff jbig coder only handles strips */
+              method=StrippedMethod;
+#endif
             else if (TIFFIsTiled(tiff))
               method=TiledMethod;
             else if ((TIFFStripSize(tiff)) <= (1024*64))
@@ -4916,6 +4921,8 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
       /*
         Export pixels to TIFF.
+
+        FIXME: JBIG needs a Strip writer.
       */
       switch (method)
         {
