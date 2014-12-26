@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 21, 2014
+This file was last updated on December 26, 2014
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -53,6 +53,9 @@ Security Fixes:
   * PNM: Validate PGM, PPM, and PAM header MaxValue parameter to avoid
     crash on poorly-formed input.
 
+  * PNG: Impose a 10-million limit on dimensions when reading a PNG
+    file to avoid denial of service.
+
   * PSD: Avoid problems caused by huge PSD colormap size.
 
   * PSD: Fix small stack over-write if more than 99 layers are written
@@ -63,6 +66,9 @@ Security Fixes:
   * SUN: Header validation is now made fully robust, and arithmetic
     overflows in buffer-size calculations are detected to avoid heap
     overwrite.
+
+  * TIFF: Fix crashes for photometrics which may delivery one or three
+    samples per pixel (was assuming always three).
 
   * VIFF: Fixes to prevent buffer overflow.
 
@@ -97,6 +103,10 @@ Bug fixes:
   * Text annotation: Fix regression added in 1.3.19 which caused
     spurious drawing errors to be produced while rendering with text
     when all of the text is off the left-hand side of the image.
+
+  * TIFF: Fix unreliable reading JBIG compressed files by forcing use
+    of strip reader rather than sometimes using scanline reader (which
+    libtiff's JBIG codec does not support).
 
   * WebP: WebP writer now writes truely lossless output when
     requested.
@@ -140,6 +150,12 @@ Performance Improvements:
   * None.
 
 Windows Delegate Updates/Additions:
+
+  * PNG: Update bundled libpng to 1.6.16.  Resolves known security
+    issues.
+
+  * FreeType: Update bundled Freetype to 2.5.4.  Resolves known
+    security issues.
 
   * WebP: Update bundled WebP to 0.4.2 release.
 

@@ -38,7 +38,7 @@
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on December 21, 2014</p>
+<p>This file was last updated on December 26, 2014</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
@@ -103,6 +103,8 @@ has.</li>
 <li>PCX: Fix for CVE-2014-8355.</li>
 <li>PNM: Validate PGM, PPM, and PAM header MaxValue parameter to avoid
 crash on poorly-formed input.</li>
+<li>PNG: Impose a 10-million limit on dimensions when reading a PNG
+file to avoid denial of service.</li>
 <li>PSD: Avoid problems caused by huge PSD colormap size.</li>
 <li>PSD: Fix small stack over-write if more than 99 layers are written
 to PSD format.</li>
@@ -110,6 +112,8 @@ to PSD format.</li>
 <li>SUN: Header validation is now made fully robust, and arithmetic
 overflows in buffer-size calculations are detected to avoid heap
 overwrite.</li>
+<li>TIFF: Fix crashes for photometrics which may delivery one or three
+samples per pixel (was assuming always three).</li>
 <li>VIFF: Fixes to prevent buffer overflow.</li>
 <li>Windows delegates: Fix unexpected argument splitting when invoking
 an external delegate program via delegates.mgk.</li>
@@ -135,6 +139,9 @@ error.</li>
 <li>Text annotation: Fix regression added in 1.3.19 which caused
 spurious drawing errors to be produced while rendering with text
 when all of the text is off the left-hand side of the image.</li>
+<li>TIFF: Fix unreliable reading JBIG compressed files by forcing use
+of strip reader rather than sometimes using scanline reader (which
+libtiff's JBIG codec does not support).</li>
 <li>WebP: WebP writer now writes truely lossless output when
 requested.</li>
 <li>identify / GetImageStatistics(): Failed to compute statistics for
@@ -148,11 +155,11 @@ the Black channel of CMYK image files.</li>
 <a href="#id1"><span class="problematic" id="id2">*</span></a>Magick brand, without losing any any compatibility with previous
 <a href="#id3"><span class="problematic" id="id4">*</span></a>naming.</p>
 <div class="system-message" id="id1">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/NEWS.txt</tt>, line 109); <em><a href="#id2">backlink</a></em></p>
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/NEWS.txt</tt>, line 119); <em><a href="#id2">backlink</a></em></p>
 <p>Inline emphasis start-string without end-string.</p>
 </div>
 <div class="system-message" id="id3">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/NEWS.txt</tt>, line 109); <em><a href="#id4">backlink</a></em></p>
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/home/bfriesen/src/graphics/GM/NEWS.txt</tt>, line 119); <em><a href="#id4">backlink</a></em></p>
 <p>Inline emphasis start-string without end-string.</p>
 </div>
 </li>
@@ -194,6 +201,10 @@ otherwise can not be read due to errors.</p>
 <p>Windows Delegate Updates/Additions:</p>
 <blockquote>
 <ul class="simple">
+<li>PNG: Update bundled libpng to 1.6.16.  Resolves known security
+issues.</li>
+<li>FreeType: Update bundled Freetype to 2.5.4.  Resolves known
+security issues.</li>
 <li>WebP: Update bundled WebP to 0.4.2 release.</li>
 <li>WebP is auto-linked in Visual Studio.</li>
 </ul>
