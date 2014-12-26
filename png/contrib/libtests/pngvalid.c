@@ -1,7 +1,7 @@
 
 /* pngvalid.c - validate libpng by constructing then reading png files.
  *
- * Last changed in libpng 1.6.10 [March 6, 2014]
+ * Last changed in libpng 1.6.14 [October 23, 2014]
  * Copyright (c) 2014 Glenn Randers-Pehrson
  * Written by John Cunningham Bowler
  *
@@ -32,6 +32,16 @@
 
 #ifdef HAVE_FEENABLEEXCEPT /* from config.h, if included */
 #  include <fenv.h>
+#endif
+
+#ifndef FE_DIVBYZERO
+#  define FE_DIVBYZERO 0
+#endif
+#ifndef FE_INVALID
+#  define FE_INVALID 0
+#endif
+#ifndef FE_OVERFLOW
+#  define FE_OVERFLOW 0
 #endif
 
 /* Define the following to use this test against your installed libpng, rather
@@ -146,6 +156,13 @@ define_exception_type(struct png_store*);
 #define anon_context(ps) struct exception_context *the_exception_context = \
    &(ps)->exception_context
 #define context(ps,fault) anon_context(ps); png_store *fault
+
+/* This macro returns the number of elements in an array as an (unsigned int),
+ * it is necessary to avoid the inability of certain versions of GCC to use
+ * the value of a compile-time constant when performing range checks.  It must
+ * be passed an array name.
+ */
+#define ARRAY_SIZE(a) ((unsigned int)((sizeof (a))/(sizeof (a)[0])))
 
 /******************************* UTILITIES ************************************/
 /* Error handling is particularly problematic in production code - error
@@ -686,7 +703,7 @@ static png_uint_32
 random_32(void)
 {
 
-   for(;;)
+   for (;;)
    {
       png_byte mark[4];
       png_uint_32 result;
@@ -1548,7 +1565,7 @@ set_store_for_write(png_store *ps, png_infopp ppi,
 
          else
 #     endif
-         ps->pwrite = png_create_write_struct(PNG_LIBPNG_VER_STRING,
+         ps->pwrite = png_create_write_struct(png_get_libpng_ver(NULL),
             ps, store_error, store_warning);
 
       png_set_write_fn(ps->pwrite, ps, store_write, store_flush);
@@ -4096,7 +4113,7 @@ make_errors(png_modifier* PNG_CONST pm, png_byte PNG_CONST colour_type,
          standard_name(name, sizeof name, 0, colour_type, 1<<bdlo, 0,
             interlace_type, 0, 0, 0);
 
-         for (test=0; test<(sizeof error_test)/(sizeof error_test[0]); ++test)
+         for (test=0; test<ARRAY_SIZE(error_test); ++test)
          {
             make_error(&pm->this, colour_type, DEPTH(bdlo), interlace_type,
                test, name);
@@ -10088,12 +10105,12 @@ int main(int argc, char **argv)
 
    /* Store the test gammas */
    pm.gammas = gammas;
-   pm.ngammas = (sizeof gammas) / (sizeof gammas[0]);
+   pm.ngammas = ARRAY_SIZE(gammas);
    pm.ngamma_tests = 0; /* default to off */
 
    /* And the test encodings */
    pm.encodings = test_encodings;
-   pm.nencodings = (sizeof test_encodings) / (sizeof test_encodings[0]);
+   pm.nencodings = ARRAY_SIZE(test_encodings);
 
    pm.sbitlow = 8U; /* because libpng doesn't do sBIT below 8! */
 
