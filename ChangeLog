@@ -1,3 +1,7 @@
+2014-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Update bundled libpng to 1.6.16.
+
 2014-12-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): The libtiff JBIG coder only
