@@ -50,6 +50,9 @@ Security Fixes:
 
   * PCX: Fix for CVE-2014-8355.
 
+  * PDB: Detect arithmetic overflows when calculating buffer sizes.
+    Fix crash in writer when image width is not even multiple of 16.
+
   * PNM: Validate PGM, PPM, and PAM header MaxValue parameter to avoid
     crash on poorly-formed input.
 

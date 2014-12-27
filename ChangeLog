@@ -1,5 +1,7 @@
 2014-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS.txt: Updated with more improvements since previous release.
+
 	* coders/palm.c (WritePALMImage): Log header details.
 
 	* coders/pdb.c: PDB reader and writer need to be more robust when
