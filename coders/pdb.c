@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -40,6 +40,7 @@
 #include "magick/blob.h"
 #include "magick/colormap.h"
 #include "magick/constitute.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -106,6 +107,71 @@ typedef struct _PDBImage
 */
 static unsigned int
   WritePDBImage(const ImageInfo *,Image *);
+
+static void LogPDPInfo(const PDBInfo *info)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "PDP Info:\n"
+                        "    name            : %.32s\n"
+                        "    attributes      : %d\n"
+                        "    version         : %d\n"
+                        "    create_time     : %lu\n"
+                        "    modify_time     : %lu\n"
+                        "    archive_time    : %lu\n"
+                        "    modify_number   : %lu\n"
+                        "    application_info: %lu\n"
+                        "    sort_info       : %lu\n"
+                        "    type            : %.4s\n"
+                        "    id              : %.4s\n"
+                        "    seed            : %lu\n"
+                        "    next_record     : %lu\n"
+                        "    number_records  : %u",
+                        info->name,
+                        info->attributes,
+                        info->version,
+                        info->create_time,
+                        info->modify_time,
+                        info->archive_time,
+                        info->modify_number,
+                        info->application_info,
+                        info->sort_info,
+                        info->type,
+                        info->id,
+                        info->seed,
+                        info->next_record,
+                        info->number_records);
+}
+
+static void LogPDPImage(const PDBImage *image)
+{
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "PDP Image:\n"
+                          "    name:       %.32s\n"
+                          "    version:    %d\n"
+                          "    type:       %d\n"
+                          "    reserved_1: %lu\n"
+                          "    note:       %lu\n"
+                          "    x_last:     %u\n"
+                          "    y_last:     %u\n"
+                          "    reserved_2: %lu\n"
+                          "    x_anchor:   %u\n"
+                          "    y_anchor:   %u\n"
+                          "    width:      %u\n"
+                          "    height:     %u",
+                          image->name,
+                          image->version,
+                          image->type,
+                          image->reserved_1,
+                          image->note,
+                          image->x_last,
+                          image->y_last,
+                          image->reserved_2,
+                          image->x_anchor,
+                          image->y_anchor,
+                          image->width,
+                          image->height
+                          );
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -301,6 +367,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a PDB image file.
   */
   count=ReadBlob(image,32,pdb_info.name);
+  if (count != 32)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   pdb_info.attributes=ReadBlobMSBShort(image);
   pdb_info.version=ReadBlobMSBShort(image);
   pdb_info.create_time=ReadBlobMSBLong(image);
@@ -311,12 +379,14 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.sort_info=ReadBlobMSBLong(image);
   (void) ReadBlob(image,4,pdb_info.type);
   (void) ReadBlob(image,4,pdb_info.id);
-  if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
-      (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
+  if (image->logging)
+    LogPDPInfo(&pdb_info);
+  if ((memcmp(pdb_info.type,"vIMG",4) != 0) ||
+      (memcmp(pdb_info.id,"View",4) != 0))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (pdb_info.next_record != 0)
     ThrowReaderException(CoderError,MultipleRecordListNotSupported,image);
   /*
@@ -362,6 +432,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_image.y_anchor=ReadBlobMSBShort(image);
   pdb_image.width=ReadBlobMSBShort(image);
   pdb_image.height=ReadBlobMSBShort(image);
+  if (image->logging)
+    LogPDPImage(&pdb_image);
   /*
     Initialize image structure.
   */
@@ -377,8 +449,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
-  packets=(bits_per_pixel*image->columns/8)*image->rows;
-  pixels=MagickAllocateMemory(unsigned char *,packets+256);
+  packets=MagickArraySize(MagickArraySize(bits_per_pixel,image->columns)/8,
+                          image->rows);
+  pixels=MagickAllocateMemory(unsigned char *,packets + (packets != 0 ? 256 : 0));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,MemoryAllocationFailed,image);
   switch (pdb_image.version)
@@ -704,6 +777,11 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *comment;
 
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Dimensions: %lux%lu",
+                          image->columns,image->rows);
+
   /*
     Open output image file.
   */
@@ -736,6 +814,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   pdb_info.next_record=0;
   comment=GetImageAttribute(image,"comment");
   pdb_info.number_records=(comment == (ImageAttribute *) NULL ? 1 : 2);
+  if (image->logging)
+    LogPDPInfo(&pdb_info);
   (void) WriteBlob(image,32,pdb_info.name);
   (void) WriteBlobMSBShort(image,pdb_info.attributes);
   (void) WriteBlobMSBShort(image,pdb_info.version);
@@ -769,8 +849,17 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   if (image->columns % 16)
     pdb_image.width=(short) (16*(image->columns/16+1));
   pdb_image.height=(short) image->rows;
-  packets=(bits_per_pixel*image->columns/8)*image->rows;
-  p=MagickAllocateArray(unsigned char *,2,packets);
+  if (image->logging)
+    LogPDPImage(&pdb_image);
+  if ((pdb_image.width < image->columns) ||
+      (pdb_image.height != image->rows))
+    {
+      ThrowWriterException(CoderError,ImageColumnOrRowSizeIsNotSupported, image);
+    }
+  packets=MagickArraySize(MagickArraySize(MagickArraySize(bits_per_pixel,
+                                                          pdb_image.width)/8,
+                                          pdb_image.height),2);
+  p=MagickAllocateMemory(unsigned char *,packets);
   if (p == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,MemoryAllocationFailed,image);
   buffer=MagickAllocateMemory(unsigned char *,256);

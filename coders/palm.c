@@ -554,11 +554,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       (void) SetImageType(image, TrueColorType);
     }
 
-  one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
+  one_row = MagickAllocateMemory(unsigned char *,Max(bytes_per_row,2*image->columns));
   if (one_row == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
-    lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
+    lastrow = MagickAllocateMemory(unsigned char *,Max(bytes_per_row,2*image->columns));
 
   mask = (1l << bits_per_pixel) - 1;
 
@@ -696,8 +696,8 @@ ModuleExport void RegisterPALMImage(void)
     *entry;
 
   entry=SetMagickInfo("PALM");
-  entry->decoder=(DecoderHandler) ReadPALMImage;
-  entry->encoder=(EncoderHandler) WritePALMImage;
+  entry->decoder=ReadPALMImage;
+  entry->encoder=WritePALMImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description="Palm pixmap";
@@ -805,6 +805,11 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   ImageCharacteristics
     characteristics;
 
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Dimensions: %lux%lu",
+                          image->columns,image->rows);
+
   /*
     Open output image file.
   */
@@ -834,6 +839,20 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
       return MagickFail;
     }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Characteristics:\n"
+                          "    cmyk       : %u\n"
+                          "    grayscale  : %u\n"
+                          "    monochrome : %u\n"
+                          "    opaque     : %u\n"
+                          "    palette    : %u",
+                          characteristics.cmyk,
+                          characteristics.grayscale,
+                          characteristics.monochrome,
+                          characteristics.opaque,
+                          characteristics.palette);
 
   bits_per_pixel=8;
   if (characteristics.palette)
