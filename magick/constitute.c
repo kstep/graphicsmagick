@@ -1823,21 +1823,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=subimages;
         }
     }
-#if 0
-  /*
-    Following error-check seems bogus.  Coder should not return an
-    image if it was not read correctly.
-  */
-  if (GetBlobStatus(image))
-    {
-      ThrowException(exception,CorruptImageError,
-                     AnErrorHasOccurredReadingFromFile,
-                     clone_info->filename);
-      DestroyImageList(image);
-      DestroyImageInfo(clone_info);
-      return((Image *) NULL);
-    }
-#endif
   for (next=image; next; next=next->next)
   {
 #if 0
@@ -2269,9 +2254,6 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     }
   (void) strlcpy(image->magick,clone_info->magick,MaxTextExtent);
   DestroyImageInfo(clone_info);
-  if (GetBlobStatus(image))
-    ThrowBinaryException(CorruptImageError,AnErrorHasOccurredWritingToFile,
-			 image->filename);
   return(status);
 }
 

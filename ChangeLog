@@ -1,3 +1,9 @@
+2014-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (WriteImage): Remove bogus use of
+	GetBlobStatus() as a catch-all for write errors.  Coders should be
+	detecting write errors all by themselves.
+
 2014-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Updated with more improvements since previous release.

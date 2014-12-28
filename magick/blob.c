@@ -2443,7 +2443,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                           "Opening Blob for image %p using %s mode ...",image,
                           BlobModeToString(mode));
-
+  /*
+    Attach existing memory buffer for I/O and immediately return.
+  */
   if (image_info->blob != (void *) NULL)
     {
       AttachBlob(image->blob,image_info->blob,image_info->length);
@@ -2452,6 +2454,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                               "  attached image_info->blob to blob %p",&image->blob);
       return(MagickPass);
     }
+  /*
+    Reset BlobInfo to defaults.
+  */
   DetachBlob(image->blob);
   image->blob->mode=mode;
   switch (mode)

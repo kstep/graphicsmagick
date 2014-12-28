@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 26, 2014
+This file was last updated on December 27, 2014
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
