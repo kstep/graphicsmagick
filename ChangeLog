@@ -1,3 +1,8 @@
+2014-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/rle.c (ReadRLEImage): URT RLE reader is now more robust
+	with errant files.
+
 2014-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Update bundled libtool to version 2.4.4.
