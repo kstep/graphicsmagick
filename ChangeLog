@@ -1,5 +1,8 @@
 2014-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/wpg.c (ReadWPGImage): Avoid use of NULL pointer returned
+	from FlipImage(), FlopImage(), and RotateImage().
+
 	* coders/rle.c (ReadRLEImage): URT RLE reader is now more robust
 	with errant files.
 

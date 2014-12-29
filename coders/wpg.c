@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1078,29 +1078,40 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   if(BitmapHeader2.RotAngle & 0x8000)
                     {
                       rotated_image = FlopImage(image, exception);
-                      rotated_image->blob = image->blob;
-                      image->blob = NULL;
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);
+                      if (rotated_image != (Image *) NULL)
+                        {
+                          rotated_image->blob = image->blob;
+                          image->blob = NULL;
+                          (void) RemoveLastImageFromList(&image);
+                          AppendImageToList(&image,rotated_image);
+                        }
                     }
                   /* flip command */
                   if(BitmapHeader2.RotAngle & 0x2000)
                     {
                       rotated_image = FlipImage(image, exception);
-                      rotated_image->blob = image->blob;
-                      image->blob = NULL;
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);		
+                      if (rotated_image != (Image *) NULL)
+                        {
+                          rotated_image->blob = image->blob;
+                          image->blob = NULL;
+                          (void) RemoveLastImageFromList(&image);
+                          AppendImageToList(&image,rotated_image);		
+                        }
                     }
 		
 		  /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
-                      rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
-                      rotated_image->blob = image->blob;
-                      image->blob = NULL;
-                      (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);		
+                      rotated_image = RotateImage(image,
+                                                  (BitmapHeader2.RotAngle & 0x0FFF),
+                                                  exception);
+                      if (rotated_image != (Image *) NULL)
+                        {
+                          rotated_image->blob = image->blob;
+                          image->blob = NULL;
+                          (void) RemoveLastImageFromList(&image);
+                          AppendImageToList(&image,rotated_image);
+                        }
                     }                
                 }
 
@@ -1248,10 +1259,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(CTM[0][0]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlopImage(image, exception);
-		  rotated_image->blob = image->blob;
-		  image->blob = NULL;
-		  (void) RemoveLastImageFromList(&image);
-		  AppendImageToList(&image,rotated_image);
+                  if (rotated_image != (Image *) NULL)
+                    {
+                      rotated_image->blob = image->blob;
+                      image->blob = NULL;
+                      (void) RemoveLastImageFromList(&image);
+                      AppendImageToList(&image,rotated_image);
+                    }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.		  
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
                      Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
@@ -1261,10 +1275,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(CTM[1][1]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlipImage(image, exception);
-		  rotated_image->blob = image->blob;
-		  image->blob = NULL;
-		  (void) RemoveLastImageFromList(&image);
-		  AppendImageToList(&image,rotated_image);
+                  if (rotated_image != (Image *) NULL)
+                    {
+                      rotated_image->blob = image->blob;
+                      image->blob = NULL;
+                      (void) RemoveLastImageFromList(&image);
+                      AppendImageToList(&image,rotated_image);
+                    }
                   /* Try to change CTM according to Flip - I am not sure, must be checked.
                      float_matrix Tx(3,3);
                      Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
