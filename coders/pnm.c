@@ -535,9 +535,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Max Value: %u",
 			    max_value);
-      if (max_value == 0)
+      if ((max_value == 0) || (max_value > 4294967295U))
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
+      bits_per_sample=0;
       if (max_value <= 1)
 	bits_per_sample=1;
       else if (max_value <= 255U)
