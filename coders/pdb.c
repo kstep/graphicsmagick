@@ -519,7 +519,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=AccessMutableIndexes(image);
-        for (x=0; x < (long) image->columns; x+=4)
+        for (x=0; x < (long) image->columns-3; x+=4)
         {
           index=(IndexPacket) (3-((*p >> 6) & 0x03));
           VerifyColormapIndex(image,index);
@@ -560,7 +560,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
           break;
         indexes=AccessMutableIndexes(image);
-        for (x=0; x < (long) image->columns; x+=2)
+        for (x=0; x < (long) image->columns-1; x+=2)
         {
           index=(IndexPacket) (15-((*p >> 4) & 0x0f));
           VerifyColormapIndex(image,index);

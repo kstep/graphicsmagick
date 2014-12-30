@@ -38,6 +38,10 @@
 <p>2014-12-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/pdb.c (ReadPDBImage): Fix indexes array overrun for 2 and
+4-bit PDB image files.</li>
+<li>coders/xpm.c (ReadXPMImage): Avoid strncpy() of overlapping
+memory.  Fix memory leaks in error paths.</li>
 <li>coders/viff.c (ReadVIFFImage): Validate index before using it to
 access colormap.</li>
 <li>coders/{cineon.c, dpx.c} (StringToAttribute): Can't use

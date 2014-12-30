@@ -183,6 +183,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     j,
+    k,
     none,
     y;
 
@@ -273,7 +274,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (q=p+1; *q != '\0'; q++)
       if (*q == '"')
         break;
-    (void) strncpy(xpm_buffer+i,p+1,q-p-1);
+    /* loop below equivalent to (void) strncpy(xpm_buffer+i,p+1,q-p-1); */
+    for ( k=0; k < (q-p-1); k++ )
+      {
+        (xpm_buffer+i)[k]=(p+1)[k];
+        if ((p+1)[k] == '\0')
+          break;
+      }
     i+=q-p-1;
     xpm_buffer[i++]='\n';
     p=q+1;
@@ -286,14 +293,18 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  keys=MagickAllocateMemory(char **,image->colors*sizeof(char *));
+  keys=MagickAllocateArray(char **,image->colors,sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
+      MagickFreeMemory(keys);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
+  for (i=0; i < (long) image->colors; i++)
+    keys[i]=(char *) NULL;
+
   /*
     Read image colormap.
   */
@@ -310,6 +321,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; textlist[i] != (char *) NULL; i++)
           MagickFreeMemory(textlist[i]);
         MagickFreeMemory(textlist);
+        for (i=0; i < (long) image->colors; i++)
+          MagickFreeMemory(keys[i]);
         MagickFreeMemory(keys);
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
@@ -345,6 +358,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
+      for (i=0; i < (long) image->colors; i++)
+        MagickFreeMemory(keys[i]);
+      MagickFreeMemory(keys);
       ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
   image->depth=GetImageDepth(image,&image->exception);
