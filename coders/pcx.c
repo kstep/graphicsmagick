@@ -298,7 +298,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify PCX identifier.
     */
     pcx_info.version=ReadBlobByte(image);
-    if ((count == 0) || (pcx_info.identifier != 0x0aU))
+    if ((count != 1) || (pcx_info.identifier != 0x0aU))
       ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
@@ -313,17 +313,84 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     image->columns=(pcx_info.right-pcx_info.left)+1;
     image->rows=(pcx_info.bottom-pcx_info.top)+1;
-    if ((image->columns == 0) || (image->rows == 0) ||
-        (pcx_info.bits_per_pixel == 0))
-      ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
-    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
+    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : 8;
     image->units=PixelsPerInchResolution;
     image->x_resolution=pcx_info.horizontal_resolution;
     image->y_resolution=pcx_info.vertical_resolution;
     image->colors=16;
-    (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
+    count=ReadBlob(image,3*image->colors,(char *) pcx_colormap);
+    if (count != 3*image->colors)
+      ThrowPCXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     pcx_info.reserved=ReadBlobByte(image);
     pcx_info.planes=ReadBlobByte(image);
+    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
+    pcx_info.palette_info=ReadBlobLSBShort(image);
+    pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
+    pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
+
+    if (image->logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "PCX Header (%d):\n"
+                            "    version=%u\n"
+                            "    encoding=%u\n"
+                            "    bits_per_pixel=%u\n"
+                            "    left=%u\n"
+                            "    top=%u\n"
+                            "    right=%u\n"
+                          "    bottom=%u\n"
+                            "    horizontal_resolution=%u\n"
+                            "    vertical_resolution=%u\n"
+                            "    reserved=%u\n"
+                            "    planes=%u\n"
+                            "    bytes_per_line=%u\n"
+                            "    palette_info=%u\n"
+                            "    horizontal_screen_size=%u\n"
+                            "    vertical_screen_size=%u",
+                            id,
+                            (unsigned int) pcx_info.version,
+                            (unsigned int) pcx_info.encoding,
+                            (unsigned int) pcx_info.bits_per_pixel,
+                            (unsigned int) pcx_info.left,
+                            (unsigned int) pcx_info.top,
+                            (unsigned int) pcx_info.right,
+                            (unsigned int) pcx_info.bottom,
+                            (unsigned int) pcx_info.horizontal_resolution,
+                            (unsigned int) pcx_info.vertical_resolution,
+                            (unsigned int) pcx_info.reserved,
+                            (unsigned int) pcx_info.planes,
+                            (unsigned int) pcx_info.bytes_per_line,
+                            (unsigned int) pcx_info.palette_info,
+                            (unsigned int) pcx_info.horizontal_screen_size,
+                            (unsigned int) pcx_info.vertical_screen_size
+                            );
+
+    /*
+      Validate rows, columns, bits
+    */
+    if ((image->columns == 0) ||
+        (image->rows == 0) ||
+        ((pcx_info.bits_per_pixel != 1) &&
+         (pcx_info.bits_per_pixel != 2) &&
+         (pcx_info.bits_per_pixel != 4) &&
+         (pcx_info.bits_per_pixel != 8)))
+      ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
+
+    /*
+      Validate bytes per line.  It is ok to have more bytes per line
+      than the total bits suggest, but not less.
+    */
+    {
+      unsigned long bytes_per_line;
+
+      bytes_per_line = (image->columns*pcx_info.bits_per_pixel + 7)/8;
+      if (image->logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Bytes per line: reqire >= %lu, have %u",
+                              bytes_per_line, pcx_info.bytes_per_line);
+      if (pcx_info.bytes_per_line < bytes_per_line)
+        ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
+
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
@@ -343,50 +410,13 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].green=ScaleCharToQuantum(*p++);
       image->colormap[i].blue=ScaleCharToQuantum(*p++);
     }
-    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
-    pcx_info.palette_info=ReadBlobLSBShort(image);
-    pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
-    pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
 
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "PCX Header (%d):\n"
-                          "    version=%u\n"
-                          "    encoding=%u\n"
-                          "    bits_per_pixel=%u\n"
-                          "    left=%u\n"
-                          "    top=%u\n"
-                          "    right=%u\n"
-                          "    bottom=%u\n"
-                          "    horizontal_resolution=%u\n"
-                          "    vertical_resolution=%u\n"
-                          "    reserved=%u\n"
-                          "    planes=%u\n"
-                          "    bytes_per_line=%u\n"
-                          "    palette_info=%u\n"
-                          "    horizontal_screen_size=%u\n"
-                          "    vertical_screen_size=%u",
-                          id,
-                          (unsigned int) pcx_info.version,
-                          (unsigned int) pcx_info.encoding,
-                          (unsigned int) pcx_info.bits_per_pixel,
-                          (unsigned int) pcx_info.left,
-                          (unsigned int) pcx_info.top,
-                          (unsigned int) pcx_info.right,
-                          (unsigned int) pcx_info.bottom,
-                          (unsigned int) pcx_info.horizontal_resolution,
-                          (unsigned int) pcx_info.vertical_resolution,
-                          (unsigned int) pcx_info.reserved,
-                          (unsigned int) pcx_info.planes,
-                          (unsigned int) pcx_info.bytes_per_line,
-                          (unsigned int) pcx_info.palette_info,
-                          (unsigned int) pcx_info.horizontal_screen_size,
-                          (unsigned int) pcx_info.vertical_screen_size
-                          );
     for (i=0; i < 54; i++)
       (void) ReadBlobByte(image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
     /*
       Read image data.
     */
