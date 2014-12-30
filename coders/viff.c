@@ -718,9 +718,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               q->blue=ScaleCharToQuantum(*(p+2*number_pixels));
               if (image->colors != 0)
                 {
-                  q->red=image->colormap[q->red].red;
-                  q->green=image->colormap[q->green].green;
-                  q->blue=image->colormap[q->blue].blue;
+                  unsigned int index;
+                  index=q->red;
+                  VerifyColormapIndex(image,index);
+                  q->red=image->colormap[index].red;
+                  index=q->green;
+                  VerifyColormapIndex(image,index);
+                  q->green=image->colormap[index].green;
+                  index=q->blue;
+                  VerifyColormapIndex(image,index);
+                  q->blue=image->colormap[index].blue;
                 }
               q->opacity=(Quantum) (image->matte ? MaxRGB-
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueOpacity);
