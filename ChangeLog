@@ -1,3 +1,8 @@
+2014-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/meta.c (convertHTMLcodes): Avoid strcpy() of overlapping
+	memory.
+
 2014-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/process.rst: Update description of development process to be
