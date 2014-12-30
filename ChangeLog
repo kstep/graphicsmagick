@@ -1,5 +1,10 @@
 2014-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/{cineon.c, dpx.c} (StringToAttribute): Can't use
+	strlcpy() to copy string which might not be NULL-terminated since
+	strlcpy() continues searching for end of string after size bytes
+	have been copied.
+
 	* coders/meta.c (convertHTMLcodes): Avoid strcpy() of overlapping
 	memory.
 

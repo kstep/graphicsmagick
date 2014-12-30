@@ -236,17 +236,19 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
                         "Attribute \"%s\" set to \"%s\"", \
                         name,value); \
 }
-
+/* Can't use strlcpy() since strlcpy() only handles NULL terminated
+   strings. */
 #define StringToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      (void) strlcpy(buffer,member,Min(sizeof(member)+1,MaxTextExtent)); \
-      (void) SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      (void) strncpy(buffer_,member,Min(sizeof(member),MaxTextExtent)); \
+      buffer_[Min(sizeof(member),MaxTextExtent-1)]='\0';             \
+      (void) SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define U8ToAttribute(image,name,member) \

@@ -470,7 +470,8 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
                         "Attribute \"%s\" set to \"%s\"", \
                         name,value); \
 }
-
+/* Can't use strlcpy() since strlcpy() only handles NULL terminated
+   strings. */
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -478,7 +479,8 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      (void) strlcpy(buffer_,member,Min(sizeof(member)+1,MaxTextExtent)); \
+      (void) strncpy(buffer_,member,Min(sizeof(member),MaxTextExtent)); \
+      buffer_[Min(sizeof(member),MaxTextExtent-1)]='\0';             \
       (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
