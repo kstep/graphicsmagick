@@ -1,5 +1,8 @@
 2014-12-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/process.rst: Update description of development process to be
+	more aligned with the process actually used.
+
 	* coders/wpg.c (ReadWPGImage): Avoid use of NULL pointer returned
 	from FlipImage(), FlopImage(), and RotateImage().
 
