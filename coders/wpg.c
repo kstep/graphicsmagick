@@ -383,6 +383,9 @@ static int UnpackWPGRaster(Image *image,int bpp)
   y=0;
 
   ldblk=(long) ((bpp*image->columns+7)/8);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Raster allocation size: %ld byte%s",
+                        ldblk, (ldblk > 1 ? "s" : ""));
   BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(BImgBuff==NULL) return(-2);
 
