@@ -528,8 +528,3 @@
 	setting.
 
 	* Rotate ChangeLog for 2012 and update web page copyright years.
-
-
-2014-12-31 Fojtik Jaroslav  <JaFojtik@seznam.cz>
-
-	* coders/wpg.c Fixed 2bpp issue.

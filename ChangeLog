@@ -1,3 +1,14 @@
+2014-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c (UnpackWPGRaster): Fix some compilation and
+	valgrind warnings.
+
+	* NEWS.txt: Updated news again.
+
+2014-12-31 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c Fixed 2bpp issue.
+
 2014-12-31  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Validate MHDR chunk length.
