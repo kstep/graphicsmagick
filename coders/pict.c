@@ -429,7 +429,7 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
 
   unsigned long
     bytes_per_pixel,
-	length,
+    length,
     number_pixels,
     scanline_length,
     width;
@@ -454,6 +454,12 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
   row_bytes=(size_t) (image->columns | 0x8000);
   if (image->storage_class == DirectClass)
     row_bytes=(size_t) ((4*image->columns) | 0x8000);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Using %lu bytes per line, %"
+                          MAGICK_SIZE_T_F "u bytes per row",
+                          bytes_per_line,
+                          (MAGICK_SIZE_T) row_bytes);
   /*
     Allocate pixel and scanline buffer.
   */
@@ -511,7 +517,7 @@ static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
               break;
             }
 
-          (void) memcpy(q,p,number_pixels);
+          (void) memcpy(q,p,number_pixels); /* ASAN report */
           q+=number_pixels;
           j+=length*bytes_per_pixel+1;
         }
