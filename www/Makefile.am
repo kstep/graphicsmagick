@@ -49,6 +49,7 @@ RST2HTML_TARGETS = \
 	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/ChangeLog-2012.html \
 	$(WWWDIR)/ChangeLog-2013.html \
+	$(WWWDIR)/ChangeLog-2014.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -156,6 +157,7 @@ WWW_HTML_FILES = \
 	$(WWWDIR)/ChangeLog-2011.html \
 	$(WWWDIR)/ChangeLog-2012.html \
 	$(WWWDIR)/ChangeLog-2013.html \
+	$(WWWDIR)/ChangeLog-2014.html \
 	$(WWWDIR)/Changelog.html \
 	$(WWWDIR)/Changes.html \
 	$(WWWDIR)/Copyright.html \
@@ -254,6 +256,9 @@ $(top_srcdir)/%.html: $(top_srcdir)/%.rst
 CHANGELOG2RST=$(top_srcdir)/scripts/changelog2rst.sh
 
 $(top_srcdir)/www/Changelog.rst: $(top_srcdir)/ChangeLog
+	$(CHANGELOG2RST) < $^ > $@
+
+$(top_srcdir)/www/ChangeLog-2014.rst: $(top_srcdir)/ChangeLog.2014
 	$(CHANGELOG2RST) < $^ > $@
 
 $(top_srcdir)/www/ChangeLog-2013.rst: $(top_srcdir)/ChangeLog.2013
