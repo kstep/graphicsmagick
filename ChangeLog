@@ -1,3 +1,7 @@
+2014-12-31  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Validate MHDR chunk length.
+
 2014-12-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xpm.c (ReadXPMImage): Detect short XPM rows and report

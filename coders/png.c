@@ -3625,6 +3625,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           (void) strcat(type,"errr");
           length=ReadBlobMSBLong(image);
           count=ReadBlob(image,4,type);
+          if (count < 4)
+            {
+              if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "  Reading MNG chunk, count: %lu",count);
+              ThrowReaderException(CorruptImageError,CorruptImage,image);
+            }
 
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3634,8 +3641,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
           if (length > PNG_MAX_UINT)
             status=MagickFalse;
-          if (count == 0)
-            ThrowReaderException(CorruptImageError,CorruptImage,image);
           p=NULL;
           chunk=(unsigned char *) NULL;
           if (length)
@@ -3684,6 +3689,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             }
           if (!memcmp(type,mng_MHDR,4))
             {
+              if (length < 16)
+                {
+                  ThrowReaderException(CorruptImageError,CorruptImage,image);
+                }
               mng_info->mng_width=(unsigned long) ((p[0] << 24) |
                                                    (p[1] << 16) |
                                                    (p[2] << 8) | p[3]);
@@ -3707,7 +3716,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                 default_frame_delay=100/mng_info->ticks_per_second;
               frame_delay=default_frame_delay;
               simplicity=0;
-              if (length > 16)
+              if (length >= 28)
                 {
                   p+=16;
                   simplicity=mng_get_long(p);
