@@ -2861,8 +2861,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           if (chunk == (unsigned char *) NULL)
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
-          for (i=0; i < (long) length; i++)
-            chunk[i]=ReadBlobByte(image);
+          if (ReadBlob(image,length,chunk) < length)
+            ThrowReaderException(CorruptImageError,CorruptImage,image);
           p=chunk;
         }
       (void) ReadBlobMSBLong(image);  /* read crc word */
@@ -3649,8 +3649,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               if (chunk == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                      image);
-              for (i=0; i < (long) length; i++)
-                chunk[i]=ReadBlobByte(image);
+              if (ReadBlob(image,length,chunk) < length)
+                ThrowReaderException(CorruptImageError,CorruptImage,image);
               p=chunk;
             }
           (void) ReadBlobMSBLong(image);  /* read crc word */
