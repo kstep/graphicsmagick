@@ -281,9 +281,9 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
       {
         indexes=AccessMutableIndexes(image);
         x = 0;
-		while(x<image->columns-3)
-		  {
-			index = (IndexPacket)((*p >> 6) & 0x3);
+        while(x < (long) image->columns-3)
+          {
+            index = (IndexPacket)((*p >> 6) & 0x3);
             VerifyColormapIndex(image,index);
             indexes[x++]=index;
             *q++=image->colormap[index];
@@ -301,19 +301,19 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
             *q++ = image->colormap[index];
             p++;
 		  }
-        if(x < image->columns)
+        if(x < (long) image->columns)
           {
             index = (IndexPacket) ((*p >> 6) & 0x3);
             VerifyColormapIndex(image,index);
             indexes[x++] = index;
             *q++=image->colormap[index];
-            if(x < image->columns)
+            if(x < (long) image->columns)
               {
                 index = (IndexPacket) ((*p >> 4) & 0x3);
                 VerifyColormapIndex(image,index);
                 indexes[x++] = index;
                 *q++=image->colormap[index];
-                 if(x < image->columns)
+                if(x < (long) image->columns)
                   {
                     index = (IndexPacket)((*p >> 2) & 0x3);
                     VerifyColormapIndex(image,index);
@@ -387,6 +387,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
                         ldblk, (ldblk > 1 ? "s" : ""));
   BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(BImgBuff==NULL) return(-2);
+  (void) memset(BImgBuff,0,(size_t) ldblk);
 
   while(y<(long) image->rows)
     {
