@@ -2465,7 +2465,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "    Reading PNG text chunk");
-        if (!memcmp(text[i].key, "Raw profile type ",17))
+        if (strlen(text[i].key) > 16 &&
+            !memcmp(text[i].key, "Raw profile type ",17))
           (void) png_read_raw_profile(image,image_info,text,(int) i);
         else
           {
@@ -2761,7 +2762,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     *s;
 
   register long
-    i,
     x;
 
   register PixelPacket
