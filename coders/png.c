@@ -3629,7 +3629,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
             {
               if (logging)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "  Reading MNG chunk, count: %lu",count);
+                                        "  Reading MNG chunk, count: %"
+                                        MAGICK_SIZE_T_F  "u",
+                                        (MAGICK_SIZE_T) count);
               ThrowReaderException(CorruptImageError,CorruptImage,image);
             }
 
