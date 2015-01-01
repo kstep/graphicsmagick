@@ -38,6 +38,10 @@
 <p>2015-01-01  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/utility.c (FormatSize): Add 'i' to value range
+identifiers since these are all in units of 2^10 rather than 1000.</li>
+<li>magick/pixel_cache.c (CheckImagePixelLimits): Fix typo and
+produce an informative error message.</li>
 <li>magick/resource.c: Added support for Image width and height
 pixels resource limits.</li>
 <li>magick/resource.h (ResourceType): New resource enumerations

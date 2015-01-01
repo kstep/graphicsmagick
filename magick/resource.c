@@ -845,12 +845,12 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
   fprintf(file,
           "\n"
           "  Ranges:\n"
-          "    K = \"kilo\"  (10^3)\n"
-          "    M = \"mega\"  (10^6)\n"
-          "    G = \"giga\"  (10^9)\n"
-          "    T = \"terra\" (10^12)\n"
-          "    P = \"peta\"  (10^15)\n"
-          "    E = \"exa\"   (10^18)\n"
+          "    ki = \"kilo\" (2^10)\n"
+          "    Mi = \"mega\" (2^20)\n"
+          "    Gi = \"giga\" (2^30)\n"
+          "    Ti = \"tera\" (2^40)\n"
+          "    Pi = \"peta\" (2^50)\n"
+          "    Ei = \"exa\"  (2^60)\n"
           );
 
   (void) fflush(file);

@@ -1192,12 +1192,12 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
     {
     default: break;
     case 0: break;
-    case 1: (void) strcat(format,"K"); break; /* kilo, 10^3 */
-    case 2: (void) strcat(format,"M"); break; /* mega, 10^6 */
-    case 3: (void) strcat(format,"G"); break; /* giga, 10^9 */
-    case 4: (void) strcat(format,"T"); break; /* terra, 10^12 */
-    case 5: (void) strcat(format,"P"); break; /* peta, 10^15 */
-    case 6: (void) strcat(format,"E"); break; /* exa, 10^18 */
+    case 1: (void) strcat(format,"ki"); break; /* kilo, 10^3 */
+    case 2: (void) strcat(format,"Mi"); break; /* mega, 10^6 */
+    case 3: (void) strcat(format,"Gi"); break; /* giga, 10^9 */
+    case 4: (void) strcat(format,"Ti"); break; /* tera, 10^12 */
+    case 5: (void) strcat(format,"Pi"); break; /* peta, 10^15 */
+    case 6: (void) strcat(format,"Ei"); break; /* exa,  10^18 */
     }
 }
 

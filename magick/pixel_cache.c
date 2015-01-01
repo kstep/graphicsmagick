@@ -1310,33 +1310,58 @@ MagickExport MagickPassFail
 CheckImagePixelLimits(const Image *image, ExceptionInfo *exception)
 {
   if ((image->columns == 0) ||
-      (AcquireMagickResource(WidthResource,image->columns*image->rows)
+      (AcquireMagickResource(WidthResource,image->columns)
        != MagickPass))
     {
+      char
+        message[MaxTextExtent];
+
       errno=0;
+      FormatString(message,"%lu > %" MAGICK_INT64_F "u \"%.1024s\"",
+                   image->columns,
+                   GetMagickResourceLimit(WidthResource),image->filename);
       ThrowException(exception,ResourceLimitError,ImagePixelWidthLimitExceeded,
-                     image->filename);
+                     message);
       return MagickFail;
     }
 
   if ((image->rows == 0) ||
-      (AcquireMagickResource(HeightResource,image->columns*image->rows)
+      (AcquireMagickResource(HeightResource,image->rows)
        != MagickPass))
     {
+      char
+        message[MaxTextExtent];
+
       errno=0;
+      FormatString(message,"%lu > %" MAGICK_INT64_F "u \"%.1024s\"",
+                   image->rows,
+                   GetMagickResourceLimit(HeightResource),image->filename);
       ThrowException(exception,ResourceLimitError,ImagePixelHeightLimitExceeded,
-                     image->filename);
+                     message);
       return MagickFail;
     }
 
-  if (AcquireMagickResource(PixelsResource,image->columns*image->rows)
-      != MagickPass)
-    {
-      errno=0;
-      ThrowException(exception,ResourceLimitError,ImagePixelLimitExceeded,
-                     image->filename);
-      return MagickFail;
-    }
+  {
+    magick_int64_t
+      total_pixels;
+
+    total_pixels=image->columns*image->rows;
+    if (AcquireMagickResource(PixelsResource,total_pixels)
+        != MagickPass)
+      {
+        char
+          message[MaxTextExtent];
+
+        errno=0;
+        FormatString(message,
+                     "%" MAGICK_INT64_F "d > %" MAGICK_INT64_F "u \"%.1024s\"",
+                     total_pixels,
+                     GetMagickResourceLimit(PixelsResource),image->filename);
+        ThrowException(exception,ResourceLimitError,ImagePixelLimitExceeded,
+                       message);
+        return MagickFail;
+      }
+  }
 
   return MagickPass;
 }
