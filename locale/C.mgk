@@ -1243,6 +1243,12 @@
         <Message name="ImagePixelLimitExceeded">
           Image pixel limit exceeded (see -limit Pixels)
         </Message>
+        <Message name="ImagePixelWidthLimitExceeded">
+          Image pixel width limit exceeded (see -limit Width)
+        </Message>
+        <Message name="ImagePixelHeightLimitExceeded">
+          Image pixel height limit exceeded (see -limit Height)
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>

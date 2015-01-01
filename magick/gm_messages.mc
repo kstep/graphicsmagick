@@ -2231,9 +2231,21 @@ Disk space limit exceeded (see -limit Disk)
 .
 
 MessageId       = +1
+SymbolicName    = LimitErrorImagePixelHeightLimitExceeded
+Language        = English
+Image pixel height limit exceeded (see -limit Height)
+.
+
+MessageId       = +1
 SymbolicName    = LimitErrorImagePixelLimitExceeded
 Language        = English
 Image pixel limit exceeded (see -limit Pixels)
+.
+
+MessageId       = +1
+SymbolicName    = LimitErrorImagePixelWidthLimitExceeded
+Language        = English
+Image pixel width limit exceeded (see -limit Width)
 .
 
 MessageId       = +1

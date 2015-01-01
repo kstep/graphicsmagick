@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2014
+// Copyright Bob Friesenhahn, 1999 - 2015
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -731,6 +731,8 @@ namespace Magick
   using MagickLib::MemoryResource;
   using MagickLib::PixelsResource;
   using MagickLib::ThreadsResource;
+  using MagickLib::WidthResource;
+  using MagickLib::HeightResource;
 
   // Virtual pixel methods
   using MagickLib::VirtualPixelMethod;

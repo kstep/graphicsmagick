@@ -176,12 +176,14 @@ void SetMagickResourceLimit( const <a class="reference external" href="../api/ty
 <h2>Description</h2>
 <p>SetMagickResourceLimit() sets the limit for a particular resource.  The
 units for resource types are as follows:</p>
-<p>DiskResource    -- Gigabytes
+<p>DiskResource    -- Bytes
 FileResource    -- Open files
-MapResource     -- Megabytes
-MemoryResource  -- Megabytes
-PixelsResource  -- Megapixels
-ThreadsResource -- Threads</p>
+MapResource     -- Bytes
+MemoryResource  -- Bytes
+PixelsResource  -- Pixels
+ThreadsResource -- Threads
+WidthResource   -- Pixels
+HeightResource  -- Pixels</p>
 <p>The format of the SetMagickResourceLimit() method is:</p>
 <pre class="literal-block">
 void SetMagickResourceLimit( const <a class="reference external" href="../api/types.html#resourcetype">ResourceType</a> type, const unsigned long limit );

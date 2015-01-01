@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2008 - 2014 GraphicsMagick Group
+% Copyright (C) 2008 - 2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1559,6 +1559,10 @@ MagickExport ResourceType StringToResourceType(const char *option)
     resource_type=PixelsResource;
   else if (LocaleCompare("Threads",option) == 0)
     resource_type=ThreadsResource;
+  else if (LocaleCompare("Width",option) == 0)
+    resource_type=WidthResource;
+  else if (LocaleCompare("Height",option) == 0)
+    resource_type=HeightResource;
   return resource_type;
 }
 

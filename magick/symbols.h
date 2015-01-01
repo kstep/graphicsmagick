@@ -96,6 +96,7 @@
 #define ChannelThresholdImage GmChannelThresholdImage
 #define ChannelTypeToString GmChannelTypeToString
 #define CharcoalImage GmCharcoalImage
+#define CheckImagePixelLimits GmCheckImagePixelLimits
 #define ChopImage GmChopImage
 #define ClassTypeToString GmClassTypeToString
 #define ClipImage GmClipImage

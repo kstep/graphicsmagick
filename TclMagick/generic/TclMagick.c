@@ -308,11 +308,15 @@ static int magickCmd(
     static CONST char *resourceNames[] = {
         "undefined", "area", "disk",
         "file",      "map",  "memory",
+        "pixels", "threads", "width",
+        "height",
         (char *) NULL
     };
     static ResourceType resourceTypes[] = {
         UndefinedResource, AreaResource, DiskResource,
-        FileResource,      MapResource,  MemoryResource
+        FileResource,      MapResource,  MemoryResource,
+        PixelsResource,    ThreadsResource, WidthResource,
+        HeightResource
     };
 
     (void) clientData; /* Unused */

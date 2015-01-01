@@ -1,5 +1,17 @@
 2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/resource.c: Added support for Image width and height
+	pixels resource limits.
+
+	* magick/resource.h (ResourceType): New resource enumerations
+	WidthResource and HeightResource.
+
+	* magick/enum_strings.c (StringToResourceType): Added support for
+	parsing '-limit Width' and '-limit Height'.
+
+	* magick/pixel_cache.c (CheckImagePixelLimits): New function to
+	test image to see if it exceeds pixels limits.
+
 	* coders/viff.c (ReadVIFFImage): Make the VIFF reader robust with
 	detecting and reporting problems.
 
