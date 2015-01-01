@@ -1,3 +1,8 @@
+2015-01-01  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Use WidthResource and HeightResource instead
+	of fixed 1-million limit for rows and columns.
+
 2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (FormatSize): Add 'i' to value range
