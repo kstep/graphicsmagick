@@ -270,6 +270,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
+  unsigned int
+    index;
+
   register long
     x;
 
@@ -322,18 +325,29 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Verify VIFF identifier.
     */
-    if ((count == 0) || ((unsigned char) viff_info.identifier != 0xabU))
+    if ((count != 1) || ((unsigned char) viff_info.identifier != 0xabU))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     /*
       Initialize VIFF image.
     */
-    (void) ReadBlob(image,sizeof(viff_info.file_type),&viff_info.file_type);
-    (void) ReadBlob(image,sizeof(viff_info.release),&viff_info.release);
-    (void) ReadBlob(image,sizeof(viff_info.version),&viff_info.version);
-    (void) ReadBlob(image,sizeof(viff_info.machine_dependency),
-                    &viff_info.machine_dependency);
-    (void) ReadBlob(image,sizeof(viff_info.reserve),&viff_info.reserve),
-    (void) ReadBlob(image,512,(char *) viff_info.comment);
+    if (ReadBlob(image,sizeof(viff_info.file_type),&viff_info.file_type)
+        != sizeof(viff_info.file_type))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (ReadBlob(image,sizeof(viff_info.release),&viff_info.release)
+        != sizeof(viff_info.release))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (ReadBlob(image,sizeof(viff_info.version),&viff_info.version)
+        != sizeof(viff_info.version))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (ReadBlob(image,sizeof(viff_info.machine_dependency),
+                 &viff_info.machine_dependency)
+        != sizeof(viff_info.machine_dependency))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (ReadBlob(image,sizeof(viff_info.reserve),&viff_info.reserve)
+        != sizeof(viff_info.reserve))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (ReadBlob(image,512,(char *) viff_info.comment) != 512)
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     viff_info.comment[511]='\0';
     if (strlen(viff_info.comment) > 4)
       (void) SetImageAttribute(image,"comment",viff_info.comment);
@@ -365,6 +379,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     viff_info.color_space_model=(ReadHeaderLong)(image);
     for (i=0; i < 420; i++)
       (void) ReadBlobByte(image);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     LogVIFFInfo(&viff_info);
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
@@ -428,6 +444,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         unsigned char
           *viff_colormap;
 
+        size_t
+          viff_colormap_size;
+
         /*
           Allocate VIFF colormap.
         */
@@ -444,18 +463,21 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        viff_colormap=MagickAllocateArray(unsigned char *,
-                                          MagickArraySize(bytes_per_pixel,
-                                                          image->colors),
-                                          viff_info.map_rows);
+
+        viff_colormap_size=MagickArraySize(MagickArraySize(bytes_per_pixel,
+                                                           image->colors),
+                                           viff_info.map_rows);
+        viff_colormap=MagickAllocateMemory(unsigned char *,viff_colormap_size);
         if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-            image);
+                               image);
         /*
           Read VIFF raster colormap.
         */
-        (void) ReadBlob(image,bytes_per_pixel*
-          image->colors*viff_info.map_rows,(char *) viff_colormap);
+        if (ReadBlob(image,viff_colormap_size,(char *) viff_colormap)
+            != viff_colormap_size)
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
         lsb_first=1;
         if (*(char *) &lsb_first &&
             ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
@@ -660,15 +682,21 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           for (x=0; x < (long) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
-              indexes[x+bit]=(IndexPacket)
-                ((*p) & (0x01 << bit) ? !polarity : polarity);
+              {
+                index=((*p) & (0x01 << bit) ? !polarity : polarity);
+                VerifyColormapIndex(image,index);
+                indexes[x+bit]=(IndexPacket) index;
+              }
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (long) (image->columns % 8); bit++)
-                indexes[x+bit]=(IndexPacket)
-                  ((*p) & (0x01 << bit) ? !polarity : polarity);
+                {
+                  index=((*p) & (0x01 << bit) ? !polarity : polarity);
+                  VerifyColormapIndex(image,index);
+                  indexes[x+bit]=(IndexPacket) index;
+                }
               p++;
             }
           if (!SyncImagePixels(image))
@@ -690,7 +718,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           indexes=AccessMutableIndexes(image);
           for (x=0; x < (long) image->columns; x++)
-            indexes[x]=(*p++);
+            {
+              index=(*p++);
+              VerifyColormapIndex(image,index);
+              indexes[x]=index;
+            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -718,7 +750,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               q->blue=ScaleCharToQuantum(*(p+2*number_pixels));
               if (image->colors != 0)
                 {
-                  unsigned int index;
                   index=q->red;
                   VerifyColormapIndex(image,index);
                   q->red=image->colormap[index].red;

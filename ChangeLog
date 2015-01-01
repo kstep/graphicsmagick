@@ -1,3 +1,8 @@
+2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/viff.c (ReadVIFFImage): Make the VIFF reader robust with
+	detecting and reporting problems.
+
 2014-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Rotate Changelog for new year.  Update documentation copyrights
