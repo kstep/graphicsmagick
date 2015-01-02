@@ -1,3 +1,11 @@
+2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (ListMagickResourceInfo): "kilo" for binary
+	prefixes is supposed to be "Ki".
+
+	* magick/utility.c (FormatSize): "kilo" for binary prefixes is
+	supposed to be "Ki".
+
 2015-01-01  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Use WidthResource and HeightResource instead

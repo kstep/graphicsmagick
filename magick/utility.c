@@ -1192,7 +1192,7 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
     {
     default: break;
     case 0: break;
-    case 1: (void) strcat(format,"ki"); break; /* kilo, 10^3 */
+    case 1: (void) strcat(format,"Ki"); break; /* kilo, 10^3 */
     case 2: (void) strcat(format,"Mi"); break; /* mega, 10^6 */
     case 3: (void) strcat(format,"Gi"); break; /* giga, 10^9 */
     case 4: (void) strcat(format,"Ti"); break; /* tera, 10^12 */
@@ -3821,9 +3821,9 @@ MagickExport magick_int64_t MagickSizeStrToInt64(const char *str,
         case 'k': mult=1; break; /* kilo, 10^3 */
         case 'm': mult=2; break; /* mega, 10^6 */
         case 'g': mult=3; break; /* giga, 10^9 */
-        case 't': mult=4; break; /* terra, 10^12 */
+        case 't': mult=4; break; /* tera, 10^12 */
         case 'p': mult=5; break; /* peta, 10^15 */
-        case 'e': mult=6; break; /* exa, 10^18 */
+        case 'e': mult=6; break; /* exa,  10^18 */
         }
 
       while (mult-- > 0)

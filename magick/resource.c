@@ -844,13 +844,13 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
     }
   fprintf(file,
           "\n"
-          "  Ranges:\n"
-          "    ki = \"kilo\" (2^10)\n"
-          "    Mi = \"mega\" (2^20)\n"
-          "    Gi = \"giga\" (2^30)\n"
-          "    Ti = \"tera\" (2^40)\n"
-          "    Pi = \"peta\" (2^50)\n"
-          "    Ei = \"exa\"  (2^60)\n"
+          "  IEC Binary Ranges:\n"
+          "    Ki = \"kibi\" (2^10)\n"
+          "    Mi = \"mebi\" (2^20)\n"
+          "    Gi = \"gibi\" (2^30)\n"
+          "    Ti = \"tebi\" (2^40)\n"
+          "    Pi = \"pebi\" (2^50)\n"
+          "    Ei = \"exbi\" (2^60)\n"
           );
 
   (void) fflush(file);
