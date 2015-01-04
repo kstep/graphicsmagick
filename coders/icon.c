@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -38,10 +38,132 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/utility.h"
+
+/* http://msdn.microsoft.com/en-us/library/ms997538.aspx */
+
+#define MaxIcons  256
+/*
+  Icon Entry
+*/
+typedef struct _IconDirEntry
+{
+  magick_uint8_t
+    width,
+    height,
+    colors,
+    reserved;
+  
+  magick_uint16_t
+    planes,
+    bits_per_pixel;
+  
+  magick_uint32_t
+    size,
+    offset;
+} IconDirEntry;
+
+/*
+  Icon Directory
+*/
+typedef struct _IconFile
+{
+  magick_uint16_t
+    reserved,
+    resource_type, /* 1 = ICON, 2 = CURSOR */
+    count;
+  
+  IconDirEntry
+    directory[MaxIcons];
+} IconFile;
+typedef struct _IconInfo
+{
+  magick_uint32_t
+    size,
+    width,
+    height;
+  
+  magick_uint16_t
+    planes,
+    bits_per_pixel;
+  
+  magick_uint32_t
+    compression,
+    image_size,
+    x_pixels,
+    y_pixels,
+    number_colors,
+    colors_important;
+} IconInfo;
+
+static void LogICONDirEntry(const unsigned int i, const IconDirEntry *icon_entry)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "IconDirEntry[%u]:\n"
+                        "    Width:  %u\n"
+                        "    Height: %u\n"
+                        "    Colors: %u\n"
+                        "    Reserved: %u\n"
+                        "    Planes: %u\n"
+                        "    BPP:    %u\n"
+                        "    Size:   %u\n"
+                        "    Offset: %u",
+                        i,
+                        (unsigned int) icon_entry->width,
+                        (unsigned int) icon_entry->height,
+                        (unsigned int) icon_entry->colors,
+                        (unsigned int) icon_entry->reserved,
+                        (unsigned int) icon_entry->planes,
+                        (unsigned int) icon_entry->bits_per_pixel,
+                        (unsigned int) icon_entry->size,
+                        (unsigned int) icon_entry->offset
+                        );
+}
+static void LogICONFile(const IconFile *icon_file)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "IconFile:\n"
+                        "    Reserved:     %u\n"
+                        "    ResourceType: %u\n"
+                        "    Count:        %u",
+                        (unsigned int) icon_file->reserved,
+                        (unsigned int) icon_file->resource_type,
+                        (unsigned int) icon_file->count
+                        );
+}
+static void LogICONInfo(const const unsigned int i, const IconInfo *icon_info)
+{
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "IconInfo[%u]:\n"
+                        "    Size:             %u\n"
+                        "    Width:            %u\n"
+                        "    Height:           %u\n"
+                        "    Planes:           %u\n"
+                        "    BPP:              %u\n"
+                        "    Compression:      %u\n"
+                        "    Image Size:       %u\n"
+                        "    X Pixels:         %u\n"
+                        "    Y Pixels:         %u\n"
+                        "    Number Colors:    %u\n"
+                        "    Important Colors: %u\n",
+                        i,
+                        (unsigned int) icon_info->size,
+                        (unsigned int) icon_info->width,
+                        (unsigned int) icon_info->height,
+                        (unsigned int) icon_info->planes,
+                        (unsigned int) icon_info->bits_per_pixel,
+                        (unsigned int) icon_info->compression,
+                        (unsigned int) icon_info->image_size,
+                        (unsigned int) icon_info->x_pixels,
+                        (unsigned int) icon_info->y_pixels,
+                        (unsigned int) icon_info->number_colors,
+                        (unsigned int) icon_info->colors_important
+                        );
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,56 +200,6 @@
 static Image *ReadIconImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define MaxIcons  256
-
-  typedef struct _IconEntry
-  {
-    unsigned char
-      width,
-      height,
-      colors,
-      reserved;
-
-    short int
-      planes,
-      bits_per_pixel;
-
-    unsigned long
-      size,
-      offset;
-  } IconEntry;
-
-  typedef struct _IconFile
-  {
-    short
-      reserved,
-      resource_type,
-      count;
-
-    IconEntry
-      directory[MaxIcons];
-  } IconFile;
-
-  typedef struct _IconInfo
-  {
-    unsigned long
-      size,
-      width,
-      height;
-
-    unsigned short
-      planes,
-      bits_per_pixel;
-
-    unsigned long
-      compression,
-      image_size,
-      x_pixels,
-      y_pixels,
-      number_colors,
-      colors_important;
-  } IconInfo;
-
   IconFile
     icon_file;
 
@@ -157,7 +229,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
-  unsigned int
+ unsigned int
     status;
 
   /*
@@ -171,19 +243,33 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+  /*
+    Read and validate icon header
+  */
   icon_file.reserved=ReadBlobLSBShort(image);
   icon_file.resource_type=ReadBlobLSBShort(image);
   icon_file.count=ReadBlobLSBShort(image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (image->logging)
+    LogICONFile(&icon_file);
   /*
     Windows ICO and CUR formats are essentially the same except that
     .CUR uses resource_type==1 while .ICO uses resource_type=2.
   */
-  if((icon_file.reserved != 0) || ((icon_file.resource_type != 1) &&
-     (icon_file.resource_type != 2)) || (icon_file.count > MaxIcons))
+  if ((icon_file.reserved != 0) ||
+      ((icon_file.resource_type != 1) &&
+       (icon_file.resource_type != 2)) ||
+      (icon_file.count > MaxIcons))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  /*
+    Read and validate icon directory.
+  */
   for (i=0; i < icon_file.count; i++)
   {
+    /* 0 - 255, 0 means 256! */
     icon_file.directory[i].width=ReadBlobByte(image);
+    /* 0 - 255, 0 means 256! */
     icon_file.directory[i].height=ReadBlobByte(image);
     icon_file.directory[i].colors=ReadBlobByte(image);
     icon_file.directory[i].reserved=ReadBlobByte(image);
@@ -191,28 +277,101 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_file.directory[i].bits_per_pixel=ReadBlobLSBShort(image);
     icon_file.directory[i].size=ReadBlobLSBLong(image);
     icon_file.directory[i].offset=ReadBlobLSBLong(image);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (image->logging)
+      LogICONDirEntry(i,&icon_file.directory[i]);
+    if (
+        /*
+          planes
+
+          In ICO format (1): Specifies color planes. Should be 0 or 1.
+
+          In CUR format (2): Specifies the horizontal coordinates of
+          the hotspot in number of pixels from the left.
+        */
+        ((icon_file.resource_type == 1) &&
+         (icon_file.directory[i].planes != 0) &&
+         (icon_file.directory[i].planes != 1)) ||
+        /*
+          bits_per_pixel
+
+          In ICO format (1): Specifies bits per pixel.
+
+          In CUR format (2): Specifies the vertical coordinates of the
+          hotspot in number of pixels from the top.
+         */
+        ((icon_file.resource_type == 1) &&
+         ((icon_file.directory[i].bits_per_pixel >= 8) &&
+          (icon_file.directory[i].colors != 0))) ||
+
+        (icon_file.directory[i].size == 0) ||
+        (icon_file.directory[i].offset == 0))
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   }
   for (i=0; i < icon_file.count; i++)
   {
     /*
-      Verify Icon identifier.
+      Verify and read icons
     */
-    if (SeekBlob(image,icon_file.directory[i].offset,SEEK_SET) == -1)
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    if (SeekBlob(image,icon_file.directory[i].offset,SEEK_SET) !=
+        (magick_off_t) icon_file.directory[i].offset)
+      {
+        if (image->logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Failed to seek to offset %u",
+                                icon_file.directory[i].offset);
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
     icon_info.size=ReadBlobLSBLong(image);
     icon_info.width=ReadBlobLSBLong(image);
     icon_info.height=ReadBlobLSBLong(image);
     icon_info.planes=ReadBlobLSBShort(image);
     icon_info.bits_per_pixel=ReadBlobLSBShort(image);
-    if (icon_info.bits_per_pixel > 32U)
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     icon_info.compression=ReadBlobLSBLong(image);
     icon_info.image_size=ReadBlobLSBLong(image);
     icon_info.x_pixels=ReadBlobLSBLong(image);
     icon_info.y_pixels=ReadBlobLSBLong(image);
     icon_info.number_colors=ReadBlobLSBLong(image);
     icon_info.colors_important=ReadBlobLSBLong(image);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if (image->logging)
+      LogICONInfo(i, &icon_info);
+    if (icon_info.number_colors > 256)
+      {
+        if (image->logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Unexpected number of colors %u",
+                                icon_info.number_colors);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
+    if ((icon_info.bits_per_pixel != 0) &&
+        (icon_info.bits_per_pixel != 1) &&
+        (icon_info.bits_per_pixel != 4) &&
+        (icon_info.bits_per_pixel != 8) &&
+        (icon_info.bits_per_pixel != 16) &&
+        (icon_info.bits_per_pixel != 24) &&
+        (icon_info.bits_per_pixel != 32))
+      {
+        if (image->logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Unexpected bits per pixel %u",
+                                icon_info.bits_per_pixel);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
     image->matte=(unsigned int) (icon_info.bits_per_pixel == 32U);
+    /* FIXME: Sometimes 1 or 4bpp images claim 2X the height, but we
+       fail to read such images. */
+    if ((icon_info.width == 0) || (icon_info.width > 256) ||
+        (icon_info.height == 0) || (icon_info.height > 256))
+      {
+        if (image->logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Unexpected width or height: %ux%u",
+                                icon_info.width, icon_info.height);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
     image->columns=icon_info.width;
     image->rows=icon_info.height;
     image->depth=8;
@@ -236,10 +395,15 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       */
       if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      icon_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
+      icon_colormap=MagickAllocateArray(unsigned char *,4,image->colors);
       if (icon_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
+      if (ReadBlob(image,4*image->colors,(char *) icon_colormap) !=
+          4*image->colors)
+        {
+          MagickFreeMemory(icon_colormap);
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        }
       p=icon_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
@@ -249,7 +413,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         p++;
       }
       MagickFreeMemory(icon_colormap);
-    }
+    } /* if (image->storage_class == PseudoClass) */
     /*
       Convert Icon raster image to pixel packets.
     */
@@ -265,6 +429,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
+        unsigned int
+          index;
+
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -275,13 +442,21 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           {
             byte=ReadBlobByte(image);
             for (bit=0; bit < 8; bit++)
-              indexes[x+bit]=(byte & (0x80 >> bit) ? 0x01 : 0x00);
+              {
+                index=(byte & (0x80 >> bit) ? 0x01 : 0x00);
+                indexes[x+bit]=index;
+                q[x+bit]=image->colormap[index];
+              }
           }
           if ((image->columns % 8) != 0)
             {
               byte=ReadBlobByte(image);
               for (bit=0; bit < (long) (image->columns % 8); bit++)
-                indexes[x+bit]=((byte) & (0x80 >> bit) ? 0x01 : 0x00);
+                {
+                  index=((byte) & (0x80 >> bit) ? 0x01 : 0x00);
+                  indexes[x+bit]=index;
+                  q[x+bit]=image->colormap[index];
+                }
             }
           if (!SyncImagePixels(image))
             break;
@@ -299,6 +474,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Read 4-bit Icon scanline.
         */
+        unsigned int
+          index;
+
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -308,13 +486,21 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
             byte=ReadBlobByte(image);
-            indexes[x]=(byte >> 4) & 0xf;
-            indexes[x+1]=(byte) & 0xf;
+
+            index=(byte >> 4) & 0xf;
+            indexes[x]=index;
+            q[x]=image->colormap[index];
+
+            index=(byte) & 0xf;
+            indexes[x+1]=index;
+            q[x+1]=image->colormap[index];
           }
           if ((image->columns % 2) != 0)
             {
               byte=ReadBlobByte(image);
-              indexes[x]=(byte >> 4) & 0xf;
+              index=(byte >> 4) & 0xf;
+              indexes[x]=index;
+              q[x]=image->colormap[index];
             }
           if (!SyncImagePixels(image))
             break;
@@ -332,6 +518,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert PseudoColor scanline.
         */
+        unsigned int
+          index;
+
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -341,7 +530,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
-            indexes[x]=(IndexPacket) byte;
+            index=(IndexPacket) byte;
+            indexes[x]=index;
+            q[x]=image->colormap[index];
           }
           if (!SyncImagePixels(image))
             break;
@@ -358,7 +549,12 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       {
         /*
           Convert PseudoColor scanline.
+
+          Does not seem likely. Expects 16-bit IndexPacket.
         */
+        unsigned int
+          index;
+
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -368,9 +564,13 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
-            indexes[x]=(IndexPacket) byte;
+            index=(IndexPacket) byte;
+
             byte=ReadBlobByte(image);
-            indexes[x]|=byte << 8;
+            index |= byte << 8;
+
+            indexes[x]=(IndexPacket) index;
+            q[x]=image->colormap[index];
           }
           if (!SyncImagePixels(image))
             break;
@@ -417,9 +617,10 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       default:
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
-    (void) SyncImage(image);
     /*
-      Convert bitmap scanline to pixel packets.
+      Handle opacity mask.
+
+      Should this be disabled for 32-bit images (with matte)?
     */
     image->storage_class=DirectClass;
     image->matte=True;
@@ -482,7 +683,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
                                     LoadImagesText,image->filename))
           break;
       }
-  }
+  } /* for (i=0; i < icon_file.count; i++) */
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

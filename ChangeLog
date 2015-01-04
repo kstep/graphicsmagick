@@ -1,3 +1,9 @@
+2015-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/icon.c: The Windows ICO reader is now more robust.  Still
+	a work in progress since some files still can not be read or read
+	incorrectly.
+
 2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (ListMagickResourceInfo): "kilo" for binary

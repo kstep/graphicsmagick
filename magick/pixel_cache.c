@@ -2998,8 +2998,9 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     {
-      ThrowException(exception,ResourceLimitError,NoPixelsDefinedInCache,
-                     image->filename);
+      if (image->exception.severity < ResourceLimitError)
+        ThrowException(exception,ResourceLimitError,NoPixelsDefinedInCache,
+                       image->filename);
       return MagickFail;
     }
 

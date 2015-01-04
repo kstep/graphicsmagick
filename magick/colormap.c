@@ -230,15 +230,18 @@ MagickConstrainColormapIndex(Image *image, unsigned int index)
 {
   if (index >= image->colors)
     {
-      char
-        colormapIndexBuffer[MaxTextExtent];
+      if (image->exception.severity < CorruptImageError )
+        {
+          char
+            colormapIndexBuffer[MaxTextExtent];
       
-      FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
-        (unsigned int) index, image->colors, image->filename);
-      errno=0;
+          FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
+                       (unsigned int) index, image->colors, image->filename);
+          errno=0;
+          ThrowException(&image->exception,CorruptImageError,
+                         InvalidColormapIndex,colormapIndexBuffer);
+        }
       index=0U;
-      ThrowException(&image->exception,CorruptImageError,
-        InvalidColormapIndex,colormapIndexBuffer);
     }
 
   return index;
