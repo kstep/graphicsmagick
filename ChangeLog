@@ -1,3 +1,15 @@
+2015-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/icon.c (ReadIconImage): Removed all of the
+	previously-existing DIB reading code from icon.c and use new
+	"ICODIB" reader to read DIB icons, or the PNG reader to read PNG
+	icons.
+
+	* coders/dib.c (ReadDIBImage): Added an "ICODIB" coder for
+	internal use which reads a Windows BMP 3 DIB followed by a Windows
+	ICO alpha mask.  This allows existing DIB code to be used to read
+	ICO directory entries.
+
 2015-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/icon.c: The Windows ICO reader is now more robust.  Still

@@ -38,6 +38,7 @@
 #include "magick/analyze.h"
 #include "magick/blob.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -50,18 +51,18 @@
 */
 typedef struct _DIBInfo
 {
-  unsigned long
-    size;
+  magick_uint32_t
+    header_size;
 
-  long
+  magick_int32_t
     width,
     height;
 
-  unsigned short
+  magick_uint16_t
     planes,
     bits_per_pixel;
 
-  unsigned long
+  magick_uint32_t
     compression,
     image_size,
     x_pixels,
@@ -69,7 +70,7 @@ typedef struct _DIBInfo
     number_colors,
     colors_important;
 
-  unsigned short
+  magick_uint16_t
     red_mask,
     green_mask,
     blue_mask,
@@ -91,6 +92,38 @@ typedef struct _DIBInfo
 static unsigned int
   WriteDIBImage(const ImageInfo *,Image *);
 
+static void LogDIBInfo(const DIBInfo *dib_info)
+{
+  /*
+    Dump 40-byte version 3+ bitmap header.
+    BMP version 4 has same members, but is 108 bytes.
+  */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "DIB Header:\n"
+                        "    Header Size:          %u\n"
+                        "    Width:                %d\n"
+                        "    Height:               %d\n"
+                        "    Planes:               %u\n"
+                        "    Bits Per Pixel:       %u\n"
+                        "    Compression:          %u\n"
+                        "    Size Of Bitmap:       %u\n"
+                        "    Horzontal Resolution: %u\n"
+                        "    Vertical Resolution:  %u\n"
+                        "    Colors Used:          %u\n"
+                        "    Colors Important:     %u",
+                        (unsigned int) dib_info->header_size,
+                        (signed int) dib_info->width,
+                        (signed int) dib_info->height,
+                        (unsigned int) dib_info->planes,
+                        (unsigned int) dib_info->bits_per_pixel,
+                        (unsigned int) dib_info->compression,
+                        (unsigned int) dib_info->image_size,
+                        (unsigned int) dib_info->x_pixels,
+                        (unsigned int) dib_info->y_pixels,
+                        (unsigned int) dib_info->number_colors,
+                        (unsigned int) dib_info->colors_important
+                        );
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -443,6 +476,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
+    count,
     length;
 
   unsigned char
@@ -469,8 +503,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a DIB file.
   */
   (void) memset(&dib_info,0,sizeof(DIBInfo));
-  dib_info.size=ReadBlobLSBLong(image);
-  if (dib_info.size!=40)
+  dib_info.header_size=ReadBlobLSBLong(image);
+  if (dib_info.header_size!=40)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Microsoft Windows 3.X DIB image file.
@@ -494,6 +528,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dib_info.y_pixels=ReadBlobLSBLong(image);
   dib_info.number_colors=ReadBlobLSBLong(image);
   dib_info.colors_important=ReadBlobLSBLong(image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+  LogDIBInfo(&dib_info);
   if ((dib_info.compression == 3) && ((dib_info.bits_per_pixel == 16) ||
       (dib_info.bits_per_pixel == 32)))
     {
@@ -550,7 +587,18 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (dib_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       packet_size=4;
-      (void) ReadBlob(image,packet_size*image->colors,(char *) dib_colormap);
+      if ((count=ReadBlob(image,packet_size*image->colors,(char *) dib_colormap))
+          != packet_size*image->colors)
+        {
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Read %" MAGICK_SIZE_T_F  "u bytes from blob"
+                                  " (expected %" MAGICK_SIZE_T_F  "u bytes)",
+                                  (MAGICK_SIZE_T) count,
+                                  (MAGICK_SIZE_T) packet_size*image->colors);
+          MagickFreeMemory(dib_colormap);
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        }
       p=dib_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
@@ -570,12 +618,24 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   length=bytes_per_line*image->rows;
   pixels=MagickAllocateArray(unsigned char *,
-                                      image->rows,
-                                      Max(bytes_per_line,image->columns+1));
+                             image->rows,
+                             Max(bytes_per_line,image->columns+1));
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if ((dib_info.compression == 0) || (dib_info.compression == 3))
-    (void) ReadBlob(image,length,(char *) pixels);
+    {
+      if ((count=ReadBlob(image,length,(char *) pixels)) != length)
+        {
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Read %" MAGICK_SIZE_T_F  "u bytes from blob"
+                                  " (expected %" MAGICK_SIZE_T_F  "u bytes)",
+                                  (MAGICK_SIZE_T) count,
+                                  (MAGICK_SIZE_T) length);
+          MagickFreeMemory(pixels);
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        }
+    }
   else
     {
       /*
@@ -584,8 +644,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=DecodeImage(image,dib_info.compression,pixels);
       if (status == False)
-        ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
-          image);
+        {
+          MagickFreeMemory(pixels);
+          ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
+                               image);
+        }
     }
   /*
     Initialize image structure.
@@ -822,7 +885,57 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(pixels);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-      image->filename);
+                   image->filename);
+  if (strcmp(image_info->magick,"ICODIB") == 0)
+    {
+      /*
+        Handle ICO mask.
+      */
+      char
+        byte;
+
+      image->storage_class=DirectClass;
+      image->matte=True;
+      for (y=(long) image->rows-1; y >= 0; y--)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < ((long) image->columns-7); x+=8)
+            {
+              byte=0;
+              (void) ReadBlob(image,sizeof(byte),&byte);
+              for (bit=0; bit < 8; bit++)
+                q[x+bit].opacity=(Quantum)
+                  (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+            }
+          if ((image->columns % 8) != 0)
+            {
+              byte=0;
+              (void) ReadBlob(image,sizeof(byte),&byte);
+              for (bit=0; bit < (long) (image->columns % 8); bit++)
+                q[x+bit].opacity=(Quantum)
+                  (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+            }
+          if (image->columns % 32)
+            for (x=0; x < (long) ((32-(image->columns % 32))/8); x++)
+              {
+                byte=0;
+                (void) ReadBlob(image,sizeof(byte),&byte);
+              }
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
+                                          LoadImageText,image->filename,
+                                          image->columns,image->rows))
+                break;
+        }
+      if (EOFBlob(image))
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                       image->filename);
+    }
   if (dib_info.height < 0)
     {
       Image
@@ -883,6 +996,18 @@ ModuleExport void RegisterDIBImage(void)
   entry->description="Microsoft Windows 3.X Packed Device-Independent Bitmap";
   entry->module="DIB";
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("ICODIB");
+  entry->decoder=(DecoderHandler) ReadDIBImage;
+  /* entry->encoder=(EncoderHandler) WriteDIBImage; */
+  entry->magick=(MagickHandler) IsDIB;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->raw=True; /* Requires size to work correctly. */
+  entry->description="Microsoft Windows 3.X Packed Device-Independent Bitmap + Mask";
+  entry->module="DIB";
+  (void) RegisterMagickInfo(entry);
+
 }
 
 /*
@@ -906,6 +1031,7 @@ ModuleExport void RegisterDIBImage(void)
 */
 ModuleExport void UnregisterDIBImage(void)
 {
+  (void) UnregisterMagickInfo("ICODIB");
   (void) UnregisterMagickInfo("DIB");
 }
 
@@ -1019,7 +1145,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_info.number_colors=1 << dib_info.bits_per_pixel;
     }
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
-  dib_info.size=40;
+  dib_info.header_size=40;
   dib_info.width=(long) image->columns;
   dib_info.height=(long) image->rows;
   dib_info.planes=1;
@@ -1184,7 +1310,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Write DIB header.
   */
-  (void) WriteBlobLSBLong(image,dib_info.size);
+  (void) WriteBlobLSBLong(image,dib_info.header_size);
   (void) WriteBlobLSBLong(image,dib_info.width);
   (void) WriteBlobLSBLong(image,dib_info.height);
   (void) WriteBlobLSBShort(image,dib_info.planes);

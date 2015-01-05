@@ -80,25 +80,6 @@ typedef struct _IconFile
   IconDirEntry
     directory[MaxIcons];
 } IconFile;
-typedef struct _IconInfo
-{
-  magick_uint32_t
-    size,
-    width,
-    height;
-  
-  magick_uint16_t
-    planes,
-    bits_per_pixel;
-  
-  magick_uint32_t
-    compression,
-    image_size,
-    x_pixels,
-    y_pixels,
-    number_colors,
-    colors_important;
-} IconInfo;
 
 static void LogICONDirEntry(const unsigned int i, const IconDirEntry *icon_entry)
 {
@@ -133,35 +114,6 @@ static void LogICONFile(const IconFile *icon_file)
                         (unsigned int) icon_file->reserved,
                         (unsigned int) icon_file->resource_type,
                         (unsigned int) icon_file->count
-                        );
-}
-static void LogICONInfo(const const unsigned int i, const IconInfo *icon_info)
-{
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "IconInfo[%u]:\n"
-                        "    Size:             %u\n"
-                        "    Width:            %u\n"
-                        "    Height:           %u\n"
-                        "    Planes:           %u\n"
-                        "    BPP:              %u\n"
-                        "    Compression:      %u\n"
-                        "    Image Size:       %u\n"
-                        "    X Pixels:         %u\n"
-                        "    Y Pixels:         %u\n"
-                        "    Number Colors:    %u\n"
-                        "    Important Colors: %u\n",
-                        i,
-                        (unsigned int) icon_info->size,
-                        (unsigned int) icon_info->width,
-                        (unsigned int) icon_info->height,
-                        (unsigned int) icon_info->planes,
-                        (unsigned int) icon_info->bits_per_pixel,
-                        (unsigned int) icon_info->compression,
-                        (unsigned int) icon_info->image_size,
-                        (unsigned int) icon_info->x_pixels,
-                        (unsigned int) icon_info->y_pixels,
-                        (unsigned int) icon_info->number_colors,
-                        (unsigned int) icon_info->colors_important
                         );
 }
 
@@ -203,33 +155,19 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   IconFile
     icon_file;
 
-  IconInfo
-    icon_info;
-
   Image
     *image;
 
-  int
-    bit,
-    byte;
+  unsigned char
+    *data;
 
-  long
-    y;
- 
-  register IndexPacket
-    *indexes;
+  size_t
+    data_alloc_size;
 
   register long
-    i,
-    x;
+    i;
 
-  register PixelPacket
-    *q;
-
-  register unsigned char
-    *p;
-
- unsigned int
+  unsigned int
     status;
 
   /*
@@ -265,6 +203,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   /*
     Read and validate icon directory.
   */
+  data_alloc_size=0;
+  data=(unsigned char *) NULL;
   for (i=0; i < icon_file.count; i++)
   {
     /* 0 - 255, 0 means 256! */
@@ -282,6 +222,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     if (image->logging)
       LogICONDirEntry(i,&icon_file.directory[i]);
     if (
+        (icon_file.directory[i].size < 40) ||
+
         /*
           planes
 
@@ -308,12 +250,29 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         (icon_file.directory[i].size == 0) ||
         (icon_file.directory[i].offset == 0))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    data_alloc_size=Max(data_alloc_size,icon_file.directory[i].size);
   }
+  data=MagickAllocateMemory(unsigned char *,data_alloc_size);
+  if (data == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   for (i=0; i < icon_file.count; i++)
   {
     /*
       Verify and read icons
     */
+    Image
+      *icon_image;
+
+    ImageInfo
+      *read_info;
+
+    char
+      dib_size[MaxTextExtent],
+      format[MaxTextExtent];
+
+    size_t
+      count;
+
     if (SeekBlob(image,icon_file.directory[i].offset,SEEK_SET) !=
         (magick_off_t) icon_file.directory[i].offset)
       {
@@ -323,344 +282,61 @@ static Image *ReadIconImage(const ImageInfo *image_info,
                                 icon_file.directory[i].offset);
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       }
-    icon_info.size=ReadBlobLSBLong(image);
-    icon_info.width=ReadBlobLSBLong(image);
-    icon_info.height=ReadBlobLSBLong(image);
-    icon_info.planes=ReadBlobLSBShort(image);
-    icon_info.bits_per_pixel=ReadBlobLSBShort(image);
-    icon_info.compression=ReadBlobLSBLong(image);
-    icon_info.image_size=ReadBlobLSBLong(image);
-    icon_info.x_pixels=ReadBlobLSBLong(image);
-    icon_info.y_pixels=ReadBlobLSBLong(image);
-    icon_info.number_colors=ReadBlobLSBLong(image);
-    icon_info.colors_important=ReadBlobLSBLong(image);
-    if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    if ((count=ReadBlob(image,icon_file.directory[i].size,data)) != icon_file.directory[i].size)
+      {
+        if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Read %" MAGICK_SIZE_T_F  "u bytes from blob"
+                                  " (expected %" MAGICK_SIZE_T_F  "u bytes)",
+                                  (MAGICK_SIZE_T) count,
+                                  (MAGICK_SIZE_T) icon_file.directory[i].size);
+        MagickFreeMemory(data);
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      }
+    format[0]='\0';
+    if (memcmp(data,"\050\000\000\000",4) == 0)
+      (void) strcpy(format,"ICODIB");
+    else if (memcmp(data,"\211PNG\r\n\032\n",8) == 0)
+      (void) strcpy(format,"PNG");
+    if (format[0] == '\0')
+      {
+        MagickFreeMemory(data);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
     if (image->logging)
-      LogICONInfo(i, &icon_info);
-    if (icon_info.number_colors > 256)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Reading icon using %s format",
+                            format);
+    icon_image=(Image *) NULL;
+    read_info=CloneImageInfo(image_info);
+    if (read_info != (const ImageInfo *) NULL)
       {
-        if (image->logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Unexpected number of colors %u",
-                                icon_info.number_colors);
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        (void) strlcpy(read_info->magick,format,MaxTextExtent);
+        (void) strlcpy(read_info->filename,format,MaxTextExtent);
+        (void) strlcat(read_info->filename,":",MaxTextExtent);
+        FormatString(dib_size,"%ux%u",
+                     icon_file.directory[i].width == 0 ? 256 :
+                     icon_file.directory[i].width,
+                     icon_file.directory[i].height == 0 ? 256 :
+                     icon_file.directory[i].height);
+        (void) CloneString(&read_info->size,dib_size);
+        icon_image=BlobToImage(read_info,data,icon_file.directory[i].size,exception);
+        DestroyImageInfo(read_info);
+        read_info=(ImageInfo *) NULL;
       }
-    if ((icon_info.bits_per_pixel != 0) &&
-        (icon_info.bits_per_pixel != 1) &&
-        (icon_info.bits_per_pixel != 4) &&
-        (icon_info.bits_per_pixel != 8) &&
-        (icon_info.bits_per_pixel != 16) &&
-        (icon_info.bits_per_pixel != 24) &&
-        (icon_info.bits_per_pixel != 32))
+    if (icon_image == (Image *) NULL)
       {
-        if (image->logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Unexpected bits per pixel %u",
-                                icon_info.bits_per_pixel);
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        MagickFreeMemory(data);
+        DestroyImageList(image);
+        return((Image *) NULL);
       }
-    image->matte=(unsigned int) (icon_info.bits_per_pixel == 32U);
-    /* FIXME: Sometimes 1 or 4bpp images claim 2X the height, but we
-       fail to read such images. */
-    if ((icon_info.width == 0) || (icon_info.width > 256) ||
-        (icon_info.height == 0) || (icon_info.height > 256))
-      {
-        if (image->logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Unexpected width or height: %ux%u",
-                                icon_info.width, icon_info.height);
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-      }
-    image->columns=icon_info.width;
-    image->rows=icon_info.height;
-    image->depth=8;
-    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16U))
-      {
-        image->storage_class=PseudoClass;
-        image->colors=icon_info.number_colors;
-        if (image->colors == 0)
-          image->colors=1 << icon_info.bits_per_pixel;
-      }
-  if (image->storage_class == PseudoClass)
-    {
-      register long
-        i;
+    DestroyBlob(icon_image);
+    icon_image->blob=ReferenceBlob(image->blob);
+    icon_image->scene=i;
+    (void) strlcpy(icon_image->magick,image_info->magick,
+                   sizeof(icon_image->magick));
+    ReplaceImageInList(&image,icon_image);
 
-      unsigned char
-        *icon_colormap;
-
-      /*
-        Read Icon raster colormap.
-      */
-      if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      icon_colormap=MagickAllocateArray(unsigned char *,4,image->colors);
-      if (icon_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      if (ReadBlob(image,4*image->colors,(char *) icon_colormap) !=
-          4*image->colors)
-        {
-          MagickFreeMemory(icon_colormap);
-          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
-        }
-      p=icon_colormap;
-      for (i=0; i < (long) image->colors; i++)
-      {
-        image->colormap[i].blue=(Quantum) ScaleCharToQuantum(*p++);
-        image->colormap[i].green=(Quantum) ScaleCharToQuantum(*p++);
-        image->colormap[i].red=(Quantum) ScaleCharToQuantum(*p++);
-        p++;
-      }
-      MagickFreeMemory(icon_colormap);
-    } /* if (image->storage_class == PseudoClass) */
-    /*
-      Convert Icon raster image to pixel packets.
-    */
-    image->columns=icon_file.directory[i].width;
-    image->rows=icon_file.directory[i].height;
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
-    switch (icon_info.bits_per_pixel)
-    {
-      case 1:
-      {
-        /*
-          Convert bitmap scanline.
-        */
-        unsigned int
-          index;
-
-        for (y=(long) image->rows-1; y >= 0; y--)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < ((long) image->columns-7); x+=8)
-          {
-            byte=ReadBlobByte(image);
-            for (bit=0; bit < 8; bit++)
-              {
-                index=(byte & (0x80 >> bit) ? 0x01 : 0x00);
-                indexes[x+bit]=index;
-                q[x+bit]=image->colormap[index];
-              }
-          }
-          if ((image->columns % 8) != 0)
-            {
-              byte=ReadBlobByte(image);
-              for (bit=0; bit < (long) (image->columns % 8); bit++)
-                {
-                  index=((byte) & (0x80 >> bit) ? 0x01 : 0x00);
-                  indexes[x+bit]=index;
-                  q[x+bit]=image->colormap[index];
-                }
-            }
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-        }
-        break;
-      }
-      case 4:
-      {
-        /*
-          Read 4-bit Icon scanline.
-        */
-        unsigned int
-          index;
-
-        for (y=(long) image->rows-1; y >= 0; y--)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < ((long) image->columns-1); x+=2)
-          {
-            byte=ReadBlobByte(image);
-
-            index=(byte >> 4) & 0xf;
-            indexes[x]=index;
-            q[x]=image->colormap[index];
-
-            index=(byte) & 0xf;
-            indexes[x+1]=index;
-            q[x+1]=image->colormap[index];
-          }
-          if ((image->columns % 2) != 0)
-            {
-              byte=ReadBlobByte(image);
-              index=(byte >> 4) & 0xf;
-              indexes[x]=index;
-              q[x]=image->colormap[index];
-            }
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-        }
-        break;
-      }
-      case 8:
-      {
-        /*
-          Convert PseudoColor scanline.
-        */
-        unsigned int
-          index;
-
-        for (y=(long) image->rows-1; y >= 0; y--)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-          {
-            byte=ReadBlobByte(image);
-            index=(IndexPacket) byte;
-            indexes[x]=index;
-            q[x]=image->colormap[index];
-          }
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-        }
-        break;
-      }
-      case 16:
-      {
-        /*
-          Convert PseudoColor scanline.
-
-          Does not seem likely. Expects 16-bit IndexPacket.
-        */
-        unsigned int
-          index;
-
-        for (y=(long) image->rows-1; y >= 0; y--)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=AccessMutableIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-          {
-            byte=ReadBlobByte(image);
-            index=(IndexPacket) byte;
-
-            byte=ReadBlobByte(image);
-            index |= byte << 8;
-
-            indexes[x]=(IndexPacket) index;
-            q[x]=image->colormap[index];
-          }
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-        }
-        break;
-      }
-      case 24:
-      case 32:
-      {
-        /*
-          Convert DirectColor scanline.
-        */
-        for (y=(long) image->rows-1; y >= 0; y--)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            q->blue=(Quantum) ScaleCharToQuantum(ReadBlobByte(image));
-            q->green=(Quantum) ScaleCharToQuantum(ReadBlobByte(image));
-            q->red=(Quantum) ScaleCharToQuantum(ReadBlobByte(image));
-            if (image->matte)
-              q->opacity=(Quantum) ScaleCharToQuantum(ReadBlobByte(image));
-            q++;
-          }
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                          LoadImageText,image->filename,
-					  image->columns,image->rows))
-                break;
-        }
-        break;
-      }
-      default:
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
-    }
-    /*
-      Handle opacity mask.
-
-      Should this be disabled for 32-bit images (with matte)?
-    */
-    image->storage_class=DirectClass;
-    image->matte=True;
-    for (y=(long) image->rows-1; y >= 0; y--)
-    {
-      q=GetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < ((long) image->columns-7); x+=8)
-      {
-        byte=ReadBlobByte(image);
-        for (bit=0; bit < 8; bit++)
-          q[x+bit].opacity=(Quantum) 
-            (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
-      }
-      if ((image->columns % 8) != 0)
-        {
-          byte=ReadBlobByte(image);
-          for (bit=0; bit < (long) (image->columns % 8); bit++)
-            q[x+bit].opacity=(Quantum) 
-              (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
-        }
-     if (image->columns % 32) 
-       for (x=0; x < (long) ((32-(image->columns % 32))/8); x++)
-         (void) ReadBlobByte(image);
-      if (!SyncImagePixels(image))
-        break;
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitorFormatted(image->rows-y-1,image->rows,&image->exception,
-                                      LoadImageText,image->filename,
-				      image->columns,image->rows))
-            break;
-    }
-    if (EOFBlob(image))
-      {
-        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-          image->filename);
-        break;
-      }
     /*
       Proceed to next image.
     */
@@ -687,6 +363,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
+  MagickFreeMemory(data);
   return(image);
 }
 

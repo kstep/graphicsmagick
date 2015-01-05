@@ -35,6 +35,19 @@
 <div class="document">
 
 
+<p>2015-01-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/icon.c (ReadIconImage): Removed all of the
+previously-existing DIB reading code from icon.c and use new
+&quot;ICODIB&quot; reader to read DIB icons, or the PNG reader to read PNG
+icons.</li>
+<li>coders/dib.c (ReadDIBImage): Added an &quot;ICODIB&quot; coder for
+internal use which reads a Windows BMP 3 DIB followed by a Windows
+ICO alpha mask.  This allows existing DIB code to be used to read
+ICO directory entries.</li>
+</ul>
+</blockquote>
 <p>2015-01-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
