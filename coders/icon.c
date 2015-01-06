@@ -25,6 +25,10 @@
 %                                John Cristy                                  %
 %                                 July 1992                                   %
 %                                                                             %
+%                                Re-written                                   %
+%                              Bob Friesenhahn                                %
+%                                January 2015                                 %
+%                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -222,7 +226,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     if (image->logging)
       LogICONDirEntry(i,&icon_file.directory[i]);
     if (
-        (icon_file.directory[i].size < 40) ||
+        /*
+          Restrict allocation size
+        */
+        (icon_file.directory[i].size < 20) ||
+        (icon_file.directory[i].size > 256+256*256*2*4) ||
 
         /*
           planes
