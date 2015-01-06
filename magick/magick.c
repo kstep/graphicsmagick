@@ -705,6 +705,17 @@ MagickPanicSignalHandler(int signo)
 
   panic_signal_handler_call_count++;
 
+#if defined(SIGXCPU)
+  /* Signal sent due to RLIMIT_CPU */
+  if (signo == SIGXCPU)
+      fprintf(stderr,"Signal SIGXCPU\n");
+#endif
+#if defined(SIGXFSZ)
+  /* Signal sent due to RLIMIT_FSIZE */
+  if (signo == SIGXFSZ)
+    fprintf(stderr,"Signal SIGXFSZ\n");
+#endif
+
   /*
     Only handle signal one time.
   */
