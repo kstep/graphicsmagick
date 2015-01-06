@@ -1,5 +1,11 @@
 2015-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.c (MagickPanicSignalHandler): Print a message in
+	the case of signals SIGXCPU and SIGXFSZ.
+
+	* coders/bmp.c (ReadBMPImage): Don't hang in endless loop if EOF
+	is encountered while checking for "BA" header.
+
 	* coders/icon.c (ReadIconImage): Limit icon image allocation size.
 
 2015-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

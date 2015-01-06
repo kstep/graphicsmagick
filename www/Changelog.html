@@ -38,6 +38,10 @@
 <p>2015-01-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/magick.c (MagickPanicSignalHandler): Print a message in
+the case of signals SIGXCPU and SIGXFSZ.</li>
+<li>coders/bmp.c (ReadBMPImage): Don't hang in endless loop if EOF
+is encountered while checking for &quot;BA&quot; header.</li>
 <li>coders/icon.c (ReadIconImage): Limit icon image allocation size.</li>
 </ul>
 </blockquote>

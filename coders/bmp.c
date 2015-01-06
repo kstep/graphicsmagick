@@ -559,12 +559,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.file_size=ReadBlobLSBLong(image);
       bmp_info.ba_offset=ReadBlobLSBLong(image);
       bmp_info.offset_bits=ReadBlobLSBLong(image);
-      count=ReadBlob(image,2,(char *) magick);
+      if ((count=ReadBlob(image,2,(char *) magick)) != 2)
+        break;
     }
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Magick: %c%c",
         magick[0],magick[1]);
-    if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
+    if ((count != 2) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     bmp_info.file_size=ReadBlobLSBLong(image);
