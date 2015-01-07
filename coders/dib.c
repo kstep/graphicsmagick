@@ -63,7 +63,7 @@ typedef struct _DIBInfo
     bits_per_pixel;
 
   magick_uint32_t
-    compression,
+    compression, /* 0=uncompressed, 1=8bit RLE, 2=4bit RLE, 3=RGB masked */
     image_size,
     x_pixels,
     y_pixels,
@@ -616,6 +616,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (dib_info.compression == 2)
     dib_info.bits_per_pixel<<=1;
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
+  /*
+    FIXME: Need to add support for compression=3 images.  Size
+    calculations are wrong and there is no support for applying the
+    masks.
+  */
   length=bytes_per_line*image->rows;
   pixels=MagickAllocateArray(unsigned char *,
                              image->rows,
