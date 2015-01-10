@@ -1,3 +1,8 @@
+2015-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sun.c (ReadSUNImage): Sun reader was still not as robust
+	as it should be.  Now it is.
+
 2014-01-10 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/wpg.c Fixed reading behind EOF issue.
