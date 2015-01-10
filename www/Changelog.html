@@ -35,6 +35,22 @@
 <div class="document">
 
 
+<p>2015-01-09  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/dpx.c (LSBPackedU32WordToOctets): Fix typo which adds
+severe corruption to encoded little-endian 32-bit packed output.
+The good news is that since the corruption is severe, it is easily
+visually detected.  The problem has corrupted all such
+(little-endian 10-bit) output since it was originally implemented
+on 2007-06-17 (changeset 11686, first released in GraphicsMagick
+1.1.8).  GraphicsMagick preserves the endianness of input DPX
+files by default, defaults to big-endian, and DPX files are
+commonly big-endian, so this problem may not have occured for many
+usages.  Problem was reported by Steve Dabner on the
+GraphicsMagick discussion mailing list.</li>
+</ul>
+</blockquote>
 <p>2015-01-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

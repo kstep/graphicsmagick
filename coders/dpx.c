@@ -2829,7 +2829,7 @@ STATIC U16 OrientationTypeToDPXOrientation(const OrientationType orientation_typ
 { \
   *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
-  *scanline++=(unsigned char) ((packed_u32 >> 18) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 16) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
 }
 #define MSBPackedU32WordToOctets(packed_u32,scanline) \
