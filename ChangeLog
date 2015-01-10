@@ -1,3 +1,7 @@
+2014-01-10 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c Fixed reading behind EOF issue.
+
 2015-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (LSBPackedU32WordToOctets): Fix typo which adds

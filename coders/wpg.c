@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2014 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                              June 2000 - 2007                               %
+%                              June 2000 - 2015                               %
 %                         Rework for GraphicsMagick                           %
 %                              Bob Friesenhahn                                %
 %                               Feb-May 2003                                  %
@@ -281,7 +281,7 @@ static MagickPassFail InsertRow(unsigned char *p,long y, Image *image, int bpp)
       {
         indexes=AccessMutableIndexes(image);
         x = 0;
-        while(x < (long) image->columns-3)
+        while(x < (long)image->columns-3)
           {
             index = (IndexPacket)((*p >> 6) & 0x3);
             VerifyColormapIndex(image,index);
@@ -391,7 +391,13 @@ static int UnpackWPGRaster(Image *image,int bpp)
 
   while(y<(long) image->rows)
     {
-      bbuf=ReadBlobByte(image);
+      i = ReadBlobByte(image);
+	  if(i==EOF)
+	    {
+          MagickFreeMemory(BImgBuff);
+          return(-5);
+        }
+      bbuf = i;
 
       RunCount=bbuf & 0x7F;
       if(bbuf & 0x80)
