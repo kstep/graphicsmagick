@@ -302,6 +302,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *sun_pixels;
 
   unsigned int
+    index;
+
+  unsigned int
     status;
 
   /*
@@ -355,8 +358,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify that we support the colormap type
     */
     if ((sun_info.maptype != RMT_NONE) &&
-        (sun_info.maptype != RMT_EQUAL_RGB) &&
-        (sun_info.maptype != RMT_RAW))
+        (sun_info.maptype != RMT_EQUAL_RGB))
       ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
     /*
       Insist that map length is zero if there is no colormap.
@@ -377,7 +379,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
     if (sun_info.depth < 24)
       {
-        image->storage_class=PseudoClass;
         image->colors=sun_info.maplength;
         if (sun_info.maptype == RMT_NONE)
           image->colors=1 << sun_info.depth;
@@ -456,6 +457,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
         sun_colormap=MagickAllocateMemory(unsigned char *,sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
@@ -555,13 +559,21 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
-            indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+            {
+              index=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+              indexes[x+7-bit]=index;
+              q[x+7-bit]=image->colormap[index];
+            }
           p++;
         }
         if ((image->columns % 8) != 0)
           {
             for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
-              indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+              {
+                index=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+                indexes[x+7-bit]=index;
+                q[x+7-bit]=image->colormap[index];
+              }
             p++;
           }
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
@@ -588,7 +600,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             indexes=AccessMutableIndexes(image);
             for (x=0; x < (long) image->columns; x++)
-              indexes[x]=(*p++);
+              {
+                index=(*p++);
+                indexes[x]=index;
+                q[x]=image->colormap[index];
+              }
             if ((image->columns % 2) != 0)
               p++;
             if (!SyncImagePixels(image))
@@ -647,8 +663,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
           }
 	}
-    if (image->storage_class == PseudoClass)
-      (void) SyncImage(image);
     MagickFreeMemory(sun_pixels);
     if (EOFBlob(image))
       {

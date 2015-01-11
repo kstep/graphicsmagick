@@ -1,3 +1,10 @@
+2015-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sun.c (ReadSUNImage): There is no definition for Sun map
+	type RMT_RAW so it can not be supported.  Update DirectClass
+	pixels directly rather using SyncImage().  Problem was reported by
+	Jodie Cunningham.
+
 2015-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pict.c (ReadPICTImage): Fix PICT reader crash when
