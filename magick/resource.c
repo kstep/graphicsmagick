@@ -91,7 +91,7 @@ static SemaphoreInfo
 /*
   Array must be in same order as ResourceType enum
 */
-#define PIXEL_LIMIT (LONG_MAX/(sizeof(PixelPacket)))
+#define PIXEL_LIMIT (INT_MAX/(sizeof(PixelPacket)))
 static ResourceInfo
   resource_info[] =
   {

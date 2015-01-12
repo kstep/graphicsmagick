@@ -374,8 +374,10 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (sun_info.depth != 32))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
-    image->columns= sun_info.width;
-    image->rows= sun_info.height;
+    image->columns=sun_info.width;
+    image->rows=sun_info.height;
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
     if (sun_info.depth < 24)
       {

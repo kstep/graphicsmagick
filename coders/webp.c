@@ -226,6 +226,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       CloseBlob(image);
       return(image);
     }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    {
+      MagickFreeMemory(stream);
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    }
   if (image->matte)
     pixels=(unsigned char *) WebPDecodeRGBA(stream,length,
                                             &stream_features.width,

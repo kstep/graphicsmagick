@@ -853,6 +853,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     image->depth=8;
     /*
       Image has alpha channel if alpha mask is specified, or is

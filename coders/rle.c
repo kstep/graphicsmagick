@@ -299,6 +299,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      {
+        MagickFreeMemory(colormap);
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+      }
+
     /*
       Allocate RLE pixels.
     */
@@ -311,7 +318,10 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     rle_pixels=MagickAllocateArray(unsigned char *,number_pixels,
                                    Max(number_planes,4));
     if (rle_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      {
+        MagickFreeMemory(colormap);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      }
     if ((flags & 0x01) && !(flags & 0x02))
       {
         long

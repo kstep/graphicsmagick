@@ -174,6 +174,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   /*
     Color canvas with background color
   */
@@ -185,7 +187,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
       *q++=background_color;
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixelsEx(image,exception))
       break;
   }
   (void) strlcpy(image->magick,image_info->magick,MaxTextExtent);

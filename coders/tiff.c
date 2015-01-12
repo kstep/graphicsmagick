@@ -1992,6 +1992,13 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           goto read_next_frame;
         }
+
+      if (CheckImagePixelLimits(image, exception) != MagickPass)
+        {
+          TIFFClose(tiff);
+          ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+        }
+
       /*
         Determine which method to use for reading pixels.
       */

@@ -38,6 +38,98 @@
 <p>2015-01-11  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/resource.c (InitializeMagickResources): Base image width
+and height default limits on the range of a 32-bit signed integer,
+even for 64-bit builds.  These limits are still beyond what most
+computers in the world can handle.  Limits can be increased by the
+user.</li>
+<li>coders/xwd.c (ReadXWDImage): Check image size limits
+immediately.</li>
+<li>coders/xc.c (ReadXCImage): Check image size limits immediately.</li>
+<li>coders/webp.c (ReadWEBPImage): Check image size limits
+immediately.</li>
+<li>coders/viff.c (ReadVIFFImage): Check image size limits
+immediately.</li>
+<li>coders/vicar.c (ReadVICARImage): Check image size limits
+immediately.</li>
+<li>coders/txt.c (ReadTXTImage): Check image size limits
+immediately.</li>
+<li>coders/ttf.c (ReadTTFImage): Check image size limits
+immediately.</li>
+<li>coders/tim.c (ReadTIMImage): Check image size limits
+immediately.</li>
+<li>coders/tiff.c (ReadTIFFImage): Check image size limits
+immediately.</li>
+<li>coders/tga.c (ReadTGAImage): Check image size limits
+immediately.</li>
+<li>coders/sgi.c (ReadSGIImage): Check image size limits
+immediately.</li>
+<li>coders/sct.c (ReadSCTImage): Check image size limits
+immediately.</li>
+<li>coders/rle.c (ReadRLEImage): Check image size limits
+immediately.</li>
+<li>coders/rla.c (ReadRLAImage): Check image size limits
+immediately.</li>
+<li>coders/psd.c (ReadPSDImage): Check image size limits
+immediately.</li>
+<li>coders/pnm.c (ReadPNMImage): Check image size limits
+immediately.</li>
+<li>coders/pix.c (ReadPIXImage): Check image size limits
+immediately.</li>
+<li>coders/pict.c (ReadPICTImage): Check image size limits
+immediately.</li>
+<li>coders/pdb.c (ReadPDBImage): Check image size limits
+immediately.</li>
+<li>coders/pcx.c (ReadPCXImage): Check image size limits
+immediately.</li>
+<li>coders/pcd.c (ReadPCDImage): Check image size limits
+immediately.</li>
+<li>coders/otb.c (ReadOTBImage): Check image size limits
+immediately.</li>
+<li>coders/null.c (ReadNULLImage): Check image size limits
+immediately.</li>
+<li>coders/mvg.c (ReadMVGImage): Check image size limits
+immediately.</li>
+<li>coders/mtv.c (ReadMTVImage): Check image size limits
+immediately.</li>
+<li>coders/mpc.c (ReadMPCImage): Check image size limits
+immediately.</li>
+<li>coders/miff.c (ReadMIFFImage): Check image size limits
+immediately.</li>
+<li>coders/jpeg.c (ReadJPEGImage): Check image size limits
+immediately.</li>
+<li>coders/jp2.c (ReadJP2Image): Check image size limits
+immediately.</li>
+<li>coders/jbig.c (ReadJBIGImage): Check image size limits
+immediately.</li>
+<li>coders/hdf.c (ReadHDFImage): Check image size limits
+immediately.</li>
+<li>coders/gif.c (ReadGIFImage): Check image size limits
+immediately.</li>
+<li>coders/fpx.c (ReadFPXImage): Check image size limits
+immediately.</li>
+<li>coders/fax.c (ReadFAXImage): Check image size limits
+immediately.</li>
+<li>coders/dpx.c (ReadDPXImage): Check image size limits
+immediately.</li>
+<li>coders/dps.c (ReadDPSImage): Check image size limits
+immediately.</li>
+<li>coders/dib.c (ReadDIBImage): Check image size limits
+immediately.</li>
+<li>coders/dcm.c (ReadDCMImage): Check image size limits
+immediately.</li>
+<li>coders/cut.c (ReadCUTImage): Check image size limits
+immediately.</li>
+<li>coders/cineon.c (ReadCINEONImage): Check image size limits
+immediately.</li>
+<li>coders/avs.c (ReadAVSImage): Check image size limits
+immediately.</li>
+<li>coders/art.c (ReadARTImage): Check image size limits
+immediately.</li>
+<li>coders/sun.c (ReadSUNImage): Check image size limits in advance
+of allocating memory for pixels.</li>
+<li>coders/bmp.c (ReadBMPImage): Check image size limits in advance
+of allocating memory for pixels.</li>
 <li>coders/sun.c (ReadSUNImage): There is no definition for Sun map
 type RMT_RAW so it can not be supported.  Update DirectClass
 pixels directly rather using SyncImage().  Problem was reported by

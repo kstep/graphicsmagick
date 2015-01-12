@@ -370,6 +370,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->columns=ximage->width;
   image->rows=ximage->height;
+  if (!image_info->ping)
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      {
+        MagickFreeMemory(ximage);
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+      }
   image->depth=8;
   if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))

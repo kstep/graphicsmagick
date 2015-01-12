@@ -447,6 +447,10 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   number_channels=rla_info.number_channels+rla_info.number_matte_channels;
   scanlines=MagickAllocateArray(magick_uint32_t *,image->rows,sizeof(magick_uint32_t));
   if (scanlines == (magick_uint32_t *) NULL)

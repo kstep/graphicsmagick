@@ -170,8 +170,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       if (!AllocateImageColormap(image,2))
         {
           MagickFreeMemory(buffer);
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-            }
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
       image->colormap[0].red=0;
       image->colormap[0].green=0;
       image->colormap[0].blue=0;
@@ -186,8 +186,14 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->colorspace=GRAYColorspace;
   if (image_info->ping)
     {
+      MagickFreeMemory(buffer);
       CloseBlob(image);
       return(image);
+    }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    {
+      MagickFreeMemory(buffer);
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     }
   /*
     Convert bitmap image to pixel packets.

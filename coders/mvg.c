@@ -38,6 +38,7 @@
 #include "magick/blob.h"
 #include "magick/magick.h"
 #include "magick/render.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*
@@ -171,6 +172,10 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,MustSpecifyImageSize,image);
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   /*
     Render drawing.
   */

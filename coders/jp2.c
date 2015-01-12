@@ -489,6 +489,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
       return(image);
     }
 
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    {
+      (void) jas_stream_close(jp2_stream);
+      jas_image_destroy(jp2_image);
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    }
+
   /*
     Allocate Jasper pixels.
   */

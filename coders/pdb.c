@@ -449,6 +449,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   packets=MagickArraySize(MagickArraySize(bits_per_pixel,image->columns)/8,
                           image->rows);
   pixels=MagickAllocateMemory(unsigned char *,packets + (packets != 0 ? 256 : 0));

@@ -246,13 +246,15 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
   image->depth=8;
-  if (!AllocateImageColormap(image,256))
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
       return(image);
     }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+  if (!AllocateImageColormap(image,256))
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Read VICAR pixels.
   */
@@ -261,11 +263,11 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
   for (y=0; y < (long) image->rows; y++)
   {
-    if (!SetImagePixels(image,0,y,image->columns,1))
+    if (!SetImagePixelsEx(image,0,y,image->columns,1,exception))
       break;
     (void) ReadBlob(image,image->columns,scanline);
     (void) ImportImagePixelArea(image,GrayQuantum,image->depth,scanline,0,0);
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixelsEx(image,exception))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,

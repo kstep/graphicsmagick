@@ -871,6 +871,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Dimensions: %lux%lu",image->columns,image->rows);
 
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   /*
     Interpret PICT opcodes.
   */
@@ -913,7 +916,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               break;
             image->columns=frame.right-frame.left;
             image->rows=frame.bottom-frame.top;
-            (void) SetImage(image,OpaqueOpacity);
+            if (CheckImagePixelLimits(image, exception) != MagickPass)
+              ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+            (void) SetImageEx(image,OpaqueOpacity,exception);
             break;
           }
           case 0x12:
