@@ -186,12 +186,14 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->colorspace=GRAYColorspace;
   if (image_info->ping)
     {
+      jbg_dec_free(&jbig_info);
       MagickFreeMemory(buffer);
       CloseBlob(image);
       return(image);
     }
   if (CheckImagePixelLimits(image, exception) != MagickPass)
     {
+      jbg_dec_free(&jbig_info);
       MagickFreeMemory(buffer);
       ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     }

@@ -1,3 +1,10 @@
+2015-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jbig.c (ReadJBIGImage): Fix memory leak in 'ping' mode.
+
+	* magick/delegate.c (InvokeDelegate): Fix memory leak of argument
+	list when invoking external program via MagickSpawnVP().
+
 2015-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (InitializeMagickResources): Base image width

@@ -870,6 +870,9 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
             Execute delegate using our secure "spawn" facility.
           */
           status = MagickSpawnVP(image_info->verbose,arg_array[1],arg_array+1);
+          for (j = 0; arg_array[j] != (const char*) NULL; j++)
+            MagickFreeMemory(arg_array[j]);
+          MagickFreeMemory(arg_array);
         }
       else
         {
