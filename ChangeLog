@@ -1,3 +1,8 @@
+2015-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sfw.c (ReadSFWImage): Fix pixel cache access errors in
+	'ping' mode.
+
 2015-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wmf.c (ReadWMFImage): Fix memory leak in 'ping' mode and
