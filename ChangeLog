@@ -1,3 +1,8 @@
+2015-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (ReadWMFImage): Fix memory leak in 'ping' mode and
+	some error paths.
+
 2015-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jbig.c (ReadJBIGImage): Fix memory leak in 'ping' mode.
