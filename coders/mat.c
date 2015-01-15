@@ -372,6 +372,7 @@ int status;
   }
 DblBreak:
  
+  inflateEnd(&zip_info);			/* Release all caches used by zip. */
   (void)fclose(mat_file);
   MagickFreeMemory(cache_block);
   MagickFreeMemory(decompress_block);

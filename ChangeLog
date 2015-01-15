@@ -1,7 +1,176 @@
+2014-01-15 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c Properly deallocating zip structures.
+
+
 2015-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/sfw.c (ReadSFWImage): Fix pixel cache access errors in
 	'ping' mode.
+
+2015-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (ReadWMFImage): Fix memory leak in 'ping' mode and
+	some error paths.
+
+2015-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jbig.c (ReadJBIGImage): Fix memory leak in 'ping' mode.
+
+	* magick/delegate.c (InvokeDelegate): Fix memory leak of argument
+	list when invoking external program via MagickSpawnVP().
+
+2015-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Base image width
+	and height default limits on the range of a 32-bit signed integer,
+	even for 64-bit builds.  These limits are still beyond what most
+	computers in the world can handle.  Limits can be increased by the
+	user.
+
+	* coders/xwd.c (ReadXWDImage): Check image size limits
+	immediately.
+
+	* coders/xc.c (ReadXCImage): Check image size limits immediately.
+
+	* coders/webp.c (ReadWEBPImage): Check image size limits
+	immediately.
+
+	* coders/viff.c (ReadVIFFImage): Check image size limits
+	immediately.
+
+	* coders/vicar.c (ReadVICARImage): Check image size limits
+	immediately.
+
+	* coders/txt.c (ReadTXTImage): Check image size limits
+	immediately.
+
+	* coders/ttf.c (ReadTTFImage): Check image size limits
+	immediately.
+
+	* coders/tim.c (ReadTIMImage): Check image size limits
+	immediately.
+
+	* coders/tiff.c (ReadTIFFImage): Check image size limits
+	immediately.
+
+	* coders/tga.c (ReadTGAImage): Check image size limits
+	immediately.
+
+	* coders/sgi.c (ReadSGIImage): Check image size limits
+	immediately.
+
+	* coders/sct.c (ReadSCTImage): Check image size limits
+	immediately.
+
+	* coders/rle.c (ReadRLEImage): Check image size limits
+	immediately.
+
+	* coders/rla.c (ReadRLAImage): Check image size limits
+	immediately.
+
+	* coders/psd.c (ReadPSDImage): Check image size limits
+	immediately.
+
+	* coders/pnm.c (ReadPNMImage): Check image size limits
+	immediately.
+
+	* coders/pix.c (ReadPIXImage): Check image size limits
+	immediately.
+
+	* coders/pict.c (ReadPICTImage): Check image size limits
+	immediately.
+
+	* coders/pdb.c (ReadPDBImage): Check image size limits
+	immediately.
+
+	* coders/pcx.c (ReadPCXImage): Check image size limits
+	immediately.
+
+	* coders/pcd.c (ReadPCDImage): Check image size limits
+	immediately.
+
+	* coders/otb.c (ReadOTBImage): Check image size limits
+	immediately.
+
+	* coders/null.c (ReadNULLImage): Check image size limits
+	immediately.
+
+	* coders/mvg.c (ReadMVGImage): Check image size limits
+	immediately.
+
+	* coders/mtv.c (ReadMTVImage): Check image size limits
+	immediately.
+
+	* coders/mpc.c (ReadMPCImage): Check image size limits
+	immediately.
+
+	* coders/miff.c (ReadMIFFImage): Check image size limits
+	immediately.
+
+	* coders/jpeg.c (ReadJPEGImage): Check image size limits
+	immediately.
+
+	* coders/jp2.c (ReadJP2Image): Check image size limits
+	immediately.
+
+	* coders/jbig.c (ReadJBIGImage): Check image size limits
+	immediately.
+
+	* coders/hdf.c (ReadHDFImage): Check image size limits
+	immediately.
+
+	* coders/gif.c (ReadGIFImage): Check image size limits
+	immediately.
+
+	* coders/fpx.c (ReadFPXImage): Check image size limits
+	immediately.
+
+	* coders/fax.c (ReadFAXImage): Check image size limits
+	immediately.
+
+	* coders/dpx.c (ReadDPXImage): Check image size limits
+	immediately.
+
+	* coders/dps.c (ReadDPSImage): Check image size limits
+	immediately.
+
+	* coders/dib.c (ReadDIBImage): Check image size limits
+	immediately.
+
+	* coders/dcm.c (ReadDCMImage): Check image size limits
+	immediately.
+
+	* coders/cut.c (ReadCUTImage): Check image size limits
+	immediately.
+
+	* coders/cineon.c (ReadCINEONImage): Check image size limits
+	immediately.
+
+	* coders/avs.c (ReadAVSImage): Check image size limits
+	immediately.
+
+	* coders/art.c (ReadARTImage): Check image size limits
+	immediately.
+
+	* coders/sun.c (ReadSUNImage): Check image size limits in advance
+	of allocating memory for pixels.
+
+	* coders/bmp.c (ReadBMPImage): Check image size limits in advance
+	of allocating memory for pixels.
+
+	* coders/sun.c (ReadSUNImage): There is no definition for Sun map
+	type RMT_RAW so it can not be supported.  Update DirectClass
+	pixels directly rather using SyncImage().  Problem was reported by
+	Jodie Cunningham.
+
+2015-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pict.c (ReadPICTImage): Fix PICT reader crash when
+	reading corrupted file.
+
+	* coders/sun.c (ReadSUNImage): Sun reader was still not as robust
+	as it should be.  Now it is.
 
 2015-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
