@@ -1,3 +1,7 @@
+2014-01-17 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c Do not execute wpg raster read in ping mode.
+
 2014-01-15 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c Properly deallocating zip structures.
