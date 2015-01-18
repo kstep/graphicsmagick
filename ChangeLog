@@ -1,5 +1,8 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (WriteBlobFile): Was not closing file in certain
+	error conditions.  Resolves Coverity CID 10237.
+
 	* coders/cineon.c (ReadCINEONImage): Don't trust file header so
 	much.  Resolves Coverity CIDs 10079, 10310, 10325.
 

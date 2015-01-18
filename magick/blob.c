@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -4488,9 +4488,9 @@ MagickExport MagickPassFail WriteBlobFile(Image *image,const char *filename)
                 }
               MagickFreeMemory(buffer);
             }
-          (void) close(file);
           status = MagickPass;
         }
+      (void) close(file);
     }
   return status;
 }
