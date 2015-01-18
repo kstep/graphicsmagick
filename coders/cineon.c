@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -236,8 +236,19 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
                         "Attribute \"%s\" set to \"%s\"", \
                         name,value); \
 }
-/* Can't use strlcpy() since strlcpy() only handles NULL terminated
-   strings. */
+/*
+  Null terminate ASCII fields which provide space for a terminating
+  NULL.
+*/
+#define NULLTerminateASCIIField(field) \
+{ \
+    field[sizeof(field)-1]='\0'; \
+} \
+/*
+  Can't use strlcpy() since strlcpy() only handles NULL terminated
+  strings.  This is not so necessary due to use of
+  NULLTerminateASCIIField() above.
+*/
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -513,7 +524,11 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
 
   if (swab)
     SwabCineonFileInfo(&cin_file_info);
-
+  NULLTerminateASCIIField(cin_file_info.header_format_version);
+  NULLTerminateASCIIField(cin_file_info.image_filename);
+  NULLTerminateASCIIField(cin_file_info.creation_date);
+  NULLTerminateASCIIField(cin_file_info.creation_time);
+  NULLTerminateASCIIField(cin_file_info.reserved);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "File magic 0x%04X",cin_file_info.magic);
 
@@ -535,7 +550,11 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                         "Creation date \"%s\"", cin_file_info.creation_date);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Creation time \"%s\"", cin_file_info.creation_time);
-
+  /*
+    Place arbitary limit on user defined length.
+  */
+  if (cin_file_info.user_defined_length > 16777216U)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   StringToAttribute(image,"document",cin_file_info.image_filename);
   StringToAttribute(image,"DPX:file.filename",cin_file_info.image_filename);
   {
@@ -543,7 +562,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
       creation_datetime[24];
 
     creation_datetime[0]='\0';
-    (void) strlcat(creation_datetime,cin_file_info.creation_date,sizeof(cin_file_info.creation_date)+1);
+    (void) strlcat(creation_datetime,cin_file_info.creation_date,
+                   sizeof(cin_file_info.creation_date)+1);
     if (creation_datetime[0]!='\0')
       (void) strlcat(creation_datetime,":",sizeof(creation_datetime));
     (void) strlcat(creation_datetime,cin_file_info.creation_time,sizeof(creation_datetime));
@@ -566,7 +586,13 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swab)
     SwabCineonImageInfo(&cin_image_info);
+  NULLTerminateASCIIField(cin_image_info.label_text);
+  NULLTerminateASCIIField(cin_image_info.reserved);
+  NULLTerminateASCIIField(cin_image_info.reserved2);
   number_of_channels=cin_image_info.channels;
+  if (number_of_channels >
+      (sizeof(cin_image_info.channel_info)/sizeof(cin_image_info.channel_info[0])))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   U8ToAttribute(image,"DPX:image.orientation",cin_image_info.orientation);
   image->orientation=CineonOrientationToOrientationType(cin_image_info.orientation);
   max_bits_per_sample=0;
@@ -615,6 +641,12 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swab)
     SwabCineonImageOriginationInfo(&cin_source_info);
+  NULLTerminateASCIIField(cin_source_info.source_image_filename);
+  NULLTerminateASCIIField(cin_source_info.creation_date);
+  NULLTerminateASCIIField(cin_source_info.creation_time);
+  NULLTerminateASCIIField(cin_source_info.input_device);
+  NULLTerminateASCIIField(cin_source_info.input_device_model);
+  NULLTerminateASCIIField(cin_source_info.input_device_serial);
   S32ToAttribute(image,"DPX:source.x-offset",cin_source_info.x_offset);
   S32ToAttribute(image,"DPX:source.y-offset",cin_source_info.y_offset);
   StringToAttribute(image,"DPX:source.filename",cin_source_info.source_image_filename);
@@ -646,6 +678,10 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swab)
         SwabCineonFilmInfo(&cin_mp_info);
+      NULLTerminateASCIIField(cin_mp_info.format);
+      NULLTerminateASCIIField(cin_mp_info.frame_id);
+      NULLTerminateASCIIField(cin_mp_info.slate_info);
+      NULLTerminateASCIIField(cin_mp_info.reserved);
       U8ToAttribute(image,"DPX:mp.film.manufacturer.id",cin_mp_info.film_mfg_id_code);
       U8ToAttribute(image,"DPX:mp.film.type",cin_mp_info.film_type);
       U8ToAttribute(image,"DPX:mp.perfs.offset",cin_mp_info.perfs_offset);
