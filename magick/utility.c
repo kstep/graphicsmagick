@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -5148,6 +5148,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
       program[MaxTextExtent];
 
     GetExceptionInfo(&exception);
+    end=(char *) NULL;
     program[0]='\0';
     GetToken(command,&end,program);
     if (MagickConfirmAccess(FileExecuteConfirmAccessMode,program,&exception)
