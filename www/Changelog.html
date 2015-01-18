@@ -38,6 +38,9 @@
 <p>2015-01-18  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/command.c (GMCommandSingle): Don't use the address of a
+stack allocation to update argv[0]. Removed updating argv[0] until
+a better design can be found.  Resolves Coverity CID 10223.</li>
 <li>magick/utility.c (SystemCommand): Fix possible overwrite of
 memory location due to uninitialized 'end' pointer.  Resolves
 Coverity CID 10251.</li>

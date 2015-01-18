@@ -1,5 +1,9 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (GMCommandSingle): Don't use the address of a
+	stack allocation to update argv[0]. Removed updating argv[0] until
+	a better design can be found.  Resolves Coverity CID 10223.
+
 	* magick/utility.c (SystemCommand): Fix possible overwrite of
 	memory location due to uninitialized 'end' pointer.  Resolves
 	Coverity CID 10251.
