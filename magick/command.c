@@ -17257,15 +17257,7 @@ static MagickBool GMCommandSingle(int argc,char **argv)
         /*
           Set command name to alternate name.
         */
-        /*
-          FIXME: Does not work to pass address from stack.  Perhaps
-          strdup() might work, but that would create a memory leak.
-          Another way is to somehow assure that argv[0] has sufficient
-          memory allocation space that it can be overwritten but if
-          argv comes from main(), that is impossible to assure.
-          Requires research to find the correct solution.
-         */
-        /* argv[0]=command; */
+        argv[0]=(char *) SetClientName(command);
       }
     else
       {
