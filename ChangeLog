@@ -1,5 +1,8 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/histogram.c (WriteHISTOGRAMImage): Avoid possible divide
+	by zero exception.  Resolves Coverity CID 10107.
+
 	* magick/error.c (MagickFatalError): Document that
 	MagickFatalError() is not supposed to return (program must quit)
 	and add GCC/Clang hints to that effect.
