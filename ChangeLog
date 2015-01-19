@@ -1,5 +1,10 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c (WriteRowSamples): Ensure that callback function is
+	always defined. Resolves Coverity CID 10122.
+	(ReadRowSamples): Ensure that callback function is always
+	defined. Resolves Coverity CID 10125.
+
 	* magick/random.c (InitializeMagickRandomKernel): Avoid possible
 	double-close of file.  Resolves Coverity CID 10257.
 

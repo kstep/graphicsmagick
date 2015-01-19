@@ -1520,10 +1520,10 @@ STATIC void ReadRowSamples(const unsigned char *scanline,
     WordStreamReadFunc
       read_func=0;
 
-    if (endian_type == MSBEndian)
-      read_func=ReadWordU32BE;
-    else if (endian_type == LSBEndian)
+    if (endian_type == LSBEndian)
       read_func=ReadWordU32LE;
+    else
+      read_func=ReadWordU32BE;
 
     read_state.words=scanline;
     MagickWordStreamInitializeRead(&read_stream,read_func, (void *) &read_state);
@@ -3148,10 +3148,10 @@ STATIC void WriteRowSamples(const sample_t *samples,
       WordStreamWriteFunc
         write_func=0;
 
-      if (endian_type == MSBEndian)
-        write_func=WriteWordU32BE;
-      else if (endian_type == LSBEndian)
+      if (endian_type == LSBEndian)
         write_func=WriteWordU32LE;
+      else
+        write_func=WriteWordU32BE;
 
       write_state.words=scanline;
       MagickWordStreamInitializeWrite(&write_stream,write_func, (void *) &write_state);
