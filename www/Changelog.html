@@ -38,6 +38,12 @@
 <p>2015-01-18  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/tempfile.c (AcquireTemporaryFileDescriptor): Avoid buffer
+overrun in the case of an astonishingly long environment variable
+string.  Resolves Coverity CID 10267.
+(AddTemporaryFileToList): Use strlcpy() rather than strlcpy().  In
+practice, should not make a difference.  Will quiet Coverity CID
+10321.</li>
 <li>magick/command.c (GMCommandSingle): Don't use the address of a
 stack allocation to update argv[0]. Removed updating argv[0] until
 a better design can be found.  Resolves Coverity CID 10223.

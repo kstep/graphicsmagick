@@ -68,7 +68,7 @@ static void AddTemporaryFileToList(const char *filename)
     if (info)
       {
         info->next=0;
-        (void) strcpy(info->filename,filename);
+        (void) strlcpy(info->filename,filename,sizeof(info->filename));
         if (!templist)
           templist=info;
         else
@@ -252,21 +252,27 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       /*
         Use our own temporary filename generator if the temporary
         file directory is known.
+
+        In practice, this method is virtually always used.
       */
       char
-        tempname[MaxTextExtent];
+        tempname[16];
       
       int
         tries=0;
       
       for (tries=0; tries < 256; tries++)
         {
-          (void) strcpy(tempname,"gmXXXXXX");
+          (void) strlcpy(tempname,"gmXXXXXX",sizeof(tempname));
           ComposeTemporaryFileName(tempname);
-          (void) strcpy(filename,tempdir);
-          if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
-            (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,tempname);
+          if (strlcpy(filename,tempdir,MaxTextExtent) >= MaxTextExtent)
+            break;
+          if (filename[strlen(filename)-1] != DirectorySeparator[0])
+            if (strlcat(filename,DirectorySeparator,MaxTextExtent) >=
+                MaxTextExtent)
+              break;
+          if (strlcat(filename,tempname,MaxTextExtent) >= MaxTextExtent)
+            break;
           fd=open(filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
           if (fd != -1)
             {

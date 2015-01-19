@@ -1,5 +1,12 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Avoid buffer
+	overrun in the case of an astonishingly long environment variable
+	string.  Resolves Coverity CID 10267.
+	(AddTemporaryFileToList): Use strlcpy() rather than strlcpy().  In
+	practice, should not make a difference.  Will quiet Coverity CID
+	10321.
+
 	* magick/command.c (GMCommandSingle): Don't use the address of a
 	stack allocation to update argv[0]. Removed updating argv[0] until
 	a better design can be found.  Resolves Coverity CID 10223.
