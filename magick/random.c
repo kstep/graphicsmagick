@@ -127,10 +127,11 @@ InitializeMagickRandomKernel(MagickRandomKernel *kernel)
       {
 	if (read(file,(void *) kernel,sizeof(*kernel)) == sizeof(*kernel))
 	  {
-	    (void) close(file);
-
 	    if ((kernel->z != 0U) || (kernel->w != 0U))
-	      return;
+              {
+                (void) close(file);
+                return;
+              }
 	  }
 	(void) close(file);
       }

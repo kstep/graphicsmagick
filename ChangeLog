@@ -1,5 +1,8 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/random.c (InitializeMagickRandomKernel): Avoid possible
+	double-close of file.  Resolves Coverity CID 10257.
+
 	* coders/histogram.c (WriteHISTOGRAMImage): Avoid possible divide
 	by zero exception.  Resolves Coverity CID 10107.
 
