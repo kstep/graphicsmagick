@@ -1,5 +1,10 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/bit_stream.c (BitAndMasks): Avoid possible access
+	one-beyond end of BitAndMasks array.  It is not clear if there is
+	a possible bug with 32-bit quantums.  If there is a bug, it has
+	not been noticed via testing.  Resolves Coverity CID 10213.
+
 	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Avoid buffer
 	overrun in the case of an astonishingly long environment variable
 	string.  Resolves Coverity CID 10267.
