@@ -1,5 +1,9 @@
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/error.c (MagickFatalError): Document that
+	MagickFatalError() is not supposed to return (program must quit)
+	and add GCC/Clang hints to that effect.
+
 	* magick/bit_stream.c (BitAndMasks): Avoid possible access
 	one-beyond end of BitAndMasks array.  It is not clear if there is
 	a possible bug with 32-bit quantums.  If there is a bug, it has
