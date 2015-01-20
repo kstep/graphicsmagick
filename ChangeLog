@@ -1,3 +1,12 @@
+2015-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (CloneImage): The definition is poor as to what a
+	non-orphan clone should do.  However, the definition surely does
+	not include crashing the software or supplanting the original
+	image in an image list.  Clone image blob and previous/next
+	pointers but do not supplant original image in list.  Resolves
+	Coverity CID 10155.
+
 2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteRowSamples): Ensure that callback function is

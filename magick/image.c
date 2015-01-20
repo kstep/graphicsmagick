@@ -1019,11 +1019,18 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   else
     {
+      /*
+        Clone image while retaining list pointers and referencing
+        original blob (with reference count).  New image does not
+        supplant existing image in list.  Note that now two images may
+        be referring to the same next and previous images in the list
+        so they are in parallel and must be treated accordingly.
+
+        This path is not used within GraphicsMagick.
+      */
       clone_image->blob=ReferenceBlob(image->blob);
-      if (image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
+      clone_image->next=image->next;
+      clone_image->previous=image->previous;
     }
   if ((columns == 0) && (rows == 0))
     {
