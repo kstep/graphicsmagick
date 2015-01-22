@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2014 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1378,6 +1378,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
   png_pixels=(unsigned char *) NULL;
   quantum_scanline=(Quantum *) NULL;
+
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
@@ -1400,6 +1401,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         }
       return(image);
     }
+
+/* From here through end of ReadOnePNGImage(), use png_error(), not Throw... */
 
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
   /* Allow benign errors */
@@ -1975,7 +1978,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Initialize image colormap.
       */
       if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        png_error(ping, "Could not allocate image colormap");
       if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
         {
           int
@@ -2046,7 +2049,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else
     png_pixels=MagickAllocateMemory(unsigned char *, ping_rowbytes);
   if (png_pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    png_error(ping, "Could not allocate png_pixels array");
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2257,8 +2260,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                                               (image->matte ?  2 : 1) *
                                               image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                               image);
+          png_error(ping, "Could not allocate quantum_scanline");
         for (y=0; y < (long) image->rows; y++)
           {
             register unsigned char
@@ -2484,9 +2486,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             value=MagickAllocateMemory(char *,length+1);
             if (value == (char *) NULL)
               {
-                (void) ThrowException3(&image->exception,ResourceLimitError,
-                                       MemoryAllocationFailed,
-                                       UnableToReadTextChunk);
+                png_warning(ping, "Could not allocate memory for text chunk");
                 break;
               }
             *value='\0';
@@ -2521,12 +2521,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->ob[object_id]->frozen)
         {
           if (mng_info->ob[object_id] == (MngBuffer *) NULL)
-            (void) ThrowException(&image->exception,ResourceLimitError,
-                                  MemoryAllocationFailed,image->filename);
+            png_error(ping, "Could not allocate MNG object");
           if (mng_info->ob[object_id]->frozen)
-            (void) ThrowException(&image->exception,ResourceLimitError,
-                                  "Cannot overwrite frozen MNG object buffer",
-                                  image->filename);
+            png_error(ping, "Could not overwrite MNG frozen object buffer");
         }
       else
         {
@@ -2548,9 +2545,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (mng_info->ob[object_id]->image != (Image *) NULL)
             mng_info->ob[object_id]->image->file=(FILE *) NULL;
           else
-            (void) ThrowException(&image->exception,ResourceLimitError,
-                                  "Cloning image for object buffer failed",
-                                  image->filename);
+            png_error(ping, "Cloning image for object buffer failed");
           png_get_IHDR(ping,ping_info,&width,&height,&bit_depth,&color_type,
                        &interlace_method,&compression_method,&filter_method);
           if (width > 250000L || height > 250000L)
@@ -4089,7 +4084,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                         {
                           frame_timeout=
                             (100*(mng_get_long(p))/mng_info->ticks_per_second);
-                          if (change_delay == 2)
+                          if (change_timeout == 2)
                             default_frame_timeout=frame_timeout;
                           p+=4;
                           if (logging)
@@ -7649,11 +7644,11 @@ static MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
 
           attribute=GetImageAttribute(image,"png:IHDR.color-type-orig");
 
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "  png00 inherited color type=%s",attribute->value);
-
           if (attribute != (ImageAttribute *) NULL)
             {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "  png00 inherited color type=%s",attribute->value);
+
               if (LocaleCompare(attribute->value,"0") == 0)
                 mng_info->write_png_colortype = 1;
 

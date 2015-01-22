@@ -1,3 +1,17 @@
+2015-01-21  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Use png_error() instead of
+	throwing an exception so cleanup in the setjmp block can happen,
+	including unlocking the semaphore.  Resolves Coverity CID 10232.
+
+	* coders/png.c (ReadOnePNGImage): Moved a logging statement
+	into a block where "attribute" has been checked for NULL.
+	Resolves Coverity CID 10187.
+
+	* coders/png.c (ReadMNGImage): Fixed a cut-and-paste typo
+	(change_delay should be change_timeout) reported by Coverity
+	 CID 10090.
+
 2015-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (CloneImage): The definition is poor as to what a
