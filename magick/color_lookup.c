@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -731,9 +731,6 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
   char
     colorname[MaxTextExtent];
 
-  register char
-    *q;
-
   register ColorInfo
     *p;
 
@@ -746,14 +743,14 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
   /*
     Search for named color.
   */
-  (void) strlcpy(colorname,name,MaxTextExtent);
-  for (q=colorname; *q != '\0'; q++)
-  {
-    if (*q != ' ')
-      continue;
-    (void) strcpy(q,q+1);
-    q--;
-  }
+  if (strlcpy(colorname,name,MaxTextExtent) >= MaxTextExtent)
+    {
+      ThrowException(exception,OptionWarning,UnrecognizedColor,name);
+      return (const ColorInfo *) NULL;
+    }
+  /*
+    Compact by removing spaces
+  */
   LockSemaphoreInfo(color_semaphore);
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
     if (LocaleCompare(colorname,p->name) == 0)
@@ -791,7 +788,7 @@ GetColorInfo(const char *name,ExceptionInfo *exception)
         color_list=p;
       }
   UnlockSemaphoreInfo(color_semaphore);
-  return((const ColorInfo *) p);
+  return ((const ColorInfo *) p);
 }
 
 /*
@@ -876,6 +873,7 @@ GetColorInfoArray(ExceptionInfo *exception)
   array=MagickAllocateMemory(ColorInfo **,sizeof(ColorInfo *)*(entries+1));
   if (!array)
     {
+      UnlockSemaphoreInfo(color_semaphore);
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return False;
     }
@@ -1595,6 +1593,8 @@ ReadColorConfigureFile(const char *basename,
 	  if (color_list == (ColorInfo *) NULL)
 	    continue;
 	  GetToken(q,(char **) NULL,token);
+          if (token == (char *) NULL)
+            break;
 	  if (*token != '=')
 	    continue;
 	  GetToken(q,&q,token);

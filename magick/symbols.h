@@ -585,6 +585,7 @@
 #define MagickSetFileSystemBlockSize GmMagickSetFileSystemBlockSize
 #define MagickSizeStrToInt64 GmMagickSizeStrToInt64
 #define MagickSpawnVP GmMagickSpawnVP
+#define MagickStripSpacesFromString GmMagickStripSpacesFromString
 #define MagickStrlCat GmMagickStrlCat
 #define MagickStrlCpy GmMagickStrlCpy
 #define MagickStrlCpyTrunc GmMagickStrlCpyTrunc

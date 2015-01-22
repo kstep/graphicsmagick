@@ -3998,6 +3998,56 @@ MagickSpawnVP(const unsigned int verbose,const char *file, char *const argv[])
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S t r i p S p a c e s F r o m S t r i n g                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickStripSpacesFromString() compacts a NULL-terminated string in-place
+%  by removing white space (space and tab) characters) from a string.
+%
+%  The format of the MagickStripSpacesFromString method is:
+%
+%      size_t MagickStripSpacesFromString(char *string)
+%
+%  A description of each parameter follows:
+%
+%    o string: String buffer to compact.
+%
+%    o returns: New string length
+%
+*/
+MagickExport size_t
+MagickStripSpacesFromString(char *string)
+{
+  register char
+    *w;
+
+  register const char
+    *r;
+
+  for (w=string, r=string; *r != '\0'; )
+    {
+      if ((*r == ' ') || (*r == '\t'))
+        {
+          r++;
+          continue;
+        }
+      if (r != w)
+        *w = *r;
+      r++;
+      w++;
+    }
+  *w='\0';
+  return (size_t) (w - string);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S t r T o I n t 6 4                                           %
 %                                                                             %
 %                                                                             %
