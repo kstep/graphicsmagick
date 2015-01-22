@@ -1,5 +1,12 @@
 2015-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colormap.c (ReplaceImageColormap): Allocate new image
+	colormap up front in order to avoid the possibility that we are
+	left with an image with no colormap due to memory allocation
+	failure. If there is a memory allocation failure, then the
+	original colormap is preserved.  Resolves Coverity CID 10194
+	"Dereference after null check".
+
 	* magick/utility.c (MagickStripSpacesFromString): New private
 	utility function to strip spaces from a string.
 

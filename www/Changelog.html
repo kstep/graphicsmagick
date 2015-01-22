@@ -38,6 +38,12 @@
 <p>2015-01-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/colormap.c (ReplaceImageColormap): Allocate new image
+colormap up front in order to avoid the possibility that we are
+left with an image with no colormap due to memory allocation
+failure. If there is a memory allocation failure, then the
+original colormap is preserved.  Resolves Coverity CID 10194
+&quot;Dereference after null check&quot;.</li>
 <li>magick/utility.c (MagickStripSpacesFromString): New private
 utility function to strip spaces from a string.</li>
 <li>magick/color_lookup.c (GetColorInfoArray): Resolves Coverity CID

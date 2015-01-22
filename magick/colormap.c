@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -251,6 +251,7 @@ MagickConstrainColormapIndex(Image *image, unsigned int index)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %   R e p l a c e I m a g e C o l o r m a p                                   %
 %                                                                             %
 %                                                                             %
@@ -324,6 +325,9 @@ ReplaceImageColormap(Image *image,
   unsigned int
     *colormap_index=(unsigned int *) NULL;
 
+  PixelPacket
+    *new_colormap;
+
   register unsigned int
     i,
     j;
@@ -339,10 +343,23 @@ ReplaceImageColormap(Image *image,
   /*
     Allocate memory for colormap index
   */
-  colormap_index=MagickAllocateMemory(unsigned int *,
-                                      MaxColormapSize*sizeof(unsigned int));
+  colormap_index=MagickAllocateArray(unsigned int *,
+                                     MaxColormapSize,sizeof(unsigned int));
   if (colormap_index == (unsigned int *) NULL)
     {
+      ThrowException3(&image->exception,ResourceLimitError,
+                      MemoryAllocationFailed,UnableToAllocateColormap);
+      return MagickFail;
+    }
+
+  /*
+    Allocate replacement colormap
+  */
+  new_colormap=MagickAllocateArray(PixelPacket *,
+                                   sizeof(PixelPacket),colors);
+  if (new_colormap == (PixelPacket *) NULL)
+    {
+      MagickFreeMemory(colormap_index);
       ThrowException3(&image->exception,ResourceLimitError,
                       MemoryAllocationFailed,UnableToAllocateColormap);
       return MagickFail;
@@ -379,18 +396,15 @@ ReplaceImageColormap(Image *image,
       */
       if (status == MagickPass)
         {
-          MagickReallocMemory(PixelPacket *,image->colormap,sizeof(PixelPacket)*colors);
-          if (image->colormap == (PixelPacket *) NULL)
-            {
-              ThrowException3(&image->exception,ResourceLimitError,
-                              MemoryAllocationFailed,UnableToAllocateColormap);
-              status=MagickFail;
-            }
+          (void) memcpy(new_colormap,colormap,sizeof(PixelPacket)*colors);
+          MagickFreeMemory(image->colormap);
+          image->colormap=new_colormap;
+          new_colormap=(PixelPacket *) NULL;
+
         }
-      if (status == MagickPass)
-        (void) memcpy(image->colormap,colormap,sizeof(PixelPacket)*colors);
     }
 
+  MagickFreeMemory(new_colormap);
   MagickFreeMemory(colormap_index);
 
   image->is_grayscale=IsGrayImage(image,&image->exception);
