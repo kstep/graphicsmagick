@@ -540,6 +540,7 @@ GetMagickInfoArray(ExceptionInfo *exception)
   array=MagickAllocateArray(MagickInfo **,sizeof(MagickInfo *),(entries+1));
   if (!array)
     {
+      UnlockSemaphoreInfo(magick_semaphore);
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return ((MagickInfo **) NULL);
     }
