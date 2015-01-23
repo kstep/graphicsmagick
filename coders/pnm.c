@@ -2034,10 +2034,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       if (image->next == (Image *) NULL)
 	break;
       image=SyncNextImageInList(image);
-      status=MagickMonitorFormatted(scene++,GetImageListLength(image),
-				    &image->exception,SaveImagesText,
-				    image->filename);
-      if (status == False)
+      if (status != MagickFail)
+        status=MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                      &image->exception,SaveImagesText,
+                                      image->filename);
+      if (status == MagickFail)
 	break;
     } while (image_info->adjoin);
   if (image_info->adjoin)

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2014 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -369,6 +369,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,32,pdb_info.name);
   if (count != 32)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  pdb_info.name[sizeof(pdb_info.name-1)]='\0';
   pdb_info.attributes=ReadBlobMSBShort(image);
   pdb_info.version=ReadBlobMSBShort(image);
   pdb_info.create_time=ReadBlobMSBLong(image);
@@ -802,8 +803,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     bits_per_pixel=1;
   if ((bits_per_pixel != 1) && (bits_per_pixel != 2))
     bits_per_pixel=4;
-  (void) memset(pdb_info.name,0,32);
-  (void) strncpy(pdb_info.name,image_info->filename,32);
+  (void) memset(&pdb_info,0,sizeof(pdb_info));
+  (void) strlcpy(pdb_info.name,image_info->filename,sizeof(pdb_info.name));
   pdb_info.attributes=0;
   pdb_info.version=0;
   pdb_info.create_time=time(NULL);
@@ -834,7 +835,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,pdb_info.seed);
   (void) WriteBlobMSBLong(image,pdb_info.next_record);
   (void) WriteBlobMSBShort(image,pdb_info.number_records);
-  (void) strncpy(pdb_image.name,pdb_info.name,32);
+  (void) memset(&pdb_image,0,sizeof(pdb_image));
+  (void) strlcpy(pdb_image.name,pdb_info.name,sizeof(pdb_image.name));
   pdb_image.version=1;  /* RLE Compressed */
   switch(bits_per_pixel)
   {

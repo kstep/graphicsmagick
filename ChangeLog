@@ -1,3 +1,12 @@
+2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (WritePNMImage): Fix overwrite of status by
+	progress monitor.  Remaining issues may lurk within.  May resolve
+	Coverity CID 10288.
+
+	* coders/pdb.c: Resolve Coverity CID 11173 "Buffer not null
+	terminated".
+
 2015-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (GetMagickInfoArray): Resolve Coverity CID 10212
