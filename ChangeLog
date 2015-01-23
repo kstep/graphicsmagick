@@ -1,5 +1,9 @@
 2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/gif.c (WriteGIFImage): Don't use an unchecked value from
+	GetImageAttribute(), even if the access succeeded before.
+	Resolves Coverity CID 10219.
+
 	* coders/dpx.c (StringToAttribute): Make sure that string is not
 	accidentally shortened by one character if it occupies the full
 	field size.

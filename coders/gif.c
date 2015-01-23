@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1442,33 +1442,39 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBShort(image,image->delay);
         (void) WriteBlobByte(image,opacity >= 0 ? opacity : 0);
         (void) WriteBlobByte(image,0x00);
-        if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
-          {
-            const ImageAttribute
-              *attribute;
+        {
+          const ImageAttribute
+            *attribute;
 
-            register char
-              *p;
-
-            size_t
-              count;
-
-            /*
-              Write Comment extension.
-            */
-            (void) WriteBlobByte(image,0x21);
-            (void) WriteBlobByte(image,0xfe);
-            attribute=GetImageAttribute(image,"comment");
-            p=attribute->value;
-            while (strlen(p) != 0)
+          if ((attribute=GetImageAttribute(image,"comment")) !=
+              (ImageAttribute *) NULL)
             {
-              count=Min(strlen(p),255);
-              (void) WriteBlobByte(image,(long) count);
-              for (i=0; i < (long) count; i++)
-                (void) WriteBlobByte(image,*p++);
+              const ImageAttribute
+                *attribute;
+
+              register char
+                *p;
+
+              size_t
+                count;
+
+              /*
+                Write Comment extension.
+              */
+              (void) WriteBlobByte(image,0x21);
+              (void) WriteBlobByte(image,0xfe);
+              attribute=GetImageAttribute(image,"comment");
+              p=attribute->value;
+              while (strlen(p) != 0)
+                {
+                  count=Min(strlen(p),255);
+                  (void) WriteBlobByte(image,(long) count);
+                  for (i=0; i < (long) count; i++)
+                    (void) WriteBlobByte(image,*p++);
+                }
+              (void) WriteBlobByte(image,0x0);
             }
-            (void) WriteBlobByte(image,0x0);
-          }
+        }
         if ((image->previous == (Image *) NULL) &&
             (image->next != (Image *) NULL) && (image->iterations != 1))
           {
