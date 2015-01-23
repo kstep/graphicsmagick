@@ -38,6 +38,15 @@
 <p>2015-01-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/dpx.c (StringToAttribute): Make sure that string is not
+accidentally shortened by one character if it occupies the full
+field size.
+(ReadDPXImage): Validate that the bits per sample claimed by the
+file header is a supported depth before using it further in the
+code.  This might resolve Coverity CID 10071 &quot;Bad shift
+operation&quot;.
+(ReadDPXImage): Check for EOF while reading forward to element
+data.  Might solve Coverity CID 10305.</li>
 <li>coders/dib.c (ReadDIBImage): Resolve Coverity CID 10228 &quot;Integer
 overflowed argument&quot;.
 (ReadDIBImage): Hopefully resolve Coverity CID 10268 &quot;Various&quot;,

@@ -471,7 +471,10 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
                         name,value); \
 }
 /* Can't use strlcpy() since strlcpy() only handles NULL terminated
-   strings. */
+   strings.  Note that some fields occupy the full space with no
+   trailing null so we null terminate one character *after* the
+   DPX field size.
+*/
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -480,7 +483,7 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
       (void) strncpy(buffer_,member,Min(sizeof(member),MaxTextExtent)); \
-      buffer_[Min(sizeof(member),MaxTextExtent-1)]='\0';             \
+      buffer_[Min(sizeof(member)+1,MaxTextExtent-1)]='\0';             \
       (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
@@ -1925,8 +1928,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         element_descriptor=(DPXImageElementDescriptor)
           dpx_image_info.element_info[element].descriptor;
-        max_bits_per_sample=Max(max_bits_per_sample,
-                                dpx_image_info.element_info[element].bits_per_sample);
+        bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
+        /*
+          Enforce supported bits per sample. Note that 32-bits could
+          be supported by the implementation but we don't allow it at
+          the moment.
+        */
+        if ((bits_per_sample != 1) &&
+            (bits_per_sample != 8) &&
+            (bits_per_sample != 10) &&
+            (bits_per_sample != 12) &&
+            (bits_per_sample != 16))
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        max_bits_per_sample=Max(max_bits_per_sample,bits_per_sample);
         max_samples_per_pixel=Max(max_samples_per_pixel,
                                   DPXSamplesPerPixel(element_descriptor));
         /*
@@ -2124,7 +2138,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /* Data is at, or ahead of current position.  Good! */
               for ( ; offset < pixels_offset ; offset++ )
-                (void) ReadBlobByte(image);
+                if (ReadBlobByte(image) == EOF)
+                  break;
             }
           else
             {
@@ -3246,7 +3261,8 @@ STATIC void WriteRowSamples(const sample_t *samples,
 /*
   This macro uses strncpy on purpose.  The string is not required to
   be null terminated, but any unused space should be filled with
-  nulls.
+  nulls.  Don't even think about using strlcpy here because some ASCII
+  fields occupy the full space.
 */
 #define AttributeToString(image_info,image,key,member) \
 { \

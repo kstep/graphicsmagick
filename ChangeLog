@@ -1,5 +1,15 @@
 2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c (StringToAttribute): Make sure that string is not
+	accidentally shortened by one character if it occupies the full
+	field size.
+	(ReadDPXImage): Validate that the bits per sample claimed by the
+	file header is a supported depth before using it further in the
+	code.  This might resolve Coverity CID 10071 "Bad shift
+	operation".
+	(ReadDPXImage): Check for EOF while reading forward to element
+	data.  Might solve Coverity CID 10305.
+
 	* coders/dib.c (ReadDIBImage): Resolve Coverity CID 10228 "Integer
 	overflowed argument".
 	(ReadDIBImage): Hopefully resolve Coverity CID 10268 "Various",
