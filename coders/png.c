@@ -1402,7 +1402,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       return(image);
     }
 
-/* From here through end of ReadOnePNGImage(), use png_error(), not Throw... */
+/* { From here through end of ReadOnePNGImage(), use png_error(), not Throw() */
 
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
   /* Allow benign errors */
@@ -2590,10 +2590,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOnePNGImage()");
   return (image);
+
+  /* End of setjmp-controlled block } */
 
   /* end of reading one PNG image */
 }
@@ -6113,6 +6116,8 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
       return(MagickFail);
     }
 
+/* { For navigation to end of setjmp-controlled block */
+
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
   /* Allow benign errors */
   png_set_benign_errors(ping, 1);
@@ -6207,8 +6212,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         palette=MagickAllocateMemory(png_color *,
                                      number_colors*sizeof(png_color));
         if (palette == (png_color *) NULL)
-          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                               image);
+          png_error(ping, "Could not allocate palette");
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "  Setting up PLTE chunk with %d colors",
@@ -6236,8 +6240,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         */
         ping_trans_alpha=MagickAllocateMemory(unsigned char *, number_colors);
         if (ping_trans_alpha == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                               image);
+          png_error(ping, "Could not allocate ping_trans_alpha");
         assert(number_colors <= 256);
         for (i=0; i < (long) number_colors; i++)
           ping_trans_alpha[i]=255;
@@ -6552,8 +6555,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                                 number_colors,
                                                 sizeof(png_color));
                     if (palette == (png_color *) NULL)
-                      ThrowWriterException(ResourceLimitError,
-                                           MemoryAllocationFailed,image);
+                      png_error(ping, "Could not allocate palette");
                     for (i=0; i < (long) number_colors; i++)
                       {
                         palette[i].red=ScaleQuantumToChar
@@ -6671,8 +6673,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         ping_trans_alpha=MagickAllocateMemory(
                           unsigned char *, number_colors);
                         if (ping_trans_alpha == (unsigned char *) NULL)
-                          ThrowWriterException(ResourceLimitError,
-                             MemoryAllocationFailed, image);
+                          png_error(ping, "Could not allocate trans_alpha");
 
                         for (i=0; i<(int) number_colors; i++)
                           if (trans_alpha[i] == 256)
@@ -7142,7 +7143,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                           rowbytes);
   png_pixels=MagickAllocateMemory(unsigned char *,rowbytes);
   if (png_pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    png_error(ping, "Could not allocate png_pixels");
   /*
     Initialize image scanlines.
   */
@@ -7452,10 +7453,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     }
   if (mng_info->write_mng && !mng_info->need_fram &&
       ((int) image->dispose == 3))
-    (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
-                           "Cannot convert GIF with disposal method 3"
-                           " to MNG-LC",
-                           (char *) NULL);
+    png_error(ping, "Cannot convert GIF with disposal method 3 to MNG-LC");
   image->depth=save_image_depth;
 
   /* Save depth actually written */
@@ -7476,10 +7474,14 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit WriteOnePNGImage()");
   return (MagickPass);
+
+  /* } end of setjmp-controlled block */
+
   /*  End write one PNG image */
 }
 

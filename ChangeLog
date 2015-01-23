@@ -1,3 +1,9 @@
+2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (WriteOnePNGImage): Use png_error() instead of
+	throwing an exception so cleanup in the setjmp block can happen,
+	including unlocking the semaphore.  Addresses Coverity CID 10184.
+
 2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c (WriteGIFImage): Don't use an unchecked value from
