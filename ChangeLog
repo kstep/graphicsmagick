@@ -63,7 +63,7 @@
 
 	* coders/png.c (ReadOnePNGImage): Moved a logging statement into a
 	block where "attribute" has been checked for NULL.  Resolves
-	Coverity CID 10187.
+	Coverity CIDs 10185 and 10187.
 
 	* coders/png.c (ReadMNGImage): Fixed a cut-and-paste typo
 	(change_delay should be change_timeout) reported by Coverity
