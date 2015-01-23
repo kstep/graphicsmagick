@@ -1,5 +1,11 @@
 2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dib.c (ReadDIBImage): Resolve Coverity CID 10228 "Integer
+	overflowed argument".
+	(ReadDIBImage): Hopefully resolve Coverity CID 10268 "Various",
+	which is primarily about placing too much trust in the claimed
+	number of colors.
+
 	* coders/pnm.c (WritePNMImage): Fix overwrite of status by
 	progress monitor.  Remaining issues may lurk within.  May resolve
 	Coverity CID 10288.

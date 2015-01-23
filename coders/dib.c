@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -531,6 +531,13 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   LogDIBInfo(&dib_info);
+  if ((dib_info.bits_per_pixel != 1) &&
+      (dib_info.bits_per_pixel != 4) &&
+      (dib_info.bits_per_pixel != 8) &&
+      (dib_info.bits_per_pixel != 16) &&
+      (dib_info.bits_per_pixel != 24) &&
+      (dib_info.bits_per_pixel != 32))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((dib_info.compression == 3) && ((dib_info.bits_per_pixel == 16) ||
       (dib_info.bits_per_pixel == 32)))
     {
@@ -538,6 +545,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBShort(image);
       dib_info.blue_mask=ReadBlobLSBShort(image);
     }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (dib_info.width <= 0)
       ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
   if (dib_info.height == 0)
@@ -546,6 +555,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=AbsoluteValue(dib_info.width);
   image->rows=AbsoluteValue(dib_info.height);
   image->depth=8;
+  if (dib_info.number_colors > 256)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (dib_info.colors_important > 256)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((dib_info.number_colors != 0) || (dib_info.bits_per_pixel < 16))
     {
       image->storage_class=PseudoClass;
@@ -626,6 +639,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     masks.
   */
   length=bytes_per_line*image->rows;
+  if ((bytes_per_line != 0) && (image->rows != length/bytes_per_line))
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   pixels=MagickAllocateArray(unsigned char *,
                              image->rows,
                              Max(bytes_per_line,image->columns+1));
