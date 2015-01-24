@@ -1,3 +1,9 @@
+2015-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/fits.c (ReadFITSImage): Enforce valid bits-per-pixel
+	values.  Add detailed header logging.  Solves problem with file
+	provided by Jodie Cunningham on 2015-01-24
+
 2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadPNGImage): Check length of various MNG
