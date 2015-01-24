@@ -369,7 +369,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,32,pdb_info.name);
   if (count != 32)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-  pdb_info.name[sizeof(pdb_info.name-1)]='\0';
+  pdb_info.name[sizeof(pdb_info.name)-1]='\0';
   pdb_info.attributes=ReadBlobMSBShort(image);
   pdb_info.version=ReadBlobMSBShort(image);
   pdb_info.create_time=ReadBlobMSBLong(image);
