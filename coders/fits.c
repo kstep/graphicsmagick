@@ -415,6 +415,7 @@ ReadExtension:
   if ((fits_info.bits_per_pixel != 8) &&
       (fits_info.bits_per_pixel != 16) &&
       (fits_info.bits_per_pixel != 32) &&
+      (fits_info.bits_per_pixel != 64) &&
       (fits_info.bits_per_pixel != -32) &&
       (fits_info.bits_per_pixel != -64))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
