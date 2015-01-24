@@ -322,10 +322,14 @@ static void SwabCineonFileInfo(CineonFileInfo *file_info)
 
 static void SwabCineonImageInfo(CineonImageInfo *image_info)
 {
-  unsigned int
+  size_t
     i;
 
-  for (i=0 ; i < (unsigned int) image_info->channels  ; i++)
+  for (i=0 ;
+       i < Min((size_t) image_info->channels,
+               (sizeof(image_info->channel_info) /
+                sizeof(image_info->channel_info[0])));
+       i++)
     {
       MagickSwabUInt32(&image_info->channel_info[i].pixels_per_line);
       MagickSwabUInt32(&image_info->channel_info[i].lines_per_image);
@@ -559,14 +563,14 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   StringToAttribute(image,"DPX:file.filename",cin_file_info.image_filename);
   {
     char
-      creation_datetime[24];
+      creation_datetime[26]; /* 12+1+12+1 */
 
-    creation_datetime[0]='\0';
-    (void) strlcat(creation_datetime,cin_file_info.creation_date,
-                   sizeof(cin_file_info.creation_date)+1);
+    (void) strlcpy(creation_datetime,cin_file_info.creation_date,
+                   Min(sizeof(creation_datetime),sizeof(cin_file_info.creation_date)));
     if (creation_datetime[0]!='\0')
       (void) strlcat(creation_datetime,":",sizeof(creation_datetime));
-    (void) strlcat(creation_datetime,cin_file_info.creation_time,sizeof(creation_datetime));
+    (void) strlcat(creation_datetime,cin_file_info.creation_time,
+                   Min(sizeof(creation_datetime),sizeof(creation_datetime)));
     StringToAttribute(image,"timestamp",creation_datetime);
     StringToAttribute(image,"DPX:file.creation.datetime",creation_datetime);
   }
@@ -584,6 +588,9 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   offset += ReadBlob(image,sizeof(cin_image_info),&cin_image_info);
   if (offset != (size_t) 712L)
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+  if (cin_image_info.channels >
+      (sizeof(cin_image_info.channel_info)/sizeof(cin_image_info.channel_info[0])))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (swab)
     SwabCineonImageInfo(&cin_image_info);
   NULLTerminateASCIIField(cin_image_info.label_text);

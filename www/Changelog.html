@@ -38,6 +38,10 @@
 <p>2015-01-24  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/pdb.c (ReadPDBImage): Fix typo.</li>
+<li>coders/cineon.c (ReadCINEONImage): Enforce that Cineon image
+info channels is valid.  Solves problem with file provided by
+Jodie Cunningham on 2015-01-24</li>
 <li>coders/fits.c (ReadFITSImage): Enforce valid bits-per-pixel
 values.  Add detailed header logging.  Solves problem with file
 provided by Jodie Cunningham on 2015-01-24</li>

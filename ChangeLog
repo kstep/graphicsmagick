@@ -1,5 +1,11 @@
 2015-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pdb.c (ReadPDBImage): Fix typo.
+
+	* coders/cineon.c (ReadCINEONImage): Enforce that Cineon image
+	info channels is valid.  Solves problem with file provided by
+	Jodie Cunningham on 2015-01-24
+
 	* coders/fits.c (ReadFITSImage): Enforce valid bits-per-pixel
 	values.  Add detailed header logging.  Solves problem with file
 	provided by Jodie Cunningham on 2015-01-24
