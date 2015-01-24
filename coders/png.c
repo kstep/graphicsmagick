@@ -3780,7 +3780,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
 
               if (length)
                 repeat=p[0];
-              if (repeat == 3)
+              if (repeat == 3 && length > 8)
                 {
                   final_delay=(png_uint_32) mng_get_long(&p[2]);
                   mng_iterations=(png_uint_32) mng_get_long(&p[6]);
@@ -4071,7 +4071,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                       change_timeout=(*p++);
                       change_clipping=(*p++);
                       p++; /* change_sync */
-                      if (change_delay)
+                      if (change_delay && (p-chunk) < (ssize_t) (length-4))
                         {
                           frame_delay=(100*(mng_get_long(p))/
                                        mng_info->ticks_per_second);
@@ -4083,7 +4083,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                                   "    Framing_delay=%ld",
                                                   frame_delay);
                         }
-                      if (change_timeout)
+                      if (change_timeout && (p-chunk) < (ssize_t) (length-4))
                         {
                           frame_timeout=
                             (100*(mng_get_long(p))/mng_info->ticks_per_second);
@@ -4095,7 +4095,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                                   "    Framing_timeout=%ld",
                                                   frame_timeout);
                         }
-                      if (change_clipping)
+                      if (change_clipping && (p-chunk) < (ssize_t) (length-17))
                         {
                           fb=mng_read_box(previous_fb,p[0],&p[1]);
                           p+=17;
@@ -4183,17 +4183,24 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               /*
                 Read CLIP.
               */
-              first_object=(p[0] << 8) | p[1];
-              last_object=(p[2] << 8) | p[3];
-              for (i=(int) first_object; i <= (int) last_object; i++)
+              if (length > 3)
                 {
-                  if (mng_info->exists[i] && !mng_info->frozen[i])
-                    {
-                      MngBox
-                        box;
+                  first_object=(p[0] << 8) | p[1];
+                  last_object=(p[2] << 8) | p[3];
+                  p+=4;
 
-                      box=mng_info->object_clip[i];
-                      mng_info->object_clip[i]=mng_read_box(box,p[4],&p[5]);
+                  for (i=(int) first_object; i <= (int) last_object; i++)
+                    {
+                      if (mng_info->exists[i] && !mng_info->frozen[i])
+                        {
+                          MngBox
+                            box;
+
+                          box=mng_info->object_clip[i];
+                          if ((p-chunk) < (ssize_t) (length-17))
+                            mng_info->object_clip[i]=
+                                mng_read_box(box,p[0],&p[1]);
+                        }
                     }
                 }
               MagickFreeMemory(chunk);
@@ -4249,23 +4256,30 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               /*
                 read MOVE
               */
-              first_object=(p[0] << 8) | p[1];
-              last_object=(p[2] << 8) | p[3];
-              for (i=(long) first_object; i <= (long) last_object; i++)
+
+              if (length > 3)
                 {
-                  if (mng_info->exists[i] && !mng_info->frozen[i])
+                  first_object=(p[0] << 8) | p[1];
+                  last_object=(p[2] << 8) | p[3];
+                  p+=4;
+
+                  for (i=(long) first_object; i <= (long) last_object; i++)
                     {
-                      MngPair
-                        new_pair;
+                      if (mng_info->exists[i] && !mng_info->frozen[i] &&
+                          (p-chunk) < (ssize_t) (length-8))
+                        {
+                          MngPair
+                            new_pair;
 
-                      MngPair
-                        old_pair;
+                          MngPair
+                            old_pair;
 
-                      old_pair.a=mng_info->x_off[i];
-                      old_pair.b=mng_info->y_off[i];
-                      new_pair=mng_read_pair(old_pair,(int) p[4],&p[5]);
-                      mng_info->x_off[i]=new_pair.a;
-                      mng_info->y_off[i]=new_pair.b;
+                          old_pair.a=mng_info->x_off[i];
+                          old_pair.b=mng_info->y_off[i];
+                          new_pair=mng_read_pair(old_pair,(int) p[0],&p[1]);
+                          mng_info->x_off[i]=new_pair.a;
+                          mng_info->y_off[i]=new_pair.b;
+                        }
                     }
                 }
               MagickFreeMemory(chunk);
@@ -4275,21 +4289,25 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           if (!memcmp(type,mng_LOOP,4))
             {
               long loop_iters=1;
-              loop_level=chunk[0];
-              loops_active++;
-              mng_info->loop_active[loop_level]=1;  /* mark loop active */
-              /*
-                Record starting point.
-              */
-              loop_iters=mng_get_long(&chunk[1]);
-              if (loop_iters == 0)
-                skipping_loop=loop_level;
-              else
+
+              if (length > 0) /* To do: check spec, if empty LOOP is allowed */
                 {
-                  mng_info->loop_jump[loop_level]=TellBlob(image);
-                  mng_info->loop_count[loop_level]=loop_iters;
+                  loop_level=chunk[0];
+                  loops_active++;
+                  mng_info->loop_active[loop_level]=1;  /* mark loop active */
+                  /*
+                    Record starting point.
+                  */
+                  loop_iters=mng_get_long(&chunk[1]);
+                  if (loop_iters == 0)
+                    skipping_loop=loop_level;
+                  else
+                    {
+                      mng_info->loop_jump[loop_level]=TellBlob(image);
+                      mng_info->loop_count[loop_level]=loop_iters;
+                    }
+                  mng_info->loop_iteration[loop_level]=0;
                 }
-              mng_info->loop_iteration[loop_level]=0;
               MagickFreeMemory(chunk);
               continue;
             }

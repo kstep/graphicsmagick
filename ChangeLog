@@ -1,5 +1,8 @@
 2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+	* coders/png.c (ReadPNGImage): Check length of various MNG
+	chunks before using the chunk data.
+
 	* coders/png.c (WriteOnePNGImage): Use png_error() instead of
 	throwing an exception so cleanup in the setjmp block can happen,
 	including unlocking the semaphore.  Addresses Coverity CID 10184.
