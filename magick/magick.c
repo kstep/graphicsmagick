@@ -1494,6 +1494,39 @@ RegisterMagickInfo(MagickInfo *magick_info)
 %
 %
 */
+static void
+PanicFreeFunc(void *ptr)
+{
+  char err_str[] = "Attempt to free memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(ptr);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+}
+static void *
+PanicMallocFunc(size_t size)
+{
+  char err_str[] = "Attempt to malloc memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(size);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+  return (void *) NULL;
+}
+static void *
+PanicReallocFunc(void *ptr, size_t size)
+{
+  char err_str[] = "Attempt to realloc memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(ptr);
+  ARG_NOT_USED(size);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+  return (void *) NULL;
+}
 MagickExport void
 PanicDestroyMagick(void)
 {
@@ -1503,7 +1536,7 @@ PanicDestroyMagick(void)
         Enforce that we don't use the memory allocation functions by
         setting them all to null.
       */
-      MagickAllocFunctions(0,0,0);
+      MagickAllocFunctions(PanicFreeFunc,PanicMallocFunc,PanicReallocFunc);
         
       /*
         Release persistent resources

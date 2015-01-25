@@ -1,4 +1,9 @@
-2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (PanicDestroyMagick): Replace memory allocation
+	functions with dummy functions rather than NULL pointers.
+
+2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/bmp.c (ReadBMPImage): An attempt to address CID 10291.
 
