@@ -706,6 +706,17 @@ MagickPanicSignalHandler(int signo)
 
   panic_signal_handler_call_count++;
 
+#if defined(SIGSEGV)
+  /* Signal sent due to SIGSEGV */
+  if (signo == SIGSEGV)
+    {
+      char err_str[] = "Signal SIGSEGV (Segmentation Fault)\n";
+      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+        {
+          /* Exists to quench warning */
+        }
+    }
+#endif
 #if defined(SIGXCPU)
   /* Signal sent due to RLIMIT_CPU */
   if (signo == SIGXCPU)
@@ -740,15 +751,34 @@ MagickPanicSignalHandler(int signo)
       PanicDestroyMagick();
 
       /*
-	Call abort so that we quit with core dump.
+        Produce a useful message for the user
       */
       {
-        char err_str[] = "Aborting due to signal...\n";
-        if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+        static char message[128];
+        size_t i;
+        int num=signo;
+
+        (void) strlcpy(message, GetClientName(), sizeof(message));
+        (void) strlcat(message,": panic abort due to signal ",sizeof(message));
+        i=strlen(message);
+        for (i=strlen(message); (num != 0) && (i < sizeof(message)-1) ; i++)
+          {
+            int rem = num % 10;
+            message[i] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+            num = num/10;
+          }
+        message[i] = '\0';
+        (void) strlcat(message,"...\n",sizeof(message));
+
+        if (write(STDERR_FILENO,message,strlen(message)) == -1)
           {
             /* Exists to quench warning */
           }
       }
+
+      /*
+	Call abort so that we quit with core dump.
+      */
       abort();
     }
 }
@@ -791,10 +821,10 @@ MagickSignalHandler(int signo)
 	  */
 	  (void) SetMonitorHandler(QuitProgressMonitor);
 
-	  /*
-	    Release persistent resources
-	  */
-	  PurgeTemporaryFiles();
+          /*
+            Release persistent resources
+          */
+          PanicDestroyMagick();
 	}
 
       /*
@@ -957,6 +987,10 @@ InitializeMagickSignalHandlers(void)
   /* software termination signal from kill, default terminate */
 #if defined(SIGTERM)
   (void) MagickCondSignal(SIGTERM,MagickSignalHandler);
+#endif
+  /* segmentation fault */
+#if defined(SIGSEGV)
+  (void) MagickCondSignal(SIGSEGV,MagickPanicSignalHandler);
 #endif
   /* exceeded cpu limit, default terminate with core */
 #if defined(SIGXCPU)
@@ -1534,7 +1568,7 @@ PanicDestroyMagick(void)
     {
       /*
         Enforce that we don't use the memory allocation functions by
-        setting them all to null.
+        setting them all to dummy functions.
       */
       MagickAllocFunctions(PanicFreeFunc,PanicMallocFunc,PanicReallocFunc);
         

@@ -2,6 +2,10 @@
 
 	* magick/magick.c (PanicDestroyMagick): Replace memory allocation
 	functions with dummy functions rather than NULL pointers.
+	(InitializeMagickSignalHandlers): Register
+	MagickPanicSignalHandler() for SIGSEGV.
+	(MagickPanicSignalHandler): Produce an informative message for the
+	user.
 
 2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
