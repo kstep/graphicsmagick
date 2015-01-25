@@ -815,40 +815,6 @@ MagickPanicSignalHandler(int signo)
 
   panic_signal_handler_call_count++;
 
-#if defined(SIGSEGV)
-  /* Signal sent due to SIGSEGV */
-  if (signo == SIGSEGV)
-    {
-      char err_str[] = "Signal SIGSEGV (Segmentation Fault)\n";
-      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
-        {
-          /* Exists to quench warning */
-        }
-    }
-#endif
-#if defined(SIGXCPU)
-  /* Signal sent due to RLIMIT_CPU */
-  if (signo == SIGXCPU)
-    {
-      char err_str[] = "Signal SIGXCPU (CPU limit exceeded)\n";
-      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
-        {
-          /* Exists to quench warning */
-        }
-    }
-#endif
-#if defined(SIGXFSZ)
-  /* Signal sent due to RLIMIT_FSIZE */
-  if (signo == SIGXFSZ)
-    {
-      char err_str[] = "Signal SIGXFSZ (file size limit exceeded)\n";
-      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
-        {
-          /* Exists to quench warning */
-        }
-    }
-#endif
-
   /*
     Only handle signal one time.
   */
