@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -709,12 +709,24 @@ MagickPanicSignalHandler(int signo)
 #if defined(SIGXCPU)
   /* Signal sent due to RLIMIT_CPU */
   if (signo == SIGXCPU)
-      fprintf(stderr,"Signal SIGXCPU\n");
+    {
+      char err_str[] = "Signal SIGXCPU (CPU limit exceeded)\n";
+      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+        {
+          /* Exists to quench warning */
+        }
+    }
 #endif
 #if defined(SIGXFSZ)
   /* Signal sent due to RLIMIT_FSIZE */
   if (signo == SIGXFSZ)
-    fprintf(stderr,"Signal SIGXFSZ\n");
+    {
+      char err_str[] = "Signal SIGXFSZ (file size limit exceeded)\n";
+      if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+        {
+          /* Exists to quench warning */
+        }
+    }
 #endif
 
   /*
@@ -722,17 +734,21 @@ MagickPanicSignalHandler(int signo)
   */
   if (1 == panic_signal_handler_call_count)
     {
-      if (MagickInitialized == InitInitialized)
-	{
-	  /*
-	    Release persistent resources
-	  */
-	  PurgeTemporaryFiles();
-	}
+      /*
+        Release persistent resources
+      */
+      PanicDestroyMagick();
 
       /*
 	Call abort so that we quit with core dump.
       */
+      {
+        char err_str[] = "Aborting due to signal...\n";
+        if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+          {
+            /* Exists to quench warning */
+          }
+      }
       abort();
     }
 }
@@ -1451,6 +1467,49 @@ RegisterMagickInfo(MagickInfo *magick_info)
   */
   DestroyMagickInfo(&magick_info);
   return(magick_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a n i c D e s t r o y M a g i c k                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PanicDestroyMagick() destroys only persistent allocations such as
+%  temporary files.  Other allocations (e.g. semaphores and heap memory)
+%  remain allocated.  This function is an alternative to DestroyMagick()
+%  which is async-safe so it may be invoked from signal handers, and
+%  may be invoked from thread context.  No semaphores are taken and no
+%  additional heap memory is allocated by this function.  The program
+%  must quit immediately after invoking this function.
+%
+%  The format of the PanicDestroyMagick function is:
+%
+%      void PanicDestroyMagick(void)
+%
+%
+*/
+MagickExport void
+PanicDestroyMagick(void)
+{
+  if (MagickInitialized == InitInitialized)
+    {
+      /*
+        Enforce that we don't use the memory allocation functions by
+        setting them all to null.
+      */
+      MagickAllocFunctions(0,0,0);
+        
+      /*
+        Release persistent resources
+      */
+      PurgeTemporaryFiles();
+    }
 }
 
 /*

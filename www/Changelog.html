@@ -35,6 +35,22 @@
 <div class="document">
 
 
+<p>2015-01-25  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/nt_base.c (Exit): Changed to return 'void'. Function can
+not return a value if it does not return.</li>
+<li>magick/error.c (DefaultFatalErrorHandler): Invoke
+PanicDestroyMagick() rather than DestroyMagick().  If we are
+really that short on memory, DestroyMagick() might not work.</li>
+<li>magick/magick.c (MagickPanicSignalHandler): Only use async-safe
+functions in signal handler.
+(PanicDestroyMagick): New function for emergency release of
+persistent resources just prior to program exit.  Async-safe and
+does not acquire or release any heap memory.</li>
+<li>magick/export.c: Eliminate two 'clang' warnings.</li>
+</ul>
+</blockquote>
 <p>2015-01-24  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

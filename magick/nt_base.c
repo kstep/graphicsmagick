@@ -212,11 +212,12 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Exit calls TerminateProcess for Win95.
+%  Method Exit calls TerminateProcess for Win95.  Should quit the program
+%  and not return.
 %
 %  The format of the Exit method is:
 %
-%      int Exit(int status)
+%      void Exit(int status)
 %
 %  A description of each parameter follows:
 %
@@ -225,12 +226,11 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
 %
 %
 */
-MagickExport int Exit(int status)
+MagickExport void Exit(int status)
 {
   if (IsWindows95())
     TerminateProcess(GetCurrentProcess(),(unsigned int) status);
   exit(status);
-  return(0);
 }
 
 /*

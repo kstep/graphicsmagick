@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -278,7 +278,13 @@ static void DefaultFatalErrorHandler(const ExceptionType severity,
         (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
       (void) fprintf(stderr,".\n");
     }
-  DestroyMagick();
+  /*
+    Release persistent resources
+  */
+  PanicDestroyMagick();
+  /*
+    Program quits
+  */
   Exit(severity);
 }
 

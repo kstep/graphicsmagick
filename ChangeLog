@@ -1,3 +1,20 @@
+2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (Exit): Changed to return 'void'. Function can
+	not return a value if it does not return.
+
+	* magick/error.c (DefaultFatalErrorHandler): Invoke
+	PanicDestroyMagick() rather than DestroyMagick().  If we are
+	really that short on memory, DestroyMagick() might not work.
+
+	* magick/magick.c (MagickPanicSignalHandler): Only use async-safe
+	functions in signal handler.
+	(PanicDestroyMagick): New function for emergency release of
+	persistent resources just prior to program exit.  Async-safe and
+	does not acquire or release any heap memory.
+
+	* magick/export.c: Eliminate two 'clang' warnings.
+
 2015-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdb.c (ReadPDBImage): Fix typo.

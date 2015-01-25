@@ -715,6 +715,7 @@
 #define OrientationTypeToString GmOrientationTypeToString
 #define PackbitsEncode2Image GmPackbitsEncode2Image
 #define PackbitsEncodeImage GmPackbitsEncodeImage
+#define PanicDestroyMagick GmPanicDestroyMagick
 #define PersistCache GmPersistCache
 #define PingBlob GmPingBlob
 #define PingImage GmPingImage

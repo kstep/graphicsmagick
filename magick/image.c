@@ -2411,16 +2411,6 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %
 */
 
-static inline unsigned int
-IsFrame(const char *point)
-{
-  char
-    *p;
-
-  (void) strtol(point,&p,10);
-  return(p != point);
-}
-
 static MagickPassFail
 ParseSubImageSpecification(char *filename,
 			   char **tile_ptr,

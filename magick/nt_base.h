@@ -288,7 +288,6 @@ extern MagickExport void
   System functions.
 */
 extern MagickExport int
-  Exit(int),
   NTSystemComman(const char *);
 
 #if !defined(XS_VERSION)  /* Not in Perl extension */
@@ -317,6 +316,7 @@ extern MagickExport double
 #define MS_SYNC         0x1  // synchronous page sync
 
 extern MagickExport void
+  Exit(int) MAGICK_FUNC_NORETURN,
   *NTmmap(char *address,size_t length,int protection,int access,int file,
      magick_off_t offset);
 

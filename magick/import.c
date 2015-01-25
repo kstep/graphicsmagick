@@ -3501,8 +3501,6 @@ ImportViewPixelArea(ViewInfo *view,
   assert(source != (const unsigned char *) NULL);
   assert(quantum_size > 0U);
   assert((quantum_size <= 32U) || (quantum_size == 64U));
-  assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
-  assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ImportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 
