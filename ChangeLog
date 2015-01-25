@@ -1,3 +1,7 @@
+2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/bmp.c (ReadBMPImage): An attempt to address CID 10291.
+
 2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (Exit): Changed to return 'void'. Function can
