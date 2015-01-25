@@ -43,7 +43,10 @@ functions with dummy functions rather than NULL pointers.
 (InitializeMagickSignalHandlers): Register
 MagickPanicSignalHandler() for SIGSEGV.
 (MagickPanicSignalHandler): Produce an informative message for the
-user.</li>
+user.
+(MagickSignalHandlerMessage): Include more detailed information
+from the signal handler via a common routine used by default
+signal handlers.</li>
 </ul>
 </blockquote>
 <p>2015-01-25  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>

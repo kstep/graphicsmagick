@@ -6,6 +6,9 @@
 	MagickPanicSignalHandler() for SIGSEGV.
 	(MagickPanicSignalHandler): Produce an informative message for the
 	user.
+	(MagickSignalHandlerMessage): Include more detailed information
+	from the signal handler via a common routine used by default
+	signal handlers.
 
 2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 

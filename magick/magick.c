@@ -682,6 +682,115 @@ MagickIgnoreSignalHandler(int signo)
 #endif
 
 /*
+  Write a message about the signal to stderr.
+*/
+static void
+MagickSignalHandlerMessage(const int signo, const char *subtext)
+{
+  /*
+    Signals we might handle, to map to their common description.
+
+    May use strsignal() on POSIX.1-2008-compliant systems, but it is
+    not documented to be async-safe.
+
+  */
+  static const struct {
+    const int signo;
+    const char *name;
+    const char *descr;
+  } signal_descr[] = {
+#if defined(SIGHUP)
+    { SIGHUP, "SIGHUP","Hangup" },
+#endif
+#if defined(SIGINT)
+    { SIGINT, "SIGINT", "Interrupt" },
+#endif
+#if defined(SIGQUIT)
+    { SIGQUIT, "SIGQUIT", "Quit" },
+#endif
+#if defined(SIGILL)
+    { SIGILL, "SIGILL", "Illegal Instruction" },
+#endif
+#if defined(SIGABRT)
+    { SIGABRT, "SIGABRT", "Abort" },
+#endif
+#if defined(SIGFPE)
+    { SIGFPE, "SIGFPE", "Arithmetic Exception" },
+#endif
+#if defined(SIGBUS)
+    { SIGBUS, "SIGBUS", "Bus Error" },
+#endif
+#if defined(SIGSEGV)
+    { SIGSEGV, "SIGSEGV", "Segmentation Fault" },
+#endif
+#if defined(SIGPIPE)
+    { SIGPIPE, "SIGPIPE", "Broken Pipe" },
+#endif
+#if defined(SIGALRM)
+    { SIGALRM, "SIGALRM", "Alarm Clock" },
+#endif
+#if defined(SIGTERM)
+    { SIGTERM, "SIGTERM", "Terminated" },
+#endif
+#if defined(SIGCHLD)
+    { SIGCHLD, "SIGCHLD", "Child Status Changed" },
+#endif
+#if defined(SIGXCPU)
+    { SIGXCPU, "SIGXCPU", "CPU time limit exceeded" },
+#endif
+#if defined(SIGXFSZ)
+    { SIGXFSZ, "SIGXFSZ", "File size limit exceeded" }
+#endif
+  };
+
+  static char
+    message[128];
+
+  size_t
+    i;
+
+  int
+    num=signo;
+
+  /*
+    Output messages like:
+
+    gm convert: quitting due to signal 2 (SIGINT) "Interrupt"...
+    gm convert: abort due to signal 11 (SIGSEGV) "Segmentation Fault"...
+  */
+  (void) strlcpy(message, GetClientName(), sizeof(message));
+  (void) strlcat(message,": ", sizeof(message));
+  (void) strlcat(message,subtext,sizeof(message));
+  (void) strlcat(message," due to signal ",sizeof(message));
+  i=strlen(message);
+  for ( ; (num != 0) && (i < sizeof(message)-1) ; i++)
+    {
+      int rem = num % 10;
+      message[i] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+      num = num/10;
+    }
+  message[i] = '\0';
+  for ( i=0; i < (sizeof(signal_descr)/sizeof(signal_descr[0])); i++)
+    {
+      if (signo == signal_descr[i].signo)
+        {
+          (void) strlcat(message," (",sizeof(message));
+          (void) strlcat(message,signal_descr[i].name,sizeof(message));
+          (void) strlcat(message,") \"",sizeof(message));
+          (void) strlcat(message,signal_descr[i].descr,sizeof(message));
+          (void) strlcat(message,"\"",sizeof(message));
+        }
+    }
+  (void) strlcat(message,"...\n",sizeof(message));
+
+  if (write(STDERR_FILENO,message,strlen(message)) == -1)
+    {
+      /* Exists to quench warning */
+    }
+}
+
+
+/*
   Signal handler to ensure that DestroyMagick is invoked in case the
   user aborts the program.
 
@@ -753,28 +862,7 @@ MagickPanicSignalHandler(int signo)
       /*
         Produce a useful message for the user
       */
-      {
-        static char message[128];
-        size_t i;
-        int num=signo;
-
-        (void) strlcpy(message, GetClientName(), sizeof(message));
-        (void) strlcat(message,": panic abort due to signal ",sizeof(message));
-        i=strlen(message);
-        for (i=strlen(message); (num != 0) && (i < sizeof(message)-1) ; i++)
-          {
-            int rem = num % 10;
-            message[i] = (rem > 9)? (rem-10) + 'a' : rem + '0';
-            num = num/10;
-          }
-        message[i] = '\0';
-        (void) strlcat(message,"...\n",sizeof(message));
-
-        if (write(STDERR_FILENO,message,strlen(message)) == -1)
-          {
-            /* Exists to quench warning */
-          }
-      }
+      MagickSignalHandlerMessage(signo,"abort");
 
       /*
 	Call abort so that we quit with core dump.
@@ -798,7 +886,6 @@ static MagickBool QuitProgressMonitor(const char *task,
 
   return MagickFail;
 }
-
 
 static RETSIGTYPE
 MagickSignalHandler(int signo)
@@ -825,6 +912,12 @@ MagickSignalHandler(int signo)
             Release persistent resources
           */
           PanicDestroyMagick();
+
+          /*
+            Produce a useful message for the user
+          */
+          if (signo != SIGINT)
+            MagickSignalHandlerMessage(signo,"quitting");
 	}
 
       /*
@@ -987,6 +1080,10 @@ InitializeMagickSignalHandlers(void)
   /* software termination signal from kill, default terminate */
 #if defined(SIGTERM)
   (void) MagickCondSignal(SIGTERM,MagickSignalHandler);
+#endif
+  /* Bus Error */
+#if defined(SIGBUS)
+  (void) MagickCondSignal(SIGBUS,MagickPanicSignalHandler);
 #endif
   /* segmentation fault */
 #if defined(SIGSEGV)
