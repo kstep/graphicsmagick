@@ -1,5 +1,9 @@
 2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/miff.c (ReadMIFFImage): MIFF needs to stop spinning if
+	zlib or bzlib report an error while decompressing.  Solves problem
+	with file provided by Jodie Cunningham on 2015-01-25.
+
 	* coders/vicar.c (ReadVICARImage): Fix Vicar reader's dogged
 	determination to continue reading when there is nothing left to
 	read.  Solves problem with file provided by Jodie Cunningham on
