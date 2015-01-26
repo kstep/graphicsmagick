@@ -1512,8 +1512,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       ThrowReaderException(CorruptImageError,UnableToUncompressImage,
                                            image);
                     }
-                  /* if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END) */
-                  /*   break; */
                 } while (zip_info.avail_out != 0);
               if (y == (long) (image->rows-1))
                 {
