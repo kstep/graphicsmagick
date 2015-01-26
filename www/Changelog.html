@@ -38,6 +38,10 @@
 <p>2015-01-25  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/vicar.c (ReadVICARImage): Fix Vicar reader's dogged
+determination to continue reading when there is nothing left to
+read.  Solves problem with file provided by Jodie Cunningham on
+2015-01-25.</li>
 <li>magick/magick.c (PanicDestroyMagick): Replace memory allocation
 functions with dummy functions rather than NULL pointers.
 (InitializeMagickSignalHandlers): Register
