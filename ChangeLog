@@ -1,5 +1,8 @@
 2015-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/gif.c (DecodeImage): Assure that GIF decoder does not use
+	unitialized data.
+
 	* coders/jpeg.c (ReadJPEGImage): Verify that we support the number
 	of output components before proceeding to decode the image.
 

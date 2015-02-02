@@ -171,6 +171,8 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
   old_code=NullCode;
   code_size=data_size+1;
   code_mask=(1 << code_size)-1;
+  (void) memset(prefix,0,MaxStackSize*sizeof(short));
+  (void) memset(suffix,0,MaxStackSize);
   for (code=0; code < clear; code++)
   {
     prefix[code]=0;
@@ -261,6 +263,12 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
               *top_stack++=first;
               code=old_code;
             }
+          /*
+            FIXME: Is the logic for this loop (or the loop which inits
+            suffix and prefix arrays) correct?  Values are
+            intentionally accessed outside of the explictly
+            initialized range of 'clear'.
+          */
           while (code >= clear)
           {
             if ((top_stack-pixel_stack) >= MaxStackSize)
