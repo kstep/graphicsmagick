@@ -1,5 +1,8 @@
 2015-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xpm.c (ReadXPMImage): Reading empty XPM file should not
+	cause bad memory access.
+
 	* coders/gif.c (DecodeImage): Assure that GIF decoder does not use
 	unitialized data.
 

@@ -227,23 +227,26 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   length=MaxTextExtent;
   xpm_buffer=MagickAllocateMemory(char *,length);
-  p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
-    while (ReadBlobString(image,p) != (char *) NULL)
     {
-      if (*p == '#')
-        if ((p == xpm_buffer) || (*(p-1) == '\n'))
-          continue;
-      if ((*p == '}') && (*(p+1) == ';'))
-        break;
-      p+=strlen(p);
-      if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
-        continue;
-      length<<=1;
-      MagickReallocMemory(char *,xpm_buffer,length);
-      if (xpm_buffer == (char *) NULL)
-        break;
-      p=xpm_buffer+strlen(xpm_buffer);
+      xpm_buffer[0]='\0';
+      p=xpm_buffer;
+      while (ReadBlobString(image,p) != (char *) NULL)
+        {
+          if (*p == '#')
+            if ((p == xpm_buffer) || (*(p-1) == '\n'))
+              continue;
+          if ((*p == '}') && (*(p+1) == ';'))
+            break;
+          p+=strlen(p);
+          if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
+            continue;
+          length<<=1;
+          MagickReallocMemory(char *,xpm_buffer,length);
+          if (xpm_buffer == (char *) NULL)
+            break;
+          p=xpm_buffer+strlen(xpm_buffer);
+        }
     }
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
