@@ -1,3 +1,9 @@
+2015-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (QuantumTransferMode): Fix reading or writing
+	planar min-is-white or min-is-black images with an associated
+	alpha channel.
+
 2015-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xpm.c (ReadXPMImage): Reading empty XPM file should not

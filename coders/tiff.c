@@ -1227,15 +1227,32 @@ QuantumTransferMode(const Image *image,
         case PHOTOMETRIC_MINISBLACK:
         case PHOTOMETRIC_MINISWHITE:
           {
-            if (image->matte)
+            if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                *quantum_type=GrayAlphaQuantum;
-                *quantum_samples=2;
+                switch (plane)
+                  {
+                  case 0:
+                    *quantum_type=GrayQuantum;
+                    *quantum_samples=1;
+                    break;
+                  case 1:
+                    *quantum_type=AlphaQuantum;
+                    *quantum_samples=1;
+                    break;
+                  }
               }
             else
               {
-                *quantum_type=GrayQuantum;
-                *quantum_samples=1;
+                if (image->matte)
+                  {
+                    *quantum_type=GrayAlphaQuantum;
+                    *quantum_samples=2;
+                  }
+                else
+                  {
+                    *quantum_type=GrayQuantum;
+                    *quantum_samples=1;
+                  }
               }
             break;
           }
@@ -2125,6 +2142,11 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 status=MagickFail;
                 break;
               }
+
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Allocating scanline buffer of %lu bytes",
+                                    (unsigned long) scanline_size);
 
             scanline=MagickAllocateMemory(unsigned char *,(size_t) scanline_size);
             if (scanline == (unsigned char *) NULL)
