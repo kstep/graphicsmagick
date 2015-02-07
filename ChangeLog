@@ -1,3 +1,8 @@
+2015-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Use YCbCr encoding when JPEG
+	compression is requested for an RGB image.
+
 2015-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (QuantumTransferMode): Fix reading or writing
