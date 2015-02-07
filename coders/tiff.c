@@ -1350,12 +1350,15 @@ QuantumTransferMode(const Image *image,
           }
         case PHOTOMETRIC_YCBCR:
           {
-            /* This is here to support JPEGCOLORMODE_RGB*/
+            /*
+              This is here to support JPEGCOLORMODE_RGB which claims a
+              YCbCr photometric, but passes RGB to libtiff.
+             */
             if (samples_per_pixel == 3)
-            {
-              *quantum_type=RGBQuantum;
-              *quantum_samples=3;
-            }
+              {
+                *quantum_type=RGBQuantum;
+                *quantum_samples=3;
+              }
             break;
           }
         }
@@ -4041,20 +4044,6 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
         }
 
       /*
-        YCbCr encoding compresses much better than RGB.  Use YCbCr
-        encoding for JPEG (normal for JPEG files).
-
-        FIXME: Need to find a way to select between RGB or YCbCr
-        encoding with JPEG compression.  Testing shows that YCbCr is
-        over 2.5X smaller than RGB but the PSNR is a bit lower,
-        particularly in red and blue channels.  Someone might want to
-        use RGB to minimize color loss.
-      */
-      if ((compress_tag == COMPRESSION_JPEG) &&
-          (photometric == PHOTOMETRIC_RGB))
-        photometric=PHOTOMETRIC_YCBCR;
-
-      /*
         If the user has selected something other than MINISWHITE,
         MINISBLACK, or RGB, then remove JPEG compression.  Also remove
         fax compression if photometric is not compatible.
@@ -4325,16 +4314,6 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
       }
 
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Using %s photometric, %u samples per pixel, "
-			      "%u bits per sample, format %s",
-                              PhotometricTagToString(photometric),
-                              (unsigned int) samples_per_pixel,
-                              (unsigned int) bits_per_sample,
-                              sample_format == SAMPLEFORMAT_UINT ? "Unsigned" :
-                              sample_format == SAMPLEFORMAT_IEEEFP ? "IEEEFP" :
-                              "unknown");
       /*
         Determine planar configuration.
       */
@@ -4369,6 +4348,32 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 	      break;
 	    }
 	}
+
+      /*
+        YCbCr encoding compresses much better than RGB.  Use YCbCr
+        encoding for JPEG (normal for JPEG files).
+
+        FIXME: Need to find a way to select between RGB or YCbCr
+        encoding with JPEG compression.  Testing shows that YCbCr is
+        over 2.5X smaller than RGB but the PSNR is a bit lower,
+        particularly in red and blue channels.  Someone might want to
+        use RGB to minimize color loss.
+      */
+      if ((compress_tag == COMPRESSION_JPEG) &&
+          (planar_config == PLANARCONFIG_CONTIG) &&
+          (photometric == PHOTOMETRIC_RGB))
+        photometric=PHOTOMETRIC_YCBCR;
+
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using %s photometric, %u samples per pixel, "
+			      "%u bits per sample, format %s",
+                              PhotometricTagToString(photometric),
+                              (unsigned int) samples_per_pixel,
+                              (unsigned int) bits_per_sample,
+                              sample_format == SAMPLEFORMAT_UINT ? "Unsigned" :
+                              sample_format == SAMPLEFORMAT_IEEEFP ? "IEEEFP" :
+                              "unknown");
 
       /*
         Only set fill order if the setting is not the default.
