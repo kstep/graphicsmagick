@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -707,6 +707,34 @@ ReadNewsProfile(char *text,long int length,Image *image,int type)
   return SetImageProfile(image,"8BIM",p,(size_t) length);
 }
 
+/*
+  Return MagickTrue if TIFF warnings should be thrown as a warning
+  exception rather than logged.
+*/
+static MagickBool
+CheckThrowWarnings(const ImageInfo *image_info)
+{
+  const char *
+    definition_value;
+
+  MagickBool
+    report_warnings=MagickFalse;
+
+  if ((definition_value=AccessDefinition(image_info,"tiff","report-warnings")))
+    {
+      if (LocaleCompare(definition_value,"TRUE") == 0)
+        report_warnings=MagickTrue;
+    }
+
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Reporting TIFF warnings via %s",
+                        (report_warnings ? "exception" :
+                         "log message"));
+
+  return report_warnings;
+}
+
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -862,9 +890,9 @@ TIFFUnmapBlob(thandle_t ARGUNUSED(image),
 #endif  /* LOG_TIFF_BLOB_IO */
 }
 
-/* Report warnings. */
+/* Report warnings as a coder log message. */
 static unsigned int
-TIFFWarnings(const char *module,const char *format,va_list warning)
+TIFFWarningsLogOnly(const char *module,const char *format,va_list warning)
 {
 /*   ExceptionInfo */
 /*     *tiff_exception; */
@@ -879,6 +907,28 @@ TIFFWarnings(const char *module,const char *format,va_list warning)
   (void) strlcat(message,".",MaxTextExtent);
 /*   tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key); */
 /*   ThrowException2(tiff_exception,CoderWarning,message,module); */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "TIFF Warning: %s",message);
+  return(True);
+}
+
+/* Report warnings as exception in thread-specific ExceptionInfo */
+static unsigned int
+TIFFWarningsThrowException(const char *module,const char *format,va_list warning)
+{
+  ExceptionInfo
+    *tiff_exception;
+
+  char
+    message[MaxTextExtent];
+
+  (void) module;
+  errno=0;
+  (void) vsnprintf(message,MaxTextExtent-2,format,warning);
+  message[MaxTextExtent-2]='\0';
+  (void) strlcat(message,".",MaxTextExtent);
+  tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key);
+  ThrowException2(tiff_exception,CoderWarning,message,module);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "TIFF Warning: %s",message);
   return(True);
@@ -1588,6 +1638,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   logging=IsEventLogging();
   image=AllocateImage(image_info);
   more_frames=MagickFalse;
@@ -1596,7 +1647,9 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   (void) MagickTsdSetSpecific(tsd_key,(void *) exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) TIFFSetWarningHandler((TIFFErrorHandler) (CheckThrowWarnings(image_info) ?
+                                                   TIFFWarningsThrowException :
+                                                   TIFFWarningsLogOnly));
   client_data.image=image;
   client_data.image_info=image_info;
   tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) &client_data,TIFFReadBlob,
@@ -3347,7 +3400,9 @@ WriteGROUP4RAWImage(const ImageInfo *image_info,Image *image)
 
   (void) MagickTsdSetSpecific(tsd_key,(void *) (&image->exception));
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) TIFFSetWarningHandler((TIFFErrorHandler) (CheckThrowWarnings(image_info) ?
+                                                   TIFFWarningsThrowException :
+                                                   TIFFWarningsLogOnly));
 
   tiff=TIFFOpen(temporary_filename,"rb");
   if (tiff == (TIFF *) NULL)
@@ -3696,7 +3751,9 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) MagickTsdSetSpecific(tsd_key,(void *) (&image->exception));
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) TIFFSetWarningHandler((TIFFErrorHandler) (CheckThrowWarnings(image_info) ?
+                                                   TIFFWarningsThrowException :
+                                                   TIFFWarningsLogOnly));
   (void) strlcpy(filename,image->filename,MaxTextExtent);
   /*
     Open TIFF file
