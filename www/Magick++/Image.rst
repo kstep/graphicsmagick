@@ -2330,7 +2330,7 @@ quiet
 +++++
 
 Determines if Warning exceptions will be thrown, or suppressed.
-Defaults to suppressed::
+The default is that warnings will be thrown (i.e. false)::
 
     void            quiet ( const bool quiet_ );
     bool            quiet ( void ) const;
