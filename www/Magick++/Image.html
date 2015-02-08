@@ -101,6 +101,7 @@ using namespace std;
 using namespace Magick;
 int main(int argc,char **argv)
 {
+  // Initialize the API.  Can pass NULL if argv is not available.
   InitializeMagick(*argv);
 
   // Construct the image object. Seperating image construction from the
@@ -109,6 +110,10 @@ int main(int argc,char **argv)
   Image image;
 
   try {
+    // Determine if Warning exceptions are thrown.
+    // Use is optional.  Set to true to block Warning exceptions.
+    image.quiet( false );
+
     // Read a file into image object
     image.read( &quot;girl.gif&quot; );
 
@@ -318,8 +323,9 @@ Image&amp; operator= ( const Image &amp;image_ )
 <h2><a class="toc-backref" href="#id17">ping</a></h2>
 <p>Ping is similar to <a class="reference internal" href="#read">read</a> except only enough of the image is read to
 determine the image columns, rows, and filesize.  Access the
-columns(), rows(), and fileSize() attributes after invoking ping.  The
-image pixels are not valid after calling ping:</p>
+columns(), rows(), and fileSize() attributes after invoking ping.
+Other attributes may also be available.  The image pixels are not
+valid after calling ping:</p>
 <pre class="literal-block">
 void            ping ( const std::string &amp;imageSpec_ )
 </pre>
@@ -1726,38 +1732,39 @@ image.write(filename)
 <li><a class="reference internal" href="#quantizecolorspace" id="id183">quantizeColorSpace</a></li>
 <li><a class="reference internal" href="#quantizedither" id="id184">quantizeDither</a></li>
 <li><a class="reference internal" href="#quantizetreedepth" id="id185">quantizeTreeDepth</a></li>
-<li><a class="reference internal" href="#renderingintent" id="id186">renderingIntent</a></li>
-<li><a class="reference internal" href="#resolutionunits" id="id187">resolutionUnits</a></li>
-<li><a class="reference internal" href="#rows" id="id188">rows</a></li>
-<li><a class="reference internal" href="#scene" id="id189">scene</a></li>
-<li><a class="reference internal" href="#signature" id="id190">signature</a></li>
-<li><a class="reference internal" href="#size" id="id191">size</a></li>
-<li><a class="reference internal" href="#statistics" id="id192">statistics</a></li>
-<li><a class="reference internal" href="#strokeantialias" id="id193">strokeAntiAlias</a></li>
-<li><a class="reference internal" href="#strokecolor" id="id194">strokeColor</a></li>
-<li><a class="reference internal" href="#strokedasharray" id="id195">strokeDashArray</a></li>
-<li><a class="reference internal" href="#strokedashoffset" id="id196">strokeDashOffset</a></li>
-<li><a class="reference internal" href="#strokelinecap" id="id197">strokeLineCap</a></li>
-<li><a class="reference internal" href="#strokelinejoin" id="id198">strokeLineJoin</a></li>
-<li><a class="reference internal" href="#strokemiterlimit" id="id199">strokeMiterLimit</a></li>
-<li><a class="reference internal" href="#strokepattern" id="id200">strokePattern</a></li>
-<li><a class="reference internal" href="#strokewidth" id="id201">strokeWidth</a></li>
-<li><a class="reference internal" href="#subimage" id="id202">subImage</a></li>
-<li><a class="reference internal" href="#subrange" id="id203">subRange</a></li>
-<li><a class="reference internal" href="#textencoding" id="id204">textEncoding</a></li>
-<li><a class="reference internal" href="#tilename" id="id205">tileName</a></li>
-<li><a class="reference internal" href="#totalcolors" id="id206">totalColors</a></li>
-<li><a class="reference internal" href="#transformorigin" id="id207">transformOrigin</a></li>
-<li><a class="reference internal" href="#transformrotation" id="id208">transformRotation</a></li>
-<li><a class="reference internal" href="#transformreset" id="id209">transformReset</a></li>
-<li><a class="reference internal" href="#transformscale" id="id210">transformScale</a></li>
-<li><a class="reference internal" href="#transformskewx" id="id211">transformSkewX</a></li>
-<li><a class="reference internal" href="#transformskewy" id="id212">transformSkewY</a></li>
-<li><a class="reference internal" href="#verbose" id="id213">verbose</a></li>
-<li><a class="reference internal" href="#view" id="id214">view</a></li>
-<li><a class="reference internal" href="#x11display" id="id215">x11Display</a></li>
-<li><a class="reference internal" href="#xresolution" id="id216">xResolution</a></li>
-<li><a class="reference internal" href="#yresolution" id="id217">yResolution</a></li>
+<li><a class="reference internal" href="#quiet" id="id186">quiet</a></li>
+<li><a class="reference internal" href="#renderingintent" id="id187">renderingIntent</a></li>
+<li><a class="reference internal" href="#resolutionunits" id="id188">resolutionUnits</a></li>
+<li><a class="reference internal" href="#rows" id="id189">rows</a></li>
+<li><a class="reference internal" href="#scene" id="id190">scene</a></li>
+<li><a class="reference internal" href="#signature" id="id191">signature</a></li>
+<li><a class="reference internal" href="#size" id="id192">size</a></li>
+<li><a class="reference internal" href="#statistics" id="id193">statistics</a></li>
+<li><a class="reference internal" href="#strokeantialias" id="id194">strokeAntiAlias</a></li>
+<li><a class="reference internal" href="#strokecolor" id="id195">strokeColor</a></li>
+<li><a class="reference internal" href="#strokedasharray" id="id196">strokeDashArray</a></li>
+<li><a class="reference internal" href="#strokedashoffset" id="id197">strokeDashOffset</a></li>
+<li><a class="reference internal" href="#strokelinecap" id="id198">strokeLineCap</a></li>
+<li><a class="reference internal" href="#strokelinejoin" id="id199">strokeLineJoin</a></li>
+<li><a class="reference internal" href="#strokemiterlimit" id="id200">strokeMiterLimit</a></li>
+<li><a class="reference internal" href="#strokepattern" id="id201">strokePattern</a></li>
+<li><a class="reference internal" href="#strokewidth" id="id202">strokeWidth</a></li>
+<li><a class="reference internal" href="#subimage" id="id203">subImage</a></li>
+<li><a class="reference internal" href="#subrange" id="id204">subRange</a></li>
+<li><a class="reference internal" href="#textencoding" id="id205">textEncoding</a></li>
+<li><a class="reference internal" href="#tilename" id="id206">tileName</a></li>
+<li><a class="reference internal" href="#totalcolors" id="id207">totalColors</a></li>
+<li><a class="reference internal" href="#transformorigin" id="id208">transformOrigin</a></li>
+<li><a class="reference internal" href="#transformrotation" id="id209">transformRotation</a></li>
+<li><a class="reference internal" href="#transformreset" id="id210">transformReset</a></li>
+<li><a class="reference internal" href="#transformscale" id="id211">transformScale</a></li>
+<li><a class="reference internal" href="#transformskewx" id="id212">transformSkewX</a></li>
+<li><a class="reference internal" href="#transformskewy" id="id213">transformSkewY</a></li>
+<li><a class="reference internal" href="#verbose" id="id214">verbose</a></li>
+<li><a class="reference internal" href="#view" id="id215">view</a></li>
+<li><a class="reference internal" href="#x11display" id="id216">x11Display</a></li>
+<li><a class="reference internal" href="#xresolution" id="id217">xResolution</a></li>
+<li><a class="reference internal" href="#yresolution" id="id218">yResolution</a></li>
 </ul>
 </div>
 <div class="section" id="adjoin">
@@ -2513,8 +2520,17 @@ void            quantizeTreeDepth ( const unsigned int treeDepth_ )
 unsigned int    quantizeTreeDepth ( void ) const
 </pre>
 </div>
+<div class="section" id="quiet">
+<h2><a class="toc-backref" href="#id186">quiet</a></h2>
+<p>Determines if Warning exceptions will be thrown, or suppressed.
+Defaults to suppressed:</p>
+<pre class="literal-block">
+void            quiet ( const bool quiet_ );
+bool            quiet ( void ) const;
+</pre>
+</div>
 <div class="section" id="renderingintent">
-<h2><a class="toc-backref" href="#id186">renderingIntent</a></h2>
+<h2><a class="toc-backref" href="#id187">renderingIntent</a></h2>
 <p>The type of rendering intent (used when applying an ICC color
 profile):</p>
 <pre class="literal-block">
@@ -2524,7 +2540,7 @@ RenderingIntent renderingIntent ( void ) const
 </pre>
 </div>
 <div class="section" id="resolutionunits">
-<h2><a class="toc-backref" href="#id187">resolutionUnits</a></h2>
+<h2><a class="toc-backref" href="#id188">resolutionUnits</a></h2>
 <p>Units of image resolution:</p>
 <pre class="literal-block">
 void            resolutionUnits ( const ResolutionType resolutionUnits_ )
@@ -2533,14 +2549,14 @@ ResolutionType  resolutionUnits ( void ) const
 </pre>
 </div>
 <div class="section" id="rows">
-<h2><a class="toc-backref" href="#id188">rows</a></h2>
+<h2><a class="toc-backref" href="#id189">rows</a></h2>
 <p>The number of pixel rows in the image:</p>
 <pre class="literal-block">
 unsigned int    rows ( void ) const
 </pre>
 </div>
 <div class="section" id="scene">
-<h2><a class="toc-backref" href="#id189">scene</a></h2>
+<h2><a class="toc-backref" href="#id190">scene</a></h2>
 <p>Image scene number:</p>
 <pre class="literal-block">
 void            scene ( const unsigned int scene_ )
@@ -2549,7 +2565,7 @@ unsigned int    scene ( void ) const
 </pre>
 </div>
 <div class="section" id="signature">
-<h2><a class="toc-backref" href="#id190">signature</a></h2>
+<h2><a class="toc-backref" href="#id191">signature</a></h2>
 <p>Image textual signature.  Set <cite>force</cite> to true in order to re-calculate
 the signature regardless of whether the image data has been modified:</p>
 <pre class="literal-block">
@@ -2557,7 +2573,7 @@ std::string     signature ( const bool force_ = false ) const
 </pre>
 </div>
 <div class="section" id="size">
-<h2><a class="toc-backref" href="#id191">size</a></h2>
+<h2><a class="toc-backref" href="#id192">size</a></h2>
 <p>Width and height of a raw image (an image which does not support width
 and height information).  Size may also be used to affect the image
 size read from a multi-resolution format (e.g. Photo CD, JBIG, or
@@ -2569,7 +2585,7 @@ Geometry        size ( void ) const
 </pre>
 </div>
 <div class="section" id="statistics">
-<h2><a class="toc-backref" href="#id192">statistics</a></h2>
+<h2><a class="toc-backref" href="#id193">statistics</a></h2>
 <p>Obtain image statistics. Statistics are normalized to the range
 of 0.0 to 1.0 and are output to the specified ImageStatistics
 structure:</p>
@@ -2578,7 +2594,7 @@ void            statistics ( ImageStatistics *statistics ) const
 </pre>
 </div>
 <div class="section" id="strokeantialias">
-<h2><a class="toc-backref" href="#id193">strokeAntiAlias</a></h2>
+<h2><a class="toc-backref" href="#id194">strokeAntiAlias</a></h2>
 <p>Enable/disable stroke anti-aliasing:</p>
 <pre class="literal-block">
 void            strokeAntiAlias( const bool flag_ )
@@ -2587,7 +2603,7 @@ bool            strokeAntiAlias( void ) const
 </pre>
 </div>
 <div class="section" id="strokecolor">
-<h2><a class="toc-backref" href="#id194">strokeColor</a></h2>
+<h2><a class="toc-backref" href="#id195">strokeColor</a></h2>
 <p><a class="reference external" href="Color.html">Color</a> to use when drawing object outlines:</p>
 <pre class="literal-block">
 void            strokeColor ( const Color &amp;strokeColor_ )
@@ -2596,7 +2612,7 @@ Color           strokeColor ( void ) const
 </pre>
 </div>
 <div class="section" id="strokedasharray">
-<h2><a class="toc-backref" href="#id195">strokeDashArray</a></h2>
+<h2><a class="toc-backref" href="#id196">strokeDashArray</a></h2>
 <p>Specify the pattern of dashes and gaps used to stroke paths. The
 strokeDashArray represents a zero-terminated array of numbers that
 specify the lengths of alternating dashes and gaps in pixels. If an
@@ -2611,7 +2627,7 @@ const double*   strokeDashArray ( void ) const
 </pre>
 </div>
 <div class="section" id="strokedashoffset">
-<h2><a class="toc-backref" href="#id196">strokeDashOffset</a></h2>
+<h2><a class="toc-backref" href="#id197">strokeDashOffset</a></h2>
 <p>While drawing using a dash pattern, specify distance into the
 dash pattern to start the dash (default 0):</p>
 <pre class="literal-block">
@@ -2621,7 +2637,7 @@ double          strokeDashOffset ( void ) const
 </pre>
 </div>
 <div class="section" id="strokelinecap">
-<h2><a class="toc-backref" href="#id197">strokeLineCap</a></h2>
+<h2><a class="toc-backref" href="#id198">strokeLineCap</a></h2>
 <p>Specify the shape to be used at the end of open subpaths when
 they are stroked. Values of LineCap are UndefinedCap, ButtCap,
 RoundCap, and SquareCap:</p>
@@ -2632,7 +2648,7 @@ LineCap         strokeLineCap ( void ) const
 </pre>
 </div>
 <div class="section" id="strokelinejoin">
-<h2><a class="toc-backref" href="#id198">strokeLineJoin</a></h2>
+<h2><a class="toc-backref" href="#id199">strokeLineJoin</a></h2>
 <p>Specify the shape to be used at the corners of paths (or other
 vector shapes) when they are stroked. Values of LineJoin are
 UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin:</p>
@@ -2643,7 +2659,7 @@ LineJoin        strokeLineJoin ( void ) const
 </pre>
 </div>
 <div class="section" id="strokemiterlimit">
-<h2><a class="toc-backref" href="#id199">strokeMiterLimit</a></h2>
+<h2><a class="toc-backref" href="#id200">strokeMiterLimit</a></h2>
 <p>Specify miter limit. When two line segments meet at a sharp
 angle and miter joins have been specified for 'lineJoin', it is
 possible for the miter to extend far beyond the thickness of
@@ -2657,7 +2673,7 @@ unsigned int    strokeMiterLimit ( void ) const
 </pre>
 </div>
 <div class="section" id="strokepattern">
-<h2><a class="toc-backref" href="#id200">strokePattern</a></h2>
+<h2><a class="toc-backref" href="#id201">strokePattern</a></h2>
 <p>Pattern image to use while stroking object outlines:</p>
 <pre class="literal-block">
 void            strokePattern ( const Image &amp;strokePattern_ )
@@ -2666,7 +2682,7 @@ Image           strokePattern ( void  ) const
 </pre>
 </div>
 <div class="section" id="strokewidth">
-<h2><a class="toc-backref" href="#id201">strokeWidth</a></h2>
+<h2><a class="toc-backref" href="#id202">strokeWidth</a></h2>
 <p>Stroke width for drawing vector objects (default one):</p>
 <pre class="literal-block">
 void            strokeWidth ( const double strokeWidth_ )
@@ -2675,7 +2691,7 @@ double          strokeWidth ( void ) const
 </pre>
 </div>
 <div class="section" id="subimage">
-<h2><a class="toc-backref" href="#id202">subImage</a></h2>
+<h2><a class="toc-backref" href="#id203">subImage</a></h2>
 <p>Subimage of an image sequence:</p>
 <pre class="literal-block">
 void            subImage ( const unsigned int subImage_ )
@@ -2684,7 +2700,7 @@ unsigned int    subImage ( void ) const
 </pre>
 </div>
 <div class="section" id="subrange">
-<h2><a class="toc-backref" href="#id203">subRange</a></h2>
+<h2><a class="toc-backref" href="#id204">subRange</a></h2>
 <p>Number of images relative to the base image:</p>
 <pre class="literal-block">
 void            subRange ( const unsigned int subRange_ )
@@ -2693,7 +2709,7 @@ unsigned int    subRange ( void ) const
 </pre>
 </div>
 <div class="section" id="textencoding">
-<h2><a class="toc-backref" href="#id204">textEncoding</a></h2>
+<h2><a class="toc-backref" href="#id205">textEncoding</a></h2>
 <p>Annotation text encoding (e.g. &quot;UTF-16&quot;):</p>
 <pre class="literal-block">
 void            textEncoding ( const std::string &amp;encoding_ )
@@ -2702,7 +2718,7 @@ std::string     textEncoding ( void ) const
 </pre>
 </div>
 <div class="section" id="tilename">
-<h2><a class="toc-backref" href="#id205">tileName</a></h2>
+<h2><a class="toc-backref" href="#id206">tileName</a></h2>
 <p>Tile name:</p>
 <pre class="literal-block">
 void            tileName ( const std::string &amp;tileName_ )
@@ -2711,56 +2727,56 @@ std::string     tileName ( void ) const
 </pre>
 </div>
 <div class="section" id="totalcolors">
-<h2><a class="toc-backref" href="#id206">totalColors</a></h2>
+<h2><a class="toc-backref" href="#id207">totalColors</a></h2>
 <p>Number of colors in the image:</p>
 <pre class="literal-block">
 unsigned long   totalColors ( void )
 </pre>
 </div>
 <div class="section" id="transformorigin">
-<h2><a class="toc-backref" href="#id207">transformOrigin</a></h2>
+<h2><a class="toc-backref" href="#id208">transformOrigin</a></h2>
 <p>Origin of coordinate system to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformOrigin ( const double x_,const  double y_ )
 </pre>
 </div>
 <div class="section" id="transformrotation">
-<h2><a class="toc-backref" href="#id208">transformRotation</a></h2>
+<h2><a class="toc-backref" href="#id209">transformRotation</a></h2>
 <p>Rotation to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformRotation ( const double angle_ )
 </pre>
 </div>
 <div class="section" id="transformreset">
-<h2><a class="toc-backref" href="#id209">transformReset</a></h2>
+<h2><a class="toc-backref" href="#id210">transformReset</a></h2>
 <p>Reset transformation parameters to default:</p>
 <pre class="literal-block">
 void            transformReset ( void )
 </pre>
 </div>
 <div class="section" id="transformscale">
-<h2><a class="toc-backref" href="#id210">transformScale</a></h2>
+<h2><a class="toc-backref" href="#id211">transformScale</a></h2>
 <p>Scale to use when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformScale ( const double sx_, const double sy_ )
 </pre>
 </div>
 <div class="section" id="transformskewx">
-<h2><a class="toc-backref" href="#id211">transformSkewX</a></h2>
+<h2><a class="toc-backref" href="#id212">transformSkewX</a></h2>
 <p>Skew to use in X axis when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformSkewX ( const double skewx_ )
 </pre>
 </div>
 <div class="section" id="transformskewy">
-<h2><a class="toc-backref" href="#id212">transformSkewY</a></h2>
+<h2><a class="toc-backref" href="#id213">transformSkewY</a></h2>
 <p>Skew to use in Y axis when annotating with text or drawing:</p>
 <pre class="literal-block">
 void            transformSkewY ( const double skewy_ )
 </pre>
 </div>
 <div class="section" id="verbose">
-<h2><a class="toc-backref" href="#id213">verbose</a></h2>
+<h2><a class="toc-backref" href="#id214">verbose</a></h2>
 <p>Print detailed information about the image:</p>
 <pre class="literal-block">
 void            verbose ( const bool verboseFlag_ )
@@ -2769,7 +2785,7 @@ bool            verbose ( void ) const
 </pre>
 </div>
 <div class="section" id="view">
-<h2><a class="toc-backref" href="#id214">view</a></h2>
+<h2><a class="toc-backref" href="#id215">view</a></h2>
 <p>FlashPix viewing parameters:</p>
 <pre class="literal-block">
 void            view ( const std::string &amp;view_ )
@@ -2778,7 +2794,7 @@ std::string     view ( void ) const
 </pre>
 </div>
 <div class="section" id="x11display">
-<h2><a class="toc-backref" href="#id215">x11Display</a></h2>
+<h2><a class="toc-backref" href="#id216">x11Display</a></h2>
 <p>X11 display to display to, obtain fonts from, or to capture
 image from:</p>
 <pre class="literal-block">
@@ -2788,14 +2804,14 @@ std::string     x11Display ( void ) const
 </pre>
 </div>
 <div class="section" id="xresolution">
-<h2><a class="toc-backref" href="#id216">xResolution</a></h2>
+<h2><a class="toc-backref" href="#id217">xResolution</a></h2>
 <p>x resolution of the image:</p>
 <pre class="literal-block">
 double          xResolution ( void ) const
 </pre>
 </div>
 <div class="section" id="yresolution">
-<h2><a class="toc-backref" href="#id217">yResolution</a></h2>
+<h2><a class="toc-backref" href="#id218">yResolution</a></h2>
 <p>y resolution of the image:</p>
 <pre class="literal-block">
 double          yResolution ( void ) const
@@ -2865,18 +2881,18 @@ image.write(&quot;horse.png&quot;);
 <p>The image cache supports the following methods:</p>
 <div class="contents local topic" id="id9">
 <ul class="simple">
-<li><a class="reference internal" href="#getconstpixels" id="id218">getConstPixels</a></li>
-<li><a class="reference internal" href="#getindexes" id="id219">getIndexes</a></li>
-<li><a class="reference internal" href="#getconstindexes" id="id220">getConstIndexes</a></li>
-<li><a class="reference internal" href="#getpixels" id="id221">getPixels</a></li>
-<li><a class="reference internal" href="#setpixels" id="id222">setPixels</a></li>
-<li><a class="reference internal" href="#syncpixels" id="id223">syncPixels</a></li>
-<li><a class="reference internal" href="#readpixels" id="id224">readPixels</a></li>
-<li><a class="reference internal" href="#writepixels" id="id225">writePixels</a></li>
+<li><a class="reference internal" href="#getconstpixels" id="id219">getConstPixels</a></li>
+<li><a class="reference internal" href="#getindexes" id="id220">getIndexes</a></li>
+<li><a class="reference internal" href="#getconstindexes" id="id221">getConstIndexes</a></li>
+<li><a class="reference internal" href="#getpixels" id="id222">getPixels</a></li>
+<li><a class="reference internal" href="#setpixels" id="id223">setPixels</a></li>
+<li><a class="reference internal" href="#syncpixels" id="id224">syncPixels</a></li>
+<li><a class="reference internal" href="#readpixels" id="id225">readPixels</a></li>
+<li><a class="reference internal" href="#writepixels" id="id226">writePixels</a></li>
 </ul>
 </div>
 <div class="section" id="getconstpixels">
-<h2><a class="toc-backref" href="#id218">getConstPixels</a></h2>
+<h2><a class="toc-backref" href="#id219">getConstPixels</a></h2>
 <p>Transfers read-only pixels from the image to the pixel cache as
 defined by the specified region:</p>
 <pre class="literal-block">
@@ -2886,21 +2902,21 @@ const PixelPacket* getConstPixels ( const int x_, const int y_,
 </pre>
 </div>
 <div class="section" id="getindexes">
-<h2><a class="toc-backref" href="#id219">getIndexes</a></h2>
+<h2><a class="toc-backref" href="#id220">getIndexes</a></h2>
 <p>Obtain mutable image pixel indexes (valid for PseudoClass images):</p>
 <pre class="literal-block">
 IndexPacket* getIndexes ( void )
 </pre>
 </div>
 <div class="section" id="getconstindexes">
-<h2><a class="toc-backref" href="#id220">getConstIndexes</a></h2>
+<h2><a class="toc-backref" href="#id221">getConstIndexes</a></h2>
 <p>Obtain immutable image pixel indexes (valid for PseudoClass images):</p>
 <pre class="literal-block">
 const IndexPacket* getConstIndexes ( void ) const
 </pre>
 </div>
 <div class="section" id="getpixels">
-<h2><a class="toc-backref" href="#id221">getPixels</a></h2>
+<h2><a class="toc-backref" href="#id222">getPixels</a></h2>
 <p>Transfers pixels from the image to the pixel cache as defined by the
 specified region. Modified pixels may be subsequently transferred back
 to the image via syncPixels.  This method is valid for DirectClass
@@ -2912,7 +2928,7 @@ PixelPacket* getPixels ( const int x_, const int y_,
 </pre>
 </div>
 <div class="section" id="setpixels">
-<h2><a class="toc-backref" href="#id222">setPixels</a></h2>
+<h2><a class="toc-backref" href="#id223">setPixels</a></h2>
 <p>Allocates a pixel cache region to store image pixels as defined by the
 region rectangle.  This area is subsequently transferred from the
 pixel cache to the image via syncPixels:</p>
@@ -2923,14 +2939,14 @@ PixelPacket* setPixels ( const int x_, const int y_,
 </pre>
 </div>
 <div class="section" id="syncpixels">
-<h2><a class="toc-backref" href="#id223">syncPixels</a></h2>
+<h2><a class="toc-backref" href="#id224">syncPixels</a></h2>
 <p>Transfers the image cache pixels to the image:</p>
 <pre class="literal-block">
 void syncPixels ( void )
 </pre>
 </div>
 <div class="section" id="readpixels">
-<h2><a class="toc-backref" href="#id224">readPixels</a></h2>
+<h2><a class="toc-backref" href="#id225">readPixels</a></h2>
 <p>Transfers one or more pixel components from a buffer or file into the
 image pixel cache of an image.  Used to support image decoders:</p>
 <pre class="literal-block">
@@ -2939,14 +2955,14 @@ void readPixels ( const QuantumType quantum_,
 </pre>
 </div>
 <div class="section" id="writepixels">
-<h2><a class="toc-backref" href="#id225">writePixels</a></h2>
+<h2><a class="toc-backref" href="#id226">writePixels</a></h2>
 <p>Transfers one or more pixel components from the image pixel cache to a
 buffer or file.  Used to support image encoders:</p>
 <pre class="literal-block">
 void writePixels ( const QuantumType quantum_,
                    unsigned char *destination_ )
 </pre>
-<p>Copyright © <a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">Bob Friesenhahn</a> 1999 - 2014</p>
+<p>Copyright © <a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">Bob Friesenhahn</a> 1999 - 2015</p>
 </div>
 </div>
 </div>

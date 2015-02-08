@@ -72,6 +72,11 @@ allocate them on the stack when possible rather than via 'new'.</p>
      // about object construction failure due to a minor warning exception
      // being thrown.
      Magick::Image image;
+
+     // Determine if Warning exceptions are thrown.
+     // Use is optional.  Set to true to block Warning exceptions.
+     image.quiet( false );
+
      try {
        // Try reading image file
        image.read(infile);
@@ -289,7 +294,7 @@ subordinate program is missing (but is needed).</td>
 </table>
 <p>Note that <em>ErrorMissingDelegate</em> is a &quot;catch-all&quot; error reported when
 GraphicsMagick is unable to figure out how to open the file.</p>
-<p>Copyright © Bob Friesenhahn 1999 - 2014</p>
+<p>Copyright © Bob Friesenhahn 1999 - 2015</p>
 </div>
 </body>
 </html>

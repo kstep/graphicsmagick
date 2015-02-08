@@ -1564,6 +1564,15 @@ which otherwise fail to read due to problems with TIFF tags.  Note
 that some TIFF tags are required in order to be able to read the image
 data at all.
 </dd>
+<dt>tiff:report-warnings={false|true}</dt>
+<dd>If the tiff:report-warnings key is defined and set to <strong>true</strong>,
+then TIFF warnings are reported as a warning exception rather than as
+a coder log message.  Such warnings are reported after the image has
+been read or written.  Most TIFF warnings are benign but sometimes
+they may help deduce problems with the TIFF file, or help detect that
+the TIFF file requires a special application to read successfully due
+to the use of proprietary or specialized extensions.
+</dd>
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
 <dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
 determine the sample format used while writing TIFF files. The default is

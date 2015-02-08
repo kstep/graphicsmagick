@@ -311,7 +311,7 @@ void Magick::Image::adaptiveThreshold ( const unsigned int width_,
   MagickLib::Image* newImage =
     AdaptiveThresholdImage( constImage(), width_, height_, offset_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Add noise to image
@@ -324,7 +324,7 @@ void Magick::Image::addNoise( const NoiseType noiseType_ )
 		    noiseType_,
 		    &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::addNoiseChannel( const ChannelType channel_,
                                      const NoiseType noiseType_ )
@@ -337,7 +337,7 @@ void Magick::Image::addNoiseChannel( const ChannelType channel_,
                            noiseType_,
                            &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Affine Transform image
@@ -357,7 +357,7 @@ void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
   MagickLib::Image* newImage =
     AffineTransformImage( image(), &_affine, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Annotate using specified text, and placement location
@@ -469,7 +469,7 @@ void Magick::Image::blur( const double radius_, const double sigma_ )
   MagickLib::Image* newImage =
     BlurImage( image(), radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::blurChannel( const ChannelType channel_,
                                  const double radius_, const double sigma_ )
@@ -479,7 +479,7 @@ void Magick::Image::blurChannel( const ChannelType channel_,
   MagickLib::Image* newImage =
     BlurImageChannel( image(), channel_,radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Add border to image
@@ -492,7 +492,7 @@ void Magick::Image::border( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     BorderImage( image(), &borderInfo, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Bake in the ASC-CDL, which is a convention for the for the exchange
@@ -531,7 +531,7 @@ unsigned int Magick::Image::channelDepth ( const ChannelType channel_ )
   GetExceptionInfo( &exceptionInfo );
   channel_depth=GetImageChannelDepth( constImage(), channel_,
                                       &exceptionInfo );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return channel_depth;
 }
 
@@ -544,7 +544,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
   MagickLib::Image* newImage =
     CharcoalImage( image(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Chop image
@@ -556,7 +556,7 @@ void Magick::Image::chop( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     ChopImage( image(), &chopInfo, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Colorize
@@ -580,7 +580,7 @@ void Magick::Image::colorize ( const unsigned int opacityRed_,
   ColorizeImage ( image(), opacity,
 		  penColor_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::colorize ( const unsigned int opacity_,
 			       const Color &penColor_ )
@@ -744,7 +744,7 @@ void Magick::Image::convolve ( const unsigned int order_,
   ConvolveImage ( image(), order_,
 		  kernel_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Crop image
@@ -758,7 +758,7 @@ void Magick::Image::crop ( const Geometry &geometry_ )
 	       &cropInfo,
 	       &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Cycle Color Map
@@ -777,7 +777,7 @@ void Magick::Image::despeckle ( void )
   MagickLib::Image* newImage =
     DespeckleImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Display image
@@ -840,7 +840,7 @@ void Magick::Image::edge ( const double radius_ )
   MagickLib::Image* newImage =
     EdgeImage( image(), radius_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Emboss image (hilight edges)
@@ -851,7 +851,7 @@ void Magick::Image::emboss ( const double radius_, const double sigma_ )
   MagickLib::Image* newImage =
     EmbossImage( image(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Enhance image (minimize noise)
@@ -862,7 +862,7 @@ void Magick::Image::enhance ( void )
   MagickLib::Image* newImage =
     EnhanceImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Equalize image (histogram equalization)
@@ -906,7 +906,7 @@ void Magick::Image::extent ( const Geometry &geometry_ )
   MagickLib::Image* newImage = ExtentImage( image(), &geometry,
                                             &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 void Magick::Image::extent ( const Geometry &geometry_,
@@ -940,7 +940,7 @@ void Magick::Image::flip ( void )
   MagickLib::Image* newImage =
     FlipImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Flood-fill color across pixels that match the color of the
@@ -1064,7 +1064,7 @@ void Magick::Image::flop ( void )
   MagickLib::Image* newImage =
     FlopImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Frame image
@@ -1084,7 +1084,7 @@ void Magick::Image::frame ( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     FrameImage( image(), &info, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::frame ( const unsigned int width_,
                             const unsigned int height_,
@@ -1103,7 +1103,7 @@ void Magick::Image::frame ( const unsigned int width_,
   MagickLib::Image* newImage =
     FrameImage( image(), &info, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Gamma correct image
@@ -1139,7 +1139,7 @@ void Magick::Image::gaussianBlur ( const double width_, const double sigma_ )
   MagickLib::Image* newImage =
     GaussianBlurImage( image(), width_, sigma_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
                                           const double width_, const double sigma_ )
@@ -1149,7 +1149,7 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
   MagickLib::Image* newImage =
     GaussianBlurImageChannel( image(), channel_, width_, sigma_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Implode image
@@ -1160,7 +1160,7 @@ void Magick::Image::implode ( const double factor_ )
   MagickLib::Image* newImage =
     ImplodeImage( image(), factor_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Level image. Adjust the levels of the image by scaling the colors
@@ -1222,7 +1222,7 @@ void Magick::Image::magnify ( void )
   MagickLib::Image* newImage =
     MagnifyImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Remap image colors with closest color from reference image
@@ -1255,7 +1255,7 @@ void Magick::Image::medianFilter ( const double radius_ )
   MagickLib::Image* newImage =
     MedianFilterImage ( image(), radius_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Reduce image by integral size
@@ -1266,7 +1266,7 @@ void Magick::Image::minify ( void )
   MagickLib::Image* newImage =
     MinifyImage( image(), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Modulate percent hue, saturation, and brightness of an image
@@ -1298,7 +1298,7 @@ void            Magick::Image::motionBlur ( const double radius_,
   MagickLib::Image* newImage =
     MotionBlurImage( image(), radius_, sigma_, angle_, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 
@@ -1327,7 +1327,7 @@ void Magick::Image::oilPaint ( const double radius_ )
   MagickLib::Image* newImage =
     OilPaintImage( image(), radius_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Set or attenuate the opacity channel. If the image pixels are
@@ -1374,7 +1374,7 @@ void Magick::Image::ping ( const std::string &imageSpec_ )
   MagickLib::Image* image =
     PingImage( imageInfo(), &exceptionInfo );
   replaceImage( image );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Ping is similar to read except only enough of the image is read
@@ -1388,7 +1388,7 @@ void Magick::Image::ping ( const Blob& blob_ )
   MagickLib::Image* image =
     PingBlob( imageInfo(), blob_.data(), blob_.length(), &exceptionInfo );
   replaceImage( image );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Execute a named process module using an argc/argv syntax similar to
@@ -1403,7 +1403,7 @@ void Magick::Image::process( std::string name_, const int argc, char **argv )
     ExecuteModuleProcess( name_.c_str(), &image(), argc, argv );
 
   if (status == false)
-    throwException( image()->exception );
+    throwImageException( image()->exception );
 }
 
 // Quantize colors in image using current quantization settings
@@ -1432,7 +1432,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
   modifyImage();
   QuantumOperatorImage( image(), channel_, operator_, static_cast<double>(rvalue_),
 			&exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::quantumOperator ( const ChannelType channel_,
                                       const QuantumOperator operator_,
@@ -1442,7 +1442,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
   GetExceptionInfo( &exceptionInfo );
   modifyImage();
   QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::quantumOperator ( const int x_,const int y_,
                                       const unsigned int columns_,
@@ -1457,7 +1457,7 @@ void Magick::Image::quantumOperator ( const int x_,const int y_,
   QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
                               operator_, static_cast<double>(rvalue_),
 			      &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::quantumOperator ( const int x_,const int y_,
                                       const unsigned int columns_,
@@ -1471,7 +1471,7 @@ void Magick::Image::quantumOperator ( const int x_,const int y_,
   modifyImage();
   QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
                               operator_, rvalue_, &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Raise image (lighten or darken the edges of an image to give a 3-D
@@ -1533,9 +1533,9 @@ void Magick::Image::read ( const std::string &imageSpec_ )
 
     }
   replaceImage( image );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   if ( image )
-    throwException( image->exception );
+    throwImageException( image->exception );
 }
 
 // Read image of specified size into current object
@@ -1556,9 +1556,9 @@ void Magick::Image::read ( const Blob &blob_ )
 		 static_cast<const void *>(blob_.data()),
 		 blob_.length(), &exceptionInfo );
   replaceImage( image );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   if ( image )
-    throwException( image->exception );
+    throwImageException( image->exception );
 }
 
 // Read image of specified size from in-memory BLOB
@@ -1626,9 +1626,9 @@ void Magick::Image::read ( const unsigned int width_,
     ConstituteImage( width_, height_, map_.c_str(), type_, pixels_,
                      &exceptionInfo );
   replaceImage( image );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   if ( image )
-    throwException( image->exception );
+    throwImageException( image->exception );
 }
 
 // Reduce noise in image
@@ -1639,7 +1639,7 @@ void Magick::Image::reduceNoise ( const double order_ )
   MagickLib::Image* newImage =
     ReduceNoiseImage( image(), order_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Resize image, specifying geometry, filter, and blur
@@ -1661,7 +1661,7 @@ void Magick::Image::resize ( const Geometry &geometry_,
   MagickLib::Image* newImage =
     ResizeImage( image(), width, height, filterType_, blur_, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Resize image, specifying geometry and filter, with blur using Image
@@ -1694,7 +1694,7 @@ void Magick::Image::roll ( const Geometry &roll_ )
   MagickLib::Image* newImage =
     RollImage( image(), xOff, yOff, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::roll ( const unsigned int columns_,
                            const unsigned int rows_ )
@@ -1706,7 +1706,7 @@ void Magick::Image::roll ( const unsigned int columns_,
                static_cast<long>(columns_),
                static_cast<long>(rows_), &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Rotate image
@@ -1717,7 +1717,7 @@ void Magick::Image::rotate ( const double degrees_ )
   MagickLib::Image* newImage =
     RotateImage( image(), degrees_, &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Sample image
@@ -1737,7 +1737,7 @@ void Magick::Image::sample ( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     SampleImage( image(), width, height, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Scale image
@@ -1757,7 +1757,7 @@ void Magick::Image::scale ( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     ScaleImage( image(), width, height, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Resize image using several algorithms to make smaller images very
@@ -1778,7 +1778,7 @@ void Magick::Image::thumbnail ( const Geometry &geometry_ )
   MagickLib::Image* newImage =
     ThumbnailImage( image(), width, height, &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Segment (coalesce similar image components) by analyzing the
@@ -1812,7 +1812,7 @@ void Magick::Image::shade ( const double azimuth_,
 		elevation_,
 		&exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Sharpen pixels in image
@@ -1826,7 +1826,7 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
                   sigma_,
                   &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::sharpenChannel ( const ChannelType channel_,
                                      const double radius_, const double sigma_ )
@@ -1840,7 +1840,7 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
                          sigma_,
                          &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Shave pixels from image edges.
@@ -1854,7 +1854,7 @@ void Magick::Image::shave ( const Geometry &geometry_ )
 	       &shaveInfo,
 	       &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Shear image
@@ -1869,7 +1869,7 @@ void Magick::Image::shear ( const double xShearAngle_,
 		yShearAngle_,
 		&exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Solarize image (similar to effect seen when exposing a photographic
@@ -1891,7 +1891,7 @@ void Magick::Image::spread ( const unsigned int amount_ )
 		 amount_,
 		 &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Add a digital watermark to the image (based on second image)
@@ -1904,7 +1904,7 @@ void Magick::Image::stegano ( const Image &watermark_ )
 		  watermark_.constImage(),
 		  &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Stereo image (left image is current image)
@@ -1917,7 +1917,7 @@ void Magick::Image::stereo ( const Image &rightImage_ )
 		 rightImage_.constImage(),
 		 &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Remove all profiles and text attributes from the image.
@@ -1936,7 +1936,7 @@ void Magick::Image::swirl ( const double degrees_ )
     SwirlImage( image(), degrees_,
 		&exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Texture image
@@ -2026,7 +2026,7 @@ void Magick::Image::unsharpmask ( const double radius_,
                       threshold_,
                       &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
                                          const double radius_,
@@ -2045,7 +2045,7 @@ void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
                              threshold_,
                              &exceptionInfo );
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Map image pixels to a sine wave
@@ -2059,7 +2059,7 @@ void Magick::Image::wave ( const double amplitude_, const double wavelength_ )
 	       wavelength_,
 	       &exceptionInfo);
   replaceImage( newImage );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Write image to file
@@ -2082,7 +2082,7 @@ void Magick::Image::write ( Blob *blob_ )
 			    image(),
 			    &length,
 			    &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
@@ -2098,7 +2098,7 @@ void Magick::Image::write ( Blob *blob_,
 			    image(),
 			    &length,
 			    &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
@@ -2116,7 +2116,7 @@ void Magick::Image::write ( Blob *blob_,
 			    image(),
 			    &length,
 			    &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
@@ -2137,7 +2137,7 @@ void Magick::Image::write ( const int x_,
   DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_,
                  pixels_,
     &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // Zoom image
@@ -2293,7 +2293,7 @@ Magick::Geometry Magick::Image::boundingBox ( void ) const
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   RectangleInfo bbox = GetImageBoundingBox( constImage(), &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return Geometry( bbox );
 }
 
@@ -2414,7 +2414,7 @@ Magick::Image Magick::Image::clipMask ( void  ) const
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
         GetImageClipMask( constImage(), &exceptionInfo );
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
       return Magick::Image( image );
 }
 
@@ -2618,7 +2618,7 @@ void Magick::Image::defineValue ( const std::string &magick_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   AddDefinition ( imageInfo(), magick_.c_str(), key_.c_str(), value_.c_str(), &exceptionInfo );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 std::string Magick::Image::defineValue ( const std::string &magick_,
                                          const std::string &key_ ) const
@@ -2646,7 +2646,7 @@ void Magick::Image::defineSet ( const std::string &magick_,
       GetExceptionInfo( &exceptionInfo );
       std::string options = magick_ + ":" + key_ + "=";
       AddDefinitions ( imageInfo(), options.c_str(), &exceptionInfo );
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
     }
   else
     {
@@ -2820,7 +2820,7 @@ Magick::Image  Magick::Image::fillPattern ( void  ) const
                     1, // orphan
                     &exceptionInfo);
       texture.replaceImage( image );
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
     }
   return texture;
 }
@@ -2875,7 +2875,7 @@ std::string Magick::Image::format ( void ) const
   GetExceptionInfo( &exceptionInfo );
   const MagickInfo * magick_info
     = GetMagickInfo( constImage()->magick, &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 
   if (( magick_info != 0 ) &&
       ( *magick_info->description != '\0' ))
@@ -2903,7 +2903,7 @@ std::string Magick::Image::formatExpression ( const std::string expression )
       translated_str=std::string(translated);
       MagickFreeMemory(translated);
     }
-  throwException( image( )->exception );
+  throwImageException( image( )->exception );
   return translated_str;
 }
 
@@ -3101,7 +3101,7 @@ unsigned int Magick::Image::modulusDepth ( void ) const
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return depth;
 }
 
@@ -3185,7 +3185,7 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
                     1, // orphan
                     &exceptionInfo);
       texture.replaceImage( image );
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
     }
   return texture;
 }
@@ -3341,6 +3341,17 @@ unsigned int Magick::Image::quantizeTreeDepth ( void ) const
   return constOptions()->quantizeTreeDepth( );
 }
 
+void Magick::Image::quiet ( const bool quiet_ )
+{
+  modifyImage();
+  options()->quiet(quiet_);
+}
+
+bool Magick::Image::quiet ( void ) const
+{
+  return(constOptions()->quiet());
+}
+
 void Magick::Image::renderingIntent
   ( const Magick::RenderingIntent renderingIntent_ )
 {
@@ -3419,7 +3430,7 @@ void Magick::Image::statistics ( ImageStatistics *statistics ) const
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   GetImageStatistics( constImage(), statistics, &exceptionInfo );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
 }
 
 // enabled/disable stroke anti-aliasing
@@ -3536,7 +3547,7 @@ Magick::Image  Magick::Image::strokePattern ( void  ) const
                     0, // rows
                     1, // orphan
                     &exceptionInfo);
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
       texture.replaceImage( image );
     }
   return texture;
@@ -3599,7 +3610,7 @@ unsigned long Magick::Image::totalColors ( void )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   unsigned long colors = GetNumberColors( image(), 0, &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return colors;
 }
 
@@ -3654,7 +3665,7 @@ Magick::ImageType Magick::Image::type ( void ) const
   ImageType image_type = constOptions()->type();
   if ( image_type == UndefinedType )
     image_type= GetImageType(constImage(), &exceptionInfo);
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return image_type;
 }
 void Magick::Image::type ( const Magick::ImageType type_)
@@ -3766,7 +3777,7 @@ const Magick::PixelPacket* Magick::Image::getConstPixels
                                                 x_, y_,
                                                 columns_, rows_,
                                                 &exceptionInfo );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return p;
 }
 
@@ -3990,7 +4001,7 @@ void Magick::Image::modifyImage( void )
                             0, // rows
                             1, // orphan
                             &exceptionInfo) );
-  throwException( exceptionInfo );
+  throwImageException( exceptionInfo );
   return;
 }
 
@@ -4002,7 +4013,7 @@ void Magick::Image::modifyImage( void )
 void Magick::Image::throwImageException( void ) const
 {
   // Throw C++ exception while resetting Image exception to default state
-  throwException( const_cast<MagickLib::Image*>(constImage())->exception );
+  throwImageException( const_cast<MagickLib::Image*>(constImage())->exception );
 }
 
 // Register image with image registry or obtain registration id
@@ -4016,7 +4027,7 @@ long Magick::Image::registerId( void )
       _imgRef->id(SetMagickRegistry(ImageRegistryType, image(),
                                     sizeof(MagickLib::Image),
 				    &exceptionInfo));
-      throwException( exceptionInfo );
+      throwImageException( exceptionInfo );
     }
   return _imgRef->id();
 }
@@ -4026,6 +4037,11 @@ void Magick::Image::unregisterId( void )
 {
   modifyImage();
   _imgRef->id( -1 );
+}
+
+void Magick::Image::throwImageException( MagickLib::ExceptionInfo &exception_ ) const
+{
+  throwException( exception_, quiet() );
 }
 
 //

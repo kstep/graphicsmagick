@@ -58,7 +58,7 @@ Magick::PixelPacket* Magick::Pixels::get ( const int x_,
   PixelPacket* pixels = GetCacheViewPixels( _view, x_, y_, columns_, rows_,
                                             &_exception );
   if ( !pixels )
-    throwException( _exception );
+    throwException( _exception, _image.quiet() );
 
   return pixels;
 }
@@ -78,7 +78,7 @@ const Magick::PixelPacket* Magick::Pixels::getConst ( const int x_, const int y_
     AcquireCacheViewPixels(_view, x_, y_, columns_, rows_, &_exception );
 
   if ( !pixels )
-    throwException( _exception );
+    throwException( _exception, _image.quiet() );
   
   return pixels;
 }
@@ -87,7 +87,7 @@ const Magick::PixelPacket* Magick::Pixels::getConst ( const int x_, const int y_
 void Magick::Pixels::sync ( void )
 {
   if( !SyncCacheViewPixels( _view, &_exception ) )
-    throwException( _exception );
+    throwException( _exception, _image.quiet() );
 }
     
 // Allocate a pixel view region to store image pixels as defined
@@ -106,7 +106,7 @@ Magick::PixelPacket* Magick::Pixels::set ( const int x_,
   PixelPacket* pixels = SetCacheViewPixels( _view, static_cast<long>(x_), static_cast<long>(y_),
                                             columns_, rows_ , &_exception);
   if ( !pixels )
-    throwException( _exception );
+    throwException( _exception, _image.quiet() );
   
   return pixels;
 }

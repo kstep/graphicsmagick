@@ -437,7 +437,8 @@ MagickDLLDecl void Magick::throwExceptionExplicit( const ExceptionType severity_
 }
 
 // Throw C++ exception, resetting exception argument to default state
-MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
+MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_,
+                                           const bool quiet_)
 {
   // Just return if there is no reported error
   if ( exception_.severity == UndefinedException )
@@ -467,6 +468,9 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
   ExceptionType severity = exception_.severity;
   DestroyExceptionInfo( &exception_ );
   GetExceptionInfo( &exception_ );
+
+  if ((quiet_) && (severity < ErrorException))
+      return;
 
   switch ( severity )
     {

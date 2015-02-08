@@ -80,6 +80,7 @@ program which reads an image, crops it, and writes it to a new file
     using namespace Magick;
     int main(int argc,char **argv)
     {
+      // Initialize the API.  Can pass NULL if argv is not available.
       InitializeMagick(*argv);
 
       // Construct the image object. Seperating image construction from the
@@ -88,6 +89,10 @@ program which reads an image, crops it, and writes it to a new file
       Image image;
 
       try {
+        // Determine if Warning exceptions are thrown.
+        // Use is optional.  Set to true to block Warning exceptions.
+        image.quiet( false );
+
         // Read a file into image object
         image.read( "girl.gif" );
 
@@ -304,8 +309,9 @@ ping
 
 Ping is similar to read_ except only enough of the image is read to
 determine the image columns, rows, and filesize.  Access the
-columns(), rows(), and fileSize() attributes after invoking ping.  The
-image pixels are not valid after calling ping::
+columns(), rows(), and fileSize() attributes after invoking ping.
+Other attributes may also be available.  The image pixels are not
+valid after calling ping::
 
     void            ping ( const std::string &imageSpec_ )
     
@@ -2320,6 +2326,16 @@ tree depth::
 
     unsigned int    quantizeTreeDepth ( void ) const
 
+quiet
++++++
+
+Determines if Warning exceptions will be thrown, or suppressed.
+Defaults to suppressed::
+
+    void            quiet ( const bool quiet_ );
+    bool            quiet ( void ) const;
+
+
 renderingIntent
 +++++++++++++++
 
@@ -2759,6 +2775,6 @@ buffer or file.  Used to support image encoders::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| `Bob Friesenhahn`_ 1999 - 2014
+Copyright |copy| `Bob Friesenhahn`_ 1999 - 2015
 
 
