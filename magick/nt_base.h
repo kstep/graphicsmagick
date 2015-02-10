@@ -45,6 +45,19 @@ extern "C" {
 #define HAVE_PROCESS_H 1
 
 /*
+  POSIX definitions for standard file numbers for use with _read() or _write()
+*/
+#if !defined(STDIN_FILENO)
+#  define STDIN_FILENO 0
+#endif
+#if !defined(STDOUT_FILENO)
+#  define STDOUT_FILENO 1
+#endif
+#if !defined(STDERR_FILENO)
+#  define STDERR_FILENO 2
+#endif
+
+/*
   libtiff features.
 */
 
