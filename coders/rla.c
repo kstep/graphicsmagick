@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -77,6 +77,10 @@
 %
 %
 */
+#define NULLTerminateASCIIField(field) \
+{ \
+    field[sizeof(field)-1]='\0'; \
+}
 static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _WindowFrame
@@ -246,32 +250,50 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (rla_info.revision == 0xFFFE)
     is_rla3=MagickTrue;
   (void) ReadBlob(image,16,(char *) rla_info.gamma);
+  NULLTerminateASCIIField(rla_info.gamma);
   (void) ReadBlob(image,24,(char *) rla_info.red_primary);
+  NULLTerminateASCIIField(rla_info.red_primary);
   (void) ReadBlob(image,24,(char *) rla_info.green_primary);
+  NULLTerminateASCIIField(rla_info.green_primary)
   (void) ReadBlob(image,24,(char *) rla_info.blue_primary);
+  NULLTerminateASCIIField(rla_info.blue_primary);
   (void) ReadBlob(image,24,(char *) rla_info.white_point);
+  NULLTerminateASCIIField(rla_info.white_point);
   rla_info.job_number=(long) ReadBlobMSBLong(image);
   (void) ReadBlob(image,128,(char *) rla_info.name);
+  NULLTerminateASCIIField(rla_info.name);
   (void) ReadBlob(image,128,(char *) rla_info.description);
+  NULLTerminateASCIIField(rla_info.description);
   (void) ReadBlob(image,64,(char *) rla_info.program);
+  NULLTerminateASCIIField(rla_info.program);
   (void) ReadBlob(image,32,(char *) rla_info.machine);
+  NULLTerminateASCIIField(rla_info.machine);
   (void) ReadBlob(image,32,(char *) rla_info.user);
+  NULLTerminateASCIIField(rla_info.user);
   (void) ReadBlob(image,20,(char *) rla_info.date);
+  NULLTerminateASCIIField(rla_info.date);
   (void) ReadBlob(image,24,(char *) rla_info.aspect);
+  NULLTerminateASCIIField(rla_info.aspect);
   (void) ReadBlob(image,8,(char *) rla_info.aspect_ratio);
+  NULLTerminateASCIIField(rla_info.aspect_ratio);
   (void) ReadBlob(image,32,(char *) rla_info.chan);
+  NULLTerminateASCIIField(rla_info.chan);
   rla_info.field=ReadBlobMSBShort(image);
   if (is_rla3)
     {
       (void) ReadBlob(image,12,(char *) rla3_extra_info.time);
+      NULLTerminateASCIIField(rla3_extra_info.time);
       (void) ReadBlob(image,32,(char *) rla3_extra_info.filter);
+      NULLTerminateASCIIField(rla3_extra_info.filter);
       rla3_extra_info.bits_per_channel=ReadBlobMSBShort(image);
       rla3_extra_info.matte_type=ReadBlobMSBShort(image);
       rla3_extra_info.matte_bits=ReadBlobMSBShort(image);
       rla3_extra_info.auxiliary_type=ReadBlobMSBShort(image);
       rla3_extra_info.auxiliary_bits=ReadBlobMSBShort(image);
       (void) ReadBlob(image,32,(char *) rla3_extra_info.auxiliary);
+      NULLTerminateASCIIField(rla3_extra_info.auxiliary);
       (void) ReadBlob(image,36,(char *) rla3_extra_info.space);
+      NULLTerminateASCIIField(rla3_extra_info.space);
       rla3_extra_info.next=(long) ReadBlobMSBLong(image);
     }
   else
@@ -286,6 +308,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       rlb_extra_info.encode_type=ReadBlobMSBShort(image);
       rlb_extra_info.padding=ReadBlobMSBShort(image);
       (void) ReadBlob(image,100,(char *) rlb_extra_info.space);
+      NULLTerminateASCIIField(rlb_extra_info.space);
     }
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);

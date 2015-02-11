@@ -1,3 +1,8 @@
+2015-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/rla.c (ReadRLAImage): Assure that header ASCII strings
+	are properly terminated.  Resolves Coverity CID 10322.
+
 2015-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.h (STDERR_FILENO): Provide definitions for

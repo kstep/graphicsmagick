@@ -243,7 +243,7 @@ static unsigned int IsCINEON(const unsigned char *magick,const size_t length)
 #define NULLTerminateASCIIField(field) \
 { \
     field[sizeof(field)-1]='\0'; \
-} \
+}
 /*
   Can't use strlcpy() since strlcpy() only handles NULL terminated
   strings.  This is not so necessary due to use of
