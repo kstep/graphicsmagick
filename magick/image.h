@@ -522,6 +522,8 @@ typedef struct _ChromaticityInfo
 # define SetYellowSample(q,value) ((q)->blue=(value))
 # define SetBlackSample(q,value) ((q)->opacity=(value))
 
+# define ClearPixelPacket(q) ((q)->red=(q)->green=(q)->blue=(q)->opacity=0)
+
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 typedef struct _PixelPacket
