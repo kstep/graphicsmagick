@@ -5,7 +5,7 @@
 	'pnmtopalm'.  A progress monitor was added.  Memory leaks in error
 	paths were fixed.
 
-2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-02-12  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Insert "if (QuantumTick(...))" ahead of
 	each "if (!MagickMonitorFormatted(...)".
