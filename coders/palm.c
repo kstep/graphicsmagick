@@ -58,6 +58,7 @@
 #include "magick/constitute.h"
 #include "magick/log.h"
 #include "magick/magick.h"
+#include "magick/monitor.h"
 #include "magick/paint.h"
 #include "magick/pixel_cache.h"
 #include "magick/quantize.h"
@@ -707,8 +708,14 @@ static int FindColor(PixelPacket *pixel)
 %
 %
 */
+#define ThrowPALMReaderException(code_,reason_,image_) \
+do { \
+  MagickFreeMemory(one_row); \
+  MagickFreeMemory(lastrow); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
 static Image *ReadPALMImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+                            ExceptionInfo *exception)
 {
   Image
     *image;
@@ -757,11 +764,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
-  lastrow=0;
+  one_row=(unsigned char*) NULL;
+  lastrow=(unsigned char*) NULL;
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowPALMReaderException(FileOpenError,UnableToOpenFile,image);
   image->columns = ReadBlobMSBShort(image);
   image->rows = ReadBlobMSBShort(image);
   bytes_per_row = ReadBlobMSBShort(image);
@@ -773,7 +781,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   compressionType = ReadBlobByte(image);
   (void) ReadBlobMSBShort(image); /* pad */
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Size=%lux%lu, bytes_per_row=%lu, flags=%lu, bits_per_pixel=%lu",
@@ -786,33 +794,38 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   /*
     Validate bits per pixel.
   */
-  if ((bits_per_pixel < 1) ||
-      ((bits_per_pixel > 8) && (bits_per_pixel != 16)))
-    ThrowReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
+  if ((bits_per_pixel != 1) &&
+      (bits_per_pixel != 2) &&
+      (bits_per_pixel != 4) &&
+      (bits_per_pixel != 8) &&
+      (bits_per_pixel != 16))
+    ThrowPALMReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
 
   /*
     Initialize image colormap.
   */
-  if (bits_per_pixel < 16 && !AllocateImageColormap(image,1L << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  if ((bits_per_pixel < 16) &&
+      !AllocateImageColormap(image,1L << bits_per_pixel))
+    ThrowPALMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
-  if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
+  if ((bits_per_pixel < 8) &&
+      (flags & PALM_IS_COMPRESSED_FLAG)) /* compressed size */
     {
-      if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
+      if (flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
         (void) ReadBlobMSBLong(image); /* size */
       else
         (void) ReadBlobMSBShort(image); /* size */
       if (EOFBlob(image))
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
   else  /* is color */
-    if(bits_per_pixel == 8)
+    if (bits_per_pixel == 8)
       {
         i = 0;
-        if(flags & PALM_HAS_COLORMAP_FLAG)
+        if (flags & PALM_HAS_COLORMAP_FLAG)
           {
             count = ReadBlobMSBShort(image);
-            for(i = 0; i < (long) count; i++)
+            for (i = 0; i < (long) count; i++)
               {
                 (void) ReadBlobByte(image);
                 index=255 - i;
@@ -821,13 +834,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 image->colormap[index].green = ScaleCharToQuantum(ReadBlobByte(image));
                 image->colormap[index].blue = ScaleCharToQuantum(ReadBlobByte(image));
                 if (EOFBlob(image))
-                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+                  ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
               }
           }
         ClearPixelPacket(&transpix);
-        for(; i < (long) (1L << bits_per_pixel); i++)
+        for (; i < (long) (1L << bits_per_pixel); i++)
           {
-            if(bits_per_pixel == 16)  /* Direct Color */
+            if (bits_per_pixel == 16)  /* Direct Color */
               {
                 (void) ReadBlobByte(image);     /* # of bits of red */
                 (void) ReadBlobByte(image);    /* # of bits of green */
@@ -844,11 +857,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             image->colormap[index].green = ScaleCharToQuantum(PalmPalette[i][1]);
             image->colormap[index].blue = ScaleCharToQuantum(PalmPalette[i][2]);
             if (EOFBlob(image))
-              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+              ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
           }
       }
 
-  if(bits_per_pixel < 16)
+  if (bits_per_pixel < 16)
     {
       image->storage_class = PseudoClass;
       image->depth = 8;
@@ -856,21 +869,21 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   else
     {
       image->storage_class = DirectClass;
-      image->depth = 0;
+      image->depth = 8;
       (void) SetImageType(image, TrueColorType);
     }
 
   one_row = MagickAllocateMemory(unsigned char *,Max(bytes_per_row,2*image->columns));
   if (one_row == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowPALMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
     lastrow = MagickAllocateMemory(unsigned char *,Max(bytes_per_row,2*image->columns));
 
   mask = (1l << bits_per_pixel) - 1;
 
-  for(y = 0; y < (long) image->rows; y++)
+  for (y = 0; y < (long) image->rows; y++)
     {
-      if(flags & PALM_IS_COMPRESSED_FLAG)
+      if (flags & PALM_IS_COMPRESSED_FLAG)
         {
           if (compressionType == PALM_COMPRESSION_RLE)
             {
@@ -914,28 +927,28 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       if (q == (PixelPacket *) NULL)
         break;
       indexes=AccessMutableIndexes(image);
-      if(bits_per_pixel == 16)
+      if (bits_per_pixel == 16)
         {
           if (image->columns > 2*bytes_per_row)
-            ThrowReaderException(CorruptImageError,CorruptImage,image);
+            ThrowPALMReaderException(CorruptImageError,CorruptImage,image);
           for (x=0; x < (long) image->columns; x++)
             {
               color16 = (*ptr++ << 8);
               color16 |= *ptr++;
-              q->red = (unsigned char) ((((color16 >> 11) & 0x1f) * MaxRGB) / 31);
-              q->green = (unsigned char) ((((color16 >> 5) & 0x3f) * MaxRGB) / 63);
-              q->blue = (unsigned char) (((color16 & 0x1f) * MaxRGB) / 31);
-              q->opacity = 0;
+              q->red = (MaxRGB*((color16 >> 11) & 0x1f))/0x1f;
+              q->green = (MaxRGB*((color16 >> 5) & 0x3f))/0x3f;
+              q->blue = (MaxRGB*((color16 >> 0) & 0x1f))/0x1f;
+              q->opacity = OpaqueOpacity;
               q++;
             }
         }
       else
         {
           bit = 8 - bits_per_pixel;
-          for(x = 0; x < (long) image->columns; x++)
+          for (x = 0; x < (long) image->columns; x++)
             {
               if ((unsigned long) (ptr - one_row) >= bytes_per_row)
-                ThrowReaderException(CorruptImageError,CorruptImage,image);
+                ThrowPALMReaderException(CorruptImageError,CorruptImage,image);
               index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
               VerifyColormapIndex(image,index);
               indexes[x] = index;
@@ -950,16 +963,21 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                   bit -= bits_per_pixel;
                 }
             }
-          if (!SyncImagePixels(image))
-            break;
         }
       if (EOFBlob(image))
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      if (!SyncImagePixels(image))
+        break;
+      if (QuantumTick(y,image->rows))
+        if (!MagickMonitorFormatted(y,image->rows,exception,
+                                    LoadImageText,image->filename,
+                                    image->columns,image->rows))
+          break;
     }
 
-  if(flags & PALM_HAS_TRANSPARENCY_FLAG)
+  if (flags & PALM_HAS_TRANSPARENCY_FLAG)
     {
-      if(bits_per_pixel == 16)
+      if (bits_per_pixel == 16)
         (void) TransparentImage(image, transpix, TransparentOpacity);
       else
         (void) TransparentImage(image, image->colormap[mask - transparentIndex],
@@ -967,8 +985,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     }
 
   MagickFreeMemory(one_row);
-  if (compressionType == PALM_COMPRESSION_SCANLINE)
-    MagickFreeMemory(lastrow);
+  MagickFreeMemory(lastrow);
   CloseBlob(image);
   return(image);
 }

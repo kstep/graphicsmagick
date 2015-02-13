@@ -1,3 +1,10 @@
+2015-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/palm.c (ReadPALMImage): PALM reader now supports 1, 2, 4,
+	8, and 16-bit test files we were able to generate using
+	'pnmtopalm'.  A progress monitor was added.  Memory leaks in error
+	paths were fixed.
+
 2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c: Insert "if (QuantumTick(...))" ahead of
