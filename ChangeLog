@@ -1,3 +1,8 @@
+2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Insert "if (QuantumTick(...))" ahead of
+	each "if (!MagickMonitorFormatted(...)".
+
 2015-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/rla.c (ReadRLAImage): Assure that header ASCII strings

@@ -2240,10 +2240,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
 
         if (image->previous == (Image *) NULL)
-          if (!MagickMonitorFormatted(pass,num_passes,exception,
-                                      LoadImageTag,image->filename,
-				      image->columns,image->rows))
-            break;
+          if (QuantumTick(pass, num_passes))
+            if (!MagickMonitorFormatted(pass,num_passes,exception,
+                                        LoadImageTag,image->filename,
+				        image->columns,image->rows))
+               break;
       }
 
   else /* image->storage_class != DirectClass */
@@ -2368,10 +2369,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             }
 
         if (image->previous == (Image *) NULL)
-          if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
-                                      image->filename,
-				      image->columns,image->rows))
-            break;
+          if (QuantumTick(pass, num_passes))
+            if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
+                                        image->filename,
+	  			      image->columns,image->rows))
+              break;
         MagickFreeMemory(quantum_scanline);
       }
 
@@ -2836,9 +2838,10 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         Read a new JNG chunk.
       */
 
-      if (!MagickMonitorFormatted(TellBlob(image),2*GetBlobSize(image),
-                                  exception,LoadImagesTag,image->filename))
-        break;
+      if (QuantumTick(TellBlob(image),2*GetBlobSize(image)))
+        if (!MagickMonitorFormatted(TellBlob(image),2*GetBlobSize(image),
+                                    exception,LoadImagesTag,image->filename))
+          break;
 
       type[0]='\0';
       (void) strcat(type,"errr");
@@ -3328,8 +3331,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   image->page.x=mng_info->x_off[mng_info->object_id];
   image->page.y=mng_info->y_off[mng_info->object_id];
   mng_info->image_found++;
-  (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
-                                exception,LoadImagesTag,image->filename);
+  if (QuantumTick(2*GetBlobSize(image),2*GetBlobSize(image)))
+    (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
+                                  exception,LoadImagesTag,image->filename);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOneJNGImage()");
@@ -4729,8 +4733,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               image=SyncNextImageInList(image);
             }
           mng_info->image=image;
-          if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
-                                      exception,LoadImagesTag,image->filename))
+          if (QuantumTick(TellBlob(image),GetBlobSize(image)))
+            if (!MagickMonitorFormatted(TellBlob(image),GetBlobSize(image),
+                                        exception,LoadImagesTag,
+                                        image->filename))
             break;
           if (term_chunk_found)
             {
@@ -7195,14 +7201,16 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
               *(png_pixels+i)=(*(png_pixels+i) > 128) ? 255 : 0;
             png_write_row(ping,png_pixels);
             if (image->previous == (Image *) NULL)
-              if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
-                                          (magick_uint64_t) image->rows*
-                                          num_passes,
-                                          &image->exception,
-                                          SaveImageTag,
-                                          image->filename,
-					  image->columns,image->rows))
-                break;
+              if (QuantumTick((magick_uint64_t) y*(pass+1),
+                              (magick_uint64_t) image->rows * num_passes))
+                if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                            (magick_uint64_t) image->rows*
+                                            num_passes,
+                                            &image->exception,
+                                            SaveImageTag,
+                                            image->filename,
+					    image->columns,image->rows))
+                  break;
 
           }
       }
@@ -7252,13 +7260,15 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                   }
                 png_write_row(ping,png_pixels);
                 if (image->previous == (Image *) NULL)
-                  if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
-                                              (magick_uint64_t) image->rows*
-                                              num_passes,
-                                              &image->exception,SaveImageTag,
-                                              image->filename,
-					      image->columns,image->rows))
-                    break;
+                  if (QuantumTick((magick_uint64_t) y*(pass+1),
+                                  (magick_uint64_t) image->rows * num_passes))
+                    if (!MagickMonitorFormatted((magick_uint64_t) y*(pass+1),
+                                                (magick_uint64_t) image->rows*
+                                                num_passes,
+                                                &image->exception,SaveImageTag,
+                                                image->filename,
+					        image->columns,image->rows))
+                      break;
               }
           }
         else
@@ -7314,6 +7324,9 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                         }
                       png_write_row(ping,png_pixels);
                       if (image->previous == (Image *) NULL)
+                      if (QuantumTick((magick_uint64_t) y * (pass+1),
+                                      (magick_uint64_t) image->rows *
+                                      num_passes))
                         if (!MagickMonitorFormatted((magick_uint64_t)
                                                     y*(pass+1),
                                                     (magick_uint64_t)
@@ -7357,15 +7370,19 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                                     png_pixels,0,0);
                       png_write_row(ping,png_pixels);
                       if (image->previous == (Image *) NULL)
-                        if (!MagickMonitorFormatted((magick_uint64_t)
-                                                    y*(pass+1),
-                                                    (magick_uint64_t)
-                                                    image->rows*num_passes,
-                                                    &image->exception,
-                                                    SaveImageTag,
-                                                    image->filename,
-						    image->columns,image->rows))
-                          break;
+                        if (QuantumTick((magick_uint64_t) y * (pass+1),
+                                        (magick_uint64_t) image->rows *
+                                        num_passes))
+                          if (!MagickMonitorFormatted((magick_uint64_t)
+                                                      y*(pass+1),
+                                                      (magick_uint64_t)
+                                                      image->rows*num_passes,
+                                                      &image->exception,
+                                                      SaveImageTag,
+                                                      image->filename,
+						      image->columns,
+                                                      image->rows))
+                            break;
                     }
                 }
             }
@@ -9095,10 +9112,11 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
       if (image->next == (Image *) NULL)
         break;
       image=SyncNextImageInList(image);
-      if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
-                                  &image->exception,SaveImagesTag,
-                                  image->filename))
-        break;
+      if (QuantumTick(scene,GetImageListLength(image)))
+        if (!MagickMonitorFormatted(scene++,GetImageListLength(image),
+                                    &image->exception,SaveImagesTag,
+                                    image->filename))
+          break;
     } while (mng_info->adjoin);
   if (write_mng)
     {
