@@ -31,19 +31,17 @@
 %  Based on pnmtopalm by Bill Janssen and ppmtobmp by Ian Goldberg.
 %  See http://www.trantor.de/kawt/doc/palmimages.html
 %
-% ppmquant -mapfile /usr/share/netpbm/palmgray2.map MasterImage_70x46.ppm | \
-%     pnmtopalm > input_gray_02bit.palm
+% gm convert MasterImage_70x46.ppm -monochrome -colors 2 pnm:- | pnmtopalm -verbose -depth 1 > input_gray_01bit.palm
 %
-% ppmquant -mapfile /usr/share/netpbm/palmcolor8.map MasterImage_70x46.ppm | \
-%     pnmtopalm > input_rgb_08bit.palm
+% gm convert MasterImage_70x46.ppm -colorspace gray -map pnm:/usr/share/netpbm/palmgray2.map pnm:- | pnmtopalm -verbose -depth 2 > input_gray_02bit.palm
 %
-% ppmquant -mapfile /usr/share/netpbm/palmgray4.map MasterImage_70x46.ppm | \
-%     pnmtopalm > input_gray_04bit.palm
+% gm convert MasterImage_70x46.ppm -colorspace gray -map pnm:/usr/share/netpbm/palmgray4.map pnm:- | pnmtopalm -verbose -depth 4 > input_gray_04bit.palm
 %
-% ppmquant -mapfile /usr/share/netpbm/palmcolor8.map MasterImage_70x46.ppm | \
-%     pnmtopalm > input_rgb_08bit.palm
+% gm convert MasterImage_70x46.ppm -map pnm:/usr/share/netpbm/palmcolor8.map pnm:- | pnmtopalm -verbose -depth 8 > input_rgb_08bit.palm
 %
-% pnmtopalm -depth 16 < MasterImage_70x46.ppm > input_rgb_16bit.palm
+% pnmtopalm -verbose -depth 16 < MasterImage_70x46.ppm > input_rgb_16bit.palm
+%
+% Add -rle or -scanline to add compression.  Add -transparent color to make color transparent.
 %
 */
 
@@ -1246,7 +1244,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
   else  /* is color */
     {
-      if(flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
+      if (flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
         {
           GetQuantizeInfo(&quantize_info);
           quantize_info.dither=image_info->dither;
