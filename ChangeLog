@@ -1,3 +1,9 @@
+2015-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/palm.c (ReadPALMImage): Improve log messages.  Add more
+	header validation.  Check image pixel limits.  Support 'ping'
+	mode.
+
 2015-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/palm.c (ReadPALMImage): PALM reader now supports 1, 2, 4,

@@ -745,7 +745,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
+  unsigned int
     bytes_per_row,
     flags,
     bits_per_pixel,
@@ -754,7 +754,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     byte,
     count,
     mask,
-    bit;
+    bit,
+    version;
 
   unsigned short
     color16;
@@ -773,7 +774,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   bytes_per_row = ReadBlobMSBShort(image);
   flags = ReadBlobMSBShort(image);
   bits_per_pixel = ReadBlobByte(image);
-  (void) ReadBlobByte(image); /* version */
+  version = ReadBlobByte(image); /* version */
   (void) ReadBlobMSBShort(image); /* nextDepthOffset */
   transparentIndex = ReadBlobByte(image);
   compressionType = ReadBlobByte(image);
@@ -782,12 +783,15 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Size=%lux%lu, bytes_per_row=%lu, flags=%lu, bits_per_pixel=%lu",
-                        image->columns, image->rows, bytes_per_row, flags, bits_per_pixel);
+                        "Version=%u, Size=%lux%lu, bytes_per_row=%u, flags=0x%02x, bits_per_pixel=%u",
+                        version, image->columns, image->rows, bytes_per_row, flags, bits_per_pixel);
   
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "transparentIndex=%lu, compressionType=%lu",
-                        transparentIndex, compressionType);
+                        "transparentIndex=%u, compressionType=%u (%s)",
+                        transparentIndex, compressionType,
+                        (compressionType == PALM_COMPRESSION_SCANLINE ? "scanline" :
+                         (compressionType == PALM_COMPRESSION_RLE ? "rle" :
+                          (compressionType == PALM_COMPRESSION_NONE ? "none" : "?"))));
 
   /*
     Validate bits per pixel.
@@ -798,6 +802,14 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       (bits_per_pixel != 8) &&
       (bits_per_pixel != 16))
     ThrowPALMReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
+
+  /*
+    Validate compression type.
+  */
+  if ((compressionType != PALM_COMPRESSION_NONE) &&
+      (compressionType != PALM_COMPRESSION_SCANLINE ) &&
+      (compressionType != PALM_COMPRESSION_RLE))
+    ThrowPALMReaderException(CorruptImageError,UnrecognizedImageCompression,image);
 
   /*
     Initialize image colormap.
@@ -868,8 +880,19 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     {
       image->storage_class = DirectClass;
       image->depth = 8;
-      (void) SetImageType(image, TrueColorType);
     }
+
+  /*
+    Skip reading pixels if ping requested.
+  */
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowPALMReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
   one_row = MagickAllocateMemory(unsigned char *,Max(bytes_per_row,2*image->columns));
   if (one_row == (unsigned char *) NULL)
