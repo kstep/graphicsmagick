@@ -1,3 +1,8 @@
+2015-02-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/palm.c (ReadPALMImage): Major re-work of PALM reader.
+	More log message improvements.  More header validation.
+
 2015-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/palm.c (ReadPALMImage): Improve log messages.  Add more
