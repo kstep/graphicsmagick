@@ -1,5 +1,7 @@
 2015-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* libtool: Update GNU libtool to 2.4.6.
+
 	* coders/palm.c (ReadPALMImage): Fix support for transparency in
 	PALM reader.
 
