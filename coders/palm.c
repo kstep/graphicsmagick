@@ -1159,11 +1159,32 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   if (palm_header.flags & PALM_HAS_TRANSPARENCY_FLAG)
     {
-      if (palm_header.bits_per_pixel == 16)
-        (void) TransparentImage(image, transpix, TransparentOpacity);
+      if (image->storage_class == PseudoClass)
+        {
+          index = mask - palm_header.transparent_index;
+          VerifyColormapIndex(image,index);
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Index %u rgb(%u,%u,%u) set transparent",
+                                  index,
+                                  image->colormap[index].red,
+                                  image->colormap[index].green,
+                                  image->colormap[index].blue);
+          image->colormap[index].opacity=TransparentOpacity;
+          SyncImage(image);
+          image->matte=MagickTrue;
+          image->storage_class=DirectClass;
+        }
       else
-        (void) TransparentImage(image, image->colormap[mask - palm_header.transparent_index],
-                                TransparentOpacity);
+        {
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "rgb(%u,%u,%u) set transparent",
+                                  transpix.red,
+                                  transpix.green,
+                                  transpix.blue);
+          (void) TransparentImage(image, transpix, TransparentOpacity);
+        }
     }
 
   MagickFreeMemory(one_row);
