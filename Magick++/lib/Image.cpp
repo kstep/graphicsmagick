@@ -286,7 +286,7 @@ Magick::Image::~Image()
 {
   bool doDelete = false;
   {
-    Lock( &_imgRef->_mutexLock );
+    Lock lock( &_imgRef->_mutexLock );
     if ( --_imgRef->_refCount == 0 )
       doDelete = true;
   }
@@ -3394,7 +3394,7 @@ unsigned int Magick::Image::scene ( void ) const
 
 std::string Magick::Image::signature ( const bool force_ ) const
 {
-  Lock( &_imgRef->_mutexLock );
+  Lock lock( &_imgRef->_mutexLock );
 
   // Re-calculate image signature if necessary
   if ( (force_) ||
@@ -3718,7 +3718,7 @@ double Magick::Image::yResolution ( void ) const
 Magick::Image::Image( const Image & image_ )
   : _imgRef(image_._imgRef)
 {
-  Lock( &_imgRef->_mutexLock );
+  Lock lock( &_imgRef->_mutexLock );
 
   // Increase reference count
   ++_imgRef->_refCount;
@@ -3730,13 +3730,13 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
   if( this != &image_ )
     {
       {
-        Lock( &image_._imgRef->_mutexLock );
+        Lock lock( &image_._imgRef->_mutexLock );
         ++image_._imgRef->_refCount;
       }
 
       bool doDelete = false;
       {
-        Lock( &_imgRef->_mutexLock );
+        Lock lock( &_imgRef->_mutexLock );
         if ( --_imgRef->_refCount == 0 )
           doDelete = true;
       }
@@ -3959,7 +3959,7 @@ MagickLib::Image * Magick::Image::replaceImage
     image = AllocateImage(constImageInfo());
 
   {
-    Lock( &_imgRef->_mutexLock );
+    Lock lock( &_imgRef->_mutexLock );
 
     if ( _imgRef->_refCount == 1 )
       {
@@ -3985,7 +3985,7 @@ MagickLib::Image * Magick::Image::replaceImage
 void Magick::Image::modifyImage( void )
 {
   {
-    Lock( &_imgRef->_mutexLock );
+    Lock lock( &_imgRef->_mutexLock );
     if ( _imgRef->_refCount == 1 )
       {
         // De-register image and return
@@ -4019,7 +4019,7 @@ void Magick::Image::throwImageException( void ) const
 // Register image with image registry or obtain registration id
 long Magick::Image::registerId( void )
 {
-  Lock( &_imgRef->_mutexLock );
+  Lock lock( &_imgRef->_mutexLock );
   if( _imgRef->id() < 0 )
     {
       ExceptionInfo exceptionInfo;
