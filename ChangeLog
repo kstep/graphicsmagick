@@ -1,3 +1,16 @@
+2015-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/{Blob.cpp, Image.cpp}: Incorrect lock scope
+	resulted in Magick++ locking not actually working to protect
+	critical sections in spite of no detected problems with locking
+	these past 16 years.  Problem was detected using the
+	misc-unused-raii check from clang-tidy and was reported by Hyrum
+	Wright.
+
+	* coders/palm.c (ReadPALMImage): Add header logging to writer.
+	Writer still seeks and overwrites its own header so logging is not
+	entirely accurate yet.
+
 2015-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool: Update GNU libtool to 2.4.6.

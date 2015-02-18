@@ -35,6 +35,20 @@
 <div class="document">
 
 
+<p>2015-02-18  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Magick++/lib/{Blob.cpp, Image.cpp}: Incorrect lock scope
+resulted in Magick++ locking not actually working to protect
+critical sections in spite of no detected problems with locking
+these past 16 years.  Problem was detected using the
+misc-unused-raii check from clang-tidy and was reported by Hyrum
+Wright.</li>
+<li>coders/palm.c (ReadPALMImage): Add header logging to writer.
+Writer still seeks and overwrites its own header so logging is not
+entirely accurate yet.</li>
+</ul>
+</blockquote>
 <p>2015-02-16  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

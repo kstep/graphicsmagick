@@ -86,7 +86,7 @@
   2 color (1 bit) palette
 */
 static unsigned char
-PalmPalette2[4][3] =
+PalmPalette1[2][3] =
   {
     {  0,  0,  0},
     {255,255,255}
@@ -128,248 +128,7 @@ PalmPalette4[16][3] =
     {255,255,255}
   };
 
-/*
-  232 color
- */
-static unsigned char
-PalmPalette8[232][3] =
-  {
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 51},
-    {0, 0, 102},
-    {0, 0, 153},
-    {0, 0, 204},
-    {0, 0, 255},
-    {0, 51, 0},
-    {0, 51, 51},
-    {0, 51, 102},
-    {0, 51, 153},
-    {0, 51, 204},
-    {0, 51, 255},
-    {0, 102, 0},
-    {0, 102, 51},
-    {0, 102, 102},
-    {0, 102, 153},
-    {0, 102, 204},
-    {0, 102, 255},
-    {0, 128, 0},
-    {0, 128, 128},
-    {0, 153, 0},
-    {0, 153, 51},
-    {0, 153, 102},
-    {0, 153, 153},
-    {0, 153, 204},
-    {0, 153, 255},
-    {0, 204, 0},
-    {0, 204, 51},
-    {0, 204, 102},
-    {0, 204, 153},
-    {0, 204, 204},
-    {0, 204, 255},
-    {0, 255, 0},
-    {0, 255, 51},
-    {0, 255, 102},
-    {0, 255, 153},
-    {0, 255, 204},
-    {0, 255, 255},
-    {17, 17, 17},
-    {34, 34, 34},
-    {51, 0, 0},
-    {51, 0, 51},
-    {51, 0, 102},
-    {51, 0, 153},
-    {51, 0, 204},
-    {51, 0, 255},
-    {51, 51, 0},
-    {51, 51, 51},
-    {51, 51, 102},
-    {51, 51, 153},
-    {51, 51, 204},
-    {51, 51, 255},
-    {51, 102, 0},
-    {51, 102, 51},
-    {51, 102, 102},
-    {51, 102, 153},
-    {51, 102, 204},
-    {51, 102, 255},
-    {51, 153, 0},
-    {51, 153, 51},
-    {51, 153, 102},
-    {51, 153, 153},
-    {51, 153, 204},
-    {51, 153, 255},
-    {51, 204, 0},
-    {51, 204, 51},
-    {51, 204, 102},
-    {51, 204, 153},
-    {51, 204, 204},
-    {51, 204, 255},
-    {51, 255, 0},
-    {51, 255, 51},
-    {51, 255, 102},
-    {51, 255, 153},
-    {51, 255, 204},
-    {51, 255, 255},
-    {68, 68, 68},
-    {85, 85, 85},
-    {102, 0, 0},
-    {102, 0, 51},
-    {102, 0, 102},
-    {102, 0, 153},
-    {102, 0, 204},
-    {102, 0, 255},
-    {102, 51, 0},
-    {102, 51, 51},
-    {102, 51, 102},
-    {102, 51, 153},
-    {102, 51, 204},
-    {102, 51, 255},
-    {102, 102, 0},
-    {102, 102, 51},
-    {102, 102, 102},
-    {102, 102, 153},
-    {102, 102, 204},
-    {102, 102, 255},
-    {102, 153, 0},
-    {102, 153, 51},
-    {102, 153, 102},
-    {102, 153, 153},
-    {102, 153, 204},
-    {102, 153, 255},
-    {102, 204, 0},
-    {102, 204, 51},
-    {102, 204, 102},
-    {102, 204, 153},
-    {102, 204, 204},
-    {102, 204, 255},
-    {102, 255, 0},
-    {102, 255, 51},
-    {102, 255, 102},
-    {102, 255, 153},
-    {102, 255, 204},
-    {102, 255, 255},
-    {119, 119, 119},
-    {128, 0, 0},
-    {128, 0, 128},
-    {136, 136, 136},
-    {153, 0, 0},
-    {153, 0, 51},
-    {153, 0, 102},
-    {153, 0, 153},
-    {153, 0, 204},
-    {153, 0, 255},
-    {153, 51, 0},
-    {153, 51, 51},
-    {153, 51, 102},
-    {153, 51, 153},
-    {153, 51, 204},
-    {153, 51, 255},
-    {153, 102, 0},
-    {153, 102, 51},
-    {153, 102, 102},
-    {153, 102, 153},
-    {153, 102, 204},
-    {153, 102, 255},
-    {153, 153, 0},
-    {153, 153, 51},
-    {153, 153, 102},
-    {153, 153, 153},
-    {153, 153, 204},
-    {153, 153, 255},
-    {153, 204, 0},
-    {153, 204, 51},
-    {153, 204, 102},
-    {153, 204, 153},
-    {153, 204, 204},
-    {153, 204, 255},
-    {153, 255, 0},
-    {153, 255, 51},
-    {153, 255, 102},
-    {153, 255, 153},
-    {153, 255, 204},
-    {153, 255, 255},
-    {170, 170, 170},
-    {187, 187, 187},
-    {192, 192, 192},
-    {204, 0, 0},
-    {204, 0, 51},
-    {204, 0, 102},
-    {204, 0, 153},
-    {204, 0, 204},
-    {204, 0, 255},
-    {204, 51, 0},
-    {204, 51, 51},
-    {204, 51, 102},
-    {204, 51, 153},
-    {204, 51, 204},
-    {204, 51, 255},
-    {204, 102, 0},
-    {204, 102, 51},
-    {204, 102, 102},
-    {204, 102, 153},
-    {204, 102, 204},
-    {204, 102, 255},
-    {204, 153, 0},
-    {204, 153, 51},
-    {204, 153, 102},
-    {204, 153, 153},
-    {204, 153, 204},
-    {204, 153, 255},
-    {204, 204, 0},
-    {204, 204, 51},
-    {204, 204, 102},
-    {204, 204, 153},
-    {204, 204, 204},
-    {204, 204, 255},
-    {204, 255, 0},
-    {204, 255, 51},
-    {204, 255, 102},
-    {204, 255, 153},
-    {204, 255, 204},
-    {204, 255, 255},
-    {221, 221, 221},
-    {238, 238, 238},
-    {255, 0, 0},
-    {255, 0, 51},
-    {255, 0, 102},
-    {255, 0, 153},
-    {255, 0, 204},
-    {255, 0, 255},
-    {255, 51, 0},
-    {255, 51, 51},
-    {255, 51, 102},
-    {255, 51, 153},
-    {255, 51, 204},
-    {255, 51, 255},
-    {255, 102, 0},
-    {255, 102, 51},
-    {255, 102, 102},
-    {255, 102, 153},
-    {255, 102, 204},
-    {255, 102, 255},
-    {255, 153, 0},
-    {255, 153, 51},
-    {255, 153, 102},
-    {255, 153, 153},
-    {255, 153, 204},
-    {255, 153, 255},
-    {255, 204, 0},
-    {255, 204, 51},
-    {255, 204, 102},
-    {255, 204, 153},
-    {255, 204, 204},
-    {255, 204, 255},
-    {255, 255, 0},
-    {255, 255, 51},
-    {255, 255, 102},
-    {255, 255, 153},
-    {255, 255, 204},
-    {255, 255, 255},
-  };
-
 #endif
-
 /*
  The 256 color system palette for Palm Computing Devices.
 */
@@ -697,7 +456,7 @@ static unsigned int
 
 void LogPALMHeader(const PalmHeader* palm_header)
 {
-  const static struct
+  static const struct
   {
     unsigned short mask;
     const char * text;
@@ -850,7 +609,6 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     *indexes;
 
   register long
-    i,
     x;
 
   PixelPacket
@@ -868,12 +626,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     status;
 
   unsigned int
+    i,
     mask,
     bit;
-
-  int
-    byte,
-    count;
 
   PalmHeader
     palm_header;
@@ -986,8 +741,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       i = 0;
       if (palm_header.flags & PALM_HAS_COLORMAP_FLAG)
         {
+          unsigned int
+            count;
+
           count = ReadBlobMSBShort(image); /* FIXME: Check colormap allocation size against count */
-          for (i = 0; i < (long) count; i++)
+          for (i = 0; i < count; i++)
             {
               (void) ReadBlobByte(image);
               index=255 - i;
@@ -999,7 +757,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 ThrowPALMReaderException(CorruptImageError,UnexpectedEndOfFile,image);
             }
         }
-      for (; i < (long) (1L << palm_header.bits_per_pixel); i++)
+      for (; i < (1U << palm_header.bits_per_pixel); i++)
         {
           index=255 - i;
           VerifyColormapIndex(image,index);
@@ -1021,6 +779,16 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       image->storage_class = DirectClass;
       image->depth = 8;
     }
+
+#if 0
+  if (image->storage_class == PseudoClass)
+    for (i=0; i < image->colors; i++)
+      fprintf(stderr,"%03u: %3u, %3u, %3u\n",
+              i,
+              ScaleQuantumToChar(image->colormap[i].red),
+              ScaleQuantumToChar(image->colormap[i].green),
+              ScaleQuantumToChar(image->colormap[i].blue));
+#endif
 
   image->compression = NoCompression;
   if (palm_header.flags & PALM_IS_COMPRESSED_FLAG)
@@ -1055,6 +823,10 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     {
       if (palm_header.flags & PALM_IS_COMPRESSED_FLAG)
         {
+          int
+            count,
+            byte;
+
           if (palm_header.compression_type == PALM_COMPRESSION_RLE)
             {
               for (i = 0; i < palm_header.bytes_per_row; )
@@ -1285,6 +1057,36 @@ ModuleExport void UnregisterPALMImage(void)
 %
 %
 */
+#if 0
+static Image *
+OptimizePALMImage(const ImageInfo *image_info,Image *image)
+{
+  Image
+    *map_image,
+    *optimize_image;
+
+  ImageCharacteristics
+    characteristics;
+
+  unsigned int
+    depth;
+
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    return (Image *) NULL;
+
+  for (depth = 1; depth < 8; depth *= 2)
+    {
+      // PalmPalette1, PalmPalette2, PalmPalette4, PalmPalette
+      optimize_image=CloneImage(image,0,0,True,&image->exception);
+    }
+
+  image->error->normalized_mean_error;
+
+  return 0;
+}
+#endif
 static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
 {
   int
@@ -1313,7 +1115,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     byte,
     color,
     *lastrow = 0,
-    *one_row,
+    *one_row = 0,
     *ptr,
     version = 0;
 
@@ -1321,22 +1123,26 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     transparentIndex = 0,
     status;
 
-  unsigned long
+  unsigned int
     count = 0,
     bits_per_pixel,
     bytes_per_row;
 
   unsigned short
-    color16,
-    flags = 0;
+    color16;
 
   ImageCharacteristics
     characteristics;
+
+  PalmHeader
+    palm_header;
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Dimensions: %lux%lu",
                           image->columns,image->rows);
+
+  (void) memset(&palm_header,0,sizeof(palm_header));
 
   /*
     Open output image file.
@@ -1385,54 +1191,73 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   bits_per_pixel=16; /* Default to 16 */
   if (characteristics.palette)
     {
-      flags |= PALM_HAS_COLORMAP_FLAG;
+      palm_header.flags |= PALM_HAS_COLORMAP_FLAG;
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Set flag PALM_HAS_COLORMAP_FLAG");
       for (bits_per_pixel=1;  ((1UL << bits_per_pixel) < image->colors) ;  bits_per_pixel*=2)
-        if (characteristics.grayscale)
-           (void) SortColormapByIntensity(image);
+        {};
+      if (characteristics.grayscale)
+        (void) SortColormapByIntensity(image);
     }
   else
     {
-      flags |= PALM_DIRECT_COLOR_FLAG;
+      palm_header.flags |= PALM_DIRECT_COLOR_FLAG;
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Set flag PALM_DIRECT_COLOR_FLAG");
     }
-  LogMagickEvent(CoderEvent,GetMagickModule(),"Bits per pixel: %lu",bits_per_pixel);
+  palm_header.bits_per_pixel=bits_per_pixel;
+  LogMagickEvent(CoderEvent,GetMagickModule(),"Bits per pixel: %u",bits_per_pixel);
 
   /* Write Tbmp header. */
-  (void) WriteBlobMSBShort(image,image->columns);  /* width */
-  (void) WriteBlobMSBShort(image,image->rows );  /* height */
+  palm_header.columns=image->columns;
+  palm_header.rows=image->rows;
   /* bytes per row - always a word boundary */
   bytes_per_row=((image->columns+(16/bits_per_pixel-1))/(16/bits_per_pixel))*2;
-  (void) WriteBlobMSBShort(image, bytes_per_row);
+  palm_header.bytes_per_row=bytes_per_row;
   if ((image->compression == RLECompression) ||
       (image->compression == FaxCompression))
-    flags|=PALM_IS_COMPRESSED_FLAG;
+    palm_header.flags|=PALM_IS_COMPRESSED_FLAG;
   if (((bytes_per_row*image->rows) > 48000) &&
-      (flags & PALM_IS_COMPRESSED_FLAG))
-    flags|=PALM_INDIRECT_COLORMAP_FLAG;
-  (void) WriteBlobMSBShort(image, flags);
-  (void) WriteBlobByte(image, bits_per_pixel);
+      (palm_header.flags & PALM_IS_COMPRESSED_FLAG))
+    palm_header.flags|=PALM_INDIRECT_COLORMAP_FLAG;
+  palm_header.bits_per_pixel=bits_per_pixel;
   if(bits_per_pixel > 1)
     version=1;
   if ((image->compression == RLECompression) ||
       (image->compression == FaxCompression))
     version=2;
-  (void) WriteBlobByte(image,version);
-  (void) WriteBlobMSBShort(image,0);  /* offset */
-  (void) WriteBlobByte(image,transparentIndex);  /* trans index */
+  palm_header.version=version;
+  palm_header.next_depth_offset=0;
+  palm_header.transparent_index=transparentIndex;
   if (image->compression == RLECompression)
-    (void) WriteBlobByte(image,PALM_COMPRESSION_RLE);
+    palm_header.compression_type=PALM_COMPRESSION_RLE;
   else
     if (image->compression == FaxCompression)
-      (void) WriteBlobByte(image,PALM_COMPRESSION_SCANLINE);
+      palm_header.compression_type=PALM_COMPRESSION_SCANLINE;
     else
-      (void) WriteBlobByte(image,PALM_COMPRESSION_NONE);
-  (void) WriteBlobMSBShort(image, 0);  /* reserved */
-  if(bits_per_pixel < 8)  /* not color */
+      palm_header.compression_type=PALM_COMPRESSION_NONE;
+  (void) memset(palm_header.reserved,0,sizeof(palm_header.reserved));
+
+  /*
+    Log and write out header.
+  */
+  if (image->logging)
+    LogPALMHeader(&palm_header);
+
+  (void) WriteBlobMSBShort(image,palm_header.columns);  /* width */
+  (void) WriteBlobMSBShort(image,palm_header.rows );  /* height */
+  (void) WriteBlobMSBShort(image,palm_header.bytes_per_row);
+  (void) WriteBlobMSBShort(image, palm_header.flags);
+  (void) WriteBlobByte(image, palm_header.bits_per_pixel);
+  (void) WriteBlobByte(image,palm_header.version);
+  (void) WriteBlobMSBShort(image,palm_header.next_depth_offset);  /* offset */
+  (void) WriteBlobByte(image,palm_header.transparent_index);
+  (void) WriteBlobByte(image,palm_header.compression_type);
+  (void) WriteBlob(image, sizeof(palm_header.reserved), palm_header.reserved);
+
+  if (bits_per_pixel < 8)  /* not color */
     {
-      if(flags & PALM_IS_COMPRESSED_FLAG)  /* compressed size */
+      if (palm_header.flags & PALM_IS_COMPRESSED_FLAG)  /* compressed size */
         {
-          if(flags & PALM_INDIRECT_COLORMAP_FLAG)  /* big size */
+          if (palm_header.flags & PALM_INDIRECT_COLORMAP_FLAG)  /* big size */
             (void) WriteBlobMSBLong(image, 0);
           else
             if (bits_per_pixel == 16)
@@ -1449,14 +1274,14 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
   else  /* is color */
     {
-      if (flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
+      if (palm_header.flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
         {
           GetQuantizeInfo(&quantize_info);
           quantize_info.dither=image_info->dither;
           quantize_info.number_colors=image->colors;
           (void) QuantizeImage(&quantize_info,image);
           (void) WriteBlobMSBShort(image, image->colors);
-          for(count = 0; count < image->colors; count++)
+          for (count = 0; count < image->colors; count++)
             {
               (void) WriteBlobByte(image, count);
               (void) WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].red));
@@ -1473,11 +1298,11 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
                                 &PalmPalette, &image->exception);
           (void) SetImageType(map, PaletteType);
           (void) MapImage(image, map, False);
-          for(y = 0; y < (long) image->rows; y++)
+          for (y = 0; y < (long) image->rows; y++)
             {
               p = GetImagePixels(image, 0, y, image->columns, 1);
               indexes=AccessMutableIndexes(image);
-              for(x = 0; x < (long) image->columns; x++)
+              for (x = 0; x < (long) image->columns; x++)
                 {
                   index = FindColor(&image->colormap[indexes[x]]);
                   if (index < 0)
@@ -1504,20 +1329,20 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       if (p == (PixelPacket *) NULL)
         break;
       indexes=AccessMutableIndexes(image);
-      if(bits_per_pixel == 16)
+      if (bits_per_pixel == 16)
         {
           for (x=0; x < (int) image->columns; x++)
             {
               color16 = (unsigned short) (((p->red * 31) / MaxRGB) << 11
                                           | ((p->green * 63) / MaxRGB) << 5
                                           | ((p->blue * 31) / MaxRGB));
-              if(p->opacity == TransparentOpacity)
+              if (p->opacity == TransparentOpacity)
                 {
                   transpix.red = p->red;
                   transpix.green = p->green;
                   transpix.blue = p->blue;
                   transpix.opacity = p->opacity;
-                  flags |= PALM_HAS_TRANSPARENCY_FLAG;
+                  palm_header.flags |= PALM_HAS_TRANSPARENCY_FLAG;
                 }
               *ptr++ = (color16 >> 8) &0xff;
               *ptr++ = color16 & 0xff;
@@ -1530,7 +1355,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           bit = (unsigned char) (8 - bits_per_pixel);
           for (x=0; x < (int) image->columns; x++)
             {
-              if(bits_per_pixel < 8) /* Make sure we use the entire colorspace for bits_per_pixel */
+              if (bits_per_pixel < 8) /* Make sure we use the entire colorspace for bits_per_pixel */
                 color = (unsigned char) (indexes[x] * ((1 << bits_per_pixel) - 1) /
                                          (image->colors - 1));
               else
@@ -1551,21 +1376,21 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
             *ptr++ = byte;
         }
 
-      if(image->compression == RLECompression)
+      if (image->compression == RLECompression)
         {
           x = 0;
-          while(x < (long) bytes_per_row)
+          while (x < (long) bytes_per_row)
             {
               byte = one_row[x];
               count = 1;
-              while(one_row[++x] == byte && count < 255 && x < (long) bytes_per_row)
+              while (one_row[++x] == byte && count < 255 && x < (long) bytes_per_row)
                 count++;
               (void) WriteBlobByte(image, count);
               (void) WriteBlobByte(image, byte);
             }
         }
       else
-        if(image->compression == FaxCompression)  /* Scanline really */
+        if (image->compression == FaxCompression)  /* Scanline really */
           {
             char tmpbuf[8];
             char *tptr;
@@ -1573,9 +1398,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
             for (x = 0;  x < (long) bytes_per_row;  x += 8)
               {
                 tptr = tmpbuf;
-                for(bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
+                for (bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
                   {
-                    if((y == 0) || (lastrow[x + bit] != one_row[x + bit]))
+                    if ((y == 0) || (lastrow[x + bit] != one_row[x + bit]))
                       {
                         byte |= (1 << (7 - bit));
                         *tptr++ = one_row[x + bit];
@@ -1592,19 +1417,19 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           }
     }
 
-  if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)
+  if (bits_per_pixel < 8 && palm_header.flags & PALM_IS_COMPRESSED_FLAG)
     {
       count = (unsigned long) GetBlobSize(image);  /* compressed size */
     }
 
-  if(flags & PALM_HAS_TRANSPARENCY_FLAG)
+  if (palm_header.flags & PALM_HAS_TRANSPARENCY_FLAG)
     {
       (void) SeekBlob(image, 6, SEEK_SET);
-      (void) WriteBlobMSBShort(image, flags);
+      (void) WriteBlobMSBShort(image, palm_header.flags);
       (void) SeekBlob(image, 12, SEEK_SET);
       (void) WriteBlobByte(image,transparentIndex);  /* trans index */
 
-      if(bits_per_pixel == 16)
+      if (bits_per_pixel == 16)
         {
           (void) SeekBlob(image, 20, SEEK_SET);
           (void) WriteBlobByte(image, 0);  /* reserved by Palm */
@@ -1613,7 +1438,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image, (transpix.blue * 31) / MaxRGB);
         }
       (void) SeekBlob(image, 16, SEEK_SET);
-      if(flags & PALM_INDIRECT_COLORMAP_FLAG)
+      if (palm_header.flags & PALM_INDIRECT_COLORMAP_FLAG)
         (void) WriteBlobMSBLong(image, count - 16);
       else
         (void) WriteBlobMSBShort(image, count - 16);
@@ -1621,7 +1446,6 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
 
   CloseBlob(image);
   MagickFreeMemory(one_row);
-  if (image->compression == FaxCompression)
-    MagickFreeMemory(lastrow);
+  MagickFreeMemory(lastrow);
   return(True);
 }
