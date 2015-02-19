@@ -1,5 +1,9 @@
 2015-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/attribute.c (GenerateEXIFAttribute): Fix crash while
+	parsing corrupt EXIF which was reported by Stijn Sanders on
+	2015-02-17.
+
 	* Magick++/lib/{Blob.cpp, Image.cpp}: Incorrect lock scope
 	resulted in Magick++ locking not actually working to protect
 	critical sections in spite of no detected problems with locking

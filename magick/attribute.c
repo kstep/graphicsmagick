@@ -1519,6 +1519,7 @@ GenerateEXIFAttribute(Image *image,const char *specification)
 
   unsigned char
     *tiffp,
+    *tiffp_max,
     *ifdstack[DE_STACK_SIZE],
     *ifdp,
     *info;
@@ -1564,10 +1565,13 @@ GenerateEXIFAttribute(Image *image,const char *specification)
   if (profile_info == 0)
     goto generate_attribute_failure;
   /*
-    If EXIF data exists, then try to parse the request for a tag.
+    If EXIF data exists, then try to parse the request for a tag in
+    the form "EXIF:key".
   */
-  key=(char *) &specification[5];
-  if ((key == (char *) NULL) || (*key == '\0'))
+  key=(char *) NULL;
+  if (strlen(specification) > 5)
+    key=(char *) &specification[5]; /* "EXIF:key" */
+  else
     goto generate_attribute_failure;
   while (isspace((int) (*key)))
     key++;
@@ -1667,6 +1671,7 @@ GenerateEXIFAttribute(Image *image,const char *specification)
   if (length < 16)
     goto generate_attribute_failure;
   tiffp=info;
+  tiffp_max=tiffp+length;
   id=Read16u(0,tiffp);
   morder=0;
   if (id == 0x4949) /* LSB */
@@ -1704,6 +1709,8 @@ GenerateEXIFAttribute(Image *image,const char *specification)
       /*
 	Determine how many entries there are in the current IFD.
       */
+      if ((ifdp < tiffp) || (ifdp+2 > tiffp_max))
+        goto generate_attribute_failure;
       nde=Read16u(morder,ifdp);
       for (; de < nde; de++)
 	{
