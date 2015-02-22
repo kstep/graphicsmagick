@@ -371,7 +371,7 @@ extern "C" {
   /*
     Check image dimensions to see if they exceed current limits.
   */
-  extern MagickPassFail
+  extern MagickExport MagickPassFail
   CheckImagePixelLimits(const Image *image, ExceptionInfo *exception);
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
