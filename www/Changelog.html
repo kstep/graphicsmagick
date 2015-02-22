@@ -35,6 +35,25 @@
 <div class="document">
 
 
+<p>2015-02-21  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/magick.c (InitializeMagick): Invoke
+NTInitializeExceptionHandlers() under Windows.</li>
+<li>magick/nt_base.c (NTInitializeExceptionHandlers): Add a new
+private function which disables pop-up Windows on exceptions and
+registers a handler for Windows exceptions to clean up temporary
+files prior to program exit.</li>
+<li>magick/magick.c (PanicDestroyMagick): Use
+PurgeTemporaryFilesAsyncSafe() rather than PurgeTemporaryFiles().
+(InitializeMagickSignalHandlers): Always register for SIGINT, even
+under Microsoft Windows.</li>
+<li>magick/tempfile.c (PurgeTemporaryFilesAsyncSafe): New private
+function to clean up temporary files prior to program exit.
+Async-safe so it can be safely called from a signal handler.
+Intentionally leaks memory.</li>
+</ul>
+</blockquote>
 <p>2015-02-18  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
