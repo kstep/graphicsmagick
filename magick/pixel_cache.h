@@ -327,7 +327,7 @@ extern "C" {
     GetPixelCachePresent() tests to see the pixel cache is present
     and contains pixels.
   */
-  extern MagickBool
+  extern MagickExport MagickBool
   GetPixelCachePresent(const Image *image);
 
   /*

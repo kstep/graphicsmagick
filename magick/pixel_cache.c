@@ -2650,7 +2650,7 @@ GetPixelCacheInCore(const Image *image)
 %
 %
 */
-extern MagickBool
+extern MagickExport MagickBool
 GetPixelCachePresent(const Image *image)
 {
   CacheInfo
