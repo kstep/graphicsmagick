@@ -1,3 +1,8 @@
+2014-02-22  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+
+	* VisualMagick\configure\configure.cpp Fixed crash.
+        Renamed debug to configure_d.exe to prevent mess.
+
 2015-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (InitializeMagick): Invoke
@@ -560,6 +565,5 @@
 
 	* Rotate Changelog for new year.  Update documentation copyrights
 	for new year.
-
 
 

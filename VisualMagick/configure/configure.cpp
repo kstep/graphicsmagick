@@ -2896,7 +2896,7 @@ BOOL CConfigureApp::InitInstance()
 
 #ifdef _DEBUG
   debuglog.open ("configure.log", ofstream::out | ofstream::app);
-  debuglog << "The log has been opened" << endl;;
+  debuglog << "The log has been opened" << endl;
 #endif
 
   m_pMainWnd = &wizard.m_Page1;
@@ -4648,7 +4648,8 @@ void ConfigureVS7Workspace::write_end()
         {
           ConfigureProject *dependent_project = find_project((*it));
 #ifdef _DEBUG
-          debuglog  << "write_end:" << project->name.c_str() << ", " << dependent_project->name.c_str() << endl;
+          debuglog << "write_end:" << project->name.c_str() << ", " << 
+            ((dependent_project==NULL)?" *NONE* ":dependent_project->name.c_str()) << endl;
 #endif
           if (dependent_project)
             {
