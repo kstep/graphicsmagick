@@ -939,6 +939,7 @@ namespace Magick
   using MagickLib::GetImageChannelDepth;
   using MagickLib::GetImageClipMask;
   using MagickLib::GetImageDepth;
+  using MagickLib::GetImageGeometry;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
   using MagickLib::GetImageProfile;
