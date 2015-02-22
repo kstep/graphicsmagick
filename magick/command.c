@@ -16815,12 +16815,23 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
   PrintFeature("Native Thread Safe", supported);
 
-  /* Large File Support */
+  /*
+    Large File Support
+
+    For POSIX, the 'stat' structure has 'st_size' member which is of
+    type 'off_t'.  However, Windows provides a large family of _stat*
+    structures with varying proportions and we might be using 'struct
+    stat' or 'struct _stati64' which use different hard-coded types
+    for the 'st_size' member.  While large files might be otherwise
+    supported, we consider the maximum size reportable by 'stat' to be
+    the limiting factor.
+  */
   {
     MagickStatStruct_t
       attributes;
 
     supported=(sizeof(attributes.st_size) > 4);
+    (void) attributes;
   }
   PrintFeature("Large Files (> 32 bit)", supported);
 
