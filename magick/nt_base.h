@@ -189,6 +189,10 @@ extern "C" {
 #  define fileno(x) _fileno(x)
 #endif
 
+#if !defined(unlink)
+#  define unlink(path) _unlink(path)
+#endif /* !defined(unlink) */
+
 /*
   Typedef declarations.
 */
@@ -386,6 +390,9 @@ extern MagickExport void
 
 extern MagickExport long
   MagickGetMMUPageSize();
+
+extern MagickExport void
+  NTInitializeExceptionHandlers();
 
 #endif /* !XS_VERSION */
 

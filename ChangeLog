@@ -1,3 +1,23 @@
+2015-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick): Invoke
+	NTInitializeExceptionHandlers() under Windows.
+
+	* magick/nt_base.c (NTInitializeExceptionHandlers): Add a new
+	private function which disables pop-up Windows on exceptions and
+	registers a handler for Windows exceptions to clean up temporary
+	files prior to program exit.
+
+	* magick/magick.c (PanicDestroyMagick): Use
+	PurgeTemporaryFilesAsyncSafe() rather than PurgeTemporaryFiles().
+	(InitializeMagickSignalHandlers): Always register for SIGINT, even
+	under Microsoft Windows.
+
+	* magick/tempfile.c (PurgeTemporaryFilesAsyncSafe): New private
+	function to clean up temporary files prior to program exit.
+	Async-safe so it can be safely called from a signal handler.
+	Intentionally leaks memory.
+
 2015-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (GenerateEXIFAttribute): Fix crash while

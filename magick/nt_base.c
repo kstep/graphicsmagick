@@ -293,6 +293,268 @@ MagickExport MagickBool IsWindows95()
   return(MagickFalse);
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   InitializeWIN32ExceptionHandlers                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeWIN32ExceptionHandlers registers a handler for WIN32
+%  exceptions (similar to POSIX signals but different).
+%
+%  The format of the InitializeWIN32ExceptionHandlers method is:
+%
+%      void InitializeWIN32ExceptionHandlers()
+%
+%
+*/
+static LONG WINAPI
+MagickUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *info)
+{
+  /*
+    https://msdn.microsoft.com/en-us/library/windows/desktop/ms680634%28v=vs.85%29.aspx
+
+    http://www.codeproject.com/Articles/11132/Walking-the-callstack
+
+    http://www.microsoft.com/msj/0197/exception/exception.aspx
+
+    Return values:
+
+    EXCEPTION_EXECUTE_HANDLER (0x1)
+
+    Return from UnhandledExceptionFilter and execute the associated
+    exception handler. This usually results in process termination.
+
+    EXCEPTION_CONTINUE_EXECUTION (0xffffffff)
+
+    Return from UnhandledExceptionFilter and continue execution from
+    the point of the exception. Note that the filter function is
+    free to modify the continuation state by modifying the exception
+    information supplied through its LPEXCEPTION_POINTERS parameter.
+
+    EXCEPTION_CONTINUE_SEARCH (0x0)
+
+    Proceed with normal execution of UnhandledExceptionFilter. That
+    means obeying the SetErrorMode flags, or invoking the
+    Application Error pop-up message box.
+
+    The EXCEPTION_POINTERS structure has the definition:
+
+    https://msdn.microsoft.com/en-us/library/windows/desktop/aa363082%28v=vs.85%29.aspx
+    typedef struct _EXCEPTION_RECORD {
+    DWORD                    ExceptionCode;
+    DWORD                    ExceptionFlags;
+    struct _EXCEPTION_RECORD  *ExceptionRecord;
+    PVOID                    ExceptionAddress;
+    DWORD                    NumberParameters;
+    ULONG_PTR                ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
+    } EXCEPTION_RECORD, *PEXCEPTION_RECORD;
+
+    https://msdn.microsoft.com/en-us/library/windows/desktop/ms679284%28v=vs.85%29.aspx 
+    We don't care about PCONTEXT because it is processor-specific and includes low level
+    details such as register contents.
+
+    https://msdn.microsoft.com/en-us/library/windows/desktop/ms679331%28v=vs.85%29.aspx
+    typedef struct _EXCEPTION_POINTERS {
+    PEXCEPTION_RECORD ExceptionRecord;
+    PCONTEXT          ContextRecord;
+    } EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
+
+  */
+  static const struct {
+    DWORD  code;
+    const char *text;
+  }
+  except_descr[] =
+    {
+      /*
+        The thread tried to read from or write to a virtual address
+        for which it does not have the appropriate access.
+      */
+#if defined(EXCEPTION_ACCESS_VIOLATION)
+      { EXCEPTION_ACCESS_VIOLATION,  "Access violation" },
+#endif
+      /*
+        The thread tried to access an array element that is out of
+        bounds and the underlying hardware supports bounds checking.
+      */
+#if defined(EXCEPTION_ARRAY_BOUNDS_EXCEEDED)
+      { EXCEPTION_ARRAY_BOUNDS_EXCEEDED, "Array bounds exceeded" },
+#endif
+      /*
+        The thread tried to read or write data that is misaligned on
+        hardware that does not provide alignment. For example,
+        16-bit values must be aligned on 2-byte boundaries; 32-bit
+        values on 4-byte boundaries, and so on.
+      */
+#if defined(EXCEPTION_DATATYPE_MISALIGNMENT)
+      { EXCEPTION_DATATYPE_MISALIGNMENT, "Datatype misalignment" },
+#endif
+      /*
+        One of the operands in a floating-point operation is
+        denormal. A denormal value is one that is too small to
+        represent as a standard floating-point value.
+      */
+#if defined(EXCEPTION_FLT_DENORMAL_OPERAND)
+      { EXCEPTION_FLT_DENORMAL_OPERAND, "Float - denormal operand" },
+#endif
+      /*
+        The thread tried to divide a floating-point value by a
+        floating-point divisor of zero.
+      */
+#if defined(EXCEPTION_FLT_DIVIDE_BY_ZERO)
+      { EXCEPTION_FLT_DIVIDE_BY_ZERO, "Float - divide by zero" },
+#endif
+      /*
+        This exception represents any floating-point exception not
+        included in this list.
+      */
+#if defined(EXCEPTION_FLT_INVALID_OPERATION)
+      { EXCEPTION_FLT_INVALID_OPERATION, "Float - invalid operation" },
+#endif
+      /*
+        The exponent of a floating-point operation is greater than the
+        magnitude allowed by the corresponding type.
+      */
+#if defined(EXCEPTION_FLT_OVERFLOW)
+      { EXCEPTION_FLT_OVERFLOW, "Float overflow" },
+#endif
+      /*
+        The stack overflowed or underflowed as the result of a
+        floating-point operation.
+      */
+#if defined(EXCEPTION_FLT_STACK_CHECK)
+      { EXCEPTION_FLT_STACK_CHECK, "Float - stack under/overflow" },
+#endif
+      /*
+        The exponent of a floating-point operation is less than the
+        magnitude allowed by the corresponding type.
+      */
+#if defined(EXCEPTION_FLT_UNDERFLOW)
+      { EXCEPTION_FLT_UNDERFLOW, "Float - underflow" },
+#endif
+      /*
+        The thread tried to execute an invalid instruction.
+      */
+#if defined(EXCEPTION_ILLEGAL_INSTRUCTION)
+      { EXCEPTION_ILLEGAL_INSTRUCTION, "Illegal instruction" },
+#endif
+      /*
+        The thread tried to access a page that was not present, and
+        the system was unable to load the page. For example, this
+        exception might occur if a network connection is lost while
+        running a program over the network.
+      */
+#if defined(EXCEPTION_IN_PAGE_ERROR)
+      { EXCEPTION_IN_PAGE_ERROR, "MMU page-in error" },
+#endif
+      /*
+        The thread tried to divide an integer value by an integer
+        divisor of zero.
+      */
+#if defined(EXCEPTION_INT_DIVIDE_BY_ZERO)
+      { EXCEPTION_INT_DIVIDE_BY_ZERO, "Integer divide by zero" },
+#endif
+      /*
+        The result of an integer operation caused a carry out of the
+        most significant bit of the result.
+      */
+#if defined(EXCEPTION_INT_OVERFLOW)
+      { EXCEPTION_INT_OVERFLOW, "Integer overflow" },
+#endif
+      /*
+        The thread tried to execute an instruction whose operation is
+        not allowed in the current machine mode.
+      */
+#if defined(EXCEPTION_PRIV_INSTRUCTION)
+      { EXCEPTION_PRIV_INSTRUCTION, "Privileged instruction" },
+#endif
+      /*
+        The thread used up its stack.
+      */
+#if defined(EXCEPTION_STACK_OVERFLOW)
+      { EXCEPTION_STACK_OVERFLOW, "Stack overflow" }
+#endif
+    };
+
+  char
+    message[MaxTextExtent];
+
+  const char
+    *text = NULL;
+
+  size_t
+    i;
+
+  DWORD
+    code = info->ExceptionRecord->ExceptionCode;
+
+  /*
+    Linear search for explanation of error code.
+  */
+  for (i=0; i < sizeof(except_descr)/sizeof(except_descr[0]); i++)
+    if (except_descr[i].code == code)
+      {
+        text = except_descr[i].text;
+        break;
+      }
+
+  /*
+    If this is an exception we handle
+  */
+  if (text != NULL)
+    {
+      /*
+        Release persistent resources
+      */
+      PanicDestroyMagick();
+
+      /*
+        Output messages like:
+
+        gm.exe identify: caught exception 0xC0000005 "Access violation"...
+      */
+      FormatString(message,
+                   "%s: caught exception 0x%08X \"%s\"...",
+                   GetClientName(), (unsigned int) code, text);
+      if (write(STDERR_FILENO,message,strlen(message)) == -1)
+        {
+          /* Exists to quench warning */
+        }
+
+      /*
+        Return from UnhandledExceptionFilter and execute the
+        associated exception handler. This usually results in process
+        termination.
+      */
+      return EXCEPTION_EXECUTE_HANDLER;
+    }
+
+  /*
+    Can also look at ExceptionFlags and check for EXCEPTION_NONCONTINUABLE.
+  */
+
+  /*
+    Proceed with normal execution of UnhandledExceptionFilter. That
+    means obeying the SetErrorMode flags, or invoking the Application
+    Error pop-up message box.
+  */
+  return EXCEPTION_CONTINUE_SEARCH;
+}
+MagickExport void
+NTInitializeExceptionHandlers()
+{
+
+  (void) SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
+                      SEM_NOOPENFILEERRORBOX);
+  (void) SetUnhandledExceptionFilter(MagickUnhandledExceptionFilter);
+}
+
 #if !defined(HasLTDL)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

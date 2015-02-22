@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2014 GraphicsMagick Group
+  Copyright (C) 2003 - 2015 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -733,6 +733,7 @@
 #define PSDensityGeometry GmPSDensityGeometry
 #define PSPageGeometry GmPSPageGeometry
 #define PurgeTemporaryFiles GmPurgeTemporaryFiles
+#define PurgeTemporaryFilesAsyncSafe GmPurgeTemporaryFilesAsyncSafe
 #define PushImagePixels GmPushImagePixels
 #define QuantizeImage GmQuantizeImage
 #define QuantizeImages GmQuantizeImages

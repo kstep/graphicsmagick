@@ -554,3 +554,38 @@ MagickExport void PurgeTemporaryFiles(void)
       MagickFreeMemory(liberate);
     }
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   P u r g e T e m p o r a r y F i l e s A s y n c S a f e                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PurgeTemporaryFiles reclaims all currently allocated temporary files,
+%  removing the files from the filesystem if they still exist.  This version
+%  is similar to PurgeTemporaryFiles() except that it intentionally does
+%  not release any memory (might use a mutex/semaphore) or invoke any
+%  functions which are not async-safe.  The only reason to call this function
+%  is something has gone wrong and the program needs to quit immediately.
+%
+%      void PurgeTemporaryFilesAsyncSafe(void)
+%
+*/
+MagickExport void PurgeTemporaryFilesAsyncSafe(void)
+{
+  const TempfileInfo
+    *member;
+
+  member=templist;
+  templist=0;
+  while(member)
+    {
+      (void) unlink(member->filename);
+      member=member->next;
+    }
+}

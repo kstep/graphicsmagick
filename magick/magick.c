@@ -1012,6 +1012,7 @@ InitializeMagickClientPathAndName(const char *path)
 
 /*
   Establish signal handlers for common signals
+
 */
 MagickExport void
 InitializeMagickSignalHandlers(void)
@@ -1028,7 +1029,7 @@ InitializeMagickSignalHandlers(void)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);
 #endif
   /* interrupt (CONTROL-c), default terminate */
-#if defined(SIGINT) && !defined(MSWINDOWS)
+#if defined(SIGINT)
   (void) MagickCondSignal(SIGINT,MagickSignalHandler);
 #endif
   /* quit (CONTROL-\), default terminate with core */
@@ -1166,6 +1167,9 @@ InitializeMagick(const char *path)
 	MinimumCoderClass=PrimaryCoderClass;
     }
 
+#if defined(MSWINDOWS)
+  NTInitializeExceptionHandlers();  /* WIN32 Exceptions */
+#endif /* defined(MSWINDOWS) */
   InitializeMagickSignalHandlers(); /* Signal handlers */
   InitializeTemporaryFiles();       /* Temporary files */
   InitializeMagickResources();      /* Resources */
@@ -1591,6 +1595,14 @@ RegisterMagickInfo(MagickInfo *magick_info)
 %
 %
 */
+/*
+  Set to 1 to break the memory allocation functions.  This is a
+  debugging aid.  In a multi-threaded program, other threads may
+  still be allocating and deallocating memory while a signal
+  handler is called.
+*/
+#define MAGICK_BREAK_HEAP 0
+#if MAGICK_BREAK_HEAP
 static void
 PanicFreeFunc(void *ptr)
 {
@@ -1624,21 +1636,23 @@ PanicReallocFunc(void *ptr, size_t size)
     }
   return (void *) NULL;
 }
+#endif /* if MAGICK_BREAK_HEAP */
 MagickExport void
 PanicDestroyMagick(void)
 {
   if (MagickInitialized == InitInitialized)
     {
+#if MAGICK_BREAK_HEAP
       /*
         Enforce that we don't use the memory allocation functions by
         setting them all to dummy functions.
       */
       MagickAllocFunctions(PanicFreeFunc,PanicMallocFunc,PanicReallocFunc);
-        
+#endif /* if MAGICK_BREAK_HEAP */
       /*
         Release persistent resources
       */
-      PurgeTemporaryFiles();
+      PurgeTemporaryFilesAsyncSafe();
     }
 }
 
