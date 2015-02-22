@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on December 31, 2014
+This file was last updated on February 22, 2015
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.21 (January ??, 2014)
+1.3.21 (February ??, 2015)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
@@ -73,6 +73,11 @@ Security Fixes:
   * Annotate: Some requestable text-subsitution attributes caused a
     crash.
 
+  * All formats: Image dimensions are checked to assure that they are
+    within limits before proceeding to read the image.
+
+  * BMP: Fix hang (endless loop) for certain files.
+
   * DCM: Fix crash as well as small heap over-write.
 
   * DPX: Fix crash due to DPX file reporting more elements than it
@@ -127,20 +132,56 @@ Security Fixes:
 Bug fixes:
 
   * CIN: Fix problem with text attribute values which are not NULL
-    terminated.
+    terminated.  Validate sizes claimed by Cineon header.
+
+  * Coverity: Fixes for many issues detected by Coverity scan (see
+    ChangeLog).
 
   * DPX: Fix problem with text attribute values which are not NULL
     terminated.
 
+  * DPX: Fix severe corruption of little-endian 32-bit packed output.
+    Corruption was severe enough that it would have been noticed
+    immediately.
+
+  * Delegates: Fix possible memory leaks when invoking external
+    application.
+
+  * FITS: Properly validate values provided by file header.
+
+  * GIF: Fix use of uninitialized data.
+
+  * JBIG: Fix memory leaks.
+
   * JNG: Fix double-free error in error path.
 
-  * Magick++ Image resolutionUnits() was not always returning correct
+  * JPEG: Verify the number of output components before attempting to
+    decode the image.
+
+  * Magick++: Image resolutionUnits() was not always returning correct
     value.
+
+  * Magick++: Locking has not been working properly since the code was
+    written in 1998.  Apparently the issue has not been significant
+    enough to cause run-time issues.
+
+  * ICO: Windows icon reader is now much more robust.
+
+  * MIFF: Reader now quits with an error if zip or bzip2 stream is
+    corrupted.
+
+  * MAT: Fix memory leaks.
+
+  * PALM: Reader now reads various input formats (up to version 2)
+    correctly whereas it was crashing or otherwise malfunctioning
+    before.  More work remains, particularly in the writer.
 
   * PCX: Eliminate memory leaks in error paths.
 
   * PDB: In PDB writer, void possible under-allocation due to
     arthimetic overflow when allocating packets.
+
+  * PICT: Fix PICT reader crash with corrupted file.
 
   * PNG: Fix double-free error in error path.
 
@@ -149,6 +190,17 @@ Bug fixes:
   * PNG: Avoid reading beyond the end of a tEXt keyword.
 
   * PSD: Fix error when reading PSDs files which have no layers.
+
+  * RLA: Fix possible crash due to file header.
+
+  * Signal Handling: Signal handling is now more robust and handles
+    SIGSEGV and other critical signals.  The sole purpose of the
+    default signal handling is to remove any temporary files and quit.
+    An informative message is printed for signals other than SIGINT.
+
+  * SUN: Sun raster reader was not completely robust. Now it is.
+
+  * SWF: Fix pixel cache access errors in 'ping' mode.
 
   * Text annotation: An empty text string is no longer treated as an
     error.
@@ -161,20 +213,33 @@ Bug fixes:
     of strip reader rather than sometimes using scanline reader (which
     libtiff's JBIG codec does not support).
 
+  * TIFF: Fix reading or writing planar min-is-white or min-is-black
+    images with an associated alpha channel.
+
   * WebP: WebP writer now writes truely lossless output when
     requested.
 
   * identify / GetImageStatistics(): Failed to compute statistics for
     the Black channel of CMYK image files.
 
+  * VICAR: Fix problem with continuing to "read" data when there is no
+    more data left to read.
+
+  * WMF: Fix memory leaks.
+
+  * WPG: Fix potential DOS due to long reads during an error
+    condition.
+
   * XPM: Avoid strncpy() of overlapping memory.  Fixed memory leaks in
-    error paths.
+    error paths.  Fixed bad memory access caused by empty file.
 
 New Features:
 
   * compose: Supports composite operator names similar to the major
     \*Magick brand, without losing any any compatibility with previous
     naming.
+
+  * ICO: Windows ICO reader now supports reading PNG-encoded files.
 
   * Magick++ Geometry: New methods limitPixels() and fillArea() to
     support '@' and '^' geometry qualifiers.  This enancement breaks
@@ -193,9 +258,30 @@ New Features:
   * Magick++ STL extentImage: New New function object to invoke image
     extent method.
 
+  * Magick++ Image::quiet().  New method which blocks (ignores)
+    warning exceptions when passed a 'true' argument.
+
+  * Resource limits: Added support for image Width and Height limits.
+    Default image Width and Height limits are based on the range of a
+    32-bit signed integer, even for 64-bit builds which may have
+    sufficient numeric range to image an entire galaxy.  Limits may be
+    increased as desired.
+
   * TIFF: Use define tiff:ignore-tags to ignore tags in 'corrupted'
     files with unknown and invalid tags.  Use to read TIFF files which
     otherwise can not be read due to errors.
+
+  * TIFF: Use '-define tiff:report-warnings=true' to enable that
+    warnings reported by libtiff are thrown as warning exceptions so
+    that they may be caught or will be reported at the gm
+    command-line.
+
+  * Windows Exceptions: A handler is registered (due to calling
+    InitializeMagick()) to capture Windows Exceptions in a similar
+    manner to the existing POSIX signal handler.  If an application is
+    using the library and wants to provide it own Windows exception
+    handling, then it should make any changes after invoking
+    InitializeMagick().
 
 Feature improvements:
 
@@ -226,6 +312,9 @@ Behavior Changes:
 
   * AVI: Support for this format is removed since the implementation
     was worthless.
+
+  * TIFF: Now uses YCbCr encoding when JPEG compression is requested
+    for an RGB image.
 
 
 1.3.20 (August 16, 2014)

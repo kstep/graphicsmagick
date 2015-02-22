@@ -38,13 +38,13 @@
 <!-- -*- mode: rst -*- -->
 <!-- This text is in reStucturedText format, so it may look a bit odd. -->
 <!-- See http://docutils.sourceforge.net/rst.html for details. -->
-<p>This file was last updated on December 31, 2014</p>
+<p>This file was last updated on February 22, 2015</p>
 <p>Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
 ChangeLog file for full details.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#january-2014" id="id1">1.3.21 (January ??, 2014)</a></li>
+<li><a class="reference internal" href="#february-2015" id="id1">1.3.21 (February ??, 2015)</a></li>
 <li><a class="reference internal" href="#august-16-2014" id="id2">1.3.20 (August 16, 2014)</a></li>
 <li><a class="reference internal" href="#december-31-2013" id="id3">1.3.19 (December 31, 2013)</a></li>
 <li><a class="reference internal" href="#march-10-2013" id="id4">1.3.18 (March 10, 2013)</a></li>
@@ -71,8 +71,8 @@ ChangeLog file for full details.</p>
 <li><a class="reference internal" href="#released-in-may-2003" id="id25">1.0 (Released in May, 2003)</a></li>
 </ul>
 </div>
-<div class="section" id="january-2014">
-<h1><a class="toc-backref" href="#id1">1.3.21 (January ??, 2014)</a></h1>
+<div class="section" id="february-2015">
+<h1><a class="toc-backref" href="#id1">1.3.21 (February ??, 2015)</a></h1>
 <p>Thanks:</p>
 <blockquote>
 <ul class="simple">
@@ -117,6 +117,9 @@ libraries, provided that the system supports library versioning.</li>
 <ul class="simple">
 <li>Annotate: Some requestable text-subsitution attributes caused a
 crash.</li>
+<li>All formats: Image dimensions are checked to assure that they are
+within limits before proceeding to read the image.</li>
+<li>BMP: Fix hang (endless loop) for certain files.</li>
 <li>DCM: Fix crash as well as small heap over-write.</li>
 <li>DPX: Fix crash due to DPX file reporting more elements than it
 has.</li>
@@ -156,19 +159,49 @@ untrustworthy input.</li>
 <blockquote>
 <ul class="simple">
 <li>CIN: Fix problem with text attribute values which are not NULL
-terminated.</li>
+terminated.  Validate sizes claimed by Cineon header.</li>
+<li>Coverity: Fixes for many issues detected by Coverity scan (see
+ChangeLog).</li>
 <li>DPX: Fix problem with text attribute values which are not NULL
 terminated.</li>
+<li>DPX: Fix severe corruption of little-endian 32-bit packed output.
+Corruption was severe enough that it would have been noticed
+immediately.</li>
+<li>Delegates: Fix possible memory leaks when invoking external
+application.</li>
+<li>FITS: Properly validate values provided by file header.</li>
+<li>GIF: Fix use of uninitialized data.</li>
+<li>JBIG: Fix memory leaks.</li>
 <li>JNG: Fix double-free error in error path.</li>
-<li>Magick++ Image resolutionUnits() was not always returning correct
+<li>JPEG: Verify the number of output components before attempting to
+decode the image.</li>
+<li>Magick++: Image resolutionUnits() was not always returning correct
 value.</li>
+<li>Magick++: Locking has not been working properly since the code was
+written in 1998.  Apparently the issue has not been significant
+enough to cause run-time issues.</li>
+<li>ICO: Windows icon reader is now much more robust.</li>
+<li>MIFF: Reader now quits with an error if zip or bzip2 stream is
+corrupted.</li>
+<li>MAT: Fix memory leaks.</li>
+<li>PALM: Reader now reads various input formats (up to version 2)
+correctly whereas it was crashing or otherwise malfunctioning
+before.  More work remains, particularly in the writer.</li>
 <li>PCX: Eliminate memory leaks in error paths.</li>
 <li>PDB: In PDB writer, void possible under-allocation due to
 arthimetic overflow when allocating packets.</li>
+<li>PICT: Fix PICT reader crash with corrupted file.</li>
 <li>PNG: Fix double-free error in error path.</li>
 <li>PNG: Fixed handling of transparency when writing indexed PNG.</li>
 <li>PNG: Avoid reading beyond the end of a tEXt keyword.</li>
 <li>PSD: Fix error when reading PSDs files which have no layers.</li>
+<li>RLA: Fix possible crash due to file header.</li>
+<li>Signal Handling: Signal handling is now more robust and handles
+SIGSEGV and other critical signals.  The sole purpose of the
+default signal handling is to remove any temporary files and quit.
+An informative message is printed for signals other than SIGINT.</li>
+<li>SUN: Sun raster reader was not completely robust. Now it is.</li>
+<li>SWF: Fix pixel cache access errors in 'ping' mode.</li>
 <li>Text annotation: An empty text string is no longer treated as an
 error.</li>
 <li>Text annotation: Fix regression added in 1.3.19 which caused
@@ -177,12 +210,19 @@ when all of the text is off the left-hand side of the image.</li>
 <li>TIFF: Fix unreliable reading JBIG compressed files by forcing use
 of strip reader rather than sometimes using scanline reader (which
 libtiff's JBIG codec does not support).</li>
+<li>TIFF: Fix reading or writing planar min-is-white or min-is-black
+images with an associated alpha channel.</li>
 <li>WebP: WebP writer now writes truely lossless output when
 requested.</li>
 <li>identify / GetImageStatistics(): Failed to compute statistics for
 the Black channel of CMYK image files.</li>
+<li>VICAR: Fix problem with continuing to &quot;read&quot; data when there is no
+more data left to read.</li>
+<li>WMF: Fix memory leaks.</li>
+<li>WPG: Fix potential DOS due to long reads during an error
+condition.</li>
 <li>XPM: Avoid strncpy() of overlapping memory.  Fixed memory leaks in
-error paths.</li>
+error paths.  Fixed bad memory access caused by empty file.</li>
 </ul>
 </blockquote>
 <p>New Features:</p>
@@ -191,6 +231,7 @@ error paths.</li>
 <li>compose: Supports composite operator names similar to the major
 *Magick brand, without losing any any compatibility with previous
 naming.</li>
+<li>ICO: Windows ICO reader now supports reading PNG-encoded files.</li>
 <li>Magick++ Geometry: New methods limitPixels() and fillArea() to
 support '&#64;' and '^' geometry qualifiers.  This enancement breaks
 the ABI due to previous use of inline methods and no place to put
@@ -203,9 +244,26 @@ based on a format similar to command-line -format.</li>
 geometry, filter, and blur.</li>
 <li>Magick++ STL extentImage: New New function object to invoke image
 extent method.</li>
+<li>Magick++ Image::quiet().  New method which blocks (ignores)
+warning exceptions when passed a 'true' argument.</li>
+<li>Resource limits: Added support for image Width and Height limits.
+Default image Width and Height limits are based on the range of a
+32-bit signed integer, even for 64-bit builds which may have
+sufficient numeric range to image an entire galaxy.  Limits may be
+increased as desired.</li>
 <li>TIFF: Use define tiff:ignore-tags to ignore tags in 'corrupted'
 files with unknown and invalid tags.  Use to read TIFF files which
 otherwise can not be read due to errors.</li>
+<li>TIFF: Use '-define tiff:report-warnings=true' to enable that
+warnings reported by libtiff are thrown as warning exceptions so
+that they may be caught or will be reported at the gm
+command-line.</li>
+<li>Windows Exceptions: A handler is registered (due to calling
+InitializeMagick()) to capture Windows Exceptions in a similar
+manner to the existing POSIX signal handler.  If an application is
+using the library and wants to provide it own Windows exception
+handling, then it should make any changes after invoking
+InitializeMagick().</li>
 </ul>
 </blockquote>
 <p>Feature improvements:</p>
@@ -243,6 +301,8 @@ security issues.</li>
 <ul class="simple">
 <li>AVI: Support for this format is removed since the implementation
 was worthless.</li>
+<li>TIFF: Now uses YCbCr encoding when JPEG compression is requested
+for an RGB image.</li>
 </ul>
 </blockquote>
 </div>

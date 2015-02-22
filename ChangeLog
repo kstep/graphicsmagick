@@ -1,5 +1,7 @@
 2015-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS.txt: Updated NEWS with more changes.
+
 	* Magick++/lib/Magick++/Include.h (Magick): Add GetImageGeometry
 	to MagickLib namespace in order to avoid a compilation problem
 	noticed with Visual C++ 6.0.
