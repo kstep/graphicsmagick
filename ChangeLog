@@ -1,3 +1,8 @@
+2015-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (OpenBlob): Fix "magic header bytes" log message
+	count value.
+
 2015-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS.txt: Updated NEWS with more changes.

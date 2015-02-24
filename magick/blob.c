@@ -2670,7 +2670,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 			  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
 						"  read %" MAGICK_SIZE_T_F
                                                 "u magic header bytes",
-						(MAGICK_SIZE_T) count*MaxTextExtent);
+						(MAGICK_SIZE_T) count);
 #if defined(HasZLIB)
 			if ((magick[0] == 0x1FU) && (magick[1] == 0x8BU) &&
 			    (magick[2] == 0x08U))
