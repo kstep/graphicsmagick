@@ -2631,6 +2631,17 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GlobExpression returns True if the expression matches the pattern.
+%  The pattern specification syntax is roughly similar to that supported by
+%  POSIX.2 glob().
+%
+%  Please note that there is a conflict between glob patterns and subimage
+%  specifications.  For example, video.mpg[50] or video.mpg[50-75] might
+%  refer to video.mpg (page 51, or pages 51-76) or there might be a file
+%  named 'video.mpg[50]'.  The IsSubimage() function is used to quickly test
+%  if the specification may be a subimage specification.  If the pattern is
+%  ultimately determined to be a subimage specification, then globbing is
+%  not performed.
+%  
 %
 %  The format of the GlobExpression function is:
 %
@@ -2641,6 +2652,8 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 %    o expression: Specifies a pointer to a text string containing a file name.
 %
 %    o pattern: Specifies a pointer to a text string containing a pattern.
+%            Patterns supported are roughly equivalent to those supported by
+%            POSIX.2 glob().
 %
 %
 */
@@ -3102,7 +3115,8 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsGlob() returns MagickTrue if the path specification contains a globbing
-%  patten as determined by GetGlob.
+%  pattern as supported by GlobExpression().  Glob patterns supported are
+%  roughly equivalent to those supported by POSIX.2 glob().
 %
 %  The format of the IsGlob method is:
 %
