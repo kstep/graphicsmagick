@@ -419,7 +419,7 @@ do { \
 
 #define ThrowReaderException(code_,reason_,image_) \
 do { \
-  if (UndefinedException == exception->severity) \
+  if (code_ > exception->severity) \
     { \
       ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
     } \

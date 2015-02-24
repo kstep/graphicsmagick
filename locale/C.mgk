@@ -488,6 +488,12 @@
         <Message name="UnrecognizedXWDHeader">
           Unrecognized XWD header
         </Message>
+        <Message name="CompressionNotValid">
+          Compression not valid
+        </Message>
+        <Message name="UnrecognizedNumberOfColors">
+          Unrecognized number of colors
+        </Message>
       </Error>
       <FatalError>
         <Message name="UnableToPersistKey">
@@ -512,9 +518,6 @@
         </Message>
         <Message name="UnrecognizedBitsPerPixel">
           Unrecognized bits per pixel
-        </Message>
-        <Message name="UnrecognizedNumberOfColors">
-          Unrecognized number of colors
         </Message>
         <Message name="UnrecognizedImageCompression">
           Unrecognized image compression

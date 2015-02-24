@@ -548,9 +548,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (dib_info.width <= 0)
-      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+      ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
   if (dib_info.height == 0)
-      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+      ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
   image->matte=dib_info.bits_per_pixel == 32;
   image->columns=AbsoluteValue(dib_info.width);
   image->rows=AbsoluteValue(dib_info.height);

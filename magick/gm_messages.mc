@@ -707,6 +707,12 @@ Colormap exceeded 256 colors
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorCompressionNotValid
+Language        = English
+Compression not valid
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorCorruptImage
 Language        = English
 Corrupt image
@@ -905,6 +911,12 @@ Unrecognized compression
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorUnrecognizedNumberOfColors
+Language        = English
+Unrecognized number of colors
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorUnrecognizedXWDHeader
 Language        = English
 Unrecognized XWD header
@@ -968,12 +980,6 @@ MessageId       = +1
 SymbolicName    = ImageWarningUnrecognizedImageCompression
 Language        = English
 Unrecognized image compression
-.
-
-MessageId       = +1
-SymbolicName    = ImageWarningUnrecognizedNumberOfColors
-Language        = English
-Unrecognized number of colors
 .
 
 MessageId       = +1

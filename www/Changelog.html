@@ -38,6 +38,13 @@
 <p>2015-02-24  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/error.h (ThrowReaderException): More significant
+exceptions (e.g. errors) should overwrite less significant
+exceptions (e.g. warnings) thrown earlier.</li>
+<li>coders/bmp.c (ReadBMPImage): Detect 32-bit integer overflows and
+other annoyances caused by intentionally broken files.  Also, only
+warn if the file header claims the file is larger than it is since
+this is a benign issue.</li>
 <li>magick/blob.c (OpenBlob): Fix &quot;magic header bytes&quot; log message
 count value.</li>
 </ul>

@@ -1,5 +1,14 @@
 2015-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/error.h (ThrowReaderException): More significant
+	exceptions (e.g. errors) should overwrite less significant
+	exceptions (e.g. warnings) thrown earlier.
+
+	* coders/bmp.c (ReadBMPImage): Detect 32-bit integer overflows and
+	other annoyances caused by intentionally broken files.  Also, only
+	warn if the file header claims the file is larger than it is since
+	this is a benign issue.
+
 	* magick/blob.c (OpenBlob): Fix "magic header bytes" log message
 	count value.
 

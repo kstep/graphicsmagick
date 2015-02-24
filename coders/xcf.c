@@ -1339,7 +1339,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (doc_info.compression != COMPRESS_RLE) &&
                 (doc_info.compression != COMPRESS_ZLIB) &&
                 (doc_info.compression != COMPRESS_FRACTAL))
-              ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
+              ThrowReaderException(CorruptImageError,CompressionNotValid,image);
           }
           break;
 
