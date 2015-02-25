@@ -41,6 +41,9 @@ Thanks:
   * Michal Zalewski provided test files which allowed us to find and
     fix security problems in the software.
 
+  * Jodie Cunningham did lots of fuzzing to find issues and set up the
+    project on Coverity for automatic analysis.
+
   * `American fuzzy lop`_ was used to produce and discover many of the
     files which caused problems for the software.
 
