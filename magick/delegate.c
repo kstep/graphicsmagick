@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -485,7 +485,7 @@ UnixShellTextEscape(char *dst, const char *src, const size_t size)
 }
 #endif /* POSIX */
 
-#if defined(MSWINDOWS)
+#if defined(HAVE_SPAWNVP) /* Windows spawnvp() */
 /*
   Escape a dynamically-allocated string argument (if needed),
   replacing with a new allocation if escaping was necessary.
@@ -520,7 +520,7 @@ WindowsArgumentTextEscape(char **arg)
   sa=*arg;
   for ( i=0; sa[i] != '\0'; i++)
     {
-      if (isspace(sa[i]))
+      if (isspace((int) sa[i]))
         {
           length += 2;
           do_escape=MagickTrue;
@@ -544,7 +544,7 @@ WindowsArgumentTextEscape(char **arg)
           for ( i=0; sa[i] != '\0'; i++)
             {
               char c=sa[i];
-              if (isspace(c))
+              if (isspace((int) c))
                 {
                   escaped[e++]='"';
                   escaped[e++]=c;
@@ -561,6 +561,8 @@ WindowsArgumentTextEscape(char **arg)
         }
     }
 }
+#endif /* defined(HAVE_SPAWNVP) */
+#if defined(MSWINDOWS)
 /*
   Escape characters from the string 'src' to the string 'dst',
   limiting the number of output characters according to 'size'.

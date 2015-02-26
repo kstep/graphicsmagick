@@ -1,3 +1,8 @@
+2015-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/delegate.c: Fix compilation under Cygwin. Thanks to Marco
+	Atzeri for advising us of this problem.
+
 2015-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/error.h (ThrowReaderException): More significant
