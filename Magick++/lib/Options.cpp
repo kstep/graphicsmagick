@@ -25,7 +25,8 @@
 Magick::Options::Options( void )
   : _imageInfo(MagickAllocateMemory(ImageInfo*,sizeof(ImageInfo))),
     _quantizeInfo(MagickAllocateMemory(QuantizeInfo*,sizeof(QuantizeInfo))),
-    _drawInfo(MagickAllocateMemory(DrawInfo*,sizeof(DrawInfo)))
+    _drawInfo(MagickAllocateMemory(DrawInfo*,sizeof(DrawInfo))),
+    _quiet(false)
 {
   // Initialize image info with defaults
   GetImageInfo( _imageInfo );
@@ -41,7 +42,8 @@ Magick::Options::Options( void )
 Magick::Options::Options( const Magick::Options& options_ )
   : _imageInfo(CloneImageInfo( options_._imageInfo )),
     _quantizeInfo(CloneQuantizeInfo(options_._quantizeInfo)),
-    _drawInfo(CloneDrawInfo(_imageInfo, options_._drawInfo))
+    _drawInfo(CloneDrawInfo(_imageInfo, options_._drawInfo)),
+    _quiet(options_._quiet)
 {
 }
 
@@ -51,7 +53,8 @@ Magick::Options::Options( const MagickLib::ImageInfo* imageInfo_,
                           const MagickLib::DrawInfo* drawInfo_ )
 : _imageInfo(0),
   _quantizeInfo(0),
-  _drawInfo(0)
+  _drawInfo(0),
+  _quiet(false)
 {
   _imageInfo = CloneImageInfo(imageInfo_);
   _quantizeInfo = CloneQuantizeInfo(quantizeInfo_);
@@ -263,7 +266,7 @@ void Magick::Options::fillPattern ( const MagickLib::Image *fillPattern_ )
 		    0,
 		    static_cast<int>(true),
 		    &exceptionInfo );
-      throwException( exceptionInfo );
+      throwException( exceptionInfo, _quiet );
     }
 }
 const MagickLib::Image* Magick::Options::fillPattern ( void  ) const
@@ -344,14 +347,14 @@ void Magick::Options::magick ( const std::string &magick_ )
   FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
   GetExceptionInfo(&exception);
   SetImageInfo( _imageInfo, 1, &exception);
-  if ( *_imageInfo->magick == '\0' )
+  if ( _imageInfo->magick[0] == '\0' )
     throwExceptionExplicit( OptionWarning,
 			    "Unrecognized image format",
 			    magick_.c_str() );
 }
 std::string Magick::Options::magick ( void ) const
 {
-  if ( _imageInfo->magick && *_imageInfo->magick )
+  if ( _imageInfo->magick[0] != '\0' )
     return std::string( _imageInfo->magick );
   
   return std::string();
@@ -438,6 +441,16 @@ void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
 unsigned int Magick::Options::quantizeTreeDepth ( void ) const
 {
   return _quantizeInfo->tree_depth;
+}
+
+void Magick::Options::quiet(const bool quiet_)
+{
+  _quiet=quiet_;
+}
+
+bool Magick::Options::quiet(void) const
+{
+  return(_quiet);
 }
 
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
@@ -565,7 +578,7 @@ void Magick::Options::strokePattern ( const MagickLib::Image *strokePattern_ )
 		    0,
 		    static_cast<int>(true),
 		    &exceptionInfo );
-      throwException( exceptionInfo );
+      throwException( exceptionInfo, _quiet );
     }
 }
 const MagickLib::Image* Magick::Options::strokePattern ( void  ) const

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (c) 2000 Markus Friedl.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
@@ -1192,12 +1192,12 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
     {
     default: break;
     case 0: break;
-    case 1: (void) strcat(format,"K"); break; /* kilo, 10^3 */
-    case 2: (void) strcat(format,"M"); break; /* mega, 10^6 */
-    case 3: (void) strcat(format,"G"); break; /* giga, 10^9 */
-    case 4: (void) strcat(format,"T"); break; /* terra, 10^12 */
-    case 5: (void) strcat(format,"P"); break; /* peta, 10^15 */
-    case 6: (void) strcat(format,"E"); break; /* exa, 10^18 */
+    case 1: (void) strcat(format,"Ki"); break; /* kilo, 10^3 */
+    case 2: (void) strcat(format,"Mi"); break; /* mega, 10^6 */
+    case 3: (void) strcat(format,"Gi"); break; /* giga, 10^9 */
+    case 4: (void) strcat(format,"Ti"); break; /* tera, 10^12 */
+    case 5: (void) strcat(format,"Pi"); break; /* peta, 10^15 */
+    case 6: (void) strcat(format,"Ei"); break; /* exa,  10^18 */
     }
 }
 
@@ -2631,6 +2631,17 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GlobExpression returns True if the expression matches the pattern.
+%  The pattern specification syntax is roughly similar to that supported by
+%  POSIX.2 glob().
+%
+%  Please note that there is a conflict between glob patterns and subimage
+%  specifications.  For example, video.mpg[50] or video.mpg[50-75] might
+%  refer to video.mpg (page 51, or pages 51-76) or there might be a file
+%  named 'video.mpg[50]'.  The IsSubimage() function is used to quickly test
+%  if the specification may be a subimage specification.  If the pattern is
+%  ultimately determined to be a subimage specification, then globbing is
+%  not performed.
+%  
 %
 %  The format of the GlobExpression function is:
 %
@@ -2641,6 +2652,8 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 %    o expression: Specifies a pointer to a text string containing a file name.
 %
 %    o pattern: Specifies a pointer to a text string containing a pattern.
+%            Patterns supported are roughly equivalent to those supported by
+%            POSIX.2 glob().
 %
 %
 */
@@ -3102,7 +3115,8 @@ MagickExport MagickBool IsGeometry(const char *geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsGlob() returns MagickTrue if the path specification contains a globbing
-%  patten as determined by GetGlob.
+%  pattern as supported by GlobExpression().  Glob patterns supported are
+%  roughly equivalent to those supported by POSIX.2 glob().
 %
 %  The format of the IsGlob method is:
 %
@@ -3821,9 +3835,9 @@ MagickExport magick_int64_t MagickSizeStrToInt64(const char *str,
         case 'k': mult=1; break; /* kilo, 10^3 */
         case 'm': mult=2; break; /* mega, 10^6 */
         case 'g': mult=3; break; /* giga, 10^9 */
-        case 't': mult=4; break; /* terra, 10^12 */
+        case 't': mult=4; break; /* tera, 10^12 */
         case 'p': mult=5; break; /* peta, 10^15 */
-        case 'e': mult=6; break; /* exa, 10^18 */
+        case 'e': mult=6; break; /* exa,  10^18 */
         }
 
       while (mult-- > 0)
@@ -3991,6 +4005,56 @@ MagickSpawnVP(const unsigned int verbose,const char *file, char *const argv[])
     }
 
   return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S t r i p S p a c e s F r o m S t r i n g                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickStripSpacesFromString() compacts a NULL-terminated string in-place
+%  by removing white space (space and tab) characters) from a string.
+%
+%  The format of the MagickStripSpacesFromString method is:
+%
+%      size_t MagickStripSpacesFromString(char *string)
+%
+%  A description of each parameter follows:
+%
+%    o string: String buffer to compact.
+%
+%    o returns: New string length
+%
+*/
+MagickExport size_t
+MagickStripSpacesFromString(char *string)
+{
+  register char
+    *w;
+
+  register const char
+    *r;
+
+  for (w=string, r=string; *r != '\0'; )
+    {
+      if ((*r == ' ') || (*r == '\t'))
+        {
+          r++;
+          continue;
+        }
+      if (r != w)
+        *w = *r;
+      r++;
+      w++;
+    }
+  *w='\0';
+  return (size_t) (w - string);
 }
 
 /*
@@ -5148,6 +5212,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
       program[MaxTextExtent];
 
     GetExceptionInfo(&exception);
+    end=(char *) NULL;
     program[0]='\0';
     GetToken(command,&end,program);
     if (MagickConfirmAccess(FileExecuteConfirmAccessMode,program,&exception)
@@ -5556,7 +5621,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method TranslateText replaces any embedded formatting characters with
-%  the appropriate image attribute and returns the translated text.
+%  the appropriate image attribute and returns the translated text.  See
+%  the documentation for TranslateTextEx() for the available translations.
 %
 %  The format of the TranslateText method is:
 %
@@ -5568,7 +5634,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %    o translated_text:  Method TranslateText returns the translated
 %      text string.
 %
-%    o image_info: The imageInfo.
+%    o image_info: The imageInfo (may be NULL!).
 %
 %    o image: The image.
 %
@@ -5601,6 +5667,52 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %  translation function.  The translation function should behave similar to
 %  strlcpy() but may translate text while it is copied.
 %
+%  The currently supported translations are:
+%
+%    %b   file size
+%    %c   comment
+%    %d   directory
+%    %e   filename extension
+%    %f   filename
+%    %g   page dimensions and offsets
+%    %h   height
+%    %i   input filename
+%    %k   number of unique colors
+%    %l   label
+%    %m   magick
+%    %n   number of scenes
+%    %o   output filename
+%    %p   page number
+%    %q   image bit depth
+%    %r   image type description
+%    %s   scene number
+%    %t   top of filename
+%    %u   first unique temporary filename
+%    %w   width
+%    %x   horizontal resolution
+%    %y   vertical resolution
+%    %z   second unique temporary filename
+%    %A   transparency supported
+%    %C   compression type
+%    %D   GIF disposal method
+%    %G   Original width and height
+%    %H   page height
+%    %M   original filename specification
+%    %O   page offset (x,y)
+%    %P   page dimensions (width,height)
+%    %Q   compression quality
+%    %T   time delay (in centi-seconds)
+%    %U   resolution units
+%    %W   page width
+%    %X   page horizontal offset (x)
+%    %Y   page vertical offset (y)
+%    %@   trim bounding box
+%    %[a] named attribute 'a'
+%    %#   signature
+%    \n   newline
+%    \r   carriage return
+%    %%   % (literal)
+%
 %  The format of the TranslateTextEx method is:
 %
 %      char *TranslateTextEx(const ImageInfo *image_info,Image *image,
@@ -5611,7 +5723,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
 %    o translated_text:  Method TranslateText returns the translated
 %      text string.
 %
-%    o image_info: The imageInfo.
+%    o image_info: The imageInfo (may be NULL!).
 %
 %    o image: The image.
 %
@@ -5836,7 +5948,8 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'o':
       {
         /* Output filename */
-        q+=(translate)(q,image_info->filename,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          q+=(translate)(q,image_info->filename,MaxTextExtent);
         break;
       }
       case 'p':
@@ -5876,18 +5989,22 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       {
         /* Scene number */
         FormatString(buffer,"%lu",image->scene);
-        if (image_info->subrange != 0)
-          FormatString(buffer,"%lu",image_info->subimage);
+        if (image_info != (const ImageInfo *) NULL)
+          if (image_info->subrange != 0)
+            FormatString(buffer,"%lu",image_info->subimage);
         q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'u':
       {
         /* Unique temporary filename */
-        if (strlcpy(buffer,image_info->unique,MaxTextExtent) == 0)
-          if (!AcquireTemporaryFileName(buffer))
-            break;
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            if (strlcpy(buffer,image_info->unique,MaxTextExtent) == 0)
+              if (!AcquireTemporaryFileName(buffer))
+                break;
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'w':
@@ -5914,10 +6031,13 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'z':
       {
         /* Second unique temporary filename */
-        if (strlcpy(buffer,image_info->zero,MaxTextExtent) == 0)
-          if (!AcquireTemporaryFileName(buffer))
-            break;
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            if (strlcpy(buffer,image_info->zero,MaxTextExtent) == 0)
+              if (!AcquireTemporaryFileName(buffer))
+                break;
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'A':
@@ -5978,8 +6098,11 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'Q':
       {
         /* Compression quality */
-        FormatString(buffer,"%lu",image_info->quality);
-        q+=(translate)(q,buffer,MaxTextExtent);
+        if (image_info != (const ImageInfo *) NULL)
+          {
+            FormatString(buffer,"%lu",image_info->quality);
+            q+=(translate)(q,buffer,MaxTextExtent);
+          }
         break;
       }
       case 'T':
@@ -6048,6 +6171,7 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
 
         /* Try to get the attribute from image_info */
         if (attribute == (const ImageAttribute *) NULL)
+          if (image_info != (const ImageInfo *) NULL)
             attribute=GetImageInfoAttribute(image_info,image,key);
 
         if (attribute != (const ImageAttribute *) NULL)

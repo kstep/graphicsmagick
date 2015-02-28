@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2015 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
 
   This program is covered by multiple licenses, which are described in
@@ -24,9 +24,6 @@
 /*
   Type definitions
 */
-static const PixelPacket BlackPixel = {0, 0, 0, OpaqueOpacity};
-
-static const PixelPacket WhitePixel = {MaxRGB, MaxRGB, MaxRGB, OpaqueOpacity};
 
 /*
   Forward declarations.
@@ -3091,7 +3088,8 @@ ExportViewPixelArea(const ViewInfo *view,
 
   assert(view != (ViewInfo *) NULL);
   assert(destination != (unsigned char *) NULL);
-  assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
+  assert(quantum_size > 0U);
+  assert((quantum_size <= 32U) || (quantum_size == 64U));
   assert((options == (const ExportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 

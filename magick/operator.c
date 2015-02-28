@@ -17,6 +17,7 @@
 #include "magick/enum_strings.h"
 #include "magick/gem.h"
 #include "magick/pixel_iterator.h"
+#include "magick/random-private.h"
 #include "magick/random.h"
 #include "magick/utility.h"
 #include "magick/operator.h"

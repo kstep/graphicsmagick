@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2008 - 2014 GraphicsMagick Group
+% Copyright (C) 2008 - 2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -432,106 +432,114 @@ MagickExport const char *CompositeOperatorToString(const CompositeOperator compo
 }
 MagickExport CompositeOperator StringToCompositeOperator(const char *option)
 {
-  CompositeOperator
-    composite_op;
+  static const struct
+  {
+    const CompositeOperator op;
+    const char *str;
+  } composite_operators[] =
+      {
+        { UndefinedCompositeOp, "Undefined" },
+        { OverCompositeOp, "Over" },
+        { OverCompositeOp, "SrcOver" },
+        { InCompositeOp , "In" },
+        { InCompositeOp , "SrcIn" },
+        { OutCompositeOp, "Out" },
+        { OutCompositeOp, "SrcOut" },
+        { AtopCompositeOp, "Atop" },
+        { AtopCompositeOp, "SrcAtop" },
+        { XorCompositeOp, "Xor" },
+        { PlusCompositeOp, "Plus" },
+        { MinusCompositeOp, "Minus" },
+        { AddCompositeOp, "Add" },
+        { SubtractCompositeOp, "Subtract" },
+        { DifferenceCompositeOp, "Difference" },
+        { MultiplyCompositeOp, "Multiply" },
+        { BumpmapCompositeOp, "Bumpmap" },
+        { CopyCompositeOp, "Copy" },
+        { CopyRedCompositeOp, "CopyRed" },
+        { CopyGreenCompositeOp, "CopyGreen" },
+        { CopyBlueCompositeOp, "CopyBlue" },
+        { CopyOpacityCompositeOp, "CopyOpacity" },
+        { ClearCompositeOp, "Clear" },
+        { DissolveCompositeOp, "Dissolve" },
+        { DisplaceCompositeOp, "Displace" },
+        { ModulateCompositeOp, "Modulate" },
+        { ThresholdCompositeOp, "Threshold" },
+        { NoCompositeOp, "No" },
+        { DarkenCompositeOp, "Darken" },
+        { LightenCompositeOp, "Lighten" },
+        { HueCompositeOp, "Hue" },
+        { SaturateCompositeOp, "Saturate" },
+        { ColorizeCompositeOp, "Colorize" },
+        { LuminizeCompositeOp, "Luminize" },
+        { ScreenCompositeOp, "Screen" },
+        { OverlayCompositeOp, "Overlay" },
+        { CopyCyanCompositeOp, "CopyCyan" },
+        { CopyMagentaCompositeOp, "CopyMagenta" },
+        { CopyYellowCompositeOp, "CopyYellow" },
+        { CopyBlackCompositeOp, "CopyBlack" },
+        { DivideCompositeOp, "Divide" },
+        { HardLightCompositeOp, "HardLight" },
+        { ExclusionCompositeOp, "Exclusion" },
+        { ColorDodgeCompositeOp, "ColorDodge" },
+        { ColorBurnCompositeOp, "ColorBurn" },
+        { SoftLightCompositeOp, "SoftLight" },
+        { LinearBurnCompositeOp, "LinearBurn" },
+        { LinearDodgeCompositeOp, "LinearDodge" },
+        { LinearLightCompositeOp, "LinearLight" },
+        { VividLightCompositeOp, "VividLight" },
+        { PinLightCompositeOp, "PinLight" },
+        { HardMixCompositeOp, "HardMix" }
+        /* Apparently missing IM operators */
+        /* ChangeMask */
+        /* DivideDst */
+        /* Dst */
+        /* DstAtop */
+        /* DstIn */
+        /* DstOut */
+        /* DstOver */
+        /* MinusDst */
+        /* PegtopLight */
+        /* Src */
+      };
 
-  composite_op=UndefinedCompositeOp;
-  if (LocaleCompare("Undefined",option) == 0)
-    composite_op=UndefinedCompositeOp;
-  else if (LocaleCompare("Over",option) == 0)
-    composite_op=OverCompositeOp;
-  else if (LocaleCompare("In",option) == 0)
-    composite_op=InCompositeOp;
-  else if (LocaleCompare("Out",option) == 0)
-    composite_op=OutCompositeOp;
-  else if (LocaleCompare("Atop",option) == 0)
-    composite_op=AtopCompositeOp;
-  else if (LocaleCompare("Xor",option) == 0)
-    composite_op=XorCompositeOp;
-  else if (LocaleCompare("Plus",option) == 0)
-    composite_op=PlusCompositeOp;
-  else if (LocaleCompare("Minus",option) == 0)
-    composite_op=MinusCompositeOp;
-  else if (LocaleCompare("Add",option) == 0)
-    composite_op=AddCompositeOp;
-  else if (LocaleCompare("Subtract",option) == 0)
-    composite_op=SubtractCompositeOp;
-  else if (LocaleCompare("Difference",option) == 0)
-    composite_op=DifferenceCompositeOp;
-  else if (LocaleCompare("Multiply",option) == 0)
-    composite_op=MultiplyCompositeOp;
-  else if (LocaleCompare("Bumpmap",option) == 0)
-    composite_op=BumpmapCompositeOp;
-  else if (LocaleCompare("Copy",option) == 0)
-    composite_op=CopyCompositeOp;
-  else if (LocaleCompare("CopyRed",option) == 0)
-    composite_op=CopyRedCompositeOp;
-  else if (LocaleCompare("CopyGreen",option) == 0)
-    composite_op=CopyGreenCompositeOp;
-  else if (LocaleCompare("CopyBlue",option) == 0)
-    composite_op=CopyBlueCompositeOp;
-  else if (LocaleCompare("CopyOpacity",option) == 0)
-    composite_op=CopyOpacityCompositeOp;
-  else if (LocaleCompare("Clear",option) == 0)
-    composite_op=ClearCompositeOp;
-  else if (LocaleCompare("Dissolve",option) == 0)
-    composite_op=DissolveCompositeOp;
-  else if (LocaleCompare("Displace",option) == 0)
-    composite_op=DisplaceCompositeOp;
-  else if (LocaleCompare("Modulate",option) == 0)
-    composite_op=ModulateCompositeOp;
-  else if (LocaleCompare("Threshold",option) == 0)
-    composite_op=ThresholdCompositeOp;
-  else if (LocaleCompare("No",option) == 0)
-    composite_op=NoCompositeOp;
-  else if (LocaleCompare("Darken",option) == 0)
-    composite_op=DarkenCompositeOp;
-  else if (LocaleCompare("Lighten",option) == 0)
-    composite_op=LightenCompositeOp;
-  else if (LocaleCompare("Hue",option) == 0)
-    composite_op=HueCompositeOp;
-  else if (LocaleCompare("Saturate",option) == 0)
-    composite_op=SaturateCompositeOp;
-  else if (LocaleCompare("Colorize",option) == 0)
-    composite_op=ColorizeCompositeOp;
-  else if (LocaleCompare("Luminize",option) == 0)
-    composite_op=LuminizeCompositeOp;
-  else if (LocaleCompare("Screen",option) == 0)
-    composite_op=ScreenCompositeOp;
-  else if (LocaleCompare("Overlay",option) == 0)
-    composite_op=OverlayCompositeOp;
-  else if (LocaleCompare("CopyCyan",option) == 0)
-    composite_op=CopyCyanCompositeOp;
-  else if (LocaleCompare("CopyMagenta",option) == 0)
-    composite_op=CopyMagentaCompositeOp;
-  else if (LocaleCompare("CopyYellow",option) == 0)
-    composite_op=CopyYellowCompositeOp;
-  else if (LocaleCompare("CopyBlack",option) == 0)
-    composite_op=CopyBlackCompositeOp;
-  else if (LocaleCompare("Divide",option) == 0)
-    composite_op=DivideCompositeOp;
-  else if (LocaleCompare("HardLight",option) == 0)
-    composite_op=HardLightCompositeOp;
-  else if (LocaleCompare("Exclusion",option) == 0)
-    composite_op=ExclusionCompositeOp;
-  else if (LocaleCompare("ColorDodge",option) == 0)
-    composite_op=ColorDodgeCompositeOp;
-  else if (LocaleCompare("ColorBurn",option) == 0)
-    composite_op=ColorBurnCompositeOp;
-  else if (LocaleCompare("SoftLight",option) == 0)
-    composite_op=SoftLightCompositeOp;
-  else if (LocaleCompare("LinearBurn",option) == 0)
-    composite_op=LinearBurnCompositeOp;
-  else if (LocaleCompare("LinearDodge",option) == 0)
-    composite_op=LinearDodgeCompositeOp;
-  else if (LocaleCompare("LinearLight",option) == 0)
-    composite_op=LinearLightCompositeOp;
-  else if (LocaleCompare("VividLight",option) == 0)
-    composite_op=VividLightCompositeOp;
-  else if (LocaleCompare("PinLight",option) == 0)
-    composite_op=PinLightCompositeOp;
-  else if (LocaleCompare("HardMix",option) == 0)
-    composite_op=HardMixCompositeOp;
+  CompositeOperator
+    composite_op = UndefinedCompositeOp;
+
+  unsigned int
+    index;
+
+  char
+    c;
+
+  char
+    match_string[MaxTextExtent];
+
+  /*
+    Handle dash or underscore separated values like the major brand by
+    stripping them out.
+  */
+  for (index = 0; option[index] != 0; index++)
+    {
+      c=option[index];
+      if ((c != '_') || (c != '-'))
+        match_string[index]=c;
+    }
+  match_string[index]='\0';
+
+  /*
+    Find a match
+  */
+  for (index = 0;
+       index < sizeof(composite_operators)/sizeof(composite_operators[0]);
+       index++)
+    {
+      if (LocaleCompare(composite_operators[index].str, match_string) == 0)
+        {
+          composite_op = composite_operators[index].op;
+          break;
+        }
+    }
 
   return composite_op;
 }
@@ -1551,6 +1559,10 @@ MagickExport ResourceType StringToResourceType(const char *option)
     resource_type=PixelsResource;
   else if (LocaleCompare("Threads",option) == 0)
     resource_type=ThreadsResource;
+  else if (LocaleCompare("Width",option) == 0)
+    resource_type=WidthResource;
+  else if (LocaleCompare("Height",option) == 0)
+    resource_type=HeightResource;
   return resource_type;
 }
 

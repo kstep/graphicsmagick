@@ -46,7 +46,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "webp/config.h"
 #endif
 
 #include <assert.h>
@@ -130,7 +130,7 @@ static int CountOccurrences(const char* arglist[], int list_length,
   return num_occurences;
 }
 
-static const char* const kErrorMessages[] = {
+static const char* const kErrorMessages[-WEBP_MUX_NOT_ENOUGH_DATA + 1] = {
   "WEBP_MUX_NOT_FOUND", "WEBP_MUX_INVALID_ARGUMENT", "WEBP_MUX_BAD_DATA",
   "WEBP_MUX_MEMORY_ERROR", "WEBP_MUX_NOT_ENOUGH_DATA"
 };
@@ -303,51 +303,51 @@ static void PrintHelp(void) {
 
   printf("\n");
   printf("GET_OPTIONS:\n");
-  printf(" Extract relevant data.\n");
-  printf("   icc       Get ICC profile.\n");
-  printf("   exif      Get EXIF metadata.\n");
-  printf("   xmp       Get XMP metadata.\n");
+  printf(" Extract relevant data:\n");
+  printf("   icc       get ICC profile\n");
+  printf("   exif      get EXIF metadata\n");
+  printf("   xmp       get XMP metadata\n");
 #ifdef WEBP_EXPERIMENTAL_FEATURES
-  printf("   frgm n    Get nth fragment.\n");
+  printf("   frgm n    get nth fragment\n");
 #endif
-  printf("   frame n   Get nth frame.\n");
+  printf("   frame n   get nth frame\n");
 
   printf("\n");
   printf("SET_OPTIONS:\n");
-  printf(" Set color profile/metadata.\n");
-  printf("   icc  file.icc     Set ICC profile.\n");
-  printf("   exif file.exif    Set EXIF metadata.\n");
-  printf("   xmp  file.xmp     Set XMP metadata.\n");
+  printf(" Set color profile/metadata:\n");
+  printf("   icc  file.icc     set ICC profile\n");
+  printf("   exif file.exif    set EXIF metadata\n");
+  printf("   xmp  file.xmp     set XMP metadata\n");
   printf("   where:    'file.icc' contains the ICC profile to be set,\n");
   printf("             'file.exif' contains the EXIF metadata to be set\n");
   printf("             'file.xmp' contains the XMP metadata to be set\n");
 
   printf("\n");
   printf("STRIP_OPTIONS:\n");
-  printf(" Strip color profile/metadata.\n");
-  printf("   icc       Strip ICC profile.\n");
-  printf("   exif      Strip EXIF metadata.\n");
-  printf("   xmp       Strip XMP metadata.\n");
+  printf(" Strip color profile/metadata:\n");
+  printf("   icc       strip ICC profile\n");
+  printf("   exif      strip EXIF metadata\n");
+  printf("   xmp       strip XMP metadata\n");
 
 #ifdef WEBP_EXPERIMENTAL_FEATURES
   printf("\n");
   printf("FRAGMENT_OPTIONS(i):\n");
-  printf(" Create fragmented image.\n");
+  printf(" Create fragmented image:\n");
   printf("   file_i +xi+yi\n");
   printf("   where:    'file_i' is the i'th fragment (WebP format),\n");
-  printf("             'xi','yi' specify the image offset for this fragment."
+  printf("             'xi','yi' specify the image offset for this fragment"
          "\n");
 #endif
 
   printf("\n");
   printf("FRAME_OPTIONS(i):\n");
-  printf(" Create animation.\n");
+  printf(" Create animation:\n");
   printf("   file_i +di+[xi+yi[+mi[bi]]]\n");
   printf("   where:    'file_i' is the i'th animation frame (WebP format),\n");
-  printf("             'di' is the pause duration before next frame.\n");
-  printf("             'xi','yi' specify the image offset for this frame.\n");
-  printf("             'mi' is the dispose method for this frame (0 or 1).\n");
-  printf("             'bi' is the blending method for this frame (+b or -b)."
+  printf("             'di' is the pause duration before next frame,\n");
+  printf("             'xi','yi' specify the image offset for this frame,\n");
+  printf("             'mi' is the dispose method for this frame (0 or 1),\n");
+  printf("             'bi' is the blending method for this frame (+b or -b)"
          "\n");
 
   printf("\n");
@@ -363,12 +363,20 @@ static void PrintHelp(void) {
          "specifying\n");
   printf("            the Alpha, Red, Green and Blue component values "
          "respectively\n");
-  printf("            [Default: 255,255,255,255].\n");
+  printf("            [Default: 255,255,255,255]\n");
 
   printf("\nINPUT & OUTPUT are in WebP format.\n");
 
   printf("\nNote: The nature of EXIF, XMP and ICC data is not checked");
   printf(" and is assumed to be\nvalid.\n");
+}
+
+static void WarnAboutOddOffset(const WebPMuxFrameInfo* const info) {
+  if ((info->x_offset | info->y_offset) & 1) {
+    fprintf(stderr, "Warning: odd offsets will be snapped to even values"
+            " (%d, %d) -> (%d, %d)\n", info->x_offset, info->y_offset,
+            info->x_offset & ~1, info->y_offset & ~1);
+  }
 }
 
 static int ReadFileToWebPData(const char* const filename,
@@ -394,8 +402,9 @@ static int CreateMux(const char* const filename, WebPMux** mux) {
 
 static int WriteData(const char* filename, const WebPData* const webpdata) {
   int ok = 0;
-  FILE* fout = strcmp(filename, "-") ? fopen(filename, "wb") : stdout;
-  if (!fout) {
+  FILE* fout = strcmp(filename, "-") ? fopen(filename, "wb")
+                                     : ExUtilSetBinaryMode(stdout);
+  if (fout == NULL) {
     fprintf(stderr, "Error opening output WebP file %s!\n", filename);
     return 0;
   }
@@ -444,6 +453,9 @@ static int ParseFrameArgs(const char* args, WebPMuxFrameInfo* const info) {
     default:
       return 0;
   }
+
+  WarnAboutOddOffset(info);
+
   // Note: The sanity of the following conversion is checked by
   // WebPMuxPushFrame().
   info->dispose_method = (WebPMuxAnimDispose)dispose_method;
@@ -456,7 +468,10 @@ static int ParseFrameArgs(const char* args, WebPMuxFrameInfo* const info) {
 }
 
 static int ParseFragmentArgs(const char* args, WebPMuxFrameInfo* const info) {
-  return (sscanf(args, "+%d+%d", &info->x_offset, &info->y_offset) == 2);
+  const int ok =
+      (sscanf(args, "+%d+%d", &info->x_offset, &info->y_offset) == 2);
+  if (ok) WarnAboutOddOffset(info);
+  return ok;
 }
 
 static int ParseBgcolorArgs(const char* args, uint32_t* const bgcolor) {
@@ -473,7 +488,7 @@ static int ParseBgcolorArgs(const char* args, uint32_t* const bgcolor) {
 static void DeleteConfig(WebPMuxConfig* config) {
   if (config != NULL) {
     free(config->feature_.args_);
-    free(config);
+    memset(config, 0, sizeof(*config));
   }
 }
 
@@ -776,33 +791,27 @@ static int ValidateConfig(WebPMuxConfig* config) {
 
 // Create config object from command-line arguments.
 static int InitializeConfig(int argc, const char* argv[],
-                            WebPMuxConfig** config) {
+                            WebPMuxConfig* config) {
   int num_feature_args = 0;
   int ok = 1;
 
   assert(config != NULL);
-  *config = NULL;
+  memset(config, 0, sizeof(*config));
 
   // Validate command-line arguments.
   if (!ValidateCommandLine(argc, argv, &num_feature_args)) {
     ERROR_GOTO1("Exiting due to command-line parsing error.\n", Err1);
   }
 
-  // Allocate memory.
-  *config = (WebPMuxConfig*)calloc(1, sizeof(**config));
-  if (*config == NULL) {
-    ERROR_GOTO1("ERROR: Memory allocation error.\n", Err1);
-  }
-  (*config)->feature_.arg_count_ = num_feature_args;
-  (*config)->feature_.args_ =
-      (FeatureArg*)calloc(num_feature_args, sizeof(FeatureArg));
-  if ((*config)->feature_.args_ == NULL) {
+  config->feature_.arg_count_ = num_feature_args;
+  config->feature_.args_ =
+      (FeatureArg*)calloc(num_feature_args, sizeof(*config->feature_.args_));
+  if (config->feature_.args_ == NULL) {
     ERROR_GOTO1("ERROR: Memory allocation error.\n", Err1);
   }
 
   // Parse command-line.
-  if (!ParseCommandLine(argc, argv, *config) ||
-      !ValidateConfig(*config)) {
+  if (!ParseCommandLine(argc, argv, config) || !ValidateConfig(config)) {
     ERROR_GOTO1("Exiting due to command-line parsing error.\n", Err1);
   }
 
@@ -824,14 +833,16 @@ static int GetFrameFragment(const WebPMux* mux,
   WebPMux* mux_single = NULL;
   long num = 0;
   int ok = 1;
+  int parse_error = 0;
   const WebPChunkId id = is_frame ? WEBP_CHUNK_ANMF : WEBP_CHUNK_FRGM;
   WebPMuxFrameInfo info;
   WebPDataInit(&info.bitstream);
 
-  num = strtol(config->feature_.args_[0].params_, NULL, 10);
+  num = ExUtilGetInt(config->feature_.args_[0].params_, 10, &parse_error);
   if (num < 0) {
     ERROR_GOTO1("ERROR: Frame/Fragment index must be non-negative.\n", ErrGet);
   }
+  if (parse_error) goto ErrGet;
 
   err = WebPMuxGetFrame(mux, num, &info);
   if (err == WEBP_MUX_OK && info.id != id) err = WEBP_MUX_NOT_FOUND;
@@ -857,7 +868,7 @@ static int GetFrameFragment(const WebPMux* mux,
  ErrGet:
   WebPDataClear(&info.bitstream);
   WebPMuxDelete(mux_single);
-  return ok;
+  return ok && !parse_error;
 }
 
 // Read and process config.
@@ -919,16 +930,19 @@ static int Process(const WebPMuxConfig* config) {
                 break;
               }
               case SUBTYPE_LOOP: {
-                const long loop_count =
-                    strtol(feature->args_[i].params_, NULL, 10);
-                if (loop_count != (int)loop_count) {
+                int parse_error = 0;
+                const int loop_count =
+                    ExUtilGetInt(feature->args_[i].params_, 10, &parse_error);
+                if (loop_count < 0 || loop_count > 65535) {
                   // Note: This is only a 'necessary' condition for loop_count
                   // to be valid. The 'sufficient' conditioned in checked in
                   // WebPMuxSetAnimationParams() method called later.
                   ERROR_GOTO1("ERROR: Loop count must be in the range 0 to "
                               "65535.\n", Err2);
                 }
-                params.loop_count = (int)loop_count;
+                ok = !parse_error;
+                if (!ok) goto Err2;
+                params.loop_count = loop_count;
                 break;
               }
               case SUBTYPE_ANMF: {
@@ -1028,8 +1042,8 @@ static int Process(const WebPMuxConfig* config) {
                       ErrorString(err), kDescriptions[feature->type_], Err2);
         }
       } else {
-          ERROR_GOTO1("ERROR: Invalid feature for action 'strip'.\n", Err2);
-          break;
+        ERROR_GOTO1("ERROR: Invalid feature for action 'strip'.\n", Err2);
+        break;
       }
       ok = WriteWebP(mux, config->output_);
       break;
@@ -1055,14 +1069,14 @@ static int Process(const WebPMuxConfig* config) {
 // Main.
 
 int main(int argc, const char* argv[]) {
-  WebPMuxConfig* config;
+  WebPMuxConfig config;
   int ok = InitializeConfig(argc - 1, argv + 1, &config);
   if (ok) {
-    ok = Process(config);
+    ok = Process(&config);
   } else {
     PrintHelp();
   }
-  DeleteConfig(config);
+  DeleteConfig(&config);
   return !ok;
 }
 

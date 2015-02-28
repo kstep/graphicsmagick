@@ -1499,4 +1499,4 @@ The following illustrates how you can use a numeric status code::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2014
+Copyright |copy| GraphicsMagick Group 2002 - 2015

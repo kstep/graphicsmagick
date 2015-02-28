@@ -488,6 +488,12 @@
         <Message name="UnrecognizedXWDHeader">
           Unrecognized XWD header
         </Message>
+        <Message name="CompressionNotValid">
+          Compression not valid
+        </Message>
+        <Message name="UnrecognizedNumberOfColors">
+          Unrecognized number of colors
+        </Message>
       </Error>
       <FatalError>
         <Message name="UnableToPersistKey">
@@ -512,9 +518,6 @@
         </Message>
         <Message name="UnrecognizedBitsPerPixel">
           Unrecognized bits per pixel
-        </Message>
-        <Message name="UnrecognizedNumberOfColors">
-          Unrecognized number of colors
         </Message>
         <Message name="UnrecognizedImageCompression">
           Unrecognized image compression
@@ -1242,6 +1245,12 @@
         </Message>
         <Message name="ImagePixelLimitExceeded">
           Image pixel limit exceeded (see -limit Pixels)
+        </Message>
+        <Message name="ImagePixelWidthLimitExceeded">
+          Image pixel width limit exceeded (see -limit Width)
+        </Message>
+        <Message name="ImagePixelHeightLimitExceeded">
+          Image pixel height limit exceeded (see -limit Height)
         </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed

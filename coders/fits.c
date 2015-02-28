@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2008 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -150,7 +150,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 {
   typedef struct _FITSInfo
   {
-    char extensions_exist;
+    char
+      extensions_exist;
     int
       simple,
       bits_per_pixel,
@@ -305,6 +306,14 @@ ReadExtension:
         if (LocaleCompare(keyword,"BITPIX") == 0)
         {
           fits_info.bits_per_pixel=MagickAtoI(value);
+          /*
+            BITPIX valid values:
+              8 -- Character or unsigned binary integer
+             16 -- 16-bit two's complement binary integer
+             32 -- 32-bit two's complement binary integer
+            -32 -- 32-bit floating point, single precision
+            -64 -- 64-bit floating point, double precision
+          */
 	  if(fits_info.bits_per_pixel>0)
             import_options.sample_type = UnsignedQuantumSampleType;
 	  if(fits_info.bits_per_pixel<0)          
@@ -368,9 +377,48 @@ ReadExtension:
   /*
     Verify that required image information is defined.
   */  
-  if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-          "HDU read finished at %Xh, number of pixel is: %d (%d*%d*%d)", (unsigned)TellBlob(image), (unsigned)number_pixels,
-          (unsigned)fits_info.columns, (unsigned)fits_info.rows, (unsigned)fits_info.number_scenes);
+  if (logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "HDU read finished at %Xh, number of pixel is: %d (%d*%d*%d)",
+                            (unsigned) TellBlob(image),
+                            (unsigned) number_pixels,
+                            (unsigned) fits_info.columns,
+                            (unsigned) fits_info.rows,
+                            (unsigned) fits_info.number_scenes);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "FITS header:\n"
+                            "    extensions_exist : 0x%02x\n"
+                            "    simple           : %d\n"
+                            "    bits_per_pixel   : %d\n"
+                            "    columns          : %d\n"
+                            "    rows             : %d\n"
+                            "    number_axes      : %d\n"
+                            "    number_scenes    : %d\n"
+                            "    min_data         : %g\n"
+                            "    max_data         : %g\n"
+                            "    zero             : %g\n"
+                            "    scale            : %g",
+                            (int) fits_info.extensions_exist,
+                            fits_info.simple,
+                            fits_info.bits_per_pixel,
+                            fits_info.columns,
+                            fits_info.rows,
+                            fits_info.number_axes,
+                            fits_info.number_scenes,
+                            fits_info.min_data,
+                            fits_info.max_data,
+                            fits_info.zero,
+                            fits_info.scale);
+    }
+
+  if ((fits_info.bits_per_pixel != 8) &&
+      (fits_info.bits_per_pixel != 16) &&
+      (fits_info.bits_per_pixel != 32) &&
+      (fits_info.bits_per_pixel != 64) &&
+      (fits_info.bits_per_pixel != -32) &&
+      (fits_info.bits_per_pixel != -64))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
@@ -378,7 +426,7 @@ ReadExtension:
     if(!fits_info.extensions_exist)	/* when extensions exists, process further */
       ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
 
-    number_pixels = (number_pixels*fits_info.bits_per_pixel) / 8;
+    number_pixels = (number_pixels*AbsoluteValue(fits_info.bits_per_pixel)) / 8;
     number_pixels = ((number_pixels+FITS_BLOCK_SIZE-1) / FITS_BLOCK_SIZE) * FITS_BLOCK_SIZE; /* raw data block size */
     (void) SeekBlob(image,number_pixels,SEEK_CUR);    
   }
@@ -429,8 +477,7 @@ ReadExtension:
     /*
       Initialize image structure.
     */
-    packet_size=fits_info.bits_per_pixel/8;
-    if (packet_size < 0) packet_size = -packet_size;
+    packet_size=AbsoluteValue(fits_info.bits_per_pixel)/8;
         
     number_pixels = image->columns*image->rows;
     if ((number_pixels / image->columns) != image->rows)

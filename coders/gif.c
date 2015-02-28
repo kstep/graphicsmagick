@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -171,6 +171,8 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
   old_code=NullCode;
   code_size=data_size+1;
   code_mask=(1 << code_size)-1;
+  (void) memset(prefix,0,MaxStackSize*sizeof(short));
+  (void) memset(suffix,0,MaxStackSize);
   for (code=0; code < clear; code++)
   {
     prefix[code]=0;
@@ -261,6 +263,12 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
               *top_stack++=first;
               code=old_code;
             }
+          /*
+            FIXME: Is the logic for this loop (or the loop which inits
+            suffix and prefix arrays) correct?  Values are
+            intentionally accessed outside of the explictly
+            initialized range of 'clear'.
+          */
           while (code >= clear)
           {
             if ((top_stack-pixel_stack) >= MaxStackSize)
@@ -1076,6 +1084,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
     /*
       Decode image.
     */
@@ -1438,33 +1450,39 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBShort(image,image->delay);
         (void) WriteBlobByte(image,opacity >= 0 ? opacity : 0);
         (void) WriteBlobByte(image,0x00);
-        if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
-          {
-            const ImageAttribute
-              *attribute;
+        {
+          const ImageAttribute
+            *attribute;
 
-            register char
-              *p;
-
-            size_t
-              count;
-
-            /*
-              Write Comment extension.
-            */
-            (void) WriteBlobByte(image,0x21);
-            (void) WriteBlobByte(image,0xfe);
-            attribute=GetImageAttribute(image,"comment");
-            p=attribute->value;
-            while (strlen(p) != 0)
+          if ((attribute=GetImageAttribute(image,"comment")) !=
+              (ImageAttribute *) NULL)
             {
-              count=Min(strlen(p),255);
-              (void) WriteBlobByte(image,(long) count);
-              for (i=0; i < (long) count; i++)
-                (void) WriteBlobByte(image,*p++);
+              const ImageAttribute
+                *attribute;
+
+              register char
+                *p;
+
+              size_t
+                count;
+
+              /*
+                Write Comment extension.
+              */
+              (void) WriteBlobByte(image,0x21);
+              (void) WriteBlobByte(image,0xfe);
+              attribute=GetImageAttribute(image,"comment");
+              p=attribute->value;
+              while (strlen(p) != 0)
+                {
+                  count=Min(strlen(p),255);
+                  (void) WriteBlobByte(image,(long) count);
+                  for (i=0; i < (long) count; i++)
+                    (void) WriteBlobByte(image,*p++);
+                }
+              (void) WriteBlobByte(image,0x0);
             }
-            (void) WriteBlobByte(image,0x0);
-          }
+        }
         if ((image->previous == (Image *) NULL) &&
             (image->next != (Image *) NULL) && (image->iterations != 1))
           {

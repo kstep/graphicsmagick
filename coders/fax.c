@@ -41,6 +41,7 @@
 #include "magick/compress.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*
@@ -162,6 +163,10 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   status=HuffmanDecodeImage(image);
   if (status == False)
     ThrowReaderException(CorruptImageError,UnableToReadImageData,image);

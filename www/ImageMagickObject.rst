@@ -127,5 +127,5 @@ Sometime in the future, MagickCMD may assume the place of gm.exe in the
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2014
+Copyright |copy| GraphicsMagick Group 2002 - 2015
 

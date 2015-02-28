@@ -177,7 +177,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   {
     if (!isalnum(c))
       {
-        c=ReadBlobByte(image);
+        if ((c=ReadBlobByte(image)) == EOF)
+          break;
         count++;
       }
     else
@@ -193,18 +194,24 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         {
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            break;
           count++;
         } while (isalnum(c) || (c == '_'));
+        if (EOFBlob(image))
+          break;
         *p='\0';
         value_expected=False;
         while (isspace(c) || (c == '='))
         {
           if (c == '=')
             value_expected=True;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            break;
           count++;
         }
+        if (EOFBlob(image))
+          break;
         if (value_expected == False)
           continue;
         p=value;
@@ -212,9 +219,12 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         {
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
-          c=ReadBlobByte(image);
+          if ((c=ReadBlobByte(image)) == EOF)
+            break;
           count++;
         }
+        if (EOFBlob(image))
+          break;
         *p='\0';
         /*
           Assign a value to the specified keyword.
@@ -234,25 +244,35 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       }
     while (isspace(c))
     {
-      c=ReadBlobByte(image);
+      if ((c=ReadBlobByte(image)) == EOF)
+        break;
       count++;
     }
+    if (EOFBlob(image))
+      break;
   }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   while (count < (long) length)
   {
-    c=ReadBlobByte(image);
+    if ((c=ReadBlobByte(image)) == EOF)
+      break;
     count++;
   }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
   image->depth=8;
-  if (!AllocateImageColormap(image,256))
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
       return(image);
     }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+  if (!AllocateImageColormap(image,256))
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Read VICAR pixels.
   */
@@ -261,11 +281,14 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
   for (y=0; y < (long) image->rows; y++)
   {
-    if (!SetImagePixels(image,0,y,image->columns,1))
+    if (!SetImagePixelsEx(image,0,y,image->columns,1,exception))
       break;
-    (void) ReadBlob(image,image->columns,scanline);
-    (void) ImportImagePixelArea(image,GrayQuantum,image->depth,scanline,0,0);
-    if (!SyncImagePixels(image))
+    if (ReadBlob(image,image->columns,scanline) != image->columns)
+      break;
+    if (ImportImagePixelArea(image,GrayQuantum,image->depth,scanline,0,0) ==
+        MagickFail)
+      break;
+    if (!SyncImagePixelsEx(image,exception))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
@@ -275,8 +298,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   }
   MagickFreeMemory(scanline);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-      image->filename);
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   CloseBlob(image);
   return(image);
 }

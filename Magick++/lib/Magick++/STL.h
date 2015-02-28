@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2012
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -60,7 +60,7 @@ namespace Magick
     unsigned int _height;
     unsigned int _offset;
   };
-  
+
   // Add noise to image with specified noise type
   class MagickDLLDecl addNoiseImage : public std::unary_function<Image&,void>
   {
@@ -110,7 +110,7 @@ namespace Magick
     // placement gravity.
     annotateImage ( const std::string &text_,
 		    const GravityType gravity_ );
-    
+
     void operator()( Image &image_ ) const;
 
   private:
@@ -275,7 +275,7 @@ namespace Magick
     compositeImage( const Image &compositeImage_,
 		    const Geometry &offset_,
 		    CompositeOperator compose_ = InCompositeOp );
-    
+
     void operator()( Image &image_ ) const;
 
   private:
@@ -395,6 +395,44 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
+  };
+
+  // Create an image canvas using background color sized according to
+  // geometry and composite existing image on it, with image placement
+  // controlled by gravity.  Parameters are obtained from existing
+  // image properties if they are not specified via a method
+  // parameter.  Parameters which are supported by image properties
+  // (gravity and backgroundColor) update those image properties as a
+  // side-effect.
+  class MagickDLLDecl extentImage : public std::unary_function<Image&,void>
+  {
+  public:
+    // Extent image using a geometry
+    extentImage ( const Geometry &geometry_ );
+
+    // Extent image using a geometry & gravity
+    extentImage ( const Geometry &geometry_,
+                  const GravityType &gravity_ );
+
+    // Extent image using a geometry & background color
+    extentImage ( const Geometry &geometry_,
+                  const Color &backgroundColor_ );
+
+    // Extent image using a geometry, background color & gravity
+    extentImage ( const Geometry &geometry_,
+                  const Color &backgroundColor_,
+                  const GravityType &gravity_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    // Copy constructor and assignment are not supported
+    extentImage(const extentImage&);
+    extentImage& operator=(const extentImage&);
+
+    const Geometry      _geometry;
+    const Color         _backgroundColor;
+    const GravityType   _gravity;
   };
 
   // Color to use when filling drawn objects
@@ -570,7 +608,7 @@ namespace Magick
   {
   public:
     haldClutImage( const Image &haldClutImage_ );
-    
+
     void operator()( Image &image_ ) const;
 
   private:
@@ -748,7 +786,7 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-  };  
+  };
 
   // Oilpaint image (image looks like oil painting)
   class MagickDLLDecl oilPaintImage : public std::unary_function<Image&,void>
@@ -835,6 +873,18 @@ namespace Magick
     unsigned int _order;
   };
 
+  // Resize image to a certain geomtry
+  class MagickDLLDecl resizeImage : public std::unary_function<Image&,void>
+  {
+  public:
+    resizeImage( const Geometry &geometry_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    Geometry  _geometry;
+  };
+
   // Roll image (rolls image vertically and horizontally) by specified
   // number of columnms and rows)
   class MagickDLLDecl rollImage : public std::unary_function<Image&,void>
@@ -873,7 +923,7 @@ namespace Magick
 
   private:
     Geometry  _geometry;
-  };  
+  };
 
   // Resize image by using simple ratio algorithm
   class MagickDLLDecl scaleImage : public std::unary_function<Image&,void>
@@ -894,7 +944,7 @@ namespace Magick
   class MagickDLLDecl segmentImage : public std::unary_function<Image&,void>
   {
   public:
-    segmentImage( const double clusterThreshold_ = 1.0, 
+    segmentImage( const double clusterThreshold_ = 1.0,
 		  const double smoothingThreshold_ = 1.5 );
 
     void operator()( Image &image_ ) const;
@@ -1784,12 +1834,10 @@ namespace Magick
 
 	current->previous = previous;
 	current->next     = 0;
+	current->scene    = scene++;
 
 	if ( previous != 0)
 	  previous->next = current;
-
-	current->scene=scene;
-	++scene;
 
 	previous = current;
       }
@@ -1822,15 +1870,15 @@ namespace Magick
 	  {
 	    MagickLib::Image* next_image = image->next;
 	    image->next = 0;
-	  
+
 	    if (next_image != 0)
 	      next_image->previous=0;
-	  
+
 	    sequence_->push_back( Magick::Image( image ) );
-	  
+
 	    image=next_image;
 	  } while( image );
-      
+
 	return;
       }
   }
@@ -1850,7 +1898,7 @@ namespace Magick
     MagickLib::AnimateImages( first_->imageInfo(), first_->image() );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Append images from list into single image in either horizontal or
@@ -1865,10 +1913,10 @@ namespace Magick
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::AppendImages( first_->image(),
 						       stack_,
-						       &exceptionInfo ); 
+						       &exceptionInfo );
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, appendedImage_->quiet() );
   }
 
   // Average a set of images.
@@ -1884,7 +1932,7 @@ namespace Magick
 							&exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, averagedImage_->quiet() );
   }
 
   // Merge a sequence of images.
@@ -1913,7 +1961,7 @@ namespace Magick
     insertImages( coalescedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Return format coders matching specified conditions.
@@ -2035,9 +2083,9 @@ namespace Magick
 
     // Obtain histogram array
     unsigned long colors;
-    MagickLib::HistogramColorPacket *histogram_array = 
+    MagickLib::HistogramColorPacket *histogram_array =
       MagickLib::GetColorHistogram( image.constImage(), &colors, &exceptionInfo );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, image.quiet() );
 
     // Clear out container
     histogram_->clear();
@@ -2051,12 +2099,12 @@ namespace Magick
                                    histogram_array[i].pixel.blue),
                                    histogram_array[i].count) );
       }
-    
+
     // Deallocate histogram array
     MagickLib::MagickFree(histogram_array);
     histogram_array = 0;
   }
-                      
+
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
   template <class InputIterator, class Container >
@@ -2080,7 +2128,7 @@ namespace Magick
     insertImages( deconstructedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   //
@@ -2095,7 +2143,7 @@ namespace Magick
     MagickLib::DisplayImages( first_->imageInfo(), first_->image() );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Merge a sequence of image frames which represent image layers.
@@ -2111,7 +2159,7 @@ namespace Magick
 							&exceptionInfo );
     unlinkImages( first_, last_ );
     flattendImage_->replaceImage( image );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, flattendImage_->quiet() );
   }
 
   // Replace the colors of a sequence of images with the closest color
@@ -2135,7 +2183,7 @@ namespace Magick
     if ( exceptionInfo.severity != MagickLib::UndefinedException )
       {
 	unlinkImages( first_, last_ );
-	throwException( exceptionInfo );
+	throwException( exceptionInfo, first_->quiet() );
       }
 
     MagickLib::Image* image = first_->image();
@@ -2148,16 +2196,16 @@ namespace Magick
 	    if ( image->exception.severity > MagickLib::UndefinedException )
 	      {
 		unlinkImages( first_, last_ );
-		throwException( exceptionInfo );
+		throwException( exceptionInfo, first_->quiet() );
 	      }
 	  }
-	
+
 	// Udate DirectClass representation of pixels
 	MagickLib::SyncImage( image );
 	if ( image->exception.severity > MagickLib::UndefinedException )
 	  {
 	    unlinkImages( first_, last_ );
-	    throwException( exceptionInfo );
+	    throwException( exceptionInfo, first_->quiet() );
 	  }
 
 	// Next image
@@ -2208,7 +2256,7 @@ namespace Magick
     unlinkImages( first_, last_ );
 
     // Report any montage error
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
 
     // Apply transparency to montage images
     if ( montageImages_->size() > 0 && montageOpts_.transparentColor().isValid() )
@@ -2218,7 +2266,7 @@ namespace Magick
 
     // Report any transparentImage() error
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Morph a set of images
@@ -2244,7 +2292,7 @@ namespace Magick
     insertImages( morphedImages_, images );
 
     // Report any error
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Inlay a number of images to form a single coherent picture.
@@ -2256,10 +2304,10 @@ namespace Magick
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::MosaicImages( first_->image(),
-						       &exceptionInfo ); 
+						       &exceptionInfo );
     unlinkImages( first_, last_ );
     mosaicImage_->replaceImage( image );
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
   // Quantize colors in images using current quantization settings
@@ -2279,7 +2327,7 @@ namespace Magick
     if ( exceptionInfo.severity > MagickLib::UndefinedException )
       {
 	unlinkImages( first_, last_ );
-	throwException( exceptionInfo );
+	throwException( exceptionInfo, first_->quiet() );
       }
 
     MagickLib::Image* image = first_->image();
@@ -2359,10 +2407,10 @@ namespace Magick
 	return;
       }
 
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
   // Write images to BLOB
-  // 
+  //
   // If an attribute is not supported as an explicit argument
   // (e.g. 'magick'), then the attribute must be set on the involved
   // images in the container prior to invoking writeImages() since
@@ -2389,7 +2437,7 @@ namespace Magick
 
     unlinkImages( first_, last_ );
 
-    throwException( exceptionInfo );
+    throwException( exceptionInfo, first_->quiet() );
   }
 
 } // namespace Magick

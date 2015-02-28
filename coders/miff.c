@@ -1401,6 +1401,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
     /*
       Determine import properties
     */
@@ -1456,7 +1460,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Read image pixels.
     */
@@ -1487,6 +1491,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               zip_info.avail_out=(uInt) (packet_size*image->columns);
               do
                 {
+                  int
+                    zip_status;
+
                   if (zip_info.avail_in == 0)
                     {
                       zip_info.next_in=compress_pixels;
@@ -1495,8 +1502,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         length=ReadBlobMSBLong(image);
                       zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
                     }
-                  if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
+                  zip_status=inflate(&zip_info,Z_NO_FLUSH);
+                  if (zip_status == Z_STREAM_END)
                     break;
+                  else if (zip_status != Z_OK)
+                    {
+                      MagickFreeMemory(pixels);
+                      MagickFreeMemory(compress_pixels);
+                      ThrowReaderException(CorruptImageError,UnableToUncompressImage,
+                                           image);
+                    }
                 } while (zip_info.avail_out != 0);
               if (y == (long) (image->rows-1))
                 {
@@ -1543,6 +1558,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
               do
                 {
+                  int
+                    bz_status;
+
                   if (bzip_info.avail_in == 0)
                     {
                       bzip_info.next_in=(char *) compress_pixels;
@@ -1551,8 +1569,16 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         length=ReadBlobMSBLong(image);
                       bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
                     }
-                  if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
+                  bz_status=BZ2_bzDecompress(&bzip_info);
+                  if (bz_status == BZ_STREAM_END)
                     break;
+                  else if (bz_status != BZ_OK)
+                    {
+                      MagickFreeMemory(pixels);
+                      MagickFreeMemory(compress_pixels);
+                      ThrowReaderException(CorruptImageError,UnableToUncompressImage,
+                                           image);
+                    }
                 } while (bzip_info.avail_out != 0);
               if (y == (long) (image->rows-1))
                 {

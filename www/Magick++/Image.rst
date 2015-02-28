@@ -80,6 +80,7 @@ program which reads an image, crops it, and writes it to a new file
     using namespace Magick;
     int main(int argc,char **argv)
     {
+      // Initialize the API.  Can pass NULL if argv is not available.
       InitializeMagick(*argv);
 
       // Construct the image object. Seperating image construction from the
@@ -88,6 +89,10 @@ program which reads an image, crops it, and writes it to a new file
       Image image;
 
       try {
+        // Determine if Warning exceptions are thrown.
+        // Use is optional.  Set to true to block Warning exceptions.
+        image.quiet( false );
+
         // Read a file into image object
         image.read( "girl.gif" );
 
@@ -304,8 +309,9 @@ ping
 
 Ping is similar to read_ except only enough of the image is read to
 determine the image columns, rows, and filesize.  Access the
-columns(), rows(), and fileSize() attributes after invoking ping.  The
-image pixels are not valid after calling ping::
+columns(), rows(), and fileSize() attributes after invoking ping.
+Other attributes may also be available.  The image pixels are not
+valid after calling ping::
 
     void            ping ( const std::string &imageSpec_ )
     
@@ -780,6 +786,29 @@ Set all image pixels to the current background color::
 
     void            erase ( void )
 
+extent
+++++++
+
+Create an image canvas using background color sized according to
+geometry and composite existing image on it, with image placement
+controlled by gravity.  Parameters are obtained from existing image
+properties if they are not specified via a method
+parameter. Parameters which are supported by image properties (gravity
+and backgroundColor) update those image properties as a side-effect::
+
+    void            extent ( const Geometry &geometry_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const GravityType &gravity_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_ )
+
+    void            extent ( const Geometry &geometry_,
+                             const Color &backgroundColor_,
+                             const GravityType &gravity_ );
+
+
 flip
 ++++
     
@@ -1185,6 +1214,27 @@ Reduce noise in image using a noise peak elimination filter::
     void            reduceNoise ( void )
 
     void            reduceNoise ( const double order_ )
+
+resize
+++++++
+
+Resize image, specifying geometry, filter, and blur (blur > 1.0 is
+more blurry and < 1.0 is sharper)::
+
+    void            resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_,
+                             const double blur_ )
+
+Resize image, specifying geometry and filter, with blur using Image
+default::
+
+    void            resize ( const Geometry &geometry_,
+                             const FilterTypes filterType_ )
+
+Resize image, specifying only geometry, with filter and blur obtained
+from Image default.  Provides the same result as the `zoom` method::
+
+    void            resize ( const Geometry &geometry_ );
 
 roll
 ++++
@@ -1969,6 +2019,19 @@ Long image format description::
 
     std::string     format ( void ) const
 
+formatExpression
+++++++++++++++++
+
+Format a string based on image properties similar to `identify`
+`-format`.  For example, the format expression "%wx%h" is converted to
+a string containing image WIDTHxHEIGHT like "640x480"::
+
+    std::string     formatExpression( const std::string expression )
+
+Please note that this method is not a const method (may modify the
+Image object and will assure a reference count of one) and it *may*
+throw an exception if there is an internal error.
+
 gamma
 +++++
 
@@ -2262,6 +2325,16 @@ tree depth::
     void            quantizeTreeDepth ( const unsigned int treeDepth_ )
 
     unsigned int    quantizeTreeDepth ( void ) const
+
+quiet
++++++
+
+Determines if Warning exceptions will be thrown, or suppressed.
+The default is that warnings will be thrown (i.e. false)::
+
+    void            quiet ( const bool quiet_ );
+    bool            quiet ( void ) const;
+
 
 renderingIntent
 +++++++++++++++
@@ -2702,6 +2775,6 @@ buffer or file.  Used to support image encoders::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| `Bob Friesenhahn`_ 1999 - 2014
+Copyright |copy| `Bob Friesenhahn`_ 1999 - 2015
 
 

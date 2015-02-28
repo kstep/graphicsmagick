@@ -196,9 +196,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         MagickFreeMemory(tim_colormap);
       }
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
+
     /*
       Read image data.
     */
@@ -210,16 +208,25 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=MagickAllocateMemory(unsigned char *,image_size);
-    if (tim_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    (void) ReadBlob(image,image_size,(char *) tim_data);
-    tim_pixels=tim_data;
     /*
       Initialize image structure.
     */
     image->columns=width;
     image->rows=height;
+
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
+    tim_data=MagickAllocateMemory(unsigned char *,image_size);
+    if (tim_data == (unsigned char *) NULL)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    (void) ReadBlob(image,image_size,(char *) tim_data);
+    tim_pixels=tim_data;
+
     /*
       Convert TIM raster image to pixel packets.
     */

@@ -217,7 +217,6 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="images/ball.png" ALT="*">APP1JPEG </td><td>rw-</td><td>Raw JPEG binary data</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">ART      </td><td>r--</td><td>PF1: 1st Publisher</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">ARW      </td><td>r--</td><td>Sony Alpha DSLR RAW</td></tr>
-<tr><td><dd><img SRC="images/ball.png" ALT="*">AVI      </td><td>r--</td><td>Audio/Visual Interleaved</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">AVS      </td><td>rw+</td><td>AVS X image</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">BIE      </td><td>rw-</td><td>Joint Bi-level Image experts Group</td></tr>
 <tr><td>          </td><td>   </td><td>interchange format</td></tr>
@@ -1593,6 +1592,23 @@ therefore RFC 2301 recommends using reverse order.
 will use it to set the group3 options tag when writing
 group3-compressed TIFF.  Please see the TIFF specification for the
 usage of this tag.  The default value is 4.
+</dd>
+<dt>tiff:ignore-tags=&lt;tags&gt;</dt>
+<dd>If the tiff:ignore-tags key is defined, then it is used as a list
+of comma-delimited integer TIFF tag values to ignore while reading the
+TIFF file.  This is useful in order to be able to read files which
+which otherwise fail to read due to problems with TIFF tags.  Note
+that some TIFF tags are required in order to be able to read the image
+data at all.
+</dd>
+<dt>tiff:report-warnings={false|true}</dt>
+<dd>If the tiff:report-warnings key is defined and set to <strong>true</strong>,
+then TIFF warnings are reported as a warning exception rather than as
+a coder log message.  Such warnings are reported after the image has
+been read or written.  Most TIFF warnings are benign but sometimes
+they may help deduce problems with the TIFF file, or help detect that
+the TIFF file requires a special application to read successfully due
+to the use of proprietary or specialized extensions.
 </dd>
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
 <dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
@@ -3169,7 +3185,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, resource limits are estimated based on the available
 resources of the system. The resource limits are <strong>Disk</strong>, maximum
@@ -3177,18 +3193,20 @@ total disk space consumed; <strong>File</strong>, maximum number of file
 descriptors allowed to be open at once; <strong>Map</strong>, maximum total
 number of file bytes which may be memory mapped; <strong>Memory</strong>,
 maximum total number of bytes of heap memory used for image storage;
-<strong>Pixels</strong>, maximum absolute image size (per image); and
-<strong>Threads</strong>, the maximum number of worker threads to use per OpenMP
-thread team.</font></td></tr></table>
+<strong>Pixels</strong>, maximum absolute image size (per image); <strong>Width</strong>,
+maximum image pixels width; <strong>Height</strong>, maximum image pixels
+height; and <strong>Threads</strong>, the maximum number of worker threads to
+use per OpenMP thread team.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 These resource limits are used to decide if (for a given image) the
-decoded image ("pixel cache") should be stored in heap memory (RAM), in a
-memory-mapped disk file, or in a disk file accessed via read/write I/O.
-The number of total pixels in one image may also be limited in order to
-force the reading, or creation of images larger than the limit (in
-pixels) to intentionally fail. The disk limit establishes an overall
-limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.</font></td></tr></table>
+decoded image ("pixel cache") should be stored in heap memory (RAM),
+in a memory-mapped disk file, or in a disk file accessed via
+read/write I/O.  The number of total pixels in one image, and/or the
+width/height, may also be limited in order to force the reading, or
+creation of images larger than the limit (in pixels) to intentionally
+fail. The disk limit establishes an overall limit since using the disk
+is the means of last resort. When the disk limit has been reached, no
+more images may be read.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The value argument is an absolute value, but may have standard binary
 suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
@@ -3201,10 +3219,11 @@ megabytes and 64 megabytes respectively.</font></td></tr></table>
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
 <strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MAP</strong>,
-<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>, and
+<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>,
+<strong>MAGICK_LIMIT_WIDTH</strong>, <strong>MAGICK_LIMIT_HEIGHT</strong>,and
 <strong>OMP_NUM_THREADS</strong> may be used to set the limits for disk space,
-open files, memory mapped size, heap memory, per-image pixels, and
-threads respectively.</font></td></tr></table>
+open files, memory mapped size, heap memory, per-image pixels, image
+width, image height, and threads respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the option <tt>-list resource</tt> list the current limits.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -5793,6 +5812,22 @@ configuration files in $HOME/.magick if the directory exists. See
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    MAGICK_ACCESS_MONITOR
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>When set to <strong>TRUE</strong>, command line monitor mode (enabled by
+<strong>-monitor</strong>) will also show files accessed (including temporary
+files) and any external commands which are executed. This is useful
+for debugging, but also illustrates arguments made available to an
+access handler registered by the
+<strong>MagickSetConfirmAccessHandler()</strong> C library function.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_CODER_STABILITY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
@@ -5992,7 +6027,9 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_MAP
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory mapped file allocation.  A memory mapped
+file consumes memory when the file is accessed, although the system
+may reclaim such memory when needed.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6004,6 +6041,46 @@ width=15><b><font face="Helvetica, Arial"
     MAGICK_LIMIT_MEMORY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_PIXELS
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of total pixels (image rows times image colums) to
+allow for any image which is requested to be created or read.  This is
+useful to place a limit on how large an image may be.  If the input
+image file has image dimensions larger than the pixel limit, then the
+image memory allocation is denied and an error is returned
+immediately.  This is a per-image limit and does not limit the total
+number of pixels due to multiple image frames/pages (e.g. multi-page
+document or an animation).</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_WIDTH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum pixel width of an image read, or created.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_HEIGHT
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum pixel height of an image read, or created.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6211,7 +6288,7 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 - 2014 GraphicsMagick Group.</strong> Additional
+<strong>Copyright (C) 2002 - 2015 GraphicsMagick Group.</strong> Additional
 copyrights apply. Please see see
 http://www.GraphicsMagick.org/Copyright.html for details.
 <p>
@@ -6223,6 +6300,6 @@ http://www.GraphicsMagick.org/Copyright.html for details.
 
 [<a href="index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
 <BR>
-<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2014</a></p></td>
+<p align=center <a href="Copyright.html">Copyright &#169; GraphicsMagick Group 2002 - 2015</a></p></td>
 </tr></table>
 </body></html>

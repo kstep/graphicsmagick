@@ -67,12 +67,6 @@ image formats.</p>
 (MacPaint?) and later used for PFS: 1st
 Publisher clip art.</td>
 </tr>
-<tr><td><a class="reference external" href="http://www.jmcgowan.com/avi.html">AVI</a></td>
-<td>R</td>
-<td>Microsoft Audio/Visual
-Interleaved</td>
-<td>&nbsp;</td>
-</tr>
 <tr><td>AVS</td>
 <td>RW</td>
 <td>AVS X image</td>
@@ -775,7 +769,10 @@ following table lists these pseudo image formats:</p>
 <tr><td>CAPTION</td>
 <td>R</td>
 <td>Image caption</td>
-<td>fixme</td>
+<td>Draws text on a canvas image with size specified by <cite>-size</cite>
+canvas color as specified by <cite>-background' (default white),
+and text stroke and fill colors as specified by `-stroke</cite>
+and <cite>-fill</cite>.  Capable of supporting multi-line text.</td>
 </tr>
 <tr><td>CLIPBOARD</td>
 <td>RW</td>
@@ -1287,7 +1284,7 @@ extensions: .gz for Zip compression, .Z for Unix compression, and .bz2
 for block compression. For example, a PNM image called image.pnm.gz is
 automatically uncompressed while the image is read.</p>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2014</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2015</p>
 </div>
 </body>
 </html>

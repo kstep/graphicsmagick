@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -88,6 +88,10 @@ typedef struct _ResourceInfo
 static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
 
+/*
+  Array must be in same order as ResourceType enum
+*/
+#define PIXEL_LIMIT (INT_MAX/(sizeof(PixelPacket)))
 static ResourceInfo
   resource_info[] =
   {
@@ -97,7 +101,9 @@ static ResourceInfo
     { "map",    "B", "MAGICK_LIMIT_MAP",    0, 0,  ResourceInfinity, SummationLimit },
     { "memory", "B", "MAGICK_LIMIT_MEMORY", 0, 0,  ResourceInfinity, SummationLimit },
     { "pixels", "P", "MAGICK_LIMIT_PIXELS", 0, 1,  ResourceInfinity, AbsoluteLimit  },
-    { "threads", "", "OMP_NUM_THREADS",     1, 1,  ResourceInfinity, AbsoluteLimit  }
+    { "threads", "", "OMP_NUM_THREADS",     1, 1,  ResourceInfinity, AbsoluteLimit  },
+    { "width",  "P", "MAGICK_LIMIT_WIDTH",  0, 1,  PIXEL_LIMIT,      AbsoluteLimit  },
+    { "height", "P", "MAGICK_LIMIT_HEIGHT", 0, 1,  PIXEL_LIMIT,      AbsoluteLimit  }
   };
 
 /*
@@ -370,7 +376,9 @@ MagickExport void InitializeMagickResources(void)
     max_map=4096,
     max_memory=1024,
     max_pixels=-1,
-    max_threads=1;
+    max_threads=1,
+    max_width=-1,
+    max_height=-1;
 
   /*
     Allocate semaphore.
@@ -560,6 +568,12 @@ MagickExport void InitializeMagickResources(void)
     if ((envp=getenv("MAGICK_LIMIT_PIXELS")))
       max_pixels=MagickSizeStrToInt64(envp,1024);
 
+    if ((envp=getenv("MAGICK_LIMIT_WIDTH")))
+      max_width=MagickSizeStrToInt64(envp,1024);
+
+    if ((envp=getenv("MAGICK_LIMIT_HEIGHT")))
+      max_height=MagickSizeStrToInt64(envp,1024);
+
 #if defined(HAVE_OPENMP)
     max_threads=omp_get_num_procs();
     (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
@@ -659,6 +673,10 @@ MagickExport void InitializeMagickResources(void)
     (void) SetMagickResourceLimit(PixelsResource,max_pixels);
   if (max_threads >= 0)
     (void) SetMagickResourceLimit(ThreadsResource,max_threads);
+  if (max_width >= 0)
+    (void) SetMagickResourceLimit(WidthResource,max_width);
+  if (max_height >= 0)
+    (void) SetMagickResourceLimit(HeightResource,max_height);
 }
 
 /*
@@ -824,6 +842,17 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
 
       fprintf(file,"%8s: %10s (%s)\n", heading, limit, environment);
     }
+  fprintf(file,
+          "\n"
+          "  IEC Binary Ranges:\n"
+          "    Ki = \"kibi\" (2^10)\n"
+          "    Mi = \"mebi\" (2^20)\n"
+          "    Gi = \"gibi\" (2^30)\n"
+          "    Ti = \"tebi\" (2^40)\n"
+          "    Pi = \"pebi\" (2^50)\n"
+          "    Ei = \"exbi\" (2^60)\n"
+          );
+
   (void) fflush(file);
 
   UnlockSemaphoreInfo(resource_semaphore);
@@ -843,12 +872,14 @@ MagickExport MagickPassFail ListMagickResourceInfo(FILE *file,
 %  SetMagickResourceLimit() sets the limit for a particular resource.  The
 %  units for resource types are as follows:
 %
-%    DiskResource    -- Gigabytes
+%    DiskResource    -- Bytes
 %    FileResource    -- Open files
-%    MapResource     -- Megabytes
-%    MemoryResource  -- Megabytes
-%    PixelsResource  -- Megapixels
+%    MapResource     -- Bytes
+%    MemoryResource  -- Bytes
+%    PixelsResource  -- Pixels
 %    ThreadsResource -- Threads
+%    WidthResource   -- Pixels
+%    HeightResource  -- Pixels
 %
 %  The format of the SetMagickResourceLimit() method is:
 %

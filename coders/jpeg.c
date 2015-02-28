@@ -1271,18 +1271,42 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->depth=Min(jpeg_info.data_precision,QuantumDepth);
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      {
+        jpeg_destroy_decompress(&jpeg_info);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      }
   if (image_info->ping)
     {
       jpeg_destroy_decompress(&jpeg_info);
       CloseBlob(image);
       return(image);
     }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    }
+
+  /*
+    Verify that we support the number of output components.
+  */
+  if ((jpeg_info.output_components != 1) &&
+      (jpeg_info.output_components != 3) &&
+      (jpeg_info.output_components != 4))
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      ThrowReaderException(CoderError,ImageTypeNotSupported,image);
+    }
+
   jpeg_pixels=MagickAllocateArray(JSAMPLE *,
 				  jpeg_info.output_components,
-				  image->columns*sizeof(JSAMPLE));
+				  MagickArraySize(image->columns,
+                                                  sizeof(JSAMPLE)));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    {
+      jpeg_destroy_decompress(&jpeg_info);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
 
   /*
     Extended longjmp-based error handler (with jpeg_pixels)
@@ -1343,7 +1367,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 	      *q++=image->colormap[index];
 	    }
 	}
-      else
+      else if ((jpeg_info.output_components == 3) ||
+               (jpeg_info.output_components == 4))
 	{
 	  if (jpeg_info.data_precision > 8)
 	    {

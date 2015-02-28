@@ -1,4 +1,4 @@
-.TH gm 1 "2014/07/27" "GraphicsMagick"
+.TH gm 1 "2015/02/08" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -134,7 +134,6 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
  o  APP1JPEG  rw- Raw JPEG binary data
  o  ART       r-- PF1: 1st Publisher
  o  ARW       r-- Sony Alpha DSLR RAW
- o  AVI       r-- Audio/Visual Interleaved
  o  AVS       rw+ AVS X image
  o  BIE       rw- Joint Bi-level Image experts Group
                   interchange format
@@ -1388,6 +1387,33 @@ If the tiff:group-three-options key is defined, GraphicsMagick
 will use it to set the group3 options tag when writing
 group3-compressed TIFF.  Please see the TIFF specification for the
 usage of this tag.  The default value is 4.
+
+.in 15
+.in 15
+.B "tiff:ignore-tags=<tags>"
+.in 20
+ \fR
+.in 20
+If the tiff:ignore-tags key is defined, then it is used as a list
+of comma-delimited integer TIFF tag values to ignore while reading the
+TIFF file.  This is useful in order to be able to read files which
+which otherwise fail to read due to problems with TIFF tags.  Note
+that some TIFF tags are required in order to be able to read the image
+data at all.
+
+.in 15
+.in 15
+.B "tiff:report-warnings={false|true}"
+.in 20
+ \fR
+.in 20
+If the tiff:report-warnings key is defined and set to \fBtrue\fP,
+then TIFF warnings are reported as a warning exception rather than as
+a coder log message.  Such warnings are reported after the image has
+been read or written.  Most TIFF warnings are benign but sometimes
+they may help deduce problems with the TIFF file, or help detect that
+the TIFF file requires a special application to read successfully due
+to the use of proprietary or specialized extensions.
 
 .in 15
 .in 15
@@ -2730,7 +2756,7 @@ interface works similar to Photoshop's "Image->Adjustments->Levels..."
 "Input Levels" interface.
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 
 By default, resource limits are estimated based on the available
 resources of the system. The resource limits are \fBDisk\fP, maximum
@@ -2738,18 +2764,20 @@ total disk space consumed; \fBFile\fP, maximum number of file
 descriptors allowed to be open at once; \fBMap\fP, maximum total
 number of file bytes which may be memory mapped; \fBMemory\fP,
 maximum total number of bytes of heap memory used for image storage;
-\fBPixels\fP, maximum absolute image size (per image); and
-\fBThreads\fP, the maximum number of worker threads to use per OpenMP
-thread team.
+\fBPixels\fP, maximum absolute image size (per image); \fBWidth\fP,
+maximum image pixels width; \fBHeight\fP, maximum image pixels
+height; and \fBThreads\fP, the maximum number of worker threads to
+use per OpenMP thread team.
 
 These resource limits are used to decide if (for a given image) the
-decoded image ("pixel cache") should be stored in heap memory (RAM), in a
-memory-mapped disk file, or in a disk file accessed via read/write I/O.
-The number of total pixels in one image may also be limited in order to
-force the reading, or creation of images larger than the limit (in
-pixels) to intentionally fail. The disk limit establishes an overall
-limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.
+decoded image ("pixel cache") should be stored in heap memory (RAM),
+in a memory-mapped disk file, or in a disk file accessed via
+read/write I/O.  The number of total pixels in one image, and/or the
+width/height, may also be limited in order to force the reading, or
+creation of images larger than the limit (in pixels) to intentionally
+fail. The disk limit establishes an overall limit since using the disk
+is the means of last resort. When the disk limit has been reached, no
+more images may be read.
 
 The value argument is an absolute value, but may have standard binary
 suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
@@ -2762,10 +2790,11 @@ megabytes and 64 megabytes respectively.
 Resource limits may also be set using environment variables. The
 environment variables \fBMAGICK_LIMIT_DISK\fP,
 \fBMAGICK_LIMIT_FILES\fP, \fBMAGICK_LIMIT_MAP\fP,
-\fBMAGICK_LIMIT_MEMORY\fP, \fBMAGICK_LIMIT_PIXELS\fP, and
+\fBMAGICK_LIMIT_MEMORY\fP, \fBMAGICK_LIMIT_PIXELS\fP,
+\fBMAGICK_LIMIT_WIDTH\fP, \fBMAGICK_LIMIT_HEIGHT\fP,and
 \fBOMP_NUM_THREADS\fP may be used to set the limits for disk space,
-open files, memory mapped size, heap memory, per-image pixels, and
-threads respectively.
+open files, memory mapped size, heap memory, per-image pixels, image
+width, image height, and threads respectively.
 
 Use the option -list resource list the current limits.
 .TP
@@ -4610,6 +4639,14 @@ configuration files in $HOME/.magick if the directory exists. See
 \fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
 \fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
 .TP
+.B "MAGICK_ACCESS_MONITOR"
+\fRWhen set to \fBTRUE\fP, command line monitor mode (enabled by
+\fB-monitor\fP) will also show files accessed (including temporary
+files) and any external commands which are executed. This is useful
+for debugging, but also illustrates arguments made available to an
+access handler registered by the
+\fBMagickSetConfirmAccessHandler()\fP C library function.
+.TP
 .B "MAGICK_CODER_STABILITY"
 \fRThe minimum coder stability level before it will be used. The
 available levels are \fBPRIMARY\fP, \fBSTABLE\fP, \fBUNSTABLE\fP,
@@ -4712,10 +4749,28 @@ mind that the operating system will try to cache files in RAM.
 \fRMaximum number of open files.
 .TP
 .B "MAGICK_LIMIT_MAP"
-\fRMaximum size of a memory map.
+\fRMaximum size of a memory mapped file allocation.  A memory mapped
+file consumes memory when the file is accessed, although the system
+may reclaim such memory when needed.
 .TP
 .B "MAGICK_LIMIT_MEMORY"
 \fRMaximum amount of memory to allocate from the heap.
+.TP
+.B "MAGICK_LIMIT_PIXELS"
+\fRMaximum number of total pixels (image rows times image colums) to
+allow for any image which is requested to be created or read.  This is
+useful to place a limit on how large an image may be.  If the input
+image file has image dimensions larger than the pixel limit, then the
+image memory allocation is denied and an error is returned
+immediately.  This is a per-image limit and does not limit the total
+number of pixels due to multiple image frames/pages (e.g. multi-page
+document or an animation).
+.TP
+.B "MAGICK_LIMIT_WIDTH"
+\fRMaximum pixel width of an image read, or created.
+.TP
+.B "MAGICK_LIMIT_HEIGHT"
+\fRMaximum pixel height of an image read, or created.
 .TP
 .B "MAGICK_TMPDIR"
 \fRPath to directory where GraphicsMagick should write temporary
@@ -4927,7 +4982,7 @@ Options, above.
 \fRthe type of interlacing scheme
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -5468,8 +5523,8 @@ use:
 
 To create an annotated difference image use:
 
-    gm compare -algorithm annotate -highlight-color purple
-            -file diff.miff original.miff compare.miff
+    gm compare -highlight-style assign -highlight-color purple \\
+      -file diff.miff original.miff compare.miff
 
 .SH OPTIONS
 
@@ -5521,7 +5576,7 @@ Options, above.
 \fRthe type of interlacing scheme
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -5697,7 +5752,7 @@ Options, above.
 \fRassign a label to an image
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -6692,7 +6747,7 @@ Options, above.
 \fRadjust the level of image contrast
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-list \fI<type>"\fP
 \fRthe type of list
@@ -7199,7 +7254,7 @@ Options, above.
 \fRassign a label to an image
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -9131,15 +9186,17 @@ are considered a precious resource, use them with discretion.
 .in 20
 .SH GM IDENTIFY
 
-\fBIdentify\fP describes the format and characteristics of one or more
-image files. It will also report if an image is incomplete or corrupt.
-The information displayed includes the scene number, the file name, the
-width and height of the image, whether the image is colormapped or not,
-the number of colors in the image, the number of bytes in the image, the
-format of the image (JPEG, PNM, etc.), and finally the number of seconds
-in both user time and elapsed time it took to read and process the image.
-If -verbose or +ping are provided as an option, the pixel read rate is
-also displayed. An example line output from \fBidentify\fP follows:
+\fBIdentify\fP describes the format and characteristics of one or
+more image files as internally supported by the software. It will also
+report if an image is incomplete or corrupt.  The information
+displayed includes the scene number, the file name, the width and
+height of the image, whether the image is colormapped or not, the
+number of colors in the image, the number of bytes in the image, the
+format of the image (JPEG, PNM, etc.), and finally the number of
+seconds in both user time and elapsed time it took to read and process
+the image.  If -verbose or +ping are provided as an option, the pixel
+read rate is also displayed. An example line output from
+\fBidentify\fP follows:
 
     images/aquarium.miff 640x480 PseudoClass 256c
            308135b MIFF 0.000u 0:01
@@ -9201,7 +9258,7 @@ Options, above.
 \fRthe type of interlacing scheme
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -9344,7 +9401,7 @@ Options, above.
 \fRassign a label to an image
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log
@@ -9649,7 +9706,7 @@ Options, above.
 \fRadjust the level of image contrast
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-linewidth"
 \fRthe line width for subsequent draw operations
@@ -10107,7 +10164,7 @@ Options, above.
 \fRassign a label to an image
 .TP
 .B "-limit \fI<type> <value>"\fP
-\fRDisk, File, Map, Memory, Pixels, or Threads resource limit
+\fRDisk, File, Map, Memory, Pixels, Width, Height or Threads resource limit
 .TP
 .B "-log \fI<string>"\fP
 \fRSpecify format for debug log

@@ -323,6 +323,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
       CloseBlob(image);
       return(image);
     }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   switch (image->storage_class)
   {
     case DirectClass:

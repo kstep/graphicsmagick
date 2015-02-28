@@ -1384,7 +1384,7 @@ The following shows the performance boost for a Q16 build:
 Windows 7 / MinGW / Intel Core 2 Quad
 -------------------------------------
 
-.. Last update: Sun Mar  9 10:39:14 CDT 2014
+.. Last update: Sun Mar  9 10:39:14 CDT 2015
 
 GCC 4.8.2 (x86_64-win32-sjlj) from a build of the 'MinGW-w64'_ project
 was installed on the same Windows system with the 2.83 GHz Core 2 Quad
@@ -1482,7 +1482,7 @@ The following shows the performance boost for a Q16 build:
 
 --------------------------------------------------------------------------
 
-| Copyright (C) 2008 - 2014 GraphicsMagick Group
+| Copyright (C) 2008 - 2015 GraphicsMagick Group
 
 This program is covered by multiple licenses, which are described in
 Copyright.txt. You should have received a copy of Copyright.txt with this

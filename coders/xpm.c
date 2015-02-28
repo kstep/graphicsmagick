@@ -41,6 +41,7 @@
 #include "magick/color.h"
 #include "magick/color_lookup.h"
 #include "magick/colormap.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
@@ -183,6 +184,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     j,
+    k,
     none,
     y;
 
@@ -218,30 +220,33 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read XPM file.
   */
   length=MaxTextExtent;
   xpm_buffer=MagickAllocateMemory(char *,length);
-  p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
-    while (ReadBlobString(image,p) != (char *) NULL)
     {
-      if (*p == '#')
-        if ((p == xpm_buffer) || (*(p-1) == '\n'))
-          continue;
-      if ((*p == '}') && (*(p+1) == ';'))
-        break;
-      p+=strlen(p);
-      if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
-        continue;
-      length<<=1;
-      MagickReallocMemory(char *,xpm_buffer,length);
-      if (xpm_buffer == (char *) NULL)
-        break;
-      p=xpm_buffer+strlen(xpm_buffer);
+      xpm_buffer[0]='\0';
+      p=xpm_buffer;
+      while (ReadBlobString(image,p) != (char *) NULL)
+        {
+          if (*p == '#')
+            if ((p == xpm_buffer) || (*(p-1) == '\n'))
+              continue;
+          if ((*p == '}') && (*(p+1) == ';'))
+            break;
+          p+=strlen(p);
+          if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
+            continue;
+          length<<=1;
+          MagickReallocMemory(char *,xpm_buffer,length);
+          if (xpm_buffer == (char *) NULL)
+            break;
+          p=xpm_buffer+strlen(xpm_buffer);
+        }
     }
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -273,7 +278,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (q=p+1; *q != '\0'; q++)
       if (*q == '"')
         break;
-    (void) strncpy(xpm_buffer+i,p+1,q-p-1);
+    /* loop below equivalent to (void) strncpy(xpm_buffer+i,p+1,q-p-1); */
+    for ( k=0; k < (q-p-1); k++ )
+      {
+        (xpm_buffer+i)[k]=(p+1)[k];
+        if ((p+1)[k] == '\0')
+          break;
+      }
     i+=q-p-1;
     xpm_buffer[i++]='\n';
     p=q+1;
@@ -283,17 +294,30 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  if (image->logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "TextList");
+      for (i=0; textlist[i] != (char *) NULL; i++)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    %lu: %s", i, textlist[i]);
+    }
+  
   /*
     Initialize image structure.
   */
-  keys=MagickAllocateMemory(char **,image->colors*sizeof(char *));
+  keys=MagickAllocateArray(char **,image->colors,sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
+      MagickFreeMemory(keys);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
+  for (i=0; i < (long) image->colors; i++)
+    keys[i]=(char *) NULL;
+
   /*
     Read image colormap.
   */
@@ -310,6 +334,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; textlist[i] != (char *) NULL; i++)
           MagickFreeMemory(textlist[i]);
         MagickFreeMemory(textlist);
+        for (i=0; i < (long) image->colors; i++)
+          MagickFreeMemory(keys[i]);
         MagickFreeMemory(keys);
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
@@ -345,6 +371,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         MagickFreeMemory(textlist[i]);
       MagickFreeMemory(textlist);
+      for (i=0; i < (long) image->colors; i++)
+        MagickFreeMemory(keys[i]);
+      MagickFreeMemory(keys);
       ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
   image->depth=GetImageDepth(image,&image->exception);
@@ -361,16 +390,25 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=textlist[i++];
         if (p == (char *) NULL)
           break;
-        r=SetImagePixels(image,0,y,image->columns,1);
+        r=SetImagePixelsEx(image,0,y,image->columns,1,exception);
         if (r == (PixelPacket *) NULL)
-          {
-            CopyException(exception,&image->exception);
-            break;
-          }
+          break;
         indexes=AccessMutableIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          (void) strncpy(key,p,width);
+          /* (void) strncpy(key,p,width); */
+          for (k=0; k < (long) width; k++)
+            {
+              key[k]=p[k];
+              if (p[k] == '\0')
+                {
+                  status=MagickFail;
+                  break;
+                }
+            }
+          if (MagickFail == status)
+            break;
+          key[k]='\0';
           if (strcmp(key,keys[j]) != 0)
             for (j=0; j < (long) Max(image->colors-1,1); j++)
               if (strcmp(key,keys[j]) == 0)
@@ -383,11 +421,10 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           r++;
           p+=width;
         }
-        if (!SyncImagePixels(image))
-          {
-            CopyException(exception,&image->exception);
-            break;
-          }
+        if (MagickFail == status)
+          break;
+        if (!SyncImagePixelsEx(image,exception))
+          break;
       }
       if (y < (long) image->rows)
         ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);

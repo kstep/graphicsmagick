@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -39,6 +39,7 @@
 #include "magick/blob.h"
 #include "magick/constitute.h"
 #include "magick/magick.h"
+#include "magick/pixel_cache.h"
 #include "magick/tempfile.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
@@ -355,11 +356,16 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Correct image orientation.
   */
-  flipped_image=FlipImage(image,exception);
-  if (flipped_image == (Image *) NULL)
-    return(image);
-  DestroyImage(image);
-  return(flipped_image);
+  if (GetPixelCachePresent(image))
+    {
+      flipped_image=FlipImage(image,exception);
+      if (flipped_image != (Image *) NULL)
+        {
+          DestroyImage(image);
+          image=flipped_image;
+        }
+    }
+  return(image);
 }
 
 /*

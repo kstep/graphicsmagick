@@ -126,6 +126,22 @@ int main ( int argc, char **argv )
                   goto program_exit;
                 }
             }
+          else if (LocaleCompare("define",option+1) == 0)
+            {
+              if (arg == argc)
+                {
+                  (void) printf("-define argument missing\n");
+                  (void) fflush(stdout);
+                  exit_status = 1;
+                  goto program_exit;
+                }
+              if (AddDefinitions(imageInfo,argv[++arg],&exception)
+                  == MagickFail)
+                {
+                  exit_status = 1;
+                  goto program_exit;
+                }
+            }
           else if (LocaleCompare("log",option+1) == 0)
             {
               (void) SetLogFormat(argv[++arg]);
@@ -168,7 +184,7 @@ int main ( int argc, char **argv )
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
       (void) printf ( "Usage: %s [-compress algorithm -debug events -depth "
-		      "integer -log format -nocheck -quality quality "
+		      "integer -define value -log format -nocheck -quality quality "
                       "-size geometry -verbose] "
 		      "infile format\n", argv[0] );
       (void) fflush(stdout);

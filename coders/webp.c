@@ -61,7 +61,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #include <webp/encode.h>
 
 /*
-  Release versions vs ABI versions
+  Release versions vs ABI versions (found in src/webp/encode.h)
 
     0.1.3  - 0x0002
     0.1.99 - 0x0100
@@ -69,6 +69,8 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
     0.2.1  - 0x0200
     0.3.0  - 0x0201
     0.4.0  - 0x0202
+    0.4.1  - 0x0202
+    0.4.2  - 0x0202
 */
 
 /*
@@ -81,6 +83,7 @@ static unsigned int WriteWEBPImage(const ImageInfo *,Image *);
 #if WEBP_ENCODER_ABI_VERSION >= 0x0200 /* >= 0.2.0 */
 #  define SUPPORT_CONFIG_WEBP_HINT_GRAPH
 #endif
+/* These relate to 'struct WebPConfig' parameters */
 #if WEBP_ENCODER_ABI_VERSION >= 0x0201 /* >= 0.3.0 */
 #  define SUPPORT_CONFIG_EMULATE_JPEG_SIZE
 #  define SUPPORT_CONFIG_THREAD_LEVEL
@@ -222,6 +225,11 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       MagickFreeMemory(stream);
       CloseBlob(image);
       return(image);
+    }
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    {
+      MagickFreeMemory(stream);
+      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     }
   if (image->matte)
     pixels=(unsigned char *) WebPDecodeRGBA(stream,length,
@@ -564,42 +572,74 @@ static unsigned int WriteWEBPImage(const ImageInfo *image_info,Image *image)
 #endif
   if (WebPValidateConfig(&configure) != 1)
     ThrowWriterException(CoderError,WebPInvalidConfiguration,image);
-  /*
-    Allocate memory for pixels.
-  */
-  per_column = MagickArraySize(MagickArraySize(4,image->rows),sizeof(*pixels));
-  pixels=MagickAllocateArray(unsigned char *,image->columns,per_column);
-  if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
-  /*
-    Convert image to WebP raster pixels.
-  */
-  q=pixels;
-  for (y=0; y < (size_t) image->rows; y++)
+  if (configure.lossless == 1)
     {
-      p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (size_t) image->columns; x++)
+      /*
+        Use ARGB input for lossless (YUVA input is lossy).
+      */
+      picture.use_argb = 1;
+      webp_status = WebPPictureAlloc(&picture);
+
+      for (y = 0; y < image->rows; y++)
         {
-          *q++=ScaleQuantumToChar(GetRedSample(p));
-          *q++=ScaleQuantumToChar(GetGreenSample(p));
-          *q++=ScaleQuantumToChar(GetBlueSample(p));
-          if (image->matte == MagickTrue)
-            *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
-          p++;
+          magick_uint32_t *s = picture.argb + y * picture.argb_stride;
+	  p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          for (x = 0; x < image->columns; x++)
+            {
+              *s = ((!image->matte ? 0xff000000u : (magick_uint32_t)
+                     ScaleQuantumToChar(MaxRGB-GetOpacitySample(p)) << 24) |
+                    (ScaleQuantumToChar(GetRedSample(p)) << 16) |
+                    (ScaleQuantumToChar(GetGreenSample(p)) << 8) |
+                    (ScaleQuantumToChar(GetBlueSample(p))));
+              s++;
+              p++;
+            }
         }
+
+    }
+  else
+    {
+      /*
+        Allocate memory for pixels.
+      */
+      per_column = MagickArraySize(MagickArraySize(4,image->rows),sizeof(*pixels));
+      pixels=MagickAllocateArray(unsigned char *,image->columns,per_column);
+      if (pixels == (unsigned char *) NULL)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
+      /*
+        Convert image to WebP raster pixels.
+      */
+      q=pixels;
+      for (y=0; y < image->rows; y++)
+        {
+          p=GetImagePixelsEx(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          for (x=0; x < image->columns; x++)
+            {
+              *q++=ScaleQuantumToChar(GetRedSample(p));
+              *q++=ScaleQuantumToChar(GetGreenSample(p));
+              *q++=ScaleQuantumToChar(GetBlueSample(p));
+              if (image->matte == MagickTrue)
+                *q++=ScaleQuantumToChar(MaxRGB-GetOpacitySample(p));
+              p++;
+            }
+        }
+
+      /*
+        "Returns false in case of memory error."
+      */
+      if (image->matte != MagickTrue)
+        webp_status=WebPPictureImportRGB(&picture,pixels,3*picture.width);
+      else
+        webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
+      MagickFreeMemory(pixels);
     }
 
-  /*
-    "Returns false in case of memory error."
-  */
-  if (image->matte != MagickTrue)
-    webp_status=WebPPictureImportRGB(&picture,pixels,3*picture.width);
-  else
-    webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
-  MagickFreeMemory(pixels);
   if (webp_status)
     {
       /*

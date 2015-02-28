@@ -108,11 +108,12 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ldblk=(long) ((width+7) / 8);
   Padding=(unsigned char) ((-ldblk) & 0x01);
 
-  if(GetBlobSize(image)!=(8+((long)ldblk+Padding)*height))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-
   image->columns=width;
   image->rows=height;
+  if(GetBlobSize(image)!=(magick_off_t) (8+((long)ldblk+Padding)*image->rows))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   image->depth=1;
   image->colors=1l << image->depth;
  

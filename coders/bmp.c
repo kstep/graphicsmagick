@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -150,13 +150,13 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const unsigned long compression,
+%      MagickPassFail DecodeImage(Image *image,const unsigned long compression,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method DecodeImage returns True if all the pixels are
-%      uncompressed without error, otherwise False.
+%    o status:  Method DecodeImage returns MagickPass if all the pixels are
+%      uncompressed without error, otherwise MagickFail.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -170,7 +170,7 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const unsigned long compression,
+static MagickPassFail DecodeImage(Image *image,const unsigned long compression,
   unsigned char *pixels)
 {
   long
@@ -202,7 +202,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
       break;
     count=ReadBlobByte(image);
     if (count == EOF)
-      break;
+      return MagickFail;
     if (count != 0)
       {
         count=Min(count, end - q);
@@ -210,6 +210,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
           Encoded mode.
         */
         byte=ReadBlobByte(image);
+        if (byte == EOF)
+          return MagickFail;
         if (compression == BI_RLE8)
           {
             for ( i=count; i != 0; --i )
@@ -233,8 +235,10 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
           Escape mode.
         */
         count=ReadBlobByte(image);
+        if (count == EOF)
+          return MagickFail;
         if (count == 0x01)
-          return(True);
+          return(MagickPass);
         switch ((int) count)
         {
           case 0x00:
@@ -252,8 +256,14 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             /*
               Delta mode.
             */
-            x+=ReadBlobByte(image);
-            y+=ReadBlobByte(image);
+            byte=ReadBlobByte(image);
+            if (byte == EOF)
+              return MagickFail;
+            x+=byte;
+            byte=ReadBlobByte(image);
+            if (byte == EOF)
+              return MagickFail;
+            y+=byte;
             q=pixels+y*image->columns+x;
             break;
           }
@@ -265,12 +275,21 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
     	    count=Min(count, end - q);
             if (compression == BI_RLE8)
               for (i=count; i != 0; --i)
-                *q++=ReadBlobByte(image);
+                {
+                  byte=ReadBlobByte(image);
+                  if (byte == EOF)
+                    return MagickFail;
+                  *q++=byte;
+                }
             else
               for (i=0; i < count; i++)
               {
                 if ((i & 0x01) == 0)
-                  byte=ReadBlobByte(image);
+                  {
+                    byte=ReadBlobByte(image);
+                    if (byte == EOF)
+                      return MagickFail;
+                  }
                 *q++=(unsigned char)
                   ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
               }
@@ -298,7 +317,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -470,6 +489,13 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 %
 %
 */
+#define ThrowBMPReaderException(code_,reason_,image_) \
+do { \
+  MagickFreeMemory(bmp_colormap); \
+  MagickFreeMemory(pixels); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
+
 static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   BMPInfo
@@ -510,6 +536,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length;
 
   unsigned char
+    *bmp_colormap,
     magick[12],
     *pixels;
 
@@ -519,6 +546,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned long
     bytes_per_line;
 
+  magick_off_t
+    file_size;
+
   /*
     Open image file.
   */
@@ -526,11 +556,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  bmp_colormap=(unsigned char *) NULL;
+  pixels=(unsigned char *) NULL;
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowBMPReaderException(FileOpenError,UnableToOpenFile,image);
+  file_size=GetBlobSize(image);
   /*
     Determine if this is a BMP file.
   */
@@ -559,22 +592,23 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.file_size=ReadBlobLSBLong(image);
       bmp_info.ba_offset=ReadBlobLSBLong(image);
       bmp_info.offset_bits=ReadBlobLSBLong(image);
-      count=ReadBlob(image,2,(char *) magick);
+      if ((count=ReadBlob(image,2,(char *) magick)) != 2)
+        break;
     }
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Magick: %c%c",
         magick[0],magick[1]);
-    if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
+    if ((count != 2) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      ThrowBMPReaderException(CorruptImageError,ImproperImageHeader,image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  BMP size: %lu, File size: %lu",
-        bmp_info.size, (unsigned long) GetBlobSize(image));
+        "  BMP size: %lu, File size: %" MAGICK_OFF_F "u",
+        bmp_info.size, GetBlobSize(image));
     if (bmp_info.size == 12)
       {
         /*
@@ -608,7 +642,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Microsoft Windows 3.X or later BMP image file.
         */
         if (bmp_info.size < 40)
-          ThrowReaderException(CorruptImageWarning,NonOS2HeaderSizeError,
+          ThrowBMPReaderException(CorruptImageError,NonOS2HeaderSizeError,
             image);
 
         /*
@@ -802,39 +836,46 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 
-    if ((magick_off_t) bmp_info.file_size > GetBlobSize(image))
-      ThrowReaderException(CorruptImageError,LengthAndFilesizeDoNotMatch,
-        image);
-    if (logging && (magick_off_t) bmp_info.file_size < GetBlobSize(image))
+    if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "Discarding all data beyond bmp_info.file_size");
+                            "File size: Claimed=%lu, Actual=%"
+                            MAGICK_OFF_F "d",
+                            bmp_info.file_size, file_size);
+    if ((magick_off_t) bmp_info.file_size > file_size)
+      {
+        ThrowException(exception,CorruptImageWarning,
+                       LengthAndFilesizeDoNotMatch,image->filename);
+      }
+    if (logging && (magick_off_t) bmp_info.file_size < file_size)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Discarding all data beyond bmp_info.file_size");
     if (bmp_info.width <= 0)
-      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+      ThrowBMPReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
     if (bmp_info.height == 0)
-      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
+      ThrowBMPReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
     if ((bmp_info.height < 0) && (bmp_info.compression !=0))
-      ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
+      ThrowBMPReaderException(CorruptImageError,CompressionNotValid,image);
     if (bmp_info.planes != 1)
-      ThrowReaderException(CorruptImageWarning,StaticPlanesValueNotEqualToOne,
+      ThrowBMPReaderException(CorruptImageError,StaticPlanesValueNotEqualToOne,
         image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
+      ThrowBMPReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
     if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
     {
       if (bmp_info.bits_per_pixel<24)
-        ThrowReaderException(CorruptImageWarning,UnrecognizedNumberOfColors,image);
+        ThrowBMPReaderException(CorruptImageError,UnrecognizedNumberOfColors,image);
       bmp_info.number_colors = 0;
     }
     if (bmp_info.compression > 3)
-      ThrowReaderException(CorruptImageWarning,UnrecognizedImageCompression,image);
+      ThrowBMPReaderException(CorruptImageError,UnrecognizedImageCompression,image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
-      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
+      ThrowBMPReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
-      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
+      ThrowBMPReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
-      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
+      ThrowBMPReaderException(CorruptImageError,UnrecognizedBitsPerPixel,image);
     switch ((unsigned int) bmp_info.compression)
     {
       case BI_RGB:
@@ -843,15 +884,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
-        ThrowReaderException(CoderError,JPEGCompressionNotSupported,image)
+        ThrowBMPReaderException(CoderError,JPEGCompressionNotSupported,image)
       case BI_PNG:
-        ThrowReaderException(CoderError,PNGCompressionNotSupported,image)
+        ThrowBMPReaderException(CoderError,PNGCompressionNotSupported,image)
       default:
-        ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,
+        ThrowBMPReaderException(CorruptImageError,UnrecognizedImageCompression,
           image)
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowBMPReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     image->depth=8;
     /*
       Image has alpha channel if alpha mask is specified, or is
@@ -869,9 +912,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (image->storage_class == PseudoClass)
       {
-        unsigned char
-          *bmp_colormap;
-
         unsigned int
           packet_size;
 
@@ -882,19 +922,21 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading colormap of %u colors",image->colors);
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+          ThrowBMPReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        bmp_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
+        bmp_colormap=MagickAllocateArray(unsigned char *,4,image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+          ThrowBMPReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
         else
           packet_size=4;
         if (SeekBlob(image,start_position+14+bmp_info.size,SEEK_SET) == -1)
-	  ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
-        (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
+	  ThrowBMPReaderException(CorruptImageError,ImproperImageHeader,image);
+        if (ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap)
+            != packet_size*image->colors)
+          ThrowBMPReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
@@ -913,21 +955,28 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image data.
     */
     if (SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET) == -1)
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
+      ThrowBMPReaderException(CorruptImageError,ImproperImageHeader,image)
     if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
-    pixels=MagickAllocateMemory(unsigned char *,
-      Max(bytes_per_line,image->columns+1)*image->rows);
+    if (length/image->rows != bytes_per_line)
+      ThrowBMPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    if (length >= (size_t) file_size)
+      ThrowBMPReaderException(CorruptImageError,InsufficientImageDataInFile,
+                              image);
+    pixels=MagickAllocateArray(unsigned char *,
+                               Max(bytes_per_line,image->columns+1),
+                               image->rows);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowBMPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Reading pixels (%ld bytes)",(long) length);
+            "  Reading pixels (%" MAGICK_SIZE_T_F "u bytes)",
+                                (MAGICK_SIZE_T) length);
         (void) ReadBlob(image,length,(char *) pixels);
       }
     else
@@ -936,8 +985,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert run-length encoded raster pixels.
         */
         status=DecodeImage(image,bmp_info.compression,pixels);
-        if (status == False)
-          ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
+        if (status == MagickFail)
+          ThrowBMPReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
             image);
       }
     /*
@@ -1106,7 +1155,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,image)
+          ThrowBMPReaderException(CorruptImageError,UnrecognizedImageCompression,image)
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -1196,7 +1245,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
-          ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,image)
+          ThrowBMPReaderException(CorruptImageError,UnrecognizedImageCompression,image)
         bytes_per_line=4*(image->columns);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
@@ -1209,10 +1258,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=(*p++);
+            pixel =(*p++);
             pixel|=(*p++ << 8);
             pixel|=(*p++ << 16);
-            pixel|=(*p++ << 24);
+            pixel|=(unsigned long) (*p++ << 24);
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
             if (quantum_bits.red == 8)
               red|=(red >> 8);
@@ -1250,7 +1299,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
+        ThrowBMPReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     MagickFreeMemory(pixels);
     if (EOFBlob(image))
@@ -1287,7 +1336,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *magick='\0';
     if (bmp_info.ba_offset != 0)
       if (SeekBlob(image,bmp_info.ba_offset,SEEK_SET) == -1)
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
+        ThrowBMPReaderException(CorruptImageError,ImproperImageHeader,image)
     (void) ReadBlob(image,2,(char *) magick);
     if (IsBMP(magick,2))
       {
@@ -1954,8 +2003,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %u entries",image->colors);
-        bmp_colormap=MagickAllocateMemory(unsigned char *,
-          (size_t) (4*(1L << bmp_info.bits_per_pixel)));
+        bmp_colormap=MagickAllocateArray(unsigned char *,4,
+          (size_t) (1L << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
           {
             MagickFreeMemory(pixels);

@@ -90,9 +90,6 @@ image formats.
    | ART          | RW   | PFS: 1st Publisher        | (MacPaint?) and later used for PFS: 1st          |
    |              |      |                           | Publisher clip art.                              |
    +--------------+------+---------------------------+--------------------------------------------------+
-   | AVI_         | R    | Microsoft Audio/Visual    |                                                  |
-   |              |      | Interleaved               |                                                  |
-   +--------------+------+---------------------------+--------------------------------------------------+
    | AVS          | RW   | AVS X image               |                                                  |
    +--------------+------+---------------------------+--------------------------------------------------+
    | BMP_         | RW   | Microsoft Windows bitmap  |                                                  |
@@ -461,7 +458,10 @@ following table lists these pseudo image formats:
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | Tag          | Mode |       Description         |                      Notes                                  |
    +--------------+------+---------------------------+-------------------------------------------------------------+
-   | CAPTION      | R    | Image caption             | fixme                                                       |
+   | CAPTION      | R    | Image caption             | Draws text on a canvas image with size specified by `-size` |
+   |              |      |                           | canvas color as specified by `-background' (default white), |
+   |              |      |                           | and text stroke and fill colors as specified by `-stroke`   |
+   |              |      |                           | and `-fill`.  Capable of supporting multi-line text.        |
    +--------------+------+---------------------------+-------------------------------------------------------------+
    | CLIPBOARD    | RW   | Windows Clipboard         | Only available under Microsoft Windows.                     |
    +--------------+------+---------------------------+-------------------------------------------------------------+
@@ -812,4 +812,4 @@ automatically uncompressed while the image is read.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2014
+Copyright |copy| GraphicsMagick Group 2002 - 2015

@@ -1,506 +1,606 @@
-2014-08-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* NEWS.txt: Update for 1.3.20 release.
+	* www/index.rst: Update for 1.3.21 release.
 
-	* www/index.rst: Update for 1.3.20 release.
+	* www/Changes.rst: Update for 1.3.21 release.
 
-	* version.sh: Update library versioning for next release.
+	* NEWS.txt: Update NEWS for 1.3.21 release.
 
-2014-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* version.sh: Bump/adjust library versioning.
 
-	* png: Updated libpng to 1.6.12 release.
+2015-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* zlib: Updated zlib to 1.2.8 release.
+	* magick/delegate.c: Fix compilation under Cygwin. Thanks to Marco
+	Atzeri for advising us of this problem.
 
-2014-08-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* NEWS.txt: Updated NEWS file to document changes since previous
-	release.
+	* magick/error.h (ThrowReaderException): More significant
+	exceptions (e.g. errors) should overwrite less significant
+	exceptions (e.g. warnings) thrown earlier.
 
-2014-08-09  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+	* coders/bmp.c (ReadBMPImage): Detect 32-bit integer overflows and
+	other annoyances caused by intentionally broken files.  Also, only
+	warn if the file header claims the file is larger than it is since
+	this is a benign issue.
 
-        * coders/webp.c webp cannot be compiled when HasWEBP is not set.
+	* magick/blob.c (OpenBlob): Fix "magic header bytes" log message
+	count value.
 
-2014-08-08  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/png.c: Eliminated palette and depth optimization (see
-	https://sourceforge.net/p/graphicsmagick/feature-requests/35/).
+	* NEWS.txt: Updated NEWS with more changes.
 
-2014-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Magick++/lib/Magick++/Include.h (Magick): Add GetImageGeometry
+	to MagickLib namespace in order to avoid a compilation problem
+	noticed with Visual C++ 6.0.
 
-	* dcraw/dcraw.c: Fix dcraw build for x64 target when only WIN64 is
-	defined (by also defining WIN32).
+2014-02-22  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
-	* VisualMagick/configure/configure.cpp (write_file): Fix problem
-	with x64 project naming which caused object file disambiguation
-	not to work for x64 target. Make line terminations consistent.
+	* VisualMagick\configure\configure.cpp Fixed crash.
+        Renamed debug to configure_d.exe to prevent mess.
 
-2014-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* VisualMagick: VisualMagick fixes by Dirk Lemstra to improve
-	configure program so that it is possible to select QuantumDepth,
-	OpenMP, and 64-bit build via configure dialog boxes as well as
-	options on the command line.  Also automatically detects and deals
-	with similarly named files in subdirectories so that WebP support
-	can now build successfully.  Resolves SF patches 31, 33, 35, 37,
-	and 38.
+	* magick/magick.c (InitializeMagick): Invoke
+	NTInitializeExceptionHandlers() under Windows.
 
-2014-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/nt_base.c (NTInitializeExceptionHandlers): Add a new
+	private function which disables pop-up Windows on exceptions and
+	registers a handler for Windows exceptions to clean up temporary
+	files prior to program exit.
 
-	* magick/nt_base.c (NTResourceToBlob): Support loading mgk files
-	as Windows resource from library if MagickLibName is defined.
-	Patch contributed by Dirk Lemstra via SF patch #32.
-	(NTGhostscriptDLL): For Microsoft Windows, add support for a
-	MAGICK_GHOSTSCRIPT_PATH environment variable which specifies the
-	path to Ghostscript.  If this environment variable is defined,
-	then the Windows registry is not used to find Ghostscript.  Patch
-	contributed by Dirk Lemstra via SF patch #39.
+	* magick/magick.c (PanicDestroyMagick): Use
+	PurgeTemporaryFilesAsyncSafe() rather than PurgeTemporaryFiles().
+	(InitializeMagickSignalHandlers): Always register for SIGINT, even
+	under Microsoft Windows.
 
-	* magick/log.c: Added SetLogMethod() to allow an
-	application/library to specify a function to be called for
-	logging.  Patch contributed by Dirk Lemstra.
+	* magick/tempfile.c (PurgeTemporaryFilesAsyncSafe): New private
+	function to clean up temporary files prior to program exit.
+	Async-safe so it can be safely called from a signal handler.
+	Intentionally leaks memory.
 
-2014-07-20  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/bmp.c: "opacity" read from a BMP3 is actually "alpha",
-	so store q->opacity=MaxRGB-opacity instead of q->opacity=opacity.
-	Reference: Bug tracker [bugs:#271] Blank result for BMP resize.
+	* magick/attribute.c (GenerateEXIFAttribute): Fix crash while
+	parsing corrupt EXIF which was reported by Stijn Sanders on
+	2015-02-17.
 
-2014-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Magick++/lib/{Blob.cpp, Image.cpp}: Incorrect lock scope
+	resulted in Magick++ locking not actually working to protect
+	critical sections in spite of no detected problems with locking
+	these past 16 years.  Problem was detected using the
+	misc-unused-raii check from clang-tidy and was reported by Hyrum
+	Wright.
 
-	* webp, VisualMagick/webp: Integrate webp 0.4.0 into windows
-	build.  May require manual renaming of output object files in
-	project files to build webp until VisualMagick configure is
-	improved!
+	* coders/palm.c (ReadPALMImage): Add header logging to writer.
+	Writer still seeks and overwrites its own header so logging is not
+	entirely accurate yet.
 
-2014-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/composite.c: fmin() and fmax() are defined by C'99 and
-	not available everywhere, so add and use MagickFmin() and
-	MagickFmax() to improve portability.
+	* libtool: Update GNU libtool to 2.4.6.
 
-2014-07-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/palm.c (ReadPALMImage): Fix support for transparency in
+	PALM reader.
 
-	* Magick++/lib/Magick++/Image.h (Magick): Fix complilation errors
-	caused by continued raw use of __attribute__.
+2015-02-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/palm.c (ReadPALMImage): Major re-work of PALM reader.
+	More log message improvements.  More header validation.
 
-	* magick/composite.c: Fixes by Brendan Lane for color channel
-	overflows in modified/new quantum operators.  Fixes test suite
-	results for Q32 build and makes LinearBurn and LinearDodge work
-	correctly at all.
+2015-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* wand/pixel_wand.c (PixelSetMagenta): Fix documentation.
-	Resolves SourceForge bug #273 'Green Magenta' typo in docs.
+	* coders/palm.c (ReadPALMImage): Improve log messages.  Add more
+	header validation.  Check image pixel limits.  Support 'ping'
+	mode.
 
-2014-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/composite.c: Composition improvements and additions
-	contributed by Brendan Lane via SourceForge patch #34 "Most of the
-	missing Photoshop separable compositing operations"
-	(https://sourceforge.net/p/graphicsmagick/patches/34/).  These
-	composition operators were modified to include alpha in their
-	computations: Difference, Darken, Lighten, HardLight, and these
-	operators were added Overlay, Exclusion, ColorBurn, ColorDodge,
-	SoftLight, LinearBurn, LinearDodge, LinearLight, VividLight,
-	PinLight, HardMix.
+	* coders/palm.c (ReadPALMImage): PALM reader now supports 1, 2, 4,
+	8, and 16-bit test files we were able to generate using
+	'pnmtopalm'.  A progress monitor was added.  Memory leaks in error
+	paths were fixed.
 
-2014-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-12  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* magick/composite.c (ScreenCompositePixels): Implementation of
-	Screen composite contributed by Brendan Lane.  SourceForge patch
-	#30 "Missing Screen composite operation".
+	* coders/png.c: Insert "if (QuantumTick(...))" ahead of
+	each "if (!MagickMonitorFormatted(...)".
 
-	* wand/magick_compat.c: Re-worked Wand library implementation to
-	depend directly on GraphicsMagick library functionality rather
-	than using ImageMagick shim code from magick_compat.c and
-	magick_compat.h. The magick_compat.c source module becomes "dead
-	code", which remains only to support the existing ABI, and will be
-	deleted at the next major ABI break point.
+2015-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/utility.c (MagickFormatString): New private function to
-	format a string into a buffer with a specified size.  Same as
-	previously existing FormatString() except requires a length
-	argument.
+	* coders/rla.c (ReadRLAImage): Assure that header ASCII strings
+	are properly terminated.  Resolves Coverity CID 10322.
 
-2014-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* wand/magick_compat.h: Use MAGICK_ATTRIBUTE definition from
-	magick/common.h.
+	* magick/nt_base.h (STDERR_FILENO): Provide definitions for
+	standard POSIX file numbers so that Visual Studio should compile.
+	Fixes SourceForge bug #291 "STDERR_FILENO (used in magick.c) is
+	not defined under Windows"
 
-	* magick/common.h (MAGICK_ATTRIBUTE): Don't undefine __attribute__
-	since this may be used by system or compiler headers.  Define
-	private macro instead.  Resolves SourceForge bug #270 "Compile
-	error with g++ -std=c++11".
+2015-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-06-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+	* Magick++/lib/Image.cpp (Image::quiet()): Patch by Dirk Lemstra
+	to support silencing warnings in Magick++.  Adds a quiet() method
+	which blocks (ignores) warning exceptions when passed a true
+	argument.  Warning exceptions are still generated by default.
 
-	* coders/png.c (ReadOnePNGImage): Free png_pixels and
-	quantum_scanline before error return.  Use "png_error()"
-	instead of "ThrowException2()" for errors occuring while
-	decoding a PNG so proper cleanup will happen.
+	* coders/tiff.c: Support '-define tiff:report-warnings=true' to
+	enable that warnings reported by libtiff are thrown as warning
+	exceptions so that they may be caught or will be reported at the
+	gm command-line.
 
-2014-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/tiff.c (ReadTIFFImage): Make sure that libtiff warnings
-	are promoted to errors for critical tags.
+	* coders/tiff.c (WriteTIFFImage): Use YCbCr encoding when JPEG
+	compression is requested for an RGB image.
 
-2014-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/tiff.c (ReadTIFFImage): Be quite a lot more draconian
-	when retrieving the baseline standard TIFF tags we need in order
-	to avoid consuming uninitalized data later.  An error with these
-	tags will result in failure to read the image file.
+	* coders/tiff.c (QuantumTransferMode): Fix reading or writing
+	planar min-is-white or min-is-black images with an associated
+	alpha channel.
 
-2014-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/operator.c: Decided that ThresholdBlackNegateQuantumOp
-	and ThresholdWhiteNegateQuantumOp should set the result to white
-	or black respectively rather than being based on subtraction.
+	* coders/xpm.c (ReadXPMImage): Reading empty XPM file should not
+	cause bad memory access.
 
-2014-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/gif.c (DecodeImage): Assure that GIF decoder does not use
+	unitialized data.
 
-	* Makefile.am (AUTOMAKE_OPTIONS): Be ultra-pedantic with CPPFLAGS
-	and include paths in order to assure that only required
-	directories are supplied, and to avoid accidential collision with
-	system header files.
+	* coders/jpeg.c (ReadJPEGImage): Verify that we support the number
+	of output components before proceeding to decode the image.
 
-2014-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/operator.h ("C"): New quantum operators
-	ThresholdBlackNegateQuantumOp and ThresholdWhiteNegateQuantumOp.
-	These correspond to -operator "Threshold-Black-Negate" and
-	"Threshold-White-Negate".
+	* coders/miff.c (ReadMIFFImage): MIFF needs to stop spinning if
+	zlib or bzlib report an error while decompressing.  Solves problem
+	with file provided by Jodie Cunningham on 2015-01-25.
 
-2014-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/vicar.c (ReadVICARImage): Fix Vicar reader's dogged
+	determination to continue reading when there is nothing left to
+	read.  Solves problem with file provided by Jodie Cunningham on
+	2015-01-25.
 
-	* magick/composite.c (MultiplyCompositePixels): Multiply
-	composition now uses SVG interpretation of how alpha should be
-	handled.  No longer does a simple multiply of alpha channel.
-	Behavior change.  Patch contributed by Sara Shafaei.
+	* magick/magick.c (PanicDestroyMagick): Replace memory allocation
+	functions with dummy functions rather than NULL pointers.
+	(InitializeMagickSignalHandlers): Register
+	MagickPanicSignalHandler() for SIGSEGV.
+	(MagickPanicSignalHandler): Produce an informative message for the
+	user.
+	(MagickSignalHandlerMessage): Include more detailed information
+	from the signal handler via a common routine used by default
+	signal handlers.
 
-	* coders/msl.c (ProcessMSLScript): Deal with case where
-	image_info->attributes is NULL.
+2015-01-25  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-2014-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/bmp.c (ReadBMPImage): An attempt to address CID 10291.
 
-	* magick/utility.c (TranslateTextEx): Support additional format
-	specifiers 'g', 'A', 'C', 'D', 'G', 'H', 'M', 'O', 'P', 'Q', 'T',
-	'U', 'W', 'X', and '@'.
-	(GetMagickGeometry): Support '>' and '<' qualifiers with '@'
-	qualifier to specify if image should be resized if larger or
-	lesser than given area specification.  Resolves SourceForge bug
-	#216 ">" wont take effect when use @ to specify the maximum area.
+2015-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/transform.c (GetImageMosaicDimensions): Move mosaic
-	dimensions code to a static function for possible future re-use.
+	* magick/nt_base.c (Exit): Changed to return 'void'. Function can
+	not return a value if it does not return.
 
-2014-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/error.c (DefaultFatalErrorHandler): Invoke
+	PanicDestroyMagick() rather than DestroyMagick().  If we are
+	really that short on memory, DestroyMagick() might not work.
 
-	* magick/gradient.c (GradientImage): Update image is_grayscale and
-	is_monochrome flags based on gradient color properties.
+	* magick/magick.c (MagickPanicSignalHandler): Only use async-safe
+	functions in signal handler.
+	(PanicDestroyMagick): New function for emergency release of
+	persistent resources just prior to program exit.  Async-safe and
+	does not acquire or release any heap memory.
 
-2014-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/export.c: Eliminate two 'clang' warnings.
 
-	* magick/utility.c (GetMagickGeometry): Deal with resize geometry
-	missing width or height (e.g. '640x' or 'x480') by substituting
-	the missing value with one which preserves the image aspect ratio.
-	This has been documented to be supported since almost the dawn of
-	GraphicsMagick but was not actually supported until now.
+2015-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pdb.c (ReadPDBImage): Fix typo.
 
-	* doc/options.imdoc: Document WebP encoder options.
+	* coders/cineon.c (ReadCINEONImage): Enforce that Cineon image
+	info channels is valid.  Solves problem with file provided by
+	Jodie Cunningham on 2015-01-24
 
-	* coders/webp.c (WriteWEBPImage): Support all of the WebP encoder
-	options via -define arguments.  Most of this work is contributed
-	by Roman Hiestand.
+	* coders/fits.c (ReadFITSImage): Enforce valid bits-per-pixel
+	values.  Add detailed header logging.  Solves problem with file
+	provided by Jodie Cunningham on 2015-01-24
 
-	* configure.ac: User-provided LIBS should be prepended to LIBS
-	that configure script produces so that user option takes
-	precedence.
+2015-01-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-2014-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/png.c (ReadPNGImage): Check length of various MNG
+	chunks before using the chunk data.
 
-	* PerlMagick/Magick.xs: Added support for HardLight composition
-	operator.
+	* coders/png.c (WriteOnePNGImage): Use png_error() instead of
+	throwing an exception so cleanup in the setjmp block can happen,
+	including unlocking the semaphore.  Addresses Coverity CID 10184.
 
-	* www/perl.rst: Update PerlMagick documentation, including the
-	composition operators.
+2015-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/xcf.c (GIMPBlendModeToCompositeOperator): Use new
-	HardLight composition operator to support XCF GIMP_HARDLIGHT_MODE
-	blend mode.  Contributed by Sara Shafaei.
+	* coders/gif.c (WriteGIFImage): Don't use an unchecked value from
+	GetImageAttribute(), even if the access succeeded before.
+	Resolves Coverity CID 10219.
 
-	* coders/psd.c (CompositeOperatorToPSDBlendMode): Use new
-	HardLight composition operator to support PSD "hLit" blend mode.
-	Contributed by Sara Shafaei.
+	* coders/dpx.c (StringToAttribute): Make sure that string is not
+	accidentally shortened by one character if it occupies the full
+	field size.
+	(ReadDPXImage): Validate that the bits per sample claimed by the
+	file header is a supported depth before using it further in the
+	code.  This might resolve Coverity CID 10071 "Bad shift
+	operation".
+	(ReadDPXImage): Check for EOF while reading forward to element
+	data.  Might solve Coverity CID 10305.
 
-	* wand/magick_wand.c (MagickOperatorImageChannel): New function to
-	apply an operator to an image channel.  Contributed by Sara
-	Shafaei.
+	* coders/dib.c (ReadDIBImage): Resolve Coverity CID 10228 "Integer
+	overflowed argument".
+	(ReadDIBImage): Hopefully resolve Coverity CID 10268 "Various",
+	which is primarily about placing too much trust in the claimed
+	number of colors.
 
-	* magick/composite.c (HardLightCompositePixels): New HardLight
-	composition operator.  Contributed by Sara Shafaei.
+	* coders/pnm.c (WritePNMImage): Fix overwrite of status by
+	progress monitor.  Remaining issues may lurk within.  May resolve
+	Coverity CID 10288.
 
-2014-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pdb.c: Resolve Coverity CID 11173 "Buffer not null
+	terminated".
 
-	* magick/command.c (BenchmarkImageCommand): Add a CSV title line
-	and quoting to benchmark -rawcsv output.
+2015-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/magick.c (GetMagickInfoArray): Resolve Coverity CID 10212
+	"Missing unlock".
 
-	* coders/webp.c: Add progress indication support to WebP writer.
+	* magick/colormap.c (ReplaceImageColormap): Allocate new image
+	colormap up front in order to avoid the possibility that we are
+	left with an image with no colormap due to memory allocation
+	failure. If there is a memory allocation failure, then the
+	original colormap is preserved.  Resolves Coverity CID 10194
+	"Dereference after null check".
 
-	* magick/command.c (VersionCommand): WebP support is included in
-	-version output.
+	* magick/utility.c (MagickStripSpacesFromString): New private
+	utility function to strip spaces from a string.
 
-	* coders/webp.c: WebP coder identifies library version and header
-	ABI versions. Improve WebP error reporting.
+	* magick/color_lookup.c (GetColorInfoArray): Resolves Coverity CID
+	10231 "Missing unlock"
+	(ReadColorConfigureFile): Resolves Coverity CID 10261 "Use of
+	untrusted scalar value"
+	(GetColorInfo): Resolves Coverity CID 10077 "Overlapping buffer in
+	memory copy".
 
-2014-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-01-21  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* coders/tiff.c (WriteTIFFImage): Allow specifying the TIFF image
-	software tag.  In the special case that the string length is zero
-	(e.g. -set software '') then the tag is skipped entirely.  This is
-	to support SourceForge feature request #37 "Option to prevent
-	addition of Exif Software tag" opened by Jean-Louis Grall.  Please
-	note that this tag is not an EXIF tag.
+	* coders/png.c (ReadOnePNGImage): Use png_error() instead of
+	throwing an exception so cleanup in the setjmp block can happen,
+	including unlocking the semaphore.  Resolves Coverity CID 10232.
 
-	* magick/command.c: composite, convert, display, mogrify, and
-	import now support +set to remove an existing image attribute.
+	* coders/png.c (ReadOnePNGImage): Moved a logging statement into a
+	block where "attribute" has been checked for NULL.  Resolves
+	Coverity CIDs 10185 and 10187.
 
-2014-03-16  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+	* coders/png.c (ReadMNGImage): Fixed a cut-and-paste typo
+	(change_delay should be change_timeout) reported by Coverity
+	CID 10090.
 
-	* coders/png.c: Don't block threads when PNG_SETJMP_SUPPORTED is
-	not enabled.
+2015-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/png.c: Changed prefix of macros defined in coders/png.c
-	from PNG_ to GMPNG_.  PNG_ is reserved for macros defined by
-	libpng.
+	* magick/image.c (CloneImage): The definition is poor as to what a
+	non-orphan clone should do.  However, the definition surely does
+	not include crashing the software or supplanting the original
+	image in an image list.  Clone image blob and previous/next
+	pointers but do not supplant original image in list.  Resolves
+	Coverity CID 10155.
 
-2014-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/blob.c: Don't use setvbuf() to set stdio block size if
-	filesystem block size is zero (e.g. MAGICK_IOBUF_SIZE=0)
+	* coders/dpx.c (WriteRowSamples): Ensure that callback function is
+	always defined. Resolves Coverity CID 10122.
+	(ReadRowSamples): Ensure that callback function is always
+	defined. Resolves Coverity CID 10125.
 
-2014-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/random.c (InitializeMagickRandomKernel): Avoid possible
+	double-close of file.  Resolves Coverity CID 10257.
 
-	* tests/{rwblob.tap, rwfile.tap}: Added tests for WEBP.
+	* coders/histogram.c (WriteHISTOGRAMImage): Avoid possible divide
+	by zero exception.  Resolves Coverity CID 10107.
 
-	* tests/{rwblob.c, rwfile.c}: Add lossy hint for WEBP.
+	* magick/error.c (MagickFatalError): Document that
+	MagickFatalError() is not supposed to return (program must quit)
+	and add GCC/Clang hints to that effect.
 
-	* coders/webp.c (WriteWEBPImage): Fix inverted return status.
-	Added a tiny bit of logging.
+	* magick/bit_stream.c (BitAndMasks): Avoid possible access
+	one-beyond end of BitAndMasks array.  It is not clear if there is
+	a possible bug with 32-bit quantums.  If there is a bug, it has
+	not been noticed via testing.  Resolves Coverity CID 10213.
 
-2014-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Avoid buffer
+	overrun in the case of an astonishingly long environment variable
+	string.  Resolves Coverity CID 10267.
+	(AddTemporaryFileToList): Use strlcpy() rather than strlcpy().  In
+	practice, should not make a difference.  Will quiet Coverity CID
+	10321.
 
-	* ttf: Updated FreeType to release 2.5.3 of March 6, 2014.
-	Provides security fixes for CVE-2014-2240.
+	* magick/command.c (GMCommandSingle): Don't use the address of a
+	stack allocation to update argv[0]. Removed updating argv[0] until
+	a better design can be found.  Resolves Coverity CID 10223.
+	(GMCommandSingle): Plan B: Use static allocation from
+	SetClientName() to both store the new command name and provide
+	storage for argv[0].
 
-	* jpeg: Update to libjpeg 9a of 19-Jan-2014.
+	* magick/utility.c (SystemCommand): Fix possible overwrite of
+	memory location due to uninitialized 'end' pointer.  Resolves
+	Coverity CID 10251.
 
-	* png: Update to Libpng 1.6.10 - March 6, 2014.
+	* magick/blob.c (WriteBlobFile): Was not closing file in certain
+	error conditions.  Resolves Coverity CID 10237.
 
-2014-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/cineon.c (ReadCINEONImage): Don't trust file header so
+	much.  Resolves Coverity CIDs 10079, 10310, 10325.
 
-	* magick/nt_base.c (NTResourceToBlob): According to Microsoft
-	Report article 193678 (http://support.microsoft.com/kb/193678),
-	FreeResource() is not needed in WIN32 and performs no useful
-	function.  Remove use of it.  Also remove use of UnlockResource()
-	which is similarly unuseful for WIN32.
+	* coders/art.c (ReadARTImage): Fix signed vs unsigned comparison
+	caused by earlier changes.
 
-	* configure.ac (MAGICK_LIBRARY_REVISION): Test for Windows
-	_aligned_malloc() is not reliable.  Use Windows CRT version to
-	decide if it is available.
+2014-01-17 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-2014-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/wpg.c Do not execute wpg raster read in ping mode.
 
-	* magick/studio.h: Make sure that Windows _aligned_malloc() is not
-	used under MinGW unless the CRT version allows it.
+2014-01-15 Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-2014-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/mat.c Properly deallocating zip structures.
 
-	* magick/pixel_cache.c (InterpolateViewColor): Applied patch by
-	Troy Patteson plus fixes to ignore opacity channel if image matte
-	is false.  Replaces most of the code rewritten on 2014-02-16 and
-	which produced a faint darkened border.  The results look stellar
-	now.
+2015-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/sfw.c (ReadSFWImage): Fix pixel cache access errors in
+	'ping' mode.
 
-	* magick/shear.c: Applied patch by Troy Patteson to improve
-	non-integral rotation by around 40% by minimizing added image
-	borders.  This may cause small differences in results for some
-	images.
+2015-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* reference/filter/Rotate10.miff: Update rotate 10 degrees
-	reference image so that PerlMagick test passes.
+	* coders/wmf.c (ReadWMFImage): Fix memory leak in 'ping' mode and
+	some error paths.
 
-	* magick/shear.c: Applied patch by Troy Patteson to fix
-	SourceForge issue #260 "Rotation exhibits clipping/shearing errors
-	for short wide images at some angles".
+2015-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-2014-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/jbig.c (ReadJBIGImage): Fix memory leak in 'ping' mode.
 
-	* doc/options.imdoc: Fix documentation to note that 'unspecified
-	alpha' is the GraphicsMagick default when writing TIFF rather than
-	'associated alpha'.  Much thanks to Mats Peterson for alerting us
-	of this error.
+	* magick/delegate.c (InvokeDelegate): Fix memory leak of argument
+	list when invoking external program via MagickSpawnVP().
 
-2014-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2015-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/pixel_cache.c (InterpolateViewColor): Added a hack so that
-	affine transformations and displace composite do not have
-	background colored fringing on the transferred image edges when
-	the background is completely transparent.  Fringing problem was
-	caused by one or more of the line ends being a transparent pixel
-	outside of the bounds of the original image content.  May not be
-	the final solution.
+	* magick/resource.c (InitializeMagickResources): Base image width
+	and height default limits on the range of a 32-bit signed integer,
+	even for 64-bit builds.  These limits are still beyond what most
+	computers in the world can handle.  Limits can be increased by the
+	user.
 
-2014-02-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/xwd.c (ReadXWDImage): Check image size limits
+	immediately.
 
-	* magick/semaphore.c (AcquireSemaphoreInfo): Document that this
-	function was deprecated.
-	(LiberateSemaphoreInfo): Document that this function was
-	deprecated.
+	* coders/xc.c (ReadXCImage): Check image size limits immediately.
 
-2014-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/webp.c (ReadWEBPImage): Check image size limits
+	immediately.
 
-	* coders/psd.c (RegisterPSDImage): Set PSD to UnstableCoderClass
-	since its implementation is currently rather marginal.  It may
-	even be that this coder deserves to be marked with the new
-	BrokenCoderClass.  We are still looking for a volunteer to iron
-	out the wrinkles in the PSD reader.
+	* coders/viff.c (ReadVIFFImage): Check image size limits
+	immediately.
 
-	* magick/magick.h (CoderClass): Added BrokenCoderClass to mark
-	coders which often malfunction or are not very useful in their
-	current condition.  Sometimes there is still hope that problems
-	will be resolved and so the source file is not outright deleted.
-	This setting allows us to mark and use coders which might
-	malfunction by defining MAGICK_CODER_STABILITY=BROKEN in the
-	environment while not causing danger for normal use.
+	* coders/vicar.c (ReadVICARImage): Check image size limits
+	immediately.
 
-2014-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/txt.c (ReadTXTImage): Check image size limits
+	immediately.
 
-	* wand/magick_wand.c: Documentation improvements for
-	MagickSetInterlaceScheme() and MagickSetImageInterlaceScheme().
-	Resolves SourceForge bug #262 "setImageInterlaceScheme doesn't
-	make image progressive".
+	* coders/ttf.c (ReadTTFImage): Check image size limits
+	immediately.
 
-2014-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/tim.c (ReadTIMImage): Check image size limits
+	immediately.
 
-	* coders/{ps.c, ps2.c, ps3.c, pdf.c}: Only use resolution from
-	image or -density if units was properly specified.  Without units,
-	resolution is worthless.
+	* coders/tiff.c (ReadTIFFImage): Check image size limits
+	immediately.
 
-	* coders/ps3.c (WritePS3Image): Use image resolution similar to PDF
-	changes.
+	* coders/tga.c (ReadTGAImage): Check image size limits
+	immediately.
 
-	* coders/ps2.c (WritePS2Image): Use image resolution similar to PDF
-	changes.
+	* coders/sgi.c (ReadSGIImage): Check image size limits
+	immediately.
 
-	* coders/ps.c (WritePSImage): Use image resolution similar to PDF
-	changes.
+	* coders/sct.c (ReadSCTImage): Check image size limits
+	immediately.
 
-	* coders/pdf.c (WritePDFImage): Use resolution from image if it
-	appears to be valid.  Resolves SourceForge issue #261 "PNG Pixel
-	Density Not Preserved Converting to PDF".
+	* coders/rle.c (ReadRLEImage): Check image size limits
+	immediately.
 
-	* magick/enum_strings.c (StringToResolutionType): New function to
-	convert ResolutionType to C string.
-	(ResolutionTypeToString): New function to convert from C string to
-	ResolutionType.
+	* coders/rla.c (ReadRLAImage): Check image size limits
+	immediately.
 
-2014-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/psd.c (ReadPSDImage): Check image size limits
+	immediately.
 
-	* wand/magick_wand.c (MagickGetImageGeometry): New function to get
-	the image geometry string.  This function and the three others in
-	this change set are contributed by Sara Shafaei.
-	(MagickGetImageMatte): New function to read the image matte
-	(opacity) channel enable flag.
-	(MagickSetImageGeometry): New function to set the image geometry
-	string.
-	(MagickSetImageMatte): New function to set the image matte
-	(opacity) channel enable flag.
+	* coders/pnm.c (ReadPNMImage): Check image size limits
+	immediately.
 
-2014-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pix.c (ReadPIXImage): Check image size limits
+	immediately.
 
-	* wand/magick_wand.c (MagickDrawImage): Remove development debug
-	fprintf which causes each drawing primitive to be printed to
-	stderr.
+	* coders/pict.c (ReadPICTImage): Check image size limits
+	immediately.
 
-2014-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pdb.c (ReadPDBImage): Check image size limits
+	immediately.
 
-	* coders/pnm.c (ReadPNMImage): Fix scaling of alpha in sub-ranged
-	pixels.  Addresses SourceForge issue #237 "Incorrect MAXVAL
-	scaling when reading PAM images", which was not fully fixed in by
-	the previous attempt.
+	* coders/pcx.c (ReadPCXImage): Check image size limits
+	immediately.
 
-2014-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/pcd.c (ReadPCDImage): Check image size limits
+	immediately.
 
-	* magick/tsd.c: Implement TSD for "pure" OpenMP mode without
-	relying on POSIX or WIN32 TSD APIs.
+	* coders/otb.c (ReadOTBImage): Check image size limits
+	immediately.
 
-	* magick/semaphore.c: Implement OpenMP-based locking so that code
-	can compile in a "pure" OpenMP mode without relying on POSIX or
-	WIN32 locking APIs.
+	* coders/null.c (ReadNULLImage): Check image size limits
+	immediately.
 
-	* configure.ac: --without-threads no longer disables use of
-	OpenMP.  Use the already existing option --disable-openmp to
-	disable OpenMP.
+	* coders/mvg.c (ReadMVGImage): Check image size limits
+	immediately.
 
-2014-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/mtv.c (ReadMTVImage): Check image size limits
+	immediately.
 
-	* magick/common.h: Support use of clang/llvm __attribute__ and
-	__builtin extensions similar to the existing support for GCC.
+	* coders/mpc.c (ReadMPCImage): Check image size limits
+	immediately.
 
-2014-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/miff.c (ReadMIFFImage): Check image size limits
+	immediately.
 
-	* Magick++/lib/Image.cpp (thumbnail): New method for fast image
-	resizing, particularly to make thumbnails.
+	* coders/jpeg.c (ReadJPEGImage): Check image size limits
+	immediately.
 
-	* coders/gif.c: Log when Netscape loop exension is read and
-	written.
+	* coders/jp2.c (ReadJP2Image): Check image size limits
+	immediately.
 
-	* coders/png.c (WriteOnePNGImage): In optimize mode, disable matte
-	channel immediately if there are no non-opaque pixels.  Also added
-	some useful logging.  Resolves SourceForge issue #252 "convert an
-	8bit PNG result in a corrupted image ".
+	* coders/jbig.c (ReadJBIGImage): Check image size limits
+	immediately.
 
-	* wand/magick_wand.c (MagickSetImageGravity): New Wand method to
-	set image gravity.
-	(MagickGetImageGravity): New wand method to get image gravity.
+	* coders/hdf.c (ReadHDFImage): Check image size limits
+	immediately.
 
-2014-01-02  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+	* coders/gif.c (ReadGIFImage): Check image size limits
+	immediately.
 
-	* coders/png.c (ReadOnePNGImage): Use libpng function
-	png_set_strip_16_to_8() when scaling 16-bit input PNG down to
-	8-bit in a Q8 build.  The png_set_scale_16_to_8() function is
-	more accurate, but the slight difference causes reference tests
-	to fail and causes unexpected difference between the behavior
-	of PNG and other formats.  If png_set_strip_16_to_8() is not
-	supported in libpng, then we use png_set_scale_16_to_8() if
-	that is available.
+	* coders/fpx.c (ReadFPXImage): Check image size limits
+	immediately.
 
-2014-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/fax.c (ReadFAXImage): Check image size limits
+	immediately.
 
-	* INSTALL-windows.txt: Update for 2014.
+	* coders/dpx.c (ReadDPXImage): Check image size limits
+	immediately.
 
-	* INSTALL-unix.txt: Update for 2014.
+	* coders/dps.c (ReadDPSImage): Check image size limits
+	immediately.
 
-	* Copyright.txt: Update for 2014.
+	* coders/dib.c (ReadDIBImage): Check image size limits
+	immediately.
 
-	* NEWS.txt: Update for 2014.
+	* coders/dcm.c (ReadDCMImage): Check image size limits
+	immediately.
 
-	* README.txt: Update for 2014.
+	* coders/cut.c (ReadCUTImage): Check image size limits
+	immediately.
 
-	* doc: Update for 2014.
+	* coders/cineon.c (ReadCINEONImage): Check image size limits
+	immediately.
 
-	* www: Update for 2014.
+	* coders/avs.c (ReadAVSImage): Check image size limits
+	immediately.
 
-	* VisualMagick/installer: Update for 2014.
+	* coders/art.c (ReadARTImage): Check image size limits
+	immediately.
 
-	* ChangeLog: Rotate Changelog to ChangeLog.2013 for 2014.
+	* coders/sun.c (ReadSUNImage): Check image size limits in advance
+	of allocating memory for pixels.
+
+	* coders/bmp.c (ReadBMPImage): Check image size limits in advance
+	of allocating memory for pixels.
+
+	* coders/sun.c (ReadSUNImage): There is no definition for Sun map
+	type RMT_RAW so it can not be supported.  Update DirectClass
+	pixels directly rather using SyncImage().  Problem was reported by
+	Jodie Cunningham.
+
+2015-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pict.c (ReadPICTImage): Fix PICT reader crash when
+	reading corrupted file.
+
+	* coders/sun.c (ReadSUNImage): Sun reader was still not as robust
+	as it should be.  Now it is.
+
+2014-01-10 Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c Fixed reading behind EOF issue.
+
+2015-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (LSBPackedU32WordToOctets): Fix typo which adds
+	severe corruption to encoded little-endian 32-bit packed output.
+	The good news is that since the corruption is severe, it is easily
+	visually detected.  The problem has corrupted all such
+	(little-endian 10-bit) output since it was originally implemented
+	on 2007-06-17 (changeset 11686, first released in GraphicsMagick
+	1.1.8).  GraphicsMagick preserves the endianness of input DPX
+	files by default, defaults to big-endian, and DPX files are
+	commonly big-endian, so this problem may not have occured for many
+	usages.  Problem was reported by Steve Dabner on the
+	GraphicsMagick discussion mailing list.
+
+2015-01-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (MagickPanicSignalHandler): Print a message in
+	the case of signals SIGXCPU and SIGXFSZ.
+
+	* coders/bmp.c (ReadBMPImage): Don't hang in endless loop if EOF
+	is encountered while checking for "BA" header.
+
+	* coders/icon.c (ReadIconImage): Limit icon image allocation size.
+
+2015-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/icon.c (ReadIconImage): Removed all of the
+	previously-existing DIB reading code from icon.c and use new
+	"ICODIB" reader to read DIB icons, or the PNG reader to read PNG
+	icons.
+
+	* coders/dib.c (ReadDIBImage): Added an "ICODIB" coder for
+	internal use which reads a Windows BMP 3 DIB followed by a Windows
+	ICO alpha mask.  This allows existing DIB code to be used to read
+	ICO directory entries.
+
+2015-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/icon.c: The Windows ICO reader is now more robust.  Still
+	a work in progress since some files still can not be read or read
+	incorrectly.
+
+2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (ListMagickResourceInfo): "kilo" for binary
+	prefixes is supposed to be "Ki".
+
+	* magick/utility.c (FormatSize): "kilo" for binary prefixes is
+	supposed to be "Ki".
+
+2015-01-01  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c: Use WidthResource and HeightResource instead
+	of fixed 1-million limit for rows and columns.
+
+2015-01-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (FormatSize): Add 'i' to value range
+	identifiers since these are all in units of 2^10 rather than 1000.
+
+	* magick/pixel_cache.c (CheckImagePixelLimits): Fix typo and
+	produce an informative error message.
+
+	* magick/resource.c: Added support for Image width and height
+	pixels resource limits.
+
+	* magick/resource.h (ResourceType): New resource enumerations
+	WidthResource and HeightResource.
+
+	* magick/enum_strings.c (StringToResourceType): Added support for
+	parsing '-limit Width' and '-limit Height'.
+
+	* magick/pixel_cache.c (CheckImagePixelLimits): New function to
+	test image to see if it exceeds pixels limits.
+
+	* coders/viff.c (ReadVIFFImage): Make the VIFF reader robust with
+	detecting and reporting problems.
+
+2014-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Rotate Changelog for new year.  Update documentation copyrights
+	for new year.
+
 

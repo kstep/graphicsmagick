@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -540,6 +540,7 @@ GetMagickInfoArray(ExceptionInfo *exception)
   array=MagickAllocateArray(MagickInfo **,sizeof(MagickInfo *),(entries+1));
   if (!array)
     {
+      UnlockSemaphoreInfo(magick_semaphore);
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return ((MagickInfo **) NULL);
     }
@@ -681,6 +682,115 @@ MagickIgnoreSignalHandler(int signo)
 #endif
 
 /*
+  Write a message about the signal to stderr.
+*/
+static void
+MagickSignalHandlerMessage(const int signo, const char *subtext)
+{
+  /*
+    Signals we might handle, to map to their common description.
+
+    May use strsignal() on POSIX.1-2008-compliant systems, but it is
+    not documented to be async-safe.
+
+  */
+  static const struct {
+    const int signo;
+    const char *name;
+    const char *descr;
+  } signal_descr[] = {
+#if defined(SIGHUP)
+    { SIGHUP, "SIGHUP","Hangup" },
+#endif
+#if defined(SIGINT)
+    { SIGINT, "SIGINT", "Interrupt" },
+#endif
+#if defined(SIGQUIT)
+    { SIGQUIT, "SIGQUIT", "Quit" },
+#endif
+#if defined(SIGILL)
+    { SIGILL, "SIGILL", "Illegal Instruction" },
+#endif
+#if defined(SIGABRT)
+    { SIGABRT, "SIGABRT", "Abort" },
+#endif
+#if defined(SIGFPE)
+    { SIGFPE, "SIGFPE", "Arithmetic Exception" },
+#endif
+#if defined(SIGBUS)
+    { SIGBUS, "SIGBUS", "Bus Error" },
+#endif
+#if defined(SIGSEGV)
+    { SIGSEGV, "SIGSEGV", "Segmentation Fault" },
+#endif
+#if defined(SIGPIPE)
+    { SIGPIPE, "SIGPIPE", "Broken Pipe" },
+#endif
+#if defined(SIGALRM)
+    { SIGALRM, "SIGALRM", "Alarm Clock" },
+#endif
+#if defined(SIGTERM)
+    { SIGTERM, "SIGTERM", "Terminated" },
+#endif
+#if defined(SIGCHLD)
+    { SIGCHLD, "SIGCHLD", "Child Status Changed" },
+#endif
+#if defined(SIGXCPU)
+    { SIGXCPU, "SIGXCPU", "CPU time limit exceeded" },
+#endif
+#if defined(SIGXFSZ)
+    { SIGXFSZ, "SIGXFSZ", "File size limit exceeded" }
+#endif
+  };
+
+  static char
+    message[128];
+
+  size_t
+    i;
+
+  int
+    num=signo;
+
+  /*
+    Output messages like:
+
+    gm convert: quitting due to signal 2 (SIGINT) "Interrupt"...
+    gm convert: abort due to signal 11 (SIGSEGV) "Segmentation Fault"...
+  */
+  (void) strlcpy(message, GetClientName(), sizeof(message));
+  (void) strlcat(message,": ", sizeof(message));
+  (void) strlcat(message,subtext,sizeof(message));
+  (void) strlcat(message," due to signal ",sizeof(message));
+  i=strlen(message);
+  for ( ; (num != 0) && (i < sizeof(message)-1) ; i++)
+    {
+      int rem = num % 10;
+      message[i] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+      num = num/10;
+    }
+  message[i] = '\0';
+  for ( i=0; i < (sizeof(signal_descr)/sizeof(signal_descr[0])); i++)
+    {
+      if (signo == signal_descr[i].signo)
+        {
+          (void) strlcat(message," (",sizeof(message));
+          (void) strlcat(message,signal_descr[i].name,sizeof(message));
+          (void) strlcat(message,") \"",sizeof(message));
+          (void) strlcat(message,signal_descr[i].descr,sizeof(message));
+          (void) strlcat(message,"\"",sizeof(message));
+        }
+    }
+  (void) strlcat(message,"...\n",sizeof(message));
+
+  if (write(STDERR_FILENO,message,strlen(message)) == -1)
+    {
+      /* Exists to quench warning */
+    }
+}
+
+
+/*
   Signal handler to ensure that DestroyMagick is invoked in case the
   user aborts the program.
 
@@ -710,13 +820,15 @@ MagickPanicSignalHandler(int signo)
   */
   if (1 == panic_signal_handler_call_count)
     {
-      if (MagickInitialized == InitInitialized)
-	{
-	  /*
-	    Release persistent resources
-	  */
-	  PurgeTemporaryFiles();
-	}
+      /*
+        Release persistent resources
+      */
+      PanicDestroyMagick();
+
+      /*
+        Produce a useful message for the user
+      */
+      MagickSignalHandlerMessage(signo,"abort");
 
       /*
 	Call abort so that we quit with core dump.
@@ -741,7 +853,6 @@ static MagickBool QuitProgressMonitor(const char *task,
   return MagickFail;
 }
 
-
 static RETSIGTYPE
 MagickSignalHandler(int signo)
 {
@@ -763,10 +874,16 @@ MagickSignalHandler(int signo)
 	  */
 	  (void) SetMonitorHandler(QuitProgressMonitor);
 
-	  /*
-	    Release persistent resources
-	  */
-	  PurgeTemporaryFiles();
+          /*
+            Release persistent resources
+          */
+          PanicDestroyMagick();
+
+          /*
+            Produce a useful message for the user
+          */
+          if (signo != SIGINT)
+            MagickSignalHandlerMessage(signo,"quitting");
 	}
 
       /*
@@ -895,6 +1012,7 @@ InitializeMagickClientPathAndName(const char *path)
 
 /*
   Establish signal handlers for common signals
+
 */
 MagickExport void
 InitializeMagickSignalHandlers(void)
@@ -911,7 +1029,7 @@ InitializeMagickSignalHandlers(void)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);
 #endif
   /* interrupt (CONTROL-c), default terminate */
-#if defined(SIGINT) && !defined(MSWINDOWS)
+#if defined(SIGINT)
   (void) MagickCondSignal(SIGINT,MagickSignalHandler);
 #endif
   /* quit (CONTROL-\), default terminate with core */
@@ -929,6 +1047,14 @@ InitializeMagickSignalHandlers(void)
   /* software termination signal from kill, default terminate */
 #if defined(SIGTERM)
   (void) MagickCondSignal(SIGTERM,MagickSignalHandler);
+#endif
+  /* Bus Error */
+#if defined(SIGBUS)
+  (void) MagickCondSignal(SIGBUS,MagickPanicSignalHandler);
+#endif
+  /* segmentation fault */
+#if defined(SIGSEGV)
+  (void) MagickCondSignal(SIGSEGV,MagickPanicSignalHandler);
 #endif
   /* exceeded cpu limit, default terminate with core */
 #if defined(SIGXCPU)
@@ -1041,6 +1167,9 @@ InitializeMagick(const char *path)
 	MinimumCoderClass=PrimaryCoderClass;
     }
 
+#if defined(MSWINDOWS)
+  NTInitializeExceptionHandlers();  /* WIN32 Exceptions */
+#endif /* defined(MSWINDOWS) */
   InitializeMagickSignalHandlers(); /* Signal handlers */
   InitializeTemporaryFiles();       /* Temporary files */
   InitializeMagickResources();      /* Resources */
@@ -1439,6 +1568,92 @@ RegisterMagickInfo(MagickInfo *magick_info)
   */
   DestroyMagickInfo(&magick_info);
   return(magick_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a n i c D e s t r o y M a g i c k                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PanicDestroyMagick() destroys only persistent allocations such as
+%  temporary files.  Other allocations (e.g. semaphores and heap memory)
+%  remain allocated.  This function is an alternative to DestroyMagick()
+%  which is async-safe so it may be invoked from signal handers, and
+%  may be invoked from thread context.  No semaphores are taken and no
+%  additional heap memory is allocated by this function.  The program
+%  must quit immediately after invoking this function.
+%
+%  The format of the PanicDestroyMagick function is:
+%
+%      void PanicDestroyMagick(void)
+%
+%
+*/
+/*
+  Set to 1 to break the memory allocation functions.  This is a
+  debugging aid.  In a multi-threaded program, other threads may
+  still be allocating and deallocating memory while a signal
+  handler is called.
+*/
+#define MAGICK_BREAK_HEAP 0
+#if MAGICK_BREAK_HEAP
+static void
+PanicFreeFunc(void *ptr)
+{
+  char err_str[] = "Attempt to free memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(ptr);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+}
+static void *
+PanicMallocFunc(size_t size)
+{
+  char err_str[] = "Attempt to malloc memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(size);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+  return (void *) NULL;
+}
+static void *
+PanicReallocFunc(void *ptr, size_t size)
+{
+  char err_str[] = "Attempt to realloc memory in PanicDestroyMagick()\n";
+  ARG_NOT_USED(ptr);
+  ARG_NOT_USED(size);
+  if (write(STDERR_FILENO,err_str,sizeof(err_str)-1) == -1)
+    {
+      /* Exists to quench warning */
+    }
+  return (void *) NULL;
+}
+#endif /* if MAGICK_BREAK_HEAP */
+MagickExport void
+PanicDestroyMagick(void)
+{
+  if (MagickInitialized == InitInitialized)
+    {
+#if MAGICK_BREAK_HEAP
+      /*
+        Enforce that we don't use the memory allocation functions by
+        setting them all to dummy functions.
+      */
+      MagickAllocFunctions(PanicFreeFunc,PanicMallocFunc,PanicReallocFunc);
+#endif /* if MAGICK_BREAK_HEAP */
+      /*
+        Release persistent resources
+      */
+      PurgeTemporaryFilesAsyncSafe();
+    }
 }
 
 /*

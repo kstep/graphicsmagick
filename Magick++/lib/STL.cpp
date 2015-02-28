@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2012
+// Copyright Bob Friesenhahn, 1999 - 2014
 //
 // Implementation of STL classes and functions
 //
@@ -338,6 +338,55 @@ Magick::equalizeImage::equalizeImage( void )
 void Magick::equalizeImage::operator()( Magick::Image &image_ ) const
 {
   image_.equalize( );
+}
+
+// Create an image canvas using background color sized according to
+// geometry and composite existing image on it, with image placement
+// controlled by gravity.  Parameters are obtained from existing image
+// properties if they are not specified via a method parameter.
+// Parameters which are supported by image properties (gravity and
+// backgroundColor) update those image properties as a side-effect.
+Magick::extentImage::extentImage( const Geometry &geometry_ )
+  : _geometry( geometry_ ),
+    _backgroundColor( ),
+    _gravity( Magick::ForgetGravity )
+    
+{
+}
+Magick::extentImage::extentImage( const Geometry &geometry_,
+                                  const GravityType &gravity_ )
+  : _geometry( geometry_ ),
+    _backgroundColor( ),
+    _gravity( gravity_ )
+{
+}
+Magick::extentImage::extentImage( const Geometry &geometry_,
+                                  const Color &backgroundColor_ )
+  : _geometry( geometry_ ),
+    _backgroundColor( backgroundColor_ ),
+    _gravity( Magick::ForgetGravity )
+{
+}
+
+Magick::extentImage::extentImage( const Geometry &geometry_,
+                                  const Color &backgroundColor_,
+                                  const GravityType &gravity_ )
+  : _geometry( geometry_ ),
+    _backgroundColor( backgroundColor_ ),
+    _gravity( gravity_ )
+{
+}
+void Magick::extentImage::operator()( Magick::Image &image_ ) const
+{
+  // Support accessing the four image method permutations.
+  if ( (_backgroundColor.isValid()) && (_gravity != Magick::ForgetGravity) )
+    image_.extent( _geometry, _backgroundColor, _gravity );
+  else if ( _backgroundColor.isValid() )
+    image_.extent( _geometry, _backgroundColor );
+  else if ( _gravity != Magick::ForgetGravity )
+    image_.extent( _geometry, _gravity );
+  else
+    image_.extent( _geometry );
 }
 
 // Color to use when filling drawn objects
@@ -773,6 +822,16 @@ void Magick::reduceNoiseImage::operator()( Image &image_ ) const
   image_.reduceNoise( _order );
 }
 
+// Resize image to a certain geometry
+Magick::resizeImage::resizeImage( const Magick::Geometry &geometry_ )
+  : _geometry( geometry_ )
+{
+}
+void Magick::resizeImage::operator()( Magick::Image &image_ ) const
+{
+  image_.resize( _geometry );
+}
+
 // Roll image (rolls image vertically and horizontally) by specified
 // number of columnms and rows)
 Magick::rollImage::rollImage( const Magick::Geometry &roll_ )
@@ -825,7 +884,7 @@ void Magick::scaleImage::operator()( Magick::Image &image_ ) const
 // histograms of the color components and identifying units that are
 // homogeneous with the fuzzy c-means technique.  Also uses
 // QuantizeColorSpace and Verbose image attributes
-Magick::segmentImage::segmentImage( const double clusterThreshold_ , 
+Magick::segmentImage::segmentImage( const double clusterThreshold_ ,
                                     const double smoothingThreshold_ )
   : _clusterThreshold( clusterThreshold_ ),
     _smoothingThreshold( smoothingThreshold_ )
@@ -1427,7 +1486,7 @@ void Magick::quantizeColorSpaceImage::operator()( Magick::Image &image_ ) const
 
 // Dither image during quantization (default true).
 Magick::quantizeDitherImage::quantizeDitherImage( const bool ditherFlag_ )
-  : _ditherFlag( ditherFlag_ ) 
+  : _ditherFlag( ditherFlag_ )
 {
 }
 void Magick::quantizeDitherImage::operator()( Magick::Image &image_ ) const

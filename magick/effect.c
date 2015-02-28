@@ -50,6 +50,7 @@
 #include "magick/operator.h"
 #include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
+#include "magick/random-private.h"
 #include "magick/random.h"
 #include "magick/render.h"
 #include "magick/shear.h"

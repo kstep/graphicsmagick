@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003, 2005, 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2015 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -14,7 +14,7 @@
 #include "magick/bit_stream.h"
 
 
-static const unsigned int BitAndMasks[32] =
+static const unsigned int BitAndMasks[33] =
   {
     /*
       Same as (~(~0 << retrieve_bits))
@@ -25,7 +25,7 @@ static const unsigned int BitAndMasks[32] =
     0x00007fffU, 0x0000ffffU, 0x0001ffffU, 0x0003ffffU, 0x0007ffffU,
     0x000fffffU, 0x001fffffU, 0x003fffffU, 0x007fffffU, 0x00ffffffU,
     0x01ffffffU, 0x03ffffffU, 0x07ffffffU, 0x0fffffffU, 0x1fffffffU,
-    0x3fffffffU, 0x7fffffffU
+    0x3fffffffU, 0x7fffffffU, 0xffffffffU
   };
 
 /*

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -134,7 +134,6 @@ MagickExport void RegisterStaticModules(void)
 {
 #if !defined(BuildMagickModules)
   RegisterARTImage();
-  RegisterAVIImage();
   RegisterAVSImage();
   RegisterBMPImage();
   RegisterCALSImage();
@@ -292,7 +291,6 @@ MagickExport void UnregisterStaticModules(void)
 {
 #if !defined(BuildMagickModules)
   UnregisterARTImage();
-  UnregisterAVIImage();
   UnregisterAVSImage();
   UnregisterBMPImage();
   UnregisterCALSImage();

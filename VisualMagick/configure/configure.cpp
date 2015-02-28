@@ -366,6 +366,11 @@ void CConfigureApp::generate_a_dependency( ConfigureWorkspace *w,ConfigureProjec
           if (LocalFindNoCase(strName,"CORE_%sjpeg",0) == 0)
             continue;
         }
+      if(!visualStudio7)
+      {
+        if(LocalFindNoCase(strName,"CORE_%swebp",0) == 0)
+            continue;
+      }
       if (LocalFindNoCase(strName,s,0) == 0)
         {
           // NOTE: This is case sensitive - so be warned!
@@ -660,6 +665,18 @@ void CConfigureApp::replace_keywords(std::string fileName)
               line="#define QuantumDepth 32";
           }
         str += line + "\n";
+      }
+
+	/* WEBP is not compatible with Visual Studio 6, undef it.
+           Note: This fix will not impact newer Visual Studio versions. */
+      if(!visualStudio7)
+      {
+        str += "\n";
+        str += "#if defined(_MSC_VER) && (_MSC_VER<=1200)\n";
+        str += " #if defined(HasWEBP)\n";
+        str += "  #undef HasWEBP\n";
+        str += " #endif\n";
+        str += "#endif\n";
       }
 
       infile.close();
@@ -1026,8 +1043,11 @@ void CConfigureApp::process_library( const char *root,
   add_includes(includes_list, extra, levels-2);
   extra = "..\\ttf\\include";
   add_includes(includes_list, extra, levels-2);
-  extra = "..\\webp\\src";
-  add_includes(includes_list, extra, levels-2);
+  if(visualStudio7)
+  {
+    extra = "..\\webp\\src";
+    add_includes(includes_list, extra, levels-2);
+  }
   extra = "..\\libxml\\include";
   add_includes(includes_list, extra, levels-2);
   add_includes(includes_list, staging, levels-2);
@@ -1113,7 +1133,8 @@ void CConfigureApp::process_library( const char *root,
           workspace->write_project_dependency(project,"CORE_jp2");
           workspace->write_project_dependency(project,"CORE_png");
           workspace->write_project_dependency(project,"CORE_libxml");
-          workspace->write_project_dependency(project,"CORE_webp");
+          if(visualStudio7)
+            workspace->write_project_dependency(project,"CORE_webp");
           workspace->write_project_dependency(project,"CORE_tiff");
           workspace->write_project_dependency(project,"CORE_wmf");
           if (useX11Stubs)
@@ -1183,7 +1204,8 @@ void CConfigureApp::process_library( const char *root,
       // webp module depends on webp
       if (name.compare("webp") == 0)
         {
-          workspace->write_project_dependency(project,"CORE_webp");
+          if(visualStudio7)
+            workspace->write_project_dependency(project,"CORE_webp");
         }
 
       // Finish the project library dependencies
@@ -1310,7 +1332,7 @@ void CConfigureApp::process_module( const char *root,
       extra = "..\\zlib";
       add_includes(includes_list, extra, levels-2);
     }
-  if (name.compare("webp") == 0)
+  if (name.compare("webp") == 0 && visualStudio7)
     {
       extra = "..\\webp\\src";
       add_includes(includes_list, extra, levels-2);
@@ -2874,7 +2896,7 @@ BOOL CConfigureApp::InitInstance()
 
 #ifdef _DEBUG
   debuglog.open ("configure.log", ofstream::out | ofstream::app);
-  debuglog << "The log has been opened" << endl;;
+  debuglog << "The log has been opened" << endl;
 #endif
 
   m_pMainWnd = &wizard.m_Page1;
@@ -3571,7 +3593,8 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_RL_filters_.lib");
 	   lib_shared_list.push_back("CORE_RL_coders_.lib");
 	   lib_shared_list.push_back("CORE_RL_libxml_.lib");
-	   lib_shared_list.push_back("CORE_RL_webp_.lib");
+       if(visualStudio7)
+	     lib_shared_list.push_back("CORE_RL_webp_.lib");
 	   lib_shared_list.push_back("CORE_RL_wmf_.lib");
 	   lib_shared_list.push_back("CORE_RL_magick_.lib");
 	 }
@@ -3636,7 +3659,8 @@ ConfigureProject *CConfigureApp::write_project_exe(
 	   lib_shared_list.push_back("CORE_DB_coders_.lib");
 	   lib_shared_list.push_back("CORE_DB_libxml_.lib");
 	   lib_shared_list.push_back("CORE_DB_wmf_.lib");
-	   lib_shared_list.push_back("CORE_DB_webp_.lib");
+       if(visualStudio7)
+	     lib_shared_list.push_back("CORE_DB_webp_.lib");
 	   lib_shared_list.push_back("CORE_DB_magick_.lib");
 	 }
    }
@@ -4624,7 +4648,8 @@ void ConfigureVS7Workspace::write_end()
         {
           ConfigureProject *dependent_project = find_project((*it));
 #ifdef _DEBUG
-          debuglog  << "write_end:" << project->name.c_str() << ", " << dependent_project->name.c_str() << endl;
+          debuglog << "write_end:" << project->name.c_str() << ", " << 
+            ((dependent_project==NULL)?" *NONE* ":dependent_project->name.c_str()) << endl;
 #endif
           if (dependent_project)
             {

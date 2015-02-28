@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2009-2013 GraphicsMagick Group
+% Copyright (C) 2009-2014 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -13,6 +13,7 @@
 */
 
 #include "magick/studio.h"
+#include "magick/random-private.h"
 #include "magick/random.h"
 #include "magick/semaphore.h"
 #include "magick/tsd.h"
@@ -126,10 +127,11 @@ InitializeMagickRandomKernel(MagickRandomKernel *kernel)
       {
 	if (read(file,(void *) kernel,sizeof(*kernel)) == sizeof(*kernel))
 	  {
-	    (void) close(file);
-
 	    if ((kernel->z != 0U) || (kernel->w != 0U))
-	      return;
+              {
+                (void) close(file);
+                return;
+              }
 	  }
 	(void) close(file);
       }

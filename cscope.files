@@ -3,7 +3,6 @@ TclMagick/generic/TclMagick.h
 TclMagick/generic/TclMagickAppInit.c
 TclMagick/generic/TkMagick.c
 coders/art.c
-coders/avi.c
 coders/avs.c
 coders/bmp.c
 coders/cals.c
@@ -33,6 +32,7 @@ coders/icon.c
 coders/identity.c
 coders/info.c
 coders/jbig.c
+coders/jnx.c
 coders/jp2.c
 coders/jpeg.c
 coders/label.c
@@ -93,6 +93,7 @@ coders/vicar.c
 coders/vid.c
 coders/viff.c
 coders/wbmp.c
+coders/webp.c
 coders/wmf.c
 coders/wpg.c
 coders/x.c
@@ -227,6 +228,7 @@ magick/quantize.c
 magick/quantize.h
 magick/random.c
 magick/random.h
+magick/random-private.h
 magick/registry.c
 magick/registry.h
 magick/render.c
@@ -282,10 +284,11 @@ wand/drawing_wand.c
 wand/drawing_wand.h
 wand/drawtest.c
 wand/magick_compat.c
-wand/magick_compat.h
 wand/magick_wand.c
 wand/magick_wand.h
 wand/pixel_wand.c
 wand/pixel_wand.h
 wand/wand_api.h
+wand/wand_private.h
+wand/wand_symbols.h
 wand/wandtest.c

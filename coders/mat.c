@@ -372,6 +372,7 @@ int status;
   }
 DblBreak:
  
+  inflateEnd(&zip_info);			/* Release all caches used by zip. */
   (void)fclose(mat_file);
   MagickFreeMemory(cache_block);
   MagickFreeMemory(decompress_block);
@@ -522,13 +523,18 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     if(MATLAB_HDR.DataType == miCOMPRESSED)
     {
       if(clone_info==NULL)
-        if((clone_info=CloneImageInfo(image_info)) == NULL) continue;
+        if((clone_info=CloneImageInfo(image_info)) == NULL)
+		{
+		  if(logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+                                   "CloneImageInfo failed");
+		  continue;
+		}
       image2 = DecompressBlock(image,MATLAB_HDR.ObjectSize,clone_info,exception);
       if(image2==NULL) 
       {
-        if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+        if(logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
                                    "Decompression failed");
-	continue;
+        continue;
       }
       MATLAB_HDR.DataType = ReadBlobXXXLong(image2); /* replace compressed object type. */
     }
@@ -700,7 +706,7 @@ NoMemory: ThrowReaderException(ResourceLimitError, MemoryAllocationFailed,
     */
     if (image_info->ping)
     {
-      unsigned long temp = image->columns;
+      unsigned long temp = image->columns;  /* The true image is rotater 90 degs. Do rotation without data. */
       image->columns = image->rows;
       image->rows = temp;
       goto done_reading; /* !!!!!! BAD  !!!! */

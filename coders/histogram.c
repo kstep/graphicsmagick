@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -260,7 +260,10 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (maximum < blue[x])
       maximum=blue[x];
   }
-  scale=(double) histogram_image->rows/maximum;
+  if (maximum > 0.0)
+    scale=(double) histogram_image->rows/maximum;
+  else
+    scale=0.0;
   /*
     Initialize histogram image.
   */

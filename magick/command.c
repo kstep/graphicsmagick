@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2840,8 +2840,8 @@ static void CompareUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-limit type value    Disk, Files, Map, Memory, or Pixels resource limit",
       "-log format          format of debugging information",
-      "-maximum-error       maximum total difference before returning error",
       "-matte               store matte channel if the image has one",
+      "-maximum-error       maximum total difference before returning error",
       "-metric              comparison metric (MAE, MSE, PAE, PSNR, RMSE)",
       "-monitor             show progress indication",
       "-sampling-factor HxV[,...]",
@@ -16815,12 +16815,23 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
 #endif /* defined((MSWINDOWS) || defined(HAVE_PTHREAD) */
   PrintFeature("Native Thread Safe", supported);
 
-  /* Large File Support */
+  /*
+    Large File Support
+
+    For POSIX, the 'stat' structure has 'st_size' member which is of
+    type 'off_t'.  However, Windows provides a large family of _stat*
+    structures with varying proportions and we might be using 'struct
+    stat' or 'struct _stati64' which use different hard-coded types
+    for the 'st_size' member.  While large files might be otherwise
+    supported, we consider the maximum size reportable by 'stat' to be
+    the limiting factor.
+  */
   {
     MagickStatStruct_t
       attributes;
 
     supported=(sizeof(attributes.st_size) > 4);
+    (void) attributes;
   }
   PrintFeature("Large Files (> 32 bit)", supported);
 
@@ -17257,7 +17268,7 @@ static MagickBool GMCommandSingle(int argc,char **argv)
         /*
           Set command name to alternate name.
         */
-        argv[0]=command;
+        argv[0]=(char *) SetClientName(command);
       }
     else
       {

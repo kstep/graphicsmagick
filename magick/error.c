@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -49,7 +49,7 @@ extern "C" {
 
 static void
   DefaultErrorHandler(const ExceptionType,const char *,const char *),
-  DefaultFatalErrorHandler(const ExceptionType,const char *,const char *),
+  DefaultFatalErrorHandler(const ExceptionType,const char *,const char *) MAGICK_FUNC_NORETURN,
   DefaultWarningHandler(const ExceptionType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -269,15 +269,22 @@ static void DefaultErrorHandler(const ExceptionType severity,const char *reason,
 static void DefaultFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
-  if (reason == (char *) NULL)
-    return;
-  (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
-  if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",description);
-  if ((severity != OptionError) && errno)
-    (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
-  (void) fprintf(stderr,".\n");
-  DestroyMagick();
+  if (reason != (char *) NULL)
+    {
+      (void) fprintf(stderr,"%.1024s: %.1024s",GetClientName(),reason);
+      if (description != (char *) NULL)
+        (void) fprintf(stderr," (%.1024s)",description);
+      if ((severity != OptionError) && errno)
+        (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
+      (void) fprintf(stderr,".\n");
+    }
+  /*
+    Release persistent resources
+  */
+  PanicDestroyMagick();
+  /*
+    Program quits
+  */
   Exit(severity);
 }
 
@@ -583,7 +590,7 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickFatalError() calls the fatal error handler methods with an error
-%  reason.
+%  reason.  The fatal error handler is not expected to return!
 %
 %  The format of the MagickError method is:
 %
@@ -609,6 +616,7 @@ MagickExport void _MagickFatalError(const ExceptionType error,const char *reason
     (*fatal_error_handler)(error,GetLocaleExceptionMessage(error,reason),
       GetLocaleExceptionMessage(error,description));
   errno=0;
+  abort();
 }
 #endif
 #if !defined(PREFIX_MAGICK_SYMBOLS)
@@ -620,6 +628,7 @@ MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
     (*fatal_error_handler)(error,GetLocaleExceptionMessage(error,reason),
       GetLocaleExceptionMessage(error,description));
   errno=0;
+  abort();
 }
 #endif
 

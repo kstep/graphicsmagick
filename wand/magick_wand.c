@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2014 GraphicsMagick Group */
+/* Copyright (C) 2003-2015 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -9292,8 +9292,9 @@ MagickSetResolutionUnits(MagickWand *wand,const ResolutionType units)
 %
 %  A description of each parameter follows:
 %
-%    o type: The type of resource: AreaResource, MemoryResource, MapResource,
-%      DiskResource, FileResource.
+%    o type: The type of resource: DiskResource, FileResource, MapResource,
+%            MemoryResource, PixelsResource, ThreadsResource, WidthResource,
+%            HeightResource.
 %
 %    o The maximum limit for the resource.
 %

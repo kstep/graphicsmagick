@@ -599,6 +599,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->columns = x+1;
       image->rows = y+1;
 
+      if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
       (void) SeekBlob(image,NextImagePos,SEEK_SET);
       NextImagePos = 0;
 
@@ -875,6 +878,10 @@ FINISH:
       ceil(((page.width*image->x_resolution)/dx_resolution)-0.5);
     image->rows=(unsigned long)
       ceil(((page.height*image->y_resolution)/dy_resolution)-0.5);
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
     texture=(Image *) NULL;
     if (image_info->texture != (char *) NULL)
       {
@@ -891,7 +898,7 @@ FINISH:
     /*
       Annotate the text image.
     */
-    (void) SetImage(image,OpaqueOpacity);
+    (void) SetImageEx(image,OpaqueOpacity,exception);
     draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
     draw_info->fill=image_info->pen;
     (void) CloneString(&draw_info->text,image_info->filename);

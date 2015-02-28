@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2014
+// Copyright Bob Friesenhahn, 1999 - 2015
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -129,6 +129,9 @@ namespace MagickLib
 #          pragma comment(lib, "CORE_DB_ttf_.lib")
 #        endif
 #        pragma comment(lib, "CORE_DB_wand_.lib")
+#        if defined(HasWEBP)
+#          pragma comment(lib, "CORE_DB_webp_.lib")
+#        endif
 #        if defined(HasWMFlite)
 #          pragma comment(lib, "CORE_DB_wmf_.lib")
 #        endif
@@ -171,6 +174,9 @@ namespace MagickLib
 #          pragma comment(lib, "CORE_RL_ttf_.lib")
 #        endif
 #        pragma comment(lib, "CORE_RL_wand_.lib")
+#        if defined(HasWEBP)
+#          pragma comment(lib, "CORE_RL_webp_.lib")
+#        endif
 #        if defined(HasWMFlite)
 #          pragma comment(lib, "CORE_RL_wmf_.lib")
 #        endif
@@ -725,6 +731,8 @@ namespace Magick
   using MagickLib::MemoryResource;
   using MagickLib::PixelsResource;
   using MagickLib::ThreadsResource;
+  using MagickLib::WidthResource;
+  using MagickLib::HeightResource;
 
   // Virtual pixel methods
   using MagickLib::VirtualPixelMethod;
@@ -905,6 +913,7 @@ namespace Magick
   using MagickLib::ExceptionInfo;
   using MagickLib::ExecuteModuleProcess;
   using MagickLib::ExportImagePixelArea;
+  using MagickLib::ExtentImage;
   using MagickLib::FileOpenError;
   using MagickLib::FileOpenFatalError;
   using MagickLib::FileOpenWarning;
@@ -930,6 +939,7 @@ namespace Magick
   using MagickLib::GetImageChannelDepth;
   using MagickLib::GetImageClipMask;
   using MagickLib::GetImageDepth;
+  using MagickLib::GetImageGeometry;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
   using MagickLib::GetImageProfile;
@@ -1028,6 +1038,7 @@ namespace Magick
   using MagickLib::RegistryType;
   using MagickLib::RegistryWarning;
   using MagickLib::RemoveDefinitions;
+  using MagickLib::ResizeImage;
   using MagickLib::ResourceLimitError;
   using MagickLib::ResourceLimitFatalError;
   using MagickLib::ResourceLimitWarning;

@@ -42,6 +42,7 @@
 #include "magick/colormap.h"
 #include "magick/composite.h"
 #include "magick/magick.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*
@@ -96,6 +97,8 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=QueryColorDatabase((char *) image_info->filename,
     &image->background_color,exception);
@@ -117,10 +120,9 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image pixels to the value of image->background_color
   */
-  status=SetImage(image,image->background_color.opacity);
+  status=SetImageEx(image,image->background_color.opacity,exception);
   if (status == MagickFail)
     {
-      CopyException(exception,&image->exception);
       DestroyImage(image);
       image=(Image *) NULL;
     }

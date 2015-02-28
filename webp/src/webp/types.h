@@ -30,14 +30,8 @@ typedef signed   short int16_t;
 typedef unsigned short uint16_t;
 typedef signed   int int32_t;
 typedef unsigned int uint32_t;
-#if defined(_MSC_VER) && (_MSC_VER<=1200)
-  typedef unsigned __int64 uint64_t;
-  typedef __int64 int64_t;
-#else
-  typedef unsigned long long int uint64_t;
-  typedef long long int int64_t;
-#endif
-
+typedef unsigned long long int uint64_t;
+typedef long long int int64_t;
 #define WEBP_INLINE __forceinline
 #endif  /* _MSC_VER */
 

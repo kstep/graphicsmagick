@@ -52,7 +52,7 @@ GraphicsMagick Extensions To X11 Geometry Specifications
 GraphicsMagick has added a number of qualifiers to the standard
 geometry string for use when resizing images. The form of an extended
 geometry string is
-"<width>x<height>{+-}<xoffset>{+-}<yoffset>{%}{!}{<}{>}". Extended
+"<width>x<height>{+-}<xoffset>{+-}<yoffset>{%}{@}{!}{^}{<}{>}". Extended
 geometry strings should only be used when resizing an image. Using an
 extended geometry string for other applications may cause the API call
 to fail. The available qualifiers are shown in the following table:
@@ -66,10 +66,9 @@ to fail. The available qualifiers are shown in the following table:
    !          Resize to width and height exactly, loosing original aspect ratio.
    <          Resize only if the image is smaller than the geometry specification.
    >          Resize only if the image is greater than the geometry specification.
+   @          Resize such that width and height are a maximum area in total pixels.
+   ^          Dimensions are treated as minimum rather than maximum values.
    =========  ======================================================
-
-Note that the area specification syntax ('@') is not yet supported by
-Magick++ Geometry.
 
 Postscript Page Size Extension To Geometry Specifications
 ---------------------------------------------------------
@@ -210,6 +209,14 @@ The following is the definition of the Magick::Geometry class::
     // Resize if image is less than size (<)
     void          less ( bool less_ );
     bool          less ( void ) const;
+
+    // Resize image to fit total pixel area specified by dimensions (@).
+    void          limitPixels ( bool limitPixels_ );
+    bool          limitPixels ( void ) const;
+
+    // Dimensions are treated as minimum rather than maximum values (^)
+    void          fillArea ( bool fillArea_ );
+    bool          fillArea ( void ) const;
     
     // Does object contain valid geometry?
     void          isValid ( bool isValid_ );
@@ -229,5 +236,5 @@ The following is the definition of the Magick::Geometry class::
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| Bob Friesenhahn 1999 - 2014
+Copyright |copy| Bob Friesenhahn 1999 - 2015
 

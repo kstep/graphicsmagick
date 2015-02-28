@@ -1019,11 +1019,18 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   else
     {
+      /*
+        Clone image while retaining list pointers and referencing
+        original blob (with reference count).  New image does not
+        supplant existing image in list.  Note that now two images may
+        be referring to the same next and previous images in the list
+        so they are in parallel and must be treated accordingly.
+
+        This path is not used within GraphicsMagick.
+      */
       clone_image->blob=ReferenceBlob(image->blob);
-      if (image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
+      clone_image->next=image->next;
+      clone_image->previous=image->previous;
     }
   if ((columns == 0) && (rows == 0))
     {
@@ -1993,20 +2000,21 @@ ResetImagePage(Image *image,const char *page)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e                                                           %
+%   S e t I m a g e E x                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImage() sets the red, green, and blue components of each pixel to
+%  SetImageEx() sets the red, green, and blue components of each pixel to
 %  the image background color and the opacity component to the specified
 %  level of transparency.  The background color is defined by the
 %  background_color member of the image.
 %
-%  The format of the SetImage method is:
+%  The format of the SetImageEx method is:
 %
-%      void SetImage(Image *image,const Quantum opacity)
+%      void SetImageEx(Image *image,const Quantum opacity,
+%                      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2014,6 +2022,7 @@ ResetImagePage(Image *image,const char *page)
 %
 %    o opacity: Set each pixel to this level of transparency.
 %
+%    o exception: Report any exception here.
 %
 */
 #define SetImageColorText "[%s] Set color..."
@@ -2057,7 +2066,8 @@ SetImageColorCallBack(void *mutable_data,         /* User provided mutable data 
 
   return MagickPass;
 }
-MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
+MagickExport MagickPassFail SetImageEx(Image *image,const Quantum opacity,
+                                       ExceptionInfo *exception)
 {
   PixelPacket
     background_color;
@@ -2082,11 +2092,45 @@ MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
                                 SetImageColorText,
                                 NULL,&background_color,0,0,
                                 image->columns,image->rows,
-                                image,&image->exception);
+                                image,exception);
 
   image->is_grayscale=IsGray(image->background_color);
   image->is_monochrome=IsMonochrome(image->background_color);
   return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImage() sets the red, green, and blue components of each pixel to
+%  the image background color and the opacity component to the specified
+%  level of transparency.  The background color is defined by the
+%  background_color member of the image. Any exception is reported to
+%  the image.
+%
+%  The format of the SetImage method is:
+%
+%      void SetImage(Image *image,const Quantum opacity)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o opacity: Set each pixel to this level of transparency.
+%
+%
+*/
+MagickExport MagickPassFail SetImage(Image *image,const Quantum opacity)
+{
+  return SetImageEx(image,opacity,&image->exception);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2366,16 +2410,6 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %
 %
 */
-
-static inline unsigned int
-IsFrame(const char *point)
-{
-  char
-    *p;
-
-  (void) strtol(point,&p,10);
-  return(p != point);
-}
 
 static MagickPassFail
 ParseSubImageSpecification(char *filename,

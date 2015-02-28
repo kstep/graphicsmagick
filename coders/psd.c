@@ -630,7 +630,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
-  (void) SetImage(image,OpaqueOpacity);
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+  if (SetImageEx(image,OpaqueOpacity,exception) == MagickFail)
+    {
+      CloseBlob(image);
+      DestroyImageList(image);
+      return MagickFail;
+    }
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
     {
@@ -701,9 +708,21 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read PSD raster colormap.
           */
-          if (!AllocateImageColormap(image,(const unsigned long) (length/3UL)))
+          unsigned long
+            colors;
+
+          colors=(const unsigned long) (length/3UL);
+          if (colors > MaxColormapSize)
             {
-              if(logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "  too many colors in colormap (%lu)",
+                                    colors);
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,
+                                   image);
+            }
+          if (!AllocateImageColormap(image,colors))
+            {
+              if (logging)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                         "  allocation of ImageColorMap failed");
@@ -759,7 +778,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
         }
       (void) SetImageProfile(image,"IPTC",data,length);
-      MagickFreeMemory(data)
+      MagickFreeMemory(data);
     }
 
   /*
@@ -795,527 +814,543 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       /* offset = TellBlob(image); */
       size=ReadBlobMSBLong(image);
-      number_layers=(short) ReadBlobMSBShort(image);
-      if (logging)
+      if (size == 0)
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "  image contains %ld layers",
-                                number_layers);
+          for (j=0; j < (long) (length-4); j++)
+            (void) ReadBlobByte(image);
         }
-      if (number_layers < 0)
+      else
         {
-          /*
-            Weird hack in PSD format to ignore first alpha channel.
-          */
-          number_layers=AbsoluteValue(number_layers);
-          if(logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "  negative layer count corrected for");
-            }
-        }
-      layer_info=MagickAllocateMemory(LayerInfo *,number_layers*sizeof(LayerInfo));
-      if (layer_info == (LayerInfo *) NULL)
-        {
+          number_layers=(short) ReadBlobMSBShort(image);
           if (logging)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "  allocation of LayerInfo failed");
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+                                    "  image contains %ld layers",
+                                    number_layers);
             }
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-        }
-      (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
-      for (i=0; i < number_layers; i++)
-        {
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "  reading layer #%ld", i+1);
-            }
-          layer_info[i].page.y=(long) ReadBlobMSBLong(image);
-          layer_info[i].page.x=(long) ReadBlobMSBLong(image);
-          layer_info[i].page.height=(ReadBlobMSBLong(image)-layer_info[i].page.y);
-          layer_info[i].page.width=(ReadBlobMSBLong(image)-layer_info[i].page.x);
-          layer_info[i].channels=ReadBlobMSBShort(image);
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "    offset(%ld,%ld), size(%ld,%ld), channels=%d", 
-                                    layer_info[i].page.x,
-                                    layer_info[i].page.y, 
-                                    layer_info[i].page.height,
-                                    layer_info[i].page.width,
-                                    layer_info[i].channels);
-            }
-          for (j=0; j < layer_info[i].channels; j++)
-            {
-              layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
-              layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
-
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "    channel[%ld]: type=%d, size=%ld", 
-                                        j, layer_info[i].channel_info[j].type, 
-                                        (long) layer_info[i].channel_info[j].size);
-                }
-            }
-          count=ReadBlob(image,4,(char *) type);
-          if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-            {
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "  layer type was %.4s instead of 8BIM", type);
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-                }
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-            }
-          (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
-          layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
-          layer_info[i].clipping=ReadBlobByte(image);
-          layer_info[i].flags=ReadBlobByte(image);
-          layer_info[i].visible=!(layer_info[i].flags & 0x02);
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "    blend=%.4s, opacity=%d, clipping=%s, flags=%d, visible=%s", 
-                                    layer_info[i].blendkey, layer_info[i].opacity,
-                                    layer_info[i].clipping ? "true" : "false",
-                                    layer_info[i].flags,
-                                    layer_info[i].visible ? "true" : "false");
-            }
-
-          (void) ReadBlobByte(image);  /* filler */
-          combinedlength = 0;
-          size=ReadBlobMSBLong(image);
-          if (size != 0)
-            {
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "    layer contains additional info");
-                }
-              length=ReadBlobMSBLong(image);
-              if (length != 0)
-                {
-                  /*
-                    Layer mask info.
-                  */
-                  layer_info[i].mask.y=(long) ReadBlobMSBLong(image);
-                  layer_info[i].mask.x=(long) ReadBlobMSBLong(image);
-                  layer_info[i].mask.height=
-                    (ReadBlobMSBLong(image)-layer_info[i].mask.y);
-                  layer_info[i].mask.width=
-                    (ReadBlobMSBLong(image)-layer_info[i].mask.x);
-
-                  if (logging)
-                    {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                            "      layer mask: offset(%ld,%ld), size(%ld,%ld), length=%ld",
-                                            layer_info[i].mask.x, layer_info[i].mask.y,
-                                            layer_info[i].mask.width, layer_info[i].mask.height,
-                                            (long) length-16);
-                    }
-                  /*
-                    Skip over the rest of the layer mask information.
-                  */
-                  for (j=0; j < (long) (length-16); j++)
-                    (void) ReadBlobByte(image);
-                }
-              combinedlength += length + 4;  /* +4 for length */
-
-              length=ReadBlobMSBLong(image);
-              if (length != 0)
-                {
-                  /*
-                    Layer blending ranges info.
-                  */
-                  if (logging)
-                    {
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                            "      layer blending ranges: length=%ld",
-                                            (long) length);
-                    }
-
-                  /*
-                    we read it, but don't use it...
-                  */
-                  for (j=0; j < (long) (length); j+=8) {
-                    size_t blend_source = ReadBlobMSBLong(image);
-                    size_t blend_dest = ReadBlobMSBLong(image);
-                    if (logging)
-                      {
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                              "        source(%x), dest(%x)",
-                                              (unsigned int) blend_source,
-                                              (unsigned int) blend_dest);
-                      }
-                  }
-                }
-              combinedlength += length + 4;  /* +4 for length */
-
-			  /* layer name */
-              length=ReadBlobByte(image);
-			  for (j=0; j < (long) (length); j++)
-				layer_info[i].name[j] = ReadBlobByte(image);
-			  layer_info[i].name[j] = 0;  /* zero term */
-
-			  if (logging)
-				{
-				  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-										"      layer name: %s",
-										layer_info[i].name);
-				}
-
-              combinedlength += length + 1;
-
-              /*
-                layer name, including length byte, is padded to
-                multiple of 4 bytes skip over padding
-              */
-              /* padBytes = ((length + 1 + 3) & ~3) - (length + 1); */
-              /* for (j=0; j < padBytes; j++) */
-              /*   ReadBlobByte(image); */
-              
-#if 0  /* still in development */
-              /*
-                Adjustment layers and other stuff...
-              */
-              {
-                char  alsig[4],
-                  alkey[4];
-
-                count=ReadBlob(image,4,(char *) alsig);
-                if ((count == 0) || (LocaleNCompare(alsig,"8BIM",4) != 0))
-                  {
-                    if (logging)
-                      {
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                              "  adjustment layer type was %.4s instead of 8BIM",
-                                              alsig);
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-                      }
-                    ThrowReaderException(CorruptImageError,NotAPSDImageFile,image);
-                  }
-                (void) ReadBlob(image,4,(char *) alkey);
-                length=ReadBlobMSBLong(image);
-                if (logging)
-                  {
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                          "      adjustment layer key: %.4s, data length=%ld",
-                                          alkey, length);
-                  }
-
-                if ( length )
-                  {
-                    for (j=0; j < (long) (length); j++)
-                      (void) ReadBlobByte(image);
-                  }
-
-              }
-              combinedlength += 12 + length;  /* sig, key, length + the actual length*/
-#endif
-
-              /*
-                Skip the rest of the variable data until we support it.
-              */
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "      unsupported data: length=%"
-                                        MAGICK_SIZE_T_F "u",
-                                        (MAGICK_SIZE_T) size-combinedlength);
-                }
-              for (j=0; j < (long) (size-combinedlength); j++)
-                (void) ReadBlobByte(image);
-            }
-          /*
-            Allocate layered image.
-          */
-          layer_info[i].image=CloneImage(image,layer_info[i].page.width,
-                                         layer_info[i].page.height,
-                                         True,&image->exception);
-          if (layer_info[i].image->blob)
-            {
-              DestroyBlob(layer_info[i].image);
-              layer_info[i].image->blob=0;
-            }
-          layer_info[i].image->blob=ReferenceBlob(image->blob);
-          if (layer_info[i].image == (Image *) NULL)
-            {
-              for (j=0; j < i; j++)
-                DestroyImage(layer_info[j].image);
-
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "  allocation of image for layer %ld failed", i);
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-                }
-
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                   image);
-            }
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "    setting up new layer image");
-            }
-          (void) SetImage(layer_info[i].image,OpaqueOpacity);
-          layer_info[i].image->compose=
-            PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
-          if (layer_info[i].visible == False)
-            layer_info[i].image->compose=NoCompositeOp;
-          if (psd_info.mode == CMYKMode)
-            layer_info[i].image->colorspace=CMYKColorspace;
-          for (j=0; j < layer_info[i].channels; j++)
-            if (layer_info[i].channel_info[j].type == -1)
-              layer_info[i].image->matte=True;
-
-          /* set up some hidden attributes for folks that need them */
-          (void) sprintf( s, "%ld", layer_info[i].page.x );
-          (void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
-          (void) sprintf( s, "%ld", layer_info[i].page.y );
-          (void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
-          (void) sprintf( s, "%d", layer_info[i].opacity );
-          (void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
-          (void) SetImageAttribute(layer_info[i].image,"[layer-name]",
-                                   (char *) layer_info[i].name);
-        }
-
-      if (logging)
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "  reading image data for layers");
-        }
-      /*
-        Read pixel data for each layer.
-      */
-      for (i=0; i < number_layers; i++)
-        {
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "  reading data for layer %ld", i);
-            }
-          for (j=0; j < layer_info[i].channels; j++)
-            {
-              if (logging)
-                {
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "    reading data for channel %ld", j);
-                }
-#if 0
-              if (layer_info[i].channel_info[j].size <= (2*layer_info[i].image->rows))
-                {
-                  long
-                    k;
-
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "      layer data is empty");
-
-                  /*
-                    A layer without data.
-                  */
-                  for (k=0; k < (long) layer_info[i].channel_info[j].size; k++)
-                    (void) ReadBlobByte(layer_info[i].image);
-                  continue;
-                }
-#endif
-              compression=ReadBlobMSBShort(layer_info[i].image);
-              if(layer_info[i].page.height > 0 && layer_info[i].page.width > 0){
-              if (compression == 1)
-                {
-                  /*
-                    Read RLE compressed data.
-                  */
-                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "      layer data is RLE compressed");
-
-                  for (y=0; y < (long) layer_info[i].image->rows; y++)
-                    (void) ReadBlobMSBShort(layer_info[i].image);
-                  (void) DecodeImage(layer_info[i].image,
-                                     layer_info[i].channel_info[j].type);
-                  continue;
-                }
-
-              /*
-                Read uncompressed pixel data as separate planes.
-              */
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "      layer data is uncompressed");
-              packet_size=1;
-              if (layer_info[i].image->storage_class == PseudoClass)
-                {
-                  if (layer_info[i].image->colors > 256)
-                    packet_size++;
-                }
-              else
-                if (layer_info[i].image->depth > 8)
-                  packet_size++;
-              for (y=0; y < (long) layer_info[i].image->rows; y++)
-                {
-                  q=GetImagePixels(layer_info[i].image,0,y,
-                                   layer_info[i].image->columns,1);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  indexes=AccessMutableIndexes(layer_info[i].image);
-                  for (x=0; x < (long) layer_info[i].image->columns; x++)
-                    {
-                      if (packet_size == 1)
-                        pixel=ScaleCharToQuantum(ReadBlobByte(layer_info[i].image));
-                      else
-                        pixel=ScaleQuantumToShort(ReadBlobMSBShort(layer_info[i].image));
-                      switch (layer_info[i].channel_info[j].type)
-                        {
-                        case -1:  /* transparency mask */
-                          {
-                            if (image->colorspace == CMYKColorspace)
-                              indexes[x]=(Quantum) (MaxRGB-pixel);
-                            else
-                              q->opacity=(Quantum) (MaxRGB-pixel);
-                            break;
-                          }
-                        case 0:  /* first component (Red, Cyan, Gray or Index) */
-                          {
-                            q->red=(Quantum) pixel;
-                            if (layer_info[i].image->storage_class == PseudoClass)
-                              {
-                                indexes[x]=(IndexPacket) ScaleQuantumToChar(MaxRGB - pixel);
-                                *q=layer_info[i].image->colormap[indexes[x]];
-                              }
-                            break;
-                          }
-                        case 1:  /* second component (Green, Magenta, or opacity) */
-                          {
-                            if (layer_info[i].image->storage_class == PseudoClass)
-                              q->opacity=(Quantum) pixel;
-                            else
-                              q->green=(Quantum) pixel;
-                            break;
-                          }
-                        case 2:  /* third component (Blue or Yellow) */
-                          {
-                            q->blue=(Quantum) pixel;
-                            break;
-                          }
-                        case 3:  /* fourth component (Opacity or Black) */
-                          {
-                            q->opacity=(Quantum) pixel;
-                            break;
-                          }
-                        case 4:  /* fifth component (opacity) */
-                          {
-                            if (image->colorspace == CMYKColorspace)
-                              indexes[x]=(Quantum) (MaxRGB-pixel);
-                            break;
-                          }
-                        default:
-                          break;
-                        }
-                      q++;
-                    }
-                  if (!SyncImagePixels(layer_info[i].image))
-                    break;
-                }
-            }
-          if (layer_info[i].opacity != OpaqueOpacity)
+          if (number_layers < 0)
             {
               /*
-                Correct for opacity level.
+                Weird hack in PSD format to ignore first alpha channel.
               */
-              for (y=0; y < (long) layer_info[i].image->rows; y++)
-                {
-                  q=GetImagePixels(layer_info[i].image,0,y,
-                                   layer_info[i].image->columns,1);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  indexes=AccessMutableIndexes(layer_info[i].image);
-                  for (x=0; x < (long) layer_info[i].image->columns; x++)
-                    {
-                      q->opacity=(Quantum) ((unsigned long)
-                                            (q->opacity*layer_info[i].opacity)/MaxRGB);
-                      if (layer_info[i].image->colorspace == CMYKColorspace)
-                        indexes[x]=(IndexPacket) ((unsigned long)
-                                                  (indexes[x]*layer_info[i].opacity)/MaxRGB);
-                      q++;
-                    }
-                  if (!SyncImagePixels(layer_info[i].image))
-                    break;
-                }
-            }
-          if (layer_info[i].image->colorspace == CMYKColorspace)
-            {
-              /*
-                Correct CMYK levels.
-              */
+              number_layers=AbsoluteValue(number_layers);
               if(logging)
                 {
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                        "    correcting CMYK values");
+                                        "  negative layer count corrected for");
                 }
-              for (y=0; y < (long) layer_info[i].image->rows; y++)
+            }
+          if (number_layers == 0)
+            {
+              for (j=0; j < (long) (size-6); j++)
+                (void) ReadBlobByte(image);
+            }
+          else
+            {
+              layer_info=MagickAllocateMemory(LayerInfo *,number_layers*sizeof(LayerInfo));
+              if (layer_info == (LayerInfo *) NULL)
                 {
-                  q=GetImagePixels(layer_info[i].image,0,y,
-                                   layer_info[i].image->columns,1);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  for (x=0; x < (long) layer_info[i].image->columns; x++)
+                  if (logging)
                     {
-                      q->red=(Quantum) (MaxRGB-q->red);
-                      q->green=(Quantum) (MaxRGB-q->green);
-                      q->blue=(Quantum) (MaxRGB-q->blue);
-                      q->opacity=(Quantum) (MaxRGB-q->opacity);
-                      q++;
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "  allocation of LayerInfo failed");
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                     }
-                  if (!SyncImagePixels(layer_info[i].image))
-                    break;
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                }
+              (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
+              for (i=0; i < number_layers; i++)
+                {
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "  reading layer #%ld", i+1);
+                    }
+                  layer_info[i].page.y=(long) ReadBlobMSBLong(image);
+                  layer_info[i].page.x=(long) ReadBlobMSBLong(image);
+                  layer_info[i].page.height=(ReadBlobMSBLong(image)-layer_info[i].page.y);
+                  layer_info[i].page.width=(ReadBlobMSBLong(image)-layer_info[i].page.x);
+                  layer_info[i].channels=ReadBlobMSBShort(image);
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "    offset(%ld,%ld), size(%ld,%ld), channels=%d", 
+                                            layer_info[i].page.x,
+                                            layer_info[i].page.y, 
+                                            layer_info[i].page.height,
+                                            layer_info[i].page.width,
+                                            layer_info[i].channels);
+                    }
+                  for (j=0; j < layer_info[i].channels; j++)
+                    {
+                      layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
+                      layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
+
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "    channel[%ld]: type=%d, size=%ld", 
+                                                j, layer_info[i].channel_info[j].type, 
+                                                (long) layer_info[i].channel_info[j].size);
+                        }
+                    }
+                  count=ReadBlob(image,4,(char *) type);
+                  if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
+                    {
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "  layer type was %.4s instead of 8BIM", type);
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+                        }
+                      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+                    }
+                  (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
+                  layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+                  layer_info[i].clipping=ReadBlobByte(image);
+                  layer_info[i].flags=ReadBlobByte(image);
+                  layer_info[i].visible=!(layer_info[i].flags & 0x02);
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "    blend=%.4s, opacity=%d, clipping=%s, flags=%d, visible=%s", 
+                                            layer_info[i].blendkey, layer_info[i].opacity,
+                                            layer_info[i].clipping ? "true" : "false",
+                                            layer_info[i].flags,
+                                            layer_info[i].visible ? "true" : "false");
+                    }
+
+                  (void) ReadBlobByte(image);  /* filler */
+                  combinedlength = 0;
+                  size=ReadBlobMSBLong(image);
+                  if (size != 0)
+                    {
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "    layer contains additional info");
+                        }
+                      length=ReadBlobMSBLong(image);
+                      if (length != 0)
+                        {
+                          /*
+                            Layer mask info.
+                          */
+                          layer_info[i].mask.y=(long) ReadBlobMSBLong(image);
+                          layer_info[i].mask.x=(long) ReadBlobMSBLong(image);
+                          layer_info[i].mask.height=
+                            (ReadBlobMSBLong(image)-layer_info[i].mask.y);
+                          layer_info[i].mask.width=
+                            (ReadBlobMSBLong(image)-layer_info[i].mask.x);
+
+                          if (logging)
+                            {
+                              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                    "      layer mask: offset(%ld,%ld), size(%ld,%ld), length=%ld",
+                                                    layer_info[i].mask.x, layer_info[i].mask.y,
+                                                    layer_info[i].mask.width, layer_info[i].mask.height,
+                                                    (long) length-16);
+                            }
+                          /*
+                            Skip over the rest of the layer mask information.
+                          */
+                          for (j=0; j < (long) (length-16); j++)
+                            (void) ReadBlobByte(image);
+                        }
+                      combinedlength += length + 4;  /* +4 for length */
+
+                      length=ReadBlobMSBLong(image);
+                      if (length != 0)
+                        {
+                          /*
+                            Layer blending ranges info.
+                          */
+                          if (logging)
+                            {
+                              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                    "      layer blending ranges: length=%ld",
+                                                    (long) length);
+                            }
+
+                          /*
+                            we read it, but don't use it...
+                          */
+                          for (j=0; j < (long) (length); j+=8) {
+                            size_t blend_source = ReadBlobMSBLong(image);
+                            size_t blend_dest = ReadBlobMSBLong(image);
+                            if (logging)
+                              {
+                                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                      "        source(%x), dest(%x)",
+                                                      (unsigned int) blend_source,
+                                                      (unsigned int) blend_dest);
+                              }
+                          }
+                        }
+                      combinedlength += length + 4;  /* +4 for length */
+
+                      /* layer name */
+                      length=ReadBlobByte(image);
+                      for (j=0; j < (long) (length); j++)
+                        layer_info[i].name[j] = ReadBlobByte(image);
+                      layer_info[i].name[j] = 0;  /* zero term */
+
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "      layer name: %s",
+                                                layer_info[i].name);
+                        }
+
+                      combinedlength += length + 1;
+
+                      /*
+                        layer name, including length byte, is padded to
+                        multiple of 4 bytes skip over padding
+                      */
+                      /* padBytes = ((length + 1 + 3) & ~3) - (length + 1); */
+                      /* for (j=0; j < padBytes; j++) */
+                      /*   ReadBlobByte(image); */
+              
+#if 0  /* still in development */
+                      /*
+                        Adjustment layers and other stuff...
+                      */
+                      {
+                        char  alsig[4],
+                          alkey[4];
+
+                        count=ReadBlob(image,4,(char *) alsig);
+                        if ((count == 0) || (LocaleNCompare(alsig,"8BIM",4) != 0))
+                          {
+                            if (logging)
+                              {
+                                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                      "  adjustment layer type was %.4s instead of 8BIM",
+                                                      alsig);
+                                (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+                              }
+                            ThrowReaderException(CorruptImageError,NotAPSDImageFile,image);
+                          }
+                        (void) ReadBlob(image,4,(char *) alkey);
+                        length=ReadBlobMSBLong(image);
+                        if (logging)
+                          {
+                            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                  "      adjustment layer key: %.4s, data length=%ld",
+                                                  alkey, length);
+                          }
+
+                        if ( length )
+                          {
+                            for (j=0; j < (long) (length); j++)
+                              (void) ReadBlobByte(image);
+                          }
+
+                      }
+                      combinedlength += 12 + length;  /* sig, key, length + the actual length*/
+#endif
+
+                      /*
+                        Skip the rest of the variable data until we support it.
+                      */
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "      unsupported data: length=%"
+                                                MAGICK_SIZE_T_F "u",
+                                                (MAGICK_SIZE_T) size-combinedlength);
+                        }
+                      for (j=0; j < (long) (size-combinedlength); j++)
+                        (void) ReadBlobByte(image);
+                    }
+                  /*
+                    Allocate layered image.
+                  */
+                  layer_info[i].image=CloneImage(image,layer_info[i].page.width,
+                                                 layer_info[i].page.height,
+                                                 True,&image->exception);
+                  if (layer_info[i].image->blob)
+                    {
+                      DestroyBlob(layer_info[i].image);
+                      layer_info[i].image->blob=0;
+                    }
+                  layer_info[i].image->blob=ReferenceBlob(image->blob);
+                  if (layer_info[i].image == (Image *) NULL)
+                    {
+                      for (j=0; j < i; j++)
+                        DestroyImage(layer_info[j].image);
+
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "  allocation of image for layer %ld failed", i);
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+                        }
+
+                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                           image);
+                    }
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "    setting up new layer image");
+                    }
+                  (void) SetImage(layer_info[i].image,OpaqueOpacity);
+                  layer_info[i].image->compose=
+                    PSDBlendModeToCompositeOperator(layer_info[i].blendkey);
+                  if (layer_info[i].visible == False)
+                    layer_info[i].image->compose=NoCompositeOp;
+                  if (psd_info.mode == CMYKMode)
+                    layer_info[i].image->colorspace=CMYKColorspace;
+                  for (j=0; j < layer_info[i].channels; j++)
+                    if (layer_info[i].channel_info[j].type == -1)
+                      layer_info[i].image->matte=True;
+
+                  /* set up some hidden attributes for folks that need them */
+                  (void) sprintf( s, "%ld", layer_info[i].page.x );
+                  (void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
+                  (void) sprintf( s, "%ld", layer_info[i].page.y );
+                  (void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
+                  (void) sprintf( s, "%d", layer_info[i].opacity );
+                  (void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
+                  (void) SetImageAttribute(layer_info[i].image,"[layer-name]",
+                                           (char *) layer_info[i].name);
+                }
+
+              if (logging)
+                {
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "  reading image data for layers");
+                }
+              /*
+                Read pixel data for each layer.
+              */
+              for (i=0; i < number_layers; i++)
+                {
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "  reading data for layer %ld", i);
+                    }
+                  for (j=0; j < layer_info[i].channels; j++)
+                    {
+                      if (logging)
+                        {
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "    reading data for channel %ld", j);
+                        }
+#if 0
+                      if (layer_info[i].channel_info[j].size <= (2*layer_info[i].image->rows))
+                        {
+                          long
+                            k;
+
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                "      layer data is empty");
+
+                          /*
+                            A layer without data.
+                          */
+                          for (k=0; k < (long) layer_info[i].channel_info[j].size; k++)
+                            (void) ReadBlobByte(layer_info[i].image);
+                          continue;
+                        }
+#endif
+                      compression=ReadBlobMSBShort(layer_info[i].image);
+                      if(layer_info[i].page.height > 0 && layer_info[i].page.width > 0){
+                        if (compression == 1)
+                          {
+                            /*
+                              Read RLE compressed data.
+                            */
+                            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                  "      layer data is RLE compressed");
+
+                            for (y=0; y < (long) layer_info[i].image->rows; y++)
+                              (void) ReadBlobMSBShort(layer_info[i].image);
+                            (void) DecodeImage(layer_info[i].image,
+                                               layer_info[i].channel_info[j].type);
+                            continue;
+                          }
+
+                        /*
+                          Read uncompressed pixel data as separate planes.
+                        */
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                              "      layer data is uncompressed");
+                        packet_size=1;
+                        if (layer_info[i].image->storage_class == PseudoClass)
+                          {
+                            if (layer_info[i].image->colors > 256)
+                              packet_size++;
+                          }
+                        else
+                          if (layer_info[i].image->depth > 8)
+                            packet_size++;
+                        for (y=0; y < (long) layer_info[i].image->rows; y++)
+                          {
+                            q=GetImagePixels(layer_info[i].image,0,y,
+                                             layer_info[i].image->columns,1);
+                            if (q == (PixelPacket *) NULL)
+                              break;
+                            indexes=AccessMutableIndexes(layer_info[i].image);
+                            for (x=0; x < (long) layer_info[i].image->columns; x++)
+                              {
+                                if (packet_size == 1)
+                                  pixel=ScaleCharToQuantum(ReadBlobByte(layer_info[i].image));
+                                else
+                                  pixel=ScaleQuantumToShort(ReadBlobMSBShort(layer_info[i].image));
+                                switch (layer_info[i].channel_info[j].type)
+                                  {
+                                  case -1:  /* transparency mask */
+                                    {
+                                      if (image->colorspace == CMYKColorspace)
+                                        indexes[x]=(Quantum) (MaxRGB-pixel);
+                                      else
+                                        q->opacity=(Quantum) (MaxRGB-pixel);
+                                      break;
+                                    }
+                                  case 0:  /* first component (Red, Cyan, Gray or Index) */
+                                    {
+                                      q->red=(Quantum) pixel;
+                                      if (layer_info[i].image->storage_class == PseudoClass)
+                                        {
+                                          indexes[x]=(IndexPacket) ScaleQuantumToChar(MaxRGB - pixel);
+                                          *q=layer_info[i].image->colormap[indexes[x]];
+                                        }
+                                      break;
+                                    }
+                                  case 1:  /* second component (Green, Magenta, or opacity) */
+                                    {
+                                      if (layer_info[i].image->storage_class == PseudoClass)
+                                        q->opacity=(Quantum) pixel;
+                                      else
+                                        q->green=(Quantum) pixel;
+                                      break;
+                                    }
+                                  case 2:  /* third component (Blue or Yellow) */
+                                    {
+                                      q->blue=(Quantum) pixel;
+                                      break;
+                                    }
+                                  case 3:  /* fourth component (Opacity or Black) */
+                                    {
+                                      q->opacity=(Quantum) pixel;
+                                      break;
+                                    }
+                                  case 4:  /* fifth component (opacity) */
+                                    {
+                                      if (image->colorspace == CMYKColorspace)
+                                        indexes[x]=(Quantum) (MaxRGB-pixel);
+                                      break;
+                                    }
+                                  default:
+                                    break;
+                                  }
+                                q++;
+                              }
+                            if (!SyncImagePixels(layer_info[i].image))
+                              break;
+                          }
+                      }
+                      if (layer_info[i].opacity != OpaqueOpacity)
+                        {
+                          /*
+                            Correct for opacity level.
+                          */
+                          for (y=0; y < (long) layer_info[i].image->rows; y++)
+                            {
+                              q=GetImagePixels(layer_info[i].image,0,y,
+                                               layer_info[i].image->columns,1);
+                              if (q == (PixelPacket *) NULL)
+                                break;
+                              indexes=AccessMutableIndexes(layer_info[i].image);
+                              for (x=0; x < (long) layer_info[i].image->columns; x++)
+                                {
+                                  q->opacity=(Quantum) ((unsigned long)
+                                                        (q->opacity*layer_info[i].opacity)/MaxRGB);
+                                  if (layer_info[i].image->colorspace == CMYKColorspace)
+                                    indexes[x]=(IndexPacket) ((unsigned long)
+                                                              (indexes[x]*layer_info[i].opacity)/MaxRGB);
+                                  q++;
+                                }
+                              if (!SyncImagePixels(layer_info[i].image))
+                                break;
+                            }
+                        }
+                      if (layer_info[i].image->colorspace == CMYKColorspace)
+                        {
+                          /*
+                            Correct CMYK levels.
+                          */
+                          if(logging)
+                            {
+                              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                                    "    correcting CMYK values");
+                            }
+                          for (y=0; y < (long) layer_info[i].image->rows; y++)
+                            {
+                              q=GetImagePixels(layer_info[i].image,0,y,
+                                               layer_info[i].image->columns,1);
+                              if (q == (PixelPacket *) NULL)
+                                break;
+                              for (x=0; x < (long) layer_info[i].image->columns; x++)
+                                {
+                                  q->red=(Quantum) (MaxRGB-q->red);
+                                  q->green=(Quantum) (MaxRGB-q->green);
+                                  q->blue=(Quantum) (MaxRGB-q->blue);
+                                  q->opacity=(Quantum) (MaxRGB-q->opacity);
+                                  q++;
+                                }
+                              if (!SyncImagePixels(layer_info[i].image))
+                                break;
+                            }
+                        }
+                    }
+                }
+              /* diff_offset = TellBlob(image) - offset; */
+
+              (void) ReadBlobMSBLong(image);  /* global mask size: currently ignored */
+
+              if (number_layers > 0)
+                {
+                  Image* returnImage = image;
+                  LayerInfo *prevLayer = NULL;
+
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                            "  putting layers into image list");
+                    }
+                  /* omit any 0x0 sized layers from the list, as they break compositing */
+                  for (i=0; i < number_layers; i++)
+                    if(layer_info[i].page.height > 0 && layer_info[i].page.width > 0)
+                      {
+                        if (prevLayer){
+                          layer_info[i].image->previous = prevLayer->image;
+                          prevLayer->image->next = layer_info[i].image;
+                        }
+                        layer_info[i].image->page = layer_info[i].page;
+                        prevLayer = &layer_info[i];
+                      }
+#ifdef use_image
+                  image->next=layer_info[0].image;
+                  layer_info[0].image->previous=image;
+#else
+                  DestroyImage(image);
+                  returnImage = layer_info[0].image;  
+#endif
+                  MagickFreeMemory(layer_info);
+
+                  if (logging)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+                    }
+
+                  return(returnImage);
                 }
             }
-        }
-        }
-      /* diff_offset = TellBlob(image) - offset; */
-
-      (void) ReadBlobMSBLong(image);  /* global mask size: currently ignored */
-
-      if (number_layers > 0)
-        {
-          Image* returnImage = image;
-          LayerInfo *prevLayer = NULL;
-
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "  putting layers into image list");
-            }
-          /* omit any 0x0 sized layers from the list, as they break compositing */
-          for (i=0; i < number_layers; i++)
-            if(layer_info[i].page.height > 0 && layer_info[i].page.width > 0)
-            {
-              if (prevLayer){
-                layer_info[i].image->previous = prevLayer->image;
-                prevLayer->image->next = layer_info[i].image;
-              }
-              layer_info[i].image->page = layer_info[i].page;
-              prevLayer = &layer_info[i];
-            }
-#ifdef use_image
-          image->next=layer_info[0].image;
-          layer_info[0].image->previous=image;
-#else
-          DestroyImage(image);
-          returnImage = layer_info[0].image;  
-#endif
-          MagickFreeMemory(layer_info);
-
-          if (logging)
-            {
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-            }
-
-          return(returnImage);
         }
     }
   else
@@ -1386,8 +1421,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 0:
                       {
-/*                         if (x==0 && y==0) */
-/*                           printf("red=%lu\n",pixel); */
+                        /*                         if (x==0 && y==0) */
+                        /*                           printf("red=%lu\n",pixel); */
                         q->red=(Quantum) pixel;
                         if (image->storage_class == PseudoClass)
                           {
@@ -1398,8 +1433,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 1:
                       {
-/*                         if (x==0 && y==0) */
-/*                           printf("green=%lu\n",pixel); */
+                        /*                         if (x==0 && y==0) */
+                        /*                           printf("green=%lu\n",pixel); */
                         if (image->storage_class == PseudoClass)
                           q->opacity=(Quantum) pixel;
                         else
@@ -1408,8 +1443,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                     case 2:
                       {
-/*                         if (x==0 && y==0) */
-/*                           printf("blue=%lu\n",pixel); */
+                        /*                         if (x==0 && y==0) */
+                        /*                           printf("blue=%lu\n",pixel); */
                         q->blue=(Quantum) pixel;
                         break;
                       }
@@ -1719,8 +1754,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     i;
 
   unsigned char
-    *pixels,
-    layer_name[4];
+    *pixels;
 
   unsigned int
     packet_size,
@@ -1944,8 +1978,18 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image, 3, &layer_name[1]);
           */ 
         } else {
-          (void) sprintf((char *) layer_name, "L%02d", layer_count++ );
-          WritePascalString( image, (char*)layer_name, 4 );
+          /*
+            In Photoshop 5.5 the maximum number of layers was 100 but
+            Photoshop CS5 supports 8000 layers.
+
+            Layer name is documented to be a Pascal string, padded to
+            a multiple of 4 bytes.
+          */
+          char
+            layer_name[MaxTextExtent];
+
+          FormatString( layer_name, "L%04d", layer_count++ );
+          WritePascalString( image, layer_name, 4 );
         }
         tmp_image = tmp_image->next;
       };

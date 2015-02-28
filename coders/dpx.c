@@ -470,7 +470,11 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
                         "Attribute \"%s\" set to \"%s\"", \
                         name,value); \
 }
-
+/* Can't use strlcpy() since strlcpy() only handles NULL terminated
+   strings.  Note that some fields occupy the full space with no
+   trailing null so we null terminate one character *after* the
+   DPX field size.
+*/
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -478,7 +482,8 @@ STATIC unsigned int IsDPX(const unsigned char *magick,const size_t length)
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      (void) strlcpy(buffer_,member,Min(sizeof(member)+1,MaxTextExtent)); \
+      (void) strncpy(buffer_,member,Min(sizeof(member),MaxTextExtent)); \
+      buffer_[Min(sizeof(member)+1,MaxTextExtent-1)]='\0';             \
       (void) SetImageAttribute(image,name,buffer_); \
       LogSetImageAttribute(name,buffer_); \
     } \
@@ -1518,10 +1523,10 @@ STATIC void ReadRowSamples(const unsigned char *scanline,
     WordStreamReadFunc
       read_func=0;
 
-    if (endian_type == MSBEndian)
-      read_func=ReadWordU32BE;
-    else if (endian_type == LSBEndian)
+    if (endian_type == LSBEndian)
       read_func=ReadWordU32LE;
+    else
+      read_func=ReadWordU32BE;
 
     read_state.words=scanline;
     MagickWordStreamInitializeRead(&read_stream,read_func, (void *) &read_state);
@@ -1745,14 +1750,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swap_endian)
     SwabDPXImageInfo(&dpx_image_info);
-  image->columns=dpx_image_info.pixels_per_line;
-  image->rows=dpx_image_info.lines_per_image_element;
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "Columns %ld, Rows %ld, Elements %u",
-                          image->columns, image->rows,
+                          "Pixels per line %u, Lines per image %u, Elements %u",
+                          (unsigned int) dpx_image_info.pixels_per_line,
+                          (unsigned int) dpx_image_info.lines_per_image_element,
                           (unsigned int) dpx_image_info.elements);
-
+  if (dpx_image_info.orientation > 7U)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (dpx_image_info.elements >
+      sizeof(dpx_image_info.element_info)/sizeof(dpx_image_info.element_info[0]))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  image->columns=dpx_image_info.pixels_per_line;
+  image->rows=dpx_image_info.lines_per_image_element;
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
   image->orientation=DPXOrientationToOrientationType(dpx_image_info.orientation);
 
@@ -1918,8 +1928,19 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         element_descriptor=(DPXImageElementDescriptor)
           dpx_image_info.element_info[element].descriptor;
-        max_bits_per_sample=Max(max_bits_per_sample,
-                                dpx_image_info.element_info[element].bits_per_sample);
+        bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
+        /*
+          Enforce supported bits per sample. Note that 32-bits could
+          be supported by the implementation but we don't allow it at
+          the moment.
+        */
+        if ((bits_per_sample != 1) &&
+            (bits_per_sample != 8) &&
+            (bits_per_sample != 10) &&
+            (bits_per_sample != 12) &&
+            (bits_per_sample != 16))
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        max_bits_per_sample=Max(max_bits_per_sample,bits_per_sample);
         max_samples_per_pixel=Max(max_samples_per_pixel,
                                   DPXSamplesPerPixel(element_descriptor));
         /*
@@ -2021,6 +2042,10 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
+
+  if (CheckImagePixelLimits(image, exception) != MagickPass)
+    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
   /*
     Read remainder of header.
   */
@@ -2113,7 +2138,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /* Data is at, or ahead of current position.  Good! */
               for ( ; offset < pixels_offset ; offset++ )
-                (void) ReadBlobByte(image);
+                if (ReadBlobByte(image) == EOF)
+                  break;
             }
           else
             {
@@ -2822,7 +2848,7 @@ STATIC U16 OrientationTypeToDPXOrientation(const OrientationType orientation_typ
 { \
   *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
-  *scanline++=(unsigned char) ((packed_u32 >> 18) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 16) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
 }
 #define MSBPackedU32WordToOctets(packed_u32,scanline) \
@@ -3137,10 +3163,10 @@ STATIC void WriteRowSamples(const sample_t *samples,
       WordStreamWriteFunc
         write_func=0;
 
-      if (endian_type == MSBEndian)
-        write_func=WriteWordU32BE;
-      else if (endian_type == LSBEndian)
+      if (endian_type == LSBEndian)
         write_func=WriteWordU32LE;
+      else
+        write_func=WriteWordU32BE;
 
       write_state.words=scanline;
       MagickWordStreamInitializeWrite(&write_stream,write_func, (void *) &write_state);
@@ -3235,7 +3261,8 @@ STATIC void WriteRowSamples(const sample_t *samples,
 /*
   This macro uses strncpy on purpose.  The string is not required to
   be null terminated, but any unused space should be filled with
-  nulls.
+  nulls.  Don't even think about using strlcpy here because some ASCII
+  fields occupy the full space.
 */
 #define AttributeToString(image_info,image,key,member) \
 { \

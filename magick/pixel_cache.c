@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1269,6 +1269,101 @@ AcquireOnePixelByReference(const Image *image,PixelPacket *pixel,
     AcquireOneCacheViewPixelInlined((const View *) AccessDefaultCacheView(image),
                                     pixel,x,y,
                                     exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C h e c k I m a g e P i x e l L i m i t s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CheckImagePixelLimits() verifies that image dimensions are within current
+%  limits.  Returns MagickPass if image dimensions are within limits, or
+%  MagickFail (and updates exception) if dimensions exceed a limit.
+%
+%  While this function is used within the pixel cache to prevent allocating
+%  an image which exceeds the limits, it may also be used to validate image
+%  dimensions obtained from file headers prior to allocating memory or doing
+%  further processing of the image.  Such additional limits should be after
+%  any 'ping' mode processing so that the image dimensions can still be
+%  shown by 'identify'.
+%
+%  The format of the CheckImagePixelLimits() method is:
+%
+%      MagickPassFail CheckImagePixelLimits(const Image *image,
+%                                           ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to verify rows/columns.
+%
+%    o exception: Throw exception into this ExceptionInfo structure.
+%
+%
+*/
+MagickExport MagickPassFail
+CheckImagePixelLimits(const Image *image, ExceptionInfo *exception)
+{
+  if ((image->columns == 0) ||
+      (AcquireMagickResource(WidthResource,image->columns)
+       != MagickPass))
+    {
+      char
+        message[MaxTextExtent];
+
+      errno=0;
+      FormatString(message,"%lu > %" MAGICK_INT64_F "u \"%.1024s\"",
+                   image->columns,
+                   GetMagickResourceLimit(WidthResource),image->filename);
+      ThrowException(exception,ResourceLimitError,ImagePixelWidthLimitExceeded,
+                     message);
+      return MagickFail;
+    }
+
+  if ((image->rows == 0) ||
+      (AcquireMagickResource(HeightResource,image->rows)
+       != MagickPass))
+    {
+      char
+        message[MaxTextExtent];
+
+      errno=0;
+      FormatString(message,"%lu > %" MAGICK_INT64_F "u \"%.1024s\"",
+                   image->rows,
+                   GetMagickResourceLimit(HeightResource),image->filename);
+      ThrowException(exception,ResourceLimitError,ImagePixelHeightLimitExceeded,
+                     message);
+      return MagickFail;
+    }
+
+  {
+    magick_int64_t
+      total_pixels;
+
+    total_pixels=image->columns*image->rows;
+    if (AcquireMagickResource(PixelsResource,total_pixels)
+        != MagickPass)
+      {
+        char
+          message[MaxTextExtent];
+
+        errno=0;
+        FormatString(message,
+                     "%" MAGICK_INT64_F "d > %" MAGICK_INT64_F "u \"%.1024s\"",
+                     total_pixels,
+                     GetMagickResourceLimit(PixelsResource),image->filename);
+        ThrowException(exception,ResourceLimitError,ImagePixelLimitExceeded,
+                       message);
+        return MagickFail;
+      }
+  }
+
+  return MagickPass;
 }
 
 /*
@@ -2555,7 +2650,7 @@ GetPixelCacheInCore(const Image *image)
 %
 %
 */
-extern MagickBool
+extern MagickExport MagickBool
 GetPixelCachePresent(const Image *image)
 {
   CacheInfo
@@ -2903,8 +2998,9 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     {
-      ThrowException(exception,ResourceLimitError,NoPixelsDefinedInCache,
-                     image->filename);
+      if (image->exception.severity < ResourceLimitError)
+        ThrowException(exception,ResourceLimitError,NoPixelsDefinedInCache,
+                       image->filename);
       return MagickFail;
     }
 
@@ -2978,17 +3074,10 @@ OpenCache(Image *image,const MapMode mode,ExceptionInfo *exception)
     }
 
   /*
-    Ensure that maximum image size (in pixels) meets criteria.
+    Ensure that image dimensions are within limits.
   */
-  errno=0;
-  if (AcquireMagickResource(PixelsResource,image->columns*image->rows)
-      != MagickPass)
-    {
-      ThrowException(exception,ResourceLimitError,ImagePixelLimitExceeded,
-                     image->filename);
-      return MagickFail;
-    }
-
+  if (CheckImagePixelLimits(image,exception) == MagickFail)
+    return MagickFail;
 
   /*
     Compute storage sizes.  Make sure that sizes fit within our

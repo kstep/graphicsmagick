@@ -658,7 +658,13 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
         Load subordinate configuration file based on path specified
         by parent configuration file.
       */
-      xml=(char *) FileToBlob(basename,&length,exception);
+      if (IsAccessibleAndNotEmpty(basename))
+        xml=(char *) FileToBlob(basename,&length,exception);
+      else
+        {
+          GetPathComponent(basename,TailPath,path);
+          xml=(char *) GetConfigureBlob(path,keyword,&length,exception);
+        }
       if (xml == (char *) NULL)
         return (False);
     }

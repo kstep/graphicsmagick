@@ -43,6 +43,11 @@ The pseudo code for the main loop of your program may look like::
       // about object construction failure due to a minor warning exception
       // being thrown.
       Magick::Image image; 
+
+      // Determine if Warning exceptions are thrown.
+      // Use is optional.  Set to true to block Warning exceptions.
+      image.quiet( false );
+
       try {
         // Try reading image file
         image.read(infile);
@@ -175,5 +180,5 @@ GraphicsMagick is unable to figure out how to open the file.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| Bob Friesenhahn 1999 - 2014
+Copyright |copy| Bob Friesenhahn 1999 - 2015
 

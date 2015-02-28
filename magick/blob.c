@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -435,14 +435,17 @@ MagickExport MagickPassFail BlobReserveSize(Image *image, magick_off_t size)
        (image->blob->mapped) && (image->blob->handle.std != (FILE *) NULL)))
     {
 #if defined(HAVE_POSIX_FALLOCATE)
+      /*
+        FIXME: Solaris 11.2 documentation says that posix_fallocate()
+        reports EINVAL for anything but UFS */
       int
         err_status;
 
       if ((err_status=posix_fallocate(fileno(image->blob->handle.std),
                                       0UL, size)) != 0)
         {
-          ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(err_status));
-          status=MagickFail;
+          /* ThrowException(&image->exception,BlobError,UnableToWriteBlob,strerror(err_status)); */
+          /* status=MagickFail; */
         }
 #endif /* HAVE_POSIX_FALLOCATE */
     }
@@ -2440,7 +2443,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                           "Opening Blob for image %p using %s mode ...",image,
                           BlobModeToString(mode));
-
+  /*
+    Attach existing memory buffer for I/O and immediately return.
+  */
   if (image_info->blob != (void *) NULL)
     {
       AttachBlob(image->blob,image_info->blob,image_info->length);
@@ -2449,6 +2454,9 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
                               "  attached image_info->blob to blob %p",&image->blob);
       return(MagickPass);
     }
+  /*
+    Reset BlobInfo to defaults.
+  */
   DetachBlob(image->blob);
   image->blob->mode=mode;
   switch (mode)
@@ -2662,7 +2670,7 @@ MagickExport MagickPassFail OpenBlob(const ImageInfo *image_info,Image *image,
 			  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
 						"  read %" MAGICK_SIZE_T_F
                                                 "u magic header bytes",
-						(MAGICK_SIZE_T) count*MaxTextExtent);
+						(MAGICK_SIZE_T) count);
 #if defined(HasZLIB)
 			if ((magick[0] == 0x1FU) && (magick[1] == 0x8BU) &&
 			    (magick[2] == 0x08U))
@@ -4480,9 +4488,9 @@ MagickExport MagickPassFail WriteBlobFile(Image *image,const char *filename)
                 }
               MagickFreeMemory(buffer);
             }
-          (void) close(file);
           status = MagickPass;
         }
+      (void) close(file);
     }
   return status;
 }

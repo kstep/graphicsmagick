@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH DWEBP 1 "December 12, 2013"
+.TH DWEBP 1 "July 22, 2014"
 .SH NAME
 dwebp \- decompress a WebP file to an image file
 .SH SYNOPSIS
@@ -24,6 +24,12 @@ Print the version number (as major.minor.revision) and exit.
 .BI \-o " string
 Specify the name of the output file (as PNG format by default).
 Using "-" as output name will direct output to 'stdout'.
+.TP
+.BI \-\- " string
+Explicitly specify the input file. This option is useful if the input
+file starts with an '\-' for instance. This option must appear \fBlast\fP.
+Any other options afterward will be ignored. If the input file is "\-",
+the data will be read from \fIstdin\fP instead of a file.
 .TP
 .B \-bmp
 Change the output format to uncompressed BMP.
@@ -57,10 +63,16 @@ Don't use the in-loop filtering process even if it is required by
 the bitstream. This may produce visible blocks on the non-compliant output,
 but it will make the decoding faster.
 .TP
-.B \-dither " strength
+.BI \-dither " strength
 Specify a dithering \fBstrength\fP between 0 and 100. Dithering is a
 post-processing effect applied to chroma components in lossy compression.
 It helps by smoothing gradients and avoiding banding artifacts.
+.\" TODO(jzern): restore post-v0.4.1
+.\" .TP
+.\" .BI \-alpha_dither
+.\" If the compressed file contains a transparency plane that was quantized
+.\" during compression, this flag will allow dithering the reconstructed plane
+.\" in order to generate smoother transparency gradients.
 .TP
 .B \-nodither
 Disable all dithering (default).
@@ -75,6 +87,10 @@ This cropping area must be fully contained within the source rectangle.
 The top-left corner will be snapped to even coordinates if needed.
 This option is meant to reduce the memory needed for cropping large images.
 Note: the cropping is applied \fIbefore\fP any scaling.
+.\" TODO(jzern): restore post-v0.4.1
+.\" .TP
+.\" .B \-flip
+.\" Flip decoded image vertically (can be useful for OpenGL textures for instance).
 .TP
 .BI \-scale " width height
 Rescale the decoded picture to dimension \fBwidth\fP x \fBheight\fP. This
@@ -101,6 +117,8 @@ dwebp picture.webp \-o output.png
 dwebp picture.webp \-ppm \-o output.ppm
 .br
 dwebp \-o output.ppm \-\- \-\-\-picture.webp
+.br
+cat picture.webp | dwebp \-o \- \-\- \- > output.ppm
 
 .SH AUTHORS
 \fBdwebp\fP was written by the WebP team.

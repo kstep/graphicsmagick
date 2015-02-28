@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2014 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -43,6 +43,31 @@
 #include "magick/monitor.h"
 #include "magick/pixel_cache.h"
 #include "magick/utility.h"
+
+static unsigned int
+RLEConstrainColormapIndex(Image *image, unsigned int index,
+                          unsigned int colormap_entries)
+{
+  if (index >= colormap_entries)
+    {
+      char
+        colormapIndexBuffer[MaxTextExtent];
+
+      FormatString(colormapIndexBuffer,"index %u >= %u, %.1024s",
+        (unsigned int) index, colormap_entries, image->filename);
+      errno=0;
+      index=0U;
+      ThrowException(&image->exception,CorruptImageError,
+        InvalidColormapIndex,colormapIndexBuffer);
+    }
+
+  return index;
+}
+#define RLEVerifyColormapIndex(image,index,colormap_entries)    \
+{ \
+  if (index >= colormap_entries) \
+    index=RLEConstrainColormapIndex(image,index,colormap_entries);      \
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,6 +157,10 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     opcode,
     operand,
     status;
+
+  unsigned int
+    colormap_entries,
+    index;
 
   long
     y;
@@ -227,12 +256,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((number_planes & 0x01) == 0)
       (void) ReadBlobByte(image);
     colormap=(unsigned char *) NULL;
+    colormap_entries=0;
     if (number_colormaps != 0)
       {
         /*
           Read image colormaps.
         */
-        colormap=MagickAllocateMemory(unsigned char *,number_colormaps*map_length);
+        colormap=MagickAllocateArray(unsigned char *,number_colormaps,
+                                     map_length);
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
@@ -240,6 +271,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (long) number_colormaps; i++)
           for (x=0; x < (long) map_length; x++)
             *p++=ScaleShortToQuantum(ReadBlobLSBShort(image));
+        colormap_entries=number_colormaps*map_length;
       }
     if (flags & 0x08)
       {
@@ -267,15 +299,29 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+      {
+        MagickFreeMemory(colormap);
+        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+      }
+
     /*
       Allocate RLE pixels.
     */
     if (image->matte)
       number_planes++;
     number_pixels=image->columns*image->rows;
-    rle_pixels=MagickAllocateMemory(unsigned char *,number_pixels*number_planes);
+    if ((image->columns != 0) &&
+        (image->rows != number_pixels/image->columns))
+      number_pixels=0;
+    rle_pixels=MagickAllocateArray(unsigned char *,number_pixels,
+                                   Max(number_planes,4));
     if (rle_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      {
+        MagickFreeMemory(colormap);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      }
     if ((flags & 0x01) && !(flags & 0x02))
       {
         long
@@ -392,7 +438,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 1)
           for (i=0; i < (long) number_pixels; i++)
           {
-            *p=colormap[*p & mask];
+            index=*p & mask;
+            RLEVerifyColormapIndex(image,index,colormap_entries);
+            *p=colormap[index];
             p++;
           }
         else
@@ -400,7 +448,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (long) number_pixels; i++)
               for (x=0; x < (long) number_planes; x++)
               {
-                *p=colormap[x*map_length+(*p & mask)];
+                index=x*map_length+(*p & mask);
+                RLEVerifyColormapIndex(image,index,colormap_entries);
+                *p=colormap[index];
                 p++;
               }
       }
@@ -504,9 +554,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=image->colormap[*p++].red;
-                q->green=image->colormap[*p++].green;
-                q->blue=image->colormap[*p++].blue;
+                index=*p++;
+                VerifyColormapIndex(image,index);
+                q->red=image->colormap[index].red;
+                index=*p++;
+                VerifyColormapIndex(image,index);
+                q->green=image->colormap[index].green;
+                index=*p++;
+                VerifyColormapIndex(image,index);
+                q->blue=image->colormap[index].blue;
                 q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
                 q++;
               }
