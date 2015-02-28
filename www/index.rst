@@ -9,14 +9,15 @@ GraphicsMagick Image Processing System
 .. meta::
    :description: GraphicsMagick is a robust collection of tools and libraries to read,
                  write, and manipulate an image in any of the more popular
-                 image formats including GIF, JPEG, PNG, PDF, and Photo CD.
+                 image formats including GIF, JPEG, PNG, PDF, and WebP.
                  With GraphicsMagick you can create GIFs dynamically making it
                  suitable for Web applications.  You can also resize, rotate,
                  sharpen, color reduce, or add special effects to an image and
                  save your completed work in the same or differing image format.
 
    :keywords: GraphicsMagick, ImageMagick, PerlMagick, image processing, OpenMP
-              software development library, image, photo, software, Magick++
+              software development library, image, photo, software, Magick++,
+              TclMagick
 
 
 .. _download GraphicsMagick release : http://sourceforge.net/projects/graphicsmagick/files/
@@ -26,7 +27,7 @@ GraphicsMagick Image Processing System
 .. _programming : programming.html
 
 ===========================  ========================================================
-Current Release              1.3.20 (Released August 16, 2014) `download release`__
+Current Release              1.3.21 (Released February 28, 2015) `download release`__
 Development Snapshots        (Updated frequently) `download development snapshots`__
 Mercurial Repository         (Updated frequently) `visit Mercurial repository`__
 ===========================  ========================================================
@@ -158,11 +159,6 @@ Here are just a few examples of what GraphicsMagick can do:
   * Describe the format and characteristics of an image
 
 ------------
-
-This page has been translated into `Spanish
-<http://www.webhostinghub.com/support/es/misc/sistema-de-procesamiento>`_
-language by Maria Ramos  from `Webhostinghub.com/support/edu
-<http://www.webhostinghub.com/support/edu>`_.
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 

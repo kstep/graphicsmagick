@@ -6,7 +6,7 @@
 GraphicsMagick News
 ===================
 
-This file was last updated on February 22, 2015
+This file was last updated on February 28, 2015
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file. See the
@@ -15,7 +15,7 @@ ChangeLog file for full details.
 .. contents::
   :local:
 
-1.3.21 (February ??, 2015)
+1.3.21 (February 28, 2015)
 ==========================
 
 .. _`GCC bug 53967` : http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53967
