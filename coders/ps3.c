@@ -277,6 +277,9 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   Image *image, unsigned char **pixels, size_t *length)
 {
+  ARG_NOT_USED(image_info);
+  ARG_NOT_USED(pixels);
+  ARG_NOT_USED(length);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename)
@@ -284,6 +287,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
 static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
+  ARG_NOT_USED(image_info);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename)

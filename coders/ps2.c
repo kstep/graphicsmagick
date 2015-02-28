@@ -203,6 +203,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
+  ARG_NOT_USED(image_info);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename);
