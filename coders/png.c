@@ -7790,7 +7790,11 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
       DestroyBlob(jpeg_image);
       jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
       status=ChannelImage(jpeg_image,OpacityChannel);
-      status=NegateImage(jpeg_image,MagickFalse);
+      if (status != MagickFalse)
+        status=NegateImage(jpeg_image,MagickFalse);
+      if (status != MagickFalse)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                             image);
       jpeg_image->matte=MagickFalse;
       if (jng_quality >= 1000)
         jpeg_image_info->quality=jng_quality/1000;
