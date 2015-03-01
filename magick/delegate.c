@@ -1247,8 +1247,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
-%  color strings with a particular image format.
+%  Method ReadConfigureFile reads the delegate configuration file which maps
+%  delegate invokation strings to a particular image format.
 %
 %  The format of the ReadConfigureFile method is:
 %
@@ -1257,8 +1257,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigureFile returns True if at least one color
-%      is defined otherwise False.
+%    o status: Method ReadConfigureFile returns True if a matching
+%        entry is found, otherwise False.
 %
 %    o basename:  The color configuration filename.
 %

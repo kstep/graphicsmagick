@@ -121,7 +121,7 @@ extern MagickExport const char *GetLocaleMessageFromID(const int);
 #define MGK_ConfigureWarningDefault 114
 #define MGK_CorruptImageErrorAnErrorHasOccurredReadingFromFile 115
 #define MGK_CorruptImageErrorAnErrorHasOccurredWritingToFile 116
-#define MGK_CorruptImageErrorColormapExceeds256Colors 117
+#define MGK_CorruptImageErrorColormapExceedsColorsLimit 117
 #define MGK_CorruptImageErrorCompressionNotValid 118
 #define MGK_CorruptImageErrorCorruptImage 119
 #define MGK_CorruptImageErrorImageFileDoesNotContainAnyImageData 120
@@ -773,7 +773,7 @@ static const MessageInfo message_map[] =
     { "Default", 114 },
     { "AnErrorHasOccurredReadingFromFile", 115 },
     { "AnErrorHasOccurredWritingToFile", 116 },
-    { "ColormapExceeds256Colors", 117 },
+    { "ColormapExceedsColorsLimit", 117 },
     { "CompressionNotValid", 118 },
     { "CorruptImage", 119 },
     { "ImageFileDoesNotContainAnyImageData", 120 },
@@ -1322,7 +1322,7 @@ static const char *message_dat[] =
     "default warning",
     "An error has occurred reading from file",
     "An error has occurred writing to file",
-    "Colormap exceeded 256 colors",
+    "Colormap exceeded colors limit",
     "Compression not valid",
     "Corrupt image",
     "Image file or does not contain any image data",

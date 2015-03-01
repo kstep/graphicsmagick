@@ -81,7 +81,6 @@
 #define PALM_COMPRESSION_BEST           0x64
 #define PALM_COMPRESSION_NONE           0xFF
 
-#if 0
 /*
   2 color (1 bit) palette
 */
@@ -128,7 +127,6 @@ PalmPalette4[16][3] =
     {255,255,255}
   };
 
-#endif
 /*
  The 256 color system palette for Palm Computing Devices.
 */
@@ -516,6 +514,36 @@ void LogPALMHeader(const PalmHeader* palm_header)
         (palm_header->compression_type == PALM_COMPRESSION_NONE ? "None" : "?")))));
 }
 
+static const unsigned char *
+GetPalmPaletteGivenBits(const unsigned int bits,
+                        size_t *size)
+{
+  const unsigned char
+    *palette = (const unsigned char *) NULL;
+
+  *size=0;
+  switch (bits)
+    {
+    case 1:
+      palette=(const unsigned char *) PalmPalette1;
+      *size=sizeof(PalmPalette1);
+      break;
+    case 2:
+      palette=(const unsigned char *) PalmPalette2;
+      *size=sizeof(PalmPalette2);
+      break;
+    case 4:
+      palette=(const unsigned char *) PalmPalette4;
+      *size=sizeof(PalmPalette4);
+      break;
+    case 8:
+      palette=(const unsigned char *) PalmPalette;
+      *size=sizeof(PalmPalette);
+      break;
+    }
+  return palette;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -736,7 +764,38 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       !AllocateImageColormap(image,1L << palm_header.bits_per_pixel))
     ThrowPALMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
-  if (palm_header.bits_per_pixel == 8)
+  if ((palm_header.bits_per_pixel == 1) ||
+      (palm_header.bits_per_pixel == 2) ||
+      (palm_header.bits_per_pixel == 4) ||
+      ((palm_header.bits_per_pixel == 8) &&
+       !(palm_header.flags & PALM_HAS_COLORMAP_FLAG)))
+    {
+      const unsigned char
+        *palette;
+
+      size_t
+        size;
+
+      palette=GetPalmPaletteGivenBits(palm_header.bits_per_pixel,
+                                      &size);
+      if (palette)
+        {
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Default %u bit palette of %"
+                                  MAGICK_SIZE_T_F "u bytes...",
+                                  palm_header.bits_per_pixel,
+                                  (MAGICK_SIZE_T) size);
+          for (index=0; index < image->colors; index++)
+            {
+              image->colormap[index].red=ScaleCharToQuantum(*palette++);
+              image->colormap[index].green=ScaleCharToQuantum(*palette++);
+              image->colormap[index].blue=ScaleCharToQuantum(*palette++);
+            }
+        }
+    }
+
+  else if (palm_header.bits_per_pixel == 8)
     {
       i = 0;
       if (palm_header.flags & PALM_HAS_COLORMAP_FLAG)
@@ -744,7 +803,19 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           unsigned int
             count;
 
-          count = ReadBlobMSBShort(image); /* FIXME: Check colormap allocation size against count */
+          count = ReadBlobMSBShort(image);
+
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Custom %u bit palette with %u colors (%"
+                                  MAGICK_SIZE_T_F "u bytes)...",
+                                  palm_header.bits_per_pixel,
+                                  count,
+                                  (MAGICK_SIZE_T) count*3);
+
+          if (count > image->colors)
+            ThrowPALMReaderException(CorruptImageError,ColormapExceedsColorsLimit,image);
+
           for (i = 0; i < count; i++)
             {
               (void) ReadBlobByte(image);

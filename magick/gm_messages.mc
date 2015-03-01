@@ -701,9 +701,9 @@ An error has occurred writing to file
 .
 
 MessageId       = +1
-SymbolicName    = ImageErrorColormapExceeds256Colors
+SymbolicName    = ImageErrorColormapExceedsColorsLimit
 Language        = English
-Colormap exceeded 256 colors
+Colormap exceeded colors limit
 .
 
 MessageId       = +1

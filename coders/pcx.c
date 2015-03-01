@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -489,7 +489,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ThrowPCXReaderException(CorruptImageError,ColormapExceeds256Colors,
+            ThrowPCXReaderException(CorruptImageError,ColormapExceedsColorsLimit,
               image);
           if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
