@@ -39,7 +39,9 @@
 <blockquote>
 <ul class="simple">
 <li>coders/miff.c (ReadMIFFImage): Fix memory leak of Image in error
-case.</li>
+case.
+(ReadMIFFImage): Fix memory leaks of zlib and bzlib2 context in
+error path which reports decompression failure.</li>
 <li>coders/bmp.c (ReadBMPImage): BMP reader was wrongly rejecting
 RLE-compressed files as being too small.  Fixes SourceForge bug
 #295 &quot;1.3.21 identify regression&quot;.  Also fixed 'ping' support code

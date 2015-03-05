@@ -1508,6 +1508,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     {
                       MagickFreeMemory(pixels);
                       MagickFreeMemory(compress_pixels);
+                      (void) inflateEnd(&zip_info);
                       ThrowReaderException(CorruptImageError,UnableToUncompressImage,
                                            image);
                     }
@@ -1575,6 +1576,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     {
                       MagickFreeMemory(pixels);
                       MagickFreeMemory(compress_pixels);
+                      (void) BZ2_bzDecompressEnd(&bzip_info);
                       ThrowReaderException(CorruptImageError,UnableToUncompressImage,
                                            image);
                     }

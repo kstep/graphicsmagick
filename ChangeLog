@@ -2,6 +2,8 @@
 
 	* coders/miff.c (ReadMIFFImage): Fix memory leak of Image in error
 	case.
+	(ReadMIFFImage): Fix memory leaks of zlib and bzlib2 context in
+	error path which reports decompression failure.
 
 	* coders/bmp.c (ReadBMPImage): BMP reader was wrongly rejecting
 	RLE-compressed files as being too small.  Fixes SourceForge bug
