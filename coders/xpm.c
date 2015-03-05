@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -166,15 +166,28 @@ static char *ParseColor(char *data)
   }
   return((char *) NULL);
 }
+#define ThrowXPMReaderException(code_,reason_,image_) \
+do { \
+  if (keys) \
+    for (i=0; i < (long) image->colors; i++) \
+      MagickFreeMemory(keys[i]); \
+  MagickFreeMemory(keys); \
+  if (textlist) \
+    for (i=0; textlist[i] != (char *) NULL; i++) \
+      MagickFreeMemory(textlist[i]); \
+  MagickFreeMemory(textlist); \
+  MagickFreeMemory(xpm_buffer); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
 
 static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
-    **keys,
+    **keys = (char **) NULL,
     target[MaxTextExtent],
-    **textlist,
-    *xpm_buffer;
+    **textlist = (char **) NULL,
+    *xpm_buffer = (char *) NULL;
 
   Image
     *image;
@@ -221,7 +234,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowXPMReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read XPM file.
   */
@@ -249,7 +262,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   if (xpm_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowXPMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Remove comments.
   */
@@ -265,7 +278,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
+    ThrowXPMReaderException(CorruptImageError,ImproperImageHeader,image);
   image->depth=16;
   /*
     Remove unquoted characters.
@@ -293,7 +306,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   textlist=StringToList(xpm_buffer);
   MagickFreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowXPMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image->logging)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -308,13 +321,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   keys=MagickAllocateArray(char **,image->colors,sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        MagickFreeMemory(textlist[i]);
-      MagickFreeMemory(textlist);
-      MagickFreeMemory(keys);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-    }
+    ThrowXPMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   for (i=0; i < (long) image->colors; i++)
     keys[i]=(char *) NULL;
 
@@ -330,15 +337,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     keys[j]=MagickAllocateMemory(char *,width+1);
     if (keys[j] == (char *) NULL)
-      {
-        for (i=0; textlist[i] != (char *) NULL; i++)
-          MagickFreeMemory(textlist[i]);
-        MagickFreeMemory(textlist);
-        for (i=0; i < (long) image->colors; i++)
-          MagickFreeMemory(keys[i]);
-        MagickFreeMemory(keys);
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-      }
+      ThrowXPMReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     keys[j][width]='\0';
     (void) strncpy(keys[j],p,width);
     /*
@@ -367,15 +366,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if (j < (long) image->colors)
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        MagickFreeMemory(textlist[i]);
-      MagickFreeMemory(textlist);
-      for (i=0; i < (long) image->colors; i++)
-        MagickFreeMemory(keys[i]);
-      MagickFreeMemory(keys);
-      ThrowReaderException(CorruptImageError,CorruptImage,image)
-    }
+    ThrowXPMReaderException(CorruptImageError,CorruptImage,image);
   image->depth=GetImageDepth(image,&image->exception);
   image->depth=NormalizeDepthToOctet(image->depth);
   j=0;
@@ -427,7 +418,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (long) image->rows)
-        ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
+        ThrowXPMReaderException(CorruptImageError,InsufficientImageDataInFile,image);
     }
   /*
     Free resources.

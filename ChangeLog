@@ -1,5 +1,7 @@
 2015-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xpm.c (ReadXPMImage): Fix memory leaks in error paths.
+
 	* coders/miff.c (ReadMIFFImage): Fix memory leak of Image in error
 	case.
 	(ReadMIFFImage): Fix memory leaks of zlib and bzlib2 context in
