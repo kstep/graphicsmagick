@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2014 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -127,10 +127,20 @@ static unsigned int IsXWD(const unsigned char *magick,const size_t length)
 %
 %
 */
+#define ThrowXWDReaderException(code_,reason_,image_) \
+do { \
+  MagickFreeMemory(comment); \
+  if (ximage) \
+    MagickFreeMemory(ximage->data); \
+  MagickFreeMemory(ximage); \
+  MagickFreeMemory(colors); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
+
 static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    *comment;
+    *comment = (char *) NULL;
 
   Image
     *image;
@@ -182,7 +192,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowXWDReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read in header information.
 
@@ -193,7 +203,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,sz_XWDheader,(char *) &header);
   if (count != sz_XWDheader)
-    ThrowReaderException(CorruptImageError,UnableToReadImageHeader,image);
+    ThrowXWDReaderException(CorruptImageError,UnableToReadImageHeader,image);
   /*
     Ensure the header byte-order is most-significant byte first.
   */
@@ -271,9 +281,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Check to see if the dump file is in the proper format.
   */
   if (header.file_version != XWD_FILE_VERSION)
-    ThrowReaderException(CorruptImageError,InvalidFileFormatVersion,image);
+    ThrowXWDReaderException(CorruptImageError,InvalidFileFormatVersion,image);
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,CorruptImage,image);
+    ThrowXWDReaderException(CorruptImageError,CorruptImage,image);
   switch (header.visual_class)
     {
     case StaticGray:
@@ -285,7 +295,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     default:
       {
-        ThrowReaderException(CorruptImageError,CorruptImage,image);
+        ThrowXWDReaderException(CorruptImageError,CorruptImage,image);
       }
     }
   switch (header.pixmap_format)
@@ -296,7 +306,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     default:
       {
-        ThrowReaderException(CorruptImageError,CorruptImage,image);
+        ThrowXWDReaderException(CorruptImageError,CorruptImage,image);
       }
     }
 
@@ -305,14 +315,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   length=header.header_size-sz_XWDheader;
   if (length > ((~0UL)/sizeof(*comment)))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
   comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,length,comment);
   if (count != length)
-    ThrowReaderException(CorruptImageError,UnableToReadWindowNameFromDumpFile,
-                         image);
+    ThrowXWDReaderException(CorruptImageError,UnableToReadWindowNameFromDumpFile,
+                            image);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
   MagickFreeMemory(comment);
@@ -322,7 +332,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   ximage=MagickAllocateMemory(XImage *,sizeof(XImage));
   if (ximage == (XImage *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   ximage->depth=(int) header.pixmap_depth;
   ximage->format=(int) header.pixmap_format;
   ximage->xoffset=(int) header.xoffset;
@@ -352,30 +362,18 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ximage->depth < 0 ||
       ximage->bytes_per_line < 0 ||
       ximage->bits_per_pixel < 0)
-    {
-      MagickFreeMemory(ximage);
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-    }
+    ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
   /* Guard against buffer overflow in libX11. */
   if (ximage->bits_per_pixel > 32 || ximage->bitmap_unit > 32)
-    {
-      MagickFreeMemory(ximage);
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-    }
+    ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
   status=XInitImage(ximage);
   if (status == False)
-    {
-      MagickFreeMemory(ximage);
-      ThrowReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
-    }
+    ThrowXWDReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
   image->columns=ximage->width;
   image->rows=ximage->height;
   if (!image_info->ping)
     if (CheckImagePixelLimits(image, exception) != MagickPass)
-      {
-        MagickFreeMemory(ximage);
-        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
-      }
+      ThrowXWDReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   image->depth=8;
   if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))
@@ -399,26 +397,17 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           length=(size_t) header.ncolors;
           if (length > ((~0UL)/sizeof(*colors)))
-            {
-              MagickFreeMemory(ximage);
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-            }
+            ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
           colors=MagickAllocateArray(XColor *,length,sizeof(XColor));
           if (colors == (XColor *) NULL)
-            {
-              MagickFreeMemory(ximage);
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                   image);
-            }
+            ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                    image);
           for (i=0; i < (long) header.ncolors; i++)
             {
               count=ReadBlob(image,sz_XWDColor,(char *) &color);
               if (count != sz_XWDColor)
-                {
-                  MagickFreeMemory(ximage);
-                  ThrowReaderException(CorruptImageError,
-                                       UnableToReadColormapFromDumpFile,image);
-                }
+                ThrowXWDReaderException(CorruptImageError,
+                                        UnableToReadColormapFromDumpFile,image);
               colors[i].pixel=color.pixel;
               colors[i].red=color.red;
               colors[i].green=color.green;
@@ -447,32 +436,22 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/((size_t) b) != ((size_t) a)))
       length=ximage->bytes_per_line*ximage->height;
       if (XWD_OVERFLOW(length,ximage->bytes_per_line,ximage->height))
-        {
-          MagickFreeMemory(ximage);
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-        }
+        ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       if (ximage->format != ZPixmap)
         {
           size_t tmp=length;
           length*=ximage->depth;
           if (XWD_OVERFLOW(length,tmp,ximage->depth))
-            {
-              MagickFreeMemory(ximage);
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                   image);
-            }
+            ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                    image);
         }
       ximage->data=MagickAllocateMemory(char *,length);
       if (ximage->data == (char *) NULL)
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       count=ReadBlob(image,length,ximage->data);
       if (count != length)
-        {
-          MagickFreeMemory(ximage->data);
-          MagickFreeMemory(ximage);
-          ThrowReaderException(CorruptImageError,
-                               UnableToReadPixmapFromDumpFile,image);
-        }
+        ThrowXWDReaderException(CorruptImageError,
+                                UnableToReadPixmapFromDumpFile,image);
       switch (image->storage_class)
         {
         case DirectClass:
@@ -580,12 +559,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               i;
 
             if (!AllocateImageColormap(image,image->colors))
-              {
-                MagickFreeMemory(ximage->data);
-                MagickFreeMemory(ximage);
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                     image);
-              }
+              ThrowXWDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                      image);
             for (i=0; i < (long) image->colors; i++)
               {
                 image->colormap[i].red=ScaleShortToQuantum(colors[i].red);
