@@ -893,8 +893,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
-    if (CheckImagePixelLimits(image, exception) != MagickPass)
-        ThrowBMPReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     image->depth=8;
     /*
       Image has alpha channel if alpha mask is specified, or is
@@ -948,9 +946,16 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         MagickFreeMemory(bmp_colormap);
       }
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+
+    if (image_info->ping)
+      if ((image_info->subrange == 0) ||
+          ((image_info->subrange != 0) &&
+           (image->scene >= (image_info->subimage+image_info->subrange-1))))
         break;
+
+    if (CheckImagePixelLimits(image, exception) != MagickPass)
+        ThrowBMPReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+
     /*
       Read image data.
     */
@@ -959,12 +964,42 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Bytes per line: %" MAGICK_SIZE_T_F "u",
+                            (MAGICK_SIZE_T) bytes_per_line);
+
     length=bytes_per_line*image->rows;
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Expected total raster length: %" MAGICK_SIZE_T_F "u",
+                            (MAGICK_SIZE_T) length);
     if (length/image->rows != bytes_per_line)
       ThrowBMPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    if (length >= (size_t) file_size)
-      ThrowBMPReaderException(CorruptImageError,InsufficientImageDataInFile,
-                              image);
+
+    /*
+      Check that file data is reasonable given claims by file header.
+      We do this before allocating raster memory to avoid DOS.
+    */
+    if ((bmp_info.compression == BI_RGB) ||
+        (bmp_info.compression == BI_BITFIELDS))
+      {
+        /*
+          Not compressed.
+        */
+        if (length >= (size_t) file_size)
+          ThrowBMPReaderException(CorruptImageError,InsufficientImageDataInFile,
+                                  image);
+      }
+    else if ((bmp_info.compression == BI_RLE4) ||
+             (bmp_info.compression == BI_RLE8))
+      {
+        /* RLE Compressed.  Assume a maximum compression ratio. */
+        if (((double) length/file_size) > 254.0)
+          ThrowBMPReaderException(CorruptImageError,InsufficientImageDataInFile,
+                                  image);
+      }
+
     pixels=MagickAllocateArray(unsigned char *,
                                Max(bytes_per_line,image->columns+1),
                                image->rows);
