@@ -1248,8 +1248,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       {
         if (image->previous)
           {
-            /* Recover from failure to read image in sequence */
-            (void) RemoveLastImageFromList(&image);
+            DeleteImageFromList(&image);
             ThrowException(exception,CorruptImageWarning,ImproperImageHeader,image->filename);
             break;
           }
