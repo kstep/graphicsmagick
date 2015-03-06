@@ -1,6 +1,10 @@
-2015-03-05  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-03-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* Fixed typo recently introduced in the JNG reader
+        * coders/png.c (ReadOnePNGImage): Make the free of
+	  quantum_scanline not depend upon the success or failure
+	  of MagickMonitorFormatted().
+
+	* coders/png.c: Fixed typo recently introduced in the JNG reader
           (status != MagickFalse should be status == MagickFalse).
 
 2015-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

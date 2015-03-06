@@ -2368,13 +2368,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
             }
 
+        MagickFreeMemory(quantum_scanline);
+
         if (image->previous == (Image *) NULL)
           if (QuantumTick(pass, num_passes))
             if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
                                         image->filename,
 	  			      image->columns,image->rows))
               break;
-        MagickFreeMemory(quantum_scanline);
       }
 
   if (image->storage_class == PseudoClass)
@@ -2640,14 +2641,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   */
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
+  {
+    CloseBlob(image);
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  }
   /*
     Allocate a MngInfo structure.
   */
   have_mng_structure=MagickFalse;
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
+  {
+    CloseBlob(image);
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  }
   /*
     Initialize members of the MngInfo structure.
   */
