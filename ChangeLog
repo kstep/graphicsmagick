@@ -1,3 +1,8 @@
+2015-03-05  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* Fixed typo recently introduced in the JNG reader
+          (status != MagickFalse should be status == MagickFalse).
+
 2015-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xwd.c (ReadXWDImage): Fix memory leaks in error paths.
