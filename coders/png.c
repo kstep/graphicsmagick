@@ -2251,6 +2251,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   else /* image->storage_class != DirectClass */
   {
+   image->matte=ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA;
+   quantum_scanline=MagickAllocateMemory(Quantum *,
+                                         (image->matte ?  2 : 1) *
+                                         image->columns*sizeof(Quantum));
+   if (quantum_scanline == (Quantum *) NULL)
+     png_error(ping, "Could not allocate quantum_scanline");
+   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "      Allocated quantum_scanline");
+
     for (pass=0; pass < num_passes; pass++)
       {
         register Quantum
@@ -2259,14 +2268,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         /*
           Convert grayscale image to PseudoClass pixel packets.
         */
-        image->matte=ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA;
-        quantum_scanline=MagickAllocateMemory(Quantum *,
-                                              (image->matte ?  2 : 1) *
-                                              image->columns*sizeof(Quantum));
-        if (quantum_scanline == (Quantum *) NULL)
-          png_error(ping, "Could not allocate quantum_scanline");
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "allocated quantum_scanline");
         for (y=0; y < (long) image->rows; y++)
           {
             register unsigned char
@@ -2373,24 +2374,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
             }
 
-#if 1
         if (image->previous == (Image *) NULL)
           if (QuantumTick(pass, num_passes))
             if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
                                         image->filename,
             			        image->columns,image->rows))
               break;
-#endif
-
-        MagickFreeMemory(quantum_scanline);
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Free'ed quantum_scanline at end of pass");
       }
 
-      /* In case we got here because of a break from the "pass" loop */
       MagickFreeMemory(quantum_scanline);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Free'ed quantum_scanline after last pass");
+          "      Free'ed quantum_scanline after last pass");
   }
 
   if (image->storage_class == PseudoClass)

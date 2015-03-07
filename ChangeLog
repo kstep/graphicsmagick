@@ -1,11 +1,12 @@
-2015-03-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+2015-03-07  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
         * coders/png.c (ReadOnePNGImage): Removed two superflous calls
 	  to CloseBlob().
 
-        * coders/png.c (ReadOnePNGImage): Make the free of
-	  quantum_scanline not depend upon the success or failure
-	  of MagickMonitorFormatted().
+        * coders/png.c (ReadOnePNGImage): Do the allocation and
+	  free of quantum_scanline outside the "pass" loop, i.e., do
+	  it once per image rather than once per pass while decoding
+	  interlaced PNG images.  Log these when -debug coders is enabled.
 
 	* coders/png.c: Fixed typo recently introduced in the JNG reader
           (status != MagickFalse should be status == MagickFalse).
