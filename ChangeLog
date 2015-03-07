@@ -1,5 +1,9 @@
 2015-03-07  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+        * coders/png.c (ReadOnePNGImage): Moved quantum_scanline
+	  and png_pixels into the MngInfo struct.  This prevents
+	  memory leaks when reading malformed PNG images.
+
         * coders/png.c (ReadOnePNGImage): Removed two superflous calls
 	  to CloseBlob().
 

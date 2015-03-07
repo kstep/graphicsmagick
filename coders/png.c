@@ -443,6 +443,12 @@ typedef struct _MngInfo
   PixelPacket
     mng_global_bkgd;
 
+  unsigned char
+    *png_pixels;
+
+  Quantum
+    *quantum_scanline;
+
 } MngInfo;
 #endif /* VER */
 
@@ -967,6 +973,8 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       MagickFreeMemory(mng_info->global_plte);
+      MagickFreeMemory(mng_info->quantum_scanline);
+      MagickFreeMemory(mng_info->png_pixels);
       MagickFreeMemory(mng_info);
       *have_mng_structure=MagickFalse;
     }
@@ -1288,12 +1296,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_textp
     text;
 
-  unsigned char
-    *png_pixels;
-
-  Quantum
-    *quantum_scanline;
-
   long
     y;
 
@@ -1376,18 +1378,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
-  png_pixels=(unsigned char *) NULL;
-  quantum_scanline=(Quantum *) NULL;
+  mng_info->png_pixels=(unsigned char *) NULL;
+  mng_info->quantum_scanline=(Quantum *) NULL;
 
   if (setjmp(png_jmpbuf(ping)))
     {
       /*
         PNG image is corrupt.
       */
-      MagickFreeMemory(png_pixels);
-      MagickFreeMemory(quantum_scanline);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "setjmp Free'ed quantum_scanline");
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
@@ -2029,7 +2027,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               "    Skipping PNG image data for scene %ld",
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-      MagickFreeMemory(png_pixels);
+      MagickFreeMemory(mng_info->png_pixels);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
@@ -2046,11 +2044,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "    Reading PNG IDAT chunk(s)");
   if (num_passes > 1)
-    png_pixels=MagickAllocateMemory(unsigned char *,
+    mng_info->png_pixels=MagickAllocateMemory(unsigned char *,
                                     ping_rowbytes*image->rows);
   else
-    png_pixels=MagickAllocateMemory(unsigned char *, ping_rowbytes);
-  if (png_pixels == (unsigned char *) NULL)
+    mng_info->png_pixels=MagickAllocateMemory(unsigned char *, ping_rowbytes);
+  if (mng_info->png_pixels == (unsigned char *) NULL)
     png_error(ping, "Could not allocate png_pixels array");
 
   if (logging)
@@ -2083,7 +2081,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else
               row_offset=0;
 
-            png_read_row(ping,png_pixels+row_offset,NULL);
+            png_read_row(ping,mng_info->png_pixels+row_offset,NULL);
 
 	    if (!SetImagePixels(image,0,y,image->columns,1))
               break;
@@ -2098,7 +2096,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   *p,
                   *r;
 
-                r=png_pixels+row_offset;
+                r=mng_info->png_pixels+row_offset;
                 p=r;
                 if (ping_colortype == PNG_COLOR_TYPE_GRAY)
                   {
@@ -2168,14 +2166,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               }
             if (depth == 8 && ping_colortype == PNG_COLOR_TYPE_GRAY)
               (void) ImportImagePixelArea(image,(QuantumType) GrayQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
             else if (ping_colortype == PNG_COLOR_TYPE_GRAY)
               {
                 image->depth=8;
                 (void) ImportImagePixelArea(image,
                                            (QuantumType) GrayQuantum,
-                                            image->depth,png_pixels+
+                                            image->depth,mng_info->png_pixels+
                                             row_offset,0,0);
                 image->depth=depth;
               }
@@ -2184,19 +2182,19 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 image->depth=8;
                 (void) ImportImagePixelArea(image,
                                            (QuantumType) GrayAlphaQuantum,
-                                            image->depth,png_pixels+
+                                            image->depth,mng_info->png_pixels+
                                             row_offset,0,0);
                 image->depth=depth;
               }
             else if (depth == 8 && ping_colortype == PNG_COLOR_TYPE_RGB)
               (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
             else if (ping_colortype == PNG_COLOR_TYPE_RGB)
               {
                 image->depth=8;
                 (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
-                                            image->depth,png_pixels+
+                                            image->depth,mng_info->png_pixels+
                                             row_offset,0,0);
                 image->depth=depth;
               }
@@ -2204,37 +2202,37 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               {
                 image->depth=8;
                 (void) ImportImagePixelArea(image,(QuantumType) RGBAQuantum,
-                                            image->depth,png_pixels+
+                                            image->depth,mng_info->png_pixels+
                                             row_offset,0,0);
                 image->depth=depth;
               }
             else if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
               (void) ImportImagePixelArea(image,(QuantumType) IndexQuantum,
-                                          ping_bit_depth,png_pixels+
+                                          ping_bit_depth,mng_info->png_pixels+
                                           row_offset,0,0);
                                           /* FIXME, sample size ??? */
 #else /* (QuantumDepth != 8) */
 
             if (ping_colortype == PNG_COLOR_TYPE_GRAY)
               (void) ImportImagePixelArea(image,(QuantumType) GrayQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
             else if (ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA)
               (void) ImportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
             else if (ping_colortype == PNG_COLOR_TYPE_RGB_ALPHA)
               (void) ImportImagePixelArea(image,(QuantumType) RGBAQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
             else if (ping_colortype == PNG_COLOR_TYPE_PALETTE)
               (void) ImportImagePixelArea(image,(QuantumType) IndexQuantum,
-                                          ping_bit_depth,png_pixels+
+                                          ping_bit_depth,mng_info->png_pixels+
                                           row_offset,0,0);
                                           /* FIXME, sample size ??? */
             else
               (void) ImportImagePixelArea(image,(QuantumType) RGBQuantum,
-                                          image->depth,png_pixels+
+                                          image->depth,mng_info->png_pixels+
                                           row_offset,0,0);
 #endif
             if (!SyncImagePixels(image))
@@ -2252,10 +2250,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else /* image->storage_class != DirectClass */
   {
    image->matte=ping_colortype == PNG_COLOR_TYPE_GRAY_ALPHA;
-   quantum_scanline=MagickAllocateMemory(Quantum *,
-                                         (image->matte ?  2 : 1) *
-                                         image->columns*sizeof(Quantum));
-   if (quantum_scanline == (Quantum *) NULL)
+   mng_info->quantum_scanline=MagickAllocateMemory(Quantum *,
+      (image->matte ?  2 : 1) * image->columns*sizeof(Quantum));
+   if (mng_info->quantum_scanline == (Quantum *) NULL)
      png_error(ping, "Could not allocate quantum_scanline");
    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                          "      Allocated quantum_scanline");
@@ -2279,7 +2276,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             else
               row_offset=0;
 
-            png_read_row(ping,png_pixels+row_offset,NULL);
+            png_read_row(ping,mng_info->png_pixels+row_offset,NULL);
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -2288,8 +2285,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               continue;
 
             indexes=AccessMutableIndexes(image);
-            p=png_pixels+row_offset;
-            r=quantum_scanline;
+            p=mng_info->png_pixels+row_offset;
+            r=mng_info->quantum_scanline;
             switch (ping_bit_depth)
               {
               case 8:
@@ -2365,7 +2362,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             /*
               Transfer image scanline.
             */
-            r=quantum_scanline;
+            r=mng_info->quantum_scanline;
 
             for (x=0; x < (long) image->columns; x++)
               indexes[x]=(*r++);
@@ -2382,7 +2379,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
       }
 
-      MagickFreeMemory(quantum_scanline);
+      MagickFreeMemory(mng_info->quantum_scanline);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "      Free'ed quantum_scanline after last pass");
   }
@@ -2395,10 +2392,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (long) image_info->first_scene && image->delay != 0.)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-      MagickFreeMemory(png_pixels);
-      MagickFreeMemory(quantum_scanline);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Free'ed quantum_scanline");
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
@@ -2599,7 +2592,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Free memory.
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
-  MagickFreeMemory(png_pixels);
+  MagickFreeMemory(mng_info->png_pixels);
 
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
   UnlockSemaphoreInfo(png_semaphore);
