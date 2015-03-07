@@ -1,5 +1,8 @@
 2015-03-06  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+        * coders/png.c (ReadOnePNGImage): Removed two superflous calls
+	  to CloseBlob().
+
         * coders/png.c (ReadOnePNGImage): Make the free of
 	  quantum_scanline not depend upon the success or failure
 	  of MagickMonitorFormatted().

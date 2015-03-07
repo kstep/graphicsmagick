@@ -2642,7 +2642,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
   {
-    CloseBlob(image);
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   }
   /*
@@ -2652,7 +2651,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   mng_info=MagickAllocateMemory(MngInfo *,sizeof(MngInfo));
   if (mng_info == (MngInfo *) NULL)
   {
-    CloseBlob(image);
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   }
   /*
