@@ -1384,12 +1384,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       /*
         PNG image is corrupt.
       */
+      MagickFreeMemory(png_pixels);
+      MagickFreeMemory(quantum_scanline);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "setjmp Free'ed quantum_scanline");
       png_destroy_read_struct(&ping,&ping_info,&end_info);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
-      MagickFreeMemory(png_pixels);
-      MagickFreeMemory(quantum_scanline);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "  exit ReadOnePNGImage() with error.");
@@ -2248,6 +2250,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       }
 
   else /* image->storage_class != DirectClass */
+  {
     for (pass=0; pass < num_passes; pass++)
       {
         register Quantum
@@ -2262,6 +2265,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                                               image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           png_error(ping, "Could not allocate quantum_scanline");
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "allocated quantum_scanline");
         for (y=0; y < (long) image->rows; y++)
           {
             register unsigned char
@@ -2368,15 +2373,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               break;
             }
 
-        MagickFreeMemory(quantum_scanline);
-
+#if 1
         if (image->previous == (Image *) NULL)
           if (QuantumTick(pass, num_passes))
             if (!MagickMonitorFormatted(pass,num_passes,exception,LoadImageTag,
                                         image->filename,
-	  			      image->columns,image->rows))
+            			        image->columns,image->rows))
               break;
+#endif
+
+        MagickFreeMemory(quantum_scanline);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Free'ed quantum_scanline at end of pass");
       }
+
+      /* In case we got here because of a break from the "pass" loop */
+      MagickFreeMemory(quantum_scanline);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Free'ed quantum_scanline after last pass");
+  }
 
   if (image->storage_class == PseudoClass)
     (void) SyncImage(image);
@@ -2387,6 +2402,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       MagickFreeMemory(png_pixels);
+      MagickFreeMemory(quantum_scanline);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Free'ed quantum_scanline");
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
