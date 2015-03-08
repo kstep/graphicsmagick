@@ -1642,6 +1642,16 @@ void Magick::Image::reduceNoise ( const double order_ )
   throwImageException( exceptionInfo );
 }
 
+void Magick::Image::repage()
+{
+  modifyImage();
+  options()->page(Geometry());
+  image()->page.width = 0U;
+  image()->page.height = 0U;
+  image()->page.x = 0;
+  image()->page.y = 0;
+}
+
 // Resize image, specifying geometry, filter, and blur
 void Magick::Image::resize ( const Geometry &geometry_,
                              const FilterTypes filterType_,

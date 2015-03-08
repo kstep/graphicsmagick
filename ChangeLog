@@ -1,3 +1,8 @@
+2015-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/Image.cpp (repage): New method to reset page
+	settings.  Contributed by Dirk Lemstra.
+
 2015-03-07  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Moved quantum_scanline

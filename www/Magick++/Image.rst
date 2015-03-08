@@ -2346,6 +2346,13 @@ profile)::
 
     RenderingIntent renderingIntent ( void ) const
 
+repage
+++++++
+
+Reset the image page canvas and position::
+
+    void            repage();
+
 resolutionUnits
 +++++++++++++++
 
