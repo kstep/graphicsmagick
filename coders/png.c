@@ -1414,11 +1414,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_set_user_limits(ping,
     (png_uint_32) Min(0x7fffffffL, GetMagickResourceLimit(WidthResource)),
     (png_uint_32) Min(0x7fffffffL, GetMagickResourceLimit(HeightResource)));
+#endif /* PNG_SET_USER_LIMITS_SUPPORTED */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                             "    PNG width limit: %lu, height limit: %lu",
     (unsigned long) Min(0x7fffffffL, GetMagickResourceLimit(WidthResource)),
     (unsigned long) Min(0x7fffffffL, GetMagickResourceLimit(HeightResource)));
-#endif /* PNG_SET_USER_LIMITS_SUPPORTED */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "    PNG pixels limit: %lu",
+    (unsigned long) GetMagickResourceLimit(PixelsResource));
 
   /*
     Prepare PNG for reading.
@@ -1549,6 +1552,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                             ping_interlace_method,
                             ping_filter_method);
     }
+
+  /* Too big? */
+  if (ping_width > GetMagickResourceLimit(PixelsResource)/ping_height)
+  {
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Number of pixels exceeds resource limit");
+    png_error(ping, "Number of pixels exceeds resource limit");
+  }
 
   if (ping_bit_depth < 8)
     {
