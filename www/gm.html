@@ -2550,10 +2550,10 @@ information contained in the file:</font></td></tr></table>
      %[EXIF:&lt;tag&gt;]
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Where "&lt;tag&gt;" can be one of the following:</font></td></tr></table>
+Where "&lt;tag&gt;" may be one of the following:</font></td></tr></table>
 <pre>
      *  (print all Exif tags, in keyword=data format)
-     !  (print all Exif tags, in tag_number data format)
+     !  (print all Exif tags, in tag_number format)
      #hhhh (print data for Exif tag #hhhh)
      ImageWidth
      ImageLength
@@ -2638,6 +2638,27 @@ Where "&lt;tag&gt;" can be one of the following:</font></td></tr></table>
      FileSource
      SceneType
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+JPEG specific information (from reading a JPEG file) may be obtained
+like this:</font></td></tr></table>
+<pre>
+     %[JPEG-&lt;tag&gt;]
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Where "&lt;tag&gt;" may be one of the following:</font></td></tr></table>
+<pre>
+     *                 (all JPEG-related tags, in
+                        keyword=data format)
+     Quality           IJG JPEG "quality" estimate
+     Colorspace        JPEG colorspace numeric ID
+     Colorspace-Name   JPEG colorspace name
+     Sampling-factors  JPEG sampling factors
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Please note that JPEG has no notion of "quality" and that the quality
+metric used by, and estimated by the software is based on the quality
+metric established by IJG JPEG 6b.  Other encoders (e.g. that used by
+Adobe Photoshop) use different encoding metrics.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Surround the format specification with quotation marks to prevent your shell
 from misinterpreting any spaces and square brackets.</font></td></tr></table>

@@ -1,4 +1,4 @@
-.TH gm 1 "2015/02/08" "GraphicsMagick"
+.TH gm 1 "2015/03/10" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2334,10 +2334,10 @@ information contained in the file:
      %[EXIF:<tag>]
 
 
-Where "<tag>" can be one of the following:
+Where "<tag>" may be one of the following:
 
      *  (print all Exif tags, in keyword=data format)
-     !  (print all Exif tags, in tag_number data format)
+     !  (print all Exif tags, in tag_number format)
      #hhhh (print data for Exif tag #hhhh)
      ImageWidth
      ImageLength
@@ -2422,6 +2422,27 @@ Where "<tag>" can be one of the following:
      FileSource
      SceneType
 
+
+JPEG specific information (from reading a JPEG file) may be obtained
+like this:
+
+     %[JPEG-<tag>]
+
+
+Where "<tag>" may be one of the following:
+
+     *                 (all JPEG-related tags, in
+                        keyword=data format)
+     Quality           IJG JPEG "quality" estimate
+     Colorspace        JPEG colorspace numeric ID
+     Colorspace-Name   JPEG colorspace name
+     Sampling-factors  JPEG sampling factors
+
+
+Please note that JPEG has no notion of "quality" and that the quality
+metric used by, and estimated by the software is based on the quality
+metric established by IJG JPEG 6b.  Other encoders (e.g. that used by
+Adobe Photoshop) use different encoding metrics.
 
 Surround the format specification with quotation marks to prevent your shell
 from misinterpreting any spaces and square brackets.
