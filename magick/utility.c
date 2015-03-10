@@ -6098,11 +6098,20 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
       case 'Q':
       {
         /* Compression quality */
+        attribute=GetImageAttribute(image,"JPEG-Quality");
+        if (attribute != (ImageAttribute *) NULL)
+          {
+            q+=(translate)(q,attribute->value,MaxTextExtent);
+            break;
+          }
         if (image_info != (const ImageInfo *) NULL)
           {
             FormatString(buffer,"%lu",image_info->quality);
             q+=(translate)(q,buffer,MaxTextExtent);
+            break;
           }
+        FormatString(buffer,"%lu",DefaultCompressionQuality);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'T':

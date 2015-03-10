@@ -1,5 +1,9 @@
 2015-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (TranslateTextEx): -format %Q should report
+	JPEG quality estimate if it is available.  Resolves SourceForge
+	bug #293 "gm identify bug?".
+
 	* doc/options.imdoc: Documented JPEG-specific -format tags.
 
 2015-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
