@@ -1,3 +1,11 @@
+2015-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc (-geometry): Document the significance of 'x'
+	as used in a geometry specification.  In particular, document that
+	if width is specified without a trailing 'x' that height is set to
+	width.  This is in response to SourceForge bug #296 "Strange
+	-resize WIDTH results with version 1.3.21".
+
 2015-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GlobExpression): Remove use of IsSubimage().

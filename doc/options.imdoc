@@ -2609,11 +2609,28 @@ Use the given radius and standard deviation (sigma).</pp>
 <!-- -geometry is also accepted, but not used, by identify -->
 <dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}</opt>
 
-<abs>preferred size and location of the Image window.</abs>
+<abs>Specify dimension, offset, and resize options.</abs>
 
 <pp>
-By default, the window size is the image size and the location is
-chosen by you when it is mapped.</pp>
+The <s>-geometry</s> option is used for a number of different
+purposes, depending on the utility it is used with.</pp>
+
+<pp
+For the X11 commands ('animate', 'display', and 'import'), it
+specifies the preferred size and location of the Image window.  By
+default, the window size is the image size and the location is chosen
+by you (or your window manager) when it is mapped.</pp>
+
+<pp> For the 'import', 'convert', 'mogrify' utility commands it may be
+used to specify the desired size when resizing an image.  In this
+case, symbols representing resize options may be appended to the
+geometry string to influence how the resize request is treated.</pp>
+
+<pp>
+See later notes corresponding to usage by particular commands.  The
+following notes apply to when <s>-geometry</s> is used to express a
+resize request, taking into account the current properties of the
+image.</pp>
 
 <pp>
 By default, the width and height are maximum values. That is, the
@@ -2632,10 +2649,13 @@ exactly the size you specify. For example, if you specify
 480.</pp>
 
 <pp>
-If only the width is specified, the width assumes the
-value and the height is chosen to maintain the aspect ratio of the image.
-Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
-the width is chosen to maintain the aspect ratio.</pp>
+If only the width is specified, without the trailing 'x', then height
+is set to width (e.g., <tt>-geometry 100</tt> is the same as
+<tt>-geometry 100x100</tt>).  If only the width is specified but with
+the trailing 'x', then width assumes the value and the height is
+chosen to maintain the aspect ratio of the image.  Similarly, if only
+the height is specified prefixed by 'x' (e.g., <tt>-geometry
+x256</tt>), the width is chosen to maintain the aspect ratio.</pp>
 
 <pp>
 To specify a percentage width or height instead, append %. The image size

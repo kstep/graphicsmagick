@@ -1,4 +1,4 @@
-.TH gm 1 "2015/03/10" "GraphicsMagick"
+.TH gm 1 "2015/03/11" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -2501,10 +2501,24 @@ but not set as an image attribute (e.g. PNG images).
 Use the given radius and standard deviation (sigma).
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 
-By default, the window size is the image size and the location is
-chosen by you when it is mapped.
+The \fB-geometry\fP option is used for a number of different
+purposes, depending on the utility it is used with.
+<pp
+For the X11 commands ('animate', 'display', and 'import'), it
+specifies the preferred size and location of the Image window.  By
+default, the window size is the image size and the location is chosen
+by you (or your window manager) when it is mapped.
+ For the 'import', 'convert', 'mogrify' utility commands it may be
+used to specify the desired size when resizing an image.  In this
+case, symbols representing resize options may be appended to the
+geometry string to influence how the resize request is treated.
+
+See later notes corresponding to usage by particular commands.  The
+following notes apply to when \fB-geometry\fP is used to express a
+resize request, taking into account the current properties of the
+image.
 
 By default, the width and height are maximum values. That is, the
 image is expanded or contracted to fit the width and height value
@@ -2519,10 +2533,13 @@ exactly the size you specify. For example, if you specify
 640x480! the image width is set to 640 pixels and height to
 480.
 
-If only the width is specified, the width assumes the
-value and the height is chosen to maintain the aspect ratio of the image.
-Similarly, if only the height is specified (e.g., -geometry x256),
-the width is chosen to maintain the aspect ratio.
+If only the width is specified, without the trailing 'x', then height
+is set to width (e.g., -geometry 100 is the same as
+-geometry 100x100).  If only the width is specified but with
+the trailing 'x', then width assumes the value and the height is
+chosen to maintain the aspect ratio of the image.  Similarly, if only
+the height is specified prefixed by 'x' (e.g., -geometry
+x256), the width is chosen to maintain the aspect ratio.
 
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -4988,7 +5005,7 @@ Options, above.
 \fRlevel of gamma correction
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -5755,7 +5772,7 @@ Options, above.
 \fRuse this font when annotating the image with text
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.
@@ -6735,7 +6752,7 @@ Options, above.
 \fRblur the image with a Gaussian operator
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.
@@ -7254,7 +7271,7 @@ Options, above.
 \fRlevel of gamma correction
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -9410,7 +9427,7 @@ Options, above.
 \fRinclude the X window frame in the imported image
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -9697,7 +9714,7 @@ Options, above.
 \fRblur the image with a Gaussian operator
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.
@@ -10167,7 +10184,7 @@ Options, above.
 \fRlevel of gamma correction
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{^}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
+\fRSpecify dimension, offset, and resize options.
 .TP
 .B "-gravity \fI<type>"\fP
 \fRdirection primitive  gravitates to when annotating the image.

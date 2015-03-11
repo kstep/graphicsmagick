@@ -2765,10 +2765,24 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-geometry"></a>-geometry <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-By default, the window size is the image size and the location is
-chosen by you when it is mapped.</font></td></tr></table>
+The <strong>-geometry</strong> option is used for a number of different
+purposes, depending on the utility it is used with.</font></td></tr></table>
+&lt;pp
+For the X11 commands ('animate', 'display', and 'import'), it
+specifies the preferred size and location of the Image window.  By
+default, the window size is the image size and the location is chosen
+by you (or your window manager) when it is mapped.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1"> For the 'import', 'convert', 'mogrify' utility commands it may be
+used to specify the desired size when resizing an image.  In this
+case, symbols representing resize options may be appended to the
+geometry string to influence how the resize request is treated.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+See later notes corresponding to usage by particular commands.  The
+following notes apply to when <strong>-geometry</strong> is used to express a
+resize request, taking into account the current properties of the
+image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, the width and height are maximum values. That is, the
 image is expanded or contracted to fit the width and height value
@@ -2783,10 +2797,13 @@ exactly the size you specify. For example, if you specify
 <tt>640x480!</tt> the image width is set to 640 pixels and height to
 480.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If only the width is specified, the width assumes the
-value and the height is chosen to maintain the aspect ratio of the image.
-Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
-the width is chosen to maintain the aspect ratio.</font></td></tr></table>
+If only the width is specified, without the trailing 'x', then height
+is set to width (e.g., <tt>-geometry 100</tt> is the same as
+<tt>-geometry 100x100</tt>).  If only the width is specified but with
+the trailing 'x', then width assumes the value and the height is
+chosen to maintain the aspect ratio of the image.  Similarly, if only
+the height is specified prefixed by 'x' (e.g., <tt>-geometry
+x256</tt>), the width is chosen to maintain the aspect ratio.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -6562,7 +6579,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8140,7 +8157,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9768,7 +9785,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11330,7 +11347,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14832,7 +14849,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -15788,7 +15805,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -17242,7 +17259,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
