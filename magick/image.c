@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -90,6 +90,12 @@ const char
 
 const unsigned long
   DefaultCompressionQuality = 75;
+
+static MagickPassFail
+MagickParseSubImageSpecification(const char *subimage_spec,
+                                 unsigned long *subimage_ptr,
+                                 unsigned long *subrange_ptr,
+                                 MagickBool allow_geometry);
 
 /* Round floating value to an integer */
 #define RndToInt(value) ((int)((value)+0.5))
@@ -1647,45 +1653,42 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsSubimage returns True if the geometry is a valid subimage
-%  specification (e.g. [1], [1-9], [1,7,4]).
+%  Method IsSubimage returns True if the specification string is a valid
+%  subimage specification (e.g. [1], [1-9], [1,7,4]).  Subimage
+%  specifications may appear between brackets in filename specifications
+%  similar to filename[specification] and this function checks the
+%  validity of the specification part.
 %
 %  The format of the IsSubimage method is:
 %
-%      unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
+%      MagickBool IsSubimage(const char *specification,
+%                            const MagickBool allow_geometry)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method IsSubimage returns True if the geometry is a valid
 %      subimage specification otherwise False is returned.
 %
-%    o geometry: This string is the geometry specification.
+%    o specification: Subimage specification string
 %
-%    o pedantic: A value other than 0 invokes a more restriction set of
-%      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
+%    o allow_geometry: A value other than 0 also allows the
+$      specification to be in the form of a geometry string (WxH+x+y).
 %
 %
 */
-MagickExport unsigned int IsSubimage(const char *geometry,
-  const unsigned int pedantic)
+MagickExport MagickBool IsSubimage(const char *spec,
+                                   const MagickBool allow_geometry)
 {
-  long
-    x,
-    y;
-
-  unsigned int
-    flags;
-
   unsigned long
-    height,
-    width;
+    subimage,
+    subrange;
 
-  if (geometry == (const char *) NULL)
-    return(False);
-  flags=GetGeometry((char *) geometry,&x,&y,&width,&height);
-  if (pedantic)
-    return((flags != NoValue) && !(flags & HeightValue));
-  return(IsGeometry(geometry) && !(flags & HeightValue));
+  if (spec == (const char *) NULL)
+    return False;
+  return MagickParseSubImageSpecification(spec,
+                                          &subimage,
+                                          &subrange,
+                                          allow_geometry);
 }
 
 /*
@@ -2410,13 +2413,136 @@ MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth
 %
 %
 */
-
 static MagickPassFail
-ParseSubImageSpecification(char *filename,
-			   char **tile_ptr,
-			   unsigned long *subimage_ptr,
-			   unsigned long *subrange_ptr,
-			   ExceptionInfo *exception)
+MagickParseSubImageSpecification(const char *subimage_spec,
+                                 unsigned long *subimage_ptr,
+                                 unsigned long *subrange_ptr,
+                                 MagickBool allow_geometry)
+{
+  char
+    spec[MaxTextExtent];
+
+  MagickPassFail
+    status=MagickPass;
+
+  /*
+    Example of supported formats (as per documentation):
+
+    4
+    2,7,4
+    4-7
+    320x256+50+50  (only if allow_geometry)
+  */
+
+  assert(subimage_spec != (const char *) NULL);
+  assert(subimage_ptr != (unsigned long *) NULL);
+  assert(subrange_ptr != (unsigned long *) NULL);
+
+  (void) strlcpy(spec,subimage_spec,sizeof(spec));
+  
+  do
+    {
+      const char
+        *digits;
+
+      char
+        *q;
+
+      unsigned long
+        subimage=0,
+        subrange=0;
+
+      unsigned long
+        first,
+        last;
+
+      long
+        value;
+
+      digits=spec;
+      q=0;
+      value=strtol(digits,&q,10);
+      if (q <= digits) /* Parse error */
+        {
+          status=MagickFail;
+          break;
+        }
+
+      subimage=value;
+      subrange=subimage;
+
+      for (q=spec; *q != '\0'; )
+        {
+          while (isspace((int)(unsigned char) *q) || (*q == ','))
+            q++;
+          digits=q;
+          value=strtol(digits,&q,10);
+          if (q <= digits) /* Parse error */
+            break;
+          first=value;
+          last=first;
+          while (isspace((int)(unsigned char) *q))
+            q++;
+          if (*q == '-')
+            {
+              digits=q+1;
+              value=strtol(digits,&q,10);
+              if (q <= digits) /* Parse error */
+                break;
+              last=value;
+            }
+          else if ((*q != ',') && (*q != '\0'))
+            {
+              break; /* Parse error */
+            }
+          if (first > last)
+            Swap(first,last);
+          if (first < subimage)
+            subimage=first;
+          if (last > subrange)
+            subrange=last;
+        }
+      if (*q == '\0')
+        {
+          subrange -= subimage-1;
+          *subimage_ptr=subimage;
+          *subrange_ptr=subrange;
+          status=MagickPass;
+        }
+      else if (allow_geometry)
+        {
+          long
+            x,
+            y;
+          
+          unsigned int
+            flags;
+          
+          unsigned long
+            height,
+            width;
+          
+          /* Require Width and Height */
+          flags=GetGeometry((char *) spec,&x,&y,&width,&height);
+          if ((flags & WidthValue) && (flags & HeightValue))
+            status=MagickPass;
+          else
+            status=MagickFail;
+        }
+      else
+        {
+          status=MagickFail;
+        }
+    } while (0);
+
+  return status;
+}
+static MagickPassFail
+ParseSubImageFileSpecification(char *filename,
+                               char **tile_ptr,
+                               unsigned long *subimage_ptr,
+                               unsigned long *subrange_ptr,
+                               ExceptionInfo *exception)
 {
   char
     *spec_start,
@@ -2441,101 +2567,38 @@ ParseSubImageSpecification(char *filename,
       (filename[filename_length-1] == ']') &&
       ((spec_start=strrchr(filename,'[')) != (const char *) NULL))
     {
-      const char
-	*digits;
-
       char
-	spec[MaxTextExtent],
-	*q;
+	spec[MaxTextExtent];
 
-      unsigned long
-	subimage=0,
-	subrange=0;
+      /*
+        Example of supported formats (as per documentation):
 
-      unsigned long
-	first,
-	last;
-
-      long
-	value;
+        4
+        2,7,4
+        4-7
+        320x256+50+50
+      */
 
       spec_end=&filename[filename_length-1];
       spec_start++;
       (void) strlcpy(spec,spec_start,sizeof(spec));
       spec[spec_end-spec_start]='\0';
-
-      /*
-	Example of supported formats (as per documentation):
-
-	4
-	2,7,4
-	4-7
-	320x256+50+50
-      */
-
-      digits=spec;
-      q=0;
-      value=strtol(digits,&q,10);
-      if (q <= digits) /* Parse error */
-	goto invalid_subimage_specification;
-
-      subimage=value;
-      subrange=subimage;
-      (void) CloneString(tile_ptr,spec);
-
-      for (q=spec; *q != '\0'; )
-	{
-	  while (isspace((int)(unsigned char) *q) || (*q == ','))
-	    q++;
-	  digits=q;
-	  value=strtol(digits,&q,10);
-	  if (q <= digits) /* Parse error */
-	    break;
-	  first=value;
-	  last=first;
-	  while (isspace((int)(unsigned char) *q))
-	    q++;
-	  if (*q == '-')
-	    {
-	      digits=q+1;
-	      value=strtol(digits,&q,10);
-	      if (q <= digits) /* Parse error */
-		break;
-	      last=value;
-	    }
-	  else if ((*q != ',') && (*q != '\0'))
-	    {
-	      break; /* Parse error */
-	    }
-	  if (first > last)
-	    Swap(first,last);
-	  if (first < subimage)
-	    subimage=first;
-	  if (last > subrange)
-	    subrange=last;
-	}
-      if (*q == '\0')
-	{
-	  subrange -= subimage-1;
-	  *subimage_ptr=subimage;
-	  *subrange_ptr=subrange;
-	  status=MagickPass;
-	}
-      else if (IsGeometry(spec))
-	{
-	  status=MagickPass;
-	}
+      if (MagickParseSubImageSpecification(spec,subimage_ptr,subrange_ptr,
+                                           MagickTrue))
+        {
+          status=MagickPass;
+        }
       else
-	{
-	invalid_subimage_specification:
-	  ThrowException(exception,OptionError,
+        {
+          status=MagickFail;
+          ThrowException(exception,OptionError,
 			 InvalidSubimageSpecification,spec);
-	  status=MagickFail;
-	}
+        }
       if (status == MagickPass)
 	{
 	  /* Truncate filename */
 	  *(spec_start-1)='\0';
+          (void) CloneString(tile_ptr,spec);
 	}
 #if 0
       fprintf(stderr,"subimage=%lu subrange=%lu tile=\"%s\"\n",
@@ -2634,11 +2697,11 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
       */
       if (*p == ']' && !IsAccessibleNoLogging(image_info->filename))
 	{
-	  (void) ParseSubImageSpecification(image_info->filename,
-					    &image_info->tile,
-					    &image_info->subimage,
-					    &image_info->subrange,
-					    exception);
+	  (void) ParseSubImageFileSpecification(image_info->filename,
+                                                &image_info->tile,
+                                                &image_info->subimage,
+                                                &image_info->subrange,
+                                                exception);
 	}
     }
 

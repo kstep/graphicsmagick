@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2014 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -391,6 +391,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       clone_info->blob=(void *) NULL;
       clone_info->length=0;
       clone_info->magick[0]='\0';
+      clone_info->subimage=0;
+      clone_info->subrange=0;
+      MagickFreeMemory(clone_info->tile);
       image=ReadImage(clone_info,exception);
     }
   (void) LiberateTemporaryFile(postscript_filename);
@@ -413,6 +416,16 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	} while (next_image != (Image *) NULL);
       while (image->previous != (Image *) NULL)
 	image=image->previous;
+      if (image_info->subimage != 0)
+        {
+          unsigned long
+            scene = image_info->subimage;
+
+          for (next_image=image;
+               next_image != (Image *) NULL;
+               next_image=next_image->next)
+            next_image->scene = scene++;
+        }
     }
   return(image);
 }

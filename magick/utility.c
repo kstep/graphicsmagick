@@ -2660,8 +2660,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 MagickExport int GlobExpression(const char *expression,const char *pattern)
 {
   unsigned int
-    done,
-    exempt;
+    done;
 
   /*
     Return on empty pattern or '*'.
@@ -2672,29 +2671,6 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
     return(True);
   if (LocaleCompare(pattern,"*") == 0)
     return(True);
-  if ((strchr(pattern,'[') != (char *) NULL) && IsSubimage(pattern+1,False))
-    {
-      ExceptionInfo
-        exception;
-
-      ImageInfo
-        *image_info;
-
-      /*
-        Determine if pattern is a subimage, i.e. img0001.pcd[2].
-      */
-      image_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strlcpy(image_info->filename,pattern,MaxTextExtent);
-      GetExceptionInfo(&exception);
-      (void) SetImageInfo(image_info,SETMAGICK_READ,&exception);
-      DestroyExceptionInfo(&exception);
-      exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
-        (image_info->subimage &&
-        (LocaleCompare(expression,image_info->filename) == 0));
-      DestroyImageInfo(image_info);
-      if (exempt)
-        return(False);
-    }
   /*
     Evaluate glob expression.
   */

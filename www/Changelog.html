@@ -38,6 +38,14 @@
 <p>2015-03-10  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/utility.c (GlobExpression): Remove use of IsSubimage().</li>
+<li>magick/image.c (IsSubimage): Re-implement with a more robust
+solution.  Combined with fixes to ps.c and pdf.c, allows selecting
+specific pages, as well as re-ordering.</li>
+<li>coders/ps.c (ReadPSImage): Set image frame scene ids
+appropriately.</li>
+<li>coders/pdf.c (ReadPDFImage): Set image frame scene ids
+appropriately.</li>
 <li>magick/utility.c (TranslateTextEx): -format %Q should report
 JPEG quality estimate if it is available.  Resolves SourceForge
 bug #293 &quot;gm identify bug?&quot;.</li>

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1603,8 +1603,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: frames=%lu cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+                              GetImageListLength(image),
 			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
@@ -1703,8 +1704,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
       if (image != (Image *) NULL)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Returned from \"%.1024s\" decoder: cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
+          "Returned from \"%.1024s\" decoder: frames=%lu cache=%s monochrome=%s grayscale=%s class=%s colorspace=%s",
                               magick_info->name,
+                              GetImageListLength(image),
 			      (GetPixelCachePresent(image) ? "present" : "missing"),
                               MagickBoolToString(image->is_monochrome),
                               MagickBoolToString(image->is_grayscale),
@@ -1753,6 +1755,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (GetBlobTemporary(image))
     RemoveTemporaryInputFile(clone_info);
+
   if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char
