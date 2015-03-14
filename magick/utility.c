@@ -2295,8 +2295,25 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetPathComponent returns the parent directory name, filename,
-%  basename, or extension of a file path.
+%  basename, or extension of a file path.  File paths are in the form:
 %
+%     magick:base.ext[subimage]
+%
+%  Similar to
+%
+%      jpg:bar
+%      jpg:foo.bar
+%      pdf:foo.pdf[2-3]
+%      foo.pdf[2-3]
+%      C:\path\foo.bar
+%      /path/foo.bar
+%      pdf:C:\path\foo.pdf[2-3]
+%
+%  Note that Windows drive letters may be part of paths on Windows systems
+%  and such paths include a colon.  Path components in real file paths may
+%  include a colon and the file might not exist yet (or ever) so testing
+%  for it is not reliable.  This means that determination of the "magick"
+%  part is ambiguous and not reliable.
 %
 %  The format of the GetPathComponent function is:
 %
