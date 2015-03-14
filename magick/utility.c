@@ -1026,7 +1026,7 @@ MagickExport MagickPassFail ExpandFilenames(int *argc,char ***argv)
       */
       GetPathComponent(option,TailPath,filename);
       if ((!IsGlob(filename)) || IsAccessibleNoLogging(option))
-	continue;
+        continue;
 
       /* Chop the option to get its other filename components. */
       GetPathComponent(option,MagickPath,magick);
@@ -2383,8 +2383,10 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   if ((p > component) && (*--p == ']'))
     {
       /* Look for a '[' matching the ']' */
-      while ((p > component) && (*p != '[') &&
-             (strchr("0123456789xX,-+ ", (int)(unsigned char)*p) != 0))
+      p--;
+      while ((p > component) &&
+             (*p != '[') &&
+             (strchr("0123456789xX,-+ ", (int)(unsigned char)*p) != 0) )
         p--;
 
       /* Copy to subimage and remove from component */
@@ -2404,11 +2406,14 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   {
     case MagickPath:
     {
+      /* this only includes the magick override prefix (if any) */
       (void)strcpy(component,magick);
       break;
     }
     case SubImagePath:
     {
+      /* this returns only the subimage specification, including
+         bracketing '[]', (if any) */
       (void)strcpy(component,subimage);
       break;
     }
@@ -2419,7 +2424,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     }
     case RootPath:
     {
-      /* this returns the path as well as the name of the file */
+      /* this returns the path including the file part with no extension */
       for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
           break;

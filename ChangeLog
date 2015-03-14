@@ -1,3 +1,9 @@
+2015-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetPathComponent): Fix SubImagePath
+	extraction. Fixes SourceForge bug #66 "converting runs slowly when
+	subimage is specified".
+
 2015-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc (-geometry): Document the significance of 'x'
