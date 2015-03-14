@@ -2709,46 +2709,50 @@ SetImageInfo(ImageInfo *image_info,const unsigned int flags,
     Look for explicit 'format:image' in filename.
   */
   image_info->affirm=False;
-  p=image_info->filename;
-  while (isalnum((int) *p))
-    p++;
-  if ((*p == ':') && ((p-image_info->filename) < (long) sizeof(magic)))
+  if ((image_info->filename[0]) &&
+      (!IsAccessibleNoLogging(image_info->filename)))
     {
-      char
-        format[MaxTextExtent];
-
-      /*
-        User specified image format.
-      */
-      (void) strncpy(format,image_info->filename,p-image_info->filename);
-      format[p-image_info->filename]='\0';
-
-      /*
-        Backward compatability and interoperability namimg
-      */
-      if (LocaleCompare(format,"GRADATION") == 0)
-        (void) strcpy(format,"GRADIENT");
-
-      if (LocaleCompare(format,"MAGICK") == 0)
-        (void) strcpy(format,"IMAGE");
-
-      LocaleUpper(format);
-      if (!IsMagickConflict(format))
+      p=image_info->filename;
+      while (isalnum((int) *p))
+        p++;
+      if ((*p == ':') && ((p-image_info->filename) < (long) sizeof(magic)))
         {
+          char
+            format[MaxTextExtent];
+
           /*
-            Strip off image format prefix.
+            User specified image format.
           */
-          char base_filename[MaxTextExtent];
-          p++;
-          (void) strlcpy(base_filename,p,MaxTextExtent);
-          (void) strcpy(image_info->filename,base_filename);
-          (void) strlcpy(magic,format,MaxTextExtent);
-          (void) strlcpy(image_info->magick,magic,MaxTextExtent);
-          if (LocaleCompare(magic,"TMP") != 0)
-            image_info->affirm=MagickTrue;
-          else
-            /* input file will be automatically removed */
-            image_info->temporary=MagickTrue;
+          (void) strncpy(format,image_info->filename,p-image_info->filename);
+          format[p-image_info->filename]='\0';
+
+          /*
+            Backward compatability and interoperability namimg
+          */
+          if (LocaleCompare(format,"GRADATION") == 0)
+            (void) strcpy(format,"GRADIENT");
+
+          if (LocaleCompare(format,"MAGICK") == 0)
+            (void) strcpy(format,"IMAGE");
+
+          LocaleUpper(format);
+          if (!IsMagickConflict(format))
+            {
+              /*
+                Strip off image format prefix.
+              */
+              char base_filename[MaxTextExtent];
+              p++;
+              (void) strlcpy(base_filename,p,MaxTextExtent);
+              (void) strcpy(image_info->filename,base_filename);
+              (void) strlcpy(magic,format,MaxTextExtent);
+              (void) strlcpy(image_info->magick,magic,MaxTextExtent);
+              if (LocaleCompare(magic,"TMP") != 0)
+                image_info->affirm=MagickTrue;
+              else
+                /* input file will be automatically removed */
+                image_info->temporary=MagickTrue;
+            }
         }
     }
 

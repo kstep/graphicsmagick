@@ -1,5 +1,10 @@
 2015-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (SetImageInfo): Fix problems with reading
+	filenames that include a colon.  Resolves SourceForge bug #294
+	"display and convert (probably other things too) choke on
+	filenames with colons in".
+
 	* magick/utility.c (GetPathComponent): Fix SubImagePath
 	extraction. Fixes SourceForge bug #66 "converting runs slowly when
 	subimage is specified".
