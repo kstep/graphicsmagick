@@ -38,6 +38,9 @@
 <p>2015-03-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/mat.c (WriteMATLABImage): FormatString() requires a
+buffer of MaxTextExtent bytes.  Use sprintf instead.  Fix for
+Coverity issue 10170.</li>
 <li>Magick++/lib/Geometry.cpp (string): FormatString() requires a
 buffer of MaxTextExtent bytes. Fix for Coverity issue 44737.</li>
 <li>coders/wmf.c (draw_pattern_push): FormatString() requires a

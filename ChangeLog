@@ -1,5 +1,9 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mat.c (WriteMATLABImage): FormatString() requires a
+	buffer of MaxTextExtent bytes.  Use sprintf instead.  Fix for
+	Coverity issue 10170.
+
 	* Magick++/lib/Geometry.cpp (string): FormatString() requires a
 	buffer of MaxTextExtent bytes. Fix for Coverity issue 44737.
 

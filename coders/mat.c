@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003, 2006 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -998,7 +998,7 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
     Store MAT header.
   */
   (void) memset(MATLAB_HDR,' ',Min(sizeof(MATLAB_HDR),124));
-  FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
+  sprintf(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %.8s, Created on: %.3s %.3s %2d %2d:%2d:%2d %d",
     OsDesc,
     DayOfWTab[t->tm_wday],
     MonthsTab[t->tm_mon],
