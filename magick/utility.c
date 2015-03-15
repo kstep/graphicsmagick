@@ -3695,6 +3695,8 @@ MagickExport void MagickFormatString(char *string,
 %  rand() function but which allows the user to pass a pointer to the
 %  'seed'.
 %
+%  This function is deprecated, and scheduled for eventual removal.
+%
 %  The format of the MagickRandReentrant method is:
 %
 %      int MagickRandReentrant(unsigned int *seed)

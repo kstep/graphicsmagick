@@ -1,5 +1,8 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/random.c (InitializeMagickRandomKernel): Silence Coverity
+	10091 "Don't Call" in the case where /dev/random is available.
+
 	* coders/mpeg.c (WriteMPEGParameterFiles): Fix Coverity 10190
 	"Resource leak".  File descriptor was leaked under certain error
 	conditions.

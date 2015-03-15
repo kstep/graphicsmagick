@@ -172,12 +172,14 @@ InitializeMagickRandomKernel(MagickRandomKernel *kernel)
   kernel->w ^= ((magick_uint32_t) GetCurrentThreadId());
 #endif
 
+#if !HAVE_DEV_URANDOM
   /*
     It is quite likely that multiple threads will invoke this function
     during the same second so we also tap into the default random
     number generator to help produce a more random seed.
   */
   kernel->w ^= (magick_uint32_t) rand();
+#endif /* !HAVE_DEV_URANDOM */
 }
 
 /*
