@@ -673,7 +673,8 @@ static void ipa_device_begin(wmfAPI * API)
       GetExceptionInfo(&exception);
 
       image_info = CloneImageInfo((ImageInfo *) 0);
-      (void) strcpy(image_info->filename, ddata->image_info->texture);
+      (void) strlcpy(image_info->filename, ddata->image_info->texture,
+                     sizeof(image_info->filename));
 
       if ( ddata->image_info->size )
         (void) CloneString(&image_info->size,ddata->image_info->size);
@@ -685,7 +686,7 @@ static void ipa_device_begin(wmfAPI * API)
           char
             pattern_id[MaxTextExtent];
 
-          (void) strcpy(image->magick,"MIFF");
+          (void) strlcpy(image->magick,"MIFF",sizeof(image->magick));
           DrawPushDefs(WmfDrawContext);
           draw_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
           DrawComposite(WmfDrawContext, CopyCompositeOp, 0, 0, image->columns, image->rows, image);
@@ -2258,7 +2259,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
         {
           if(LocaleCompare(wmf_font_name, SubFontMap[i].name) == 0)
             {
-              (void) strcpy(target,SubFontMap[i].mapping);
+              (void) strlcpy(target,SubFontMap[i].mapping,sizeof(target));
               break;
             }
         }
