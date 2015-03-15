@@ -1,3 +1,9 @@
+2015-03-15  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (WritePNGImage) Avoid a null pointer dereference
+	while logging inherited color_type (Fixes Coverity CID 10185).
+
+
 2015-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Fix problems with reading

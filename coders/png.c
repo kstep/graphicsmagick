@@ -7678,11 +7678,10 @@ static MagickPassFail WritePNGImage(const ImageInfo *image_info,Image *image)
 
           attribute=GetImageAttribute(image,"png:IHDR.bit-depth-orig");
 
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "  png00 inherited bit depth=%s",attribute->value);
-
           if (attribute != (ImageAttribute *) NULL)
             {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "  png00 inherited bit depth=%s",attribute->value);
 
               if (LocaleCompare(attribute->value,"1") == 0)
                 mng_info->write_png_depth = 1;
