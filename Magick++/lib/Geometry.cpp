@@ -434,7 +434,7 @@ Magick::Geometry::operator std::string() const
     }
 
   string geometry;
-  char buffer[32];
+  char buffer[MaxTextExtent];
 
   if ( _width )
     {

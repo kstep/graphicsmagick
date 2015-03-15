@@ -1,5 +1,8 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/lib/Geometry.cpp (string): FormatString() requires a
+	buffer of MaxTextExtent bytes. Fix for Coverity issue 44737.
+
 	* coders/wmf.c (draw_pattern_push): FormatString() requires a
 	buffer of MaxTextExtent bytes.  Fix for Coverity issue 44741.
 	(ipa_device_begin): FormatString() requires a buffer of
