@@ -1,5 +1,14 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/wpg.c (UnpackWPG2Raster): Fix Coverity 10312
+	"Uninitialized scalar variable" gripe.
+
+	* magick/utility.c (ListFiles): Possibly address
+	Coverity 10245 "Sizeof not portable" gripe.
+
+	* magick/widget.c (MagickXFontBrowserWidget): Possibly address
+	Coverity 10323 "Sizeof not portable" gripe.
+
 	* coders/mat.c (WriteMATLABImage): FormatString() requires a
 	buffer of MaxTextExtent bytes.  Use sprintf instead.  Fix for
 	Coverity issue 10170.

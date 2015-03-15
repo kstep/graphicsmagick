@@ -3361,7 +3361,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   /*
     Sort filelist in ascending order.
   */
-  qsort((void *) filelist,*number_entries,sizeof(char **),FileCompare);
+  qsort((void *) filelist,*number_entries,sizeof(filelist[0]),FileCompare);
   return(filelist);
 }
 

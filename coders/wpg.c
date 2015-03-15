@@ -507,6 +507,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     return(-2);
   }
   (void) memset(UpImgBuff,0,ldblk);
+  (void) memset(SampleBuffer,0,sizeof(SampleBuffer));
 
   while( y< image->rows)
     {
@@ -537,7 +538,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
 	  RunCount=ReadBlobByte(image);   /* EXT */
 	  for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
-              InsertByte6(SampleBuffer[bbuf]);          
+              InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */

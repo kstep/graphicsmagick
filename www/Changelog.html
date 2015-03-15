@@ -38,6 +38,12 @@
 <p>2015-03-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/wpg.c (UnpackWPG2Raster): Fix Coverity 10312
+&quot;Uninitialized scalar variable&quot; gripe.</li>
+<li>magick/utility.c (ListFiles): Possibly address
+Coverity 10245 &quot;Sizeof not portable&quot; gripe.</li>
+<li>magick/widget.c (MagickXFontBrowserWidget): Possibly address
+Coverity 10323 &quot;Sizeof not portable&quot; gripe.</li>
 <li>coders/mat.c (WriteMATLABImage): FormatString() requires a
 buffer of MaxTextExtent bytes.  Use sprintf instead.  Fix for
 Coverity issue 10170.</li>

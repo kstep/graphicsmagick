@@ -5725,7 +5725,7 @@ MagickExport void MagickXFontBrowserWidget(Display *display,MagickXWindows *wind
           }
         for (i=0; i < fonts; i++)
           fontlist[i]=listhead[i];
-        qsort((void *) fontlist,fonts,sizeof(char **),FontCompare);
+        qsort((void *) fontlist,fonts,sizeof(fontlist[0]),FontCompare);
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
         if (fonts > (int) visible_fonts)
