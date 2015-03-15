@@ -1,5 +1,11 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/lib/Image.cpp (annotate): Silence Coverity 44750 "Copy
+	into fixed size buffer".
+
+	* coders/ept.c (ReadEPTImage): Silence Coverity 44751 "Copy into
+	fixed size buffer".
+
 	* coders/wmf.c (ipa_device_begin): Silence Coverity 44753 "Copy
 	into fixed size buffer".
 	(lite_font_map): Silence Coverity 44752 "Copy into fixed size

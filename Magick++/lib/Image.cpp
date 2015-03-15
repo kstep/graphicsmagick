@@ -398,7 +398,8 @@ void Magick::Image::annotate ( const std::string &text_,
       }
     else
       {
-        strcpy( boundingArea, string(boundingArea_).c_str());
+        strlcpy( boundingArea, string(boundingArea_).c_str(),
+                 sizeof(boundingArea));
       }
     drawInfo->geometry = boundingArea;
   }
