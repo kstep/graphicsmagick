@@ -260,7 +260,11 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
       (void) fprintf(file,"%s\n",filename);
       parameter_file=fopen(filename,"w");
       if (parameter_file == (FILE *) NULL)
-        return(False);
+        {
+          (void) fclose(file);
+          file=(FILE *) NULL;
+          return(False);
+        }
       if (image_info->quality < DefaultCompressionQuality)
         {
           q=Max((DefaultCompressionQuality-image_info->quality)/8.0,1.0);
@@ -284,6 +288,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
           }
         }
       (void) fclose(parameter_file);
+      parameter_file=(FILE *) NULL;
     }
   if (image_info->quality == DefaultCompressionQuality)
     (void) fprintf(file,"-\n");  /* default non intra quant matrix */
@@ -296,7 +301,11 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
       (void) fprintf(file,"%s\n",filename);
       parameter_file=fopen(filename,"w");
       if (parameter_file == (FILE *) NULL)
-        return(False);
+        {
+          (void) fclose(file);
+          file=(FILE *) NULL;
+          return(False);
+        }
       q=Min(Max(66.0-(2*image_info->quality)/3.0,1.0),255);
       for (i=0; i < 64; i++)
       {
@@ -305,6 +314,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
           (void) fprintf(parameter_file,"\n");
       }
       (void) fclose(parameter_file);
+      parameter_file=(FILE *) NULL;
     }
   (void) fprintf(file,"%.1024s.log\n",image_info->unique);  /* statistics log */
   (void) fprintf(file,"1\n");  /* input picture file format */
@@ -353,6 +363,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
           if ((horizontal_factor != 2) || (vertical_factor != 2))
             {
               (void) fclose(file);
+              file=(FILE *) NULL;
               return(False);
             }
         }
@@ -361,6 +372,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
             ((vertical_factor != 1) && (vertical_factor != 2)))
           {
             (void) fclose(file);
+            file=(FILE *) NULL;
             return(False);
           }
     }
@@ -395,6 +407,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"1 1 7 7\n");
   (void) fprintf(file,"1 1 3 3\n");
   (void) fclose(file);
+  file=(FILE *) NULL;
   return(True);
 }
 

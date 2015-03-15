@@ -1,5 +1,9 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mpeg.c (WriteMPEGParameterFiles): Fix Coverity 10190
+	"Resource leak".  File descriptor was leaked under certain error
+	conditions.
+
 	* coders/wpg.c (UnpackWPG2Raster): Fix Coverity 10312
 	"Uninitialized scalar variable" gripe.
 
