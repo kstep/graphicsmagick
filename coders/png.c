@@ -4986,7 +4986,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                       MngInfoFreeStruct(mng_info,&have_mng_structure);
                       ThrowReaderException(ResourceLimitError,
                                            MemoryAllocationFailed,image)
-                        }
+                    }
                   n=GetImagePixels(image,0,0,image->columns,1);
                   (void) memcpy(next,n,row_length);
                   for (y=0; y < (long) image->rows; y++)
@@ -8082,7 +8082,7 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
     {
       if (jng_alpha_compression_method==0)
         {
-          long
+          unsigned long
             len;
 
           register long
@@ -8099,7 +8099,10 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
           p=(unsigned char *) (blob+8);
           for (i=8; i<(long) length; i+=len+12)
             {
-              len=(*p<<24)|((*(p+1))<<16)|((*(p+2))<<8)|(*(p+3));
+              len=((*(p    ) & 0xff) << 24) +
+                  ((*(p + 1) & 0xff) << 16) +
+                  ((*(p + 2) & 0xff) <<  8) +
+                  ((*(p + 3) & 0xff)      ) ;
               p+=4;
               if (*(p)==73 && *(p+1)==68 && *(p+2)==65 && *(p+3)==84)
                 {
