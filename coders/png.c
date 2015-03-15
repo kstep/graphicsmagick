@@ -6254,32 +6254,35 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
 
         ping_colortype=PNG_COLOR_TYPE_PALETTE;
 
-        palette=MagickAllocateMemory(png_color *,
-                                     number_colors*sizeof(png_color));
-        if (palette == (png_color *) NULL)
-          png_error(ping, "Could not allocate palette");
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "  Setting up PLTE chunk with %d colors",
                                 (int) number_colors);
-        for (i=0; i < (long) number_colors; i++)
-          {
-            palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
-            palette[i].green=ScaleQuantumToChar(image->colormap[i].green);
-            palette[i].blue=ScaleQuantumToChar(image->colormap[i].blue);
-            if (logging)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        palette=MagickAllocateMemory(png_color *,
+                                     number_colors*sizeof(png_color));
+        if (palette == (png_color *) NULL)
+          png_error(ping, "Could not allocate palette");
+        else
+        {
+          for (i=0; i < (long) number_colors; i++)
+            {
+              palette[i].red=ScaleQuantumToChar(image->colormap[i].red);
+              palette[i].green=ScaleQuantumToChar(image->colormap[i].green);
+              palette[i].blue=ScaleQuantumToChar(image->colormap[i].blue);
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 #if QuantumDepth == 8
-                                    "    %3ld (%3d,%3d,%3d)",
+                                      "    %3ld (%3d,%3d,%3d)",
 #else
-                                    "    %5ld (%5d,%5d,%5d)",
+                                      "    %5ld (%5d,%5d,%5d)",
 #endif
-                                    i,palette[i].red,palette[i].green,
-                                    palette[i].blue);
+                                      i,palette[i].red,palette[i].green,
+                                      palette[i].blue);
 
-          }
-        png_set_PLTE(ping,ping_info,palette,(int) number_colors);
-        MagickFreeMemory(palette);
+            }
+          png_set_PLTE(ping,ping_info,palette,(int) number_colors);
+          MagickFreeMemory(palette);
+        }
         /*
           Identify which colormap entry is transparent.
         */
