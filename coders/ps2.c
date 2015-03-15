@@ -601,7 +601,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS2") == 0)
-          (void) strcpy(page_geometry,PSPageGeometry);
+          (void) strlcpy(page_geometry,PSPageGeometry,sizeof(page_geometry));
     (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
        &geometry.width,&geometry.height);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -615,7 +615,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
-    (void) strcpy(density,PSDensityGeometry);
+    (void) strlcpy(density,PSDensityGeometry,sizeof(density));
     count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;

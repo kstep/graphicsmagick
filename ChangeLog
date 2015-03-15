@@ -1,5 +1,17 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/ps.c (ReadPSImage): Silence Coverity 10306 "Copy into
+	fixed size buffer".
+
+	* coders/msl.c (MSLStartElement): Silence Coverity 10308 "Copy
+	into fixed size buffer".
+
+	* coders/ps2.c (WritePS2Image): Silence Coverity 10309 "Copy into
+	fixed size buffer".
+
+	* Magick++/lib/Geometry.cpp (operator): Silence Coverity 44749
+	"Copy into fixed size buffer".
+
 	* Magick++/lib/Image.cpp (annotate): Silence Coverity 44750 "Copy
 	into fixed size buffer".
 

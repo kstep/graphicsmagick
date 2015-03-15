@@ -38,6 +38,16 @@
 <p>2015-03-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/ps.c (ReadPSImage): Silence Coverity 10306 &quot;Copy into
+fixed size buffer&quot;.</li>
+<li>coders/msl.c (MSLStartElement): Silence Coverity 10308 &quot;Copy
+into fixed size buffer&quot;.</li>
+<li>coders/ps2.c (WritePS2Image): Silence Coverity 10309 &quot;Copy into
+fixed size buffer&quot;.</li>
+<li>Magick++/lib/Geometry.cpp (operator): Silence Coverity 44749
+&quot;Copy into fixed size buffer&quot;.</li>
+<li>Magick++/lib/Image.cpp (annotate): Silence Coverity 44750 &quot;Copy
+into fixed size buffer&quot;.</li>
 <li>coders/ept.c (ReadEPTImage): Silence Coverity 44751 &quot;Copy into
 fixed size buffer&quot;.</li>
 <li>coders/wmf.c (ipa_device_begin): Silence Coverity 44753 &quot;Copy

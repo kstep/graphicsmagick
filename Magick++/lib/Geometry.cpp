@@ -341,7 +341,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   // If argument does not start with digit, presume that it is a
   // page-size specification that needs to be converted to an
   // equivalent geometry specification using PostscriptGeometry()
-  strcpy(geom,geometry_.c_str());
+  strlcpy(geom,geometry_.c_str(),sizeof(geom));
   if ( geom[0] != '-' &&
        geom[0] != '+' &&
        geom[0] != 'x' &&
@@ -350,7 +350,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
       char *pageptr = GetPageGeometry( geom );
       if ( pageptr != 0 )
 	{
-	  strcpy(geom,pageptr);
+	  strlcpy(geom,pageptr,sizeof(geom));
           MagickFreeMemory(pageptr);
 	}
     }
