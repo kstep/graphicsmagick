@@ -1,3 +1,14 @@
+2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (draw_pattern_push): FormatString() requires a
+	buffer of MaxTextExtent bytes.  Fix for Coverity issue 44741.
+	(ipa_device_begin): FormatString() requires a buffer of
+	MaxTextExtent bytes.  Fix for Coverity issue 44740.
+	(util_set_brush): FormatString() requires a buffer of
+	MaxTextExtent bytes. Fix for Coverity issue 44739.
+	(ipa_region_clip): FormatString() requires a buffer of
+	MaxTextExtent bytes. Fix for Coverity issue 44738.
+
 2015-03-15  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (WritePNGImage) Avoid a null pointer dereference
