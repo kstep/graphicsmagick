@@ -57,6 +57,10 @@
 
 2015-03-15  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+	* coders/png.c (WritePNGImage) Avoid a Coverity gripe about
+	potential NULL dereference (actually it is impossible because
+	png_error() does not return. Fix for Coverity gripe 44731.
+
 	* coders/png.c (WritePNGImage) Avoid a null pointer dereference
 	while logging inherited color_type. Fix for Coverity issue 10185.
 

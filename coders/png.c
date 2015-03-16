@@ -6290,41 +6290,44 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
         ping_trans_alpha=MagickAllocateMemory(unsigned char *, number_colors);
         if (ping_trans_alpha == (unsigned char *) NULL)
           png_error(ping, "Could not allocate ping_trans_alpha");
-        assert(number_colors <= 256);
-        for (i=0; i < (long) number_colors; i++)
-          ping_trans_alpha[i]=255;
-        for (y=0; y < (long) image->rows; y++)
+        else
           {
-            register const PixelPacket
-              *p=NULL;
-
-            p=AcquireImagePixels(image,0,y,image->columns,1,
-                                 &image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            indexes=AccessImmutableIndexes(image);
-            for (x=0; x < (long) image->columns; x++)
+            assert(number_colors <= 256);
+            for (i=0; i < (long) number_colors; i++)
+              ping_trans_alpha[i]=255;
+            for (y=0; y < (long) image->rows; y++)
               {
-                if (p->opacity != OpaqueOpacity)
-                  {
-                    IndexPacket
-                      index;
+                register const PixelPacket
+                  *p=NULL;
 
-                    index=indexes[x];
-                    assert((unsigned long) index < number_colors);
-                    ping_trans_alpha[index]=(png_byte) (255-
-                                            ScaleQuantumToChar(p->opacity));
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                                     &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                indexes=AccessImmutableIndexes(image);
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    if (p->opacity != OpaqueOpacity)
+                      {
+                        IndexPacket
+                          index;
+
+                        index=indexes[x];
+                        assert((unsigned long) index < number_colors);
+                        ping_trans_alpha[index]=(png_byte) (255-
+                                                ScaleQuantumToChar(p->opacity));
+                      }
+                    p++;
                   }
-                p++;
               }
+            ping_num_trans=0;
+            for (i=0; i < (long) number_colors; i++)
+              if (ping_trans_alpha[i] != 255)
+                ping_num_trans=(unsigned short) (i+1);
+            if (ping_num_trans != 0)
+              ping_valid_trns = 1;
+            MagickFreeMemory(ping_trans_alpha);
           }
-        ping_num_trans=0;
-        for (i=0; i < (long) number_colors; i++)
-          if (ping_trans_alpha[i] != 255)
-            ping_num_trans=(unsigned short) (i+1);
-        if (ping_num_trans != 0)
-          ping_valid_trns = 1;
-        MagickFreeMemory(ping_trans_alpha);
         /*
           Identify which colormap entry is the background color.
         */
