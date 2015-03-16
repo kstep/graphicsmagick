@@ -995,7 +995,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
              (bmp_info.compression == BI_RLE8))
       {
         /* RLE Compressed.  Assume a maximum compression ratio. */
-        if (((double) length/file_size) > 254.0)
+        if ((file_size == 0) || (((double) length/file_size) > 254.0))
           ThrowBMPReaderException(CorruptImageError,InsufficientImageDataInFile,
                                   image);
       }

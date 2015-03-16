@@ -1,5 +1,9 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/bmp.c (ReadBMPImage): Fix Coverity 44726 "Division or
+	modulo by float zero".  I don't think that this can actually
+	happen due to prior checks.
+
 	* magick/xwindow.c (MagickXMakeWindow): Silence Coverity 10281
 	"Copy into fixed size buffer".
 

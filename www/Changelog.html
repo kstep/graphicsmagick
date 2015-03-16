@@ -38,6 +38,9 @@
 <p>2015-03-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/bmp.c (ReadBMPImage): Fix Coverity 44726 &quot;Division or
+modulo by float zero&quot;.  I don't think that this can actually
+happen due to prior checks.</li>
 <li>magick/xwindow.c (MagickXMakeWindow): Silence Coverity 10281
 &quot;Copy into fixed size buffer&quot;.</li>
 <li>coders/pdf.c (ReadPDFImage): Silence Coverity 10241 &quot;Copy into
