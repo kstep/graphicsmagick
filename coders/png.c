@@ -1555,7 +1555,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   /* Too big? */
   if (ping_width >
-     (unsigned long) GetMagickResourceLimit(PixelsResource)/ping_height)
+     (magick_uint64_t) GetMagickResourceLimit(PixelsResource)/ping_height)
   {
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Number of pixels exceeds resource limit");
