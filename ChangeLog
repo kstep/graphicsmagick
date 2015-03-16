@@ -66,6 +66,10 @@
 	* coders/png.c (WriteOnePNGImage) Quiet a false Coverity warning
 	about dereference after NULL check.  Fix for Coverity issue 44729.
 
+	* coders/png.c (ReadOnePNGImage): Redid the "Respect the
+	PixelsResource limit" patch of March 7, using unsigned arithmetic
+	to determine the width limit.  Sometimes the caluclated
+	width limit was incorrectly zero.
 
 2015-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
