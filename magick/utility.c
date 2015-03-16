@@ -2409,7 +2409,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       /* Copy to subimage and remove from component */
       if ((p > component) && (*p == '[') && IsFrame(p+1))
         {
-          (void) strcpy(subimage, p);
+          (void) strlcpy(subimage, p,sizeof(subimage));
           *p='\0';
         }
     }
@@ -2424,14 +2424,14 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case MagickPath:
     {
       /* this only includes the magick override prefix (if any) */
-      (void)strcpy(component,magick);
+      (void) strlcpy(component,magick,sizeof(component));
       break;
     }
     case SubImagePath:
     {
       /* this returns only the subimage specification, including
          bracketing '[]', (if any) */
-      (void)strcpy(component,subimage);
+      (void) strlcpy(component,subimage,sizeof(component));
       break;
     }
     case FullPath:
@@ -4389,8 +4389,11 @@ MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
 %  terminated string src to dst, NULL-terminating the result. If size is
 %  zero, then the result is not NULL terminated.  The total length of the
 %  string which would have been created given sufficient buffer size (may
-%  be longer than size) is returned. This function substitutes for strlcpy()
-%  which is available under FreeBSD, Apple's OS-X, and Solaris 8.
+%  be longer than size) is returned. This function is simlar to strlcpy()
+%  which is available under FreeBSD, Apple's OS-X, and Solaris 8 except
+%  that it is assured to work with overlapping objects.  FreeBSD does not
+%  document if strlcpy() handles overlapping objects, but Solaris strlcpy()
+%  does not.
 %
 %  Buffer overflow can be checked as  follows:
 %

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -843,7 +843,7 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
   /*
     Read the log configure file.
   */
-  (void) strcpy(path,basename);
+  (void) strlcpy(path,basename,sizeof(path));
   if (depth == 0)
     {
       /*

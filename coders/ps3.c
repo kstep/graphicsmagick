@@ -1290,7 +1290,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               image->page.y);
         else
           if (LocaleCompare(image_info->magick,"PS3") == 0)
-            (void) strcpy(page_geometry,PSPageGeometry);
+            (void) strlcpy(page_geometry,PSPageGeometry,sizeof(page_geometry));
       }
     (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
        &geometry.width,&geometry.height);
@@ -1307,7 +1307,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
-    (void) strcpy(density,PSDensityGeometry);
+    (void) strlcpy(density,PSDensityGeometry,sizeof(density));
     count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
@@ -1358,9 +1358,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       {
         /* Postscript magic */
         if (LocaleCompare(image_info->magick,"PS3") == 0)
-          (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
+          (void) strlcpy(buffer,"%!PS-Adobe-3.0\n", sizeof(buffer));
         else
-          (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
+          (void) strlcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n", sizeof(buffer));
         (void) WriteBlobString(image,buffer);
 
         /* Creator */
@@ -1429,7 +1429,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
             if (!image_info->adjoin)
-              (void) strcpy(buffer,"%%Pages: 1\n");
+              (void) strlcpy(buffer,"%%Pages: 1\n",sizeof(buffer));
             else
               FormatString(buffer,"%%%%Pages: %lu\n",(unsigned long)
                 GetImageListLength(image));

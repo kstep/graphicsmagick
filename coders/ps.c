@@ -396,8 +396,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       do
 	{
-	  (void) strcpy(image->magick,"PS");
-	  (void) strlcpy(image->filename,filename,MaxTextExtent);
+	  (void) strlcpy(image->magick,"PS",sizeof(image->magick));
+	  (void) strlcpy(image->filename,filename,sizeof(image->filename));
 	  next_image=SyncNextImageInList(image);
 	  if (next_image != (Image *) NULL)
 	    image=next_image;
@@ -979,7 +979,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           image->page.height,image->page.x,image->page.y);
       else
         if (LocaleCompare(image_info->magick,"PS") == 0)
-          (void) strcpy(page_geometry,PSPageGeometry);
+          (void) strlcpy(page_geometry,PSPageGeometry,sizeof(page_geometry));
     (void) GetMagickGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -993,7 +993,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
-    (void) strcpy(density,PSDensityGeometry);
+    (void) strlcpy(density,PSDensityGeometry,sizeof(density));
     count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
     if (count != 2)
       y_resolution=x_resolution;
@@ -1041,9 +1041,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           Output Postscript header.
         */
         if (LocaleCompare(image_info->magick,"PS") == 0)
-          (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
+          (void) strlcpy(buffer,"%!PS-Adobe-3.0\n",sizeof(buffer));
         else
-          (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
+          (void) strlcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n",sizeof(buffer));
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (GraphicsMagick)\n");
         FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
@@ -1059,7 +1059,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         bounds.x2=geometry.x+x_scale;
         bounds.y2=geometry.y+(geometry.height+text_size);
         if (image_info->adjoin && (image->next != (Image *) NULL))
-          (void) strcpy(buffer,"%%%%BoundingBox: (atend)\n");
+          (void) strlcpy(buffer,"%%%%BoundingBox: (atend)\n",sizeof(buffer));
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
             floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),

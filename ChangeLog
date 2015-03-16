@@ -1,5 +1,35 @@
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c (MagickXMakeWindow): Silence Coverity 10281
+	"Copy into fixed size buffer".
+
+	* coders/pdf.c (ReadPDFImage): Silence Coverity 10241 "Copy into
+	fixed size buffer".
+
+	* magick/type.c (ReadTypeConfigureFile): Silence Coverity 10242
+	"Copy into fixed size buffer".
+
+	* magick/utility.c (GetPathComponent): Silence Coverity 10263
+	"Copy into fixed size buffer".
+
+	* coders/txt.c (ReadTXTImage): Silence Coverity 10287 "Copy into
+	fixed size buffer".
+
+	* coders/ps.c (WritePSImage): Silence Coverity 10289 "Copy into
+	fixed size buffer".
+
+	* magick/delegate.c (ReadConfigureFile): Silence Coverity 10297
+	"Copy into fixed size buffer".
+
+	* magick/log.c (ReadLogConfigureFile): Silence Coverity 10300
+	"Copy into fixed size buffer".
+
+	* coders/ps3.c (WritePS3Image): Silence Coverity 10303 "Copy into
+	fixed size buffer".
+
+	* coders/pdf.c (WritePDFImage): Silence Coverity 10304 "Copy into
+	fixed size buffer".
+
 	* coders/ps.c (ReadPSImage): Silence Coverity 10306 "Copy into
 	fixed size buffer".
 

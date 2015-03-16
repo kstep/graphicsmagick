@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -8375,7 +8375,7 @@ MagickXMakeWindow(Display *display,Window parent,char **argv,
         if (!isspace((int) (*p)) && (*p != '%'))
           p++;
         else
-          (void) strcpy(p,p+1);
+          (void) MagickStrlCpy(p,p+1,sizeof(geometry)-(p-geometry));
       }
       flags=XWMGeometry(display,window_info->screen,geometry,default_geometry,
         window_info->border_width,size_hints,&size_hints->x,&size_hints->y,

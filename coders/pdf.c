@@ -210,7 +210,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dy_resolution=72.0;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
-      (void) strcpy(density,PSDensityGeometry);
+      (void) strlcpy(density,PSDensityGeometry,sizeof(density));
       count=GetMagickDimension(density,&image->x_resolution,&image->y_resolution,NULL,NULL);
       if (count != 2)
         image->y_resolution=image->x_resolution;
@@ -408,8 +408,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       do
 	{
-	  (void) strcpy(image->magick,"PDF");
-	  (void) strlcpy(image->filename,filename,MaxTextExtent);
+	  (void) strlcpy(image->magick,"PDF",sizeof(image->magick));
+	  (void) strlcpy(image->filename,filename,sizeof(image->filename));
 	  next_image=SyncNextImageInList(image);
 	  if (next_image != (Image *) NULL)
 	    image=next_image;
@@ -877,7 +877,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       dx_resolution=72.0;
       dy_resolution=72.0;
       x_resolution=72.0;
-      (void) strcpy(density,PSDensityGeometry);
+      (void) strlcpy(density,PSDensityGeometry,sizeof(density));
       count=GetMagickDimension(density,&x_resolution,&y_resolution,NULL,NULL);
       if (count != 2)
         y_resolution=x_resolution;
@@ -1007,12 +1007,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"%lu 0 obj\n",object);
       (void) WriteBlobString(image,buffer);
       if ((image->storage_class == DirectClass) || (image->colors > 256))
-        (void) strcpy(buffer,"[ /PDF /Text /ImageC");
+        (void) strlcpy(buffer,"[ /PDF /Text /ImageC",sizeof(buffer));
       else
         if (compression == FaxCompression)
-          (void) strcpy(buffer,"[ /PDF /Text /ImageB");
+          (void) strlcpy(buffer,"[ /PDF /Text /ImageB",sizeof(buffer));
         else
-          (void) strcpy(buffer,"[ /PDF /Text /ImageI");
+          (void) strlcpy(buffer,"[ /PDF /Text /ImageI",sizeof(buffer));
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image," ]\n");
       (void) WriteBlobString(image,"endobj\n");
@@ -1040,7 +1040,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (image->colorspace != CMYKColorspace)
               break;
             (void) WriteBlobString(image,buffer);
-            (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
+            (void) strlcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n",sizeof(buffer));
             break;
           }
         case LZWCompression:
@@ -1078,9 +1078,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 				      "ImageToHuffman2DBlob reports success!");
 	      }
 	    DestroyExceptionInfo(&exception);
-            (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
+            (void) strlcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n",sizeof(buffer));
             (void) WriteBlobString(image,buffer);
-            (void) strcpy(buffer,"/Interpolate false\n");
+            (void) strlcpy(buffer,"/Interpolate false\n",sizeof(buffer));
             (void) WriteBlobString(image,buffer);
             FormatString(buffer,
                          "/DecodeParms [ << /K %.1024s /BlackIs1 false /Columns %ld /Rows %ld >> ]\n",
@@ -1488,7 +1488,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       if (image->colorspace == CMYKColorspace)
         {
-          (void) strcpy(buffer,"/DeviceCMYK\n");
+          (void) strlcpy(buffer,"/DeviceCMYK\n",sizeof(buffer));
         }
       else
         {
@@ -1497,13 +1497,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               ((image_info->type != TrueColorType) &&
                (characteristics.grayscale)))
             {
-              (void) strcpy(buffer,"/DeviceGray\n");
+              (void) strlcpy(buffer,"/DeviceGray\n",sizeof(buffer));
             }
           else
             {
               if ((image->storage_class == DirectClass) || (image->colors > 256) ||
                   (compression == JPEGCompression))
-                (void) strcpy(buffer,"/DeviceRGB\n");
+                (void) strlcpy(buffer,"/DeviceRGB\n",sizeof(buffer));
               else
                 FormatString(buffer,"[ /Indexed /DeviceRGB %u %lu 0 R ]\n",
                              (unsigned int) image->colors-1,object+1);

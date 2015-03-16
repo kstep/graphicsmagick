@@ -854,7 +854,7 @@ FINISH:
 	char
 	  density[MaxTextExtent];
 
-	(void) strcpy(density,PSDensityGeometry);
+	(void) strlcpy(density,PSDensityGeometry,sizeof(density));
 	count=GetMagickDimension(density,&image->x_resolution,
 				 &image->y_resolution,NULL,NULL);
 	if (count != 2)
@@ -1214,7 +1214,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 	      FormatString(buffer,"%ld,%ld: ",x,y);
 	      (void) WriteBlobString(image,buffer);
 	      GetColorTuple(p,depth,image->matte,MagickFalse,tuple);
-	      (void) strcat(tuple," ");
+	      (void) strlcat(tuple," ",sizeof(tuple));
 	      (void) WriteBlobString(image,tuple);
 	      /* (void) QueryColorname(image,p,SVGCompliance,tuple,&image->exception); */
 	      GetColorTuple(p,depth,image->matte,MagickTrue,tuple);

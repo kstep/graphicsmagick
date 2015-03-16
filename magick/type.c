@@ -634,14 +634,15 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "File path=\"%.1024s\", recursion depth=%lu",basename,depth);
-  (void) strcpy(path,basename);
+  (void) strlcpy(path,basename,sizeof(path));
 #if defined(MSWINDOWS)
   /*
     For Windows, cache the location of the Ghostscript fonts.
   */
   GhostscriptFontDir[0]='\0';
   if (NTGhostscriptFonts(GhostscriptFontDir,MaxTextExtent-2))
-    (void) strcat(GhostscriptFontDir,DirectorySeparator);
+    (void) strlcat(GhostscriptFontDir,DirectorySeparator,
+                   sizeof(GhostscriptFontDir));
 #endif
   if (depth == 0)
     {
