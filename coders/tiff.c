@@ -1177,13 +1177,14 @@ InitializeImageColormap(Image *image, TIFF *tiff)
 */
 static MagickPassFail
 QuantumTransferMode(const Image *image,
-		    const uint16 photometric,
-		    const uint16 sample_format,
+                    const uint16 photometric,
+                    const uint16 compress_tag,
+                    const uint16 sample_format,
                     const unsigned int samples_per_pixel,
-		    const uint16 planar_config,
-		    const unsigned int plane,
-		    QuantumType *quantum_type,
-		    int *quantum_samples,
+                    const uint16 planar_config,
+                    const unsigned int plane,
+                    QuantumType *quantum_type,
+                    int *quantum_samples,
                     ExceptionInfo *exception)
 {
   ARG_NOT_USED(exception);
@@ -1207,8 +1208,8 @@ QuantumTransferMode(const Image *image,
                   case 0:
                     if (samples_per_pixel == 1)
                       *quantum_type=GrayQuantum;
-                    else
-                      *quantum_type=RedQuantum;
+                      else
+                        *quantum_type=RedQuantum;
                     break;
                   case 1:
                     *quantum_type=GreenQuantum;
@@ -1325,36 +1326,39 @@ QuantumTransferMode(const Image *image,
           }
         case PHOTOMETRIC_RGB:
           {
-            if (planar_config == PLANARCONFIG_SEPARATE)
+            if (compress_tag != COMPRESSION_OJPEG)
               {
-                switch (plane)
+                if (planar_config == PLANARCONFIG_SEPARATE)
                   {
-                  case 0:
-                    *quantum_type=RedQuantum;
-                    break;
-                  case 1:
-                    *quantum_type=GreenQuantum;
-                    break;
-                  case 2:
-                    *quantum_type=BlueQuantum;
-                    break;
-                  case 3:
-                    *quantum_type=AlphaQuantum;
-                    break;
-                  }
-                *quantum_samples=1;
-              }
-            else
-              {
-                if (image->matte)
-                  {
-                    *quantum_type=RGBAQuantum;
-                    *quantum_samples=4;
+                    switch (plane)
+                      {
+                      case 0:
+                        *quantum_type=RedQuantum;
+                        break;
+                      case 1:
+                        *quantum_type=GreenQuantum;
+                        break;
+                      case 2:
+                        *quantum_type=BlueQuantum;
+                        break;
+                      case 3:
+                        *quantum_type=AlphaQuantum;
+                        break;
+                      }
+                    *quantum_samples=1;
                   }
                 else
                   {
-                    *quantum_type=RGBQuantum;
-                    *quantum_samples=3;
+                    if (image->matte)
+                      {
+                        *quantum_type=RGBAQuantum;
+                        *quantum_samples=4;
+                      }
+                    else
+                      {
+                        *quantum_type=RGBQuantum;
+                        *quantum_samples=3;
+                      }
                   }
               }
             break;
@@ -1403,8 +1407,8 @@ QuantumTransferMode(const Image *image,
             /*
               This is here to support JPEGCOLORMODE_RGB which claims a
               YCbCr photometric, but passes RGB to libtiff.
-             */
-            if (samples_per_pixel == 3)
+            */
+            if ((compress_tag == COMPRESSION_JPEG) && (samples_per_pixel == 3))
               {
                 *quantum_type=RGBQuantum;
                 *quantum_samples=3;
@@ -1416,7 +1420,7 @@ QuantumTransferMode(const Image *image,
   /* fprintf(stderr,"Quantum Type: %d Quantum Samples: %d\n",(int) *quantum_type,*quantum_samples); */
   /* FIXME: Throw exception if there is an error */
   /* FIXME: We do need to support YCbCr! */
-  
+
   return (*quantum_samples != 0 ? MagickPass : MagickFail);
 }
 
@@ -2110,9 +2114,9 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         method=RGBAPuntMethod;
         quantum_type=UndefinedQuantum;
         quantum_samples=0;
-        if (QuantumTransferMode(image,photometric,sample_format,samples_per_pixel,
-                                planar_config,0,&quantum_type,&quantum_samples,
-                                exception)
+        if (QuantumTransferMode(image,photometric,compress_tag,sample_format,
+                                samples_per_pixel,planar_config,0,&quantum_type,
+                                &quantum_samples,exception)
             == MagickPass)
           {
             method=ScanLineMethod;
@@ -2227,9 +2231,11 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,PLANARCONFIG_CONTIG,0,
-                                        &quantum_type,&quantum_samples,exception)
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        PLANARCONFIG_CONTIG,0,
+                                        &quantum_type,&quantum_samples,
+                                        exception)
                     == MagickPass)
                   max_sample=quantum_samples;
               }
@@ -2262,9 +2268,12 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /*
                       Determine quantum parse method.
                     */
-                    if (QuantumTransferMode(image,photometric,sample_format,
-                                            samples_per_pixel,planar_config,sample,
-                                            &quantum_type,&quantum_samples,exception)
+                    if (QuantumTransferMode(image,photometric,compress_tag,
+                                            sample_format,
+                                            samples_per_pixel,planar_config,
+                                            sample,
+                                            &quantum_type,&quantum_samples,
+                                            exception)
                         == MagickFail)
                       {
                         CopyException(exception,&image->exception);
@@ -2379,7 +2388,8 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,sample_format,
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,
                                         samples_per_pixel,PLANARCONFIG_CONTIG,
                                         0,&quantum_type,&quantum_samples,
                                         exception)
@@ -2399,9 +2409,11 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Determine quantum parse method.
                 */
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,planar_config,sample,
-                                        &quantum_type,&quantum_samples,exception)
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        planar_config,sample,
+                                        &quantum_type,&quantum_samples,
+                                        exception)
                     == MagickFail)
                   {
                     CopyException(exception,&image->exception);
@@ -2576,9 +2588,10 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples,
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples,
                                         exception)
                     == MagickPass)
                   max_sample=quantum_samples;
@@ -2596,10 +2609,10 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		/*
 		  Determine quantum parse method.
 		*/
-		if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,planar_config,
-                                        sample,&quantum_type,&quantum_samples,
-                                        exception)
+		if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        planar_config,sample,&quantum_type,
+                                        &quantum_samples,exception)
 		    == MagickFail)
 		  {
 		    CopyException(exception,&image->exception);
@@ -5089,10 +5102,10 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples,
-                                        &image->exception)
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples,&image->exception)
                     == MagickPass)
                   max_sample=quantum_samples;
               }
@@ -5104,10 +5117,10 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 /*
                   Determine quantum parse method.
                 */
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,planar_config,sample,
-                                        &quantum_type,&quantum_samples,
-                                        &image->exception)
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        planar_config,sample,&quantum_type,
+                                        &quantum_samples,&image->exception)
                     == MagickFail)
                   {
                     status=MagickFail;
@@ -5285,10 +5298,10 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
             max_sample=1;
             if (planar_config == PLANARCONFIG_SEPARATE)
               {
-                if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,PLANARCONFIG_CONTIG,
-                                        0,&quantum_type,&quantum_samples,
-                                        &image->exception)
+                if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        PLANARCONFIG_CONTIG,0,&quantum_type,
+                                        &quantum_samples,&image->exception)
                     == MagickPass)
                   max_sample=quantum_samples;
               }
@@ -5305,10 +5318,10 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		/*
 		  Determine quantum parse method.
 		*/
-		if (QuantumTransferMode(image,photometric,sample_format,
-                                        samples_per_pixel,planar_config,
-                                        sample,&quantum_type,&quantum_samples,
-                                        &image->exception)
+		if (QuantumTransferMode(image,photometric,compress_tag,
+                                        sample_format,samples_per_pixel,
+                                        planar_config,sample,&quantum_type,
+                                        &quantum_samples,&image->exception)
                     == MagickFail)
 		  {
 		    status=MagickFail;

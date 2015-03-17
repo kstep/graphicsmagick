@@ -1,3 +1,13 @@
+2015-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/Magick++/Include.h (Magick): Fix compilation with
+	'clang' under Linux.  Build was broken yesterday.
+
+	* coders/tiff.c (QuantumTransferMode): Fix reading Old JPEG and
+	YCbCr sample images from libtiff pics-3.8.0.tar.gz image file
+	collection.  There was a regression for YCbCr added in last
+	release.
+
 2015-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c (ReadBMPImage): Fix Coverity 44726 "Division or
