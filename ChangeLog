@@ -1,5 +1,8 @@
 2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/quantize.c (GrayscalePseudoClassImage): Silence Coverity
+	10256 "Wrong sizeof argument".
+
 	* coders/tiff.c (ReadTIFFImage): Fix Coverity 44747 and 44748
 	"Extra sizeof expression".
 
