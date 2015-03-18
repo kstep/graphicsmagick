@@ -3461,7 +3461,7 @@ MagickExport int MagickXConfirmWidget(Display *display,MagickXWindows *windows,
             /*
               Dismiss button status changed.
             */
-            dismiss_info.raised=!cancel_info.raised;
+            dismiss_info.raised=!dismiss_info.raised;
             XDrawBeveledButton(display,&windows->widget,&dismiss_info);
             break;
           }

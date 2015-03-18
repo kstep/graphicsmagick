@@ -1,5 +1,8 @@
 2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/widget.c (MagickXConfirmWidget): Silence Coverity 10089
+	"Copy-paste error".  This is an amazing find by Coverity.
+
 	* magick/xwindow.c (MagickXImportImage): Silence Coverity 10207
 	"Array compared against 0".
 
