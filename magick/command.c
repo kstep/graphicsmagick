@@ -16442,7 +16442,7 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
               char *value = NULL;
               status = GetOptionValue(option, argv[++i], &value);
               if (OptionSuccess == status)
-                strncpy(options->fail, value, SIZE_OPTION_VALUE);
+                strlcpy(options->fail, value, sizeof(options->fail));
             }
           break;
 
@@ -16464,13 +16464,15 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
               char *value = NULL;
               status = GetOptionValue(option, argv[++i], &value);
               if (OptionSuccess == status)
-                strncpy(options->pass, value, SIZE_OPTION_VALUE);
+                strlcpy(options->pass, value, sizeof(options->pass));
             }
           else if (LocaleCompare(option = "-prompt", p) == 0) {
               char *value = NULL;
               status = GetOptionValue(option, argv[++i], &value);
               if (OptionSuccess == status)
-                strncpy(options->prompt, LocaleCompare("off", value) == 0 ? "" : value, SIZE_OPTION_VALUE);
+                strlcpy(options->prompt,
+                        LocaleCompare("off", value) == 0 ? "" : value,
+                        sizeof(options->prompt));
             }
           break;
 

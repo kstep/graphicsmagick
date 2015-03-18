@@ -1,5 +1,8 @@
 2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (ProcessBatchOptions): Silence Coverity 10080
+	"Buffer not null terminated".
+
 	* magick/widget.c (MagickXConfirmWidget): Silence Coverity 10089
 	"Copy-paste error".  This is an amazing find by Coverity.
 
