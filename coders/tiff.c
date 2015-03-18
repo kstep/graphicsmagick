@@ -2177,7 +2177,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if ((16 == bits_per_sample) || (32 == bits_per_sample) || (64 == bits_per_sample))
         import_options.endian=NativeEndian;
-      
+
       switch (method)
         {
         case ScanLineMethod:
@@ -2992,7 +2992,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             uint32
               *pixels;
 
-            unsigned long
+            size_t
               number_pixels;
 
             if (logging)
@@ -3002,9 +3002,17 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert TIFF image to DirectClass MIFF image.
             */
-            number_pixels=(unsigned long) image->columns*image->rows;
-            pixels=MagickAllocateMemory(uint32 *,
-                                        (number_pixels+6*image->columns)*sizeof(uint32));
+            number_pixels=(size_t) image->columns*image->rows;
+            if ((image->columns == 0) ||
+                (number_pixels/image->columns != image->rows))
+              {
+                TIFFClose(tiff);
+                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                     image);
+              }
+            pixels=MagickAllocateArray(uint32 *,
+                                       number_pixels+6*image->columns,
+                                       sizeof(uint32));
             if (pixels == (uint32 *) NULL)
               {
                 TIFFClose(tiff);
@@ -3013,7 +3021,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             if (!TIFFReadRGBAImage(tiff,(uint32) image->columns,
                                    (uint32) image->rows,
-                                   pixels+image->columns*sizeof(uint32),0))
+                                   pixels+image->columns,0))
               {
                 MagickFreeMemory(pixels);
                 TIFFClose(tiff);
@@ -3022,7 +3030,7 @@ ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert image to DirectClass pixel packets.
             */
-            p=pixels+number_pixels+image->columns*sizeof(uint32)-1;
+            p=pixels+number_pixels+image->columns-1;
             for (y=0; y < image->rows; y++)
               {
                 q=SetImagePixels(image,0,y,image->columns,1);

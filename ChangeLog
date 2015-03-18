@@ -1,3 +1,8 @@
+2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fix Coverity 44747 and 44748
+	"Extra sizeof expression".
+
 2015-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/Magick++/Include.h (Magick): Fix compilation with
