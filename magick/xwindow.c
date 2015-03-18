@@ -5118,8 +5118,7 @@ MagickXImportImage(const ImageInfo *image_info,
       status=XGetWMName(display,target,&window_name);
       if (status == True)
         {
-          if ((image_info->filename != (char *) NULL) &&
-              (*image_info->filename == '\0'))
+          if (image_info->filename[0] == '\0')
             {
               /*
                 Initialize image filename.

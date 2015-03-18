@@ -1,5 +1,8 @@
 2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c (MagickXImportImage): Silence Coverity 10207
+	"Array compared against 0".
+
 	* magick/quantize.c (GrayscalePseudoClassImage): Silence Coverity
 	10256 "Wrong sizeof argument".
 
