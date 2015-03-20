@@ -1593,8 +1593,6 @@ ReadColorConfigureFile(const char *basename,
 	  if (color_list == (ColorInfo *) NULL)
 	    continue;
 	  GetToken(q,(char **) NULL,token);
-          if (token == (char *) NULL)
-            break;
 	  if (*token != '=')
 	    continue;
 	  GetToken(q,&q,token);

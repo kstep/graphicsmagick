@@ -5699,8 +5699,7 @@ MagickXMakeImage(Display *display,
           /*
             Clean up if there is an error.
           */
-          if (ximage != (XImage *) NULL)
-            XDestroyImage(ximage);
+          XDestroyImage(ximage);
           ximage=(XImage *) NULL;
 
           if (segment_info[1].shmaddr)
@@ -5742,12 +5741,9 @@ MagickXMakeImage(Display *display,
           window->shared_memory=False;
           if (shm_attached)
             (void) XShmDetach(display,&segment_info[1]);
-          if (ximage != (XImage *) NULL)
-            {
-              ximage->data=NULL;
-              XDestroyImage(ximage);
-              ximage=(XImage *) NULL;
-            }
+          ximage->data=NULL;
+          XDestroyImage(ximage);
+          ximage=(XImage *) NULL;
           if (segment_info[1].shmid >= 0)
             {
               if (segment_info[1].shmaddr != NULL)

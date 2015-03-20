@@ -1,5 +1,22 @@
 2015-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/animate.c (MagickXAnimateImages): Silence Coverity 44736
+	"Dereference null return value".  Also fixed apparent memory leak
+	that Coverity did not notice.
+
+	* coders/fits.c (ReadFITSImage): Silence Coverity 10209
+	"Dereference before null check".
+
+	* magick/color_lookup.c (ReadColorConfigureFile): Silence Coverity
+	44743 "Dereference before null check".
+
+	* magick/xwindow.c (MagickXMakeImage): Silence Coverity 44745
+	"Dereference before null check".
+
+	* coders/pict.c (ReadPICTImage): Hopefully address consequences of
+	Coverity 10292 "Untrusted loop bound" although it will likely
+	still complain.
+
 	* magick/utility.c (LocaleCompare, LocaleNCompare): Try to create
 	an implementation that Coverity won't label an "tainted sink", and
 	therefore result in a Coverity "Use of untrusted scalar value"

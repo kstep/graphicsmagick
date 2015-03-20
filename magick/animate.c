@@ -1827,17 +1827,30 @@ MagickXAnimateImages(Display *display,
                 strlen(image_list[scene]->filename)-1;
               while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
-              FormatString(windows->image.name,
-                "GraphicsMagick: %.1024s[%lu of %lu]",p,scene,number_scenes);
+              {
+                char
+                  name[MaxTextExtent];
+                
+                FormatString(name,
+                             "GraphicsMagick: %.1024s[%lu of %lu]",p,scene,
+                             number_scenes);
+                CloneString(&windows->image.name,name);
+              }
               if (resource_info->title != (char *) NULL)
-                windows->image.name=TranslateText(resource_info->image_info,
-                  image,resource_info->title);
-              status=
-                XStringListToTextProperty(&windows->image.name,1,&window_name);
-              if (status != 0)
                 {
-                  XSetWMName(display,windows->image.id,&window_name);
-                  (void) XFree((void *) window_name.value);
+                  MagickFreeMemory(windows->image.name);
+                  windows->image.name=TranslateText(resource_info->image_info,
+                                                    image,resource_info->title);
+                }
+              if (windows->image.name != (char *) NULL)
+                {
+                  status=
+                    XStringListToTextProperty(&windows->image.name,1,&window_name);
+                  if (status != 0)
+                    {
+                      XSetWMName(display,windows->image.id,&window_name);
+                      (void) XFree((void *) window_name.value);
+                    }
                 }
             }
           /*

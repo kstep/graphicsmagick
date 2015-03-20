@@ -1313,16 +1313,21 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             ThrowReaderTemporaryFileException(clone_info->filename);
           }
         length=ReadBlobMSBLong(image);
-        for (i=0; i < 6; i++)
-          (void) ReadBlobMSBLong(image);
-        ReadRectangle(frame);
-        for (i=0; i < 122; i++)
-          (void) ReadBlobByte(image);
-        for (i=0; i < (long) (length-154); i++)
-        {
-          c=ReadBlobByte(image);
-          (void) fputc(c,file);
-        }
+        if (length > 154)
+          {
+            for (i=0; i < 6; i++)
+              (void) ReadBlobMSBLong(image);
+            ReadRectangle(frame);
+            for (i=0; i < 122; i++)
+              if (ReadBlobByte(image) == EOF)
+                break;
+            for (i=0; i < (long) (length-154); i++)
+              {
+                if ((c=ReadBlobByte(image)) == EOF)
+                  break;
+                (void) fputc(c,file);
+              }
+          }
         (void) fclose(file);
         tile_image=ReadImage(clone_info,exception);
         (void) LiberateTemporaryFile(clone_info->filename);
@@ -1348,7 +1353,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         length=ReadBlobMSBShort(image);
         for (i=0; i < (long) length; i++)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            break;
         continue;
       }
     if ((code >= 0x100) && (code <= 0x7fff))
@@ -1358,7 +1364,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         */
         length=(code >> 7) & 0xff;
         for (i=0; i < (long) length; i++)
-          (void) ReadBlobByte(image);
+          if (ReadBlobByte(image) == EOF)
+            break;
         continue;
       }
   }
