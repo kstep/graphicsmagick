@@ -3399,30 +3399,24 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
 MagickExport int LocaleCompare(const char *p,const char *q)
 {
   int
-    result;
+    result=0;
+
+  register size_t
+    i;
 
   if (p == (char *) NULL)
     result=-1;
   else if (q == (char *) NULL)
     result=1;
   else
-    {
-      register unsigned int
-	c,
-	d,
-	i;
-
-      i=0;
-      while (1)
-	{
-	  c=(unsigned int) ((unsigned char *) p)[i];
-	  d=(unsigned int) ((unsigned char *) q)[i];
-	  if ((c == 0U) || (AsciiMap[c] != AsciiMap[d]))
-	    break;
-	  i++;
-	}
-      result=AsciiMap[c]-AsciiMap[d];
-    }
+    for (i=0; ; i++)
+      {
+        if (((result=
+              AsciiMap[(unsigned int) ((unsigned char *) p)[i] & 0xff] -
+              AsciiMap[(unsigned int) ((unsigned char *) q)[i] & 0xff]) != 0)
+            || (p[i] == 0) || (q[i] == 0))
+          break;
+      }
   return result;
 }
 
@@ -3498,29 +3492,26 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
 {
-  register size_t
-    n;
+  int
+    result=0;
 
-  register unsigned int
-    c,
-    d;
+  register size_t
+    i;
 
   if (p == (char *) NULL)
-    return(-1);
-  if (q == (char *) NULL)
-    return(1);
-  for (n=length; n != 0; n--)
-  {
-    c=*((unsigned char *) p);
-    d=*((unsigned char *) q);
-    if (AsciiMap[c] != AsciiMap[d])
-      return(AsciiMap[c]-AsciiMap[d]);
-    if (c == 0U)
-      return(0);
-    p++;
-    q++;
-  }
-  return(0);
+    result = -1;
+  else if (q == (char *) NULL)
+    result = 1;
+  else
+    for (i=0; i < length; i++)
+      {
+        if (((result=
+              AsciiMap[(unsigned int) ((unsigned char *) p)[i] & 0xff] -
+              AsciiMap[(unsigned int) ((unsigned char *) q)[i] & 0xff]) != 0)
+            || (p[i] == 0) || (q[i] == 0))
+          break;
+      }
+  return result;
 }
 
 /*

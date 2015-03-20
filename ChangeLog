@@ -1,3 +1,11 @@
+2015-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (LocaleCompare, LocaleNCompare): Try to create
+	an implementation that Coverity won't label an "tainted sink", and
+	therefore result in a Coverity "Use of untrusted scalar value"
+	report whenever a string from an external source is compared.  The
+	original implementations are not believed to be faulty.
+
 2015-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ProcessBatchOptions): Silence Coverity 10080
