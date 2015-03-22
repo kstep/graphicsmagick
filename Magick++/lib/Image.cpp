@@ -2492,7 +2492,8 @@ void Magick::Image::colorMapSize ( const unsigned int entries_ )
   if( !imageptr->colormap )
     {
       // Allocate colormap
-      imageptr->colormap = MagickAllocateMemory(PixelPacket*,entries_*sizeof(PixelPacket));
+      imageptr->colormap = MagickAllocateMemory(PixelPacket*,
+                                                entries_*sizeof(PixelPacket));
       imageptr->colors = 0;
     }
   else if ( entries_ > imageptr->colors )
@@ -2502,9 +2503,13 @@ void Magick::Image::colorMapSize ( const unsigned int entries_ )
                           (entries_)*sizeof(PixelPacket));
     }
 
+  if ( !imageptr->colormap )
+    throwExceptionExplicit( ResourceLimitError,
+			    "Failed to allocate colormap");
+
   // Initialize any new new colormap entries as all black
   Color black(0,0,0);
-  for( unsigned int i=imageptr->colors; i<(entries_-1); i++ )
+  for( unsigned int i=imageptr->colors; i< (entries_-1); i++ )
     (imageptr->colormap)[i] = black;
 
   imageptr->colors = entries_;

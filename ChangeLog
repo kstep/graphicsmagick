@@ -1,10 +1,13 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/vid.c (ReadVIDImage): Silence 44730 "Explicit null
-	dereferenced".
+	* Magick++/lib/Image.cpp (colorMapSize): Silence Coverity 44728
+	"Dereference after null check".
 
-	* coders/mpc.c (ReadMPCImage): Silence 44732 "Dereference after
-	null check".
+	* coders/vid.c (ReadVIDImage): Silence Coverity 44730 "Explicit
+	null dereferenced".
+
+	* coders/mpc.c (ReadMPCImage): Silence Coverity 44732 "Dereference
+	after null check".
 
 	* Magick++/lib/Image.cpp (signature): Silence Coverity 44735
 	"Dereference null return value".

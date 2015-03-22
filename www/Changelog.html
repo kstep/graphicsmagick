@@ -38,10 +38,12 @@
 <p>2015-03-22  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
-<li>coders/vid.c (ReadVIDImage): Silence 44730 &quot;Explicit null
-dereferenced&quot;.</li>
-<li>coders/mpc.c (ReadMPCImage): Silence 44732 &quot;Dereference after
-null check&quot;.</li>
+<li>Magick++/lib/Image.cpp (colorMapSize): Silence Coverity 44728
+&quot;Dereference after null check&quot;.</li>
+<li>coders/vid.c (ReadVIDImage): Silence Coverity 44730 &quot;Explicit
+null dereferenced&quot;.</li>
+<li>coders/mpc.c (ReadMPCImage): Silence Coverity 44732 &quot;Dereference
+after null check&quot;.</li>
 <li>Magick++/lib/Image.cpp (signature): Silence Coverity 44735
 &quot;Dereference null return value&quot;.</li>
 <li>coders/ps.c (ReadPSImage): Ghostscript options concatenation
