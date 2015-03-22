@@ -356,28 +356,44 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   {
     char
-      options[MaxTextExtent];
+      options[MaxTextExtent],
+      arg[MaxTextExtent];
 
     options[0]='\0';
 
     if (use_crop_box)
-      FormatString(options,"-dUseCropBox");
+      (void) strlcat(options,"-dUseCropBox",sizeof(options));
 
     if (pdf_stop_on_error)
-      FormatString(options+strlen(options)," -dPDFSTOPONERROR");
+      {
+        if (options[0] != '\0')
+          (void) strlcat(options," ",sizeof(options));
+        (void) strlcat(options,"-dPDFSTOPONERROR",sizeof(options));
+      }
 
     /*
       Append subrange.
     */
     if (image_info->subrange != 0)
-      FormatString(options+strlen(options)," -dFirstPage=%lu -dLastPage=%lu",
-		   image_info->subimage+1,image_info->subimage+image_info->subrange);
+      {
+        FormatString(arg,"-dFirstPage=%lu -dLastPage=%lu",
+                     image_info->subimage+1,
+                     image_info->subimage+image_info->subrange);
+        if (options[0] != '\0')
+          (void) strlcat(options," ",sizeof(options));
+        (void) strlcat(options,arg,sizeof(options));
+      }
+
     /*
       Append authentication string.
     */
     if (image_info->authenticate != (char *) NULL)
-      FormatString(options+strlen(options)," -sPDFPassword=%.1024s",
-		   image_info->authenticate);
+      {
+        FormatString(arg,"-sPDFPassword=%.1024s", image_info->authenticate);
+        if (options[0] != '\0')
+          (void) strlcat(options," ",sizeof(options));
+        (void) strlcat(options,arg,sizeof(options));
+      }
     (void) strlcpy(filename,image_info->filename,MaxTextExtent);
     clone_info=CloneImageInfo(image_info);
     if (!AcquireTemporaryFileName(clone_info->filename))
