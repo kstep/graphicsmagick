@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999-2014
+// Copyright Bob Friesenhahn, 1999-2015
 //
 // Implementation of Image
 //
@@ -3417,8 +3417,11 @@ std::string Magick::Image::signature ( const bool force_ ) const
 
   const ImageAttribute * attribute =
     GetImageAttribute(constImage(), "Signature");
-
-  return std::string( attribute->value );
+  if ((attribute != (const ImageAttribute *) NULL) &&
+      (attribute->value != (const char *) NULL))
+    return std::string( attribute->value );
+  else
+    return std::string();
 }
 
 void Magick::Image::size ( const Geometry &geometry_ )

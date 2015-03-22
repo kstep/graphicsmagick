@@ -1,5 +1,8 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/lib/Image.cpp (signature): Silence Coverity 44735
+	"Dereference null return value".
+
 	* coders/ps.c (ReadPSImage): Ghostscript options concatenation
 	should be more secure against buffer overflow.
 
