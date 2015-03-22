@@ -1,5 +1,9 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/uil.c (WriteUILImage): Silence Coverity 10202
+	"Dereference after null check".  In fact, UIL output was not
+	working at all due to this bug.
+
 	* magick/xwindow.c (MagickXMakeImage): Silence Coverity 44727
 	"Dereference after null check".
 
