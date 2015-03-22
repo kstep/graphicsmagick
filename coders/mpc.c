@@ -272,14 +272,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                   p=values+strlen(values);
                 }
-              if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
               *p++=c;
               c=ReadBlobByte(image);
               if (*values != '{')
                 if (isspace(c))
                   break;
             }
+            if (values == (char *) NULL)
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
             *p='\0';
             /*
               Assign a value to the specified keyword.

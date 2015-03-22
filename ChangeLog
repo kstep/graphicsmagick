@@ -1,5 +1,8 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mpc.c (ReadMPCImage): Silence 44732 "Dereference after
+	null check".
+
 	* Magick++/lib/Image.cpp (signature): Silence Coverity 44735
 	"Dereference null return value".
 
