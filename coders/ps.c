@@ -312,7 +312,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   {
     char
-      options[MaxTextExtent];
+      options[MaxTextExtent],
+      arg[MaxTextExtent];
     
     options[0]='\0';
     /*
@@ -324,7 +325,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Append bounding box.
     */
-    FormatString(options+strlen(options)," -g%s",geometry);
+    FormatString(arg,"-g%s",geometry);
+    if (options[0] != '\0')
+      (void) strlcat(options," ",sizeof(options));
+    (void) strlcat(options,arg,sizeof(options));
+
     (void) strlcpy(filename,image_info->filename,MaxTextExtent);
     if (image_info->temporary)
       (void) LiberateTemporaryFile((char *) image_info->filename);

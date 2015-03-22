@@ -1,10 +1,13 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/ps.c (ReadPSImage): Ghostscript options concatenation
+	should be more secure against buffer overflow.
+
 	* coders/pdf.c (ReadPDFImage): Applied patch by Chris Gilling such
 	that '-define pdf:stop-on-error=true' will stop PDF processing
 	immediately upon an error.
-	(ReadPDFImage): PDF options concatenation should be more secure
-	against buffer overflow.
+	(ReadPDFImage): Ghostscript options concatenation should be more
+	secure against buffer overflow.
 
 2015-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
