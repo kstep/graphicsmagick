@@ -1,5 +1,9 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/meta.c (parse8BIM): Silence Coverity 10159 "Explicit null
+	dereferenced".
+	(parse8BIMW): Silence Coverity 10144 "Explicit null dereferenced".
+
 	* coders/uil.c (WriteUILImage): Silence Coverity 10202
 	"Dereference after null check".  In fact, UIL output was not
 	working at all due to this bug.

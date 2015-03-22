@@ -281,10 +281,10 @@ static long parse8BIM(Image *ifile, Image *ofile)
   char
     brkused,
     quoted,
-    *line,
-    *token,
-    *newstr,
-    *name;
+    *line = (char *) NULL,
+    *token = (char *) NULL,
+    *newstr = (char *) NULL,
+    *name = (char *) NULL;
 
   int
     state,
@@ -313,7 +313,8 @@ static long parse8BIM(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line = MagickAllocateMemory(char *,inputlen);
-  name = token = (char *)NULL;
+  if (line == (char *) NULL)
+    goto parse8BIM_failure;
   savedpos = 0;
   while(super_fgets(&line,&inputlen,ifile)!=NULL)
   {
@@ -321,7 +322,11 @@ static long parse8BIM(Image *ifile, Image *ofile)
     next=0;
 
     token = MagickAllocateMemory(char *,inputlen);
+    if (token == (char *) NULL)
+      goto parse8BIM_failure;
     newstr = MagickAllocateMemory(char *,inputlen);
+    if (newstr == (char *) NULL)
+      goto parse8BIM_failure;
     while (Tokenizer(&token_info, 0, token, inputlen, line,
           (char *) "", (char *) "=",
       (char *) "\"", 0, &brkused,&next,&quoted)==0)
@@ -354,8 +359,9 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
-                if (name)
-                  (void) strcpy(name,newstr);
+                if (name == (char *) NULL)
+                  goto parse8BIM_failure;
+                (void) strcpy(name,newstr);
                 break;
             }
             state++;
@@ -484,6 +490,13 @@ static long parse8BIM(Image *ifile, Image *ofile)
       savedolen = 0L;
     }
   return outputlen;
+
+ parse8BIM_failure:
+  MagickFreeMemory(token);
+  MagickFreeMemory(newstr);
+  MagickFreeMemory(name);
+  MagickFreeMemory(line);
+  return 0L;
 }
 
 static char *super_fgets_w(char **b, size_t *blen, Image *file)
@@ -542,10 +555,10 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   char
     brkused,
     quoted,
-    *line,
-    *token,
-    *newstr,
-    *name;
+    *line = (char *) NULL,
+    *token = (char *) NULL,
+    *newstr = (char *) NULL,
+    *name = (char *) NULL;
 
   int
     state,
@@ -574,6 +587,8 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   dataset = 0;
   recnum = 0;
   line = MagickAllocateMemory(char *,inputlen);
+  if (line == (char *) NULL)
+    goto parse8BIMW_failure;
   name = token = (char *)NULL;
   savedpos = 0;
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -586,7 +601,11 @@ static long parse8BIMW(Image *ifile, Image *ofile)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "META CODER Parse8BIM: %s (%lu)",line, (unsigned long) inputlen);
     token = MagickAllocateMemory(char *,inputlen);
+    if (token == (char *) NULL)
+      goto parse8BIMW_failure;
     newstr = MagickAllocateMemory(char *,inputlen);
+    if (newstr == (char *) NULL)
+      goto parse8BIMW_failure;
     while (Tokenizer(&token_info, 0, token, inputlen, line,
           (char *) "", (char *) "=",
       (char *) "\"", 0, &brkused,&next,&quoted)==0)
@@ -619,8 +638,9 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                 break;
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
-                if (name)
-                  (void) strcpy(name,newstr);
+                if (name == (char *) NULL)
+                  goto parse8BIMW_failure;
+                (void) strcpy(name,newstr);
                 break;
             }
             state++;
@@ -749,6 +769,13 @@ static long parse8BIMW(Image *ifile, Image *ofile)
       savedolen = 0L;
     }
   return outputlen;
+
+ parse8BIMW_failure:
+  MagickFreeMemory(token);
+  MagickFreeMemory(newstr);
+  MagickFreeMemory(name);
+  MagickFreeMemory(line);
+  return 0L;
 }
 
 /* some defines for the different JPEG block types */
