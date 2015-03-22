@@ -1,5 +1,8 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c (MagickXMakeImage): Silence Coverity 44727
+	"Dereference after null check".
+
 	* Magick++/lib/Image.cpp (colorMapSize): Silence Coverity 44728
 	"Dereference after null check".
 

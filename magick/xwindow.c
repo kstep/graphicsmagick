@@ -5683,8 +5683,11 @@ MagickXMakeImage(Display *display,
 			     &segment_info[1],width,height);
       window->shared_memory &= (ximage != (XImage *) NULL);
 
-      shm_extent=MagickArraySize(ximage->height,ximage->bytes_per_line);
-      window->shared_memory &= (shm_extent != 0);
+      if (window->shared_memory)
+        {
+          shm_extent=MagickArraySize(ximage->height,ximage->bytes_per_line);
+          window->shared_memory &= (shm_extent != 0);
+        }
 
       if (window->shared_memory)
         segment_info[1].shmid=shmget(IPC_PRIVATE,shm_extent,IPC_CREAT | 0777);
