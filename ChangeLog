@@ -1,5 +1,8 @@
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/vid.c (ReadVIDImage): Silence 44730 "Explicit null
+	dereferenced".
+
 	* coders/mpc.c (ReadMPCImage): Silence 44732 "Dereference after
 	null check".
 
