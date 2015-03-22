@@ -1,3 +1,9 @@
+2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (ReadPDFImage): Applied patch by Chris Gilling such
+	that '-define pdf:stop-on-error=true' will stop PDF processing
+	immediately upon an error.
+
 2015-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/animate.c (MagickXAnimateImages): Silence Coverity 44736

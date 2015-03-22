@@ -172,6 +172,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBool
     use_crop_box = MagickFalse;
 
+  MagickBool
+    pdf_stop_on_error = MagickFalse;
+
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -181,8 +184,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((value=AccessDefinition(image_info,"pdf","use-cropbox"))) 
     {
       if (strcmp(value,"true") == 0)
-	use_crop_box = True;
+        use_crop_box = True;
     }
+
+   if ((value=AccessDefinition(image_info,"pdf","stop-on-error"))) 
+     {
+       if (strcmp(value,"true") == 0)
+         pdf_stop_on_error = True;
+     }
 
   /*
     Select Postscript delegate driver
@@ -353,6 +362,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     if (use_crop_box)
       FormatString(options,"-dUseCropBox");
+
+    if (pdf_stop_on_error)
+      FormatString(options+strlen(options)," -dPDFSTOPONERROR");
+
     /*
       Append subrange.
     */

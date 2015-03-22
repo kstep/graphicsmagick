@@ -1,4 +1,4 @@
-.TH gm 1 "2015/03/11" "GraphicsMagick"
+.TH gm 1 "2015/03/22" "GraphicsMagick"
 .TP
 .in 15
 .in 15
@@ -1326,12 +1326,23 @@ requested to scale the image to fit the page size (width and/or
 height).
 .in 15
 .in 15
-.B "pdf:use-cropbox"
+.B "pdf:use-cropbox={true|false}"
 .in 20
  \fR
 .in 20
-If the pdf:use-cropbox flag is defined, then Ghostscript is
-requested to apply the PDF crop box.
+If the pdf:use-cropbox flag is set to \fBtrue\fP, then
+Ghostscript is requested to apply the PDF crop box.
+
+.in 15
+.in 15
+.B "pdf:stop-on-error={true|false}"
+.in 20
+ \fR
+.in 20
+If the pdf:stop-on-error flag is set to \fBtrue\fP, then
+Ghostscript is requested to stop processing the PDF when the first
+error is encountered.  Otherwise it will attempt to process all
+requested pages.
 
 .in 15
 .in 15
