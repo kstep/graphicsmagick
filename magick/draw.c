@@ -4875,6 +4875,8 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
+  if (dasharray == (const double *) NULL)
+    n_new = 0;
   q = CurrentContext->dash_pattern;
   if( q != (const double *) NULL )
     while( *q++ != 0.0)
@@ -4911,7 +4913,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
       if(CurrentContext->dash_pattern != (double*)NULL)
         MagickFreeMemory(CurrentContext->dash_pattern);
 
-      if( n_new != 0)
+      if( n_new != 0 )
         {
           CurrentContext->dash_pattern = MagickAllocateArray(double *,
                                                              (n_new+1),

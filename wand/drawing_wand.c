@@ -4550,6 +4550,8 @@ WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
 
   assert(drawing_wand != (DrawingWand *) NULL);
   assert(drawing_wand->signature == MagickSignature);
+  if (dash_array == (const double *) NULL)
+    n_new = 0;
   q=CurrentContext->dash_pattern;
   if (q != (const double *) NULL)
     while (*q++ != 0.0)
