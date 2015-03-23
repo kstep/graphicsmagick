@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -3363,35 +3363,40 @@ DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     PathInfo
       * restrict path_info;
 
-    if ((path_info=ConvertPrimitiveToPath(draw_info,primitive_info))
-        == (PathInfo *) NULL)
-      {
-        return(MagickFail);
-      }
-    else
-      {
-	unsigned int
-	  index;
+    unsigned int
+      index;
 
-	polygon_set=AllocateThreadViewDataSet(DestroyPolygonInfo,image,
-					      &image->exception);
-	if (polygon_set != (ThreadViewDataSet *) NULL)
-	  {
+    polygon_set=(ThreadViewDataSet *) NULL;
+    path_info=(PathInfo *) NULL;
+    if ((path_info=ConvertPrimitiveToPath(draw_info,primitive_info))
+        != (PathInfo *) NULL)
+      {
+	if ((polygon_set=AllocateThreadViewDataSet(DestroyPolygonInfo,image,
+                                                   &image->exception))
+            != (ThreadViewDataSet *) NULL)
+          {
+            /*
+              Assign polygon for each worker thread.
+            */
 	    for (index=0; index < GetThreadViewDataSetAllocatedViews(polygon_set); index++)
 	      AssignThreadViewData(polygon_set,index,(void *) ConvertPathToPolygon(path_info));
-	  }
+
+            /*
+              Verify worker thread allocations.
+            */
+            for (index=0; index < GetThreadViewDataSetAllocatedViews(polygon_set); index++)
+              if (AccessThreadViewDataById(polygon_set,index) == (void *) NULL)
+                {
+                  DestroyThreadViewDataSet(polygon_set);
+                  polygon_set=(ThreadViewDataSet *) NULL;
+                  break;
+                }
+          }
+
 	MagickFreeMemory(path_info);
-
-	for (index=0; index < GetThreadViewDataSetAllocatedViews(polygon_set); index++)
-	  if (AccessThreadViewDataById(polygon_set,index) == (void *) NULL)
-	    status=MagickFail;
-
-	if (status == MagickFail)
-	  {
-	    DestroyThreadViewDataSet(polygon_set);
-	    return status;
-	  }
       }
+    if (polygon_set == (ThreadViewDataSet *) NULL)
+      return MagickFail;
   }
 
   /*
