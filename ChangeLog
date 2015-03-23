@@ -1,3 +1,7 @@
+2014-03-24  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c More paranoa in checking ReadBlobByte() negative return.
+
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/Image.cpp (syncPixels): Silence Coverity 44722

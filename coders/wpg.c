@@ -469,7 +469,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
 }
 
 /* WPG2 raster reader. */
-static int UnpackWPG2Raster(Image *image,int bpp)
+static int UnpackWPG2Raster(Image *image, int bpp)
 {
   unsigned int
     SampleSize=1;
@@ -493,6 +493,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     ldblk;
 
   int XorMe = 0;
+  int ParanoaCheck;
 
   x=0;
   y=0;
@@ -541,12 +542,20 @@ static int UnpackWPG2Raster(Image *image,int bpp)
               InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
-          RunCount=ReadBlobByte(image);  /* RST */
+          RunCount = ParanoaCheck = ReadBlobByte(image);  /* RST */
+		  if(ParanoaCheck<0)
+		  {
+		     MagickFreeMemory(BImgBuff);
+             MagickFreeMemory(UpImgBuff);
+			 return(-4);
+		  }
           if(x!=0)
             {
               (void) fprintf(stderr,
                              "\nUnsupported WPG2 unaligned token RST x=%lu, please report!\n"
                              ,x);
+			  MagickFreeMemory(BImgBuff);
+              MagickFreeMemory(UpImgBuff);
               return(-3);
             }
           {
