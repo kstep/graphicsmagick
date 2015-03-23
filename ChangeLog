@@ -1,5 +1,8 @@
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/attribute.c (Generate8BIMAttribute): Silence Coverity
+	10195 "Argument cannot be negative".
+
 	* Magick++/lib/Image.cpp (syncPixels): Silence Coverity 44722
 	"Unchecked return value".
 	(fontTypeMetrics): Silence Coverity 44721 "Unchecked return

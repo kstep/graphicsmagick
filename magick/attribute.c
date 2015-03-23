@@ -907,7 +907,7 @@ Generate8BIMAttribute(Image *image,const char *key)
   unsigned int
     status;
 
-  unsigned long
+  long
     count;
 
   const unsigned char
@@ -962,12 +962,13 @@ Generate8BIMAttribute(Image *image,const char *key)
       if (resource != (char *)NULL)
         MagickFreeMemory(resource);
       count=ReadByte(&info,&length);
-      if ((count != 0) && (count <= length))
+      if ((count > 0) && ((size_t) count <= length))
 	{
-	  resource=(char *) MagickAllocateMemory(char *,count+MaxTextExtent);
+	  resource=(char *) MagickAllocateMemory(char *,
+                                                 (size_t) count+MaxTextExtent);
 	  if (resource != (char *) NULL)
 	    {
-	      for (i=0; i < (long) count; i++)
+	      for (i=0; i < count; i++)
 		resource[i]=(char) ReadByte(&info,&length);
 	      resource[count]='\0';
 	    }
@@ -975,6 +976,15 @@ Generate8BIMAttribute(Image *image,const char *key)
       if (!(count & 0x01))
 	(void) ReadByte(&info,&length);
       count=ReadMSBLong(&info,&length);
+      /*
+        ReadMSBLong() can return negative values such as -1 or any
+        other negative value.  Make sure that it is in range.
+      */
+      if ((count < 0) || ((size_t) count > length))
+        {
+          length=0; /* Quit loop */
+          continue;
+        }
       if ((*name != '\0') && (*name != '#'))
 	{
 	  if ((resource == (char *) NULL) ||
@@ -1001,10 +1011,11 @@ Generate8BIMAttribute(Image *image,const char *key)
       /*
 	We have the resource of interest.
       */
-      attribute=(char *) MagickAllocateMemory(char *,count+MaxTextExtent);
+      attribute=(char *) MagickAllocateMemory(char *,
+                                              (size_t) count+MaxTextExtent);
       if (attribute != (char *) NULL)
 	{
-	  (void) memcpy(attribute,(char *) info,count);
+	  (void) memcpy(attribute,(char *) info,(size_t) count);
 	  attribute[count]='\0';
 	  info+=count;
 	  length-=count;
