@@ -1,5 +1,8 @@
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/render.c (DrawPolygonPrimitive): Silence Coverity 10136
+	"Dereference after null check".
+
 	* wand/drawing_wand.c (DrawSetStrokeDashArray): Silence Coverity
 	10117 "Dereference after null check".
 
