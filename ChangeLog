@@ -1,3 +1,8 @@
+2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/drawing_wand.c (DrawPushGraphicContext): Silence Coverity
+	10151 "Dereference after null check".
+
 2015-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c (parse8BIM): Silence Coverity 10159 "Explicit null

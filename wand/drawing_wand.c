@@ -3828,8 +3828,12 @@ WandExport void DrawPushGraphicContext(DrawingWand *drawing_wand)
   MagickReallocMemory(DrawInfo **,drawing_wand->graphic_context,
                       (drawing_wand->index+1)*sizeof(DrawInfo *));
   if (drawing_wand->graphic_context == (DrawInfo **) NULL)
-    ThrowException3(&drawing_wand->exception,ResourceLimitError,
-      MemoryAllocationFailed,UnableToDrawOnImage);
+    {
+      drawing_wand->index--;
+      ThrowException3(&drawing_wand->exception,ResourceLimitError,
+                      MemoryAllocationFailed,UnableToDrawOnImage);
+      return;
+    }
   CurrentContext=CloneDrawInfo((ImageInfo *) NULL,
     drawing_wand->graphic_context[drawing_wand->index-1]);
   (void) MvgPrintf(drawing_wand,"push graphic-context\n");
