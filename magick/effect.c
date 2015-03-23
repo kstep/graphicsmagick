@@ -211,7 +211,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
           if (p == (const PixelPacket *) NULL)
             {
               status = MagickFail;
-              break;
+              break; /* Breaks overall 'y' loop '*/
             }
 
           /*
@@ -261,6 +261,12 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
       for (x = 2; x < (image->columns + (width << 1)); x++)
         {
           LongPixelPacket * restrict current_pre;
+
+          if (p == (const PixelPacket *) NULL)
+            {
+              status = MagickFail;
+              break; /* Breaks only immediate 'x' loop */
+            }
 
           /* preprocess (x,y) */
           current_pre = &dyn_process[PRE(x, y)];
@@ -417,12 +423,14 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                 q[x - width].green = q[x - width].blue = q[x - width].red;
             } /* if (y ... */
         } /* for (x ... */
+      if (status == MagickFail)
+        break; /* Breaks overall 'y' loop '*/
       if (q != (const PixelPacket *) NULL)
         {
           if (!SyncImagePixelsEx(threshold_image, exception))
             {
               status = MagickFail;
-              break;
+              break; /* Breaks overall 'y' loop '*/
             }
         }
       row_count++;
@@ -431,7 +439,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image * image,
                                     AdaptiveThresholdImageText, image->filename))
           {
             status = MagickFail;
-            break;
+            break; /* Breaks overall 'y' loop '*/
           }
     } /* for (y ... */
 

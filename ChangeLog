@@ -1,7 +1,9 @@
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/effect.c (EmbossImage): Silence Coverity "Dereference
-	after null check".
+	* magick/effect.c (EmbossImage): Silence Coverity 10114
+	"Dereference after null check".
+	(AdaptiveThresholdImage): Silence Coverity 10118 "Explicit null
+	dereferenced".
 
 	* coders/msl.c (MSLPushImage): Silence Coverity 10128 "Dereference
 	after null check".
