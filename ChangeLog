@@ -1,5 +1,8 @@
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/msl.c (MSLPushImage): Silence Coverity 10128 "Dereference
+	after null check".
+
 	* magick/render.c (DrawPolygonPrimitive): Silence Coverity 10136
 	"Dereference after null check".
 

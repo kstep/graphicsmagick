@@ -510,8 +510,8 @@ MSLPushImage(MSLInfo *msl_info,Image *image)
       (msl_info->draw_info == (DrawInfo **) NULL) ||
       (msl_info->attributes == (Image **) NULL) ||
       (msl_info->image == (Image **) NULL))
-    ThrowException3(msl_info->exception,ResourceLimitFatalError,
-                    MemoryAllocationFailed,UnableToAllocateImage);
+    MagickFatalError3(ResourceLimitFatalError,
+                      MemoryAllocationFailed,UnableToAllocateImage);
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=
     CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
