@@ -1,5 +1,10 @@
 2015-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Magick++/lib/Image.cpp (syncPixels): Silence Coverity 44722
+	"Unchecked return value".
+	(fontTypeMetrics): Silence Coverity 44721 "Unchecked return
+	value".
+
 	* magick/render.c (ConvertPathToPolygon): Silence Coverity 10120
 	"Dereference after null check".
 

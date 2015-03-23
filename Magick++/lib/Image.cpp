@@ -2880,7 +2880,9 @@ void Magick::Image::fontTypeMetrics ( const std::string &text_,
 {
   DrawInfo *drawInfo = options()->drawInfo();
   drawInfo->text = const_cast<char *>(text_.c_str());
-  GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric) );
+  if (GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric) )
+      != MagickPass)
+    throwImageException();
   drawInfo->text = 0;
 }
 
@@ -3792,10 +3794,10 @@ const Magick::PixelPacket* Magick::Image::getConstPixels
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  const PixelPacket* p = (*AcquireImagePixels)( constImage(),
-                                                x_, y_,
-                                                columns_, rows_,
-                                                &exceptionInfo );
+  const PixelPacket* p = AcquireImagePixels( constImage(),
+                                             x_, y_,
+                                             columns_, rows_,
+                                             &exceptionInfo );
   throwImageException( exceptionInfo );
   return p;
 }
@@ -3830,9 +3832,9 @@ Magick::PixelPacket* Magick::Image::getPixels ( const int x_, const int y_,
 						const unsigned int rows_ )
 {
   modifyImage();
-  PixelPacket* result = (*GetImagePixels)( image(),
-                                           x_, y_,
-                                           columns_, rows_ );
+  PixelPacket* result = GetImagePixels( image(),
+                                        x_, y_,
+                                        columns_, rows_ );
   if( !result )
     throwImageException();
 
@@ -3847,9 +3849,9 @@ Magick::PixelPacket* Magick::Image::setPixels ( const int x_, const int y_,
 						const unsigned int rows_ )
 {
   modifyImage();
-  PixelPacket* result = (*SetImagePixels)( image(),
-                                           x_, y_,
-                                           columns_, rows_ );
+  PixelPacket* result = SetImagePixels( image(),
+                                        x_, y_,
+                                        columns_, rows_ );
   if( !result )
     throwImageException();
 
@@ -3859,8 +3861,8 @@ Magick::PixelPacket* Magick::Image::setPixels ( const int x_, const int y_,
 // Transfers the image cache pixels to the image.
 void Magick::Image::syncPixels ( void )
 {
-  (*SyncImagePixels)( image() );
-  throwImageException();
+  if (SyncImagePixels( image() ) != MagickPass)
+    throwImageException();
 }
 
 // Transfers one or more pixel components from a buffer or file
