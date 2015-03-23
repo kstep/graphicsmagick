@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2012 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1972,7 +1972,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
   MagickFreeMemory(kernel);
-  emboss_image->is_grayscale=image->is_grayscale;
+  if (emboss_image != (Image *) NULL)
+    emboss_image->is_grayscale=image->is_grayscale;
   return(emboss_image);
 }
 
