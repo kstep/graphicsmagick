@@ -479,6 +479,8 @@ ConvertPathToPolygon(const PathInfo *path_info)
         /*
           New edge.
         */
+        if (points == (PointInfo *) NULL) /* PathInfo code logic error */
+          return((PolygonInfo *) NULL);
         point=points[n-1];
         if (edge == number_edges)
           {
