@@ -318,6 +318,9 @@
       <Message name="WebPInvalidParameter">
         WebP failed: invalid parameter
       </Message>
+      <Message name="UnableToWriteTemporaryFile">
+        Unable to write to temporary file
+      </Message>
     </Error>
     <FatalError>
       <Message name="Default">

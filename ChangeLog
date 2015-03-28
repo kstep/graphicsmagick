@@ -1,3 +1,11 @@
+2015-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cals.c (ReadCALSImage): Silence Coverity 10086 "Unchecked
+	return value from library".
+
+	* magick/enhance.c (ModulateImage): Silence Coverity 10087
+	"Unchecked return value".
+
 2014-03-24  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
         * coders/wpg.c More paranoa in checking ReadBlobByte() negative return.

@@ -162,6 +162,9 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   ImageInfo
     *clone_info;
 
+  MagickPassFail
+    file_write_status;
+
   /*
     Open image file.
   */
@@ -236,67 +239,79 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     ThrowReaderTemporaryFileException(filename);
-
-  /* Intel TIFF with IFD at offset 8 - IFD has 14 records */
-  fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
-  /* New sub image - normal type */
-  fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  /* Image width */
-  fwrite("\000\001\004\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,width);
-  /* Image height */
-  fwrite("\001\001\004\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,height);
-  /* 1 bit per sample */
-  fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  /* CCITT Group 4 compression */
-  fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
-  /* Photometric interpretation MAX BLACK */
-  fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
-  /* Strip offset */
-  fwrite("\021\001\003\000\001\000\000\000",1,8,file);
-  strip_off_pos = 10 + (12 * 14) + 4 + 8;
-  CALS_WriteIntelULong(file,strip_off_pos);
-  /* Orientation */
-  fwrite("\022\001\003\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,orient);
-  /* 1 sample per pixel */
-  fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
-  /* Rows per strip (same as height) */
-  fwrite("\026\001\004\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,height);
-  /* Strip byte count */
-  fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
-  byte_count_pos = ftell(file)-4;
-  /* X resolution */
-  fwrite("\032\001\005\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,strip_off_pos-8);
-  /* Y resolution */
-  fwrite("\033\001\005\000\001\000\000\000",1,8,file);
-  CALS_WriteIntelULong(file,strip_off_pos-8);
-  /* Resolution unit is inch */
-  fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
-  /* Offset to next IFD ie end of images */
-  fwrite("\000\000\000\000",1,4,file);
-  /* Write X/Y resolution as rational data */
-  CALS_WriteIntelULong(file,density);
-  CALS_WriteIntelULong(file,1);
-
-  /* Copy image stream data */
-  flen = 0;
-  c=ReadBlobByte(image);
-  while (c != EOF)
+  file_write_status=MagickFail;
+  do
     {
-      flen++;
-      (void) fputc(c,file);
+      /* Intel TIFF with IFD at offset 8 - IFD has 14 records */
+      fwrite("\111\111\052\000\010\000\000\000\016\000",1,10,file);
+      /* New sub image - normal type */
+      fwrite("\376\000\003\000\001\000\000\000\000\000\000\000",1,12,file);
+      /* Image width */
+      fwrite("\000\001\004\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,width);
+      /* Image height */
+      fwrite("\001\001\004\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,height);
+      /* 1 bit per sample */
+      fwrite("\002\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+      /* CCITT Group 4 compression */
+      fwrite("\003\001\003\000\001\000\000\000\004\000\000\000",1,12,file);
+      /* Photometric interpretation MAX BLACK */
+      fwrite("\006\001\003\000\001\000\000\000\000\000\000\000",1,12,file);
+      /* Strip offset */
+      fwrite("\021\001\003\000\001\000\000\000",1,8,file);
+      strip_off_pos = 10 + (12 * 14) + 4 + 8;
+      CALS_WriteIntelULong(file,strip_off_pos);
+      /* Orientation */
+      fwrite("\022\001\003\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,orient);
+      /* 1 sample per pixel */
+      fwrite("\025\001\003\000\001\000\000\000\001\000\000\000",1,12,file);
+      /* Rows per strip (same as height) */
+      fwrite("\026\001\004\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,height);
+      /* Strip byte count */
+      fwrite("\027\001\004\000\001\000\000\000\000\000\000\000",1,12,file);
+      byte_count_pos = ftell(file)-4;
+      /* X resolution */
+      fwrite("\032\001\005\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,strip_off_pos-8);
+      /* Y resolution */
+      fwrite("\033\001\005\000\001\000\000\000",1,8,file);
+      CALS_WriteIntelULong(file,strip_off_pos-8);
+      /* Resolution unit is inch */
+      fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
+      /* Offset to next IFD ie end of images */
+      fwrite("\000\000\000\000",1,4,file);
+      /* Write X/Y resolution as rational data */
+      CALS_WriteIntelULong(file,density);
+      CALS_WriteIntelULong(file,1);
+
+      /* Copy image stream data */
+      flen = 0;
       c=ReadBlobByte(image);
-    }
+      while (c != EOF)
+        {
+          flen++;
+          (void) fputc(c,file);
+          c=ReadBlobByte(image);
+        }
 
-  /* Return to correct location and output strip byte count */
-  fseek(file,byte_count_pos,SEEK_SET);
-  CALS_WriteIntelULong(file,flen);
-
+      /* Return to correct location and output strip byte count */
+      if (fseek(file,byte_count_pos,SEEK_SET) != 0)
+        break;
+      CALS_WriteIntelULong(file,flen);
+      fflush(file);
+      if (ferror(file))
+        break;
+      file_write_status=MagickPass;
+    } while (0);
   (void) fclose(file);
+  if (file_write_status != MagickPass)
+    {
+      (void) LiberateTemporaryFile(filename);
+      ThrowReaderException(CoderError,UnableToWriteTemporaryFile,image);
+    }
   DestroyImage(image);
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;

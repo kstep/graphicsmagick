@@ -503,6 +503,12 @@ Unable to write MPEG parameters
 .
 
 MessageId       = +1
+SymbolicName    = CoderErrorUnableToWriteTemporaryFile
+Language        = English
+Unable to write to temporary file
+.
+
+MessageId       = +1
 SymbolicName    = CoderErrorUnableToZipCompressImage
 Language        = English
 Unable to zip-compress image
