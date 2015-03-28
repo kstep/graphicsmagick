@@ -8373,7 +8373,7 @@ MagickXMakeWindow(Display *display,Window parent,char **argv,
         if (!isspace((int) (*p)) && (*p != '%'))
           p++;
         else
-          (void) MagickStrlCpy(p,p+1,sizeof(geometry)-(p-geometry));
+          (void) memmove(p,p+1,strlen(p+1)+1);
       }
       flags=XWMGeometry(display,window_info->screen,geometry,default_geometry,
         window_info->border_width,size_hints,&size_hints->x,&size_hints->y,

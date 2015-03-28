@@ -1,5 +1,14 @@
 2015-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/widget.c (XEditText): Silence Coverity 10072 "Overlapping
+	buffer in memory copy"
+
+	* coders/locale.c (ReadConfigureFile): Silence Coverity 10075
+	"Overlapping buffer in memory copy".
+
+	* magick/xwindow.c (MagickXMakeWindow): Silence Coverity 10076
+	"Overlapping buffer in memory copy".
+
 	* coders/dcm.c (funcDCM_TransferSyntax): Silence Coverity 10083
 	"Unchecked return value".
 

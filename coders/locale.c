@@ -270,7 +270,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
             continue;
           }
         token[strlen(token)-1]='\0';
-        (void) strcpy(token,token+1);
+        (void) memmove(token,token+1,strlen(token+1)+1);
         (void) strlcat(locale,token,sizeof(locale));
         (void) strlcat(locale,"/",sizeof(locale));
         continue;
