@@ -2,6 +2,7 @@
 
 	* coders/cals.c (ReadCALSImage): Silence Coverity 10086 "Unchecked
 	return value from library".
+	(ReadCALSImage): Silence Coverity 10085 "Unchecked return value".
 
 	* magick/enhance.c (ModulateImage): Silence Coverity 10087
 	"Unchecked return value".

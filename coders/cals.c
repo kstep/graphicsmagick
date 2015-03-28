@@ -190,7 +190,11 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
       ReadBlob(image,128,(char *) record);
       if (LocaleNCompare(record,"rtype:",6) == 0)
         { /* rtype */
-          sscanf(record+6,"%ld",&rtype);
+          if (sscanf(record+6,"%ld",&rtype) != 1)
+            {
+              rtype = 0;
+              break;
+            }
         }
       else
       if (LocaleNCompare(record,"rorient:",8) == 0)
@@ -200,7 +204,11 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
             line_rot;
 
           pel_path_rot = line_rot = 0;
-          sscanf(record+8,"%ld,%ld",&pel_path_rot,&line_rot);
+          if (sscanf(record+8,"%ld,%ld",&pel_path_rot,&line_rot) != 2)
+            {
+              orient = 0;
+              break;
+            }
           switch (pel_path_rot)
             {
               case 90:
@@ -220,16 +228,25 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
       else
       if (LocaleNCompare(record,"rpelcnt:",8) == 0)
         { /* replcnt */
-          sscanf(record+8,"%ld,%ld",&width,&height);
+          if (sscanf(record+8,"%ld,%ld",&width,&height) != 2)
+            {
+              width = 0;
+              height = 0;
+              break;
+            }
         }
      else
      if (LocaleNCompare(record,"rdensty:",8) == 0)
         { /* rdensty */
-          sscanf(record+8,"%ld",&density);
+          if (sscanf(record+8,"%ld",&density) != 1)
+            {
+              density = 0;
+              break;
+            }
           if (!density) density = 200;
         }
     }
-  if ((!width) || (!height) || (rtype != 1))
+  if ((!width) || (!height) || (rtype != 1) || (!orient) || (!density) )
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
