@@ -187,7 +187,8 @@ static Image *ReadCALSImage(const ImageInfo *image_info,ExceptionInfo *exception
   record[128]=0;
   for (y = 0; y < 16; y++)
     {
-      ReadBlob(image,128,(char *) record);
+      if (ReadBlob(image,128,(char *) record) != 128)
+        break;
       if (LocaleNCompare(record,"rtype:",6) == 0)
         { /* rtype */
           if (sscanf(record+6,"%ld",&rtype) != 1)
