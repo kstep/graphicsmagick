@@ -1,5 +1,11 @@
 2015-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dcm.c (funcDCM_TransferSyntax): Silence Coverity 10083
+	"Unchecked return value".
+
+	* magick/static.c (ExecuteStaticModuleProcess): Silence Coverity
+	10082 "Unchecked return value".
+
 	* coders/cals.c (ReadCALSImage): Silence Coverity 10086 "Unchecked
 	return value from library".
 	(ReadCALSImage): Silence Coverity 10085 "Unchecked return value".

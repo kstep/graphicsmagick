@@ -92,12 +92,12 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,
 
   if (method)
     {
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" filter module",tag);
 
       status=(*method)(image,argc,argv);
 
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" filter module",tag);
     }
 #else

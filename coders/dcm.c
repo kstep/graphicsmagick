@@ -2919,7 +2919,12 @@ static MagickPassFail funcDCM_TransferSyntax(Image *image,DicomStream *dcm,Excep
         }
       type=0;
       subtype=0;
-      sscanf(p+17,".%d.%d",&type,&subtype);
+      /* Subtype is not always provided, but insist on type */
+      if (sscanf(p+17,".%d.%d",&type,&subtype) < 1)
+        {
+          ThrowException(exception,CorruptImageError,ImproperImageHeader,image->filename);
+          return MagickFail;
+        }
       switch (type)
         {
         case 1:
