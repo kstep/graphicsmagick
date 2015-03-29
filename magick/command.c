@@ -132,8 +132,7 @@ typedef int (*CommandLineParser)(FILE *in, int acmax, char **av);
 typedef struct _BatchOptions {
   MagickBool        stop_on_error,
                     is_feedback_enabled,
-                    is_echo_enabled,
-                    is_safe_mode;
+                    is_echo_enabled;
   char              prompt[SIZE_OPTION_VALUE],
                     pass[SIZE_OPTION_VALUE],
                     fail[SIZE_OPTION_VALUE];
@@ -1524,13 +1523,11 @@ static MagickBool BatchCommand(int argc, char **argv)
   result = ProcessBatchOptions(argc-1, argv+1, &batch_options);
 
   run_mode = BatchMode;
-  if (!batch_options.is_safe_mode) {
 #if defined(MSWINDOWS)
-    InitializeMagick((char *) NULL);
+  InitializeMagick((char *) NULL);
 #else
-    InitializeMagick(argv[0]);
+  InitializeMagick(argv[0]);
 #endif
-  }
 
   av[0] = argv[0];
   av[MAX_PARAM] = (char *)NULL;
@@ -1599,8 +1596,7 @@ static MagickBool BatchCommand(int argc, char **argv)
       (void) fputs("\n", stdout);
       (void) fflush(stdout);
     }
-  if (!batch_options.is_safe_mode)
-    DestroyMagick();
+  DestroyMagick();
   return(result);
 }
 
@@ -16480,8 +16476,6 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
         case 'S':
           if (LocaleCompare(option = "-stop-on-error", p) == 0)
             status = GetOnOffOptionValue(option, argv[++i], &options->stop_on_error);
-          else if (LocaleCompare(option = "-safe-mode", p) == 0)
-            status = GetOnOffOptionValue(option, argv[++i], &options->is_safe_mode);
           break;
         }
       if (status == OptionSuccess)
@@ -17227,10 +17221,10 @@ static MagickBool GMCommandSingle(int argc,char **argv)
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
 
-  if (run_mode == SingleMode || batch_options.is_safe_mode)
+  if (run_mode == SingleMode)
     {
 #if defined(MSWINDOWS)
-  InitializeMagick((char *) NULL);
+      InitializeMagick((char *) NULL);
 #else
       InitializeMagick(argv[0]);
 #endif
@@ -17308,7 +17302,7 @@ static MagickBool GMCommandSingle(int argc,char **argv)
     CatchException(&exception);
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
-  if (run_mode == SingleMode || batch_options.is_safe_mode)
+  if (run_mode == SingleMode)
     DestroyMagick();
 
   return (status);

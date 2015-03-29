@@ -1118,13 +1118,6 @@ InitializeMagick(const char *path)
   /* Initialize our random number generator */
   InitializeMagickRandomGenerator();
 
-  /*
-    Set logging flags using the value of MAGICK_DEBUG if it is set in
-    the environment.
-  */
-  if ((p=getenv("MAGICK_DEBUG")) != (const char *) NULL)
-    (void) SetLogEventMask(p);
-
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
 			"Initialize Magick");
 
@@ -1151,6 +1144,12 @@ InitializeMagick(const char *path)
   */
   if (GetClientName() == (const char *) NULL)
     DefineClientName(path);
+
+  /*
+    Initialize any logging configuration which could not complete
+    since we did not know the installation directory yet
+  */
+  InitializeLogInfoPost();
 
   /*
     Adjust minimum coder class if requested.

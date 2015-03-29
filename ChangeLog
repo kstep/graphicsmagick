@@ -1,3 +1,9 @@
+2015-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (SetLogEventMask): Silence Coverity 10069 "Value
+	not atomically updated".  Logging initialization is done
+	single-threaded entirely in InitializeLogInfo() now.
+
 2015-03-28  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity

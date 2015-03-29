@@ -35,6 +35,22 @@
 <div class="document">
 
 
+<p>2015-03-29  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>magick/log.c (SetLogEventMask): Silence Coverity 10069 &quot;Value
+not atomically updated&quot;.  Logging initialization is done
+single-threaded entirely in InitializeLogInfo() now.</li>
+</ul>
+</blockquote>
+<p>2015-03-28  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity
+44734 &quot;Data race condition&quot; by freeing mng_info-&gt;png_pixels
+and mng_info-&gt;quantum_scanline separately from MngInfoFreeStruct.</li>
+</ul>
+</blockquote>
 <p>2015-03-28  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
@@ -302,7 +318,8 @@ settings.  Contributed by Dirk Lemstra.</li>
 limit.</li>
 <li>coders/png.c (ReadOnePNGImage): Moved quantum_scanline
 and png_pixels into the MngInfo struct.  This prevents
-memory leaks when reading malformed PNG images.</li>
+memory leaks when reading malformed PNG images, but unfortunately
+triggers a new complaint about a possible race condition.</li>
 <li>coders/png.c (ReadOnePNGImage): Removed two superflous calls to
 CloseBlob().</li>
 <li>coders/png.c (ReadOnePNGImage): Do the allocation and free of
