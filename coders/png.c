@@ -973,8 +973,6 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       MagickFreeMemory(mng_info->global_plte);
-      MagickFreeMemory(mng_info->quantum_scanline);
-      MagickFreeMemory(mng_info->png_pixels);
       MagickFreeMemory(mng_info);
       *have_mng_structure=MagickFalse;
     }
@@ -1387,6 +1385,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      MagickFreeMemory(mng_info->quantum_scanline);
+      MagickFreeMemory(mng_info->png_pixels);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
 #endif
@@ -2039,6 +2039,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               "    Skipping PNG image data for scene %ld",
                               mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      MagickFreeMemory(mng_info->quantum_scanline);
       MagickFreeMemory(mng_info->png_pixels);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(png_semaphore);
@@ -2404,6 +2405,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (long) image_info->first_scene && image->delay != 0.)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+      MagickFreeMemory(mng_info->quantum_scanline);
+      MagickFreeMemory(mng_info->png_pixels);
       image->colors=2;
       (void) SetImage(image,TransparentOpacity);
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
@@ -2604,6 +2607,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     Free memory.
   */
   png_destroy_read_struct(&ping,&ping_info,&end_info);
+  MagickFreeMemory(mng_info->quantum_scanline);
   MagickFreeMemory(mng_info->png_pixels);
 
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)

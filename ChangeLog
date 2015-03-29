@@ -1,3 +1,9 @@
+2015-03-28  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity
+	44734 "Data race condition" by freeing mng_info->png_pixels
+	and mng_info->quantum_scanline separately from MngInfoFreeStruct.
+
 2015-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/widget.c (XEditText): Silence Coverity 10072 "Overlapping
@@ -309,7 +315,8 @@
 
 	* coders/png.c (ReadOnePNGImage): Moved quantum_scanline
 	and png_pixels into the MngInfo struct.  This prevents
-	memory leaks when reading malformed PNG images.
+	memory leaks when reading malformed PNG images, but unfortunately
+	triggers a new complaint about a possible race condition.
 
 	* coders/png.c (ReadOnePNGImage): Removed two superflous calls to
 	CloseBlob().
