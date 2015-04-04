@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -803,10 +803,9 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
         if (image_info->interlace == PartitionInterlace)
           (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
-        if (!MagickMonitorFormatted(400,400,&image->exception,SaveImageText,
-                                    image->filename,
-				    image->columns,image->rows))
-          break;
+        (void) MagickMonitorFormatted(400,400,&image->exception,SaveImageText,
+                                      image->filename,
+                                      image->columns,image->rows);
         break;
       }
     }

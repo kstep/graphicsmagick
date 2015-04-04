@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -243,8 +243,8 @@ static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resourc
         *state&=(~ForwardAnimationState);
       if (command_type == StepForwardCommand)
         *state|=ForwardAnimationState;
-      if (resource_info->title != (char *) NULL)
-        break;
+      /* if (resource_info->title != (char *) NULL) */
+      /*   break; */
       break;
     }
     case RepeatCommand:

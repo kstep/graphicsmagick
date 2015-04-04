@@ -1,5 +1,36 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (GetMagickGeometry): Fix Coverity 53403 and
+	53405 "Division or modulo by float zero".
+	(GetPathComponent): Fix Coverity 53417 "Wrong sizeof argument.
+
+	* magick/quantize.c (GrayscalePseudoClassImage): Fix Coverity
+	10256 "Wrong sizeof argument".
+
+	* magick/image.c (ResetImagePage): Fix Coverity 53401 "Division or
+	modulo by float zero" and 53402 "Division or modulo by float
+	zero".
+
+	* coders/histogram.c (WriteHISTOGRAMImage): Silence Coverity 10107
+	"Division or modulo by float zero".  2nd try.
+
+	* magick/xwindow.c (MagickXImportImage): Silence Coverity 10207
+	"Array compared against 0".
+
+	* magick/widget.c (MagickXColorBrowserWidget): Silence Coverity
+	53406 "Identical code for different branches".
+	(MagickXListBrowserWidget): Silence Coverity 53407 "Identical code
+	for different branches".
+
+	* magick/animate.c (MagickXMagickCommand): Silence Coverity 53410
+	"Identical code for different branches".
+
+	* coders/rgb.c (WriteRGBImage): Silence Coverity 53409 "Identical
+	code for different branches".
+
+	* coders/cmyk.c (WriteCMYKImage): Silence Coverity 53408
+	"Identical code for different branches".
+
 	* magick/xwindow.c (MagickXMakeImage): Silence Coverity 44727
 	"Dereference after null check".  2nd try.
 

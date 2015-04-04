@@ -38,6 +38,28 @@
 <p>2015-04-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/utility.c (GetMagickGeometry): Fix Coverity 53403 and
+53405 &quot;Division or modulo by float zero&quot;.
+(GetPathComponent): Fix Coverity 53417 &quot;Wrong sizeof argument.</li>
+<li>magick/quantize.c (GrayscalePseudoClassImage): Fix Coverity
+10256 &quot;Wrong sizeof argument&quot;.</li>
+<li>magick/image.c (ResetImagePage): Fix Coverity 53401 &quot;Division or
+modulo by float zero&quot; and 53402 &quot;Division or modulo by float
+zero&quot;.</li>
+<li>coders/histogram.c (WriteHISTOGRAMImage): Silence Coverity 10107
+&quot;Division or modulo by float zero&quot;.  2nd try.</li>
+<li>magick/xwindow.c (MagickXImportImage): Silence Coverity 10207
+&quot;Array compared against 0&quot;.</li>
+<li>magick/widget.c (MagickXColorBrowserWidget): Silence Coverity
+53406 &quot;Identical code for different branches&quot;.
+(MagickXListBrowserWidget): Silence Coverity 53407 &quot;Identical code
+for different branches&quot;.</li>
+<li>magick/animate.c (MagickXMagickCommand): Silence Coverity 53410
+&quot;Identical code for different branches&quot;.</li>
+<li>coders/rgb.c (WriteRGBImage): Silence Coverity 53409 &quot;Identical
+code for different branches&quot;.</li>
+<li>coders/cmyk.c (WriteCMYKImage): Silence Coverity 53408
+&quot;Identical code for different branches&quot;.</li>
 <li>magick/xwindow.c (MagickXMakeImage): Silence Coverity 44727
 &quot;Dereference after null check&quot;.  2nd try.</li>
 <li>magick/utility.c (EscapeString): Silence Coverity 53416

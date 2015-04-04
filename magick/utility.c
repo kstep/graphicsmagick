@@ -2007,6 +2007,9 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
 
+  if ((former_width == 0UL) || (former_height == 0UL))
+    return(flags);
+
   if (flags & AreaValue) /* @  */
     {
       double
@@ -2066,7 +2069,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       if (((flags & WidthValue) && !(flags & HeightValue)))
         *height=(unsigned long) floor(((double) former_height/former_width)*
                                       (*width)+0.5);
-      else if ((!(flags & WidthValue) && (flags & HeightValue)))
+      else if ((!(flags & WidthValue) &&  (flags & HeightValue)))
         *width=(unsigned long) floor(((double) former_width/former_height)*
                                      (*height)+0.5);
       if (flags & PercentValue)
@@ -2422,14 +2425,14 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case MagickPath:
     {
       /* this only includes the magick override prefix (if any) */
-      (void) strlcpy(component,magick,sizeof(component));
+      (void) strlcpy(component,magick,MaxTextExtent);
       break;
     }
     case SubImagePath:
     {
       /* this returns only the subimage specification, including
          bracketing '[]', (if any) */
-      (void) strlcpy(component,subimage,sizeof(component));
+      (void) strlcpy(component,subimage,MaxTextExtent);
       break;
     }
     case FullPath:

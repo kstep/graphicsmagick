@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -2292,8 +2292,8 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
             cancel_info.raised=True;
             XDrawBeveledButton(display,&windows->widget,&cancel_info);
           }
-        if (!MatteIsActive(reply_info,event.xbutton))
-          break;
+        /* if (!MatteIsActive(reply_info,event.xbutton)) */
+        /*   break; */
         break;
       }
       case ClientMessage:
@@ -7139,8 +7139,8 @@ MagickExport void MagickXListBrowserWidget(Display *display,MagickXWindows *wind
             cancel_info.raised=True;
             XDrawBeveledButton(display,window_info,&cancel_info);
           }
-        if (!MatteIsActive(reply_info,event.xbutton))
-          break;
+        /* if (!MatteIsActive(reply_info,event.xbutton)) */
+        /*   break; */
         break;
       }
       case ClientMessage:

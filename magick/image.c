@@ -1951,8 +1951,8 @@ ResetImagePage(Image *image,const char *page)
   page_geometry.y=0;
   page_geometry.width=0;
   page_geometry.height=0;
-  flags=GetMagickGeometry(page,&page_geometry.x,&page_geometry.y,
-			  &page_geometry.width,&page_geometry.height);
+  flags=GetGeometry(page,&page_geometry.x,&page_geometry.y,
+                    &page_geometry.width,&page_geometry.height);
 
   /* If no values were parsed, then return failed status */
   if (NoValue == flags)

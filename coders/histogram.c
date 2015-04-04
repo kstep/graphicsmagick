@@ -260,7 +260,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (maximum < blue[x])
       maximum=blue[x];
   }
-  if (maximum > 0.0)
+  if (maximum > 0L)
     scale=(double) histogram_image->rows/maximum;
   else
     scale=0.0;
