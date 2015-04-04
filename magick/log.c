@@ -304,6 +304,12 @@ InitializeLogInfo(void)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateLogInfo);
   (void) memset((void *) log_info,0,sizeof(LogInfo));
+
+  /*
+    Lock for access (to make Coverity happy)
+  */
+  LockSemaphoreInfo(log_semaphore);
+
   log_info->path=AcquireString("(default)");
   log_info->filename=AcquireString("Magick-%d.log");
   log_info->generations=3;
@@ -319,6 +325,8 @@ InitializeLogInfo(void)
   log_info->output_type=StderrOutput;
 #endif
   GetTimerInfo(&log_info->timer);
+
+  UnlockSemaphoreInfo(log_semaphore);
 
   /*
     Verify subordinate allocations.

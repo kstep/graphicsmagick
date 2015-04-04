@@ -1,5 +1,8 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (InitializeLogInfo): Hopefully silence Coverity
+	53411 and 53412 "Data race condition".
+
 	* coders/cineon.c (AttributeToString): Silence Coverity 10079
 	"Buffer not null terminated".  2nd try.  The buffer is not
 	required to be null terminated!
