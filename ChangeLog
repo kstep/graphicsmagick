@@ -1,5 +1,14 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c (MagickXMakeImage): Silence Coverity 44727
+	"Dereference after null check".  2nd try.
+
+	* magick/utility.c (EscapeString): Silence Coverity 53416
+	"Dereference before null check".
+
+	* coders/gif.c (WriteGIFImage): Fix Coverity 10219 "Dereference
+	null return value".
+
 	* magick/log.c (InitializeLogInfo): Hopefully silence Coverity
 	53411 and 53412 "Data race condition".
 

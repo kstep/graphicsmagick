@@ -758,6 +758,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
     length;
 
   assert(source != (const char *) NULL);
+
   length=strlen(source)+1;
   for (p=source; *p; p++)
     if ((*p == '\\') || (*p == escape))
@@ -767,17 +768,14 @@ MagickExport char *EscapeString(const char *source,const char escape)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToEscapeString);
   *destination='\0';
-  if (source != (char *) NULL)
+  q=destination;
+  for (p=source; *p; p++)
     {
-      q=destination;
-      for (p=source; *p; p++)
-      {
-        if ((*p == '\\') || (*p == escape))
-          *q++= '\\';
-        *q++=(*p);
-      }
-      *q=0;
+      if ((*p == '\\') || (*p == escape))
+        *q++= '\\';
+      *q++=(*p);
     }
+  *q=0;
   return(destination);
 }
 

@@ -1454,12 +1454,10 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
           const ImageAttribute
             *attribute;
 
-          if ((attribute=GetImageAttribute(image,"comment")) !=
-              (ImageAttribute *) NULL)
+          if (((attribute=GetImageAttribute(image,"comment")) !=
+               (ImageAttribute *) NULL) &&
+              (attribute->value != (const char *) NULL))
             {
-              const ImageAttribute
-                *attribute;
-
               register char
                 *p;
 
@@ -1471,7 +1469,6 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
               */
               (void) WriteBlobByte(image,0x21);
               (void) WriteBlobByte(image,0xfe);
-              attribute=GetImageAttribute(image,"comment");
               p=attribute->value;
               while (strlen(p) != 0)
                 {

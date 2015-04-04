@@ -5702,8 +5702,11 @@ MagickXMakeImage(Display *display,
           /*
             Clean up if there is an error.
           */
-          XDestroyImage(ximage);
-          ximage=(XImage *) NULL;
+          if (ximage != (XImage *) NULL)
+            {
+              XDestroyImage(ximage);
+              ximage=(XImage *) NULL;
+            }
 
           if (segment_info[1].shmaddr)
             {
