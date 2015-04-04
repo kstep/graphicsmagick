@@ -38,6 +38,13 @@
 <p>2015-04-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/resize.c (ResizeImage): Fix Coverity 53404 &quot;Division or
+modulo by zero&quot;.</li>
+<li>coders/ps3.c (WritePS3MaskImage): Fix Coverity 53415 &quot;Improper
+use of negative value&quot;.</li>
+<li>coders/meta.c (parse8BIM): Fix Coverity 53413 &quot;Improper use of
+negative value&quot;.
+(parse8BIMW): Fix Coverity 53414 &quot;Improper use of negative value&quot;.</li>
 <li>magick/utility.c (GetMagickGeometry): Fix Coverity 53403 and
 53405 &quot;Division or modulo by float zero&quot;.
 (GetPathComponent): Fix Coverity 53417 &quot;Wrong sizeof argument.</li>

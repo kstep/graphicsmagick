@@ -1,5 +1,15 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/resize.c (ResizeImage): Fix Coverity 53404 "Division or
+	modulo by zero".
+
+	* coders/ps3.c (WritePS3MaskImage): Fix Coverity 53415 "Improper
+	use of negative value".
+
+	* coders/meta.c (parse8BIM): Fix Coverity 53413 "Improper use of
+	negative value".
+	(parse8BIMW): Fix Coverity 53414 "Improper use of negative value".
+
 	* magick/utility.c (GetMagickGeometry): Fix Coverity 53403 and
 	53405 "Division or modulo by float zero".
 	(GetPathComponent): Fix Coverity 53417 "Wrong sizeof argument.

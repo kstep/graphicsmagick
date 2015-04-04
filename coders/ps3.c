@@ -756,7 +756,7 @@ static unsigned int MaskWriteByteHook(Image *ARGUNUSED(mask_image),
   return(True);
 }
 
-static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WritePS3MaskImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent];
@@ -774,10 +774,11 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  int
+  MagickPassFail
     status;
 
-  ExtendedSignedIntegralType
+  magick_off_t
+    here,
     start,
     stop;
 
@@ -786,16 +787,20 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->matte);
-  status=True;
+  status=MagickPass;
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
 
   /* Keep position of BeginData DSC comment for update later */
   start=TellBlob(image);
+  if (start < 0)
+    return MagickFail;
   FormatString(buffer,"%%%%BeginData:%13ld ASCII Bytes\n",0L);
   (void) WriteBlobString(image,buffer);
   stop=TellBlob(image);
+  if (stop < 0)
+    return MagickFail;
 
   /* Only lossless compressions for the mask */
   switch (compression)
@@ -831,12 +836,13 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
 
   mask_image=CloneImage(image,0,0,True,&image->exception);
   if (mask_image == (Image *) NULL)
-    ThrowWriterException2(CoderError,image->exception.reason,image);
+    return MagickFail;
   status=ChannelImage(mask_image, OpacityChannel);
   if (!status)
   {
+    CopyException(&image->exception,&mask_image->exception);
     DestroyImage(mask_image);
-    return(False);
+    return(MagickFail);
   }
   (void) SetImageType(mask_image, BilevelType);
   mask_image->matte=False;
@@ -914,8 +920,13 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
       break;
   }
   DestroyImage(mask_image);
-  length=TellBlob(image)-stop;
+  here=TellBlob(image);
+  if (here < 0)
+    return MagickFail;
+  length=here-stop;
   stop=TellBlob(image);
+  if (stop < 0)
+    return MagickFail;
   (void) SeekBlob(image,start,SEEK_SET);
   FormatString(buffer,"%%%%BeginData:%13ld ASCII Bytes\n",(long) length);
   (void) WriteBlobString(image,buffer);

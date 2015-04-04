@@ -1310,7 +1310,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   assert(((int) filter >= 0) && ((int) filter <= SincFilter));
-  if ((columns == 0) || (rows == 0))
+  if ((image->columns == 0UL) || (image->rows == 0UL) ||
+      (columns == 0UL) || (rows == 0UL))
     {
       ThrowImageException(ImageError,UnableToResizeImage,
                           MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
@@ -2027,7 +2028,8 @@ MagickExport Image *ZoomImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   zoom_image=ResizeImage(image,columns,rows,image->filter,image->blur,
-    exception);
+                         exception);
   return(zoom_image);
 }

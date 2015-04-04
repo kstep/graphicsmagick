@@ -406,6 +406,8 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   {
                     long diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
+                    if (currentpos < 0)
+                      goto parse8BIM_failure;
                     (void) SeekBlob(ofile,savedpos,SEEK_SET);
                     (void) WriteBlobMSBLong(ofile,diff);
                     (void) SeekBlob(ofile,currentpos,SEEK_SET);
@@ -451,6 +453,8 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
+                    if (savedpos < 0)
+                      goto parse8BIM_failure;
                     (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
                     outputlen += 4;
                     savedolen = outputlen;
@@ -484,6 +488,9 @@ static long parse8BIM(Image *ifile, Image *ofile)
       long diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
+      if (currentpos < 0)
+        goto parse8BIM_failure;
+
       (void) SeekBlob(ofile,savedpos,SEEK_SET);
       (void) WriteBlobMSBLong(ofile,diff);
       (void) SeekBlob(ofile,currentpos,SEEK_SET);
@@ -685,6 +692,8 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   {
                     long diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
+                    if (currentpos < 0)
+                      goto parse8BIMW_failure;
                     (void) SeekBlob(ofile,savedpos,SEEK_SET);
                     (void) WriteBlobMSBLong(ofile,diff);
                     (void) SeekBlob(ofile,currentpos,SEEK_SET);
@@ -730,6 +739,8 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
+                    if (savedpos < 0)
+                      goto parse8BIMW_failure;
                     (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
                     outputlen += 4;
                     savedolen = outputlen;
@@ -763,6 +774,8 @@ static long parse8BIMW(Image *ifile, Image *ofile)
       long diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
+      if (currentpos < 0)
+        goto parse8BIMW_failure;
       (void) SeekBlob(ofile,savedpos,SEEK_SET);
       (void) WriteBlobMSBLong(ofile,diff);
       (void) SeekBlob(ofile,currentpos,SEEK_SET);
