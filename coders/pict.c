@@ -66,12 +66,13 @@
   pixmap.plane_bytes=ReadBlobMSBLong(image);                           \
   pixmap.table=ReadBlobMSBLong(image);                                 \
   pixmap.reserved=ReadBlobMSBLong(image);                              \
-  if (EOFBlob(image) ||                                                \
-      pixmap.bits_per_pixel <= 0 || pixmap.bits_per_pixel > 32 ||      \
-      pixmap.component_count <= 0 || pixmap.component_count > 4 ||     \
-      pixmap.component_size <= 0)                                      \
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image); \
   }
+
+#define ValidatePixmap(pixmap) \
+  (!(EOFBlob(image) ||                                                 \
+     pixmap.bits_per_pixel <= 0 || pixmap.bits_per_pixel > 32 ||       \
+     pixmap.component_count <= 0 || pixmap.component_count > 4 ||      \
+     pixmap.component_size <= 0))
 
 #define ReadRectangle(rectangle)                                       \
   {                                                                    \
@@ -79,11 +80,11 @@
   rectangle.left=ReadBlobMSBShort(image);                              \
   rectangle.bottom=ReadBlobMSBShort(image);                            \
   rectangle.right=ReadBlobMSBShort(image);                             \
-  if (EOFBlob(image) ||                                                \
-      (rectangle.top > rectangle.bottom ||                             \
-       rectangle.left > rectangle.right))                              \
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image); \
   }
+
+#define ValidateRectangle(rectangle) \
+  (!(EOFBlob(image) || \
+     (rectangle.top > rectangle.bottom || rectangle.left > rectangle.right)))
 
 typedef struct _PICTCode
 {
@@ -838,6 +839,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     (void) ReadBlobByte(image);  /* skip header */
   (void) ReadBlobMSBShort(image);  /* skip picture size */
   ReadRectangle(frame);
+  if (!ValidateRectangle(frame))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
@@ -912,6 +915,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
               }
             ReadRectangle(frame);
+            if (!ValidateRectangle(frame))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             if ((frame.left & 0x8000) || (frame.top & 0x8000))
               break;
             image->columns=frame.right-frame.left;
@@ -949,7 +954,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 image);
             length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
+            if (!ValidateRectangle(frame))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             ReadPixmap(pixmap);
+            if (!ValidatePixmap(pixmap))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             (void) ReadBlobMSBLong(image);
             flags=ReadBlobMSBShort(image);
             length=ReadBlobMSBShort(image);
@@ -1050,6 +1059,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 (void) ReadBlobMSBShort(image);
               }
             ReadRectangle(frame);
+            if (!ValidateRectangle(frame))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             /*
               Initialize tile image.
             */
@@ -1062,6 +1073,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if ((code == 0x9a) || (code == 0x9b) || (bytes_per_line & 0x8000))
               {
                 ReadPixmap(pixmap);
+                if (!ValidatePixmap(pixmap))
+                  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
                 tile_image->matte=pixmap.component_count == 4;
               }
             if ((code != 0x9a) && (code != 0x9b))
@@ -1112,7 +1125,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   }
               }
             ReadRectangle(source);
+            if (!ValidateRectangle(source))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             ReadRectangle(destination);
+            if (!ValidateRectangle(destination))
+              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
             (void) ReadBlobMSBShort(image);
             if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
               {
@@ -1318,6 +1335,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             for (i=0; i < 6; i++)
               (void) ReadBlobMSBLong(image);
             ReadRectangle(frame);
+            if (!ValidateRectangle(frame))
+              {
+                (void) fclose(file);
+                ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              }
             for (i=0; i < 122; i++)
               if (ReadBlobByte(image) == EOF)
                 break;

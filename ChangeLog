@@ -1,3 +1,10 @@
+2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pict.c (ReadPICTImage): 10171 "Resource leak".  2nd try.
+
+	* coders/wmf.c (util_set_brush): Silence Coverity 44739
+	"Out-of-bounds access".  2nd try.
+
 2015-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (SetLogEventMask): Silence Coverity 10069 "Value

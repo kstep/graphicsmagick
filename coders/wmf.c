@@ -1728,7 +1728,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
 
             {
               char
-                pattern_id[30];
+                pattern_id[MaxTextExtent];
 
               FormatString(pattern_id, "#brush_%lu", ddata->pattern_id);
 
