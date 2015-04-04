@@ -1,5 +1,9 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/cineon.c (AttributeToString): Silence Coverity 10079
+	"Buffer not null terminated".  2nd try.  The buffer is not
+	required to be null terminated!
+
 	* coders/pict.c (ReadPICTImage): 10171 "Resource leak".  2nd try.
 
 	* coders/wmf.c (util_set_brush): Silence Coverity 44739

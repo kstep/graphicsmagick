@@ -1052,9 +1052,8 @@ ModuleExport void UnregisterCINEONImage(void)
 }
 
 /*
-  This macro uses strncpy on purpose.  The string is not required to
-  be null terminated, but any unused space should be filled with
-  nulls.
+  Header string values are not required to be null terminated, but any
+  unused space should be filled with nulls.
 */
 #define AttributeToString(image_info,image,key,member) \
 { \
@@ -1064,12 +1063,11 @@ ModuleExport void UnregisterCINEONImage(void)
   const char \
     *definition_value; \
 \
+  SET_UNDEFINED_ASCII(member); \
   if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    (void) strncpy(member,definition_value,sizeof(member)); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    (void) strncpy(member,attribute->value,sizeof(member)); \
-  else \
-    SET_UNDEFINED_ASCII(member); \
+    (void) memcpy(member,definition_value,Min(sizeof(member),strlen(definition_value))); \
+  else if ((attribute=GetImageAttribute(image,key)) && (attribute->value)) \
+    (void) memcpy(member,attribute->value,Min(sizeof(member),strlen(attribute->value))); \
 }
 
 static void GenerateCineonTimeStamp(char *date_str, size_t date_str_length, char*time_str, size_t time_str_length)
