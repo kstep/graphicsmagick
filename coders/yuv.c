@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -243,8 +243,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             {
-              break;
               status=MagickFail;
+              break;
             }
           for (x=0; x < (long) image->columns; x++)
           {

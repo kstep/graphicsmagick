@@ -1,5 +1,8 @@
 2015-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/yuv.c (ReadYUVImage): Fix Coverity 10260 "Structurally
+	dead code".
+
 	* coders/xcf.c (ReadXCFImage): Fix Coverity 10226 "Missing break
 	in switch".
 
