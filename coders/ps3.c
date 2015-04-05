@@ -809,6 +809,7 @@ static MagickPassFail WritePS3MaskImage(const ImageInfo *image_info,Image *image
       FormatString(buffer,
         "currentfile %lu %lu "PS3_NoCompression" ByteStreamDecodeFilter\n",
         image->columns, image->rows);
+      break;
     case FaxCompression:
     default:
       FormatString(buffer,
