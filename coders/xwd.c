@@ -377,9 +377,18 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
       (ximage->green_mask != 0) || (ximage->blue_mask != 0))
-    image->storage_class=DirectClass;
+    {
+      image->storage_class=DirectClass;
+      if (!image_info->ping)
+        if ((ximage->red_mask == 0) ||
+            (ximage->green_mask == 0) ||
+            (ximage->blue_mask == 0))
+          ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
+    }
   else
-    image->storage_class=PseudoClass;
+    {
+      image->storage_class=PseudoClass;
+    }
   image->colors=header.ncolors;
   if (!image_info->ping)
     {
@@ -492,6 +501,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 blue_mask>>=1;
                 blue_shift++;
               }
+
             /*
               Convert X image to DirectClass packets.
             */
@@ -524,6 +534,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                 }
             else
+              if ((ximage->red_mask == 0) ||
+                  (ximage->green_mask == 0) ||
+                  (ximage->blue_mask == 0))
+                ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
               for (y=0; y < (long) image->rows; y++)
                 {
                   q=SetImagePixels(image,0,y,image->columns,1);

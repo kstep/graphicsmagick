@@ -1,5 +1,8 @@
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xwd.c (ReadXWDImage): Fix Coverity 10104 "Division or
+	modulo by zero".
+
 	* magick/resize.c (ResizeImage): Fix Coverity 53404 "Division or
 	modulo by zero".
 

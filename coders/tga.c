@@ -328,10 +328,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colors=(0x01U << tga_info.bits_per_pixel);
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "Applying grayscale colormap with %u colors.",image->colors);
-              if (!AllocateImageColormap(image,image->colors))
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                     image);
             }
+          if (!AllocateImageColormap(image,image->colors))
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                 image);
         }
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -358,9 +358,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read TGA raster colormap.
           */
-          if (!AllocateImageColormap(image,image->colors))
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                 image);
           for (i=0; i < (long) image->colors; i++)
             {
               switch (tga_info.colormap_size)
