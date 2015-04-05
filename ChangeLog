@@ -1,5 +1,11 @@
 2015-04-04  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+	* coders/png.c (WriteOneJNGImage): Quiet Coverity CID issue 14370,
+	"Unused value" (status was ignored).
+
+	* coders/png.c (ReadOneJNGImage): Quiet Coverity CID issue 44724,
+	"Logically dead code" (skip_to_iend can't be true).
+
 	* coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity
 	CID 10232 "Missing unlock", by using png_error() instead of
 	throwing an exception.

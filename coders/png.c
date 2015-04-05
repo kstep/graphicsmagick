@@ -2909,12 +2909,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         }
       (void) ReadBlobMSBLong(image);  /* read crc word */
 
+#if 0 /* Dead code */
       if (skip_to_iend)
         {
           if (length)
             MagickFreeMemory(chunk);
           continue;
         }
+#endif
 
       if (!memcmp(type,mng_JHDR,4))
         {
@@ -7861,25 +7863,28 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
             *attribute;
 
           /* Encode opacity as a grayscale PNG blob */
-          status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
-                          &image->exception);
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "  Creating PNG blob.");
-          length=0;
+          status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
+                          &image->exception);
+          if (status != MagickFalse)
+            {
+              length=0;
 
-          (void) strlcpy(jpeg_image_info->magick,"PNG",MaxTextExtent);
-          (void) strlcpy(jpeg_image->magick,"PNG",MaxTextExtent);
-          jpeg_image_info->interlace=NoInterlace;
+              (void) strlcpy(jpeg_image_info->magick,"PNG",MaxTextExtent);
+              (void) strlcpy(jpeg_image->magick,"PNG",MaxTextExtent);
+              jpeg_image_info->interlace=NoInterlace;
 
-          blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
-                                    &image->exception);
+              blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
+                                        &image->exception);
 
-          /* Retrieve sample depth used */
-          attribute=GetImageAttribute(jpeg_image,"[png:bit-depth-written]");
-          if ((attribute != (const ImageAttribute *) NULL) &&
-              (attribute->value != (char *) NULL))
-            jng_alpha_sample_depth= (unsigned int) attribute->value[0];
+              /* Retrieve sample depth used */
+              attribute=GetImageAttribute(jpeg_image,"[png:bit-depth-written]");
+              if ((attribute != (const ImageAttribute *) NULL) &&
+                  (attribute->value != (char *) NULL))
+                jng_alpha_sample_depth= (unsigned int) attribute->value[0];
+            }
         }
       else
         {
@@ -7887,27 +7892,32 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
 
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
                           &image->exception);
+          if (status != MagickFalse)
+            {
+              (void) strlcpy(jpeg_image_info->magick,"JPEG",MaxTextExtent);
+              (void) strlcpy(jpeg_image->magick,"JPEG",MaxTextExtent);
+              jpeg_image_info->interlace=NoInterlace;
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "  Creating blob.");
+              blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
+                                        &image->exception);
+              jng_alpha_sample_depth=8;
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "  Successfully read jpeg_image into a"
+                                      " blob, length=%lu.",
+                                      (unsigned long) length);
 
-          (void) strlcpy(jpeg_image_info->magick,"JPEG",MaxTextExtent);
-          (void) strlcpy(jpeg_image->magick,"JPEG",MaxTextExtent);
-          jpeg_image_info->interlace=NoInterlace;
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "  Creating blob.");
-          blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
-                                    &image->exception);
-          jng_alpha_sample_depth=8;
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "  Successfully read jpeg_image into a"
-                                  " blob, length=%lu.",
-                                  (unsigned long) length);
-
+            }
         }
       /* Destroy JPEG image and image_info */
       (void) LiberateUniqueFileResource(jpeg_image_info->filename);
       DestroyImage(jpeg_image);
       DestroyImageInfo(jpeg_image_info);
+      if (status == MagickFalse)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                             image);
     }
 
   /* Write JHDR chunk */
@@ -8186,6 +8196,9 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
                   &image->exception);
+  if (status == MagickFalse)
+     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                          image);
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
