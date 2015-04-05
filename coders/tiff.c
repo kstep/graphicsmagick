@@ -503,8 +503,12 @@ CompressionSupported(const CompressionType compression,
 #if defined(HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
       if (compress_tag != COMPRESSION_NONE)
         {
-          if (TIFFIsCODECConfigured(compress_tag))
-	    status = MagickTrue;
+          /*
+            Returns 1 if the codec is configured and
+            working. Otherwise 0 will be returned.
+          */
+          if (!TIFFIsCODECConfigured(compress_tag))
+	    status = MagickFalse;
 	  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 				"TIFFIsCODECConfigured says support for %s "
 				"compression %s configured.",

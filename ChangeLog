@@ -1,5 +1,8 @@
 2015-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (CompressionSupported): Fix Coverity 44723
+	"Logically dead code".
+
 	* coders/ps3.c (WritePS3Image): Validate results from TellBlob()
 	and SeekBlob().  Should quiet Coverity 10198 "Improper use of
 	negative value".
