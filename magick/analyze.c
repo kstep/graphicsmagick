@@ -582,7 +582,7 @@ MagickExport MagickPassFail GetImageCharacteristics(const Image *image,
                   }
                 p++;
               }
-            if (!opaque)
+            if (opaque)
               {
                 for (y=0; y < image->rows; y++)
                   {
