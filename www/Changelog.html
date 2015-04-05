@@ -35,6 +35,26 @@
 <div class="document">
 
 
+<p>2015-04-05  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/rle.c: Make URT RLE reader more robust.  Should quiet
+Coverity CID 10070 &quot;Bad bit shift operation&quot;, as well as 10235
+&quot;Improper use of negative value&quot;.</li>
+</ul>
+</blockquote>
+<p>2015-04-04  Glenn Randers-Pehrson  &lt;<a class="reference external" href="mailto:glennrp&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">glennrp<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/png.c (WriteOneJNGImage): Quiet Coverity CID issue 14370,
+&quot;Unused value&quot; (status was ignored).</li>
+<li>coders/png.c (ReadOneJNGImage): Quiet Coverity CID issue 44724,
+&quot;Logically dead code&quot; (skip_to_iend can't be true).</li>
+<li>coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity
+CID 10232 &quot;Missing unlock&quot;, by using png_error() instead of
+throwing an exception.</li>
+</ul>
+</blockquote>
 <p>2015-04-04  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
