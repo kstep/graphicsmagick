@@ -1363,19 +1363,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                               PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  ping_info=png_create_info_struct(ping);
-  if (ping_info == (png_info *) NULL)
     {
-      png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+      UnlockSemaphoreInfo(png_semaphore);
+#endif
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
-  end_info=png_create_info_struct(ping);
-  if (end_info == (png_info *) NULL)
-    {
-      png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+
   mng_info->png_pixels=(unsigned char *) NULL;
   mng_info->quantum_scanline=(Quantum *) NULL;
 
@@ -1403,6 +1397,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 
 /* { From here through end of ReadOnePNGImage(), use png_error(), not Throw() */
+
+  ping_info=png_create_info_struct(ping);
+  if (ping_info == (png_info *) NULL)
+    {
+      png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
+      png_error(ping,"Could not allocate PNG info struct");
+    }
+
+  end_info=png_create_info_struct(ping);
+  if (end_info == (png_info *) NULL)
+    {
+      png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
+      png_error(ping,"Could not allocate PNG end_info struct");
+    }
 
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
   /* Allow benign errors */

@@ -1,3 +1,9 @@
+2015-04-04  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOnePNGImage): Attempt to quiet Coverity
+	CID 10232 "Missing unlock", by using png_error() instead of
+	throwing an exception.
+
 2015-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xwd.c (ReadXWDImage): Fix Coverity 10104 "Division or
