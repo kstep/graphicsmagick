@@ -1,5 +1,9 @@
 2015-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/ps2.c (WritePS2Image): Validate results from TellBlob()
+	and SeekBlob().  Should quiet Coverity 10230 "Improper use of
+	negative value".
+
 	* coders/mpeg.c (WriteMPEGImage): Quiet Coverity 10176 "Missing
 	break in switch".
 

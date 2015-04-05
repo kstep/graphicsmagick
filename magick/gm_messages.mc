@@ -11,6 +11,12 @@ Unable to create blob
 .
 
 MessageId       = +1
+SymbolicName    = BlobErrorUnableToObtainOffset
+Language        = English
+Unable to obtain current offset
+.
+
+MessageId       = +1
 SymbolicName    = BlobErrorUnableToOpenFile
 Language        = English
 Unable to open file

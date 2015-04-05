@@ -493,7 +493,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
-  ExtendedSignedIntegralType
+  magick_off_t
+    current,
     start,
     stop;
 
@@ -765,10 +766,14 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
     start=TellBlob(image);
+    if (start < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",0L,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
     stop=TellBlob(image);
+    if (stop < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
       Output image data.
@@ -1175,13 +1180,20 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         }
     (void) WriteBlobByte(image,'\n');
-    length=TellBlob(image)-stop;
+    current=TellBlob(image);
+    if (current < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
+    length=current-stop;
     stop=TellBlob(image);
-    (void) SeekBlob(image,start,SEEK_SET);
+    if (stop < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
+    if (SeekBlob(image,start,SEEK_SET) != start)
+      ThrowWriterException(BlobError,UnableToSeekToOffset,image);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) length,
       compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
-    (void) SeekBlob(image,stop,SEEK_SET);
+    if (SeekBlob(image,stop,SEEK_SET) != stop)
+      ThrowWriterException(BlobError,UnableToSeekToOffset,image);
     (void) WriteBlobString(image,"%%EndData\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"end\n");
