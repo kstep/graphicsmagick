@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -323,7 +323,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   Image
     *image;
 
-  unsigned int
+  MagickPassFail
     status;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -332,13 +332,8 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
-  if (status == False)
-    {
-      DestroyImage(image);
-      return((Image *) NULL);
-    }
   image->columns=1;
   image->rows=1;
   (void) SetImage(image,OpaqueOpacity);
