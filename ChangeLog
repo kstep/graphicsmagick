@@ -2,6 +2,8 @@
 
 	* coders/tiff.c (CompressionSupported): Fix Coverity 44723
 	"Logically dead code".
+	(WriteTIFFImage): Fix Coverity 44742 and 44746 "Unintended sign
+	extension".
 
 	* coders/ps3.c (WritePS3Image): Validate results from TellBlob()
 	and SeekBlob().  Should quiet Coverity 10198 "Improper use of

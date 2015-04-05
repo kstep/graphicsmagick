@@ -4657,22 +4657,23 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 	      */
 	      static const long
 		lzma_memory_mb[] =
-		{      /* Level  Compress  Decompress */
-		  1,   /*   1       2 MB      1 MB    */
-		  4 ,  /*   2      12 MB      2 MB    */
-		  4,   /*   3      12 MB      1 MB    */
-		  4,   /*   4      16 MB      2 MB    */
-		  6,   /*   5      26 MB      3 MB    */
-		  10,  /*   6      45 MB      5 MB    */
-		  18,  /*   7      83 MB      9 MB    */
-		  34,  /*   8     159 MB     17 MB    */
-		  66   /*   9     311 MB     33 MB    */
+		{       /* Level  Compress  Decompress */
+		  1UL,  /*   1       2 MB      1 MB    */
+		  4UL,  /*   2      12 MB      2 MB    */
+		  4UL,  /*   3      12 MB      1 MB    */
+		  4UL,  /*   4      16 MB      2 MB    */
+		  6UL,  /*   5      26 MB      3 MB    */
+		  10UL, /*   6      45 MB      5 MB    */
+		  18UL, /*   7      83 MB      9 MB    */
+		  34UL, /*   8     159 MB     17 MB    */
+		  66UL  /*   9     311 MB     33 MB    */
 		};
 	      
-	      rows_per_strip = (uint32) ((lzma_memory_mb[lzma_preset-1]*1024*1024))/
-		(((bits_per_sample*samples_per_pixel)/8)*image->rows);
+	      rows_per_strip = (uint32) (((lzma_memory_mb[lzma_preset-1]*1024UL*1024UL))/
+                                         ((((magick_uint64_t) bits_per_sample*samples_per_pixel)/
+                                           8UL)*image->rows));
 	      if (rows_per_strip < 1)
-		rows_per_strip=1;
+		rows_per_strip=1U;
 	      if (rows_per_strip > image->rows)
 		rows_per_strip=image->rows;
 	    }

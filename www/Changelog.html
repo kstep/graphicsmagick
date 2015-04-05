@@ -39,7 +39,9 @@
 <blockquote>
 <ul class="simple">
 <li>coders/tiff.c (CompressionSupported): Fix Coverity 44723
-&quot;Logically dead code&quot;.</li>
+&quot;Logically dead code&quot;.
+(WriteTIFFImage): Fix Coverity 44742 and 44746 &quot;Unintended sign
+extension&quot;.</li>
 <li>coders/ps3.c (WritePS3Image): Validate results from TellBlob()
 and SeekBlob().  Should quiet Coverity 10198 &quot;Improper use of
 negative value&quot;.</li>
