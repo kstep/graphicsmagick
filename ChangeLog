@@ -1,5 +1,10 @@
 2015-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xcf.c (ReadXCFImage): Fix Coverity 10226 "Missing break
+	in switch".
+
+	* coders/tim.c (ReadTIMImage): Fix Coverity 10249 "Unused value".
+
 	* coders/tiff.c (CompressionSupported): Fix Coverity 44723
 	"Logically dead code".
 	(WriteTIFFImage): Fix Coverity 44742 and 44746 "Unintended sign

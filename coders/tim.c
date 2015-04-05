@@ -175,8 +175,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void)ReadBlobLSBLong(image);
         (void)ReadBlobLSBShort(image);
         (void)ReadBlobLSBShort(image);
-        width=ReadBlobLSBShort(image);
-        height=ReadBlobLSBShort(image);
+        /* width= */ (void)ReadBlobLSBShort(image);
+        /* height= */ (void)ReadBlobLSBShort(image);
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);

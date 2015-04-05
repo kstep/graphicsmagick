@@ -1294,6 +1294,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
         case PROP_END:
           foundPropEnd = 1;
+          break;
 
         case PROP_COLORMAP:
           /* BOGUS: just skip it for now */
