@@ -535,8 +535,14 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           break;
         }
         case 1:
+        {
           blob=(unsigned char *)
             FileToBlob(previous_image,&length,&image->exception);
+          FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
+          if (length > 0)
+            status=BlobToFile(filename,blob,length,&image->exception);
+          break;
+        }
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
