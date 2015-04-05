@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -927,10 +927,12 @@ static MagickPassFail WritePS3MaskImage(const ImageInfo *image_info,Image *image
   stop=TellBlob(image);
   if (stop < 0)
     return MagickFail;
-  (void) SeekBlob(image,start,SEEK_SET);
+  if (SeekBlob(image,start,SEEK_SET) != start)
+    ThrowWriterException(BlobError,UnableToSeekToOffset,image);
   FormatString(buffer,"%%%%BeginData:%13ld ASCII Bytes\n",(long) length);
   (void) WriteBlobString(image,buffer);
-  (void) SeekBlob(image,stop,SEEK_SET);
+  if (SeekBlob(image,stop,SEEK_SET) != stop)
+    ThrowWriterException(BlobError,UnableToSeekToOffset,image);
   (void) WriteBlobString(image,"%%EndData\n");
   (void)WriteBlobString(image, "/mask_stream exch def\n");
   return(status);
@@ -1207,7 +1209,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
-  ExtendedSignedIntegralType
+  magick_off_t
+    current,
     start,
     stop;
 
@@ -1557,9 +1560,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       in the blob.
     */
     start=TellBlob(image);
+    if (start < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
     FormatString(buffer,"%%%%BeginData:%13ld ASCII Bytes\n",0L);
     (void) WriteBlobString(image,buffer);
     stop=TellBlob(image);
+    if (stop < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
 
     /* Call to image display procedure */
     (void) WriteBlobString(image,"DisplayImage\n");
@@ -1873,12 +1880,19 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
 
     /* Update BeginData now that we know the data size */
-    length=TellBlob(image)-stop;
+    current=TellBlob(image);
+    if (current < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
+    length=current-stop;
     stop=TellBlob(image);
-    (void) SeekBlob(image,start,SEEK_SET);
+    if (stop < 0)
+      ThrowWriterException(BlobError,UnableToObtainOffset,image);
+    if (SeekBlob(image,start,SEEK_SET) != start)
+      ThrowWriterException(BlobError,UnableToSeekToOffset,image);
     FormatString(buffer,"%%%%BeginData:%13ld ASCII Bytes\n",(long) length);
     (void) WriteBlobString(image,buffer);
-    (void) SeekBlob(image,stop,SEEK_SET);
+    if (SeekBlob(image,stop,SEEK_SET) != stop)
+      ThrowWriterException(BlobError,UnableToSeekToOffset,image);
     (void) WriteBlobString(image,"%%EndData\n");
 
     /* End private dictionary if this is an EPS */
