@@ -1,5 +1,11 @@
 2015-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/widget.c (MagickXFontBrowserWidget): Fix Coverity 10323
+	"Sizeof not portable".  2nd try.
+
+	* coders/xwd.c (ReadXWDImage): Fix Coverity 10095, 10100, 10104
+	"Division or modulo by zero".  2nd try.
+
 	* magick/analyze.c (GetImageCharacteristics): Fix Coverity 10096
 	"Logically dead code".
 

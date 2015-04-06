@@ -5448,7 +5448,7 @@ MagickExport void MagickXFontBrowserWidget(Display *display,MagickXWindows *wind
     }
   for (i=0; i < fonts; i++)
     fontlist[i]=listhead[i];
-  qsort((void *) fontlist,fonts,sizeof(char **),FontCompare);
+  qsort((void *) fontlist,fonts,sizeof(char *),FontCompare);
   /*
     Determine Font Browser widget attributes.
   */

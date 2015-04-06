@@ -534,9 +534,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       break;
                 }
             else
-              if ((ximage->red_mask == 0) ||
-                  (ximage->green_mask == 0) ||
-                  (ximage->blue_mask == 0))
+              if ((red_mask == 0) ||
+                  (green_mask == 0) ||
+                  (blue_mask == 0))
                 ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
               for (y=0; y < (long) image->rows; y++)
                 {
