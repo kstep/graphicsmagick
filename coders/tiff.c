@@ -4655,22 +4655,22 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		Strip memory target for various compression preset levels.
 		Values are arbitrary.  LZMA is a memory and CPU pig.
 	      */
-	      static const long
+	      static const unsigned int
 		lzma_memory_mb[] =
 		{       /* Level  Compress  Decompress */
-		  1UL,  /*   1       2 MB      1 MB    */
-		  4UL,  /*   2      12 MB      2 MB    */
-		  4UL,  /*   3      12 MB      1 MB    */
-		  4UL,  /*   4      16 MB      2 MB    */
-		  6UL,  /*   5      26 MB      3 MB    */
-		  10UL, /*   6      45 MB      5 MB    */
-		  18UL, /*   7      83 MB      9 MB    */
-		  34UL, /*   8     159 MB     17 MB    */
-		  66UL  /*   9     311 MB     33 MB    */
+		  1U,  /*   1       2 MB      1 MB    */
+		  4U,  /*   2      12 MB      2 MB    */
+		  4U,  /*   3      12 MB      1 MB    */
+		  4U,  /*   4      16 MB      2 MB    */
+		  6U,  /*   5      26 MB      3 MB    */
+		  10U, /*   6      45 MB      5 MB    */
+		  18U, /*   7      83 MB      9 MB    */
+		  34U, /*   8     159 MB     17 MB    */
+		  66U  /*   9     311 MB     33 MB    */
 		};
 	      
 	      rows_per_strip = (uint32) (((lzma_memory_mb[lzma_preset-1]*1024UL*1024UL))/
-                                         ((((magick_uint64_t) bits_per_sample*samples_per_pixel)/
+                                         ((((unsigned long) bits_per_sample*samples_per_pixel)/
                                            8UL)*image->rows));
 	      if (rows_per_strip < 1)
 		rows_per_strip=1U;
