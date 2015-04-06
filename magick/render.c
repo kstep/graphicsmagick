@@ -4733,8 +4733,8 @@ TracePath(PrimitiveInfo *primitive_info,const char *path)
 
   PointInfo
     end={0,0},
-    points[4],
-    point,
+    points[4]={{0,0},{0,0},{0,0},{0,0}},
+    point={0,0},
     start={0,0};
 
   PrimitiveType
@@ -4751,8 +4751,6 @@ TracePath(PrimitiveInfo *primitive_info,const char *path)
     z_count;
 
   attribute=0;
-  point.x=0;
-  point.y=0;
   number_coordinates=0;
   z_count=0;
   primitive_type=primitive_info->primitive;
