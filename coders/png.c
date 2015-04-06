@@ -2815,7 +2815,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     logging,
     read_JSEP,
     reading_idat,
-    skip_to_iend,
     status;
 
   unsigned long
@@ -2856,7 +2855,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   read_JSEP=MagickFalse;
   reading_idat=MagickFalse;
-  skip_to_iend=MagickFalse;
   for (;;)
     {
       char
@@ -2908,15 +2906,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           p=chunk;
         }
       (void) ReadBlobMSBLong(image);  /* read crc word */
-
-#if 0 /* Dead code */
-      if (skip_to_iend)
-        {
-          if (length)
-            MagickFreeMemory(chunk);
-          continue;
-        }
-#endif
 
       if (!memcmp(type,mng_JHDR,4))
         {
