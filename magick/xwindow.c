@@ -5821,7 +5821,7 @@ MagickXMakeImage(Display *display,
       /*
         Destroy previous X image.
       */
-      length=(size_t) window->ximage->bytes_per_line*window->ximage->height;
+      /* length=(size_t) window->ximage->bytes_per_line*window->ximage->height; */
 #if defined(HasSharedMemory)
       if (window->segment_info != (XShmSegmentInfo *) NULL)
         {

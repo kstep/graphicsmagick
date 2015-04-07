@@ -4669,9 +4669,9 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
 		  66U  /*   9     311 MB     33 MB    */
 		};
 	      
-	      rows_per_strip = (uint32) (((lzma_memory_mb[lzma_preset-1]*1024UL*1024UL))/
+	      rows_per_strip = (uint32) (((lzma_memory_mb[lzma_preset-1]*1024U*1024U))/
                                          ((((unsigned long) bits_per_sample*samples_per_pixel)/
-                                           8UL)*image->rows));
+                                           8U)*image->rows));
 	      if (rows_per_strip < 1)
 		rows_per_strip=1U;
 	      if (rows_per_strip > image->rows)
