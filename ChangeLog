@@ -1,3 +1,8 @@
+2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sgi.c (ReadSGIImage, WriteSGIImage): Fix Coverity 10243,
+	10244, 10247, 10254, and 10294 "Unintended sign extension".
+
 2015-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (MagickXMakeImage): Quiet Coverity 10282
