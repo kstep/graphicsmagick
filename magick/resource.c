@@ -539,8 +539,8 @@ MagickExport void InitializeMagickResources(void)
   /*
     Disk, map, and memory are in units of MB and need to be scaled up.
   */
-  if (max_disk > 0)
-    max_disk  *= 1024UL*1024UL;
+  /* if (max_disk > 0) */
+  /*   max_disk  *= 1024UL*1024UL; */
   if (max_map > 0)
     max_map   *= 1024UL*1024UL;
   if (max_memory > 0)
