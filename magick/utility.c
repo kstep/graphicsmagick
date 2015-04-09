@@ -4137,10 +4137,12 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
     *p;
 
   unsigned int
-    directory_mode = 0;
+    directory_mode;
 
 #if defined(S_IRWXU)
-  directory_mode |= S_IRWXU;
+  directory_mode = S_IRWXU;
+#else
+  directory_mode = 0777;
 #endif
 #if defined(S_IRGRP)
   directory_mode |= S_IRGRP;
@@ -4154,8 +4156,6 @@ MagickExport MagickPassFail MagickCreateDirectoryPath(const char *dir,
 #if defined(S_IXOTH)
   directory_mode |= S_IXOTH;
 #endif
-  if (0 == directory_mode)
-    directory_mode = 0777;
 
   dir_len = strlen(dir);
   end = dir + dir_len;

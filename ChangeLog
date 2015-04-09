@@ -1,5 +1,8 @@
 2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (MagickCreateDirectoryPath): Silence Coverity
+	10098 "Logically dead code".
+
 	* magick/resource.c (InitializeMagickResources): Silence Coverity
 	10101 "Logically dead code".
 
