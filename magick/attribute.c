@@ -374,10 +374,13 @@ ReadMSBLong(unsigned char **p,size_t *length)
   int
     c;
 
-  long
-    value;
+  union
+  {
+    magick_uint32_t u;
+    magick_int32_t s;
+  } value;
 
-  register long
+  register unsigned int
     i;
 
   unsigned char
@@ -391,21 +394,26 @@ ReadMSBLong(unsigned char **p,size_t *length)
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value=buffer[0] << 24;
-  value|=buffer[1] << 16;
-  value|=buffer[2] << 8;
-  value|=buffer[3];
-  return(value);
+  value.u=buffer[0] << 24;
+  value.u|=buffer[1] << 16;
+  value.u|=buffer[2] << 8;
+  value.u|=buffer[3];
+  return(value.s);
 }
 
 static int
 ReadMSBShort(unsigned char **p,size_t *length)
 {
   int
-    c,
-    value;
+    c;
 
-  register long
+  union
+  {
+    magick_uint32_t u;
+    magick_int32_t s;
+  } value;
+
+  register unsigned int
     i;
 
   unsigned char
@@ -419,9 +427,9 @@ ReadMSBShort(unsigned char **p,size_t *length)
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value=buffer[0] << 8;
-  value|=buffer[1];
-  return(value);
+  value.u=buffer[0] << 8;
+  value.u|=buffer[1];
+  return(value.s);
 }
 
 /*
