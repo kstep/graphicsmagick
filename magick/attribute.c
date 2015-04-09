@@ -394,7 +394,7 @@ ReadMSBLong(unsigned char **p,size_t *length)
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value.u=buffer[0] << 24;
+  value.u=(buffer[0] & 0xff) << 24;
   value.u|=buffer[1] << 16;
   value.u|=buffer[2] << 8;
   value.u|=buffer[3];
@@ -427,7 +427,7 @@ ReadMSBShort(unsigned char **p,size_t *length)
     (*length)--;
     buffer[i]=(unsigned char) c;
   }
-  value.u=buffer[0] << 8;
+  value.u=(buffer[0] & 0xff) << 8;
   value.u|=buffer[1];
   return(value.s);
 }

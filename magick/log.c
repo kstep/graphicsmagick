@@ -241,6 +241,9 @@ static LogEventType ParseEvents(const char *event_string)
 */
 MagickExport void DestroyLogInfo(void)
 {
+
+  LockSemaphoreInfo(log_semaphore);
+
   if (log_info != (LogInfo *) NULL)
     {
       if (log_info->file != (FILE *) NULL)
@@ -257,6 +260,9 @@ MagickExport void DestroyLogInfo(void)
     }
   log_info=(LogInfo *) NULL;
   log_configured=False;
+
+  UnlockSemaphoreInfo(log_semaphore);
+
   DestroySemaphoreInfo(&log_semaphore);
 }
 
@@ -326,7 +332,6 @@ InitializeLogInfo(void)
 #endif
   GetTimerInfo(&log_info->timer);
 
-  UnlockSemaphoreInfo(log_semaphore);
 
   /*
     Verify subordinate allocations.
@@ -334,8 +339,13 @@ InitializeLogInfo(void)
   if ((log_info->path == (char *) NULL) ||
       (log_info->filename == (char *) NULL) ||
       (log_info->format == (char *) NULL))
-    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-                      UnableToAllocateLogInfo);
+    {
+      UnlockSemaphoreInfo(log_semaphore);
+      MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                        UnableToAllocateLogInfo);
+    }
+
+  UnlockSemaphoreInfo(log_semaphore);
 
   /*
     Set initial logging flags using the value of MAGICK_DEBUG if it is
@@ -1114,7 +1124,13 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
                      XML and TXT format files each use the file handle
                      field and others to do their work, so they can
                      not be used together */
+
+                  LockSemaphoreInfo(log_semaphore);
+
                   log_info->output_type=output_map[i].mask;
+
+                  UnlockSemaphoreInfo(log_semaphore);
+
                   break;
                 }
             }
