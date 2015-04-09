@@ -1,5 +1,8 @@
 2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.c (MagickSignalHandlerMessage): Fix Coverity 44725
+	"Logically dead code".
+
 	* magick/log.c (DestroyLogInfo): Silence Coverity 53659 and 53661
 	"Data race condition".
 	(ReadLogConfigureFile): Silence Coverity 53660 "Data race

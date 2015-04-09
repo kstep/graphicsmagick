@@ -766,7 +766,7 @@ MagickSignalHandlerMessage(const int signo, const char *subtext)
   for ( ; (num != 0) && (i < sizeof(message)-1) ; i++)
     {
       int rem = num % 10;
-      message[i] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+      message[i] = rem + '0';
       num = num/10;
     }
   message[i] = '\0';
