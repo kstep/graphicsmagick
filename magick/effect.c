@@ -1569,7 +1569,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Despeckle() reduces the speckle noise in an image while perserving the
+%  Despeckle() reduces the speckle noise in an image while preserving the
 %  edges of the original image.
 %
 %  The format of the DespeckleImage method is:
@@ -1702,8 +1702,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       register PixelPacket
         *q;
 
-      MagickPassFail
-	status=MagickPass;
 
       /*
 	Export image channel

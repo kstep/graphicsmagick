@@ -1,5 +1,9 @@
 2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (DespeckleImage): Fix error handling issue
+	caused by shadowed variable.  Fixes Coverity 10099 "Logically dead
+	code".
+
 	* magick/command.c (TimeImageCommand): Fix Coverity 10097
 	"Logically dead code".
 
