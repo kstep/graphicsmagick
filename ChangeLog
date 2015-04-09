@@ -1,5 +1,8 @@
 2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (TimeImageCommand): Fix Coverity 10097
+	"Logically dead code".
+
 	* magick/attribute.c (ReadMSBLong): Hopefully silence Coverity
 	10276 "Unintended sign extension".
 

@@ -16699,13 +16699,6 @@ TimeImageCommand(ImageInfo *image_info,
   argv++;
   i=0;
 
-  if (argc < 1)
-    {
-      TimeUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return MagickFail;
-    }
-
   (void) strlcpy(client_name,GetClientName(),sizeof(client_name));
   GetTimerInfo(&timer);
   status=ExecuteSubCommand(image_info,argc,argv,metadata,exception);
