@@ -1,3 +1,8 @@
+2015-04-09  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOneJNGImage): Avoid using a NULL alpha_image.
+	(ReadJNGImage): Removed an extraneous CloseBlob().
+
 2015-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (MagickCreateDirectoryPath): Silence Coverity

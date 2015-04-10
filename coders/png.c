@@ -3071,7 +3071,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             Copy IDAT header and chunk data to alpha_image->blob
           */
 
-          if (!image_info->ping)
+          if (alpha_image != NULL && image_info->ping == MagickFalse)
             {
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3097,7 +3097,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             Copy chunk data to alpha_image->blob
           */
 
-          if (!image_info->ping)
+          if (alpha_image != NULL && image_info->ping == MagickFalse)
             {
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
