@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mat.c (ReadMATImage): Silence Coverity 10175 "Improper
+	use of negative value"
+
 	* coders/tga.c (ReadTGAImage): Silence Coverity 10088 "Operands
 	don't affect result".
 

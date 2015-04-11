@@ -506,6 +506,8 @@ static Image *ReadMATImage(const ImageInfo *image_info, ExceptionInfo *exception
 MATLAB_KO: ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   filepos = TellBlob(image);
+  if (filepos < 0)
+      ThrowReaderException(BlobError,UnableToObtainOffset,image);
   while(!EOFBlob(image)) /* object parser loop */
   {
     Frames = 1;
