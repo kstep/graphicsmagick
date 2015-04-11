@@ -1822,15 +1822,6 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
       font_info=MagickXBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerError,UnableToLoadFont,draw_info->font);
-      if ((map_info == (XStandardColormap *) NULL) ||
-          (visual_info == (XVisualInfo *) NULL) ||
-          (font_info == (XFontStruct *) NULL))
-        {
-          MagickXFreeResources(display,visual_info,map_info,&pixel,font_info,
-            &resource_info,(MagickXWindowInfo *) NULL);
-          ThrowBinaryException(XServerError,UnableToLoadFont,
-            draw_info->server_name)
-        }
       cache_info=(*draw_info);
     }
   /*

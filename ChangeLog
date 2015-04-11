@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/annotate.c (RenderX11): Silence Coverity 10106 "Logically
+	dead code".
+
 	* coders/xcf.c: Silence Coverity 10224, 10233, and 10236 "Improper
 	use of negative value".
 
