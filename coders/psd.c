@@ -1088,6 +1088,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                         }
 
+                      MagickFreeMemory(layer_info);
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                            image);
                     }

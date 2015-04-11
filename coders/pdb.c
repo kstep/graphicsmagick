@@ -349,7 +349,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   unsigned char
-    *pixels;
+    *pixels = (unsigned char *) NULL;
 
   unsigned int
     bits_per_pixel,
