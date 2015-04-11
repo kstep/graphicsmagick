@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/wpg.c (LoadWPG2Flags): Silence Coverity 10273 and 10253
+	"Unused value".
+
 	* magick/montage.c (MontageImages): Silence Coverity 10255 "Unused
 	value".
 	(MontageImages): Silence Coverity 10264 "Unused value".

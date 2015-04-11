@@ -616,17 +616,17 @@ unsigned Flags;
  (*CTM)[2][2]=1;
 
  Flags=ReadBlobLSBShort(image);
- if(Flags & LCK) x=ReadBlobLSBLong(image);	/*Edit lock*/
+ if(Flags & LCK) /*x=*/ (void) ReadBlobLSBLong(image);	/*Edit lock*/
  if(Flags & OID)
 	{
 	if(Precision==0)
-	  {x=ReadBlobLSBShort(image);}	/*ObjectID*/
+	  {/*x=*/ (void) ReadBlobLSBShort(image);}	/*ObjectID*/
 	else
-	  {x=ReadBlobLSBLong(image);}	/*ObjectID (Double precision)*/
+	  {/*x=*/ (void) ReadBlobLSBLong(image);}	/*ObjectID (Double precision)*/
 	}
  if(Flags & ROT)
 	{
-	x=ReadBlobLSBLong(image);	/*Rot Angle*/
+        x=ReadBlobLSBLong(image);	/*Rot Angle*/
 	if(Angle) *Angle=x/65536.0;
 	}
  if(Flags & (ROT|SCL))
