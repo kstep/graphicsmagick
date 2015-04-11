@@ -1319,7 +1319,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         */
         length=2*(bytes_per_line+2)*(image->rows+2)+2;
         dib_data=MagickAllocateMemory(unsigned char *,length);
-        if (pixels == (unsigned char *) NULL)
+        if (dib_data == (unsigned char *) NULL)
           {
             MagickFreeMemory(pixels);
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
@@ -1356,7 +1356,10 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_colormap=MagickAllocateArray(unsigned char *,
                                        (size_t) (1U << dib_info.bits_per_pixel),4);
       if (dib_colormap == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+        {
+          MagickFreeMemory(pixels);
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
       q=dib_colormap;
       for (i=0; i < (long) Min(image->colors,dib_info.number_colors); i++)
       {

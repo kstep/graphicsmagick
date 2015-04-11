@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -197,6 +197,13 @@ ModuleExport void UnregisterMPEGImage(void)
 %
 %
 */
+
+#define ThrowMPEGWriterException(code_,reason_,image_) \
+{ \
+  if (clone_info) \
+    DestroyImageInfo(clone_info);             \
+  ThrowWriterException(code_,reason_,image_); \
+}
 
 static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   Image *image)
@@ -422,7 +429,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     *next_image;
 
   ImageInfo
-    *clone_info;
+    *clone_info = (ImageInfo *) NULL;
 
   register Image
     *p;
@@ -454,7 +461,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+    ThrowMPEGWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   /*
     Determine if the sequence of images have identical page info.
@@ -500,7 +507,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           FormatString(filename,"%.1024s.niq",basename);
           (void) remove(filename);
         }
-      ThrowWriterException(CoderError,UnableToWriteMPEGParameters,image)
+      ThrowMPEGWriterException(CoderError,UnableToWriteMPEGParameters,image);
     }
   count=0;
   clone_info->interlace=PlaneInterlace;

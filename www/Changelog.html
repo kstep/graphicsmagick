@@ -38,6 +38,44 @@
 <p>2015-04-11  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>coders/pict.c (WritePICTImage): Fix Coverity 55867, 55875, 55883
+&quot;Resource leak&quot;.  Fix Coverity 55892 &quot;Resource leak&quot;.</li>
+<li>coders/pdb.c (ReadPDBImage): Fix Coverity 55840, 55856, and
+55885 &quot;Resource leak&quot;.</li>
+<li>coders/pcx.c (WritePCXImage): Fix Coverity 55877 &quot;Resource
+leak&quot;.</li>
+<li>coders/mvg.c (ReadMVGImage): Fix Coverity 55873 &quot;Resource leak&quot;.</li>
+<li>coders/mpeg.c (WriteMPEGImage): Fix Coverity 55880 &quot;Resource
+leak&quot;.</li>
+<li>coders/miff.c (WriteMIFFImage): Fix Coverity 55864 &quot;Resource
+leak&quot;.
+(WriteMIFFImage): Fix Coverity 55872 &quot;Resource leak&quot;.</li>
+<li>coders/meta.c (formatIPTCfromBuffer): Fix Coverity 55838
+&quot;Resource leak&quot;.
+(format8BIM): Fix Coverity 55842 and 55852 &quot;Resource leak&quot;.
+(formatIPTC): Fix Coverity 5882 &quot;Resource leak&quot;.</li>
+<li>coders/mat.c (ReadMATImage): Fix Coverity 55850 &quot;Resource leak&quot;.</li>
+<li>coders/map.c (ReadMAPImage): Fix Coverity 55876 &quot;Resource leak&quot;.</li>
+<li>coders/logo.c (ReadLOGOImage): Fix Coverity 55870 &quot;Resource
+leak&quot;.</li>
+<li>coders/label.c (ReadLABELImage): Fix Coverity 55869 &quot;Resource
+leak&quot;.</li>
+<li>coders/icon.c (ReadIconImage): Fix Coverity 55887 &quot;Resource
+leak&quot;.</li>
+<li>coders/fits.c (WriteFITSImage): Fix Coverity 55884 &quot;Resource
+leak&quot;.</li>
+<li>coders/dpx.c (WriteDPXImage): Fix Coverity 55861 &quot;Resource
+leak&quot;.
+(ReadDPXImage): Fix Coverity 55878 &quot;Resource leak&quot;.
+(ReadDPXImage): Fix Coverity 55879 &quot;Resource leak&quot;.</li>
+<li>coders/dib.c (WriteDIBImage): Fix Coverity 55881 &quot;Resource
+leak&quot;.
+(WriteDIBImage): Fix Coverity 55895 &quot;Resource leak&quot;.</li>
+<li>coders/cut.c (ReadCUTImage): Fix Coverity 55893 &quot;Resource leak&quot;.</li>
+<li>coders/caption.c (ReadCAPTIONImage): Fix Coverity 55888
+&quot;Resource leak&quot;.
+(ReadCAPTIONImage): Fix Coverity 55889 &quot;Resource leak&quot;.
+(ReadCAPTIONImage): Fix Coverity 55896 &quot;Resource leak&quot;.</li>
 <li>magick/annotate.c (RenderX11): Silence Coverity 10106 &quot;Logically
 dead code&quot;.</li>
 <li>coders/xcf.c: Silence Coverity 10224, 10233, and 10236 &quot;Improper

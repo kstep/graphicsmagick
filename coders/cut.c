@@ -474,8 +474,10 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,image->colors))
         {
         NoMemory:
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
-            }     
+          if (clone_info != NULL)
+            DestroyImageInfo(clone_info);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
    
       for (i=0; i < (long)image->colors; i++)
         {

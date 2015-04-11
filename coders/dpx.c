@@ -2149,7 +2149,11 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           /* Verify that we reached our offset objective */
           if ( pixels_offset != offset)
-            ThrowReaderException(BlobError,UnableToSeekToOffset,image);
+            {
+              DestroyThreadViewDataSet(scanline_set);
+              DestroyThreadViewDataSet(samples_set);
+              ThrowReaderException(BlobError,UnableToSeekToOffset,image);
+            }
         }
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
       element_descriptor=(DPXImageElementDescriptor)
@@ -4169,7 +4173,10 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           chroma_image=ResizeImage(image,image->columns/2,image->rows,
                                    LanczosFilter,1.0,&image->exception);
           if (chroma_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+            {
+              MagickFreeMemory(scanline);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+            }
         }
 
       for (y=0; y < image->rows; y++)

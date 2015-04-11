@@ -174,6 +174,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(colormap);
   if (image_info->ping)
     {
+      MagickFreeMemory(pixels);
       CloseBlob(image);
       return(image);
     }

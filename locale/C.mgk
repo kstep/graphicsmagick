@@ -399,7 +399,7 @@
           invalid file format version
         </Message>
         <Message name="ImageFileDoesNotContainAnyImageData">
-          Image file or does not contain any image data
+          Image file or blob does not contain any image data
         </Message>
         <Message name="ImageTypeNotSupported">
           Image type not supported

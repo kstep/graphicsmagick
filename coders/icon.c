@@ -288,6 +288,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "Failed to seek to offset %u",
                                 icon_file.directory[i].offset);
+        MagickFreeMemory(data);
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       }
     if ((count=ReadBlob(image,icon_file.directory[i].size,data)) != icon_file.directory[i].size)

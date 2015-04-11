@@ -1982,6 +1982,13 @@ static void WriteRunlengthPacket(const Image *image,
   *qp=q;
 }
 
+#define ThrowMIFFWriterException(code_,reason_,image_) \
+{ \
+  MagickFreeMemory(compress_pixels)            \
+  MagickFreeMemory(pixels); \
+  ThrowWriterException(code_,reason_,image_); \
+}
+
 static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
 
@@ -2028,8 +2035,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     length;
 
   unsigned char
-    *compress_pixels,
-    *pixels;
+    *compress_pixels = (unsigned char *) NULL,
+    *pixels = (unsigned char *) NULL;
 
   unsigned int
     depth,
@@ -2125,7 +2132,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowMIFFWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Write MIFF header.
     */
@@ -2384,8 +2391,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         packet_size=3*depth/8;
         colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-            image);
+          ThrowMIFFWriterException(ResourceLimitError,MemoryAllocationFailed,
+                                   image);
         /*
           Write colormap to file.
         */

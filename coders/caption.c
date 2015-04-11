@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -155,7 +155,11 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *q='\0';
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
-      ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+      {
+        DestroyDrawInfo(draw_info);
+        MagickFreeMemory(caption);
+        ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+      }
     if ((metrics.width+metrics.max_advance/2) < image->columns)
       continue;
     for (p--; !isspace((int) *p) && (p > caption); p--);

@@ -187,7 +187,11 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     draw_info->primitive=(char *) FileToBlob(image->filename,&length,exception);
   if (draw_info->primitive == (char *) NULL)
-    return((Image *) NULL);
+    {
+      DestroyDrawInfo(draw_info);
+      CloseBlob(image);
+      return (Image *) NULL;
+    }
   (void) DrawImage(image,draw_info);
   DestroyDrawInfo(draw_info);
   CloseBlob(image);

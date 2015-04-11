@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -73,6 +73,13 @@
 %
 %
 */
+#define ThrowLABELReaderException(code_,reason_,image_) \
+do { \
+  if (draw_info) \
+    DestroyDrawInfo(draw_info); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
+
 static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -80,7 +87,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     geometry[MaxTextExtent];
 
   DrawInfo
-    *draw_info;
+    *draw_info = (DrawInfo *) NULL;
 
   Image
     *image;
@@ -104,10 +111,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  if (draw_info == (DrawInfo *) NULL)
+    ThrowLABELReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   draw_info->fill=image_info->pen;
   draw_info->text=TranslateText(image_info,image,image_info->filename);
   if (draw_info->text == (char *) NULL)
-    ThrowReaderException(CoderError,UnableToTranslateText,image);
+    ThrowLABELReaderException(CoderError,UnableToTranslateText,image);
   if ((image->columns != 0) || (image->rows != 0))
     {
       /*
@@ -137,7 +146,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     }
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+    ThrowLABELReaderException(TypeError,UnableToGetTypeMetrics,image);
   FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   if (image->columns == 0)
     image->columns=(unsigned long)

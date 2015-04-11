@@ -1,5 +1,60 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pict.c (WritePICTImage): Fix Coverity 55867, 55875, 55883
+	"Resource leak".  Fix Coverity 55892 "Resource leak".
+
+	* coders/pdb.c (ReadPDBImage): Fix Coverity 55840, 55856, and
+	55885 "Resource leak".
+
+	* coders/pcx.c (WritePCXImage): Fix Coverity 55877 "Resource
+	leak".
+
+	* coders/mvg.c (ReadMVGImage): Fix Coverity 55873 "Resource leak".
+
+	* coders/mpeg.c (WriteMPEGImage): Fix Coverity 55880 "Resource
+	leak".
+
+	* coders/miff.c (WriteMIFFImage): Fix Coverity 55864 "Resource
+	leak".
+	(WriteMIFFImage): Fix Coverity 55872 "Resource leak".
+
+	* coders/meta.c (formatIPTCfromBuffer): Fix Coverity 55838
+	"Resource leak".
+	(format8BIM): Fix Coverity 55842 and 55852 "Resource leak".
+	(formatIPTC): Fix Coverity 5882 "Resource leak".
+
+	* coders/mat.c (ReadMATImage): Fix Coverity 55850 "Resource leak".
+
+	* coders/map.c (ReadMAPImage): Fix Coverity 55876 "Resource leak".
+
+	* coders/logo.c (ReadLOGOImage): Fix Coverity 55870 "Resource
+	leak".
+
+	* coders/label.c (ReadLABELImage): Fix Coverity 55869 "Resource
+	leak".
+
+	* coders/icon.c (ReadIconImage): Fix Coverity 55887 "Resource
+	leak".
+
+	* coders/fits.c (WriteFITSImage): Fix Coverity 55884 "Resource
+	leak".
+
+	* coders/dpx.c (WriteDPXImage): Fix Coverity 55861 "Resource
+	leak".
+	(ReadDPXImage): Fix Coverity 55878 "Resource leak".
+	(ReadDPXImage): Fix Coverity 55879 "Resource leak".
+
+	* coders/dib.c (WriteDIBImage): Fix Coverity 55881 "Resource
+	leak".
+	(WriteDIBImage): Fix Coverity 55895 "Resource leak".
+
+	* coders/cut.c (ReadCUTImage): Fix Coverity 55893 "Resource leak".
+
+	* coders/caption.c (ReadCAPTIONImage): Fix Coverity 55888
+	"Resource leak".
+	(ReadCAPTIONImage): Fix Coverity 55889 "Resource leak".
+	(ReadCAPTIONImage): Fix Coverity 55896 "Resource leak".
+
 	* magick/annotate.c (RenderX11): Silence Coverity 10106 "Logically
 	dead code".
 

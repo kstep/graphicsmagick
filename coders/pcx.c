@@ -874,6 +874,13 @@ static MagickPassFail WriteRLEPixels(Image *image,
   return (MagickPass);
 }
 
+#define ThrowPCXWriterException(code_,reason_,image_) \
+{ \
+  MagickFreeMemory(pcx_colormap) \
+  MagickFreeMemory(pcx_pixels); \
+  MagickFreeMemory(page_table); \
+  ThrowWriterException(code_,reason_,image_); \
+}
 static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
   long
@@ -899,8 +906,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     length;
 
   unsigned char
-    *pcx_colormap,
-    *pcx_pixels;
+    *pcx_colormap = (unsigned char *) NULL,
+    *pcx_pixels = (unsigned char *) NULL;
 
   MagickBool
     adjoin,
@@ -930,7 +937,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   logging=image->logging;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+    ThrowPCXWriterException(FileOpenError,UnableToOpenFile,image);
 
   write_dcx=MagickFalse;
   if (LocaleCompare(image_info->magick,"DCX") == 0)
@@ -943,7 +950,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       page_table=MagickAllocateMemory(ExtendedSignedIntegralType *,
         1024*sizeof(ExtendedSignedIntegralType));
       if (page_table == (ExtendedSignedIntegralType *) NULL)
-        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+        ThrowPCXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       for (scene=0; scene < 1024; scene++)
         (void) WriteBlobLSBLong(image,0x00000000L);
     }
@@ -1032,7 +1039,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     pcx_colormap=MagickAllocateMemory(unsigned char *,3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowPCXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     for (i=0; i < (3*256); i++)
       pcx_colormap[i]=0;
     q=pcx_colormap;
@@ -1054,7 +1061,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     length=(size_t) pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=MagickAllocateMemory(unsigned char *,length);
     if (pcx_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowPCXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     q=pcx_pixels;
     if (image->storage_class == DirectClass)
       {
@@ -1228,7 +1235,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       MagickFreeMemory(page_table);
     }
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToWriteFile,image);
+    ThrowPCXWriterException(FileOpenError,UnableToWriteFile,image);
   CloseBlob(image);
   return(True);
 }

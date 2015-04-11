@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1928,7 +1928,11 @@ static int formatIPTC(Image *ifile, Image *ofile)
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c=ReadBlobByte(ifile);
-      if (c == EOF) return -1;
+      if (c == EOF)
+        {
+          MagickFreeMemory(str);
+          return -1;
+        }
       str[tagindx] = (unsigned char) c;
     }
     str[taglen] = 0;
@@ -2051,7 +2055,11 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
     for (tagindx=0; tagindx<taglen; tagindx++)
     {
       c = *s++; len--;
-      if (len < 0) return -1;
+      if (len < 0)
+        {
+          MagickFreeMemory(str);
+          return -1;
+        }
       str[tagindx] = (unsigned char) c;
     }
     str[ taglen ] = 0;
@@ -2156,7 +2164,12 @@ static int format8BIM(Image *ifile, Image *ofile)
     for (i=0; i<Size; i++)
     {
       c=ReadBlobByte(ifile);
-      if (c == EOF) return -1;
+      if (c == EOF)
+        {
+          MagickFreeMemory(PString);
+          MagickFreeMemory(str);
+          return -1;
+        }
       str[i] = (unsigned char) c;
     }
 

@@ -770,6 +770,13 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %
 %
 */
+#define ThrowPICTReaderException(code_,reason_,image_) \
+{ \
+  if (clone_info) \
+    DestroyImageInfo(clone_info); \
+  ThrowReaderException(code_,reason_,image_); \
+}
+
 static Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -778,6 +785,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
 
   Image
     *image;
+
+  ImageInfo
+    *clone_info = (ImageInfo *) NULL;
 
   IndexPacket
     index;
@@ -827,7 +837,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowPICTReaderException(FileOpenError,UnableToOpenFile,image);
   pixmap.bits_per_pixel=0;
   pixmap.component_count=0;
   /*
@@ -840,27 +850,27 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   (void) ReadBlobMSBShort(image);  /* skip picture size */
   ReadRectangle(frame);
   if (!ValidateRectangle(frame))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
   version=ReadBlobByte(image);
   if (version == 2)
     {
       c=ReadBlobByte(image);
       if (c != 0xff)
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
     }
   else
     if (version != 1)
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Validate dimensions
   */
   if ((frame.left < 0) || (frame.right < 0) || (frame.top < 0) || (frame.bottom < 0) ||
       (frame.left >= frame.right) || (frame.top >= frame.bottom))
     {
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
     }
 
   /*
@@ -875,7 +885,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           "Dimensions: %lux%lu",image->columns,image->rows);
 
   if (CheckImagePixelLimits(image, exception) != MagickPass)
-    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    ThrowPICTReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
   /*
     Interpret PICT opcodes.
@@ -916,13 +926,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             ReadRectangle(frame);
             if (!ValidateRectangle(frame))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             if ((frame.left & 0x8000) || (frame.top & 0x8000))
               break;
             image->columns=frame.right-frame.left;
             image->rows=frame.bottom-frame.top;
             if (CheckImagePixelLimits(image, exception) != MagickPass)
-              ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+              ThrowPICTReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
             (void) SetImageEx(image,OpaqueOpacity,exception);
             break;
           }
@@ -950,15 +960,15 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
               }
             if (pattern != 1)
-              ThrowReaderException(CorruptImageError,UnknownPatternType,
+              ThrowPICTReaderException(CorruptImageError,UnknownPatternType,
                 image);
             length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
             if (!ValidateRectangle(frame))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             ReadPixmap(pixmap);
             if (!ValidatePixmap(pixmap))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             (void) ReadBlobMSBLong(image);
             flags=ReadBlobMSBShort(image);
             length=ReadBlobMSBShort(image);
@@ -1060,7 +1070,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             ReadRectangle(frame);
             if (!ValidateRectangle(frame))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             /*
               Initialize tile image.
             */
@@ -1074,7 +1084,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 ReadPixmap(pixmap);
                 if (!ValidatePixmap(pixmap))
-                  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+                  ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
                 tile_image->matte=pixmap.component_count == 4;
               }
             if ((code != 0x9a) && (code != 0x9b))
@@ -1092,7 +1102,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (!AllocateImageColormap(tile_image,tile_image->colors))
                   {
                     DestroyImage(tile_image);
-                    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+                    ThrowPICTReaderException(ResourceLimitError,MemoryAllocationFailed,image)
                   }
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "Allocated tile image colormap with %u colors",tile_image->colors);
@@ -1126,10 +1136,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             ReadRectangle(source);
             if (!ValidateRectangle(source))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             ReadRectangle(destination);
             if (!ValidateRectangle(destination))
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+              ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
             (void) ReadBlobMSBShort(image);
             if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
               {
@@ -1150,7 +1160,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 CopyException(exception, &tile_image->exception);
                 DestroyImage(tile_image);
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+                ThrowPICTReaderException(ResourceLimitError,MemoryAllocationFailed,image)
               }
             /*
               Convert PICT tile image to pixel packets.
@@ -1261,7 +1271,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (length == 0)
                   break;
                 if (SetImageProfile(image,"ICM",info,length) == MagickFail)
-                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowPICTReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 MagickFreeMemory(info);
                 break;
               }
@@ -1270,7 +1280,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (length == 0)
                   break;
                 if (SetImageProfile(image,"IPTC",info,length) == MagickFail)
-                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowPICTReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 MagickFreeMemory(info);
                 break;
               }
@@ -1313,9 +1323,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         Image
           *tile_image;
 
-        ImageInfo
-          *clone_info;
-
         /*
           Embedded JPEG.
         */
@@ -1338,7 +1345,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (!ValidateRectangle(frame))
               {
                 (void) fclose(file);
-                ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+                ThrowPICTReaderException(CorruptImageError,ImproperImageHeader,image);
               }
             for (i=0; i < 122; i++)
               if (ReadBlobByte(image) == EOF)
@@ -1500,6 +1507,13 @@ ModuleExport void UnregisterPICTImage(void)
 %
 %
 */
+#define ThrowPICTWriterException(code_,reason_,image_) \
+{ \
+  MagickFreeMemory(buffer) \
+  MagickFreeMemory(packed_scanline) \
+  MagickFreeMemory(scanline) \
+  ThrowWriterException(code_,reason_,image_); \
+}
 static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCount  128U
@@ -1553,9 +1567,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     count;
 
   unsigned char
-    *buffer,
-    *packed_scanline,
-    *scanline;
+    *buffer = (unsigned char *) NULL,
+    *packed_scanline = (unsigned char *) NULL,
+    *scanline = (unsigned char *) NULL;
 
   unsigned int
     status;
@@ -1577,10 +1591,10 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ImageError,WidthOrHeightExceedsLimit,image);
+    ThrowPICTWriterException(ImageError,WidthOrHeightExceedsLimit,image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+    ThrowPICTWriterException(FileOpenError,UnableToOpenFile,image);
   (void) TransformColorspace(image,RGBColorspace);
   /*
     Initialize image info.
@@ -1636,7 +1650,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowPICTWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
