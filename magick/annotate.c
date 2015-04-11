@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1056,14 +1056,17 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(TypeError,UnableToReadFont,draw_info->font)
     }
+  /*
+    Select a charmap
+  */
   if (face->num_charmaps != 0)
-    ft_status=FT_Set_Charmap(face,face->charmaps[0]);
+    /* ft_status= */ (void) FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_unicode;
   ft_status=FT_Select_Charmap(face,encoding_type);
   if (ft_status != 0)
     {
       encoding_type=ft_encoding_none;
-      ft_status=FT_Select_Charmap(face,encoding_type);
+      /* ft_status= */ (void) FT_Select_Charmap(face,encoding_type);
     }
   if (encoding != (char *) NULL)
     {
