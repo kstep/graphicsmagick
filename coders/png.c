@@ -3257,7 +3257,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     o destroy the secondary image.
   */
 
-  if (color_image == (Image *)NULL)
+  if (color_image != (Image *)NULL)
     {
       CloseBlob(color_image);
       if (logging)
@@ -3362,6 +3362,17 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
                                       exception,LoadImagesTag,image->filename);
     }
+  if (alpha_image != (Image *)NULL)
+    {
+      DestroyImage(alpha_image);
+      DestroyImageInfo(alpha_image_info);
+    }
+  if (color_image != (Image *)NULL)
+    {
+      DestroyImage(color_image);
+      DestroyImageInfo(color_image_info);
+    }
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOneJNGImage()");
