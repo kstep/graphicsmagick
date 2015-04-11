@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tga.c (ReadTGAImage): Silence Coverity 10088 "Operands
+	don't affect result".
+
 	* magick/annotate.c (RenderFreetype): Silence Coverity 14396 and
 	44755 "Unused value".
 

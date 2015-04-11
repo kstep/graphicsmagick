@@ -567,13 +567,19 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 indexes[x]=index;
               *q++=pixel;
             }
+          /*
+            FIXME: Need to research what case was expected to be
+            tested here.  This test case can never be true and so it
+            is commented out for the moment.
+
           if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 4)
             offset+=4;
           else
-            if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
+          */
+          if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
               offset+=2;
-            else
-              offset++;
+          else
+            offset++;
           if (offset >= image->rows)
             {
               base++;
