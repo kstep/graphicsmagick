@@ -2622,7 +2622,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   UnlockSemaphoreInfo(png_semaphore);
 #endif
 
-
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOnePNGImage()");
@@ -3270,7 +3269,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       jng_image=ReadImage(color_image_info,exception);
       (void) LiberateUniqueFileResource(color_image->filename);
       DestroyImage(color_image);
+      color_image = (Image *)NULL;
       DestroyImageInfo(color_image_info);
+      color_image_info = (ImageInfo *)NULL;
 
       if (jng_image == (Image *) NULL)
         {
@@ -3296,7 +3297,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             break;
         }
       DestroyImage(jng_image);
-      if (!image_info->ping)
+      jng_image = (Image *)NULL;
+      if (alpha_image != (Image *)NULL && !image_info->ping)
         {
           if (jng_color_type >= 12)
             {
@@ -3345,14 +3347,19 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 }
               (void) LiberateUniqueFileResource(alpha_image->filename);
               DestroyImage(alpha_image);
+              alpha_image = (Image *)NULL;
               DestroyImageInfo(alpha_image_info);
+              alpha_image_info = (ImageInfo *)NULL;
               DestroyImage(jng_image);
+              jng_image = (Image *)NULL;
             }
         }
 
       /*
         Read the JNG image.
       */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          " Read the JNG image");
       image->page.width=jng_width;
       image->page.height=jng_height;
       image->page.x=mng_info->x_off[mng_info->object_id];
@@ -3362,15 +3369,28 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
                                       exception,LoadImagesTag,image->filename);
     }
+
+  /* Clean up in case we didn't earlier */
   if (alpha_image != (Image *)NULL)
     {
+      (void) LiberateUniqueFileResource(alpha_image->filename);
       DestroyImage(alpha_image);
-      DestroyImageInfo(alpha_image_info);
+      alpha_image = (Image *)NULL;
     }
   if (color_image != (Image *)NULL)
     {
       DestroyImage(color_image);
+      color_image = (Image *)NULL;
+    }
+  if (alpha_image_info != (ImageInfo *)NULL)
+    {
+      DestroyImageInfo(alpha_image_info);
+      alpha_image_info = (ImageInfo *)NULL;
+    }
+  if (color_image_info != (ImageInfo *)NULL)
+    {
       DestroyImageInfo(color_image_info);
+      color_image_info = (ImageInfo *)NULL;
     }
 
   if (logging)
