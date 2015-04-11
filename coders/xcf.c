@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2014 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -716,6 +716,8 @@ static MagickPassFail load_level (Image* image,
         is stored.
       */
       saved_pos = TellBlob(image);
+      if (saved_pos < 0)
+        ThrowBinaryException(BlobError,UnableToObtainOffset,image->filename);
 
       /*
         read in the offset of the next tile so we can calculate the
@@ -965,6 +967,8 @@ static MagickPassFail load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLa
    *  next level offset is stored.
    */
   saved_pos = TellBlob(image);
+  if (saved_pos < 0)
+    ThrowBinaryException(BlobError,UnableToObtainOffset,image->filename);
   
   /* seek to the level offset */
   (void) SeekBlob(image, offset, SEEK_SET);
@@ -1492,6 +1496,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
          the read pointer
       */
       magick_off_t oldPos = TellBlob(image);
+      if (oldPos < 0)
+        ThrowReaderException(BlobError,UnableToObtainOffset,image);
       do
         {
           long
@@ -1557,6 +1563,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
            *  next layer offset is stored.
            */
           saved_pos = TellBlob(image);
+          if (saved_pos < 0)
+            ThrowReaderException(BlobError,UnableToObtainOffset,image);
 
           if( first_layer <= current_layer && current_layer <= last_layer )
 	    {

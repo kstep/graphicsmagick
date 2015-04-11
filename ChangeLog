@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xcf.c: Silence Coverity 10224, 10233, and 10236 "Improper
+	use of negative value".
+
 	* coders/mat.c (ReadMATImage): Silence Coverity 10175 "Improper
 	use of negative value"
 
