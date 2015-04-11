@@ -410,7 +410,7 @@ MagickExport Image *MontageImages(const Image *images,
       x=0;
       y=0;
       tiles_per_column=number_images;
-      flags=GetGeometry(montage_info->tile,&x,&y,&tiles_per_row,
+      /* flags= */ (void) GetGeometry(montage_info->tile,&x,&y,&tiles_per_row,
         &tiles_per_column);
     }
   /*
