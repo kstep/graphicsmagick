@@ -5839,7 +5839,8 @@ WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickNextImage() associates the next image in the image list with a magick
-%  wand.
+%  wand.  True is returned if the Wand iterated to a next image, or False is
+%  returned if the wand did not iterate to a next image.
 %
 %  The format of the MagickNextImage method is:
 %

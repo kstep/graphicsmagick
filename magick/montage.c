@@ -355,7 +355,7 @@ MagickExport Image *MontageImages(const Image *images,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     image=image_list[i];
     SetGeometry(image,&geometry);
-    flags=GetMagickGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+    /* flags= */ (void) GetMagickGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     /*
       Use ThumbnailImage() rather than ZoomImage() to resize montage
