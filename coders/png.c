@@ -3055,8 +3055,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "    Copying JDAT chunk data"
                                   " to color_blob.");
-
-          (void) WriteBlob(color_image,length,(char *) chunk);
+          if (color_image != (Image *)NULL)
+            (void) WriteBlob(color_image,length,(char *) chunk);
           if (length)
             MagickFreeMemory(chunk);
           continue;
@@ -3257,108 +3257,111 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     o destroy the secondary image.
   */
 
-  CloseBlob(color_image);
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    Reading jng_image from color_blob.");
-
-  FormatString(color_image_info->filename,"%.1024s",color_image->filename);
-
-  color_image_info->ping=MagickFalse;   /* To do: avoid this */
-  jng_image=ReadImage(color_image_info,exception);
-  (void) LiberateUniqueFileResource(color_image->filename);
-  DestroyImage(color_image);
-  DestroyImageInfo(color_image_info);
-
-  if (jng_image == (Image *) NULL)
+  if (color_image == (Image *)NULL)
     {
-      /*
-        Don't throw exception here since ReadImage() will already
-        have thrown it.
-      */
-      return (Image *) NULL;
-    }
+      CloseBlob(color_image);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Reading jng_image from color_blob.");
 
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    Copying jng_image pixels to main image.");
-  image->rows=jng_height;
-  image->columns=jng_width;
-  length=image->columns*sizeof(PixelPacket);
-  for (y=0; y < (long) image->rows; y++)
-    {
-      s=AcquireImagePixels(jng_image,0,y,image->columns,1,&image->exception);
-      q=SetImagePixels(image,0,y,image->columns,1);
-      (void) memcpy(q,s,length);
-      if (!SyncImagePixels(image))
-        break;
-    }
-  DestroyImage(jng_image);
-  if (!image_info->ping)
-    {
-      if (jng_color_type >= 12)
+      FormatString(color_image_info->filename,"%.1024s",color_image->filename);
+
+      color_image_info->ping=MagickFalse;   /* To do: avoid this */
+      jng_image=ReadImage(color_image_info,exception);
+      (void) LiberateUniqueFileResource(color_image->filename);
+      DestroyImage(color_image);
+      DestroyImageInfo(color_image_info);
+
+      if (jng_image == (Image *) NULL)
         {
-          if (jng_alpha_compression_method == 0)
-            {
-              png_byte
-                data[5];
-              (void) WriteBlobMSBULong(alpha_image,0x00000000L);
-              PNGType(data,mng_IEND);
-              LogPNGChunk(logging,mng_IEND,0L);
-              (void) WriteBlob(alpha_image,4,(char *) data);
-              (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
-            }
-          CloseBlob(alpha_image);
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "    Reading opacity from alpha_blob.");
-
-          FormatString(alpha_image_info->filename,"%.1024s",
-                       alpha_image->filename);
-
-          jng_image=ReadImage(alpha_image_info,exception);
-
-          for (y=0; y < (long) image->rows; y++)
-            {
-              s=AcquireImagePixels(jng_image,0,y,image->columns,1,
-                                   &image->exception);
-              if (image->matte)
-                {
-                  q=SetImagePixels(image,0,y,image->columns,1);
-                  for (x=(long) image->columns; x > 0; x--,q++,s++)
-                    q->opacity=(Quantum) MaxRGB-s->red;
-                }
-              else
-                {
-                  q=SetImagePixels(image,0,y,image->columns,1);
-                  for (x=(long) image->columns; x > 0; x--,q++,s++)
-                    {
-                      q->opacity=(Quantum) MaxRGB-s->red;
-                      if (q->opacity != OpaqueOpacity)
-                        image->matte=MagickTrue;
-                    }
-                }
-              if (!SyncImagePixels(image))
-                break;
-            }
-          (void) LiberateUniqueFileResource(alpha_image->filename);
-          DestroyImage(alpha_image);
-          DestroyImageInfo(alpha_image_info);
-          DestroyImage(jng_image);
+          /*
+            Don't throw exception here since ReadImage() will already
+            have thrown it.
+          */
+          return (Image *) NULL;
         }
-    }
 
-  /*
-    Read the JNG image.
-  */
-  image->page.width=jng_width;
-  image->page.height=jng_height;
-  image->page.x=mng_info->x_off[mng_info->object_id];
-  image->page.y=mng_info->y_off[mng_info->object_id];
-  mng_info->image_found++;
-  if (QuantumTick(2*GetBlobSize(image),2*GetBlobSize(image)))
-    (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
-                                  exception,LoadImagesTag,image->filename);
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "    Copying jng_image pixels to main image.");
+      image->rows=jng_height;
+      image->columns=jng_width;
+      length=image->columns*sizeof(PixelPacket);
+      for (y=0; y < (long) image->rows; y++)
+        {
+          s=AcquireImagePixels(jng_image,0,y,image->columns,1,&image->exception);
+          q=SetImagePixels(image,0,y,image->columns,1);
+          (void) memcpy(q,s,length);
+          if (!SyncImagePixels(image))
+            break;
+        }
+      DestroyImage(jng_image);
+      if (!image_info->ping)
+        {
+          if (jng_color_type >= 12)
+            {
+              if (jng_alpha_compression_method == 0)
+                {
+                  png_byte
+                    data[5];
+                  (void) WriteBlobMSBULong(alpha_image,0x00000000L);
+                  PNGType(data,mng_IEND);
+                  LogPNGChunk(logging,mng_IEND,0L);
+                  (void) WriteBlob(alpha_image,4,(char *) data);
+                  (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
+                }
+              CloseBlob(alpha_image);
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "    Reading opacity from alpha_blob.");
+
+              FormatString(alpha_image_info->filename,"%.1024s",
+                           alpha_image->filename);
+
+              jng_image=ReadImage(alpha_image_info,exception);
+
+              for (y=0; y < (long) image->rows; y++)
+                {
+                  s=AcquireImagePixels(jng_image,0,y,image->columns,1,
+                                       &image->exception);
+                  if (image->matte)
+                    {
+                      q=SetImagePixels(image,0,y,image->columns,1);
+                      for (x=(long) image->columns; x > 0; x--,q++,s++)
+                        q->opacity=(Quantum) MaxRGB-s->red;
+                    }
+                  else
+                    {
+                      q=SetImagePixels(image,0,y,image->columns,1);
+                      for (x=(long) image->columns; x > 0; x--,q++,s++)
+                        {
+                          q->opacity=(Quantum) MaxRGB-s->red;
+                          if (q->opacity != OpaqueOpacity)
+                            image->matte=MagickTrue;
+                        }
+                    }
+                  if (!SyncImagePixels(image))
+                    break;
+                }
+              (void) LiberateUniqueFileResource(alpha_image->filename);
+              DestroyImage(alpha_image);
+              DestroyImageInfo(alpha_image_info);
+              DestroyImage(jng_image);
+            }
+        }
+
+      /*
+        Read the JNG image.
+      */
+      image->page.width=jng_width;
+      image->page.height=jng_height;
+      image->page.x=mng_info->x_off[mng_info->object_id];
+      image->page.y=mng_info->y_off[mng_info->object_id];
+      mng_info->image_found++;
+      if (QuantumTick(2*GetBlobSize(image),2*GetBlobSize(image)))
+        (void) MagickMonitorFormatted(2*GetBlobSize(image),2*GetBlobSize(image),
+                                      exception,LoadImagesTag,image->filename);
+    }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "  exit ReadOneJNGImage()");
