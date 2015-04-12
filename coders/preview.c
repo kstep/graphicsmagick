@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -249,7 +249,10 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   master_image=ThumbnailImage(image,geometry.width,geometry.height,
                               &image->exception);
   if (master_image == (Image *) NULL)
-    return False;
+    {
+      DestroyImageInfo(clone_info);
+      return False;
+    }
   for (i=0; i < NumberTiles; i++)
   {
     preview_image=CloneImage(master_image,0,0,True,&image->exception);

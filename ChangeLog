@@ -1,3 +1,8 @@
+2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/preview.c (WritePreviewImage): Fix Coverity 55988
+	"Resource leak".
+
 2015-04-12  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOneJNGImage): Avoid some memory leaks
