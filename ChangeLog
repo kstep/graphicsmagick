@@ -1,5 +1,12 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/resize.c (ScaleImage): Fix Coverity 55841, 55853, 55858,
+	and 55860 "Resource leak".
+
+	* magick/render.c (ConvertPathToPolygon): Fix Coverity 55836
+	"Resource leak".
+	(DrawDashPolygon): Fix Coverity 55837 "Resource leak".
+
 	* magick/quantize.c (GrayscalePseudoClassImage): Fix Coverity
 	55831 "Resource leak".
 

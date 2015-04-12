@@ -134,6 +134,7 @@ static void
 #if 0
   DestroyGradientInfo(GradientInfo *),
 #endif
+  DestroyPolygonInfo(void *polygon_info_void),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceArcPath(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
@@ -405,11 +406,15 @@ ConvertPathToPolygon(const PathInfo *path_info)
   polygon_info=MagickAllocateMemory(PolygonInfo *,sizeof(PolygonInfo));
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
+  (void) memset(&polygon_info,0,sizeof(PolygonInfo));
   number_edges=16;
   polygon_info->edges=
     MagickAllocateArray(EdgeInfo *,number_edges,sizeof(EdgeInfo));
   if (polygon_info->edges == (EdgeInfo *) NULL)
-    return((PolygonInfo *) NULL);
+    {
+      DestroyPolygonInfo(polygon_info);
+      return((PolygonInfo *) NULL);
+    }
   direction=0;
   edge=0;
   ghostline=MagickFalse;
@@ -434,7 +439,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
                 MagickReallocMemory(EdgeInfo *,polygon_info->edges,
                   number_edges*sizeof(EdgeInfo));
                 if (polygon_info->edges == (EdgeInfo *) NULL)
-                  return((PolygonInfo *) NULL);
+                  {
+                    DestroyPolygonInfo(polygon_info);
+                    return((PolygonInfo *) NULL);
+                  }
               }
             polygon_info->edges[edge].number_points=n;
             polygon_info->edges[edge].scanline=(-1.0);
@@ -457,7 +465,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
             points=
 	      MagickAllocateArray(PointInfo *,number_points,sizeof(PointInfo));
             if (points == (PointInfo *) NULL)
-              return((PolygonInfo *) NULL);
+              {
+                DestroyPolygonInfo(polygon_info);
+                return((PolygonInfo *) NULL);
+              }
           }
         ghostline=path_info[i].code == GhostlineCode ? MagickTrue : MagickFalse;
         point=path_info[i].point;
@@ -480,7 +491,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
           New edge.
         */
         if (points == (PointInfo *) NULL) /* PathInfo code logic error */
-          return((PolygonInfo *) NULL);
+          {
+            DestroyPolygonInfo(polygon_info);
+            return((PolygonInfo *) NULL);
+          }
         point=points[n-1];
         if (edge == number_edges)
           {
@@ -488,7 +502,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
             MagickReallocMemory(EdgeInfo *,polygon_info->edges,
               number_edges*sizeof(EdgeInfo));
             if (polygon_info->edges == (EdgeInfo *) NULL)
-              return((PolygonInfo *) NULL);
+              {
+                DestroyPolygonInfo(polygon_info);
+                return((PolygonInfo *) NULL);
+              }
           }
         polygon_info->edges[edge].number_points=n;
         polygon_info->edges[edge].scanline=(-1.0);
@@ -505,7 +522,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
         points=
 	  MagickAllocateArray(PointInfo *,number_points,sizeof(PointInfo));
         if (points == (PointInfo *) NULL)
-          return((PolygonInfo *) NULL);
+          {
+            DestroyPolygonInfo(polygon_info);
+            return((PolygonInfo *) NULL);
+          }
         n=1;
         ghostline=MagickFalse;
         points[0]=point;
@@ -521,7 +541,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
         number_points<<=1;
         MagickReallocMemory(PointInfo *,points,number_points*sizeof(PointInfo));
         if (points == (PointInfo *) NULL)
-          return((PolygonInfo *) NULL);
+          {
+            DestroyPolygonInfo(polygon_info);
+            return((PolygonInfo *) NULL);
+          }
       }
     point=path_info[i].point;
     points[n]=point;
@@ -545,7 +568,10 @@ ConvertPathToPolygon(const PathInfo *path_info)
               MagickReallocMemory(EdgeInfo *,polygon_info->edges,
                 number_edges*sizeof(EdgeInfo));
               if (polygon_info->edges == (EdgeInfo *) NULL)
-                return((PolygonInfo *) NULL);
+                {
+                  DestroyPolygonInfo(polygon_info);
+                  return((PolygonInfo *) NULL);
+                }
             }
           polygon_info->edges[edge].number_points=n;
           polygon_info->edges[edge].scanline=(-1.0);
@@ -869,13 +895,16 @@ DestroyPolygonInfo(void *polygon_info_void)
   PolygonInfo
     *polygon_info = (PolygonInfo *) polygon_info_void;
 
-  register long
-    i;
+  if (polygon_info != (PolygonInfo *) NULL)
+    {
+      register long
+        i;
 
-  for (i=0; i < polygon_info->number_edges; i++)
-    MagickFreeMemory(polygon_info->edges[i].points);
-  MagickFreeMemory(polygon_info->edges);
-  MagickFreeMemory(polygon_info);
+      for (i=0; i < polygon_info->number_edges; i++)
+        MagickFreeMemory(polygon_info->edges[i].points);
+      MagickFreeMemory(polygon_info->edges);
+      MagickFreeMemory(polygon_info);
+    }
 }
 
 /*
@@ -1466,6 +1495,8 @@ DrawDashPolygon(const DrawInfo *draw_info,const PrimitiveInfo *primitive_info,
   assert(draw_info != (const DrawInfo *) NULL);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin draw-dash");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if (clone_info == (DrawInfo *) NULL)
+    return(MagickFail);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   number_vertices=i;
@@ -1473,7 +1504,10 @@ DrawDashPolygon(const DrawInfo *draw_info,const PrimitiveInfo *primitive_info,
 				   (size_t) 2*number_vertices+1,
 				   sizeof(PrimitiveInfo));
   if (dash_polygon == (PrimitiveInfo *) NULL)
-    return(MagickFail);
+    {
+      DestroyDrawInfo(clone_info);
+      return(MagickFail);
+    }
   dash_polygon[0]=primitive_info[0];
   scale=ExpandAffine(&draw_info->affine);
   length=scale*draw_info->dash_pattern[0];

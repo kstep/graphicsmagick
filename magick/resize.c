@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2012 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1611,10 +1611,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 
   DoublePixelPacket
     pixel,
-    *scale_scanline,
-    *scanline,
-    *x_vector,
-    *y_vector,
+    *scale_scanline = (DoublePixelPacket *) NULL,
+    *scanline = (DoublePixelPacket *) NULL,
+    *x_vector = (DoublePixelPacket *) NULL,
+    *y_vector = (DoublePixelPacket *) NULL,
     zero;
 
   Image
@@ -1679,6 +1679,10 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       (x_vector == (DoublePixelPacket *) NULL) ||
       (y_vector == (DoublePixelPacket *) NULL))
     {
+      MagickFreeMemory(y_vector);
+      MagickFreeMemory(scale_scanline);
+      MagickFreeMemory(scanline);
+      MagickFreeMemory(x_vector);
       DestroyImage(scale_image);
       ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
                            UnableToScaleImage);
@@ -1900,8 +1904,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   */
   MagickFreeMemory(y_vector);
   MagickFreeMemory(scale_scanline);
-  if (scale_image->rows != image->rows)
-    MagickFreeMemory(scanline);
+  MagickFreeMemory(scanline);
   MagickFreeMemory(x_vector);
   scale_image->is_grayscale=image->is_grayscale;
   return(scale_image);
