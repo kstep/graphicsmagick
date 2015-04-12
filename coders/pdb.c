@@ -307,7 +307,7 @@ static unsigned int IsPDB(const unsigned char *magick,const size_t length)
 */
 #define ThrowPDBReaderException(code_,reason_,image_) \
 { \
-  MagickFreeMemory(pixels) \
+  MagickFreeMemory(pixels);                   \
   ThrowReaderException(code_,reason_,image_); \
 }
 
@@ -758,9 +758,9 @@ static unsigned char *EncodeRLE(unsigned char *destination,
 
 #define ThrowPDBWriterException(code_,reason_,image_) \
 { \
-  MagickFreeMemory(buffer) \
-  MagickFreeMemory(p) \
-  MagickFreeMemory(scanline) \
+  MagickFreeMemory(buffer);                     \
+  MagickFreeMemory(p);                          \
+  MagickFreeMemory(scanline);                   \
   ThrowWriterException(code_,reason_,image_); \
 }
 

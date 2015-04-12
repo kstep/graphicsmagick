@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c (ReadDPXImage): Fix Coverity 55878 "Resource leak".
+	2nd try.
+
 	* coders/preview.c (WritePreviewImage): Fix Coverity 55988
 	"Resource leak".
 

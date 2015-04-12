@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2005-2012 GraphicsMagick Group
+% Copyright (C) 2005-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -1567,6 +1567,17 @@ STATIC void TentUpsampleChroma(PixelPacket *pixels, unsigned long columns)
     }
 }
 
+#define ThrowDPXReaderException(code_,reason_,image_) \
+{ \
+  MagickFreeMemory(map_Y); \
+  MagickFreeMemory(map_CbCr); \
+  if (samples_set) \
+    DestroyThreadViewDataSet(samples_set);    \
+  if (scanline_set) \
+    DestroyThreadViewDataSet(scanline_set);    \
+  ThrowReaderException(code_,reason_,image_); \
+}
+
 STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   DPXFileInfo
@@ -1595,14 +1606,14 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     row_octets;
 
   Quantum
-    *map_Y,                     /* value translation map (RGB or Y) */
-    *map_CbCr;                  /* value translation map (CbCr) */
+    *map_Y=0,                     /* value translation map (RGB or Y) */
+    *map_CbCr=0;                  /* value translation map (CbCr) */
 
   ThreadViewDataSet
-    *samples_set;
+    *samples_set=0;
 
   ThreadViewDataSet
-    *scanline_set;
+    *scanline_set=0;
 
   size_t
     element_size;               /* Number of bytes in an element */
@@ -1653,7 +1664,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+    ThrowDPXReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read DPX image.
   */
@@ -1661,7 +1672,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (offset != sizeof(dpx_file_info) ||
       ((LocaleNCompare((char *) &dpx_file_info.magic,"SDPX",4) != 0) &&
        (LocaleNCompare((char *) &dpx_file_info.magic,"XPDS",4) != 0)))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Check for swapped endian order.
   */
@@ -1714,7 +1725,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Image data offset %lu",pixels_offset);
   if (pixels_offset < 1408)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
   if (image->logging)
     {
       char
@@ -1747,7 +1758,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   offset += ReadBlob(image,sizeof(dpx_image_info),&dpx_image_info);
   if (offset != (size_t) 1408L)
-    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swap_endian)
     SwabDPXImageInfo(&dpx_image_info);
   if (image->logging)
@@ -1757,10 +1768,10 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           (unsigned int) dpx_image_info.lines_per_image_element,
                           (unsigned int) dpx_image_info.elements);
   if (dpx_image_info.orientation > 7U)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
   if (dpx_image_info.elements >
       sizeof(dpx_image_info.element_info)/sizeof(dpx_image_info.element_info[0]))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
   image->columns=dpx_image_info.pixels_per_line;
   image->rows=dpx_image_info.lines_per_image_element;
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
@@ -1773,7 +1784,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       offset += ReadBlob(image,sizeof(dpx_source_info),&dpx_source_info);
       if (offset != (size_t) 1664L)
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swap_endian)
         SwabDPXImageSourceInfo(&dpx_source_info);
 
@@ -1803,7 +1814,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       offset += ReadBlob(image,sizeof(dpx_mp_info),&dpx_mp_info);
       if (offset != (size_t) 1920L)
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swap_endian)
         SwabDPXMPFilmInfo(&dpx_mp_info);
 
@@ -1831,7 +1842,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       offset += ReadBlob(image,sizeof(dpx_tv_info),&dpx_tv_info);
       if (offset != (size_t) 2048L)
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image); 
+        ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image); 
       if (swap_endian)
         SwabDPXTVInfo(&dpx_tv_info);
 
@@ -1882,12 +1893,9 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               read_size=Min(block_size,dpx_file_info.user_defined_length-user_data_length);
               MagickReallocMemory(unsigned char *,user_data,user_data_length+read_size);
               if (user_data == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
               if (ReadBlob(image,read_size,user_data+user_data_length) != read_size)
-                {
-                  MagickFreeMemory(user_data);
-                  ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
-                }
+                ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
               user_data_length += read_size;
               offset += read_size;
             }
@@ -1895,10 +1903,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           dpx_user_data=(DPXUserDefinedData *) user_data;
           StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
           if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
-            {
-              MagickFreeMemory(user_data);
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-            }
+            ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
           MagickFreeMemory(user_data);
         }
     }
@@ -1939,7 +1944,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (bits_per_sample != 10) &&
             (bits_per_sample != 12) &&
             (bits_per_sample != 16))
-          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+          ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
         max_bits_per_sample=Max(max_bits_per_sample,bits_per_sample);
         max_samples_per_pixel=Max(max_samples_per_pixel,
                                   DPXSamplesPerPixel(element_descriptor));
@@ -2044,14 +2049,14 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if (CheckImagePixelLimits(image, exception) != MagickPass)
-    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    ThrowDPXReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
   /*
     Read remainder of header.
   */
   for ( ; offset < pixels_offset ; offset++ )
     if (ReadBlobByte(image) == EOF)
-      ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      ThrowDPXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   /*
     Allocate sample translation map storage.
@@ -2060,41 +2065,27 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             MaxValueGivenBits(max_bits_per_sample)+1,
                             sizeof(Quantum));
   if (map_Y == (Quantum *) NULL)
-    {
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   
   map_CbCr=MagickAllocateArray(Quantum *,
                                MaxValueGivenBits(max_bits_per_sample)+1,
                                sizeof(Quantum));
   if (map_CbCr == (Quantum *) NULL)
-    {
-      MagickFreeMemory(map_Y);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Allocate per-thread-view row samples.
   */
   samples_set=AllocateThreadViewDataArray(image,exception,image->columns,
                                           max_samples_per_pixel*sizeof(sample_t));
   if (samples_set == (ThreadViewDataSet *) NULL)
-    {
-      MagickFreeMemory(map_CbCr);
-      MagickFreeMemory(map_Y);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Allocate per-thread-view scanline storage.
   */
   scanline_set=AllocateThreadViewDataArray(image,exception,image->columns,
                                            max_samples_per_pixel*sizeof(U32));
   if (scanline_set == (ThreadViewDataSet *) NULL)
-    {
-      DestroyThreadViewDataSet(samples_set);
-      MagickFreeMemory(map_CbCr);
-      MagickFreeMemory(map_Y);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Allow user to over-ride pixel endianness.
   */
@@ -2149,11 +2140,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           /* Verify that we reached our offset objective */
           if ( pixels_offset != offset)
-            {
-              DestroyThreadViewDataSet(scanline_set);
-              DestroyThreadViewDataSet(samples_set);
-              ThrowReaderException(BlobError,UnableToSeekToOffset,image);
-            }
+            ThrowDPXReaderException(BlobError,UnableToSeekToOffset,image);
         }
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
       element_descriptor=(DPXImageElementDescriptor)
@@ -2307,7 +2294,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 When subsampling, image width must be evenly divisible by two.
               */
               if (image->columns %2)
-                ThrowReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
+                ThrowDPXReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
             }
           /*
             Read element data.
@@ -2638,7 +2625,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       else
         {
-          ThrowReaderException(CoderError,ColorTypeNotSupported,image);
+          ThrowDPXReaderException(CoderError,ColorTypeNotSupported,image);
         }
     }
     
@@ -3290,6 +3277,17 @@ STATIC void WriteRowSamples(const sample_t *samples,
 #define RoundUpToBoundary(offset,boundary) \
   (((offset+boundary-1)/boundary)*boundary);
 
+#define ThrowDPXWriterException(code_,reason_,image_)    \
+{ \
+  MagickFreeMemory(map_CbCr);   \
+  MagickFreeMemory(map_Y); \
+  MagickFreeMemory(samples); \
+  MagickFreeMemory(scanline); \
+  if (chroma_image) \
+    DestroyImage(chroma_image); \
+  ThrowWriterException(code_,reason_,image_); \
+}
+
 STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
   DPXFileInfo
@@ -3330,15 +3328,15 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     x;
 
   sample_t
-    *samples,
+    *samples=0,
     *samples_itr;
 
   sample_t
-    *map_Y,                     /* value translation map (RGB or Y) */
-    *map_CbCr;                  /* value translation map (CbCr) */
+    *map_Y=0,                   /* value translation map (RGB or Y) */
+    *map_CbCr=0;                /* value translation map (CbCr) */
 
   unsigned char
-    *scanline;
+    *scanline=0;
 
   const unsigned char
     *user_data;
@@ -3480,15 +3478,15 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         sampling_factor_vertical=sampling_factor_horizontal;
       if ((sampling_factor_horizontal != 1) && (sampling_factor_horizontal != 2) &&
           (sampling_factor_vertical != 1) && (sampling_factor_vertical != 2))
-        ThrowWriterException(OptionError,UnsupportedSamplingFactor,
-                             image);
+        ThrowDPXWriterException(OptionError,UnsupportedSamplingFactor,
+                                image);
 
       /*
         When subsampling, image width must be evenly divisible by two.
       */
       if (((sampling_factor_horizontal / sampling_factor_vertical) == 2) &&
           (image->columns %2))
-        ThrowWriterException(CoderError,SubsamplingRequiresEvenWidth,image);
+        ThrowDPXWriterException(CoderError,SubsamplingRequiresEvenWidth,image);
     }
 
   /*
@@ -3956,7 +3954,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   samples=MagickAllocateArray(sample_t *,image->columns,
                               max_samples_per_pixel*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowDPXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset((void *) samples,0,max_samples_per_pixel*image->columns*
                 sizeof(sample_t));
   /*
@@ -3964,10 +3962,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   scanline=MagickAllocateMemory(unsigned char *,row_octets);
   if (scanline == (unsigned char *) NULL)
-    {
-      MagickFreeMemory(samples);
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset((void *) scanline,0,row_octets);
 
   /*
@@ -3975,21 +3970,12 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   map_Y=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
   if (map_Y == (sample_t *) NULL)
-    {
-      MagickFreeMemory(samples);
-      MagickFreeMemory(scanline);
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset((void *) map_Y,0,(MaxMap+1)*sizeof(sample_t));
 
   map_CbCr=MagickAllocateArray(sample_t *,MaxMap+1,sizeof(sample_t));
   if (map_CbCr == (sample_t *) NULL)
-    {
-      MagickFreeMemory(samples);
-      MagickFreeMemory(scanline);
-      MagickFreeMemory(map_Y);
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-    }
+    ThrowDPXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   (void) memset((void *) map_CbCr,0,(MaxMap+1)*sizeof(sample_t));
 
   /*
@@ -4173,10 +4159,7 @@ STATIC unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           chroma_image=ResizeImage(image,image->columns/2,image->rows,
                                    LanczosFilter,1.0,&image->exception);
           if (chroma_image == (Image *) NULL)
-            {
-              MagickFreeMemory(scanline);
-              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-            }
+            ThrowDPXWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }
 
       for (y=0; y < image->rows; y++)
