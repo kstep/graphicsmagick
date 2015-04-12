@@ -1,3 +1,8 @@
+2015-04-12  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOneJNGImage): Avoid some memory leaks
+	newly reported by Coverity (work in progress)
+
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resize.c (ScaleImage): Fix Coverity 55824 "Division or

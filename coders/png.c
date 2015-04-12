@@ -2890,7 +2890,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         }
 
       if (length > PNG_MAX_UINT || count == 0)
-        ThrowReaderException(CorruptImageError,CorruptImage,image);
+        {
+          ThrowReaderException(CorruptImageError,CorruptImage,image);
+        }
 
       chunk=(unsigned char *) NULL;
       p=NULL;
@@ -8200,8 +8202,11 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
 
   jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
   if (jpeg_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                         image);
+    {
+      DestroyImageInfo(jpeg_image_info);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                           image);
+    }
   DestroyBlob(jpeg_image);
   jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   (void) AcquireUniqueFilename(jpeg_image->filename);
@@ -8210,8 +8215,14 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
                   &image->exception);
   if (status == MagickFalse)
-     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                          image);
+    {
+      if (jpeg_image != (Image *)NULL)
+        DestroyImage(jpeg_image);
+      if (jpeg_image_info != (ImageInfo *)NULL)
+        DestroyImageInfo(jpeg_image_info);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                           image);
+    }
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
