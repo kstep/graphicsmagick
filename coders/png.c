@@ -3378,12 +3378,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       (void) LiberateUniqueFileResource(alpha_image->filename);
       DestroyImage(alpha_image);
     }
-  if (color_image != (Image *)NULL)
-      DestroyImage(color_image);
   if (alpha_image_info != (ImageInfo *)NULL)
       DestroyImageInfo(alpha_image_info);
-  if (color_image_info != (ImageInfo *)NULL)
-      DestroyImageInfo(color_image_info);
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
