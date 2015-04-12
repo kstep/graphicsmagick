@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2014 GraphicsMagick Group */
+/* Copyright (C) 2003-2015 GraphicsMagick Group */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2270,6 +2270,7 @@ WandExport void DrawComposite(DrawingWand *drawing_wand,
       }
       (void) MvgPrintf(drawing_wand,"'\n");
     }
+  MagickFreeMemory(base64);
   MagickFreeMemory(media_type);
 }
 

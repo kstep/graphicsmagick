@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/drawing_wand.c (DrawComposite): Fix Coverity 55849
+	"Resource leak".
+
 	* magick/widget.c (MagickXColorBrowserWidget): Fix Coverity 55854
 	"Resource leak".
 
