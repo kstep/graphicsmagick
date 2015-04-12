@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -442,8 +442,13 @@ MagickExport MagickPassFail HuffmanDecodeImage(Image *image)
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-      (char *) NULL);
+    {
+      MagickFreeMemory(mw_hash);
+      MagickFreeMemory(mb_hash);
+      MagickFreeMemory(scanline);
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+                           (char *) NULL);
+    }
   /*
     Initialize Huffman tables.
   */
@@ -741,7 +746,10 @@ MagickExport MagickPassFail HuffmanEncode2Image(const ImageInfo *image_info,
       (char *) NULL);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
-    return(MagickFail);
+    {
+      MagickFreeMemory(scanline);
+      return(MagickFail);
+    }
   status &= SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;

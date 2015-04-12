@@ -1,5 +1,9 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/compress.c (HuffmanEncode2Image): Fix Coverity 55839
+	"Resource leak".
+	(HuffmanDecodeImage): Fix Coverity 55859 "Resource leak".
+
 	* magick/color.c (GetColorHistogram): Fix Coverity 55845 "Resource
 	leak".
 	(ComputeCubeInfo): Fix Coverity 55857 "Resource leak".

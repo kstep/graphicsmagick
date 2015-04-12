@@ -38,6 +38,9 @@
 <p>2015-04-12  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/compress.c (HuffmanEncode2Image): Fix Coverity 55839
+&quot;Resource leak&quot;.
+(HuffmanDecodeImage): Fix Coverity 55859 &quot;Resource leak&quot;.</li>
 <li>magick/color.c (GetColorHistogram): Fix Coverity 55845 &quot;Resource
 leak&quot;.
 (ComputeCubeInfo): Fix Coverity 55857 &quot;Resource leak&quot;.</li>
