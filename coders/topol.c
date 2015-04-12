@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -318,6 +318,16 @@ static void ReadBlobDwordLSB(Image *image, size_t len, magick_uint32_t *data)
 %
 %
 */
+
+#define ThrowPDBReaderException(code_,reason_,image_) \
+{ \
+  if (clone_info) \
+    DestroyImageInfo(clone_info); \
+  if (palette) \
+    DestroyImage(palette); \
+  ThrowReaderException(code_,reason_,image_); \
+}
+
 static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
   Image
@@ -402,14 +412,14 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   for (i = 0; i < (long) sizeof(Header.Name); i++)
     {
       if (Header.Name[i] < ' ')
-TOPOL_KO:              ThrowReaderException(CorruptImageError,ImproperImageHeader, image);
+TOPOL_KO:              ThrowPDBReaderException(CorruptImageError,ImproperImageHeader, image);
     }
   if (Header.Komprese != 0 || (Header.Version >= 2 && Header.TileCompression != 0))
-    ThrowReaderException(CorruptImageError, UnrecognizedImageCompression, image);
+    ThrowPDBReaderException(CorruptImageError, UnrecognizedImageCompression, image);
   if (Header.Rows == 0 || Header.Cols == 0)
     goto TOPOL_KO;
   if (Header.Version > 2)
-    ThrowReaderException(CorruptImageError, InvalidFileFormatVersion, image); /* unknown version */
+    ThrowPDBReaderException(CorruptImageError, InvalidFileFormatVersion, image); /* unknown version */
 
   switch(Header.FileType)
     {
@@ -591,7 +601,7 @@ NoPalette:
       if (!AllocateImageColormap(image, image->colors))
       {
         NoMemory:
-          ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);
+          ThrowPDBReaderException(ResourceLimitError, MemoryAllocationFailed, image);
       }
 
       for(i = 0; i < (long) image->colors; i++)
@@ -612,7 +622,7 @@ NoPalette:
      ldblk = (long) ((depth * image->columns + 7) / 8);
      BImgBuff = MagickAllocateMemory(unsigned char *,(size_t) ldblk);	/*Ldblk was set in the check phase */
      if (BImgBuff == NULL)
-        ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);
+        ThrowPDBReaderException(ResourceLimitError, MemoryAllocationFailed, image);
      (void) SeekBlob(image, 512 /*sizeof(Header)*/, SEEK_SET);
      for (i = 0; i < (int) Header.Rows; i++)
      {
@@ -630,7 +640,7 @@ NoPalette:
 
       if(Header.TileCompression!=0)
 		{
-  	        ThrowReaderException(CorruptImageError, UnrecognizedImageCompression, image);
+  	        ThrowPDBReaderException(CorruptImageError, UnrecognizedImageCompression, image);
 		break;
 		}
 
@@ -640,7 +650,7 @@ NoPalette:
        /* dlazdice.create(Header.TileWidth,Header.TileHeight,p.Planes); */
        Offsets = MagickAllocateMemory(magick_uint32_t *,(size_t)TilesAcross*TilesDown*sizeof(magick_uint32_t));
        if(Offsets==NULL)
-         ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);         
+         ThrowPDBReaderException(ResourceLimitError, MemoryAllocationFailed, image);         
 
        (void)SeekBlob(image, Header.TileOffsets, SEEK_SET);
        ReadBlobDwordLSB(image, TilesAcross*TilesDown*4, (magick_uint32_t *)Offsets);
@@ -681,7 +691,7 @@ DONE_READING:
   if (clone_info != NULL)
     DestroyImageInfo(clone_info);
   /* if (EOFBlob(image))
-     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image); */
+     ThrowPDBReaderException(CorruptImageError,UnexpectedEndOfFile,image); */
   CloseBlob(image);
 
   if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return");

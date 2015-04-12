@@ -1,5 +1,10 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/txt.c (ReadTXTImage): Fix Coverity 55866 "Resource leak".
+
+	* coders/topol.c (ReadTOPOLImage): Fix Coverity 55865 "Resource
+	leak".
+
 	* coders/sgi.c (WriteSGIImage): Fix Coverity 55891 "Resource leak".
 
 	* coders/psd.c (ReadPSDImage): Fix Coverity 55855 "Resource leak".

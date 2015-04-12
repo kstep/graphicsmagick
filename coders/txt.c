@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2010 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -825,7 +825,7 @@ FINISH:
       dy_resolution;
 
     Image
-      *texture;
+      *texture = (Image *) NULL;
 
     long
       count,
@@ -836,7 +836,7 @@ FINISH:
       pixels_per_line;
 
     DrawInfo
-      *draw_info;
+      *draw_info = (DrawInfo *) NULL;
     
     RectangleInfo
       page;
@@ -906,7 +906,12 @@ FINISH:
     (void) CloneString(&draw_info->geometry,geometry);
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
-      ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+      {
+        if (texture != (Image *) NULL)
+          DestroyImage(texture);
+        DestroyDrawInfo(draw_info);
+        ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
+      }
     if (logging)
       (void)LogMagickEvent(CoderEvent,GetMagickModule(),
 			   "Type metrics: ascent=%g descent=%g"
