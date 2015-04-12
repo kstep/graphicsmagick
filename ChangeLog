@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/resize.c (ScaleImage): Fix Coverity 55824 "Division or
+	modulo by float zero".
+
 	* magick/annotate.c (AnnotateImage): Fix Coverity 55863
 	"Uninitialized scalar variable".
 

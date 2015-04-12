@@ -1649,8 +1649,13 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+  if ((columns == 0) || (rows == 0) ||
+      (image->columns == 0) || (image->rows == 0))
+    {
+      ThrowImageException(ImageError,UnableToResizeImage,
+                          MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
+      return((Image *) NULL);
+    }
   scale_image=CloneImage(image,columns,rows,True,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1659,6 +1664,9 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
                         "Scaling image of size %lux%lu to %lux%lu",
                         image->columns,image->rows,scale_image->columns,
                         scale_image->rows);
+
+  if ((columns == image->columns) && (rows == image->rows))
+    return scale_image;
 
   scale_image->storage_class=DirectClass;
   /*
