@@ -1,5 +1,9 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/display.c (MagickXAnnotateEditImage): Fix Coverity 55830
+	"Resource leak".
+	(MagickXVisualDirectoryImage): Fix Coverity 55894 "Resource leak".
+
 	* magick/constitute.c (ReadImages): Fix Coverity 55834 "Resource
 	leak".
 	(ReadInlineImage): Fix Coverity 55843 "Resource leak".

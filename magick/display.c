@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2013 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -563,7 +563,10 @@ static unsigned int MagickXAnnotateEditImage(Display *display,
   annotate_info->text=MagickAllocateMemory(char *,
     windows->image.width/Max(font_info->min_bounds.width,1)+2);
   if (annotate_info->text == (char *) NULL)
-    return(False);
+    {
+      MagickFreeMemory(annotate_info);
+      return(False);
+    }
   /*
     Create cursor and set graphic context.
   */
@@ -11391,6 +11394,10 @@ static Image *MagickXVisualDirectoryImage(Display *display,
         MagickError(ImageError,NoImagesWereFound,filenames);
       else
         MagickError(ResourceLimitError,MemoryAllocationFailed,filenames);
+      for (i=0; i < number_files; i++)
+        if (filelist[i] != filenames)
+          MagickFreeMemory(filelist[i]);
+      MagickFreeMemory(filelist);
       return((Image *) NULL);
     }
   /*
