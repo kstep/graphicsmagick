@@ -2078,6 +2078,13 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
   return tagsfound;
 }
 
+#define Format8BIMLiberate()                    \
+  do                                            \
+    {                                           \
+      MagickFreeMemory(PString);                \
+      MagickFreeMemory(str);                    \
+    } while(0);
+
 static int format8BIM(Image *ifile, Image *ofile)
 {
   char
@@ -2093,114 +2100,138 @@ static int format8BIM(Image *ifile, Image *ofile)
     c;
 
   unsigned char
-    *PString,
-    *str;
+    *PString=0,
+    *str=0;
 
   resCount = 0;
 
   c =ReadBlobByte(ifile);
   while (c != EOF)
-  {
-    if (c == '8')
-      {
-        unsigned char
-          buffer[5];
+    {
+      if (c == '8')
+        {
+          unsigned char
+            buffer[5];
 
-        buffer[0] = (unsigned char) c;
-        for (i=1; i<4; i++)
+          buffer[0] = (unsigned char) c;
+          for (i=1; i<4; i++)
+            {
+              c=ReadBlobByte(ifile);
+              if (c == EOF)
+                {
+                  Format8BIMLiberate();
+                  return -1;
+                }
+              buffer[i] = (unsigned char) c;
+            }
+          buffer[4] = 0;
+          if (strcmp((const char *)buffer, "8BIM") != 0)
+            continue;
+        }
+      else
         {
           c=ReadBlobByte(ifile);
-          if (c == EOF) return -1;
-          buffer[i] = (unsigned char) c;
-        }
-        buffer[4] = 0;
-        if (strcmp((const char *)buffer, "8BIM") != 0)
           continue;
-      }
-    else
-      {
-        c=ReadBlobByte(ifile);
-        continue;
-      }
+        }
 
-    /* we found the OSType (8BIM) and now grab the ID, PString, and Size fields */
-    ID = ReadBlobMSBShort(ifile);
-    if (ID < 0) return -1;
-    {
-      unsigned char
-        plen;
-
-      c=ReadBlobByte(ifile);
-      if (c == EOF) return -1;
-      plen = (unsigned char) c;
-      PString=MagickAllocateMemory(unsigned char *,(unsigned int) (plen+1));
-      if (PString == (unsigned char *) NULL)
-      {
-        (void) printf("MemoryAllocationFailed");
-        return 0;
-      }
-      for (i=0; i<plen; i++)
-      {
-        c=ReadBlobByte(ifile);
-        if (c == EOF) return -1;
-        PString[i] = (unsigned char) c;
-      }
-      PString[ plen ] = 0;
-      if (!(plen&1))
-      {
-        c=ReadBlobByte(ifile);
-        if (c == EOF) return -1;
-      }
-    }
-    Size = ReadBlobMSBLong(ifile);
-    if (Size < 0) return -1;
-    /* make a buffer to hold the data and snag it from the input stream */
-    str=MagickAllocateMemory(unsigned char *,(size_t) Size);
-    if (str == (unsigned char *) NULL)
-      {
-        (void) printf("MemoryAllocationFailed");
-        return 0;
-      }
-    for (i=0; i<Size; i++)
-    {
-      c=ReadBlobByte(ifile);
-      if (c == EOF)
+      /* we found the OSType (8BIM) and now grab the ID, PString, and Size fields */
+      ID = ReadBlobMSBShort(ifile);
+      if (ID < 0)
         {
-          MagickFreeMemory(PString);
-          MagickFreeMemory(str);
+          Format8BIMLiberate();
           return -1;
         }
-      str[i] = (unsigned char) c;
-    }
-
-    /* we currently skip thumbnails, since it does not make
-     * any sense preserving them in a real world application
-     */
-    if (ID != THUMBNAIL_ID)
       {
-        /* now finish up by formatting this binary data into
-         * ASCII equivalent
-         */
-        if (strlen((const char *) PString) != 0)
-          FormatString(temp, "8BIM#%d#%s=", ID, PString);
-        else
-          FormatString(temp, "8BIM#%d=", ID);
-        (void) WriteBlobString(ofile,temp);
-        if (ID == IPTC_ID)
+        unsigned char
+          plen;
+
+        c=ReadBlobByte(ifile);
+        if (c == EOF)
           {
-            formatString(ofile, "IPTC", 4);
-            (void) formatIPTCfromBuffer(ofile, (char *)str, (long) Size);
+            Format8BIMLiberate();
+            return -1;
           }
-        else
-          formatString(ofile, (char *)str, (long) Size);
+        plen = (unsigned char) c;
+        PString=MagickAllocateMemory(unsigned char *,(unsigned int) (plen+1));
+        if (PString == (unsigned char *) NULL)
+          {
+            (void) printf("MemoryAllocationFailed");
+            Format8BIMLiberate();
+            return 0;
+          }
+        for (i=0; i<plen; i++)
+          {
+            c=ReadBlobByte(ifile);
+            if (c == EOF)
+              {
+                Format8BIMLiberate();
+                return -1;
+              }
+            PString[i] = (unsigned char) c;
+          }
+        PString[ plen ] = 0;
+        if (!(plen&1))
+          {
+            c=ReadBlobByte(ifile);
+            if (c == EOF)
+              {
+                Format8BIMLiberate();
+                return -1;
+              }
+          }
       }
-    MagickFreeMemory(str);
-    MagickFreeMemory(PString);
+      Size = ReadBlobMSBLong(ifile);
+      if (Size < 0)
+        {
+          Format8BIMLiberate();
+          return -1;
+        }
+      /* make a buffer to hold the data and snag it from the input stream */
+      str=MagickAllocateMemory(unsigned char *,(size_t) Size);
+      if (str == (unsigned char *) NULL)
+        {
+          (void) printf("MemoryAllocationFailed");
+          Format8BIMLiberate();
+          return 0;
+        }
+      for (i=0; i<Size; i++)
+        {
+          c=ReadBlobByte(ifile);
+          if (c == EOF)
+            {
+              Format8BIMLiberate();
+              return -1;
+            }
+          str[i] = (unsigned char) c;
+        }
 
-    resCount++;
+      /* we currently skip thumbnails, since it does not make
+       * any sense preserving them in a real world application
+       */
+      if (ID != THUMBNAIL_ID)
+        {
+          /* now finish up by formatting this binary data into
+           * ASCII equivalent
+           */
+          if (strlen((const char *) PString) != 0)
+            FormatString(temp, "8BIM#%d#%s=", ID, PString);
+          else
+            FormatString(temp, "8BIM#%d=", ID);
+          (void) WriteBlobString(ofile,temp);
+          if (ID == IPTC_ID)
+            {
+              formatString(ofile, "IPTC", 4);
+              (void) formatIPTCfromBuffer(ofile, (char *)str, (long) Size);
+            }
+          else
+            formatString(ofile, (char *)str, (long) Size);
+        }
+      Format8BIMLiberate();
 
-    c=ReadBlobByte(ifile);
-  }
+      resCount++;
+
+      c=ReadBlobByte(ifile);
+    }
   return resCount;
 }
 

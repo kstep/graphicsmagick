@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/meta.c (format8BIM): Fix Coverity 55842 "Resource
+	leak". 2nd try.
+
 	* coders/mat.c (WriteMATLABImage): Fix Coverity 55850 "Resource
 	leak". 2nd try.
 
