@@ -406,7 +406,6 @@ ConvertPathToPolygon(const PathInfo *path_info)
   polygon_info=MagickAllocateMemory(PolygonInfo *,sizeof(PolygonInfo));
   if (polygon_info == (PolygonInfo *) NULL)
     return((PolygonInfo *) NULL);
-  (void) memset(&polygon_info,0,sizeof(PolygonInfo));
   number_edges=16;
   polygon_info->edges=
     MagickAllocateArray(EdgeInfo *,number_edges,sizeof(EdgeInfo));
