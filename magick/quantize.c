@@ -1792,6 +1792,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
         new_colormap=MagickAllocateMemory(PixelPacket *,image->colors*sizeof(PixelPacket));
         if (new_colormap == (PixelPacket *) NULL)
           {
+            MagickFreeMemory(colormap_index);
             ThrowException3(&image->exception,ResourceLimitError,
               MemoryAllocationFailed,UnableToSortImageColormap);
             return;

@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/quantize.c (GrayscalePseudoClassImage): Fix Coverity
+	55831 "Resource leak".
+
 	* magick/paint.c (ColorFloodfillImage): Fix Coverity 55886
 	"Resource leak".
 
