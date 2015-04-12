@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mat.c (WriteMATLABImage): Fix Coverity 55850 "Resource
+	leak". 2nd try.
+
 	* coders/dpx.c (ReadDPXImage): Fix Coverity 55878 "Resource leak".
 	2nd try.
 
