@@ -468,6 +468,13 @@ static int UnpackWPGRaster(Image *image,int bpp)
    } \
 }
 
+#define FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff) \
+  do \
+    { \
+      MagickFreeMemory(BImgBuff); \
+      MagickFreeMemory(UpImgBuff); \
+    } while(0);
+
 /* WPG2 raster reader. */
 static int UnpackWPG2Raster(Image *image, int bpp)
 {
@@ -476,9 +483,9 @@ static int UnpackWPG2Raster(Image *image, int bpp)
 
   unsigned char
     bbuf,
-    *BImgBuff,		/* Buffer for a current line. */
-    *UpImgBuff,		/* Buffer for previous line. */
-    *tmpImgBuff,
+    *BImgBuff = (unsigned char *) NULL,	  /* Buffer for a current line. */
+    *UpImgBuff = (unsigned char *) NULL,  /* Buffer for previous line. */
+    *tmpImgBuff = (unsigned char *) NULL,
     RunCount,
     SampleBuffer[8];
 
@@ -504,7 +511,7 @@ static int UnpackWPG2Raster(Image *image, int bpp)
   UpImgBuff=MagickAllocateMemory(unsigned char *,(size_t) ldblk);
   if(UpImgBuff==NULL)
   {
-    MagickFreeMemory(BImgBuff);
+    FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
     return(-2);
   }
   (void) memset(UpImgBuff,0,ldblk);
@@ -519,9 +526,15 @@ static int UnpackWPG2Raster(Image *image, int bpp)
         case 0x7D:
           SampleSize=ReadBlobByte(image);  /* DSZ */
           if(SampleSize>8)
-            return(-2);
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-2);
+            }
           if(SampleSize<1)
-            return(-2);
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-2);
+            }
           break;
         case 0x7E:
           if(y==0)			   /* XOR */
@@ -545,8 +558,7 @@ static int UnpackWPG2Raster(Image *image, int bpp)
           RunCount = ParanoaCheck = ReadBlobByte(image);  /* RST */
 		  if(ParanoaCheck<0)
 		  {
-		     MagickFreeMemory(BImgBuff);
-             MagickFreeMemory(UpImgBuff);
+                    FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
 			 return(-4);
 		  }
           if(x!=0)
@@ -554,8 +566,7 @@ static int UnpackWPG2Raster(Image *image, int bpp)
               (void) fprintf(stderr,
                              "\nUnsupported WPG2 unaligned token RST x=%lu, please report!\n"
                              ,x);
-			  MagickFreeMemory(BImgBuff);
-              MagickFreeMemory(UpImgBuff);
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
               return(-3);
             }
           {
@@ -595,8 +606,7 @@ static int UnpackWPG2Raster(Image *image, int bpp)
           }
         }
     }
-  MagickFreeMemory(BImgBuff);
-  MagickFreeMemory(UpImgBuff);
+  FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
   return(0);
 }
 

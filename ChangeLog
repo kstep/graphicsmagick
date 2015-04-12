@@ -1,3 +1,8 @@
+2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c (UnpackWPG2Raster): Fix Coverity 55832 and 55848
+	"Resource leak".
+
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/vid.c (ReadVIDImage): Fix Coverity 55868 "Resource leak"
