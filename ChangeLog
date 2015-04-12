@@ -1,5 +1,9 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ReadImages): Fix Coverity 55834 "Resource
+	leak".
+	(ReadInlineImage): Fix Coverity 55843 "Resource leak".
+
 	* magick/compress.c (HuffmanEncode2Image): Fix Coverity 55839
 	"Resource leak".
 	(HuffmanDecodeImage): Fix Coverity 55859 "Resource leak".

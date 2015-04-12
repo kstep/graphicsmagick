@@ -1943,9 +1943,9 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   Strip(command);
   images=StringToArgv(command,&number_images);
+  MagickFreeMemory(command);
   if (images == (char **) NULL)
     return((Image *) NULL);
-  MagickFreeMemory(command);
   /*
     Read the images into a linked list.
   */
@@ -2036,7 +2036,10 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   p++;
   blob=Base64Decode(p,&length);
   if (length == 0)
-    ThrowReaderException(CorruptImageError,CorruptImage,image);
+    {
+      MagickFreeMemory(blob);
+      ThrowReaderException(CorruptImageError,CorruptImage,image);
+    }
   handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
   (void) SetMonitorHandler(handler);
