@@ -1,5 +1,7 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/yuv.c (ReadYUVImage): Fix Coverity 55890 "Resource leak".
+
 	* coders/wpg.c (UnpackWPG2Raster): Fix Coverity 55832 and 55848
 	"Resource leak".
 

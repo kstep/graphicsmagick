@@ -81,12 +81,18 @@ static unsigned int
 %
 %
 */
+#define ThrowYUVReaderException(code_,reason_,image_) \
+{ \
+  MagickFreeMemory(scanline);                 \
+  ThrowReaderException(code_,reason_,image_); \
+}
+
 static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
-    *chroma_image,
+    *chroma_image = (Image *) NULL,
     *image,
-    *resize_image;
+    *resize_image = (Image *) NULL;
 
   long
     horizontal_factor,
@@ -113,7 +119,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   unsigned char
-    *scanline;
+    *scanline = (unsigned char *) NULL;
 
   MagickPassFail
     status;
@@ -131,7 +137,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=MagickPass;
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
+    ThrowYUVReaderException(OptionError,MustSpecifyImageSize,image);
   image->depth=8;
   interlace=image_info->interlace;
   horizontal_factor=2;
@@ -147,7 +153,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         vertical_factor=horizontal_factor;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
-        ThrowReaderException(OptionError,UnsupportedSamplingFactor,
+        ThrowYUVReaderException(OptionError,UnsupportedSamplingFactor,
           image);
     }
   if ((interlace == UndefinedInterlace) ||
@@ -164,7 +170,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == MagickFail)
-        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+        ThrowYUVReaderException(FileOpenError,UnableToOpenFile,image);
       for (i=0; i < image->offset; i++)
         {
           if (EOF == ReadBlobByte(image))
@@ -180,13 +186,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowYUVReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   do
   {
     chroma_image=CloneImage(image,image->columns/horizontal_factor,
       image->rows/vertical_factor,True,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowYUVReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert raster image to pixel packets.
     */
@@ -198,7 +204,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+          ThrowYUVReaderException(FileOpenError,UnableToOpenFile,image);
       }
     for (y=0; y < (long) image->rows; y++)
     {
@@ -282,7 +288,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == False)
-          ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+          ThrowYUVReaderException(FileOpenError,UnableToOpenFile,image);
       }
     if (interlace != NoInterlace)
       {
@@ -317,7 +323,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           AppendImageFormat("V",image->filename);
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == False)
-            ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+            ThrowYUVReaderException(FileOpenError,UnableToOpenFile,image);
         }
       for (y=0; y < (long) chroma_image->rows; y++)
       {
@@ -350,7 +356,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TriangleFilter,1.0,exception);
     DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowYUVReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
