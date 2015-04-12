@@ -964,8 +964,11 @@ BlurImage(const Image *original_image,const double radius,
         }
     }
   if (width < 3)
-    ThrowImageException3(OptionError,UnableToBlurImage,
-                         KernelRadiusIsTooSmall);
+    {
+      MagickFreeMemory(kernel);
+      ThrowImageException3(OptionError,UnableToBlurImage,
+                           KernelRadiusIsTooSmall);
+    }
 
   blur_image=RotateImage(original_image,90,exception);
   if (blur_image == (Image *) NULL)
