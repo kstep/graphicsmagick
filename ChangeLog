@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/annotate.c (AnnotateImage): Fix Coverity 55863
+	"Uninitialized scalar variable".
+
 	* wand/magick_wand.c (MagickDrawImage): Fix Coverity 55828
 	"Resource leak".
 	(MagickMontageImage): Fix Coverity 55835 "Resource leak".

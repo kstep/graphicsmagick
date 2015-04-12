@@ -202,6 +202,9 @@ MagickExport MagickPassFail AnnotateImage(Image *image,const DrawInfo *draw_info
     height,
     number_lines;
 
+  MagickBool
+    metrics_initialized = MagickFalse;
+
   /*
     Translate any embedded format characters (e.g. %f).
   */
@@ -246,8 +249,11 @@ MagickExport MagickPassFail AnnotateImage(Image *image,const DrawInfo *draw_info
       Position text relative to image.
     */
     (void) CloneString(&annotate->text,textlist[i]);
-    if ((i == 0) || (annotate->gravity != NorthWestGravity))
-      (void) GetTypeMetrics(image,annotate,&metrics);
+    if ((!metrics_initialized) || (annotate->gravity != NorthWestGravity))
+      {
+        metrics_initialized=MagickTrue;
+        (void) GetTypeMetrics(image,annotate,&metrics);
+      }
     height=(unsigned long) (metrics.ascent-metrics.descent);
     switch (annotate->gravity)
     {
