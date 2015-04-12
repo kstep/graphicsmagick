@@ -1906,7 +1906,11 @@ WandExport unsigned int MagickDrawImage(MagickWand *wand,
   draw_info=DrawPeekGraphicContext(drawing_wand);
   if ((draw_info == (DrawInfo *) NULL) ||
       (draw_info->primitive == (char *) NULL))
-    return(False);
+    {
+      if (draw_info != (DrawInfo *) NULL)
+        DestroyDrawInfo(draw_info);
+      return(False);
+    }
   status=DrawImage(wand->image,draw_info);
   if (status == False)
     CopyException(&wand->exception,&wand->image->exception);
@@ -5580,7 +5584,10 @@ WandExport MagickWand *MagickMontageImage(MagickWand *wand,
   }
   font=DrawGetFont(drawing_wand);
   if (font != (char *) NULL)
-    (void) CloneString(&montage_info->font,font);
+    {
+      (void) CloneString(&montage_info->font,font);
+      MagickFreeMemory(font);
+    }
   if (frame != (char *) NULL)
     (void) CloneString(&montage_info->frame,frame);
   montage_info->pointsize=DrawGetFontSize(drawing_wand);
