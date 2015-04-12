@@ -1,5 +1,8 @@
 2015-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/vid.c (ReadVIDImage): Fix Coverity 55868 "Resource leak"
+	(ReadVIDImage): Fix Coverity 55874 "Resource leak".
+
 	* coders/txt.c (ReadTXTImage): Fix Coverity 55866 "Resource leak".
 
 	* coders/topol.c (ReadTOPOLImage): Fix Coverity 55865 "Resource

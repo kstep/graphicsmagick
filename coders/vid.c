@@ -141,6 +141,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((status == False) || (number_files == 0))
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+      MagickFreeMemory(list[0]);
+      MagickFreeMemory(list);
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   DestroyImage(image);
@@ -215,6 +217,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (montage_image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+      MagickFreeMemory(list[0]);
+      MagickFreeMemory(list);
       ThrowReaderException(CorruptImageError,UnableToReadVIDImage,image)
     }
   DestroyImageList(image);
