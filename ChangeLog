@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/widget.c (MagickXColorBrowserWidget): Fix Coverity 55854
+	"Resource leak".
+
 	* magick/resize.c (ScaleImage): Fix Coverity 55841, 55853, 55858,
 	and 55860 "Resource leak".
 

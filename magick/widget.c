@@ -1872,6 +1872,7 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
         checklist=GetColorList(glob_pattern,&number_colors);
         if (number_colors == 0)
           {
+            MagickFreeMemory(checklist);
             (void) strlcpy(glob_pattern,reset_pattern,MaxTextExtent);
             (void) XBell(display,0);
           }
@@ -5265,8 +5266,7 @@ MagickExport void MagickXFileBrowserWidget(Display *display,MagickXWindows *wind
   */
   for (i=0; i < files; i++)
     MagickFreeMemory(filelist[i]);
-  if (filelist != (char **) NULL)
-    MagickFreeMemory(filelist);
+  MagickFreeMemory(filelist);
   if (*reply == '~')
     ExpandFilename(reply);
 }
