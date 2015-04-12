@@ -1,5 +1,7 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (CloneImage): Fix Coverity 55833 "Resource leak".
+
 	* magick/effect.c (BlurImage): Fix Coverity 55851 "Resource leak".
 
 	* magick/display.c (MagickXAnnotateEditImage): Fix Coverity 55830

@@ -961,8 +961,11 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       length=image->colors*sizeof(PixelPacket);
       clone_image->colormap=MagickAllocateMemory(PixelPacket *,length);
       if (clone_image->colormap == (PixelPacket *) NULL)
-        ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToCloneImage);
+        {
+          DestroyImage(clone_image);
+          ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                               UnableToCloneImage);
+        }
       length=image->colors*sizeof(PixelPacket);
       (void) memcpy(clone_image->colormap,image->colormap,length);
     }
@@ -1049,6 +1052,19 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->ping=image->ping;
       clone_image->cache=ReferenceCache(image->cache);
       clone_image->default_views=AllocateThreadViewSet(clone_image,exception);
+      if (((image->montage != (char *) NULL) &&
+           (clone_image->montage == ((char *) NULL))) ||
+          ((image->directory != (char *) NULL) &&
+           (clone_image->directory == (char *) NULL)) ||
+          ((image->clip_mask != (Image *) NULL) &&
+           (clone_image->clip_mask == (Image *) NULL)) ||
+          (clone_image->cache == (_CacheInfoPtr_) NULL) ||
+          (clone_image->default_views == (_ThreadViewSetPtr_) NULL))
+        {
+          DestroyImage(clone_image);
+          ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                               UnableToCloneImage);
+        }
       return(clone_image);
     }
   clone_image->page.width=columns;
@@ -1062,6 +1078,13 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->ping=image->ping;
   GetCacheInfo(&clone_image->cache);
   clone_image->default_views=AllocateThreadViewSet(clone_image,exception);
+  if ((clone_image->cache == (_CacheInfoPtr_) NULL) ||
+      (clone_image->default_views == (_ThreadViewSetPtr_) NULL))
+    {
+      DestroyImage(clone_image);
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                           UnableToCloneImage);
+    }
   return(clone_image);
 }
 
