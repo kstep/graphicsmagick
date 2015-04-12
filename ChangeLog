@@ -1,5 +1,9 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/color.c (GetColorHistogram): Fix Coverity 55845 "Resource
+	leak".
+	(ComputeCubeInfo): Fix Coverity 55857 "Resource leak".
+
 	* coders/yuv.c (ReadYUVImage): Fix Coverity 55890 "Resource leak".
 
 	* coders/wpg.c (UnpackWPG2Raster): Fix Coverity 55832 and 55848
