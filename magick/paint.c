@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -163,8 +163,12 @@ MagickExport MagickPassFail ColorFloodfillImage(Image *image,
   segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
-    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToFloodfillImage);
+    {
+      MagickFreeMemory(floodplane);
+      MagickFreeMemory(segment_stack);
+      ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+                            UnableToFloodfillImage);
+    }
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.

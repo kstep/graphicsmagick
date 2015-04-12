@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/paint.c (ColorFloodfillImage): Fix Coverity 55886
+	"Resource leak".
+
 	* magick/map.c (MagickMapAddEntry): Possibly silence 55844
 	"Resource leak".
 
