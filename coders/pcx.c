@@ -874,11 +874,16 @@ static MagickPassFail WriteRLEPixels(Image *image,
   return (MagickPass);
 }
 
+#define LiberatePCXAllocations()                \
+  {                                             \
+    MagickFreeMemory(pcx_colormap);             \
+    MagickFreeMemory(pcx_pixels);               \
+    MagickFreeMemory(page_table);               \
+  }
+
 #define ThrowPCXWriterException(code_,reason_,image_) \
 { \
-  MagickFreeMemory(pcx_colormap) \
-  MagickFreeMemory(pcx_pixels); \
-  MagickFreeMemory(page_table); \
+  LiberatePCXAllocations();                   \
   ThrowWriterException(code_,reason_,image_); \
 }
 static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
@@ -972,6 +977,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 				 (OptimizeType == image_info->type),
 				 &image->exception))
       {
+        LiberatePCXAllocations();
 	CloseBlob(image);
 	return MagickFail;
       }

@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pcx.c (WritePCXImage): Fix Coverity 55877 "Resource
+	leak". 2nd try.
+
 	* coders/meta.c (format8BIM): Fix Coverity 55842 "Resource
 	leak". 2nd try.
 
