@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -355,6 +355,9 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
         *last_object=0,
         *p;
 
+      MagickBool
+        spliced_in=MagickFalse;
+
       /*
         Search for, and replace any existing object with
         same key.
@@ -378,6 +381,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
                 map->list=new_object;
               p->previous=0;
               p->next=0;
+              spliced_in=MagickTrue;
               
               /*
                 Remove old object
@@ -387,7 +391,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
             }
         }
 
-      if (p == 0)
+      if (!spliced_in)
         {
           /*
             No existing matching object was found.  The last_object

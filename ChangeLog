@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/map.c (MagickMapAddEntry): Possibly silence 55844
+	"Resource leak".
+
 	* magick/image.c (CloneImage): Fix Coverity 55833 "Resource leak".
 
 	* magick/effect.c (BlurImage): Fix Coverity 55851 "Resource leak".
