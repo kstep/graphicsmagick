@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pict.c (PictPixmapOp): Fix Coverity 55875 and 55883
+	"Resource leak". 2nd try.
+
 	* coders/pcx.c (WritePCXImage): Fix Coverity 55877 "Resource
 	leak". 2nd try.
 

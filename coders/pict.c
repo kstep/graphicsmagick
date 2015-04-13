@@ -1507,13 +1507,17 @@ ModuleExport void UnregisterPICTImage(void)
 %
 %
 */
-#define ThrowPICTWriterException(code_,reason_,image_) \
-{ \
-  MagickFreeMemory(buffer) \
-  MagickFreeMemory(packed_scanline) \
-  MagickFreeMemory(scanline) \
-  ThrowWriterException(code_,reason_,image_); \
-}
+#define LiberatePICTAllocations()               \
+  {                                             \
+    MagickFreeMemory(buffer);                   \
+    MagickFreeMemory(packed_scanline);          \
+    MagickFreeMemory(scanline);                 \
+  }
+#define ThrowPICTWriterException(code_,reason_,image_)  \
+  {                                                     \
+    LiberatePICTAllocations();                          \
+    ThrowWriterException(code_,reason_,image_);         \
+  }
 static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxCount  128U
@@ -1730,6 +1734,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       jpeg_image=CloneImage(image,0,0,True,&image->exception);
       if (jpeg_image == (Image *) NULL)
         {
+          LiberatePICTAllocations();
           CloseBlob(image);
           return (False);
         }
@@ -1740,7 +1745,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         &image->exception);
       DestroyImage(jpeg_image);
       if (blob == (unsigned char *) NULL)
-        return(False);
+        {
+          LiberatePICTAllocations();
+          CloseBlob(image);
+          return(False);
+        }
       (void) WriteBlobMSBShort(image,PictJPEGOp);
       (void) WriteBlobMSBLong(image,(const magick_uint16_t) length+154);
       (void) WriteBlobMSBShort(image,0x0000);
