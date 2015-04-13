@@ -2891,6 +2891,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
       if (length > PNG_MAX_UINT || count == 0)
         {
+          if (color_image_info != (ImageInfo *)NULL)
+            {
+              DestroyImageInfo(color_image_info);
+            }
+          if (alpha_image_info != (ImageInfo *)NULL)
+            {
+              DestroyImageInfo(alpha_image_info);
+            }
           ThrowReaderException(CorruptImageError,CorruptImage,image);
         }
 
