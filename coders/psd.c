@@ -444,6 +444,11 @@ static const char* ModeToString( PSDImageType inType )
     }
 }
 
+#define ThrowPSDReaderException(code_,reason_,image_)   \
+  {                                                     \
+    MagickFreeMemory(layer_info);                       \
+    ThrowReaderException(code_,reason_,image_);         \
+  }
 
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -524,7 +529,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   LayerInfo
-    *layer_info;
+    *layer_info=0;
 
   long
     j,
@@ -587,7 +592,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                 "return ReadPSDImage()");
         }
-      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+      ThrowPSDReaderException(FileOpenError,UnableToOpenFile,image);
     }
 
   /*
@@ -606,12 +611,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                 psd_info.signature );
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      ThrowPSDReaderException(CorruptImageError,ImproperImageHeader,image);
     }
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image); /* Number of channels */
   if (psd_info.channels > MaxPSDChannels)
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowPSDReaderException(CorruptImageError,ImproperImageHeader,image);
   psd_info.rows=ReadBlobMSBLong(image);    /* Height */
   psd_info.columns=ReadBlobMSBLong(image); /* Width */
   psd_info.depth=ReadBlobMSBShort(image);  /* Depth */
@@ -631,7 +636,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
   if (CheckImagePixelLimits(image, exception) != MagickPass)
-    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    ThrowPSDReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   if (SetImageEx(image,OpaqueOpacity,exception) == MagickFail)
     {
       CloseBlob(image);
@@ -655,7 +660,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                   "  allocation of ImageColorMap failed");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
           }
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       }
       image->matte=psd_info.channels >= 2;
       if (logging)
@@ -697,8 +702,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                       "  allocation of ImageColorMap failed");
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
               }
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                 image);
+            ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                    image);
           }
           (void) ReadBlob(image,length,data);
           MagickFreeMemory(data);
@@ -717,8 +722,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "  too many colors in colormap (%lu)",
                                     colors);
-              ThrowReaderException(CorruptImageError,ImproperImageHeader,
-                                   image);
+              ThrowPSDReaderException(CorruptImageError,ImproperImageHeader,
+                                      image);
             }
           if (!AllocateImageColormap(image,colors))
             {
@@ -728,8 +733,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                         "  allocation of ImageColorMap failed");
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                 }
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                   image);
+              ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                      image);
             }
           for (i=0; i < (long) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
@@ -764,7 +769,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                     "  allocation of resources/IPTC failed");
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
             }
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
         }
       count=ReadBlob(image,length,(char *) data);
       if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
@@ -775,7 +780,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                     "  image resources invalid");
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
             }
-          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+          ThrowPSDReaderException(CorruptImageError,ImproperImageHeader,image);
         }
       (void) SetImageProfile(image,"IPTC",data,length);
       MagickFreeMemory(data);
@@ -856,7 +861,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                             "  allocation of LayerInfo failed");
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                     }
-                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 }
               (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
               for (i=0; i < number_layers; i++)
@@ -903,7 +908,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                                 "  layer type was %.4s instead of 8BIM", type);
                           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                         }
-                      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+                      ThrowPSDReaderException(CorruptImageError,ImproperImageHeader,image);
                     }
                   (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
                   layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
@@ -1030,7 +1035,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                                       alsig);
                                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                               }
-                            ThrowReaderException(CorruptImageError,NotAPSDImageFile,image);
+                            ThrowPSDReaderException(CorruptImageError,NotAPSDImageFile,image);
                           }
                         (void) ReadBlob(image,4,(char *) alkey);
                         length=ReadBlobMSBLong(image);
@@ -1088,9 +1093,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
                         }
 
-                      MagickFreeMemory(layer_info);
-                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                                           image);
+                      ThrowPSDReaderException(ResourceLimitError,MemoryAllocationFailed,
+                                              image);
                     }
                   if (logging)
                     {

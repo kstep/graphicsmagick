@@ -195,7 +195,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     *master_image;
 
   ImageInfo
-    *clone_info;
+    *clone_info=0;
 
   long
     y;

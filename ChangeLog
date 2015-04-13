@@ -1,5 +1,8 @@
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/psd.c (ReadPSDImage): Fix Coverity 55855 "Resource
+	leak". 2nd try.
+
 	* coders/pict.c (PictPixmapOp): Fix Coverity 55875 and 55883
 	"Resource leak". 2nd try.
 
