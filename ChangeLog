@@ -5,6 +5,9 @@
 
 2015-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/quantize.c (GrayscalePseudoClassImage): Fix Coverity
+	55831 "Resource leak".  2nd try.
+
 	* coders/vid.c (ReadVIDImage): Fix Coverity 55868 and 55874
 	"Resource leak".  2nd try.
 

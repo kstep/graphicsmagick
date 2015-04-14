@@ -1720,7 +1720,10 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
                   q++;
                 }
               if (!SyncImagePixels(image))
-                return;
+                {
+                  MagickFreeMemory(colormap_index);
+                  return;
+                }
             }
         }
       else
