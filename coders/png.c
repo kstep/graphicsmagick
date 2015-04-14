@@ -7853,8 +7853,12 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
       if (status != MagickFalse)
         status=NegateImage(jpeg_image,MagickFalse);
       if (status == MagickFalse)
-        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                             image);
+        {
+          DestroyImage(jpeg_image);
+          DestroyImageInfo(jpeg_image_info);
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
+        }
       jpeg_image->matte=MagickFalse;
       if (jng_quality >= 1000)
         jpeg_image_info->quality=jng_quality/1000;

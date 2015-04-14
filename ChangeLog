@@ -1,3 +1,8 @@
+2015-04-14  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadOneJNGImage): Fix Coverity 55829 and 55846
+	"Resource leak".
+
 2015-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/vid.c (ReadVIDImage): Fix Coverity 55868 and 55874
