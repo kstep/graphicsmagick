@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -83,22 +83,41 @@ static unsigned int
 %
 %
 */
+
+#define LiberateVIDLists()                      \
+  {                                             \
+    if ((filelist) && (list != filelist))       \
+      {                                         \
+        for (i=0; i < number_files; i++)        \
+          MagickFreeMemory(filelist[i]);        \
+        MagickFreeMemory(filelist);             \
+      }                                         \
+    MagickFreeMemory(list[0]);                  \
+    MagickFreeMemory(list);                     \
+  }
+
+#define ThrowVIDReaderException(code_,reason_,image_)   \
+  {                                                     \
+    LiberateVIDLists();                                 \
+    ThrowReaderException(code_,reason_,image_);         \
+  }
+
 static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ClientName  "montage"
 
   char
-    **filelist,
-    **list;
+    **filelist=0,
+    **list=0;
 
   Image
-    *image,
+    *image=0,
     *montage_image,
     *next_image,
     *thumbnail_image;
 
   ImageInfo
-    *clone_info;
+    *clone_info=0;
 
   int
     number_files;
@@ -131,7 +150,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (list == (char **) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+      ThrowVIDReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   list[0]=(char *) AllocateString((char *) NULL);
   (void) strlcpy(list[0],image_info->filename,MaxTextExtent);
@@ -141,11 +160,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((status == False) || (number_files == 0))
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      MagickFreeMemory(list[0]);
-      MagickFreeMemory(list);
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+      ThrowVIDReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   DestroyImage(image);
+  image=(Image *) NULL;
   /*
     Read each image and convert them to a tile.
   */
@@ -198,11 +216,12 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   DestroyImageInfo(clone_info);
+  clone_info=(ImageInfo *) NULL;
   MagickFreeMemory(filelist);
   if (image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      ThrowReaderException(CorruptImageError,UnableToReadVIDImage,image)
+      ThrowVIDReaderException(CorruptImageError,UnableToReadVIDImage,image)
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -217,13 +236,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (montage_image == (Image *) NULL)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-      MagickFreeMemory(list[0]);
-      MagickFreeMemory(list);
-      ThrowReaderException(CorruptImageError,UnableToReadVIDImage,image)
+      ThrowVIDReaderException(CorruptImageError,UnableToReadVIDImage,image)
     }
   DestroyImageList(image);
-  MagickFreeMemory(list[0]);
-  MagickFreeMemory(list);
+  LiberateVIDLists();
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(montage_image);
 }

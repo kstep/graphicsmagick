@@ -1,3 +1,8 @@
+2015-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/vid.c (ReadVIDImage): Fix Coverity 55868 and 55874
+	"Resource leak".  2nd try.
+
 2015-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c (ReadPSDImage): Fix Coverity 55855 "Resource
