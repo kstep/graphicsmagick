@@ -2911,7 +2911,17 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                  image);
           if (ReadBlob(image,length,chunk) < length)
-            ThrowReaderException(CorruptImageError,CorruptImage,image);
+            {
+              if (color_image_info != (ImageInfo *)NULL)
+                {
+                  DestroyImageInfo(color_image_info);
+                }
+              if (alpha_image_info != (ImageInfo *)NULL)
+                {
+                  DestroyImageInfo(alpha_image_info);
+                }
+              ThrowReaderException(CorruptImageError,CorruptImage,image);
+            }
           p=chunk;
         }
       (void) ReadBlobMSBLong(image);  /* read crc word */
@@ -7845,8 +7855,14 @@ static MagickPassFail WriteOneJNGImage(MngInfo *mng_info,
                               "  Creating jpeg_image.");
       jpeg_image=CloneImage(image,0,0,MagickTrue,&image->exception);
       if (jpeg_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                             image);
+        {
+          if (jpeg_image_info != (ImageInfo *)NULL)
+            {
+              DestroyImageInfo(jpeg_image_info);
+            }
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                               image);
+        }
       DestroyBlob(jpeg_image);
       jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
       status=ChannelImage(jpeg_image,OpacityChannel);
