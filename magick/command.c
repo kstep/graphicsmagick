@@ -16236,7 +16236,11 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
 
           case '#':
             while ((c = fgetc(in)) != '\n');
-            break;
+            /* Same handling as '\n' since we are at end of line */
+            *p = 0;
+            n = av[n][0] ? n+1 : n;
+            av[n] = (char *)NULL;
+            return n;
 
           case '\n':
             *p = 0;
@@ -16246,6 +16250,12 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
 
           case '\\':
             c = fgetc(in);
+            if (p >= limit )
+              {
+                while ((c = fgetc(in)) != '\n');
+                return 0;
+              }
+            *p++ = c;
             break;
 
           default:
@@ -16348,7 +16358,11 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
 
           case '#':
             while ((c = fgetc(in)) != '\n');
-            break;
+            /* Same handling as '\n' since we are at end of line */
+            *p = 0;
+            n = av[n][0] ? n+1 : n;
+            av[n] = (char *)NULL;
+            return n;
 
           case '\n':
             *p = 0;

@@ -1,3 +1,8 @@
+2015-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ParseUnixCommandLine): Fix Coverity 59256
+	"Unused value".
+
 2015-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/display.c (MagickXROIImage): Fix Coverity 10179 "Missing
