@@ -409,6 +409,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
               return((unsigned char *) NULL);
             }
           p++;
+          break;
         }
         case 3:
         {
@@ -423,6 +424,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
               MagickFreeMemory(decode);
               return((unsigned char *) NULL);
             }
+          break;
         }
       }
     }
@@ -5586,7 +5588,11 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
     switch(token_info->state)
     {
       case IN_WHITE:
-        token_info->state=IN_TOKEN;
+        {
+          token_info->state=IN_TOKEN;
+          StoreToken(token_info,token,max_token_length,c);
+          break;
+        }
       case IN_TOKEN:
       case IN_QUOTE:
       {

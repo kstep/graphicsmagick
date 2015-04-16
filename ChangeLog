@@ -1,5 +1,10 @@
 2015-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (Base64Decode): Fix Coverity 10203 "Missing
+	break in switch".
+	(Tokenizer): Quench Coverity 10182 "Missing break in switch".  Not
+	believed to be an actual problem.
+
 	* magick/command.c (ParseUnixCommandLine): Fix Coverity 10174 and
 	10178 "Missing break in switch".
 	(ProcessBatchOptions): Fix Coverity 10180 "Missing break in
