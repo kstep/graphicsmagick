@@ -5416,6 +5416,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "  No beginning");
+          MngInfoFreeStruct(mng_info,&have_mng_structure);
           (void) ThrowException2(&image->exception,(ExceptionType) CoderError,
                                  "Linked list is corrupted,"
                                  " beginning of list not found",
