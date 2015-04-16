@@ -3452,7 +3452,10 @@ static unsigned int MagickXCropImage(Display *display,MagickXResourceInfo *resou
           {
             case XK_Escape:
             case XK_F20:
-              state|=EscapeState;
+              {
+                state|=EscapeState;
+                break;
+              }
             case XK_Return:
             {
               state|=ExitState;
@@ -9654,7 +9657,10 @@ static unsigned int MagickXROIImage(Display *display,MagickXResourceInfo *resour
               break;
             case XK_Escape:
             case XK_F20:
-              state|=EscapeState;
+              {
+                state|=EscapeState;
+                break;
+              }
             case XK_Return:
             {
               state|=ExitState;
