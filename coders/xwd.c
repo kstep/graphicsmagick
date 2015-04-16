@@ -375,8 +375,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (CheckImagePixelLimits(image, exception) != MagickPass)
       ThrowXWDReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
   image->depth=8;
-  if ((header.ncolors == 0U) || (ximage->red_mask != 0) ||
-      (ximage->green_mask != 0) || (ximage->blue_mask != 0))
+  if ((header.ncolors == 0U) ||
+      ((ximage->red_mask != 0) ||
+       (ximage->green_mask != 0) ||
+       (ximage->blue_mask != 0)))
     {
       image->storage_class=DirectClass;
       if (!image_info->ping)
@@ -506,62 +508,66 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Convert X image to DirectClass packets.
             */
             if (image->colors != 0)
-              for (y=0; y < (long) image->rows; y++)
-                {
-                  q=SetImagePixels(image,0,y,image->columns,1);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  for (x=0; x < (long) image->columns; x++)
-                    {
-                      pixel=XGetPixel(ximage,(int) x,(int) y);
-                      index_val=(unsigned short)
-                        ((pixel >> red_shift) & red_mask);
-                      q->red=ScaleShortToQuantum(colors[index_val].red);
-                      index_val=(unsigned short)
-                        ((pixel >> green_shift) & green_mask);
-                      q->green=ScaleShortToQuantum(colors[index_val].green);
-                      index_val=(unsigned short)
-                        ((pixel >> blue_shift) & blue_mask);
-                      q->blue=ScaleShortToQuantum(colors[index_val].blue);
-                      q++;
-                    }
-                  if (!SyncImagePixels(image))
-                    break;
-                  if (QuantumTick(y,image->rows))
-                    if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename,
-                                                image->columns,image->rows))
+              {
+                for (y=0; y < (long) image->rows; y++)
+                  {
+                    q=SetImagePixels(image,0,y,image->columns,1);
+                    if (q == (PixelPacket *) NULL)
                       break;
-                }
+                    for (x=0; x < (long) image->columns; x++)
+                      {
+                        pixel=XGetPixel(ximage,(int) x,(int) y);
+                        index_val=(unsigned short)
+                          ((pixel >> red_shift) & red_mask);
+                        q->red=ScaleShortToQuantum(colors[index_val].red);
+                        index_val=(unsigned short)
+                          ((pixel >> green_shift) & green_mask);
+                        q->green=ScaleShortToQuantum(colors[index_val].green);
+                        index_val=(unsigned short)
+                          ((pixel >> blue_shift) & blue_mask);
+                        q->blue=ScaleShortToQuantum(colors[index_val].blue);
+                        q++;
+                      }
+                    if (!SyncImagePixels(image))
+                      break;
+                    if (QuantumTick(y,image->rows))
+                      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                  LoadImageText,image->filename,
+                                                  image->columns,image->rows))
+                        break;
+                  }
+              }
             else
-              if ((red_mask == 0) ||
-                  (green_mask == 0) ||
-                  (blue_mask == 0))
-                ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
-              for (y=0; y < (long) image->rows; y++)
-                {
-                  q=SetImagePixels(image,0,y,image->columns,1);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  for (x=0; x < (long) image->columns; x++)
-                    {
-                      pixel=XGetPixel(ximage,(int) x,(int) y);
-                      color=(pixel >> red_shift) & red_mask;
-                      q->red=ScaleShortToQuantum((color*65535L)/red_mask);
-                      color=(pixel >> green_shift) & green_mask;
-                      q->green=ScaleShortToQuantum((color*65535L)/green_mask);
-                      color=(pixel >> blue_shift) & blue_mask;
-                      q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
-                      q++;
-                    }
-                  if (!SyncImagePixels(image))
-                    break;
-                  if (QuantumTick(y,image->rows))
-                    if (!MagickMonitorFormatted(y,image->rows,exception,
-                                                LoadImageText,image->filename,
-                                                image->columns,image->rows))
+              {
+                if ((red_mask == 0) ||
+                    (green_mask == 0) ||
+                    (blue_mask == 0))
+                  ThrowXWDReaderException(CorruptImageError,ImproperImageHeader,image);
+                for (y=0; y < (long) image->rows; y++)
+                  {
+                    q=SetImagePixels(image,0,y,image->columns,1);
+                    if (q == (PixelPacket *) NULL)
                       break;
-                }
+                    for (x=0; x < (long) image->columns; x++)
+                      {
+                        pixel=XGetPixel(ximage,(int) x,(int) y);
+                        color=(pixel >> red_shift) & red_mask;
+                        q->red=ScaleShortToQuantum((color*65535L)/red_mask);
+                        color=(pixel >> green_shift) & green_mask;
+                        q->green=ScaleShortToQuantum((color*65535L)/green_mask);
+                        color=(pixel >> blue_shift) & blue_mask;
+                        q->blue=ScaleShortToQuantum((color*65535L)/blue_mask);
+                        q++;
+                      }
+                    if (!SyncImagePixels(image))
+                      break;
+                    if (QuantumTick(y,image->rows))
+                      if (!MagickMonitorFormatted(y,image->rows,exception,
+                                                  LoadImageText,image->filename,
+                                                  image->columns,image->rows))
+                        break;
+                  }
+              }
             break;
           }
         case PseudoClass:

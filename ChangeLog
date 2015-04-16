@@ -1,3 +1,8 @@
+2015-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xwd.c (ReadXWDImage): Fix Coverity 10095 "Division or
+	modulo by zero".  3rd try.
+
 2015-04-14  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOneJNGImage): Fix Coverity 55829 and 55846
