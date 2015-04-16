@@ -16236,6 +16236,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
 
           case '#':
             while ((c = fgetc(in)) != '\n');
+            break;
 
           case '\n':
             *p = 0;
@@ -16245,6 +16246,7 @@ static int ParseUnixCommandLine(FILE *in, int acmax, char **av)
 
           case '\\':
             c = fgetc(in);
+            break;
 
           default:
             if (p >= limit )
@@ -16346,6 +16348,7 @@ static int ParseWindowsCommandLine(FILE *in, int acmax, char **av)
 
           case '#':
             while ((c = fgetc(in)) != '\n');
+            break;
 
           case '\n':
             *p = 0;
@@ -16412,9 +16415,11 @@ static int ProcessBatchOptions(int argc, char **argv, BatchOptions *options)
         {
         case '\0':
           return i;
+
         case '-':
           if (p[2] == '\0')
             return i+1;
+          break;
 
         case 'e':
         case 'E':

@@ -38,6 +38,12 @@
 <p>2015-04-15  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/command.c (ParseUnixCommandLine): Fix Coverity 10174 and
+10178 &quot;Missing break in switch&quot;.
+(ProcessBatchOptions): Fix Coverity 10180 &quot;Missing break in
+switch&quot;.
+(ParseWindowsCommandLine): Fix Coverity 10220 &quot;Missing break in
+switch&quot;.</li>
 <li>coders/xwd.c (ReadXWDImage): Fix Coverity 10095 &quot;Division or
 modulo by zero&quot;.  3rd try.</li>
 </ul>

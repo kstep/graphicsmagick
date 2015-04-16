@@ -1,5 +1,12 @@
 2015-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (ParseUnixCommandLine): Fix Coverity 10174 and
+	10178 "Missing break in switch".
+	(ProcessBatchOptions): Fix Coverity 10180 "Missing break in
+	switch".
+	(ParseWindowsCommandLine): Fix Coverity 10220 "Missing break in
+	switch".
+
 	* coders/xwd.c (ReadXWDImage): Fix Coverity 10095 "Division or
 	modulo by zero".  3rd try.
 
