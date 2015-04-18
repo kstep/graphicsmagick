@@ -14984,7 +14984,11 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       image=NewImageList();
       j=i;
     }
+  /*
+    FIXME: Overlapping memory detected here where memory should not be overlapping.
+   */
   (void) strlcpy(montage_info->filename,argv[argc-1],MaxTextExtent);
+  /* (void) memmove(montage_info->filename,argv[argc-1],strlen(argv[argc-1])+1); */
   montage_image=MontageImages(image_list,montage_info,exception);
   if (montage_image == (Image *) NULL)
     ThrowMontageException(OptionError,RequestDidNotReturnAnImage,(char *) NULL);

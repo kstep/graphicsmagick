@@ -1,3 +1,9 @@
+2015-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetToken): Fix an overlapping strlcpy() which
+	caused a crash in pedantic strlcpy() implementations while parsing
+	a SVG-style URL from text.  Several other issues remain.
+
 2015-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ParseUnixCommandLine): Fix Coverity 59256

@@ -2634,12 +2634,20 @@ MagickExport void GetToken(const char *start,char **end,char *token)
     }
   }
   token[i]='\0';
-  if (LocaleNCompare(token,"url(#",5) == 0)
+  {
+    char
+      *r;
+
+    /*
+      Parse token in form "url(#%s)"
+    */
+    if ((LocaleNCompare(token,"url(#",5) == 0) &&
+        ((r = strrchr(token,')')) != NULL))
     {
-      i=(long) strlen(token);
-      (void) strlcpy(token,token+5,MaxTextExtent);
-      token[i-6]='\0';
+      *r='\0';
+      (void) memmove(token,token+5,r-token+1);
     }
+  }
   if (end != (char **) NULL)
     *end=p;
 }
@@ -4418,6 +4426,7 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
   assert(dst != NULL);
   assert(src != (const char *) NULL);
   assert(size >= 1);
+  /* assert((dst + size <= src) || (dst - size >= src)); */
 
   /*
     Copy src to dst within bounds of size-1.
@@ -5779,7 +5788,11 @@ MagickExport char *TranslateTextEx(const ImageInfo *image_info,
   translated_text=MagickAllocateMemory(char *,length);
   if (translated_text == (char *) NULL)
     return NULL;
+  /*
+    FIXME: Overlapping memory detected here where memory should not be overlapping.
+  */
   (void) strlcpy(translated_text,text,length);
+  /* (void) memmove(translated_text,text,strlen(text)+1); */
   p=text;
   for (q=translated_text; *p != '\0'; p++)
   {
