@@ -4426,7 +4426,7 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
   assert(dst != NULL);
   assert(src != (const char *) NULL);
   assert(size >= 1);
-  assert(((dst+size) <= src) || (dst >= (src+size)));
+  /* assert(((dst+size) <= src) || (dst >= (src+size))); */
 
 
   /*
