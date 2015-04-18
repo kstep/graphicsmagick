@@ -1,3 +1,7 @@
+2015-04-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/png.c (ReadMNGImage): Fix Coverity 55862 "Resource leak".
+
 2015-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetToken): Fix an overlapping strlcpy() which

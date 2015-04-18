@@ -3648,7 +3648,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
       */
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
-        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        {
+          MngInfoFreeStruct(mng_info,&have_mng_structure);
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+        }
       /*
         Initialize some nonzero members of the MngInfo structure.
       */
@@ -3706,6 +3709,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                         "  Reading MNG chunk, count: %"
                                         MAGICK_SIZE_T_F  "u",
                                         (MAGICK_SIZE_T) count);
+              MngInfoFreeStruct(mng_info,&have_mng_structure);
               ThrowReaderException(CorruptImageError,CorruptImage,image);
             }
 
