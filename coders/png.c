@@ -3773,6 +3773,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                 {
                   ThrowReaderException(CorruptImageError,CorruptImage,image);
                 }
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              /* To quiet a Coverity complaint */
+              LockSemaphoreInfo(png_semaphore);
+#endif
               mng_info->mng_width=(unsigned long) ((p[0] << 24) |
                                                    (p[1] << 16) |
                                                    (p[2] << 8) | p[3]);
@@ -3788,6 +3792,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                                         "  MNG height: %lu",
                                         mng_info->mng_height);
                 }
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              UnlockSemaphoreInfo(png_semaphore);
+#endif
               p+=8;
               mng_info->ticks_per_second=mng_get_long(p);
               if (mng_info->ticks_per_second == 0)
@@ -3838,7 +3845,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
               mng_info->frame.right=(long) mng_info->mng_width;
               mng_info->frame.top=0;
               mng_info->frame.bottom=(long) mng_info->mng_height;
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              /* To quiet a Coverity complaint */
+              LockSemaphoreInfo(png_semaphore);
+#endif
               mng_info->clip=default_fb=previous_fb=mng_info->frame;
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              UnlockSemaphoreInfo(png_semaphore);
+#endif
               for (i=0; i < MNG_MAX_OBJECTS; i++)
                 mng_info->object_clip[i]=mng_info->frame;
               MagickFreeMemory(chunk);
