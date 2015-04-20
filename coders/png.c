@@ -3730,7 +3730,10 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                      image);
               if (ReadBlob(image,length,chunk) < length)
-                ThrowReaderException(CorruptImageError,CorruptImage,image);
+                {
+                  MngInfoFreeStruct(mng_info,&have_mng_structure);
+                  ThrowReaderException(CorruptImageError,CorruptImage,image);
+                }
               p=chunk;
             }
           (void) ReadBlobMSBLong(image);  /* read crc word */
@@ -4198,8 +4201,15 @@ static Image *ReadMNGImage(const ImageInfo *image_info,
                         }
                     }
                 }
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              /* To quiet a Coverity complaint */
+              LockSemaphoreInfo(png_semaphore);
+#endif
               mng_info->clip=fb;
               mng_info->clip=mng_minimum_box(fb,mng_info->frame);
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+              UnlockSemaphoreInfo(png_semaphore);
+#endif
               subframe_width=(mng_info->clip.right-mng_info->clip.left);
               subframe_height=(mng_info->clip.bottom-mng_info->clip.top);
               /*
