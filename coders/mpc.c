@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -148,9 +148,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  size_t
-    length;
-
   unsigned int
     status;
 
@@ -199,11 +196,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image header;  header terminates one character beyond a ':'.
     */
-    length=MaxTextExtent;
-    values=AllocateString((char *) NULL);
     quantum_depth=QuantumDepth;
     image->depth=8;
     image->compression=NoCompression;
+    image->storage_class=DirectClass;
     while (isgraph(c) && (c != ':'))
     {
       register char
@@ -214,22 +210,28 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           char
             *comment;
 
+          size_t
+            comment_length;
+
           /*
             Read comment-- any text between { }.
           */
-          length=MaxTextExtent;
-          comment=AllocateString((char *) NULL);
+          comment_length=MaxTextExtent;
+          comment=MagickAllocateMemory(char *,comment_length);
+          if (comment == (char *) NULL)
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+              image);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
             c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((unsigned long) (p-comment+1) >= length)
+            if ((size_t) (p-comment+1) >= comment_length)
               {
                 *p='\0';
-                length<<=1;
-                MagickReallocMemory(char *,comment,length);
+                comment_length<<=1;
+                MagickReallocMemory(char *,comment,comment_length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -247,40 +249,68 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (isalnum(c))
           {
+            size_t
+              values_length;
+
+            MagickBool
+              in_brace=MagickFalse;
+
             /*
-              Determine a keyword and its value.
+              Get keyword.
             */
+            keyword[0]='\0';
             p=keyword;
             do
             {
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=c;
               c=ReadBlobByte(image);
-            } while (isalnum(c) || (c == '-'));
+            } while ((c != '=') && (c != EOF));
             *p='\0';
-            while (isspace(c) || (c == '='))
-              c=ReadBlobByte(image);
-            p=values;
-            while ((c != '}') && (c != EOF))
-            {
-              if ((p-values+1) >= (int) length)
-                {
-                  *p='\0';
-                  length<<=1;
-                  MagickReallocMemory(char *,values,length);
-                  if (values == (char *) NULL)
-                    break;
-                  p=values+strlen(values);
-                }
-              *p++=c;
-              c=ReadBlobByte(image);
-              if (*values != '{')
-                if (isspace(c))
-                  break;
-            }
+            if (c == EOF)
+              ThrowReaderException(CorruptImageWarning,ImproperImageHeader,image);
+
+            /*
+              Get values.
+
+              Values not containing spaces are terminated by the first
+              white-space (or new-line) enountered.  Values containing
+              spaces and/or new-lines must be surrounded by braces.
+            */
+            values_length=MaxTextExtent;
+            values=MagickAllocateMemory(char *,values_length);
             if (values == (char *) NULL)
               ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+            values[0]='\0';
+            c=ReadBlobByte(image);
+            in_brace=(c == '{');
+            if (in_brace)
+              c=ReadBlobByte(image);
+            p=values;
+            while ((((!in_brace) && (c != '\n')) ||
+                     ((in_brace) && (c != '}'))) &&
+                   (c != EOF))
+              {
+                if ((size_t) (p-values+1) >= values_length)
+                  {
+                    *p='\0';
+                    values_length<<=1;
+                    MagickReallocMemory(char *,values,values_length);
+                    if (values == (char *) NULL)
+                      break;
+                    p=values+strlen(values);
+                  }
+                if (values == (char *) NULL)
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                *p++=c;
+                c=ReadBlobByte(image);
+                if (!in_brace)
+                  if (isspace(c))
+                    break;
+              }
             *p='\0';
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "keyword=\"%s\" values=\"%s\"",keyword,values);
             /*
               Assign a value to the specified keyword.
             */

@@ -1,3 +1,7 @@
+2015-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/mpc.c (ReadMPCImage): Port MIFF header reading fixes.
+
 2015-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): MIFF reader failed to read some
