@@ -1,3 +1,9 @@
+2015-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): MIFF reader failed to read some
+	MIFF headers properly.  Fixes SourceForge issue #298 "invalid next
+	size (normal)/memory corruption".
+
 2015-04-18  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/png.c (ReadMNGImage): Fix Coverity 55862 "Resource leak"

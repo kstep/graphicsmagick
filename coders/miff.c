@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -753,8 +753,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *p;
 
   unsigned char
-    *compress_pixels,
-    *pixels;
+    *compress_pixels = (unsigned char *) NULL,
+    *pixels = (unsigned char *) NULL;
 
   void
     *pixels_p;
@@ -806,10 +806,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Decode image header;  header terminates one character beyond a ':'.
     */
-    length=MaxTextExtent;
-    values=MagickAllocateMemory(char *,length);
-    if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     colors=0;
     image->depth=8;
     image->compression=NoCompression;
@@ -824,22 +820,28 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           char
             *comment;
 
+          size_t
+            comment_length;
+
           /*
             Read comment-- any text between { }.
           */
-          length=MaxTextExtent;
-          comment=MagickAllocateMemory(char *,length);
+          comment_length=MaxTextExtent;
+          comment=MagickAllocateMemory(char *,comment_length);
+          if (comment == (char *) NULL)
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+              image);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
             c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((size_t) (p-comment+1) >= length)
+            if ((size_t) (p-comment+1) >= comment_length)
               {
                 *p='\0';
-                length<<=1;
-                MagickReallocMemory(char *,comment,length);
+                comment_length<<=1;
+                MagickReallocMemory(char *,comment,comment_length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -857,39 +859,65 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       else
         if (isalnum(c))
           {
+            size_t
+              values_length;
+
+            MagickBool
+              in_brace=MagickFalse;
+
             /*
-              Determine a keyword and its value.
+              Get keyword.
             */
+            keyword[0]='\0';
             p=keyword;
             do
             {
               if ((p-keyword) < (MaxTextExtent-1))
                 *p++=c;
               c=ReadBlobByte(image);
-            } while ((isalnum(c) || (c == '-') || (c == ':')) && (c != EOF));
+            } while ((c != '=') && (c != EOF));
             *p='\0';
-            while ((isspace(c) || (c == '=')) && (c != EOF))
+            if (c == EOF)
+              ThrowReaderException(CorruptImageWarning,ImproperImageHeader,image);
+
+            /*
+              Get values.
+
+              Values not containing spaces are terminated by the first
+              white-space (or new-line) enountered.  Values containing
+              spaces and/or new-lines must be surrounded by braces.
+            */
+            values_length=MaxTextExtent;
+            values=MagickAllocateMemory(char *,values_length);
+            if (values == (char *) NULL)
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+            values[0]='\0';
+            c=ReadBlobByte(image);
+            in_brace=(c == '{');
+            if (in_brace)
               c=ReadBlobByte(image);
             p=values;
-            while ((c != '}') && (c != EOF))
-            {
-              if ((size_t) (p-values+1) >= length)
-                {
-                  *p='\0';
-                  length<<=1;
-                  MagickReallocMemory(char *,values,length);
-                  if (values == (char *) NULL)
+            while ((((!in_brace) && (c != '\n')) ||
+                     ((in_brace) && (c != '}'))) &&
+                   (c != EOF))
+              {
+                if ((size_t) (p-values+1) >= values_length)
+                  {
+                    *p='\0';
+                    values_length<<=1;
+                    MagickReallocMemory(char *,values,values_length);
+                    if (values == (char *) NULL)
+                      break;
+                    p=values+strlen(values);
+                  }
+                if (values == (char *) NULL)
+                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                *p++=c;
+                c=ReadBlobByte(image);
+                if (!in_brace)
+                  if (isspace(c))
                     break;
-                  p=values+strlen(values);
-                }
-              if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-              *p++=c;
-              c=ReadBlobByte(image);
-              if (*values != '{')
-                if (isspace(c))
-                  break;
-            }
+              }
             *p='\0';
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "keyword=\"%s\" values=\"%s\"",keyword,values);
@@ -1454,11 +1482,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=quantum_size/8;
     if (image->compression == RLECompression)
       packet_size++;
-    pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
-    length=(size_t) (1.01*packet_size*image->columns+600);
+    pixels=MagickAllocateArray(unsigned char *,packet_size,image->columns);
+    if (pixels == (unsigned char *) NULL)
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    length=(size_t) (1.01*MagickArraySize(packet_size,image->columns));
+    if (length)
+      length += 600;
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
-    if ((pixels == (unsigned char *) NULL) ||
-        (compress_pixels == (unsigned char *) NULL))
+    if (compress_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Read image pixels.
@@ -1496,10 +1527,23 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   if (zip_info.avail_in == 0)
                     {
                       zip_info.next_in=compress_pixels;
-                      length=(int) (1.01*packet_size*image->columns+12);
-                      if (version != 0)
-                        length=ReadBlobMSBLong(image);
-                      zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
+                      if (version == 0)
+                        {
+                          length=(int) (1.01*packet_size*image->columns+12);
+                          zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
+                        }
+                      else
+                        {
+                          length=ReadBlobMSBLong(image);
+                          zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
+                          if ((size_t) zip_info.avail_in != length)
+                            {
+                              MagickFreeMemory(pixels);
+                              MagickFreeMemory(compress_pixels);
+                              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,
+                                                   image);
+                            }
+                        }
                     }
                   zip_status=inflate(&zip_info,Z_NO_FLUSH);
                   if (zip_status == Z_STREAM_END)
@@ -1564,10 +1608,23 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   if (bzip_info.avail_in == 0)
                     {
                       bzip_info.next_in=(char *) compress_pixels;
-                      length=(int) (1.01*packet_size*image->columns+600);
-                      if (version != 0)
-                        length=ReadBlobMSBLong(image);
-                      bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
+                      if (version == 0)
+                        {
+                          length=(int) (1.01*packet_size*image->columns+600);
+                          bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
+                        }
+                      else
+                        {
+                          length=ReadBlobMSBLong(image);
+                          bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
+                          if ((size_t) bzip_info.avail_in != length)
+                            {
+                              MagickFreeMemory(pixels);
+                              MagickFreeMemory(compress_pixels);
+                              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,
+                                                   image);
+                            }
+                        }
                     }
                   bz_status=BZ2_bzDecompress(&bzip_info);
                   if (bz_status == BZ_STREAM_END)
