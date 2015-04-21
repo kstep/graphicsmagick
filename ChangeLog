@@ -1,5 +1,8 @@
 2015-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/sun.c (ReadSUNImage): Try to quench Coverity 10280
+	"Untrusted loop bound".
+
 	* coders/mpc.c (ReadMPCImage): Port MIFF header reading fixes.
 
 2015-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

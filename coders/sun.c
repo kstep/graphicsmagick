@@ -376,6 +376,9 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     image->columns=sun_info.width;
     image->rows=sun_info.height;
+    if (((unsigned long) ((long) image->columns) != image->columns) ||
+        ((unsigned long) ((long) image->rows) != image->rows))
+      ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,image);
     if (CheckImagePixelLimits(image, exception) != MagickPass)
         ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
@@ -604,6 +607,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (long) image->columns; x++)
               {
                 index=(*p++);
+                VerifyColormapIndex(image,index);
                 indexes[x]=index;
                 q[x]=image->colormap[index];
               }
