@@ -3333,7 +3333,7 @@ MagickExport magick_uint16_t ReadBlobLSBShort(Image *image)
 
   value=buffer[1] << 8;
   value|=buffer[0];
-  return(value);
+  return(value & 0xffff);
 }
 
 /*
@@ -3735,7 +3735,7 @@ MagickExport magick_uint16_t ReadBlobMSBShort(Image *image)
 
   value=buffer[0] << 8;
   value|=buffer[1];
-  return(value);
+  return(value & 0xffff);
 }
 
 /*
