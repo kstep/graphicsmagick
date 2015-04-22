@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -154,7 +154,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixelsEx(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=AccessMutableIndexes(image);
@@ -173,7 +173,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (bit == 8)
         bit=0;
     }
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixelsEx(image,exception))
       break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,

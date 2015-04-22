@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2004-2012 GraphicsMagick Group
+# Copyright (C) 2004-2015 GraphicsMagick Group
 . ./common.shi
 . ${top_srcdir}/tests/common.shi
 
@@ -10,7 +10,13 @@ rwblob=./rwblob
 check_types='bilevel gray pallette truecolor'
 
 # Number of tests we plan to run
-test_plan_fn 188
+test_plan_fn 192
+
+# ART format
+for type in ${check_types}
+do
+  test_command_fn "ART ${type}" ${MEMCHECK} ${rwblob} "${SRCDIR}/input_${type}.miff" ART
+done
 
 # AVS format
 for type in ${check_types}

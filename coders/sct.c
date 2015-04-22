@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -139,6 +139,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
+  int
+    c;
+
   unsigned int
     status;
 
@@ -156,32 +159,47 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read control block.
   */
-  (void) ReadBlob(image,80,(char *) buffer);
-  (void) ReadBlob(image,2,(char *) magick);
-  if ((LocaleNCompare((char *) magick,"CT",2) != 0) &&
-      (LocaleNCompare((char *) magick,"LW",2) != 0) &&
-      (LocaleNCompare((char *) magick,"BM",2) != 0) &&
-      (LocaleNCompare((char *) magick,"PG",2) != 0) &&
-      (LocaleNCompare((char *) magick,"TX",2) != 0))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-  if ((LocaleNCompare((char *) magick,"LW",2) == 0) ||
-      (LocaleNCompare((char *) magick,"BM",2) == 0) ||
-      (LocaleNCompare((char *) magick,"PG",2) == 0) ||
-      (LocaleNCompare((char *) magick,"TX",2) == 0))
-    ThrowReaderException(CoderError,OnlyContinuousTonePictureSupported,image);
-  (void) ReadBlob(image,174,(char *) buffer);
-  (void) ReadBlob(image,768,(char *) buffer);
-  /*
-    Read paramter block.
-  */
-  (void) ReadBlob(image,32,(char *) buffer);
-  (void) ReadBlob(image,14,(char *) buffer);
-  image->rows=MagickAtoL(buffer);
-  (void) ReadBlob(image,14,(char *) buffer);
-  image->columns=MagickAtoL(buffer);
-  (void) ReadBlob(image,196,(char *) buffer);
-  (void) ReadBlob(image,768,(char *) buffer);
-  image->colorspace=CMYKColorspace;
+  do
+    {
+      if (ReadBlob(image,80,(char *) buffer) != 80)
+        break;
+      if (ReadBlob(image,2,(char *) magick) != 2)
+        break;
+      if ((LocaleNCompare((char *) magick,"CT",2) != 0) &&
+          (LocaleNCompare((char *) magick,"LW",2) != 0) &&
+          (LocaleNCompare((char *) magick,"BM",2) != 0) &&
+          (LocaleNCompare((char *) magick,"PG",2) != 0) &&
+          (LocaleNCompare((char *) magick,"TX",2) != 0))
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      if ((LocaleNCompare((char *) magick,"LW",2) == 0) ||
+          (LocaleNCompare((char *) magick,"BM",2) == 0) ||
+          (LocaleNCompare((char *) magick,"PG",2) == 0) ||
+          (LocaleNCompare((char *) magick,"TX",2) == 0))
+        ThrowReaderException(CoderError,OnlyContinuousTonePictureSupported,image);
+      if (ReadBlob(image,174,(char *) buffer) != 174)
+        break;
+      if (ReadBlob(image,768,(char *) buffer) != 768)
+        break;
+      /*
+        Read parameter block.
+      */
+      if (ReadBlob(image,32,(char *) buffer) != 32)
+        break;
+      if (ReadBlob(image,14,(char *) buffer) != 14)
+        break;
+      image->rows=MagickAtoL(buffer);
+      if (ReadBlob(image,14,(char *) buffer) != 14)
+        break;
+      image->columns=MagickAtoL(buffer);
+      if (ReadBlob(image,196,(char *) buffer) != 196)
+        break;
+      if (ReadBlob(image,768,(char *) buffer) != 768)
+        break;
+      image->colorspace=CMYKColorspace;
+    }
+  while (0);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -196,53 +214,67 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixelsEx(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+      if ((c = ReadBlobByte(image)) == EOF)
+        break;
+      q->red=(Quantum) (MaxRGB-ScaleCharToQuantum(c));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadBlobByte(image);  /* pad */
-    q=GetImagePixels(image,0,y,image->columns,1);
+      if (ReadBlobByte(image) == EOF)  /* pad */
+        break;
+    q=GetImagePixelsEx(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->green=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+      if ((c = ReadBlobByte(image)) == EOF)
+        break;
+      q->green=(Quantum) (MaxRGB-ScaleCharToQuantum(c));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadBlobByte(image);  /* pad */
-    q=GetImagePixels(image,0,y,image->columns,1);
+      if (ReadBlobByte(image) == EOF)  /* pad */
+        break;
+    q=GetImagePixelsEx(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->blue=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+      if ((c = ReadBlobByte(image)) == EOF)
+        break;
+      q->blue=(Quantum) (MaxRGB-ScaleCharToQuantum(c));
       q++;
     }
     if ((image->columns % 2) != 0)
-      (void) ReadBlobByte(image);  /* pad */
-    q=GetImagePixels(image,0,y,image->columns,1);
+      if (ReadBlobByte(image) == EOF)  /* pad */
+        break;
+    q=GetImagePixelsEx(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
+      if ((c = ReadBlobByte(image)) == EOF)
+        break;
+      q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(c));
       q++;
     }
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixelsEx(image,exception))
       break;
     if ((image->columns % 2) != 0)
-      (void) ReadBlobByte(image);  /* pad */
+      if (ReadBlobByte(image) == EOF)  /* pad */
+        break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitorFormatted(y,image->rows,exception,LoadImageText,
                                   image->filename,
 				  image->columns,image->rows))
         break;
+    if (EOFBlob(image))
+      break;
   }
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,

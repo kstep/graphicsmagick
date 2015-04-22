@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2012 GraphicsMagick Group
+% Copyright (C) 2012-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -276,6 +276,9 @@ ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
   if (JNXHeader.Version >= 4)
     JNXHeader.ZOrder = ReadBlobLSBLong(image);
 
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
   /* Read JNX image level info. */
   total_tiles = 0;
   current_tile = 0;
@@ -300,6 +303,9 @@ ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
           JNXLevelInfo[i].Copyright = NULL;
         }
     }
+
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   /* Get the current limit */
   SaveLimit = GetMagickResourceLimit(MapResource);
@@ -327,6 +333,12 @@ ReadJNXImage(const ImageInfo * image_info, ExceptionInfo * exception)
           PositionList[j].PicHeight = ReadBlobLSBShort(image);
           PositionList[j].PicSize = ReadBlobLSBLong(image);
           PositionList[j].PicOffset = ReadBlobLSBLong(image);
+        }
+
+      if (EOFBlob(image))
+        {
+          MagickFreeMemory(PositionList);
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
 
       for (j = 0; j < JNXLevelInfo[i].TileCount; j++)

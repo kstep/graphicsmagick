@@ -1,3 +1,27 @@
+2015-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tim.c (ReadTIMImage): Make TIM reader more robust against
+	EOF.
+
+	* coders/sct.c (ReadSCTImage): Make SCT reader more robust against
+	EOF.
+
+	* coders/pwp.c (ReadPWPImage): Test loop for EOF.
+
+	* coders/otb.c (ReadOTBImage): Make error reporting a bit more
+	robust.
+
+	* coders/jnx.c (ExtractTileJPG): Add some EOF checks.
+
+	* coders/cut.c (ReadCUTImage): Limit width/height to range of
+	signed integer.
+
+	* tests/rwfile.tap: Add a R/W file test for ART.
+
+	* tests/rwblob.tap: Add a R/W blob test for ART.
+
+	* coders/art.c (ReadARTImage): Improve error checking.
+
 2015-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/sun.c (ReadSUNImage): Try to quench Coverity 10280

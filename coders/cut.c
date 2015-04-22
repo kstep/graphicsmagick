@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -165,7 +165,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
         break;
       }
-      
+
     case 4:  /* Convert PseudoColor scanline. */
       {
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -324,33 +324,34 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Header.Height=ReadBlobLSBShort(image);
   Header.Reserved=ReadBlobLSBShort(image);
 
-  if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
-    CUT_KO:  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0 ||
+      (Header.Width > INT_MAX) || (Header.Height > INT_MAX) )
+  CUT_KO:  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   /*---This code checks first line of image---*/
   EncodedByte=ReadBlobLSBShort(image);
   RunCount=ReadBlobByte(image);
   RunCountMasked=RunCount & 0x7F;
   ldblk=0;
-  while(RunCountMasked!=0)  /*end of line?*/
+  while (RunCountMasked != 0)  /*end of line?*/
     {
       i=1;
-      if(RunCount<0x80) i=RunCountMasked;
+      if (RunCount<0x80) i=RunCountMasked;
       (void) SeekBlob(image,TellBlob(image)+i,SEEK_SET);
-      if(EOFBlob(image)) goto CUT_KO;  /*wrong data*/
+      if (EOFBlob(image)) goto CUT_KO;  /*wrong data*/
       EncodedByte-=i+1;
       ldblk+=RunCountMasked;
 
       RunCount=ReadBlobByte(image);
-      if(EOFBlob(image))  goto CUT_KO;  /*wrong data: unexpected eof in line*/
+      if (EOFBlob(image))  goto CUT_KO;  /*wrong data: unexpected eof in line*/
       RunCountMasked=RunCount & 0x7F;
     }
-  if(EncodedByte!=1) goto CUT_KO;  /*wrong data: size incorrect*/
+  if (EncodedByte!=1) goto CUT_KO;  /*wrong data: size incorrect*/
   i=0;        /*guess a number of bit planes*/
-  if(ldblk==(int) Header.Width)   i=8;
-  if(2*ldblk==(int) Header.Width) i=4;
-  if(8*ldblk==(int) Header.Width) i=1;
-  if(i==0) goto CUT_KO;    /*wrong data: incorrect bit planes*/
+  if (ldblk==(int) Header.Width)   i=8;
+  if (2*ldblk==(int) Header.Width) i=4;
+  if (8*ldblk==(int) Header.Width) i=1;
+  if (i==0) goto CUT_KO;    /*wrong data: incorrect bit planes*/
 
   image->columns=Header.Width;
   image->rows=Header.Height;
@@ -362,35 +363,35 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (CheckImagePixelLimits(image, exception) != MagickPass)
     ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
- 
+
   /* ----- Do something with palette ----- */
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
- 
- 
+
+
   i=(long) strlen(clone_info->filename);
   j=i;
-  while(--i>0)
+  while (--i>0)
     {
-      if(clone_info->filename[i]=='.') 
+      if (clone_info->filename[i]=='.')
         {
           break;
         }
-      if(clone_info->filename[i]=='/' || clone_info->filename[i]=='\\' ||
-         clone_info->filename[i]==':' ) 
+      if (clone_info->filename[i]=='/' || clone_info->filename[i]=='\\' ||
+          clone_info->filename[i]==':' )
         {
           i=j;
           break;
         }
     }
-  
+
   (void) strcpy(clone_info->filename+i,".PAL");
-  if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
+  if ((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
     {
       (void) strcpy(clone_info->filename+i,".pal");
-      if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
+      if ((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
         {
           clone_info->filename[i]=0;
-          if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) 
+          if ((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
             {
               DestroyImageInfo(clone_info);
               clone_info=NULL;
@@ -399,21 +400,21 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
-  if( (palette=AllocateImage(clone_info))==NULL ) goto NoPalette;
+  if ( (palette=AllocateImage(clone_info))==NULL ) goto NoPalette;
   status=OpenBlob(clone_info,palette,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-    ErasePalette:     
+    ErasePalette:
       DestroyImage(palette);
       palette=NULL;
       goto NoPalette;
     }
- 
-     
-  if(palette!=NULL)
+
+
+  if (palette!=NULL)
     {
       (void) ReadBlob(palette,2,PalHeader.FileId);
-      if(strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
+      if (strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
       PalHeader.Version=ReadBlobLSBShort(palette);
       PalHeader.Size=ReadBlobLSBShort(palette);
       PalHeader.FileType=ReadBlobByte(palette);
@@ -425,51 +426,57 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       PalHeader.MaxGreen=ReadBlobLSBShort(palette);
       PalHeader.MaxBlue=ReadBlobLSBShort(palette);
       (void) ReadBlob(palette,20,PalHeader.PaletteId);
-   
-      if(PalHeader.MaxIndex<1) goto ErasePalette;
+
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
+      if (PalHeader.MaxIndex<1) goto ErasePalette;
       image->colors=PalHeader.MaxIndex+1;
       if (!AllocateImageColormap(image,image->colors)) goto NoMemory;
-   
-      if(PalHeader.MaxRed==0) PalHeader.MaxRed=MaxRGB;  /*avoid division by 0*/
-      if(PalHeader.MaxGreen==0) PalHeader.MaxGreen=MaxRGB;
-      if(PalHeader.MaxBlue==0) PalHeader.MaxBlue=MaxRGB;
-   
-      for(i=0;i<=(int) PalHeader.MaxIndex;i++)
-        {      /*this may be wrong- I don't know why is palette such strange*/
+
+      if (PalHeader.MaxRed==0) PalHeader.MaxRed=MaxRGB;  /*avoid division by 0*/
+      if (PalHeader.MaxGreen==0) PalHeader.MaxGreen=MaxRGB;
+      if (PalHeader.MaxBlue==0) PalHeader.MaxBlue=MaxRGB;
+
+      for (i=0;i<=(int) PalHeader.MaxIndex;i++)
+        {
+          /*this may be wrong- I don't know why is palette such strange*/
           j=(long) TellBlob(palette);
-          if((j % 512)>512-6)
+          if ((j % 512)>512-6)
             {
               j=((j / 512)+1)*512;
               (void) SeekBlob(palette,j,SEEK_SET);
             }
           image->colormap[i].red=ReadBlobLSBShort(palette);
-          if(MaxRGB!=PalHeader.MaxRed) 
+          if (MaxRGB!=PalHeader.MaxRed)
             {
               image->colormap[i].red=(Quantum)
                 (((double)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed+0.5);
             }
           image->colormap[i].green=ReadBlobLSBShort(palette);
-          if(MaxRGB!=PalHeader.MaxGreen) 
+          if (MaxRGB!=PalHeader.MaxGreen)
             {
               image->colormap[i].green=(Quantum)
                 (((double)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen+0.5);
             }
-          image->colormap[i].blue=ReadBlobLSBShort(palette);       
-          if(MaxRGB!=PalHeader.MaxBlue)  
+          image->colormap[i].blue=ReadBlobLSBShort(palette);
+          if (MaxRGB!=PalHeader.MaxBlue)
             {
               image->colormap[i].blue=(Quantum)
                 (((double)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue+0.5);
             }
-         
+
         }
+      if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
 
-   
+
 
  NoPalette:
-  if(palette==NULL)
-    { 
-   
+  if (palette==NULL)
+    {
+
       image->colors=256;
       if (!AllocateImageColormap(image,image->colors))
         {
@@ -478,7 +485,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageInfo(clone_info);
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
         }
-   
+
       for (i=0; i < (long)image->colors; i++)
         {
           image->colormap[i].red=ScaleCharToQuantum(i);
@@ -487,13 +494,13 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
 
-           
+
   /* ----- Load RLE compressed raster ----- */
   BImgBuff=MagickAllocateMemory(unsigned char *,(size_t) (ldblk));  /*Ldblk was set in the check phase*/
-  if(BImgBuff==NULL) goto NoMemory;
+  if (BImgBuff==NULL) goto NoMemory;
 
   (void) SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
-  for(i=0;i<(int) Header.Height;i++)
+  for (i=0;i<(int) Header.Height;i++)
     {
       EncodedByte=ReadBlobLSBShort(image);
 
@@ -503,18 +510,18 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
 
-      while(RunCountMasked!=0)    
+      while (RunCountMasked!=0)
         {
-          if(RunCountMasked>j)
+          if (RunCountMasked>j)
             {    /*Wrong Data*/
               RunCountMasked=(unsigned char) j;
-              if(j==0) 
+              if (j==0)
                 {
                   break;
                 }
             }
 
-          if(RunCount>0x80)
+          if (RunCount>0x80)
             {
               RunValue=ReadBlobByte(image);
               (void) memset(ptrB,RunValue,RunCountMasked);
@@ -522,11 +529,11 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           else {
             (void) ReadBlob(image,RunCountMasked,ptrB);
           }
-         
+
           ptrB+=RunCountMasked;
-          j-=RunCountMasked;     
-    
-          if(EOFBlob(image)) goto Finish;  /* wrong data: unexpected eof in line */
+          j-=RunCountMasked;
+
+          if (EOFBlob(image)) goto Finish;  /* wrong data: unexpected eof in line */
           RunCount=ReadBlobByte(image);
           RunCountMasked=RunCount & 0x7F;
         }
@@ -537,48 +544,48 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /*detect monochrome image*/
 
-  if(palette==NULL)
+  if (palette==NULL)
     {    /*attempt to detect binary (black&white) images*/
-      if((image->storage_class == PseudoClass) && IsGrayImage(image,&image->exception))
+      if ((image->storage_class == PseudoClass) && IsGrayImage(image,&image->exception))
         {
-          if(GetCutColors(image)==2)
+          if (GetCutColors(image)==2)
             {
               for (i=0; i < (long)image->colors; i++)
                 {
                   register Quantum
                     sample;
                   sample=ScaleCharToQuantum(i);
-                  if(image->colormap[i].red!=sample) goto Finish;
-                  if(image->colormap[i].green!=sample) goto Finish;
-                  if(image->colormap[i].blue!=sample) goto Finish;
+                  if (image->colormap[i].red!=sample) goto Finish;
+                  if (image->colormap[i].green!=sample) goto Finish;
+                  if (image->colormap[i].blue!=sample) goto Finish;
                 }
-     
+
               image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
-              for (i=0; i < (long)image->rows; i++)  
+              for (i=0; i < (long)image->rows; i++)
                 {
-                  q=SetImagePixels(image,0,i,image->columns,1);  
-                  for (j=0; j < (long)image->columns; j++)  
-                    {       
-                      if(q->red==ScaleCharToQuantum(1))
+                  q=SetImagePixels(image,0,i,image->columns,1);
+                  for (j=0; j < (long)image->columns; j++)
+                    {
+                      if (q->red==ScaleCharToQuantum(1))
                         {
                           q->red=q->green=q->blue=MaxRGB;
                         }
-                      q++;  
-                    }  
+                      q++;
+                    }
                   if (!SyncImagePixels(image)) goto Finish;
                 }
             }
-        }        
-    } 
+        }
+    }
 
  Finish:
-  if(BImgBuff!=NULL) MagickFreeMemory(BImgBuff);
-  if(palette!=NULL) DestroyImage(palette);
-  if(clone_info!=NULL) DestroyImageInfo(clone_info);
+  if (BImgBuff!=NULL) MagickFreeMemory(BImgBuff);
+  if (palette!=NULL) DestroyImage(palette);
+  if (clone_info!=NULL) DestroyImageInfo(clone_info);
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   CloseBlob(image);
-  return(image);       
+  return(image);
 }
 
 /*
@@ -640,4 +647,3 @@ ModuleExport void UnregisterCUTImage(void)
 {
   (void) UnregisterMagickInfo("CUT");
 }
-

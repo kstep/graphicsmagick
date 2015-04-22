@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -78,8 +78,8 @@
 static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
-  int i;
-  unsigned width,height,dummy;
+  unsigned int i;
+  unsigned int width,height,dummy;
   long ldblk;
   unsigned char *BImgBuff=NULL;
   unsigned char Padding;
@@ -124,29 +124,29 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /* If ping is true, then only set image size and colors without reading any image data. */
   if (image_info->ping) goto DONE_READING;
 
-  /* ----- Load RLE compressed raster ----- */
   BImgBuff=MagickAllocateMemory(unsigned char *,((size_t) ldblk));  /*Ldblk was set in the check phase*/
-  if(BImgBuff==NULL)
-    NoMemory:
-  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  if (BImgBuff==NULL)
+  NoMemory:
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
-  for(i=0; i<(int)height; i++)
+  for (i=0; i < height; i++)
     {
-      (void) ReadBlob(image,(size_t)ldblk,(char *)BImgBuff);
-      (void) ReadBlob(image,Padding,(char *)&dummy);      
+      if (ReadBlob(image,(size_t)ldblk,(char *)BImgBuff) != (size_t)ldblk)
+        break;
+      if (ReadBlob(image,Padding,(char *)&dummy) != Padding)
+        break;
 
-      q=SetImagePixels(image,0,i,image->columns,1);
+      q=SetImagePixelsEx(image,0,i,image->columns,1,exception);
       if (q == (PixelPacket *)NULL) break;
       (void)ImportImagePixelArea(image,GrayQuantum,1,BImgBuff,NULL,0);
-      if (!SyncImagePixels(image)) break;
+      if (!SyncImagePixelsEx(image,exception)) break;
     }
-  if(BImgBuff!=NULL)
-    MagickFreeMemory(BImgBuff);
-  if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-                   image->filename);
+  MagickFreeMemory(BImgBuff);
 
-DONE_READING:
+  if (i != height)
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+
+ DONE_READING:
   CloseBlob(image);
   return(image);
 }
@@ -288,6 +288,7 @@ ModuleExport void RegisterARTImage(void)
   entry->encoder = (EncoderHandler)WriteARTImage;
   entry->description="PFS: 1st Publisher";
   entry->module="ART";
+  entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
 }
 

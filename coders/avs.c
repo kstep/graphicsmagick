@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -81,8 +81,8 @@ static unsigned int
 %
 %
 */
-#define AVS_WIDTH_LIMIT 65536  /* Artificially limit width to 64K pixels */
-#define AVS_HEIGHT_LIMIT 65536 /* Artificially limit height to 64K pixels */
+#define AVS_WIDTH_LIMIT 65536UL  /* Artificially limit width to 64K pixels */
+#define AVS_HEIGHT_LIMIT 65536UL /* Artificially limit height to 64K pixels */
 static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
