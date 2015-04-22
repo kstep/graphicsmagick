@@ -1,8 +1,9 @@
 2015-04-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
-	* magick/blob.c (ReadMSBShort, ReadLSBShort): Attempt to fix
-	various "tainted" variables, e.g., in coders/gif.c and coders/sgi.c
-	by masking off all but the lower 16 bits returned.
+	* magick/blob.c (ReadBlobMSBShort, ReadBlobLSBShort): Attempt
+	to fix various "tainted" or "untrusted" variables, e.g., in
+	coders/gif.c and coders/sgi.c by masking off all but the lower
+	16 bits returned.
 
 2015-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
