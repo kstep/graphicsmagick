@@ -1,3 +1,8 @@
+2015-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (Base64Encode): Quiet Coverity 10296 and 10272
+	"Use of untrusted scalar value".
+
 2015-04-22  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlobMSBShort, ReadBlobLSBShort): Attempt

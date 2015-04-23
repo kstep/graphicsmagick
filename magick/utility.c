@@ -465,6 +465,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %    o encode_length:  The number of bytes encoded.
 %
 */
+#define Index64(index) ((index) & 0x3f)
 MagickExport char *Base64Encode(const unsigned char *blob,
   const size_t blob_length,size_t *encode_length)
 {
@@ -485,17 +486,19 @@ MagickExport char *Base64Encode(const unsigned char *blob,
   assert(blob_length != 0);
   assert(encode_length != (size_t *) NULL);
   *encode_length=0;
-  max_length=4*blob_length/3+4;
+  max_length=MagickArraySize(4U,blob_length)/3U;
+  if (max_length)
+    max_length += 4U;
   encode=MagickAllocateMemory(char *,max_length);
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
   for (p=blob; p < (blob+blob_length-2); p+=3)
   {
-    encode[i++]=Base64[*p >> 2];
-    encode[i++]=Base64[((*p & 0x03) << 4)+(*(p+1) >> 4)];
-    encode[i++]=Base64[((*(p+1) & 0x0f) << 2)+(*(p+2) >> 6)];
-    encode[i++]=Base64[*(p+2) & 0x3f];
+    encode[i++]=Base64[Index64(*p >> 2)];
+    encode[i++]=Base64[Index64(((*p & 0x03) << 4)+(*(p+1) >> 4))];
+    encode[i++]=Base64[Index64(((*(p+1) & 0x0f) << 2)+(*(p+2) >> 6))];
+    encode[i++]=Base64[Index64(*(p+2))];
   }
   remaining=blob_length % 3;
   if (remaining != 0)
@@ -511,12 +514,12 @@ MagickExport char *Base64Encode(const unsigned char *blob,
       code[2]='\0';
       for (j=0; j < (long) remaining; j++)
         code[j]=(*p++);
-      encode[i++]=Base64[code[0] >> 2];
-      encode[i++]=Base64[((code[0] & 0x03) << 4)+(code[1] >> 4)];
+      encode[i++]=Base64[Index64(code[0] >> 2)];
+      encode[i++]=Base64[Index64(((code[0] & 0x03) << 4)+(code[1] >> 4))];
       if (remaining == 1)
         encode[i++]='=';
       else
-        encode[i++]=Base64[((code[1] & 0x0f) << 2)+(code[2] >> 6)];
+        encode[i++]=Base64[Index64(((code[1] & 0x0f) << 2)+(code[2] >> 6))];
       encode[i++]='=';
     }
   *encode_length=i;
