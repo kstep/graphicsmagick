@@ -91,7 +91,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
+  unsigned int
     index;
 
   long
