@@ -1,3 +1,8 @@
+2015-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gif.c: Protect against integer overflow in array size
+	calculations.  Used unsigned type for colormap index.
+
 2015-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/map.c (ReadMAPImage): Maybe quiet Coverity 10326

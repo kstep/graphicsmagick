@@ -147,7 +147,7 @@ static MagickPassFail DecodeImage(Image *image,const long opacity)
     Allocate decoder tables.
   */
   packet=MagickAllocateMemory(unsigned char *,256);
-  prefix=MagickAllocateMemory(short *,MaxStackSize*sizeof(short));
+  prefix=MagickAllocateArray(short *,MaxStackSize,sizeof(short));
   suffix=MagickAllocateMemory(unsigned char *,MaxStackSize);
   pixel_stack=MagickAllocateMemory(unsigned char *,MaxStackSize+1);
   if ((packet == (unsigned char *) NULL) ||
@@ -509,8 +509,8 @@ static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
   */
   assert(image != (Image *) NULL);
   packet=MagickAllocateMemory(unsigned char *,256);
-  hash_code=MagickAllocateMemory(short *,MaxHashTable*sizeof(short));
-  hash_prefix=MagickAllocateMemory(short *,MaxHashTable*sizeof(short));
+  hash_code=MagickAllocateArray(short *,MaxHashTable,sizeof(short));
+  hash_prefix=MagickAllocateArray(short *,MaxHashTable,sizeof(short));
   hash_suffix=MagickAllocateMemory(unsigned char *,MaxHashTable);
   if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
       (hash_prefix == (short *) NULL) ||
@@ -832,7 +832,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register long
+  register unsigned int
     i;
 
   register unsigned char
@@ -882,7 +882,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   background=ReadBlobByte(image);
   c=ReadBlobByte(image);  /* reserved */
   global_colors=1 << ((flag & 0x07)+1);
-  global_colormap=MagickAllocateMemory(unsigned char *,3*Max(global_colors,256));
+  global_colormap=MagickAllocateArray(unsigned char *,3,Max(global_colors,256));
   if (global_colormap == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (BitSet(flag,0x80))
@@ -1038,12 +1038,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Use global colormap.
         */
         p=global_colormap;
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
+          VerifyColormapIndex(image, i);
           image->colormap[i].red=ScaleCharToQuantum(*p++);
           image->colormap[i].green=ScaleCharToQuantum(*p++);
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
-          if (i == opacity)
+          if ((long) i == opacity)
 	    image->colormap[i].opacity=(Quantum) TransparentOpacity;
         }
         image->background_color=
@@ -1057,7 +1058,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=MagickAllocateMemory(unsigned char *,3*image->colors);
+        colormap=MagickAllocateArray(unsigned char *,3,image->colors);
         if (colormap == (unsigned char *) NULL)
           {
             MagickFreeMemory(global_colormap);
@@ -1071,12 +1072,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	    ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
 	  }
         p=colormap;
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           image->colormap[i].red=ScaleCharToQuantum(*p++);
           image->colormap[i].green=ScaleCharToQuantum(*p++);
           image->colormap[i].blue=ScaleCharToQuantum(*p++);
-          if (i == opacity)
+          if ((long) i == opacity)
             image->colormap[i].opacity=(Quantum) TransparentOpacity;
         }
         MagickFreeMemory(colormap);
@@ -1238,7 +1239,7 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
   register long
     x;
 
-  register long
+  register unsigned int
     i;
 
   register unsigned char
@@ -1405,13 +1406,13 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
       if ((1UL << bits_per_pixel) >= image->colors)
         break;
     q=colormap;
-    for (i=0; i < (long) image->colors; i++)
+    for (i=0; i < image->colors; i++)
     {
       *q++=ScaleQuantumToChar(image->colormap[i].red);
       *q++=ScaleQuantumToChar(image->colormap[i].green);
       *q++=ScaleQuantumToChar(image->colormap[i].blue);
     }
-    for ( ; i < (1L << bits_per_pixel); i++)
+    for ( ; i < (1U << bits_per_pixel); i++)
     {
       *q++=(Quantum) 0x0;
       *q++=(Quantum) 0x0;
@@ -1474,7 +1475,7 @@ static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
                 {
                   count=Min(strlen(p),255);
                   (void) WriteBlobByte(image,(long) count);
-                  for (i=0; i < (long) count; i++)
+                  for (i=0; i < count; i++)
                     (void) WriteBlobByte(image,*p++);
                 }
               (void) WriteBlobByte(image,0x0);
