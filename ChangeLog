@@ -1,5 +1,8 @@
 2015-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/transform.c (FlipImage): Possibly quiet case #4 of
+	Coverity 10311 "Untrusted value as argument".
+
 	* magick/utility.c (Base64Encode): Quiet Coverity 10296 and 10272
 	"Use of untrusted scalar value".
 

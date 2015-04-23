@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2010 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -997,6 +997,11 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
+  if (((((size_t) Max(sizeof(PixelPacket),sizeof(IndexPacket)))*image->columns)/
+       image->columns) != Max(sizeof(PixelPacket),sizeof(IndexPacket)))
+      ThrowImageException(ImageError,WidthOrHeightExceedsLimit,image->filename);
+
   flip_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (flip_image == (Image *) NULL)
     return((Image *) NULL);
