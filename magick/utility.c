@@ -2891,7 +2891,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       }
     }
   }
-  while (*pattern == '*')
+  while ((*pattern != '\0') && (*pattern == '*'))
     pattern++;
   return((*expression == '\0') && (*pattern == '\0'));
 }

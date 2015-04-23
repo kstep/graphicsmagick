@@ -1,5 +1,9 @@
 2015-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (GlobExpression): See if testing for null
+	terminating character quiets Coverity 10246 "Untrusted value as
+	argument".
+
 	* magick/transform.c (FlipImage): Possibly quiet case #4 of
 	Coverity 10311 "Untrusted value as argument".
 
