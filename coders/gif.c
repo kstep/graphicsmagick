@@ -921,7 +921,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             dispose=header[0] >> 2;
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
-              opacity=header[3];
+              opacity=(header[3] & 0xff);
             break;
           }
           case 0xfe:

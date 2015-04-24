@@ -1,3 +1,8 @@
+2015-04-24  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/gif.c (ReadGIFImage): Attempt to fix Coverity issue
+	10284 by using "opacity = (header[3] & 0xff)".
+
 2015-04-23  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* magick/blob.c (ReadBlobMSBLong, ReadBlobLSBLong): Attempt
