@@ -3233,7 +3233,7 @@ MagickExport magick_uint32_t ReadBlobLSBLong(Image *image)
   value|=buffer[2] << 16;
   value|=buffer[1] << 8;
   value|=buffer[0];
-  return(value);
+  return(value & 0xffffffff);
 }
 
 /*
@@ -3687,7 +3687,7 @@ MagickExport magick_uint32_t ReadBlobMSBLong(Image *image)
   value|=buffer[1] << 16;
   value|=buffer[2] << 8;
   value|=buffer[3];
-  return(value);
+  return(value & 0xffffffff);
 }
 
 /*

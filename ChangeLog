@@ -1,10 +1,16 @@
+2015-04-23  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* magick/blob.c (ReadBlobMSBLong, ReadBlobLSBLong): Attempt
+	to fix various "tainted" or "untrusted" variables
+	by masking off all but the lower 32 bits returned.
+
 2015-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Fix Coverity 10216 "Integer
 	overflowed argument".
 
-	* magick/transform.c (FlipImage): Fix Coverity 61461 "Division or modulo by
-	zero".
+	* magick/transform.c (FlipImage): Fix Coverity 61461 "Division or
+	modulo by zero".
 
 	* coders/gif.c: Protect against integer overflow in array size
 	calculations.  Used unsigned type for colormap index.
