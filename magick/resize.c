@@ -1310,14 +1310,15 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   assert(((int) filter >= 0) && ((int) filter <= SincFilter));
+
   if ((image->columns == 0UL) || (image->rows == 0UL) ||
       (columns == 0UL) || (rows == 0UL))
-    {
-      ThrowImageException(ImageError,UnableToResizeImage,
-                          MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
-    }
+    ThrowImageException(ImageError,UnableToResizeImage,
+                        MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
+
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return (CloneImage(image,0,0,True,exception));
+
   resize_image=CloneImage(image,columns,rows,True,exception);
   if (resize_image == (Image *) NULL)
     return ((Image *) NULL);

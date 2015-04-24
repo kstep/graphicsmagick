@@ -998,8 +998,12 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
 
+  if ((image->columns == 0UL) || (image->rows == 0UL))
+    ThrowImageException(ImageError,UnableToResizeImage,
+                        MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
+
   if (((((size_t) Max(sizeof(PixelPacket),sizeof(IndexPacket)))*image->columns)/
-       image->columns) != Max(sizeof(PixelPacket),sizeof(IndexPacket)))
+        image->columns) != Max(sizeof(PixelPacket),sizeof(IndexPacket)))
       ThrowImageException(ImageError,WidthOrHeightExceedsLimit,image->filename);
 
   flip_image=CloneImage(image,image->columns,image->rows,True,exception);
