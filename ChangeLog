@@ -1,6 +1,9 @@
 2015-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/transform.c (FlipImage): Fix 61461 "Division or modulo by
+	* coders/xcf.c (ReadXCFImage): Fix Coverity 10216 "Integer
+	overflowed argument".
+
+	* magick/transform.c (FlipImage): Fix Coverity 61461 "Division or modulo by
 	zero".
 
 	* coders/gif.c: Protect against integer overflow in array size

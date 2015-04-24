@@ -38,7 +38,9 @@
 <p>2015-04-23  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
-<li>magick/transform.c (FlipImage): Fix 61461 &quot;Division or modulo by
+<li>coders/xcf.c (ReadXCFImage): Fix Coverity 10216 &quot;Integer
+overflowed argument&quot;.</li>
+<li>magick/transform.c (FlipImage): Fix Coverity 61461 &quot;Division or modulo by
 zero&quot;.</li>
 <li>coders/gif.c: Protect against integer overflow in array size
 calculations.  Used unsigned type for colormap index.</li>
