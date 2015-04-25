@@ -1,5 +1,10 @@
 2015-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pcx.c (ReadPCXImage): Add some more integer-overflow
+	safety to computations.  Add some casts.
+
+	* coders/meta.c (formatIPTC): Fix Coverity 10221 "Infinite loop".
+
 	* magick/attribute.c (GenerateEXIFAttribute): Fix Coverity 10320
 	"Untrusted array index read" and "Untrusted loop bound".
 

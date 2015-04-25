@@ -423,15 +423,18 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    pcx_packets=(size_t) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    pcx_packets=MagickArraySize(image->rows,
+                                MagickArraySize(pcx_info.bytes_per_line,
+                                                pcx_info.planes));
     if ((size_t) (pcx_info.bits_per_pixel*pcx_info.planes*image->columns) >
         (pcx_packets*8U))
       ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
     pcx_pixels=MagickAllocateMemory(unsigned char *,pcx_packets);
+    if (pcx_pixels == (unsigned char *) NULL)
+      ThrowPCXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     scanline=MagickAllocateArray(unsigned char *,Max(image->columns,
       (size_t) pcx_info.bytes_per_line),Max(pcx_info.planes,8));
-    if ((pcx_pixels == (unsigned char *) NULL) ||
-        (scanline == (unsigned char *) NULL))
+    if (scanline == (unsigned char *) NULL)
       ThrowPCXReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (pcx_info.encoding == 0)
       {
@@ -483,7 +486,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=pcx_info.planes > 3;
     else
       if ((pcx_info.version == 5) ||
-          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+          (((size_t) pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         {
           /*
             Initialize image colormap.
@@ -491,7 +494,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->colors > 256)
             ThrowPCXReaderException(CorruptImageError,ColormapExceedsColorsLimit,
               image);
-          if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
+          if (((size_t) pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
               /*
                 Monochrome colormap.
@@ -532,10 +535,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       indexes=AccessMutableIndexes(image);
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < pcx_info.planes; i++)
+        for (i=0; i < (unsigned int) pcx_info.planes; i++)
         {
           r=scanline+i;
-          for (x=0; x < pcx_info.bytes_per_line; x++)
+          for (x=0; x < (long) pcx_info.bytes_per_line; x++)
           {
             switch (i)
             {
@@ -561,18 +564,18 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-            r+=pcx_info.planes;
+            r+=(unsigned int) pcx_info.planes;
           }
         }
       else
-        if (pcx_info.planes > 1)
+        if ((unsigned int) pcx_info.planes > 1)
           {
             for (x=0; x < (long) image->columns; x++)
               *r++=0;
-            for (i=0; i < pcx_info.planes; i++)
+            for (i=0; i < (unsigned int) pcx_info.planes; i++)
             {
               r=scanline;
-              for (x=0; x < pcx_info.bytes_per_line; x++)
+              for (x=0; x < (long) pcx_info.bytes_per_line; x++)
               {
                  bits=(*p++);
                  for (mask=0x80; mask != 0; mask>>=1)

@@ -1880,9 +1880,14 @@ static int formatIPTC(Image *ifile, Image *ofile)
     else
       {
         if (foundiptc)
-          return -1;
+          {
+            return -1;
+          }
         else
-          continue;
+          {
+            c = ReadBlobByte(ifile);
+            continue;
+          }
       }
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
