@@ -1,3 +1,8 @@
+2015-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (GenerateEXIFAttribute): Fix Coverity 10320
+	"Untrusted array index read" and "Untrusted loop bound".
+
 2015-04-24  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
 	* coders/gif.c (ReadGIFImage): Attempt to fix Coverity issue

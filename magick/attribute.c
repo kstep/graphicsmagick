@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1078,6 +1078,7 @@ Generate8BIMAttribute(Image *image,const char *key)
 #define GPS_LATITUDE 0x0002
 #define GPS_LONGITUDE 0x0004
 #define GPS_TIMESTAMP 0x0007
+#define MAX_TAGS_PER_IFD 1024 /* Maximum tags allowed per IFD */
 
 typedef struct _TagInfo
 {
@@ -1560,6 +1561,8 @@ GenerateEXIFAttribute(Image *image,const char *specification)
   MagickBool
     debug=MagickFalse;
 
+  assert((sizeof(format_bytes)/sizeof(format_bytes[0])-1) == EXIF_NUM_FORMATS);
+
   {
     const char *
       env_value;
@@ -1713,7 +1716,7 @@ GenerateEXIFAttribute(Image *image,const char *specification)
   */
   ifdp=tiffp+offset;
   level=0;
-  de=0;
+  de=0U;
   do
     {
       /*
@@ -1727,10 +1730,13 @@ GenerateEXIFAttribute(Image *image,const char *specification)
 	}
       /*
 	Determine how many entries there are in the current IFD.
+        Limit the number of entries parsed to MAX_TAGS_PER_IFD.
       */
       if ((ifdp < tiffp) || (ifdp+2 > tiffp_max))
         goto generate_attribute_failure;
       nde=Read16u(morder,ifdp);
+      if (nde > MAX_TAGS_PER_IFD)
+        nde=MAX_TAGS_PER_IFD;
       for (; de < nde; de++)
 	{
 	  unsigned int
@@ -1750,7 +1756,8 @@ GenerateEXIFAttribute(Image *image,const char *specification)
 	  pde=(char *) (ifdp+2+(12*de));
 	  t=Read16u(morder,pde); /* get tag value */
 	  f=Read16u(morder,pde+2); /* get the format */
-	  if ((f-1) >= EXIF_NUM_FORMATS)
+          if ((f < 0) ||
+              ((size_t) f >= sizeof(format_bytes)/sizeof(format_bytes[0])))
 	    break;
 	  c=(long) Read32u(morder,pde+4); /* get number of components */
 	  n=c*format_bytes[f];

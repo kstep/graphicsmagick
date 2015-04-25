@@ -1458,9 +1458,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             size_t amount;
 
             /* read over it... */
-            while (prop_size > 0)
+            while (prop_size > 0) /* size_t prop_size, amount */
               {
-                amount = Min (16U, prop_size);
+                amount = Min (sizeof(buf), prop_size);
                 for (i=0; i < amount; i++)
                   {
                     amount = ReadBlob(image, amount, &buf);
