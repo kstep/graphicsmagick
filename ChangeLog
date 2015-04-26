@@ -1,5 +1,8 @@
 2015-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pcx.c (ReadPCXImage): Fix Coverity 10197 "Negative loop
+	bound".
+
 	* coders/wpg.c (UnpackWPG2Raster): Always test for EOF from
 	ReadBlobByte().  Should fix Coverity 10205 "Negative loop bound".
 

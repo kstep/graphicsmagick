@@ -318,15 +318,16 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->x_resolution=pcx_info.horizontal_resolution;
     image->y_resolution=pcx_info.vertical_resolution;
     image->colors=16;
-    count=ReadBlob(image,3*image->colors,(char *) pcx_colormap);
-    if (count != 3*image->colors)
-      ThrowPCXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
     pcx_info.reserved=ReadBlobByte(image);
     pcx_info.planes=ReadBlobByte(image);
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
     pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
     pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
+
+    if (EOFBlob(image))
+      ThrowPCXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
     if (image->logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
