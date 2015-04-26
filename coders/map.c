@@ -139,7 +139,6 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->storage_class=PseudoClass;
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
     ThrowMAPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  packet_size=image->depth > 8 ? 2 : 1;
   packet_size=image->colors > 256 ? 6 : 3;
   colormap=MagickAllocateArray(unsigned char *,packet_size,image->colors);
   if (colormap == (unsigned char *) NULL)
@@ -177,10 +176,10 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image pixels.
   */
+  packet_size=image->depth > 8 ? 2 : 1;
   pixels=MagickAllocateArray(unsigned char *,packet_size,image->columns);
   if (pixels == (unsigned char *) NULL)
     ThrowMAPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-  packet_size=image->depth > 8 ? 2 : 1;
   for (y=0; y < (long) image->rows; y++)
   {
     p=pixels;

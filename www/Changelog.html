@@ -39,7 +39,9 @@
 <blockquote>
 <ul class="simple">
 <li>coders/map.c (ReadMAPImage): Allocate pixels after return case
-for 'ping' mode.</li>
+for 'ping' mode.
+(ReadMAPImage): Fix problem added in last commit due to multiple
+uses of 'packet_size'.</li>
 <li>magick/floats.c (_Gm_convert_fp16_to_fp32)
 (_Gm_convert_fp24_to_fp32): Fix Coverity 10094 &quot;Logically dead
 code&quot;.</li>
