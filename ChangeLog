@@ -1,5 +1,9 @@
 2015-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/floats.c (_Gm_convert_fp16_to_fp32)
+	(_Gm_convert_fp24_to_fp32): Fix Coverity 10094 "Logically dead
+	code".
+
 	* coders/pcx.c (ReadPCXImage): Fix Coverity 10197 "Negative loop
 	bound".
 

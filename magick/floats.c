@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2008 - 2012 GraphicsMagick Group
+  Copyright (C) 2008 - 2015 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -56,7 +56,8 @@ int _Gm_convert_fp16_to_fp32 (const fp_16bits *fp16, float *fp32)
   new_expt = expt = 0;
   new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
 
-  if (*fp16 != 0)
+  /* For zero, all bits except possibly sbit are zero */
+  if ((src[0] | src[1]) != 0U)
     {
 #if !defined(WORDS_BIGENDIAN)
 	{
@@ -503,7 +504,8 @@ int _Gm_convert_fp24_to_fp32 (const fp_24bits *fp24, float *fp32, const int mode
   /* new_mant = mant = 0; */
   new_m3 = new_m2 = new_m1 = m2 = m1 = 0;
 
-  if (*fp24 == 0)
+  /* For zero, all bits except possibly sbit are zero */
+  if ((src[0] | src[1] | src[2]) == 0U)
     {
       *dst = 0;
       *(dst + 1) = 0;
