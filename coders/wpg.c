@@ -500,7 +500,7 @@ static int UnpackWPG2Raster(Image *image, int bpp)
     ldblk;
 
   int XorMe = 0;
-  int ParanoaCheck;
+  int c;
 
   x=0;
   y=0;
@@ -524,7 +524,12 @@ static int UnpackWPG2Raster(Image *image, int bpp)
       switch(bbuf)
         {
         case 0x7D:
-          SampleSize=ReadBlobByte(image);  /* DSZ */
+          if ((c = ReadBlobByte(image)) == EOF) /* DSZ */
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
+          SampleSize=c;
           if(SampleSize>8)
             {
               FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
@@ -542,25 +547,35 @@ static int UnpackWPG2Raster(Image *image, int bpp)
 	  XorMe=!XorMe; /* or XorMe=1 ?? */
           break;
         case 0x7F:
-          RunCount=ReadBlobByte(image);   /* BLK */
+          if ((c = ReadBlobByte(image)) == EOF) /* BLK */
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
+          RunCount=c;
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertByte6(0);
             }
           break;
         case 0xFD:
-	  RunCount=ReadBlobByte(image);   /* EXT */
+          if ((c = ReadBlobByte(image)) == EOF) /* EXT */
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
+	  RunCount=c;
 	  for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
-          RunCount = ParanoaCheck = ReadBlobByte(image);  /* RST */
-		  if(ParanoaCheck<0)
-		  {
-                    FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
-			 return(-4);
-		  }
+          if ((c = ReadBlobByte(image)) == EOF)  /* RST */
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
+          RunCount = c;
           if(x!=0)
             {
               (void) fprintf(stderr,
@@ -580,7 +595,12 @@ static int UnpackWPG2Raster(Image *image, int bpp)
           }
           break;
         case 0xFF:
-          RunCount=ReadBlobByte(image);	 /* WHT */
+          if ((c = ReadBlobByte(image)) == EOF)	 /* WHT */
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
+          RunCount=c;
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertByte6(0xFF);
@@ -604,6 +624,11 @@ static int UnpackWPG2Raster(Image *image, int bpp)
                 InsertByte6(bbuf);
               }
           }
+          if (EOFBlob(image))
+            {
+              FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);
+              return(-4);
+            }
         }
     }
   FreeUnpackWPG2RasterAllocs(BImgBuff,UpImgBuff);

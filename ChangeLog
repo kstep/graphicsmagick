@@ -1,3 +1,8 @@
+2015-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c (UnpackWPG2Raster): Always test for EOF from
+	ReadBlobByte().  Should fix Coverity 10205 "Negative loop bound".
+
 2015-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pcx.c (ReadPCXImage): Add some more integer-overflow
