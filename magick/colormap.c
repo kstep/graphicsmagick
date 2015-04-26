@@ -236,7 +236,7 @@ MagickConstrainColormapIndex(Image *image, unsigned int index)
             colormapIndexBuffer[MaxTextExtent];
       
           FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
-                       (unsigned int) index, image->colors, image->filename);
+                       index, image->colors, image->filename);
           errno=0;
           ThrowException(&image->exception,CorruptImageError,
                          InvalidColormapIndex,colormapIndexBuffer);

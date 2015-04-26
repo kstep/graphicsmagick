@@ -140,9 +140,6 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
     ThrowMAPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
-  if (pixels == (unsigned char *) NULL)
-    ThrowMAPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   packet_size=image->colors > 256 ? 6 : 3;
   colormap=MagickAllocateArray(unsigned char *,packet_size,image->colors);
   if (colormap == (unsigned char *) NULL)
@@ -174,13 +171,15 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(colormap);
   if (image_info->ping)
     {
-      MagickFreeMemory(pixels);
       CloseBlob(image);
       return(image);
     }
   /*
     Read image pixels.
   */
+  pixels=MagickAllocateArray(unsigned char *,packet_size,image->columns);
+  if (pixels == (unsigned char *) NULL)
+    ThrowMAPReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   packet_size=image->depth > 8 ? 2 : 1;
   for (y=0; y < (long) image->rows; y++)
   {
@@ -194,9 +193,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowMAPReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(IndexPacket) (*p++);
+      index=(*p++);
       if (image->colors > 256)
-        index=(IndexPacket) ((index << 8)+(*p++));
+        index=((index << 8)+(*p++));
       VerifyColormapIndex(image,index);
       indexes[x]=index;
       *q++=image->colormap[index];
