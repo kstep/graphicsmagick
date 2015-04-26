@@ -1,5 +1,8 @@
 2015-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pcx.c (ReadPCXImage): Fix Coverity 10197 "Negative loop
+	bound".
+
 	* coders/map.c (ReadMAPImage): Allocate pixels after return case
 	for 'ping' mode.
 	(ReadMAPImage): Fix problem added in last commit due to multiple

@@ -209,6 +209,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *page_table = (ExtendedSignedIntegralType *) NULL;
 
   int
+    c,
     bits,
     id,
     mask;
@@ -297,36 +298,40 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Verify PCX identifier.
     */
-    pcx_info.version=ReadBlobByte(image);
-    if ((count != 1) || (pcx_info.identifier != 0x0aU))
-      ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
-    pcx_info.encoding=ReadBlobByte(image);
-    pcx_info.bits_per_pixel=ReadBlobByte(image);
-    pcx_info.left=ReadBlobLSBShort(image);
-    pcx_info.top=ReadBlobLSBShort(image);
-    pcx_info.right=ReadBlobLSBShort(image);
-    pcx_info.bottom=ReadBlobLSBShort(image);
-    pcx_info.horizontal_resolution=ReadBlobLSBShort(image);
-    pcx_info.vertical_resolution=ReadBlobLSBShort(image);
-    /*
-      Read PCX raster colormap.
-    */
-    image->columns=(pcx_info.right-pcx_info.left)+1;
-    image->rows=(pcx_info.bottom-pcx_info.top)+1;
-    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : 8;
-    image->units=PixelsPerInchResolution;
-    image->x_resolution=pcx_info.horizontal_resolution;
-    image->y_resolution=pcx_info.vertical_resolution;
-    image->colors=16;
-    (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
-    pcx_info.reserved=ReadBlobByte(image);
-    pcx_info.planes=ReadBlobByte(image);
-    pcx_info.bytes_per_line=ReadBlobLSBShort(image);
-    pcx_info.palette_info=ReadBlobLSBShort(image);
-    pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
-    pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
+    do
+      {
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        pcx_info.version=c;
+        if ((count != 1) || (pcx_info.identifier != 0x0aU))
+          ThrowPCXReaderException(CorruptImageError,ImproperImageHeader,image);
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        pcx_info.encoding=c;
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        pcx_info.bits_per_pixel=c;
+        pcx_info.left=ReadBlobLSBShort(image);
+        pcx_info.top=ReadBlobLSBShort(image);
+        pcx_info.right=ReadBlobLSBShort(image);
+        pcx_info.bottom=ReadBlobLSBShort(image);
+        pcx_info.horizontal_resolution=ReadBlobLSBShort(image);
+        pcx_info.vertical_resolution=ReadBlobLSBShort(image);
+        if (ReadBlob(image,3*16,(char *) pcx_colormap) != 3*16)
+          break;
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        pcx_info.reserved=c;
+        if ((c = ReadBlobByte(image)) == EOF)
+          break;
+        pcx_info.planes=c;
+        pcx_info.bytes_per_line=ReadBlobLSBShort(image);
+        pcx_info.palette_info=ReadBlobLSBShort(image);
+        pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
+        pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
+      } while (0);
 
-    if (EOFBlob(image))
+    if ((c == EOF) || EOFBlob(image))
       ThrowPCXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
     if (image->logging)
@@ -364,6 +369,17 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             (unsigned int) pcx_info.horizontal_screen_size,
                             (unsigned int) pcx_info.vertical_screen_size
                             );
+
+    /*
+      Read PCX raster colormap.
+    */
+    image->columns=(pcx_info.right-pcx_info.left)+1;
+    image->rows=(pcx_info.bottom-pcx_info.top)+1;
+    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : 8;
+    image->units=PixelsPerInchResolution;
+    image->x_resolution=pcx_info.horizontal_resolution;
+    image->y_resolution=pcx_info.vertical_resolution;
+    image->colors=16;
 
     /*
       Validate rows, columns, bits
