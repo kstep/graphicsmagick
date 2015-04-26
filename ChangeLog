@@ -1,5 +1,9 @@
 2015-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colormap.c (MagickConstrainColormapIndex): For out of
+	range condition, specifically return 0 rather than setting index
+	to zero, and then returning index.
+
 	* coders/pcx.c (ReadPCXImage): Fix Coverity 10197 "Negative loop
 	bound".
 

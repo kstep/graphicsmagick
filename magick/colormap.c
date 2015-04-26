@@ -228,23 +228,21 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
 MagickExport unsigned int
 MagickConstrainColormapIndex(Image *image, unsigned int index)
 {
-  if (index >= image->colors)
-    {
-      if (image->exception.severity < CorruptImageError )
-        {
-          char
-            colormapIndexBuffer[MaxTextExtent];
-      
-          FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
-                       index, image->colors, image->filename);
-          errno=0;
-          ThrowException(&image->exception,CorruptImageError,
-                         InvalidColormapIndex,colormapIndexBuffer);
-        }
-      index=0U;
-    }
+  if (index < image->colors)
+    return index;
 
-  return index;
+  if (image->exception.severity < CorruptImageError )
+    {
+      char
+        colormapIndexBuffer[MaxTextExtent];
+      
+      FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s",
+                   index, image->colors, image->filename);
+      errno=0;
+      ThrowException(&image->exception,CorruptImageError,
+                     InvalidColormapIndex,colormapIndexBuffer);
+    }
+  return 0U;
 }
 
 /*
