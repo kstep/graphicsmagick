@@ -295,6 +295,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,1,(char *) &pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
+    MagickBool
+      read_header_ok = MagickFalse;
+
     /*
       Verify PCX identifier.
     */
@@ -329,9 +332,12 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pcx_info.palette_info=ReadBlobLSBShort(image);
         pcx_info.horizontal_screen_size=ReadBlobLSBShort(image);
         pcx_info.vertical_screen_size=ReadBlobLSBShort(image);
+        if (EOFBlob(image))
+          break;
+        read_header_ok=MagickTrue;
       } while (0);
 
-    if ((c == EOF) || EOFBlob(image))
+    if (!read_header_ok)
       ThrowPCXReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
     if (image->logging)
