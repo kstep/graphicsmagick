@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003-2013 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -229,7 +229,7 @@ MagickExport void * MagickMallocAligned(const size_t alignment,const size_t size
     alloc_size=(size+alignment-1)+sizeof(void *);
     if (alloc_size > size)
       {
-	if ((alloc_p = ((MallocFunc)(alloc_size))) != NULL)
+	if ((alloc_p = (MagickMalloc(alloc_size))) != NULL)
 	  {
 	    alligned_p=(void*) RoundUpToAlignment((magick_uintptr_t)alloc_p+
 						  sizeof(void *),alignment);
@@ -344,7 +344,7 @@ MagickExport void *MagickMallocArray(const size_t count,const size_t size)
   allocation_size=MagickArraySize(count,size);
 
   if (allocation_size)
-    allocation = (MallocFunc)(allocation_size);
+    allocation = MagickMalloc(allocation_size);
   return allocation;
 }
 
@@ -381,7 +381,7 @@ MagickExport void * MagickMallocCleared(const size_t size)
 
   if (size != 0)
     {
-      p=(MallocFunc)(size);
+      p=MagickMalloc(size);
 
       if (p != (void *) NULL)
 	(void) memset(p,0,size);
@@ -472,7 +472,7 @@ MagickExport void *MagickRealloc(void *memory,const size_t size)
   else
     new_memory = (ReallocFunc)(memory,size);
   if ((new_memory == 0) && (memory != 0) && (size != 0))
-    (FreeFunc)(memory);
+    MagickFree(memory);
 
   return new_memory;
 }
@@ -542,12 +542,12 @@ MagickExport void MagickFreeAligned(void *memory)
   if (memory != (void *) NULL)
     {
 #if defined (HAVE_POSIX_MEMALIGN)
-      (FreeFunc)(memory);
+      MagickFree(memory);
 #elif defined(HAVE__ALIGNED_MALLOC)
       /* Windows Studio .NET 2003 or later */
       _aligned_free(memory);
 #else
-      (FreeFunc)(*((void **)memory-1));
+      MagickFree(*((void **)memory-1));
 #endif
     }
 }
