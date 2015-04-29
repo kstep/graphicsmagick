@@ -1720,7 +1720,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Obtain offset to pixels.
   */
-  pixels_offset=dpx_file_info.image_data_offset;
+  pixels_offset=dpx_file_info.image_data_offset & 0xffffffff;
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Image data offset %lu",pixels_offset);
