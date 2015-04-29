@@ -336,6 +336,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (txt_subformat != NO_TXT)
     {
+#define ThrowNOTXTReaderException(code_,reason_,image_)         \
+      do {                                                      \
+        MagickFreeMemory(BImgBuff);                             \
+        ThrowReaderException(code_,reason_,image_);             \
+      } while (0);
+
       unsigned
 	x,
 	y;
@@ -356,7 +362,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	NumOfPlanes;
 
       unsigned char
-	*BImgBuff;
+	*BImgBuff=0;
 
       magick_uint16_t
 	*WImgBuff;
@@ -462,7 +468,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		    (ch >= 'A' && ch <= 'Z'))
 		  {
 		  TXT_FAIL:			/* not a text data */
-		    ThrowReaderException(CoderError,ImageTypeNotSupported,image);
+		    ThrowNOTXTReaderException(CoderError,ImageTypeNotSupported,image);
 		  }
 	      }
 	    /* x,y: (R,G,B) */
@@ -594,13 +600,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       WImgBuff = (magick_uint16_t *)BImgBuff;
       DImgBuff = (magick_uint32_t *)BImgBuff;  
       if (BImgBuff == NULL) 
-	ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+	ThrowNOTXTReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   
       image->columns = x+1;
       image->rows = y+1;
 
       if (CheckImagePixelLimits(image, exception) != MagickPass)
-        ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+        ThrowNOTXTReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
       (void) SeekBlob(image,NextImagePos,SEEK_SET);
       NextImagePos = 0;
@@ -806,6 +812,7 @@ FINISH:
 
 	    }
 	}
+    /* Note that DImgBuff and WImgBuff point to BImgBuff */
     MagickFreeMemory(BImgBuff);
     } while(!EOFBlob(image) && NextImagePos>0);	
 

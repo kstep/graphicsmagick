@@ -1483,9 +1483,13 @@ SampleImage(const Image *image,const unsigned long columns,
   pixels=MagickAllocateArray(PixelPacket *,image->columns,sizeof(PixelPacket));
   x_offset=MagickAllocateArray(double *,sample_image->columns,sizeof(double));
   y_offset=MagickAllocateArray(double *,sample_image->rows,sizeof(double));
-  if ((pixels == (PixelPacket *) NULL) || (x_offset == (double *) NULL) ||
+  if ((pixels == (PixelPacket *) NULL) ||
+      (x_offset == (double *) NULL) ||
       (y_offset == (double *) NULL))
     {
+      MagickFreeMemory(y_offset);
+      MagickFreeMemory(x_offset);
+      MagickFreeMemory(pixels);
       DestroyImage(sample_image);
       ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
                            UnableToSampleImage);

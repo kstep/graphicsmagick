@@ -1575,7 +1575,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
            */
           saved_pos = TellBlob(image);
           if (saved_pos < 0)
-            ThrowReaderException(BlobError,UnableToObtainOffset,image);
+            {
+              MagickFreeMemory(layer_info);
+              ThrowReaderException(BlobError,UnableToObtainOffset,image);
+            }
 
           if( first_layer <= current_layer && current_layer <= last_layer )
 	    {

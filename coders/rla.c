@@ -81,6 +81,12 @@
 { \
     field[sizeof(field)-1]='\0'; \
 }
+
+#define ThrowRLAReaderException(code_,reason_,image_) \
+do { \
+  MagickFreeMemory(scanlines); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
 static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _WindowFrame
@@ -189,7 +195,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   magick_uint32_t
-    *scanlines;
+    *scanlines=0;
 
   register long
     i,
@@ -311,14 +317,14 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       NULLTerminateASCIIField(rlb_extra_info.space);
     }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    ThrowRLAReaderException(CorruptImageError,UnexpectedEndOfFile,image);
 
   /*
     Verify revision.
   */
 
 /*   if (rla3_extra_info.revision != 0xFFFE) */
-/*     ThrowReaderException(CorruptImageError,ImproperImageHeader,image); */
+/*     ThrowRLAReaderException(CorruptImageError,ImproperImageHeader,image); */
 
   /*
     Verify dimensions.
@@ -332,7 +338,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           (int) rla_info.active_window.bottom);
   if ((((long) rla_info.active_window.right - rla_info.active_window.left) < 0) ||
       (((long) rla_info.active_window.top-rla_info.active_window.bottom) < 0))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowRLAReaderException(CorruptImageError,ImproperImageHeader,image);
 
   if (image->logging)
     {
@@ -446,13 +452,13 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if ((rla_info.storage_type != 0) || (rla_info.storage_type > 3))
-    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+    ThrowRLAReaderException(CorruptImageError,ImproperImageHeader,image);
 
   if (rla_info.storage_type != 0)
-    ThrowReaderException(CoderError,DataStorageTypeIsNotSupported,image);
+    ThrowRLAReaderException(CoderError,DataStorageTypeIsNotSupported,image);
 
   if (LocaleNCompare(rla_info.chan,"rgb",3) != 0)
-    ThrowReaderException(CoderError,ColorTypeNotSupported,image);
+    ThrowRLAReaderException(CoderError,ColorTypeNotSupported,image);
                           
   /*
     Initialize image structure.
@@ -472,12 +478,12 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if (CheckImagePixelLimits(image, exception) != MagickPass)
-    ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+    ThrowRLAReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
   number_channels=rla_info.number_channels+rla_info.number_matte_channels;
   scanlines=MagickAllocateArray(magick_uint32_t *,image->rows,sizeof(magick_uint32_t));
   if (scanlines == (magick_uint32_t *) NULL)
-    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowRLAReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (*rla_info.description != '\0')
     (void) SetImageAttribute(image,"comment",rla_info.description);
   /*
@@ -493,7 +499,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
     }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    ThrowRLAReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   /*
     Read image data.
   */
@@ -652,8 +658,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+    ThrowRLAReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   CloseBlob(image);
+  MagickFreeMemory(scanlines);
   return(image);
 }
 

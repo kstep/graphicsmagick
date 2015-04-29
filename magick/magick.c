@@ -1398,7 +1398,7 @@ ListModuleMap(FILE *file,ExceptionInfo *exception)
     file=stdout;
 
    magick_array=GetMagickInfoArray(exception);
-   if ((!magick_array) || (exception->severity > UndefinedException))
+   if (!magick_array)
      return MagickFail;
 
    (void) fprintf(file, "<?xml version=\"1.0\"?>\n");

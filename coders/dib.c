@@ -904,7 +904,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
+      {
+        MagickFreeMemory(pixels);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
   }
   MagickFreeMemory(pixels);
   if (EOFBlob(image))

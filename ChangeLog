@@ -1,3 +1,24 @@
+2015-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xcf.c (ReadXCFImage): Fix Coverity 64064 "Resource leak".
+
+	* coders/txt.c (ReadTXTImage): Fix Coverity 64061 "Resource leak".
+
+	* coders/rla.c (ReadRLAImage): Fix Coverity 64063 "Resource leak".
+
+	* coders/dib.c (ReadDIBImage): Fix Coverity 64057 Resource leak".
+
+	* magick/segment.c (Classify): Fix Coverity 64056 "Resource leak".
+
+	* magick/resize.c (SampleImage): Fix Coverity 64053, 64054, and
+	64062 "Resource leak".
+
+	* magick/render.c (TraceStrokePolygon): Fix Coverity 64055, 64059,
+	and 64060 "Resource leak".
+
+	* magick/magick.c (ListModuleMap): Quiet Coverity 64058 "Resource
+	leak".
+
 2015-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.c: All use of user-provided allocation functions

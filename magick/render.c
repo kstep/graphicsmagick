@@ -5321,13 +5321,23 @@ TraceStrokePolygon(const DrawInfo *draw_info,
   number_vertices=primitive_info->coordinates;
   max_strokes=2*number_vertices+6*BezierQuantum+360;
   path_p=MagickAllocateArray(PointInfo *,max_strokes,sizeof(PointInfo));
+  if (path_p == (PointInfo *) NULL)
+    return((PrimitiveInfo *) NULL);
   path_q=MagickAllocateArray(PointInfo *,max_strokes,sizeof(PointInfo));
+  if (path_q == (PointInfo *) NULL)
+    {
+      MagickFreeMemory(path_p);
+      return((PrimitiveInfo *) NULL);
+    }
   polygon_primitive=
     MagickAllocateArray(PrimitiveInfo *,(number_vertices+2),
 			sizeof(PrimitiveInfo));
-  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
-      (polygon_primitive == (PrimitiveInfo *) NULL))
-    return((PrimitiveInfo *) NULL);
+  if (polygon_primitive == (PrimitiveInfo *) NULL)
+    {
+      MagickFreeMemory(path_p);
+      MagickFreeMemory(path_q);
+      return((PrimitiveInfo *) NULL);
+    }
   (void) memcpy(polygon_primitive,primitive_info,number_vertices*
     sizeof(PrimitiveInfo));
   closed_path=
@@ -5487,6 +5497,8 @@ TraceStrokePolygon(const DrawInfo *draw_info,
          MagickReallocMemory(PointInfo *,path_q,max_strokes*sizeof(PointInfo));
          if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
            {
+             MagickFreeMemory(path_p);
+             MagickFreeMemory(path_q);
              MagickFreeMemory(polygon_primitive);
              return((PrimitiveInfo *) NULL);
            }

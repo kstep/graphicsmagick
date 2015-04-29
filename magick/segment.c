@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2009 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -213,8 +213,8 @@ DumpHistogramArray(FILE *stream,const unsigned int entries,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%  Method Classify defines on ore more classes.  Each pixel is thresholded
-%  to determine which class it belongs to.  If not class is identified it
+%  Method Classify defines one or more classes.  Each pixel is thresholded
+%  to determine which class it belongs to.  If no class is identified it
 %  is assigned to the closest class based on the fuzzy c-Means technique.
 %
 %  The format of the Classify method is:
@@ -271,11 +271,11 @@ Classify(Image *image,short **extrema,
          const unsigned int verbose)
 {
   Cluster
-    *cluster,
-    **cluster_array,
-    *head,
+    *cluster=0,
+    **cluster_array=0,
+    *head=0,
     *last_cluster,
-    *next_cluster;
+    *next_cluster=0;
 
   double
     *free_squares,
@@ -294,13 +294,13 @@ Classify(Image *image,short **extrema,
     y;
 
   PixelPacket
-    *colormap;
+    *colormap=0;
 
   register const PixelPacket
     *p;
 
   register double
-    *squares;
+    *squares=0;
 
   register IndexPacket
     *indexes;
@@ -349,8 +349,11 @@ Classify(Image *image,short **extrema,
                   head=cluster;
                 }
               if (cluster == (Cluster *) NULL)
-                ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                                     image->filename);
+                {
+                  ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,
+                                 image->filename);
+                  goto classify_error_exit;
+                }
               /*
                 Initialize a new class.
               */
@@ -370,8 +373,11 @@ Classify(Image *image,short **extrema,
       */
       cluster=MagickAllocateMemory(Cluster *,sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
-        ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                             image->filename);
+        {
+          ThrowException(&image->exception,ResourceLimitError,MemoryAllocationFailed,
+                         image->filename);
+          goto classify_error_exit;
+        }
       /*
         Initialize a new class.
       */
@@ -455,6 +461,8 @@ Classify(Image *image,short **extrema,
             break;
           }
     }
+  if (status == MagickFail)
+    goto classify_error_exit;
 
   /*
     Remove clusters that do not meet minimum cluster threshold.
@@ -554,14 +562,20 @@ Classify(Image *image,short **extrema,
         }
     }
   if ((number_clusters > 256) || (number_clusters == 0))
-    ThrowBinaryException3(ImageError,UnableToSegmentImage,TooManyClusters);
+    {
+      ThrowException3(&image->exception,ImageError,UnableToSegmentImage,TooManyClusters);
+      goto classify_error_exit;
+    }
   /*
     Speed up distance calculations.
   */
   squares=MagickAllocateMemory(double *,513*sizeof(double));
   if (squares == (double *) NULL)
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                         image->filename);
+    {
+      ThrowException(&image->exception,ResourceLimitError,
+                     MemoryAllocationFailed,image->filename);
+      goto classify_error_exit;
+    }
   squares+=255;
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for
@@ -573,12 +587,14 @@ Classify(Image *image,short **extrema,
   */
   colormap=MagickAllocateMemory(PixelPacket *,number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-                         image->filename);
+    {
+      ThrowException(&image->exception,ResourceLimitError,
+                     MemoryAllocationFailed,image->filename);
+      goto classify_error_exit;
+    }
   image->matte=False;
   image->storage_class=PseudoClass;
-  if (image->colormap != (PixelPacket *) NULL)
-    MagickFreeMemory(image->colormap);
+  MagickFreeMemory(image->colormap);
   image->colormap=colormap;
   image->colors=number_clusters;
   i=0;
@@ -761,6 +777,7 @@ Classify(Image *image,short **extrema,
   /*
     Free memory.
   */
+ classify_error_exit:
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
     {
       next_cluster=cluster->next;
@@ -768,9 +785,12 @@ Classify(Image *image,short **extrema,
       head=(Cluster *) NULL;
     }
   MagickFreeMemory(cluster_array);
-  squares-=255;
-  free_squares=squares;
-  MagickFreeMemory(free_squares);
+  if (squares > (double *) 255)
+    {
+      squares-=255;
+      free_squares=squares;
+      MagickFreeMemory(free_squares);
+    }
   return(status);
 }
 
