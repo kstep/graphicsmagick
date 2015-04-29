@@ -1,3 +1,7 @@
+2015-04-28  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
+
+	* coders/cineon.c: Fix Coverity 10310 "Untrusted loop bound".
+
 2015-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/memory.c: All use of user-provided allocation functions

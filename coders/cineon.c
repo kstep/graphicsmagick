@@ -578,7 +578,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   /*
     Obtain offset to pixels.
   */
-  pixels_offset=cin_file_info.image_data_offset;
+  pixels_offset=cin_file_info.image_data_offset & 0xffffffff;
   if (pixels_offset < 712)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
