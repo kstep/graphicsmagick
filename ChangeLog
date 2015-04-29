@@ -1,5 +1,7 @@
 2015-04-28  Glenn Randers-Pehrson  <glennrp@simple.dallas.tx.us>
 
+	* coders/dpx.c: Fix Coverity 10305 "Untrusted loop bound".
+
 	* coders/cineon.c: Fix Coverity 10310 "Untrusted loop bound".
 
 2015-04-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
