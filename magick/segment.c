@@ -278,7 +278,7 @@ Classify(Image *image,short **extrema,
     *next_cluster=0;
 
   double
-    *free_squares,
+    *squares_array=0,
     threshold,
     total_vectors;
 
@@ -300,7 +300,7 @@ Classify(Image *image,short **extrema,
     *p;
 
   register double
-    *squares=0;
+    *squares;
 
   register IndexPacket
     *indexes;
@@ -569,14 +569,14 @@ Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=MagickAllocateMemory(double *,513*sizeof(double));
-  if (squares == (double *) NULL)
+  squares_array=MagickAllocateMemory(double *,513*sizeof(double));
+  if (squares_array == (double *) NULL)
     {
       ThrowException(&image->exception,ResourceLimitError,
                      MemoryAllocationFailed,image->filename);
       goto classify_error_exit;
     }
-  squares+=255;
+  squares=squares_array+255;
 #if defined(HAVE_OPENMP)
 #  pragma omp parallel for
 #endif
@@ -785,12 +785,7 @@ Classify(Image *image,short **extrema,
       head=(Cluster *) NULL;
     }
   MagickFreeMemory(cluster_array);
-  if (squares > (double *) 255)
-    {
-      squares-=255;
-      free_squares=squares;
-      MagickFreeMemory(free_squares);
-    }
+  MagickFreeMemory(squares_array);
   return(status);
 }
 

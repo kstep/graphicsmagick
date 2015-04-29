@@ -1,3 +1,7 @@
+2015-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/segment.c (Classify): Fix Coverity 64317 "Resource leak".
+
 2015-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xcf.c (ReadXCFImage): Fix Coverity 64064 "Resource leak".
