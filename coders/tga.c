@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -231,8 +231,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tga_info.colormap_size=ReadBlobByteFromBuffer(readbuffer, &readbufferpos);
       tga_info.x_origin=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
       tga_info.y_origin=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
-      tga_info.width=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
-      tga_info.height=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
+      tga_info.width=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos) & 0xFFFF;
+      tga_info.height=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos) & 0xFFFF;
       tga_info.bits_per_pixel=ReadBlobByteFromBuffer(readbuffer, &readbufferpos);
       tga_info.attributes=ReadBlobByteFromBuffer(readbuffer, &readbufferpos);
       assert(readbufferpos == headersize);

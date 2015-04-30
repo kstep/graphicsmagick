@@ -1,5 +1,24 @@
 2015-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/xcf.c (load_tile_rle): Quiet Coverity 10259 "Untrusted
+	loop bound".
+
+	* coders/sct.c (ReadSCTImage): Quiet Coverity 10285 "Untrusted
+	loop bound".
+
+	* coders/pwp.c (ReadPWPImage): Quiet Coverity 10299 "Untrusted
+	loop bound".
+
+	* coders/pcd.c (ReadPCDImage): Quiet Coverity 10301 "Untrusted
+	loop bound".
+
+	* coders/tga.c (ReadTGAImage): Quiet Coverity 53418 "Untrusted
+	loop bound".
+
+	* wand/magick_compat.c (ParseGeometry): Fix overlap strcpy() in
+	dead code.  Quiets Coverity 10078 "Overlapping buffer in memory
+	copy" and 10248 "Copy into fixed size buffer".
+
 	* magick/segment.c (Classify): Fix Coverity 64317 "Resource leak".
 
 2015-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

@@ -458,7 +458,9 @@ WandExport unsigned int ParseGeometry(const char *geometry,
       case '@':
       {
         flags|=AreaValue;
-        (void) strcpy(p,p+1);
+        /* This change is only to make Coverity happy.  Yes strlen() might get run twice. */
+        (void) memmove(p,p+1,Min(sizeof(pedantic_geometry),strlen(p+1)+1));
+        p[sizeof(pedantic_geometry)-1]='\0';
         break;
       }
       case '-':

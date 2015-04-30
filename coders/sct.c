@@ -38,7 +38,8 @@
   HandShake Foreign File Transfer Protocol, Scitex Corporation, Ltd.,
   Revision A: April 1988, Document No. 788-37898A, Catalog No. 399Z37898
 
-  http://www.oreilly.com/www/centers/gff/formats/scitex/
+  http://www.oreilly.com/www/centers/gff/formats/scitex
+/
 */
 
 
@@ -187,10 +188,10 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (ReadBlob(image,14,(char *) buffer) != 14)
         break;
-      image->rows=MagickAtoL(buffer);
+      image->rows=MagickAtoL(buffer) & 0x7FFFFFFF;
       if (ReadBlob(image,14,(char *) buffer) != 14)
         break;
-      image->columns=MagickAtoL(buffer);
+      image->columns=MagickAtoL(buffer) & 0x7FFFFFFF;
       if (ReadBlob(image,196,(char *) buffer) != 196)
         break;
       if (ReadBlob(image,768,(char *) buffer) != 768)

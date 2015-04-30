@@ -197,7 +197,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderTemporaryFileException(filename);
       }
     (void) fwrite("SFW94A",1,6,file);
-    filesize=65535L*magick[2]+256L*magick[1]+magick[0];
+    filesize=(65535L*magick[2]+256L*magick[1]+magick[0]) && 0xFFFFFFFF;
     for (i=0; i < filesize; i++)
     {
       if ((c=ReadBlobByte(pwp_image)) == EOF)

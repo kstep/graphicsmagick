@@ -473,7 +473,7 @@ static MagickPassFail load_tile_rle (Image* image,
                       goto bogus_rle;
                     }
     
-                  length = (*xcfdata << 8) + xcfdata[1];
+                  length = ((*xcfdata << 8) + xcfdata[1]) & 0xFFFF;
                   xcfdata += 2;
                 }
     
@@ -542,7 +542,7 @@ static MagickPassFail load_tile_rle (Image* image,
                       goto bogus_rle;
                     }
     
-                  length = (*xcfdata << 8) + xcfdata[1];
+                  length = ((*xcfdata << 8) + xcfdata[1]) & 0xFFFF;
                   xcfdata += 2;
                 }
     

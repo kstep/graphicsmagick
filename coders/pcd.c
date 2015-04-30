@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003-2015 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -564,7 +564,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   rotate=header[0x0e02] & 0x03;
-  number_images=(header[10] << 8) | header[11];
+  number_images=((header[10] << 8) | header[11]) & 0xFFFF;
   MagickFreeMemory(header);
   /*
     Determine resolution by subimage specification.
