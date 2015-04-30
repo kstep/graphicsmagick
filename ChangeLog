@@ -1,5 +1,8 @@
 2015-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/bin/delegates.mgk: Recipe for 'gs-cmyk' contained a
+	typo which breaks using '-type ColorSeparation'.
+
 	* coders/pwp.c (ReadPWPImage): Fix Coverity CID 64491 "Integer
 	handling issues".
 
