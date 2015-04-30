@@ -29846,7 +29846,7 @@ GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
 GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
-GSCMYKDevice=pam
+GSCMYKDevices="pamcmyk32 pam $GSColorDevice"
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
@@ -29933,12 +29933,15 @@ $as_echo "$GSMonoDevice" >&6; }
   # GSCMYKDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs CMYK device" >&5
 $as_echo_n "checking for gs CMYK device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pam -sOutputFile=/dev/null < /dev/null 2> /dev/null
-  then
-    GSCMYKDevice=pam
-  else
-    GSCMYKDevice=$GSColorDevice
-  fi
+  GSCMYKDevice=$GSColorDevice
+  for device in $GSCMYKDevices
+  do
+    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    then
+      GSCMYKDevice=$device
+      break
+    fi
+  done
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSCMYKDevice" >&5
 $as_echo "$GSCMYKDevice" >&6; }
 

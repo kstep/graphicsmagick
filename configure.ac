@@ -3027,7 +3027,7 @@ GSColorAlphaDevice=pngalpha
 GSGrayDevice=pgmraw
 GSPaletteDevice=pcx256
 GSMonoDevice=pbmraw
-GSCMYKDevice=pam
+GSCMYKDevices="pamcmyk32 pam $GSColorDevice"
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
@@ -3101,12 +3101,15 @@ then
 
   # GSCMYKDevice
   AC_MSG_CHECKING([for gs CMYK device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pam -sOutputFile=/dev/null < /dev/null 2> /dev/null
-  then
-    GSCMYKDevice=pam
-  else
-    GSCMYKDevice=$GSColorDevice
-  fi
+  GSCMYKDevice=$GSColorDevice
+  for device in $GSCMYKDevices
+  do
+    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    then
+      GSCMYKDevice=$device
+      break
+    fi
+  done
   AC_MSG_RESULT($GSCMYKDevice)
 
   # GSPDFDevice

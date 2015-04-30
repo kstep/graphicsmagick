@@ -1,5 +1,8 @@
 2015-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Use an algorithm to try to discover the best value
+	for GSCMYKDevice.
+
 	* VisualMagick/bin/delegates.mgk: Recipe for 'gs-cmyk' contained a
 	typo which breaks using '-type ColorSeparation'.
 
