@@ -1944,9 +1944,11 @@ GetCacheInfo(Cache *cache)
                       UnableToAllocateCacheInfo);
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
-  cache_info->reference_count=1;
-  cache_info->file=(-1);
   cache_info->reference_semaphore=AllocateSemaphoreInfo();
+  LockSemaphoreInfo(cache_info->reference_semaphore);
+  cache_info->reference_count=1;
+  UnlockSemaphoreInfo(cache_info->reference_semaphore);
+  cache_info->file=(-1);
   if (cache_info->reference_semaphore == (SemaphoreInfo *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
                       UnableToAllocateCacheInfo);

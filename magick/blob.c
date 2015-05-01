@@ -784,7 +784,9 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->type=blob_info->type;
   clone_info->handle=blob_info->handle;
   clone_info->data=blob_info->data;
+  LockSemaphoreInfo(clone_info->semaphore);
   clone_info->reference_count=1;
+  UnlockSemaphoreInfo(clone_info->semaphore);
   return(clone_info);
 }
 
@@ -1365,8 +1367,10 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   (void) memset(blob_info,0,sizeof(BlobInfo));
   blob_info->quantum=DefaultBlobQuantum;
   blob_info->fsync=MagickFalse;
-  blob_info->reference_count=1;
   blob_info->semaphore=AllocateSemaphoreInfo();
+  LockSemaphoreInfo(blob_info->semaphore);
+  blob_info->reference_count=1;
+  UnlockSemaphoreInfo(blob_info->semaphore);
   blob_info->signature=MagickSignature;
 }
 

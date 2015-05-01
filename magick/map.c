@@ -454,8 +454,10 @@ MagickMapAllocateMap(MagickMapObjectClone clone,
       map->clone_function=clone;
       map->deallocate_function=deallocate;
       map->semaphore=AllocateSemaphoreInfo();
+      (void) LockSemaphoreInfo(map->semaphore);
       map->reference_count=1;
       map->list=0;
+      (void) UnlockSemaphoreInfo(map->semaphore);
       map->signature=MagickSignature;
     }
 

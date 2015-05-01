@@ -1,5 +1,19 @@
 2015-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/pixel_cache.c (GetCacheInfo): Quiet Coverity 10208 "Data
+	race condition".
+
+	* magick/blob.c (CloneBlobInfo): Quiet Coverity 10188 "Data race
+	condition".
+	(GetBlobInfo): Quiet Coverity 10191 "Data race condition".
+
+	* magick/image.c (AllocateImage): Quiet Coverity 10196 "Data race
+	condition".
+	(CloneImage): Quiet Coverity 10206 "Data race condition".
+
+	* magick/map.c (MagickMapAllocateMap): Quiet Coverity 10192, 10193
+	and 10228 "Data race condition".
+
 	* configure.ac: Use an algorithm to try to discover the best value
 	for GSCMYKDevice.
 

@@ -38,6 +38,16 @@
 <p>2015-04-30  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/pixel_cache.c (GetCacheInfo): Quiet Coverity 10208 &quot;Data
+race condition&quot;.</li>
+<li>magick/blob.c (CloneBlobInfo): Quiet Coverity 10188 &quot;Data race
+condition&quot;.
+(GetBlobInfo): Quiet Coverity 10191 &quot;Data race condition&quot;.</li>
+<li>magick/image.c (AllocateImage): Quiet Coverity 10196 &quot;Data race
+condition&quot;.
+(CloneImage): Quiet Coverity 10206 &quot;Data race condition&quot;.</li>
+<li>magick/map.c (MagickMapAllocateMap): Quiet Coverity 10192, 10193
+and 10228 &quot;Data race condition&quot;.</li>
 <li>configure.ac: Use an algorithm to try to discover the best value
 for GSCMYKDevice.</li>
 <li>VisualMagick/bin/delegates.mgk: Recipe for 'gs-cmyk' contained a

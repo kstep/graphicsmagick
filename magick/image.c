@@ -362,8 +362,10 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->logging=IsEventLogging();
   allocate_image->is_monochrome=MagickTrue;
   allocate_image->is_grayscale=MagickTrue;
-  allocate_image->reference_count=1;
   allocate_image->semaphore=AllocateSemaphoreInfo();
+  LockSemaphoreInfo((SemaphoreInfo *) allocate_image->semaphore);
+  allocate_image->reference_count=1;
+  UnlockSemaphoreInfo((SemaphoreInfo *) allocate_image->semaphore);
   allocate_image->signature=MagickSignature;
   allocate_image->default_views=AllocateThreadViewSet(allocate_image,
                                                       &allocate_image->exception);
@@ -1019,7 +1021,9 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     MaxTextExtent);
   (void) strlcpy(clone_image->magick,image->magick,MaxTextExtent);
   (void) strlcpy(clone_image->filename,image->filename,MaxTextExtent);
+  LockSemaphoreInfo((SemaphoreInfo *) clone_image->semaphore);
   clone_image->reference_count=1;
+  UnlockSemaphoreInfo((SemaphoreInfo *) clone_image->semaphore);
   clone_image->previous=(Image *) NULL;
   clone_image->list=(Image *) NULL;
   clone_image->next=(Image *) NULL;
