@@ -1926,14 +1926,20 @@ static void WriteRunlengthPacket(const Image *image,
               {
                 *q++=(unsigned char) (value >> 24);
                 *q++=(unsigned char) (value >> 16);
+                *q++=(unsigned char) (value >> 8);
+                *q++=(unsigned char) value;
+                break;
               }
             case 16:
               {
                 *q++=(unsigned char) (value >> 8);
+                *q++=(unsigned char) value;
+                break;
               }
             case 8:
               {
                 *q++=(unsigned char) value;
+                break;
               }
             } /* switch (quantum_size) */
         }
