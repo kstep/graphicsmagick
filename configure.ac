@@ -3044,13 +3044,13 @@ then
   fi
   AC_MSG_RESULT($GSVersion)
 
-  # GSColorDevice
+  # GSColorDevice # AS_MESSAGE_LOG_FD 
   AC_MSG_CHECKING([for gs color device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSColorDevice=pnmraw
   else
-    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
     then
       GSColorDevice=ppmraw
     else
@@ -3061,7 +3061,7 @@ then
 
   # GSColorAlphaDevice
   AC_MSG_CHECKING([for gs color+alpha device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSColorAlphaDevice=pngalpha
   else
@@ -3071,7 +3071,7 @@ then
 
   # GSGrayDevice
   AC_MSG_CHECKING([for gs gray device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSGrayDevice=pgmraw
   else
@@ -3081,7 +3081,7 @@ then
 
   # GSPaletteDevice
   AC_MSG_CHECKING([for gs pallet device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSPaletteDevice=pcx256
   else
@@ -3091,7 +3091,7 @@ then
 
   # GSMonoDevice
   AC_MSG_CHECKING([for gs mono device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSMonoDevice=pbmraw
   else
@@ -3104,7 +3104,7 @@ then
   GSCMYKDevice=$GSColorDevice
   for device in $GSCMYKDevices
   do
-    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
     then
       GSCMYKDevice=$device
       break
@@ -3114,7 +3114,7 @@ then
 
   # GSPDFDevice
   AC_MSG_CHECKING([for gs PDF writing device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSPDFDevice=pdfwrite
   else
@@ -3124,7 +3124,7 @@ then
 
   # GSPSDevice
   AC_MSG_CHECKING([for gs PS writing device])
-  if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSPSDevice=pswrite
   else
@@ -3134,7 +3134,7 @@ then
 
   # GSEPSDevice
   AC_MSG_CHECKING([for gs EPS writing device])
-  if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD
   then
     GSEPSDevice=epswrite
   else

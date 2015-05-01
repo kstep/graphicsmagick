@@ -29865,14 +29865,14 @@ $as_echo_n "checking for Ghostscript version... " >&6; }
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GSVersion" >&5
 $as_echo "$GSVersion" >&6; }
 
-  # GSColorDevice
+  # GSColorDevice # AS_MESSAGE_LOG_FD
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs color device" >&5
 $as_echo_n "checking for gs color device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSColorDevice=pnmraw
   else
-    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
     then
       GSColorDevice=ppmraw
     else
@@ -29885,7 +29885,7 @@ $as_echo "$GSColorDevice" >&6; }
   # GSColorAlphaDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs color+alpha device" >&5
 $as_echo_n "checking for gs color+alpha device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSColorAlphaDevice=pngalpha
   else
@@ -29897,7 +29897,7 @@ $as_echo "$GSColorAlphaDevice" >&6; }
   # GSGrayDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs gray device" >&5
 $as_echo_n "checking for gs gray device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pgmraw -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSGrayDevice=pgmraw
   else
@@ -29909,7 +29909,7 @@ $as_echo "$GSGrayDevice" >&6; }
   # GSPaletteDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs pallet device" >&5
 $as_echo_n "checking for gs pallet device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pcx256 -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSPaletteDevice=pcx256
   else
@@ -29921,7 +29921,7 @@ $as_echo "$GSPaletteDevice" >&6; }
   # GSMonoDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs mono device" >&5
 $as_echo_n "checking for gs mono device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSMonoDevice=pbmraw
   else
@@ -29936,7 +29936,7 @@ $as_echo_n "checking for gs CMYK device... " >&6; }
   GSCMYKDevice=$GSColorDevice
   for device in $GSCMYKDevices
   do
-    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 2> /dev/null
+    if $PSDelegate -q -dBATCH -sDEVICE=$device -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
     then
       GSCMYKDevice=$device
       break
@@ -29948,7 +29948,7 @@ $as_echo "$GSCMYKDevice" >&6; }
   # GSPDFDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PDF writing device" >&5
 $as_echo_n "checking for gs PDF writing device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSPDFDevice=pdfwrite
   else
@@ -29960,7 +29960,7 @@ $as_echo "$GSPDFDevice" >&6; }
   # GSPSDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs PS writing device" >&5
 $as_echo_n "checking for gs PS writing device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSPSDevice=pswrite
   else
@@ -29972,7 +29972,7 @@ $as_echo "$GSPSDevice" >&6; }
   # GSEPSDevice
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for gs EPS writing device" >&5
 $as_echo_n "checking for gs EPS writing device... " >&6; }
-  if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 1>&5 2>&5
   then
     GSEPSDevice=epswrite
   else

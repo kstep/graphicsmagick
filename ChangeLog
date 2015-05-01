@@ -1,5 +1,8 @@
 2015-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Keep Ghostscript gibberish from appearing in
+	Configure output.
+
 	* coders/miff.c (WriteRunlengthPacket): Quiet Coverity 10186 and
 	10214 "Missing break in switch".
 
