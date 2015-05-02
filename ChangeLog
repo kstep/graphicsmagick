@@ -1,3 +1,10 @@
+2015-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Remove
+	unneeded, almost certainly never used, and potentially insecure
+	use of mkstemp().  Will quiet Coverity 10315 "Insecure temporary
+	file".
+
 2015-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Keep Ghostscript gibberish from appearing in

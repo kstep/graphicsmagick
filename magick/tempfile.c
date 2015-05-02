@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 - 2011 GraphicsMagick Group
+% Copyright (C) 2003 - 2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -282,27 +282,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
         }
     }
 
-#if HAVE_MKSTEMP
-  /*
-    Use mkstemp().
-    Mkstemp opens the the temporary file to assure that there is
-    no race condition between allocating the name and creating the
-    file. This helps improve security.  However, the other cases
-    also create the file in advance as well so there is not actually
-    much advantage.
-  */
-  {
-    (void) strcpy(filename,"gmXXXXXX");
-    fd=mkstemp(filename);
-    if (fd != -1)
-      {
-        AddTemporaryFileToList(filename);
-	return (fd);
-      }
-  }
-
-
-#elif HAVE_TEMPNAM
+#if HAVE_TEMPNAM
   /*
     Use tempnam().
     Windows has _tempnam which works similar to Unix tempnam.
