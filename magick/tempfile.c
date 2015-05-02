@@ -222,32 +222,55 @@ MagickExport MagickPassFail AcquireTemporaryFileName(char *filename)
 */
 MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 {
-  const char
-    *tempdir=0;
+  static const char *env_strings[] =
+    {
+      "MAGICK_TMPDIR",
+#if defined(POSIX)
+      "TMPDIR",
+#endif /* defined(POSIX) */
+#if defined(MSWINDOWS)
+      "TMP",
+      "TEMP",
+#endif
+#if defined(P_tmpdir)
+      P_tmpdir,
+#endif
+      NULL
+    };
+
+  char
+    tempdir[MaxTextExtent];
+
+  unsigned int
+    i;
 
   int
     fd=-1;
 
   assert(filename != (char *) NULL);
   filename[0]='\0';
+  tempdir[0]='\0';
 
-  tempdir=getenv("MAGICK_TMPDIR");
-#if defined(POSIX)
-  if (!tempdir)
-    tempdir=getenv("TMPDIR");
-#endif /* POSIX */
-#if defined(MSWINDOWS)
-  if (!tempdir)
-    tempdir=getenv("TMP");
-  if (!tempdir)
-    tempdir=getenv("TEMP");
-#endif /* MSWINDOWS */
-#if defined(P_tmpdir)
-  if (!tempdir)
-    tempdir=P_tmpdir;
-#endif
+  for (i=0; i < sizeof(env_strings)/sizeof(env_strings[0]); i++)
+    {
+      const char
+        *env;
 
-  if (tempdir)
+      if (env_strings[i] == NULL)
+        break;
+      if ((env=getenv(env_strings[i])) != NULL)
+        {
+          const size_t copy_len = sizeof(tempdir)-16;
+          if (strlcpy(tempdir,env,copy_len) >= copy_len)
+            tempdir[0]='\0';
+          if ((tempdir[0] != '\0') && (access(tempdir,W_OK) != 0))
+            tempdir[0]='\0';
+          if (tempdir[0] != '\0')
+            break;
+        }
+    }
+
+  if (tempdir[0] != '\0')
     {
       /*
         Use our own temporary filename generator if the temporary

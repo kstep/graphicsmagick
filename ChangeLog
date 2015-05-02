@@ -1,5 +1,9 @@
 2015-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Thoroughly
+	vet temporary file path.  Might quiet Coverity 64613 "Use of
+	untrusted string value".
+
 	* wand/magick_compat.c (ParseGeometry): Another try at quieting
 	Coverity 10248 "Copy into fixed size buffer" and 10078
 	"Overlapping buffer in memory copy" in this dead code.
