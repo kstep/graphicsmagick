@@ -398,11 +398,12 @@ WandExport unsigned int ParseAbsoluteGeometry(const char *geometry,
 %
 %
 */
-static inline char *MoveStringForward(char *dst,const char *src,size_t dstsize)
+static inline char *MoveStringForward(char *dst,const char *src,size_t dstlen)
 {
-  size_t srclen=strlen(src);
-  (void) memmove(dst,src,Min(dstsize,srclen+1));
-  dst[dstsize-1]='\0';
+  const size_t srclen = strlen(src);
+  const size_t movelen = Min(dstlen,srclen+1);
+  (void) memmove(dst,src,movelen);
+  dst[movelen-1]='\0';
   return dst;
 }
 WandExport unsigned int ParseGeometry(const char *geometry,
@@ -433,7 +434,6 @@ WandExport unsigned int ParseGeometry(const char *geometry,
   {
     if (isspace((int) (*p)))
       {
-        (void) strcpy(p,p+1);
         (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         continue;
       }
