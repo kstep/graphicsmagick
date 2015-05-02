@@ -1,5 +1,9 @@
 2015-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_compat.c (ParseGeometry): Another try at quieting
+	Coverity 10248 "Copy into fixed size buffer" and 10078
+	"Overlapping buffer in memory copy" in this dead code.
+
 	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Remove
 	unneeded, almost certainly never used, and potentially insecure
 	use of mkstemp().  Will quiet Coverity 10315 "Insecure temporary

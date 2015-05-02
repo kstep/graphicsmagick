@@ -398,6 +398,13 @@ WandExport unsigned int ParseAbsoluteGeometry(const char *geometry,
 %
 %
 */
+static inline char *MoveStringForward(char *dst,const char *src,size_t dstsize)
+{
+  size_t srclen=strlen(src);
+  (void) memmove(dst,src,Min(dstsize,srclen+1));
+  dst[dstsize-1]='\0';
+  return dst;
+}
 WandExport unsigned int ParseGeometry(const char *geometry,
   GeometryInfo *geometry_info)
 {
@@ -427,6 +434,7 @@ WandExport unsigned int ParseGeometry(const char *geometry,
     if (isspace((int) (*p)))
       {
         (void) strcpy(p,p+1);
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         continue;
       }
     switch (*p)
@@ -434,33 +442,31 @@ WandExport unsigned int ParseGeometry(const char *geometry,
       case '%':
       {
         flags|=PercentValue;
-        (void) strcpy(p,p+1);
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         break;
       }
       case '!':
       {
         flags|=AspectValue;
-        (void) strcpy(p,p+1);
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         break;
       }
       case '<':
       {
         flags|=LessValue;
-        (void) strcpy(p,p+1);
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         break;
       }
       case '>':
       {
         flags|=GreaterValue;
-        (void) strcpy(p,p+1);
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         break;
       }
       case '@':
       {
         flags|=AreaValue;
-        /* This change is only to make Coverity happy.  Yes strlen() might get run twice. */
-        (void) memmove(p,p+1,Min(sizeof(pedantic_geometry),strlen(p+1)+1));
-        p[sizeof(pedantic_geometry)-1]='\0';
+        (void) MoveStringForward(p,p+1,sizeof(pedantic_geometry));
         break;
       }
       case '-':
