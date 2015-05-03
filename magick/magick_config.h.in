@@ -318,9 +318,6 @@
 /* define if the compiler supports basic templates */
 #undef HAVE_TEMPLATES
 
-/* Define to 1 if you have the `tempnam' function. */
-#undef HAVE_TEMPNAM
-
 /* Define to 1 if you have the <tiffconf.h> header file. */
 #undef HAVE_TIFFCONF_H
 
@@ -344,9 +341,6 @@
 
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
-
-/* Define to 1 if you have the `tmpnam_r' function. */
-#undef HAVE_TMPNAM_R
 
 /* Define to 1 if you have the `ulltostr' function. */
 #undef HAVE_ULLTOSTR

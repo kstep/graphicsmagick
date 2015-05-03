@@ -2124,7 +2124,7 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].data_offset) &&
           (dpx_image_info.element_info[element].data_offset != 0U))
         {
-          pixels_offset=dpx_image_info.element_info[element].data_offset;
+          pixels_offset=dpx_image_info.element_info[element].data_offset & 0xFFFFFFFF;
           if (pixels_offset >= offset)
             {
               /* Data is at, or ahead of current position.  Good! */

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 - 2014 GraphicsMagick Group
+  Copyright (C) 2003 - 2015 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -39,7 +39,6 @@ extern "C" {
 #define W_OK 2
 #define RW_OK 6
 #define HAVE_VSNPRINTF 1
-#define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
 #define HAVE_SPAWNVP 1
 #define HAVE_PROCESS_H 1
@@ -102,10 +101,6 @@ extern "C" {
 # else
 #   define chsize(file,length) _chsize(file,length)
 # endif
-#endif
-
-#if !defined(tempnam)
-# define tempnam _tempnam
 #endif
 
 #if !defined(hypot)

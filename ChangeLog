@@ -1,3 +1,25 @@
+2015-05-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Hopefully quiet Coverity 10305
+	"ntrusted loop bound".
+
+	* coders/tga.c (ReadTGAImage): Hopefully quiet Coverity 53418
+	"Untrusted loop bound".
+
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Eliminate
+	all use of operating system provided temporary file allocation
+	functions (all apparently flawed in one way or another) and rely
+	exclusively on our own implementation.
+
+	* magick/constitute.c (ConstituteImage): Quiet Coverity 53399
+	"Logically dead code".
+
+	* coders/webp.c (ReadWEBPImage): Quiet Coverity 53400 "Logically dead
+	code".
+
+	* coders/miff.c (WriteRunlengthPacket): More work to quiet
+	Coverity 10186 and 10214 "Missing break in switch".
+
 2015-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Thoroughly

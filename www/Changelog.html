@@ -35,6 +35,25 @@
 <div class="document">
 
 
+<p>2015-05-03  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>coders/dpx.c (ReadDPXImage): Hopefully quiet Coverity 10305
+&quot;ntrusted loop bound&quot;.</li>
+<li>coders/tga.c (ReadTGAImage): Hopefully quiet Coverity 53418
+&quot;Untrusted loop bound&quot;.</li>
+<li>magick/tempfile.c (AcquireTemporaryFileDescriptor): Eliminate
+all use of operating system provided temporary file allocation
+functions (all apparently flawed in one way or another) and rely
+exclusively on our own implementation.</li>
+<li>magick/constitute.c (ConstituteImage): Quiet Coverity 53399
+&quot;Logically dead code&quot;.</li>
+<li>coders/webp.c (ReadWEBPImage): Quiet Coverity 53400 &quot;Logically dead
+code&quot;.</li>
+<li>coders/miff.c (WriteRunlengthPacket): More work to quiet
+Coverity 10186 and 10214 &quot;Missing break in switch&quot;.</li>
+</ul>
+</blockquote>
 <p>2015-05-02  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

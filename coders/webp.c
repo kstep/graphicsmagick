@@ -178,8 +178,13 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
 
       switch (webp_status)
         {
+#if !defined(__COVERITY__)
         case VP8_STATUS_OK:
           break;
+#else
+        default:
+          break;
+#endif
         case VP8_STATUS_OUT_OF_MEMORY:
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
           break;

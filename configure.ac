@@ -1172,7 +1172,7 @@ AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \
   putc_unlocked raise rand_r readdir_r readlink realpath select seekdir \
   setrlimit sigemptyset sigaction spawnvp strerror strerror_r strlcat strlcpy \
-  strtoll sysconf tempnam tmpnam_r times telldir ulltostr vsprintf vsnprintf qsort_r])
+  strtoll sysconf times telldir ulltostr vsprintf vsnprintf qsort_r])
 
 ########
 #

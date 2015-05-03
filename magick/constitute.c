@@ -320,10 +320,17 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                       }
                     break;
                   }
+#if !defined(__COVERITY__)
                 case UndefinedDispatchType:
                   {
                     break;
                   }
+#else
+                default:
+                  {
+                    break;
+                  }
+#endif
                 } /* end switch */
               if (!SyncImagePixels(image))
                 break;

@@ -227,7 +227,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       readbufferpos = 0;
       tga_info.colormap_index=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
-      tga_info.colormap_length=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
+      tga_info.colormap_length=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos) & 0xFFFF;
       tga_info.colormap_size=ReadBlobByteFromBuffer(readbuffer, &readbufferpos);
       tga_info.x_origin=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);
       tga_info.y_origin=ReadBlobLSBShortFromBuffer(readbuffer, &readbufferpos);

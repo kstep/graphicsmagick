@@ -131,11 +131,27 @@ static void ComposeTemporaryFileName(char *name)
   char
     *c;
 
+  assert(name != (char *) NULL);
+
   for (c=name; *c; c++)
     {
       if (*c == 'X')
 	*c=SafeChars[MagickRandomInteger() % (sizeof(SafeChars)-1)];
     }
+}
+
+/*
+  Validate a temporary directory path
+*/
+static MagickPassFail ValidateTemporaryFileDirectory(const char *tempdir)
+{
+  assert(tempdir != (char *) NULL);
+
+  if (tempdir[0] == '\0')
+    return MagickFail;
+  if (access(tempdir,W_OK) != 0)
+    return MagickFail;
+  return MagickPass;
 }
 
 
@@ -263,7 +279,8 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
           const size_t copy_len = sizeof(tempdir)-16;
           if (strlcpy(tempdir,env,copy_len) >= copy_len)
             tempdir[0]='\0';
-          if ((tempdir[0] != '\0') && (access(tempdir,W_OK) != 0))
+          if ((tempdir[0] != '\0') &&
+              !ValidateTemporaryFileDirectory(tempdir))
             tempdir[0]='\0';
           if (tempdir[0] != '\0')
             break;
@@ -272,12 +289,6 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 
   if (tempdir[0] != '\0')
     {
-      /*
-        Use our own temporary filename generator if the temporary
-        file directory is known.
-
-        In practice, this method is virtually always used.
-      */
       char
         tempname[16];
       
@@ -305,67 +316,6 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
         }
     }
 
-#if HAVE_TEMPNAM
-  /*
-    Use tempnam().
-    Windows has _tempnam which works similar to Unix tempnam.
-    Note that Windows _tempnam only produces temporary file
-    names which are unique to the current process so we compute
-    a random part in the name ourselves. Windows _tempnam
-    is documented to place sequential numbers in the file
-    extension.
-  */
-  {
-    char
-      *name;
-
-    strcpy(filename,"gmXXXXXX");
-    ComposeTemporaryFileName(filename);
-    if ((name=tempnam(tempdir,filename)))
-      {
-        (void) remove(filename);
-        fd=open(name,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
-        if (fd != -1)
-          {
-            (void) strlcpy(filename,name,MaxTextExtent);
-            AddTemporaryFileToList(filename);
-          }
-        else
-          {
-            char
-              path[MaxTextExtent];
-
-            /* Try to report a useful pathname for error reports */
-            (void) strlcpy(path,tempdir,MaxTextExtent);
-            if (tempdir[strlen(path)-1] != DirectorySeparator[0])
-              strlcat(path,DirectorySeparator,MaxTextExtent);
-            strlcat(path,filename,MaxTextExtent);
-            (void) strlcpy(filename,path,MaxTextExtent);
-          }
-
-        MagickFreeMemory(name);
-      }
-    if (fd != -1)
-      return (fd);
-  }
-
-#else
-  /*
-    Use ANSI C standard tmpnam
-  */
-  {
-    if ((tmpnam(filename) == filename))
-      {
-        (void) remove(filename);
-        fd=open(filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
-        if (fd != -1)
-          {
-            AddTemporaryFileToList(filename);
-	    return (fd);
-          }
-      }
-  }
-#endif
   return fd;
 }
 
