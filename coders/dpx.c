@@ -1772,8 +1772,8 @@ STATIC Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (dpx_image_info.elements >
       sizeof(dpx_image_info.element_info)/sizeof(dpx_image_info.element_info[0]))
     ThrowDPXReaderException(CorruptImageError,ImproperImageHeader,image);
-  image->columns=dpx_image_info.pixels_per_line;
-  image->rows=dpx_image_info.lines_per_image_element;
+  image->columns=dpx_image_info.pixels_per_line & 0xFFFFFFFF;
+  image->rows=dpx_image_info.lines_per_image_element & 0xFFFFFFFF;
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
   image->orientation=DPXOrientationToOrientationType(dpx_image_info.orientation);
 
