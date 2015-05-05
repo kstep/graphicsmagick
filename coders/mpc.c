@@ -130,8 +130,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     cache_filename[MaxTextExtent],
     id[MaxTextExtent],
-    keyword[MaxTextExtent],
-    *values;
+    keyword[MaxTextExtent];
 
   ExtendedSignedIntegralType
     offset;
@@ -249,6 +248,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (isalnum(c))
           {
+            char
+              *values;
+
             size_t
               values_length;
 
@@ -567,7 +569,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     i=(long) number_of_profiles;
                     MagickReallocMemory(ProfileInfo *,profiles,(i+1)*sizeof(ProfileInfo));
                     if (profiles == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                      {
+                        MagickFreeMemory(values);
+                        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                      }
                     profiles[i].name=AllocateString(keyword+8);
                     profiles[i].length=MagickAtoL(values);
                     profiles[i].info=(unsigned char *) NULL;
@@ -681,14 +686,25 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
+            MagickFreeMemory(values);
           }
         else
-          c=ReadBlobByte(image);
+          {
+            c=ReadBlobByte(image);
+          }
       while (isspace(c))
         c=ReadBlobByte(image);
     }
-    MagickFreeMemory(values);
     (void) ReadBlobByte(image);
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "id=\"%s\" class=%s compression=%s matte=%s "
+			  "columns=%lu rows=%lu depth=%u",
+                          id,ClassTypeToString(image->storage_class),
+                          CompressionTypeToString(image->compression),
+                          MagickBoolToString(image->matte),
+                          image->columns, image->rows, image->depth);
+
     /*
       Verify that required image information is defined.
     */
