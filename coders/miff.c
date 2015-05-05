@@ -722,8 +722,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   char
     id[MaxTextExtent],
-    keyword[MaxTextExtent],
-    *values;
+    keyword[MaxTextExtent];
 
   double
     version;
@@ -859,6 +858,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       else
         if (isalnum(c))
           {
+            char
+              *values;
+
             size_t
               values_length;
 
@@ -1135,7 +1137,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     i=(long) number_of_profiles;
                     MagickReallocMemory(ProfileInfo *,profiles,(i+1)*sizeof(ProfileInfo));
                     if (profiles == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                      {
+                        MagickFreeMemory(values);
+                        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                      }
                     profiles[i].name=AllocateString(keyword+8);
                     profiles[i].length=MagickAtoL(values);
                     profiles[i].info=(unsigned char *) NULL;
@@ -1249,13 +1254,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               }
             }
+            MagickFreeMemory(values);
           }
         else
-          c=ReadBlobByte(image);
+          {
+            c=ReadBlobByte(image);
+          }
       while (isspace(c))
         c=ReadBlobByte(image);
     }
-    MagickFreeMemory(values);
     (void) ReadBlobByte(image);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

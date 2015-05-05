@@ -1,3 +1,8 @@
+2015-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Fix memory leak of values
+	allocation.
+
 2015-05-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): Hopefully quiet Coverity 10305
