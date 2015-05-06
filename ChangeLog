@@ -1,7 +1,12 @@
 2015-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/miff.c (ReadMIFFImage): Fix possible leak of profiles in
+	error path.
+
 	* coders/mpc.c (ReadMPCImage): Fix memory leak of values
 	allocation.
+	(ReadMPCImage): Fix possible leak of profiles in error path. Fixes
+	Coverity 80697 "Resource leak".
 
 2015-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

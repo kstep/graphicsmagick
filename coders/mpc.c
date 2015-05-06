@@ -125,6 +125,22 @@ static MagickBool IsMPC(const unsigned char *magick,const size_t length)
 %
 %
 */
+
+#define ThrowMPCReaderException(code_,reason_,image_) \
+do { \
+  if (number_of_profiles > 0) \
+    { \
+      unsigned int _index; \
+      for (_index=0; _index < number_of_profiles; _index++) \
+        { \
+          MagickFreeMemory(profiles[_index].name); \
+          MagickFreeMemory(profiles[_index].info); \
+        } \
+      MagickFreeMemory(profiles); \
+      number_of_profiles=0; \
+    } \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
 static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -218,7 +234,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           comment_length=MaxTextExtent;
           comment=MagickAllocateMemory(char *,comment_length);
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+            ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
@@ -238,7 +254,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+            ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
@@ -270,7 +286,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             } while ((c != '=') && (c != EOF));
             *p='\0';
             if (c == EOF)
-              ThrowReaderException(CorruptImageWarning,ImproperImageHeader,image);
+              ThrowMPCReaderException(CorruptImageWarning,ImproperImageHeader,image);
 
             /*
               Get values.
@@ -282,7 +298,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             values_length=MaxTextExtent;
             values=MagickAllocateMemory(char *,values_length);
             if (values == (char *) NULL)
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+              ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,image);
             values[0]='\0';
             c=ReadBlobByte(image);
             in_brace=(c == '{');
@@ -303,7 +319,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     p=values+strlen(values);
                   }
                 if (values == (char *) NULL)
-                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 *p++=c;
                 c=ReadBlobByte(image);
                 if (!in_brace)
@@ -571,7 +587,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     if (profiles == (ProfileInfo *) NULL)
                       {
                         MagickFreeMemory(values);
-                        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                        ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                       }
                     profiles[i].name=AllocateString(keyword+8);
                     profiles[i].length=MagickAtoL(values);
@@ -712,9 +728,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      ThrowMPCReaderException(CorruptImageError,ImproperImageHeader,image);
     if (quantum_depth != QuantumDepth)
-      ThrowReaderException(CacheError,InconsistentPersistentCacheDepth,image);
+      ThrowMPCReaderException(CacheError,InconsistentPersistentCacheDepth,image);
     if (image->montage != (char *) NULL)
       {
         register char
@@ -725,7 +741,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
+          ThrowMPCReaderException(CorruptImageError,UnableToReadImageData,image);
         p=image->directory;
         do
         {
@@ -738,7 +754,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickReallocMemory(char *,image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,UnableToReadImageData,
+                ThrowMPCReaderException(CorruptImageError,UnableToReadImageData,
                   image);
               p=image->directory+strlen(image->directory);
             }
@@ -758,7 +774,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             continue;
           profiles[i].info=MagickAllocateMemory(unsigned char *,profiles[i].length);
           if (profiles[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageError,UnableToReadGenericProfile,
+            ThrowMPCReaderException(CorruptImageError,UnableToReadGenericProfile,
               image);
           (void) ReadBlob(image,profiles[i].length,profiles[i].info);
           (void) SetImageProfile(image,profiles[i].name,profiles[i].info,
@@ -776,7 +792,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+          ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (image->colors == 0)
           for (i=0; i < 256; i++)
@@ -800,7 +816,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             packet_size=image->depth > 8 ? 6 : 3;
             colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+              ThrowMPCReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
@@ -835,14 +851,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
 
     if (CheckImagePixelLimits(image, exception) != MagickPass)
-      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+      ThrowMPCReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
     /*
       Attach persistent pixel cache.
     */
     status=PersistCache(image,cache_filename,MagickTrue,&offset,exception);
     if (status == MagickFail)
-      ThrowReaderException(CacheError,UnableToPeristPixelCache,image);
+      ThrowMPCReaderException(CacheError,UnableToPeristPixelCache,image);
     /*
       Proceed to next image.
     */

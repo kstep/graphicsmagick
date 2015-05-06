@@ -712,6 +712,24 @@ static void ZLIBFreeFunc(voidpf opaque, voidpf address)
 }
 #endif /* defined(HasZLIB) */
 
+#define ThrowMIFFReaderException(code_,reason_,image_) \
+do { \
+  if (number_of_profiles > 0) \
+    { \
+      unsigned int _index; \
+      for (_index=0; _index < number_of_profiles; _index++) \
+        { \
+          MagickFreeMemory(profiles[_index].name); \
+          MagickFreeMemory(profiles[_index].info); \
+        } \
+      MagickFreeMemory(profiles); \
+      number_of_profiles=0; \
+    } \
+  MagickFreeMemory(pixels); \
+  MagickFreeMemory(compress_pixels); \
+  ThrowReaderException(code_,reason_,image_); \
+} while (0);
+
 static Image *ReadMIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -828,7 +846,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           comment_length=MaxTextExtent;
           comment=MagickAllocateMemory(char *,comment_length);
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+            ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
@@ -848,7 +866,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+            ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
@@ -880,7 +898,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             } while ((c != '=') && (c != EOF));
             *p='\0';
             if (c == EOF)
-              ThrowReaderException(CorruptImageWarning,ImproperImageHeader,image);
+              ThrowMIFFReaderException(CorruptImageWarning,ImproperImageHeader,image);
 
             /*
               Get values.
@@ -892,7 +910,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             values_length=MaxTextExtent;
             values=MagickAllocateMemory(char *,values_length);
             if (values == (char *) NULL)
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+              ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,image);
             values[0]='\0';
             c=ReadBlobByte(image);
             in_brace=(c == '{');
@@ -913,7 +931,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     p=values+strlen(values);
                   }
                 if (values == (char *) NULL)
-                  ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                  ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                 *p++=c;
                 c=ReadBlobByte(image);
                 if (!in_brace)
@@ -1139,7 +1157,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     if (profiles == (ProfileInfo *) NULL)
                       {
                         MagickFreeMemory(values);
-                        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+                        ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,image);
                       }
                     profiles[i].name=AllocateString(keyword+8);
                     profiles[i].length=MagickAtoL(values);
@@ -1289,7 +1307,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           }
         else
           {
-            ThrowReaderException(CorruptImageError,ImproperImageHeader,
+            ThrowMIFFReaderException(CorruptImageError,ImproperImageHeader,
               image);
           }
       }
@@ -1314,7 +1332,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         */
         image->directory=MagickAllocateMemory(char *,MaxTextExtent);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
+          ThrowMIFFReaderException(CorruptImageError,UnableToReadImageData,image);
         p=image->directory;
         do
         {
@@ -1327,7 +1345,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               MagickReallocMemory(char *,image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageError,UnableToReadImageData,
+                ThrowMIFFReaderException(CorruptImageError,UnableToReadImageData,
                   image);
               p=image->directory+strlen(image->directory);
             }
@@ -1347,7 +1365,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             continue;
           profiles[i].info=MagickAllocateMemory(unsigned char *,profiles[i].length);
           if (profiles[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageError,UnableToReadGenericProfile,
+            ThrowMIFFReaderException(CorruptImageError,UnableToReadGenericProfile,
               image);
           (void) ReadBlob(image,profiles[i].length,profiles[i].info);
           (void) SetImageProfile(image,profiles[i].name,profiles[i].info,profiles[i].length);
@@ -1364,7 +1382,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         if (!AllocateImageColormap(image,colors != 0 ? colors : 256))
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+          ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (colors != 0)
           {
@@ -1381,7 +1399,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             packet_size=3*depth/8;
             colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
+              ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
@@ -1437,7 +1455,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         break;
 
     if (CheckImagePixelLimits(image, exception) != MagickPass)
-      ThrowReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
+      ThrowMIFFReaderException(ResourceLimitError,ImagePixelLimitExceeded,image);
 
     /*
       Determine import properties
@@ -1491,13 +1509,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size++;
     pixels=MagickAllocateArray(unsigned char *,packet_size,image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     length=(size_t) (1.01*MagickArraySize(packet_size,image->columns));
     if (length)
       length += 600;
     compress_pixels=MagickAllocateMemory(unsigned char *,length);
     if (compress_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowMIFFReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Read image pixels.
     */
@@ -1544,12 +1562,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                           length=ReadBlobMSBLong(image);
                           zip_info.avail_in=(uInt) ReadBlob(image,length,zip_info.next_in);
                           if ((size_t) zip_info.avail_in != length)
-                            {
-                              MagickFreeMemory(pixels);
-                              MagickFreeMemory(compress_pixels);
-                              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,
-                                                   image);
-                            }
+                            ThrowMIFFReaderException(CorruptImageError,UnexpectedEndOfFile,
+                                                     image);
                         }
                     }
                   zip_status=inflate(&zip_info,Z_NO_FLUSH);
@@ -1557,10 +1571,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     break;
                   else if (zip_status != Z_OK)
                     {
-                      MagickFreeMemory(pixels);
-                      MagickFreeMemory(compress_pixels);
                       (void) inflateEnd(&zip_info);
-                      ThrowReaderException(CorruptImageError,UnableToUncompressImage,
+                      ThrowMIFFReaderException(CorruptImageError,UnableToUncompressImage,
                                            image);
                     }
                 } while (zip_info.avail_out != 0);
@@ -1626,9 +1638,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                           bzip_info.avail_in=(unsigned int) ReadBlob(image,length,bzip_info.next_in);
                           if ((size_t) bzip_info.avail_in != length)
                             {
-                              MagickFreeMemory(pixels);
-                              MagickFreeMemory(compress_pixels);
-                              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,
+                              ThrowMIFFReaderException(CorruptImageError,UnexpectedEndOfFile,
                                                    image);
                             }
                         }
@@ -1638,10 +1648,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     break;
                   else if (bz_status != BZ_OK)
                     {
-                      MagickFreeMemory(pixels);
-                      MagickFreeMemory(compress_pixels);
                       (void) BZ2_bzDecompressEnd(&bzip_info);
-                      ThrowReaderException(CorruptImageError,UnableToUncompressImage,
+                      ThrowMIFFReaderException(CorruptImageError,UnableToUncompressImage,
                                            image);
                     }
                 } while (bzip_info.avail_out != 0);
