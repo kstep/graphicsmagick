@@ -120,7 +120,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *clone_info=0;
 
   int
-    number_files;
+    number_files=0;
 
   MonitorHandler
     handler;
