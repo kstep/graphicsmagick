@@ -370,6 +370,23 @@ snapshot: distcheck
 	cp $(top_srcdir)/ChangeLog $(SNAPSHOT_DIRECTORY)/ChangeLog.txt
 	cp $(top_srcdir)/www/Changelog.html $(SNAPSHOT_DIRECTORY)/ChangeLog.html
 
+COVERITY_EMAIL=bfriesen@simple.dallas.tx.us
+COVERITY_TARBALL=GraphicsMagick.xz
+COVERITY_VERSION=snapshot-@PACKAGE_CHANGE_DATE@
+COVERITY_DESCRIPTION='Ubuntu Q@QuantumDepth@'
+coverity:
+	$(MAKE) clean
+	cov-build --dir cov-int $(MAKE)
+	tar caf $(COVERITY_TARBALL) cov-int
+	curl --limit-rate 200K \
+	--form token=`cat $$HOME/.coverity_key_gm` \
+	--form email=$(COVERITY_EMAIL) \
+	--form file=@$(COVERITY_TARBALL) \
+	--form version=$(COVERITY_VERSION) \
+	--form description=$(COVERITY_DESCRIPTION) \
+	https://scan.coverity.com/builds?project=GraphicsMagick
+	$(RM) $(COVERITY_TARBALL)
+
 # Rules for a profiled build (according to Paolo Bonzini <bonzini@gnu.org>)
 #.PHONY: profile
 #profile:
