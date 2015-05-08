@@ -1,3 +1,11 @@
+2018-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+
+        * VisualMagick/configure/system_page.cpp
+        * VisualMagick/configure/system_page.h
+        * VisualMagick/configure/target_page.h
+        Ability to re-use already given paths. It is highly frustrating 
+        to enter path for different configurations again and again.
+
 2015-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/vid.c (ReadVIDImage): Fix use of uninitialized variable

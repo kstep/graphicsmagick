@@ -27,7 +27,7 @@ CConfigureWizard::CConfigureWizard(CWnd* pWndParent)
 
 	AddPage(&m_Page1);
 	AddPage(&m_Page2);
-	AddPage(&m_Page3);
+	AddPage(&m_Page3); m_Page3.m_Wizard = this;
 	AddPage(&m_Page4);
 
 	SetWizardMode();
