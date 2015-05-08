@@ -238,7 +238,7 @@ BOOL CSystemPage::OnSetActive()
             const char *Pos2 = strstr(Pos+strlen(OUT_DIR), "\"");
             if(Pos2!=NULL)
             {
-              line[Pos2 - line.c_str() + 1] = 0;
+              line[Pos2 - line.c_str()] = 0;
 
               UpdateData(TRUE);
               m_outputBin = Pos + strlen(OUT_DIR);
@@ -272,7 +272,7 @@ BOOL CSystemPage::OnSetActive()
             const char *Pos2 = strstr(Pos+strlen(OUT_DIR2), "\"");
             if(Pos2!=NULL)
             {
-              line[Pos2 - line.c_str() + 1] = 0;
+              line[Pos2 - line.c_str()] = 0;
 
               UpdateData(TRUE);
               m_outputBin = Pos + strlen(OUT_DIR2);
