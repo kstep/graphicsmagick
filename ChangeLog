@@ -2,6 +2,12 @@
 
         * VisualMagick/configure/system_page.cpp
         * VisualMagick/configure/system_page.h
+        Suppress reloading .vcproj when configuration type does not change.
+
+2018-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+
+        * VisualMagick/configure/system_page.cpp
+        * VisualMagick/configure/system_page.h
         * VisualMagick/configure/target_page.h
         Ability to re-use already given paths. It is highly frustrating 
         to enter path for different configurations again and again.

@@ -34,6 +34,8 @@ CSystemPage::CSystemPage(CConfigureWizard *IniWizard): CPropertyPage(CSystemPage
 	//}}AFX_DATA_INIT
 
         m_Wizard = IniWizard;
+        m_projectType = 0xFFFFFFFF;
+        m_VisualStudio7 = false;
 }
 
 
@@ -155,28 +157,17 @@ string & ReadLine(FILE *f, string & pstr, long MaxStrSize)
 }
 
 
-
-BOOL CSystemPage::OnSetActive() 
+void CSystemPage::ReloadVcproj(void)
 {
-  CPropertySheet* psheet = (CPropertySheet*) GetParent();
-  psheet->SetWizardButtons(PSWIZB_BACK | PSWIZB_NEXT);
+  string root = "..\\utilities";
+  string prefix = "UTIL_gm";
+  string name;
 
-  //////////////////////////////////////////////////////
-  // Here should be filled paths if found inside already generated .vcproj
-  if(m_Wizard)
+  string theprojectname = get_project_name(EXEPROJECT, m_projectType, root, prefix, name);
+
+  FILE *F = fopen(theprojectname.c_str(),"rb");
+  if(F)
   {
-    int projectType = m_Wizard->m_Page2.m_projectType;
-    visualStudio7 = m_Wizard->m_Page2.m_visualStudio7;
-    
-    string root = "..\\utilities";
-    string prefix = "UTIL_gm";
-    string name;
-
-    string theprojectname = get_project_name(EXEPROJECT, projectType, root, prefix, name);
-
-    FILE *F = fopen(theprojectname.c_str(),"rb");
-    if(F)
-    {
       string line;
       bool is_release = false;
       bool is_debug = false;
@@ -246,6 +237,24 @@ BOOL CSystemPage::OnSetActive()
             }
             continue;
           }
+
+          const char *LIB_PATH = "AdditionalLibraryDirectories=\"";
+          Pos = strstr(line.c_str(), LIB_PATH);
+          if(Pos!=NULL)
+          {
+            const char *Pos2 = strstr(Pos+strlen(LIB_PATH), "\"");
+            if(Pos2!=NULL)
+            {
+              line[Pos2 - line.c_str()] = 0;
+
+              UpdateData(TRUE);
+              m_outputLib = Pos + strlen(LIB_PATH);
+              UpdateData(FALSE);
+            }
+            continue;
+          }
+
+
         }
          
         else
@@ -306,16 +315,53 @@ BOOL CSystemPage::OnSetActive()
             }
             continue;          
           }
+
+
+          const char *LIB_PATH6 = "ADD LINK32 /libpath:\"";
+          Pos = strstr(line.c_str(), LIB_PATH6);
+          if(Pos!=NULL)
+          {
+            const char *Pos2 = strstr(Pos+strlen(LIB_PATH6), "\" ");
+            if(Pos2!=NULL)
+            {
+              line[Pos2 - line.c_str()] = 0;
+
+              UpdateData(TRUE);
+              m_outputLib = Pos + strlen(LIB_PATH6);
+              UpdateData(FALSE);
+            }
+            continue;
+          }
  
         }
  
       }
       fclose(F);
     }
+}
 
+
+
+BOOL CSystemPage::OnSetActive() 
+{
+  CPropertySheet* psheet = (CPropertySheet*) GetParent();
+  psheet->SetWizardButtons(PSWIZB_BACK | PSWIZB_NEXT);
+
+  // Here should be filled paths if found inside already generated .vcproj
+  if(m_Wizard)
+  {
+    int projectType = m_Wizard->m_Page2.m_projectType;
+    visualStudio7 = m_Wizard->m_Page2.m_visualStudio7;
+
+    if(m_projectType!=projectType || visualStudio7!=m_VisualStudio7)
+    {
+      m_projectType = projectType;
+      m_VisualStudio7 = visualStudio7;
+
+      ReloadVcproj();
+    }
   }
   //////////////////////////////////////////////////////
-
 	
   return CPropertyPage::OnSetActive();
 }

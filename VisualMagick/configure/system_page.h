@@ -22,7 +22,10 @@ class CSystemPage : public CPropertyPage
 public:
 	CSystemPage(CConfigureWizard *IniWizard=NULL);
 	~CSystemPage();
+        void ReloadVcproj(void) ;
         CConfigureWizard *m_Wizard;
+        unsigned m_projectType;
+        BOOL m_VisualStudio7;
 
 // Dialog Data
 	//{{AFX_DATA(CSystemPage)
