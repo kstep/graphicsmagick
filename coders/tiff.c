@@ -26,7 +26,7 @@
 %                                 July 1992                                   %
 %                     Re-Written For GraphicsMagick                           %
 %                             Bob Friesenhahn                                 %
-%                                2002-2009                                    %
+%                                2002-2015                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -3995,8 +3995,43 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
                             (characteristics.opaque ? 'y' : 'n'),
                             (characteristics.palette ? 'y' : 'n'));
 
+
       /*
-        Choose best photometric.
+        Some compression types do not work with a matte channel.
+        Disable matte channel for these types.
+      */
+      if (image->matte)
+        {
+          switch (compress_tag)
+            {
+            case COMPRESSION_CCITTFAX3:
+            case COMPRESSION_CCITTFAX4:
+            case COMPRESSION_JBIG:
+            case COMPRESSION_JPEG:
+              {
+                if (logging)
+                  {
+                    const char *
+                      compress_type;
+                    
+                    compress_type=CompressionTagToString(compress_tag);
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "Disabled image matte channel since "
+                                          "%s compression not supported with "
+                                          "alpha channel.",
+                                          compress_type);
+                  }
+                image->matte=MagickFalse;
+                break;
+              }
+            default:
+              {
+              }
+            }
+        }
+
+      /*
+        Choose best photometric based on image properties.
       */
       if (characteristics.cmyk)
         {
@@ -4017,6 +4052,19 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       else
         {
           photometric=PHOTOMETRIC_RGB;
+        }
+
+      /*
+        If optimization is requested, disable matte channel if image
+        is opaque.
+      */
+      if ((OptimizeType == image_info->type) &&
+          (characteristics.opaque && image->matte))
+        {
+          image->matte=MagickFalse;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Disabled image matte channel since image is "
+                                "opaque.");
         }
 
       /*

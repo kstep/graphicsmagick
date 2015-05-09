@@ -1,3 +1,11 @@
+2015-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Disable matte channel for
+	compression types which don't support it.  Resolves SourceForge
+	bug #297 "GM distorts image using -transform".
+	(WriteTIFFImage): When type is Optimize, disable matte channel if
+	image is opaque.
+
 2015-05-09  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
 	* webp/src/utils/endian_inl.h: Fixed defect in intrinsic function
