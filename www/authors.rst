@@ -37,9 +37,11 @@ Glenn Randers-Pehrson
 		Maintains the SourceForge mailing lists.
 
 Jaroslav Fojtik
-		Authored the ART, CUT, JNX, MAC, MATLAB, TOPOL, and
-                WPG coder modules. Improved the FITS and TXT coder
-                modules.
+		Authored the ART, CUT, HRZ, JNX, MAC, MATLAB, TOPOL,
+                and WPG coder modules. Improved the FITS and TXT coder
+                modules.  VisualMagick 'configure' improvements and
+                build testing/fixes for many versions of Microsoft
+                Visual Studio.
 
 Kenneth Xu
                 Contributed the implementation of 'gm batch', a simple

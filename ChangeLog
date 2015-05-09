@@ -1,20 +1,21 @@
-2018-05-09  Jaroslav Fojtik  <JaFojtik@seznam.cz>
-        GraphicsMagickHg\webp\src\utils\endian_inl.h
-        Fixed defect in intrinsic function byteswap_ulong for Visual Studio less than 2005.
+2015-05-09  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
-2018-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+	* webp/src/utils/endian_inl.h: Fixed defect in intrinsic function
+	byteswap_ulong for Visual Studio less than 2005.
 
-        * VisualMagick/configure/system_page.cpp
-        * VisualMagick/configure/system_page.h
-        Suppress reloading .vcproj when configuration type does not change.
+2015-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
 
-2018-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+	* VisualMagick/configure/system_page.cpp,
+	VisualMagick/configure/system_page.h: Suppress reloading .vcproj
+	when configuration type does not change.
 
-        * VisualMagick/configure/system_page.cpp
-        * VisualMagick/configure/system_page.h
-        * VisualMagick/configure/target_page.h
-        Ability to re-use already given paths. It is highly frustrating 
-        to enter path for different configurations again and again.
+2015-05-08  Jaroslav Fojtik  <JaFojtik@seznam.cz>
+
+	* VisualMagick/configure/system_page.cpp,
+	VisualMagick/configure/system_page.h,
+	VisualMagick/configure/target_page.h: Ability to re-use already
+	given paths. It is highly frustrating to enter path for different
+	configurations again and again.
 
 2015-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
