@@ -1678,7 +1678,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   *q='\0';
 
   /*
-    Parse width/height/x/y.
+    Parse width/height/x/y.  At this point resize qualifiers have been
+    truncated from the original geometry string.
   */
   bounds.width=0;
   bounds.height=0;
@@ -1704,7 +1705,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
           bounds.width=(unsigned long) floor(double_val+0.5);
           flags|=WidthValue;
         }
-      if ((*q == 'x') || (*q == 'X'))
+      if ((*q == 'x') || (*q == 'X') || ((flags & AreaValue) && (*q == '\0')))
         p=q;
       else
         {
@@ -1938,8 +1939,8 @@ GetMagickDimension(const char *str,double *width,double *height,
 %       interpreted as a percentage of the supplied width and height
 %       parameters.
 %    @: (AreaValue) The geometry parameter represents the desired total
-%       area (e.g. "307520@") or width x height (e.g. "640x480@") of the
-%       final image.
+%       area (e.g. "307520@") or an area equivalent to a specified
+%       width x height (e.g. "640x480@"), of the final image.
 %    !: (AspectValue) Force the width and height values to be absolute
 %       values.  The original image aspect ratio is not maintained.
 %    <: (LessValue) Update the provided width and height parameters if
@@ -2015,6 +2016,13 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   if ((former_width == 0UL) || (former_height == 0UL))
     return(flags);
 
+#if 0
+      fprintf(stderr,"WidthValue=%u, HeightValue=%u width=%lu, height=%lu\n",
+              flags & WidthValue ? 1 : 0,
+              flags & HeightValue ? 1 : 0,
+              *width,*height);
+#endif
+
   if (flags & AreaValue) /* @  */
     {
       double
@@ -2077,6 +2085,9 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       else if ((!(flags & WidthValue) &&  (flags & HeightValue)))
         *width=(unsigned long) floor(((double) former_width/former_height)*
                                      (*height)+0.5);
+#if 0
+      fprintf(stderr,"Geometry Bounds: %lux%lu\n",*width,*height);
+#endif
       if (flags & PercentValue)
         {
           double

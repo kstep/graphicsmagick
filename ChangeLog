@@ -1,3 +1,9 @@
+2015-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetGeometry): Fix handling of area geometries
+	in the form "5000000@".  Resolves SourceForge issue #299 "-resize
+	with @ and > in geometry specification".
+
 2015-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Disable matte channel for

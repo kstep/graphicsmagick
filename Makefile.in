@@ -10153,7 +10153,7 @@ coverity:
 	$(MAKE) clean
 	cov-build --dir cov-int $(MAKE)
 	tar caf $(COVERITY_TARBALL) cov-int
-	curl --limit-rate 200K \
+	curl --limit-rate 50K \
 	--form token=`cat $$HOME/.coverity_key_gm` \
 	--form email=$(COVERITY_EMAIL) \
 	--form file=@$(COVERITY_TARBALL) \
