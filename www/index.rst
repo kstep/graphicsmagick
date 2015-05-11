@@ -60,8 +60,8 @@ Check http://www.GraphicsMagick.org/ for the latest version of this page.
 .. _`valgrind` : http://www.valgrind.org/
 
 GraphicsMagick is the swiss army knife of image processing. Comprised
-of 282K physical lines (according to David A. Wheeler's `SLOCCount`_)
-of source code in the base package (or 964K including 3rd party
+of 265K physical lines (according to David A. Wheeler's `SLOCCount`_)
+of source code in the base package (or 1,220K including 3rd party
 libraries) it provides a robust and efficient collection of tools and
 libraries which support reading, writing, and manipulating an image in
 over 88 major formats including important formats like DPX, GIF, JPEG,

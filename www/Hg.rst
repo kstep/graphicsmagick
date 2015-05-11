@@ -22,7 +22,7 @@ GraphicsMagick Mercurial
 
 .. _Mercurial : http://mercurial.selenic.com/
 .. _TortoiseHg : http://tortoisehg.bitbucket.org/
-.. _`GraphicsMagick repository at SourceForge` : http://sourceforge.net/p/graphicsmagick/code/
+.. _`GraphicsMagick repository at SourceForge` : http://hg.code.sf.net/p/graphicsmagick/code/
 
 .. contents::
 
@@ -51,14 +51,7 @@ Web Access
 
 The `GraphicsMagick repository at SourceForge`_ web interface is
 available which may be used to interactively view the latest versions
-of files, or the changes to files, using your web browser.  Please
-note that the SourceForge web interface to repositories is the worst
-that we have ever experienced and it is difficult to imagine how it
-could be worse.  This was not the case when Mercurial was initially
-used at SourceForge and Mercurial's native web interface was offered.
-The user is advised to clone the whole repository and use Mercurial's
-own web interface, or a graphical tool like Tortoise Hg on their own
-machine to peruse the files and change history.
+of files, or the changes to files, using your web browser.
 
 Cloning the Mercurial Repository
 ==================================
