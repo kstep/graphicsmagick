@@ -1112,9 +1112,6 @@ InitializeMagick(const char *path)
   /* Initialize logging */
   InitializeLogInfo();
 
-  /* Seed the random number generator */
-  srand(MagickRandNewSeed());
-
   /* Initialize our random number generator */
   InitializeMagickRandomGenerator();
 
