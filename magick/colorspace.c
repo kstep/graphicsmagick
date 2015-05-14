@@ -1256,8 +1256,8 @@ typedef struct _RGBTransformInfo_t
   RGBColorTransformPacket *r;
   RGBColorTransformPacket *g;
   RGBColorTransformPacket *b;
-  unsigned int rgb_map_max_index;
   const unsigned char *rgb_map;
+  unsigned int rgb_map_max_index;
 } RGBTransformInfo_t;
 
 static MagickPassFail

@@ -56,14 +56,15 @@
 */
 typedef struct _ColorPacket
 {
+  unsigned long
+    count;
+
   PixelPacket
     pixel;
 
   unsigned short
     index;
 
-  unsigned long
-    count;
 } ColorPacket;
 
 typedef struct _NodeInfo
