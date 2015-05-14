@@ -1,3 +1,11 @@
+2015-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tga.c (ReadTGAImage): Quiet Coverity 10201 "Identical
+	code for different branches".
+
+	* coders/pcx.c (ReadPCXImage): Quiet Coverity 10218 "Identical
+	code for different branches".
+
 2015-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetGeometry): Fix handling of area geometries

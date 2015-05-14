@@ -278,9 +278,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             TrueColor Quantum Depth
           */
           image->depth=((tga_info.bits_per_pixel <= 8) ? 8 :
-                        (tga_info.bits_per_pixel <= 16) ? 5 :
-                        (tga_info.bits_per_pixel == 24) ? 8 :
-                        (tga_info.bits_per_pixel == 32) ? 8 : 8);
+                        (tga_info.bits_per_pixel <= 16) ? 5 : 8);
         }
       else
         {
@@ -288,9 +286,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ColorMapped Palette Entry Quantum Depth
           */
           image->depth=((tga_info.colormap_size <= 8) ? 8 :
-                        (tga_info.colormap_size <= 16) ? 5 :
-                        (tga_info.colormap_size == 24) ? 8 :
-                        (tga_info.colormap_size == 32) ? 8 : 8);
+                        (tga_info.colormap_size <= 16) ? 5 : 8);
         }
 
       image->storage_class=DirectClass;

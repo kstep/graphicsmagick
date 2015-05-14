@@ -381,7 +381,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     image->columns=(pcx_info.right-pcx_info.left)+1;
     image->rows=(pcx_info.bottom-pcx_info.top)+1;
-    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : 8;
+    image->depth=8; /* or pcx_info.bits_per_pixel */
     image->units=PixelsPerInchResolution;
     image->x_resolution=pcx_info.horizontal_resolution;
     image->y_resolution=pcx_info.vertical_resolution;
