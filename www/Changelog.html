@@ -38,6 +38,10 @@
 <p>2015-05-13  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">
+<li>magick/utility.c (MagickRandReentrant): Quiet Coverity 10092
+&quot;Calling risky function&quot;.
+(MagickRandNewSeed): Quiet Coverity 10093 &quot;Calling risky
+function&quot;.</li>
 <li>coders/tga.c (ReadTGAImage): Quiet Coverity 10201 &quot;Identical
 code for different branches&quot;.</li>
 <li>coders/pcx.c (ReadPCXImage): Quiet Coverity 10218 &quot;Identical

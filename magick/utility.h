@@ -105,7 +105,7 @@ extern MagickExport int
     char,char *,int *,char *);
 
 extern MagickExport unsigned int
-  MagickRandNewSeed(void);
+  MagickRandNewSeed(void) MAGICK_FUNC_DEPRECATED;
 
 extern MagickExport unsigned char
   *Base64Decode(const char *, size_t *);

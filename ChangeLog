@@ -1,5 +1,10 @@
 2015-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (MagickRandReentrant): Quiet Coverity 10092
+	"Calling risky function".
+	(MagickRandNewSeed): Quiet Coverity 10093 "Calling risky
+	function".
+
 	* coders/tga.c (ReadTGAImage): Quiet Coverity 10201 "Identical
 	code for different branches".
 

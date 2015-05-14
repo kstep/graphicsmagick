@@ -46,6 +46,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/pixel_cache.h"
+#include "magick/random.h"
 #include "magick/signature.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -3709,7 +3710,7 @@ MagickExport void MagickFormatString(char *string,
 %
 %  Method MagickRandReentrant() is a reentrant version of the standard
 %  rand() function but which allows the user to pass a pointer to the
-%  'seed'.
+%  'seed'.  Values returned are in the range of 0 - RAND_MAX.
 %
 %  This function is deprecated, and scheduled for eventual removal.
 %
@@ -3728,20 +3729,9 @@ MagickExport void MagickFormatString(char *string,
 */
 MagickExport int MagickRandReentrant(unsigned int *seed)
 {
-  int
-    result;
-
-#if defined(HAVE_RAND_R)
-  if (seed)
-    result=rand_r(seed);
-  else
-    result=rand();
-#else
-  /* This version is not reentrant */
   ARG_NOT_USED(seed);
-  result=rand();
-#endif
-  return result;
+
+  return (int) ((double) RAND_MAX*MagickRandomReal()+0.5);
 }
 
 /*
@@ -3758,6 +3748,8 @@ MagickExport int MagickRandReentrant(unsigned int *seed)
 %  Method MagickRandNewSeed() returns a semi-random initial seed value for
 %  use with MagickRandReentrant() or rand().
 %
+%  This function is deprecated, and scheduled for eventual removal.
+%
 %  The format of the MagickRandNewSeed method is:
 %
 %      unsigned int MagickRandNewSeed(void)
@@ -3765,25 +3757,7 @@ MagickExport int MagickRandReentrant(unsigned int *seed)
 */
 MagickExport unsigned int MagickRandNewSeed(void)
 {
-  unsigned int
-    seed;
-
-  /*
-    Initial seed is based on time of day.
-  */
-  seed=time(0);
-  /*
-    Multiple processes may be started within the same second so hash
-    with process ID as well.
-  */
-  seed ^= (unsigned int) getpid();
-  /*
-    It is quite likely that multiple threads will invoke this function
-    during the same second so we also tap into the default random
-    number generator to help produce a more random seed.
-  */
-  seed ^= (unsigned int) rand();
-  return seed;
+  return (unsigned int) MagickRandomInteger();
 }
 
 /*
