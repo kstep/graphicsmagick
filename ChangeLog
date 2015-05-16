@@ -1,3 +1,13 @@
+2015-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): P_tmpdir is
+	not an environment variable.  Need to consider Windows environment
+	variables for Cygwin.
+
+	* magick/random.c (InitializeMagickRandomKernel): For Microsoft
+	Windows, use CryptGenRandom() to salt the built-in random number
+	generator.
+
 2015-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (MagickRandReentrant): Quiet Coverity 10092

@@ -880,7 +880,9 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers 
-AC_CHECK_HEADERS(machine/param.h mach-o/dyld.h process.h sun_prefetch.h sys/mman.h sys/resource.h sys/times.h sys/types.h)
+AC_CHECK_HEADERS([machine/param.h mach-o/dyld.h process.h sun_prefetch.h sys/mman.h sys/resource.h sys/times.h sys/types.h])
+AC_CHECK_HEADERS([wincrypt.h],[],[],[#include <windows.h>])
+
 
 ########
 #
@@ -1166,7 +1168,8 @@ AC_SUBST(MAGICK_SSIZE_T_F)
 #
 ########
 GM_FUNC_MMAP_FILEIO
-AC_CHECK_FUNCS([atoll ctime_r _exit fcntl fstatvfs ftime getexecname \
+AC_CHECK_FUNCS([atoll CryptGenRandom \
+  ctime_r _exit fcntl fstatvfs ftime getexecname \
   getc_unlocked getpagesize getrlimit getpid lltostr localtime_r madvise \
   _NSGetExecutablePath _pclose pclose poll _popen popen posix_fadvise \
   posix_fallocate posix_madvise posix_memalign posix_spawnp pread pwrite \

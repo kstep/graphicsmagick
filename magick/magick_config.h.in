@@ -51,6 +51,9 @@
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
 
+/* Define to 1 if you have the `CryptGenRandom' function. */
+#undef HAVE_CRYPTGENRANDOM
+
 /* Define to 1 if you have the `ctime_r' function. */
 #undef HAVE_CTIME_R
 
@@ -353,6 +356,9 @@
 
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
+
+/* Define to 1 if you have the <wincrypt.h> header file. */
+#undef HAVE_WINCRYPT_H
 
 /* Define to 1 if you have the `_exit' function. */
 #undef HAVE__EXIT

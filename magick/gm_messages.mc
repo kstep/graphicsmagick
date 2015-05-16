@@ -733,7 +733,7 @@ Corrupt image
 MessageId       = +1
 SymbolicName    = ImageErrorImageFileDoesNotContainAnyImageData
 Language        = English
-Image file or does not contain any image data
+Image file or blob does not contain any image data
 .
 
 MessageId       = +1
@@ -2894,6 +2894,12 @@ MessageId       = +1
 SymbolicName    = LimitFatalErrorUnableToLockSemaphore
 Language        = English
 unable to lock semaphore
+.
+
+MessageId       = +1
+SymbolicName    = LimitFatalErrorUnableToObtainRandomEntropy
+Language        = English
+unable to obtain random bytes from operating system
 .
 
 MessageId       = +1

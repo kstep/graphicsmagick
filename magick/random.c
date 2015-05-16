@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2009-2014 GraphicsMagick Group
+% Copyright (C) 2009-2015 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -30,6 +30,9 @@
 #endif
 #if defined(USE_WIN32_THREADS)
 #  include <windows.h>
+#endif
+#if defined(MSWINDOWS) && HAVE_CRYPTGENRANDOM && HAVE_WINCRYPT_H
+#  include <wincrypt.h>
 #endif
 
 
@@ -107,36 +110,58 @@ void DestroyMagickRandomGenerator()
 MagickExport void
 InitializeMagickRandomKernel(MagickRandomKernel *kernel)
 {
+  MagickBool
+    done = MagickFalse;
+
   kernel->z = 0U;
   kernel->w = 0U;
-#if HAVE_DEV_URANDOM
+#if defined(POSIX) && HAVE_DEV_URANDOM
+  /*
+    Read from /dev/urandom
+
+    MinGW's MSYS emulates /dev/random in its shell so a configure
+      test for it produces an invalid result.
+  */
   {
-    /*
-      It is not known for sure what /dev/urandom on System X will do
-      if the kernel runs out of entropy.  If it produces zeros, then
-      don't trust the result.  While Linux /dev/urandom seems to use
-      the same entropy pool as /dev/random, it apparently uses some
-      hashing algorithm on the whole entropy pool (4096 bits) so that
-      apparently random values are produced when the system runs out
-      of fresh entropy.
-    */
     int
       file;
 
     if ((file=open("/dev/urandom",O_RDONLY | O_BINARY)) != -1)
       {
 	if (read(file,(void *) kernel,sizeof(*kernel)) == sizeof(*kernel))
-	  {
-	    if ((kernel->z != 0U) || (kernel->w != 0U))
-              {
-                (void) close(file);
-                return;
-              }
-	  }
+          done=MagickTrue;
 	(void) close(file);
       }
+    if (!done)
+      MagickFatalError(ResourceLimitFatalError,UnableToObtainRandomEntropy,
+                       NULL);
   }
-#endif
+#elif defined(MSWINDOWS) && HAVE_CRYPTGENRANDOM
+  /*
+    Use Windows advapi32.lib CryptGenRandom
+
+    Is claimed to be supported under Windows XP
+  */
+  {
+    HCRYPTPROV
+      hProvider = 0;
+
+    if (CryptAcquireContextW(&hProvider, 0, 0, PROV_RSA_FULL,
+                             CRYPT_VERIFYCONTEXT | CRYPT_SILENT))
+      {
+        /* Returns zero (FALSE) on failure */
+        if (CryptGenRandom(hProvider, (DWORD) sizeof(*kernel), (BYTE *) kernel))
+          done=MagickTrue;
+        (void) CryptReleaseContext(hProvider, 0);
+      }
+    if (!done)
+      MagickFatalError(ResourceLimitFatalError,UnableToObtainRandomEntropy,
+                       NULL);
+  }
+#else
+  /*
+    Fallback implementation
+  */
 
   /*
     Initial time of day.
@@ -172,14 +197,13 @@ InitializeMagickRandomKernel(MagickRandomKernel *kernel)
   kernel->w ^= ((magick_uint32_t) GetCurrentThreadId());
 #endif
 
-#if !HAVE_DEV_URANDOM
   /*
     It is quite likely that multiple threads will invoke this function
     during the same second so we also tap into the default random
     number generator to help produce a more random seed.
   */
   kernel->w ^= (magick_uint32_t) rand();
-#endif /* !HAVE_DEV_URANDOM */
+#endif
 }
 
 /*

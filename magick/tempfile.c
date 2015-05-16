@@ -244,10 +244,15 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 #if defined(POSIX)
       "TMPDIR",
 #endif /* defined(POSIX) */
-#if defined(MSWINDOWS)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
       "TMP",
       "TEMP",
 #endif
+      NULL
+    };
+
+  static const char *fixed_strings[] =
+    {
 #if defined(P_tmpdir)
       P_tmpdir,
 #endif
@@ -286,6 +291,22 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
             break;
         }
     }
+
+  if (tempdir[0] == '\0')
+    for (i=0; i < sizeof(fixed_strings)/sizeof(fixed_strings[0]); i++)
+      {
+        const size_t copy_len = sizeof(tempdir)-16;
+
+        if (fixed_strings[i] == NULL)
+          break;
+        if (strlcpy(tempdir,fixed_strings[i],copy_len) >= copy_len)
+          tempdir[0]='\0';
+        if ((tempdir[0] != '\0') &&
+            !ValidateTemporaryFileDirectory(tempdir))
+          tempdir[0]='\0';
+        if (tempdir[0] != '\0')
+          break;
+      }
 
   if (tempdir[0] != '\0')
     {

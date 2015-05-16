@@ -6,7 +6,7 @@
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
  
-  Windows NT Utility Methods for ImageMagick.
+  Windows NT Utility Methods for GraphicsMagick.
 */
 #ifndef _MAGICK_NTBASE_H
 #define _MAGICK_NTBASE_H
@@ -42,6 +42,11 @@ extern "C" {
 #define HAVE_RAISE 1
 #define HAVE_SPAWNVP 1
 #define HAVE_PROCESS_H 1
+
+#if defined(_VISUALC_)
+#  define HAVE_CRYPTGENRANDOM 1
+#  define HAVE_WINCRYPT_H 1
+#endif
 
 /*
   POSIX definitions for standard file numbers for use with _read() or _write()

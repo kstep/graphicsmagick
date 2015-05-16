@@ -1572,6 +1572,9 @@
         <Message name="UnableToInterpretMSLImage">
           unable to interpret MSL image
         </Message>
+        <Message name="UnableToObtainRandomEntropy">
+          unable to obtain random bytes from operating system
+        </Message>
       </FatalError>
       <Warning>
         <Message name="MemoryAllocationFailed">
