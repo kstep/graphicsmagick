@@ -26672,21 +26672,68 @@ fi
     fi
     if test -n "$freetype_config"
     then
-      freetype_prefix=`${freetype_config} --prefix`
-      freetype_exec_prefix=`${freetype_config} --exec-prefix`
-      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
+      freetype_cflags=`${freetype_config} --cflags`
+      freeype_libs=`${freetype_config}  --libs`
+      # freetype-config --cflags may output values such as
+      # -I/usr/local/include/freetype2 -I/usr/local/include
+      # Take only the first -I option since non-Freetype include
+      # directories (not needed by the FreeType API) may pollute
+      # the include path.
+      for flag in $freetype_cflags
+      do
+        case $flag in
+          -I*)
+            CPPFLAGS="$CPPFLAGS $flag"
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
+      # freetype-config --libs may output values such as
+      # -L/usr/local/lib -lfreetype -lz
+      #    or
+      # -L/usr/lib/x86_64-linux-gnu -lfreetype -lz -lpng12
+      #
+      # Problems will surely result if we have already successfully
+      # configured different dependency libraries than freetype was
+      # built against.  For this reason, we only take the first
+      # argument of each type, assuming that they are specific to
+      # Freetype.  In the future we may need to do something different
+      # if the FreeType library was to depend on some weird library
+      # that we don't normally test for.
+      for flag in $freeype_libs
+      do
+        case $flag in
+          -L*)
+            LDFLAGS="$LDFLAGS $flag"
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
+      for flag in $freeype_libs
+      do
+        case $flag in
+          -l*)
+            LIB_TTF_BASE=`echo $flag | sed -e s/^-l//'`
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
     fi
 
-    if test "$LIB_TTF" = ''
-    then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -lfreetype" >&5
-$as_echo_n "checking for FT_Init_FreeType in -lfreetype... " >&6; }
-if ${ac_cv_lib_freetype_FT_Init_FreeType+:} false; then :
+    as_ac_Lib=`$as_echo "ac_cv_lib_$LIB_TTF_BASE''_FT_Init_FreeType" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -l$LIB_TTF_BASE" >&5
+$as_echo_n "checking for FT_Init_FreeType in -l$LIB_TTF_BASE... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfreetype  $LIBS"
+LIBS="-l$LIB_TTF_BASE  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -26706,27 +26753,29 @@ return FT_Init_FreeType ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_freetype_FT_Init_FreeType=yes
+  eval "$as_ac_Lib=yes"
 else
-  ac_cv_lib_freetype_FT_Init_FreeType=no
+  eval "$as_ac_Lib=no"
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_freetype_FT_Init_FreeType" >&5
-$as_echo "$ac_cv_lib_freetype_FT_Init_FreeType" >&6; }
-if test "x$ac_cv_lib_freetype_FT_Init_FreeType" = xyes; then :
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
   LIB_TTF='-lfreetype'
+else
+  LIB_TTF=''
 fi
 
-      if test "$LIB_TTF" != ''
-      then
-        passed=`expr $passed + 1`
-      else
-        failed=`expr $failed + 1`
-        LDFLAGS="$OLD_LDFLAGS"
-      fi
+    if test "$LIB_TTF" != ''
+    then
+      passed=`expr $passed + 1`
+    else
+      failed=`expr $failed + 1`
+      LDFLAGS="$OLD_LDFLAGS"
     fi
 
     # Modern Freetype2 installs require that <ft2build.h> be included

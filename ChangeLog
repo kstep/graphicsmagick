@@ -1,3 +1,10 @@
+2015-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Use the first -I, -L, and -l arguments produced by
+	freetype-config and don't produce arguments based on installation
+	prefix.  This is hoped to improve configure reliability on
+	multi-arch type systems.
+
 2015-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/tempfile.c (AcquireTemporaryFileDescriptor): P_tmpdir is

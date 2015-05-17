@@ -2279,23 +2279,68 @@ then
     fi
     if test -n "$freetype_config"
     then
-      freetype_prefix=`${freetype_config} --prefix`
-      freetype_exec_prefix=`${freetype_config} --exec-prefix`
-      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
+      freetype_cflags=`${freetype_config} --cflags`
+      freeype_libs=`${freetype_config}  --libs`
+      # freetype-config --cflags may output values such as
+      # -I/usr/local/include/freetype2 -I/usr/local/include
+      # Take only the first -I option since non-Freetype include
+      # directories (not needed by the FreeType API) may pollute
+      # the include path.
+      for flag in $freetype_cflags
+      do
+        case $flag in
+          -I*)
+            CPPFLAGS="$CPPFLAGS $flag"
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
+      # freetype-config --libs may output values such as
+      # -L/usr/local/lib -lfreetype -lz
+      #    or
+      # -L/usr/lib/x86_64-linux-gnu -lfreetype -lz -lpng12
+      #
+      # Problems will surely result if we have already successfully
+      # configured different dependency libraries than freetype was
+      # built against.  For this reason, we only take the first
+      # argument of each type, assuming that they are specific to
+      # Freetype.  In the future we may need to do something different
+      # if the FreeType library was to depend on some weird library
+      # that we don't normally test for.
+      for flag in $freeype_libs
+      do
+        case $flag in
+          -L*)
+            LDFLAGS="$LDFLAGS $flag"
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
+      for flag in $freeype_libs
+      do
+        case $flag in
+          -l*)
+            LIB_TTF_BASE=`echo $flag | sed -e s/^-l//'`
+            break
+            ;;
+          *)
+            ;;
+        esac
+      done
     fi
 
 dnl First see if there is a library
-    if test "$LIB_TTF" = ''
+    AC_CHECK_LIB([$LIB_TTF_BASE],[FT_Init_FreeType],[LIB_TTF='-lfreetype'],[LIB_TTF=''],[])
+    if test "$LIB_TTF" != ''
     then
-      AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
-      if test "$LIB_TTF" != ''
-      then
-        passed=`expr $passed + 1`
-      else
-        failed=`expr $failed + 1`
-        LDFLAGS="$OLD_LDFLAGS"
-      fi
+      passed=`expr $passed + 1`
+    else
+      failed=`expr $failed + 1`
+      LDFLAGS="$OLD_LDFLAGS"
     fi
 
 dnl Now test for the headers
