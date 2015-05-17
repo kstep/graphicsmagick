@@ -2324,7 +2324,7 @@ then
       do
         case $flag in
           -l*)
-            LIB_TTF_BASE=`echo $flag | sed -e s/^-l//'`
+            LIB_TTF_BASE=`echo $flag | sed -e 's/^-l//'`
             break
             ;;
           *)
