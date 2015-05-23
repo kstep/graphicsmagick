@@ -1906,8 +1906,9 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 
 static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *imagep)
 {
-  Image *
-    volatile image = imagep;  /* volatile to avoid "clobber" */
+  Image
+    * volatile imagev = imagep,  /* volatile to avoid "clobber" */
+    *image;
 
   ErrorManager
     error_manager;
@@ -1964,15 +1965,32 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *imagep)
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  assert(imagev != (Image *) NULL);
+  assert(imagev->signature == MagickSignature);
+  status=OpenBlob(image_info,imagev,WriteBinaryBlobMode,&imagev->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,imagev);
 
   (void) memset(&error_manager,0,sizeof(error_manager));
   (void) memset(&jpeg_info,0,sizeof(jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
+
+  /*
+    Set initial longjmp based error handler.
+  */
+  jpeg_info.client_data=(void *) imagev;
+  jpeg_info.err=jpeg_std_error(&jpeg_error);
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
+  jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
+  error_manager.image=imagev;
+  jpeg_info.client_data=(void *) &error_manager;
+  if (setjmp(error_manager.error_recovery))
+    {
+      jpeg_destroy_compress(&jpeg_info);
+      CloseBlob(imagev);
+      return MagickFail ;
+    }
+  image=imagev;  /* Use 'image' after this point for optimization */
 
   /*
     Transform image to user-requested colorspace.
@@ -2002,22 +2020,6 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *imagep)
       CloseBlob(image);
       return MagickFail;
     }
-
-  /*
-    Set initial longjmp based error handler.
-  */
-  jpeg_info.client_data=(void *) image;
-  jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGMessageHandler;
-  jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  error_manager.image=image;
-  if (setjmp(error_manager.error_recovery))
-    {
-      jpeg_destroy_compress(&jpeg_info);
-      CloseBlob(image);
-      return MagickFail ;
-    }
-  jpeg_info.client_data=(void *) &error_manager;
 
   jpeg_create_compress(&jpeg_info);
   JPEGDestinationManager(&jpeg_info,image);
