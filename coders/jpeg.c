@@ -1965,8 +1965,8 @@ static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *imagep)
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(imagep != (Image *) NULL);
+  assert(imagep->signature == MagickSignature);
   status=OpenBlob(image_info,imagev,WriteBinaryBlobMode,&imagev->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,imagev);
