@@ -6047,8 +6047,11 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 }
 
 static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
-                                       const ImageInfo *image_info,Image *image)
+                                       const ImageInfo *image_info,Image *imagep)
 {
+  Image *
+    volatile image = imagep;  /* volatile to avoid "clobber" */
+
   /* Write one PNG image */
   const ImageAttribute
     *attribute;
@@ -6101,7 +6104,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     *png_pixels;
 
   unsigned int
-    image_colors,
+    volatile image_colors, /* volatile to avoid "clobber" */
     image_depth,
     image_matte,
     logging,

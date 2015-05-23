@@ -1904,8 +1904,11 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
   destination->image=image;
 }
 
-static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteJPEGImage(const ImageInfo *image_info,Image *imagep)
 {
+  Image *
+    volatile image = imagep;  /* volatile to avoid "clobber" */
+
   ErrorManager
     error_manager;
 

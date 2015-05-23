@@ -2280,7 +2280,6 @@ then
     if test -n "$freetype_config"
     then
       freetype_cflags=`${freetype_config} --cflags`
-      freeype_libs=`${freetype_config}  --libs`
       # freetype-config --cflags may output values such as
       # -I/usr/local/include/freetype2 -I/usr/local/include
       # Take only the first -I option since non-Freetype include
@@ -2309,6 +2308,7 @@ then
       # Freetype.  In the future we may need to do something different
       # if the FreeType library was to depend on some weird library
       # that we don't normally test for.
+      freeype_libs=`${freetype_config}  --libs`
       for flag in $freeype_libs
       do
         case $flag in
@@ -2334,7 +2334,7 @@ then
     fi
 
 dnl First see if there is a library
-    AC_CHECK_LIB([$LIB_TTF_BASE],[FT_Init_FreeType],[LIB_TTF='-lfreetype'],[LIB_TTF=''],[])
+    AC_CHECK_LIB([$LIB_TTF_BASE],[FT_Init_FreeType],[LIB_TTF="-l$LIB_TTF_BASE"],[LIB_TTF=''],[])
     if test "$LIB_TTF" != ''
     then
       passed=`expr $passed + 1`
@@ -2507,6 +2507,7 @@ AC_SUBST(LIB_WEBP)
 #
 have_xml='no'
 LIB_XML=''
+LIB_XML2_BASE='xml2'
 if test "$with_xml" != 'no'
 then
     OLD_LDFLAGS=$LDFLAGS
@@ -2517,49 +2518,82 @@ then
     AC_PATH_PROG(xml2_config,xml2-config,)dnl
     if test -n "$xml2_config"
     then
-        # Debian installs libxml headers under /usr/include/libxml2/libxml with
-        # the shared library installed under /usr/lib, whereas the package
-        # installs itself under $prefix/libxml and $prefix/lib.
-        xml2_prefix=`xml2-config --prefix`
-        if test -d "${xml2_prefix}/include/libxml2"
-        then
-          CPPFLAGS="$CPPFLAGS -I${xml2_prefix}/include/libxml2"
-        fi
-        LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
-     fi
+        # Sample output from xml2-config --cflags:
+        # -I/usr/include/libxml2
+        # -I/usr/local/include/libxml2 -I/usr/local/include
+        xml2_cflags=`$xml2_config --cflags`
+        for flag in $xml2_cflags
+        do
+            case $flag in
+                -I*)
+                    CPPFLAGS="$CPPFLAGS $flag"
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+        # Sample output from xml2-config --libs:
+        # -lxml2
+        # -L/usr/lib -R/usr/lib -lxml2 -lz -lpthread -lm -lsocket -lnsl
+        #-L/usr/local/lib -lxml2 -lz -L/usr/local/lib -liconv -lm
+        xml2_libs=`$xml2_config  --libs`
+        for flag in $xml2_libs
+        do
+            case $flag in
+                -L*)
+                    LDFLAGS="$LDFLAGS $flag"
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+        for flag in $xml2_libs
+        do
+            case $flag in
+                -l*)
+                    LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+    fi
     failed=0
     passed=0
     # Incantation tested with libxml2 2.7.8 configured with
     #   --with-minimum --with-http --with-ftp --with-push --with-zlib --with-sax1
     # Note that SAX1 interfaces don't seem to be directly used but parsers fail to work
     # as expected without SAX1 support compiled in.
-    AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml2,xmlSAXVersion,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER([libxml/parser.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlSAXVersion],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
     # Next two require --with-push to be enabled
-    AC_CHECK_LIB(xml2,xmlParseChunk,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(xml2,xmlCreatePushParserCtxt,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if XML package is complete)
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlParseChunk],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlCreatePushParserCtxt],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_MSG_CHECKING([if XML package is complete])
     if test $passed -gt 0
     then
     if test $failed -gt 0
     then
-	AC_MSG_RESULT(no -- some components failed test)
+	AC_MSG_RESULT([no -- some components failed test])
         have_xml='no (failed tests)'
         LDFLAGS="$OLD_LDFLAGS"
         CPPFLAGS="$OLD_CPPFLAGS"
     else
-	LIB_XML='-lxml2'
+	LIB_XML="-l$LIB_XML2_BASE"
 	LIBS="$LIB_XML $LIBS"
-	AC_DEFINE(HasXML,1,Define if you have XML library)
-	AC_MSG_RESULT(yes)
+	AC_DEFINE([HasXML],[1],[Define if you have XML library])
+	AC_MSG_RESULT([yes])
         have_xml='yes'
     fi
     else
-        AC_MSG_RESULT(no)
+        AC_MSG_RESULT([no])
     fi
 fi
-AM_CONDITIONAL(HasXML, test "$have_xml" = 'yes')
-AC_SUBST(LIB_XML)
+AM_CONDITIONAL([HasXML], [test "$have_xml" = 'yes'])
+AC_SUBST([LIB_XML])
 
 #
 # Check for WMF
@@ -2593,6 +2627,17 @@ then
     else
 
       LIB_WMF_DEPS=''
+      # Sample output from libwmf-config --cflags:
+      # -I/usr/include/freetype2 -I/usr/include
+      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include -I/usr/local/include
+      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include
+      # -I/usr/local/include -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/local/include
+
+      # Sample output from libwmf-config --libs:
+      # -L/usr/local/lib -lwmflite
+      # -L/usr/lib/x86_64-linux-gnu -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
+      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
+      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -L/usr/openwin/lib -R/usr/openwin/lib -lSM -lICE -lX11 -lsocket -lnsl -R/usr/local/lib -lxml2 -lz -lm -lsocket -lnsl -ljpeg -lpng -lz -lm
       WMF_CONFIG_LIBS=`libwmf-config --libs`
       for lib in xml2 expat freetype jpeg png z
       do

@@ -26673,7 +26673,6 @@ fi
     if test -n "$freetype_config"
     then
       freetype_cflags=`${freetype_config} --cflags`
-      freeype_libs=`${freetype_config}  --libs`
       # freetype-config --cflags may output values such as
       # -I/usr/local/include/freetype2 -I/usr/local/include
       # Take only the first -I option since non-Freetype include
@@ -26702,6 +26701,7 @@ fi
       # Freetype.  In the future we may need to do something different
       # if the FreeType library was to depend on some weird library
       # that we don't normally test for.
+      freeype_libs=`${freetype_config}  --libs`
       for flag in $freeype_libs
       do
         case $flag in
@@ -26765,7 +26765,7 @@ eval ac_res=\$$as_ac_Lib
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-  LIB_TTF='-lfreetype'
+  LIB_TTF="-l$LIB_TTF_BASE"
 else
   LIB_TTF=''
 fi
@@ -27352,6 +27352,7 @@ fi
 #
 have_xml='no'
 LIB_XML=''
+LIB_XML2_BASE='xml2'
 if test "$with_xml" != 'no'
 then
     OLD_LDFLAGS=$LDFLAGS
@@ -27402,16 +27403,49 @@ fi
 
     if test -n "$xml2_config"
     then
-        # Debian installs libxml headers under /usr/include/libxml2/libxml with
-        # the shared library installed under /usr/lib, whereas the package
-        # installs itself under $prefix/libxml and $prefix/lib.
-        xml2_prefix=`xml2-config --prefix`
-        if test -d "${xml2_prefix}/include/libxml2"
-        then
-          CPPFLAGS="$CPPFLAGS -I${xml2_prefix}/include/libxml2"
-        fi
-        LDFLAGS="$LDFLAGS -L${xml2_prefix}/lib"
-     fi
+        # Sample output from xml2-config --cflags:
+        # -I/usr/include/libxml2
+        # -I/usr/local/include/libxml2 -I/usr/local/include
+        xml2_cflags=`$xml2_config --cflags`
+        for flag in $xml2_cflags
+        do
+            case $flag in
+                -I*)
+                    CPPFLAGS="$CPPFLAGS $flag"
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+        # Sample output from xml2-config --libs:
+        # -lxml2
+        # -L/usr/lib -R/usr/lib -lxml2 -lz -lpthread -lm -lsocket -lnsl
+        #-L/usr/local/lib -lxml2 -lz -L/usr/local/lib -liconv -lm
+        xml2_libs=`$xml2_config  --libs`
+        for flag in $xml2_libs
+        do
+            case $flag in
+                -L*)
+                    LDFLAGS="$LDFLAGS $flag"
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+        for flag in $xml2_libs
+        do
+            case $flag in
+                -l*)
+                    LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
+                    break
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+    fi
     failed=0
     passed=0
     # Incantation tested with libxml2 2.7.8 configured with
@@ -27426,13 +27460,14 @@ else
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlSAXVersion in -lxml2" >&5
-$as_echo_n "checking for xmlSAXVersion in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlSAXVersion+:} false; then :
+    as_ac_Lib=`$as_echo "ac_cv_lib_$LIB_XML2_BASE''_xmlSAXVersion" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlSAXVersion in -l$LIB_XML2_BASE" >&5
+$as_echo_n "checking for xmlSAXVersion in -l$LIB_XML2_BASE... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
+LIBS="-l$LIB_XML2_BASE  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27452,30 +27487,32 @@ return xmlSAXVersion ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlSAXVersion=yes
+  eval "$as_ac_Lib=yes"
 else
-  ac_cv_lib_xml2_xmlSAXVersion=no
+  eval "$as_ac_Lib=no"
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlSAXVersion" >&5
-$as_echo "$ac_cv_lib_xml2_xmlSAXVersion" >&6; }
-if test "x$ac_cv_lib_xml2_xmlSAXVersion" = xyes; then :
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
     # Next two require --with-push to be enabled
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlParseChunk in -lxml2" >&5
-$as_echo_n "checking for xmlParseChunk in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlParseChunk+:} false; then :
+    as_ac_Lib=`$as_echo "ac_cv_lib_$LIB_XML2_BASE''_xmlParseChunk" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlParseChunk in -l$LIB_XML2_BASE" >&5
+$as_echo_n "checking for xmlParseChunk in -l$LIB_XML2_BASE... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
+LIBS="-l$LIB_XML2_BASE  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27495,29 +27532,31 @@ return xmlParseChunk ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlParseChunk=yes
+  eval "$as_ac_Lib=yes"
 else
-  ac_cv_lib_xml2_xmlParseChunk=no
+  eval "$as_ac_Lib=no"
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlParseChunk" >&5
-$as_echo "$ac_cv_lib_xml2_xmlParseChunk" >&6; }
-if test "x$ac_cv_lib_xml2_xmlParseChunk" = xyes; then :
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlCreatePushParserCtxt in -lxml2" >&5
-$as_echo_n "checking for xmlCreatePushParserCtxt in -lxml2... " >&6; }
-if ${ac_cv_lib_xml2_xmlCreatePushParserCtxt+:} false; then :
+    as_ac_Lib=`$as_echo "ac_cv_lib_$LIB_XML2_BASE''_xmlCreatePushParserCtxt" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlCreatePushParserCtxt in -l$LIB_XML2_BASE" >&5
+$as_echo_n "checking for xmlCreatePushParserCtxt in -l$LIB_XML2_BASE... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml2  $LIBS"
+LIBS="-l$LIB_XML2_BASE  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27537,17 +27576,18 @@ return xmlCreatePushParserCtxt ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_xml2_xmlCreatePushParserCtxt=yes
+  eval "$as_ac_Lib=yes"
 else
-  ac_cv_lib_xml2_xmlCreatePushParserCtxt=no
+  eval "$as_ac_Lib=no"
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xml2_xmlCreatePushParserCtxt" >&5
-$as_echo "$ac_cv_lib_xml2_xmlCreatePushParserCtxt" >&6; }
-if test "x$ac_cv_lib_xml2_xmlCreatePushParserCtxt" = xyes; then :
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
@@ -27565,7 +27605,7 @@ $as_echo "no -- some components failed test" >&6; }
         LDFLAGS="$OLD_LDFLAGS"
         CPPFLAGS="$OLD_CPPFLAGS"
     else
-	LIB_XML='-lxml2'
+	LIB_XML="-l$LIB_XML2_BASE"
 	LIBS="$LIB_XML $LIBS"
 
 $as_echo "#define HasXML 1" >>confdefs.h
@@ -27670,6 +27710,17 @@ $as_echo "#define HasWMFlite 1" >>confdefs.h
     else
 
       LIB_WMF_DEPS=''
+      # Sample output from libwmf-config --cflags:
+      # -I/usr/include/freetype2 -I/usr/include
+      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include -I/usr/local/include
+      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include
+      # -I/usr/local/include -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/local/include
+
+      # Sample output from libwmf-config --libs:
+      # -L/usr/local/lib -lwmflite
+      # -L/usr/lib/x86_64-linux-gnu -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
+      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
+      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -L/usr/openwin/lib -R/usr/openwin/lib -lSM -lICE -lX11 -lsocket -lnsl -R/usr/local/lib -lxml2 -lz -lm -lsocket -lnsl -ljpeg -lpng -lz -lm
       WMF_CONFIG_LIBS=`libwmf-config --libs`
       for lib in xml2 expat freetype jpeg png z
       do
