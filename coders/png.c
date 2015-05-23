@@ -6049,8 +6049,9 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
                                        const ImageInfo *image_info,Image *imagep)
 {
-  Image *
-    volatile image = imagep;  /* volatile to avoid "clobber" */
+  Image
+    * volatile imagev = imagep,  /* Use only 'imagev' before setjmp() */
+    *image;                      /* Use only 'image' after setjmp() */
 
   /* Write one PNG image */
   const ImageAttribute
@@ -6104,7 +6105,7 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
     *png_pixels;
 
   unsigned int
-    volatile image_colors, /* volatile to avoid "clobber" */
+    image_colors,
     image_depth,
     image_matte,
     logging,
@@ -6121,38 +6122,6 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
                          "  enter WriteOnePNGImage()");
 
-  /*
-    Make sure that image is in an RGB type space.
-  */
-  (void) TransformColorspace(image,RGBColorspace);
-
-  /*
-    Analyze image to be written.
-  */
-  if (!GetImageCharacteristics(image,&characteristics,
-                               (OptimizeType == image_info->type),
-                               &image->exception))
-    {
-      CloseBlob(image);
-      return MagickFail;
-    }
-
-  if (logging)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "  Image Characteristics:\n"
-                            "    CMYK:       %u\n"
-                            "    Grayscale:  %u\n"
-                            "    Monochrome: %u\n"
-                            "    Opaque:     %u\n"
-                            "    Palette:    %u",
-                            characteristics.cmyk,
-                            characteristics.grayscale ,
-                            characteristics.monochrome,
-                            characteristics.opaque,
-                            characteristics.palette);
-    }
-
   /* Initialize some stuff */
   ping_background.red = 0;
   ping_background.green = 0;
@@ -6165,55 +6134,28 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   ping_trans_color.blue=0;
   ping_trans_color.gray=0;
 
-  if (image->storage_class == PseudoClass)
-    image_colors=image->colors;
-  else
-    image_colors=0;
-
-  image_depth=image->depth;
-  image_matte=image->matte;
-
-  if (image->storage_class == PseudoClass &&
-      image_colors <= 256)
-    {
-      mng_info->IsPalette=MagickTrue;
-      image_depth=8;
-    }
-
-  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
-    image_depth=8;
-
-  else if (mng_info->write_png48 || mng_info->write_png64)
-      image_depth=16;
-
-  else if (image_depth < 8)
-    image_depth=8;
-
-  else if (image_depth > 8)
-    image_depth=16;
-
   /*
     Allocate the PNG structures
   */
 #ifdef PNG_USER_MEM_SUPPORTED
-  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct_2(PNG_LIBPNG_VER_STRING,imagev,
                                  PNGErrorHandler,PNGWarningHandler,
                                  (void *) NULL,
                                  (png_malloc_ptr) png_IM_malloc,
                                  (png_free_ptr) png_IM_free);
 #else
-  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,image,
+  ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,imagev,
                                PNGErrorHandler,PNGWarningHandler);
 #endif
   if (ping == (png_struct *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,imagev);
   ping_info=png_create_info_struct(ping);
   if (ping_info == (png_info *) NULL)
     {
       png_destroy_write_struct(&ping,(png_info **) NULL);
-      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,imagev);
     }
-  png_set_write_fn(ping,image,png_put_data,png_flush_data);
+  png_set_write_fn(ping,imagev,png_put_data,png_flush_data);
   png_pixels=(unsigned char *) NULL;
 
 #if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
@@ -6243,6 +6185,77 @@ static MagickPassFail WriteOnePNGImage(MngInfo *mng_info,
   /* Allow benign errors */
   png_set_benign_errors(ping, 1);
 #endif
+
+  image=imagev;  /* Use 'image' after this point for optimization */
+
+  /*
+    Make sure that image is in an RGB type space.
+  */
+  if (!TransformColorspace(image,RGBColorspace))
+    {
+      CloseBlob(image);
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+      UnlockSemaphoreInfo(png_semaphore);
+#endif
+      return MagickFail;
+    }
+
+  /*
+    Analyze image to be written.
+  */
+  if (!GetImageCharacteristics(image,&characteristics,
+                               (OptimizeType == image_info->type),
+                               &image->exception))
+    {
+      CloseBlob(image);
+#if defined(GMPNG_SETJMP_NOT_THREAD_SAFE)
+      UnlockSemaphoreInfo(png_semaphore);
+#endif
+      return MagickFail;
+    }
+
+  if (logging)
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "  Image Characteristics:\n"
+                            "    CMYK:       %u\n"
+                            "    Grayscale:  %u\n"
+                            "    Monochrome: %u\n"
+                            "    Opaque:     %u\n"
+                            "    Palette:    %u",
+                            characteristics.cmyk,
+                            characteristics.grayscale ,
+                            characteristics.monochrome,
+                            characteristics.opaque,
+                            characteristics.palette);
+    }
+
+  if (image->storage_class == PseudoClass)
+    image_colors=image->colors;
+  else
+    image_colors=0;
+
+  image_depth=image->depth;
+  image_matte=image->matte;
+
+  if (image->storage_class == PseudoClass &&
+      image_colors <= 256)
+    {
+      mng_info->IsPalette=MagickTrue;
+      image_depth=8;
+    }
+
+  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
+    image_depth=8;
+
+  else if (mng_info->write_png48 || mng_info->write_png64)
+      image_depth=16;
+
+  else if (image_depth < 8)
+    image_depth=8;
+
+  else if (image_depth > 8)
+    image_depth=16;
 
   /*
     Prepare PNG for writing.
