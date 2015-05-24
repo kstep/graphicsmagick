@@ -2,6 +2,7 @@
 
 	* configure.ac: Improve handling of libxml2 dependencies.  Only
 	test for and use libwmflite.  Full-up libwmf is no longer used.
+	* configure.ac: Deduplicate CFLAGS and LDFLAGS.
 
 2015-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
