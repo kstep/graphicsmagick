@@ -677,7 +677,7 @@ coders_mpr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_mpr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mpr_la_rpath = -rpath $(codersdir)
 coders_msl_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_coders_msl_la_OBJECTS = coders/coders_msl_la-msl.lo
 coders_msl_la_OBJECTS = $(am_coders_msl_la_OBJECTS)
 coders_msl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -905,7 +905,7 @@ coders_sun_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_sun_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sun_la_rpath = -rpath $(codersdir)
 coders_svg_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_coders_svg_la_OBJECTS = coders/coders_svg_la-svg.lo
 coders_svg_la_OBJECTS = $(am_coders_svg_la_OBJECTS)
 coders_svg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -976,7 +976,7 @@ coders_uil_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_uil_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_uil_la_rpath = -rpath $(codersdir)
 coders_url_la_DEPENDENCIES = $(LIBMAGICK) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_coders_url_la_OBJECTS = coders/coders_url_la-url.lo
 coders_url_la_OBJECTS = $(am_coders_url_la_OBJECTS)
 coders_url_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2162,6 +2162,7 @@ LIB_WMF_DEPS = @LIB_WMF_DEPS@
 LIB_X11 = @LIB_X11@
 LIB_XEXT = @LIB_XEXT@
 LIB_XML = @LIB_XML@
+LIB_XML_DEPS = @LIB_XML_DEPS@
 LIB_ZLIB = @LIB_ZLIB@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -2990,7 +2991,7 @@ coders_mpr_la_LIBADD = $(LIBMAGICK)
 coders_msl_la_SOURCES = coders/msl.c
 coders_msl_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_msl_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_msl_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
+coders_msl_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_XML_DEPS)
 
 # MTV coder module
 coders_mtv_la_SOURCES = coders/mtv.c
@@ -3170,7 +3171,7 @@ coders_sun_la_LIBADD = $(LIBMAGICK)
 coders_svg_la_SOURCES = coders/svg.c
 coders_svg_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_svg_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_svg_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
+coders_svg_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_XML_DEPS)
 
 # TGA coder module
 coders_tga_la_SOURCES = coders/tga.c
@@ -3224,7 +3225,7 @@ coders_uil_la_LIBADD = $(LIBMAGICK)
 coders_url_la_SOURCES = coders/url.c
 coders_url_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_url_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_url_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
+coders_url_la_LIBADD = $(LIBMAGICK) $(LIB_XML) $(LIB_XML_DEPS)
 
 # UYVY coder module
 coders_uyvy_la_SOURCES = coders/uyvy.c

@@ -1,3 +1,8 @@
+2015-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Improve handling of libxml2 dependencies.  Only
+	test for and use libwmflite.  Full-up libwmf is no longer used.
+
 2015-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (WriteOnePNGImage): Eliminate a "clobber"

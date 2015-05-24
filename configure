@@ -732,6 +732,7 @@ LIB_WMF_DEPS
 LIB_WMF
 HasWMF_FALSE
 HasWMF_TRUE
+LIB_XML_DEPS
 LIB_XML
 HasXML_FALSE
 HasXML_TRUE
@@ -27352,7 +27353,8 @@ fi
 #
 have_xml='no'
 LIB_XML=''
-LIB_XML2_BASE='xml2'
+LIB_XML_DEPS=''
+LIB_XML2_BASE=''
 if test "$with_xml" != 'no'
 then
     OLD_LDFLAGS=$LDFLAGS
@@ -27406,12 +27408,25 @@ fi
         # Sample output from xml2-config --cflags:
         # -I/usr/include/libxml2
         # -I/usr/local/include/libxml2 -I/usr/local/include
-        xml2_cflags=`$xml2_config --cflags`
+        xml2_cflags=`"$xml2_config" --cflags`
         for flag in $xml2_cflags
         do
             case $flag in
                 -I*)
-                    CPPFLAGS="$CPPFLAGS $flag"
+                    # Add flag to CPPFLAGS if not already present
+                    add=yes;
+                    for test_flag in $CPPFLAGS
+                    do
+                        if test $flag = $test_flag
+                        then
+                            add=no
+                            break
+                        fi
+                    done
+                    if test $add = yes
+                    then
+                        CPPFLAGS="$CPPFLAGS $flag"
+                    fi
                     break
                     ;;
                 *)
@@ -27427,7 +27442,20 @@ fi
         do
             case $flag in
                 -L*)
-                    LDFLAGS="$LDFLAGS $flag"
+                    # Add flag to LDFLAGS if not already present
+                    add=yes;
+                    for test_flag in $LDFLAGS
+                    do
+                        if test $flag = $test_flag
+                        then
+                            add=no
+                            break
+                        fi
+                    done
+                    if test $add = yes
+                    then
+                        LDFLAGS="$LDFLAGS $flag"
+                    fi
                     break
                     ;;
                 *)
@@ -27438,13 +27466,24 @@ fi
         do
             case $flag in
                 -l*)
-                    LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
-                    break
+                    # The first library listed is assumed to be the
+                    # name of the library and all others are assumed
+                    # to be its dependencies.
+                    if test "x$LIB_XML2_BASE" = "x"
+                    then
+                        LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
+                    else
+                        LIB_XML_DEPS="$LIB_XML_DEPS $flag"
+                    fi
                     ;;
                 *)
                     ;;
             esac
         done
+    fi
+    if test "x$LIB_XML2_BASE" = "x"
+    then
+        LIB_XML2_BASE=xml2
     fi
     failed=0
     passed=0
@@ -27467,7 +27506,7 @@ if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-l$LIB_XML2_BASE  $LIBS"
+LIBS="-l$LIB_XML2_BASE $LIB_XML_DEPS $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27512,7 +27551,7 @@ if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-l$LIB_XML2_BASE  $LIBS"
+LIBS="-l$LIB_XML2_BASE $LIB_XML_DEPS $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27556,7 +27595,7 @@ if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-l$LIB_XML2_BASE  $LIBS"
+LIBS="-l$LIB_XML2_BASE $LIB_XML_DEPS $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -27593,8 +27632,8 @@ else
   failed=`expr $failed + 1`
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if XML package is complete" >&5
-$as_echo_n "checking if XML package is complete... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if XML package is complete " >&5
+$as_echo_n "checking if XML package is complete ... " >&6; }
     if test $passed -gt 0
     then
     if test $failed -gt 0
@@ -27606,7 +27645,23 @@ $as_echo "no -- some components failed test" >&6; }
         CPPFLAGS="$OLD_CPPFLAGS"
     else
 	LIB_XML="-l$LIB_XML2_BASE"
-	LIBS="$LIB_XML $LIBS"
+        # Add lib to LIBS if not already present
+        for test_lib in $LIB_XML $LIB_XML_DEPS
+        do
+            add=yes;
+            for lib in $LIBS
+            do
+                if test $lib = $test_lib
+                then
+                    add=no
+                    break
+                fi
+            done
+            if test $add = yes
+            then
+                LIBS="$test_lib $LIBS"
+            fi
+        done
 
 $as_echo "#define HasXML 1" >>confdefs.h
 
@@ -27629,8 +27684,14 @@ fi
 
 
 
+
 #
 # Check for WMF
+#
+# We require libwmflite and now refuse to use full libwmf.  Typical
+# dependencies for libwmflite are '-lpthread -lm' (which we already
+# usually depend on) whereas full libwmf has a great many
+# dependencies.
 #
 
 have_wmf='no'
@@ -27639,26 +27700,25 @@ LIB_WMF_DEPS=''
 OLIBS="$LIBS"
 if test "$with_wmf" != 'no'
 then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WMF support " >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for WMF support " >&5
 $as_echo_n "checking for WMF support ... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
 
-  have_libwmf='no'
-  have_libwmflite='no'
-  have_libwmf_ipa_h='no'
+    have_libwmflite='no'
+    have_libwmf_ipa_h='no'
 
-  ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
+    ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
 "
 if test "x$ac_cv_header_libwmf_ipa_h" = xyes; then :
   have_libwmf_ipa_h='yes'
 fi
 
 
-  if test "$have_libwmf_ipa_h" = 'yes'
-  then
+    if test "$have_libwmf_ipa_h" = 'yes'
+    then
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
 $as_echo_n "checking for wmf_lite_create in -lwmflite... " >&6; }
 if ${ac_cv_lib_wmflite_wmf_lite_create+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -27698,103 +27758,33 @@ if test "x$ac_cv_lib_wmflite_wmf_lite_create" = xyes; then :
   have_libwmflite='yes'
 fi
 
-    if test "$have_libwmflite" = 'yes'
-    then
+        if test "$have_libwmflite" = 'yes'
+        then
 
 $as_echo "#define HasWMFlite 1" >>confdefs.h
 
 
-      LIB_WMF='-lwmflite'
-      LIBS="$LIB_WMF $LIBS"
-      have_wmf='yes'
-    else
-
-      LIB_WMF_DEPS=''
-      # Sample output from libwmf-config --cflags:
-      # -I/usr/include/freetype2 -I/usr/include
-      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include -I/usr/local/include
-      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include
-      # -I/usr/local/include -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/local/include
-
-      # Sample output from libwmf-config --libs:
-      # -L/usr/local/lib -lwmflite
-      # -L/usr/lib/x86_64-linux-gnu -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
-      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
-      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -L/usr/openwin/lib -R/usr/openwin/lib -lSM -lICE -lX11 -lsocket -lnsl -R/usr/local/lib -lxml2 -lz -lm -lsocket -lnsl -ljpeg -lpng -lz -lm
-      WMF_CONFIG_LIBS=`libwmf-config --libs`
-      for lib in xml2 expat freetype jpeg png z
-      do
-        testlib="-l${lib}"
-        echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && LIB_WMF_DEPS="$LIB_WMF_DEPS $testlib"
-      done
-
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_api_create in -lwmf" >&5
-$as_echo_n "checking for wmf_api_create in -lwmf... " >&6; }
-if ${ac_cv_lib_wmf_wmf_api_create+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmf $LIB_WMF_DEPS $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char wmf_api_create ();
-int
-main ()
-{
-return wmf_api_create ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_wmf_wmf_api_create=yes
-else
-  ac_cv_lib_wmf_wmf_api_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_api_create" >&5
-$as_echo "$ac_cv_lib_wmf_wmf_api_create" >&6; }
-if test "x$ac_cv_lib_wmf_wmf_api_create" = xyes; then :
-  have_libwmf='yes'
-fi
-
-      if test "$have_libwmf" = 'yes'
-      then
-
-$as_echo "#define HasWMF 1" >>confdefs.h
-
-        LIB_WMF='-lwmf'
-        LIBS="$LIB_WMF $LIBS"
-        have_wmf='yes'
-      else
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+            LIB_WMF='-lwmflite'
+            LIBS="$LIB_WMF $LIBS"
+            have_wmf='yes'
+        else
+	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 $as_echo "no -- some components failed test" >&6; }
-        have_wmf='no (failed tests)'
-        have_wmflite='no (failed tests)'
-        LIBS="$OLIBS"
-        LIB_WMF=''
-      fi
+            have_wmf='no (failed tests)'
+            have_wmflite='no (failed tests)'
+            LIBS="$OLIBS"
+            LIB_WMF=''
+        fi
     fi
-  fi
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete" >&5
-$as_echo_n "checking if WMF package is complete... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete " >&5
+$as_echo_n "checking if WMF package is complete ... " >&6; }
 if test "$have_wmf" = 'yes'
 then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
  if test "$have_wmf" = 'yes'; then

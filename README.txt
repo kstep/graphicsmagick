@@ -306,7 +306,7 @@ building under Microsoft Windows:
   leaks, buffer overruns, multiple frees, use of uninitialized data, use
   of freed data, and many other common programming errors.
 
-* GraphicsMagick requires libwmf 0.2.5 (or later) from
+* GraphicsMagick requires libwmflite from libwmf 0.2.5 (or later) from
 
      http://sourceforge.net/projects/wvware/
 
@@ -322,7 +322,9 @@ building under Microsoft Windows:
   xmlsoft libxml, or expat libraries. Since GraphicsMagick already uses
   libxml (for reading SVG and to retrieve files via HTTP or FTP), it is
   recommended that the options '--without-expat --with-xml' be supplied
-  to libwmf's configure script.
+  to libwmf's configure script.  If the other features of libwmf are
+  not needed, then the '--disable-heavy' option may be used to only
+  build libwmflite.
 
   GraphicsMagick's WMF renderer provides some of the finest WMF
   rendering available due its use of antialiased drawing algorithms.

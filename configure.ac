@@ -2507,26 +2507,40 @@ AC_SUBST(LIB_WEBP)
 #
 have_xml='no'
 LIB_XML=''
-LIB_XML2_BASE='xml2'
+LIB_XML_DEPS=''
+LIB_XML2_BASE=''
 if test "$with_xml" != 'no'
 then
     OLD_LDFLAGS=$LDFLAGS
     OLD_CPPFLAGS=$CPPFLAGS
-    AC_MSG_CHECKING(for XML support )
-    AC_MSG_RESULT()
+    AC_MSG_CHECKING([for XML support ])
+    AC_MSG_RESULT([])
     xml2_config=''
-    AC_PATH_PROG(xml2_config,xml2-config,)dnl
+    AC_PATH_PROG([xml2_config],[xml2-config],[])dnl
     if test -n "$xml2_config"
     then
         # Sample output from xml2-config --cflags:
         # -I/usr/include/libxml2
         # -I/usr/local/include/libxml2 -I/usr/local/include
-        xml2_cflags=`$xml2_config --cflags`
+        xml2_cflags=`"$xml2_config" --cflags`
         for flag in $xml2_cflags
         do
             case $flag in
                 -I*)
-                    CPPFLAGS="$CPPFLAGS $flag"
+                    # Add flag to CPPFLAGS if not already present
+                    add=yes;
+                    for test_flag in $CPPFLAGS
+                    do
+                        if test $flag = $test_flag
+                        then
+                            add=no
+                            break
+                        fi
+                    done
+                    if test $add = yes
+                    then
+                        CPPFLAGS="$CPPFLAGS $flag"
+                    fi
                     break
                     ;;
                 *)
@@ -2542,7 +2556,20 @@ then
         do
             case $flag in
                 -L*)
-                    LDFLAGS="$LDFLAGS $flag"
+                    # Add flag to LDFLAGS if not already present
+                    add=yes;
+                    for test_flag in $LDFLAGS
+                    do
+                        if test $flag = $test_flag
+                        then
+                            add=no
+                            break
+                        fi
+                    done
+                    if test $add = yes
+                    then
+                        LDFLAGS="$LDFLAGS $flag"
+                    fi
                     break
                     ;;
                 *)
@@ -2553,13 +2580,24 @@ then
         do
             case $flag in
                 -l*)
-                    LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
-                    break
+                    # The first library listed is assumed to be the
+                    # name of the library and all others are assumed
+                    # to be its dependencies.
+                    if test "x$LIB_XML2_BASE" = "x"
+                    then
+                        LIB_XML2_BASE=`echo $flag | sed -e 's/^-l//'`
+                    else
+                        LIB_XML_DEPS="$LIB_XML_DEPS $flag"
+                    fi
                     ;;
                 *)
                     ;;
             esac
         done
+    fi
+    if test "x$LIB_XML2_BASE" = "x"
+    then
+        LIB_XML2_BASE=xml2
     fi
     failed=0
     passed=0
@@ -2568,11 +2606,11 @@ then
     # Note that SAX1 interfaces don't seem to be directly used but parsers fail to work
     # as expected without SAX1 support compiled in.
     AC_CHECK_HEADER([libxml/parser.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlSAXVersion],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlSAXVersion],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[$LIB_XML_DEPS])
     # Next two require --with-push to be enabled
-    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlParseChunk],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlCreatePushParserCtxt],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_MSG_CHECKING([if XML package is complete])
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlParseChunk],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[$LIB_XML_DEPS])
+    AC_CHECK_LIB([$LIB_XML2_BASE],[xmlCreatePushParserCtxt],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[$LIB_XML_DEPS])
+    AC_MSG_CHECKING([if XML package is complete ])
     if test $passed -gt 0
     then
     if test $failed -gt 0
@@ -2583,7 +2621,23 @@ then
         CPPFLAGS="$OLD_CPPFLAGS"
     else
 	LIB_XML="-l$LIB_XML2_BASE"
-	LIBS="$LIB_XML $LIBS"
+        # Add lib to LIBS if not already present
+        for test_lib in $LIB_XML $LIB_XML_DEPS
+        do
+            add=yes;
+            for lib in $LIBS
+            do
+                if test $lib = $test_lib
+                then
+                    add=no
+                    break
+                fi
+            done
+            if test $add = yes
+            then
+                LIBS="$test_lib $LIBS"
+            fi
+        done
 	AC_DEFINE([HasXML],[1],[Define if you have XML library])
 	AC_MSG_RESULT([yes])
         have_xml='yes'
@@ -2594,9 +2648,15 @@ then
 fi
 AM_CONDITIONAL([HasXML], [test "$have_xml" = 'yes'])
 AC_SUBST([LIB_XML])
+AC_SUBST([LIB_XML_DEPS])
 
 #
 # Check for WMF
+#
+# We require libwmflite and now refuse to use full libwmf.  Typical
+# dependencies for libwmflite are '-lpthread -lm' (which we already
+# usually depend on) whereas full libwmf has a great many
+# dependencies.
 #
 
 have_wmf='no'
@@ -2605,78 +2665,48 @@ LIB_WMF_DEPS=''
 OLIBS="$LIBS"
 if test "$with_wmf" != 'no'
 then
-  AC_MSG_CHECKING(for WMF support )
-  AC_MSG_RESULT()
+    AC_MSG_CHECKING([for WMF support ])
+    AC_MSG_RESULT([])
 
-  have_libwmf='no'
-  have_libwmflite='no'
-  have_libwmf_ipa_h='no'
+    have_libwmflite='no'
+    have_libwmf_ipa_h='no'
 
-  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
-  if test "$have_libwmf_ipa_h" = 'yes'
-  then
-
-    AC_CHECK_LIB(wmflite,wmf_lite_create,have_libwmflite='yes',,)
-    if test "$have_libwmflite" = 'yes'
+    AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
+    if test "$have_libwmf_ipa_h" = 'yes'
     then
-      AC_DEFINE(HasWMFlite,1,Define if you have wmflite library)
 
-      LIB_WMF='-lwmflite'
-      LIBS="$LIB_WMF $LIBS"
-      have_wmf='yes'
-    else
+        AC_CHECK_LIB([wmflite],[wmf_lite_create],[have_libwmflite='yes'],[],[])
+        if test "$have_libwmflite" = 'yes'
+        then
+            AC_DEFINE([HasWMFlite],[1],[Define if you have wmflite library])
 
-      LIB_WMF_DEPS=''
-      # Sample output from libwmf-config --cflags:
-      # -I/usr/include/freetype2 -I/usr/include
-      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include -I/usr/local/include
-      # -I/usr/local/include/freetype2 -I/usr/local/include -I/usr/local/include
-      # -I/usr/local/include -I/usr/local/include/freetype2 -I/usr/openwin/include -I/usr/local/include
-
-      # Sample output from libwmf-config --libs:
-      # -L/usr/local/lib -lwmflite
-      # -L/usr/lib/x86_64-linux-gnu -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
-      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -lX11 -lexpat -ljpeg -lpng -lz -lm
-      # -L/usr/local/lib -lwmf -lwmflite -lfreetype -lz -L/usr/openwin/lib -R/usr/openwin/lib -lSM -lICE -lX11 -lsocket -lnsl -R/usr/local/lib -lxml2 -lz -lm -lsocket -lnsl -ljpeg -lpng -lz -lm
-      WMF_CONFIG_LIBS=`libwmf-config --libs`
-      for lib in xml2 expat freetype jpeg png z
-      do
-        testlib="-l${lib}"
-        echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && LIB_WMF_DEPS="$LIB_WMF_DEPS $testlib"
-      done
-
-      AC_CHECK_LIB(wmf,wmf_api_create,have_libwmf='yes',,$LIB_WMF_DEPS)
-      if test "$have_libwmf" = 'yes'
-      then
-        AC_DEFINE(HasWMF,1,Define if you have wmf library)
-        LIB_WMF='-lwmf'
-        LIBS="$LIB_WMF $LIBS"
-        have_wmf='yes'
-      else
-	AC_MSG_RESULT(no -- some components failed test)
-        have_wmf='no (failed tests)'
-        have_wmflite='no (failed tests)'
-        LIBS="$OLIBS"
-        LIB_WMF=''
-      fi
+            LIB_WMF='-lwmflite'
+            LIBS="$LIB_WMF $LIBS"
+            have_wmf='yes'
+        else
+	    AC_MSG_RESULT([no -- some components failed test])
+            have_wmf='no (failed tests)'
+            have_wmflite='no (failed tests)'
+            LIBS="$OLIBS"
+            LIB_WMF=''
+        fi
     fi
-  fi
 fi
-AC_MSG_CHECKING(if WMF package is complete)
+AC_MSG_CHECKING([if WMF package is complete ])
 if test "$have_wmf" = 'yes'
 then
-  AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes])
 else
-  AC_MSG_RESULT(no)
+    AC_MSG_RESULT([no])
 fi
-AM_CONDITIONAL(HasWMF, test "$have_wmf" = 'yes')
-AC_SUBST(LIB_WMF)
-AC_SUBST(LIB_WMF_DEPS)
+AM_CONDITIONAL([HasWMF], [test "$have_wmf" = 'yes'])
+AC_SUBST([LIB_WMF])
+AC_SUBST([LIB_WMF_DEPS])
 
 #
 # Substitute compiler name to build/link PerlMagick
 #
-AC_SUBST(PERLMAINCC)
+AC_SUBST([PERLMAINCC])
 
 #
 # Configure install Paths
