@@ -191,6 +191,9 @@ image formats.
    | GRAY         | RW   | Raw gray samples          | Use -size, -depth, and -endian to specify the    |
    |              |      |                           | image width, height, depth, and byte order.      |
    +--------------+------+---------------------------+--------------------------------------------------+
+   | GRAYA        | RW   | Raw gray samples + alpha  | Use -size, -depth, and -endian to specify the    |
+   |              |      |                           | image width, height, depth, and byte order.      |
+   +--------------+------+---------------------------+--------------------------------------------------+
    | HPGL         | R    | HP-GL plotter language    | Requires hp2xx_ 3.2.0 or later                   |
    +--------------+------+---------------------------+--------------------------------------------------+
    |              |      | Hypertext Markup Language |                                                  |

@@ -10,7 +10,7 @@ rwfile=./rwfile
 check_types='truecolor_70x46'
 
 # Number of tests we plan to run
-test_plan_fn 8
+test_plan_fn 9
 
 # CMYK format
 for type in ${check_types}
@@ -22,6 +22,12 @@ done
 for type in ${check_types}
 do
   test_command_fn "GRAY ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" GRAY
+done
+
+# GRAYA format
+for type in ${check_types}
+do
+  test_command_fn "GRAYA ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" GRAYA
 done
 
 # MONO format

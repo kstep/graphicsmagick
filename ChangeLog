@@ -1,3 +1,11 @@
+2015-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gray.c: Added support for "GRAYA" format.  Format
+	specifiers "R", "G", "B", "A", "C", "M", and "Y" may now be used
+	to save and restore the associated channel using the same raw
+	format as "GRAY".  These format specifiers were already supported
+	but did not appear to serve any useful function.
+
 2015-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Improve handling of libxml2 dependencies.  Only

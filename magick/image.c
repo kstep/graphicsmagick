@@ -2359,7 +2359,9 @@ MagickExport MagickPassFail SetImageClipMask(Image *image,const Image *clip_mask
 MagickExport MagickPassFail SetImageDepth(Image *image,const unsigned long depth)
 {
   MagickPassFail
-    status;
+    status=MagickPass;
+
+  assert(image != (Image *) NULL);
 
   status=QuantumOperatorImage(image,AllChannels,DepthQuantumOp,(double) depth,
                               &image->exception);
