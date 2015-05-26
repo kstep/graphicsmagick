@@ -360,6 +360,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw red samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -368,6 +369,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw cyan samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -376,6 +378,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw green samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -384,6 +387,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw magenta samples";
   entry->module="GRAY";
 
@@ -392,6 +396,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw blue samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -400,6 +405,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw yellow samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -408,6 +414,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw opacity samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);
@@ -416,6 +423,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=(DecoderHandler) ReadGRAYImage;
   entry->encoder=(EncoderHandler) WriteGRAYImage;
   entry->raw=True;
+  entry->extension_treatment=IgnoreExtensionTreatment;
   entry->description="Raw black samples";
   entry->module="GRAY";
   (void) RegisterMagickInfo(entry);

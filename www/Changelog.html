@@ -40,7 +40,13 @@
 <ul class="simple">
 <li>coders/gray.c (ReadGRAYImage): Fix read glitch caused by
 incorrect memset(). Added missing break statement to switch.
-Added more logging.</li>
+Added more logging.
+(RegisterGRAYImage): Register &quot;gray&quot; formats R, G, B, C, M, Y, K,
+O such that they are not triggered by file extension.  It is
+necessary to apply a magick prefix to the file name (or set image
+magick in the API) in order to force using these formats.  This
+avoids accidents in case the file extension was used for some
+other purpose.</li>
 </ul>
 </blockquote>
 <p>2015-05-25  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
