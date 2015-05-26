@@ -10,7 +10,7 @@ rwfile=./rwfile
 check_types='truecolor_70x46'
 
 # Number of tests we plan to run
-test_plan_fn 9
+test_plan_fn 16
 
 # CMYK format
 for type in ${check_types}
@@ -28,6 +28,48 @@ done
 for type in ${check_types}
 do
   test_command_fn "GRAYA ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" GRAYA
+done
+
+# R format
+for type in ${check_types}
+do
+  test_command_fn "R (red) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" R
+done
+
+# G format
+for type in ${check_types}
+do
+  test_command_fn "G (green) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" G
+done
+
+# B format
+for type in ${check_types}
+do
+  test_command_fn "B (blue) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" B
+done
+
+# C format
+for type in ${check_types}
+do
+  test_command_fn "C (cyan) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" C
+done
+
+# M format
+for type in ${check_types}
+do
+  test_command_fn "M (magenta) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" M
+done
+
+# Y format
+for type in ${check_types}
+do
+  test_command_fn "Y (yellow) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" Y
+done
+
+# K format
+for type in ${check_types}
+do
+  test_command_fn "K (black) ${type}" ${MEMCHECK} ${rwfile} -filespec "out_${type}_%d" -size 70x46 "${SRCDIR}/input_${type}.miff" K
 done
 
 # MONO format

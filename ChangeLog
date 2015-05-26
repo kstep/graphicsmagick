@@ -1,3 +1,9 @@
+2015-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gray.c (ReadGRAYImage): Fix read glitch caused by
+	incorrect memset(). Added missing break statement to switch.
+	Added more logging.
+
 2015-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gray.c: Added support for "GRAYA" format.  Format

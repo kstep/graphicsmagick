@@ -177,12 +177,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
 
-  if (image->logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "Tile %lux%lu%+ld%+ld",
-			  image->tile_info.width,image->tile_info.height,
-			  image->tile_info.x,image->tile_info.y);
-
   quantum_type=MagickToQuantumType(image_info->magick);
   /*
     Support depth in multiples of 8 bits.
@@ -215,9 +209,19 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     import_options.endian=image_info->endian;
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			  "Depth %u bits, Endian %s",
+			  "Depth: %u bits, "
+                          "Type: %s, "
+                          "Samples/Pixel: %u, "
+                          "Endian %s, "
+                          "Tile: %lux%lu%+ld%+ld",
 			  quantum_size,
-			  EndianTypeToString(import_options.endian));
+                          QuantumTypeToString(quantum_type),
+                          samples_per_pixel,
+			  EndianTypeToString(import_options.endian),
+                          image->tile_info.width,
+                          image->tile_info.height,
+                          image->tile_info.x,
+                          image->tile_info.y);
   /*
     Support starting at intermediate image frame.
   */
@@ -254,9 +258,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       q=SetImagePixelsEx(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      (void) memset(q,0,packet_size*image->columns);
+      (void) memset(q,0,sizeof(PixelPacket)*image->columns);
       (void) ImportImagePixelArea(image,quantum_type,quantum_size,scanline+x,
-				  &import_options,0);
+        			  &import_options,0);
       if (!SyncImagePixelsEx(image,exception))
         break;
       if (image->previous == (Image *) NULL)
@@ -266,7 +270,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
 				      image->columns,image->rows))
             break;
     }
-    image->is_grayscale=MagickTrue;
+    if ((quantum_type == GrayQuantum) || (quantum_type == GrayAlphaQuantum))
+      image->is_grayscale=MagickTrue;
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -569,6 +574,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       case BlackQuantum:
         {
           (void) TransformColorspace(image,CMYKColorspace);
+          break;
         }
       default:
         {
@@ -588,8 +594,14 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       export_options.endian=image_info->endian;
     if (image->logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-			    "Depth %u bits, Endian %s",quantum_size,
-			    EndianTypeToString(export_options.endian));
+                            "Depth: %u bits, "
+                            "Type: %s, "
+                            "Samples/Pixel: %u, "
+                            "Endian %s",
+                            quantum_size,
+                            QuantumTypeToString(quantum_type),
+                            samples_per_pixel,
+                            EndianTypeToString(export_options.endian));
     /*
       Convert MIFF to GRAY raster scanline.
     */
