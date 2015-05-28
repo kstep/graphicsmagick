@@ -1,3 +1,9 @@
+2015-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gray.c (ReadGRAYImage): Based on feedback from Glenn,
+	return a gray image from the reader, even if a channelized format
+	specifier is given.
+
 2015-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gray.c (ReadGRAYImage): Fix read glitch caused by

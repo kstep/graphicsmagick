@@ -50,33 +50,54 @@
 static unsigned int
   WriteGRAYImage(const ImageInfo *,Image *);
 
-static QuantumType MagickToQuantumType(const char *magick)
+/*
+  Return an appropriate channel quantum type depending on the magick
+  format specifier.
+*/
+static QuantumType MagickToQuantumType(const char *magick,
+                                       const MagickBool gray_only)
 {
   QuantumType
-    quantum_type;
+    quantum_type=GrayQuantum;
 
-  if (strcmp(magick,"GRAY") == 0)
-    quantum_type=GrayQuantum;
-  else if (strcmp(magick,"GRAYA") == 0)
-    quantum_type=GrayAlphaQuantum;
-  else if (strcmp(magick,"R") == 0)
-    quantum_type=RedQuantum;
-  else if (strcmp(magick,"G") == 0)
-    quantum_type=GreenQuantum;
-  else if (strcmp(magick,"B") == 0)
-    quantum_type=BlueQuantum;
-  else if (strcmp(magick,"O") == 0)
-    quantum_type=AlphaQuantum;
-  else if (strcmp(magick,"C") == 0)
-    quantum_type=CyanQuantum;
-  else if (strcmp(magick,"M") == 0)
-    quantum_type=MagentaQuantum;
-  else if (strcmp(magick,"Y") == 0)
-    quantum_type=YellowQuantum;
-  else if (strcmp(magick,"K") == 0)
-    quantum_type=BlackQuantum;
+  /*
+    Reader returns GRAY or GRAYA images while writer writes GRAY or
+    GRAYA, or individual channels as GRAY.
+
+    For the reader, if all channels are treated as in the writer case,
+    then a color image would be returned, with only the specified
+    channel set.  However, that is not what is done here.
+  */
+  if (gray_only)
+    {
+      if (strcmp(magick,"GRAY") == 0)
+        quantum_type=GrayQuantum;
+      else if (strcmp(magick,"GRAYA") == 0)
+        quantum_type=GrayAlphaQuantum;
+    }
   else
-    quantum_type=GrayQuantum;
+    {
+      if (strcmp(magick,"GRAY") == 0)
+        quantum_type=GrayQuantum;
+      else if (strcmp(magick,"GRAYA") == 0)
+        quantum_type=GrayAlphaQuantum;
+      else if (strcmp(magick,"R") == 0)
+        quantum_type=RedQuantum;
+      else if (strcmp(magick,"G") == 0)
+        quantum_type=GreenQuantum;
+      else if (strcmp(magick,"B") == 0)
+        quantum_type=BlueQuantum;
+      else if (strcmp(magick,"O") == 0)
+        quantum_type=AlphaQuantum;
+      else if (strcmp(magick,"C") == 0)
+        quantum_type=CyanQuantum;
+      else if (strcmp(magick,"M") == 0)
+        quantum_type=MagentaQuantum;
+      else if (strcmp(magick,"Y") == 0)
+        quantum_type=YellowQuantum;
+      else if (strcmp(magick,"K") == 0)
+        quantum_type=BlackQuantum;
+    }
 
   return quantum_type;
 }
@@ -158,6 +179,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
+  MagickBool
+    is_grayscale;
+
   /*
     Open image file.
   */
@@ -177,7 +201,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
     }
 
-  quantum_type=MagickToQuantumType(image_info->magick);
+  quantum_type=MagickToQuantumType(image_info->magick,MagickTrue);
+  is_grayscale=((quantum_type == GrayQuantum) ||
+                (quantum_type == GrayAlphaQuantum));
   /*
     Support depth in multiples of 8 bits.
   */
@@ -258,7 +284,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       q=SetImagePixelsEx(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
-      (void) memset(q,0,sizeof(PixelPacket)*image->columns);
+      if (!is_grayscale)
+        (void) memset(q,0,sizeof(PixelPacket)*image->columns);
       (void) ImportImagePixelArea(image,quantum_type,quantum_size,scanline+x,
         			  &import_options,0);
       if (!SyncImagePixelsEx(image,exception))
@@ -270,8 +297,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
 				      image->columns,image->rows))
             break;
     }
-    if ((quantum_type == GrayQuantum) || (quantum_type == GrayAlphaQuantum))
-      image->is_grayscale=MagickTrue;
+    image->is_grayscale=is_grayscale;
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -537,7 +563,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
 
-  quantum_type=MagickToQuantumType(image_info->magick);
+  quantum_type=MagickToQuantumType(image_info->magick,MagickFalse);
   
   /*
     Support depth in multiples of 8 bits.
