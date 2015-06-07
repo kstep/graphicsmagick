@@ -1,3 +1,17 @@
+2015-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/lib/STL.cpp (adaptiveThresholdImage): Add a new
+	constructor which accepts a 'double' offset value.  The previous
+	version of this constructor is deprecated and subject to removal
+	in the future.  The size of the class is enlarged to store a
+	'double' and so this is a break in the ABI when this class was
+	used.  Code using this class should be re-compiled.
+
+	* Magick++/lib/Image.cpp (adaptiveThreshold): Add a new version of
+	this method which accepts a 'double' offset value.  The previous
+	version of the method is deprecated and subject to removal in the
+	future.  Problem was reported by Dirk Lemstra.
+
 2015-05-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gray.c (ReadGRAYImage): Based on feedback from Glenn,

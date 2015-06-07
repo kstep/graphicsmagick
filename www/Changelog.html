@@ -35,6 +35,21 @@
 <div class="document">
 
 
+<p>2015-06-07  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
+<blockquote>
+<ul class="simple">
+<li>Magick++/lib/STL.cpp (adaptiveThresholdImage): Add a new
+constructor which accepts a 'double' offset value.  The previous
+version of this constructor is deprecated and subject to removal
+in the future.  The size of the class is enlarged to store a
+'double' and so this is a break in the ABI when this class was
+used.  Code using this class should be re-compiled.</li>
+<li>Magick++/lib/Image.cpp (adaptiveThreshold): Add a new version of
+this method which accepts a 'double' offset value.  The previous
+version of the method is deprecated and subject to removal in the
+future.  Problem was reported by Dirk Lemstra.</li>
+</ul>
+</blockquote>
 <p>2015-05-27  Bob Friesenhahn  &lt;<a class="reference external" href="mailto:bfriesen&#37;&#52;&#48;simple&#46;dallas&#46;tx&#46;us">bfriesen<span>&#64;</span>simple<span>&#46;</span>dallas<span>&#46;</span>tx<span>&#46;</span>us</a>&gt;</p>
 <blockquote>
 <ul class="simple">

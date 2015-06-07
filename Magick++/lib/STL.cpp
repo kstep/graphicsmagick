@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2014
+// Copyright Bob Friesenhahn, 1999 - 2015
 //
 // Implementation of STL classes and functions
 //
@@ -14,10 +14,19 @@
 // Local adaptive threshold image
 Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width_,
                                                         const unsigned int height_,
-                                                        const unsigned int offset_ )
+                                                        const double offset_ )
       : _width(width_),
         _height(height_),
         _offset(offset_)
+{
+}
+// Local adaptive threshold image.  This version is deprecated and subject to deletion.
+Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width_,
+                                                        const unsigned int height_,
+                                                        const unsigned int offset_ )
+      : _width(width_),
+        _height(height_),
+        _offset(static_cast<double>(offset_))
 {
 }
 void Magick::adaptiveThresholdImage::operator()( Magick::Image &image_ ) const
