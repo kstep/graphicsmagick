@@ -20,15 +20,6 @@ Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width
         _offset(offset_)
 {
 }
-// Local adaptive threshold image.  This version is deprecated and subject to deletion.
-Magick::adaptiveThresholdImage::adaptiveThresholdImage( const unsigned int width_,
-                                                        const unsigned int height_,
-                                                        const unsigned int offset_ )
-      : _width(width_),
-        _height(height_),
-        _offset(static_cast<double>(offset_))
-{
-}
 void Magick::adaptiveThresholdImage::operator()( Magick::Image &image_ ) const
 {
   image_.adaptiveThreshold( _width, _height, _offset );

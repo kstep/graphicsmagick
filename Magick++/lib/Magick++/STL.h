@@ -52,9 +52,6 @@ namespace Magick
     adaptiveThresholdImage( const unsigned int width_,
                             const unsigned int height_,
                             const double offset_ = 0.0  );
-    adaptiveThresholdImage( const unsigned int width_,
-                            const unsigned int height_,
-                            const unsigned int offset_ ) MAGICK_FUNC_DEPRECATED;
 
     void operator()( Image &image_ ) const;
 
