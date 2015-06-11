@@ -63,8 +63,20 @@
 #  include "tiff.h"
 #  include "tiffio.h"
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
-#    define COMPRESSION_ADOBE_DEFLATE  8
+#     define COMPRESSION_ADOBE_DEFLATE  8
 #  endif  /* !defined(COMPRESSION_ADOBE_DEFLATE) */
+
+/*
+  JPEG headers are needed in order to obtain BITS_IN_JSAMPLE
+*/
+#  if defined(HasJPEG)
+#    if defined(__MINGW32__)
+#       define XMD_H 1
+#    endif
+#    undef HAVE_STDLIB_H
+#    include "jpeglib.h"
+#  endif /* defined(HasJPEG) */
+
 #if defined(TIFF_VERSION_BIG)
 #  define HasBigTIFF 1
 #endif /* defined(TIFF_BIGTIFF_VERSION) */
@@ -4290,15 +4302,18 @@ WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (COMPRESSION_JPEG == compress_tag)
         {
           /*
-            JPEG compression can only use size specified by BITS_IN_JSAMPLE.
+            JPEG compression can only use size specified by
+            BITS_IN_JSAMPLE (except for MK1 JPEG) which supports two
+            sizes.
+
+            Maybe there is a tricky way to obtain this value from
+            libtiff or libtiff can be extended?
+
             FIXME
-          */
-#if BITS_IN_JSAMPLE == 12
-          depth=12;
-          bits_per_sample=12;
-#else
-          depth=8;
-          bits_per_sample=8;
+          */          
+#if BITS_IN_JSAMPLE
+          depth=BITS_IN_JSAMPLE;
+          bits_per_sample=BITS_IN_JSAMPLE;
 #endif
         }
 

@@ -1,3 +1,12 @@
+2015-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Include JPEG headers to obtain
+	its BITS_IN_JSAMPLE definition.  This is needed so we can know
+	what JPEG depth libtiff supports.
+
+	* www/index.rst: Add mention of GraphicsMagick having zero defects
+	reported by Coverity.
+
 2015-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++/lib/STL.cpp (adaptiveThresholdImage): Add a new

@@ -130,6 +130,9 @@ Here are some reasons to prefer GraphicsMagick over ImageMagick:
     control management tool which supports management of local
     changes.
 
+  * GM has 0.00 (zero) defects per 1000 lines of code (293,341 total
+    lines included) according to Coverity analsis on May 25, 2015.
+
   * GM developers contribute to other free projects for the public good.
 
 GraphicsMagick is `copyrighted <Copyright.html>`_ by the GraphicsMagick
